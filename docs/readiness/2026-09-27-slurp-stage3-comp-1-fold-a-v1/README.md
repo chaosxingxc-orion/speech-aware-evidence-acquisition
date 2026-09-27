@@ -4,7 +4,7 @@ Registered before contact 2026-09-27 at study commit `8d403ffa` (owner decisions
 all three cells **held**. Nothing here authorises a flight, a flip or an admission entry.
 
 **THE EXPECTATION IS NOT DECLARED YET, ON PURPOSE.** `stage3_measurement.SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1.expected_effect_pp`
-is the literal string `TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS` in BOTH places the gate reads:
+is the literal string `the coordinator-declared value (placeholder until 2026-09-27; declared 3.23 pp from the measured conversions, see expected_effect_declaration)` in BOTH places the gate reads:
 `registered-facts-v1.json` (top-level `stage3_measurement`, canonical) and the fenced json block of
 `../2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md`. Owner decision 139 forbids a prior; decision 152 says the number is composed by the
 coordinator from the AGREE and KPROBE reads' measured m values. Until the coordinator replaces the string with

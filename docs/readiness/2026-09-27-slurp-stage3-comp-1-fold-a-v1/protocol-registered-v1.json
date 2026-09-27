@@ -70,7 +70,7 @@
   "development_numbers_only": "Every number this cell will produce is a TRAIN Fold A construction-fold development number (owner decisions 28 and 86) and is never a test claim.",
   "expectation": {
     "gate_state_until_then": "scripts/checks/stage3_effect_floor_check.py: FAIL [unparsable-declaration] on the arm (expected_effect_pp must be a number) -- INTENDED; the A/A and the smoke parse.",
-    "placeholder": "TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS",
+    "placeholder": "the coordinator-declared value (placeholder until 2026-09-27; declared 3.23 pp from the measured conversions, see expected_effect_declaration)",
     "what_composes_it": {
       "bar_at_n_1080_pp": 2.5,
       "m_agree": {
@@ -99,12 +99,12 @@
     },
     "where_to_fill": [
       {
-        "currently": "TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS",
+        "currently": "the coordinator-declared value (placeholder until 2026-09-27; declared 3.23 pp from the measured conversions, see expected_effect_declaration)",
         "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/registered-facts-v1.json",
         "json_path": "stage3_measurement.SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1.expected_effect_pp"
       },
       {
-        "currently": "TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS",
+        "currently": "the coordinator-declared value (placeholder until 2026-09-27; declared 3.23 pp from the measured conversions, see expected_effect_declaration)",
         "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md",
         "location": "the fenced json block under '## The measurement declaration', key stage3_measurement.SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1.expected_effect_pp"
       }
