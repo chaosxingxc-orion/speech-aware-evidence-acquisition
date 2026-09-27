@@ -3,6 +3,7 @@
 # slurp-stage3-agree-w1-fold-a-paired-analysis-v1). MODEL-FREE: zero model / tokenizer / encoder / server
 # contacts; scorer output is read from the sealed per-sample scores only.
 #
+# Driver: scripts/analysis/slurp_paired_roster_read.py (left = comparator, right = arm).
 # Pass vs-aa (GATING): the arm against its in-chain A/A (w_agree 0.0, the locked plan's own bytes) -- the
 #   measurement design is cross-flight-with-in-chain-replicate, intent primary (owner decisions 133, 143).
 # Pass vs-plan (CONTEXT ONLY): the arm against the sealed PLAN arm; never the gating contrast.
@@ -24,24 +25,15 @@ grep -E "^\| [^|]* \| SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-PAIRED-ANALYSIS-V1 \|" "
 $PY -B -c "import speech_aware_evidence_acquisition as m, sys; sys.exit(0 if m.__file__.startswith('$MAIN') else 9)" \
   || { echo "REFUSED: the package under test is not $MAIN (shared-venv hijack)"; exit 9; }
 for PASS in vs-aa vs-plan; do
-  if [ "$PASS" = vs-aa ]; then C_RUN=$AA_RUN; C_ATT=$AA_ATT; C_FIT=$AA_FIT; C_LABEL="the in-chain A/A (w_agree 0.0, the locked plan's own bytes)"
-  else C_RUN=$PLAN_RUN; C_ATT=$PLAN_ATT; C_FIT=$PLAN_FIT; C_LABEL="the sealed PLAN arm (context only)"; fi
+  if [ "$PASS" = vs-aa ]; then L_RUN=$AA_RUN; L_ATT=$AA_ATT; L_LABEL="the in-chain A/A (w_agree 0.0, the locked plan's own bytes)"
+  else L_RUN=$PLAN_RUN; L_ATT=$PLAN_ATT; L_LABEL="the sealed PLAN arm (context only)"; fi
   ROOT=$BASE/$PASS
-  mkdir -p "$ROOT" && cp "$MAIN/scripts/analysis/plan_cell_read.py" "$ROOT/plan_cell_read.py" \
-    && cp "$PKG/registered-facts-v1.json" "$ROOT/registered-agree.json" && cd "$ROOT" || exit 1
-  echo "### $PASS driver sha256 $(sha256sum plan_cell_read.py | cut -c1-16)"
-  for stage in stop structural contrast lock efficiency frontier verdict; do
-    $PY -B plan_cell_read.py --stage $stage \
-      --arm-run $ARM_RUN --arm-attempt $ARM_ATT --arm-fit-run $ARM_FIT --arm-label "cell AGREE (w_agree 1.0, k 60, fuse 8-1-8)" \
-      --comparator-run $C_RUN --comparator-attempt $C_ATT --comparator-fit-run $C_FIT --comparator-label "$C_LABEL" \
-      --lock-run SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1 --lock-attempt "$LOCK_ATTEMPT" \
-      --own-null-left-run $PLAN_RUN --own-null-left-attempt $PLAN_ATT --own-null-left-label "cell PLAN" \
-      --own-null-right-run SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1 --own-null-right-attempt attempt-slurp-native-default-plan-lock-replicate-train-fold-a-generation-v1 --own-null-right-label "cell PLANr" \
-      --package-dir "$PKG" --h-slu 1.2485 --h-intent 0.9943 --normaliser-id saea-deliver-normalise-v3 --seed 20260926 \
-      --recipe-id slurp-stage3-agree-w1-fold-a-paired-analysis-v1 \
-      --title "Cell AGREE ($PASS): the intent-boundary agreement term on TRAIN Fold A" \
-      --registered "$ROOT/registered-agree.json" --analysis-root "$ROOT" > "$ROOT/stage-$stage.log" 2>&1 \
-      || { echo "STAGE $stage FAILED ($PASS)"; tail -8 "$ROOT/stage-$stage.log" | cut -c1-300; exit 2; }
-  done
-  echo "### $PASS done: $(ls "$ROOT" | tr '\n' ' ')"
+  mkdir -p "$ROOT" && cp "$MAIN/scripts/analysis/slurp_paired_roster_read.py" "$ROOT/slurp_paired_roster_read.py" && cd "$ROOT" || exit 1
+  echo "### $PASS driver sha256 $(sha256sum slurp_paired_roster_read.py | cut -c1-16)"
+  # plan_cell_read.py needs a registered-facts shape (comparator_official, lock_official, ...) this package does
+  # not carry; the programme-standard paired roster read takes the two arms directly. Resampling unit per the
+  # recipe: the row (cluster key sample_id), 10,000 draws, seed 20260926; TRAIN gold through the -train sibling.
+  $PY -B slurp_paired_roster_read.py --stage all     --left-run "$L_RUN" --left-attempt "$L_ATT" --left-label "$L_LABEL"     --right-run $ARM_RUN --right-attempt $ARM_ATT --right-label "cell AGREE (w_agree 1.0, k 60, fuse 8-1-8)"     --scorer-id slurp-slu-official-train --expected-split-role discovery     --roster docs/receipts/rosters/slurp-evo-fold-a-v2.json --cluster-key sample_id     --split-identity-hash 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6     --repo-root "$MAIN" --data-root "$SPEECHRL_DATA_DIR" --seed 20260926 --draws 10000     --recipe-id slurp-stage3-agree-w1-fold-a-paired-analysis-v1     --title "Cell AGREE ($PASS): the intent-boundary agreement term on TRAIN Fold A"     --analysis-root "$ROOT" > "$ROOT/stage-all.log" 2>&1     || { echo "READ FAILED ($PASS)"; tail -8 "$ROOT/stage-all.log" | cut -c1-300; exit 2; }
+  echo "### $PASS done: $(ls "$ROOT" | tr '
+' ' ')"
 done
