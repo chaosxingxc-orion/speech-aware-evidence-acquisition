@@ -355,7 +355,7 @@ def prove_supply(repo: Path, data: Path, lock: Path, scratch: Path) -> dict[str,
                 "prepare-supply", "--repo-root", str(repo), "--data-root", str(data),
                 "--runtime-root", str(Path.home()), "--lock-path", str(lock),
                 "--experiment", experiment, "--cell", experiment, "--output", str(path),
-                "--workers", "8",
+                "--workers", "4",
             ],
             check=True, env=env, cwd=str(repo), stdout=subprocess.DEVNULL,
         )
@@ -476,13 +476,7 @@ def capture_requests(
                 raise RuntimeError(f"contact {key} posted twice")
             captured[key]["body_sha256"] = _sha(body)
             if keep_raw:
-                captured[key]["body"] = body
-            if keep_raw:
-                captured[key]["body"] = body
-            if keep_raw:
-                captured[key]["body"] = body
-            if keep_raw:
-                captured[key]["body"] = body
+                captured[key]["body"] = body.decode("utf-8")
         return json.dumps(
             {
                 "choices": [{"index": 0, "finish_reason": "stop",
@@ -512,9 +506,7 @@ def capture_requests(
                 "role": role,
             }
             if keep_raw:
-                captured[key]["payload"] = request_bytes
-            if keep_raw:
-                captured[key]["payload"] = request_bytes
+                captured[key]["payload"] = request_bytes.decode("utf-8")
         local.key = key
         local.answer = canned_answer(role, visit, str(payload.get("sample_id")), intents)
         return real(request_bytes)
@@ -584,7 +576,7 @@ def capture_requests(
     }
 
 
-def _leaf_classes(left: bytes, right: bytes) -> list[str]:
+def _leaf_classes(left: str, right: str) -> list[str]:
     import re
 
     a, b = flatten(json.loads(left)), flatten(json.loads(right))
@@ -592,14 +584,9 @@ def _leaf_classes(left: bytes, right: bytes) -> list[str]:
                    if a.get(leaf) != b.get(leaf)})
 
 
-def scheduling_self_control(repo: Path, data: Path, lock: Path, rows: int) -> dict[str, Any]:
-    """COMP-1's A/A dispatched TWICE at the production np4 concurrency: which request fields
-    differ between two dispatches of the SAME cell (scheduling and run identity, not config)."""
+def self_control_reading(first: Mapping[str, Any], second: Mapping[str, Any], rows: int) -> dict:
+    """Which request fields differ between two concurrent dispatches of the SAME cell."""
 
-    first, _ = capture_requests(repo, data, lock, CELLS["comp1_aa"], rows, keep_raw=True,
-                                serial=False)
-    second, _ = capture_requests(repo, data, lock, CELLS["comp1_aa"], rows, keep_raw=True,
-                                 serial=False)
     payload_fields: dict[str, int] = {}
     body_fields: dict[str, int] = {}
     for key in sorted(set(first) & set(second)):
@@ -614,7 +601,7 @@ def scheduling_self_control(repo: Path, data: Path, lock: Path, rows: int) -> di
             "number of contacts on which each field differs between the two dispatches of the "
             "SAME cell. These fields are assigned by arrival order (request_id, the "
             "rails-message/<request_id>/ provenance relpaths, the slot id) or derived from the "
-            "run id (source_query_state_sha256), which is why the A/A comparison above dispatches "
+            "run id (source_query_state_sha256), which is why the A/A comparison dispatches "
             "serially and reads the run-id-derived field separately"
         ),
         "rows": rows,
@@ -623,6 +610,80 @@ def scheduling_self_control(repo: Path, data: Path, lock: Path, rows: int) -> di
         "payload_fields_differing": dict(sorted(payload_fields.items())),
         "post_body_fields_differing": dict(sorted(body_fields.items())),
     }
+
+
+#: 64-hex values the proof may quote IN FULL: the prepared-supply OUTPUT digests (the claim
+#: itself; core.flight.repin never maps an output digest) and the study commit. Every other
+#: 64-hex value -- a composed config hash, a protocol hash, an artifact pin -- is quoted by a
+#: 16-hex prefix, because core.flight.repin rewrites every JSON file of a readiness package from
+#: its old identity hashes to its new ones at the flip and then refuses any old hash left under
+#: docs/: quoted in full, a record of what was computed at ``study_commit`` would be silently
+#: rewritten or would block the flip.
+FULL_HASH_KEYS = frozenset({"output_sha256", "sealed_plan_output_sha256", "study_commit"})
+
+
+def _is_sha256(value: Any) -> bool:
+    return (
+        isinstance(value, str) and len(value) == 64
+        and all(char in "0123456789abcdef" for char in value)
+    )
+
+
+def quote_hashes_by_prefix(node: Any, key: str | None = None) -> Any:
+    """Every 64-hex string outside :data:`FULL_HASH_KEYS` as ``sha256-prefix16:<16 hex>``."""
+
+    if isinstance(node, Mapping):
+        return {name: quote_hashes_by_prefix(value, name) for name, value in node.items()}
+    if isinstance(node, list):
+        return [quote_hashes_by_prefix(item, key) for item in node]
+    if _is_sha256(node) and key not in FULL_HASH_KEYS:
+        return "sha256-prefix16:" + node[:16]
+    return node
+
+
+def _launch_worker(repo: Path, args, *, cell: str, out: Path, rows: int | None,
+                   common: tuple[str, int] | None, serial: bool, raw: bool):
+    command = [
+        sys.executable, "-B", str(Path(__file__).resolve()),
+        "--repo-root", str(repo), "--data-root", str(args.data_root),
+        "--lock-path", str(args.lock_path), "--worker-cell", cell, "--worker-out", str(out),
+    ]
+    if rows is not None:
+        command += ["--rows", str(rows)]
+    if common is not None:
+        command += ["--worker-common", f"{common[0]}:{common[1]}"]
+    if not serial:
+        command.append("--worker-concurrent")
+    if raw:
+        command.append("--worker-raw")
+    env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=str(repo / "src"))
+    log = out.with_suffix(".log").open("w", encoding="utf-8")
+    return subprocess.Popen(command, env=env, cwd=str(repo), stdout=log, stderr=subprocess.STDOUT)
+
+
+def _run_workers(jobs: list[tuple[str, Any]], parallel: int) -> None:
+    """Run ``(label, launcher)`` jobs at most ``parallel`` at a time; refuse on any failure."""
+
+    pending, running = list(jobs), []
+    while pending or running:
+        while pending and len(running) < parallel:
+            label, launch = pending.pop(0)
+            running.append((label, launch()))
+        time.sleep(5)
+        still, failed = [], None
+        for label, process in running:
+            code = process.poll()
+            if code is None:
+                still.append((label, process))
+            elif code != 0 and failed is None:
+                failed = (label, code)
+        if failed is not None:
+            for _label, process in still:
+                process.send_signal(2)  # SIGINT: each worker aborts its own scratch attempt
+            for _label, process in still:
+                process.wait()
+            raise SystemExit(f"capture worker {failed[0]} exited {failed[1]}; see its .log")
+        running = still
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -634,8 +695,16 @@ def main(argv: list[str] | None = None) -> int:
                         help="dispatch only the first N rows (default: the whole roster)")
     parser.add_argument("--self-control-rows", type=int, default=12,
                         help="rows of the concurrent self-control (0 skips it)")
+    parser.add_argument("--parallel", type=int, default=4,
+                        help="capture worker processes at once (the owner's campaign-time CPU "
+                             "budget is 8 workers)")
     parser.add_argument("--scratch", type=Path, default=None)
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--worker-cell", help=argparse.SUPPRESS)
+    parser.add_argument("--worker-out", type=Path, help=argparse.SUPPRESS)
+    parser.add_argument("--worker-common", help=argparse.SUPPRESS)
+    parser.add_argument("--worker-concurrent", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--worker-raw", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     repo = args.repo_root.resolve()
     import speech_aware_evidence_acquisition as package
@@ -644,6 +713,19 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"imported package {package.__file__} is not under {repo}")
     if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
         raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
+    if args.worker_cell:
+        common = None
+        if args.worker_common:
+            label, _, stamp = args.worker_common.rpartition(":")
+            common = (label, int(stamp))
+        captured, receipt = capture_requests(
+            repo, args.data_root, args.lock_path, CELLS[args.worker_cell], args.rows,
+            keep_raw=args.worker_raw, serial=not args.worker_concurrent, common_run=common,
+        )
+        args.worker_out.write_text(
+            json.dumps({"captured": captured, "receipt": receipt}), encoding="utf-8"
+        )
+        return 0
     scratch = args.scratch or Path(f"/tmp/comp1g5-shared-aa-proof-{int(time.time())}")
     scratch.mkdir(parents=True, exist_ok=True)
 
@@ -657,22 +739,47 @@ def main(argv: list[str] | None = None) -> int:
 
     # Mode A (decisive): both cells under ONE scratch run id -- every payload byte must match.
     # Mode B (flight-shaped): each cell under its own run id -- the POST bodies must match and the
-    # payloads may differ ONLY in the run-id-derived custody field.
+    # payloads may differ ONLY in the run-id-derived custody field. Each capture is its own
+    # process (the dispatch is CPU-bound); the self-control dispatches COMP-1's A/A twice at the
+    # production concurrency.
     common_run = ("COMP1-G5-SHARED-AA-PROOF", int(time.time() * 1000))
-    modes: dict[str, dict[str, Any]] = {}
+    jobs, outputs = [], {}
     for mode, common in (("common_run_id", common_run), ("own_run_ids", None)):
-        captures, receipts = {}, {}
-        for name, experiment in CELLS.items():
-            captures[name], receipts[name] = capture_requests(
-                repo, args.data_root, args.lock_path, experiment, args.rows, common_run=common,
-            )
+        for name in CELLS:
+            out = scratch / f"capture-{mode}-{name}.json"
+            outputs[(mode, name)] = out
+            jobs.append((f"{mode}/{name}", functools.partial(
+                _launch_worker, repo, args, cell=name, out=out, rows=args.rows, common=common,
+                serial=True, raw=False,
+            )))
+    if args.self_control_rows:
+        for index in (1, 2):
+            out = scratch / f"capture-self-control-{index}.json"
+            outputs[("self_control", index)] = out
+            jobs.append((f"self-control/{index}", functools.partial(
+                _launch_worker, repo, args, cell="comp1_aa", out=out,
+                rows=args.self_control_rows, common=None, serial=False, raw=True,
+            )))
+    _run_workers(jobs, args.parallel)
+
+    def _load(key):
+        return json.loads(outputs[key].read_text(encoding="utf-8"))
+
+    modes: dict[str, dict[str, Any]] = {}
+    for mode in ("common_run_id", "own_run_ids"):
+        loaded = {name: _load((mode, name)) for name in CELLS}
         modes[mode] = {
-            "comp1_aa": receipts["comp1_aa"],
-            "g5_aa": receipts["g5_aa"],
-            "comparison": compare_captures(captures["comp1_aa"], captures["g5_aa"]),
+            "comp1_aa": loaded["comp1_aa"]["receipt"],
+            "g5_aa": loaded["g5_aa"]["receipt"],
+            "comparison": compare_captures(
+                loaded["comp1_aa"]["captured"], loaded["g5_aa"]["captured"]
+            ),
         }
     self_control = (
-        scheduling_self_control(repo, args.data_root, args.lock_path, args.self_control_rows)
+        self_control_reading(
+            _load(("self_control", 1))["captured"], _load(("self_control", 2))["captured"],
+            args.self_control_rows,
+        )
         if args.self_control_rows else None
     )
     common_cmp = modes["common_run_id"]["comparison"]
@@ -765,7 +872,16 @@ def main(argv: list[str] | None = None) -> int:
             "scheduling_self_control": self_control,
         },
         "scratch": str(scratch),
+        "hash_quoting": (
+            "64-hex identities other than the prepared-supply output digests and the study "
+            "commit are quoted as sha256-prefix16:<first 16 hex>: core.flight.repin rewrites every "
+            "JSON file of a readiness package from a cell's old identity hashes to its new ones at "
+            "the flip and refuses any old hash left under docs/, so a full quote would either be "
+            "rewritten -- falsifying this record of what was computed at study_commit -- or block "
+            "the flip; the full values are recomputable from study_commit"
+        ),
     }
+    proof = quote_hashes_by_prefix(proof)
     output = args.output or (repo / DEFAULT_OUTPUT)
     output.write_text(json.dumps(proof, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")
     print(json.dumps({"verdict": proof["verdict"], "output": str(output),

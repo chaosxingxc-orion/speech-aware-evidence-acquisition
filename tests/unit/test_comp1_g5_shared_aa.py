@@ -130,6 +130,29 @@ def test_compare_captures_reports_each_byte_level_separately(tool) -> None:
     assert missing["only_in_comp1_aa"] == ["j"]
 
 
+def test_identity_hashes_are_quoted_by_prefix_and_output_digests_in_full(tool) -> None:
+    full = "ab" * 32
+    quoted = tool.quote_hashes_by_prefix({
+        "composed_config_hash": full, "output_sha256": full, "sealed_plan_output_sha256": full,
+        "rows": [{"sha256": full}], "note": "not a hash", "short": "abcd",
+    })
+    assert quoted["composed_config_hash"] == "sha256-prefix16:" + full[:16]
+    assert quoted["rows"][0]["sha256"] == "sha256-prefix16:" + full[:16]
+    assert quoted["output_sha256"] == full and quoted["sealed_plan_output_sha256"] == full
+    assert quoted["note"] == "not a hash" and quoted["short"] == "abcd"
+
+
+def test_the_self_control_counts_differing_fields_per_contact(tool) -> None:
+    first = {"k": {"payload": json.dumps({"request_id": "a", "history": [{"x": 1}]}),
+                   "body": json.dumps({"id_slot": 0, "messages": []})}}
+    second = {"k": {"payload": json.dumps({"request_id": "b", "history": [{"x": 1}]}),
+                    "body": json.dumps({"id_slot": 3, "messages": []})}}
+    reading = tool.self_control_reading(first, second, 1)
+    assert reading["payload_fields_differing"] == {"request_id": 1}
+    assert reading["post_body_fields_differing"] == {"id_slot": 1}
+    assert reading["keys_equal"] and reading["contacts"] == 1
+
+
 def test_classify_supply_input_names_the_recall_width_and_its_identity_hash(tool) -> None:
     assert tool.classify_supply_input("sources.supply_spec.k") == "supply-recall-width"
     assert tool.classify_supply_input("config_sha256").startswith("supply-config-identity-hash")
