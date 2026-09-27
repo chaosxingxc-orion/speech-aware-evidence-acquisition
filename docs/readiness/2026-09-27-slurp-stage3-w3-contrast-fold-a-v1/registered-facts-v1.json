@@ -159,10 +159,109 @@
     "why_no_benefit_is_declared": "Row 139: an expectation may be declared only from a measured conversion analogue. The two measured conversions on this programme are DELIVERY conversions of the gold boundary card to Perception (CONV 32 of 70 = 0.457143, KPROBE 24 of 55 = 0.436364). W3a delivers nothing new -- the delivered set is the AGREE arm's own, byte for byte -- it changes what an already-delivered card SAYS, and no contrast text has ever been flown and read; W3b changes the composition of a block delivered to the SOLVER, a different node and channel from the one CONV measured. Neither analogue applies, so the cell is registered as a no-harm read and says so."
   },
   "fit_gate": {
-    "arm": null,
-    "headroom_before": "the AGREE arm registered Solver 21,278 of 21,504 usable tokens (np4 slot 24,576 minus the 3,072 reserve): 226 tokens of headroom",
-    "smoke": null,
-    "summary": null,
+    "headroom_before": "the AGREE arm registered Solver 21,278 of 21,504 usable tokens (np4 slot 24,576 minus the 3,072 reserve): 226 tokens of headroom on the pre-flight placeholder count",
+    "proofs": {
+      "line": "The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; the offline projection moves a Solver contact by -53.886 tokens on average (max +75.528, 52 rows above zero). Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5).",
+      "per_cell": {
+        "arm": {
+          "blockers": null,
+          "first_phase_supply_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+          "identical_to_agree": true,
+          "per_phase": {
+            "perception": {
+              "agree_registered_rendered_text_tokens": 19449,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 1874,
+              "physical_margin_tokens": 4946,
+              "rendered_text_tokens": 19087,
+              "required_window_tokens": 19630
+            },
+            "planner": {
+              "agree_registered_rendered_text_tokens": 19252,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 2071,
+              "physical_margin_tokens": 5143,
+              "rendered_text_tokens": 18890,
+              "required_window_tokens": 19433
+            },
+            "reviewer": {
+              "agree_registered_rendered_text_tokens": 19313,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 2010,
+              "physical_margin_tokens": 5082,
+              "rendered_text_tokens": 18951,
+              "required_window_tokens": 19494
+            },
+            "solver": {
+              "agree_registered_rendered_text_tokens": 21278,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 45,
+              "physical_margin_tokens": 3117,
+              "rendered_text_tokens": 20916,
+              "required_window_tokens": 21459
+            }
+          }
+        },
+        "smoke": {
+          "blockers": null,
+          "first_phase_supply_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
+          "identical_to_agree": true,
+          "per_phase": {
+            "perception": {
+              "agree_registered_rendered_text_tokens": 19449,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 1874,
+              "physical_margin_tokens": 4946,
+              "rendered_text_tokens": 19087,
+              "required_window_tokens": 19630
+            },
+            "planner": {
+              "agree_registered_rendered_text_tokens": 19252,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 2071,
+              "physical_margin_tokens": 5143,
+              "rendered_text_tokens": 18890,
+              "required_window_tokens": 19433
+            },
+            "reviewer": {
+              "agree_registered_rendered_text_tokens": 19313,
+              "decision": "ALLOW",
+              "delta_vs_agree": -363,
+              "operational_margin_tokens": 2011,
+              "physical_margin_tokens": 5083,
+              "rendered_text_tokens": 18950,
+              "required_window_tokens": 19493
+            },
+            "solver": {
+              "agree_registered_rendered_text_tokens": 21278,
+              "decision": "ALLOW",
+              "delta_vs_agree": -363,
+              "operational_margin_tokens": 46,
+              "physical_margin_tokens": 3118,
+              "rendered_text_tokens": 20915,
+              "required_window_tokens": 21458
+            }
+          }
+        }
+      },
+      "realised_agree_requests": {
+        "cost_records": 4385,
+        "max_prompt_tokens": 14561,
+        "per_contact_prompt_limit_tokens": 20990,
+        "trace": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1.trace.jsonl",
+          "sha256": "faffbcca32eeec86dab97f11f4499a6b82fc8181bff6c3d9c97636f676883472"
+        }
+      },
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/preflight-proofs-v1.json",
+      "sha256": "d8e6655ff8dab9a1091e8754c3883818ea25457019d261f60174e6c4a0bd16e3"
+    },
     "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -457 tokens); the capped block still carries 20 exemplars, whose lengths differ row by row",
     "what_must_be_freed": "nothing for W3 alone; W1's saving is not needed and is not spent"
   },
@@ -215,9 +314,9 @@
       "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json",
       "script": {
         "relpath": "scripts/analysis/slurp_w3_contrast_cap_offline.py",
-        "sha256": "852bee7c15a083188b28010dbee4e46aa9cc300233dfe8840ff9b115cd83a8d2"
+        "sha256": "3853a58d86022a31c3e4ea15d565d0ee5897ccab2c887dd4c288d96326ebdf85"
       },
-      "sha256": "3cc7cb802225b2b5917151e5dc9f42314d33b8bc641e5a430c3b54ab77f01225"
+      "sha256": "4f9fa9c38b38e2f064b245e666f5ed1bd048a37f9e744df4b109055c73a8eca8"
     }
   },
   "identity": {
@@ -425,7 +524,7 @@
       "rows": 1080
     }
   },
-  "study_commit_at_registration": "9673e9e2",
+  "study_commit_at_registration": "359df4c9",
   "the_item": {
     "evidence": {
       "K1": "docs/results/2026-09-27-slurp-knowledge-content-audit.md section 1: every card has exactly one activation sentence and one confusable exclusion, 57.7 % of each card is boilerplate; on 75 of the AGREE arm's 153 intent-wrong rows both the right and the chosen card are delivered and neither names the other; 119 distinct confusion pairs",

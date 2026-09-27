@@ -7,13 +7,13 @@ every cell's own hashes, PROVES the composed-config diff against the retained AG
 knowledge-content pins, the contrast release's two frozen source receipts and per-flight bookkeeping,
 and writes the package documents, the analysis recipe (with its READ run id), a draft decision
 receipt for root and (with ``--append-ledger``) seven DRAFT exposure rows. Config alone: no adapter,
-no split load, no lock, no contact; it flips nothing and mints nothing. ``--check-arm`` /
-``--check-smoke`` fold the held ``core.flight.cli check`` outputs (the Fit gate numbers) into the
-registered facts.
+no split load, no lock, no contact; it flips nothing and mints nothing. The Fit gate numbers and the
+first-phase supply proof are read from the package's ``preflight-proofs-v1.json``
+(``scripts/flights/w3/w3_preflight_proofs.py``).
 
     python scripts/flights/w3/write_slurp_w3_registration.py --study-commit <sha> \\
         --registered-at 2026-09-27T17:00:00.000000+00:00 \\
-        [--check-arm PATH] [--check-smoke PATH] [--append-ledger]
+        [--append-ledger]
 """
 
 from __future__ import annotations
@@ -169,39 +169,12 @@ def identities() -> dict:
     return out
 
 
-def fit_numbers(path: str | None) -> dict | None:
-    if not path:
-        return None
-    document = json.loads(Path(path).read_text(encoding="utf-8"))
-    pre = document.get("preflight", {})
-    receipts = pre.get("prompt_budget_receipts") or pre.get("prompt_budget") or []
-    phases = {}
-    for receipt in receipts if isinstance(receipts, list) else []:
-        phase = receipt.get("phase")
-        breakdown = receipt.get("breakdown") or {}
-        phases[phase] = {k: receipt.get(k, breakdown.get(k)) for k in (
-            "decision", "rendered_text_tokens", "physical_margin_tokens", "operational_margin_tokens",
-            "required_window_tokens", "serving_slot_limit_tokens")}
-    return {
-        "source": {"relpath_outside_git": path, "sha256": sha_file(path)},
-        "readiness": document.get("scientific_readiness"),
-        "config_hash": pre.get("config_hash"), "protocol_hash": pre.get("protocol_hash"),
-        "sample_count": pre.get("sample_count"), "study_commit": pre.get("study_commit"),
-        "prepared_artifacts_ok": pre.get("prepared_artifacts_ok"),
-        "blockers": pre.get("blockers"),
-        "per_phase": phases,
-    }
-
-
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--study-commit", required=True)
     parser.add_argument("--registered-at", required=True)
     parser.add_argument("--branch", default="fable/w3")
     parser.add_argument("--worktree", default="/home/chao/saea-worktrees/fable-w3")
-    parser.add_argument("--check-arm", default=None)
-    parser.add_argument("--check-smoke", default=None)
-    parser.add_argument("--fit-summary", default=None, help="JSON the coordinator/agent extracted from the held check")
     parser.add_argument("--append-ledger", action="store_true")
     args = parser.parse_args(argv)
     os.chdir(REPO_ROOT)
@@ -229,7 +202,6 @@ def main(argv: list[str] | None = None) -> int:
         if candidates:
             smoke_supply = json.loads(candidates[-1].read_text(encoding="utf-8"))["output_sha256"]
     AGREE_SUPPLY_OUTPUT_SHA["smoke"] = smoke_supply
-    fits = {"arm": fit_numbers(args.check_arm), "smoke": fit_numbers(args.check_smoke)}
     fit_summary = json.loads(Path(PROOFS).read_text(encoding="utf-8")) if Path(PROOFS).is_file() else None
 
     wrong_rows = contrast_a["wrong_rows"]

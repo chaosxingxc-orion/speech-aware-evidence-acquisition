@@ -30,7 +30,7 @@
     "repeated_speech_audio_seconds_cap": 33930
   },
   "plan_kind": "generation",
-  "preparation_base_commit": "9673e9e2",
+  "preparation_base_commit": "359df4c9",
   "prepared_phase_supply": {
     "expected_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
     "note": "the first-phase (Perception) supply reads facet keys, the agreement table and value ids; W3 moves none of them (the contrast release keeps every facet and value id), so every supply the flip mints must carry the AGREE family's own output digest -- a different digest means the boundary retrieval moved: stop and report",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "d23595db8707f23b7cfe37af9842f62670fe0b5f28e92c85fbd6124ea1eb0e62"
+    "sha256": "5faf0b019aa63b7333f39407fa3509299965491bc0b9b3e7f70b2fccabcfa46d"
   },
   "purpose": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1: Cell W3. NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text or to exemplar composition, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name and to the rows the cap newly gives a gold exemplar (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W3 arm and the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1. A verdict computed against the sealed AGREE arm alone is refused.",

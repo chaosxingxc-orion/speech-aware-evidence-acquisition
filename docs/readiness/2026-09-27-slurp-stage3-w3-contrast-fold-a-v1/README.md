@@ -1,6 +1,6 @@
 # Cell W3: intent contrast cards + a per-intent exemplar cap
 
-Registered before contact 2026-09-27 at study commit `9673e9e2` (owner decision 164,
+Registered before contact 2026-09-27 at study commit `359df4c9` (owner decision 164,
 knowledge-wave item W3); both cells **held**. Nothing here authorises a flight, a flip or an admission entry.
 
 **Why.** [`docs/results/2026-09-27-slurp-knowledge-content-audit.md`](../../results/2026-09-27-slurp-knowledge-content-audit.md) K1: every intent card carries one
@@ -76,7 +76,7 @@ channel. So W3 is registered as a **no-harm read** and says so. For scale only (
 48 newly named rows plus the 6 rows given a gold exemplar, at the CONV rate, would be
 2.286 pp.
 
-**Fit.** not measured in this write (pass --check-arm)
+**Fit.** The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; the offline projection moves a Solver contact by -53.886 tokens on average (max +75.528, 52 rows above zero). Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5). Receipt: [`preflight-proofs-v1.json`](preflight-proofs-v1.json).
 
 **`stage3_measurement`.** The arm declares `admission` `no-harm`, `harm_margin_pp` 1.2485 (by metric intent 0.9943 /
 SLU 1.2485), `claims_benefit` false, `expected_effect_pp` 0.0, `measurement_design`
@@ -104,7 +104,8 @@ output digests), and queues the arm in the wave-1 chain beside `SAEA-SLURP-STAGE
 | `generation-plan-registered-v1.json` / `fit-plan-registered-v1.json` | the arm's plans |
 | `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the smoke's plans |
 | `analysis-recipe-v1.json` | the paired read at the shared A/A, with `run_ids.read` |
-| `offline-estimates-v1.json` | the Fold B tuning table and the Fold A counts (the membership sets' counts) |
+| `offline-estimates-v1.json` | the Fold B tuning table, the Fold A counts (the membership sets' counts) and the request-size projection |
+| `preflight-proofs-v1.json` | the held check per phase (Fit), the scratch-minted first-phase supply digests, the realised AGREE request sizes |
 | `root-admission-draft-v1.json` | the decision receipt root mints with `w3_mint_receipt.py` |
 
 **Not authorised by this package.** No flight before the receipt is minted and the cells are flipped; no contact by this

@@ -3,12 +3,12 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/analysis-recipe-v1.json",
-      "sha256": "b44aa99de2f3097a1205db84fd03e1f96005ad065302d7698039184e3bb74b7b"
+      "sha256": "3f714c376a44a97e35029f8adfb71b456ed59961c7e48bb4f1eaa43a5c5c6f0d"
     },
     "base_cell": "the retained AGREE arm (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1): W3 is that fragment with two knowledge-content pins",
     "config_proof": {
       "path": "tests/unit/test_w3_config.py",
-      "sha256": "9abf0b322f82b8bcc54d7c4c2e136260061159ffb087762a0277723e1292fcb6"
+      "sha256": "43b3259b2b4a5c7906465396ba6d3e34eeae8e5e503348c3fde9ffaffb07bbae"
     },
     "contrast_card_receipt": {
       "path": "docs/receipts/knowledge/slurp-intent-contrast-cards-v1.json",
@@ -20,11 +20,15 @@
     },
     "offline_estimates": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json",
-      "sha256": "3cc7cb802225b2b5917151e5dc9f42314d33b8bc641e5a430c3b54ab77f01225"
+      "sha256": "4f9fa9c38b38e2f064b245e666f5ed1bd048a37f9e744df4b109055c73a8eca8"
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "0446b6f51e159fc55af85f26ec34da922304d75e30df9fa398588bee5f0570cc"
+      "sha256": "79885109a5219a8818f07489c136f71a2177ac58523b6b33ecebbea552d821b0"
+    },
+    "preflight_proofs": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/preflight-proofs-v1.json",
+      "sha256": "d8e6655ff8dab9a1091e8754c3883818ea25457019d261f60174e6c4a0bd16e3"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1-preregistration.md",
@@ -32,7 +36,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "d23595db8707f23b7cfe37af9842f62670fe0b5f28e92c85fbd6124ea1eb0e62"
+      "sha256": "5faf0b019aa63b7333f39407fa3509299965491bc0b9b3e7f70b2fccabcfa46d"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/README.md",
@@ -40,9 +44,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/registered-facts-v1.json",
-      "sha256": "c6b0dbe804a752ff313912b744d2a32e7e433cfe88b28b4b8548175b56a8cf22"
+      "sha256": "14397aaf4024649a59fbeebe54881d62cf5633fff0725387b5bc2e1863c044e9"
     },
-    "registration_base_commit": "9673e9e2"
+    "registration_base_commit": "359df4c9"
   },
   "authorization_basis": "Owner decision 164 (the knowledge wave); rows 139, 133, 28, 86, 101, 77; the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
   "budget": {
@@ -109,7 +113,7 @@
       "composed_config": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
       "protocol": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f"
     },
-    "note": "the values of the fragments exactly as committed at 9673e9e2; repin_cell.py recomputes them at the flip.",
+    "note": "the values of the fragments exactly as committed at 359df4c9; repin_cell.py recomputes them at the flip.",
     "smoke": {
       "composed_config": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
       "protocol": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1"

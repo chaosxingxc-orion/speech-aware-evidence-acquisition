@@ -33,7 +33,7 @@
     "fixed_before_contact": true,
     "note": "the offline read's Fold A counts define the attribution groups; the per-row membership is recomputed by the same script at read time from the same pinned inputs and must reproduce these counts exactly",
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json",
-    "sha256": "3cc7cb802225b2b5917151e5dc9f42314d33b8bc641e5a430c3b54ab77f01225"
+    "sha256": "4f9fa9c38b38e2f064b245e666f5ed1bd048a37f9e744df4b109055c73a8eca8"
   },
   "output": {
     "analysis_root": "analysis/SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1"

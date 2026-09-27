@@ -53,8 +53,8 @@
           "slot_tokens": 24576,
           "slots": 4
         },
-        "sha256": "d3d3635a2ed5646e733f4fbe4c0925ddbcdbe08e5e38764657a15bfac111d9ed",
-        "study_commit": "32a700dfed6ccec216984cbc176c462ac47f527b"
+        "sha256": "8fb38b64641d432732202fa2b5ca538d1a55f809e8cf359bc32180015fc91347",
+        "study_commit": "359df4c905b157eacd1ecad45794eb158d2d80a4"
       },
       "first_phase_supply_proof": {
         "agree_family_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
@@ -127,8 +127,8 @@
           "slot_tokens": 24576,
           "slots": 4
         },
-        "sha256": "e59f73dde34c8cd1d9cfb98f8efa6f46f522d3771118d186ac2dc3c6d12dcd19",
-        "study_commit": "32a700dfed6ccec216984cbc176c462ac47f527b"
+        "sha256": "70f7cda6f1a0d64fbe2b19ee660ec82904e2c58d25cafbbcb0be42db916d65c3",
+        "study_commit": "359df4c905b157eacd1ecad45794eb158d2d80a4"
       },
       "first_phase_supply_proof": {
         "agree_family_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",

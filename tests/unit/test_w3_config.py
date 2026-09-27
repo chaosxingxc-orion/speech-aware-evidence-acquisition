@@ -143,9 +143,14 @@ def test_package_declares_no_harm_at_the_shared_aa_and_registers_its_read():
     recipe = _read(PACKAGE / "analysis-recipe-v1.json")
     assert recipe["run_ids"]["read"] == READ_RUN and recipe["read_run_id"] == READ_RUN
     assert recipe["arms"]["in_chain_replicate"]["run_id"] == SHARED_AA
+    proofs = _read(PACKAGE / "preflight-proofs-v1.json")
     for experiment, run_id in ((ARM, ARM_RUN), (SMOKE, SMOKE_RUN)):
         _document, composed = _compose(experiment)
-        split = composed.values.get("split_identity_hash") or _read(REPO / "configs/experiment" / f"{experiment}.json")["population"]["split_identity_hash"]
+        key = "arm" if experiment == ARM else "smoke"
+        assert proofs["cells"][key]["first_phase_supply_proof"]["identical"] is True
+        assert proofs["cells"][key]["check"]["config_hash"] == composed.config_hash
+        # the POPULATION's identity (the smoke flies 4 rows), which is what the runtime's check reports
+        split = _read(REPO / "configs/experiment" / f"{experiment}.json")["population"]["split_identity_hash"]
         prefix = "" if experiment == ARM else "smoke-"
         plan = _read(PACKAGE / f"{prefix}generation-plan-registered-v1.json")
         assert plan["composed_config_hash"] == composed.config_hash

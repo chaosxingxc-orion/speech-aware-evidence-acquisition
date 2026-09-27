@@ -172,7 +172,7 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w3, branch fable/w3",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "9673e9e2",
+  "study_commit_at_registration": "359df4c9",
   "the_question": "With the intent cards carrying TRAIN-derived contrast lines in place of boilerplate (no more tokens per card) and the Solver's exemplar block capped at 11 per intent (still 20 exemplars), do the official intent accuracy and pooled SLU-F1 on TRAIN Fold A 1,080 stay within the design's own null, read against the shared wave-1 in-chain A/A? A no-harm question, because no measured conversion applies (row 139).",
   "two_pins": {
     "w3a": "the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added",
