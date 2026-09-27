@@ -16,13 +16,20 @@
         "reason": "The in-chain A/A replicate of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58): the same baseline bytes at k 60, w_agree 0.0, no agreement_source, the written key, the un-armed citation default, its own run, attempt and fit ids. HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Its prepared supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-v1.json",
+            "sha256": "7c6f93577dbf9719a64fe6a2a82aa72ba6c99cd5010dc7db4e8db6d4fcd5a4a5",
+            "reason": "Decision slurp-stage3-comp1-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. Its output digest must equal the sealed PLAN preparation's ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f (the byte-identity proof that the A/A flies the locked plan's own bytes). E16: this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/phase-supply-v1.json",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/phase-supply-v2.json",
             "sha256": "445e1acc7d5d867b0edd5b2cc0837d3afef567ca9ab76930bfa02bad50471a2a"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1"
     }

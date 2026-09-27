@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1-aa-fold-a-v1",
-  "composed_config_hash": "b06da99e98fa29179e24675f66cd8e75389a7bea28bdebf6bf8a1234f5ce7b9b",
+  "composed_config_hash": "4b22af26b265f785d875557499b466df17c607d528414abbd5b3ac8a98c149bf",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "2c753652197d396fee4cea6a93eb80c77d1bf3f1c9917da8bc271eb5a5fbdc83",
+    "protocol_hash": "b33edd493c5165a14fd2818ff7187f1b3cc6930d3ac2860d9a8fd3d55c5e3b30",
     "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "ec823ca087598c5f3b57b327506434653b87567a3d9ed580d260e906afda14de"
+    "sha256": "f131fc7613fffd872522520aeecc9409c5aafcf932f5b21fe7d092f282ddc83a"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",

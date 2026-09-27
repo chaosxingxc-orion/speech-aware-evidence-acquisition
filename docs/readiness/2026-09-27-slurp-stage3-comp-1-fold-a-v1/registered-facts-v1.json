@@ -63,7 +63,7 @@
       },
       "boundary_facet_source_sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
       "cell": "slurp-native-stage3-comp1-aa-fold-a-v1",
-      "composed_config_hash": "b06da99e98fa29179e24675f66cd8e75389a7bea28bdebf6bf8a1234f5ce7b9b",
+      "composed_config_hash": "4b22af26b265f785d875557499b466df17c607d528414abbd5b3ac8a98c149bf",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "declares_agreement_source": false,
       "deliver_normaliser": {
@@ -75,7 +75,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "2c753652197d396fee4cea6a93eb80c77d1bf3f1c9917da8bc271eb5a5fbdc83",
+      "protocol_hash": "b33edd493c5165a14fd2818ff7187f1b3cc6930d3ac2860d9a8fd3d55c5e3b30",
       "readiness_state": "held",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
@@ -495,7 +495,7 @@
         "aa": {
           "blockers": null,
           "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-aa-fold-a-v1.json",
-          "config_hash": "b06da99e98fa29179e24675f66cd8e75389a7bea28bdebf6bf8a1234f5ce7b9b",
+          "config_hash": "4b22af26b265f785d875557499b466df17c607d528414abbd5b3ac8a98c149bf",
           "prompt_budget_per_phase": [
             {
               "completion_token_ceiling": 512,
@@ -542,7 +542,7 @@
               "speech_feature_tokens": 29
             }
           ],
-          "protocol_hash": "2c753652197d396fee4cea6a93eb80c77d1bf3f1c9917da8bc271eb5a5fbdc83",
+          "protocol_hash": "b33edd493c5165a14fd2818ff7187f1b3cc6930d3ac2860d9a8fd3d55c5e3b30",
           "scientific_readiness": {
             "reason": "The in-chain A/A replicate of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58): the same baseline bytes at k 60, w_agree 0.0, no agreement_source, the written key, the un-armed citation default, its own run, attempt and fit ids. HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Its prepared supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f.",
             "state": "held"
