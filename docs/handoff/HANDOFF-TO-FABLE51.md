@@ -5,6 +5,34 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Operational checkpoint: 2026-09-27 15:25Z
+
+Fable 5.1 is coordinating again. Read HANDOFF-TO-CHATGPT.md and newer owner,
+launch and operational receipts before the older plans below. In particular,
+the four per-group knowledge proposals remain held under owner decision 130;
+the older "Next: register" paragraph below is superseded, not launch authority.
+The newer measurement rules apply to any subsequent construction and acceptance.
+
+Script-only inspection found AGREE A/A and treatment, both Audio2Tool A/A passes,
+and KPROBE FINALIZED with COMPLETED manifests and exactly one official score-job
+record each. No task-quality values were read. The latest driver epoch is KPROBE,
+12:45:00--12:55:34Z, complete; no live GPU answering service or driver was observed.
+The SLURP stop receipt is 13:09:23Z. Old telemetry must not be read as live health.
+
+Host memory needs attention before another GPU launch: Windows free memory was
+7.89 GiB, then 6.924 GiB at 15:24:17Z and 6.35 GiB at 15:26:45Z, below the
+owner's 10 GiB reserve. The E21
+wrapper had already refused startup at 13:11Z because its own 12.0 GB minimum was
+not met (10.1 GB observed then). The CPU test-sample packet sidecar remains active;
+its live PIDs were observed only, not modified. No restart, dispatch, retry, score
+replay, STOP mutation or frozen-source modification was performed. Coordinate host
+headroom with the current owner of the sidecar before another registered launch.
+
+Evidence: docs/receipts/continuation/2026-09-27-1525-heartbeat-operations.json.
+The heartbeat snapshot is being refreshed to follow current receipts and both
+handoff entry points. This operational note does not refresh Fable's scientific
+handoff or imply that a pending family has passed its read gate.
+
 ## Complete-system group contexts ready for knowledge proposal registration
 
 The all-group 1,065,214-byte input remains archived and unfit. Its prospective

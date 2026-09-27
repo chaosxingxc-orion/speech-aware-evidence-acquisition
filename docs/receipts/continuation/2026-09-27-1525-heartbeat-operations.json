@@ -1,0 +1,67 @@
+{
+  "schema": "saea-heartbeat-operations-v1",
+  "observed_at": "2026-09-27T15:24:54Z",
+  "scope": "Operational metadata only; no task-quality read or launch authority.",
+  "coordinator": "Fable 5.1, per HANDOFF-TO-CHATGPT.md; newer launch and owner receipts override handoff snapshots.",
+  "sources": [
+    {
+      "path": "/home/chao/batch-queue.json",
+      "sha256": "0adebfabf67fc675d41c6375110171ed6e8ccf196057e65d4964bb897776b772"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "8865f4b1b6ea7af9122f3089e66b05d64375eb6e9f0d9889022e8a31e4e77553"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl.20260927T122809Z.bak",
+      "sha256": "d05e00b43410c88a5801e7eb4b34a4022f9949fdc0f53194dfbd0de2c5256c99"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl.20260927T124110Z.bak",
+      "sha256": "304261e66d51c93be5f8a21fac80fc1213e09025abff8eb93759b99d4f285e49"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session-stop.json",
+      "sha256": "888e493fb4aa0bafa35f341296bebcd5d5aecdb2709489fbb51deb68cd5cdb36"
+    },
+    {
+      "path": "/home/chao/serving-e21-np4-20260927T130930Z.log",
+      "sha256": "95dd27c28c5de4c43910515104581e5455a7f5f000e338a1c80a1ed4afc169b1"
+    }
+  ],
+  "completed_members": [
+    "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+    "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1",
+    "SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1",
+    "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1"
+  ],
+  "completion_evidence": "Each named member has one COMPLETED manifest, a FINALIZED attempt and exactly one official score-job record. No row completion inferred from service request totals.",
+  "current_driver_epoch": {
+    "started_at": "2026-09-27T12:45:00Z",
+    "finished_at": "2026-09-27T12:55:34Z",
+    "cell": "slurp-native-stage3-kprobe-fold-a-55-v1",
+    "state": "complete",
+    "live_driver_observed": false,
+    "stop_marker_present": false
+  },
+  "serving": {
+    "live_gpu_answering_server_observed": false,
+    "slurp_stopped_at": "2026-09-27T13:09:23.182639+00:00",
+    "slurp_last_telemetry_is_stale": true,
+    "e21_launch_wrapper_exited_at": "2026-09-27T13:11:01Z",
+    "e21_launch_exit_code": 2,
+    "e21_launch_reason": "Startup guard refused 10.1 GB host free memory against its 12.0 GB minimum.",
+    "cpu_sidecar": "Existing test-sample preprocessing remains active, PID 209222 and its CPU encoder PID 209642 on port 8081; PIDs are observations, never future action targets."
+  },
+  "resources": {
+    "windows_free_gib_earlier": 7.89,
+    "windows_free_gib_at_2026_09_27T15_24_17Z": 6.924,
+    "owner_windows_minimum_free_gib": 10,
+    "vmmem_working_set_gib_observed": 42.46,
+    "gpu_utilization_percent_at_1520": 0,
+    "gpu_memory_mib_at_1520": 574
+  },
+  "action": "Report host-memory headroom violation; keep launch blocked. Do not stop or alter another coordinator's sidecar, clear STOP, restart services, replay scoring, or dispatch held work.",
+  "scientific_results_read": false
+}
