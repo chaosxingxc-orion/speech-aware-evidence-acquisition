@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-27T00:29:42Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
+Last refreshed: 2026-09-27T00:35:27Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
 `c8b1`+ (repin fix merged) on `master`, tree clean. Fable 5.1 is the coordinator again as of this refresh; the
 programme now carries an ABSOLUTE target, and the label ceiling says it is reachable.
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
@@ -168,8 +168,14 @@ are identical, and those are what every read consumes.
 
 **In the air / just sealed.** ROLL-2 sealed (Fold A 1,080 x 5, 8,996 contacts). The CONV probe sealed at
 00:05Z: 70 Fold A rows whose gold intent entry is newly delivered under `w_agree` 1.0, treatment only, read
-as P(correct | newly delivered) on intent per row -- its m re-declares the AGREE arm (arm clears its 2.5 pp
-intent bar iff m >= 27 of 70; the retired SLU-F1 framing needed 61). Read in progress.
+as P(correct | newly delivered) on intent per row. **Read: m = 32 of 70** -- 45.71 %, Wilson CI95
+[34.57, 57.30] %, exact [33.74, 58.06] %; delivery gate held 70/70; wrong->gold 32, gold->wrong 0,
+same-wrong 22, different-wrong 16; the tracer marks the gold entry used on 42 and ignored on 28; 289
+contacts, 0.124 GPU-h. Under decision 133 the arm's re-declared expectation is 32 x 0.092615 = 2.96 pp
+intent against a 2.5 pp bar -- the point estimate clears it, the CI95 in rows [24.2, 40.1] spans the 27
+line; under the retired SLU-F1 framing it is 1.33 pp. **Owner decision 139 forbids any pre-committed
+disposition; the AGREE arm's fate is being decided in conversation on this number.** Its receipt, flip
+scripts and chain script are ready; the re-pin fix it needed is merged.
 
 **Landed since the last stamp.** Owner decisions 138-142: the cumulative-harm check is folded into the
 optimisation rounds and a non-improving round is read as a conflict between information elements (138);
