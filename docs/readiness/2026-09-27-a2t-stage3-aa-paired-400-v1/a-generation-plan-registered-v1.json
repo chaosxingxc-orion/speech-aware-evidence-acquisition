@@ -1,6 +1,6 @@
 {
   "cell": "a2t-stage3-aa-paired-400-a-v1",
-  "composed_config_hash": "2257e9f8aaff60592980d856d7f2ef55fb4e00f9b59dc451ad2b57b747bb17f6",
+  "composed_config_hash": "cfd6783ce1ebd696329bede91fdc2bc91cabe119c283756f2464b443fc435f95",
   "execution_plan": {
     "attempt_id": "attempt-a2t-stage3-aa-paired-400-a-generation-v1",
     "carrier_lock_key": "audio2tool",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 400,
     "planned_speech_audio_seconds": 2761,
-    "protocol_hash": "a3eebde9f0aec4c0371dfaeb5b260066d8a39714593399a0a790259727c941ba",
+    "protocol_hash": "fabed23cfe5b85be32ce6a30b302cf8f0306eb1e6277d3b507cf6011ff9b32d5",
     "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a",
@@ -34,7 +34,7 @@
   "preparation_base_commit": "eb5e463b",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-a2t-stage3-aa-paired-400-v1/protocol-registered-v1.json",
-    "sha256": "1353d83eeb883b4aaa356d1d0a6b78faa15adbb5824533606c76e12c8dad328b"
+    "sha256": "e49ce8face99f673e32060caf3a8e1a0fc364af718530d0940c0016a1e9cf973"
   },
   "purpose": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1: cell A2T-AA pass A, one of the two request-identical passes whose paired difference is the Audio2Tool carrier's own null. NONE. The read is descriptive: it delivers h_A2T and the byte-identity counts and states no verdict. Nothing is admitted, refuted or compared; the half-width is registered as the margin of every later Audio2Tool contrast on this roster (owner decision 68).",
   "quality_read_gate": "No read before BOTH passes' complete sealed manifests, exact ordered outputs, phase summaries and single complete official scores exist, both attempts are FINALIZED at the same flight commit on the same session, and request_sha256 agrees on 400 of 400 rows. A partial manifest is never scored and never read.",

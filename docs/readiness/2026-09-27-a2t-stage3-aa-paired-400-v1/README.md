@@ -49,7 +49,7 @@ contacts per minute (decision 140). There is no verdict and no admission.
 | cell | run id | attempt | fit run id (contact cap) | rows | composed config | protocol |
 | --- | --- | --- | --- | ---: | --- | --- |
 | smoke | `SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1` | `attempt-a2t-stage3-aa-paired-400-smoke-4-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-FIT-V1` (13) | 4 | `9adcadaa534c75e9d0f13a5a12fbd7bd979423dec7edbb33f258204fdeb8e63a` | `d5769316f8634c9e76333a8e483dc2bda9afe6633f726726a917867716a552a7` |
-| pass A | `SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1` | `attempt-a2t-stage3-aa-paired-400-a-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1` (1201) | 400 | `2257e9f8aaff60592980d856d7f2ef55fb4e00f9b59dc451ad2b57b747bb17f6` | `a3eebde9f0aec4c0371dfaeb5b260066d8a39714593399a0a790259727c941ba` |
+| pass A | `SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1` | `attempt-a2t-stage3-aa-paired-400-a-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1` (1201) | 400 | `cfd6783ce1ebd696329bede91fdc2bc91cabe119c283756f2464b443fc435f95` | `fabed23cfe5b85be32ce6a30b302cf8f0306eb1e6277d3b507cf6011ff9b32d5` |
 | pass B | `SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1` | `attempt-a2t-stage3-aa-paired-400-b-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-B-FIT-V1` (1201) | 400 | `5287ee6e58bfa6048b2db894d44566061764905801568219300130841227514f` | `d00d21ce8c2a7699c8c3d3365d307a4f45a986b2ee7708f5a71eecf3f1c6a14a` |
 
 **Budgets, as arithmetic.** Per pass: 400 generation contacts (400 rows x 1,

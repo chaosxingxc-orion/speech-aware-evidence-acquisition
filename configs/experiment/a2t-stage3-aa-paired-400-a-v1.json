@@ -15,8 +15,16 @@
       "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
       "readiness": {
         "reason": "Cell A2T-AA pass A -- the Audio2Tool carrier's own request-identical null on the paired 400 (owner decisions 67, 68, 71 and 139; measurement instrument rules 3 and 6), registered before contact on 2026-09-27 by script from the sealed direct baseline's own fragments (decision 58). HELD: root mints coordination/a2t-stage3-aa-paired-400-v1/root-admission-v1.json (decision id a2t-stage3-aa-paired-400-admission-v1) naming the six eligible run ids and this package's caps, then flips the smoke, pass A and pass B with scripts/flights/repin_cell.py --set-ready through scripts/flights/batch/a2taa_flip_all.sh. The program declares no supplied first phase (item E38), so the re-pin creates no prepared artifact and no preparation requirement; the requirements list is empty by design and --allow-output-change is never passed. The chain flies only on the Audio2Tool session serving-a2t-native-role-base-np3-max2048-v3 (c98304 np3 x 32,768 max2048, the A2T packet root), never on the resident SLURP np4 session. Nothing here authorises a flight, a readiness flip or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "a2t-stage3-aa-paired-400-admission-v1",
+            "relpath": "coordination/a2t-stage3-aa-paired-400-v1/root-admission-v1.json",
+            "sha256": "114b90b78f1d58e3a127f1c65d4fbf221aea7790287ee08eff942b05cde6a620",
+            "reason": "Decision a2t-stage3-aa-paired-400-admission-v1 pinned by scripts/flights/repin_cell.py."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1"
     }

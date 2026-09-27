@@ -15,8 +15,8 @@ decisions 28 and 86); never a test claim.
 | in-chain replicate | pass B is pass A's replicate and pass A is pass B's; both fly in one chain on one session |
 | runs | `SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1` / `SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-FIT-V1`; `SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1` / `SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1`; `SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1` / `SAEA-A2T-STAGE3-AA-PAIRED-400-B-FIT-V1` |
 | rows | 4 (smoke), 400, 400 |
-| composed config hash | smoke `9adcadaa534c75e9d0f13a5a12fbd7bd979423dec7edbb33f258204fdeb8e63a`; pass A `2257e9f8aaff60592980d856d7f2ef55fb4e00f9b59dc451ad2b57b747bb17f6`; pass B `5287ee6e58bfa6048b2db894d44566061764905801568219300130841227514f` |
-| protocol hash | smoke `d5769316f8634c9e76333a8e483dc2bda9afe6633f726726a917867716a552a7`; pass A `a3eebde9f0aec4c0371dfaeb5b260066d8a39714593399a0a790259727c941ba`; pass B `d00d21ce8c2a7699c8c3d3365d307a4f45a986b2ee7708f5a71eecf3f1c6a14a` |
+| composed config hash | smoke `9adcadaa534c75e9d0f13a5a12fbd7bd979423dec7edbb33f258204fdeb8e63a`; pass A `cfd6783ce1ebd696329bede91fdc2bc91cabe119c283756f2464b443fc435f95`; pass B `5287ee6e58bfa6048b2db894d44566061764905801568219300130841227514f` |
+| protocol hash | smoke `d5769316f8634c9e76333a8e483dc2bda9afe6633f726726a917867716a552a7`; pass A `fabed23cfe5b85be32ce6a30b302cf8f0306eb1e6277d3b507cf6011ff9b32d5`; pass B `d00d21ce8c2a7699c8c3d3365d307a4f45a986b2ee7708f5a71eecf3f1c6a14a` |
 | split identity | `965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a` (smoke `c7057020334be227c430d661953fa3ad3b0b044dfbc97c4e186c5777cb6a5baa`) |
 | roster | `docs/receipts/rosters/a2t-paired-400-v1.json` (sha256 `b57275736ff18c048e4d48414348443ce23afae0df1490821bafcae75e499c3d`), seed 20260921, owner decisions 67 and 71 |
 | comparator rows | `docs/receipts/rosters/a2t-paired-400-v1.comparator-rows.json` (sha256 `f43a83876d3fb6748c17ee1f3fed7adf05a69ec3ddd32eb627ccb1e6c27f40ef`) |
