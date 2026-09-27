@@ -1599,7 +1599,6 @@ def _no_derivation_evidence_source(lock, root, sample_id, carrier_lock_key, valu
     ]
 
 
-EVIDENCE_SOURCES.register("test-no-derivation-evidence", _no_derivation_evidence_source)
 
 
 def _carrier_independent_evidence_source(lock, root, sample_id, carrier_lock_key, values=None):
@@ -1634,9 +1633,16 @@ def _carrier_independent_evidence_source(lock, root, sample_id, carrier_lock_key
     ]
 
 
-EVIDENCE_SOURCES.register(
-    "test-carrier-independent-evidence", _carrier_independent_evidence_source
-)
+@pytest.fixture(autouse=True)
+def _test_evidence_sources(monkeypatch):
+    # Registered per test and removed afterwards. Both used to be registered at IMPORT time and never removed, so
+    # from collection onward the process-global core.base.EVIDENCE_SOURCES carried two test-only ids and
+    # test_engineering_base_check.py::test_regex_extraction_agrees_with_package_import (the registry against the
+    # canonical source scan) failed in every full-suite run while passing alone.
+    monkeypatch.setitem(EVIDENCE_SOURCES._entries, "test-no-derivation-evidence", _no_derivation_evidence_source)
+    monkeypatch.setitem(
+        EVIDENCE_SOURCES._entries, "test-carrier-independent-evidence", _carrier_independent_evidence_source
+    )
 
 
 def test_run_experiment_refuses_evidence_with_no_derivation_record(synthetic_world, tmp_path):
