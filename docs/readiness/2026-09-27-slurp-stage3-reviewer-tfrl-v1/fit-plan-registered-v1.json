@@ -31,7 +31,7 @@
   },
   "one_factor": "Composed key phase_material.reviewer.instruction_template: probes/slurp_native_role_reviewer_v1_g5_v1.txt -> probes/slurp_native_role_reviewer_contrastive_v1.txt (sha256 2b6de3b6cfdba2c248efc5a36e1d29b58220c09e0b673a9285cb1cf2ad51e3cf).",
   "plan_kind": "fit",
-  "preparation_base_commit": "97eb3288",
+  "preparation_base_commit": "4d459858",
   "prepared_phase_supply": {
     "expected_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
     "note": "the Reviewer instruction is not an input to the first-phase supply, so every 1,080-row supply the flip mints for the arm and the A/A must carry this output digest; a different digest means the knowledge channel moved -- stop and report",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-    "sha256": "6ed3a920ebaf40c8bd9783cb053e024b0078af6bdf39a19b5f57706f9e9c4940"
+    "sha256": "6ba5f22f93614ad797afd2220c927655f4e692b73fe566a3f4b3c18fc05f4055"
   },
   "purpose": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-FIT-V1: Cell REV-TFRL-1. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",

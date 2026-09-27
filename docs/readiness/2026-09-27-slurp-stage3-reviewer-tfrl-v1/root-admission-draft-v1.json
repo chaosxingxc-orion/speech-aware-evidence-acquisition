@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-      "sha256": "6ed3a920ebaf40c8bd9783cb053e024b0078af6bdf39a19b5f57706f9e9c4940"
+      "sha256": "6ba5f22f93614ad797afd2220c927655f4e692b73fe566a3f4b3c18fc05f4055"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md",
@@ -43,9 +43,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/registered-facts-v1.json",
-      "sha256": "dc6d28af95f14e538b0726d4ca2f0b14f9a9318a4a44b3e564b0461e9480eeb7"
+      "sha256": "1262a85aaaa0c0589992e8ffcb1dbadc77138fea614cf3e87bf0671e6ff85749"
     },
-    "registration_base_commit": "97eb3288"
+    "registration_base_commit": "4d459858"
   },
   "authorization_basis": "Owner decision 165 (optimise the Reviewer node on its own with training-free RL); 127, 133, 139, 153, 161; the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
   "budget": {

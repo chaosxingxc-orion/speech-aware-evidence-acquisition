@@ -3,7 +3,7 @@
 Owner decision 165 (2026-09-27, translated): *"nodes like the Reviewer can all be optimised and improved; do not
 mechanically throw them away -- use training-free RL to optimise its behaviour on its own."* This package is the
 design, the reward signal (the Reviewer's credit table over sealed pools), the offline inner loop, and the first
-cell it selects. Registered before contact 2026-09-27 at study commit `97eb3288` by
+cell it selects. Registered before contact 2026-09-27 at study commit `4d459858` by
 Claude Opus 5.5 (worktree `/home/chao/saea-worktrees/fable-revtfrl`, branch `fable/revtfrl`); all three cells **held**. Nothing here
 authorises a flight, a flip or an admission entry. Development numbers only (owner decisions 28 and 86).
 

@@ -58,6 +58,6 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-revtfrl, branch fable/revtfrl",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "97eb3288",
+  "study_commit_at_registration": "4d459858",
   "the_question": "With the Reviewer node's instruction moved to the contrastive form selected offline over sealed TRAIN R01C trajectories and nothing else changed, does the system stay within its own null on TRAIN Fold A 1,080 against an in-chain A/A (the AGREE arm with G5's Reviewer instruction), and how large is the node's own within-trajectory credit beside the A/A's?"
 }

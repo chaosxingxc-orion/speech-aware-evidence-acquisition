@@ -1,6 +1,6 @@
 # Cell REV-TFRL-1: preregistration
 
-Registered 2026-09-27 at study commit `97eb3288`, before any contact, from the committed AGREE
+Registered 2026-09-27 at study commit `4d459858`, before any contact, from the committed AGREE
 arm fragments by script (decision 58) with one pin moved, under owner decision 165. Development numbers only (owner
 decisions 28 and 86); never a test claim. The design, the credit table and the offline selection are in
 [`2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md`](2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md).
