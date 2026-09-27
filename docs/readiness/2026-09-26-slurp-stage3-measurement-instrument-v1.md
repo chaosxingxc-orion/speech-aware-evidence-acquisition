@@ -76,6 +76,28 @@ re-generated, so no flight variance enters.
 | cross-flight A/A, DEV-2000-ADDED | 1,000 | 1.2525 (intent 1.1520) | -0.25 measured | B6 pair |
 | terminal feedback on 4-16 trajectories | 4-16 | not readable | dominant | batch002 |
 
+### 2e. DEV-2000-ADDED sealed pool (ROLL-3, 2026-09-27)
+
+`SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1` sealed five temperature-0.7 Solver samples per row (seeds
+1249110493 to 1249110497, one flight, the resident np4 geometry) on the 1,000 rows of the evaluation roster
+DEV-2000-ADDED, and its registered read `SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-READ-V1` scored each sample
+index once under `slurp-slu-official-projected-v3`. The within-pool paired instrument at n = 1,000 -- the
+CI95 half-width of a contrast between two sample indices of this pool, over the ten index pairs (whole-utterance
+cluster bootstrap, 10,000 draws, seed 20260915):
+
+| contrast | mean | median | range over the ten pairs |
+| --- | ---: | ---: | --- |
+| per-row intent | **0.82** | 0.71 | 0.65 to 1.09 |
+| per-row SLU-F1 | **1.19** | 1.15 | 0.95 to 1.55 |
+| pooled micro official SLU-F1 | **1.56** | 1.48 | 1.23 to 2.04 |
+
+The two samples of a pair differ only by seed: pairwise byte identity is 61.46 %, the intent-flip share
+5.17 % and the entity-set-flip share 31.41 %; four of the ten pooled micro SLU-F1 contrasts have a CI95 that
+excludes zero, none of the ten intent contrasts does. These widths belong to a contrast between two
+independent temperature-0.7 draws of one pool; section 2c's 0.67 pp belongs to a delivery rule read against
+its own pool. They are different contrasts, so the floor table of section 2d is not amended by them. Read:
+`docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md`.
+
 ## 3. The law
 
 1. **Prefer a design with no flight offset.** An action whose effect can be computed over an
