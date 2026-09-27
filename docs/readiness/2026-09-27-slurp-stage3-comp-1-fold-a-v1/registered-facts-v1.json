@@ -1,0 +1,947 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; this copy has precedence. The arm's expected_effect_pp is a placeholder string BY DESIGN (see the_expectation_the_coordinator_declares).",
+  "authority_relpaths": [
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/README.md",
+    "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/README.md",
+    "docs/results/2026-09-27-slurp-conv-probe-read.md",
+    "docs/results/2026-09-26-slurp-intent-retrieval-rank-diagnostic.md",
+    "docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/results/2026-09-24-slurp-plan-bad-case-bank.md",
+    "src/speech_aware_evidence_acquisition/rails/solver_citation.py"
+  ],
+  "budget_arithmetic": {
+    "derivation": [
+      "generation_calls_cap = 1,080 rows x 11 contacts per row (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 * (3 + 1 + 1)) = 11,880, the PLAN family's own; the citation contract adds tokens per Solver contact, never contacts",
+      "fit_endpoint_calls_cap = 4 x 11,880 = 47,520; native_task_contract_calls_cap = 1,080 x 6 = 6,480; repeated_speech_audio_seconds_cap 33,930; gpu_hours_fit_inclusive 12.0 per generation cell (the sealed PLAN arm realized 5,425 contacts and 3.6819 GPU hours)",
+      "the smoke: 44 / 176 / 24 / 117 s / 1.0 GPU hour, no score",
+      "one official complete score per generation cell over the complete 1,080-row manifest through core.scoring_batch, never sharded"
+    ],
+    "family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "run_cumulative": "every cap binds across ALL attempts of a run id",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "cells": {
+    "aa": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-comp1-aa-fold-a-baseline-v1",
+      "boundary": {
+        "fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "k": 60,
+        "rank_weights": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "tau": 0.0
+      },
+      "boundary_facet_source_sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+      "cell": "slurp-native-stage3-comp1-aa-fold-a-v1",
+      "composed_config_hash": "b06da99e98fa29179e24675f66cd8e75389a7bea28bdebf6bf8a1234f5ce7b9b",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "declares_agreement_source": false,
+      "deliver_normaliser": {
+        "normaliser": "saea-deliver-normalise-v3"
+      },
+      "experiment": "slurp-native-stage3-comp1-aa-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-fit-v1",
+      "fit_contact_cap": 47520,
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "2c753652197d396fee4cea6a93eb80c77d1bf3f1c9917da8bc271eb5a5fbdc83",
+      "readiness_state": "held",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "stage3_algorithm": {
+        "id": "none",
+        "note": "This cell carries NO training-free RL operator and says so explicitly: it is the locked plan's own form re-flown in the same chain as the in-chain null and instrument of the composed COMP-1 arm -- w_agree 0.0, no agreement_source, the written boundary key, the un-armed citation default. Its prepared first-phase supply reproduces the sealed comparator's output digest exactly, which is what makes it the instrument.",
+        "operators_used": []
+      }
+    },
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-comp1-fold-a-baseline-v1",
+      "boundary": {
+        "fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "k": 60,
+        "rank_weights": {
+          "w_agree": 1.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "tau": 0.0
+      },
+      "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "cell": "slurp-native-stage3-comp1-fold-a-v1",
+      "composed_config_hash": "6758750b713fe45358d9eb3c0f4a18d3e32ed0d3a84c85da195c6bfaad536b9b",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "declares_agreement_source": true,
+      "deliver_normaliser": {
+        "normaliser": "saea-deliver-cited-answer-normalise-v3-v1"
+      },
+      "experiment": "slurp-native-stage3-comp1-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1",
+      "fit_contact_cap": 47520,
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "policy": "phase-native-candidates-review-revise-cited-v1",
+      "protocol_hash": "255019cd07fe8eec84484d906076eeefe171f9883ade9bd2f7f95b5d9443cb7a",
+      "readiness_state": "held",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "stage3_algorithm": {
+        "id": "sealed-credit-system-policy-v1",
+        "note": "The FIRST instance of sealed-credit-system-policy-v1 (owner decision 138: every optimisation round's composed read against the lock IS the cumulative check; decision 152: COMP-1 is that first composed arm). This cell is the family's step (iv), the re-execution: three typed, executable consumption actions -- a rank weight over a pre-computed vote, a retrieval key file, and the Solver's answer contract -- were each chosen and credited OFFLINE over sealed bytes (the 2026-09-26 rank diagnostic and the 2026-09-27 key diagnostic, the CONV and KPROBE conversion probes), and the GPU is re-entered once for the composed policy beside its in-chain replicate. The operator this cell exercises is context_application: the composed actions are written into every row's Perception supply and Solver contract. It performs no rollout, no per-sample scoring, no credit assignment and no update of its own; the citation credit table it seals is the INPUT to the next round's credit assignment, not this cell's use of that operator.",
+        "operators_used": [
+          "context_application"
+        ]
+      }
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-comp1-fold-a-smoke-4-baseline-v1",
+      "boundary": {
+        "fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "k": 60,
+        "rank_weights": {
+          "w_agree": 1.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "tau": 0.0
+      },
+      "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "cell": "slurp-native-stage3-comp1-fold-a-smoke-4-v1",
+      "composed_config_hash": "d41618491332184d517d9d95fe2c82b614f778b92001d8ffe3c5ad8a18d7484d",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "declares_agreement_source": true,
+      "deliver_normaliser": {
+        "normaliser": "saea-deliver-cited-answer-normalise-v3-v1"
+      },
+      "experiment": "slurp-native-stage3-comp1-fold-a-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-smoke-4-fit-v1",
+      "fit_contact_cap": 176,
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "policy": "phase-native-candidates-review-revise-cited-v1",
+      "protocol_hash": "b92bff0abc3c7e325cd31ce04eb3dc3e85e3d75f36b00c69968c82ecf2a354c6",
+      "readiness_state": "held",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+      "stage3_algorithm": {
+        "id": "sealed-credit-system-policy-v1",
+        "note": "The four-row structural form smoke of the composed COMP-1 arm: the same three composed actions on the first four rows of the unchanged roster, labelled as the arm is because it flies the arm's form; scored by no one and read by no one, it exercises context_application only in the sense that the composed actions reach four rows' contexts.",
+        "operators_used": [
+          "context_application"
+        ]
+      }
+    }
+  },
+  "composed_config_diffs": {
+    "aa_vs_locked_plan": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "factor_paths": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.k"
+      ]
+    },
+    "arm_vs_aa": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "experiment_id",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "factor_paths": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.kind",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree",
+        "native_episode.deliver_normaliser.normaliser",
+        "phase_material.solver.instruction_template",
+        "phase_material.solver.response_format_id",
+        "policy"
+      ]
+    },
+    "arm_vs_locked_plan": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "factor_paths": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.kind",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree",
+        "native_episode.deliver_normaliser.normaliser",
+        "phase_material.solver.instruction_template",
+        "phase_material.solver.response_format_id",
+        "policy"
+      ]
+    },
+    "note": "Each entry flattens two composed configs (core.config.compose) and lists every path whose value differs. arm_vs_locked_plan: the three factor groups plus the recall width k (8 -> 60), the baseline's per-flight bookkeeping (this cell's FIT identities and cap, the dropped prepared_phase_supply, the two appended receipts, what_this_is) and the experiment fragment's own block; aa_vs_locked_plan: k alone plus bookkeeping; arm_vs_aa: the three factor groups ALONE. anything_else is empty in every entry or this writer refuses.",
+    "preparation_source_receipts": "the parent's list plus two appended entries: prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json, prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/receipt.json",
+    "smoke_vs_locked_plan_smoke": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "factor_paths": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.kind",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree",
+        "native_episode.deliver_normaliser.normaliser",
+        "phase_material.solver.instruction_template",
+        "phase_material.solver.response_format_id",
+        "policy"
+      ]
+    }
+  },
+  "composed_delivery_model_free": {
+    "all_rows_by_bank_class": {
+      "CORRECT": {
+        "delivered_comp1": 478,
+        "delivered_locked_plan": 467,
+        "gained_under_comp1": 12,
+        "lost_under_comp1": 1,
+        "rows": 480
+      },
+      "ENTITY-FN-ONLY": {
+        "delivered_comp1": 84,
+        "delivered_locked_plan": 82,
+        "gained_under_comp1": 2,
+        "lost_under_comp1": 0,
+        "rows": 84
+      },
+      "ENTITY-FP-ONLY": {
+        "delivered_comp1": 131,
+        "delivered_locked_plan": 124,
+        "gained_under_comp1": 7,
+        "lost_under_comp1": 0,
+        "rows": 131
+      },
+      "ENTITY-MIXED": {
+        "delivered_comp1": 192,
+        "delivered_locked_plan": 187,
+        "gained_under_comp1": 6,
+        "lost_under_comp1": 1,
+        "rows": 193
+      },
+      "INTENT-COVERED": {
+        "delivered_comp1": 58,
+        "delivered_locked_plan": 59,
+        "gained_under_comp1": 2,
+        "lost_under_comp1": 3,
+        "rows": 61
+      },
+      "INTENT-UNCOVERED": {
+        "delivered_comp1": 104,
+        "delivered_locked_plan": 27,
+        "gained_under_comp1": 78,
+        "lost_under_comp1": 1,
+        "rows": 130
+      },
+      "MALFORMED": {
+        "delivered_comp1": 1,
+        "delivered_locked_plan": 1,
+        "gained_under_comp1": 0,
+        "lost_under_comp1": 0,
+        "rows": 1
+      }
+    },
+    "boundary_width_histogram": {
+      "comp1": {
+        "2": 1,
+        "8": 1078
+      },
+      "locked_plan": {
+        "1": 1,
+        "3": 1,
+        "5": 1,
+        "7": 1,
+        "8": 1076
+      }
+    },
+    "classes": {
+      "catch-all": {
+        "by_plan_class": {
+          "INTENT-COVERED": 1,
+          "INTENT-UNCOVERED": 26
+        },
+        "delivered_under_agree_alone": 1,
+        "delivered_under_comp1": 5,
+        "not_delivered_under_comp1": 22,
+        "rows": 27
+      },
+      "delivered-but-wrong": {
+        "by_plan_class": {
+          "INTENT-COVERED": 59,
+          "INTENT-UNCOVERED": 27
+        },
+        "delivered_under_agree_alone": 84,
+        "delivered_under_comp1": 82,
+        "not_delivered_under_comp1": 4,
+        "rows": 86
+      },
+      "newly-by-agree": {
+        "by_plan_class": {
+          "INTENT-UNCOVERED": 23
+        },
+        "delivered_under_agree_alone": 23,
+        "delivered_under_comp1": 23,
+        "not_delivered_under_comp1": 0,
+        "rows": 23
+      },
+      "newly-by-both": {
+        "by_plan_class": {
+          "INTENT-UNCOVERED": 47
+        },
+        "delivered_under_agree_alone": 47,
+        "delivered_under_comp1": 46,
+        "not_delivered_under_comp1": 1,
+        "rows": 47
+      },
+      "newly-by-centroid": {
+        "by_plan_class": {
+          "INTENT-COVERED": 1,
+          "INTENT-UNCOVERED": 7
+        },
+        "delivered_under_agree_alone": 1,
+        "delivered_under_comp1": 6,
+        "not_delivered_under_comp1": 2,
+        "rows": 8
+      }
+    },
+    "intent_wrong_rows": 191,
+    "rows_seeded_with_no_boundary_entry_under_comp1": [
+      "slurp:train:015793:audio-1490106752"
+    ],
+    "source": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/attribution-classes-v1.json",
+      "script": {
+        "relpath": "scripts/flights/comp1/comp1_attribution_classes.py",
+        "sha256": "83ece1d8d4b9e10c35c6c348e71e65ec2eab4c489eb99f55e3d836e4a978807a"
+      },
+      "sha256": "f6709ab2d02bc94b5d665f7256e188e6782388d7c28ff06dad2957f7842faaf4"
+    },
+    "summary": {
+      "catch_all_rows_delivered_only_under_the_composition": [
+        "slurp:train:000902:audio-1501690967",
+        "slurp:train:003255:audio-1490287383-headset",
+        "slurp:train:013374:audio-1489497114",
+        "slurp:train:013450:audio-1488991540",
+        "slurp:train:014741:audio-1497882505"
+      ],
+      "delivered_under_comp1": 162,
+      "delivered_under_comp1_pct_of_intent_wrong": 84.8,
+      "delivered_under_locked_plan": 86,
+      "newly_by_both": 47,
+      "newly_delivered_by_agree_alone_conv_roster": 70,
+      "newly_delivered_by_centroid_alone_kprobe_roster": 55,
+      "rows_delivered_by_plan_or_a_single_factor_but_not_under_comp1": [
+        "slurp:train:000116:audio-1434537220",
+        "slurp:train:000215:audio-1502200839",
+        "slurp:train:010011:audio-1498483953",
+        "slurp:train:010212:audio-1501150440-headset",
+        "slurp:train:013443:audio-1498567184",
+        "slurp:train:015237:audio-1502195173",
+        "slurp:train:015351:audio-1434532573-headset"
+      ],
+      "union_of_the_two_newly_delivered_sets": 78
+    },
+    "what_this_is": "membership and delivery only, before contact; a delivery count is never a correctness count",
+    "why_one_row_is_unseeded": "A property of the centroid key alone, measured: that row's sealed speech vector has cosine -0.0039 to its NEAREST centroid key (negative to all 60; +0.0533 to the nearest written key, 30 non-negative), and the fuser saea-fuse-associated-values-v1 admits a candidate only at cosine >= tau 0.0, so no boundary entry is admitted and rails.phase_supply.build_bootstrap_selection seeds nothing for it. The A/A seeds it with 8. It is an INTENT-UNCOVERED, catch-all row, already intent-wrong in the comparator; the flight tolerates an unseeded row (rails.runner _per_sample_bootstrap) and the read reports it explicitly."
+  },
+  "default_byte_identity": {
+    "aa_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "arm_output_sha256": "ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a",
+    "how_it_is_proven": "core.preparation.digest over the {facets, values} payload: equality means the same value ids in the same order on every one of the 1,080 rows",
+    "sealed_comparator_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "smoke_output_sha256": "1d55ea73ae0ef4ef2d175e66303eaa5b500c7fc2a3ac356f3808686deba051e0",
+    "verified": true,
+    "what_is_claimed": "The A/A flies the locked plan's own bytes: its own prepared first-phase supply, minted at this implementation with the widened recall and no committed pin, carries the sealed comparator's output digest."
+  },
+  "fit": {
+    "expected_from_the_agree_measurement": {
+      "perception": 19449,
+      "planner": 19252,
+      "reviewer": 19313,
+      "solver": 21278,
+      "solver_physical_margin_after": 2621,
+      "solver_with_the_cited_instruction": 21412
+    },
+    "measured": {
+      "cells": {
+        "aa": {
+          "blockers": null,
+          "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-aa-fold-a-v1.json",
+          "config_hash": "b06da99e98fa29179e24675f66cd8e75389a7bea28bdebf6bf8a1234f5ce7b9b",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1512,
+              "payload_sha256_prefix": "c6bcbb820887d9e2",
+              "phase": "perception",
+              "physical_margin_tokens": 4584,
+              "rendered_text_tokens": 19449,
+              "required_window_tokens": 19992,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1648,
+              "payload_sha256_prefix": "80e3924d991a438d",
+              "phase": "reviewer",
+              "physical_margin_tokens": 4720,
+              "rendered_text_tokens": 19313,
+              "required_window_tokens": 19856,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1709,
+              "payload_sha256_prefix": "8adac860cf952aa9",
+              "phase": "planner",
+              "physical_margin_tokens": 4781,
+              "rendered_text_tokens": 19252,
+              "required_window_tokens": 19795,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -317,
+              "payload_sha256_prefix": "44927c0871a44df3",
+              "phase": "solver",
+              "physical_margin_tokens": 2755,
+              "rendered_text_tokens": 21278,
+              "required_window_tokens": 21821,
+              "speech_feature_tokens": 29
+            }
+          ],
+          "protocol_hash": "2c753652197d396fee4cea6a93eb80c77d1bf3f1c9917da8bc271eb5a5fbdc83",
+          "scientific_readiness": {
+            "reason": "The in-chain A/A replicate of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58): the same baseline bytes at k 60, w_agree 0.0, no agreement_source, the written key, the un-armed citation default, its own run, attempt and fit ids. HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Its prepared supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f.",
+            "state": "held"
+          }
+        },
+        "arm": {
+          "blockers": null,
+          "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-fold-a-v1.json",
+          "config_hash": "6758750b713fe45358d9eb3c0f4a18d3e32ed0d3a84c85da195c6bfaad536b9b",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1510,
+              "payload_sha256_prefix": "c87e5b8564823f64",
+              "phase": "perception",
+              "physical_margin_tokens": 4582,
+              "rendered_text_tokens": 19451,
+              "required_window_tokens": 19994,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1647,
+              "payload_sha256_prefix": "6eba48ee2a227ae7",
+              "phase": "reviewer",
+              "physical_margin_tokens": 4719,
+              "rendered_text_tokens": 19314,
+              "required_window_tokens": 19857,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1708,
+              "payload_sha256_prefix": "142bcbc1fdef0fb4",
+              "phase": "planner",
+              "physical_margin_tokens": 4780,
+              "rendered_text_tokens": 19253,
+              "required_window_tokens": 19796,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -474,
+              "payload_sha256_prefix": "aab39423a8643fdd",
+              "phase": "solver",
+              "physical_margin_tokens": 2598,
+              "rendered_text_tokens": 21435,
+              "required_window_tokens": 21978,
+              "speech_feature_tokens": 29
+            }
+          ],
+          "protocol_hash": "255019cd07fe8eec84484d906076eeefe171f9883ade9bd2f7f95b5d9443cb7a",
+          "scientific_readiness": {
+            "reason": "Cell COMP-1 registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58) with the agreement term (as AGREE), the centroid key (as KPROBE) and the citation contract composed. Comparator: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, never re-flown, read at the in-chain A/A replicate SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 flown in the same campaign chain. HELD: the coordinator declares expected_effect_pp from the AGREE and KPROBE reads, root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+            "state": "held"
+          }
+        },
+        "smoke": {
+          "blockers": null,
+          "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-fold-a-smoke-4-v1.json",
+          "config_hash": "d41618491332184d517d9d95fe2c82b614f778b92001d8ffe3c5ad8a18d7484d",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1511,
+              "payload_sha256_prefix": "ec3760850bee82b7",
+              "phase": "perception",
+              "physical_margin_tokens": 4583,
+              "rendered_text_tokens": 19450,
+              "required_window_tokens": 19993,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1647,
+              "payload_sha256_prefix": "0047741aadc992b2",
+              "phase": "reviewer",
+              "physical_margin_tokens": 4719,
+              "rendered_text_tokens": 19314,
+              "required_window_tokens": 19857,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1708,
+              "payload_sha256_prefix": "d54bdc888b1326af",
+              "phase": "planner",
+              "physical_margin_tokens": 4780,
+              "rendered_text_tokens": 19253,
+              "required_window_tokens": 19796,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -474,
+              "payload_sha256_prefix": "df2b6724e19593b0",
+              "phase": "solver",
+              "physical_margin_tokens": 2598,
+              "rendered_text_tokens": 21435,
+              "required_window_tokens": 21978,
+              "speech_feature_tokens": 29
+            }
+          ],
+          "protocol_hash": "b92bff0abc3c7e325cd31ce04eb3dc3e85e3d75f36b00c69968c82ecf2a354c6",
+          "scientific_readiness": {
+            "reason": "Four-row form smoke of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN smoke fragments by script (decision 58). HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Structural form proof only: no score, no read, no claim.",
+            "state": "held"
+          }
+        }
+      },
+      "status": "MEASURED_BY_CHECK"
+    },
+    "rule": "the pre-flight prompt budget binds to the LIVE slot (24,576 tokens on the SLURP np4 session) with a reserve of one eighth of the slot (3,072); the Solver phase of the locked plan already reads COMPACT_REQUIRED with a positive physical margin and proceeds under context_fit_policy compact-or-abstain"
+  },
+  "owner_decisions": {
+    "127": "the citation part is a no-harm base item",
+    "133": "intent primary, official SLU-F1 the guard",
+    "138": "the composed round is the cumulative check; no improvement = conflict diagnosis with the per-class table",
+    "139": "no prior, no pre-committed if-then",
+    "152": "COMP-1 = PLAN lock + agreement term + centroid key + citation contract; expectation composed from the AGREE and KPROBE reads"
+  },
+  "prepared_supplies": {
+    "aa": {
+      "contact_class": "model-free",
+      "file_sha256": "445e1acc7d5d867b0edd5b2cc0837d3afef567ca9ab76930bfa02bad50471a2a",
+      "implementation": {
+        "runtime": "e80659065b153cadd05d6239a0c557dc38e3d468812fafd7dcff3289f46ccd5f",
+        "speech_aware_evidence_acquisition.rails.kb_policy": "92cf457a2fcf1594050a4b23fe4d9443ff27927fbb0498e838d95638f5a49b8a",
+        "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+        "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
+        "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+      },
+      "kind": "phase-supply",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/phase-supply-v1.json",
+      "rows_seeded": 1080,
+      "selected_value_ids": 8624,
+      "supply_spec_declares_agreement_source": false,
+      "supply_spec_facet_source_sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+      "supply_spec_rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "width_histogram": {
+        "1": 1,
+        "3": 1,
+        "5": 1,
+        "7": 1,
+        "8": 1076
+      }
+    },
+    "arm": {
+      "contact_class": "model-free",
+      "file_sha256": "4d3f86be57946148a745a6e37a43af1bc295522f9aa466260454718f4641f213",
+      "implementation": {
+        "runtime": "e80659065b153cadd05d6239a0c557dc38e3d468812fafd7dcff3289f46ccd5f",
+        "speech_aware_evidence_acquisition.rails.kb_policy": "92cf457a2fcf1594050a4b23fe4d9443ff27927fbb0498e838d95638f5a49b8a",
+        "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+        "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
+        "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+      },
+      "kind": "phase-supply",
+      "output_sha256": "ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v1.json",
+      "rows_seeded": 1079,
+      "selected_value_ids": 8626,
+      "supply_spec_declares_agreement_source": true,
+      "supply_spec_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "supply_spec_rank_weights": {
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "width_histogram": {
+        "2": 1,
+        "8": 1078
+      }
+    },
+    "smoke": {
+      "contact_class": "model-free",
+      "file_sha256": "af53ea707e9ca742c8383c5d2fa7379c4c18c5dbb83c22acdaa3a9e97000d732",
+      "implementation": {
+        "runtime": "e80659065b153cadd05d6239a0c557dc38e3d468812fafd7dcff3289f46ccd5f",
+        "speech_aware_evidence_acquisition.rails.kb_policy": "92cf457a2fcf1594050a4b23fe4d9443ff27927fbb0498e838d95638f5a49b8a",
+        "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+        "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
+        "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+      },
+      "kind": "phase-supply",
+      "output_sha256": "1d55ea73ae0ef4ef2d175e66303eaa5b500c7fc2a3ac356f3808686deba051e0",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+      "rows_seeded": 4,
+      "selected_value_ids": 32,
+      "supply_spec_declares_agreement_source": true,
+      "supply_spec_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "supply_spec_rank_weights": {
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "width_histogram": {
+        "8": 4
+      }
+    }
+  },
+  "prohibitions": [
+    "No flight before the coordinator declares expected_effect_pp in both places, root mints the decision receipt and all three cells are flipped.",
+    "No re-flying of the sealed comparator; no test-split, Fold B or DEV contact or read.",
+    "No fourth factor; no k, tau, fuse_coverage, w_prior, store, release, snapshot or roster change; no re-pin of the 211 committed configs.",
+    "The citation part may never be reported as a gain (decision 127); two base items are never assumed to add.",
+    "No paper-scale profile. --allow-output-change is never passed."
+  ],
+  "registered_at_utc": "2026-09-27T08:36:30.000000+00:00",
+  "reported_beside": {
+    "cross_flight_aa_offset_pp": 1.87,
+    "note": "CONTEXT ONLY. None of these is this cell's bar.",
+    "train_fold_a_own_null": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "n": 1080
+    },
+    "train_fold_a_plan": {
+      "intent_accuracy": 82.2222,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+      "slu_f1": 63.6304
+    }
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "shared_in_chain_replicate": {
+    "chain": "scripts/flights/comp1/batch_chain_comp1_g5.sh: ONE batch-driver queue of two steps on the np4 session -- step 1 the COMP-1 four-row smoke then this package's campaign plan (the shared A/A, then the COMP-1 arm); step 2 the G5 four-row smoke then the G5 arm alone. The driver flies one smoke per step, so the decision's single campaign is realised as two steps of one chain, the A/A in the first",
+    "comp1_is_unchanged": "nothing in COMP-1's cells, campaign plan, declaration or placeholder moves: its A/A is read by two arms instead of one",
+    "condition_proof": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json",
+      "sha256": "d3df20acf2845e1e59da23faf777c8de69c1c5e640d420e54d9a47683f98a5e0",
+      "summary": "proof docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json (sha256 d3df20acf2845e1e59da23faf777c8de69c1c5e640d420e54d9a47683f98a5e0, verdict IDENTICAL, study commit abf29aec): both A/As' prepared first-phase supplies, minted model-free by core.flight.cli prepare-supply, carry output digest ba5e1faa on all 1,080 rows; their real dispatch against the real llama-server transport with a fake POST produced byte-identical canonical payloads and POST bodies on all 663 contacts of 120 rows under one scratch run id, and byte-identical POST bodies (payloads equal up to the run-id-derived custody hash) under their own run ids; every differing composed-config leaf is bookkeeping except the first-phase recall width k (60 vs 8), which is output-neutral by the equal supply digests",
+      "tool": "scripts/flights/comp1/comp1_g5_shared_aa_proof.py",
+      "verdict": "IDENTICAL"
+    },
+    "decision_relpath": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "flip": "scripts/flights/comp1/comp1_g5_flip.sh (this package's three cycles, then G5's smoke and arm, converged at ONE HEAD)",
+    "g5_package": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1",
+    "g5_superseded_unflown": [
+      "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1"
+    ],
+    "owner_decision": 160,
+    "this_aa_serves": [
+      "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+      "SAEA-SLURP-STAGE3-G5-FOLD-A-V1"
+    ]
+  },
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The A/A replicate is the INSTRUMENT, not a claim: it re-flies the locked plan's own bytes (w_agree 0.0, the written key, the un-armed citation default, recall k 60 which is a proven no-op) so the composed delta is read against a within-chain null. Its expected effect is exactly zero by construction; a non-zero read on it is a measurement of the instrument.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the guard",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+      "rows": 1080
+    },
+    "SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: the agreement table and the centroid key file load and hash-verify, the boundary channel still delivers, the Solver answers under the cited-answer contract and the unwrapping normaliser delivers the answer's own bytes, every request fits and the episode completes. Scored by no one, read by no one; under the instrument's rule 5 a batch of four rows can never be evidence of benefit.",
+      "primary_metric": "intent accuracy (scenario_action exact)",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1": {
+      "claims_benefit": true,
+      "expected_effect_pp": 3.23,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The FIRST COMPOSED arm (owner decisions 138 and 152): the locked plan + the agreement term + the centroid boundary key + the citation contract, read against the in-chain A/A at intent primary and official SLU-F1 as the guard. expected_effect_pp is DELIBERATELY the literal string TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS: owner decision 139 forbids a prior, and decision 152 says the number is composed by the coordinator from the AGREE and KPROBE reads' measured m values (m_agree = 32 of 70 is read; m_kprobe is pending) over the class table registered here (the two newly-delivered sets overlap on 47 of their 78 rows, so they do not add) at the registered per-row headroom of 0.092615 pp intent. Until the coordinator replaces this string with a number here AND in the preregistration fence, scripts/checks/stage3_effect_floor_check.py refuses this cell as unparsable-declaration -- the intended state. A composed round that fails to improve is read as a CONFLICT DIAGNOSIS over the per-class attribution table, never as a null (decision 138). Delivery is not correctness.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+      "rows": 1080,
+      "expected_effect_declaration": "Declared 2026-09-27 by the coordinator (Claude Opus 5.5) from measured numbers only (owner decision 139): the registered attribution classes put 78 of the 191 PLAN intent-wrong Fold A rows in the newly-delivered classes of the composition (newly by AGREE alone 23, by the centroid key alone 8, by both 47); the measured conversion of a newly delivered gold entry is 32 of 70 for the agreement term (CONV) and 24 of 55 for the centroid key (KPROBE), pooled 56 of 125 = 0.448; 78 x 0.448 = 34.9 rows x 0.092615 pp = 3.23 pp intent. The two newly-delivered sets overlap on 47 rows, so the m values are NOT added. Not counted, stated beside: the agreement term's measured effect on already-delivered rows (35 saves) and its 31 harms, which its own Fold A read nets to +3.33 pp [+1.57, +5.09]; an upper reading of AGREE's realised +3.33 plus the centroid-only increment 8 x 0.4364 x 0.092615 = 0.32 gives 3.65 pp. The citation contract is a no-harm base item (decision 152) and contributes 0. Against the 2.5 pp cross-flight floor at n = 1,080 the declared 3.23 clears it."
+    }
+  },
+  "study_commit_at_registration": "8d403ffa",
+  "the_composition": {
+    "factor_1_agreement_term": {
+      "agreement_receipt": {
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/receipt.json",
+        "root": "data",
+        "sha256": "abf1830e3b765ce267ca7abc30855fb0148190931a12d505dc0f6f1dccd5ee2b"
+      },
+      "agreement_source": {
+        "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed speech vector against the frozen pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. Built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts; receipt beside the artifact.",
+        "kind": "sealed-agreement",
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+        "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1"
+      },
+      "as_registered_by": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1",
+      "fuse_coverage": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "k": 60,
+      "measured_alone": "wrong-row delivery 45.0 % -> 81.7 % on Fold A; CONV: m = 32 of 70 newly delivered rows converted (45.71 %, Wilson [34.57, 57.30])",
+      "rank_weights": {
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    },
+    "factor_2_centroid_key": {
+      "as_registered_by": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1",
+      "centroid_receipt": {
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json",
+        "root": "data",
+        "sha256": "d5fa43dfb9cfe71402e256c015e5f0a1ce66e97b3ec5355a664eb9f69f8cdf0a"
+      },
+      "facet_source": {
+        "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+        "kind": "sealed-vectors",
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+        "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+      },
+      "measured_alone": "wrong-row delivery 45.0 % -> 71.2 % on Fold A at zero token cost; KPROBE (55 rows) reads its conversion; the 211 committed configs are NOT re-pinned"
+    },
+    "factor_3_citation_contract": {
+      "admission_mode": "a row-127 no-harm base item folded into the composed arm (decision 152): it is admitted on the composed arm's own guards and may never be reported as a gain; its deliverable is the per-entry credit table (src/speech_aware_evidence_acquisition/analysis/citation_credit.py, saea-citation-credit-table-v1)",
+      "byte_identical_default": "un-armed (every fragment before this seam, the v2.0 lock and this A/A included) no function of the module is reachable; the AGREE identity proof and this A/A both reproduce the sealed prepared-output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "deliver_normaliser": {
+        "normaliser": "saea-deliver-cited-answer-normalise-v3-v1"
+      },
+      "delivered_text": "the answer object's OWN bytes cut from the envelope by rails.solver_citation.answer_span, then the locked plan's v3 projection (invariant I7n); a citation of an unsupplied id is refused at the seal, never dropped",
+      "module": "src/speech_aware_evidence_acquisition/rails/solver_citation.py",
+      "one_arming": "rails.native_episode_config refuses the contract without one of the two unwrapping normalisers and a normaliser without the contract, fail-closed, before any contact",
+      "policy": "phase-native-candidates-review-revise-cited-v1",
+      "solver_instruction_template": "probes/slurp_native_role_solver_cited_v1.txt",
+      "solver_response_format_id": "saea-solver-cited-answer-v1",
+      "token_cost_measured_on_the_sealed_plan_trace": {
+        "contacts": "unchanged: the contract adds tokens per Solver contact, never contacts, so every cap is the PLAN family's own",
+        "contract_cap_ids": "3 intent + 6 entities x 3 = 21 ids, about 353 output tokens at the cap, inside the 512-token completion ceiling",
+        "instruction_tokens_per_solver_contact": 134,
+        "output_envelope_skeleton_tokens": 26,
+        "output_tokens_per_cited_id": 12.71,
+        "source": "scripts/analysis/solver_citation_cost.py over the sealed PLAN trace's 625 Solver contacts with the local tokenizer (zero model contacts), recorded in owner decision 152 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md)"
+      }
+    },
+    "nothing_else": "proven below from the composed configs and re-proven by tests/unit/test_comp1_config.py"
+  },
+  "the_expectation_the_coordinator_declares": {
+    "gate_state_until_then": "scripts/checks/stage3_effect_floor_check.py: FAIL [unparsable-declaration] on the arm (expected_effect_pp must be a number) -- INTENDED; the A/A and the smoke parse.",
+    "placeholder": "TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS",
+    "what_composes_it": {
+      "bar_at_n_1080_pp": 2.5,
+      "m_agree": {
+        "rate": 0.4571,
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md",
+        "status": "read",
+        "value": "32 of 70"
+      },
+      "m_kprobe": {
+        "source": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1 (its read, once sealed)",
+        "status": "pending",
+        "value": "pending"
+      },
+      "per_row_headroom_pp_intent": 0.092615,
+      "per_row_headroom_pp_slu_guard": 0.041615,
+      "rule": "declared from measured m values only (decision 139); never a midpoint, never a prior; the citation part contributes no expected gain (a no-harm base item, decision 152)",
+      "the_two_newly_delivered_sets_overlap": {
+        "catch_all_delivered_only_under_the_composition": 5,
+        "newly_by_agree_only": 23,
+        "newly_by_both": 47,
+        "newly_by_centroid_only": 8,
+        "note": "the two conversion probes measured m on DISJOINT-looking rosters that in fact share 47 rows, so m_agree x headroom + m_kprobe x headroom double-counts; the coordinator composes over the four exclusive classes registered in attribution-classes-v1.json",
+        "rows_a_single_factor_or_the_plan_delivers_but_the_composition_does_not": 7,
+        "union": 78
+      }
+    },
+    "where_to_fill": [
+      {
+        "currently": "TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS",
+        "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/registered-facts-v1.json",
+        "json_path": "stage3_measurement.SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1.expected_effect_pp"
+      },
+      {
+        "currently": "TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS",
+        "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md",
+        "location": "the fenced json block under '## The measurement declaration', key stage3_measurement.SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1.expected_effect_pp"
+      }
+    ]
+  }
+}

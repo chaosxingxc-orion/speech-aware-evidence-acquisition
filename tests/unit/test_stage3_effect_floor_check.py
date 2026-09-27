@@ -778,3 +778,70 @@ def test_an_unknown_admission_and_a_non_positive_margin_are_refused(
         assert _kinds(data) == ["unparsable-declaration"], needle
         assert needle in data["findings"][0]["message"], needle
         assert data["passed"] is False
+
+
+def _two_package_tree(root: Path, *, arm_package: str, replicate_package: str) -> None:
+    """Owner decision 160's shape: an arm in one package names, as its in-chain replicate, an
+    A/A registered -- fragment, ledger row, declaration -- by ANOTHER package."""
+
+    arm_run, aa_run = "SAEA-SLURP-STAGE3-SYNTH-ARM-V1", "SAEA-SLURP-STAGE3-SYNTH-SHARED-AA-V1"
+    (root / "configs" / "experiment").mkdir(parents=True, exist_ok=True)
+    for fragment, run_id in (("slurp-native-stage3-synth-arm-v1", arm_run),
+                             ("slurp-native-stage3-synth-shared-aa-v1", aa_run)):
+        document = {
+            "experiment_id": run_id,
+            "date": "2026-09-28T12:00:00+00:00",
+            "population": {"count": 1080, "dataset_fragment": "synthetic"},
+            "cells": [{"cell_id": fragment, "run_id": run_id, "baseline_fragment": "b",
+                       "readiness": {"state": "held", "reason": "synthetic"}}],
+        }
+        (root / "configs" / "experiment" / f"{fragment}.json").write_text(
+            json.dumps(document, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    declarations = {
+        arm_package: {arm_run: _cross_flight_no_harm(harm_margin_pp=1.2485, replicate_run_id=aa_run)},
+        replicate_package: {aa_run: _declaration(
+            measurement_design="cross-flight-with-in-chain-replicate", expected_effect_pp=0.0,
+            rows=1080, claims_benefit=False, replicate_run_id="SAEA-SLURP-STAGE3-SYNTH-OTHER-ARM-V1",
+        )},
+    }
+    for package, block in declarations.items():
+        (root / "docs" / "readiness" / package).mkdir(parents=True, exist_ok=True)
+        (root / "docs" / "readiness" / package / "registered-facts-v1.json").write_text(
+            json.dumps({gate.MEASUREMENT_KEY: block}, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    (root / "docs" / "exposure-ledger.md").write_text(_ledger([
+        {"date": "2026-09-28", "run/experiment id": run_id,
+         "execution profile": "bounded-discovery-probe", "consumed": "no", "notes": "synthetic"}
+        for run_id in (arm_run, aa_run)
+    ]), encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    ("arm_package", "replicate_package"),
+    [
+        # the G5 shape: the arm's package sorts AFTER the package that owns the shared A/A
+        ("2026-09-27-slurp-stage3-g5-fold-a-v1", "2026-09-27-slurp-stage3-comp-1-fold-a-v1"),
+        # and the reverse order, where the arm's file (which quotes the A/A's run id) is read first
+        ("2026-09-27-slurp-stage3-a-arm-v1", "2026-09-27-slurp-stage3-z-aa-v1"),
+    ],
+)
+def test_a_replicate_registered_by_another_package_is_accepted(
+    tmp_path: Path, arm_package: str, replicate_package: str
+) -> None:
+    """Owner decision 160: the gate reads ``replicate_run_id`` as a run id string and never asks
+    which package registered it, so an arm whose in-chain replicate is another package's A/A
+    passes; and each cell's own declaration is still the one found -- the arm's keyed block
+    quotes the A/A's run id as a VALUE, never as a key, so the A/A never borrows it."""
+
+    _two_package_tree(tmp_path, arm_package=arm_package, replicate_package=replicate_package)
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == []
+    assert data["passed"] is True
+    by_run = {row["run_id"]: row for row in data["in_scope_cells"]}
+    arm = by_run["SAEA-SLURP-STAGE3-SYNTH-ARM-V1"]["declaration"]
+    aa = by_run["SAEA-SLURP-STAGE3-SYNTH-SHARED-AA-V1"]["declaration"]
+    assert arm["replicate_run_id"] == "SAEA-SLURP-STAGE3-SYNTH-SHARED-AA-V1"
+    assert arm["source"] == f"docs/readiness/{arm_package}/registered-facts-v1.json"
+    assert aa["source"] == f"docs/readiness/{replicate_package}/registered-facts-v1.json"
+    assert aa["replicate_run_id"] == "SAEA-SLURP-STAGE3-SYNTH-OTHER-ARM-V1"

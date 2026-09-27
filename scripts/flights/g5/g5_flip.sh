@@ -23,6 +23,12 @@
 # files count as dirt for core.flight.cli check.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1
+# Owner decision 160 (2026-09-27): G5 is read at the SHARED in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1,
+# its own A/A pair is superseded unflown and its campaign plan carries the arm alone. In that mode this
+# script must not run: the family flips ONLY through scripts/flights/comp1/comp1_g5_flip.sh.
+if ! grep -q "slurp-native-stage3-g5-aa-fold-a-v1" /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/campaign/slurp-native-stage3-g5-fold-a-v1.json; then
+  echo "refusing (owner decision 160): the G5 campaign plan carries the arm alone -- use scripts/flights/comp1/comp1_g5_flip.sh"; exit 6
+fi
 G5=$(dirname "$0")
 for K in smoke aa arm; do
 cat > /home/chao/g5-$K-commit.txt <<M

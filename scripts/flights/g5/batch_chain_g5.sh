@@ -18,6 +18,12 @@ MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-eviden
 REPO=/home/chao/saea-worktrees/fable-batch-flight
 LOG=/home/chao/batch-chain-g5.out
 COMMIT=$(cat /home/chao/g5-flight-commit.txt) || exit 1
+# Owner decision 160 (2026-09-27): G5 is read at the SHARED in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1,
+# its own A/A pair is superseded unflown and its campaign plan carries the arm alone. In that mode this
+# script must not run: the family flies ONLY through scripts/flights/comp1/batch_chain_comp1_g5.sh.
+if ! grep -q "slurp-native-stage3-g5-aa-fold-a-v1" /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/campaign/slurp-native-stage3-g5-fold-a-v1.json; then
+  echo "refusing (owner decision 160): the G5 campaign plan carries the arm alone -- use scripts/flights/comp1/batch_chain_comp1_g5.sh"; exit 6
+fi
 export BATCH_SESSION=serving-slurp-native-candidate-five-train-a-np4-v1
 echo "chain start $(date -u +%FT%TZ) commit $COMMIT session $BATCH_SESSION" >> $LOG
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh' | grep -v pgrep)" ]; then echo "a batch is running; abort" >> $LOG; exit 7; fi

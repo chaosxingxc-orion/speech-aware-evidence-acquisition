@@ -69,8 +69,19 @@
   "comparator": {
     "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
     "in_chain_replicate": {
-      "run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
-      "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate; the A/A is the locked plan's own form re-flown in the SAME campaign chain"
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
+      "owner_decision": 160,
+      "registered_by": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+      "superseded_registration": {
+        "run_ids": [
+          "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+          "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1"
+        ],
+        "status": "superseded-unflown: never flown, never consumed, never deleted",
+        "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate; the A/A is the locked plan's own form re-flown in the SAME campaign chain"
+      },
+      "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate; decision 160 shares ONE A/A between COMP-1 and G5 -- the locked plan's own request bytes re-flown in the SAME chain, proven byte-identical to G5's own registered A/A model-free before the flip (shared-aa-proof-v1.json)"
     },
     "margins": {
       "h_intent": 0.9943,
@@ -653,15 +664,38 @@
   "registered_at_utc": "2026-09-27T13:00:00.000000+00:00",
   "rows": 1080,
   "schema": "saea-registered-facts-v1",
+  "shared_in_chain_replicate": {
+    "campaign_plan": "configs/campaign/slurp-native-stage3-g5-fold-a-v1.json carries the G5 arm ALONE; the shared A/A flies in COMP-1's campaign plan (A/A, then the COMP-1 arm) in step 1 of the SAME batch-driver queue, and the G5 smoke and arm in step 2 (scripts/flights/comp1/batch_chain_comp1_g5.sh; the driver flies one smoke per step)",
+    "condition_proof": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json",
+      "sha256": "d3df20acf2845e1e59da23faf777c8de69c1c5e640d420e54d9a47683f98a5e0",
+      "summary": "proof docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json (sha256 d3df20acf2845e1e59da23faf777c8de69c1c5e640d420e54d9a47683f98a5e0, verdict IDENTICAL, study commit abf29aec): both A/As' prepared first-phase supplies, minted model-free by core.flight.cli prepare-supply, carry output digest ba5e1faa on all 1,080 rows; their real dispatch against the real llama-server transport with a fake POST produced byte-identical canonical payloads and POST bodies on all 663 contacts of 120 rows under one scratch run id, and byte-identical POST bodies (payloads equal up to the run-id-derived custody hash) under their own run ids; every differing composed-config leaf is bookkeeping except the first-phase recall width k (60 vs 8), which is output-neutral by the equal supply digests",
+      "tool": "scripts/flights/comp1/comp1_g5_shared_aa_proof.py",
+      "verdict": "IDENTICAL"
+    },
+    "decision_relpath": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "flip": "scripts/flights/comp1/comp1_g5_flip.sh (the COMP-1 cycles, then the G5 smoke and arm cycles -- never the G5 A/A -- converged at ONE HEAD)",
+    "mint": "scripts/flights/g5/g5_mint_receipt.py --drop-aa (four eligible run ids: the arm, the smoke and their FIT identities)",
+    "owner_decision": 160,
+    "protocol_document": "protocol-registered-v1.json keeps its registration-time comparator.in_chain_replicate on purpose: every plan document of this package pins that document's sha256 and every exposure-ledger row pins its plan's sha256, so an edit there would cascade through them before the flip. This block, the stage3_measurement declaration, the preregistration fence and analysis-recipe-v1.json carry the re-declaration; they take precedence.",
+    "registered_by": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1",
+    "replicate_attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
+    "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+    "superseded_unflown": [
+      "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1"
+    ]
+  },
   "stage3_measurement": {
     "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1": {
       "claims_benefit": false,
       "expected_effect_pp": 0.0,
       "measurement_design": "cross-flight-with-in-chain-replicate",
-      "note": "The A/A replicate is the INSTRUMENT, not a claim: it re-flies the locked plan's own form -- the OLD Reviewer instruction -- so the G5 delta is read against a within-chain null. Its expected effect is exactly zero by construction, and a non-zero read on it is a measurement of the instrument, which is what it is for.",
+      "note": "SUPERSEDED UNFLOWN by owner decision 160: the G5 arm is read at COMP-1's in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1, flown in the same chain; this A/A is never flown and never consumed, and its registration stays as the record of what G5 registered. The A/A replicate is the INSTRUMENT, not a claim: it re-flies the locked plan's own form -- the OLD Reviewer instruction -- so the G5 delta is read against a within-chain null. Its expected effect is exactly zero by construction, and a non-zero read on it is a measurement of the instrument, which is what it is for.",
       "primary_metric": "intent accuracy (scenario_action exact) and official pooled SLU-F1, as the instrument",
       "replicate_run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1",
-      "rows": 1080
+      "rows": 1080,
+      "status": "superseded-unflown (owner decision 160)"
     },
     "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1": {
       "claims_benefit": false,
@@ -683,7 +717,8 @@
       "measurement_design": "cross-flight-with-in-chain-replicate",
       "note": "A row-127 ENGINEERING-BASE item, admitted on NO HARM and never reported as a gain: expected_effect_pp is 0.0 because the cell registers no effect to look for, claims_benefit is false, and the harm margin is the measured floor of this design at n = 1,080 -- the Fold A own-null half-width of PLAN vs PLANr, SLU 1.2485 (the gate's single harm_margin_pp field, in the floor table's own unit) and intent 0.9943 (the primary metric's own half-width, applied by the read; harm_margin_pp_by_metric). The delta is read against the in-chain A/A replicate flown in the same chain (rule 3), never against the sealed comparator alone. The ceiling the item unlocks is stated in registered-facts-v1.json (ceiling_unlocked); it is a form ceiling, not a task-quality expectation. The read is neutral-by-width-is-admission (decision 127); a measured loss on either metric is HARMFUL (decision 25). Folded into the next composed round for the cumulative check (decision 138).",
       "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
-      "replicate_run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "replicate_note": "RE-DECLARED under owner decision 160 (2026-09-27): COMP-1 and G5 fly in ONE chain with ONE shared in-chain A/A, COMP-1's SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 (registered by docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1); G5's own A/A pair SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1 / SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1 is SUPERSEDED UNFLOWN, never consumed and never deleted. The decision's condition was checked model-free before any flip -- proof docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json (sha256 d3df20acf2845e1e59da23faf777c8de69c1c5e640d420e54d9a47683f98a5e0, verdict IDENTICAL, study commit abf29aec): both A/As' prepared first-phase supplies, minted model-free by core.flight.cli prepare-supply, carry output digest ba5e1faa on all 1,080 rows; their real dispatch against the real llama-server transport with a fake POST produced byte-identical canonical payloads and POST bodies on all 663 contacts of 120 rows under one scratch run id, and byte-identical POST bodies (payloads equal up to the run-id-derived custody hash) under their own run ids; every differing composed-config leaf is bookkeeping except the first-phase recall width k (60 vs 8), which is output-neutral by the equal supply digests. The no-harm rule, the margins and the read are unchanged; only the A/A the delta is read at moved.",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
       "rows": 1080
     }
   },

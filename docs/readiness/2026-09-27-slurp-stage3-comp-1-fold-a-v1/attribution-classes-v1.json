@@ -1,0 +1,2130 @@
+{
+  "all_rows_by_bank_class": {
+    "CORRECT": {
+      "delivered_comp1": 478,
+      "delivered_locked_plan": 467,
+      "gained_under_comp1": 12,
+      "lost_under_comp1": 1,
+      "rows": 480
+    },
+    "ENTITY-FN-ONLY": {
+      "delivered_comp1": 84,
+      "delivered_locked_plan": 82,
+      "gained_under_comp1": 2,
+      "lost_under_comp1": 0,
+      "rows": 84
+    },
+    "ENTITY-FP-ONLY": {
+      "delivered_comp1": 131,
+      "delivered_locked_plan": 124,
+      "gained_under_comp1": 7,
+      "lost_under_comp1": 0,
+      "rows": 131
+    },
+    "ENTITY-MIXED": {
+      "delivered_comp1": 192,
+      "delivered_locked_plan": 187,
+      "gained_under_comp1": 6,
+      "lost_under_comp1": 1,
+      "rows": 193
+    },
+    "INTENT-COVERED": {
+      "delivered_comp1": 58,
+      "delivered_locked_plan": 59,
+      "gained_under_comp1": 2,
+      "lost_under_comp1": 3,
+      "rows": 61
+    },
+    "INTENT-UNCOVERED": {
+      "delivered_comp1": 104,
+      "delivered_locked_plan": 27,
+      "gained_under_comp1": 78,
+      "lost_under_comp1": 1,
+      "rows": 130
+    },
+    "MALFORMED": {
+      "delivered_comp1": 1,
+      "delivered_locked_plan": 1,
+      "gained_under_comp1": 0,
+      "lost_under_comp1": 0,
+      "rows": 1
+    }
+  },
+  "class_order": [
+    "delivered-but-wrong",
+    "newly-by-both",
+    "newly-by-agree",
+    "newly-by-centroid",
+    "catch-all"
+  ],
+  "classes": {
+    "catch-all": {
+      "by_plan_class": {
+        "INTENT-COVERED": 1,
+        "INTENT-UNCOVERED": 26
+      },
+      "delivered_under_agree_alone": 1,
+      "delivered_under_comp1": 5,
+      "ids": [
+        "slurp:train:000036:audio-1502376074",
+        "slurp:train:000902:audio-1501690967",
+        "slurp:train:000958:audio-1494422382",
+        "slurp:train:003057:audio-1490201218",
+        "slurp:train:003255:audio-1490287383-headset",
+        "slurp:train:003332:audio-1490202502-headset",
+        "slurp:train:005265:audio-1498567344-headset",
+        "slurp:train:006427:audio-1494420952-headset",
+        "slurp:train:006893:audio-1500036235-headset",
+        "slurp:train:009988:audio-1498572002",
+        "slurp:train:010642:audio-1492784427-headset",
+        "slurp:train:011011:audio-1498574170",
+        "slurp:train:011111:audio-1497271520",
+        "slurp:train:011165:audio-1434541935-headset",
+        "slurp:train:011701:audio-1502890774-headset",
+        "slurp:train:013014:audio-1501777042-headset",
+        "slurp:train:013146:audio-1496265910-headset",
+        "slurp:train:013315:audio-1502308628-headset",
+        "slurp:train:013374:audio-1489497114",
+        "slurp:train:013450:audio-1488991540",
+        "slurp:train:013452:audio-1501692165-headset",
+        "slurp:train:014741:audio-1497882505",
+        "slurp:train:015204:audio-1497885641-headset",
+        "slurp:train:015793:audio-1490106752",
+        "slurp:train:015846:audio-1501690491",
+        "slurp:train:016867:audio-1497438083",
+        "slurp:train:017161:audio-1501758440"
+      ],
+      "not_delivered_under_comp1": 22,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed PLAN arm (official scorer's scenario_action_exact)",
+      "rows": 27
+    },
+    "delivered-but-wrong": {
+      "by_plan_class": {
+        "INTENT-COVERED": 59,
+        "INTENT-UNCOVERED": 27
+      },
+      "delivered_under_agree_alone": 84,
+      "delivered_under_comp1": 82,
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000087:audio-1488558343",
+        "slurp:train:000116:audio-1434537220",
+        "slurp:train:000215:audio-1502200839",
+        "slurp:train:000507:audio-1434541601",
+        "slurp:train:000529:audio-1500038782",
+        "slurp:train:000575:audio-1498486436",
+        "slurp:train:000752:audio--1506079487-headset",
+        "slurp:train:000820:audio--1504193163",
+        "slurp:train:001368:audio-1501752480",
+        "slurp:train:001588:audio-1502199894",
+        "slurp:train:001629:audio-1492781058",
+        "slurp:train:001642:audio--1504198588",
+        "slurp:train:001790:audio-1501772271-headset",
+        "slurp:train:001836:audio-1490359334-headset",
+        "slurp:train:001907:audio--1504195414-headset",
+        "slurp:train:002005:audio-1502896932",
+        "slurp:train:002070:audio--1504191474-headset",
+        "slurp:train:002147:audio-1434541391",
+        "slurp:train:002233:audio-1498570714",
+        "slurp:train:002268:audio-1490195358",
+        "slurp:train:002407:audio-1502201170",
+        "slurp:train:002484:audio-1501155627",
+        "slurp:train:002489:audio-1490368743-headset",
+        "slurp:train:002586:audio-1434542134",
+        "slurp:train:002631:audio-1490110028",
+        "slurp:train:002642:audio-1500418473-headset",
+        "slurp:train:002817:audio-1501777656-headset",
+        "slurp:train:002929:audio-1501693634-headset",
+        "slurp:train:003054:audio-1498569491",
+        "slurp:train:003071:audio-1498574080",
+        "slurp:train:003102:audio-1497884755-headset",
+        "slurp:train:003290:audio-1501687692-headset",
+        "slurp:train:003384:audio--1505406264",
+        "slurp:train:003487:audio--1504193240-headset",
+        "slurp:train:003499:audio-1489671976",
+        "slurp:train:003836:audio-1502197306-headset",
+        "slurp:train:004146:audio-1502461787-headset",
+        "slurp:train:004180:audio-1496264968-headset",
+        "slurp:train:004181:audio-1490263527-headset",
+        "slurp:train:004389:audio-1502113264",
+        "slurp:train:004404:audio-1492784195",
+        "slurp:train:004528:audio-1496265890",
+        "slurp:train:004733:audio--1504194623",
+        "slurp:train:004808:audio-1501758380",
+        "slurp:train:004866:audio-1501778099-headset",
+        "slurp:train:004868:audio-1502101578",
+        "slurp:train:005284:audio--1504195212",
+        "slurp:train:005473:audio-1490181068",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:006032:audio--1504195204",
+        "slurp:train:006066:audio-1495733787-headset",
+        "slurp:train:006637:audio-1501689200",
+        "slurp:train:006903:audio-1502377447",
+        "slurp:train:006984:audio-1490704518-headset",
+        "slurp:train:007784:audio-1497867407-headset",
+        "slurp:train:008045:audio-1498578440",
+        "slurp:train:009292:audio-1490007448-headset",
+        "slurp:train:009434:audio-1502890896-headset",
+        "slurp:train:010011:audio-1498483953",
+        "slurp:train:010033:audio-1497024342",
+        "slurp:train:010064:audio-1502195836-headset",
+        "slurp:train:010069:audio-1494512409-headset",
+        "slurp:train:010212:audio-1501150440-headset",
+        "slurp:train:011135:audio-1502375110-headset",
+        "slurp:train:011176:audio-1490019787",
+        "slurp:train:011627:audio-1501758892",
+        "slurp:train:011632:audio-1434540435-headset",
+        "slurp:train:012094:audio-1498572961",
+        "slurp:train:012280:audio-1497886215-headset",
+        "slurp:train:012290:audio-1497887198-headset",
+        "slurp:train:012323:audio-1497886076",
+        "slurp:train:012516:audio-1498564568-headset",
+        "slurp:train:012671:audio-1494548438-headset",
+        "slurp:train:012887:audio-1501764735",
+        "slurp:train:013726:audio-1497887453-headset",
+        "slurp:train:014523:audio-1498563693-headset",
+        "slurp:train:014610:audio-1502218659-headset",
+        "slurp:train:015165:audio-1501758991",
+        "slurp:train:015179:audio-1498569151-headset",
+        "slurp:train:015206:audio-1495733505-headset",
+        "slurp:train:015232:audio-1490109224-headset",
+        "slurp:train:015335:audio-1490354879",
+        "slurp:train:015373:audio-1495377330-headset",
+        "slurp:train:015640:audio-1502376334",
+        "slurp:train:016358:audio-1434536304-headset"
+      ],
+      "not_delivered_under_comp1": 4,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed PLAN arm (official scorer's scenario_action_exact)",
+      "rows": 86
+    },
+    "newly-by-agree": {
+      "by_plan_class": {
+        "INTENT-UNCOVERED": 23
+      },
+      "delivered_under_agree_alone": 23,
+      "delivered_under_comp1": 23,
+      "ids": [
+        "slurp:train:000325:audio-1490108447-headset",
+        "slurp:train:005883:audio-1495377112-headset",
+        "slurp:train:006234:audio-1490183390",
+        "slurp:train:006409:audio-1499688413-headset",
+        "slurp:train:006583:audio-1502895875",
+        "slurp:train:006590:audio-1490105917",
+        "slurp:train:006591:audio-1502896632-headset",
+        "slurp:train:006693:audio-1490289519",
+        "slurp:train:007967:audio-1490182244-headset",
+        "slurp:train:009449:audio-1499266000",
+        "slurp:train:010839:audio-1501689932",
+        "slurp:train:012942:audio-1494607699",
+        "slurp:train:012997:audio-1501689194-headset",
+        "slurp:train:013003:audio-1497886732-headset",
+        "slurp:train:013008:audio-1489152656",
+        "slurp:train:013526:audio-1502113543",
+        "slurp:train:013543:audio-1501764794-headset",
+        "slurp:train:013593:audio-1498647415-headset",
+        "slurp:train:013668:audio-1490204487",
+        "slurp:train:013696:audio-1500978981",
+        "slurp:train:014821:audio-1501688342-headset",
+        "slurp:train:015085:audio-1490287489-headset",
+        "slurp:train:015699:audio-1490289415"
+      ],
+      "not_delivered_under_comp1": 0,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed PLAN arm (official scorer's scenario_action_exact)",
+      "rows": 23
+    },
+    "newly-by-both": {
+      "by_plan_class": {
+        "INTENT-UNCOVERED": 47
+      },
+      "delivered_under_agree_alone": 47,
+      "delivered_under_comp1": 46,
+      "ids": [
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:000822:audio-1434535176",
+        "slurp:train:000871:audio-1501767528-headset",
+        "slurp:train:001849:audio-1502218742-headset",
+        "slurp:train:003147:audio-1501758004",
+        "slurp:train:004754:audio-1490201898-headset",
+        "slurp:train:005338:audio-1434540035",
+        "slurp:train:005942:audio-1501686863-headset",
+        "slurp:train:006324:audio-1499246867-headset",
+        "slurp:train:006398:audio-1497867926-headset",
+        "slurp:train:006408:audio-1490193792",
+        "slurp:train:006644:audio-1497887514",
+        "slurp:train:006661:audio-1499694500",
+        "slurp:train:006712:audio-1500980407-headset",
+        "slurp:train:007772:audio-1501753944-headset",
+        "slurp:train:007864:audio-1434536288",
+        "slurp:train:008229:audio-1490106273",
+        "slurp:train:008348:audio-1490356207-headset",
+        "slurp:train:008940:audio-1492785556",
+        "slurp:train:010144:audio-1502375950",
+        "slurp:train:010161:audio-1497883488",
+        "slurp:train:010721:audio-1502376160-headset",
+        "slurp:train:010765:audio-1501754011",
+        "slurp:train:011099:audio-1501754215-headset",
+        "slurp:train:011707:audio-1498572930",
+        "slurp:train:011984:audio-1490288002-headset",
+        "slurp:train:012191:audio-1498568799",
+        "slurp:train:013114:audio-1490106644-headset",
+        "slurp:train:013169:audio-1490106738",
+        "slurp:train:013212:audio-1490291531-headset",
+        "slurp:train:013443:audio-1498567184",
+        "slurp:train:013626:audio-1502112891",
+        "slurp:train:014300:audio-1501694638-headset",
+        "slurp:train:014548:audio-1490956004",
+        "slurp:train:014629:audio-1502890907-headset",
+        "slurp:train:014801:audio-1498571227",
+        "slurp:train:014936:audio-1502891319",
+        "slurp:train:015040:audio-1494548394-headset",
+        "slurp:train:015160:audio-1490182873-headset",
+        "slurp:train:015253:audio-1434541435",
+        "slurp:train:015278:audio-1497438167-headset",
+        "slurp:train:015479:audio-1501765047-headset",
+        "slurp:train:015599:audio-1501406791-headset",
+        "slurp:train:015664:audio-1502894832-headset",
+        "slurp:train:015773:audio-1501692472",
+        "slurp:train:016243:audio-1499689044-headset"
+      ],
+      "not_delivered_under_comp1": 1,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed PLAN arm (official scorer's scenario_action_exact)",
+      "rows": 47
+    },
+    "newly-by-centroid": {
+      "by_plan_class": {
+        "INTENT-COVERED": 1,
+        "INTENT-UNCOVERED": 7
+      },
+      "delivered_under_agree_alone": 1,
+      "delivered_under_comp1": 6,
+      "ids": [
+        "slurp:train:000327:audio-1501775408-headset",
+        "slurp:train:001663:audio-1501756828",
+        "slurp:train:005313:audio-1502200943-headset",
+        "slurp:train:006765:audio-1501172651-headset",
+        "slurp:train:010930:audio-1502895782",
+        "slurp:train:015237:audio-1502195173",
+        "slurp:train:015317:audio-1502891826-headset",
+        "slurp:train:015351:audio-1434532573-headset"
+      ],
+      "not_delivered_under_comp1": 2,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed PLAN arm (official scorer's scenario_action_exact)",
+      "rows": 8
+    }
+  },
+  "comp1_boundary_width_histogram": {
+    "comp1": {
+      "2": 1,
+      "8": 1078
+    },
+    "locked_plan": {
+      "1": 1,
+      "3": 1,
+      "5": 1,
+      "7": 1,
+      "8": 1076
+    }
+  },
+  "contact_class": "model-free",
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "delivery_definition": "a row's gold intent's boundary value id (intent-boundaries::intent-boundary:<gold intent>) is among the value ids the cell's own prepared first-phase supply seeds for that row -- the eight (or fewer) entries the Perception phase is shown",
+  "derivation_id": "SAEA-SLURP-STAGE3-COMP1-ATTRIBUTION-CLASSES-V1",
+  "gold_use": "Gold is read on the SCORING side only -- the bank's plan_class and gold intent -- to define the read's classes before contact, exactly as the AGREE and KPROBE registrations did. Gold reaches no query, no key, no weight, no selector and no runtime.",
+  "inputs": {
+    "aa_supply": {
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/phase-supply-v1.json",
+      "sha256": "445e1acc7d5d867b0edd5b2cc0837d3afef567ca9ab76930bfa02bad50471a2a"
+    },
+    "agree_supply": {
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+      "sha256": "be70d4d0fa990a1b064ebb28f4c598d5424ea5ccaca6a66f7503154c5b1e6600"
+    },
+    "arm_supply": {
+      "output_sha256": "ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v1.json",
+      "sha256": "4d3f86be57946148a745a6e37a43af1bc295522f9aa466260454718f4641f213"
+    },
+    "bad_case_bank": {
+      "relpath": "analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl",
+      "roster": "train-fold-a",
+      "sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf"
+    },
+    "conv_roster": {
+      "count": 70,
+      "id_list_sha256": "5920bd6c99d1d5935881c0ca85c8454c7ec8eed096d950b7242c0ec7d8fbf73b",
+      "relpath": "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1/roster-derivation-v1.json",
+      "sha256": "865d3fe0432bc8f18e9d19b26636e1560bcc82f2d7a9fedae32eadb5cb208dba"
+    },
+    "kprobe_roster": {
+      "count": 55,
+      "id_list_sha256": "ad433b1fc3f21765af15d3aed4012264125d9f17fdd4cef837d67bcf50ddde02",
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/roster-derivation-v1.json",
+      "sha256": "ca2869c13e6e3394d9ce324e342e4548e1b2d134e48d88d9ef89daeb7f39eed8"
+    }
+  },
+  "intent_wrong_rows": 191,
+  "per_row": {
+    "slurp:train:000007:audio--1504197557": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000015:audio-1488524781": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000036:audio-1502376074": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000087:audio-1488558343": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:000116:audio-1434537220": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": false,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000215:audio-1502200839": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": false,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:000244:audio-1497883990-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000325:audio-1490108447-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000327:audio-1501775408-headset": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000507:audio-1434541601": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000529:audio-1500038782": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:000575:audio-1498486436": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000752:audio--1506079487-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000820:audio--1504193163": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:000822:audio-1434535176": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000871:audio-1501767528-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000902:audio-1501690967": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:000958:audio-1494422382": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:001368:audio-1501752480": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:001588:audio-1502199894": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:001629:audio-1492781058": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:001642:audio--1504198588": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:001663:audio-1501756828": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:001790:audio-1501772271-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:001836:audio-1490359334-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:001849:audio-1502218742-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:001907:audio--1504195414-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002005:audio-1502896932": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002070:audio--1504191474-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002147:audio-1434541391": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002233:audio-1498570714": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002268:audio-1490195358": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:002407:audio-1502201170": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002484:audio-1501155627": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002489:audio-1490368743-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:002586:audio-1434542134": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:002631:audio-1490110028": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:002642:audio-1500418473-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002817:audio-1501777656-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:002929:audio-1501693634-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:003054:audio-1498569491": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:003057:audio-1490201218": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:003071:audio-1498574080": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:003102:audio-1497884755-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:003147:audio-1501758004": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:003255:audio-1490287383-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:003290:audio-1501687692-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:003332:audio-1490202502-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:003384:audio--1505406264": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:003487:audio--1504193240-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:003499:audio-1489671976": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:003836:audio-1502197306-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:004146:audio-1502461787-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004180:audio-1496264968-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004181:audio-1490263527-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004389:audio-1502113264": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004404:audio-1492784195": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004528:audio-1496265890": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004733:audio--1504194623": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004754:audio-1490201898-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:004808:audio-1501758380": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:004866:audio-1501778099-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:004868:audio-1502101578": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:005265:audio-1498567344-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:005284:audio--1504195212": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:005313:audio-1502200943-headset": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:005338:audio-1434540035": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:005473:audio-1490181068": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:005513:audio-1494513310": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:005883:audio-1495377112-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:005942:audio-1501686863-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006032:audio--1504195204": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:006066:audio-1495733787-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:006234:audio-1490183390": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006324:audio-1499246867-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006398:audio-1497867926-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006408:audio-1490193792": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006409:audio-1499688413-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006427:audio-1494420952-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006583:audio-1502895875": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006590:audio-1490105917": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006591:audio-1502896632-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006637:audio-1501689200": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:006644:audio-1497887514": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006661:audio-1499694500": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006693:audio-1490289519": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006712:audio-1500980407-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006765:audio-1501172651-headset": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:006893:audio-1500036235-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006903:audio-1502377447": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:006984:audio-1490704518-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:007772:audio-1501753944-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:007784:audio-1497867407-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:007864:audio-1434536288": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:007967:audio-1490182244-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:008045:audio-1498578440": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:008229:audio-1490106273": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:008348:audio-1490356207-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:008940:audio-1492785556": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:009292:audio-1490007448-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:009434:audio-1502890896-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:009449:audio-1499266000": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:009988:audio-1498572002": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010011:audio-1498483953": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:010033:audio-1497024342": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:010064:audio-1502195836-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:010069:audio-1494512409-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010144:audio-1502375950": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010161:audio-1497883488": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010212:audio-1501150440-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:010642:audio-1492784427-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010721:audio-1502376160-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010765:audio-1501754011": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010839:audio-1501689932": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:010930:audio-1502895782": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:011011:audio-1498574170": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:011099:audio-1501754215-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:011111:audio-1497271520": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:011135:audio-1502375110-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:011165:audio-1434541935-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:011176:audio-1490019787": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:011627:audio-1501758892": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:011632:audio-1434540435-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:011701:audio-1502890774-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:011707:audio-1498572930": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:011984:audio-1490288002-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:012094:audio-1498572961": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:012191:audio-1498568799": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:012280:audio-1497886215-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:012290:audio-1497887198-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:012323:audio-1497886076": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:012516:audio-1498564568-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:012671:audio-1494548438-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:012887:audio-1501764735": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:012942:audio-1494607699": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:012997:audio-1501689194-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013003:audio-1497886732-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013008:audio-1489152656": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013014:audio-1501777042-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013114:audio-1490106644-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013146:audio-1496265910-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013169:audio-1490106738": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013212:audio-1490291531-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013315:audio-1502308628-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013374:audio-1489497114": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013443:audio-1498567184": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013450:audio-1488991540": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013452:audio-1501692165-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013526:audio-1502113543": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013543:audio-1501764794-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013593:audio-1498647415-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013626:audio-1502112891": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013668:audio-1490204487": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013696:audio-1500978981": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:013726:audio-1497887453-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:014300:audio-1501694638-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:014523:audio-1498563693-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:014548:audio-1490956004": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:014610:audio-1502218659-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:014629:audio-1502890907-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:014741:audio-1497882505": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:014801:audio-1498571227": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:014821:audio-1501688342-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:014936:audio-1502891319": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015040:audio-1494548394-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015085:audio-1490287489-headset": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015160:audio-1490182873-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015165:audio-1501758991": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:015179:audio-1498569151-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:015204:audio-1497885641-headset": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015206:audio-1495733505-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:015232:audio-1490109224-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:015237:audio-1502195173": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015253:audio-1434541435": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015278:audio-1497438167-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015317:audio-1502891826-headset": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015335:audio-1490354879": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015351:audio-1434532573-headset": {
+      "class": "newly-by-centroid",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015373:audio-1495377330-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:015479:audio-1501765047-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015599:audio-1501406791-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015640:audio-1502376334": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:015664:audio-1502894832-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015699:audio-1490289415": {
+      "class": "newly-by-agree",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015773:audio-1501692472": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015793:audio-1490106752": {
+      "class": "catch-all",
+      "comp1_boundary_width": 0,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:015846:audio-1501690491": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:016243:audio-1499689044-headset": {
+      "class": "newly-by-both",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:016358:audio-1434536304-headset": {
+      "class": "delivered-but-wrong",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": true,
+      "delivered_comp1": true,
+      "delivered_locked_plan": true,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-COVERED"
+    },
+    "slurp:train:016867:audio-1497438083": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    },
+    "slurp:train:017161:audio-1501758440": {
+      "class": "catch-all",
+      "comp1_boundary_width": 8,
+      "delivered_agree_alone": false,
+      "delivered_comp1": false,
+      "delivered_locked_plan": false,
+      "locked_boundary_width": 8,
+      "plan_class": "INTENT-UNCOVERED"
+    }
+  },
+  "rows_seeded_with_no_boundary_entry_under_comp1": [
+    "slurp:train:015793:audio-1490106752"
+  ],
+  "schema": "saea-comp1-attribution-classes-v1",
+  "summary": {
+    "catch_all_rows_delivered_only_under_the_composition": [
+      "slurp:train:000902:audio-1501690967",
+      "slurp:train:003255:audio-1490287383-headset",
+      "slurp:train:013374:audio-1489497114",
+      "slurp:train:013450:audio-1488991540",
+      "slurp:train:014741:audio-1497882505"
+    ],
+    "delivered_under_comp1": 162,
+    "delivered_under_comp1_pct_of_intent_wrong": 84.8,
+    "delivered_under_locked_plan": 86,
+    "newly_by_both": 47,
+    "newly_delivered_by_agree_alone_conv_roster": 70,
+    "newly_delivered_by_centroid_alone_kprobe_roster": 55,
+    "rows_delivered_by_plan_or_a_single_factor_but_not_under_comp1": [
+      "slurp:train:000116:audio-1434537220",
+      "slurp:train:000215:audio-1502200839",
+      "slurp:train:010011:audio-1498483953",
+      "slurp:train:010212:audio-1501150440-headset",
+      "slurp:train:013443:audio-1498567184",
+      "slurp:train:015237:audio-1502195173",
+      "slurp:train:015351:audio-1434532573-headset"
+    ],
+    "union_of_the_two_newly_delivered_sets": 78
+  },
+  "what_this_is_not": "Not a verdict, not a claim and not a prediction: membership only. The outcome column is read after the seal by the registered recipe, and a delivery count is never a correctness count."
+}
