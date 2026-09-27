@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
 
@@ -44,6 +45,25 @@ def rekey(receipt: dict) -> dict:
     return out
 
 
+def _minted(patterns) -> dict:
+    """Each minted supply artifact's OWN recorded output digest (the digest a
+    flip compares with the sealed PLAN preparation's), by the bench run that
+    minted it; the bench receipts' ``output_sha256`` is a digest of the parsed
+    output, kept for the within-group comparison."""
+
+    import glob
+
+    found = {}
+    for pattern in patterns:
+        for path in sorted(glob.glob(pattern)):
+            if not path.endswith(".json"):
+                continue
+            # phase-supply-<label>-<stamp>.json -> <label>
+            label = Path(path).stem.removeprefix("phase-supply-").rsplit("-", 1)[0]
+            found[label] = json.loads(Path(path).read_text(encoding="utf-8")).get("output_sha256")
+    return {"count": len(found), "output_sha256_values": sorted(set(found.values())), "by_run": found}
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--gap", required=True)
@@ -51,6 +71,8 @@ def main(argv=None) -> int:
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--statement", required=True, help="the honest throughput statement, one paragraph")
     ap.add_argument("--flown-bound", required=True, help="the flown-cell bound, one sentence")
+    ap.add_argument("--minted-supply", action="append", default=[],
+                    help="glob of the first-phase supply artifacts the bench minted (their own output_sha256 is read)")
     args = ap.parse_args(argv)
     out_dir = Path(args.out_dir)
     (out_dir / "bench").mkdir(parents=True, exist_ok=True)
@@ -102,9 +124,12 @@ def main(argv=None) -> int:
         }
 
     table = {label: tp(r) for label, r in groups[next(iter(groups))]}
-    offs = [t for label, t in table.items() if label.startswith("off")]
-    on = table.get("all")
+    # the key-off runs are "off", "off2", ...; the all-switch runs "all", "all2", ...
+    offs = [t for label, t in table.items() if re.fullmatch(r"off\d*", label)]
+    ons = [t for label, t in table.items() if re.fullmatch(r"all\d*", label)]
     off_cph = sum(t["contacts_per_hour_of_window"] for t in offs) / len(offs)
+    on_cph = sum(t["contacts_per_hour_of_window"] for t in ons) / len(ons) if ons else None
+    on_empty = sum(t["empty_slot_share_pct"] for t in ons) / len(ons) if ons else None
     off_empty = sum(t["empty_slot_share_pct"] for t in offs) / len(offs)
     by_role = rep["turnaround_by_role"]
     summary = {
@@ -166,7 +191,10 @@ def main(argv=None) -> int:
             "comparisons": comparisons,
             "all_identical": all_identical,
             "supply_output_sha256_by_run": supply,
-            "supply_outputs_identical": len(set(supply.values())) == 1,
+            "minted_first_phase_supplies": _minted(args.minted_supply),
+            "supply_outputs_identical_within_each_group": all(
+                len({supply[label] for label, _r in members}) == 1 for members in groups.values()
+            ),
             "groups": {group: [label for label, _r in members] for group, members in groups.items()},
             "seal": seals,
             "seal_all_verified": bool(seals) and all(v == "VERIFIED" for v in seals.values()),
@@ -182,10 +210,10 @@ def main(argv=None) -> int:
             "service_model": "each request holds its slot for a deterministic draw from the sealed ROLL-2 per-role server busy times (launch to release) of the same role",
             "table": table,
             "offline_contacts_per_hour_off": round(off_cph, 1),
-            "offline_contacts_per_hour_on": on["contacts_per_hour_of_window"] if on else None,
-            "offline_gain_pct": round(100 * (on["contacts_per_hour_of_window"] / off_cph - 1), 1) if on else None,
+            "offline_contacts_per_hour_on": round(on_cph, 1) if ons else None,
+            "offline_gain_pct": round(100 * (on_cph / off_cph - 1), 1) if ons else None,
             "offline_empty_share_off_pct": round(off_empty, 2),
-            "offline_empty_share_on_pct": on["empty_slot_share_pct"] if on else None,
+            "offline_empty_share_on_pct": round(on_empty, 2) if ons else None,
             "off_vs_off_spread_pct": round(100 * (max(t["contacts_per_hour_of_window"] for t in offs) / min(t["contacts_per_hour_of_window"] for t in offs) - 1), 1) if len(offs) > 1 else None,
             "statement": args.statement,
             "flown_bound_statement": args.flown_bound,

@@ -1382,6 +1382,42 @@
         "state": "UNMET",
         "requirement": "Before native_episode.reviewer_verdict may enter a default plan, intent non-inferiority must be PROVEN on a request-identical replicate (R-PRIMr) at the plan's own null, or the module must be carried into the plan by a pruning cell (P1 / P0, decision 85) whose own read admits it. Until then the module is the measurable-Reviewer BASE of the pruning cells only (decision 97) and is barred from every default plan."
       }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+        "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+      },
+      "date": "2026-09-27",
+      "evidence": {
+        "falsifier": "model-free, before any contact: on the REAL locked PLAN cell through the REAL flight dispatch against a recording fake server, every request body, client payload, sealed row, canonical output row and the multiset of trace records are identical with the key on and off (and off and off), modulo the request-id counter and the slot number that today's dispatcher already assigns by arrival; the minted first-phase supplies agree on their output bytes",
+        "registration": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/README.md",
+        "status_note": "PENDING: registered and held; the no-harm read (intent 0.9943 / SLU 1.2485 at the in-chain A/A) and the throughput read are the cell's own and do not exist yet. Nothing here enters a plan."
+      },
+      "module": "dispatcher slot fill (dispatch: recall prefetch, role input off the shared event loop, frozen static heap)",
+      "row": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1",
+      "status": "PENDING",
+      "switch": {
+        "added_by": "owner decision 159, 2026-09-27; rails.dispatch_slot_fill, read by core.flight.runtime.FlightRuntime._dispatch_phase_program",
+        "falsifier": {
+          "kind": "request-bytes-identical",
+          "note": "the proof bench's own falsifier (scripts/analysis/slotfill_fake_server_harness.py): the fake server records the exact body bytes the flight's own LlamaServerTransport renders, and the key-on run's bodies equal the key-off run's per (row, contact) with id_slot masked. That is what puts this module outside the four per-phase tables.",
+          "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-dispatch-slot-fill-byte-identity-v1"
+        },
+        "key": "dispatch",
+        "off": null,
+        "on": {
+          "gc_freeze": true,
+          "recall_prefetch": true,
+          "role_input_offload": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "proof": "tests/unit/test_dispatch_slot_fill.py::test_every_switch_on_sends_the_same_requests_and_seals_the_same_rows",
+        "table": "run",
+        "what_flew": "Nothing yet: the SLOTFILL arm's baseline fragment is the locked PLAN baseline plus this one key, and its in-chain A/A is the same fragment without it (tests/unit/test_slotfill_config.py).",
+        "why_this_class": "dispatch is read flat by the flight runtime and decides how the native role episode is SCHEDULED -- a row's Perception-independent recall computed ahead, the role-input builder off the shared event loop, the loaded heap frozen out of the collector. It is per-RUN, while the four tables are per-PHASE and each of them changes the request the frozen core sees; this one provably changes no request byte, which is both why it has no table entry and why it is allowed to have none."
+      }
     }
   ],
   "switch_classes": [

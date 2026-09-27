@@ -538,7 +538,7 @@ def main(argv=None) -> int:
         "gc": {"collections": len(gc_pauses), "pause_s_sum": round(sum(gc_pauses), 3), "pause_s_max": round(max(gc_pauses or [0]), 4)},
         "attempt_aborted": bool(aborted),
         "seal": seal,
-        "phase_supply": {"relpath": supply_rel, "artifact_sha256": supply_receipt["sha256"], "output_sha256": supply_output_sha256}, "trace_manifest_hash": close_receipt["trace_manifest_hash"],
+        "phase_supply": {"relpath": supply_rel, "artifact_sha256": supply_receipt["sha256"], "output_sha256": supply_output_sha256, "artifact_recorded_output_sha256": supply_doc.get("output_sha256")}, "trace_manifest_hash": close_receipt["trace_manifest_hash"],
         "digests": {
             "request_bodies_id_slot_masked": body_digests,
             "request_payloads_id_slot_masked": payload_digests,

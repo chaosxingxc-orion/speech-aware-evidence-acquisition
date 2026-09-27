@@ -78,24 +78,36 @@ through the real `FrozenCoreClient` / `FrozenCoreAdapter` and the real `LlamaSer
 replaced by an in-process four-slot fake llama-server that records every body it receives and answers with
 canned schema-valid role responses keyed on (row, contact id), never on arrival order (25 % of rows REVISE).
 
-Nine runs of the first 60 rows (285 contacts each) share one scratch run id: two key-off runs and seven
-key-on runs (all three switches twice, each switch alone, and two pairs). Against the first key-off run,
-**every** run is identical on all five digests (`bench/*.json`, `proof-summary-v1.json`):
+Nine runs of the first 60 rows (285 contacts each, the resume seam narrowing the roster) share one scratch
+run id: two key-off runs and seven key-on runs (all three switches twice, each switch alone, and two pairs).
+Against the first key-off run, **every** run is identical on all five digests (`bench/*.json`,
+`proof-summary-v1.json`):
 
 * the request body bytes the fake server received, per (row, contact), `id_slot` masked;
 * the client payloads, per (row, contact);
 * every sealed dispatch row and every canonical output row, per row;
-* the multiset of all 935+ trace records (sorted, so ORDER is free).
+* the multiset of all 1,725 trace records (sorted, so ORDER is free).
 
 Exactly two facts are assigned by ARRIVAL and already differ between two runs of today's dispatcher: the
 request-id counter (`flight-<n>`) and the slot number (`id_slot` on the wire, `slot_id` / `slot_ids` in the
 sealed waves). The normaliser renames each `flight-<n>` and each request sha256 to its own (row, contact)
 identity, masks the slot keys and the runtime-trace digest computed over them (its preimage records are
 compared), and drops `latency_seconds`. The key-off run against the second key-off run needs exactly the
-same normalisation, which is the proof that nothing else moved. The minted supplies of every run agree on
-their output bytes. How the seal handles order: `TraceSink` appends in arrival order and the trace manifest
-hashes the file as written, so a manifest digest is an attempt fact, not a content fact; `verify_bundle`
-checks each record's bindings, not the file order, and `core.flight.resume` scans by record id.
+same normalisation, which is the proof that nothing else moved. Every first-phase supply the bench minted
+over the whole 1,080-row roster, key on and key off (eleven, including two runs a run-cumulative budget
+later stopped), records the sealed PLAN preparation's output digest `ba5e1faa...` -- the byte-identity check
+a flip makes; the two minted over the sealed pair's 60-row roster agree with each other (`b33fe65b...`)
+(`proof-summary-v1.json`, `minted_first_phase_supplies`).
+
+**The seal still verifies.** A second pair (`bench/sealoff.json`, `bench/sealon.json`, its own scratch run id,
+the adapter's split truncated to the same 60 rows so the verified split, the minted supply and the manifest
+describe one roster) was flown on the committed, CLEAN tree and sealed: canonical outputs written, the
+COMPLETED run manifest built by `core.bundle.manifest.build_manifest` and `core.bundle.verify.verify_bundle`
+run on it (no scorer). Both VERIFIED, and the two runs are identical on all five digests. Their manifest and
+as-written outputs digests differ, as two key-off runs' do: the trace is appended in arrival order and the
+trace manifest hashes the file as written, and every output row carries its own request id, so those digests
+are attempt facts, not content facts. `verify_bundle` checks each record's bindings, not the file order, and
+`core.flight.resume` scans the trace by record id, so a resume is unaffected by the order.
 
 The episode-level unit tests (`tests/unit/test_dispatch_slot_fill.py`, the real OpenJiuwen graph with a
 scripted transport) re-prove it at both revision bounds, prove the prefetched recall yields the live
@@ -119,9 +131,11 @@ times (launch to release) of the same role; the client is the real code. 60 rows
 | pfoff | recall_prefetch + role_input_offload | 364.7 | 13.03 % | 0.71 | 2,813.1 |
 | offload | role_input_offload | 367.3 | 13.77 % | 1.26 | 2,793.5 |
 | gc | gc_freeze | 371.3 | 14.71 % | 1.20 | 2,763.5 |
+| sealoff (sealed pair) | none | 374.0 | 15.30 % | 0.30 | 2,743.4 |
+| sealon (sealed pair) | three switches | 352.6 | 10.19 % | 0.21 | 2,910.0 |
 
 With all three switches the empty share falls 15.6 % -> 10.5 % and contacts per hour of window rise
-2,736 -> 2,899, **+6.0 %** (the two key-on runs +7.3 % and +4.6 %; the two key-off runs agree within 0.3 %);
+2,736 -> 2,899, **+6.0 %** (the two key-on runs +7.3 % and +4.6 %; the two key-off runs agree within 0.3 %; the sealed pair, flown later on the committed tree, +6.1 %);
 per row the key removes 1.40 slot-seconds of empty slot and 0.35 s of wall. The bench attributes the gain to
 `recall_prefetch` (+6.4 % alone); `role_input_offload` (+2.1 %) and `gc_freeze` (+1.0 %) are within the
 run-to-run spread on the bench and are carried because they are byte-neutral and aim at the flight's

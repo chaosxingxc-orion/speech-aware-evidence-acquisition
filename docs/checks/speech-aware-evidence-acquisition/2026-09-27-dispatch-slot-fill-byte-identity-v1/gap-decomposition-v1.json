@@ -1,0 +1,169 @@
+{
+ "attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-v1-generation",
+ "contacts_made": 0,
+ "fit_attempt_id": "attempt-slurp-native-stage3-roll-2-fold-a-v1-fit",
+ "fit_gate_on_the_server_clock": {
+  "clock_offset_feasible_interval_s": [
+   0.917,
+   -1.236
+  ],
+  "clock_offset_s_applied_to_file_times": -0.159,
+  "contacts_with_fit_times": 8994,
+  "endpoint_contacts_per_fit": {
+   "max": 4,
+   "mean": 4.0,
+   "n": 8994,
+   "p50": 4,
+   "p90": 4,
+   "sum": 35976
+  },
+  "fit_duration_s": {
+   "max": 1.664,
+   "mean": 0.096,
+   "n": 8994,
+   "p50": 0.063,
+   "p90": 0.108,
+   "sum": 867.446
+  },
+  "fit_intervals_overlapping_their_predecessor": 0,
+  "fit_lock_busy_share_of_window": 0.1054,
+  "fit_receipts": 8996,
+  "fit_seconds_sum": 867.4,
+  "fit_seconds_union_in_window": 867.4,
+  "fit_to_fit_gap_s_under_5s": {
+   "max": 4.991,
+   "mean": 0.608,
+   "n": 8769,
+   "p50": 0.287,
+   "p90": 1.68,
+   "sum": 5327.434
+  },
+  "launch_minus_fit_end_s": {
+   "max": 1.996,
+   "mean": 0.116,
+   "n": 8994,
+   "p50": 0.076,
+   "p90": 0.581,
+   "sum": 1046.881
+  },
+  "turnaround_split_by_role_s": {
+   "perception": {
+    "fit_s": 74.7,
+    "n": 1075.0,
+    "post_fit_s": 145.4,
+    "pre_fit_s": 337.4
+   },
+   "planner": {
+    "fit_s": 91.6,
+    "n": 1118.0,
+    "post_fit_s": 173.5,
+    "pre_fit_s": 593.4
+   },
+   "reviewer": {
+    "fit_s": 88.4,
+    "n": 1133.0,
+    "post_fit_s": 127.8,
+    "pre_fit_s": 464.9
+   },
+   "solver#1": {
+    "fit_s": 226.7,
+    "n": 1133.0,
+    "post_fit_s": 289.7,
+    "pre_fit_s": 2507.3
+   },
+   "solver#2-5(full hit)": {
+    "fit_s": 385.9,
+    "n": 4531.0,
+    "post_fit_s": 309.9,
+    "pre_fit_s": 1470.7
+   }
+  }
+ },
+ "fit_run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-FIT-V1",
+ "generated_at": "2026-09-27T14:27:26+00:00",
+ "reproduced_note_accounting": {
+  "contact_window_utc": [
+   "2026-09-26T16:01:48+00:00",
+   "2026-09-26T18:18:56+00:00"
+  ],
+  "contacts_per_gpu_hour_contact_window": 3936.0,
+  "join_report": {
+   "offset_histogram": {
+    "-1,0": 8994
+   },
+   "skipped_tasks": 2,
+   "unmatched_contacts": 2
+  },
+  "joined_contacts": 8994,
+  "matches_note": {
+   "all_idle_s": true,
+   "client_turnaround_slot_s": true,
+   "empty_slot_s": true,
+   "joined_contacts": true,
+   "turnaround_by_role": true
+  },
+  "mean_busy_slots": 2.906,
+  "note_reference": {
+   "all_idle_s": 1055.3,
+   "client_turnaround_slot_s": 7287.3,
+   "empty_slot_s": 8997.4,
+   "joined_contacts": 8994,
+   "turnaround_slot_s_by_role": {
+    "perception": 557.5,
+    "planner": 858.5,
+    "reviewer": 681.1,
+    "solver#1": 3023.7,
+    "solver#2-5(full hit)": 2166.6
+   }
+  },
+  "server_lifetime_index": 11,
+  "server_lifetimes_in_file": 14,
+  "server_tasks_in_arm_window": 8996,
+  "slot_capacity": {
+   "client_turnaround_slot_s": 7287.3,
+   "empty_slot_s": 8997.4,
+   "server_compute_slot_s": 22132.1,
+   "slot_seconds_total": 32908.6
+  },
+  "states_s": {
+   "all_idle": 1055.3,
+   "decode_only": 3193.3,
+   "prefill_active": 3973.3,
+   "slot_busy_no_compute": 5.2,
+   "slot_seconds_busy": 23911.2
+  },
+  "trace_contacts": 8996,
+  "turnaround_by_role": {
+   "perception": {
+    "contacts": 1079,
+    "turnaround_mean_s": 0.52,
+    "turnaround_slot_s": 557.5
+   },
+   "planner": {
+    "contacts": 1118,
+    "turnaround_mean_s": 0.77,
+    "turnaround_slot_s": 858.5
+   },
+   "reviewer": {
+    "contacts": 1133,
+    "turnaround_mean_s": 0.6,
+    "turnaround_slot_s": 681.1
+   },
+   "solver#1": {
+    "contacts": 1133,
+    "turnaround_mean_s": 2.67,
+    "turnaround_slot_s": 3023.7
+   },
+   "solver#2-5(full hit)": {
+    "contacts": 4531,
+    "turnaround_mean_s": 0.48,
+    "turnaround_slot_s": 2166.6
+   }
+  },
+  "wall_s": 8227.2
+ },
+ "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+ "schema": "saea-slotfill-gap-decomposition-v1",
+ "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+ "trace_order_per_slot_monotone": true
+}
