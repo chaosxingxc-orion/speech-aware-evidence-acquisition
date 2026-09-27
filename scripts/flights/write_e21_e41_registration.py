@@ -1049,14 +1049,15 @@ def ledger_section(idents: dict, plan_shas: dict, trace_sha: str, token_sha: str
         "discovery", "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61", "no", "0", "0", "0",
         "No new speech exposure: no speech byte is read; the sealed traces read were already exposed by the arms that sealed them. Prior exposure inherited in full.",
         f"{RD}/perception-trace-read-v1.json",
-        (f"REGISTERED BEFORE RESULT READING (DRAFT, root countersignature pending) {DATE} at study commit {base_commit}. "
+        (f"REGISTERED WITH ITS RESULT (DRAFT, root countersignature pending) {DATE} at study commit {base_commit}: a "
+         "model-free read of already-sealed bytes that ran before this row was written, recorded so the facts the one "
+         "pin rests on are on the ledger. "
          f"Receipt {RD}/perception-trace-read-v1.json SHA256 {trace_sha}; token receipt {RD}/instruction-token-measurement-v1.json "
          f"SHA256 {token_sha}; script scripts/analysis/e21_e41_perception_note_trace_read.py. Measured: {pooled['perception_contacts']} "
          f"sealed Perception contacts, {pooled['truncated']} length-truncated, modes {modes_text}, "
          f"0 within the E41 bound; prompt +{tokens['prompt_side_delta_per_perception_contact']} tokens per Perception contact; "
          f"compliant-note worst case {tokens['completion_side_bound']['synthetic_compliant_notes']['digit_dense_worst_case_compliant_note']['tokens']} tokens against the 640 cap. "
-         "It constructs no ExecutionPlan, reserves no contact, re-pins no committed config and authorises nothing; it exists "
-         "because a pre-computation is registered before its result is read, even when it is model-free."),
+         "It constructs no ExecutionPlan, reserves no contact, re-pins no committed config and authorises nothing."),
     ])
     for row in rows:
         for cell_text in row:
