@@ -23,6 +23,8 @@ from speech_aware_evidence_acquisition.core.driver.speech_native import (
     FINALIZE_FROM_DISK_MODE_ID,
     SpeechNativeProfileError,
     _count_jsonl_lines,
+    _iter_trace_lines,
+    _trace_facts_from_lines,
     build_flight_receipt_from_disk,
     derive_server_log_window_for_contacts,
     read_attempt_trace_facts,
@@ -359,6 +361,104 @@ def test_trace_facts_flag_a_request_that_lost_its_speech_carriage(tmp_path):
 
     assert facts["speech_query"]["query_source_failure_count"] == 1
     assert facts["speech_query"]["invalid_speech_query_count"] == 1
+
+
+# ---------------------------------------------------------------------------
+# The large-read line source (2026-09-26) against the former text-mode
+# iteration: identical lines, identical facts, identical refusals.
+# ---------------------------------------------------------------------------
+
+
+def _legacy_text_lines(path: Path):
+    """The pre-2026-09-26 line source of ``read_attempt_trace_facts``:
+    ``open(path, "r", encoding="utf-8")`` iterated line by line."""
+
+    with Path(path).open("r", encoding="utf-8") as handle:
+        for line in handle:
+            yield line
+
+
+def _append_record(trace_path: Path, record: dict, *, terminate: bool = True) -> None:
+    with trace_path.open("a", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + ("\n" if terminate else ""))
+
+
+def test_large_read_lines_equal_text_mode_lines_at_every_block_boundary(tmp_path):
+    trace_path = _write_attempt(tmp_path) / f"{RUN_ID}.trace.jsonl"
+    _append_record(
+        trace_path,
+        {"channel": "ORG", "record_id": "s/org", "payload": {"org_note": "café 中文 \U0001f600" * 40}},
+    )
+    reference = [line.rstrip("\n") for line in _legacy_text_lines(trace_path)]
+    assert reference and len(reference) > 4
+
+    for block_bytes in (1, 3, 7, 64, 4096, 64 * 1024 * 1024):
+        assert list(_iter_trace_lines(trace_path, block_bytes=block_bytes)) == reference
+
+
+def test_large_read_facts_equal_text_mode_facts(tmp_path):
+    trace_path = _write_attempt(tmp_path) / f"{RUN_ID}.trace.jsonl"
+
+    assert read_attempt_trace_facts(trace_path) == _trace_facts_from_lines(_legacy_text_lines(trace_path))
+    for block_bytes in (1, 5, 1000):
+        assert _trace_facts_from_lines(_iter_trace_lines(trace_path, block_bytes=block_bytes)) == _trace_facts_from_lines(
+            _legacy_text_lines(trace_path)
+        )
+
+
+def test_large_read_handles_a_final_unterminated_line_like_text_mode(tmp_path):
+    trace_path = _write_attempt(tmp_path) / f"{RUN_ID}.trace.jsonl"
+    _append_record(
+        trace_path,
+        {"channel": "COST", "record_id": "x/cost", "payload": {"calls": 1, "prompt_tokens": 7, "completion_tokens": 1, "audio_seconds": 1.0, "latency_seconds": 0.5}},
+        terminate=False,
+    )
+    assert not trace_path.read_bytes().endswith(b"\n")
+
+    assert [line.rstrip("\n") for line in _legacy_text_lines(trace_path)] == list(_iter_trace_lines(trace_path, block_bytes=11))
+    facts = read_attempt_trace_facts(trace_path)
+    assert facts == _trace_facts_from_lines(_legacy_text_lines(trace_path))
+    assert facts["trace_usage"]["cost_record_count"] == 3
+
+
+def test_large_read_of_an_empty_trace_equals_text_mode(tmp_path):
+    trace_path = tmp_path / "empty.trace.jsonl"
+    trace_path.write_bytes(b"")
+
+    assert list(_iter_trace_lines(trace_path)) == []
+    assert read_attempt_trace_facts(trace_path) == _trace_facts_from_lines(_legacy_text_lines(trace_path))
+    assert read_attempt_trace_facts(trace_path)["cost"]["calls_used"] == 0
+
+
+def test_large_read_refuses_what_text_mode_refused(tmp_path):
+    attempt_dir = _write_attempt(tmp_path)
+    trace_path = attempt_dir / f"{RUN_ID}.trace.jsonl"
+
+    # A blank line between records: json.loads("") fails in both forms.
+    blank = tmp_path / "blank.trace.jsonl"
+    body = trace_path.read_bytes().split(b"\n")
+    blank.write_bytes(b"\n".join(body[:1] + [b""] + body[1:]))
+    with pytest.raises(json.JSONDecodeError):
+        _trace_facts_from_lines(_legacy_text_lines(blank))
+    with pytest.raises(SpeechNativeProfileError, match="cannot verify profile trace"):
+        read_attempt_trace_facts(blank)
+
+    # Bytes that are not UTF-8: a UnicodeError in both forms.
+    broken = tmp_path / "broken.trace.jsonl"
+    broken.write_bytes(trace_path.read_bytes() + b'{"channel": "ORG", "record_id": "b", "payload": {"org_x": "\xff\xfe"}}\n')
+    with pytest.raises(UnicodeDecodeError):
+        _trace_facts_from_lines(_legacy_text_lines(broken))
+    with pytest.raises(SpeechNativeProfileError, match="cannot verify profile trace"):
+        read_attempt_trace_facts(broken)
+
+    # A missing file: OSError in both forms.
+    with pytest.raises(OSError):
+        _trace_facts_from_lines(_legacy_text_lines(tmp_path / "absent.trace.jsonl"))
+    with pytest.raises(SpeechNativeProfileError, match="cannot verify profile trace"):
+        read_attempt_trace_facts(tmp_path / "absent.trace.jsonl")
+
+    with pytest.raises(ValueError, match="block_bytes"):
+        list(_iter_trace_lines(trace_path, block_bytes=0))
 
 
 def test_the_server_log_window_is_derived_from_the_trailing_contacts(tmp_path):

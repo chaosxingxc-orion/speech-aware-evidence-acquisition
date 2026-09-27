@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import contextvars
 import copy
+import threading
 from pathlib import Path
 from typing import Mapping
 
@@ -131,12 +132,42 @@ class TraceSink:
             )
         self._hashes: dict[str, str] = {}
         self._closed = False
+        # One append handle for the life of the sink, opened lazily on the
+        # first record (the trace file must not exist before the first
+        # record: constructing a second sink on the directory is refused
+        # because the file exists, and "no file" equals "no records" for
+        # every reader). Until 2026-09-26 ``emit`` opened, appended and
+        # closed the file per record; on the drvfs/9p run root that round
+        # trip cost 7.06 ms per record (355.6 s over ROLL-2's 50,380
+        # records against 8.8 s in one open --
+        # docs/results/2026-09-26-slurp-seal-path-profile.md, section 3).
+        self._handle = None
+        self._lock = threading.Lock()
 
     @property
     def run_id(self) -> str:
         return self._run_id
 
     def emit(self, channel: str, record_id: str, payload: Mapping[str, object]) -> str:
+        """Append one validated record and return its content hash.
+
+        Durability contract (unchanged from the per-record open/close form):
+        when ``emit`` returns, the record is a whole ``\\n``-terminated line
+        handed to the kernel -- ``flush()`` after every record pushes the
+        text and buffered layers down with ``write(2)``, exactly what the old
+        ``close()`` per record did, and no ``fsync`` is issued in either form
+        (the seal's four whole-file fsyncs are elsewhere). A process killed at
+        any instant therefore leaves a trace that is complete up to the last
+        ``emit`` that returned, with no torn line from a Python buffer, which
+        is the granularity both recovery readers rely on:
+        ``core.flight.resume._scan_trace`` refuses the whole predecessor
+        attempt on a single malformed line, and
+        ``core.driver.speech_native.read_attempt_trace_facts`` counts an
+        interrupted attempt's contacts from the same file. The write and the
+        bookkeeping are serialised on a lock so two emitters can never
+        interleave bytes inside one line.
+        """
+
         if self._closed:
             raise TraceSinkError("sink is closed")
         if record_id in self._hashes:
@@ -144,16 +175,30 @@ class TraceSink:
         record = TraceRecord(channel=channel, record_id=record_id, payload=payload)
         line = record.serialize()
         digest = record.content_hash()
-        with self._path.open("a", encoding="utf-8", newline="\n") as handle:
+        with self._lock:
+            if self._closed:
+                raise TraceSinkError("sink is closed")
+            if record_id in self._hashes:
+                raise TraceSinkError(f"duplicate trace record id {record_id!r}")
+            handle = self._handle
+            if handle is None:
+                handle = self._path.open("a", encoding="utf-8", newline="\n")
+                self._handle = handle
             handle.write(line + "\n")
-        self._hashes[record_id] = digest
+            handle.flush()
+            self._hashes[record_id] = digest
         return digest
 
     def manifest(self) -> dict[str, str]:
         return dict(self._hashes)
 
     def close(self) -> str:
-        self._closed = True
+        with self._lock:
+            self._closed = True
+            handle = self._handle
+            self._handle = None
+        if handle is not None:
+            handle.close()
         return write_json_artifact(
             self._run_dir / f"{self._run_id}.trace-manifest.json",
             {"run_id": self._run_id, "records": self.manifest()},
