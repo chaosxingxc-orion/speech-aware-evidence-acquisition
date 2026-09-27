@@ -1,0 +1,198 @@
+{
+  "schema": "saea-owner-split-allowance-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "status": "authorised",
+  "status_meaning": "AUTHORISED for the SAMPLE roster only. contracts.plan.require_owner_split_allowance accepts a 'final-report' ExecutionPlan against this file when the plan pins these exact bytes, carries execution_profile 'bounded-discovery-probe', declares carrier 'slurp' and split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9, and names one of the permitted_run_ids below. Authorisation is not a contact: every contact still needs its pre-registered exposure row, its root countersignature, its decision receipt, and -- for the first contact of any kind -- the conversational precondition in 'first_contact_gate'.",
+  "date": "2026-09-27",
+  "dated_owner_decision": "Owner decision 151 of 2026-09-27 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, row 151). The owner's words, verbatim, in Chinese: \"决策3：现在签\" -- English translation by the coordinator: \"Decision 3: sign now.\" (the third numbered decision put to the owner in that conversation was whether to sign this allowance now or only after the first composed arm is admitted on dev). Recorded ruling, quoted from row 151: \"the allowance receipt for the sample (split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9) is written with status `authorised` on this instruction, quoting the owner's words; it permits the sample's preparations and its milestone reads, each read run id one attempt; the FIRST CONTACT with the sample is nevertheless gated on the coordinator reporting a dev-admitted composed arm to the owner in conversation, and the closure roster `SLURP-TEST-CLOSURE-10068-V1` stays `pending-owner` until the Stage-3 closure read.\" Decision 151 signs what owner decision 141 of 2026-09-27 permitted (a coverage-guaranteed sample of the test split for MILESTONE comparison, dev sampling first for per-round iteration), on the roster owner decision 146 sized (3,010 recordings / 682 prompts, partitioned by prompt from the closure), behind the gate owner decision 147 made partition-aware. The design this receipt implements is docs/readiness/2026-09-27-slurp-test-sample-design-v1.md section 7.2.",
+  "venue": "The sample's milestone reads run in THIS study repository, not in a papers/<slug> carrier, for the reason the owner's decisions give in substance: decision 141 permits the test sample as a development-side COMPARISON instrument for milestone checks during Stage-3 iteration, and decision 151 signs it now so that a dev-admitted composed arm can be checked without waiting for a paper repository; a milestone read is not the final read, makes no publication-grade claim, and its numbers are development evidence under owner decision 28 (dev numbers are not test claims) exactly as every DEV roster read is. The final read stays on the CLOSURE roster, whose venue is still the open question of decision 108 (protocol section 6; Remedy A, promotion to an admitted papers/<slug> repository, remains the recommendation) and which this receipt does not decide. Stated plainly: the owner did not dictate a venue sentence in so many words; this paragraph is the coordinator's statement of the reason the two decisions carry, written so that check 9 of contracts.plan.require_owner_split_allowance has a reason to read rather than a blank.",
+  "split": {
+    "carrier_lock_key": "slurp",
+    "split_name": "TEST-SAMPLE",
+    "roster_id": "SLURP-TEST-SAMPLE-3010-V1",
+    "roster_receipt_relpath": "docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+    "roster_receipt_sha256": "48d9fb336ce99ad1725bf5ca0f74687d37711d685fa9fb4f594b2f1d88344e6d",
+    "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
+    "split_identity_hash_basis": "sha256 over the LF-joined sorted carrier-prefixed 'slurp/<sample_id>' ids -- the core.roster / data.splits convention, which is the value an ExecutionPlan declares and which this allowance binds; recomputed from the 3,010 committed item ids of the roster receipt when this file was written and equal to the value in owner decision 151",
+    "carrier_split_identity_hash": "6c1283003458abe08b8c636b14643e62c56d9cc858560d171aa6f97641fbd167",
+    "carrier_split_identity_hash_basis": "sha256 over the LF-joined sorted BARE sample ids, the rails.knowledge_build.freeze_slurp_split_identity convention recorded in docs/receipts/knowledge/slurp-split-identity.json; recomputed from the same 3,010 ids and equal to the roster receipt's carrier_split_identity_hash",
+    "recordings": 3010,
+    "utterances": 682,
+    "headset_recordings": 1456,
+    "far_field_recordings": 1554,
+    "audio_seconds_total": 8206.436875,
+    "media_bytes_total": 155430109,
+    "counts_source": "recordings, utterances (distinct utterance_id), headset / far-field and audio seconds are recomputed from the roster receipt's committed items and equal its counts and channel_counts blocks (design note section 2: 3,010 / 682 / 1,456 / 1,554 / 8,206.436875 s). The roster receipt carries durations only, so media bytes are the sum of the per-row 'bytes' of the committed FULL-split D1 media supplement docs/receipts/artifacts/d1-slurp-test-full.json (sha256 d68bd784b58a62062cd5ffa3896d21a6a55985fac6abcdcc98f3ceab0cdb4138) over exactly the sample's ids, all at 16,000 Hz; the same sum over the FULL ids reproduces the parent's 700,033,078. No audio file was opened.",
+    "intents_covered": "58 of the 59 scored test intents; 'general_greet' (one test prompt) is in the closure only (decision 146)",
+    "disjointness_receipt_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json",
+    "disjointness_receipt_sha256": "859472d1ba73bea1ead1af12d7fd61ac5207d828af388436073dcfac32c9fc57",
+    "prior_exposure": "ZERO. No exposure-ledger row names either identity hash of this roster (checked against docs/exposure-ledger.md when this file was written). The three 2026-09-23 draft preparation rows name the FULL parent's identity 7247647b..., are unconsumed, and stay unauthorised. A milestone read consumes its run id permanently."
+  },
+  "derived_from": {
+    "statement": "The sample is one member of a two-part partition of the frozen FULL test split, partitioned by PROMPT so sample and closure share no sentence; the partition is re-proved from committed item lists by the gate at every touch (owner decision 147, contracts.gate_exposure._final_report_partition_exemptions) and was re-proved again when this file was written: sample and closure are disjoint at recording, utterance and prompt-number level, their union is exactly the parent's 13,078 ids, and the union hashes to the parent's identity.",
+    "source_roster": {
+      "roster_id": "SLURP-TEST-FULL-13078-V1",
+      "repo_relpath": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+      "sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3",
+      "split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+      "carrier_split_identity_hash": "3f7063cb8b1e60d69c383d2215b5f244bbd7164d484010193a093a5e879389bd",
+      "recordings": 13078,
+      "utterances": 2974,
+      "allowance": "docs/receipts/owner/2026-09-23-slurp-test-split-allowance-v1.json, status pending-owner, sha256 7b7bf3dcf56f56979dfc82738858cf98dcc226a3a3ff2f4643c163b32e3cb1cd; left byte-identical by this signature. Its read run ids are void to the extent of decision 141 (the final read is the closure, not the full split); its preparation ids remain unauthorised."
+    },
+    "sibling_roster": {
+      "roster_id": "SLURP-TEST-CLOSURE-10068-V1",
+      "repo_relpath": "docs/receipts/rosters/slurp-test-closure-10068-v1.json",
+      "sha256": "f836a66193e2c5d1d0e1dda8e9c3b88de4e6d0f4887c0435119559423e7ea0d8",
+      "split_identity_hash": "377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b",
+      "carrier_split_identity_hash": "7f4de1fa4e91d46f07687ec3ac561bce29be8e00b99741712a2ad0cba835a4a8",
+      "recordings": 10068,
+      "utterances": 2292,
+      "allowance": "NONE. The closure roster stays pending-owner until the Stage-3 closure read (decision 151); no allowance receipt is written for it now, so every final-report plan carrying 377b937d... is refused by contracts.plan.require_owner_split_allowance for want of a committed receipt naming that hash, and THIS receipt refuses it at check 7 because it binds one split identity only."
+    },
+    "partition_proof_receipt": {
+      "repo_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json",
+      "sha256": "859472d1ba73bea1ead1af12d7fd61ac5207d828af388436073dcfac32c9fc57",
+      "schema": "saea-test-sample-partition-proof-v1",
+      "proof_sha256": "d3bedeaaf29b9a0d44dd83193c3ea2c2c567c40822d400f8b0116b8ed1bbe510",
+      "verdict": "CLEAN",
+      "sources_checked": 87,
+      "arithmetic": {
+        "sample_recordings": 3010,
+        "closure_recordings": 10068,
+        "union_recordings": 13078,
+        "parent_recordings": 13078,
+        "intersection_recordings": 0,
+        "intersection_utterances": 0,
+        "intersection_prompt_numbers": 0,
+        "union_split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+        "union_equals_parent": true
+      }
+    }
+  },
+  "permitted_run_ids": [
+    "SAEA-SN-TEST-SAMPLE-3010-PREPROCESS",
+    "SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-02-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-03-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-04-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-05-V1"
+  ],
+  "read_run_ids": [
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-02-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-03-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-04-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-05-V1"
+  ],
+  "preparation_run_ids": [
+    "SAEA-SN-TEST-SAMPLE-3010-PREPROCESS",
+    "SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1"
+  ],
+  "run_ids": {
+    "SAEA-SN-TEST-SAMPLE-3010-PREPROCESS": {
+      "kind": "preparation",
+      "what": "ENCODE + PROMOTE the featcache speech packets for the sample's 3,010 rows only: one frozen-core contact per row at max_tokens 1 through the CPU-only llama.cpp sidecar, then a zero-contact additive promotion into the resident packet root. The legacy feature-cache key is the FNV-1a hash of the media bytes alone, so the prompt cannot affect the cached features and the fixed one-token response is never read semantically. The sample's rows are the FULL parent's rows, so a packet built here is byte-identical to the one the FULL preparation SAEA-SN-TEST-FULL-PREPROCESS would build for the same media; that FULL preparation stays unauthorised (its allowance is pending-owner) and is not consumed by this one.",
+      "reads_labels": false,
+      "expected_contacts": 3010,
+      "expected_speech_audio_seconds": 8206,
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1": {
+      "kind": "preparation",
+      "what": "One frozen retrieval-encoder forward per sample recording (Omni-Embed-Nemotron-3B, prompt 'query: ', dimension 2048) producing the speech query vectors the Perception and Solver knowledge stores retrieve with, plus the zero-contact dimension alias that renames them. No answer is produced and no gold is opened.",
+      "reads_labels": false,
+      "expected_contacts": 3010,
+      "expected_speech_audio_seconds": 8206,
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1": {
+      "kind": "preparation",
+      "what": "The zero-contact flatten of the sample's segment vectors into the content dimension. It constructs no contracts.ExecutionPlan at all -- the plan validator requires finite POSITIVE calls, GPU hours and speech seconds by design, and a pass that touches no model must not reserve one contact of head-room -- so the profile rule of this allowance does not bind it. It is named here because it is a derivative of test-split media and its exposure row must carry the owner's name like its parents.",
+      "reads_labels": false,
+      "expected_contacts": 0,
+      "expected_speech_audio_seconds": 0,
+      "execution_profile": "model-free-check"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1": {
+      "kind": "read",
+      "what": "THE COMPARATOR. The locked PLAN system (the v2.0 lock of 2026-09-22, as flown, unchanged) on all 3,010 sample rows, one attempt, ever. Every later milestone is read AGAINST this sealed sample read of the locked system's own answers: a composed arm's milestone effect is that arm minus this arm on the same rows, per stratum, in natural-mixture and equal-stratum weightings. There is no direct-baseline read on the sample; the bare core's number is not what a milestone measures.",
+      "arm": "system (locked PLAN plan)",
+      "reads_labels": "gold is read ONLY by the official scorer, after delivery, in one complete manifest job; never by the control plane and never inside a request",
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1": {
+      "kind": "read",
+      "what": "MILESTONE 01. One composed system arm that has already been ADMITTED on a development roster and REPORTED to the owner in conversation, on all 3,010 sample rows, one attempt, ever, read against SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1. The arm's identity (its composed config hash and its dev admission receipt) is fixed in the exposure row and the decision receipt before contact and can never be changed afterwards. The milestone NUMBER is a place in a sequence, not a claim of effect: it is consumed whether the arm gains, loses or is neutral.",
+      "arm": "system (composed arm, dev-admitted)",
+      "reads_labels": "same as MILESTONE-00-PLAN",
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-02-V1": {
+      "kind": "read",
+      "what": "MILESTONE 02. One composed system arm that has already been ADMITTED on a development roster and REPORTED to the owner in conversation, on all 3,010 sample rows, one attempt, ever, read against SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1. The arm's identity (its composed config hash and its dev admission receipt) is fixed in the exposure row and the decision receipt before contact and can never be changed afterwards. The milestone NUMBER is a place in a sequence, not a claim of effect: it is consumed whether the arm gains, loses or is neutral.",
+      "arm": "system (composed arm, dev-admitted)",
+      "reads_labels": "same as MILESTONE-00-PLAN",
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-03-V1": {
+      "kind": "read",
+      "what": "MILESTONE 03. One composed system arm that has already been ADMITTED on a development roster and REPORTED to the owner in conversation, on all 3,010 sample rows, one attempt, ever, read against SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1. The arm's identity (its composed config hash and its dev admission receipt) is fixed in the exposure row and the decision receipt before contact and can never be changed afterwards. The milestone NUMBER is a place in a sequence, not a claim of effect: it is consumed whether the arm gains, loses or is neutral.",
+      "arm": "system (composed arm, dev-admitted)",
+      "reads_labels": "same as MILESTONE-00-PLAN",
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-04-V1": {
+      "kind": "read",
+      "what": "MILESTONE 04. One composed system arm that has already been ADMITTED on a development roster and REPORTED to the owner in conversation, on all 3,010 sample rows, one attempt, ever, read against SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1. The arm's identity (its composed config hash and its dev admission receipt) is fixed in the exposure row and the decision receipt before contact and can never be changed afterwards. The milestone NUMBER is a place in a sequence, not a claim of effect: it is consumed whether the arm gains, loses or is neutral.",
+      "arm": "system (composed arm, dev-admitted)",
+      "reads_labels": "same as MILESTONE-00-PLAN",
+      "execution_profile": "bounded-discovery-probe"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-05-V1": {
+      "kind": "read",
+      "what": "MILESTONE 05. One composed system arm that has already been ADMITTED on a development roster and REPORTED to the owner in conversation, on all 3,010 sample rows, one attempt, ever, read against SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1. The arm's identity (its composed config hash and its dev admission receipt) is fixed in the exposure row and the decision receipt before contact and can never be changed afterwards. The milestone NUMBER is a place in a sequence, not a claim of effect: it is consumed whether the arm gains, loses or is neutral.",
+      "arm": "system (composed arm, dev-admitted)",
+      "reads_labels": "same as MILESTONE-00-PLAN",
+      "execution_profile": "bounded-discovery-probe"
+    }
+  },
+  "milestone_rule": "A milestone read id is CONSUMED by its one attempt, whatever the outcome; there is no second attempt, recovery, re-score, re-projection or best-of on a consumed id. A further milestone needs a fresh id, and a fresh id enters this repository only through a SUCCESSOR receipt (…-slurp-test-sample-allowance-v2.json, the same schema, this file superseded and never edited in place) written under a fresh coordinator report of a dev-admitted composed arm to the owner in conversation, per decision 151. The numbered family 01..05 is head-room named in advance so that a series of milestones does not need a re-pin per milestone (design note section 7.2 item 4); naming five ids authorises none of them to fly without its own report, exposure row, countersignature and decision receipt.",
+  "first_contact_gate": {
+    "verbatim_from_decision_151": "the FIRST CONTACT with the sample is nevertheless gated on the coordinator reporting a dev-admitted composed arm to the owner in conversation",
+    "meaning": "Read literally: the first model or encoder contact of ANY permitted run id -- the preparations included, because ENCODE+PROMOTE and the speech query encoding are contacts on test media -- waits until the coordinator has reported, in conversation with the owner, a composed arm that a development roster read has ADMITTED under the standing admission rules (own-null margins, in-chain A/A, n >= 400). The report is named -- date and arm -- in the root countersignature of the first sample exposure row that is consumed, so the precondition is auditable on the ledger.",
+    "enforcement": "This precondition is conversational and is NOT checked by contracts.plan.require_owner_split_allowance or by any script under scripts/checks/; the machine gates are the allowance bytes, the exposure pre-registration, the countersignature discipline and the one-attempt budget. Whoever countersigns the first sample row attests that the report happened.",
+    "status_at_signing": "NOT YET MET. At the time this file is written no composed arm has been admitted on a development roster (COMP-1 of decision 152 is not yet registered), so no sample contact of any kind may be made, and none has been."
+  },
+  "attempt_budget": {
+    "read_run_ids": 1,
+    "preparation_run_ids": 2,
+    "enforced_by": "contracts.gate_exposure._ExposureAndCarrierMixin._require_final_report_attempt_budget",
+    "statement": "A read run id (MILESTONE-00-PLAN and every MILESTONE-NN) gets exactly ONE attempt and is refused a second even as a recovery (protocol section 4.4: no repeat, no second configuration, no best-of). A preparation run id keeps the ordinary one-recovery budget the rest of this repository uses; its output is label-free feature construction keyed by media identity."
+  },
+  "closure_status": "SLURP-TEST-CLOSURE-10068-V1 (split identity 377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b) receives NO allowance receipt now and stays pending-owner until the Stage-3 closure read (decision 151). It is named here only as the partition sibling whose committed item list proves this roster's exemption from the parent/sibling intersection; nothing in this file may be read as authorising a contact with it.",
+  "what_this_receipt_does_not_do": [
+    "it does not authorise the closure roster, the FULL parent, or any run id not listed in permitted_run_ids",
+    "it does not lift the first-contact gate: no sample contact of any kind before the coordinator's conversational report of a dev-admitted composed arm",
+    "it does not flip a readiness state, mint a decision receipt or countersign an exposure row",
+    "it does not admit a second attempt of a read id, a re-score, a re-projection of delivered bytes, or a best-of over milestones",
+    "it does not authorise a direct-baseline read on the sample; the comparator is the locked PLAN system's own one-attempt sample read",
+    "it does not widen any Stage-2 role: STAGE2_SPLIT_ROLES still admits only 'discovery' and 'dev', and 'confirmatory' is still refused outright",
+    "it does not make a milestone number a claim of effect; a milestone read is development evidence under owner decision 28, never a test claim, and never the final read",
+    "it does not decide the venue of the closure read (decision 108, protocol section 6) and does not promote anything to a papers/<slug> repository"
+  ],
+  "re_pinning_note": "Every config fragment that binds this allowance pins these exact bytes by sha256. Any edit -- adding a milestone id, changing a word -- changes the bytes, so every pin breaks and every composed config hash moves. That is deliberate: a change to what the owner signed forces a visible, countersigned re-pin of each preparation and of each read, rather than silently unlocking already-registered plans. This file is therefore never edited in place once a plan pins it; it is superseded by a successor receipt.",
+  "paired_code_change": {
+    "contracts_plan": "src/speech_aware_evidence_acquisition/contracts/plan.py -- FINAL_REPORT_SPLIT_ROLE, OwnerSplitAllowance, require_owner_split_allowance (checks 1-9), and the ExecutionPlan.validate branch that calls it; unchanged by this signature",
+    "contracts_gate_exposure": "src/speech_aware_evidence_acquisition/contracts/gate_exposure.py -- _require_final_report_isolation and its sub-checks (no construction-visible arm, gate-time disjointness re-proof made PARTITION-AWARE by _final_report_partition_exemptions under owner decision 147, merged to master as 7aea4483 on 2026-09-27, and the one-attempt read budget); unchanged by this signature",
+    "data_slurp": "src/speech_aware_evidence_acquisition/data/slurp.py -- _RUNTIME_VIEW_SPLIT_ROLES, so the label-free runtime view may NAME the role it has",
+    "tests": "tests/unit/test_final_report_split_role.py -- section 4 loads THIS committed receipt and proves: a sample-identity 'bounded-discovery-probe' plan is accepted for every permitted run id and passes FrozenCoreGate._require_final_report_isolation on the committed receipts; the closure identity is refused naming both hashes; 'paper-scale-confirmatory' is refused; the FULL receipt still refuses (pending-owner)",
+    "protocol": "docs/readiness/2026-09-19-slurp-test-split-one-read-protocol-v1-draft.md (sha256 b5e910e31a4986307edbac15101867ab97c42152d88d4f2cd086106630eac54b) sections 2, 4.4, 6 and 7 for the vocabulary of 'read' and 'preparation'",
+    "design": "docs/readiness/2026-09-27-slurp-test-sample-design-v1.md section 7.2 (committed version at study commit 81307ac3, sha256 618a8a5bd714f1b62a0a750c3ee09c922ee4177a650dfe3629fe9e76781f6cd6; section 9 of the same note, appended in the commit that lands this receipt, records the signature)"
+  }
+}

@@ -267,3 +267,28 @@ It does not write an owner allowance, register a run id, write an exposure row, 
 (`configs/dataset/…`), a D1 supplement or a preparation config for either roster, change any contract or
 gate, fly anything, contact anything, or open any audio. It leaves the FULL receipt, its disjointness
 proof, its allowance receipt and its draft rows byte-identical.
+
+## 9. Allowance signed for the SAMPLE under owner decision 151; the closure is not
+
+Owner decision 151 (2026-09-27, "决策3：现在签" -- "Decision 3: sign now.") signed the section 7.2 receipt
+for the sample: `docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json`, schema
+`saea-owner-split-allowance-v1`, status `authorised`, binding `SLURP-TEST-SAMPLE-3010-V1` (split identity
+`0164dabf…`, both identity hashes recomputed from the committed item ids when the receipt was written) and
+naming nine run ids: the sample's three label-free preparations (`SAEA-SN-TEST-SAMPLE-3010-PREPROCESS`,
+`SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1`, `SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1`)
+and six one-attempt reads -- the locked PLAN system's own sample read
+`SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1`, which every milestone is compared against, and the
+numbered family `…-MILESTONE-{01..05}-V1` for composed arms. There is no direct-baseline read on the sample.
+A milestone id is consumed by its one attempt; a further milestone needs a fresh id in a successor receipt
+under a fresh coordinator report. Two things the signature does NOT do, stated in the receipt itself: it
+does not lift the first-contact gate of decision 151 (no sample contact of any kind, preparations included,
+until the coordinator has reported a dev-admitted composed arm to the owner in conversation; not met at
+signing), and it does not touch the closure -- `SLURP-TEST-CLOSURE-10068-V1` receives no receipt and stays
+`pending-owner` until the Stage-3 closure read, while the FULL receipt of 2026-09-23 is left byte-identical.
+One departure from section 7.2 item 5 is recorded plainly: the owner did not dictate a venue sentence, so the
+receipt's `venue` is the coordinator's statement of the reason decisions 141 and 151 carry (a development-side
+milestone comparison, not the final read; the closure's venue stays with decision 108). Proof:
+`tests/unit/test_final_report_split_role.py` section 4 loads the committed receipt and shows a sample-identity
+`bounded-discovery-probe` plan accepted for every permitted run id at plan and gate level, the closure and
+FULL identities refused naming the hashes, `paper-scale-confirmatory` refused, and the FULL receipt still
+refusing.
