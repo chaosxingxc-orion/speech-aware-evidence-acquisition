@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "5b49bba0f39a6c80f7723963a94002f6d2e48dadca5b033e0e3b22a9a28afd7a"
+    "sha256": "34f078fcec9fec8e4c625e11a9315b7244ab5f2069f83cbd9820e6a316e80c72"
   },
   "purpose": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1: Four-row form smoke of cell W1. Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W1 arm and the shared in-chain A/A. A verdict computed against the sealed AGREE arm alone is refused.",

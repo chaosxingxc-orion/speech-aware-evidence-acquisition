@@ -32,7 +32,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "5b49bba0f39a6c80f7723963a94002f6d2e48dadca5b033e0e3b22a9a28afd7a"
+      "sha256": "34f078fcec9fec8e4c625e11a9315b7244ab5f2069f83cbd9820e6a316e80c72"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/README.md",
@@ -40,7 +40,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/registered-facts-v1.json",
-      "sha256": "ca385e0521040334f8d1508c53ecf98ba90c522dd0bf7bdb8fee3cae5e361b73"
+      "sha256": "7ccf85d06ecfdaeab821ec2a268623dba4d437d00a2d4859ae839bf39f16313f"
     },
     "registration_base_commit": "88edc193272f9bdb11f5099124b03cbb39f7d5b0"
   },

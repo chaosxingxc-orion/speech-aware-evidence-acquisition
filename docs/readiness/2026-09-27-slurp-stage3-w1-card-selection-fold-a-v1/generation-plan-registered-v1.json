@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "5b49bba0f39a6c80f7723963a94002f6d2e48dadca5b033e0e3b22a9a28afd7a"
+    "sha256": "34f078fcec9fec8e4c625e11a9315b7244ab5f2069f83cbd9820e6a316e80c72"
   },
   "purpose": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1: Cell W1. NO-HARM ADMITTED (owner decision 127): against the SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the retained AGREE arm's own bytes, registered by the coordinator for wave items W1-W4) flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d; the G5 precedent). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). Never reported as a gain; two base items are never assumed to add (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Solver prompt-token delta per contact and per row from the sealed COST records, and the registered harm rows (5 rows that lose a gold-type card) read row by row.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W1 arm and the shared in-chain A/A. A verdict computed against the sealed AGREE arm alone is refused.",

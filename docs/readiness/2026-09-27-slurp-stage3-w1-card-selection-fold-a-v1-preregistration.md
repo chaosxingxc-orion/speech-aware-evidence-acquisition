@@ -48,7 +48,7 @@ NO-HARM ADMITTED (owner decision 127): against the SHARED in-chain A/A SAEA-SLUR
           "w1": 50030
         },
         "preflight_solver_rendered_tokens": {
-          "after": "PENDING_CHECK",
+          "after": 19272,
           "before": 21278
         },
         "source": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/card-selection-measurement-v1.json (sha256 4303999d7f7df3b26fabfe54ffb266d635fda8705750f0466bc6564ec200df53)",

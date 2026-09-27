@@ -41,7 +41,7 @@ flown selection replayed identically on 1,080 / 1,080 rows first; exact tokens b
 Sensitivity (computed on the same arm before the rule was fixed, disclosed): min support 3 -> 10 harmed rows, 5 -> 22.
 
 **Fit.** Before (the sealed AGREE preflight): Solver rendered 21,278, `COMPACT_REQUIRED`, physical margin
-2,755. After: PENDING (run core.flight.cli check after the exposure rows exist, then re-run this writer with --check-dir).
+2,755. After: Solver rendered 21,278 -> 19,272 tokens, required window 21,821 -> 19,815, physical margin 2,755 -> 4,761, operational margin -317 -> 1,689, decision COMPACT_REQUIRED -> ALLOW.
 
 **`stage3_measurement`.** `admission` `no-harm`, `harm_margin_pp` 1.2485 (by metric intent 0.9943 / SLU 1.2485, the G5
 precedent), `claims_benefit` false, `expected_effect_pp` 0.0, `cross-flight-with-in-chain-replicate`, `replicate_run_id`
