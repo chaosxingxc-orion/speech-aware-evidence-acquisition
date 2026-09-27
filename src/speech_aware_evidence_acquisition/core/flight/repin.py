@@ -447,32 +447,101 @@ def _set_prepared_phase_supply(baseline_path: Path, pin: ArtifactPin) -> None:
     _write_json(baseline_path, document)
 
 
-def _set_preparation_requirement(experiment_path: Path, *, cell_id: str, pin: ArtifactPin) -> None:
+#: The relpath shape :func:`ensure_artifact_pinned` mints for a cell's own
+#: prepared phase-supply artifact: ``prepared/<run_id>/phase-supply-v<N>.json``.
+_OWN_SUPPLY_RELPATH_PATTERN = re.compile(r"prepared/(?P<run_id>[^/]+)/phase-supply-v\d+\.json")
+
+#: The ``reason`` written on a 'preparation' requirement this tool creates.
+_CREATED_REQUIREMENT_REASON = (
+    "Model-free first-phase supply prepared by core.flight.repin on the launch commit; "
+    "zero model, tokenizer or encoder contact."
+)
+
+
+def is_own_supply_requirement(entry: object, *, run_id: str, previous_relpath: str | None) -> bool:
+    """Whether ``entry`` is the readiness requirement for the cell's OWN prepared supply.
+
+    A readiness requirement's identity is its ``relpath``: it is the only key
+    ``core.flight.campaign.declared_readiness`` locates and verifies the
+    artifact by (a requirement carries no run-id or role field). An entry
+    names the cell's own supply when it is a 'preparation' requirement whose
+    relpath is either
+
+    * the pin this re-pin supersedes -- the baseline's current
+      ``prepared_phase_supply``, which for a cell that inherited a sibling's
+      supply verbatim (B8b from B7r) lives under the SIBLING's run id -- or
+    * a phase-supply artifact under the cell's own run-id directory, in the
+      exact ``prepared/<run_id>/phase-supply-v<N>.json`` shape this tool mints
+      (:func:`ensure_artifact_pinned`); this also covers a cell registered
+      before its supply was prepared and therefore carrying no baseline pin
+      yet (the AGREE family).
+
+    Matching on ``kind`` alone was the 2026-09-26 defect: a cell may carry
+    other 'preparation' requirements (the AGREE cells' pre-computed
+    exemplar-intent agreement table, under a different run id), and those are
+    never this cell's supply, so a flip must not rewrite them.
+    """
+
+    if not isinstance(entry, Mapping) or entry.get("kind") != "preparation":
+        return False
+    relpath = entry.get("relpath")
+    if not isinstance(relpath, str) or not relpath:
+        return False
+    if previous_relpath is not None and relpath == previous_relpath:
+        return True
+    match = _OWN_SUPPLY_RELPATH_PATTERN.fullmatch(relpath)
+    return match is not None and match.group("run_id") == run_id
+
+
+def _set_preparation_requirement(
+    experiment_path: Path,
+    *,
+    cell_id: str,
+    run_id: str,
+    previous_pin: ArtifactPin | None,
+    pin: ArtifactPin,
+) -> dict[str, int]:
+    """Point the cell's OWN 'preparation' readiness requirement at ``pin``.
+
+    Rewrites every requirement :func:`is_own_supply_requirement` accepts (a
+    cell registered with the same own-supply entry twice keeps both, both
+    updated -- sixteen committed Stage-3 cells carry that duplicate), leaves
+    every other 'preparation' requirement untouched byte-for-byte, and appends
+    exactly one new requirement when nothing matches. Returns ``{"updated",
+    "appended", "kept"}`` counts for the re-pin summary.
+    """
+
     document = _read_json(experiment_path)
     if not isinstance(document, dict) or not isinstance(document.get("cells"), list):
         raise RepinError(f"experiment fragment {experiment_path} has no cells list")
-    found = False
-    for cell_doc in document["cells"]:
-        if not isinstance(cell_doc, Mapping) or cell_doc.get("cell_id") != cell_id:
-            continue
+    previous_relpath = previous_pin.relpath if previous_pin is not None else None
+    own_cells = [
+        cell_doc
+        for cell_doc in document["cells"]
+        if isinstance(cell_doc, Mapping) and cell_doc.get("cell_id") == cell_id
+    ]
+    updated = kept = 0
+    for cell_doc in own_cells:
         readiness = cell_doc.get("readiness")
         requirements = readiness.get("requirements") if isinstance(readiness, Mapping) else None
         if not isinstance(requirements, list):
             continue
         for entry in requirements:
-            if isinstance(entry, dict) and entry.get("kind") == "preparation":
+            if is_own_supply_requirement(entry, run_id=run_id, previous_relpath=previous_relpath):
                 entry["relpath"] = pin.relpath
                 entry["sha256"] = pin.sha256
-                found = True
-    if not found:
+                updated += 1
+            elif isinstance(entry, Mapping) and entry.get("kind") == "preparation":
+                kept += 1
+    appended = 0
+    if updated == 0:
         # A package registered before its supply could be prepared (the B1
-        # exemplar cells, blocked by the E3 router guard) carries an empty
-        # requirements list; the first successful preparation creates the
-        # requirement instead of refusing, so the tool completes such a
+        # exemplar cells, blocked by the E3 router guard; the CONV probe)
+        # carries no own-supply requirement -- an empty list, or only foreign
+        # 'preparation' requirements; the first successful preparation creates
+        # the requirement instead of refusing, so the tool completes such a
         # registration rather than demanding a hand edit.
-        for cell_doc in document["cells"]:
-            if not isinstance(cell_doc, Mapping) or cell_doc.get("cell_id") != cell_id:
-                continue
+        for cell_doc in own_cells:
             readiness = cell_doc.get("readiness")
             if not isinstance(readiness, dict):
                 continue
@@ -482,14 +551,16 @@ def _set_preparation_requirement(experiment_path: Path, *, cell_id: str, pin: Ar
                     "kind": "preparation",
                     "relpath": pin.relpath,
                     "sha256": pin.sha256,
-                    "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
+                    "reason": _CREATED_REQUIREMENT_REASON,
                 })
-                found = True
-    if not found:
+                appended = 1
+                break
+    if updated == 0 and appended == 0:
         raise RepinError(
             f"cell {cell_id!r} in {experiment_path} has no readiness block to carry a 'preparation' requirement"
         )
     _write_json(experiment_path, document)
+    return {"updated": updated, "appended": appended, "kept": kept}
 
 
 def ensure_artifact_pinned(
@@ -512,7 +583,11 @@ def ensure_artifact_pinned(
     ``phase-supply-v<N+1>.json``, its ``output`` is asserted equal to the
     previous artifact's ``output`` when one exists, and only then is the new
     pin written into both the baseline fragment and the experiment's
-    'preparation' readiness requirement.
+    'preparation' readiness requirement for the cell's OWN supply -- matched
+    by artifact identity (:func:`is_own_supply_requirement`), never by
+    ``kind`` alone, so any other 'preparation' requirement the cell carries
+    (the AGREE family's pre-computed agreement table) stays byte-for-byte
+    intact.
 
     A cell that HAS no prepared phase supply -- a program without a supplied
     first phase (item E38), or a construction-visible text arm (item E42) --
@@ -623,13 +698,20 @@ def ensure_artifact_pinned(
 
     new_pin = ArtifactPin(new_relpath, new_sha256)
     _set_prepared_phase_supply(baseline_path, new_pin)
-    _set_preparation_requirement(experiment_path, cell_id=identity.cell_id, pin=new_pin)
+    requirement_edit = _set_preparation_requirement(
+        experiment_path,
+        cell_id=identity.cell_id,
+        run_id=identity.run_id,
+        previous_pin=current_pin,
+        pin=new_pin,
+    )
     return {
         "rebuilt": True,
         "reason": mismatch_reason,
         "old_pin": current_pin.as_dict() if current_pin is not None else None,
         "new_pin": new_pin.as_dict(),
         "row_counts": row_counts,
+        "readiness_requirement": requirement_edit,
     }
 
 
