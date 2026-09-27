@@ -1,0 +1,56 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "role": "gating comparator, sealed, never re-flown",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-g5-aa-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the within-chain null the delta is read at",
+      "run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim, and it admits nothing beyond the no-harm entry it is registered for. No utterance text, transcript, gold label or model output is printed or persisted.",
+  "decision_rule": "NO-HARM ADMITTED (owner decision 127): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION: a CI that includes zero and clears the margin is exactly the reading a base item requires (decision 127). The item is NEVER reported as a gain, whatever the point estimate; two base items are never assumed to add, and the cumulative check is the next composed round (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Reviewer prompt-token delta per contact and per row, the Reviewer contact rate, and a model-free count of Reviewer responses that narrate a tool call or a tool result on each arm (the downstream failure docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md recorded).",
+  "margins": {
+    "h_intent": 0.9943,
+    "h_slu": 1.2485
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-G5-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver_family": "scripts/analysis/plan_cell_read.py",
+  "recipe_id": "slurp-stage3-g5-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-27T13:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the G5 arm and the in-chain A/A carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score, and their config hashes are this package's (the arm flew the repaired instruction, the A/A the old one).",
+    "2. Structural stage: on both arms, 0 tool schemas and 0 tool calls on every contact; the Reviewer contact rate per row; the Reviewer prompt tokens per contact from the sealed COST records, whose arm-minus-A/A difference must sit at the measured -51 (a boundary token of tolerance); and a model-free count of Reviewer responses on each arm whose text narrates a tool call or a tool result (counts only, no text persisted).",
+    "3. Score once per arm over the complete manifest with the dataset's standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded); take per row scenario_action_exact and the per-row SLU-F1 contributions.",
+    "4. Paired row bootstrap (10,000 draws, seed 20260927) of the arm minus in-chain A/A delta on intent accuracy and on official pooled SLU-F1; report the point estimate and CI95 of each; report the same paired delta against the sealed PLAN comparator BESIDE it, never instead of it.",
+    "5. Apply the no-harm rule: ADMITTED iff the intent lower bound >= -0.9943 and the SLU lower bound >= -1.2485; HARMFUL iff either upper bound < 0 (decision 25); otherwise NOT ADMITTED (width). Never write 'gain' or 'no gain'.",
+    "6. Report beside every number: the per-scenario table in the natural-mixture and equal-stratum weightings; the frontier row (decision 75); the measured token delta per Reviewer contact and per row; the tool-narration counts of step 2; and the A/A's own delta against the sealed comparator as the instrument's reading.",
+    "7. Hand the admitted pin (comp2-pin-v1.json) to COMP-2 for the cumulative check (decision 138); an unadmitted pin is withdrawn from COMP-2 with the tool-narration counts as the first root-cause lead."
+  ],
+  "title": "Cell G5 -- the standard paired roster read on intent + SLU against the sealed PLAN arm, at the in-chain A/A null flown beside it, under the no-harm rule"
+}

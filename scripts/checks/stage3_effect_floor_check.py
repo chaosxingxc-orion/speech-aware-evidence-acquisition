@@ -48,7 +48,13 @@ DECLARED effect, before the GPU hours are spent rather than after.
   number of percentage points the primary metric may not fall below. It may not
   be TIGHTER than the measured floor of its own design, because a margin the
   design cannot see is not a bound on harm -- it is a bound the cell will appear
-  to satisfy whatever happens.
+  to satisfy whatever happens. For a no-harm reading that floor is the design's
+  SAMPLING half-width alone -- owner decision 127 names them: 0.67 pp offline
+  over a sealed pool, 0.735 same-flight paired, 1.2485 cross-flight at Fold A
+  1,080, 1.2525 at DEV 1,000 -- because the rule-3 admission bar is a BENEFIT
+  bar (the delta a cross-flight arm must EXCEED over its replicate's offset to
+  claim a gain) and a no-harm cell claims none; ``floor_for(...,
+  purpose="harm")`` is that arithmetic.
 * ``replicate_run_id`` -- required by
   ``cross-flight-with-in-chain-replicate``: the run id of the
   request-identical replicate that flies in the SAME chain (rule 3).
@@ -289,13 +295,21 @@ def _scaled(
     )
 
 
-def floor_for(design: str, rows: int) -> tuple[float | None, list[str]]:
+def floor_for(
+    design: str, rows: int, *, purpose: str = "benefit"
+) -> tuple[float | None, list[str]]:
     """``(floor in pp, the arithmetic as lines)``.
 
     ``None`` means the design carries no numeric floor (``form-proof``);
-    ``math.inf`` means the design is refused outright.
+    ``math.inf`` means the design is refused outright. ``purpose`` is
+    ``"benefit"`` (the default: the smallest effect the design can SEE, the
+    larger of the sampling half-width and the rule-3 admission bar) or
+    ``"harm"`` (owner decision 127: the sampling half-width alone -- the rule-3
+    bar is what a gain must exceed, and a no-harm cell claims no gain).
     """
 
+    if purpose not in ("benefit", "harm"):
+        raise ValueError(f"purpose must be 'benefit' or 'harm', not {purpose!r}")
     rule = FLOOR_TABLE[design]
     if rule.refused is not None:
         return math.inf, [f"refused outright -- {rule.refused}"]
@@ -305,7 +319,12 @@ def floor_for(design: str, rows: int) -> tuple[float | None, list[str]]:
         value, shown = _scaled(rule.sampling, rows)
         lines.append(f"sampling half-width: {shown}")
         parts.append(value)
-    if rule.bar:
+    if rule.bar and purpose == "harm":
+        lines.append(
+            "rule-3 admission bar not applied: a no-harm reading claims no benefit, "
+            "so its floor is the sampling half-width alone (owner decision 127)"
+        )
+    elif rule.bar:
         value, shown = _scaled(rule.bar, rows)
         lines.append(f"rule-3 admission bar: {shown}")
         parts.append(value)
@@ -737,7 +756,10 @@ def _findings_for(record: dict[str, Any], parsed: Declaration | None) -> list[di
 
     # Owner decision 127: an engineering-base item is admitted on sound logic, a stated ceiling and
     # a NO-HARM reading, and never has to demonstrate a gain. Two consequences are enforced here.
+    # The margin is measured against the design's SAMPLING half-width (decision 127's own numbers:
+    # 1.2485 cross-flight at Fold A 1,080), not against the rule-3 benefit bar a gain must exceed.
     if parsed.admission == "no-harm":
+        harm_floor, harm_arithmetic = floor_for(str(design), int(rows), purpose="harm")
         if parsed.claims_benefit:
             findings.append(
                 {
@@ -757,18 +779,18 @@ def _findings_for(record: dict[str, Any], parsed: Declaration | None) -> list[di
                         f"{cell}: admission 'no-harm' without harm_margin_pp; a no-harm reading "
                         "is only a reading if the margin it must not breach was preregistered "
                         f"-- the measured floor of {design} at n = {rows} is "
-                        f"{'unbounded' if floor is None else format(floor, '.4f') + ' pp'}"
+                        f"{'unbounded' if harm_floor is None else format(harm_floor, '.4f') + ' pp'}"
                     ),
                 }
             )
-        elif floor is not None and parsed.harm_margin_pp < floor:
+        elif harm_floor is not None and parsed.harm_margin_pp < harm_floor:
             findings.append(
                 {
                     "kind": "harm-margin-below-floor",
                     "message": (
                         f"{cell}: harm_margin_pp {parsed.harm_margin_pp:g} is tighter than the "
-                        f"{design} floor {floor:.4f} pp at n = {rows} "
-                        f"[{'; '.join(arithmetic)}]; a margin the design cannot see is not a "
+                        f"{design} no-harm floor {harm_floor:.4f} pp at n = {rows} "
+                        f"[{'; '.join(harm_arithmetic)}]; a margin the design cannot see is not a "
                         f"bound on harm, it is a bound this cell will appear to satisfy whatever "
                         f"happens -- source: {rule.source}"
                     ),

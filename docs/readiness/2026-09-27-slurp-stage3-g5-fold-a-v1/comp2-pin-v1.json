@@ -1,0 +1,19 @@
+{
+  "admission_state": "PREPARED, not admitted: pin into COMP-2 only after the round-3 no-harm read (decision 153; cumulative check under decision 138)",
+  "composed_key": "phase_material.reviewer.instruction_template",
+  "how_to_pin": "set phase_material.reviewer.instruction_template to the value above in the COMP-2 baseline; nothing else moves",
+  "instruction_path": "configs/probes/slurp_native_role_reviewer_v1_g5_v1.txt",
+  "instruction_sha256": "724a437de1eeb1167d11395ad78605d595e324e682cff552c27cb84caa8cef35",
+  "item": "G5 -- the Reviewer instruction with the retired-tool order deleted",
+  "replaces": {
+    "sha256": "dce206a20d361b221ea146dc4ff274ba5e08ce4ab1bfbfece662dc7da5012417",
+    "value": "probes/slurp_native_role_reviewer_v1.txt"
+  },
+  "schema": "saea-comp2-pin-fragment-v1",
+  "tokens_per_reviewer_contact": {
+    "delta": -51,
+    "new": 31,
+    "old": 82
+  },
+  "value": "probes/slurp_native_role_reviewer_v1_g5_v1.txt"
+}

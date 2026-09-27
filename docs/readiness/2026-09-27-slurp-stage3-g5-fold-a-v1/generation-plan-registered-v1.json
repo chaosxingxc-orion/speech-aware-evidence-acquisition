@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-g5-fold-a-v1",
+  "composed_config_hash": "4082465a803efd9425e79b05ae2b2a39415dd8958be9fed6768f859aaf73d829",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "cc1581f468eb9851a001622c1705e44d2fd421c93f81904fb9ca8277633a18f3",
+    "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed campaign plan configs/campaign/slurp-native-stage3-g5-fold-a-v1.json, which carries the A/A replicate AND the G5 arm so the two fly in ONE chain; the campaign acquires its own GenerationLease against the resident session and schedules one official score per generation cell at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-g5-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "one_factor": "Delete the two sentences that order, describe and depend on the retired tool; add nothing; rephrase nothing. The surviving text is the audit's own 'review order' partition, byte for byte. Composed key phase_material.reviewer.instruction_template: probes/slurp_native_role_reviewer_v1.txt -> probes/slurp_native_role_reviewer_v1_g5_v1.txt (sha256 724a437de1eeb1167d11395ad78605d595e324e682cff552c27cb84caa8cef35).",
+  "plan_kind": "generation",
+  "preparation_base_commit": "81307ac3",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "note": "NONE COMMITTED, by design: the flip mints each cell's own under its own run id (item E16), the readiness requirements list is empty, and --allow-output-change must never be passed. the Reviewer instruction is not an input to the first-phase supply, so every supply the flip mints for this family must carry this output digest on all 1,080 rows (the smoke on its four); a different digest means the knowledge channel moved -- stop and report",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-G5-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "f730ddedb1b4281492366bfe028fca5b81ce7abe29b534d30eab25a511efdc0e"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1: Cell G5. NO-HARM ADMITTED (owner decision 127): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION: a CI that includes zero and clears the margin is exactly the reading a base item requires (decision 127). The item is NEVER reported as a gain, whatever the point estimate; two base items are never assumed to add, and the cumulative check is the next composed round (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Reviewer prompt-token delta per contact and per row, the Reviewer contact rate, and a model-free count of Reviewer responses that narrate a tool call or a tool result on each arm (the downstream failure docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md recorded).",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
+  "registered_at_utc": "2026-09-27T13:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-g5, branch fable/g5",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

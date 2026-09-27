@@ -1,0 +1,282 @@
+{
+  "authority": "owner decisions 127, 135, 138 and 153 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); the audit docs/results/2026-09-26-slurp-reviewer-planner-global-state-audit.md (G5) and its script scripts/analysis/slurp_reviewer_planner_global_state_audit.py; the retirement record docs/receipts/harness-admission.json: the entry whose row is SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-V1 (status RETIRED, switch class phase_tools, key phase_tools.reviewer, ON = the saea-tool-task-contract-v1 toolkit the anchor-to-B5e cells carried, OFF = absent); the class and status were added to the receipt's switch_rule and status_values by item E25 on 2026-09-20 (schema_history saea-harness-admission-v3). Verdict docs/results/2026-09-20-slurp-b1-notool-verdict.md (owner decisions 55, 56; status NEUTRAL made final by decision 61 in docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); the lock note docs/results/2026-09-22-slurp-v2-lock-v1.md row 'the Reviewer's native toolkit: phase_tools absent, RETIRED'.; the measurement instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md (rules 3 and 4, section 2d); the AGREE chain shape docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1; owner decisions 25 (measured loss), 28 and 86 (development numbers), 101 (the Stage-3 algorithm label), 133 (intent primary)",
+  "ceiling_unlocked": "What the repair unlocks (row 127 asks for the ceiling, not a gain): a Reviewer that is no longer instructed to perform an action it cannot perform and to review 'against' a tool result that does not exist -- the standing instruction to fabricate that the 2026-09-26 system-summary diagnostic traced downstream (summaries treating textual tool-result claims as execution while the tool event list is empty). It is the node-side precondition for the typed evidence link (G1/G2) and for any later Reviewer grounding, and it frees 51 prompt tokens per Reviewer contact (52.32 per row at the sealed PLAN rate, 56,508 per 1,080-row flight). No task-quality ceiling is claimed for it and none is needed under row 127.",
+  "cells": {
+    "aa": {
+      "attempt_id": "attempt-slurp-native-stage3-g5-aa-fold-a-generation-v1",
+      "cell": "slurp-native-stage3-g5-aa-fold-a-v1",
+      "composed_config_hash": "fa5f5b2650cd1216d1e47906360c92879225d70828c2b467848fd04a2cb16084",
+      "experiment": "slurp-native-stage3-g5-aa-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-g5-aa-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1",
+      "protocol_hash": "cbf039dc491d5238d55a271735abd4a6d8a7179e383e5f8ed327132d001c8c05",
+      "reviewer_instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-generation-v1",
+      "cell": "slurp-native-stage3-g5-fold-a-v1",
+      "composed_config_hash": "4082465a803efd9425e79b05ae2b2a39415dd8958be9fed6768f859aaf73d829",
+      "experiment": "slurp-native-stage3-g5-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-g5-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-FIT-V1",
+      "protocol_hash": "cc1581f468eb9851a001622c1705e44d2fd421c93f81904fb9ca8277633a18f3",
+      "reviewer_instruction_template": "probes/slurp_native_role_reviewer_v1_g5_v1.txt",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
+      "composed_config_hash": "57d0ff88bdf8f0c28d418056b20d0fcef48b24589e9980de9b3dfed1a4c7173a",
+      "experiment": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-FIT-V1",
+      "protocol_hash": "602e9ef33e626ca4825d4ec6fdd013d09fca372f9f9e8f1138c8071361b98b91",
+      "reviewer_instruction_template": "probes/slurp_native_role_reviewer_v1_g5_v1.txt",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+    "in_chain_replicate": {
+      "run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate; the A/A is the locked plan's own form re-flown in the SAME campaign chain"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "the plan's own null on this roster, PLAN vs PLANr (SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d"
+    },
+    "never_reflown": true,
+    "official": {
+      "intent_accuracy": 82.2222,
+      "slu_f1": 63.6304
+    },
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+  },
+  "decision_rule_fixed_here": "NO-HARM ADMITTED (owner decision 127): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION: a CI that includes zero and clears the margin is exactly the reading a base item requires (decision 127). The item is NEVER reported as a gain, whatever the point estimate; two base items are never assumed to add, and the cumulative check is the next composed round (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Reviewer prompt-token delta per contact and per row, the Reviewer contact rate, and a model-free count of Reviewer responses that narrate a tool call or a tool result on each arm (the downstream failure docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md recorded).",
+  "development_numbers_only": "Every number this family will produce is a TRAIN Fold A construction-fold development number (owner decisions 28 and 86) and is never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "model_free_proofs_landed_before_contact": {
+    "composed_config_diff": {
+      "aa": {
+        "anything_else": [],
+        "baseline_bookkeeping_only": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "failure_policy",
+          "fragment_kind",
+          "generation_budget.definition",
+          "generation_budget.target",
+          "purpose",
+          "stage3_algorithm.id",
+          "stage3_algorithm.note",
+          "stage3_algorithm.operators_used"
+        ],
+        "parent_experiment": "slurp-native-default-plan-lock-v1",
+        "phase_material_equal_except_reviewer_instruction_template": true,
+        "the_one_pin": []
+      },
+      "arm": {
+        "anything_else": [],
+        "baseline_bookkeeping_only": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "failure_policy",
+          "fragment_kind",
+          "generation_budget.definition",
+          "generation_budget.target",
+          "purpose",
+          "stage3_algorithm.id",
+          "stage3_algorithm.note",
+          "stage3_algorithm.operators_used"
+        ],
+        "parent_experiment": "slurp-native-default-plan-lock-v1",
+        "phase_material_equal_except_reviewer_instruction_template": true,
+        "the_one_pin": [
+          "phase_material.reviewer.instruction_template"
+        ]
+      },
+      "note": "computed by flattening both composed configs (core.config.compose) and listing every path whose value differs: the one pin (arm and smoke; none on the A/A), the baseline's per-flight bookkeeping (this cell's FIT identities and cap, the dropped prepared_phase_supply, what_this_is) and the experiment fragment's own block. The unit test tests/unit/test_g5_config.py re-proves it.",
+      "smoke": {
+        "anything_else": [],
+        "baseline_bookkeeping_only": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "failure_policy",
+          "fragment_kind",
+          "purpose",
+          "stage3_algorithm.id",
+          "stage3_algorithm.note",
+          "stage3_algorithm.operators_used"
+        ],
+        "parent_experiment": "slurp-native-default-plan-lock-smoke-4-v1",
+        "phase_material_equal_except_reviewer_instruction_template": true,
+        "the_one_pin": [
+          "phase_material.reviewer.instruction_template"
+        ]
+      }
+    },
+    "deletion_only": {
+      "byte_level": {
+        "deleted_head_chars": 265,
+        "deleted_head_sha256": "27acda0a6cfa683d301f634db50d4893c0cbd7107acab167dc34d6f5d8c274ec",
+        "new_bytes": 170,
+        "new_starts_with_the_split_marker": true,
+        "old_bytes": 435,
+        "old_equals_deleted_head_plus_new": true
+      },
+      "word_level": {
+        "deleted_spans": [
+          {
+            "old_word_range": [
+              0,
+              42
+            ],
+            "words": [
+              "Before",
+              "reviewing",
+              "the",
+              "Solver",
+              "draft,",
+              "call",
+              "the",
+              "available",
+              "task-contract",
+              "tool",
+              "exactly",
+              "once",
+              "through",
+              "its",
+              "native",
+              "function",
+              "schema.",
+              "The",
+              "framework",
+              "does",
+              "not",
+              "inject",
+              "this",
+              "call:",
+              "make",
+              "it",
+              "yourself,",
+              "use",
+              "only",
+              "its",
+              "returned",
+              "source-bound",
+              "result,",
+              "and",
+              "do",
+              "not",
+              "call",
+              "it",
+              "again",
+              "in",
+              "this",
+              "review."
+            ]
+          }
+        ],
+        "deleted_words": 42,
+        "new_is_a_subsequence_of_old": true,
+        "new_words": 28,
+        "old_words": 70,
+        "only_equal_and_delete": true,
+        "opcode_kinds": {
+          "delete": 1,
+          "equal": 1
+        }
+      }
+    },
+    "token_measurement": {
+      "delta_per_reviewer_contact": -51,
+      "new_tokens_per_reviewer_contact": 31,
+      "old_tokens_per_reviewer_contact": 82,
+      "reproduces_the_audit_82_and_52": true,
+      "retired_tool_order_tokens": 52,
+      "retired_tool_share_pct": 63.4,
+      "reviewer_contacts_per_row": 1.025926,
+      "saved_share_of_sealed_plan_prompt_tokens": 0.00153796,
+      "saved_tokens_per_1080_row_flight": 56508,
+      "saved_tokens_per_row": 52.3222,
+      "sealed_plan_calls_used": 4424,
+      "sealed_plan_reviewer_contacts": 1108,
+      "sealed_plan_role_visits": {
+        "perception": 1080,
+        "planner": 1108,
+        "reviewer": 1108,
+        "solver": 1118
+      },
+      "sealed_plan_rows": 1080,
+      "source_of_the_contact_rate": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 / attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1: phases.json native_episode_receipt.role_visits (per-role identity of every contact) beside the run manifest cost block; ROLL-2 reported beside it in the receipt and not used",
+      "tokenizer": {
+        "argv_tail": [
+          "--no-bos",
+          "--no-escape",
+          "--show-count",
+          "--log-disable",
+          "--ids"
+        ],
+        "binary": "/home/chao/llama.cpp/build/bin/llama-tokenize",
+        "invocations": 5,
+        "model": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "same_as": "scripts/analysis/slurp_reviewer_planner_global_state_audit.py"
+      },
+      "variants_priced_not_applied": {
+        "also_delete_or_invent_a_tool_result": 26,
+        "also_delete_then": 30
+      },
+      "why_51_not_52": "the audit priced the deleted HEAD on its own bytes (52); tokenised alone the surviving text costs 31, not 82 - 52 = 30, because 'Then' at the start of a text is one token and ' Then' after a space is another. The saving on the wire is the standalone difference, 82 -> 31 = -51 per Reviewer contact; the 63 % is the audit's head-over-whole share, reproduced exactly."
+    }
+  },
+  "one_factor": "Delete the two sentences that order, describe and depend on the retired tool; add nothing; rephrase nothing. The surviving text is the audit's own 'review order' partition, byte for byte. Composed key phase_material.reviewer.instruction_template: probes/slurp_native_role_reviewer_v1.txt -> probes/slurp_native_role_reviewer_v1_g5_v1.txt (sha256 724a437de1eeb1167d11395ad78605d595e324e682cff552c27cb84caa8cef35).",
+  "prohibitions": [
+    "Never reported as a gain: a no-harm item is admitted on the reading and two base items are never assumed to add (decision 127).",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed comparator.",
+    "No second factor: no other template, knob, store, release, snapshot, roster, geometry or session change; the 211 committed configs are NOT re-pinned to the repaired instruction -- COMP-2 pins it (decision 153).",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped."
+  ],
+  "protocol_id": "slurp-stage3-g5-fold-a-protocol-v1",
+  "registered_at_utc": "2026-09-27T13:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-g5, branch fable/g5",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "81307ac3",
+  "the_question": "With the two sentences ordering the retired task-contract tool deleted from the Reviewer's instruction and nothing else changed, do the official intent accuracy and pooled SLU-F1 on TRAIN Fold A 1,080 stay within the plan's own null, read against an in-chain A/A? (A no-harm question; the item's value is the removal of a standing order to fabricate and its negative token cost, stated as a ceiling, never as a gain.)",
+  "unchanged": "everything but that pin and per-flight bookkeeping: the roster (TRAIN Fold A 1,080, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6), the model fragment and serving geometry (np4 x 24,576), the session serving-slurp-native-candidate-five-train-a-np4-v1, the phase program and its 11-contact ceiling, all three knowledge stores and their release/snapshot pins, the exemplar k of 20, the role graph, the response formats, every other instruction template, the task contract, the deliver normaliser, the scorers and every budget",
+  "what_a_harmful_read_would_mean": "That the Reviewer's behaviour depended on the stale order in a way the audit did not predict -- which would itself be a finding about the node, reported with the tool-narration count beside it -- and the repair is withdrawn from COMP-2 pending a root cause. A NEUTRAL read is the admission, not a failure, and is never written as 'no gain'."
+}
