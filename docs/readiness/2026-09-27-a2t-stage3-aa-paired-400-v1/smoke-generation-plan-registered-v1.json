@@ -1,6 +1,6 @@
 {
   "cell": "a2t-stage3-aa-paired-400-smoke-4-v1",
-  "composed_config_hash": "93e412fcdd1785d64bbfc67b0491ab7a0fbbd10f06e8f43ee609423d6acb04ed",
+  "composed_config_hash": "9adcadaa534c75e9d0f13a5a12fbd7bd979423dec7edbb33f258204fdeb8e63a",
   "execution_plan": {
     "attempt_id": "attempt-a2t-stage3-aa-paired-400-smoke-4-generation-v1",
     "carrier_lock_key": "audio2tool",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.2,
     "planned_model_calls": 4,
     "planned_speech_audio_seconds": 21,
-    "protocol_hash": "be349584e1f4d757bc5f873129b94f7b29d8ab874d7532c3074b44c211368d21",
+    "protocol_hash": "d5769316f8634c9e76333a8e483dc2bda9afe6633f726726a917867716a552a7",
     "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "c7057020334be227c430d661953fa3ad3b0b044dfbc97c4e186c5777cb6a5baa",
@@ -34,7 +34,7 @@
   "preparation_base_commit": "eb5e463b",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-a2t-stage3-aa-paired-400-v1/protocol-registered-v1.json",
-    "sha256": "bbbc0f7db1ca4517c53992eb83631785f926f94a99bb80207cb94ca083ab5e06"
+    "sha256": "1353d83eeb883b4aaa356d1d0a6b78faa15adbb5824533606c76e12c8dad328b"
   },
   "purpose": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1: the four-row form smoke of cell A2T-AA. No score, no read.",
   "quality_read_gate": "None: a smoke is inspected for structure and never read for a number.",
