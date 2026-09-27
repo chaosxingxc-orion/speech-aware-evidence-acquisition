@@ -1,0 +1,148 @@
+{
+  "schema": "saea-e41-bounded-perception-protocol-v1",
+  "protocol_id": "e21-native-window-e41-bounded-perception-protocol-v1",
+  "item": "E41",
+  "registered_at_utc": "2026-09-27T16:00:00.000000+00:00",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e41, branch fable/e41, base commit a50a0d1c",
+  "hash_policy": "This shared document quotes NO composed config or protocol hash of either E41 cell (each cell's hashes live only in its own plan files), so flipping one cell never rewrites the other cell's plan documents through this file's sha256.",
+  "authority": "owner decisions 103 (E41 defined: a bounded Perception note with its own dry run before the sub10 re-read) and 158 (E41 is unfinished Stage-2 engineering base: carry it out after COMP-1, on the E21 geometry, a serving swap); 89 / 91 / 92 / 98 (Earnings on FlightRuntime, the E21 geometry, the shared slice tree, the n >= 400 calibration after the SLURP main line); base lock v3.1 (docs/results/2026-09-22-base-lock-v3.md section 5b).",
+  "question": "Does bounding the Perception note of the Earnings system form (a numbered list of at most 5 lines, at most 20 words each, never repeated, explicitly not a transcript) remove the Perception length-truncation mode that E35, E39 and E39b recorded, with nothing else moved?",
+  "claim_surface": "Engineering structure only. No score, comparison, effectiveness or generalization claim.",
+  "one_pin": {
+    "path": "phase_material.perception.instruction_template",
+    "old": "probes/e21_native_window_system_perception_v1.txt",
+    "new": "probes/e21_native_window_system_perception_v2.txt",
+    "new_sha256": "dbc2e691e21f59dff33657e1691259815c1afce3f305d1bb6712bfee93b15bfa",
+    "old_sha256": "a1a46c22e1fdf6b87450d9eefb97a869f47e83d3ba4f8b2a2cb1e17cf8f19581"
+  },
+  "model_free_argument": {
+    "receipt": "docs/readiness/2026-09-27-e21-native-window-e41-v1/perception-trace-read-v1.json",
+    "sealed_perception_contacts": 354,
+    "truncated": 82,
+    "truncated_modes": {
+      "ENUMERATION": 12,
+      "LOOP": 60,
+      "PROSE": 5,
+      "TRANSCRIPT": 5
+    },
+    "truncated_within_e41_bound": 0,
+    "stopped_within_e41_bound": "0 of 272",
+    "worst_case_compliant_note_tokens": 574,
+    "cap": 640
+  },
+  "cells": {
+    "dry-run": {
+      "cell_id": "e21-native-window-system-four-row-e41-v1",
+      "experiment": "e21-native-window-four-row-e41-dry-run-v1",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1",
+      "attempt_id": "attempt-e21-native-window-system-four-row-e41-v1",
+      "fit_run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1-FIT-V1",
+      "fit_attempt_id": "attempt-e21-native-window-system-four-row-e41-v1-fit",
+      "baseline_fragment": "e21-native-window-system-four-row-e41-v1",
+      "dataset_fragment": "e21-native-window-four-row-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-native-review-revise-acquire-v1",
+      "campaign_plan": "configs/campaign/e21-native-window-system-four-row-e41-v1.json",
+      "windows": 4,
+      "calls": 1,
+      "decision_id": "e21-native-window-e41-dry-run-admission-v1",
+      "decision_relpath": "coordination/e21-native-window-e41-v1/root-admission-dry-run-v1.json",
+      "plans": [
+        "docs/readiness/2026-09-27-e21-native-window-e41-v1/dry-run-generation-plan-registered-v1.json",
+        "docs/readiness/2026-09-27-e21-native-window-e41-v1/dry-run-fit-plan-registered-v1.json"
+      ],
+      "analysis_recipe": "docs/readiness/2026-09-27-e21-native-window-e41-v1/dry-run-analysis-recipe-v1.json"
+    },
+    "sub10": {
+      "cell_id": "e21-native-window-system-sub10-e41-v1",
+      "experiment": "e21-native-window-sub10-e41-v1",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1",
+      "attempt_id": "attempt-e21-native-window-system-sub10-e41-v1",
+      "fit_run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-FIT-V1",
+      "fit_attempt_id": "attempt-e21-native-window-system-sub10-e41-v1-fit",
+      "baseline_fragment": "e21-native-window-system-sub10-e41-v1",
+      "dataset_fragment": "e21-native-window-sub10-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-native-review-revise-acquire-v1",
+      "campaign_plan": "configs/campaign/e21-native-window-system-sub10-e41-v1.json",
+      "windows": 342,
+      "calls": 10,
+      "decision_id": "e21-native-window-e41-sub10-admission-v1",
+      "decision_relpath": "coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json",
+      "plans": [
+        "docs/readiness/2026-09-27-e21-native-window-e41-v1/sub10-generation-plan-registered-v1.json",
+        "docs/readiness/2026-09-27-e21-native-window-e41-v1/sub10-fit-plan-registered-v1.json"
+      ],
+      "analysis_recipe": "docs/readiness/2026-09-27-e21-native-window-e41-v1/sub10-analysis-recipe-v1.json"
+    }
+  },
+  "order": "The dry run flies first; the sub10 re-read is flipped and flown ONLY after the dry-run receipts read holds R1-R3 and is committed (row 103: 'its own dry run before the sub10 re-read').",
+  "service": {
+    "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1",
+    "attach_only": true,
+    "no_child_start_stop": true,
+    "slots": 4,
+    "slot_tokens": 24576,
+    "max_completion_tokens": 1024,
+    "decoder_only": true,
+    "mmproj": "absent",
+    "swap": "the resident SLURP np4 session is stopped and the E21 session started before a chain runs (decision 91; scripts/flights/batch/serving_switch_to_e21.sh, serving_task_entry_e21.sh); the SLURP geometry returns after the seal; row 158 schedules E41 after COMP-1 so the SLURP line keeps the card"
+  },
+  "fit": {
+    "dry-run": {
+      "mode": "native_contact_fit",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1-FIT-V1",
+      "attempt_id": "attempt-e21-native-window-system-four-row-e41-v1-fit",
+      "contact_cap": 176,
+      "arithmetic": "4 x 11 x (1 speech packet + 3 endpoints) = 176",
+      "coordinate_fit": "must NOT be run, or the FIT row is double-charged"
+    },
+    "sub10": {
+      "mode": "native_contact_fit",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-FIT-V1",
+      "attempt_id": "attempt-e21-native-window-system-sub10-e41-v1-fit",
+      "contact_cap": 15048,
+      "arithmetic": "342 x 11 x (1 speech packet + 3 endpoints) = 15048",
+      "coordinate_fit": "must NOT be run, or the FIT row is double-charged"
+    }
+  },
+  "accounting": {
+    "dry-run": {
+      "generation_calls_cap": 44,
+      "fit_endpoint_calls_cap": 176,
+      "repeated_speech_audio_seconds_cap": 3960,
+      "gpu_hours_fit_inclusive": 0.5,
+      "official_complete_scoring_jobs": 1,
+      "asr_calls": 0,
+      "encoder_calls": 0,
+      "paid_api_calls": 0,
+      "native_task_contract_calls_cap": 0,
+      "plan_budget_is_run_cumulative": true,
+      "ceilings_are_not_targets": true
+    },
+    "sub10": {
+      "generation_calls_cap": 3762,
+      "fit_endpoint_calls_cap": 15048,
+      "repeated_speech_audio_seconds_cap": 334477,
+      "gpu_hours_fit_inclusive": 12.0,
+      "official_complete_scoring_jobs": 1,
+      "asr_calls": 0,
+      "encoder_calls": 0,
+      "paid_api_calls": 0,
+      "native_task_contract_calls_cap": 0,
+      "plan_budget_is_run_cumulative": true,
+      "ceilings_are_not_targets": true
+    }
+  },
+  "failure_policy": "Stop and preserve on the first failure: no automatic restart, replay, roster, graph, prompt, knowledge, geometry or cap change. At most ONE separately registered recovery per cell after a named cause; a second failure stops E41 and the fix is proven on a fresh four-row dry run.",
+  "prepared_phase_supply_note": "NONE for either cell (item E38 path); --allow-output-change must never be passed.",
+  "not_authorised": [
+    "any flight before the decision receipt is minted and the cell flipped",
+    "the sub10 flip before the dry-run read holds R1-R3",
+    "any ASR, transcript, encoder, paid-API or Earnings-22 contact; FSD50K / AudioSet / ESC-50 are never consumed",
+    "re-flying or re-scoring any sealed E35 / E39 / E39b arm",
+    "any change beyond the one registered pin",
+    "any effectiveness, superiority or generalization claim"
+  ]
+}

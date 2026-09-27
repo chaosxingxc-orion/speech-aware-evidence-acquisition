@@ -1,0 +1,470 @@
+{
+ "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block (keyed by run id). It quotes no composed / protocol hash of an E41 cell; those live in the plan files.",
+ "schema": "saea-e41-registered-facts-v1",
+ "registered_at_utc": "2026-09-27T16:00:00.000000+00:00",
+ "study_commit_at_registration": "a50a0d1c",
+ "item": {
+  "id": "E41",
+  "definition": "row 103: a bounded Perception note (structured / length-constrained instruction) with its own dry run before the sub10 re-read of the Earnings system form",
+  "judgement": "row 158: unfinished Stage-2 engineering base; carry it out after COMP-1"
+ },
+ "one_pin": {
+  "path": "phase_material.perception.instruction_template",
+  "old": "probes/e21_native_window_system_perception_v1.txt",
+  "new": "probes/e21_native_window_system_perception_v2.txt",
+  "instruction_files": {
+   "new": {
+    "bytes": 754,
+    "relpath": "configs/probes/e21_native_window_system_perception_v2.txt",
+    "sha256": "dbc2e691e21f59dff33657e1691259815c1afce3f305d1bb6712bfee93b15bfa"
+   },
+   "old": {
+    "bytes": 410,
+    "relpath": "configs/probes/e21_native_window_system_perception_v1.txt",
+    "sha256": "a1a46c22e1fdf6b87450d9eefb97a869f47e83d3ba4f8b2a2cb1e17cf8f19581"
+   }
+  }
+ },
+ "stage3_measurement": {
+  "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1": {
+   "measurement_design": "form-proof",
+   "expected_effect_pp": 0.0,
+   "rows": 1,
+   "claims_benefit": false,
+   "primary_metric": "the Perception length-truncation count on the four windows (target zero), with R1 (no auxiliary node voids its window) and R2 (4 / 4 non-empty deliveries)",
+   "note": "A receipts-only STRUCTURAL dry run of one instruction pin: one call (four windows) is far under MIN_BENEFIT_ROWS, so under rule 5 it is a form proof by size; claims_benefit is false and expected_effect_pp is 0.0 because the cell registers no effect on any task metric. It is NOT an admission request: no admission mode is declared and no harm margin is claimed."
+  },
+  "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1": {
+   "measurement_design": "form-proof",
+   "expected_effect_pp": 0.0,
+   "rows": 10,
+   "claims_benefit": false,
+   "primary_metric": "structural receipts at scale (windows voided by an auxiliary node, non-empty deliveries, the Perception truncation rate) beside the carrier's standard scorer (Whisper-normalised corpus WER) and the agentic metrics (ConEC entity WER mirror, numeric-value accuracy), all DESCRIPTIVE against the sealed E35 sub10 direct arm bound per window",
+   "note": "A descriptive structural read: 10 calls (342 windows) sit below every power floor of the measurement instrument and under MIN_BENEFIT_ROWS, so this is a form proof by size; claims_benefit is false and expected_effect_pp is 0.0 because no effect on any metric is registered or may be claimed. The comparator is a sealed arm from another flight (a cross-flight contrast with no in-chain replicate), which is exactly why the read is descriptive and never an admission. It is NOT an admission request."
+  }
+ },
+ "stage3_algorithm": {
+  "id": "none",
+  "operators_used": [],
+  "note": "This cell carries NO training-free RL operator and says so explicitly: item E41 is unfinished Stage-2 engineering base (owner decision 158) -- one instruction pin that bounds the Perception note of the Earnings system form so the shared harness carries that form soundly -- with no rollout, no per-sample scoring, no credit assignment, no update operator and no learned artifact."
+ },
+ "token_cost": {
+  "receipt": "docs/readiness/2026-09-27-e21-native-window-e41-v1/instruction-token-measurement-v1.json",
+  "prompt_side_tokens": {
+   "new_as_wire_user_turn": 243,
+   "new_instruction": 173,
+   "old_as_wire_user_turn": 145,
+   "old_instruction": 75
+  },
+  "prompt_side_delta_per_perception_contact": 98,
+  "prompt_side_delta_per_flight": {
+   "four_row_dry_run": 392,
+   "note": "one Perception contact per window (role_max_iterations 1); the instruction is sent once, as the last text part of that contact's user turn",
+   "sub10_re_read": 33516
+  },
+  "completion_side_bound": {
+   "bound": {
+    "max_lines": 5,
+    "max_quoted_words_per_reading": 4,
+    "max_words_per_line": 20,
+    "readings_per_line": 2
+   },
+   "cap": 640,
+   "note": "the digit-dense worst case fills every reading with four 12-character numerals (one token per digit or separator on this vocabulary); a note that obeys the v2 form cannot exceed the cap, so any length-truncated contact under v2 is a NON-compliant note by construction, which the dry run's R3 counts",
+   "ratio_bound_derivation": "5 lines x 20 words x 2.7162 tokens per whitespace word (the MAXIMUM observed over every sealed Perception note of this carrier)",
+   "ratio_bound_tokens": 271.6,
+   "worst_case_headroom_tokens": 66
+  },
+  "synthetic_compliant_note_tokens": {
+   "digit_dense_worst_case_compliant_note": 574,
+   "typical_compliant_note": 75
+  }
+ },
+ "truncation_argument": {
+  "receipt": "docs/readiness/2026-09-27-e21-native-window-e41-v1/perception-trace-read-v1.json",
+  "mode_rule": "applied in order, first match wins: LOOP if the 6-gram repetition share >= 0.20; TRANSCRIPT if the note re-emits >= 0.50 of the same window's direct-arm transcript 4-gram set; ENUMERATION if it has >= 10 non-empty lines (twice the E41 line bound); PROSE otherwise",
+  "pooled": {
+   "perception_contacts": 354,
+   "stopped": 272,
+   "stopped_within_e41_bound": 0,
+   "tokens_per_whitespace_word": {
+    "max": 2.7162,
+    "min": 1.1716,
+    "n": 354,
+    "p25": 1.3416,
+    "p50": 1.45315,
+    "p75": 1.6,
+    "p90": 1.7407,
+    "p95": 1.8235
+   },
+   "truncated": 82,
+   "truncated_modes": {
+    "ENUMERATION": 12,
+    "LOOP": 60,
+    "PROSE": 5,
+    "TRANSCRIPT": 5
+   },
+   "truncated_within_e41_bound": 0
+  },
+  "per_run": [
+   {
+    "label": "E35-sub10",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1",
+    "caps": {
+     "1024": 342
+    },
+    "perception_contacts": 342,
+    "truncated": 75,
+    "truncated_modes": {
+     "ENUMERATION": 9,
+     "LOOP": 59,
+     "PROSE": 3,
+     "TRANSCRIPT": 4
+    },
+    "truncated_lines": {
+     "max": 97,
+     "min": 1,
+     "n": 75,
+     "p25": 1,
+     "p50": 23,
+     "p75": 38,
+     "p90": 49,
+     "p95": 62
+    },
+    "truncated_loops": {
+     "count": 59,
+     "loop_onset_word": {
+      "max": 377,
+      "min": 12,
+      "n": 59,
+      "p25": 72,
+      "p50": 127,
+      "p75": 192,
+      "p90": 271,
+      "p95": 312
+     },
+     "loop_period_words": {
+      "max": 291,
+      "min": 6,
+      "n": 59,
+      "p25": 15,
+      "p50": 26,
+      "p75": 101,
+      "p90": 153,
+      "p95": 269
+     },
+     "onset_within_100_words": 27,
+     "with_duplicate_lines_or_single_line": 40
+    },
+    "stopped_reemit_ge_half_window": 36,
+    "stopped": 267
+   },
+   {
+    "label": "E35-four-row",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-V1",
+    "caps": {
+     "1024": 4
+    },
+    "perception_contacts": 4,
+    "truncated": 1,
+    "truncated_modes": {
+     "LOOP": 1
+    },
+    "truncated_lines": {
+     "max": 1,
+     "min": 1,
+     "n": 1,
+     "p25": 1,
+     "p50": 1,
+     "p75": 1,
+     "p90": 1,
+     "p95": 1
+    },
+    "truncated_loops": {
+     "count": 1,
+     "loop_onset_word": {
+      "max": 72,
+      "min": 72,
+      "n": 1,
+      "p25": 72,
+      "p50": 72,
+      "p75": 72,
+      "p90": 72,
+      "p95": 72
+     },
+     "loop_period_words": {
+      "max": 60,
+      "min": 60,
+      "n": 1,
+      "p25": 60,
+      "p50": 60,
+      "p75": 60,
+      "p90": 60,
+      "p95": 60
+     },
+     "onset_within_100_words": 1,
+     "with_duplicate_lines_or_single_line": 1
+    },
+    "stopped_reemit_ge_half_window": 1,
+    "stopped": 3
+   },
+   {
+    "label": "E39",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39-V1",
+    "caps": {
+     "320": 4
+    },
+    "perception_contacts": 4,
+    "truncated": 4,
+    "truncated_modes": {
+     "ENUMERATION": 2,
+     "PROSE": 2
+    },
+    "truncated_lines": {
+     "max": 10,
+     "min": 6,
+     "n": 4,
+     "p25": 7,
+     "p50": 8.5,
+     "p75": 10,
+     "p90": 10,
+     "p95": 10
+    },
+    "truncated_loops": {
+     "count": 0,
+     "loop_onset_word": {
+      "n": 0
+     },
+     "loop_period_words": {
+      "n": 0
+     },
+     "onset_within_100_words": 0,
+     "with_duplicate_lines_or_single_line": 0
+    },
+    "stopped_reemit_ge_half_window": 0,
+    "stopped": 0
+   },
+   {
+    "label": "E39b",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1",
+    "caps": {
+     "640": 4
+    },
+    "perception_contacts": 4,
+    "truncated": 2,
+    "truncated_modes": {
+     "ENUMERATION": 1,
+     "TRANSCRIPT": 1
+    },
+    "truncated_lines": {
+     "max": 21,
+     "min": 19,
+     "n": 2,
+     "p25": 19,
+     "p50": 20.0,
+     "p75": 21,
+     "p90": 21,
+     "p95": 21
+    },
+    "truncated_loops": {
+     "count": 0,
+     "loop_onset_word": {
+      "n": 0
+     },
+     "loop_period_words": {
+      "n": 0
+     },
+     "onset_within_100_words": 0,
+     "with_duplicate_lines_or_single_line": 0
+    },
+    "stopped_reemit_ge_half_window": 1,
+    "stopped": 2
+   }
+  ]
+ },
+ "composed_config_diff": {
+  "dry-run": {
+   "parent": {
+    "experiment": "e21-native-window-four-row-e39b-dry-run-v1",
+    "cell": "e21-native-window-system-four-row-e39b-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1",
+    "composed_config_hash_as_committed": "615d7f227348e7c71ac0fd9bc266dfe3693d22c2d86381055c915802f2680630",
+    "protocol_hash_as_committed": "a06b65a712a72b29a002131b2261ab6cdbf7baab1cf190a9a6b6fd7783986cec"
+   },
+   "child": {
+    "experiment": "e21-native-window-four-row-e41-dry-run-v1",
+    "cell": "e21-native-window-system-four-row-e41-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1"
+   },
+   "differing_leaf_paths": 26,
+   "pins": [
+    {
+     "path": "phase_material.perception.instruction_template",
+     "old": "probes/e21_native_window_system_perception_v1.txt",
+     "new": "probes/e21_native_window_system_perception_v2.txt",
+     "class": "pin"
+    }
+   ],
+   "episode_config": {
+    "parent": {
+     "finite_completion_scope": "answering-node",
+     "role_completion_caps": {
+      "perception": 640,
+      "reviewer": 640
+     },
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    },
+    "child": {
+     "finite_completion_scope": "answering-node",
+     "role_completion_caps": {
+      "perception": 640,
+      "reviewer": 640
+     },
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    }
+   },
+   "base_lock_v31_paths": [],
+   "bookkeeping_paths": [
+    "cells[0].attempt_id",
+    "cells[0].attempt_note",
+    "cells[0].baseline_fragment",
+    "cells[0].cell_id",
+    "cells[0].readiness.reason",
+    "cells[0].readiness.requirements",
+    "cells[0].readiness.requirements[0].expected_decision_id",
+    "cells[0].readiness.requirements[0].kind",
+    "cells[0].readiness.requirements[0].reason",
+    "cells[0].readiness.requirements[0].relpath",
+    "cells[0].readiness.requirements[0].sha256",
+    "cells[0].readiness.state",
+    "cells[0].run_id",
+    "date",
+    "execution_plan_note",
+    "experiment_id",
+    "native_contact_fit.attempt_id",
+    "native_contact_fit.run_id",
+    "native_episode.episode_id",
+    "purpose",
+    "readiness.reason",
+    "stage3_algorithm.id",
+    "stage3_algorithm.note",
+    "stage3_algorithm.operators_used",
+    "what_this_is"
+   ]
+  },
+  "sub10": {
+   "parent": {
+    "experiment": "e21-native-window-sub10-direct-vs-system-v1",
+    "cell": "e21-native-window-system-sub10-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1",
+    "composed_config_hash_as_committed": "5ad96f131472dbca64d5ef03b8e3feac32b2af2fe244dfa2c50c6cabc60607c2",
+    "protocol_hash_as_committed": "bc7dbaab9ddda427447bf7a4e94f8c1e124617999d5c136dfe036c4ed903616f"
+   },
+   "child": {
+    "experiment": "e21-native-window-sub10-e41-v1",
+    "cell": "e21-native-window-system-sub10-e41-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1"
+   },
+   "differing_leaf_paths": 61,
+   "pins": [
+    {
+     "path": "phase_material.perception.instruction_template",
+     "old": "probes/e21_native_window_system_perception_v1.txt",
+     "new": "probes/e21_native_window_system_perception_v2.txt",
+     "class": "pin"
+    }
+   ],
+   "episode_config": {
+    "parent": {
+     "finite_completion_scope": "episode",
+     "role_completion_caps": {},
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    },
+    "child": {
+     "finite_completion_scope": "answering-node",
+     "role_completion_caps": {
+      "perception": 640,
+      "reviewer": 640
+     },
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    }
+   },
+   "base_lock_v31_paths": [
+    "native_episode.finite_completion_scope",
+    "native_episode.roles.perception.max_completion_tokens",
+    "native_episode.roles.reviewer.max_completion_tokens",
+    "phase_material.reviewer.instruction_template"
+   ],
+   "bookkeeping_paths": [
+    "cells[0].attempt_id",
+    "cells[0].attempt_note",
+    "cells[0].baseline_fragment",
+    "cells[0].cell_id",
+    "cells[0].execution_plan.planned_gpu_hours",
+    "cells[0].execution_plan.planned_model_calls",
+    "cells[0].execution_plan.planned_speech_audio_seconds",
+    "cells[0].policy",
+    "cells[0].readiness.reason",
+    "cells[0].readiness.requirements",
+    "cells[0].readiness.requirements[0].expected_decision_id",
+    "cells[0].readiness.requirements[0].kind",
+    "cells[0].readiness.requirements[0].reason",
+    "cells[0].readiness.requirements[0].relpath",
+    "cells[0].readiness.requirements[0].sha256",
+    "cells[0].readiness.state",
+    "cells[0].run_id",
+    "cells[1].allowed_execution_stages[0]",
+    "cells[1].allowed_execution_stages[1]",
+    "cells[1].allowed_execution_stages[2]",
+    "cells[1].arm",
+    "cells[1].attempt_id",
+    "cells[1].baseline_fragment",
+    "cells[1].cell_id",
+    "cells[1].dataset_fragment",
+    "cells[1].execution_plan.planned_gpu_hours",
+    "cells[1].execution_plan.planned_model_calls",
+    "cells[1].execution_plan.planned_speech_audio_seconds",
+    "cells[1].execution_plan.split_role",
+    "cells[1].model_fragment",
+    "cells[1].policy",
+    "cells[1].readiness.reason",
+    "cells[1].readiness.requirements[0].expected_decision_id",
+    "cells[1].readiness.requirements[0].kind",
+    "cells[1].readiness.requirements[0].reason",
+    "cells[1].readiness.requirements[0].relpath",
+    "cells[1].readiness.requirements[0].sha256",
+    "cells[1].readiness.state",
+    "cells[1].run_id",
+    "date",
+    "execution_plan.planned_gpu_hours",
+    "execution_plan.planned_model_calls",
+    "execution_plan.planned_speech_audio_seconds",
+    "execution_plan_note",
+    "experiment_id",
+    "native_contact_fit.attempt_id",
+    "native_contact_fit.run_id",
+    "native_episode.episode_id",
+    "purpose",
+    "readiness.reason",
+    "readiness.state",
+    "service_session",
+    "stage3_algorithm.id",
+    "stage3_algorithm.note",
+    "stage3_algorithm.operators_used",
+    "what_this_is"
+   ]
+  }
+ },
+ "sub10_comparator_binding": {
+  "relpath": "docs/readiness/2026-09-27-e21-native-window-e41-v1/sub10-comparator-binding-v1.json",
+  "sha256": "e49c3a48b204920a9c4eaae58c1571483504fde8877cb94e2f3c3243c2bec46a"
+ }
+}

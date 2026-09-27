@@ -1,0 +1,75 @@
+{
+  "schema": "saea-receipts-only-read-recipe-v1",
+  "recipe_id": "e21-native-window-e41-dry-run-receipts-read-v1",
+  "registered_at_utc": "2026-09-27T16:00:00.000000+00:00",
+  "title": "Item E41 four-row dry run on the Earnings21+ConEC native-window system form: receipts-only read",
+  "cell_kind": "STRUCTURAL DRY RUN -- the receipt assertions are the deliverable. No score is quoted.",
+  "authority": {
+    "item": "E41, row 103 (definition) and row 158 (carry it out) of docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "rule_source": "the E39 / E39b rule R1-R3 (docs/readiness/2026-09-23-e21-native-window-four-row-e39b-v1/analysis-recipe-v1.json), with R3 read on the Perception node first",
+    "trace_read": "docs/readiness/2026-09-27-e21-native-window-e41-v1/perception-trace-read-v1.json"
+  },
+  "claim_boundary": "Structural receipts on four historically exposed discovery windows of one call. No score, effectiveness, comparison or generalization claim of any kind.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "run_ids": {
+    "arm": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1",
+    "fit": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1-FIT-V1"
+  },
+  "inputs": {
+    "sealed_manifest": "the single attempt's COMPLETED manifest for SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1",
+    "trace": "$SPEECHRL_DATA_DIR/runs/SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1/attempt-e21-native-window-system-four-row-e41-v1/SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1.trace.jsonl (receipt FIELDS only)",
+    "comparators": "the sealed E39b dry run SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1 (flight commit 48c4bd1e; Perception 504 / 523 / 640 / 640 tokens, 2 truncated) and the E35 four-row direct arm SAEA-E21-NATIVE-WINDOW-DIRECT-FOUR-ROW-V1, read structurally, never re-scored"
+  },
+  "decision_rule": {
+    "kind": "receipts-only; no estimator, no interval, no margin, no bar",
+    "assertions": [
+      {
+        "id": "R1",
+        "statement": "ZERO retained rows carry a terminal_disposition whose role_id is 'perception' or 'reviewer' together with an abstention (unchanged from E39 / E39b).",
+        "verdict_effect": "a single such row FAILS"
+      },
+      {
+        "id": "R2",
+        "statement": "4 of 4 windows deliver NON-EMPTY text: one saea-deliver-earnings-text-v1 receipt per window, zero blank deliveries (unchanged from E39 / E39b).",
+        "verdict_effect": "fewer than 4 FAILS"
+      },
+      {
+        "id": "R3",
+        "statement": "The Perception truncation RATE -- Perception contacts with finish_reason 'length' at the 640 cap, over Perception contacts -- is REPORTED with its exact count on every verdict, TARGET ZERO; the Reviewer truncation count at its 640 cap is reported beside it (E39 / E39b's R3 counted both).",
+        "verdict_effect": "item E41's own deliverable is R3 = 0 / 4 Perception truncations; a non-zero count FAILS E41 with the named cause and the truncated note's structure (lines, words per line, repetition share) reported; a non-zero Reviewer count is a named cause carried into the next registration"
+      }
+    ],
+    "pass": "PASS iff R1 and R2 hold and zero Perception or Reviewer contacts are length-truncated.",
+    "consequence": "On PASS root may mint the sub10 decision receipt (e21-native-window-e41-sub10-admission-v1) and flip the sub10 re-read. On FAIL the sub10 cell stays HELD, the named cause is registered, and at most ONE recovery re-registration of this dry run is allowed (a second failure stops E41 and the fix is proven on a fresh four-row dry run)."
+  },
+  "tables_required": [
+    "per-role contact counts beside the sealed E39b dry run's (25 contacts)",
+    "per-role finish_reason counts (stop / length / other) beside E39b's",
+    "terminal_disposition table: role_id x reason x count, this arm and E39b",
+    "delivery table: window, delivered non-empty (yes / no), normaliser receipt present (yes / no)",
+    "contact and repeated-speech-second totals against the registered ceilings 44 / 3,960"
+  ],
+  "diagnostics_required": [
+    "the realized Perception completion-token distribution against the 640 cap and against the E41 bound (the digit-dense worst case 574 tokens), counts and quantiles only",
+    "Perception note compliance with the bound, counted on the sealed responses with the SAME feature code as scripts/analysis/e21_e41_perception_note_trace_read.py (non-empty lines <= 5, words per line <= 20, 6-gram repetition share, window-transcript 4-gram re-emission against the E35 four-row direct arm): counts only, never text",
+    "the Solver completion tokens per window beside E39b's (the answering node must stay near the direct arm's count)",
+    "the number of REVISE / ACCEPT Planner routes and byte-identical second Solver drafts, beside E39b's",
+    "every abort, refusal and recovery re-registration, with its cause"
+  ],
+  "scorer": {
+    "runs": "NONE is read. The finalize may schedule the baseline's scorer stack once; this read quotes no score.",
+    "why": "n = 4 carries no quality information; the deliverable is the truncation mode, not a number."
+  },
+  "output": {
+    "verdict_document": "docs/results/2026-09-2x-e21-native-window-e41-four-row-dry-run-read.md",
+    "prints_only_aggregates": "counts, role ids, reasons, booleans and hashes only",
+    "harness_admission": "NONE -- a base item admits no module"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "plan_kind": "generation",
+  "cell": "e21-native-window-system-four-row-e41-v1",
+  "experiment": "e21-native-window-four-row-e41-dry-run-v1",
+  "campaign_plan": "configs/campaign/e21-native-window-system-four-row-e41-v1.json",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-e21-native-window-e41-v1/protocol-registered-v1.json",
+    "sha256": "6a6a3161c190dd2a896b008b8935449eeeb8e28f44b3b3931cd3cae8452436e3"
+  },
+  "root_registration_required": true,
+  "execution_plan": {
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1",
+    "attempt_id": "attempt-e21-native-window-system-four-row-e41-v1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "earnings21-original",
+    "split_role": "discovery",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "planned_model_calls": 44,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 3960,
+    "protocol_hash": "4c4f5d51b3b9b6c763d99adb488de4b5facb4e2741361118d9246f4f9ab0bd73"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/e21-native-window-system-four-row-e41-v1.json; the campaign acquires its own GenerationLease against the resident E21 session and attaches only.",
+  "execution_location": "Shared six-node controller (phase-native-review-revise-acquire-v1: perception, solver, reviewer x3, planner, zero-contact acquisition, delivery normaliser) and the OpenJiuwen executor, through core.flight.FlightRuntime.",
+  "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "repeated_speech_audio_seconds_cap": 3960
+  },
+  "modules": {
+    "base": "the Earnings21 + ConEC six-node native system form at base lock v3.1 exactly as the sealed E39b dry run flew it (flight commit 48c4bd1e): phase-native-review-revise-acquire-v1, ceiling 11, tool-free, finite_completion_scope answering-node, Perception / Reviewer caps 640 / 640, tool-free Reviewer probe v2, finite_completion_policy deliver-latest-or-abstain, react_exhaustion_policy continue-without-answer, the np4 x 24,576 max1024 E21 geometry, the shared controller / FlightRuntime / OpenJiuwen path; roster: the four-row roster batch SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1 (4 native windows of call 4320211).",
+    "factor": "ONE pin: phase_material.perception.instruction_template probes/e21_native_window_system_perception_v1.txt -> probes/e21_native_window_system_perception_v2.txt (the bounded Perception note). Everything else is the base's own bytes; the remaining composed differences are bookkeeping (docs/readiness/2026-09-27-e21-native-window-e41-v1/composed-config-diff-v1.json).",
+    "zero_added_contacts": "The role graph is untouched: the ceiling stays 11 contacts per window."
+  },
+  "scoring": "At most one complete official scoring job at finalize over the baseline's unchanged scorer stack (asr-wer-whisper, conec-entity-wer-official mirror, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1, cost), through core.scoring_batch, never sharded. The dry-run read is RECEIPTS ONLY and quotes no score.",
+  "quality_read_gate": "No read of any kind before the single attempt's manifest is sealed and complete; the read prints or persists no utterance, transcript, reference or delivered text.",
+  "requires_before_flight": [
+    "The roster's execution-unit subset, window feature packets and knowledge snapshot present at their pinned hashes (they are: the sealed parent flights used them).",
+    "The resident serving session serving-e21-native-window-flightruntime-np4-max1024-v1 up on the E21 geometry and the SLURP np4 session stopped; the flight attaches and never spawns or stops a server.",
+    "Root has minted coordination/e21-native-window-e41-v1/root-admission-dry-run-v1.json (e21-native-window-e41-dry-run-admission-v1) and flipped this cell with scripts/flights/repin_cell.py; readiness is HELD until then."
+  ],
+  "prepared_phase_supply_note": "NONE and none is pinned: the program declares no supplied first phase (item E38); --allow-output-change must never be passed.",
+  "fit_arithmetic": "4 units x 11 native contacts x (1 speech packet + 3 endpoints) = 176",
+  "registration_state": "REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending); readiness HELD. The flip moves the composed and protocol hashes below and the re-pin tool rewrites them.",
+  "composed_config_hash": "a47088808842e76ce040a1678fa410d9346b5605a2266f95d4cc96878e18aaf8",
+  "registered_at_utc": "2026-09-27T16:00:00.000000+00:00",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e41, branch fable/e41, base commit a50a0d1c",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true,
+  "attempt_note": "First attempt of this run id. At most one separately registered recovery after a named cause; a second failure stops the flight."
+}

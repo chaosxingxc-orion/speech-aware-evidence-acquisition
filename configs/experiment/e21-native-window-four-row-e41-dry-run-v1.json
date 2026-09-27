@@ -1,0 +1,59 @@
+{
+  "experiment_id": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-E41-DRY-RUN-V1",
+  "date": "2026-09-27",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Item E41 (owner decisions 103 and 158): a four-row dry run of the BOUNDED Perception note on the Earnings21 + ConEC six-node system form, on the SAME roster, the SAME shared harness (rails.controllers.EvidenceAgentController, core.flight.FlightRuntime, the OpenJiuwen executor) and the SAME E21 geometry the E39b dry run flew, with one pin moved (the Perception instruction). NO optimisation, NO new mechanism, NO flight: registered-before-contact configuration only. No score, comparison, decision, effectiveness or generalization claim may be made from this proof.",
+  "failure_policy": "Preserve original failure and contact record. No automatic restart/replay/geometry/output-cap change. At most one separately registered recovery after a named cause and bounded proof.",
+  "population": {
+    "carrier": "earnings21-original",
+    "count": 1,
+    "execution_units": 4,
+    "dataset_fragment": "e21-native-window-four-row-v1",
+    "roster_receipt": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "historically_exposed": true
+  },
+  "cells": [
+    {
+      "cell_id": "e21-native-window-system-four-row-e41-v1",
+      "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1",
+      "attempt_id": "attempt-e21-native-window-system-four-row-e41-v1",
+      "arm": "speech-feature-query",
+      "policy": "phase-native-review-revise-acquire-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "dataset_fragment": "e21-native-window-four-row-v1",
+      "baseline_fragment": "e21-native-window-system-four-row-e41-v1",
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "E41 dry run (2026-09-27): registered before contact; decision id e21-native-window-e41-dry-run-admission-v1 at coordination/e21-native-window-e41-v1/root-admission-dry-run-v1.json; held until root mints and flips.",
+        "requirements": []
+      },
+      "execution_plan": {
+        "split_role": "discovery",
+        "planned_model_calls": 44,
+        "planned_gpu_hours": 0.5,
+        "planned_speech_audio_seconds": 3960
+      },
+      "attempt_note": "First attempt of this run id. The one pin against e21-native-window-system-four-row-e39b-v1 is phase_material.perception.instruction_template probes/e21_native_window_system_perception_v1.txt -> probes/e21_native_window_system_perception_v2.txt. Every pinned artifact (execution-unit subset, window feature packets, knowledge snapshot) is the parent's, unchanged: those pins are bound to the four-row roster batch SAEA-E21-NATIVE-WINDOW-FOUR-ROW-V1, not to a run id."
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 3960,
+    "split_role": "discovery"
+  },
+  "execution_plan_note": "One arm only (the E41 system form); its direct comparator is the already-flown e21-native-window-direct-four-row-v1 cell, and its structural comparator the sealed E39b dry run, on the same roster and the same serving geometry. Ceilings, not targets, enforced run-cumulatively per run id by the runtime. Speech seconds are REPEATED seconds: every native-episode contact re-sends the window audio, so the ceiling is windows x 11 x window seconds.",
+  "service_session": "serving-e21-native-window-flightruntime-np4-max1024-v1",
+  "stage3_algorithm": {
+    "id": "none",
+    "operators_used": [],
+    "note": "This cell carries NO training-free RL operator and says so explicitly: item E41 is unfinished Stage-2 engineering base (owner decision 158) -- one instruction pin that bounds the Perception note of the Earnings system form so the shared harness carries that form soundly -- with no rollout, no per-sample scoring, no credit assignment, no update operator and no learned artifact."
+  }
+}
