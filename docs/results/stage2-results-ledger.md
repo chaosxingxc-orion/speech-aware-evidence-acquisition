@@ -59,6 +59,8 @@ The ADJUST items and their new readings:
 
 Each affected row or section below carries one appended line starting `Reclassification 2026-09-27`; the JSON twin carries the same content in a `reclassification_2026_09_27` field per row and a top-level block of the same name.
 
+Follow-on (2026-09-27, after A2T-AA landed and owner decision 167 accepted h_A2T): the deferred Audio2Tool item A2T-ORG-1 HARMFUL was re-read against h_A2T and is **KEEP** (official tool accuracy -3.225 [-4.30, -2.13] at n = 4,000, beyond h_A2T 1.625); its secondary-loss claim is KEEP-PROVISIONAL. It sits outside the 57 counted items. See [`2026-09-27-a2t-org-1-reread-against-h-a2t.md`](2026-09-27-a2t-org-1-reread-against-h-a2t.md).
+
 ## The rules this ledger follows
 
 - **Family rule (owner, 2026-09-08).** Every "not worse" guard is a non-inferiority test whose margin is the half-width of the carrier's OWN same-request null. A margin imported from another carrier is labelled as imported wherever it decided a cell, and the row says so.
@@ -1410,6 +1412,8 @@ The counts in this section apply only to the 53 historical rows below. They inte
 | GPU-hours and contacts | 4,000 contacts of 4,200 registered (4,008 planned); 23,418.083083 of 24,600 registered speech-audio seconds; generation wall 2,586 s; 3,752.7 prompt tokens per call; 26 parse failures of 4,000. Realized GPU hours are not stated in the verdict. |
 | named next step | A2T-ORG-2 is registered against the official-protocol baseline, not against ORG-1, and its contrast notes must target the SAME-domain twins, because that is where 1,118 of the 1,673 misses now live. |
 | note | One methodological caution now measured rather than assumed: a prompt-form change that supplies real, correct, release-authored knowledge can cost three points on this carrier, so any later ORG or SUPPLY mechanism that changes the shape of the registry block owes a same-shape control. |
+
+**Reclassification 2026-09-27 (owner decision 166, re-read against h_A2T under owner decision 167; [note](2026-09-27-a2t-org-1-reread-against-h-a2t.md)):** A2T-ORG-1 KEEP; official tool accuracy -3.225 pp, CI95 [-4.30, -2.13] at n = 4,000 (A2T-AA driver bootstrap, seed 20260903, 10,000 draws), 2.0x h_A2T 1.625 and beyond the A/A offset + h (2.625); the comparator-geometry-matched 2,500 rows read -2.76 [-4.20, -1.32]; the paired 400 reads -2.00 [-5.75, +1.50]. The secondary-loss claim (exact match -0.65, macro parameter F1 -0.78) is KEEP-PROVISIONAL: inside h_A2T_em 1.375 and the 2.23 parameter-F1 margin, and both reverse sign on the paired 400 (+1.00, +0.33); rule missed: secondary loss inside the carrier's own null, cross-flight contrast with no in-chain A/A; settling: none (ORG line closed). Comparator caveat: the verdict's comparator is the 2026-09-04 official-protocol form at np2/np3, not the native-role direct at np3 x 32,768 that h_A2T was measured on.
 
 ---
 
