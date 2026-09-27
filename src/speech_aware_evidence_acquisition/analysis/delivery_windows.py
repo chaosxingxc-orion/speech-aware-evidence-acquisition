@@ -280,6 +280,37 @@ def verified_delivery_windows(
 __all__ = ["DeliveryWindowsError", "verified_delivery_windows"]
 
 
+def _replayed_normalised_text(block: object, raw_text: str) -> str:
+    """Re-derive a normalised unit's delivered text from its raw response (I7n).
+
+    The receipt must name a registered delivery normaliser, its recorded input
+    must be the raw response bytes, the rule must be deterministic, and its
+    output must hash to the receipt's recorded output digest.
+    """
+    from ..core.base import DELIVERY_NORMALISERS, CoreError
+    from ..rails import delivery_normalisers as _registrations  # noqa: F401
+
+    receipt = _mapping(block, "delivery normalisation receipt")
+    if {"normaliser_id", "input_sha256", "output_sha256"} - set(receipt):
+        raise DeliveryWindowsError("delivery normalisation receipt lacks its identity or digests")
+    if sha256(raw_text.encode("utf-8")) != receipt["input_sha256"]:
+        raise DeliveryWindowsError(
+            "delivery normalisation did not run on the recorded model response"
+        )
+    try:
+        rule = DELIVERY_NORMALISERS.resolve(str(receipt["normaliser_id"]))
+        first, second = rule(raw_text), rule(raw_text)
+    except (CoreError, TypeError, ValueError) as error:
+        raise DeliveryWindowsError(f"delivery normaliser cannot be replayed: {error}") from error
+    if first.text != second.text:
+        raise DeliveryWindowsError("delivery normaliser is not deterministic")
+    if sha256(first.text.encode("utf-8")) != receipt["output_sha256"]:
+        raise DeliveryWindowsError(
+            "delivery normaliser replay differs from its recorded output"
+        )
+    return first.text
+
+
 def verified_execution_unit_windows(
     bundle: VerifiedBundle,
 ) -> dict[str, tuple[WindowSpan, ...]]:
@@ -392,10 +423,10 @@ def verified_execution_unit_windows(
                 not isinstance(text, str)
                 or raw_request.get("payload_sha256") != source.get("request_sha256")
                 or raw_response.get("response_sha256") != source.get("response_sha256")
-                or raw_response.get("response_text_sha256") != source.get("raw_text_sha256")
-                or sha256(text.encode("utf-8")) != source.get("raw_text_sha256")
+                or sha256(text.encode("utf-8")) != raw_response.get("response_text_sha256")
             ):
                 raise DeliveryWindowsError("terminal request or response differs from delivery")
+            raw_text_sha256 = raw_response["response_text_sha256"]
             episode = episodes.get(execution_unit_scope(unit.request_key))
             kind = "direct"
             if episode is not None:
@@ -420,7 +451,7 @@ def verified_execution_unit_windows(
                         ("request_id", request_id),
                         ("request_sha256", source["request_sha256"]),
                         ("response_sha256", source["response_sha256"]),
-                        ("response_text_sha256", source["raw_text_sha256"]),
+                        ("response_text_sha256", raw_text_sha256),
                     )):
                         raise DeliveryWindowsError("delivery is not the recorded native Solver")
             elif (
@@ -428,6 +459,21 @@ def verified_execution_unit_windows(
                 or raw_request.get("tool_id") == "native-terminal-abstention-v1"
             ):
                 raise DeliveryWindowsError("native unit delivery has no episode receipt")
+            # E11/E35: a unit whose episode ran the registered delivery
+            # normaliser delivered that rule's output over the recorded raw
+            # response, and its source hash names the DELIVERED bytes. Those
+            # bytes are re-derived here from the raw response, never trusted.
+            normalisation = episode.get("deliver_normaliser") if episode is not None else None
+            if normalisation is None:
+                delivered_text = text
+            elif kind in ("abstention", "context-abstention"):
+                raise DeliveryWindowsError(
+                    "an abstention cannot carry a delivery normalisation receipt"
+                )
+            else:
+                delivered_text = _replayed_normalised_text(normalisation, text)
+            if sha256(delivered_text.encode("utf-8")) != source.get("raw_text_sha256"):
+                raise DeliveryWindowsError("terminal request or response differs from delivery")
             if kind != "abstention":
                 payload = _mapping(raw_request.get("payload"), "terminal request payload")
                 if payload.get("sample_id") != parent or payload.get("request_id") != request_id:
@@ -435,7 +481,9 @@ def verified_execution_unit_windows(
             saturated, skipped = source.get("saturated"), source.get("skipped")
             if not isinstance(saturated, bool) or not isinstance(skipped, bool):
                 raise DeliveryWindowsError("execution-unit terminal flags must be booleans")
-            delivered = normalize_terminal_response(text, saturated=saturated, skipped=skipped)
+            delivered = normalize_terminal_response(
+                delivered_text, saturated=saturated, skipped=skipped
+            )
             units.append(unit)
             terminals.append({
                 "sample_id": parent, "execution_unit_id": unit.request_key,
@@ -443,7 +491,7 @@ def verified_execution_unit_windows(
                 "request_sha256": source["request_sha256"],
                 "response_sha256": source["response_sha256"],
                 "response_text_sha256": source["raw_text_sha256"],
-                "text": text, "saturated": saturated, "skipped": skipped,
+                "text": delivered_text, "saturated": saturated, "skipped": skipped,
             })
             spans.append(WindowSpan(
                 parent, index, request_id, record.start_seconds, record.end_seconds,
