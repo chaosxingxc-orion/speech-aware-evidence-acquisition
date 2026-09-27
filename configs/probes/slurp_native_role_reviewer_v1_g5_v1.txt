@@ -1,0 +1,1 @@
+Then review the Solver proposal against the current speech and role history. Do not request a transcript or invent a tool result. State concise findings for the Planner.

@@ -1,0 +1,71 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-g5-fold-a-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell G5, registered before contact on 2026-09-27 from the locked cell PLAN smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement; the requirements list is empty by design, --allow-output-change must never be passed, and the minted supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f (the Reviewer instruction is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-27",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops this cell and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-g5-fold-a-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of cell G5: that the repaired Reviewer instruction loads by its new relpath, that every request fits, that the Reviewer still answers on its first contact with no tool call and that the episode completes. It is scored by no one and read by no one: four rows can never be evidence of benefit or of harm. The Reviewer node's instruction template moves from probes/slurp_native_role_reviewer_v1.txt to probes/slurp_native_role_reviewer_v1_g5_v1.txt: the same instruction with the two sentences that order the Reviewer to call the task-contract tool 'exactly once through its native function schema' and to 'use only its returned source-bound result' DELETED, and nothing added -- no new guidance, no rephrasing of the surviving clauses (deletion-only, proven word by word). That toolkit was RETIRED as item E25 after the B1-notool read (owner decisions 55, 56 and 61); the locked plan renders 0 tool schemas in every contact, so the deleted sentences ordered an action the node cannot perform and the 2026-09-26 system-summary diagnostic recorded the consequence: summaries treating a Reviewer's textual tool-result claims as real execution while the tool event list is empty. Measured with the audit's own vocab-only tokenizer: the deleted order is 52 of the instruction's 82 tokens (63 %), so the pin costs -52 prompt tokens per Reviewer contact. Nothing else moves: roster, geometry, session, program and its 11-contact ceiling, the three stores and their pins, the exemplar k of 20, the role graph, every other template, the deliver normaliser and the scorers are the locked PLAN plan's, byte for byte.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is a one-pin instruction repair -- the deletion of an order to use a retired tool -- chosen by a model-free audit over sealed bytes and flown as a row-127 engineering-base no-harm item, with no rollout, no per-sample scoring, no credit assignment, no update operator and no evolving store. It is deliberately NOT labelled sealed-credit-system-policy-v1: that id's first instance is reserved for the composed system policy, and a deletion is not a policy search.",
+    "operators_used": []
+  }
+}

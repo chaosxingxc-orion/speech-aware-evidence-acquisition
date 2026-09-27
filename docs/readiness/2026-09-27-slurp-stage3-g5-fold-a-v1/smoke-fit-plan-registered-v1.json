@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
+  "composed_config_hash": "57d0ff88bdf8f0c28d418056b20d0fcef48b24589e9980de9b3dfed1a4c7173a",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "602e9ef33e626ca4825d4ec6fdd013d09fca372f9f9e8f1138c8071361b98b91",
+    "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; it measures request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "one_factor": "Delete the two sentences that order, describe and depend on the retired tool; add nothing; rephrase nothing. The surviving text is the audit's own 'review order' partition, byte for byte. Composed key phase_material.reviewer.instruction_template: probes/slurp_native_role_reviewer_v1.txt -> probes/slurp_native_role_reviewer_v1_g5_v1.txt (sha256 724a437de1eeb1167d11395ad78605d595e324e682cff552c27cb84caa8cef35).",
+  "plan_kind": "fit",
+  "preparation_base_commit": "81307ac3",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "note": "NONE COMMITTED, by design: the flip mints each cell's own under its own run id (item E16), the readiness requirements list is empty, and --allow-output-change must never be passed. the Reviewer instruction is not an input to the first-phase supply, so every supply the flip mints for this family must carry this output digest on all 1,080 rows (the smoke on its four); a different digest means the knowledge channel moved -- stop and report",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "f730ddedb1b4281492366bfe028fca5b81ce7abe29b534d30eab25a511efdc0e"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-FIT-V1: Four-row form smoke of cell G5. It measures request envelopes only and reads nothing.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
+  "registered_at_utc": "2026-09-27T13:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-g5, branch fable/g5",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
