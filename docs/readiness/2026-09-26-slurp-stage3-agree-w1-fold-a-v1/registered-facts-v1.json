@@ -39,10 +39,10 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-w1-fold-a-v1",
-      "composed_config_hash": "80994f4a0173f8f4e7891b60c2bc3f99df04c56925015016dbe76973dd0d6a7b",
+      "composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "declares_agreement_source": true,
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1",
-      "protocol_hash": "90abf80ca48725c92e0245e425f0837d729049eb4ce632bde39d4b208efbfca3",
+      "protocol_hash": "d33252e173b23f74144b5b7d318c8bece8e2c3a88979b31a30f3c73034eddce3",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
     },

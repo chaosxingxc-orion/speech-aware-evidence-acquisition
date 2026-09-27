@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "f243ac64cfa2184ca04a13211bf8b8ec8ef659561d8b0c33953c6138f0245265"
+    "sha256": "98bb3fe66d9314ce9948a7f6ab91b4947a0d557b57c5f82fa72c591bdc689492"
   },
   "purpose": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1: Four-row form smoke of cell AGREE. Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",

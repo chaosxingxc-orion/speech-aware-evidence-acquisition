@@ -16,6 +16,13 @@
         "reason": "Cell AGREE registered before contact on 2026-09-26 from the sealed cell PLAN fragments by script (decision 58). Comparator: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, never re-flown, read at the in-chain A/A replicate SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1 flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-agree-w1-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-agree-w1-fold-a-v1/root-admission-v1.json",
+            "sha256": "ebdf2f439bf2254ccfffc419bb89580fb7438c9d6d3b3deb03dd4e8d24044f47",
+            "reason": "Decision slurp-stage3-agree-w1-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -24,11 +31,11 @@
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v1.json",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
             "sha256": "be70d4d0fa990a1b064ebb28f4c598d5424ea5ccaca6a66f7503154c5b1e6600"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
     }
