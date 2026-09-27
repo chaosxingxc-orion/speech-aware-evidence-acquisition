@@ -1,0 +1,51 @@
+{
+  "cell": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
+  "composed_config_hash": "1d871be17ee13c40548029ac9e755cde39de6b473d4ad5a01983f69133f630ca",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 2.0,
+    "planned_model_calls": 2200,
+    "planned_speech_audio_seconds": 1184,
+    "protocol_hash": "5e820cd2cb9b842aac96e6ba7c20b1a541e16c83fc9d87b3472509d9087cd82f",
+    "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; it measures request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-det-np1-nocache-v1",
+  "experiment": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 2200,
+    "generation_calls_cap": 550,
+    "gpu_hours_fit_inclusive": 2.0,
+    "native_task_contract_calls_cap": 300,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 1184
+  },
+  "one_factor": "The serving geometry, and nothing else: one 24,576-token slot (np1 c24576) with the prompt cache OFF (--no-cache-prompt) and no --slot-prompt-similarity, against the resident np4 c98304 prompt-cache-on geometry. In the composed config it is the model fragment's server_args / profile_slot_count / geometry_basis plus the baseline's serving_slots 4 -> 1; every other non-bookkeeping key is the locked PLAN cell's own bytes.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "9255ac71",
+  "prepared_phase_supply": {
+    "note": "NONE COMMITTED, by design: the flip mints each pass's own under its own run id (item E16); pass B's output block must reproduce pass A's byte for byte, and --allow-output-change must never be passed. The requirements lists are empty because core.flight.repin._set_preparation_requirement rewrites every preparation entry.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/protocol-registered-v1.json",
+    "sha256": "6d5667c39799c6ce299da3e5b9794ba9a4764f92ebb6d1a7315e64c03f11426d"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1: cell DET pass A FIT identity. It measures request envelopes only and reads nothing.",
+  "quality_read_gate": "No read before BOTH passes' complete sealed manifests, exact ordered outputs, native phase summaries and single successful complete official TRAIN scores exist, and before the stop stage of scripts/analysis/slurp_det_pair_read.py has verified both attempts FINALIZED, both manifests COMPLETED on the 50-row split identity, and every delivered text re-hashing to its recorded digest. A partial manifest is never scored and never read.",
+  "registered_at_utc": "2026-09-27T00:36:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-det, branch fable/det",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

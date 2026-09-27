@@ -1,0 +1,69 @@
+{
+  "arms": {
+    "pass_a": {
+      "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "pass_b": {
+      "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-b-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "drivers": {
+    "descriptive": {
+      "relpath": "scripts/analysis/slurp_paired_roster_read.py",
+      "sha256": "90831272906e0b149c0ef70dca39130bfa7a8190f615cb7077d6c572ffb1faac"
+    },
+    "primary": {
+      "relpath": "scripts/analysis/slurp_det_pair_read.py",
+      "sha256": "ffea63e6a4659ebd69c8478e9d3734c1ad1d3f986495d79059b2cbea6c1c0e16"
+    },
+    "runbook": "scripts/flights/det/det_read.sh"
+  },
+  "execution_profile": "model-free-check",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-READ-V1",
+    "files": [
+      "stop.json",
+      "per_row.json",
+      "summary.json",
+      "paired-roster-read/ (the descriptive driver's own files)"
+    ],
+    "privacy": "No utterance text, gold label, transcript or model output is printed or persisted: ids, stratum names, digests, flags, scores, counts and rates only. The delivered text is read into memory only to re-hash it against its recorded digest."
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-READ-V1",
+  "recipe_id": "slurp-stage3-det-np1-fold-a-50-pair-read-v1",
+  "registered_at_utc": "2026-09-27T00:36:00.000000+00:00",
+  "roster": {
+    "id_list_sha256": "1fed658cdf96580f021887e54b1964d544dd55e8d70afd39a7e3744640f2f4b5",
+    "relpath": "docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json",
+    "rows": 50,
+    "sha256": "c68366a5e5d73c0de280a46f8ce16b746b93f334935270c48051fd5c356306a8",
+    "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa"
+  },
+  "schema": "saea-stage3-det-pair-read-recipe-v1",
+  "steps": [
+    "1. STOP: refuse unless both attempts are FINALIZED, both manifests COMPLETED with an empty study_repo_dirt, both manifests bind the roster's split identity, both outputs files carry exactly the roster's ids, and every outputs row's delivered text re-hashes to its recorded response_text_sha256. Record both study commits (the same chain, one flight commit) and the expected session id.",
+    "2. PER ROW: the two delivered digests and byte_identical = (digest A == digest B); the count of identical rows out of 50; the per-stratum table (10 strata of the prefix) with that count.",
+    "3. REPORTED BESIDE, never as a comparator: ROLL-AA's within-flight np4 statistic (183 of 200 byte-identical, 91.5 %, 0 intent flips) and the cross-flight np4 disagreement the instrument note records (about 28 % of raw outputs, about 5 % of intents; VAR1 PLAN vs PLANR +1.87 pp SLU).",
+    "4. DESCRIPTIVE: from the sealed official per-sample scores (slurp-slu-official-train, already sealed at finalize; no scorer contact) each pass's slu_f1_f1 and scenario_action_exact per row, the paired deltas B - A, their pooled mean with CI95 by row bootstrap (10,000 draws, seed 20260915); where the per-sample rows carry the parsed prediction, the intent-flip and entity-set-flip shares with denominators. Then scripts/analysis/slurp_paired_roster_read.py (pass B against pass A on the 50-row receipt, utterance_id clustering) for the programme-standard paired blocks, for the record.",
+    "5. THROUGHPUT (decision 140): for each pass, contacts per minute = contact_count / (wall_seconds / 60) and prompt tokens per second = prompt_tokens_total / wall_seconds, from the sealed flight-receipts.json run_phases receipt (wall_seconds, contact_window, contact_count) and the sealed generation manifest's cost block; beside them ROLL-2's np4 numbers (8,996 contacts, 81,435,827 prompt tokens, 16:00:01Z-18:22:39Z = 8,558 s: 63.07 contacts per minute, 9,515.8 prompt tokens per second), in ONE table. The window definitions are stated beside the table.",
+    "6. ROUTE: 50 of 50 identical -> the coordinator registers the 200-row re-estimate; fewer -> the offset is intrinsic and this axis closes. State in the same paragraph that a 50-row cell cannot support a floor re-estimate, that the cell decides a determinism question and informs a throughput one, and that np1 is not adopted for sampling-heavy work on determinism alone."
+  ],
+  "title": "Cell DET -- does the locked plan repeat byte for byte on a single-slot, cache-off server?",
+  "what_is_not_here": "No comparator block, no margins block, no gate, no verdict document, no frontier row and no plan_cell_read.py invocation: the pair is its own control and claims nothing."
+}
