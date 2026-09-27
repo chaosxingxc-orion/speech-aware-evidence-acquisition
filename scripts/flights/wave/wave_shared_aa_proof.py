@@ -17,12 +17,13 @@ Three proofs, each model-free (zero model, server, tokenizer, encoder or scorer 
    committed ``prepared_phase_supply`` pin, which the A/A drops so the flip mints its own, item E16:
    output-neutral exactly when proof 2 finds equal output digests), or ``unclassified`` (treated as
    request-affecting: the verdict fails).
-2. **Prepared supply.** ``core.flight.cli prepare-supply`` is run for both cells into a scratch
-   directory (never ``prepared/``); both ``output_sha256`` values must be equal to each other, to
-   the AGREE arm's registered digest ``eab5c61e...`` and to the output digest of the AGREE arm's
-   own committed artifact on the data root.
+2. **Prepared supply.** ``core.flight.cli prepare-supply`` mints the A/A's supply into a scratch
+   directory (never ``prepared/``); its ``output_sha256`` must equal the AGREE arm's registered
+   digest ``eab5c61e...`` and the output digest of the AGREE arm's own COMMITTED artifact (the one
+   that flew), read raw and re-digested (it no longer loads at HEAD: item E16).
 3. **Request bytes.** Each cell's REAL dispatch against the REAL transport with a fake POST (the
-   decision-160 method, verbatim): mode A under one common scratch run id (every payload and POST
+   decision-160 method, verbatim; the AGREE side with its unloadable pin lifted so its supply is
+   computed live, which proof 2 shows is the committed output): mode A under one common scratch run id (every payload and POST
    body byte must match), mode B under each cell's own run id (every POST body byte must match; the
    payloads may differ only in the run-id-derived custody field), plus the concurrent
    self-control on the A/A.
@@ -141,58 +142,93 @@ def relabel(comparison: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def prove_supply(repo: Path, data: Path, lock: Path, scratch: Path) -> dict[str, Any]:
+    """Mint the A/A's supply into ``scratch``; compare it with the AGREE arm's COMMITTED artifact.
+
+    The AGREE arm's own committed pin (``prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json``)
+    is the artifact that flew. It no longer LOADS at this HEAD -- ``core.preparation.load_artifact`` refuses an
+    artifact whose recorded inputs (which carry the implementation identity of ``rails/kb_policy`` and its
+    siblings, item E16) differ from the current ones, and the W3 merge moved ``rails/kb_policy`` -- so it is not
+    re-minted here: its bytes are read raw, the file hash is checked against the AGREE baseline's pin, and its
+    recorded ``output_sha256`` (the digest over the ``{facets, values}`` payload the request composer consumes)
+    is re-digested and compared with the A/A's freshly minted one.
+    """
+
     out: dict[str, Any] = {}
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", PYTHONPATH=str(repo / "src"))
-    artifacts = {}
-    for name, experiment in CELLS.items():
-        path = scratch / name / "phase-supply-v1.json"
-        if path.exists():
-            raise SystemExit(f"scratch supply {path} already exists; use a fresh --scratch")
-        started = time.time()
-        subprocess.run(
-            [sys.executable, "-B", "-m", "speech_aware_evidence_acquisition.core.flight.cli", "prepare-supply",
-             "--repo-root", str(repo), "--data-root", str(data), "--runtime-root", str(Path.home()),
-             "--lock-path", str(lock), "--experiment", experiment, "--cell", experiment, "--output", str(path),
-             "--workers", "4"],
-            check=True, env=env, cwd=str(repo), stdout=subprocess.DEVNULL,
-        )
-        raw = path.read_bytes()
-        artifact = json.loads(raw)
+    experiment = CELLS["wave_aa"]
+    path = scratch / "wave_aa" / "phase-supply-v1.json"
+    if path.exists():
+        raise SystemExit(f"scratch supply {path} already exists; use a fresh --scratch")
+    started = time.time()
+    subprocess.run(
+        [sys.executable, "-B", "-m", "speech_aware_evidence_acquisition.core.flight.cli", "prepare-supply",
+         "--repo-root", str(repo), "--data-root", str(data), "--runtime-root", str(Path.home()),
+         "--lock-path", str(lock), "--experiment", experiment, "--cell", experiment, "--output", str(path),
+         "--workers", "4"],
+        check=True, env=env, cwd=str(repo), stdout=subprocess.DEVNULL,
+    )
+    raw = path.read_bytes()
+    minted = json.loads(raw)
+
+    def _summary(artifact: Mapping[str, Any]) -> dict[str, Any]:
         values = {sample: ids for per_phase in artifact["output"]["values"].values() for sample, ids in per_phase.items()}
-        artifacts[name] = artifact
-        out[name] = {
-            "command": f"core.flight.cli prepare-supply --experiment {experiment} --cell {experiment} --output <scratch>/{name}/phase-supply-v1.json",
-            "output_sha256": artifact["output_sha256"],
-            "file_sha256": P160._sha(raw),
-            "rows_seeded": sum(1 for ids in values.values() if ids),
-            "selected_value_ids": sum(len(ids) for ids in values.values()),
-            "seconds": round(time.time() - started, 1),
-        }
-    # The AGREE arm's own committed artifact (the pin the A/A drops), read from the data root.
+        return {"rows_seeded": sum(1 for ids in values.values() if ids),
+                "selected_value_ids": sum(len(ids) for ids in values.values())}
+
+    out["wave_aa"] = {
+        "command": f"core.flight.cli prepare-supply --experiment {experiment} --cell {experiment} --output <scratch>/wave_aa/phase-supply-v1.json",
+        "output_sha256": minted["output_sha256"], "file_sha256": P160._sha(raw), **_summary(minted),
+        "seconds": round(time.time() - started, 1),
+    }
     baseline = json.loads((repo / "configs" / "baseline" / "slurp-native-stage3-agree-w1-fold-a-baseline-v1.json").read_text(encoding="utf-8"))
     pin = baseline["prepared_phase_supply"]
-    pinned_path = data / pin["relpath"]
-    pinned = json.loads(pinned_path.read_bytes())
-    pinned_ok = P160._sha(pinned_path.read_bytes()) == pin["sha256"]
+    pinned_raw = (data / pin["relpath"]).read_bytes()
+    pinned = json.loads(pinned_raw)
+    pinned_ok = P160._sha(pinned_raw) == pin["sha256"]
+    from speech_aware_evidence_acquisition.core.preparation import digest as _digest
+
+    recomputed = _digest(pinned["output"])
+    out["agree_arm"] = {
+        "source": "the AGREE arm's committed artifact (the one that flew), read raw -- not re-minted",
+        "relpath": pin["relpath"], "file_sha256_matches_pin": pinned_ok,
+        "output_sha256": pinned["output_sha256"], "output_sha256_recomputed": recomputed, **_summary(pinned),
+    }
     inputs_diff = [
-        {"leaf": leaf, "wave_aa": a, "agree_arm": b, "class": P160.classify_supply_input(leaf)}
-        for leaf, a, b in P160._diff_pairs(artifacts["wave_aa"]["inputs"], artifacts["agree_arm"]["inputs"])
+        {"leaf": leaf, "wave_aa": a, "agree_arm": b}
+        for leaf, a, b in P160._diff_pairs(minted["inputs"], pinned["inputs"])
     ]
-    equal = out["wave_aa"]["output_sha256"] == out["agree_arm"]["output_sha256"]
+    equal = minted["output_sha256"] == pinned["output_sha256"] == recomputed
     out.update({
         "agree_arm_registered_output_sha256": AGREE_ARM_SUPPLY_OUTPUT_SHA256,
-        "agree_arm_committed_artifact": {"relpath": pin["relpath"], "file_sha256_matches_pin": pinned_ok,
-                                         "output_sha256": pinned.get("output_sha256")},
         "output_digests_equal": equal,
-        "equal_registered_and_committed": equal
-        and out["wave_aa"]["output_sha256"] == AGREE_ARM_SUPPLY_OUTPUT_SHA256
-        and pinned.get("output_sha256") == AGREE_ARM_SUPPLY_OUTPUT_SHA256 and pinned_ok,
+        "equal_registered_and_committed": equal and pinned_ok and minted["output_sha256"] == AGREE_ARM_SUPPLY_OUTPUT_SHA256,
         "artifact_input_differences": inputs_diff,
-        "note": ("file_sha256 differs whenever an artifact INPUT differs (the run id is an input); output_sha256 is "
-                 "core.preparation.digest over the {facets, values} payload and is what the flip's byte-identity "
-                 "check and the request composer consume"),
+        "note": ("the recorded INPUTS differ (the run id, and the implementation identity the W3 merge moved), which is "
+                 "why the committed artifact no longer loads at HEAD; output_sha256 is core.preparation.digest over the "
+                 "{facets, values} payload and is what the flip's byte-identity check and the request composer consume"),
     })
     return out
+
+
+def _lift_agree_pin() -> None:
+    """In a capture worker for the AGREE arm: dispatch it as a flip would mint it at this HEAD.
+
+    Its committed ``prepared_phase_supply`` pin cannot load here (see :func:`prove_supply`), so the pin is
+    removed from the built runtime's composed values and the first-phase supply is computed LIVE through the
+    same ``_phase_supply_seeds`` path the A/A uses. Proof 2 separately shows the A/A's minted output equals the
+    committed artifact's output byte for byte, so the live supply is the AGREE arm's own.
+    """
+
+    from speech_aware_evidence_acquisition.core.flight import factory
+
+    real = factory.build_flight_runtime
+
+    def build(*args, **kwargs):
+        runtime = real(*args, **kwargs)
+        runtime._composed.values.pop("prepared_phase_supply", None)
+        return runtime
+
+    factory.build_flight_runtime = build
 
 
 def _launch_worker(repo: Path, args, *, cell: str, out: Path, rows: int | None,
@@ -237,6 +273,8 @@ def main(argv: list[str] | None = None) -> int:
     if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
         raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
     if args.worker_cell:
+        if args.worker_cell == "agree_arm":
+            _lift_agree_pin()
         common = None
         if args.worker_common:
             label, _, stamp = args.worker_common.rpartition(":")
@@ -354,7 +392,7 @@ def main(argv: list[str] | None = None) -> int:
     proof = P160.quote_hashes_by_prefix(proof)
     # The AGREE digest keys are claims, quoted in full like the decision-160 output digests.
     proof["prepared_supply"]["agree_arm_registered_output_sha256"] = AGREE_ARM_SUPPLY_OUTPUT_SHA256
-    proof["prepared_supply"]["agree_arm_committed_artifact"]["output_sha256"] = supply["agree_arm_committed_artifact"]["output_sha256"]
+    proof["prepared_supply"]["agree_arm"]["output_sha256_recomputed"] = supply["agree_arm"]["output_sha256_recomputed"]
     output = args.output or (repo / DEFAULT_OUTPUT)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(proof, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")
