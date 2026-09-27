@@ -7,6 +7,13 @@ for their own flights. Do not interpret old plans as permission to restart them.
 
 ## Operational checkpoint: 2026-09-27 15:25Z
 
+Follow-up at 15:32Z: Windows free memory recovered to 11.76 and 11.72 GiB
+in two observations. No GPU answering service or driver was running; the same
+KPROBE epoch remains complete, with no STOP marker, and CPU preparation continues.
+This removes the observed 10 GiB reserve violation at those instants, not the need
+for a fresh geometry-specific startup check. No stable-recovery or launch-clearance
+claim is made. Evidence: docs/receipts/continuation/2026-09-27-1532-heartbeat-operations.json.
+
 Fable 5.1 is coordinating again. Read HANDOFF-TO-CHATGPT.md and newer owner,
 launch and operational receipts before the older plans below. In particular,
 the four per-group knowledge proposals remain held under owner decision 130;

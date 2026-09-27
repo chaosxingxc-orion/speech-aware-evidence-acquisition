@@ -1,0 +1,40 @@
+{
+  "schema": "saea-heartbeat-operations-v1",
+  "observed_at": "2026-09-27T15:32:32Z",
+  "scope": "Operational metadata only; no launch authority or task-quality read.",
+  "current_campaign_members": [
+    {
+      "run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1",
+      "attempt_state": "FINALIZED",
+      "manifest_status": "COMPLETED",
+      "official_score_jobs": 1
+    }
+  ],
+  "sources": [
+    {
+      "path": "/home/chao/batch-queue.json",
+      "sha256": "0adebfabf67fc675d41c6375110171ed6e8ccf196057e65d4964bb897776b772"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "8865f4b1b6ea7af9122f3089e66b05d64375eb6e9f0d9889022e8a31e4e77553"
+    }
+  ],
+  "live_gpu_answering_service_observed": false,
+  "live_driver_observed": false,
+  "stop_marker_present": false,
+  "stopped_service_telemetry_is_stale": true,
+  "cpu_packet_sidecar_still_active": true,
+  "windows_free_gib_samples": [
+    {
+      "at": "2026-09-27T15:32:05Z",
+      "value": 11.76
+    },
+    {
+      "at": "2026-09-27T15:32:32Z",
+      "value": 11.72
+    }
+  ],
+  "action": "No runtime changes. Memory is above the owner reserve again; preserve geometry startup admission and recheck at any authorized launch. Do not claim stable recovery or launch clearance from two samples.",
+  "notification": "quiet: no new completion or failure, no automatic restart; partial headroom recovery only."
+}
