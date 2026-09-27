@@ -217,3 +217,74 @@ def test_rehashed_planner_text_cannot_replace_native_solver_delivery():
     bundle = _bundle(ExecutionUnitRoster((unit,)), [result], trace)
     with pytest.raises(subject.DeliveryWindowsError, match="recorded native Solver"):
         subject.verified_execution_unit_windows(bundle)
+
+
+def _normalised_native_unit(raw_text="Transcript:  accepted \n  answer"):
+    """An accepted native Solver unit whose episode ran the Earnings delivery
+    normaliser over a raw response the rule changes (E11/E35 custody)."""
+    import json
+
+    from speech_aware_evidence_acquisition.core.base import DELIVERY_NORMALISERS
+    from speech_aware_evidence_acquisition.rails import delivery_normalisers  # noqa: F401
+    from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+        validate_native_episode_delivery_receipt,
+    )
+
+    _, phase, _, trace = _fixture()
+    episode = phase["native_episode_receipt"]
+    selected = validate_native_episode_delivery_receipt(
+        episode, episode["role_visits"], episode["planner_routes"],
+    )
+    request_id = selected.final_contact["request_id"]
+    old_hash = trace[request_id + "/response"]["response_text_sha256"]
+    new_hash = _sha(raw_text)
+    def swap(value):
+        return json.loads(json.dumps(value).replace(old_hash, new_hash))
+
+    episode, trace = swap(episode), swap(trace)
+    trace[request_id + "/response"]["text"] = raw_text
+    normalisation = DELIVERY_NORMALISERS.resolve("saea-deliver-earnings-text-v1")(raw_text)
+    assert normalisation.changed
+    episode["deliver_normaliser"] = dict(normalisation.receipt)
+    unit = _unit("s1", 0)
+    request, response = trace[request_id + "/request"], trace[request_id + "/response"]
+    result = {
+        **_result(unit, normalisation.text), "request_id": request_id,
+        "request_sha256": request["payload_sha256"], "response_sha256": response["response_sha256"],
+    }
+    trace[execution_unit_scope(unit.request_key) + "/s1/native-policy/native-episode"] = {
+        "use_native_episode": episode,
+    }
+    return unit, result, trace, episode, normalisation
+
+
+def test_normalised_native_unit_is_replayed_from_its_raw_response():
+    unit, result, trace, _, normalisation = _normalised_native_unit()
+    bundle = _bundle(ExecutionUnitRoster((unit,)), [result], trace)
+    span, = subject.verified_execution_unit_windows(bundle)["s1"]
+    assert span.text == normalisation.text == "accepted answer"
+    assert span.delivery_kind == "accepted"
+    raw = bundle.trace_records[result["request_id"] + "/response"]["text"]
+    assert raw != normalisation.text  # the raw custody is untouched
+
+
+@pytest.mark.parametrize("damage", (
+    "input_digest", "output_digest", "unregistered_rule", "raw_hash_as_delivery", "missing_digest",
+))
+def test_normalised_unit_refuses_unproven_bytes(damage):
+    unit, result, trace, episode, normalisation = _normalised_native_unit()
+    block = episode["deliver_normaliser"]
+    if damage == "input_digest":
+        block["input_sha256"] = _sha("another response")
+    elif damage == "output_digest":
+        block["output_sha256"] = _sha("another delivery")
+    elif damage == "unregistered_rule":
+        block["normaliser_id"] = "saea-deliver-unregistered-v0"
+    elif damage == "missing_digest":
+        del block["output_sha256"]
+    else:
+        raw = trace[result["request_id"] + "/response"]["text"]
+        result = {**result, "text": raw, "response_text_sha256": _sha(raw)}
+    bundle = _bundle(ExecutionUnitRoster((unit,)), [result], trace)
+    with pytest.raises(subject.DeliveryWindowsError):
+        subject.verified_execution_unit_windows(bundle)

@@ -244,54 +244,125 @@ class SessionReceipt:
 
 
 def archived_session_receipt_path(path: Path, sha256: str) -> Path:
-    """The only archival location for bytes formerly held at a session path."""
+    """The content-addressed store entry for receipt bytes whose sha256 is ``sha256``.
+
+    Every receipt :func:`write_session_receipt` writes at ``path`` is kept at
+    ``<path>.archive/<sha256>.json``. An entry is created exclusively, is never
+    overwritten and is never moved; its name is the hash of its bytes. A bundle
+    pins a resident receipt by path AND hash, so the hash resolves here after
+    the resident file has been replaced by a restart of the same session id.
+    """
     if not isinstance(sha256, str) or _SHA256.fullmatch(sha256) is None:
         raise SessionError("session receipt archive requires a 64-hex sha256")
     path = Path(path)
     return path.parent / f"{path.name}.archive" / f"{sha256}.json"
 
 
-def _archive_existing_session_receipt(path: Path) -> None:
-    """Durably retain exact prior bytes before replacing a resident receipt."""
-    try:
-        prior = path.read_bytes()
-    except FileNotFoundError:
-        return
-    digest = hashlib.sha256(prior).hexdigest()
+def store_session_receipt_bytes(path: Path, raw: bytes) -> Path:
+    """Append ``raw`` to the content-addressed store beside ``path``; idempotent.
+
+    The entry is created with ``O_EXCL`` and read-only permissions, fsynced,
+    and its directory fsynced, so it exists durably before any caller replaces
+    the resident file. An existing entry with identical bytes is accepted as
+    is; an existing entry with different bytes is refused as a collision or
+    tampering and is left untouched.
+    """
+    digest = hashlib.sha256(raw).hexdigest()
     archive = archived_session_receipt_path(path, digest)
     try:
         archive.parent.mkdir(parents=True, exist_ok=True)
         try:
-            fd = os.open(archive, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            fd = os.open(archive, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o444)
         except FileExistsError:
-            if archive.read_bytes() != prior:
+            if archive.read_bytes() != raw:
                 raise SessionError(
                     f"session receipt archive collision or tampering at {archive}"
-                )
-            return
+                ) from None
+            return archive
         try:
             with os.fdopen(fd, "wb") as stream:
-                stream.write(prior)
+                stream.write(raw)
                 stream.flush()
                 os.fsync(stream.fileno())
         except BaseException:
             archive.unlink(missing_ok=True)
             raise
-        # Archive creation must precede replacement even across a crash.
+        # The store entry must be durable before the resident file changes.
         directory_fd = os.open(archive.parent, os.O_RDONLY)
         try:
             os.fsync(directory_fd)
         finally:
             os.close(directory_fd)
     except OSError as error:
+        raise SessionError(f"cannot store session receipt bytes for {path}: {error}") from error
+    return archive
+
+
+def _archive_existing_session_receipt(path: Path) -> None:
+    """Durably retain exact prior bytes before replacing a resident receipt.
+
+    Receipts written before the store existed (commit 46e03f3d, 2026-09-24)
+    are only resident; this keeps them when their session id restarts.
+    """
+    try:
+        prior = path.read_bytes()
+    except FileNotFoundError:
+        return
+    except OSError as error:
         raise SessionError(f"cannot archive prior session receipt {path}: {error}") from error
+    store_session_receipt_bytes(path, prior)
+
+
+def resolve_pinned_session_receipt(path: Path, sha256: str) -> bytes:
+    """Return the exact receipt bytes a bundle pinned as ``{path, sha256}``.
+
+    The resident file answers when it still holds the pinned bytes; otherwise
+    the content-addressed store entry for ``sha256`` must exist and must hash
+    to its own name. Nothing else is consulted and nothing is written.
+    """
+    expected = archived_session_receipt_path(path, sha256)
+    path = Path(path)
+    resident_hash = None
+    try:
+        resident = path.read_bytes()
+    except OSError:
+        resident = None
+    if resident is not None:
+        resident_hash = hashlib.sha256(resident).hexdigest()
+        if resident_hash == sha256:
+            return resident
+    try:
+        stored = expected.read_bytes()
+    except FileNotFoundError:
+        held = (
+            f"holds {resident_hash[:12]}..." if resident_hash is not None else "is absent"
+        )
+        raise SessionError(
+            f"pinned session receipt {sha256[:12]}... resolves nowhere: the resident "
+            f"{path} {held} and the content-addressed store has no {expected}"
+        ) from None
+    except OSError as error:
+        raise SessionError(
+            f"cannot read session receipt store entry {expected}: {error}"
+        ) from error
+    if hashlib.sha256(stored).hexdigest() != sha256:
+        raise SessionError(
+            f"session receipt store entry {expected} does not hash to its name (tampered)"
+        )
+    return stored
 
 
 def write_session_receipt(path: Path, receipt: SessionReceipt) -> Path:
     """Atomic (temp-file + ``os.replace``) write, mirroring
     ``core.attempts.AttemptHandle._write``. Session receipts are RUN
     artifacts (live under the run directory, outside the repo) -- this
-    function never writes anywhere inside the study tree by itself."""
+    function never writes anywhere inside the study tree by itself.
+
+    Before the resident file changes, the NEW bytes enter the
+    content-addressed store (so every receipt ever written resolves by hash
+    for as long as the store is kept) and the PRIOR resident bytes are stored
+    too (receipts written before the store existed).
+    """
 
     receipt.validate()
     path = Path(path)
@@ -300,6 +371,7 @@ def write_session_receipt(path: Path, receipt: SessionReceipt) -> Path:
     raw = json.dumps(receipt.as_json(), ensure_ascii=False, sort_keys=True, indent=2)
     try:
         tmp.write_text(raw, encoding="utf-8", newline="\n")
+        store_session_receipt_bytes(path, raw.encode("utf-8"))
         _archive_existing_session_receipt(path)
         os.replace(tmp, path)
     except (OSError, SessionError) as error:
