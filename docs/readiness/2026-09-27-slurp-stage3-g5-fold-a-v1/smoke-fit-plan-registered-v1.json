@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "1fedb1f2b66f9160a528f289f3ce7a8095145294e0900c0c147a8e899c474040"
+    "sha256": "9ee2ccdfb75c98ec9045a3381ddcd923ff6e6f6b875d3eb70c91e30a5011e1da"
   },
   "purpose": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-FIT-V1: Four-row form smoke of cell G5. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",

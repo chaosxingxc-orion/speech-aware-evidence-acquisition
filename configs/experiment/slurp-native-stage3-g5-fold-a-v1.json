@@ -14,8 +14,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Cell G5 registered before contact on 2026-09-27 from the locked cell PLAN fragments by script (decision 58) with one pin moved (owner decisions 135 and 153). Comparator: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, never re-flown, read at the in-chain A/A replicate SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1 flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement; the requirements list is empty by design, --allow-output-change must never be passed, and the minted supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f (the Reviewer instruction is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-g5-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-g5-fold-a-v1/root-admission-v1.json",
+            "sha256": "354bf2eb0230dc2b59c2841eadd676be5c5735a866928609b737ffd8bb167ddb",
+            "reason": "Decision slurp-stage3-g5-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-G5-FOLD-A-V1/phase-supply-v1.json",
+            "sha256": "890db86cbbf05e00c93314035b8c13487b0dbf8021cf5e484f8cdff744a801ef",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1"
     }

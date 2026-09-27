@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-g5-fold-a-v1",
-  "composed_config_hash": "4082465a803efd9425e79b05ae2b2a39415dd8958be9fed6768f859aaf73d829",
+  "composed_config_hash": "1a0a66f6d24eb04d774c212321c88a8acf595a15950fb40bf83a39c3cff0d08a",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "cc1581f468eb9851a001622c1705e44d2fd421c93f81904fb9ca8277633a18f3",
+    "protocol_hash": "ad8027055d5fc1917698395a9150a634aad8e77e29e6d9f96c956bbdb1aa172c",
     "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "1fedb1f2b66f9160a528f289f3ce7a8095145294e0900c0c147a8e899c474040"
+    "sha256": "9ee2ccdfb75c98ec9045a3381ddcd923ff6e6f6b875d3eb70c91e30a5011e1da"
   },
   "purpose": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1: Cell G5. NO-HARM ADMITTED (owner decision 127): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION: a CI that includes zero and clears the margin is exactly the reading a base item requires (decision 127). The item is NEVER reported as a gain, whatever the point estimate; two base items are never assumed to add, and the cumulative check is the next composed round (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Reviewer prompt-token delta per contact and per row, the Reviewer contact rate, and a model-free count of Reviewer responses that narrate a tool call or a tool result on each arm (the downstream failure docs/results/2026-09-26-system-summary001-fidelity-and-feedback-diagnostic.md recorded).",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
