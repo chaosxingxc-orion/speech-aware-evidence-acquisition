@@ -1,0 +1,268 @@
+{
+  "cards": {
+    "card_block_tokens": {
+      "max": 793,
+      "mean": 325.1,
+      "min": 212
+    },
+    "card_tokens_per_solver_contact_flown": {
+      "max": 9960,
+      "mean": 5821.692,
+      "median": 6123,
+      "min": 372,
+      "p95": 8418
+    },
+    "card_tokens_per_solver_contact_w1": {
+      "max": 8979,
+      "mean": 4635.862,
+      "median": 4923,
+      "min": 0,
+      "p95": 7039
+    },
+    "per_row_flown": {
+      "max": 24,
+      "mean": 12.904,
+      "median": 14,
+      "min": 1,
+      "p95": 20
+    },
+    "per_row_w1": {
+      "max": 21,
+      "mean": 9.869,
+      "median": 10,
+      "min": 0,
+      "p95": 16
+    },
+    "rows_whose_card_set_changes": 1040,
+    "rows_with_zero_cards_flown": 0,
+    "rows_with_zero_cards_w1": 1,
+    "zero_card_note": "a row whose shortlisted intents carry no legal slot type receives no slot-contract card; the route records disposition no-mapping and the Solver still receives its exemplar supply (rails.knowledge_stores composes only the supplies that exist)",
+    "zero_card_rows_w1": [
+      "slurp:train:010065:audio-1501756518"
+    ]
+  },
+  "descriptive": "model-free; development numbers on TRAIN Fold A (owner decisions 28 and 86); never a test claim",
+  "harm": {
+    "definition": "a row loses a card for a GOLD slot type: the flown selection offered it and W1 does not, i.e. the gold type is not legal under any shortlisted intent",
+    "gold_items_of_lost_types": 5,
+    "of_which_delivered_exactly_right_by_agree": 1,
+    "rows": [
+      {
+        "error_source_items_of_lost_types": [
+          {
+            "kind": "MISSING",
+            "sub": "missing"
+          }
+        ],
+        "gold_intent_position_in_shortlist": null,
+        "gold_items_of_lost_types": [
+          {
+            "delivered_exactly_right_by_agree": false,
+            "slot_type": "general_frequency"
+          }
+        ],
+        "lost_gold_slot_types": [
+          "general_frequency"
+        ],
+        "lost_type_support_under_gold_intent": {
+          "general_frequency": 1
+        },
+        "sample_id": "slurp:train:003057:audio-1490201218",
+        "shortlist_width": 3
+      },
+      {
+        "error_source_items_of_lost_types": [],
+        "gold_intent_position_in_shortlist": null,
+        "gold_items_of_lost_types": [
+          {
+            "delivered_exactly_right_by_agree": true,
+            "slot_type": "food_type"
+          }
+        ],
+        "lost_gold_slot_types": [
+          "food_type"
+        ],
+        "lost_type_support_under_gold_intent": {
+          "food_type": 70
+        },
+        "sample_id": "slurp:train:010065:audio-1501756518",
+        "shortlist_width": 1
+      },
+      {
+        "error_source_items_of_lost_types": [
+          {
+            "kind": "NEAR",
+            "sub": "near-value"
+          }
+        ],
+        "gold_intent_position_in_shortlist": 1,
+        "gold_items_of_lost_types": [
+          {
+            "delivered_exactly_right_by_agree": false,
+            "slot_type": "business_name"
+          }
+        ],
+        "lost_gold_slot_types": [
+          "business_name"
+        ],
+        "lost_type_support_under_gold_intent": {
+          "business_name": 0
+        },
+        "sample_id": "slurp:train:012069:audio-1492780300",
+        "shortlist_width": 2
+      },
+      {
+        "error_source_items_of_lost_types": [
+          {
+            "kind": "WRONG-TYPE",
+            "sub": "same-value"
+          }
+        ],
+        "gold_intent_position_in_shortlist": 1,
+        "gold_items_of_lost_types": [
+          {
+            "delivered_exactly_right_by_agree": false,
+            "slot_type": "business_name"
+          }
+        ],
+        "lost_gold_slot_types": [
+          "business_name"
+        ],
+        "lost_type_support_under_gold_intent": {
+          "business_name": 1
+        },
+        "sample_id": "slurp:train:012876:audio-1502309870-headset",
+        "shortlist_width": 1
+      },
+      {
+        "error_source_items_of_lost_types": [
+          {
+            "kind": "MISSING",
+            "sub": "missing"
+          }
+        ],
+        "gold_intent_position_in_shortlist": null,
+        "gold_items_of_lost_types": [
+          {
+            "delivered_exactly_right_by_agree": false,
+            "slot_type": "relation"
+          }
+        ],
+        "lost_gold_slot_types": [
+          "relation"
+        ],
+        "lost_type_support_under_gold_intent": {
+          "relation": 79
+        },
+        "sample_id": "slurp:train:016867:audio-1497438083",
+        "shortlist_width": 3
+      }
+    ],
+    "rows_all_gold_types_carded_flown": 654,
+    "rows_all_gold_types_carded_w1": 649,
+    "rows_losing_a_gold_type_card": 5,
+    "rows_whose_delivered_answer_used_a_dropped_type": 12,
+    "rows_with_gold_entities": 666
+  },
+  "inputs": {
+    "authored_slot_contracts": {
+      "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/authored-slot-contracts-v1.json",
+      "sha256": "34f6c3dc192eca4a30ef7208d10c1e2b797a0ae2ffe5122f16b376e10a30e4c5"
+    },
+    "error_sources": {
+      "relpath": "analysis/SAEA-SLURP-STAGE3-AGREE-ERROR-SOURCES-V1/rows.jsonl",
+      "sha256": "17a0be507949a3c78765729eef7f72d630389848acbf4de24f778740b8b63508"
+    },
+    "gold_offline_only": {
+      "relpath": "datasets/slurp/metadata/train.jsonl",
+      "rows_read": 1080,
+      "sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e"
+    },
+    "legality": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json",
+      "sha256": "59b507b4e36970d4328b3442a31c790c2be48e2e47f4247bd3764bf2fddd1bad"
+    },
+    "sealed_arm": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "phases_relpath": "runs/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1.phases.json",
+      "phases_sha256": "783299f156269acbf11a162e37d788e92987252e3a3a4204c8e82031046c27d1",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "slot_contract_store": {
+      "content_hash": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json"
+    },
+    "tokenizer": {
+      "binary": "/home/chao/llama.cpp/build/bin/llama-tokenize",
+      "invocations": 54,
+      "vocab_only_model": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+    }
+  },
+  "read_id": "SAEA-SLURP-W1-CARD-SELECTION-MEASUREMENT-V1",
+  "saving": {
+    "contacts_rendering_the_block": {
+      "planner": 1099,
+      "reviewer": 1103,
+      "solver": 1103
+    },
+    "tokens_per_1080_row_flight": 3919964,
+    "tokens_per_row_over_every_contact_rendering_the_block": {
+      "max": 15624,
+      "mean": 3629.596,
+      "median": 3210,
+      "min": 0,
+      "p95": 7713
+    },
+    "tokens_per_solver_contact": {
+      "max": 3652,
+      "mean": 1185.83,
+      "median": 1070,
+      "min": 0,
+      "p95": 2483
+    },
+    "tolerance": "each card is priced as its own rendered block; the separator between blocks is not priced (at most one boundary token per card)"
+  },
+  "schema": "saea-w1-card-selection-measurement-v1",
+  "sensitivity_grid": [
+    {
+      "gold_items_of_lost_types": 0,
+      "min_support_utterances": 1,
+      "pairs_kept": 402,
+      "rows_losing_a_gold_type_card": 0,
+      "tokens_saved_per_solver_contact_mean": 0.0
+    },
+    {
+      "gold_items_of_lost_types": 5,
+      "min_support_utterances": 2,
+      "pairs_kept": 286,
+      "rows_losing_a_gold_type_card": 5,
+      "tokens_saved_per_solver_contact_mean": 1185.8
+    },
+    {
+      "gold_items_of_lost_types": 10,
+      "min_support_utterances": 3,
+      "pairs_kept": 234,
+      "rows_losing_a_gold_type_card": 10,
+      "tokens_saved_per_solver_contact_mean": 1695.5
+    },
+    {
+      "gold_items_of_lost_types": 22,
+      "min_support_utterances": 5,
+      "pairs_kept": 188,
+      "rows_losing_a_gold_type_card": 22,
+      "tokens_saved_per_solver_contact_mean": 2297.4
+    }
+  ],
+  "static_bound_utf8_bytes": {
+    "authored_heaviest_28_any_3_intents_can_reach": 56554,
+    "flown_global_longest_28": 57846,
+    "note": "the runtime bound for a narrowed route is rails.candidate_semantic_supply.max_candidate_selection_value_ids over the narrowed index; the check converts bytes to tokens",
+    "w1_cards_in_the_bound": 24,
+    "w1_heaviest_28_any_3_intents_can_reach": 50030
+  },
+  "validation": {
+    "replayed_flown_selection_identical_in_order": 1080,
+    "rows": 1080,
+    "w1_selection_is_a_subset_of_the_flown_selection_on_every_row": true
+  }
+}

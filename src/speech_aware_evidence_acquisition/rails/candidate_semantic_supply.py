@@ -76,11 +76,183 @@ _OPTIONAL_SPEC_KEYS = frozenset(
         "fallback_candidates",
         "fallback_distinction",
         "exemplar_candidate_proposal",
+        "candidate_legality_source",
     }
 )
 _SOURCE_KEYS = frozenset(
     {"schema", "builder_policy_id", "source_split_identity_hash", "rows"}
 )
+
+#: W1 card selection (owner decision 164). A SLURP candidate route may pin a
+#: pre-computed intent -> slot-type LEGALITY table exactly the way a phase
+#: supply pins its agreement table: ``kind``, ``relpath`` (under the data
+#: root), ``sha256``, ``tool_contact_ledger_row`` and ``embedded_signal``.
+#: When present, the released authored candidate index is NARROWED to the
+#: (intent, slot type) pairs the table admits -- a table can only remove an
+#: authored binding, never add one. Absent (every cell committed before
+#: 2026-09-27), the index is the authored bindings, byte for byte.
+SLOT_LEGALITY_SOURCE_KIND = "sealed-intent-slot-legality"
+SLOT_LEGALITY_SCHEMA = "saea-slurp-intent-slot-legality-v1"
+_LEGALITY_SOURCE_KEYS = frozenset(
+    {"kind", "relpath", "sha256", "tool_contact_ledger_row", "embedded_signal"}
+)
+
+
+def validate_candidate_legality_source(raw: object) -> Mapping[str, object]:
+    """Validate a ``candidate_legality_source`` declaration (no file is read)."""
+
+    if not isinstance(raw, Mapping) or set(raw) != _LEGALITY_SOURCE_KEYS:
+        raise CandidateSemanticSupplyError(
+            "candidate_legality_source must carry exactly "
+            f"{sorted(_LEGALITY_SOURCE_KEYS)}"
+        )
+    if raw["kind"] != SLOT_LEGALITY_SOURCE_KIND:
+        raise CandidateSemanticSupplyError(
+            f"candidate_legality_source.kind must be {SLOT_LEGALITY_SOURCE_KIND!r}"
+        )
+    relpath = raw["relpath"]
+    if (
+        not isinstance(relpath, str)
+        or not relpath
+        or relpath.startswith("/")
+        or "\\" in relpath
+        or any(part in ("", ".", "..") for part in relpath.split("/"))
+    ):
+        raise CandidateSemanticSupplyError(
+            "candidate_legality_source.relpath must be a plain relative data-root path"
+        )
+    sha = raw["sha256"]
+    if (
+        not isinstance(sha, str)
+        or len(sha) != 64
+        or any(character not in "0123456789abcdef" for character in sha)
+    ):
+        raise CandidateSemanticSupplyError(
+            "candidate_legality_source.sha256 must be a lowercase SHA-256"
+        )
+    for field in ("tool_contact_ledger_row", "embedded_signal"):
+        if not isinstance(raw[field], str) or not raw[field].strip():
+            raise CandidateSemanticSupplyError(
+                f"candidate_legality_source.{field} must be non-empty text"
+            )
+    return MappingProxyType(dict(raw))
+
+
+def load_sealed_slot_legality(
+    source: Mapping[str, object], data_root: Path
+) -> Mapping[str, frozenset[str]]:
+    """Read and verify a pinned legality table: ``{intent id: slot types}``."""
+
+    source = validate_candidate_legality_source(source)
+    root = Path(data_root).resolve()
+    path = (root / str(source["relpath"])).resolve()
+    if path == root or root not in path.parents:
+        raise CandidateSemanticSupplyError("legality table escapes the data root")
+    try:
+        raw = path.read_bytes()
+    except OSError as error:
+        raise CandidateSemanticSupplyError("cannot read the legality table") from error
+    if hashlib.sha256(raw).hexdigest() != source["sha256"]:
+        raise CandidateSemanticSupplyError("legality table SHA-256 mismatch")
+    try:
+        document = json.loads(raw)
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise CandidateSemanticSupplyError("legality table is not JSON") from error
+    if not isinstance(document, Mapping) or document.get("schema") != SLOT_LEGALITY_SCHEMA:
+        raise CandidateSemanticSupplyError(
+            f"legality table schema must be {SLOT_LEGALITY_SCHEMA!r}"
+        )
+    table = document.get("legal_slot_types")
+    if not isinstance(table, Mapping) or not table:
+        raise CandidateSemanticSupplyError("legality table carries no legal_slot_types")
+    out: dict[str, frozenset[str]] = {}
+    for intent_id, types in table.items():
+        if (
+            not isinstance(intent_id, str)
+            or not intent_id
+            or not isinstance(types, list)
+            or any(not isinstance(item, str) or not item for item in types)
+            or types != sorted(set(types))
+        ):
+            raise CandidateSemanticSupplyError(
+                "legal_slot_types must map intent ids to sorted unique slot types"
+            )
+        out[intent_id] = frozenset(types)
+    return MappingProxyType(out)
+
+
+def narrow_candidate_index(
+    index: Mapping[str, Sequence[str]],
+    legality: Mapping[str, frozenset[str]],
+    *,
+    legal_candidate_ids: Sequence[str],
+) -> Mapping[str, tuple[str, ...]]:
+    """Keep only the authored (intent, slot-contract) bindings the table admits.
+
+    A table that names an intent outside the legal inventory, or a pair the
+    authored index does not bind, is refused: the legality table is a
+    SELECTION over released knowledge, never a source of new bindings.
+    """
+
+    legal = frozenset(legal_candidate_ids)
+    for intent_id, types in legality.items():
+        if intent_id not in legal:
+            raise CandidateSemanticSupplyError(
+                f"legality table names {intent_id!r}, outside the legal inventory"
+            )
+        bound = set(index.get(intent_id, ()))
+        for slot_type in types:
+            if f"slot-contract:{slot_type}" not in bound:
+                raise CandidateSemanticSupplyError(
+                    f"legality table admits ({intent_id!r}, {slot_type!r}), which the "
+                    "released authored bindings do not carry; a table may only narrow"
+                )
+    narrowed: dict[str, tuple[str, ...]] = {}
+    for intent_id, value_ids in index.items():
+        admitted = legality.get(intent_id, frozenset())
+        kept = tuple(
+            value_id
+            for value_id in value_ids
+            if value_id.split("slot-contract:", 1)[-1] in admitted
+        )
+        if kept:
+            narrowed[intent_id] = kept
+    return MappingProxyType(narrowed)
+
+
+def max_candidate_selection_value_ids(
+    index: Mapping[str, Sequence[str]],
+    *,
+    weight: Mapping[str, int],
+    max_candidates: int,
+    max_total_values: int,
+) -> tuple[str, ...]:
+    """The heaviest value set ANY ``max_candidates`` distinct candidates can reach.
+
+    A conservative pre-flight volume bound for a NARROWED index: over every
+    combination of ``max_candidates`` indexed intents, the ``max_total_values``
+    heaviest values in the union of their bindings. It relaxes the
+    per-candidate cap and the round-robin order (so it can only over-count a
+    real selection) and returns the value ids of the heaviest such set, ties
+    broken by value id.
+    """
+
+    from itertools import combinations  # noqa: PLC0415
+
+    intents = sorted(index)
+    width = min(max_candidates, len(intents))
+    best: tuple[int, tuple[str, ...]] = (-1, ())
+    for combo in combinations(intents, width):
+        union = {value_id for intent_id in combo for value_id in index[intent_id]}
+        chosen = tuple(
+            sorted(union, key=lambda value_id: (-weight[value_id], value_id))[
+                :max_total_values
+            ]
+        )
+        total = sum(weight[value_id] for value_id in chosen)
+        if total > best[0]:
+            best = (total, chosen)
+    return best[1]
 
 
 class CandidateSemanticSupplyError(RailsError):
@@ -128,9 +300,19 @@ class CandidateSemanticSupplySpec:
     fallback_candidates: tuple[str, ...] = ()
     fallback_distinction: str = DEFAULT_FALLBACK_DISTINCTION
     exemplar_candidate_proposal: Mapping[str, object] | None = None
+    #: W1 (owner decision 164): the pinned intent -> slot-type legality table
+    #: that narrows the authored candidate index; ``None`` is the authored
+    #: index unchanged.
+    candidate_legality_source: Mapping[str, object] | None = None
 
     def validate(self, program: PhaseProgram) -> "CandidateSemanticSupplySpec":
         program.validate()
+        if self.candidate_legality_source is not None:
+            validate_candidate_legality_source(self.candidate_legality_source)
+            if self.provider != SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID:
+                raise CandidateSemanticSupplyError(
+                    "candidate_legality_source is a SLURP slot-contract option"
+                )
         if self.supply_mode not in ("provide", "withhold"):
             raise CandidateSemanticSupplyError("supply_mode must be provide or withhold")
         if (
@@ -305,6 +487,8 @@ class CandidateSemanticSupplySpec:
             result["fallback_candidates"] = list(self.fallback_candidates)
             if self.fallback_distinction != DEFAULT_FALLBACK_DISTINCTION:
                 result["fallback_distinction"] = self.fallback_distinction
+        if self.candidate_legality_source is not None:
+            result["candidate_legality_source"] = dict(self.candidate_legality_source)
         return result
 
 
@@ -393,6 +577,10 @@ def load_candidate_semantic_supply_specs(
                 ),
                 fallback_distinction=raw.get(
                     "fallback_distinction", DEFAULT_FALLBACK_DISTINCTION
+                ),
+                candidate_legality_source=(
+                    validate_candidate_legality_source(raw["candidate_legality_source"])
+                    if "candidate_legality_source" in raw else None
                 ),
             ).validate(program)
             specs[phase] = spec
@@ -510,6 +698,25 @@ def _released_candidate_index(
     *,
     data_root: Path,
     legal_candidate_ids: Sequence[str],
+    legality_source: Mapping[str, object] | None = None,
+) -> Mapping[str, tuple[str, ...]]:
+    index = _authored_candidate_index(
+        store, data_root=data_root, legal_candidate_ids=legal_candidate_ids,
+    )
+    if legality_source is None:
+        return index
+    return narrow_candidate_index(
+        index,
+        load_sealed_slot_legality(legality_source, data_root),
+        legal_candidate_ids=legal_candidate_ids,
+    )
+
+
+def _authored_candidate_index(
+    store: object,
+    *,
+    data_root: Path,
+    legal_candidate_ids: Sequence[str],
 ) -> Mapping[str, tuple[str, ...]]:
     source = _read_released_authored_source(store, data_root)
     rows = source["rows"]
@@ -608,6 +815,11 @@ def _released_audio2tool_candidate_index(
         )
     return MappingProxyType(index)
 
+def _index_key(spec: CandidateSemanticSupplySpec) -> tuple[str, str | None]:
+    source = spec.candidate_legality_source
+    return (spec.store_id, None if source is None else str(source["sha256"]))
+
+
 def build_candidate_semantic_supply(
     binding: object,
     specs: Mapping[str, CandidateSemanticSupplySpec],
@@ -641,24 +853,27 @@ def build_candidate_semantic_supply(
                     )
                 except SlurpIntentHypothesisError as error:
                     raise CandidateSemanticSupplyError(str(error)) from error
-    indexes: dict[str, Mapping[str, tuple[str, ...]]] = {}
+    # Keyed by (store, legality table): two routes over one store share an
+    # index only when they narrow it identically (W1, owner decision 164).
+    indexes: dict[tuple[str, str | None], Mapping[str, tuple[str, ...]]] = {}
     for spec in specs.values():
-        if spec.store_id not in indexes:
+        if _index_key(spec) not in indexes:
             if spec.provider == A2T_CANDIDATE_SEMANTIC_PROVIDER_ID:
                 if candidate_inventory_authority != "audio2tool-public-tool-registry":
                     raise CandidateSemanticSupplyError(
                         "Audio2Tool requires its public tool registry authority"
                     )
-                indexes[spec.store_id] = _released_audio2tool_candidate_index(
+                indexes[_index_key(spec)] = _released_audio2tool_candidate_index(
                     binding.store(spec.store_id), data_root=data_root,
                     legal_candidate_ids=legal_candidate_ids,
                     candidate_inventory_source_sha256=candidate_inventory_source_sha256,
                 )
             else:
-                indexes[spec.store_id] = _released_candidate_index(
+                indexes[_index_key(spec)] = _released_candidate_index(
                     binding.store(spec.store_id),
                     data_root=data_root,
                     legal_candidate_ids=legal_candidate_ids,
+                    legality_source=spec.candidate_legality_source,
                 )
     audits: dict[str, Mapping[str, object]] = {}
     audit_lock = Lock()
@@ -748,7 +963,7 @@ def build_candidate_semantic_supply(
         )
         store = binding.store(spec.store_id)
         provider_args = {
-            "candidate_values": indexes[spec.store_id],
+            "candidate_values": indexes[_index_key(spec)],
             "legal_candidate_ids": legal_candidate_ids,
             "max_values_per_candidate": spec.max_values_per_candidate,
             "max_total_values": spec.max_total_values,
@@ -920,9 +1135,20 @@ __all__ = [
     "CANDIDATE_SUPPLY_SCHEMA",
     "MAX_SLURP_CANDIDATES",
     "SELECTION_SCHEMA",
+    "SLOT_LEGALITY_SCHEMA",
+    "SLOT_LEGALITY_SOURCE_KIND",
     "CandidateSemanticSupplyError",
     "CandidateSemanticSupplySpec",
     "build_candidate_semantic_supply",
     "candidate_state_read_parameters",
     "load_candidate_semantic_supply_specs",
+    "load_sealed_slot_legality",
+    "max_candidate_selection_value_ids",
+    "narrow_candidate_index",
+    "released_candidate_index",
+    "validate_candidate_legality_source",
 ]
+
+#: Public name for the verified released index a route selects from (used by
+#: the pre-flight prompt bound and by the W1 measurement script).
+released_candidate_index = _released_candidate_index

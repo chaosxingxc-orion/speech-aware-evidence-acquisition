@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell W1, registered before contact on 2026-09-27 from the retained AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE preparation's output digest (the card route is not an input to the first-phase supply). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+            "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-27",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops this cell and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of cell W1: that the legality table loads and verifies, that the card route narrows without error, that every request fits and that the episode completes. It is scored by no one and read by no one: four rows can never be evidence of benefit or of harm. The slot-contract card route (knowledge_stores.slot-contracts.candidate_supply.solver) gains candidate_legality_source, the pinned intent -> slot-type legality table prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json: the route's authored index -- exactly the 402 (intent, slot type) pairs the released 9,354-utterance TRAIN exemplar store carries at least once -- is narrowed to the 286 pairs that store carries in at least two distinct utterances (rule pool-utterance-support-at-least-2-v1), so the Solver receives only the slot-contract cards for slot types legal under the row's shortlisted intents. The table can only remove an authored binding, never add one (enforced at load). Measured offline on the sealed AGREE arm: 12.90 -> 9.87 cards per row, 1,186 fewer prompt tokens per Solver contact on average (3,630 per row over the Solver, Reviewer and Planner contacts that render the block); 5 of 1,080 rows lose a card for a gold slot type (5 gold items, 1 of which the AGREE arm delivered exactly right). Nothing else moves: roster, geometry, session, program and its 11-contact ceiling, the three stores and their pins, the agreement term, the exemplar k of 20, the card route's caps, the role graph, every template, the deliver normaliser and the scorers are the retained AGREE arm's, byte for byte.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is a one-key knowledge SELECTION change (which slot cards reach the Solver), chosen by a model-free content audit over sealed bytes and flown as a row-127 no-harm FORM item, with no rollout, no per-sample scoring, no credit assignment, no update operator and no evolving store. It is deliberately NOT labelled sealed-credit-system-policy-v1: that id's first instance is reserved for the composed system policy, and a card filter is not a policy search.",
+    "operators_used": []
+  }
+}

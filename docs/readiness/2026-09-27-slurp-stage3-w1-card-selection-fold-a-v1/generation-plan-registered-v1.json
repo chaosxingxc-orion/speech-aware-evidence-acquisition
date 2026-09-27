@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-w1-cardsel-fold-a-v1",
+  "composed_config_hash": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9",
+    "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign: configs/campaign/slurp-native-stage3-w1-cardsel-fold-a-v1.json carries the W1 arm alone; the coordinator's chain flies it beside the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 in ONE chain; one official score per generation cell at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-w1-cardsel-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "one_factor": "Composed key knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source: absent -> the pinned legality table prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json (sha256 59b507b4e36970d4328b3442a31c790c2be48e2e47f4247bd3764bf2fddd1bad); the card route's authored index (402 pairs) narrowed to the 286 pairs the released exemplar store carries in at least two distinct utterances; nothing added.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "88edc193272f9bdb11f5099124b03cbb39f7d5b0",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "note": "the card route is not an input to the first-phase (Perception) supply, so the supply the flip mints for each cell must carry the AGREE preparation's output digest; a different digest means the Perception channel moved -- stop and report",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "34f078fcec9fec8e4c625e11a9315b7244ab5f2069f83cbd9820e6a316e80c72"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1: Cell W1. NO-HARM ADMITTED (owner decision 127): against the SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the retained AGREE arm's own bytes, registered by the coordinator for wave items W1-W4) flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d; the G5 precedent). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). Never reported as a gain; two base items are never assumed to add (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Solver prompt-token delta per contact and per row from the sealed COST records, and the registered harm rows (5 rows that lose a gold-type card) read row by row.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W1 arm and the shared in-chain A/A. A verdict computed against the sealed AGREE arm alone is refused.",
+  "registered_at_utc": "2026-09-27T15:45:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w1, branch fable/w1",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

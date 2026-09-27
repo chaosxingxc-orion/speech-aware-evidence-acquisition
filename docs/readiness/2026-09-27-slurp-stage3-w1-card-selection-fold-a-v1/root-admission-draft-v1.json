@@ -1,0 +1,127 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/w1/w1_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "e17b68dfba87b4d8266c521b636b8b539d55bd1ce0c7d724731fda2a7d32a8c3"
+    },
+    "base_cell": "the retained AGREE arm (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, decision 161): W1 is that fragment with one key added",
+    "code_proof": {
+      "path": "tests/unit/test_candidate_legality_narrowing.py",
+      "sha256": "7e7aceffef17e6c31b82319196b40fc84bbc2eadc7d9925e56d2303bd7be3918"
+    },
+    "config_proof": {
+      "path": "tests/unit/test_w1_cardsel_config.py",
+      "sha256": "dd8a0f346859eef0f851678842c848dd29b3a727c67203402b7f5010733a5d92"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "measurement": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/card-selection-measurement-v1.json",
+      "sha256": "4303999d7f7df3b26fabfe54ffb266d635fda8705750f0466bc6564ec200df53"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "79885109a5219a8818f07489c136f71a2177ac58523b6b33ecebbea552d821b0"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "34f078fcec9fec8e4c625e11a9315b7244ab5f2069f83cbd9820e6a316e80c72"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/registered-facts-v1.json",
+      "sha256": "7ccf85d06ecfdaeab821ec2a268623dba4d437d00a2d4859ae839bf39f16313f"
+    },
+    "registration_base_commit": "88edc193272f9bdb11f5099124b03cbb39f7d5b0"
+  },
+  "authorization_basis": "Owner decision 164 (knowledge wave W1), 127 (engineering-base admission), 161 (AGREE retained), 138 (cumulative check in the composed round); the audit docs/results/2026-09-27-slurp-knowledge-content-audit.md K8; standing: 25, 28, 86, 101, 133, 77, and docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "expected_contacts_per_1080_row_cell": 4385,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 33930,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "cell_kind": "Stage-3 engineering-base no-harm FORM item (label none). One arm on TRAIN Fold A 1,080 read at the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (registered and made eligible by the coordinator's own receipt), and a four-row form smoke outside the chain.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a no-harm admission of one engineering-base FORM item, never reported as a gain.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly W1: the retained AGREE arm with its slot-contract card route narrowed by the pinned legality table (286 of the 402 authored bindings, those the released exemplar store carries in at least two utterances), read on NO HARM at the shared in-chain A/A at the plan's own Fold A half-widths (intent 0.9943, SLU 1.2485); never reported as a gain.",
+  "decision_id": "slurp-stage3-w1-cardsel-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "flying the arm without the shared in-chain A/A in the same chain",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the one registered key",
+    "reporting the item as a gain"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "partition": "TRAIN Fold A 1,080",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "minted by scripts/flights/repin_cell.py at the flip (each cell's own, item E16); expected output digests arm eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae, smoke 308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+      "protocol": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9"
+    },
+    "smoke": {
+      "composed_config": "c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde",
+      "protocol": "35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "note": "the resident SLURP np4 session; the flight attaches only",
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

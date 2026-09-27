@@ -2309,6 +2309,14 @@ class FlightRuntime:
                     rendered,
                     key=lambda block: (-len(block[0].encode("utf-8")), block[0]),
                 )[:selection_limit]
+                if getattr(spec, "candidate_legality_source", None) is not None:
+                    # W1: only a route that declares a legality table reaches
+                    # the narrowed bound; every other route keeps the line above.
+                    narrowed_blocks = FlightRuntime._legality_narrowed_candidate_blocks(
+                        self, spec, store, rendered, selection_count=selection_count,
+                    )
+                    if narrowed_blocks is not None:
+                        blocks = narrowed_blocks
                 if spec.exemplar_candidate_proposal is not None:
                     # Conservative preparation only. The actual native request
                     # gate still measures every exact sent request. Include the
@@ -2369,6 +2377,64 @@ class FlightRuntime:
                 if retained:
                     bound[phase] = tuple(retained)
         return bound
+
+    def _legality_narrowed_candidate_blocks(
+        self,
+        spec: object,
+        store: object,
+        rendered: Sequence[tuple[str, str]],
+        *,
+        selection_count: int,
+    ) -> tuple[tuple[str, str], ...] | None:
+        """The candidate-route volume bound for a route whose index is NARROWED.
+
+        W1 (owner decision 164). A route declaring ``candidate_legality_source``
+        can only ever select from the narrowed index, so bounding it by the
+        store's globally longest ``max_total_values`` values would budget cards
+        no candidate combination can reach. For such a route -- and only when
+        it has a single selection (no refresh), no exemplar proposal and no
+        standing fallback, the configurations this bound is proven for -- the
+        bound is the heaviest ``max_total_values`` values in the union of ANY
+        ``max_candidates`` indexed intents' bindings
+        (``rails.candidate_semantic_supply.max_candidate_selection_value_ids``,
+        which relaxes the per-candidate cap and so can only over-count).
+        Returns ``None`` for every other route: the pre-existing bound stands,
+        byte for byte, on every cell that declares no legality table.
+        """
+
+        if (
+            getattr(spec, "candidate_legality_source", None) is None
+            or selection_count != 1
+            or spec.exemplar_candidate_proposal is not None
+            or spec.fallback_candidates
+        ):
+            return None
+        from ...rails.candidate_semantic_supply import (  # noqa: PLC0415
+            max_candidate_selection_value_ids,
+            released_candidate_index,
+        )
+
+        index = released_candidate_index(
+            store,
+            data_root=self._data_root,
+            legal_candidate_ids=self._adapter.candidate_inventory().validate().candidate_ids,
+            legality_source=spec.candidate_legality_source,
+        )
+        by_value = {
+            value.value_id: block for value, block in zip(store.snapshot.values, rendered, strict=True)
+        }
+        chosen = max_candidate_selection_value_ids(
+            index,
+            weight={value_id: len(block[0].encode("utf-8")) for value_id, block in by_value.items()},
+            max_candidates=spec.max_candidates,
+            max_total_values=spec.max_total_values,
+        )
+        return tuple(
+            sorted(
+                (by_value[value_id] for value_id in chosen),
+                key=lambda block: (-len(block[0].encode("utf-8")), block[0]),
+            )
+        )
 
     def _verify_phase_prompt_fit(self) -> Mapping[str, object] | None:
         """Verify a PINNED phase prompt-fit receipt against what this flight

@@ -1,0 +1,96 @@
+{
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-generation-v1",
+      "cell": "slurp-native-stage3-w1-cardsel-fold-a-v1",
+      "composed_config_hash": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+      "experiment": "slurp-native-stage3-w1-cardsel-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-FIT-V1",
+      "protocol_hash": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+      "composed_config_hash": "c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde",
+      "experiment": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-FIT-V1",
+      "protocol_hash": "35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "in_chain_replicate": {
+      "registered_by": "the coordinator, separately, as the shared A/A of wave items W1-W4 (the AGREE arm's own bytes)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "PLAN vs PLANr Fold A own null (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d), as docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1 declared"
+    },
+    "never_reflown": true,
+    "official": {
+      "calls_used": 4385,
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575,
+      "span_f1": 54.4343
+    },
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "decision_rule_fixed_here": "NO-HARM ADMITTED (owner decision 127): against the SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the retained AGREE arm's own bytes, registered by the coordinator for wave items W1-W4) flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d; the G5 precedent). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). Never reported as a gain; two base items are never assumed to add (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Solver prompt-token delta per contact and per row from the sealed COST records, and the registered harm rows (5 rows that lose a gold-type card) read row by row.",
+  "declared_ceiling": {
+    "cards_per_row": {
+      "flown": 12.904,
+      "w1": 9.869
+    },
+    "kind": "form: prompt room freed, not a task-quality expectation",
+    "preflight_solver_card_envelope_utf8_bytes": {
+      "flown": 57846,
+      "w1": 50030
+    },
+    "preflight_solver_rendered_tokens": {
+      "after": 19272,
+      "before": 21278
+    },
+    "source": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/card-selection-measurement-v1.json (sha256 4303999d7f7df3b26fabfe54ffb266d635fda8705750f0466bc6564ec200df53)",
+    "tokens_per_1080_row_flight": 3919964,
+    "tokens_per_row_mean_over_every_contact_rendering_the_block": 3629.596,
+    "tokens_per_solver_contact_mean": 1185.83,
+    "tokens_per_solver_contact_median": 1070,
+    "tokens_per_solver_contact_p95": 2483
+  },
+  "development_numbers_only": "TRAIN Fold A construction-fold development numbers (owner decisions 28 and 86); never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "one_factor": "Composed key knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source: absent -> the pinned legality table prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json (sha256 59b507b4e36970d4328b3442a31c790c2be48e2e47f4247bd3764bf2fddd1bad); the card route's authored index (402 pairs) narrowed to the 286 pairs the released exemplar store carries in at least two distinct utterances; nothing added.",
+  "prohibitions": [
+    "Never reported as a gain (decision 127).",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE comparator.",
+    "No second factor: no other store, snapshot, cap, template, roster, geometry or session change.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped; the shared A/A is the coordinator's registration, not this package's."
+  ],
+  "protocol_id": "slurp-stage3-w1-cardsel-fold-a-protocol-v1",
+  "registered_at_utc": "2026-09-27T15:45:00.000000+00:00",
+  "registered_risk": {
+    "gold_items_of_lost_types": 5,
+    "of_which_delivered_exactly_right_by_agree": 1,
+    "rows_losing_a_gold_type_card": 5,
+    "rows_whose_delivered_answer_used_a_dropped_type": 12
+  },
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w1, branch fable/w1",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "88edc193272f9bdb11f5099124b03cbb39f7d5b0",
+  "the_question": "With the Solver's slot-contract cards narrowed to the slot types legal under the row's shortlisted intents, do the official intent accuracy and pooled SLU-F1 on TRAIN Fold A 1,080 stay within the plan's own null, read against the shared in-chain A/A? (A no-harm question; the item's value is the prompt room it frees, stated as a ceiling.)",
+  "unchanged": "everything but that key and per-flight bookkeeping: the roster (TRAIN Fold A 1,080, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6), the model fragment and serving geometry (np4 x 24,576), the session serving-slurp-native-candidate-five-train-a-np4-v1, the program and its 11-contact ceiling, all three stores and their pins, the agreement term, the exemplar k of 20, the card route's caps (3 / 16 / 28), the role graph, every template, the deliver normaliser, the scorers and every budget",
+  "what_a_harmful_read_would_mean": "that the dropped anecdotal cards carried guidance the Solver used beyond their type -- read first on the registered harm rows and on the rows whose delivered answer used a dropped type -- and W1 is withdrawn from the composed round pending a root cause; a NEUTRAL read is the admission and is never written as 'no gain'"
+}

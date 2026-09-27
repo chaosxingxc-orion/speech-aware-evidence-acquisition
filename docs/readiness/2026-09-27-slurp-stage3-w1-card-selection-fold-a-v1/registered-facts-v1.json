@@ -1,0 +1,659 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (keyed by run id). The preregistration's fence repeats it; this copy has precedence.",
+  "authority_relpaths": [
+    "docs/results/2026-09-27-slurp-knowledge-content-audit.md",
+    "docs/results/2026-09-27-slurp-throughput-baseline-and-levers.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/README.md",
+    "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/README.md",
+    "scripts/checks/stage3_effect_floor_check.py"
+  ],
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "derivation": [
+      "generation_calls_cap = 1,080 x 11 (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 x (3 + 1 + 1)) = 11,880; the smoke 4 x 11 = 44",
+      "fit_endpoint_calls_cap = 4 x generation = 47,520 (smoke 176); native_task_contract_calls_cap 6,480 (smoke 24); repeated_speech_audio_seconds_cap 33,930 (smoke 117); gpu_hours_fit_inclusive 12.0 (smoke 1.0): the AGREE family's own ceilings",
+      "expected spend at the sealed AGREE arm's own rate: about 4,385 contacts; W1 removes prompt tokens and adds none, and no cap is denominated in tokens",
+      "official_complete_scoring_jobs = 1 per 1,080-row cell through core.scoring_batch, never sharded; the smoke is never scored"
+    ],
+    "run_cumulative": "every cap binds across ALL attempts of a run id",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "byte_identity_expectation": {
+    "arm_supply_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "claim": "the card route is not an input to the first-phase (Perception) supply, so the supply the flip mints for each cell must carry the AGREE preparation's output digest; a different digest means the Perception channel moved -- stop and report",
+    "smoke_supply_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9"
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "in_chain_replicate": {
+      "registered_by": "the coordinator, separately, as the shared A/A of wave items W1-W4 (the AGREE arm's own bytes)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "PLAN vs PLANr Fold A own null (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d), as docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1 declared"
+    },
+    "never_reflown": true,
+    "official": {
+      "calls_used": 4385,
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575,
+      "span_f1": 54.4343
+    },
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "composed_config_diff_against_the_agree_cell": {
+    "arm": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "the_one_key": [
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.embedded_signal",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.kind",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.relpath",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.sha256",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.tool_contact_ledger_row"
+      ]
+    },
+    "note": "flattened composed configs (core.config.compose): the one key, the baseline's bookkeeping (FIT ids, the dropped prepared_phase_supply, the legality receipt in preparation_source_receipts, what_this_is) and the experiment fragment's own block. tests/unit/test_w1_cardsel_config.py re-proves it.",
+    "smoke": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "the_one_key": [
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.embedded_signal",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.kind",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.relpath",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.sha256",
+        "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source.tool_contact_ledger_row"
+      ]
+    }
+  },
+  "fit": {
+    "before_solver": {
+      "decision": "COMPACT_REQUIRED",
+      "operational_margin_tokens": -317,
+      "physical_margin_tokens": 2755,
+      "rendered_text_tokens": 21278,
+      "required_window_tokens": 21821,
+      "source": "the sealed AGREE arm's own pre-flight receipt (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1/flight-receipts.json stages.preflight.prompt_budget)"
+    },
+    "measured": {
+      "cells": {
+        "arm": {
+          "blockers": null,
+          "config_hash": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+          "prompt_budget_per_phase": [
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 3517,
+              "payload_sha256_prefix": "972f24065fa8ea7c",
+              "phase": "perception",
+              "physical_margin_tokens": 6589,
+              "rendered_text_tokens": 17444,
+              "required_window_tokens": 17987
+            },
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 3654,
+              "payload_sha256_prefix": "36ef9e4c9f2758e1",
+              "phase": "reviewer",
+              "physical_margin_tokens": 6726,
+              "rendered_text_tokens": 17307,
+              "required_window_tokens": 17850
+            },
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 3715,
+              "payload_sha256_prefix": "da7023c9f2388f44",
+              "phase": "planner",
+              "physical_margin_tokens": 6787,
+              "rendered_text_tokens": 17246,
+              "required_window_tokens": 17789
+            },
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1689,
+              "payload_sha256_prefix": "3b1dadccf91d95fa",
+              "phase": "solver",
+              "physical_margin_tokens": 4761,
+              "rendered_text_tokens": 19272,
+              "required_window_tokens": 19815
+            }
+          ],
+          "protocol_hash": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9",
+          "scientific_readiness": {
+            "reason": "Cell W1 registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decisions 58, 161 and 164) with one key added. Comparator: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, never re-flown, read at the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the AGREE arm's own bytes) flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE preparation's output digest (the card route is not an input to the first-phase supply). Nothing here authorises a flight, a readiness flip or an admission entry.",
+            "state": "held"
+          }
+        },
+        "smoke": {
+          "blockers": null,
+          "config_hash": "c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde",
+          "prompt_budget_per_phase": [
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 3518,
+              "payload_sha256_prefix": "39ac50d929e65c48",
+              "phase": "perception",
+              "physical_margin_tokens": 6590,
+              "rendered_text_tokens": 17443,
+              "required_window_tokens": 17986
+            },
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 3654,
+              "payload_sha256_prefix": "5197f9690fd2d93a",
+              "phase": "reviewer",
+              "physical_margin_tokens": 6726,
+              "rendered_text_tokens": 17307,
+              "required_window_tokens": 17850
+            },
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 3715,
+              "payload_sha256_prefix": "c9c3f782ff0473d0",
+              "phase": "planner",
+              "physical_margin_tokens": 6787,
+              "rendered_text_tokens": 17246,
+              "required_window_tokens": 17789
+            },
+            {
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1689,
+              "payload_sha256_prefix": "6bf012cc5ced761c",
+              "phase": "solver",
+              "physical_margin_tokens": 4761,
+              "rendered_text_tokens": 19272,
+              "required_window_tokens": 19815
+            }
+          ],
+          "protocol_hash": "35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50",
+          "scientific_readiness": {
+            "reason": "Four-row form smoke of cell W1, registered before contact on 2026-09-27 from the retained AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE preparation's output digest (the card route is not an input to the first-phase supply). Nothing here authorises a flight, a readiness flip or an admission entry.",
+            "state": "held"
+          }
+        }
+      },
+      "status": "MEASURED_BY_CHECK"
+    },
+    "rule": "the pre-flight prompt budget binds to the LIVE slot (24,576 tokens, np4) with a reserve of one eighth (3,072); the Solver phase of the AGREE arm reads COMPACT_REQUIRED with a positive physical margin and proceeds under context_fit_policy compact-or-abstain",
+    "why_the_bound_moves": "core.flight.runtime._legality_narrowed_candidate_blocks bounds a narrowed card route by the heaviest 28 cards ANY 3 indexed intents can reach (7,816 fewer UTF-8 bytes than the store's globally longest 28); candidate blocks are unioned into every native role's bound, so every phase's envelope moves by the same amount"
+  },
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w1-cardsel-fold-a-baseline-v1",
+      "candidate_legality_source": {
+        "embedded_signal": "derived: the (intent, slot type) pairs the released TRAIN exemplar store the Solver already consumes (size-pool-annotated-exemplars, 9,354 utterances, content hash 4c498dc0...) carries in at least two distinct utterances, read from the store's own annotation text (type names only). A released-store property, never a label of an evaluated row: the store holds no Fold A utterance (checked at build), and no governed label, transcript, devel or test file is read. Built model-free by scripts/build_slurp_intent_slot_legality.py with zero model, server, tokenizer, encoder, embedder, scorer, network and GPU contacts; receipt beside the artifact.",
+        "kind": "sealed-intent-slot-legality",
+        "relpath": "prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json",
+        "sha256": "59b507b4e36970d4328b3442a31c790c2be48e2e47f4247bd3764bf2fddd1bad",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1"
+      },
+      "card_route_caps": {
+        "max_candidates": 3,
+        "max_total_values": 28,
+        "max_values_per_candidate": 16
+      },
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w1-cardsel-fold-a-v1",
+      "composed_config_hash": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w1-cardsel-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-baseline-v1",
+      "candidate_legality_source": {
+        "embedded_signal": "derived: the (intent, slot type) pairs the released TRAIN exemplar store the Solver already consumes (size-pool-annotated-exemplars, 9,354 utterances, content hash 4c498dc0...) carries in at least two distinct utterances, read from the store's own annotation text (type names only). A released-store property, never a label of an evaluated row: the store holds no Fold A utterance (checked at build), and no governed label, transcript, devel or test file is read. Built model-free by scripts/build_slurp_intent_slot_legality.py with zero model, server, tokenizer, encoder, embedder, scorer, network and GPU contacts; receipt beside the artifact.",
+        "kind": "sealed-intent-slot-legality",
+        "relpath": "prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json",
+        "sha256": "59b507b4e36970d4328b3442a31c790c2be48e2e47f4247bd3764bf2fddd1bad",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1"
+      },
+      "card_route_caps": {
+        "max_candidates": 3,
+        "max_total_values": 28,
+        "max_values_per_candidate": 16
+      },
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+      "composed_config_hash": "c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 176,
+        "generation_calls_cap": 44,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 24,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 117
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-smoke-4-fit-v1",
+        "contact_cap": 176,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "protocol_hash": "35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "measurement": {
+    "cards": {
+      "card_block_tokens": {
+        "max": 793,
+        "mean": 325.1,
+        "min": 212
+      },
+      "card_tokens_per_solver_contact_flown": {
+        "max": 9960,
+        "mean": 5821.692,
+        "median": 6123,
+        "min": 372,
+        "p95": 8418
+      },
+      "card_tokens_per_solver_contact_w1": {
+        "max": 8979,
+        "mean": 4635.862,
+        "median": 4923,
+        "min": 0,
+        "p95": 7039
+      },
+      "per_row_flown": {
+        "max": 24,
+        "mean": 12.904,
+        "median": 14,
+        "min": 1,
+        "p95": 20
+      },
+      "per_row_w1": {
+        "max": 21,
+        "mean": 9.869,
+        "median": 10,
+        "min": 0,
+        "p95": 16
+      },
+      "rows_whose_card_set_changes": 1040,
+      "rows_with_zero_cards_flown": 0,
+      "rows_with_zero_cards_w1": 1,
+      "zero_card_note": "a row whose shortlisted intents carry no legal slot type receives no slot-contract card; the route records disposition no-mapping and the Solver still receives its exemplar supply (rails.knowledge_stores composes only the supplies that exist)"
+    },
+    "harm": {
+      "definition": "a row loses a card for a GOLD slot type: the flown selection offered it and W1 does not, i.e. the gold type is not legal under any shortlisted intent",
+      "gold_items_of_lost_types": 5,
+      "of_which_delivered_exactly_right_by_agree": 1,
+      "rows": [
+        {
+          "error_source_items_of_lost_types": [
+            {
+              "kind": "MISSING",
+              "sub": "missing"
+            }
+          ],
+          "gold_intent_position_in_shortlist": null,
+          "gold_items_of_lost_types": [
+            {
+              "delivered_exactly_right_by_agree": false,
+              "slot_type": "general_frequency"
+            }
+          ],
+          "lost_gold_slot_types": [
+            "general_frequency"
+          ],
+          "lost_type_support_under_gold_intent": {
+            "general_frequency": 1
+          },
+          "sample_id": "slurp:train:003057:audio-1490201218",
+          "shortlist_width": 3
+        },
+        {
+          "error_source_items_of_lost_types": [],
+          "gold_intent_position_in_shortlist": null,
+          "gold_items_of_lost_types": [
+            {
+              "delivered_exactly_right_by_agree": true,
+              "slot_type": "food_type"
+            }
+          ],
+          "lost_gold_slot_types": [
+            "food_type"
+          ],
+          "lost_type_support_under_gold_intent": {
+            "food_type": 70
+          },
+          "sample_id": "slurp:train:010065:audio-1501756518",
+          "shortlist_width": 1
+        },
+        {
+          "error_source_items_of_lost_types": [
+            {
+              "kind": "NEAR",
+              "sub": "near-value"
+            }
+          ],
+          "gold_intent_position_in_shortlist": 1,
+          "gold_items_of_lost_types": [
+            {
+              "delivered_exactly_right_by_agree": false,
+              "slot_type": "business_name"
+            }
+          ],
+          "lost_gold_slot_types": [
+            "business_name"
+          ],
+          "lost_type_support_under_gold_intent": {
+            "business_name": 0
+          },
+          "sample_id": "slurp:train:012069:audio-1492780300",
+          "shortlist_width": 2
+        },
+        {
+          "error_source_items_of_lost_types": [
+            {
+              "kind": "WRONG-TYPE",
+              "sub": "same-value"
+            }
+          ],
+          "gold_intent_position_in_shortlist": 1,
+          "gold_items_of_lost_types": [
+            {
+              "delivered_exactly_right_by_agree": false,
+              "slot_type": "business_name"
+            }
+          ],
+          "lost_gold_slot_types": [
+            "business_name"
+          ],
+          "lost_type_support_under_gold_intent": {
+            "business_name": 1
+          },
+          "sample_id": "slurp:train:012876:audio-1502309870-headset",
+          "shortlist_width": 1
+        },
+        {
+          "error_source_items_of_lost_types": [
+            {
+              "kind": "MISSING",
+              "sub": "missing"
+            }
+          ],
+          "gold_intent_position_in_shortlist": null,
+          "gold_items_of_lost_types": [
+            {
+              "delivered_exactly_right_by_agree": false,
+              "slot_type": "relation"
+            }
+          ],
+          "lost_gold_slot_types": [
+            "relation"
+          ],
+          "lost_type_support_under_gold_intent": {
+            "relation": 79
+          },
+          "sample_id": "slurp:train:016867:audio-1497438083",
+          "shortlist_width": 3
+        }
+      ],
+      "rows_all_gold_types_carded_flown": 654,
+      "rows_all_gold_types_carded_w1": 649,
+      "rows_losing_a_gold_type_card": 5,
+      "rows_whose_delivered_answer_used_a_dropped_type": 12,
+      "rows_with_gold_entities": 666
+    },
+    "receipt": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/card-selection-measurement-v1.json",
+      "script": {
+        "relpath": "scripts/analysis/slurp_w1_card_selection_measurement.py",
+        "sha256": "abe48194a98c646f27d79ec18ce0c00521461250852dd80006454ca63a215489"
+      },
+      "sha256": "4303999d7f7df3b26fabfe54ffb266d635fda8705750f0466bc6564ec200df53"
+    },
+    "saving": {
+      "contacts_rendering_the_block": {
+        "planner": 1099,
+        "reviewer": 1103,
+        "solver": 1103
+      },
+      "tokens_per_1080_row_flight": 3919964,
+      "tokens_per_row_over_every_contact_rendering_the_block": {
+        "max": 15624,
+        "mean": 3629.596,
+        "median": 3210,
+        "min": 0,
+        "p95": 7713
+      },
+      "tokens_per_solver_contact": {
+        "max": 3652,
+        "mean": 1185.83,
+        "median": 1070,
+        "min": 0,
+        "p95": 2483
+      },
+      "tolerance": "each card is priced as its own rendered block; the separator between blocks is not priced (at most one boundary token per card)"
+    },
+    "sensitivity_grid": [
+      {
+        "gold_items_of_lost_types": 0,
+        "min_support_utterances": 1,
+        "pairs_kept": 402,
+        "rows_losing_a_gold_type_card": 0,
+        "tokens_saved_per_solver_contact_mean": 0.0
+      },
+      {
+        "gold_items_of_lost_types": 5,
+        "min_support_utterances": 2,
+        "pairs_kept": 286,
+        "rows_losing_a_gold_type_card": 5,
+        "tokens_saved_per_solver_contact_mean": 1185.8
+      },
+      {
+        "gold_items_of_lost_types": 10,
+        "min_support_utterances": 3,
+        "pairs_kept": 234,
+        "rows_losing_a_gold_type_card": 10,
+        "tokens_saved_per_solver_contact_mean": 1695.5
+      },
+      {
+        "gold_items_of_lost_types": 22,
+        "min_support_utterances": 5,
+        "pairs_kept": 188,
+        "rows_losing_a_gold_type_card": 22,
+        "tokens_saved_per_solver_contact_mean": 2297.4
+      }
+    ],
+    "static_bound_utf8_bytes": {
+      "authored_heaviest_28_any_3_intents_can_reach": 56554,
+      "flown_global_longest_28": 57846,
+      "note": "the runtime bound for a narrowed route is rails.candidate_semantic_supply.max_candidate_selection_value_ids over the narrowed index; the check converts bytes to tokens",
+      "w1_cards_in_the_bound": 24,
+      "w1_heaviest_28_any_3_intents_can_reach": 50030
+    },
+    "validation": {
+      "replayed_flown_selection_identical_in_order": 1080,
+      "rows": 1080,
+      "w1_selection_is_a_subset_of_the_flown_selection_on_every_row": true
+    },
+    "zero_card_rows_w1": [
+      "slurp:train:010065:audio-1501756518"
+    ]
+  },
+  "no_harm_rule": "NO-HARM ADMITTED (owner decision 127): against the SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the retained AGREE arm's own bytes, registered by the coordinator for wave items W1-W4) flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d; the G5 precedent). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). Never reported as a gain; two base items are never assumed to add (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Solver prompt-token delta per contact and per row from the sealed COST records, and the registered harm rows (5 rows that lose a gold-type card) read row by row.",
+  "owner_decisions": {
+    "127": "the ENGINEERING-BASE admission: sound logic, a stated ceiling, a no-harm reading at a margin equal to the design's measured floor; never reported as a gain",
+    "161": "AGREE retained; later items derive from the retained AGREE arm",
+    "164": "knowledge wave: W1 slot-card selection approved, analysis and preparation now, flight as soon as possible after 09:00 (owner's time, about 01:00Z 2026-09-28)"
+  },
+  "prohibitions": [
+    "Never reported as a gain (decision 127).",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE comparator.",
+    "No second factor: no other store, snapshot, cap, template, roster, geometry or session change.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped; the shared A/A is the coordinator's registration, not this package's."
+  ],
+  "registered_at_utc": "2026-09-27T15:45:00.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: that the legality table loads and verifies, that the card route narrows without error, that every request fits and that the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1": {
+      "admission": "no-harm",
+      "claims_benefit": false,
+      "declared_ceiling": {
+        "cards_per_row": {
+          "flown": 12.904,
+          "w1": 9.869
+        },
+        "kind": "form: prompt room freed, not a task-quality expectation",
+        "preflight_solver_card_envelope_utf8_bytes": {
+          "flown": 57846,
+          "w1": 50030
+        },
+        "preflight_solver_rendered_tokens": {
+          "after": 19272,
+          "before": 21278
+        },
+        "source": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/card-selection-measurement-v1.json (sha256 4303999d7f7df3b26fabfe54ffb266d635fda8705750f0466bc6564ec200df53)",
+        "tokens_per_1080_row_flight": 3919964,
+        "tokens_per_row_mean_over_every_contact_rendering_the_block": 3629.596,
+        "tokens_per_solver_contact_mean": 1185.83,
+        "tokens_per_solver_contact_median": 1070,
+        "tokens_per_solver_contact_p95": 2483
+      },
+      "expected_effect_pp": 0.0,
+      "harm_margin_pp": 1.2485,
+      "harm_margin_pp_by_metric": {
+        "intent_accuracy": 0.9943,
+        "slu_f1": 1.2485
+      },
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "A row-127 FORM item (knowledge-wave W1, owner decision 164), admitted on NO HARM and never reported as a gain: expected_effect_pp is 0.0 because the cell registers no effect to look for, claims_benefit is false, and the harm margin is the measured floor of this design at n = 1,080 (the Fold A own-null half-width of PLAN vs PLANr, SLU 1.2485 in the gate's field, intent 0.9943 applied by the read), exactly as G5 declared it. The delta is read against the shared in-chain A/A of the AGREE arm's own bytes flown in the same chain, never against the sealed AGREE arm alone. The declared ceiling is the prompt room freed (declared_ceiling), measured model-free on the sealed AGREE arm; the measured risk is 5 rows / 5 gold items whose slot card W1 drops (1 delivered exactly right by AGREE).",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "rows": 1080
+    }
+  },
+  "study_commit_at_registration": "88edc193272f9bdb11f5099124b03cbb39f7d5b0",
+  "the_item": {
+    "change": "narrow the card route's index to the 286 pairs the store carries in at least two distinct utterances",
+    "finding": "docs/results/2026-09-27-slurp-knowledge-content-audit.md deficit K8: 12.9 slot-contract cards reach the Solver per row and 91.1 % of their text serves neither the delivered nor the gold slot types, while the Solver's pre-flight envelope has 226 tokens of headroom (21,278 of 21,504 usable); docs/results/2026-09-27-slurp-throughput-baseline-and-levers.md lever 2 prices dropping cards no candidate intent can carry at +7.0 % throughput.",
+    "how_the_rule_was_chosen": "min_support 2 is the smallest non-trivial support threshold (a binding seen once is not a convention of the intent). The sensitivity grid in the measurement receipt was computed on the same sealed Fold A arm before the rule was fixed and is disclosed in full; 2 is the grid's most conservative non-identity point (3: 10 harmed rows, 5: 22).",
+    "legality_table": {
+      "builder": "scripts/build_slurp_intent_slot_legality.py",
+      "pairs": {
+        "authored": 402,
+        "kept": 286,
+        "removed": 116
+      },
+      "receipt": "prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/receipt.json",
+      "relpath": "prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json",
+      "rule": "pool-utterance-support-at-least-2-v1",
+      "sha256": "59b507b4e36970d4328b3442a31c790c2be48e2e47f4247bd3764bf2fddd1bad",
+      "source": "the released TRAIN exemplar store size-pool-annotated-exemplars (content hash 4c498dc0...), 9,354 utterances, Fold A-free (checked); type names only",
+      "why_not_the_8554_sibling": "the R01-excluded 8,554-utterance sibling lacks cooking_query entirely and 42 of the authored pairs; the brief's '9,354' is the flown store, which is the one the Solver already reads and whose pairs equal the authored bindings"
+    },
+    "measured_here": "The flown card route already selects through the authored intent_bindings, and those 402 bindings are EXACTLY the (intent, slot type) pairs the released 9,354-utterance exemplar store carries at least once -- so 'legal under a candidate intent' by mere presence is what flies today. What the audit calls unused is carried by ANECDOTAL bindings: 116 of the 402 pairs are witnessed by a single pool utterance."
+  }
+}

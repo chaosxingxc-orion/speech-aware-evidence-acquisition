@@ -1,0 +1,58 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "role": "context, sealed, never re-flown",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "in_chain_replicate": {
+      "role": "the within-chain null the delta is read at (the AGREE arm's own bytes; registered by the coordinator)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold filler or model output is printed or persisted.",
+  "decision_rule": "NO-HARM ADMITTED (owner decision 127): against the SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the retained AGREE arm's own bytes, registered by the coordinator for wave items W1-W4) flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d; the G5 precedent). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). Never reported as a gain; two base items are never assumed to add (decision 138). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the measured Solver prompt-token delta per contact and per row from the sealed COST records, and the registered harm rows (5 rows that lose a gold-type card) read row by row.",
+  "margins": {
+    "h_intent": 0.9943,
+    "h_slu": 1.2485
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver_family": "scripts/analysis/plan_cell_read.py",
+  "read_run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1",
+  "recipe_id": "slurp-stage3-w1-cardsel-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-27T15:45:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired)"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+    "comparator": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+    "in_chain_replicate": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+    "read": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the W1 arm and the shared in-chain A/A carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score.",
+    "2. Structural stage: on the arm, every Solver card selection is a subset of the one the A/A made on the same Perception shortlist; the per-row card count and the Solver prompt tokens per contact from the sealed COST records against the A/A (expected about -1,186 per Solver contact where the shortlist agrees).",
+    "3. Score once per arm over the complete manifest with slurp-slu-official-train through core.scoring_batch, never sharded.",
+    "4. Paired row bootstrap (10,000 draws, seed 20260927) of the arm minus A/A delta on intent accuracy and official pooled SLU-F1, point and CI95; the delta against the sealed AGREE arm reported BESIDE it, never instead of it.",
+    "5. ADMITTED iff intent lower bound >= -0.9943 and SLU lower bound >= -1.2485; HARMFUL iff either upper bound < 0; otherwise NOT ADMITTED (width). Never write 'gain' or 'no gain'.",
+    "6. Report: per-scenario tables in both weightings; the frontier row (decision 75); the registered harm rows of card-selection-measurement-v1.json read row by row (ids and type names only); the rows whose delivered answer used a dropped type."
+  ],
+  "title": "Cell W1 -- the standard paired roster read on intent + SLU at the shared in-chain A/A, under the no-harm rule"
+}
