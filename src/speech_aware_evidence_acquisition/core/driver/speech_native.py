@@ -15,6 +15,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import http.client
+import io
 from itertools import permutations
 import json
 import math
@@ -25,7 +26,7 @@ import threading
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Callable, Mapping, Sequence
+from typing import Callable, Iterable, Iterator, Mapping, Sequence
 
 from ...contracts import ExecutionPlan
 from ...core.model.transport import _ordered_speech_feature_content
@@ -12581,6 +12582,47 @@ def derive_server_log_window_for_contacts(
     return launch_offsets[-expected_contact_count], server_log_end_offset
 
 
+#: Block size of the trace reader's raw reads. The trace is read through a
+#: handful of large ``read(2)`` calls instead of ``TextIOWrapper``'s 8 KiB
+#: chunks: over the drvfs/9p run root the line iteration cost 14.6 s of a
+#: 37.9 s seal on ROLL-2's 719 MiB trace (about 92,000 small reads) while
+#: ``read_bytes`` on the same file took about 4 s
+#: (docs/results/2026-09-26-slurp-seal-path-profile.md, section 6). 64 MiB
+#: keeps the reader's peak memory at one buffer plus one line rather than the
+#: whole trace, so the host reserve (owner decision 119) is untouched.
+_TRACE_READ_BLOCK_BYTES = 64 * 1024 * 1024
+
+
+def _iter_trace_lines(
+    path: Path, *, block_bytes: int = _TRACE_READ_BLOCK_BYTES
+) -> Iterator[str]:
+    """Yield a trace file's lines, decoded as UTF-8, through large raw reads.
+
+    Line discipline is ``core.tracing.TraceSink.emit``'s: every record is one
+    ``json.dumps`` line terminated by ``"\n"``, so the file is split on
+    ``b"\n"`` alone. Each yielded line excludes its terminator (``json.loads``
+    never saw it as anything but whitespace); a final unterminated line is
+    yielded as it stands; an empty line between two records is yielded empty,
+    so it fails ``json.loads`` exactly as it did under text-mode iteration.
+    Decoding per line is exact because the newline byte never occurs inside
+    a UTF-8 multi-byte sequence, and a byte sequence that is not UTF-8 raises
+    ``UnicodeDecodeError`` (a ``UnicodeError``) as the text reader's did.
+    """
+
+    if isinstance(block_bytes, bool) or not isinstance(block_bytes, int) or block_bytes <= 0:
+        raise ValueError("block_bytes must be a positive integer")
+    # io.BufferedReader's C-level readline over a ``block_bytes`` buffer: the
+    # raw file is read ``block_bytes`` at a time (13 reads for a 719 MiB
+    # trace) while one line at a time is resident. Measured on an ext4 copy
+    # of ROLL-2's trace it is also faster than the text-mode iteration
+    # (1.32 s against 1.45 s), which a Python-level block splitter was not.
+    with io.BufferedReader(io.FileIO(str(path), "rb"), buffer_size=block_bytes) as handle:
+        for raw in handle:
+            if raw.endswith(b"\n"):
+                raw = raw[:-1]
+            yield raw.decode("utf-8")
+
+
 def read_attempt_trace_facts(path: Path) -> dict[str, object]:
     """Summarise one attempt trace without ever opening ``MODEL_RESPONSE``.
 
@@ -12590,6 +12632,34 @@ def read_attempt_trace_facts(path: Path) -> dict[str, object]:
     per-contact token accounting from the ``COST`` channel, which carries the
     identical metered figures. Only structural carriage fields are read from
     ``MODEL_REQUEST``: never the prompt, the messages, or any generated text.
+
+    The file is read by :func:`_iter_trace_lines` (a few large raw reads,
+    bounded memory) and summarised by :func:`_trace_facts_from_lines`; the
+    facts are identical to those of the former text-mode line iteration, which
+    the unit tests hold against a reference iteration on fixtures.
+    """
+
+    try:
+        return _trace_facts_from_lines(_iter_trace_lines(path))
+    except (
+        OSError,
+        UnicodeError,
+        json.JSONDecodeError,
+        TypeError,
+        ValueError,
+    ) as error:
+        raise SpeechNativeProfileError(
+            f"cannot verify profile trace from disk: {error}"
+        ) from error
+
+
+def _trace_facts_from_lines(lines: Iterable[str]) -> dict[str, object]:
+    """The per-record accounting of :func:`read_attempt_trace_facts`.
+
+    ``lines`` is any iterable of JSON lines (terminator optional). Kept
+    separate from the file reader so that two line sources can be proven to
+    yield one facts object; the exceptions the file reader and ``json`` raise
+    propagate unchanged and are mapped by the caller.
     """
 
     request_count = 0
@@ -12615,122 +12685,110 @@ def read_attempt_trace_facts(path: Path) -> dict[str, object]:
     )
     sample_ids: set[str] = set()
     packet_ids: set[str] = set()
-    try:
-        with Path(path).open("r", encoding="utf-8") as handle:
-            for line in handle:
-                record = json.loads(line)
-                channel = record.get("channel")
-                if channel == "MODEL_RESPONSE":
-                    # Counted, never opened: the payload is not touched here.
-                    response_count += 1
-                    continue
-                if channel == "COST":
-                    cost_count += 1
-                    payload = record.get("payload")
-                    if not isinstance(payload, Mapping):
-                        raise SpeechNativeProfileError("trace cost record is malformed")
-                    calls = payload.get("calls")
-                    prompt_tokens = payload.get("prompt_tokens")
-                    completion_tokens = payload.get("completion_tokens")
-                    audio_seconds = payload.get("audio_seconds")
-                    latency_seconds = payload.get("latency_seconds")
-                    for name, value in (
-                        ("calls", calls),
-                        ("prompt_tokens", prompt_tokens),
-                        ("completion_tokens", completion_tokens),
-                    ):
-                        if (
-                            isinstance(value, bool)
-                            or not isinstance(value, int)
-                            or value < 0
-                        ):
-                            raise SpeechNativeProfileError(
-                                f"trace cost record {name} is malformed"
-                            )
-                    for name, value in (
-                        ("audio_seconds", audio_seconds),
-                        ("latency_seconds", latency_seconds),
-                    ):
-                        if (
-                            isinstance(value, bool)
-                            or not isinstance(value, (int, float))
-                            or not math.isfinite(float(value))
-                            or float(value) < 0
-                        ):
-                            raise SpeechNativeProfileError(
-                                f"trace cost record {name} is malformed"
-                            )
-                    assert isinstance(calls, int)
-                    assert isinstance(prompt_tokens, int)
-                    assert isinstance(completion_tokens, int)
-                    calls_total += calls
-                    prompt_tokens_total += prompt_tokens
-                    completion_tokens_total += completion_tokens
-                    audio_seconds_total += float(audio_seconds)  # type: ignore[arg-type]
-                    latency_seconds_total += float(latency_seconds)  # type: ignore[arg-type]
-                    max_prompt_tokens = max(max_prompt_tokens, prompt_tokens)
-                    max_completion_tokens = max(
-                        max_completion_tokens, completion_tokens
+    for line in lines:
+        record = json.loads(line)
+        channel = record.get("channel")
+        if channel == "MODEL_RESPONSE":
+            # Counted, never opened: the payload is not touched here.
+            response_count += 1
+            continue
+        if channel == "COST":
+            cost_count += 1
+            payload = record.get("payload")
+            if not isinstance(payload, Mapping):
+                raise SpeechNativeProfileError("trace cost record is malformed")
+            calls = payload.get("calls")
+            prompt_tokens = payload.get("prompt_tokens")
+            completion_tokens = payload.get("completion_tokens")
+            audio_seconds = payload.get("audio_seconds")
+            latency_seconds = payload.get("latency_seconds")
+            for name, value in (
+                ("calls", calls),
+                ("prompt_tokens", prompt_tokens),
+                ("completion_tokens", completion_tokens),
+            ):
+                if (
+                    isinstance(value, bool)
+                    or not isinstance(value, int)
+                    or value < 0
+                ):
+                    raise SpeechNativeProfileError(
+                        f"trace cost record {name} is malformed"
                     )
-                    continue
-                if channel != "MODEL_REQUEST":
-                    continue
-                request_count += 1
-                counts["model_request_count"] += 1
-                envelope = record.get("payload")
-                payload = (
-                    envelope.get("payload") if isinstance(envelope, Mapping) else None
-                )
-                if not isinstance(payload, Mapping):
-                    payload = {}
-                sample_id = payload.get("sample_id")
-                if isinstance(sample_id, str) and sample_id:
-                    sample_ids.add(sample_id)
-                else:
-                    counts["unknown_sample_id_count"] += 1
-                source_valid = payload.get("query_source") == "speech_features"
-                mmproj_valid = payload.get("mmproj_loaded") is False
-                if not source_valid:
-                    counts["query_source_failure_count"] += 1
-                if not mmproj_valid:
-                    counts["mmproj_flag_failure_count"] += 1
-                parts = payload.get("speech_feature_parts")
-                query_parts = (
-                    [
-                        dict(part)
-                        for part in parts
-                        if isinstance(part, Mapping) and part.get("role") == "query"
-                    ]
-                    if isinstance(parts, list)
-                    else []
-                )
-                packet_sha256 = payload.get("speech_packet_sha256")
-                binding_valid = (
-                    len(query_parts) == 1
-                    and isinstance(packet_sha256, str)
-                    and _SHA256.fullmatch(packet_sha256) is not None
-                    and query_parts[0].get("sha256") == packet_sha256
-                    and isinstance(query_parts[0].get("packet_id"), str)
-                    and bool(query_parts[0].get("packet_id"))
-                )
-                if binding_valid:
-                    packet_ids.add(str(query_parts[0]["packet_id"]))
-                else:
-                    counts["packet_binding_failure_count"] += 1
-                if source_valid and mmproj_valid and binding_valid:
-                    counts["valid_speech_query_count"] += 1
-                else:
-                    counts["invalid_speech_query_count"] += 1
-    except (
-        OSError,
-        UnicodeError,
-        json.JSONDecodeError,
-        TypeError,
-        ValueError,
-    ) as error:
-        raise SpeechNativeProfileError(
-            f"cannot verify profile trace from disk: {error}"
-        ) from error
+            for name, value in (
+                ("audio_seconds", audio_seconds),
+                ("latency_seconds", latency_seconds),
+            ):
+                if (
+                    isinstance(value, bool)
+                    or not isinstance(value, (int, float))
+                    or not math.isfinite(float(value))
+                    or float(value) < 0
+                ):
+                    raise SpeechNativeProfileError(
+                        f"trace cost record {name} is malformed"
+                    )
+            assert isinstance(calls, int)
+            assert isinstance(prompt_tokens, int)
+            assert isinstance(completion_tokens, int)
+            calls_total += calls
+            prompt_tokens_total += prompt_tokens
+            completion_tokens_total += completion_tokens
+            audio_seconds_total += float(audio_seconds)  # type: ignore[arg-type]
+            latency_seconds_total += float(latency_seconds)  # type: ignore[arg-type]
+            max_prompt_tokens = max(max_prompt_tokens, prompt_tokens)
+            max_completion_tokens = max(
+                max_completion_tokens, completion_tokens
+            )
+            continue
+        if channel != "MODEL_REQUEST":
+            continue
+        request_count += 1
+        counts["model_request_count"] += 1
+        envelope = record.get("payload")
+        payload = (
+            envelope.get("payload") if isinstance(envelope, Mapping) else None
+        )
+        if not isinstance(payload, Mapping):
+            payload = {}
+        sample_id = payload.get("sample_id")
+        if isinstance(sample_id, str) and sample_id:
+            sample_ids.add(sample_id)
+        else:
+            counts["unknown_sample_id_count"] += 1
+        source_valid = payload.get("query_source") == "speech_features"
+        mmproj_valid = payload.get("mmproj_loaded") is False
+        if not source_valid:
+            counts["query_source_failure_count"] += 1
+        if not mmproj_valid:
+            counts["mmproj_flag_failure_count"] += 1
+        parts = payload.get("speech_feature_parts")
+        query_parts = (
+            [
+                dict(part)
+                for part in parts
+                if isinstance(part, Mapping) and part.get("role") == "query"
+            ]
+            if isinstance(parts, list)
+            else []
+        )
+        packet_sha256 = payload.get("speech_packet_sha256")
+        binding_valid = (
+            len(query_parts) == 1
+            and isinstance(packet_sha256, str)
+            and _SHA256.fullmatch(packet_sha256) is not None
+            and query_parts[0].get("sha256") == packet_sha256
+            and isinstance(query_parts[0].get("packet_id"), str)
+            and bool(query_parts[0].get("packet_id"))
+        )
+        if binding_valid:
+            packet_ids.add(str(query_parts[0]["packet_id"]))
+        else:
+            counts["packet_binding_failure_count"] += 1
+        if source_valid and mmproj_valid and binding_valid:
+            counts["valid_speech_query_count"] += 1
+        else:
+            counts["invalid_speech_query_count"] += 1
     return {
         "trace_usage": {
             "model_request_count": request_count,

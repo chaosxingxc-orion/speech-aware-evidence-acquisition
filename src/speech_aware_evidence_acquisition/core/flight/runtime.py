@@ -5379,9 +5379,11 @@ class FlightRuntime:
           order, so the sealed outputs rows do not depend on completion
           timing.
         * **Trace safety, verified rather than assumed.**
-          ``core.tracing.TraceSink.emit`` holds NO lock: it check-then-sets
-          a dict and reopens the trace file per record, so concurrent
-          workers must not write it directly. Each task therefore emits into
+          ``core.tracing.TraceSink.emit`` serialises its own write on a
+          lock (one open handle, flushed per record since 2026-09-26), so
+          two workers could not tear a line -- but the trace's RECORD ORDER
+          would then depend on completion timing, so concurrent workers
+          still must not write it directly. Each task therefore emits into
           its own ``core.tracing.TraceBuffer`` (bound through the contextvar
           ``set_current_trace_buffer``, which is per-thread), and the parent
           flushes those buffers one at a time, in sample order, through
