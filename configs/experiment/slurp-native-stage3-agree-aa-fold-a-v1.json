@@ -16,13 +16,20 @@
         "reason": "The in-chain A/A replicate of cell AGREE, registered before contact on 2026-09-26 from the sealed cell PLAN fragments by script (decision 58): the same baseline bytes, w_agree 0.0, no agreement_source, its own run, attempt and fit ids. HELD until root mints the admission receipt and re-pins with --set-ready. Its prepared supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-agree-w1-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-agree-w1-fold-a-v1/root-admission-v1.json",
+            "sha256": "ebdf2f439bf2254ccfffc419bb89580fb7438c9d6d3b3deb03dd4e8d24044f47",
+            "reason": "Decision slurp-stage3-agree-w1-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v1.json",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1/phase-supply-v2.json",
             "sha256": "f03e40aa0e68744310dfdbf0b33553161e30f713a7b6c66579db300292a9fa5f"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1"
     }

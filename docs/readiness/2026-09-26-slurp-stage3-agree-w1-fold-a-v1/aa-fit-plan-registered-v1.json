@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-agree-aa-fold-a-v1",
-  "composed_config_hash": "4e55d2958b8ecc954bf264db3d07e15fca83653f8ed44a190babd1e40f777eb6",
+  "composed_config_hash": "bcae25768dada8be731033ebff83f9e5ba26d68e369e6b818e0ad90afe935aef",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-agree-aa-fold-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "8007009b17cbeb619bdbe8cf2b89ccfbfcda75a2b63ef0259d7cddef271e8451",
+    "protocol_hash": "6a14f4c14109d87f739ebdcf1b556b4192ff81a31f041c3a39658add7321d3b3",
     "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "c67c8fa5116fb74c22e5dd1581c32bb5cb4012e1aeae3873445d97d7c7d538cd"
+    "sha256": "f243ac64cfa2184ca04a13211bf8b8ec8ef659561d8b0c33953c6138f0245265"
   },
   "purpose": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1: The in-chain A/A replicate of cell AGREE. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",

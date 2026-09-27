@@ -9,12 +9,12 @@
         "w_prior": 0.0
       },
       "cell": "slurp-native-stage3-agree-aa-fold-a-v1",
-      "composed_config_hash": "4e55d2958b8ecc954bf264db3d07e15fca83653f8ed44a190babd1e40f777eb6",
+      "composed_config_hash": "bcae25768dada8be731033ebff83f9e5ba26d68e369e6b818e0ad90afe935aef",
       "declares_agreement_source": false,
       "experiment": "slurp-native-stage3-agree-aa-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-agree-aa-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-FIT-V1",
-      "protocol_hash": "8007009b17cbeb619bdbe8cf2b89ccfbfcda75a2b63ef0259d7cddef271e8451",
+      "protocol_hash": "6a14f4c14109d87f739ebdcf1b556b4192ff81a31f041c3a39658add7321d3b3",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
