@@ -1,0 +1,2505 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 141 (2026-09-27): a coverage-guaranteed sample of the test split is permitted for comparison; drawn once, complement sealed at the same moment as the closure roster; test gold read for stratification offline only; every contact behind the final-report owner allowance",
+  "generator": "scripts/build_slurp_test_sample_roster.py",
+  "intents_absent_from_sample": [
+    "general_greet"
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "carrier_split_identity_hash": "3f7063cb8b1e60d69c383d2215b5f244bbd7164d484010193a093a5e879389bd",
+    "receipt_file_sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3",
+    "relpath": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+    "roster_id": "SLURP-TEST-FULL-13078-V1",
+    "split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+  },
+  "partition_proof": {
+    "closure_recordings": 10068,
+    "closure_utterances": 2292,
+    "intersection_prompt_numbers": 0,
+    "intersection_recordings": 0,
+    "intersection_utterances": 0,
+    "parent_recordings": 13078,
+    "sample_recordings": 3010,
+    "sample_utterances": 682,
+    "union_equals_parent": true,
+    "union_recordings": 13078,
+    "union_split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+  },
+  "passes": {
+    "1_by_recording_id": {
+      "sources_checked": 87
+    },
+    "2_by_utterance_id_and_prompt_number": {
+      "sources_checked": 87
+    },
+    "3_by_text": {
+      "see": "text_overlap_with_train",
+      "status": "RUN, digest only, against the TRAIN construction pool"
+    },
+    "4_exposure_closure_new_rosters": {
+      "consumed_rows": [],
+      "identity_hashes_searched": [
+        "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
+        "377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b",
+        "6c1283003458abe08b8c636b14643e62c56d9cc858560d171aa6f97641fbd167",
+        "7f4de1fa4e91d46f07687ec3ac561bce29be8e00b99741712a2ad0cba835a4a8"
+      ],
+      "ledger_relpath": "docs/exposure-ledger.md",
+      "matching_rows": [],
+      "rows_parsed": 1272,
+      "verdict": "UNREAD"
+    },
+    "4_exposure_closure_parent": {
+      "consumed_rows": [],
+      "identity_hashes_searched": [
+        "3f7063cb8b1e60d69c383d2215b5f244bbd7164d484010193a093a5e879389bd",
+        "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+      ],
+      "ledger_relpath": "docs/exposure-ledger.md",
+      "matching_rows": [
+        {
+          "consumed": "no",
+          "identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+          "run_id": "SAEA-SN-TEST-FULL-PREPROCESS"
+        },
+        {
+          "consumed": "no",
+          "identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+          "run_id": "SAEA-SLURP-TEST-FULL-SPEECH-QUERY-ENCODING-V1"
+        },
+        {
+          "consumed": "no",
+          "identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+          "run_id": "SAEA-SLURP-TEST-FULL-QUERY-VECTOR-EXPORT-V1"
+        }
+      ],
+      "rows_parsed": 1272,
+      "verdict": "UNREAD"
+    }
+  },
+  "per_intent": {
+    "alarm_query": {
+      "closure_recordings": 162,
+      "closure_utterances": 24,
+      "sample_recordings": 63,
+      "sample_utterances": 10,
+      "test_recordings": 225,
+      "test_utterances": 34
+    },
+    "alarm_remove": {
+      "closure_recordings": 116,
+      "closure_utterances": 13,
+      "sample_recordings": 48,
+      "sample_utterances": 8,
+      "test_recordings": 164,
+      "test_utterances": 21
+    },
+    "alarm_set": {
+      "closure_recordings": 215,
+      "closure_utterances": 30,
+      "sample_recordings": 82,
+      "sample_utterances": 11,
+      "test_recordings": 297,
+      "test_utterances": 41
+    },
+    "audio_volume_down": {
+      "closure_recordings": 35,
+      "closure_utterances": 5,
+      "sample_recordings": 32,
+      "sample_utterances": 6,
+      "test_recordings": 67,
+      "test_utterances": 11
+    },
+    "audio_volume_mute": {
+      "closure_recordings": 178,
+      "closure_utterances": 23,
+      "sample_recordings": 88,
+      "sample_utterances": 9,
+      "test_recordings": 266,
+      "test_utterances": 32
+    },
+    "audio_volume_other": {
+      "closure_recordings": 12,
+      "closure_utterances": 3,
+      "sample_recordings": 16,
+      "sample_utterances": 3,
+      "test_recordings": 28,
+      "test_utterances": 6
+    },
+    "audio_volume_up": {
+      "closure_recordings": 41,
+      "closure_utterances": 6,
+      "sample_recordings": 78,
+      "sample_utterances": 7,
+      "test_recordings": 119,
+      "test_utterances": 13
+    },
+    "calendar_query": {
+      "closure_recordings": 456,
+      "closure_utterances": 104,
+      "sample_recordings": 74,
+      "sample_utterances": 22,
+      "test_recordings": 530,
+      "test_utterances": 126
+    },
+    "calendar_remove": {
+      "closure_recordings": 231,
+      "closure_utterances": 53,
+      "sample_recordings": 66,
+      "sample_utterances": 14,
+      "test_recordings": 297,
+      "test_utterances": 67
+    },
+    "calendar_set": {
+      "closure_recordings": 679,
+      "closure_utterances": 175,
+      "sample_recordings": 145,
+      "sample_utterances": 34,
+      "test_recordings": 824,
+      "test_utterances": 209
+    },
+    "cooking_recipe": {
+      "closure_recordings": 240,
+      "closure_utterances": 57,
+      "sample_recordings": 49,
+      "sample_utterances": 15,
+      "test_recordings": 289,
+      "test_utterances": 72
+    },
+    "datetime_convert": {
+      "closure_recordings": 33,
+      "closure_utterances": 8,
+      "sample_recordings": 22,
+      "sample_utterances": 7,
+      "test_recordings": 55,
+      "test_utterances": 15
+    },
+    "datetime_query": {
+      "closure_recordings": 454,
+      "closure_utterances": 71,
+      "sample_recordings": 67,
+      "sample_utterances": 17,
+      "test_recordings": 521,
+      "test_utterances": 88
+    },
+    "email_addcontact": {
+      "closure_recordings": 15,
+      "closure_utterances": 5,
+      "sample_recordings": 32,
+      "sample_utterances": 7,
+      "test_recordings": 47,
+      "test_utterances": 12
+    },
+    "email_query": {
+      "closure_recordings": 360,
+      "closure_utterances": 98,
+      "sample_recordings": 91,
+      "sample_utterances": 21,
+      "test_recordings": 451,
+      "test_utterances": 119
+    },
+    "email_querycontact": {
+      "closure_recordings": 69,
+      "closure_utterances": 17,
+      "sample_recordings": 32,
+      "sample_utterances": 9,
+      "test_recordings": 101,
+      "test_utterances": 26
+    },
+    "email_sendemail": {
+      "closure_recordings": 329,
+      "closure_utterances": 93,
+      "sample_recordings": 81,
+      "sample_utterances": 21,
+      "test_recordings": 410,
+      "test_utterances": 114
+    },
+    "general_greet": {
+      "closure_recordings": 15,
+      "closure_utterances": 1,
+      "sample_recordings": 0,
+      "sample_utterances": 0,
+      "test_recordings": 15,
+      "test_utterances": 1
+    },
+    "general_joke": {
+      "closure_recordings": 37,
+      "closure_utterances": 11,
+      "sample_recordings": 84,
+      "sample_utterances": 8,
+      "test_recordings": 121,
+      "test_utterances": 19
+    },
+    "general_quirky": {
+      "closure_recordings": 528,
+      "closure_utterances": 141,
+      "sample_recordings": 91,
+      "sample_utterances": 28,
+      "test_recordings": 619,
+      "test_utterances": 169
+    },
+    "iot_cleaning": {
+      "closure_recordings": 152,
+      "closure_utterances": 18,
+      "sample_recordings": 51,
+      "sample_utterances": 8,
+      "test_recordings": 203,
+      "test_utterances": 26
+    },
+    "iot_coffee": {
+      "closure_recordings": 117,
+      "closure_utterances": 26,
+      "sample_recordings": 39,
+      "sample_utterances": 10,
+      "test_recordings": 156,
+      "test_utterances": 36
+    },
+    "iot_hue_lightchange": {
+      "closure_recordings": 107,
+      "closure_utterances": 26,
+      "sample_recordings": 29,
+      "sample_utterances": 10,
+      "test_recordings": 136,
+      "test_utterances": 36
+    },
+    "iot_hue_lightdim": {
+      "closure_recordings": 77,
+      "closure_utterances": 13,
+      "sample_recordings": 48,
+      "sample_utterances": 8,
+      "test_recordings": 125,
+      "test_utterances": 21
+    },
+    "iot_hue_lightoff": {
+      "closure_recordings": 180,
+      "closure_utterances": 32,
+      "sample_recordings": 61,
+      "sample_utterances": 11,
+      "test_recordings": 241,
+      "test_utterances": 43
+    },
+    "iot_hue_lighton": {
+      "closure_recordings": 19,
+      "closure_utterances": 2,
+      "sample_recordings": 1,
+      "sample_utterances": 1,
+      "test_recordings": 20,
+      "test_utterances": 3
+    },
+    "iot_hue_lightup": {
+      "closure_recordings": 76,
+      "closure_utterances": 18,
+      "sample_recordings": 32,
+      "sample_utterances": 9,
+      "test_recordings": 108,
+      "test_utterances": 27
+    },
+    "iot_wemo_off": {
+      "closure_recordings": 45,
+      "closure_utterances": 11,
+      "sample_recordings": 22,
+      "sample_utterances": 7,
+      "test_recordings": 67,
+      "test_utterances": 18
+    },
+    "iot_wemo_on": {
+      "closure_recordings": 16,
+      "closure_utterances": 5,
+      "sample_recordings": 21,
+      "sample_utterances": 5,
+      "test_recordings": 37,
+      "test_utterances": 10
+    },
+    "lists_createoradd": {
+      "closure_recordings": 140,
+      "closure_utterances": 29,
+      "sample_recordings": 46,
+      "sample_utterances": 10,
+      "test_recordings": 186,
+      "test_utterances": 39
+    },
+    "lists_query": {
+      "closure_recordings": 167,
+      "closure_utterances": 39,
+      "sample_recordings": 63,
+      "sample_utterances": 12,
+      "test_recordings": 230,
+      "test_utterances": 51
+    },
+    "lists_remove": {
+      "closure_recordings": 161,
+      "closure_utterances": 40,
+      "sample_recordings": 69,
+      "sample_utterances": 12,
+      "test_recordings": 230,
+      "test_utterances": 52
+    },
+    "music_dislikeness": {
+      "closure_recordings": 10,
+      "closure_utterances": 2,
+      "sample_recordings": 10,
+      "sample_utterances": 2,
+      "test_recordings": 20,
+      "test_utterances": 4
+    },
+    "music_likeness": {
+      "closure_recordings": 119,
+      "closure_utterances": 26,
+      "sample_recordings": 43,
+      "sample_utterances": 10,
+      "test_recordings": 162,
+      "test_utterances": 36
+    },
+    "music_query": {
+      "closure_recordings": 97,
+      "closure_utterances": 25,
+      "sample_recordings": 39,
+      "sample_utterances": 10,
+      "test_recordings": 136,
+      "test_utterances": 35
+    },
+    "music_settings": {
+      "closure_recordings": 8,
+      "closure_utterances": 3,
+      "sample_recordings": 13,
+      "sample_utterances": 3,
+      "test_recordings": 21,
+      "test_utterances": 6
+    },
+    "news_query": {
+      "closure_recordings": 436,
+      "closure_utterances": 102,
+      "sample_recordings": 90,
+      "sample_utterances": 22,
+      "test_recordings": 526,
+      "test_utterances": 124
+    },
+    "play_audiobook": {
+      "closure_recordings": 236,
+      "closure_utterances": 30,
+      "sample_recordings": 71,
+      "sample_utterances": 11,
+      "test_recordings": 307,
+      "test_utterances": 41
+    },
+    "play_game": {
+      "closure_recordings": 100,
+      "closure_utterances": 25,
+      "sample_recordings": 38,
+      "sample_utterances": 10,
+      "test_recordings": 138,
+      "test_utterances": 35
+    },
+    "play_music": {
+      "closure_recordings": 623,
+      "closure_utterances": 147,
+      "sample_recordings": 125,
+      "sample_utterances": 29,
+      "test_recordings": 748,
+      "test_utterances": 176
+    },
+    "play_podcasts": {
+      "closure_recordings": 203,
+      "closure_utterances": 49,
+      "sample_recordings": 105,
+      "sample_utterances": 14,
+      "test_recordings": 308,
+      "test_utterances": 63
+    },
+    "play_radio": {
+      "closure_recordings": 224,
+      "closure_utterances": 57,
+      "sample_recordings": 74,
+      "sample_utterances": 15,
+      "test_recordings": 298,
+      "test_utterances": 72
+    },
+    "qa_currency": {
+      "closure_recordings": 126,
+      "closure_utterances": 29,
+      "sample_recordings": 44,
+      "sample_utterances": 10,
+      "test_recordings": 170,
+      "test_utterances": 39
+    },
+    "qa_definition": {
+      "closure_recordings": 153,
+      "closure_utterances": 44,
+      "sample_recordings": 57,
+      "sample_utterances": 13,
+      "test_recordings": 210,
+      "test_utterances": 57
+    },
+    "qa_factoid": {
+      "closure_recordings": 432,
+      "closure_utterances": 117,
+      "sample_recordings": 88,
+      "sample_utterances": 24,
+      "test_recordings": 520,
+      "test_utterances": 141
+    },
+    "qa_maths": {
+      "closure_recordings": 56,
+      "closure_utterances": 17,
+      "sample_recordings": 24,
+      "sample_utterances": 8,
+      "test_recordings": 80,
+      "test_utterances": 25
+    },
+    "qa_stock": {
+      "closure_recordings": 58,
+      "closure_utterances": 18,
+      "sample_recordings": 29,
+      "sample_utterances": 8,
+      "test_recordings": 87,
+      "test_utterances": 26
+    },
+    "recommendation_events": {
+      "closure_recordings": 105,
+      "closure_utterances": 32,
+      "sample_recordings": 36,
+      "sample_utterances": 11,
+      "test_recordings": 141,
+      "test_utterances": 43
+    },
+    "recommendation_locations": {
+      "closure_recordings": 79,
+      "closure_utterances": 22,
+      "sample_recordings": 23,
+      "sample_utterances": 9,
+      "test_recordings": 102,
+      "test_utterances": 31
+    },
+    "recommendation_movies": {
+      "closure_recordings": 58,
+      "closure_utterances": 12,
+      "sample_recordings": 28,
+      "sample_utterances": 8,
+      "test_recordings": 86,
+      "test_utterances": 20
+    },
+    "social_post": {
+      "closure_recordings": 206,
+      "closure_utterances": 65,
+      "sample_recordings": 54,
+      "sample_utterances": 16,
+      "test_recordings": 260,
+      "test_utterances": 81
+    },
+    "social_query": {
+      "closure_recordings": 99,
+      "closure_utterances": 17,
+      "sample_recordings": 26,
+      "sample_utterances": 8,
+      "test_recordings": 125,
+      "test_utterances": 25
+    },
+    "takeaway_order": {
+      "closure_recordings": 64,
+      "closure_utterances": 14,
+      "sample_recordings": 36,
+      "sample_utterances": 8,
+      "test_recordings": 100,
+      "test_utterances": 22
+    },
+    "takeaway_query": {
+      "closure_recordings": 165,
+      "closure_utterances": 25,
+      "sample_recordings": 36,
+      "sample_utterances": 10,
+      "test_recordings": 201,
+      "test_utterances": 35
+    },
+    "transport_query": {
+      "closure_recordings": 133,
+      "closure_utterances": 39,
+      "sample_recordings": 34,
+      "sample_utterances": 12,
+      "test_recordings": 167,
+      "test_utterances": 51
+    },
+    "transport_taxi": {
+      "closure_recordings": 67,
+      "closure_utterances": 15,
+      "sample_recordings": 18,
+      "sample_utterances": 8,
+      "test_recordings": 85,
+      "test_utterances": 23
+    },
+    "transport_ticket": {
+      "closure_recordings": 120,
+      "closure_utterances": 25,
+      "sample_recordings": 35,
+      "sample_utterances": 10,
+      "test_recordings": 155,
+      "test_utterances": 35
+    },
+    "transport_traffic": {
+      "closure_recordings": 36,
+      "closure_utterances": 8,
+      "sample_recordings": 22,
+      "sample_utterances": 7,
+      "test_recordings": 58,
+      "test_utterances": 15
+    },
+    "weather_query": {
+      "closure_recordings": 593,
+      "closure_utterances": 130,
+      "sample_recordings": 89,
+      "sample_utterances": 26,
+      "test_recordings": 682,
+      "test_utterances": 156
+    }
+  },
+  "proof_sha256": "d3bedeaaf29b9a0d44dd83193c3ea2c2c567c40822d400f8b0116b8ed1bbe510",
+  "rosters": {
+    "SLURP-TEST-CLOSURE-10068-V1": {
+      "carrier_split_identity_hash": "7f4de1fa4e91d46f07687ec3ac561bce29be8e00b99741712a2ad0cba835a4a8",
+      "recordings": 10068,
+      "relpath": "docs/receipts/rosters/slurp-test-closure-10068-v1.json",
+      "split_identity_hash": "377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b",
+      "utterances": 2292
+    },
+    "SLURP-TEST-SAMPLE-3010-V1": {
+      "carrier_split_identity_hash": "6c1283003458abe08b8c636b14643e62c56d9cc858560d171aa6f97641fbd167",
+      "recordings": 3010,
+      "relpath": "docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+      "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
+      "utterances": 682
+    }
+  },
+  "schema": "saea-test-sample-partition-proof-v1",
+  "sources": [
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "46330f24f22228bdafa1714beaceb4d65e8c4ead588906b8c99378bae12ea740",
+      "items": 1000,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-dev-1000-ts2-v1.json",
+      "roster_id": "SLURP-DEV-1000-TS2-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58",
+      "items": 1000,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "roster_id": "SLURP-DEV-2000-ADDED-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "c7d196e80b7dab34e2fb9f89803d66c80cd8d5cb702a54aa9c66b8b9a81cc0ad",
+      "items": 2000,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-v1.json",
+      "roster_id": "SLURP-DEV-2000-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "9208f3c4b33d2ad4d6ec95081f676ed5cc5a52873dd167e556896d3790c1bfa3",
+      "items": 500,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-dev-500-b-v1.json",
+      "roster_id": "SLURP-DEV-500-B-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "0d9fab6b7274aa941699d1b944e908afd68e18e7dfdad2acaada6cc1ebd2009c",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-dev1000-intent-hypothesis-source-engineering4-v1.json",
+      "roster_id": "SLURP-DEV1000-INTENT-HYPOTHESIS-SOURCE-ENGINEERING4-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "aff787436856c68537e6ce67fda9dce00b368262b2dabe8e3e57c57bb302070e",
+      "items": 1000,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-dev1000-intent-hypothesis-source-v1.json",
+      "roster_id": "SLURP-DEV1000-INTENT-HYPOTHESIS-SOURCE-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "e7ac3e46a0b4890cb5aa307e12a7d4c47b59c41c98b0e4feef11f0fa17b28e88",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-devel-remainder-np8-equivalence-4-v1.json",
+      "roster_id": "SLURP-DEVEL-REMAINDER-NP8-EQUIVALENCE-4-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "83f618bdadf338fe88ae0a851d43ce4c9e3ef9569365fd7bf2bcffb82cb4ee18",
+      "items": 6690,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-devel-remainder-v1.json",
+      "roster_id": "SLURP-DEVEL-REMAINDER-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "b695a6bdb7ed70dba5ae842ac52e02e026dfc5940b856673884cb549ef7f9977",
+      "items": 6570,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-devel-remainder-v2.json",
+      "roster_id": "SLURP-DEVEL-REMAINDER-V2",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "4400e362e3664451aa3aeb73f84dcb617a7dacbff04a04fc4da253d65326d83d",
+      "items": 432,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-evo-exemplars-v1.json",
+      "roster_id": "SLURP-EVO-EXEMPLARS-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "0d57df6c711e494af148745db4bd3082719fd2c1d5f7e0a340075887e4fddf05",
+      "items": 430,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-evo-exemplars-v2.json",
+      "roster_id": "SLURP-EVO-EXEMPLARS-V2",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "ed330bdfe520517a4ef060aa288e33ca848cd9ee43c738e382571fd43d6cf0ee",
+      "items": 540,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v1.json",
+      "roster_id": "SLURP-EVO-FOLD-A-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "items": 1080,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "roster_id": "SLURP-EVO-FOLD-A-V2",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "b94371b00ef58e71742dc68f2da21c5f613ea81cd4779314d1139784f67650e1",
+      "items": 540,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v1.json",
+      "roster_id": "SLURP-EVO-FOLD-B-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "items": 1080,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "roster_id": "SLURP-EVO-FOLD-B-V2",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "f9d3be07309778938466db83179d903b969a448d771454e399a363a2e95e261a",
+      "items": 54,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-evo-s1-proposer-r01.json",
+      "roster_id": "SLURP-EVO-S1-PROPOSER-R01",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "78abd5c328987149c64e15c15a8f3d2873c465578cc23b971bc01d28d50c1087",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-native-tools-engineering-4-v1.json",
+      "roster_id": "SLURP-NATIVE-TOOLS-ENGINEERING-4-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "a44cb98b1a3ca819b3f85a0545f60035badac6bdd0b184ec41bb01a9c4a0cfc1",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-smoke-4-v1.json",
+      "roster_id": "SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-SMOKE-4-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "9e819f230dbcd3d5c1826c4a61619eee03257a35aebdae4023e1c1101116c75a",
+      "items": 225,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json",
+      "roster_id": "SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+      "items": 800,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
+      "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+      "items": 625,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "caf080e6208e50038282cbdfba50adcd0f68fab04d9919d1c476c2f768363b1f",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-smoke-4-v1.json",
+      "roster_id": "SLURP-STAGE3-GEPA-R01C-CARRIERS-SMOKE-4-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "b6c618ef0df6c1fd53ea42161094b7f1a32951d699c1012680f5a39fde01e72e",
+      "items": 68,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-gepa-r01c-carriers-v1.json",
+      "roster_id": "SLURP-STAGE3-GEPA-R01C-CARRIERS-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "38f1d79ee5437362c104168969a6682e940290267b73381c71917c426d31ee8f",
+      "items": 173,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-gepa-r01c-groups-v1.json",
+      "roster_id": "SLURP-STAGE3-GEPA-R01C-GROUPS-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "7a69a88d8a74333707ddcac0d9aeee6fbaf7db868e193e95784b718d62aedec6",
+      "items": 200,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-roll-aa-r01c-200-v1.json",
+      "roster_id": "SLURP-STAGE3-ROLL-AA-R01C-200-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "0ae11e22071b1904719652fb9a292b1d05576632ea44ea33214be71de50bc3fe",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-stage3-roll-aa-r01c-smoke-4-v1.json",
+      "roster_id": "SLURP-STAGE3-ROLL-AA-R01C-SMOKE-4-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "740d8d31e3ec33e63cd398d654dc5d5771612178703b4a528094898741a6f19b",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-system-batch001-r01c-v1.json",
+      "roster_id": "SLURP-SYSTEM-BATCH001-R01C-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "a357828e4a70a5dd88931af99fd018c4598192fa836fa71aada85491a7ada7bc",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-system-batch002-r01c-v1.json",
+      "roster_id": "SLURP-SYSTEM-BATCH002-R01C-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "8340b8fdc8a399fbcca30908a941b319c0d809f971d4b3c948500f9178a5d03b",
+      "items": 1,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-system-comparison001-v1.json",
+      "roster_id": "SLURP-SYSTEM-COMPARISON001-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "87d1d92d80d2fd43c32d8f317f1e999b9aa13bcdf6d272076a7a96454be3273a",
+      "items": 4,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-system-memory-batch002-evaluation-v1.json",
+      "roster_id": "SLURP-SYSTEM-MEMORY-BATCH002-EVALUATION-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "eee21337170cc39f8c25fc200a01669e123fa97829ac9d1716d9e1cee5f21616",
+      "items": 8,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-system-memory-cumulative-batch002-v1.json",
+      "roster_id": "SLURP-SYSTEM-MEMORY-CUMULATIVE-BATCH002-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "e69642b485185fad1d8a348a004280ae79686088308d86532359fa807f894bf7",
+      "items": 8,
+      "kind": "roster-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/rosters/slurp-system-through-batch002-r01c-v1.json",
+      "roster_id": "SLURP-SYSTEM-THROUGH-BATCH002-R01C-V1",
+      "roster_role": "construction",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 2292,
+        "shared_recording_ids": 10068,
+        "shared_utterance_ids": 2292
+      },
+      "file_sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3",
+      "items": 13078,
+      "kind": "roster-receipt",
+      "relation": "parent (overlap is the roster itself, by construction)",
+      "relpath": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+      "roster_id": "SLURP-TEST-FULL-13078-V1",
+      "roster_role": "evaluation",
+      "sample": {
+        "shared_prompt_numbers": 682,
+        "shared_recording_ids": 3010,
+        "shared_utterance_ids": 682
+      },
+      "split_role": "final-report"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "0cf5effe493f88128a894f7f075c21a05cd32e232eb5a7b6199eac03a23120d0",
+      "items": 100,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/DEV-100.json",
+      "roster_id": "dev-ladder-dev100",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3",
+      "items": 500,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "roster_id": "dev-ladder-dev1000-preprocess-new500",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+      "items": 1000,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+      "roster_id": "dev-ladder-dev1000",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "86c199b204002afb8706485c6778314ef907069ea386bf72bce21179d95d95fc",
+      "items": 400,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/DEV-500-NEW400.json",
+      "roster_id": "dev-ladder-dev500-preprocess-new400",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "adc3e4ddd20518d279dc6c3aa42821629ca67b05eaba7802e1918f0349c2f315",
+      "items": 500,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/DEV-500.json",
+      "roster_id": "dev-ladder-dev500",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "dev"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "3cfa5f4b3f51505af2ea457166a3fef2dc9a51a15c10b2c870902f851450cd57",
+      "items": 108,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/DISCOVERY-X108.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "f1ea5182261f25296c2ff540761ece3c6707b0f4bd262358f2da3f0c2bfcc28a",
+      "items": 108,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/EFFECT-C108.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "bfc97d55a2c9e70b81d7a34cb5b633200e4896644229bf90d7f0c1b3eedfafb1",
+      "items": 8,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/ENG-GATE8.json",
+      "roster_id": "speech-native-engineering-gate",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "3c875edc20f550de6fb940f577e81999583cfce83464a0c63ffe4ac4e313087c",
+      "items": 108,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/EVIDENCE-E108.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "24d713c065656ec17000e6079825edb66ad13752edeb829997325320ec2f407b",
+      "items": 108,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/FACTOR-D108.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "630d6e255a8a31738a7cf9c2d0a7c0798a3eb099eb17797d8ea88cbdb2fbbc78",
+      "items": 60,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/FINAL60.json",
+      "roster_id": "dev-ladder-final60",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "reserved-final-unread"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "511d9114b9b547bf03420efb8f90295e7714052675e0dd51ba4bfdbd259a3e89",
+      "items": 36,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/GATE-C36.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "9d3aca254351e1e676148d3df0e04f79d17c7f6c68828b88cb173d387b3f8818",
+      "items": 18,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/GATE18.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "068a369c85b76fa1cd011b72b18dccfa3c7f1e2102bea3958e5bbdb38fcf9154",
+      "items": 18,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/KEY18.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "8a55922b862b661d23aa55880525d1d259e2af771425a37d012ba9328ca81820",
+      "items": 36,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/OPT-A36.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "67290bebb01ba7cc90d1935e3b81962e41d14f1b5d839aadffae9fbef882edee",
+      "items": 18,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/OPT-B18.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "8d801895da089a5b11c74203909fdc033f19c3c433b5322fdca21f3ffcbf1772",
+      "items": 430,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/SLURP-EVO-EXEMPLARS-V2.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "16a768c2ba90716cfc1757b4379e83693dfa152171526061d244989c8225a632",
+      "items": 1080,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/SLURP-EVO-FOLD-A-V2.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "d234d208d3d6b84619d38b9ddf73a5345ba4960bd0f90fcdba132b5c7d81ee1b",
+      "items": 1080,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/SLURP-EVO-FOLD-B-V2.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "eb44994d43b15bf4c4794f255e7ae981924006a5ade0ab74ddeb4b94fd2d6c98",
+      "items": 90,
+      "kind": "probe-sample-receipt",
+      "relation": "other",
+      "relpath": "docs/receipts/probe-samples/TRAIN90.json",
+      "roster_id": "speech-native-runtime-view",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": "discovery"
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "a90507f9d9d3a4bdb2145e1895eab6c7ca8cd563fd579681f3a266ed9c986519",
+      "items": 36,
+      "kind": "probe-binding-config",
+      "relation": "other",
+      "relpath": "configs/probes/g0-binding/pkey-flight.json",
+      "roster_id": "pkey-flight",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "6bc8873b1d6e0c020b2ff383d81bc4108d57d98c63f92123e0343589fefbdbcd",
+      "items": 3,
+      "kind": "probe-binding-config",
+      "relation": "other",
+      "relpath": "configs/probes/g0-binding/pslu-flight.json",
+      "roster_id": "pslu-flight",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "b0ed229867d89443031d78f1235c4b072240fcc06c5207492448cb05fd70aa6f",
+      "items": 3,
+      "kind": "probe-binding-config",
+      "relation": "other",
+      "relpath": "configs/probes/g0-binding/pslu-s2-flight.json",
+      "roster_id": "pslu-s2-flight",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": "782609ac54b1ab58e403a042e43030899ed68551c575740caabef97411b63b63",
+      "items": 60,
+      "kind": "probe-binding-config",
+      "relation": "other",
+      "relpath": "configs/probes/g0-binding/pslu-sample-devel-n60.json",
+      "roster_id": "pslu-sample-devel-n60",
+      "roster_role": null,
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/_quarantine/saea-slurp-intent-candidates-v1-unexcluded-20260919/snapshot.json",
+      "roster_id": "saea-slurp-intent-candidates-v1",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "f179f5db51413fd3141f2d0b65fd49cea35f48b67429c838badf745dc3c779c5",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 4091,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-1000/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-d20aac643eebabaf",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "1af3a1db6bbbaa93d0afb6e37fa7239dad064332622694a137ba76e89fbe5886",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 20089,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-5000/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-5dc8dac5802d997a",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "656b037310b1edc388e96048d6255dc1f4dd05ac52094d062f3dcb3bab959061",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-76e61b0666162aa7",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-7d85ec2c65173343",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "2c43147780b60fe64a3f46de5e9f6ab28b053f3a28a6900b2a92c04591541cf6",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-role-coverage/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-2284b4d4750a33bc",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "ae922246ae3a6c5a4508262d95a5436cb631e6179c720419ad53a7c1d94a6ee6",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-0192f26f9210bed2",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 37407,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-6e97c2089412d998",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-slot-type-set/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-5b1be7eb1f585a03",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "1171670b952032e84b5f07794c742c6d7c4e76859c1fdce5c83cffeb0b311501",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-span-role-frame/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-c3303eb28f816eba",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "25176ff7fd78984691b6af41f57f585b55846a954c3afb59d4e64c2d04dfd33d",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-typed-fillers/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-1607a3dde1e3e463",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "c27cb0a17ed20c5f76da8ad75cc0230434bdd50b3bc8067454cb90da09dc8258",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 50628,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-b6834ffad7203333",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 37407,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker-evo-s1/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-f85ea70770726239",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "a2a9f99bb1d2b7634bb5686288e0fea9c7b71e31b5bd6c4b8d21ef288e810d7b",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 37407,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-272fc1f938d1816e",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 34474,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-empty-contract-minus-r01-v1/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-fae1ef4b29dcc621",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "2c4d44626e269df2b9cc1371623c08a317de03dd0f1183e3a0bc3b8ed1477e18",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 37407,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-empty-contract-v1/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-75a1c9173c3ebdc3",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "e39985250bbd32ae0ac80ef234b8d0357943c4a68ac4e73b680ee4be4f48dbc6",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 34474,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "roster_id": "slurp-kb-distmodel-220dc61ef33b6a83",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 2037,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-factored-v1/snapshot.json",
+      "roster_id": "saea-authored-intent-boundaries-factored-v1:21dbb12511eba615",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "2f51a962bda72dfbb5469a2d31e1ad99030ecb5634d1e25fc0f9f093d759758b",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 2037,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+      "roster_id": "saea-authored-intent-boundaries-v1:f8e2d43feec14398",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 2037,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v2/snapshot.json",
+      "roster_id": "saea-authored-intent-boundaries-v1:a35fcf87371832f3",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "8a27424a84d5b419e033391b9bba00f30952de520c993237ea0219a9978c07c5",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 3162,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+      "roster_id": "saea-authored-slot-contracts-v1:39434afac0c86d99",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 3162,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+      "roster_id": "saea-authored-slot-contracts-v1:a876046de640ace9",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 201,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-twin-v1/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:57ec40c90e18ed34",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "f19671d381f82ffb07f7d186b93c45adfe129bcf934e62011abdec1744123ffe",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 201,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-gepa-v1/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:60481405e361aa04",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "560d84e7e6364de5ce09635f586660d22b9a103734c51dbd64e6182599fb935c",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 223,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:056feb25f5f4a90a",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "d393bbbb7db698a881c160ce8a77aea68af9964ab68c10fe2b7c8781b472c5a4",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 223,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v1r/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:703227c624ac630a",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "5aee8d1df90430272d7eedbafb2ab4fe032178a7b681b692b8234ecb2e56fb98",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 136,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-twin-v2/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:19308dbb20fe778c",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "131809122d23ccdaac86c9a9426c5e045a9544fc3059c1b46f80a3365151d614",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 223,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-v1/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:7513db582cfb4ab1",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "1d55f44122c741e0c17e5186cf6f17a3181a31bae0152dea95decd7a4b9fea10",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 223,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-v1r/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:ca469128546c9757",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "e2552666ebe6dcd87e4239bfddb3a02d62e8965280b9f52c40acf9cbf4b2f27d",
+      "split_role": null
+    },
+    {
+      "closure": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "file_sha256": null,
+      "items": 136,
+      "kind": "knowledge-snapshot",
+      "relation": "other",
+      "relpath": "knowledge/slurp/semantic/stage3-deltas-v2/snapshot.json",
+      "roster_id": "saea-authored-stage3-deltas-v2:a4129b3a5d127627",
+      "roster_role": "train",
+      "sample": {
+        "shared_prompt_numbers": 0,
+        "shared_recording_ids": 0,
+        "shared_utterance_ids": 0
+      },
+      "snapshot_sha256": "44a804184cf83a08e85831d40bae942af1e71ed4365b485d833f9a03807ef150",
+      "split_role": null
+    }
+  ],
+  "speaker_prompt_author_overlap": {
+    "prompt_authors": {
+      "closure": 534,
+      "closure_only": 211,
+      "closure_recordings_by_an_author_also_in_sample": 7518,
+      "closure_recordings_by_an_author_also_in_sample_share": 0.7467,
+      "closure_recordings_with_no_author_id": 214,
+      "sample": 359,
+      "sample_only": 36,
+      "sample_recordings_with_no_author_id": 47,
+      "shared": 323
+    },
+    "source": "governed datasets/slurp/metadata/metadata.json (recordings[].usrid, userid_amt)",
+    "speakers": {
+      "closure": 139,
+      "closure_only": 8,
+      "closure_recordings_by_a_speaker_also_in_sample": 10035,
+      "closure_recordings_by_a_speaker_also_in_sample_share": 0.9967,
+      "sample": 134,
+      "sample_only": 3,
+      "shared": 131
+    },
+    "statement": "Speaker and prompt-author disjointness between the sample and the closure roster is IMPOSSIBLE inside one SLURP split: the same speakers recorded prompts across the whole split and the same authors wrote prompts across it. The partition is by PROMPT, which is what makes the closure roster independent of the sample at the sentence level; the speaker and author overlap below is reported so a reader knows exactly what is and is not shared. Ids are counted in memory and never written."
+  },
+  "stratification": {
+    "closure_floor_utterances": 5,
+    "even_split_intents": [
+      {
+        "closure": 3,
+        "intent": "audio_volume_other",
+        "sample": 3,
+        "test_utterances": 6
+      },
+      {
+        "closure": 2,
+        "intent": "iot_hue_lighton",
+        "sample": 1,
+        "test_utterances": 3
+      },
+      {
+        "closure": 2,
+        "intent": "music_dislikeness",
+        "sample": 2,
+        "test_utterances": 4
+      },
+      {
+        "closure": 3,
+        "intent": "music_settings",
+        "sample": 3,
+        "test_utterances": 6
+      }
+    ],
+    "floor_driven_utterances": 279,
+    "intents": 59,
+    "quotas_utterances": {
+      "alarm_query": 10,
+      "alarm_remove": 8,
+      "alarm_set": 11,
+      "audio_volume_down": 6,
+      "audio_volume_mute": 9,
+      "audio_volume_other": 3,
+      "audio_volume_up": 7,
+      "calendar_query": 22,
+      "calendar_remove": 14,
+      "calendar_set": 34,
+      "cooking_recipe": 15,
+      "datetime_convert": 7,
+      "datetime_query": 17,
+      "email_addcontact": 7,
+      "email_query": 21,
+      "email_querycontact": 9,
+      "email_sendemail": 21,
+      "general_greet": 0,
+      "general_joke": 8,
+      "general_quirky": 28,
+      "iot_cleaning": 8,
+      "iot_coffee": 10,
+      "iot_hue_lightchange": 10,
+      "iot_hue_lightdim": 8,
+      "iot_hue_lightoff": 11,
+      "iot_hue_lighton": 1,
+      "iot_hue_lightup": 9,
+      "iot_wemo_off": 7,
+      "iot_wemo_on": 5,
+      "lists_createoradd": 10,
+      "lists_query": 12,
+      "lists_remove": 12,
+      "music_dislikeness": 2,
+      "music_likeness": 10,
+      "music_query": 10,
+      "music_settings": 3,
+      "news_query": 22,
+      "play_audiobook": 11,
+      "play_game": 10,
+      "play_music": 29,
+      "play_podcasts": 14,
+      "play_radio": 15,
+      "qa_currency": 10,
+      "qa_definition": 13,
+      "qa_factoid": 24,
+      "qa_maths": 8,
+      "qa_stock": 8,
+      "recommendation_events": 11,
+      "recommendation_locations": 9,
+      "recommendation_movies": 8,
+      "social_post": 16,
+      "social_query": 8,
+      "takeaway_order": 8,
+      "takeaway_query": 10,
+      "transport_query": 12,
+      "transport_taxi": 8,
+      "transport_ticket": 10,
+      "transport_traffic": 7,
+      "weather_query": 26
+    },
+    "remainder_rule": "core.roster.mixture_quotas against test's natural prompt mixture, capped by capacity minus both floors",
+    "remainder_utterances": 403,
+    "sample_floor_utterances": 5,
+    "seed": 20260927,
+    "single_prompt_intents_to_closure": [
+      "general_greet"
+    ]
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "text_overlap_with_train": {
+    "closure": {
+      "distinct_sentence_digests": 2291,
+      "exact_sentence_matches_in_train_construction_pool": 10,
+      "gram_digest_set_sha256": "5c9bf9770fb5bdf96868e98def82a975fdc8079d0cf51c70df110062e08dc15a",
+      "sentence_digest_set_sha256": "b5ad715c90ac2a2f5e40349a7ef8a06aba29793ede7e07ca0a8b79c02cc58c86",
+      "utterances_read": 2292,
+      "utterances_sharing_a_train_6gram": 261
+    },
+    "dev_reference": {
+      "note": "the same method on devel gave 1 exact match and 113 6-gram-sharing prompts of 913 (DEV-2000-ADDED) and 1 / 111 of 1,000 (DEV-1000)",
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json"
+    },
+    "method": "Digest only, the scripts/build_slurp_dev2000_roster.py method: test sentences are read inside one generator, compared as whole-sentence SHA-256 digests and as word 6-gram digests (rails.proposer.word_ngrams / ngram_digest) against the TRAIN construction text pool, and only counts and digest-set hashes are written. No sentence and no gram is written anywhere. This is the first time a test 'sentence' field has been touched in this repository; it was touched for this count alone, under owner decision 141 item 5 (offline test gold for the sample's construction), and it does not edit the NOT-RUN record of the frozen parent's text pass (protocol section 9 item 3), which stands as written.",
+    "reading": "The construction-versus-knowledge guard compares ids, not sentences; these counts say how much of each test roster's TEXT a TRAIN-built knowledge store could already contain. Any non-zero exact match is a property of the corpus, not of the draw, and is reported rather than acted on.",
+    "sample": {
+      "distinct_sentence_digests": 682,
+      "exact_sentence_matches_in_train_construction_pool": 2,
+      "gram_digest_set_sha256": "74f8ee90cef13c888c9b69a184567bfa78c28ee47635b47bc94ae86678df36ba",
+      "sentence_digest_set_sha256": "2a9c62523144558b980988d692d1a4962430077297186ce85f11e839742de56f",
+      "utterances_read": 682,
+      "utterances_sharing_a_train_6gram": 71
+    },
+    "sample_closure_shared_sentence_digests": 0,
+    "train_construction_pool": {
+      "gram_digests": 25475,
+      "pool_id": "slurp-construction-text-pool-v1",
+      "sentence_digests": 11483,
+      "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+      "utterance_count": 11514
+    }
+  },
+  "verdict": "CLEAN",
+  "violations": []
+}
