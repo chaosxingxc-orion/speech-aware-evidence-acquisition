@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+  "composed_config_hash": "c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50",
+    "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli worker on this cell alone; the smoke is outside the campaign plan and is never scored.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "one_factor": "Composed key knowledge_stores.slot-contracts.candidate_supply.solver.candidate_legality_source: absent -> the pinned legality table prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json (sha256 59b507b4e36970d4328b3442a31c790c2be48e2e47f4247bd3764bf2fddd1bad); the card route's authored index (402 pairs) narrowed to the 286 pairs the released exemplar store carries in at least two distinct utterances; nothing added.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "88edc193272f9bdb11f5099124b03cbb39f7d5b0",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
+    "note": "the card route is not an input to the first-phase (Perception) supply, so the supply the flip mints for each cell must carry the AGREE preparation's output digest; a different digest means the Perception channel moved -- stop and report",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "5b49bba0f39a6c80f7723963a94002f6d2e48dadca5b033e0e3b22a9a28afd7a"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1: Four-row form smoke of cell W1. Structural form proof only: no score and no read.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W1 arm and the shared in-chain A/A. A verdict computed against the sealed AGREE arm alone is refused.",
+  "registered_at_utc": "2026-09-27T15:45:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w1, branch fable/w1",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
