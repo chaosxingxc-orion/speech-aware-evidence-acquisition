@@ -17,6 +17,8 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import subprocess
+import tempfile
 from collections.abc import Mapping
 from pathlib import Path
 
@@ -30,9 +32,27 @@ from speech_aware_evidence_acquisition.core.flight.repin import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-AGREE_W1_FRAGMENT = REPO_ROOT / "configs/experiment/slurp-native-stage3-agree-w1-fold-a-v1.json"
-AGREE_SMOKE_FRAGMENT = REPO_ROOT / "configs/experiment/slurp-native-stage3-agree-w1-fold-a-smoke-4-v1.json"
-AGREE_AA_FRAGMENT = REPO_ROOT / "configs/experiment/slurp-native-stage3-agree-aa-fold-a-v1.json"
+# The AGREE fragments as REGISTERED, before their flip (master 1df49946): the flip itself (05e8053a) re-pinned them
+# with this very code, so the working-tree bytes no longer carry the pre-flip requirement lists this regression
+# proof is about. The fixtures are the committed pre-flip git blobs, materialised once per session.
+_PRE_FLIP_COMMIT = "1df49946"
+_FIXTURE_DIR = Path(tempfile.mkdtemp(prefix="saea-agree-preflip-"))
+
+
+def _pre_flip(relpath: str) -> Path:
+    target = _FIXTURE_DIR / Path(relpath).name
+    if not target.exists():
+        blob = subprocess.run(
+            ["git", "-C", str(REPO_ROOT), "show", f"{_PRE_FLIP_COMMIT}:{relpath}"],
+            check=True, capture_output=True,
+        ).stdout
+        target.write_bytes(blob)
+    return target
+
+
+AGREE_W1_FRAGMENT = _pre_flip("configs/experiment/slurp-native-stage3-agree-w1-fold-a-v1.json")
+AGREE_SMOKE_FRAGMENT = _pre_flip("configs/experiment/slurp-native-stage3-agree-w1-fold-a-smoke-4-v1.json")
+AGREE_AA_FRAGMENT = _pre_flip("configs/experiment/slurp-native-stage3-agree-aa-fold-a-v1.json")
 AGREE_ARM_CELL = "slurp-native-stage3-agree-w1-fold-a-v1"
 AGREE_SMOKE_CELL = "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1"
 AGREEMENT_TABLE_RELPATH = "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl"
@@ -141,7 +161,7 @@ def test_the_agree_cells_keep_their_agreement_table_and_update_only_their_own_su
     assert [entry["kind"] for entry in before] == ["preparation", "preparation"]
     assert before[0]["relpath"] == AGREEMENT_TABLE_RELPATH
     assert before[1]["relpath"] == f"prepared/{run_id}/phase-supply-v1.json"
-    baseline = json.loads((REPO_ROOT / "configs/baseline" / f"{cell['baseline_fragment']}.json").read_text(encoding="utf-8"))
+    baseline = json.loads(_pre_flip(f"configs/baseline/{cell['baseline_fragment']}.json").read_text(encoding="utf-8"))
     assert "prepared_phase_supply" not in baseline
 
     pin = ArtifactPin(f"prepared/{run_id}/phase-supply-v2.json", NEW_SHA)
