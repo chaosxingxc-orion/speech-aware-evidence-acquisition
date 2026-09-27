@@ -728,6 +728,9 @@ def test_window_fit_inputs_refuse_evidence_source_drift_after_materialization(sy
         _lock=lock,
         _data_root=synthetic_world.data_root,
         _samples=[sample],
+        # request_fit_inputs keys the prepared-text implementation hash on the composed arm (FlightRuntime._arm);
+        # this synthetic window fit is not the prepared-text arm.
+        _arm=lambda: "fixed-legal-context",
         preparation_context=lambda: {
             "values": values,
             "split_identity_hash": "a" * 64,
@@ -824,6 +827,8 @@ def test_real_window_fit_materialization_matches_registered_live_factory_with_co
     runtime._repo_root = synthetic_world.data_root / "repo"
     runtime._plan = None
     runtime._prepare = lambda: (values, "earnings21-original", "discovery", "identity")
+    # The real _prepare sets _composed; window_feature_packet_binding reads the composed values from it.
+    runtime._composed = SimpleNamespace(values=values)
     batch = runtime.materialize_window_batch()
     assert batch.evidence_binding is not None
     evidence = batch.evidence_binding.evidence_by_sample[CALL]
