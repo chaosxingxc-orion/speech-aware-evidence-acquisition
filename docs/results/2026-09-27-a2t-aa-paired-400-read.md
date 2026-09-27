@@ -4,7 +4,7 @@ Read 2026-09-27 by the analysis agent (Claude Opus 5.5, worktree `/home/chao/sae
 `fable/xcarrier`) under the coordinator's brief for the analysis track of owner decision 163. Registered recipe
 `docs/readiness/2026-09-27-a2t-stage3-aa-paired-400-v1/analysis-recipe-v1.json` (sha256
 `84da9590e9025ce37dbef38f869e4d5776d71501a541b18a5a87515c43a4b023`), read row
-`SAEA-A2T-STAGE3-AA-PAIRED-400-READ-V1` registered before any score was read (commit `39a20303`, rebased from `8e6f22e5`). Zero model,
+`SAEA-A2T-STAGE3-AA-PAIRED-400-READ-V1` registered before any score was read (in the commit 'research: register the A2T-AA read row before reading', which precedes this read on branch fable/xcarrier; first written as 8e6f22e5 before the rebase onto master). Zero model,
 tokenizer, encoder, scorer, server, GPU and network contacts: every number below is arithmetic over the two sealed
 passes and the sealed direct comparator. DESCRIPTIVE: no verdict, no admission, no bar; the owner disposes
 (decision 139).
