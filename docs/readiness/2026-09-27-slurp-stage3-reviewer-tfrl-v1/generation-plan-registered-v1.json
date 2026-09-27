@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-revtfrl-fold-a-v1",
-  "composed_config_hash": "0d1451cfe6f3b875c8696b2ff2895bbbbc2f2b4415453503684a7d45debe9a5a",
+  "composed_config_hash": "f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "721bd0ab1f45f0ea215258d1d0e907606d946964dd97285b8e4487fdaa08c907",
+    "protocol_hash": "d976235252f997c258b50329f6fc256b8275325c8ef2219912cba03132a76fc1",
     "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -31,7 +31,7 @@
   },
   "one_factor": "Composed key phase_material.reviewer.instruction_template: probes/slurp_native_role_reviewer_v1_g5_v1.txt -> probes/slurp_native_role_reviewer_contrastive_v1.txt (sha256 2b6de3b6cfdba2c248efc5a36e1d29b58220c09e0b673a9285cb1cf2ad51e3cf).",
   "plan_kind": "generation",
-  "preparation_base_commit": "1c196a5d",
+  "preparation_base_commit": "97eb3288",
   "prepared_phase_supply": {
     "expected_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
     "note": "the Reviewer instruction is not an input to the first-phase supply, so every 1,080-row supply the flip mints for the arm and the A/A must carry this output digest; a different digest means the knowledge channel moved -- stop and report",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-    "sha256": "fc569c8808cefd1b4f3e6a8e965256546c060b051cc173d0f2c9aca0c520ad45"
+    "sha256": "6ed3a920ebaf40c8bd9783cb053e024b0078af6bdf39a19b5f57706f9e9c4940"
   },
   "purpose": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1: Cell REV-TFRL-1. NO-HARM ADMITTED (owner decision 127): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION. The cell is NEVER reported as a gain, whatever the point estimate. Beside the verdict, never instead of it, the read reports the NODE CREDIT: on each arm, the loop value (delivered answer minus the same trajectory's first Solver draft, intent and official pooled SLU-F1, paired within the flight, cluster CI95) and the per-visit credit table by pre-review error class computed by scripts/analysis/slurp_reviewer_credit_table.py's own functions; the arm-minus-A/A difference of loop values set beside the declared expectation +0.80 pp; the Reviewer contact rate and REVISE rate; the per-scenario table in both weightings and the frontier row (decision 75); and a model-free count of Reviewer responses narrating a tool call on each arm.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",

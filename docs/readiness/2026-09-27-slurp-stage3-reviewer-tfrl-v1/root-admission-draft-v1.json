@@ -7,7 +7,7 @@
     },
     "config_proof": {
       "path": "tests/unit/test_revtfrl_config.py",
-      "sha256": "14bdd4cf24f5aeee66d391351036fd950f6d5721d1d676a2a5ce22fd6b6aa932"
+      "sha256": "ec09a87dfa3d44fc192814a472ad372c66e35ee8f9be05a1f505bdb4fe3f4309"
     },
     "credit_summary": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/credit-table-summary-v1.json",
@@ -27,7 +27,7 @@
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "0446b6f51e159fc55af85f26ec34da922304d75e30df9fa398588bee5f0570cc"
+      "sha256": "79885109a5219a8818f07489c136f71a2177ac58523b6b33ecebbea552d821b0"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1-preregistration.md",
@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-      "sha256": "fc569c8808cefd1b4f3e6a8e965256546c060b051cc173d0f2c9aca0c520ad45"
+      "sha256": "6ed3a920ebaf40c8bd9783cb053e024b0078af6bdf39a19b5f57706f9e9c4940"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md",
@@ -43,9 +43,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/registered-facts-v1.json",
-      "sha256": "ab2cdc712e638474b9644efb8173e3aae849d0a092fe86222afc37d53610540f"
+      "sha256": "dc6d28af95f14e538b0726d4ca2f0b14f9a9318a4a44b3e564b0461e9480eeb7"
     },
-    "registration_base_commit": "1c196a5d"
+    "registration_base_commit": "97eb3288"
   },
   "authorization_basis": "Owner decision 165 (optimise the Reviewer node on its own with training-free RL); 127, 133, 139, 153, 161; the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
   "budget": {
@@ -80,7 +80,7 @@
       "repeated_speech_audio_seconds_cap": 117
     }
   },
-  "cell_kind": "Stage-3 training-free RL cell (reviewer-node-sealed-credit-v1): one arm on TRAIN Fold A 1,080, its in-chain A/A in the same chain, and a four-row form smoke outside the chain.",
+  "cell_kind": "Stage-3 training-free RL cell (sealed-credit-system-policy-v1): one arm on TRAIN Fold A 1,080, its in-chain A/A in the same chain, and a four-row form smoke outside the chain.",
   "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a no-harm admission of one Reviewer policy, never reported as a gain.",
   "coordinator": "Fable5.1",
   "decision": "Fly REV-TFRL-1: the AGREE arm with the Reviewer node's instruction moved from the G5 text to the contrastive form selected offline over sealed TRAIN R01C trajectories, read at the in-chain A/A (the base) on NO HARM at the Fold A half-widths (intent 0.9943, SLU 1.2485); never reported as a gain; the node's within-trajectory credit read beside it.",
@@ -117,12 +117,12 @@
       "protocol": "978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368"
     },
     "arm": {
-      "composed_config": "0d1451cfe6f3b875c8696b2ff2895bbbbc2f2b4415453503684a7d45debe9a5a",
-      "protocol": "721bd0ab1f45f0ea215258d1d0e907606d946964dd97285b8e4487fdaa08c907"
+      "composed_config": "f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873",
+      "protocol": "d976235252f997c258b50329f6fc256b8275325c8ef2219912cba03132a76fc1"
     },
     "smoke": {
-      "composed_config": "6473bef148414d15ebcda4fc92b7314356e58d6d217a0f31409cd8aeae2bd189",
-      "protocol": "0112f962b4b80a05f7076511157449a03a29fd36355c7388b8a92960b8b56e67"
+      "composed_config": "399c9f3ac6542918afafc7281c7411f6db2f1a5f5379618c3ef7cd8da877e495",
+      "protocol": "aee8ecadf5868a2bb9f1c58e9632797126984dbf82e339f62e50196ae2dc1e1d"
     }
   },
   "schema": "saea-campaign-decision-v1",

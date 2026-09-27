@@ -16,11 +16,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-generation-v1",
       "cell": "slurp-native-stage3-revtfrl-fold-a-v1",
-      "composed_config_hash": "0d1451cfe6f3b875c8696b2ff2895bbbbc2f2b4415453503684a7d45debe9a5a",
+      "composed_config_hash": "f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873",
       "experiment": "slurp-native-stage3-revtfrl-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-FIT-V1",
-      "protocol_hash": "721bd0ab1f45f0ea215258d1d0e907606d946964dd97285b8e4487fdaa08c907",
+      "protocol_hash": "d976235252f997c258b50329f6fc256b8275325c8ef2219912cba03132a76fc1",
       "reviewer_instruction_template": "probes/slurp_native_role_reviewer_contrastive_v1.txt",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1",
@@ -29,11 +29,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-revtfrl-fold-a-smoke-4-v1",
-      "composed_config_hash": "6473bef148414d15ebcda4fc92b7314356e58d6d217a0f31409cd8aeae2bd189",
+      "composed_config_hash": "399c9f3ac6542918afafc7281c7411f6db2f1a5f5379618c3ef7cd8da877e495",
       "experiment": "slurp-native-stage3-revtfrl-fold-a-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-FIT-V1",
-      "protocol_hash": "0112f962b4b80a05f7076511157449a03a29fd36355c7388b8a92960b8b56e67",
+      "protocol_hash": "aee8ecadf5868a2bb9f1c58e9632797126984dbf82e339f62e50196ae2dc1e1d",
       "reviewer_instruction_template": "probes/slurp_native_role_reviewer_contrastive_v1.txt",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1",
@@ -58,6 +58,6 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-revtfrl, branch fable/revtfrl",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "1c196a5d",
+  "study_commit_at_registration": "97eb3288",
   "the_question": "With the Reviewer node's instruction moved to the contrastive form selected offline over sealed TRAIN R01C trajectories and nothing else changed, does the system stay within its own null on TRAIN Fold A 1,080 against an in-chain A/A (the AGREE arm with G5's Reviewer instruction), and how large is the node's own within-trajectory credit beside the A/A's?"
 }

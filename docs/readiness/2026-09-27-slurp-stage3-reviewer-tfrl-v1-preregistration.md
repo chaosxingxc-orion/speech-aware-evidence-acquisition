@@ -1,6 +1,6 @@
 # Cell REV-TFRL-1: preregistration
 
-Registered 2026-09-27 at study commit `1c196a5d`, before any contact, from the committed AGREE
+Registered 2026-09-27 at study commit `97eb3288`, before any contact, from the committed AGREE
 arm fragments by script (decision 58) with one pin moved, under owner decision 165. Development numbers only (owner
 decisions 28 and 86); never a test claim. The design, the credit table and the offline selection are in
 [`2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md`](2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md).
@@ -17,10 +17,10 @@ decisions 28 and 86); never a test claim. The design, the credit table and the o
 | declared expectation | +0.80 pp intent, the measured transfer of the offline selection statistic (below the benefit bar; claims_benefit false) |
 | node credit (beside the verdict) | loop value over the trajectory's own first draft on each arm, per-class credit table |
 | runs | `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1` / `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1` / `SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1` |
-| composed config hashes | arm `0d1451cfe6f3b875c8696b2ff2895bbbbc2f2b4415453503684a7d45debe9a5a`; A/A `ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844`; smoke `6473bef148414d15ebcda4fc92b7314356e58d6d217a0f31409cd8aeae2bd189` |
-| protocol hashes | arm `721bd0ab1f45f0ea215258d1d0e907606d946964dd97285b8e4487fdaa08c907`; A/A `978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368`; smoke `0112f962b4b80a05f7076511157449a03a29fd36355c7388b8a92960b8b56e67` |
+| composed config hashes | arm `f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873`; A/A `ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844`; smoke `399c9f3ac6542918afafc7281c7411f6db2f1a5f5379618c3ef7cd8da877e495` |
+| protocol hashes | arm `d976235252f997c258b50329f6fc256b8275325c8ef2219912cba03132a76fc1`; A/A `978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368`; smoke `aee8ecadf5868a2bb9f1c58e9632797126984dbf82e339f62e50196ae2dc1e1d` |
 | split identity | arm and A/A `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
-| stage3_algorithm | `reviewer-node-sealed-credit-v1` (arm and smoke, operators_used `context_application`); `none` on the A/A |
+| stage3_algorithm | `sealed-credit-system-policy-v1` (arm and smoke, operators_used `context_application`); `none` on the A/A |
 
 ## Decision rule (fixed here)
 

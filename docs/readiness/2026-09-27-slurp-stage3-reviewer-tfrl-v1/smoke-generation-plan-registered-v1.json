@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-revtfrl-fold-a-smoke-4-v1",
-  "composed_config_hash": "6473bef148414d15ebcda4fc92b7314356e58d6d217a0f31409cd8aeae2bd189",
+  "composed_config_hash": "399c9f3ac6542918afafc7281c7411f6db2f1a5f5379618c3ef7cd8da877e495",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "0112f962b4b80a05f7076511157449a03a29fd36355c7388b8a92960b8b56e67",
+    "protocol_hash": "aee8ecadf5868a2bb9f1c58e9632797126984dbf82e339f62e50196ae2dc1e1d",
     "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -31,7 +31,7 @@
   },
   "one_factor": "Composed key phase_material.reviewer.instruction_template: probes/slurp_native_role_reviewer_v1_g5_v1.txt -> probes/slurp_native_role_reviewer_contrastive_v1.txt (sha256 2b6de3b6cfdba2c248efc5a36e1d29b58220c09e0b673a9285cb1cf2ad51e3cf).",
   "plan_kind": "generation",
-  "preparation_base_commit": "1c196a5d",
+  "preparation_base_commit": "97eb3288",
   "prepared_phase_supply": {
     "expected_output_sha256": "the AGREE smoke's own four-row digest",
     "note": "the Reviewer instruction is not an input to the first-phase supply, so every 1,080-row supply the flip mints for the arm and the A/A must carry this output digest; a different digest means the knowledge channel moved -- stop and report",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-    "sha256": "fc569c8808cefd1b4f3e6a8e965256546c060b051cc173d0f2c9aca0c520ad45"
+    "sha256": "6ed3a920ebaf40c8bd9783cb053e024b0078af6bdf39a19b5f57706f9e9c4940"
   },
   "purpose": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1: Four-row form smoke of cell REV-TFRL-1. Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",

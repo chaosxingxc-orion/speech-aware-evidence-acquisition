@@ -3,7 +3,7 @@
 Owner decision 165 (2026-09-27, translated): *"nodes like the Reviewer can all be optimised and improved; do not
 mechanically throw them away -- use training-free RL to optimise its behaviour on its own."* This package is the
 design, the reward signal (the Reviewer's credit table over sealed pools), the offline inner loop, and the first
-cell it selects. Registered before contact 2026-09-27 at study commit `1c196a5d` by
+cell it selects. Registered before contact 2026-09-27 at study commit `97eb3288` by
 Claude Opus 5.5 (worktree `/home/chao/saea-worktrees/fable-revtfrl`, branch `fable/revtfrl`); all three cells **held**. Nothing here
 authorises a flight, a flip or an admission entry. Development numbers only (owner decisions 28 and 86).
 
@@ -129,8 +129,9 @@ draft -- the "top-2 contrast" is already inside that history and the instruction
 (iii) the intervention trigger (when its verdict may change the answer); (iv) the revision scope (what a revision may
 change).
 
-**Algorithm `reviewer-node-sealed-credit-v1`** (registered in `core/stage3_algorithms.py`; GEPA's reflective update, arXiv:2507.19457,
-restricted to one node and scored where this rig can see): (1) *rollout* is not an operator of this algorithm -- it consumes
+**Algorithm `sealed-credit-system-policy-v1`**, applied NODE-SCOPED as owner decision 165 rules it (per-node credit: the Reviewer's
+revise / keep decisions and their outcomes in the sealed pools are the reward signal); its update step is a reflective
+proposal in GEPA's manner (arXiv:2507.19457) restricted to one node, and every step is scored where this rig can see: (1) *rollout* is not an operator of this algorithm -- it consumes
 sealed pools already on disk and the flights this design queues; (2) *scoring* -- offline, per draft, against gold on the scoring side; (3) *credit
 assignment* -- per Reviewer VISIT, by the pre-review draft's error class; (4) *update* -- a reflective proposal of the
 node's policy from the credit table (the proposer reads the table, names the failing class, and edits the policy for
@@ -179,8 +180,8 @@ the selected form's text, adapted to this plan and changed in nothing else --
 
 `configs/probes/slurp_native_role_reviewer_contrastive_v1.txt` (sha256 `2b6de3b6cfdba2c248efc5a36e1d29b58220c09e0b673a9285cb1cf2ad51e3cf`, 194 words, 182 kept in order from the source).
 
-**Selection data.** R01C (625 TRAIN construction rows, disjoint from Fold A); the decision-162 filler chunks (TRAIN
-outside Fold A and every evaluation roster) are the substrate of later rounds. Fold A gold entered the credit table
+**Selection data.** R01C (625 TRAIN construction rows, disjoint from Fold A); the decision-162 filler chunks, which
+decision 168 places on Fold B's 1,080 TRAIN rows (outside Fold A), are the substrate of later rounds. Fold A gold entered the credit table
 descriptively and never a selection.
 
 **The read.** TRAIN Fold A 1,080, the in-chain A/A = the base (AGREE + G5's Reviewer text), intent primary, SLU-F1
@@ -200,9 +201,10 @@ the cell claims no benefit: `admission` `no-harm`, `claims_benefit` false, `expe
 1.8816 GPU-h; arm about 6,319 contacts, about 2.71 GPU-h; total about
 4.6 GPU-h (caps 11,880 generation contacts and
 12.0 GPU-h per cell are ceilings; smoke 44 / 1.0).
-Next rounds: Reviewer variants the offline loop cannot score are flown on TRAIN rows outside Fold A (R01C, or the decision-162 filler chunks), K variants plus the as-built control in ONE campaign, each read by its own within-trajectory loop value: about 625 x 5.85 x 0.000429 = 1.6 GPU-h per 625-row variant, so K = 3 plus control is about 6.3 GPU-h; only the winner re-enters Fold A beside an in-chain A/A (about 4.6 GPU-h).
+Next rounds: Reviewer variants the offline loop cannot score are flown on TRAIN rows outside Fold A (R01C, or the decision-162 filler chunks on Fold B, decision 168), K variants plus the as-built control in ONE campaign, each read by its own within-trajectory loop value: about 625 x 5.85 x 0.000429 = 1.6 GPU-h per 625-row variant, so K = 3 plus control is about 6.3 GPU-h; only the winner re-enters Fold A beside an in-chain A/A (about 4.6 GPU-h).
 
-**Round 2 (queued by this design, not registered here).** The proposer reads REV-TFRL-1's own sealed credit table. If
+**Round 2 (queued by this design, not registered here).** Decision 165 names G5 as the node's first, no-harm step and
+the Planner as the next node on the same route. The proposer reads REV-TFRL-1's own sealed credit table. If
 the arm's REVISE reach lands near the source arm's but its correct-draft harm is higher, the next candidate is the
 revision-scope text on the Solver side or the Planner's routing criterion (the source arm's other two texts), each a
 one-node variant flown on R01C / filler rows in ONE campaign with the as-built control and read by loop value; if the
