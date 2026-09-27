@@ -106,15 +106,15 @@
       "comparator_locked_at": "intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06)",
       "own_null_measured": "MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188",
       "own_null_source": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
-      "cells_flown": 44,
+      "cells_flown": 45,
       "admitted": 1,
       "aligned": 0,
       "neutral": 6,
       "rejected": 10,
-      "instrument": 19,
+      "instrument": 20,
       "closed_unread": 3,
       "pending": 12,
-      "rows": 51,
+      "rows": 52,
       "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     },
     {
@@ -4995,6 +4995,60 @@
       "provisional": null
     },
     {
+      "cell_id": "SLURP-ROLL-3",
+      "carrier": "SLURP",
+      "layer": "Stage-3 instrument (sealed sample pool on the evaluation roster)",
+      "title": "ROLL-3 - ROLL-2's grouped-Solver form (samples 5, temperature 0.7, plurality-support commit at min_support 3) re-pointed onto the evaluation roster DEV-2000-ADDED (1,000 rows), sealed as a five-sample pool and read offline: the per-sample official scores, the within-flight sample spread, the oracle best-of-5 ceiling as an upper bound and the sealed delivered score beside them",
+      "date": "2026-09-27",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1",
+        "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-READ-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md",
+      "receipt": "docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1/",
+      "preregistration": "docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1-preregistration.md",
+      "status": "DESCRIPTIVE (an asset read on the evaluation roster DEV-2000-ADDED: per-sample scores, within-flight sample spread, the oracle ceiling as an upper bound and the sealed delivered score beside; no comparator, no gate, no admission, no effectiveness, superiority or generalisation claim, no disposition)",
+      "status_source": "h1",
+      "status_quote": "# Cell ROLL-3 read: the sealed five-sample pool on DEV-2000-ADDED -- per-sample intent 75.5 to 76.0, any-sample-correct 77.5, one intent across all five samples on 90.5 % of the rows with five parsed samples (DESCRIPTIVE)",
+      "comparator": {
+        "text": "none: ROLL-3 is an asset, not a comparison. The delivered plurality-commit answer as the flight sealed it under the unprojected slurp-slu-official (intent 70.8, SLU-F1 63.43) is reported beside the five copies scored under slurp-slu-official-projected-v3 and never subtracted from them (a different scorer id). The Fold A offline pool floor (0.67 pp at n = 625, about 0.51 pp at n = 1,080), the DEV-2000-ADDED cross-flight own null (h_SLU 1.2525 / h_intent 1.1520 at n = 1,000, offset -0.25) and ROLL-AA's within-flight null (0.735 / 0.000 at n = 200) are context only.",
+        "source": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md"
+      },
+      "rule": {
+        "text": "none as an effectiveness rule: the recipe slurp-stage3-roll-3-dev2000-added-sealed-pool-v1 has no gating decision rule (offline-sealed-pool, claims_benefit false, expected_effect_pp 0.0, stage3_algorithm shared-rollout). Its row accounting: 1,000 in and 1,000 out, five custodied samples per row with the registered seeds and temperature 0.7, the plurality-support commit replay reproducing the sealed delivered answer on every row, zero native task-contract calls; stage 1 renders one copy per sample index, stage 2 scores each copy once under slurp-slu-official-projected-v3 against DEVEL gold, stage 3 reads the per-row best / worst and the sealed delivered score, stage 4 (registered separately as the READ row before any number was read) reads the ten sample-index pairs with CI95 by whole-utterance cluster bootstrap (10,000 draws, seed 20260915), the flip shares, the headset / far-field table and the ceiling as an upper bound.",
+        "source": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md"
+      },
+      "primary": {
+        "text": "per-sample official scores under slurp-slu-official-projected-v3: intent 75.5 / 76.0 / 75.7 / 75.9 / 75.7 (mean 75.76), SLU-F1 63.53 / 62.32 / 63.73 / 64.01 / 61.94 (mean 63.11); oracle best-of-5 UPPER BOUND micro SLU-F1 71.06 and intent any-sample-correct 77.5 (+1.74 over the mean sample), worst-of-5 intent (every sample correct) 73.7; one intent across the five samples on 896 of 990 rows with five parsed samples (90.5 %), all five byte-identical on 401 of 1,000, pairwise mean byte identity 61.46 %, intent flip 5.17 %, entity-set flip 31.41 %; four of the ten pooled micro SLU-F1 pair contrasts and one of the ten per-row contrasts have a CI95 excluding zero, none of the ten intent contrasts; headset 460 rows read intent 80.13 / SLU-F1 66.43 on the mean sample against far-field 540 rows at 72.04 / 60.12.",
+        "source": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md"
+      },
+      "margin": {
+        "text": "none - no bar applies. Implied within-pool CI95 half-widths at n = 1,000, means over the ten sample-index pairs: per-row intent 0.82 (0.65 to 1.09), per-row SLU-F1 1.19 (0.95 to 1.55), pooled micro SLU-F1 1.56 (1.23 to 2.04); reported beside the offline pool floor and the cross-flight own null as context, never as a comparator, a bar or a floor re-estimate.",
+        "source": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md"
+      },
+      "margin_kind": "none - whole-utterance cluster bootstrap CI95 (10,000 draws, seed 20260915) over two sample indices of one sealed pool",
+      "guards": {
+        "text": "row accounting held on every clause (1,000 of 1,000 rows with five samples, the registered seeds and temperature 0.7; plurality replay equal to the sealed delivered bytes and to response_text_sha256 on 1,000 of 1,000; 0 native tool calls on 8,216 contacts; 17 malformed samples over 10 rows); manifest COMPLETED and attempt FINALIZED at flight commit bc507604 with a clean tree; five copy scores each identity-checked and their micro SLU-F1 recomputed from the count fields to 1.2e-16. Two recipe/seal mismatches handled by the driver and recorded: the as-registered render refused the stratum-withheld roster and the minimal fix of commit 243705e5 groups it by recording channel; the sealed delivered score is under a different scorer id from the copies and is reported beside, never subtracted.",
+        "source": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "arm: 8,216 generation contacts of the 19,000 cap (8.216 per row), 24,606.729 s of repeated speech audio of the 56,688 cap, 120.91 monitored GPU-active minutes (2.0152 GPU-h) of the 11.2 cap inside a 134.00 min contact window, 79,185,386 prompt / 344,207 completion tokens, 0 tool calls, dispositions finite_completion 8 rows and planner_action_illegal 1 row, against a registered expectation of about 8,550 contacts and 3.3 GPU-h; four-row smoke 32 contacts, 65.022 s, 0.39 GPU-active minutes; the two FIT identities opened no attempt; the read five CPU scorer jobs and no other contact.",
+        "source": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md"
+      },
+      "next_step": {
+        "text": "the owner's, in conversation (decision 139); the note states only what the pool entails for the absolute 95 per cent intent target (decisions 137 and 141): intent errors on this roster are systematic across samples, so selection or aggregation among the five samples cannot deliver intent above 77.5 here, consistent with the closed aggregation line (decision 112) and the retrieval diagnosis.",
+        "source": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "Read note sha256 91f43e4e400c5dc0d844fc78cf5df7e870be575021cdc6a59493d3e6b8f80991; machine results under SPEECHRL_DATA_DIR analysis/SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-READ-V1: spread.json 0d6261b55ccdc0f14e40287a0df129b2c6cf3932f0319f6b29aa96ca4772bd1b, ceiling.json a137f68259cdeb67f09f1d84b626b82df72e0bdfec9f0145e6d0802f9650c14f, score-summary.json 34dd50f09e49a3b219fd5594307b211b041cccbc6bc8d9c05402323e6b222e6e. Drivers copied beside the output equal the committed bytes at e2822b2b (stage3_rollout_score.py 8c5c2008e0a1c9790093018dc69b8a620e379cffeaf4c71bb990a19971801282, stage3_pool_spread_read.py d6f97769c96aa6a854c5437e348536af6dcecc17e369835bcafdd684f9615382); the as-registered driver (79371c36b3cde0d6f0af5d16cb6b007cdedab8a014c416376def9e37667fa9da, the flight commit bc507604's bytes) and its roster refusal log are pinned beside them. The context file labels the 0.67 pp floor the Fold A pool floor; the instrument note measured it over the ROLL-1 pool on the R01C construction roster at n = 625. The four flight rows of the exposure ledger still carry their registration text 'draft, root countersignature pending'; the flight ran under the decision receipt coordination/slurp-stage3-roll-3-dev2000-added-v1/root-admission-v1.json (recorded 2026-09-27 05:04:42 UTC).",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
       "cell_id": "INFRA-RUNROOT-AUDIT",
       "carrier": "all carriers (engineering base)",
       "layer": "engineering base",
@@ -5756,7 +5810,8 @@
       "SLURP-VAR-2",
       "SLURP-VERIFY-1",
       "SLURP-CONV",
-      "SLURP-DET"
+      "SLURP-DET",
+      "SLURP-ROLL-3"
     ],
     "algorithm_registry": {
       "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects were observed while these rows were written. The first is REPAIRED since: gepa-reflective-pareto-v1 and inference-time-verification-v1 both read status='planned' although CELL-1-GEPA and VERIFY-1 had flown and sealed, and both were corrected to status='base-loop' in commit 8b18f4ef of 2026-09-26 -- a status is a fact about this repository, not a statement of intent. The second stands and is reported rather than repaired: the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes), and this ledger resolves none of them.",
