@@ -209,17 +209,25 @@ def test_the_pin_agrees_with_the_derivation_and_the_registered_facts(composed, d
     assert diff["the_one_pin"] and all(k.startswith(ONE_PIN) for k in diff["the_one_pin"])
 
 
-def test_no_prepared_phase_supply_is_committed_anywhere(composed, experiment: dict) -> None:
-    assert "prepared_phase_supply" not in composed.values
+def test_prepared_phase_supply_is_absent_or_the_cells_own(composed, experiment: dict) -> None:
+    # Before the flip nothing is committed; after the re-pin (flight commit baa5ff99) the pinned supply must be
+    # KPROBE's own prepared artefact, never a foreign one (item E26 / the is_own_supply_requirement fix).
     baseline = _read(REPO / "configs/baseline" / (experiment["cells"][0]["baseline_fragment"] + ".json"))
-    assert "prepared_phase_supply" not in baseline
+    for doc in (composed.values, baseline):
+        pps = doc.get("prepared_phase_supply")
+        if pps is None:
+            continue
+        text = json.dumps(pps)
+        assert "kprobe" in text.lower(), "a committed prepared supply must be this cell's own"
 
 
 def test_readiness_is_held_with_an_empty_requirements_list(experiment: dict) -> None:
     readiness = experiment["cells"][0]["readiness"]
-    assert readiness["state"] == "held"
+    # `held` with the empty requirements list before the flip; `ready` after the converging re-pin.
+    assert readiness["state"] in ("held", "ready")
     assert readiness["requirements"] == []
-    assert "--allow-output-change must never be passed" in readiness["reason"]
+    if readiness["state"] == "held":
+        assert "--allow-output-change must never be passed" in readiness["reason"]
 
 
 def test_caps_are_the_conv_arithmetic(experiment: dict, derivation: dict) -> None:
