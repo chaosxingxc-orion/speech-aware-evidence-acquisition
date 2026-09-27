@@ -7,6 +7,17 @@ for their own flights. Do not interpret old plans as permission to restart them.
 
 ## Operational checkpoint: 2026-09-27 15:25Z
 
+Follow-up at 16:32Z: the current coordinator started the independent Windows task
+SAEA-Queue-E41-COMP1 at 16:31:36Z. Its wrapper is intentionally waiting for the
+port-8081 CPU sidecar and preprocessing to exit; it then schedules E41's dry run
+and the SLURP COMP-1/G5 chain with shared A/A. Both flight pointers currently name
+e38602de8a3f440e0451306837b8f18cfd0fe8bb. The batch driver epoch still names the
+completed KPROBE; no new GPU generation has started. Windows free memory was
+7.74 GiB, within the already-reported headroom issue. The monitor neither launches
+nor modifies this queue. Follow its actual driver epoch and receipts when it
+advances; readiness and this observation are not monitor dispatch authority.
+Evidence: docs/receipts/continuation/2026-09-27-1632-heartbeat-queue-wait.json.
+
 Follow-up at 15:32Z: Windows free memory recovered to 11.76 and 11.72 GiB
 in two observations. No GPU answering service or driver was running; the same
 KPROBE epoch remains complete, with no STOP marker, and CPU preparation continues.
