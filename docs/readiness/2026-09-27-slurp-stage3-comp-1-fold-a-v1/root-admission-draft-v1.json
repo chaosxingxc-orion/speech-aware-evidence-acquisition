@@ -40,7 +40,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "908c717ed71b61a2e8bff8069357302a276624bc6cd576305bfb198c46310a45"
+      "sha256": "7ca1ba9a0496134a527952c38ea1b0677147f57fb6beee95d3ee191e8fd509c9"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/README.md",
@@ -120,8 +120,8 @@
       "protocol": "f734266c7907464e9806d1cb2a0781a5d9b4bd0af42f1b30e7470ca832611330"
     },
     "arm": {
-      "composed_config": "356884d1d44e05fbaa474505a2e4639c107b34658209e8648d1a5ef90189fc2b",
-      "protocol": "80d7c91f89ec17edef99efe117ad402a9d750e084ccd1f29a488a23321b9e34d"
+      "composed_config": "45f56c899b7ef67f9cb5b03620a9b187530b8ce21eeb6c7b3ca13abe2f49cecd",
+      "protocol": "64e56899bdb852c3f76108b78b4f80c44a7d83667bc547a0fcf5839ac722c8ce"
     },
     "note": "the values of the fragments exactly as committed at 8d403ffa (readiness held, no decision requirement); repin_cell.py recomputes them at the flip",
     "smoke": {

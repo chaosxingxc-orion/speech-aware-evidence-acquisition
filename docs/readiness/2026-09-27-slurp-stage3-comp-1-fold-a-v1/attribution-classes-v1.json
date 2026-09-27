@@ -355,7 +355,7 @@
     "arm_supply": {
       "output_sha256": "ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a",
       "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v1.json",
-      "sha256": "4d3f86be57946148a745a6e37a43af1bc295522f9aa466260454718f4641f213"
+      "sha256": "a0af76daa8917fe29e38a68dc2761005509fca6c099fcc0a2d7ab2c1c475aa10"
     },
     "bad_case_bank": {
       "relpath": "analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl",

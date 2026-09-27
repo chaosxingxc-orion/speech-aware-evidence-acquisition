@@ -20,13 +20,13 @@
       "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
       "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
       "cell": "slurp-native-stage3-comp1-fold-a-v1",
-      "composed_config_hash": "356884d1d44e05fbaa474505a2e4639c107b34658209e8648d1a5ef90189fc2b",
+      "composed_config_hash": "45f56c899b7ef67f9cb5b03620a9b187530b8ce21eeb6c7b3ca13abe2f49cecd",
       "declares_agreement_source": true,
       "experiment": "slurp-native-stage3-comp1-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
       "policy": "phase-native-candidates-review-revise-cited-v1",
-      "protocol_hash": "80d7c91f89ec17edef99efe117ad402a9d750e084ccd1f29a488a23321b9e34d",
+      "protocol_hash": "64e56899bdb852c3f76108b78b4f80c44a7d83667bc547a0fcf5839ac722c8ce",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
@@ -295,7 +295,7 @@
         "selected_value_ids": 8624
       },
       "arm": {
-        "file_sha256": "4d3f86be57946148a745a6e37a43af1bc295522f9aa466260454718f4641f213",
+        "file_sha256": "a0af76daa8917fe29e38a68dc2761005509fca6c099fcc0a2d7ab2c1c475aa10",
         "output_sha256": "ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a",
         "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v1.json",
         "rows_seeded": 1079,

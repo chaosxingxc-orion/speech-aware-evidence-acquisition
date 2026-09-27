@@ -44,7 +44,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "908c717ed71b61a2e8bff8069357302a276624bc6cd576305bfb198c46310a45"
+    "sha256": "7ca1ba9a0496134a527952c38ea1b0677147f57fb6beee95d3ee191e8fd509c9"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1: It supplies the within-chain null the composed delta is read at and makes no claim of its own.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",
