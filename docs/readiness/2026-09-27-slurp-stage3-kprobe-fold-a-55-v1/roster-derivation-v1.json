@@ -1,0 +1,977 @@
+{
+  "authority": {
+    "diagnostic_note": {
+      "relpath": "docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md",
+      "sha256": "48b3ac1dd99375b28755fdb026da91a3675fc915c84d2cca3fa8adadbb0eb24f"
+    },
+    "diagnostic_recipe": {
+      "imported_unchanged": true,
+      "relpath": "scripts/analysis/slurp_boundary_key_construction_diagnostic.py",
+      "sha256": "f126fd4ac68daa832c8d26bddca39e2791d6aa1d2db32a55567859ad77808137"
+    },
+    "replication_recipe": {
+      "imported_unchanged": true,
+      "relpath": "scripts/analysis/slurp_intent_agreement_production_replication.py",
+      "sha256": "62c175d5fda67ca8a3743a25a309e433941607f13be648d997f245c8901cd17d"
+    }
+  },
+  "boundary": "ZERO model, server, encoder, embedder, scorer, tokenizer, network, GPU and paid-API contacts: no server was started, stopped or probed, no waveform decoded and no text encoded. Every number is arithmetic over receipt-pinned vector files and frozen snapshots, each verified against its configured sha256 by this repository's own loaders through its own rails.phase_supply / rails.knowledge_provider / rails.kb_policy seams. A DERIVATION, never a gate: it registers no cell by itself, admits no mechanism, releases or rebuilds no store, authorises no flight and states no effectiveness, superiority or generalisation claim. Every roster is a discovery or dev roster and every number is a development number (owner decisions 28 and 86). Every number here is DELIVERY, never correctness. No utterance text, transcript, gold label, knowledge body or delivered answer is printed or persisted: every cell is an id, a count, a rate or a hash.",
+  "contact_class": "model-free",
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "derivation_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-ROSTER-V1",
+  "flown_k": 8,
+  "gold_use": "THE ROSTER IS SELECTED USING GOLD, OFFLINE. The bad-case bank's plan_class and each row's gold intent are read on the scoring side only, in this derivation, before the cell exists. That is legitimate for a CONDITIONAL estimate on a TRAIN roster and for nothing else: NO POOLED OR ROSTER-LEVEL CLAIM MAY EVER BE MADE FROM THE CELL THIS ROSTER DEFINES, because its population was chosen by the mechanism's own effect. Gold reaches no query, no key, no weight, no selector and no runtime; the key is built from each pool value's frozen build-time task_target, a store property.",
+  "population": {
+    "bank_plan_classes_collapsed": [
+      "INTENT-UNCOVERED",
+      "INTENT-COVERED"
+    ],
+    "bank_sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf",
+    "by_plan_class": {
+      "INTENT-COVERED": {
+        "newly_delivered": 1,
+        "newly_lost": 3,
+        "rows": 61
+      },
+      "INTENT-UNCOVERED": {
+        "newly_delivered": 54,
+        "newly_lost": 2,
+        "rows": 130
+      }
+    },
+    "class_rows": 191,
+    "comparator_class": "INTENT-WRONG",
+    "expected_order_of_magnitude": {
+      "delivered_centroid": 136,
+      "delivered_written": 86,
+      "intent_wrong_rows": 191,
+      "newly_delivered": 55,
+      "newly_lost": 5,
+      "note": "191 intent-wrong rows x (0.712 - 0.450) is about 50 under the FULL-pool centroid the note reports; the treatment file is the R01-excluded centroid"
+    },
+    "newly_lost_by_class_all_rows": {
+      "CORRECT": 3,
+      "ENTITY-MIXED": 3,
+      "INTENT-WRONG": 5
+    },
+    "predicate": "the row is intent-WRONG in the sealed comparator (bad-case bank plan_class INTENT-UNCOVERED or INTENT-COVERED) and the row's own gold intent's intent-boundary value id is in the fused Perception selection under the centroid key file and NOT under the flown written key file, both at the flown k 8 / fuse_coverage m 8 / c 1 / top_l 8 / w_agree 0.0 through provider.candidates + provider.fuse",
+    "source": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "bank_roster": "train-fold-a",
+      "baseline_fragment": "slurp-native-default-plan-lock-baseline-v1",
+      "cell_id": "slurp-native-default-plan-lock-v1",
+      "experiment": "slurp-native-default-plan-lock-v1",
+      "roster_rows": 1080,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "what_the_flight_cannot_see": "rows that LOSE their gold entry under the centroid key, and rows the comparator already answers correctly: both lie outside this roster and remain a construction cell's question"
+  },
+  "proof_a_diagnostic_reproduced": {
+    "arms": {
+      "dev2000-added-plan": {
+        "own_rows_in_pool": {
+          "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json": 0,
+          "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json": 0
+        },
+        "phases_relpath": "runs/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1/attempt-slurp-native-default-plan-dev2000-added-generation-v1/SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1.phases.json",
+        "phases_sha256": "7853313714c58b434f306ebbc2df7de8b05801feb8695dbee4663dfacae4aed1",
+        "pool": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+        "population_source": "bad-case bank roster dev2000-added",
+        "population_source_sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf",
+        "query_relpath": "vectors/slurp-dev2000-added-v1/query-vectors-speech-segments.jsonl",
+        "query_sha256": "e2a5fd046dac7c87fcf53830955e41e69d20402a2305a02ebf2bfc1a33001b9d",
+        "reads": {
+          "centroid": {
+            "cells": {
+              "deliv_all": 90.6,
+              "deliv_correct": 98.2,
+              "deliv_wrong": 66.8,
+              "rank1_all": 62.5,
+              "rank1_wrong": 17.2
+            },
+            "counts": {
+              "correct_rows": 398,
+              "delivered_all": 906,
+              "delivered_correct": 391,
+              "delivered_wrong": 155,
+              "rank1_all": 625,
+              "rank1_wrong": 40,
+              "rows": 1000,
+              "unrankable_all": 0,
+              "wrong_rows": 232
+            }
+          },
+          "written": {
+            "cells": {
+              "deliv_all": 81.5,
+              "deliv_correct": 94.5,
+              "deliv_wrong": 35.8,
+              "rank1_all": 56.4,
+              "rank1_wrong": 3.9
+            },
+            "counts": {
+              "correct_rows": 398,
+              "delivered_all": 815,
+              "delivered_correct": 376,
+              "delivered_wrong": 83,
+              "rank1_all": 564,
+              "rank1_wrong": 9,
+              "rows": 1000,
+              "unrankable_all": 8,
+              "wrong_rows": 232
+            }
+          }
+        },
+        "rows": 1000,
+        "validation": {
+          "numpy_order_equals_repo": 1000,
+          "numpy_top_matches_sealed": 1000,
+          "repo_top_matches_sealed": 1000,
+          "rows": 1000,
+          "sealed_width_is_8": 994
+        }
+      },
+      "roll1": {
+        "own_rows_in_pool": {
+          "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json": 0,
+          "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json": 625
+        },
+        "phases_relpath": "runs/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1/attempt-slurp-native-stage3-rollout-r01-generation-v1/SAEA-SLURP-STAGE3-ROLLOUT-R01-V1.phases.json",
+        "phases_sha256": "203aab4861e503a088af6cd67662164c908d0ecf66149ce8bf97bf1706aa4f9d",
+        "pool": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "population_source": "slurp-slu-official-projected-v3-train",
+        "population_source_sha256": "70247697eca510e9dc699983f23996bcb77113d43c94ba340d764083bb04f76d",
+        "query_relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+        "query_sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8",
+        "reads": {
+          "centroid": {
+            "cells": {
+              "deliv_all": 87.8,
+              "deliv_correct": 95.7,
+              "deliv_wrong": 64.7,
+              "rank1_all": 54.1,
+              "rank1_wrong": 14.7
+            },
+            "counts": {
+              "correct_rows": 163,
+              "delivered_all": 549,
+              "delivered_correct": 156,
+              "delivered_wrong": 119,
+              "rank1_all": 338,
+              "rank1_wrong": 27,
+              "rows": 625,
+              "unrankable_all": 2,
+              "wrong_rows": 184
+            }
+          },
+          "written": {
+            "cells": {
+              "deliv_all": 79.2,
+              "deliv_correct": 95.1,
+              "deliv_wrong": 44.6,
+              "rank1_all": 47.0,
+              "rank1_wrong": 3.3
+            },
+            "counts": {
+              "correct_rows": 163,
+              "delivered_all": 495,
+              "delivered_correct": 155,
+              "delivered_wrong": 82,
+              "rank1_all": 294,
+              "rank1_wrong": 6,
+              "rows": 625,
+              "unrankable_all": 9,
+              "wrong_rows": 184
+            }
+          }
+        },
+        "rows": 625,
+        "validation": {
+          "numpy_order_equals_repo": 625,
+          "numpy_top_matches_sealed": 625,
+          "repo_top_matches_sealed": 625,
+          "rows": 625,
+          "sealed_width_is_8": 621
+        }
+      },
+      "train-fold-a-plan": {
+        "own_rows_in_pool": {
+          "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json": 0,
+          "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json": 0
+        },
+        "phases_relpath": "runs/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1/attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1.phases.json",
+        "phases_sha256": "7cac358a39c446c7aa13fcec70722a4669814ea0fad4fc76e9bf291d7b4b8e6f",
+        "pool": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
+        "population_source": "bad-case bank roster train-fold-a",
+        "population_source_sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf",
+        "query_relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+        "query_sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+        "reads": {
+          "centroid": {
+            "cells": {
+              "deliv_all": 94.0,
+              "deliv_correct": 99.0,
+              "deliv_wrong": 71.2,
+              "rank1_all": 65.7,
+              "rank1_wrong": 23.0
+            },
+            "counts": {
+              "correct_rows": 480,
+              "delivered_all": 1015,
+              "delivered_correct": 475,
+              "delivered_wrong": 136,
+              "rank1_all": 710,
+              "rank1_wrong": 44,
+              "rows": 1080,
+              "unrankable_all": 1,
+              "wrong_rows": 191
+            }
+          },
+          "written": {
+            "cells": {
+              "deliv_all": 87.7,
+              "deliv_correct": 97.3,
+              "deliv_wrong": 45.0,
+              "rank1_all": 65.6,
+              "rank1_wrong": 4.7
+            },
+            "counts": {
+              "correct_rows": 480,
+              "delivered_all": 947,
+              "delivered_correct": 467,
+              "delivered_wrong": 86,
+              "rank1_all": 708,
+              "rank1_wrong": 9,
+              "rows": 1080,
+              "unrankable_all": 6,
+              "wrong_rows": 191
+            }
+          }
+        },
+        "rows": 1080,
+        "validation": {
+          "numpy_order_equals_repo": 1080,
+          "numpy_top_matches_sealed": 1080,
+          "repo_top_matches_sealed": 1080,
+          "rows": 1080,
+          "sealed_width_is_8": 1076
+        }
+      }
+    },
+    "differences": [],
+    "note_cells_compared": {
+      "dev2000-added-plan": {
+        "centroid": {
+          "deliv_all": 90.6,
+          "deliv_correct": 98.2,
+          "deliv_wrong": 66.8,
+          "rank1_all": 62.5,
+          "rank1_wrong": 17.2
+        },
+        "correct": 398,
+        "rows": 1000,
+        "written": {
+          "deliv_all": 81.5,
+          "deliv_correct": 94.5,
+          "deliv_wrong": 35.8,
+          "rank1_all": 56.4,
+          "rank1_wrong": 3.9
+        },
+        "wrong": 232
+      },
+      "roll1": {
+        "centroid": {
+          "deliv_all": 87.8,
+          "deliv_correct": 95.7,
+          "deliv_wrong": 64.7,
+          "rank1_all": 54.1,
+          "rank1_wrong": 14.7
+        },
+        "correct": 163,
+        "rows": 625,
+        "written": {
+          "deliv_all": 79.2,
+          "deliv_correct": 95.1,
+          "deliv_wrong": 44.6,
+          "rank1_all": 47.0,
+          "rank1_wrong": 3.3
+        },
+        "wrong": 184
+      },
+      "train-fold-a-plan": {
+        "centroid": {
+          "deliv_all": 94.0,
+          "deliv_correct": 99.0,
+          "deliv_wrong": 71.2,
+          "rank1_all": 65.7,
+          "rank1_wrong": 23.0
+        },
+        "correct": 480,
+        "rows": 1080,
+        "written": {
+          "deliv_all": 87.7,
+          "deliv_correct": 97.3,
+          "deliv_wrong": 45.0,
+          "rank1_all": 65.6,
+          "rank1_wrong": 4.7
+        },
+        "wrong": 191
+      }
+    },
+    "r01_excluded_centroid_geometry": {
+      "cos_max": 0.993,
+      "cos_mean": 0.9326,
+      "fallback": [
+        "cooking_query"
+      ],
+      "keys": 60
+    }
+  },
+  "proof_b_treatment_file_through_production_recall": {
+    "arms": {
+      "dev2000-added-plan": {
+        "cells": {
+          "deliv_all": 90.7,
+          "deliv_correct": 98.5,
+          "deliv_wrong": 66.4,
+          "rank1_all": 64.0,
+          "rank1_wrong": 17.7
+        },
+        "counts": {
+          "correct_rows": 398,
+          "delivered_all": 907,
+          "delivered_correct": 392,
+          "delivered_wrong": 154,
+          "rank1_all": 640,
+          "rank1_wrong": 41,
+          "rows": 1000,
+          "unrankable_all": 0,
+          "wrong_rows": 232
+        },
+        "note_comparison": "the note read this roster under the FULL pool (reproduced in proof A); the treatment file is the R01-excluded construction, so its cells are reported beside the note's, not equated",
+        "note_full_pool_cells": {
+          "deliv_all": 90.6,
+          "deliv_correct": 98.2,
+          "deliv_wrong": 66.8,
+          "rank1_all": 62.5,
+          "rank1_wrong": 17.2
+        },
+        "per_class": {
+          "CORRECT": {
+            "delivered_centroid": 392,
+            "delivered_written": 376,
+            "newly_delivered": 19,
+            "newly_lost": 3,
+            "rows": 398
+          },
+          "ENTITY-FN-ONLY": {
+            "delivered_centroid": 64,
+            "delivered_written": 61,
+            "newly_delivered": 4,
+            "newly_lost": 1,
+            "rows": 65
+          },
+          "ENTITY-FP-ONLY": {
+            "delivered_centroid": 103,
+            "delivered_written": 104,
+            "newly_delivered": 1,
+            "newly_lost": 2,
+            "rows": 108
+          },
+          "ENTITY-MIXED": {
+            "delivered_centroid": 192,
+            "delivered_written": 189,
+            "newly_delivered": 4,
+            "newly_lost": 1,
+            "rows": 195
+          },
+          "INTENT-WRONG": {
+            "delivered_centroid": 154,
+            "delivered_written": 83,
+            "newly_delivered": 83,
+            "newly_lost": 12,
+            "rows": 232
+          },
+          "MALFORMED": {
+            "delivered_centroid": 2,
+            "delivered_written": 2,
+            "newly_delivered": 0,
+            "newly_lost": 0,
+            "rows": 2
+          }
+        },
+        "production_recall_order_equals_vectorised_order": 1000,
+        "production_recall_width8_equals_order_head": 1000,
+        "rows": 1000
+      },
+      "roll1": {
+        "cells": {
+          "deliv_all": 87.8,
+          "deliv_correct": 95.7,
+          "deliv_wrong": 64.7,
+          "rank1_all": 54.1,
+          "rank1_wrong": 14.7
+        },
+        "counts": {
+          "correct_rows": 163,
+          "delivered_all": 549,
+          "delivered_correct": 156,
+          "delivered_wrong": 119,
+          "rank1_all": 338,
+          "rank1_wrong": 27,
+          "rows": 625,
+          "unrankable_all": 2,
+          "wrong_rows": 184
+        },
+        "note_comparison": "the note read ROLL-1 under this same R01-excluded pool; the treatment file must reproduce its centroid cells exactly",
+        "per_class": {
+          "CORRECT": {
+            "delivered_centroid": 156,
+            "delivered_written": 155,
+            "newly_delivered": 6,
+            "newly_lost": 5,
+            "rows": 163
+          },
+          "ENTITY-FN-ONLY": {
+            "delivered_centroid": 40,
+            "delivered_written": 40,
+            "newly_delivered": 0,
+            "newly_lost": 0,
+            "rows": 41
+          },
+          "ENTITY-FP-ONLY": {
+            "delivered_centroid": 67,
+            "delivered_written": 62,
+            "newly_delivered": 6,
+            "newly_lost": 1,
+            "rows": 69
+          },
+          "ENTITY-MIXED": {
+            "delivered_centroid": 167,
+            "delivered_written": 156,
+            "newly_delivered": 12,
+            "newly_lost": 1,
+            "rows": 168
+          },
+          "INTENT-WRONG": {
+            "delivered_centroid": 119,
+            "delivered_written": 82,
+            "newly_delivered": 51,
+            "newly_lost": 14,
+            "rows": 184
+          }
+        },
+        "production_recall_order_equals_vectorised_order": 625,
+        "production_recall_width8_equals_order_head": 625,
+        "rows": 625
+      },
+      "train-fold-a-plan": {
+        "cells": {
+          "deliv_all": 94.0,
+          "deliv_correct": 99.2,
+          "deliv_wrong": 71.2,
+          "rank1_all": 69.9,
+          "rank1_wrong": 22.5
+        },
+        "counts": {
+          "correct_rows": 480,
+          "delivered_all": 1015,
+          "delivered_correct": 476,
+          "delivered_wrong": 136,
+          "rank1_all": 755,
+          "rank1_wrong": 43,
+          "rows": 1080,
+          "unrankable_all": 1,
+          "wrong_rows": 191
+        },
+        "note_comparison": "the note read this roster under the FULL pool (reproduced in proof A); the treatment file is the R01-excluded construction, so its cells are reported beside the note's, not equated",
+        "note_full_pool_cells": {
+          "deliv_all": 94.0,
+          "deliv_correct": 99.0,
+          "deliv_wrong": 71.2,
+          "rank1_all": 65.7,
+          "rank1_wrong": 23.0
+        },
+        "per_class": {
+          "CORRECT": {
+            "delivered_centroid": 476,
+            "delivered_written": 467,
+            "newly_delivered": 12,
+            "newly_lost": 3,
+            "rows": 480
+          },
+          "ENTITY-FN-ONLY": {
+            "delivered_centroid": 84,
+            "delivered_written": 82,
+            "newly_delivered": 2,
+            "newly_lost": 0,
+            "rows": 84
+          },
+          "ENTITY-FP-ONLY": {
+            "delivered_centroid": 128,
+            "delivered_written": 124,
+            "newly_delivered": 4,
+            "newly_lost": 0,
+            "rows": 131
+          },
+          "ENTITY-MIXED": {
+            "delivered_centroid": 190,
+            "delivered_written": 187,
+            "newly_delivered": 6,
+            "newly_lost": 3,
+            "rows": 193
+          },
+          "INTENT-WRONG": {
+            "delivered_centroid": 136,
+            "delivered_written": 86,
+            "newly_delivered": 55,
+            "newly_lost": 5,
+            "rows": 191
+          },
+          "MALFORMED": {
+            "delivered_centroid": 1,
+            "delivered_written": 1,
+            "newly_delivered": 0,
+            "newly_lost": 0,
+            "rows": 1
+          }
+        },
+        "production_recall_order_equals_vectorised_order": 1080,
+        "production_recall_width8_equals_order_head": 1080,
+        "rows": 1080
+      }
+    },
+    "differences": [],
+    "fallback_equals_written_key_exactly": true,
+    "fallback_facet_ids": [
+      "intent-boundary:cooking_query"
+    ],
+    "fallback_max_abs_diff_to_the_renormalised_written_key": 1.5767406269517892e-09,
+    "fallback_note": "the diagnostic's keyset carries the written key re-normalised in float64; the file carries the FLOWN bytes. Cosine ranking is scale-invariant, so the two order identically (proven per row below); the distance is the encoder's float32 unit-norm residue",
+    "l2_norm_max": 1.0,
+    "l2_norm_min": 0.9999999906966784,
+    "max_abs_diff_to_diagnostic_r01_excluded_centroid": 0.0,
+    "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+    "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532"
+  },
+  "proof_c_population_through_production_constructor": {
+    "bad_case_bank_sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf",
+    "bank_raw_classes": {
+      "CORRECT": 480,
+      "ENTITY-FN-ONLY": 84,
+      "ENTITY-FP-ONLY": 131,
+      "ENTITY-MIXED": 193,
+      "INTENT-COVERED": 61,
+      "INTENT-UNCOVERED": 130,
+      "MALFORMED": 1
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-default-plan-lock-baseline-v1",
+      "cell_id": "slurp-native-default-plan-lock-v1",
+      "experiment": "slurp-native-default-plan-lock-v1",
+      "roster_rows": 1080,
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "delivery": {
+      "classes": {
+        "CORRECT": {
+          "base_fused": 467,
+          "base_fused_pct": 97.2917,
+          "base_ranked": 467,
+          "base_ranked_pct": 97.2917,
+          "rows": 480,
+          "treat_fused": 476,
+          "treat_fused_pct": 99.1667,
+          "treat_ranked": 476,
+          "treat_ranked_pct": 99.1667
+        },
+        "ENTITY-FN-ONLY": {
+          "base_fused": 82,
+          "base_fused_pct": 97.619,
+          "base_ranked": 82,
+          "base_ranked_pct": 97.619,
+          "rows": 84,
+          "treat_fused": 84,
+          "treat_fused_pct": 100.0,
+          "treat_ranked": 84,
+          "treat_ranked_pct": 100.0
+        },
+        "ENTITY-FP-ONLY": {
+          "base_fused": 124,
+          "base_fused_pct": 94.6565,
+          "base_ranked": 124,
+          "base_ranked_pct": 94.6565,
+          "rows": 131,
+          "treat_fused": 128,
+          "treat_fused_pct": 97.7099,
+          "treat_ranked": 128,
+          "treat_ranked_pct": 97.7099
+        },
+        "ENTITY-MIXED": {
+          "base_fused": 187,
+          "base_fused_pct": 96.8912,
+          "base_ranked": 187,
+          "base_ranked_pct": 96.8912,
+          "rows": 193,
+          "treat_fused": 190,
+          "treat_fused_pct": 98.4456,
+          "treat_ranked": 190,
+          "treat_ranked_pct": 98.4456
+        },
+        "INTENT-WRONG": {
+          "base_fused": 86,
+          "base_fused_pct": 45.0262,
+          "base_ranked": 86,
+          "base_ranked_pct": 45.0262,
+          "rows": 191,
+          "treat_fused": 136,
+          "treat_fused_pct": 71.2042,
+          "treat_ranked": 136,
+          "treat_ranked_pct": 71.2042
+        },
+        "MALFORMED": {
+          "base_fused": 1,
+          "base_fused_pct": 100.0,
+          "base_ranked": 1,
+          "base_ranked_pct": 100.0,
+          "rows": 1,
+          "treat_fused": 1,
+          "treat_fused_pct": 100.0,
+          "treat_ranked": 1,
+          "treat_ranked_pct": 100.0
+        }
+      },
+      "fusion_vs_rank_disagreements": 0,
+      "plan_class_split": {
+        "CORRECT": {
+          "delivered_after": 476,
+          "delivered_before": 467,
+          "newly_delivered": 12,
+          "newly_lost": 3,
+          "rows": 480
+        },
+        "ENTITY-FN-ONLY": {
+          "delivered_after": 84,
+          "delivered_before": 82,
+          "newly_delivered": 2,
+          "newly_lost": 0,
+          "rows": 84
+        },
+        "ENTITY-FP-ONLY": {
+          "delivered_after": 128,
+          "delivered_before": 124,
+          "newly_delivered": 4,
+          "newly_lost": 0,
+          "rows": 131
+        },
+        "ENTITY-MIXED": {
+          "delivered_after": 190,
+          "delivered_before": 187,
+          "newly_delivered": 6,
+          "newly_lost": 3,
+          "rows": 193
+        },
+        "INTENT-COVERED": {
+          "delivered_after": 57,
+          "delivered_before": 59,
+          "newly_delivered": 1,
+          "newly_lost": 3,
+          "rows": 61
+        },
+        "INTENT-UNCOVERED": {
+          "delivered_after": 79,
+          "delivered_before": 27,
+          "newly_delivered": 54,
+          "newly_lost": 2,
+          "rows": 130
+        },
+        "MALFORMED": {
+          "delivered_after": 1,
+          "delivered_before": 1,
+          "newly_delivered": 0,
+          "newly_lost": 0,
+          "rows": 1
+        }
+      },
+      "sealed_boundary_agreement": {
+        "baseline_fusion_equals_sealed": 1080,
+        "rows": 1080
+      },
+      "skipped": {}
+    },
+    "newly_lost_by_class_all_rows": {
+      "CORRECT": 3,
+      "ENTITY-MIXED": 3,
+      "INTENT-WRONG": 5
+    },
+    "newly_lost_wrong_ids": [
+      "slurp:train:000116:audio-1434537220",
+      "slurp:train:000215:audio-1502200839",
+      "slurp:train:002586:audio-1434542134",
+      "slurp:train:006637:audio-1501689200",
+      "slurp:train:010011:audio-1498483953"
+    ],
+    "population_by_plan_class": {
+      "INTENT-COVERED": {
+        "newly_delivered": 1,
+        "newly_lost": 3,
+        "rows": 61
+      },
+      "INTENT-UNCOVERED": {
+        "newly_delivered": 54,
+        "newly_lost": 2,
+        "rows": 130
+      }
+    },
+    "production_constructor_equals_production_recall_on_the_population": true,
+    "recipe_functions_used": [
+      "load_bank",
+      "load_train_gold",
+      "arm_channels",
+      "load_population",
+      "load_sealed",
+      "boundary_decisions",
+      "tally"
+    ],
+    "sealed_phase_artefact": {
+      "relpath": "runs/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1/attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1.phases.json",
+      "sha256": "7cac358a39c446c7aa13fcec70722a4669814ea0fad4fc76e9bf291d7b4b8e6f"
+    },
+    "treatment_boundary_channel": {
+      "candidates_recalled_histogram": {
+        "0": 1,
+        "2": 1,
+        "8": 1078
+      },
+      "delivered_width_histogram": {
+        "0": 1,
+        "2": 1,
+        "8": 1078
+      },
+      "facet_source": {
+        "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+        "kind": "sealed-vectors",
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+        "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+      },
+      "fuse_coverage": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "fuse_policy": "saea-fuse-associated-values-v1",
+      "k_committed": 8,
+      "k_used_as_recall_width": 8,
+      "query_source": {
+        "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+        "kind": "sealed-segment-vectors",
+        "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+        "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+      },
+      "rank_weights_flown": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "rank_weights_used": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "segments_per_row": {
+        "1": 1080
+      },
+      "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "tau": 0.0
+    },
+    "written_boundary_channel": {
+      "candidates_recalled_histogram": {
+        "1": 1,
+        "3": 1,
+        "5": 1,
+        "7": 1,
+        "8": 1076
+      },
+      "delivered_width_histogram": {
+        "1": 1,
+        "3": 1,
+        "5": 1,
+        "7": 1,
+        "8": 1076
+      },
+      "facet_source": {
+        "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+        "kind": "sealed-vectors",
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+        "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+      },
+      "fuse_coverage": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "fuse_policy": "saea-fuse-associated-values-v1",
+      "k_committed": 8,
+      "k_used_as_recall_width": 8,
+      "query_source": {
+        "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+        "kind": "sealed-segment-vectors",
+        "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+        "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+      },
+      "rank_weights_flown": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "rank_weights_used": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "segments_per_row": {
+        "1": 1080
+      },
+      "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "tau": 0.0
+    },
+    "wrong_rows": 191
+  },
+  "recall_width_for_orders": 60,
+  "roster": {
+    "audio_seconds_total": 127.701375,
+    "carrier_lock_key": "slurp",
+    "count": 55,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "id_list_convention": "sha256 over the LF-joined sorted sample ids, UTF-8, no trailing newline",
+    "id_list_sha256": "ad433b1fc3f21765af15d3aed4012264125d9f17fdd4cef837d67bcf50ddde02",
+    "ids": [
+      "slurp:train:000015:audio-1488524781",
+      "slurp:train:000244:audio-1497883990-headset",
+      "slurp:train:000327:audio-1501775408-headset",
+      "slurp:train:000822:audio-1434535176",
+      "slurp:train:000871:audio-1501767528-headset",
+      "slurp:train:001663:audio-1501756828",
+      "slurp:train:001849:audio-1502218742-headset",
+      "slurp:train:003147:audio-1501758004",
+      "slurp:train:004754:audio-1490201898-headset",
+      "slurp:train:005313:audio-1502200943-headset",
+      "slurp:train:005338:audio-1434540035",
+      "slurp:train:005942:audio-1501686863-headset",
+      "slurp:train:006324:audio-1499246867-headset",
+      "slurp:train:006398:audio-1497867926-headset",
+      "slurp:train:006408:audio-1490193792",
+      "slurp:train:006644:audio-1497887514",
+      "slurp:train:006661:audio-1499694500",
+      "slurp:train:006712:audio-1500980407-headset",
+      "slurp:train:006765:audio-1501172651-headset",
+      "slurp:train:007772:audio-1501753944-headset",
+      "slurp:train:007864:audio-1434536288",
+      "slurp:train:008229:audio-1490106273",
+      "slurp:train:008348:audio-1490356207-headset",
+      "slurp:train:008940:audio-1492785556",
+      "slurp:train:010144:audio-1502375950",
+      "slurp:train:010161:audio-1497883488",
+      "slurp:train:010721:audio-1502376160-headset",
+      "slurp:train:010765:audio-1501754011",
+      "slurp:train:010930:audio-1502895782",
+      "slurp:train:011099:audio-1501754215-headset",
+      "slurp:train:011707:audio-1498572930",
+      "slurp:train:011984:audio-1490288002-headset",
+      "slurp:train:012191:audio-1498568799",
+      "slurp:train:013114:audio-1490106644-headset",
+      "slurp:train:013169:audio-1490106738",
+      "slurp:train:013212:audio-1490291531-headset",
+      "slurp:train:013443:audio-1498567184",
+      "slurp:train:013626:audio-1502112891",
+      "slurp:train:014300:audio-1501694638-headset",
+      "slurp:train:014548:audio-1490956004",
+      "slurp:train:014629:audio-1502890907-headset",
+      "slurp:train:014801:audio-1498571227",
+      "slurp:train:014936:audio-1502891319",
+      "slurp:train:015040:audio-1494548394-headset",
+      "slurp:train:015160:audio-1490182873-headset",
+      "slurp:train:015237:audio-1502195173",
+      "slurp:train:015253:audio-1434541435",
+      "slurp:train:015278:audio-1497438167-headset",
+      "slurp:train:015317:audio-1502891826-headset",
+      "slurp:train:015351:audio-1434532573-headset",
+      "slurp:train:015479:audio-1501765047-headset",
+      "slurp:train:015599:audio-1501406791-headset",
+      "slurp:train:015664:audio-1502894832-headset",
+      "slurp:train:015773:audio-1501692472",
+      "slurp:train:016243:audio-1499689044-headset"
+    ],
+    "newly_lost_wrong_ids": [
+      "slurp:train:000116:audio-1434537220",
+      "slurp:train:000215:audio-1502200839",
+      "slurp:train:002586:audio-1434542134",
+      "slurp:train:006637:audio-1501689200",
+      "slurp:train:010011:audio-1498483953"
+    ],
+    "split_identity_convention": "data.splits.split_identity_hash over the LF-joined sorted carrier-prefixed ids f'slurp/{sample_id}'",
+    "split_identity_hash": "d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31"
+  },
+  "schema": "saea-centroid-key-conversion-roster-v1",
+  "the_quantity_this_roster_measures": {
+    "arm_admission_bar_pp": 2.5,
+    "arm_rows": 1080,
+    "ceiling_intent_pp_at_perfect_conversion": 5.0938,
+    "ceiling_slu_pp_at_perfect_conversion": 2.2888,
+    "headroom_intent_pp_per_row": 0.092615,
+    "headroom_slu_pp_per_row": 0.041615,
+    "name": "P(correct | newly delivered)",
+    "re_declared_expectation_rule": "a later 1,080-row construction cell's expected_effect_pp = (rows of this roster that move from a wrong intent to the gold intent) x 0.092615 pp intent accuracy (primary under owner decision 133), and x 0.041615 pp SLU-F1 for the guard.",
+    "rows_needed_to_clear_the_2_5_pp_intent_bar": 27,
+    "the_only_directly_observable_prior": "86 of the 191 intent-wrong Fold A rows already RECEIVE the gold intent's boundary entry under the written key and are wrong anyway; the CONV probe measured 32 of 70 newly delivered rows converting under the agreement term. Neither is a prediction for this key.",
+    "what_it_is": "the conversion from delivery to correctness for the centroid boundary key: of the rows whose gold intent's boundary entry the key newly puts in front of the Solver, the share that move from a wrong intent to the gold intent. Every row is intent WRONG in the sealed comparator, so the forward count is the whole estimate and the reverse count is zero by construction."
+  },
+  "treatment": {
+    "artifact_id": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1",
+    "construction_pool": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "utterances": 8554
+    },
+    "facet_source_pin": {
+      "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+      "kind": "sealed-vectors",
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+      "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+    },
+    "pool_facet_vectors": {
+      "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "role": "one pinned vector per construction-TRAIN utterance; the members",
+      "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+    },
+    "receipt_kind": "centroid-over-pinned-utterance-vectors-v1",
+    "receipt_relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json",
+    "receipt_sha256": "d5fa43dfb9cfe71402e256c015e5f0a1ce66e97b3ec5355a664eb9f69f8cdf0a",
+    "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+    "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+    "written_fallback_ids": [
+      "intent-boundary:cooking_query"
+    ]
+  },
+  "why": "The committed diagnostic measured DELIVERY on whole rosters and named the centroid key; the probe that measures conversion flies exactly the TRAIN Fold A rows whose gold intent's boundary entry the centroid key NEWLY delivers, and that set is derived here from the pinned key FILE through the production path, after three proofs: the diagnostic's own arithmetic reproduces its committed note, the pinned file reproduces the diagnostic's R01-excluded centroid through the production recall, and the production constructor's fused selection agrees with the recall on every population row.",
+  "workers": 4
+}

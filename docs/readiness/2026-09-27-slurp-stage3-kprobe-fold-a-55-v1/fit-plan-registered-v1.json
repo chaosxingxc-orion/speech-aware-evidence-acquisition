@@ -1,0 +1,51 @@
+{
+  "cell": "slurp-native-stage3-kprobe-fold-a-55-v1",
+  "composed_config_hash": "8ff881efbe1c3a35e0d05afbc5357cfc70ed79d14f6c95fe5699b75103488dd9",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-kprobe-fold-a-55-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 2420,
+    "planned_speech_audio_seconds": 1405,
+    "protocol_hash": "c278e63b8e2a5bf84a307da40dcadf4f4a2783e902da5543def005f9d318f031",
+    "run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; it measures request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-kprobe-fold-a-55-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 2420,
+    "generation_calls_cap": 605,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 330,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 1405
+  },
+  "one_factor": "ONE PIN. The locked PLAN baseline's intent-boundary Perception facet_source moves from the written-key file to the centroid-key file; k 8, fuse_coverage 8-1-8, rank weights, tau, store snapshot/release, delivered bodies, every other store, the model fragment, geometry, session, program, role graph, templates, normaliser and scorers are byte-identical. The composed-config diff is recorded in registered-facts-v1.json and re-proven by the unit test.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "08fd493c",
+  "prepared_phase_supply": {
+    "note": "NONE COMMITTED, by design: the flip mints this cell's own under its own run id (item E16) and --allow-output-change must never be passed. This cell has no earlier supply to compare against; a CHANGED output on a later re-pin means the knowledge channel moved -- stop and report.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/protocol-registered-v1.json",
+    "sha256": "2f33d2f6bf1cf9a8545b88ba89a4e1a4bff409191eb53328097c35bec37aa7f7"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1: cell KPROBE. It measures request envelopes only and reads nothing.",
+  "quality_read_gate": "No read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for this cell, and before the flown delivery check agrees with the offline derivation on all 55 rows. A partial manifest is never scored and never read.",
+  "registered_at_utc": "2026-09-27T06:18:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-kprobe, branch fable/kprobe",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

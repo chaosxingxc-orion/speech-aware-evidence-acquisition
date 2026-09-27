@@ -1,0 +1,718 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves. The same block is repeated in the preregistration's fenced json for readability; this copy has precedence.",
+  "authority_relpaths": [
+    "docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md",
+    "scripts/analysis/slurp_boundary_key_construction_diagnostic.py",
+    "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1/README.md",
+    "docs/results/2026-09-27-slurp-conv-probe-read.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/results/2026-09-24-slurp-plan-bad-case-bank.md",
+    "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+  ],
+  "budget_arithmetic": {
+    "contacts_per_row_program_ceiling": 11,
+    "derivation": [
+      "generation_calls_cap = 55 rows x 11 contacts per row (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 * (3 + 1 + 1)) = 605",
+      "fit_endpoint_calls_cap = 4 x 605 = 2420, the PLAN family's own ratio",
+      "native_task_contract_calls_cap = 55 x 6 = 330, the family's own per-row figure",
+      "repeated_speech_audio_seconds_cap = ceil(127.701375 roster seconds x 11) = 1405",
+      "gpu_hours_fit_inclusive = 1.0, a ceiling: the sealed PLAN arm's own 3.6819 h per 5,425 contacts puts the whole 605-contact ceiling at about 0.41 h and the expected 276 contacts at about 0.19 h (CONV realized 0.12 h for 70 rows)",
+      "official_complete_scoring_jobs = 1, one job over the complete 55-row manifest through core.scoring_batch, never sharded"
+    ],
+    "expected_contacts": 276,
+    "family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 2420,
+      "generation_calls_cap": 605,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 330,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 1405
+    },
+    "run_cumulative": "every cap binds across ALL attempts of this run id, so the one permitted recovery re-registration spends from the same ceiling"
+  },
+  "committed_artifacts": {
+    "centroid_key_file": {
+      "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+      "kind": "sealed-vectors",
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+      "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+    },
+    "centroid_key_receipt": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json",
+      "root": "data",
+      "sha256": "d5fa43dfb9cfe71402e256c015e5f0a1ce66e97b3ec5355a664eb9f69f8cdf0a"
+    },
+    "note": "The key file is pinned where the loader verifies it -- facet_source.sha256 in the baseline -- and its receipt in preparation_source_receipts, which core.preparation.verify_source_receipts checks at prepare time. It is deliberately NOT a readiness 'preparation' requirement: core.flight.repin._set_preparation_requirement rewrites EVERY such entry to the freshly minted first-phase supply pin at the flip. This cell's requirements list is empty and the flip appends exactly one.",
+    "prepared_phase_supply": "NONE COMMITTED, by design: the flip mints this cell's own under its own run id (item E16) and --allow-output-change must never be passed. This cell has no earlier supply to compare against; a CHANGED output on a later re-pin means the knowledge channel moved -- stop and report."
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+    "per_row_intent_verdict_authority": {
+      "note": "the read re-derives the comparator's per-row verdict from the sealed PLAN arm's own official score as well and refuses on any disagreement.",
+      "relpath": "analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl",
+      "sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf"
+    },
+    "role": "sealed, already flown, never re-flown and not part of this campaign. It holds these 55 rows' comparator answers, and every one of them is intent-WRONG there: the bank's INTENT-UNCOVERED and INTENT-COVERED classes both collapse to INTENT-WRONG in its own convention. The probe therefore flies the TREATMENT ONLY and the contrast is per-row and offline.",
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+  },
+  "composed_config_diff_against_the_locked_plan_cell": {
+    "anything_else": [],
+    "baseline_bookkeeping_only": [
+      "native_contact_fit.attempt_id",
+      "native_contact_fit.contact_cap",
+      "native_contact_fit.run_id",
+      "preparation_source_receipts",
+      "prepared_phase_supply.relpath",
+      "prepared_phase_supply.sha256",
+      "what_this_is"
+    ],
+    "experiment_fragment_own_block": [
+      "cells",
+      "date",
+      "execution_plan.planned_gpu_hours",
+      "execution_plan.planned_model_calls",
+      "execution_plan.planned_speech_audio_seconds",
+      "experiment_id",
+      "failure_policy",
+      "family_budget.fit_endpoint_calls_cap",
+      "family_budget.generation_calls_cap",
+      "family_budget.gpu_hours_fit_inclusive",
+      "family_budget.native_task_contract_calls_cap",
+      "family_budget.repeated_speech_audio_seconds_cap",
+      "fragment_kind",
+      "generation_budget.cap",
+      "generation_budget.definition",
+      "generation_budget.target",
+      "population.count",
+      "population.decision_population",
+      "population.split_identity_hash",
+      "populations",
+      "purpose",
+      "stage3_algorithm.id",
+      "stage3_algorithm.note",
+      "stage3_algorithm.operators_used"
+    ],
+    "note": "computed by flattening both composed configs (core.config.compose) and listing every path whose value differs: the one pin, the baseline's per-flight bookkeeping (this cell's FIT identities and cap, the dropped prepared_phase_supply, the appended receipt, what_this_is) and the experiment fragment's own block (population, budgets, purpose, readiness, the Stage-3 label -- the cell's registration, never a knowledge key; an experiment key overlapping a baseline key is refused). The unit test tests/unit/test_kprobe_config.py re-proves it",
+    "perception_spec_equal_except_facet_source": true,
+    "preparation_source_receipts": "the parent's list plus one appended entry: prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json",
+    "the_one_pin": [
+      "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.embedded_signal",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.relpath",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.sha256",
+      "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.tool_contact_ledger_row"
+    ]
+  },
+  "delivery_proofs": {
+    "derivation": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/roster-derivation-v1.json",
+      "script": {
+        "relpath": "scripts/analysis/slurp_boundary_centroid_conversion_roster.py",
+        "sha256": "f0e31c2bde81f339659634b251a79fa5ba570ab92b810680c6ad3eb7f4445e99"
+      },
+      "sha256": "ca2869c13e6e3394d9ce324e342e4548e1b2d134e48d88d9ef89daeb7f39eed8"
+    },
+    "proof_a_the_diagnostics_arithmetic_reproduces_its_note": {
+      "cells_compared": {
+        "dev2000-added-plan": {
+          "centroid": {
+            "deliv_all": 90.6,
+            "deliv_correct": 98.2,
+            "deliv_wrong": 66.8,
+            "rank1_all": 62.5,
+            "rank1_wrong": 17.2
+          },
+          "correct": 398,
+          "rows": 1000,
+          "written": {
+            "deliv_all": 81.5,
+            "deliv_correct": 94.5,
+            "deliv_wrong": 35.8,
+            "rank1_all": 56.4,
+            "rank1_wrong": 3.9
+          },
+          "wrong": 232
+        },
+        "roll1": {
+          "centroid": {
+            "deliv_all": 87.8,
+            "deliv_correct": 95.7,
+            "deliv_wrong": 64.7,
+            "rank1_all": 54.1,
+            "rank1_wrong": 14.7
+          },
+          "correct": 163,
+          "rows": 625,
+          "written": {
+            "deliv_all": 79.2,
+            "deliv_correct": 95.1,
+            "deliv_wrong": 44.6,
+            "rank1_all": 47.0,
+            "rank1_wrong": 3.3
+          },
+          "wrong": 184
+        },
+        "train-fold-a-plan": {
+          "centroid": {
+            "deliv_all": 94.0,
+            "deliv_correct": 99.0,
+            "deliv_wrong": 71.2,
+            "rank1_all": 65.7,
+            "rank1_wrong": 23.0
+          },
+          "correct": 480,
+          "rows": 1080,
+          "written": {
+            "deliv_all": 87.7,
+            "deliv_correct": 97.3,
+            "deliv_wrong": 45.0,
+            "rank1_all": 65.6,
+            "rank1_wrong": 4.7
+          },
+          "wrong": 191
+        }
+      },
+      "differences": [],
+      "note": {
+        "relpath": "docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md",
+        "sha256": "48b3ac1dd99375b28755fdb026da91a3675fc915c84d2cca3fa8adadbb0eb24f"
+      },
+      "r01_excluded_centroid_geometry": {
+        "cos_max": 0.993,
+        "cos_mean": 0.9326,
+        "fallback": [
+          "cooking_query"
+        ],
+        "keys": 60
+      },
+      "recipe": {
+        "imported_unchanged": true,
+        "relpath": "scripts/analysis/slurp_boundary_key_construction_diagnostic.py",
+        "sha256": "f126fd4ac68daa832c8d26bddca39e2791d6aa1d2db32a55567859ad77808137"
+      },
+      "written_key_recall_reproduces_every_sealed_delivered_set": {
+        "dev2000-added-plan": {
+          "numpy_order_equals_repo": 1000,
+          "numpy_top_matches_sealed": 1000,
+          "repo_top_matches_sealed": 1000,
+          "rows": 1000,
+          "sealed_width_is_8": 994
+        },
+        "roll1": {
+          "numpy_order_equals_repo": 625,
+          "numpy_top_matches_sealed": 625,
+          "repo_top_matches_sealed": 625,
+          "rows": 625,
+          "sealed_width_is_8": 621
+        },
+        "train-fold-a-plan": {
+          "numpy_order_equals_repo": 1080,
+          "numpy_top_matches_sealed": 1080,
+          "repo_top_matches_sealed": 1080,
+          "rows": 1080,
+          "sealed_width_is_8": 1076
+        }
+      }
+    },
+    "proof_b_the_pinned_file_reproduces_through_the_production_recall": {
+      "dev2000_under_the_treatment_file": {
+        "deliv_all": 90.7,
+        "deliv_correct": 98.5,
+        "deliv_wrong": 66.4,
+        "rank1_all": 64.0,
+        "rank1_wrong": 17.7
+      },
+      "differences": [],
+      "fallback_equals_written_key_exactly": true,
+      "fallback_facet_ids": [
+        "intent-boundary:cooking_query"
+      ],
+      "fold_a_under_the_full_pool_centroid_the_note_reports": {
+        "deliv_all": 94.0,
+        "deliv_correct": 99.0,
+        "deliv_wrong": 71.2,
+        "rank1_all": 65.7,
+        "rank1_wrong": 23.0
+      },
+      "fold_a_under_the_treatment_file": {
+        "deliv_all": 94.0,
+        "deliv_correct": 99.2,
+        "deliv_wrong": 71.2,
+        "rank1_all": 69.9,
+        "rank1_wrong": 22.5
+      },
+      "max_abs_diff_to_diagnostic_r01_excluded_centroid": 0.0,
+      "per_class_fold_a": {
+        "CORRECT": {
+          "delivered_centroid": 476,
+          "delivered_written": 467,
+          "newly_delivered": 12,
+          "newly_lost": 3,
+          "rows": 480
+        },
+        "ENTITY-FN-ONLY": {
+          "delivered_centroid": 84,
+          "delivered_written": 82,
+          "newly_delivered": 2,
+          "newly_lost": 0,
+          "rows": 84
+        },
+        "ENTITY-FP-ONLY": {
+          "delivered_centroid": 128,
+          "delivered_written": 124,
+          "newly_delivered": 4,
+          "newly_lost": 0,
+          "rows": 131
+        },
+        "ENTITY-MIXED": {
+          "delivered_centroid": 190,
+          "delivered_written": 187,
+          "newly_delivered": 6,
+          "newly_lost": 3,
+          "rows": 193
+        },
+        "INTENT-WRONG": {
+          "delivered_centroid": 136,
+          "delivered_written": 86,
+          "newly_delivered": 55,
+          "newly_lost": 5,
+          "rows": 191
+        },
+        "MALFORMED": {
+          "delivered_centroid": 1,
+          "delivered_written": 1,
+          "newly_delivered": 0,
+          "newly_lost": 0,
+          "rows": 1
+        }
+      },
+      "production_recall_agreements": {
+        "dev2000-added-plan": {
+          "production_recall_order_equals_vectorised_order": 1000,
+          "production_recall_width8_equals_order_head": 1000,
+          "rows": 1000
+        },
+        "roll1": {
+          "production_recall_order_equals_vectorised_order": 625,
+          "production_recall_width8_equals_order_head": 625,
+          "rows": 625
+        },
+        "train-fold-a-plan": {
+          "production_recall_order_equals_vectorised_order": 1080,
+          "production_recall_width8_equals_order_head": 1080,
+          "rows": 1080
+        }
+      },
+      "roll1_equals_the_note": {
+        "file": {
+          "deliv_all": 87.8,
+          "deliv_correct": 95.7,
+          "deliv_wrong": 64.7,
+          "rank1_all": 54.1,
+          "rank1_wrong": 14.7
+        },
+        "note": {
+          "deliv_all": 87.8,
+          "deliv_correct": 95.7,
+          "deliv_wrong": 64.7,
+          "rank1_all": 54.1,
+          "rank1_wrong": 14.7
+        }
+      }
+    },
+    "proof_c_the_production_constructor_agrees": {
+      "fusion_vs_rank_disagreements": 0,
+      "newly_lost_by_class_all_rows": {
+        "CORRECT": 3,
+        "ENTITY-MIXED": 3,
+        "INTENT-WRONG": 5
+      },
+      "plan_class_split": {
+        "CORRECT": {
+          "delivered_after": 476,
+          "delivered_before": 467,
+          "newly_delivered": 12,
+          "newly_lost": 3,
+          "rows": 480
+        },
+        "ENTITY-FN-ONLY": {
+          "delivered_after": 84,
+          "delivered_before": 82,
+          "newly_delivered": 2,
+          "newly_lost": 0,
+          "rows": 84
+        },
+        "ENTITY-FP-ONLY": {
+          "delivered_after": 128,
+          "delivered_before": 124,
+          "newly_delivered": 4,
+          "newly_lost": 0,
+          "rows": 131
+        },
+        "ENTITY-MIXED": {
+          "delivered_after": 190,
+          "delivered_before": 187,
+          "newly_delivered": 6,
+          "newly_lost": 3,
+          "rows": 193
+        },
+        "INTENT-COVERED": {
+          "delivered_after": 57,
+          "delivered_before": 59,
+          "newly_delivered": 1,
+          "newly_lost": 3,
+          "rows": 61
+        },
+        "INTENT-UNCOVERED": {
+          "delivered_after": 79,
+          "delivered_before": 27,
+          "newly_delivered": 54,
+          "newly_lost": 2,
+          "rows": 130
+        },
+        "MALFORMED": {
+          "delivered_after": 1,
+          "delivered_before": 1,
+          "newly_delivered": 0,
+          "newly_lost": 0,
+          "rows": 1
+        }
+      },
+      "production_constructor_equals_production_recall_on_the_population": true,
+      "sealed_boundary_agreement": {
+        "baseline_fusion_equals_sealed": 1080,
+        "rows": 1080
+      },
+      "treatment_boundary_channel": {
+        "candidates_recalled_histogram": {
+          "0": 1,
+          "2": 1,
+          "8": 1078
+        },
+        "delivered_width_histogram": {
+          "0": 1,
+          "2": 1,
+          "8": 1078
+        },
+        "facet_source": {
+          "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+          "kind": "sealed-vectors",
+          "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+          "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+          "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+        },
+        "fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "fuse_policy": "saea-fuse-associated-values-v1",
+        "k_committed": 8,
+        "k_used_as_recall_width": 8,
+        "query_source": {
+          "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+          "kind": "sealed-segment-vectors",
+          "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+          "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+          "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+        },
+        "rank_weights_flown": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "rank_weights_used": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "segments_per_row": {
+          "1": 1080
+        },
+        "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+        "tau": 0.0
+      },
+      "written_boundary_channel": {
+        "candidates_recalled_histogram": {
+          "1": 1,
+          "3": 1,
+          "5": 1,
+          "7": 1,
+          "8": 1076
+        },
+        "delivered_width_histogram": {
+          "1": 1,
+          "3": 1,
+          "5": 1,
+          "7": 1,
+          "8": 1076
+        },
+        "facet_source": {
+          "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+          "kind": "sealed-vectors",
+          "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+          "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+          "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+        },
+        "fuse_coverage": {
+          "c": 1,
+          "m": 8,
+          "top_l": 8
+        },
+        "fuse_policy": "saea-fuse-associated-values-v1",
+        "k_committed": 8,
+        "k_used_as_recall_width": 8,
+        "query_source": {
+          "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+          "kind": "sealed-segment-vectors",
+          "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+          "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+          "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+        },
+        "rank_weights_flown": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "rank_weights_used": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "segments_per_row": {
+          "1": 1080
+        },
+        "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+        "tau": 0.0
+      }
+    }
+  },
+  "gold_selection": "THE ROSTER IS SELECTED USING GOLD, OFFLINE. The bad-case bank's plan_class and each row's gold intent were read on the scoring side only, in the committed roster derivation, before this cell existed. That is legitimate for a CONDITIONAL estimate on a TRAIN roster and it is legitimate for nothing else: NO POOLED OR ROSTER-LEVEL CLAIM MAY EVER BE MADE FROM THIS CELL, because its population was chosen by the mechanism's own effect. Gold reaches no query, no key, no weight, no selector and no runtime -- the key itself is built from each pool value's frozen build-time task_target, a store property -- and no gold label, intent name as content, transcript or utterance text is printed or persisted anywhere in this package.",
+  "headroom_registered_by_the_class": {
+    "ceiling_intent_pp_at_perfect_conversion": 5.0938,
+    "intent_pp_per_row": 0.092615,
+    "re_declaration_rule": "a later 1,080-row construction cell's expected_effect_pp = (rows of this roster that move from a wrong intent to the gold intent) x 0.092615 pp intent accuracy (primary, owner decision 133) and x 0.041615 pp SLU-F1 (the guard).",
+    "rows_needed_to_clear_the_2_5_pp_intent_bar_at_n_1080": 27,
+    "rows_needed_under_the_retired_slu_framing": 61,
+    "slu_pp_per_row": 0.041615,
+    "source": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/registered-facts-v1.json, expected_effect_derivation: INTENT-UNCOVERED perfect-repair headroom 5.41 pp SLU-F1 and 12.04 pp intent accuracy over 130 rows. Not re-derived here. This roster is the intent-wrong rows the key newly reaches (bank classes INTENT-UNCOVERED and INTENT-COVERED, split in the derivation); the per-row figure is applied as the task's re-declaration rule states it and the class split is reported beside m."
+  },
+  "identity": {
+    "arm": "speech-feature-query-native-tools",
+    "attempt_id": "attempt-slurp-native-stage3-kprobe-fold-a-55-generation-v1",
+    "baseline_fragment": "slurp-native-stage3-kprobe-fold-a-55-baseline-v1",
+    "boundary_channel": {
+      "declares_agreement_source": false,
+      "facet_source": {
+        "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+        "kind": "sealed-vectors",
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+        "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+      },
+      "fuse_coverage": {
+        "c": 1,
+        "m": 8,
+        "top_l": 8
+      },
+      "k": 8,
+      "parent_facet_source": {
+        "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+        "kind": "sealed-vectors",
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+        "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+        "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+      },
+      "rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    },
+    "cell": "slurp-native-stage3-kprobe-fold-a-55-v1",
+    "composed_config_hash": "8ff881efbe1c3a35e0d05afbc5357cfc70ed79d14f6c95fe5699b75103488dd9",
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "declares_prepared_phase_supply": false,
+    "experiment": "slurp-native-stage3-kprobe-fold-a-55-v1",
+    "fit_attempt_id": "attempt-slurp-native-stage3-kprobe-fold-a-55-fit-v1",
+    "fit_run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-FIT-V1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "native_episode_policies": {
+      "finite_completion_policy": "deliver-latest-or-abstain",
+      "react_exhaustion_policy": "continue-without-answer"
+    },
+    "parent_baseline_fragment": "slurp-native-default-plan-lock-baseline-v1",
+    "parent_composed_config_hash": "55b06b12c70a49d79e1fe8de7af76a78f581946de250cb57f129354508a1be5b",
+    "parent_experiment": "slurp-native-default-plan-lock-v1",
+    "protocol_hash": "c278e63b8e2a5bf84a307da40dcadf4f4a2783e902da5543def005f9d318f031",
+    "run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1",
+    "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "split_identity_hash": "d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31"
+  },
+  "no_pooled_claim": "This cell reads ONE quantity: the per-row intent verdict on a gold-selected subset. It may never be reported as a pooled SLU-F1 or intent-accuracy effect, as an admission, as a replication, or as evidence about any roster. Its population is the mechanism's own beneficiaries; a pooled number computed over it would be a selection artefact by construction. The cell also cannot see harm: every row here is already intent-wrong in the comparator, so the rows where the key could COST a correct intent -- including the rows that LOSE their gold entry under the centroid key, counted in the roster derivation -- are outside this roster and remain a construction cell's own question.",
+  "owner_decision": 145,
+  "prohibitions": [
+    "No pooled, roster-level, effectiveness, superiority or generalisation claim from this cell, ever -- its population was selected with gold.",
+    "No admission entry and no admission mode: the cell claims nothing and asks for nothing.",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed comparator.",
+    "No second factor: no k, tau, fuse_coverage, rank-weight, store, release or snapshot change; no store rebuild or release; no re-pin of the 211 committed configs.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cell is flipped."
+  ],
+  "registered_at_utc": "2026-09-27T06:18:00.000000+00:00",
+  "roster": {
+    "audio_seconds_total": 127.701375,
+    "by_bank_plan_class": {
+      "INTENT-COVERED": {
+        "newly_delivered": 1,
+        "newly_lost": 3,
+        "rows": 61
+      },
+      "INTENT-UNCOVERED": {
+        "newly_delivered": 54,
+        "newly_lost": 2,
+        "rows": 130
+      }
+    },
+    "count": 55,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "delivered_centroid": 136,
+    "delivered_written": 86,
+    "derivation": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/roster-derivation-v1.json",
+      "sha256": "ca2869c13e6e3394d9ce324e342e4548e1b2d134e48d88d9ef89daeb7f39eed8"
+    },
+    "expected_order_of_magnitude": {
+      "delivered_centroid": 136,
+      "delivered_written": 86,
+      "intent_wrong_rows": 191,
+      "newly_delivered": 55,
+      "newly_lost": 5,
+      "note": "191 intent-wrong rows x (0.712 - 0.450) is about 50 under the FULL-pool centroid the note reports; the treatment file is the R01-excluded centroid"
+    },
+    "id_list_sha256": "ad433b1fc3f21765af15d3aed4012264125d9f17fdd4cef837d67bcf50ddde02",
+    "intent_wrong_rows_fold_a": 191,
+    "newly_delivered": 55,
+    "newly_lost_correct_rows": 3,
+    "newly_lost_intent_wrong": 5,
+    "split_identity_hash": "d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31"
+  },
+  "rows": 55,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The cell measures a CONDITIONAL RATE and makes NO effectiveness claim. Its 55 rows are under the measurement instrument's MIN_BENEFIT_ROWS, so under rule 5 this is a form proof by size and claims_benefit is false; expected_effect_pp is 0.0 because the cell registers no effect to look for. What it delivers is the centroid boundary key's conversion from delivery to correctness, measured: of the rows whose gold intent's boundary entry the key newly delivers, the proportion m/55 that move from a wrong intent to the gold intent. RE-DECLARATION RULE: a later 1,080-row construction cell that flies this key declares expected_effect_pp = m x 0.092615 pp intent accuracy (intent primary under owner decision 133, official SLU-F1 the non-inferiority guard; m x 0.041615 pp SLU-F1 for the guard), never a midpoint. It is NOT an admission request: no admission mode is declared, no harm margin is claimed, and no pooled or roster-level number may ever be read off this cell, whose population was selected with gold, offline.",
+      "primary_metric": "per-row intent correctness (official scorer's scenario_action_exact), reported as the conditional rate P(correct | newly delivered) with a binomial CI95",
+      "rows": 55
+    }
+  },
+  "study_commit_at_registration": "08fd493c",
+  "the_unmeasured_quantity": {
+    "conv_precedent": "cell CONV measured the agreement term's conversion on its own 70 newly delivered rows: m = 32 of 70 (45.71 %, Wilson [34.57, 57.30]); the arm was then re-declared from that m (decision 143). This probe repeats the design for the key, not the weight.",
+    "name": "P(correct | newly delivered) -- the centroid key's conversion from delivery to correctness",
+    "the_only_directly_observable_prior": "86 of the 191 intent-wrong Fold A rows already receive the gold intent's boundary entry under the written key and are wrong anyway. Neither that zero nor CONV's 32/70 is a prediction for this key; the cell is registered without a predicted value on purpose.",
+    "what_the_diagnostic_measured": "DELIVERY only: on the intent-wrong rows the written key delivers gold within eight on 45.0 / 44.6 / 35.8 % (Fold A / ROLL-1 / DEV-2000, held-out pools) and the centroid key on 71.2 / 64.7 / 66.8 %, at zero token cost. Whether the Solver then answers correctly with the entry present is mode (iv) of that note, unmeasured because it needs the answer the row would give, which needs contacts."
+  },
+  "treatment_key_file": {
+    "artifact_id": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1",
+    "builder": {
+      "relpath": "scripts/build_slurp_intent_boundary_centroid_keys.py",
+      "sha256": "161a345e1b25a5d0973320a159b2101b34fdc5ca9a55c39e337afcfca9a976aa"
+    },
+    "construction": {
+      "arithmetic_source": {
+        "functions_used": [
+          "load_boundary",
+          "load_pool_vectors",
+          "unit_rows"
+        ],
+        "note": "imported byte-unchanged; the mean is bitwise the diagnostic's 'centroid' construction",
+        "relpath": "scripts/analysis/slurp_boundary_key_construction_diagnostic.py",
+        "sha256": "f126fd4ac68daa832c8d26bddca39e2791d6aa1d2db32a55567859ad77808137"
+      },
+      "construction_pool": "the R01-excluded pool, so one file is held out on TRAIN Fold A, ROLL-1 (R01C) and DEV-2000-ADDED alike",
+      "label_is": "the pool value's frozen build-time task_target, a released-store property; no gold label enters",
+      "label_key": "task_target",
+      "member_order": "pool facet ids ascending (the diagnostic's order)",
+      "rule": "for each released intent, take every construction-pool facet whose frozen build-time task_target names that intent, in pool facet-id order; unit-normalise each member vector in float64 (rails.kb_policy._cosine_with_norms' own quotient); take the arithmetic mean over the members; unit-normalise the mean. An intent with no member in this pool keeps the flown written key vector, byte for byte."
+    },
+    "facets": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+      "rows": 60,
+      "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532"
+    },
+    "inputs": {
+      "construction_pool_snapshot": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+        "utterances": 8554
+      },
+      "pool_facet_vectors": {
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "role": "one pinned vector per construction-TRAIN utterance; the members",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "same_space": {
+        "encoder_inventory_sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31",
+        "geometry": {
+          "audio": false,
+          "batch_size": 1,
+          "facet_dimension": "intent-boundary",
+          "prompt": "passage: "
+        },
+        "note": "both the written keys and the pool vectors were cut by the same frozen encoder under the same prefix; the diagnostic's section 0 proves the spaces comparable"
+      },
+      "target_store_snapshot": {
+        "facets": 60,
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "role": "the released intent-boundaries-v1 store; its facet ids and delivered bodies are unchanged",
+        "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+      },
+      "written_key_encoding_index": {
+        "encoded_is_representation": 60,
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/index.json",
+        "sha256": "f70cf26726143151e360015bf9a5c4b0922c9e1e9ecc0177878f9b5c77674dab"
+      },
+      "written_key_vectors": {
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+        "role": "the flown keys; the fallback source for an intent with no pool member",
+        "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2"
+      }
+    },
+    "measured": {
+      "centroid_facets": 59,
+      "distinct_pool_labels": 59,
+      "intents": 60,
+      "key_to_key_cosine_max": 0.993,
+      "key_to_key_cosine_mean": 0.9326,
+      "members_max": 745,
+      "members_min_over_centroid_facets": 6,
+      "members_total": 8554,
+      "written_fallback_facets": 1,
+      "written_fallback_ids": [
+        "intent-boundary:cooking_query"
+      ]
+    },
+    "not_re_pinned": "only this cell's derived baseline pins the centroid file; the 211 committed configs that pin the written key are untouched (owner decision 145), and the store rebuild waits on this cell's m",
+    "receipt": {
+      "kind": "centroid-over-pinned-utterance-vectors-v1",
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json",
+      "repository_copy": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/centroid-keys-receipt-v1.json",
+      "schema": "saea-centroid-key-receipt-v1",
+      "sha256": "d5fa43dfb9cfe71402e256c015e5f0a1ce66e97b3ec5355a664eb9f69f8cdf0a"
+    },
+    "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1",
+    "why_a_new_receipt_kind": "The text-facet kind pins a text_sha256 per facet because each written key WAS a text run through the encoder. A centroid has no text source and no encoder pass: it is arithmetic over already-pinned utterance vectors. This kind therefore pins, per facet, the construction, the member count, the sha256 of the sorted member facet-id list and the sha256 of the emitted vector, plus every input pin and the loader implementation hashes, so the file is reproducible from the pins alone."
+  },
+  "why_intent_and_not_slu_f1": "The within-flight null (docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md) measured 0 intent flips out of 200 request-identical rows, so an intent flip is ATTRIBUTABLE rather than noise and a per-row intent read is legible at this size; cell CONV read the same quantity the same way at n = 70 (docs/results/2026-09-27-slurp-conv-probe-read.md). Pooled SLU-F1 is not legible here: its own measured noise would swamp the roster, and the official SLU-F1 is entity-only while this mechanism acts on the intent. The official scorer still produces the number -- the read takes its per-sample scenario_action_exact field and nothing else -- so the standard-scoring rule is intact."
+}
