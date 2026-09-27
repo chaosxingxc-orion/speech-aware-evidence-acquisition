@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
-  "composed_config_hash": "57d0ff88bdf8f0c28d418056b20d0fcef48b24589e9980de9b3dfed1a4c7173a",
+  "composed_config_hash": "87d3277ded278e7dd0584cc86e5646b9a9790cdd3a2d9c1f96f3b80f5df59176",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "602e9ef33e626ca4825d4ec6fdd013d09fca372f9f9e8f1138c8071361b98b91",
+    "protocol_hash": "6ce5704b47dcbe53c21a0800367b3a8cb62a76beb97b47b45610c2fcf3e02dfa",
     "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "f730ddedb1b4281492366bfe028fca5b81ce7abe29b534d30eab25a511efdc0e"
+    "sha256": "1fedb1f2b66f9160a528f289f3ce7a8095145294e0900c0c147a8e899c474040"
   },
   "purpose": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1: Four-row form smoke of cell G5. Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
