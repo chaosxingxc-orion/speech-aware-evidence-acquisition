@@ -1,0 +1,1596 @@
+{
+  "annotation_scope": [
+    {
+      "slot_type": "business_name",
+      "spoken_occurrences": 119,
+      "tagged_occurrences": 96,
+      "tagged_when_spoken_counts": [
+        [
+          15,
+          15
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 23,
+      "usually_untagged_counts": [],
+      "usually_untagged_values": 0,
+      "values_with_evidence": 12
+    },
+    {
+      "slot_type": "business_type",
+      "spoken_occurrences": 116,
+      "tagged_occurrences": 89,
+      "tagged_when_spoken_counts": [
+        [
+          36,
+          36
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "tagged_when_spoken_values": 3,
+      "untagged_occurrences": 27,
+      "usually_untagged_counts": [
+        [
+          1,
+          5
+        ]
+      ],
+      "usually_untagged_values": 1,
+      "values_with_evidence": 9
+    },
+    {
+      "slot_type": "date",
+      "spoken_occurrences": 1583,
+      "tagged_occurrences": 1454,
+      "tagged_when_spoken_counts": [
+        [
+          398,
+          413
+        ],
+        [
+          176,
+          178
+        ],
+        [
+          118,
+          128
+        ],
+        [
+          75,
+          75
+        ],
+        [
+          65,
+          65
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 129,
+      "usually_untagged_counts": [
+        [
+          1,
+          77
+        ]
+      ],
+      "usually_untagged_values": 1,
+      "values_with_evidence": 42
+    },
+    {
+      "slot_type": "device_type",
+      "spoken_occurrences": 577,
+      "tagged_occurrences": 368,
+      "tagged_when_spoken_counts": [
+        [
+          49,
+          54
+        ],
+        [
+          34,
+          38
+        ],
+        [
+          35,
+          36
+        ],
+        [
+          31,
+          31
+        ],
+        [
+          30,
+          30
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 209,
+      "usually_untagged_counts": [
+        [
+          6,
+          125
+        ],
+        [
+          5,
+          51
+        ],
+        [
+          1,
+          15
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          2,
+          6
+        ]
+      ],
+      "usually_untagged_values": 5,
+      "values_with_evidence": 23
+    },
+    {
+      "slot_type": "event_name",
+      "spoken_occurrences": 1657,
+      "tagged_occurrences": 766,
+      "tagged_when_spoken_counts": [
+        [
+          281,
+          305
+        ],
+        [
+          89,
+          94
+        ],
+        [
+          55,
+          63
+        ],
+        [
+          39,
+          44
+        ],
+        [
+          25,
+          29
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 891,
+      "usually_untagged_counts": [
+        [
+          1,
+          360
+        ],
+        [
+          6,
+          133
+        ],
+        [
+          2,
+          90
+        ],
+        [
+          7,
+          81
+        ],
+        [
+          8,
+          49
+        ]
+      ],
+      "usually_untagged_values": 5,
+      "values_with_evidence": 43
+    },
+    {
+      "slot_type": "food_type",
+      "spoken_occurrences": 40,
+      "tagged_occurrences": 37,
+      "tagged_when_spoken_counts": [
+        [
+          14,
+          16
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          5,
+          5
+        ]
+      ],
+      "tagged_when_spoken_values": 4,
+      "untagged_occurrences": 3,
+      "usually_untagged_counts": [],
+      "usually_untagged_values": 0,
+      "values_with_evidence": 4
+    },
+    {
+      "slot_type": "house_place",
+      "spoken_occurrences": 196,
+      "tagged_occurrences": 175,
+      "tagged_when_spoken_counts": [
+        [
+          59,
+          63
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 21,
+      "usually_untagged_counts": [
+        [
+          2,
+          8
+        ]
+      ],
+      "usually_untagged_values": 1,
+      "values_with_evidence": 10
+    },
+    {
+      "slot_type": "list_name",
+      "spoken_occurrences": 142,
+      "tagged_occurrences": 110,
+      "tagged_when_spoken_counts": [
+        [
+          28,
+          30
+        ],
+        [
+          27,
+          29
+        ],
+        [
+          26,
+          27
+        ]
+      ],
+      "tagged_when_spoken_values": 3,
+      "untagged_occurrences": 32,
+      "usually_untagged_counts": [
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "usually_untagged_values": 2,
+      "values_with_evidence": 8
+    },
+    {
+      "slot_type": "meal_type",
+      "spoken_occurrences": 50,
+      "tagged_occurrences": 48,
+      "tagged_when_spoken_counts": [
+        [
+          27,
+          28
+        ],
+        [
+          21,
+          22
+        ]
+      ],
+      "tagged_when_spoken_values": 2,
+      "untagged_occurrences": 2,
+      "usually_untagged_counts": [],
+      "usually_untagged_values": 0,
+      "values_with_evidence": 2
+    },
+    {
+      "slot_type": "media_type",
+      "spoken_occurrences": 607,
+      "tagged_occurrences": 266,
+      "tagged_when_spoken_counts": [
+        [
+          76,
+          79
+        ],
+        [
+          42,
+          42
+        ],
+        [
+          25,
+          28
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          19,
+          19
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 341,
+      "usually_untagged_counts": [
+        [
+          5,
+          157
+        ],
+        [
+          1,
+          108
+        ],
+        [
+          1,
+          25
+        ],
+        [
+          4,
+          18
+        ],
+        [
+          3,
+          12
+        ]
+      ],
+      "usually_untagged_values": 5,
+      "values_with_evidence": 16
+    },
+    {
+      "slot_type": "news_topic",
+      "spoken_occurrences": 55,
+      "tagged_occurrences": 36,
+      "tagged_when_spoken_counts": [
+        [
+          9,
+          9
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          8
+        ]
+      ],
+      "tagged_when_spoken_values": 3,
+      "untagged_occurrences": 19,
+      "usually_untagged_counts": [
+        [
+          2,
+          10
+        ],
+        [
+          1,
+          7
+        ]
+      ],
+      "usually_untagged_values": 2,
+      "values_with_evidence": 7
+    },
+    {
+      "slot_type": "order_type",
+      "spoken_occurrences": 47,
+      "tagged_occurrences": 39,
+      "tagged_when_spoken_counts": [
+        [
+          14,
+          14
+        ],
+        [
+          13,
+          13
+        ]
+      ],
+      "tagged_when_spoken_values": 2,
+      "untagged_occurrences": 8,
+      "usually_untagged_counts": [],
+      "usually_untagged_values": 0,
+      "values_with_evidence": 5
+    },
+    {
+      "slot_type": "person",
+      "spoken_occurrences": 438,
+      "tagged_occurrences": 276,
+      "tagged_when_spoken_counts": [
+        [
+          60,
+          62
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 162,
+      "usually_untagged_counts": [
+        [
+          1,
+          124
+        ],
+        [
+          3,
+          20
+        ]
+      ],
+      "usually_untagged_values": 2,
+      "values_with_evidence": 31
+    },
+    {
+      "slot_type": "place_name",
+      "spoken_occurrences": 561,
+      "tagged_occurrences": 421,
+      "tagged_when_spoken_counts": [
+        [
+          64,
+          66
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          14,
+          15
+        ],
+        [
+          14,
+          14
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 140,
+      "usually_untagged_counts": [
+        [
+          4,
+          28
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          1,
+          6
+        ]
+      ],
+      "usually_untagged_values": 5,
+      "values_with_evidence": 42
+    },
+    {
+      "slot_type": "song_name",
+      "spoken_occurrences": 12,
+      "tagged_occurrences": 9,
+      "tagged_when_spoken_counts": [],
+      "tagged_when_spoken_values": 0,
+      "untagged_occurrences": 3,
+      "usually_untagged_counts": [],
+      "usually_untagged_values": 0,
+      "values_with_evidence": 2
+    },
+    {
+      "slot_type": "time",
+      "spoken_occurrences": 1188,
+      "tagged_occurrences": 936,
+      "tagged_when_spoken_counts": [
+        [
+          59,
+          65
+        ],
+        [
+          50,
+          54
+        ],
+        [
+          48,
+          53
+        ],
+        [
+          47,
+          50
+        ],
+        [
+          44,
+          44
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 252,
+      "usually_untagged_counts": [
+        [
+          8,
+          105
+        ],
+        [
+          1,
+          37
+        ],
+        [
+          1,
+          8
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          1,
+          6
+        ]
+      ],
+      "usually_untagged_values": 5,
+      "values_with_evidence": 52
+    },
+    {
+      "slot_type": "timeofday",
+      "spoken_occurrences": 209,
+      "tagged_occurrences": 200,
+      "tagged_when_spoken_counts": [
+        [
+          65,
+          69
+        ],
+        [
+          50,
+          51
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          19,
+          21
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "tagged_when_spoken_values": 5,
+      "untagged_occurrences": 9,
+      "usually_untagged_counts": [],
+      "usually_untagged_values": 0,
+      "values_with_evidence": 8
+    },
+    {
+      "slot_type": "transport_agency",
+      "spoken_occurrences": 27,
+      "tagged_occurrences": 27,
+      "tagged_when_spoken_counts": [
+        [
+          27,
+          27
+        ]
+      ],
+      "tagged_when_spoken_values": 1,
+      "untagged_occurrences": 0,
+      "usually_untagged_counts": [],
+      "usually_untagged_values": 0,
+      "values_with_evidence": 1
+    },
+    {
+      "slot_type": "transport_type",
+      "spoken_occurrences": 236,
+      "tagged_occurrences": 213,
+      "tagged_when_spoken_counts": [
+        [
+          166,
+          175
+        ],
+        [
+          35,
+          35
+        ],
+        [
+          8,
+          8
+        ]
+      ],
+      "tagged_when_spoken_values": 3,
+      "untagged_occurrences": 23,
+      "usually_untagged_counts": [
+        [
+          2,
+          10
+        ],
+        [
+          2,
+          8
+        ]
+      ],
+      "usually_untagged_values": 2,
+      "values_with_evidence": 5
+    }
+  ],
+  "card_byte_deltas": {
+    "business_name": {
+      "added": 232,
+      "components": {
+        "K2": false,
+        "K3": false,
+        "K4": true
+      },
+      "v2": 1925,
+      "w4": 2157
+    },
+    "business_type": {
+      "added": 463,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 2095,
+      "w4": 2558
+    },
+    "date": {
+      "added": 465,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 3828,
+      "w4": 4293
+    },
+    "device_type": {
+      "added": 543,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 2370,
+      "w4": 2913
+    },
+    "event_name": {
+      "added": 529,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 2987,
+      "w4": 3516
+    },
+    "food_type": {
+      "added": 209,
+      "components": {
+        "K2": false,
+        "K3": false,
+        "K4": true
+      },
+      "v2": 1660,
+      "w4": 1869
+    },
+    "house_place": {
+      "added": 726,
+      "components": {
+        "K2": true,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 1750,
+      "w4": 2476
+    },
+    "list_name": {
+      "added": 400,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 1631,
+      "w4": 2031
+    },
+    "meal_type": {
+      "added": 320,
+      "components": {
+        "K2": true,
+        "K3": false,
+        "K4": true
+      },
+      "v2": 1599,
+      "w4": 1919
+    },
+    "media_type": {
+      "added": 520,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 2448,
+      "w4": 2968
+    },
+    "news_topic": {
+      "added": 410,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 1202,
+      "w4": 1612
+    },
+    "order_type": {
+      "added": 223,
+      "components": {
+        "K2": true,
+        "K3": false,
+        "K4": false
+      },
+      "v2": 1438,
+      "w4": 1661
+    },
+    "person": {
+      "added": 350,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 2635,
+      "w4": 2985
+    },
+    "place_name": {
+      "added": 442,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 2535,
+      "w4": 2977
+    },
+    "song_name": {
+      "added": 154,
+      "components": {
+        "K2": false,
+        "K3": false,
+        "K4": true
+      },
+      "v2": 1423,
+      "w4": 1577
+    },
+    "time": {
+      "added": 491,
+      "components": {
+        "K2": false,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 3607,
+      "w4": 4098
+    },
+    "timeofday": {
+      "added": 467,
+      "components": {
+        "K2": true,
+        "K3": false,
+        "K4": true
+      },
+      "v2": 2412,
+      "w4": 2879
+    },
+    "transport_agency": {
+      "added": 337,
+      "components": {
+        "K2": true,
+        "K3": false,
+        "K4": true
+      },
+      "v2": 1067,
+      "w4": 1404
+    },
+    "transport_type": {
+      "added": 605,
+      "components": {
+        "K2": true,
+        "K3": true,
+        "K4": true
+      },
+      "v2": 1578,
+      "w4": 2183
+    }
+  },
+  "classes_all_types": {
+    "closed": 6,
+    "open": 28,
+    "semi-closed": 20
+  },
+  "schema": "saea-slurp-slot-conventions-w4-tables-v1",
+  "source": "the R01-excluded TRAIN exemplar pool size-pool-annotated-exemplars-minus-r01 (8,554 utterances, content hash 6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63); no Fold A, Fold B, DEV or test byte, no flight output and no score read to author a value",
+  "span_extent": [
+    {
+      "located_mentions": 205,
+      "rules": [
+        {
+          "cases": 20,
+          "count": 20,
+          "edge": "trail",
+          "side": "inside",
+          "word": "service"
+        },
+        {
+          "cases": 136,
+          "count": 135,
+          "edge": "lead",
+          "side": "outside",
+          "word": "<preposition>"
+        },
+        {
+          "cases": 25,
+          "count": 25,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "business_name"
+    },
+    {
+      "located_mentions": 115,
+      "rules": [
+        {
+          "cases": 16,
+          "count": 16,
+          "edge": "lead",
+          "side": "outside",
+          "word": "a"
+        },
+        {
+          "cases": 12,
+          "count": 12,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 41,
+          "count": 41,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "business_type"
+    },
+    {
+      "located_mentions": 1310,
+      "rules": [
+        {
+          "cases": 159,
+          "count": 138,
+          "edge": "lead",
+          "side": "inside",
+          "word": "this"
+        },
+        {
+          "cases": 114,
+          "count": 114,
+          "edge": "trail",
+          "side": "inside",
+          "word": "week"
+        },
+        {
+          "cases": 77,
+          "count": 70,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        }
+      ],
+      "slot_type": "date"
+    },
+    {
+      "located_mentions": 168,
+      "rules": [
+        {
+          "cases": 89,
+          "count": 89,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 38,
+          "count": 36,
+          "edge": "trail",
+          "side": "inside",
+          "word": "socket"
+        },
+        {
+          "cases": 32,
+          "count": 32,
+          "edge": "trail",
+          "side": "inside",
+          "word": "cleaner"
+        }
+      ],
+      "slot_type": "device_type"
+    },
+    {
+      "located_mentions": 820,
+      "rules": [
+        {
+          "cases": 118,
+          "count": 116,
+          "edge": "lead",
+          "side": "outside",
+          "word": "my"
+        },
+        {
+          "cases": 112,
+          "count": 112,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 98,
+          "count": 98,
+          "edge": "lead",
+          "side": "outside",
+          "word": "a"
+        }
+      ],
+      "slot_type": "event_name"
+    },
+    {
+      "located_mentions": 93,
+      "rules": [
+        {
+          "cases": 13,
+          "count": 13,
+          "edge": "lead",
+          "side": "outside",
+          "word": "a"
+        },
+        {
+          "cases": 19,
+          "count": 19,
+          "edge": "lead",
+          "side": "outside",
+          "word": "<preposition>"
+        },
+        {
+          "cases": 15,
+          "count": 15,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "food_type"
+    },
+    {
+      "located_mentions": 151,
+      "rules": [
+        {
+          "cases": 86,
+          "count": 85,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 41,
+          "count": 41,
+          "edge": "trail",
+          "side": "inside",
+          "word": "room"
+        },
+        {
+          "cases": 18,
+          "count": 16,
+          "edge": "lead",
+          "side": "outside",
+          "word": "my"
+        }
+      ],
+      "slot_type": "house_place"
+    },
+    {
+      "located_mentions": 121,
+      "rules": [
+        {
+          "cases": 91,
+          "count": 83,
+          "edge": "trail",
+          "side": "outside",
+          "word": "list"
+        },
+        {
+          "cases": 54,
+          "count": 53,
+          "edge": "lead",
+          "side": "outside",
+          "word": "my"
+        },
+        {
+          "cases": 19,
+          "count": 19,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        }
+      ],
+      "slot_type": "list_name"
+    },
+    {
+      "located_mentions": 51,
+      "rules": [
+        {
+          "cases": 25,
+          "count": 25,
+          "edge": "lead",
+          "side": "outside",
+          "word": "<preposition>"
+        },
+        {
+          "cases": 19,
+          "count": 19,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "meal_type"
+    },
+    {
+      "located_mentions": 307,
+      "rules": [
+        {
+          "cases": 28,
+          "count": 28,
+          "edge": "lead",
+          "side": "outside",
+          "word": "my"
+        },
+        {
+          "cases": 21,
+          "count": 20,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 15,
+          "count": 15,
+          "edge": "lead",
+          "side": "outside",
+          "word": "a"
+        }
+      ],
+      "slot_type": "media_type"
+    },
+    {
+      "located_mentions": 113,
+      "rules": [
+        {
+          "cases": 30,
+          "count": 25,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 22,
+          "count": 21,
+          "edge": "trail",
+          "side": "outside",
+          "word": "news"
+        },
+        {
+          "cases": 47,
+          "count": 47,
+          "edge": "lead",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "news_topic"
+    },
+    {
+      "located_mentions": 43,
+      "rules": [],
+      "slot_type": "order_type"
+    },
+    {
+      "located_mentions": 621,
+      "rules": [
+        {
+          "cases": 340,
+          "count": 340,
+          "edge": "lead",
+          "side": "outside",
+          "word": "<preposition>"
+        },
+        {
+          "cases": 121,
+          "count": 121,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "person"
+    },
+    {
+      "located_mentions": 735,
+      "rules": [
+        {
+          "cases": 84,
+          "count": 73,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 8,
+          "count": 8,
+          "edge": "trail",
+          "side": "inside",
+          "word": "station"
+        },
+        {
+          "cases": 538,
+          "count": 538,
+          "edge": "lead",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "place_name"
+    },
+    {
+      "located_mentions": 103,
+      "rules": [
+        {
+          "cases": 11,
+          "count": 11,
+          "edge": "lead",
+          "side": "outside",
+          "word": "song"
+        },
+        {
+          "cases": 47,
+          "count": 47,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "song_name"
+    },
+    {
+      "located_mentions": 559,
+      "rules": [
+        {
+          "cases": 205,
+          "count": 205,
+          "edge": "trail",
+          "side": "inside",
+          "word": "pm"
+        },
+        {
+          "cases": 147,
+          "count": 147,
+          "edge": "trail",
+          "side": "inside",
+          "word": "am"
+        },
+        {
+          "cases": 44,
+          "count": 38,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        }
+      ],
+      "slot_type": "time"
+    },
+    {
+      "located_mentions": 184,
+      "rules": [
+        {
+          "cases": 25,
+          "count": 25,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 10,
+          "count": 10,
+          "edge": "trail",
+          "side": "inside",
+          "word": "afternoon"
+        },
+        {
+          "cases": 39,
+          "count": 39,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "timeofday"
+    },
+    {
+      "located_mentions": 30,
+      "rules": [
+        {
+          "cases": 16,
+          "count": 16,
+          "edge": "lead",
+          "side": "outside",
+          "word": "an"
+        },
+        {
+          "cases": 10,
+          "count": 10,
+          "edge": "trail",
+          "side": "outside",
+          "word": "<preposition>"
+        }
+      ],
+      "slot_type": "transport_agency"
+    },
+    {
+      "located_mentions": 216,
+      "rules": [
+        {
+          "cases": 107,
+          "count": 107,
+          "edge": "lead",
+          "side": "outside",
+          "word": "a"
+        },
+        {
+          "cases": 31,
+          "count": 31,
+          "edge": "lead",
+          "side": "outside",
+          "word": "the"
+        },
+        {
+          "cases": 13,
+          "count": 13,
+          "edge": "lead",
+          "side": "outside",
+          "word": "next"
+        }
+      ],
+      "slot_type": "transport_type"
+    }
+  ],
+  "thresholds": {
+    "list_cap": 20,
+    "loo_closed": 0.9,
+    "scope_list_cap": 5,
+    "scope_min_occurrences": 5,
+    "semi_closed_coverage": 0.9,
+    "span_min_cases": 8,
+    "span_share": 0.8,
+    "tag_rate_high": 0.85,
+    "tag_rate_low": 0.35
+  },
+  "vocabulary": [
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 134,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.563319,
+      "n90": 112,
+      "pool_mentions": 229,
+      "slot_type": "business_name"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 44,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.730435,
+      "n90": 33,
+      "pool_mentions": 115,
+      "slot_type": "business_type"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 233,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.88785,
+      "n90": 94,
+      "pool_mentions": 1391,
+      "slot_type": "date"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 58,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.791667,
+      "n90": 42,
+      "pool_mentions": 168,
+      "slot_type": "device_type"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 295,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.725674,
+      "n90": 210,
+      "pool_mentions": 853,
+      "slot_type": "event_name"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 56,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.56701,
+      "n90": 47,
+      "pool_mentions": 97,
+      "slot_type": "food_type"
+    },
+    {
+      "class": "semi-closed",
+      "closed_value_list": null,
+      "distinct_values": 32,
+      "listed_coverage": 0.900662,
+      "listed_values": 17,
+      "loo_value_coverage": 0.887417,
+      "n90": 17,
+      "pool_mentions": 151,
+      "slot_type": "house_place"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 48,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.655738,
+      "n90": 36,
+      "pool_mentions": 122,
+      "slot_type": "list_name"
+    },
+    {
+      "class": "closed",
+      "closed_value_list": [
+        "dinner",
+        "lunch",
+        "breakfast"
+      ],
+      "distinct_values": 3,
+      "listed_coverage": 1.0,
+      "listed_values": 3,
+      "loo_value_coverage": 1.0,
+      "n90": 2,
+      "pool_mentions": 51,
+      "slot_type": "meal_type"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 71,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.84984,
+      "n90": 40,
+      "pool_mentions": 313,
+      "slot_type": "media_type"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 78,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.495798,
+      "n90": 67,
+      "pool_mentions": 119,
+      "slot_type": "news_topic"
+    },
+    {
+      "class": "closed",
+      "closed_value_list": [
+        "delivery",
+        "takeaway",
+        "deliver",
+        "take out",
+        "takeout",
+        "carryout",
+        "delivers",
+        "takeaways",
+        "to go"
+      ],
+      "distinct_values": 9,
+      "listed_coverage": 1.0,
+      "listed_values": 9,
+      "loo_value_coverage": 0.906977,
+      "n90": 5,
+      "pool_mentions": 43,
+      "slot_type": "order_type"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 406,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.577525,
+      "n90": 336,
+      "pool_mentions": 703,
+      "slot_type": "person"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 367,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.645248,
+      "n90": 293,
+      "pool_mentions": 747,
+      "slot_type": "place_name"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 88,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.28972,
+      "n90": 78,
+      "pool_mentions": 107,
+      "slot_type": "song_name"
+    },
+    {
+      "class": "open",
+      "closed_value_list": null,
+      "distinct_values": 181,
+      "listed_coverage": 0.0,
+      "listed_values": 0,
+      "loo_value_coverage": 0.792185,
+      "n90": 125,
+      "pool_mentions": 563,
+      "slot_type": "time"
+    },
+    {
+      "class": "closed",
+      "closed_value_list": [
+        "morning",
+        "tonight",
+        "noon",
+        "afternoon",
+        "evening",
+        "this afternoon",
+        "night",
+        "this evening",
+        "next morning",
+        "this am",
+        "tonight 's"
+      ],
+      "distinct_values": 11,
+      "listed_coverage": 1.0,
+      "listed_values": 11,
+      "loo_value_coverage": 0.983784,
+      "n90": 6,
+      "pool_mentions": 185,
+      "slot_type": "timeofday"
+    },
+    {
+      "class": "closed",
+      "closed_value_list": [
+        "uber",
+        "ola",
+        "golden taxi"
+      ],
+      "distinct_values": 3,
+      "listed_coverage": 1.0,
+      "listed_values": 3,
+      "loo_value_coverage": 0.966667,
+      "n90": 1,
+      "pool_mentions": 30,
+      "slot_type": "transport_agency"
+    },
+    {
+      "class": "closed",
+      "closed_value_list": [
+        "train",
+        "taxi",
+        "cab",
+        "ride",
+        "trains",
+        "car",
+        "driving",
+        "metro"
+      ],
+      "distinct_values": 8,
+      "listed_coverage": 1.0,
+      "listed_values": 8,
+      "loo_value_coverage": 0.986301,
+      "n90": 2,
+      "pool_mentions": 219,
+      "slot_type": "transport_type"
+    }
+  ]
+}

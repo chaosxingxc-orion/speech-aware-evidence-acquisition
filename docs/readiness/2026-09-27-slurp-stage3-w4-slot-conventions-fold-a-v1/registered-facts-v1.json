@@ -1,0 +1,2312 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (keyed by run id).",
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "note": "the AGREE arithmetic (1,080 x 11 contacts, run-cumulative); W4 adds prompt tokens, never contacts",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "byte_identity_expectation": {
+    "agree_first_phase_supply_output_sha256": {
+      "arm": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "smoke": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9"
+    },
+    "claim": "the slot-contracts store is not an input to the first-phase (Perception boundary) supply, so the supply the flip mints for the arm must carry the AGREE arm's output digest and the smoke's the AGREE smoke's; a different digest means the boundary channel moved -- stop and report"
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "in_chain_replicate": {
+      "registered_by": "the coordinator (knowledge wave shared A/A)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d"
+    },
+    "never_reflown": true,
+    "official": {
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575
+    },
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "composed_config_diff_against_the_agree_cell": {
+    "arm": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "the_one_pin": [
+        "knowledge_stores.slot-contracts.release.relpath",
+        "knowledge_stores.slot-contracts.release.sha256",
+        "knowledge_stores.slot-contracts.snapshot.relpath",
+        "knowledge_stores.slot-contracts.snapshot.sha256"
+      ]
+    },
+    "smoke": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "the_one_pin": [
+        "knowledge_stores.slot-contracts.release.relpath",
+        "knowledge_stores.slot-contracts.release.sha256",
+        "knowledge_stores.slot-contracts.snapshot.relpath",
+        "knowledge_stores.slot-contracts.snapshot.sha256"
+      ]
+    }
+  },
+  "conventions_tables": {
+    "annotation_scope": [
+      {
+        "slot_type": "business_name",
+        "spoken_occurrences": 119,
+        "tagged_occurrences": 96,
+        "tagged_when_spoken_counts": [
+          [
+            15,
+            15
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            9,
+            9
+          ],
+          [
+            8,
+            9
+          ],
+          [
+            7,
+            7
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 23,
+        "usually_untagged_counts": [],
+        "usually_untagged_values": 0,
+        "values_with_evidence": 12
+      },
+      {
+        "slot_type": "business_type",
+        "spoken_occurrences": 116,
+        "tagged_occurrences": 89,
+        "tagged_when_spoken_counts": [
+          [
+            36,
+            36
+          ],
+          [
+            15,
+            16
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tagged_when_spoken_values": 3,
+        "untagged_occurrences": 27,
+        "usually_untagged_counts": [
+          [
+            1,
+            5
+          ]
+        ],
+        "usually_untagged_values": 1,
+        "values_with_evidence": 9
+      },
+      {
+        "slot_type": "date",
+        "spoken_occurrences": 1583,
+        "tagged_occurrences": 1454,
+        "tagged_when_spoken_counts": [
+          [
+            398,
+            413
+          ],
+          [
+            176,
+            178
+          ],
+          [
+            118,
+            128
+          ],
+          [
+            75,
+            75
+          ],
+          [
+            65,
+            65
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 129,
+        "usually_untagged_counts": [
+          [
+            1,
+            77
+          ]
+        ],
+        "usually_untagged_values": 1,
+        "values_with_evidence": 42
+      },
+      {
+        "slot_type": "device_type",
+        "spoken_occurrences": 577,
+        "tagged_occurrences": 368,
+        "tagged_when_spoken_counts": [
+          [
+            49,
+            54
+          ],
+          [
+            34,
+            38
+          ],
+          [
+            35,
+            36
+          ],
+          [
+            31,
+            31
+          ],
+          [
+            30,
+            30
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 209,
+        "usually_untagged_counts": [
+          [
+            6,
+            125
+          ],
+          [
+            5,
+            51
+          ],
+          [
+            1,
+            15
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            2,
+            6
+          ]
+        ],
+        "usually_untagged_values": 5,
+        "values_with_evidence": 23
+      },
+      {
+        "slot_type": "event_name",
+        "spoken_occurrences": 1657,
+        "tagged_occurrences": 766,
+        "tagged_when_spoken_counts": [
+          [
+            281,
+            305
+          ],
+          [
+            89,
+            94
+          ],
+          [
+            55,
+            63
+          ],
+          [
+            39,
+            44
+          ],
+          [
+            25,
+            29
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 891,
+        "usually_untagged_counts": [
+          [
+            1,
+            360
+          ],
+          [
+            6,
+            133
+          ],
+          [
+            2,
+            90
+          ],
+          [
+            7,
+            81
+          ],
+          [
+            8,
+            49
+          ]
+        ],
+        "usually_untagged_values": 5,
+        "values_with_evidence": 43
+      },
+      {
+        "slot_type": "food_type",
+        "spoken_occurrences": 40,
+        "tagged_occurrences": 37,
+        "tagged_when_spoken_counts": [
+          [
+            14,
+            16
+          ],
+          [
+            10,
+            11
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        "tagged_when_spoken_values": 4,
+        "untagged_occurrences": 3,
+        "usually_untagged_counts": [],
+        "usually_untagged_values": 0,
+        "values_with_evidence": 4
+      },
+      {
+        "slot_type": "house_place",
+        "spoken_occurrences": 196,
+        "tagged_occurrences": 175,
+        "tagged_when_spoken_counts": [
+          [
+            59,
+            63
+          ],
+          [
+            30,
+            30
+          ],
+          [
+            24,
+            24
+          ],
+          [
+            17,
+            17
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 21,
+        "usually_untagged_counts": [
+          [
+            2,
+            8
+          ]
+        ],
+        "usually_untagged_values": 1,
+        "values_with_evidence": 10
+      },
+      {
+        "slot_type": "list_name",
+        "spoken_occurrences": 142,
+        "tagged_occurrences": 110,
+        "tagged_when_spoken_counts": [
+          [
+            28,
+            30
+          ],
+          [
+            27,
+            29
+          ],
+          [
+            26,
+            27
+          ]
+        ],
+        "tagged_when_spoken_values": 3,
+        "untagged_occurrences": 32,
+        "usually_untagged_counts": [
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            5
+          ]
+        ],
+        "usually_untagged_values": 2,
+        "values_with_evidence": 8
+      },
+      {
+        "slot_type": "meal_type",
+        "spoken_occurrences": 50,
+        "tagged_occurrences": 48,
+        "tagged_when_spoken_counts": [
+          [
+            27,
+            28
+          ],
+          [
+            21,
+            22
+          ]
+        ],
+        "tagged_when_spoken_values": 2,
+        "untagged_occurrences": 2,
+        "usually_untagged_counts": [],
+        "usually_untagged_values": 0,
+        "values_with_evidence": 2
+      },
+      {
+        "slot_type": "media_type",
+        "spoken_occurrences": 607,
+        "tagged_occurrences": 266,
+        "tagged_when_spoken_counts": [
+          [
+            76,
+            79
+          ],
+          [
+            42,
+            42
+          ],
+          [
+            25,
+            28
+          ],
+          [
+            19,
+            20
+          ],
+          [
+            19,
+            19
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 341,
+        "usually_untagged_counts": [
+          [
+            5,
+            157
+          ],
+          [
+            1,
+            108
+          ],
+          [
+            1,
+            25
+          ],
+          [
+            4,
+            18
+          ],
+          [
+            3,
+            12
+          ]
+        ],
+        "usually_untagged_values": 5,
+        "values_with_evidence": 16
+      },
+      {
+        "slot_type": "news_topic",
+        "spoken_occurrences": 55,
+        "tagged_occurrences": 36,
+        "tagged_when_spoken_counts": [
+          [
+            9,
+            9
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "tagged_when_spoken_values": 3,
+        "untagged_occurrences": 19,
+        "usually_untagged_counts": [
+          [
+            2,
+            10
+          ],
+          [
+            1,
+            7
+          ]
+        ],
+        "usually_untagged_values": 2,
+        "values_with_evidence": 7
+      },
+      {
+        "slot_type": "order_type",
+        "spoken_occurrences": 47,
+        "tagged_occurrences": 39,
+        "tagged_when_spoken_counts": [
+          [
+            14,
+            14
+          ],
+          [
+            13,
+            13
+          ]
+        ],
+        "tagged_when_spoken_values": 2,
+        "untagged_occurrences": 8,
+        "usually_untagged_counts": [],
+        "usually_untagged_values": 0,
+        "values_with_evidence": 5
+      },
+      {
+        "slot_type": "person",
+        "spoken_occurrences": 438,
+        "tagged_occurrences": 276,
+        "tagged_when_spoken_counts": [
+          [
+            60,
+            62
+          ],
+          [
+            21,
+            21
+          ],
+          [
+            17,
+            17
+          ],
+          [
+            12,
+            13
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 162,
+        "usually_untagged_counts": [
+          [
+            1,
+            124
+          ],
+          [
+            3,
+            20
+          ]
+        ],
+        "usually_untagged_values": 2,
+        "values_with_evidence": 31
+      },
+      {
+        "slot_type": "place_name",
+        "spoken_occurrences": 561,
+        "tagged_occurrences": 421,
+        "tagged_when_spoken_counts": [
+          [
+            64,
+            66
+          ],
+          [
+            23,
+            23
+          ],
+          [
+            19,
+            19
+          ],
+          [
+            14,
+            15
+          ],
+          [
+            14,
+            14
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 140,
+        "usually_untagged_counts": [
+          [
+            4,
+            28
+          ],
+          [
+            6,
+            18
+          ],
+          [
+            3,
+            11
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            1,
+            6
+          ]
+        ],
+        "usually_untagged_values": 5,
+        "values_with_evidence": 42
+      },
+      {
+        "slot_type": "song_name",
+        "spoken_occurrences": 12,
+        "tagged_occurrences": 9,
+        "tagged_when_spoken_counts": [],
+        "tagged_when_spoken_values": 0,
+        "untagged_occurrences": 3,
+        "usually_untagged_counts": [],
+        "usually_untagged_values": 0,
+        "values_with_evidence": 2
+      },
+      {
+        "slot_type": "time",
+        "spoken_occurrences": 1188,
+        "tagged_occurrences": 936,
+        "tagged_when_spoken_counts": [
+          [
+            59,
+            65
+          ],
+          [
+            50,
+            54
+          ],
+          [
+            48,
+            53
+          ],
+          [
+            47,
+            50
+          ],
+          [
+            44,
+            44
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 252,
+        "usually_untagged_counts": [
+          [
+            8,
+            105
+          ],
+          [
+            1,
+            37
+          ],
+          [
+            1,
+            8
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            1,
+            6
+          ]
+        ],
+        "usually_untagged_values": 5,
+        "values_with_evidence": 52
+      },
+      {
+        "slot_type": "timeofday",
+        "spoken_occurrences": 209,
+        "tagged_occurrences": 200,
+        "tagged_when_spoken_counts": [
+          [
+            65,
+            69
+          ],
+          [
+            50,
+            51
+          ],
+          [
+            25,
+            25
+          ],
+          [
+            19,
+            21
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "tagged_when_spoken_values": 5,
+        "untagged_occurrences": 9,
+        "usually_untagged_counts": [],
+        "usually_untagged_values": 0,
+        "values_with_evidence": 8
+      },
+      {
+        "slot_type": "transport_agency",
+        "spoken_occurrences": 27,
+        "tagged_occurrences": 27,
+        "tagged_when_spoken_counts": [
+          [
+            27,
+            27
+          ]
+        ],
+        "tagged_when_spoken_values": 1,
+        "untagged_occurrences": 0,
+        "usually_untagged_counts": [],
+        "usually_untagged_values": 0,
+        "values_with_evidence": 1
+      },
+      {
+        "slot_type": "transport_type",
+        "spoken_occurrences": 236,
+        "tagged_occurrences": 213,
+        "tagged_when_spoken_counts": [
+          [
+            166,
+            175
+          ],
+          [
+            35,
+            35
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "tagged_when_spoken_values": 3,
+        "untagged_occurrences": 23,
+        "usually_untagged_counts": [
+          [
+            2,
+            10
+          ],
+          [
+            2,
+            8
+          ]
+        ],
+        "usually_untagged_values": 2,
+        "values_with_evidence": 5
+      }
+    ],
+    "card_byte_deltas": {
+      "business_name": {
+        "added": 232,
+        "components": {
+          "K2": false,
+          "K3": false,
+          "K4": true
+        },
+        "v2": 1925,
+        "w4": 2157
+      },
+      "business_type": {
+        "added": 463,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 2095,
+        "w4": 2558
+      },
+      "date": {
+        "added": 465,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 3828,
+        "w4": 4293
+      },
+      "device_type": {
+        "added": 543,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 2370,
+        "w4": 2913
+      },
+      "event_name": {
+        "added": 529,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 2987,
+        "w4": 3516
+      },
+      "food_type": {
+        "added": 209,
+        "components": {
+          "K2": false,
+          "K3": false,
+          "K4": true
+        },
+        "v2": 1660,
+        "w4": 1869
+      },
+      "house_place": {
+        "added": 726,
+        "components": {
+          "K2": true,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 1750,
+        "w4": 2476
+      },
+      "list_name": {
+        "added": 400,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 1631,
+        "w4": 2031
+      },
+      "meal_type": {
+        "added": 320,
+        "components": {
+          "K2": true,
+          "K3": false,
+          "K4": true
+        },
+        "v2": 1599,
+        "w4": 1919
+      },
+      "media_type": {
+        "added": 520,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 2448,
+        "w4": 2968
+      },
+      "news_topic": {
+        "added": 410,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 1202,
+        "w4": 1612
+      },
+      "order_type": {
+        "added": 223,
+        "components": {
+          "K2": true,
+          "K3": false,
+          "K4": false
+        },
+        "v2": 1438,
+        "w4": 1661
+      },
+      "person": {
+        "added": 350,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 2635,
+        "w4": 2985
+      },
+      "place_name": {
+        "added": 442,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 2535,
+        "w4": 2977
+      },
+      "song_name": {
+        "added": 154,
+        "components": {
+          "K2": false,
+          "K3": false,
+          "K4": true
+        },
+        "v2": 1423,
+        "w4": 1577
+      },
+      "time": {
+        "added": 491,
+        "components": {
+          "K2": false,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 3607,
+        "w4": 4098
+      },
+      "timeofday": {
+        "added": 467,
+        "components": {
+          "K2": true,
+          "K3": false,
+          "K4": true
+        },
+        "v2": 2412,
+        "w4": 2879
+      },
+      "transport_agency": {
+        "added": 337,
+        "components": {
+          "K2": true,
+          "K3": false,
+          "K4": true
+        },
+        "v2": 1067,
+        "w4": 1404
+      },
+      "transport_type": {
+        "added": 605,
+        "components": {
+          "K2": true,
+          "K3": true,
+          "K4": true
+        },
+        "v2": 1578,
+        "w4": 2183
+      }
+    },
+    "classes_all_types": {
+      "closed": 6,
+      "open": 28,
+      "semi-closed": 20
+    },
+    "span_extent": [
+      {
+        "located_mentions": 205,
+        "rules": [
+          {
+            "cases": 20,
+            "count": 20,
+            "edge": "trail",
+            "side": "inside",
+            "word": "service"
+          },
+          {
+            "cases": 136,
+            "count": 135,
+            "edge": "lead",
+            "side": "outside",
+            "word": "<preposition>"
+          },
+          {
+            "cases": 25,
+            "count": 25,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "business_name"
+      },
+      {
+        "located_mentions": 115,
+        "rules": [
+          {
+            "cases": 16,
+            "count": 16,
+            "edge": "lead",
+            "side": "outside",
+            "word": "a"
+          },
+          {
+            "cases": 12,
+            "count": 12,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 41,
+            "count": 41,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "business_type"
+      },
+      {
+        "located_mentions": 1310,
+        "rules": [
+          {
+            "cases": 159,
+            "count": 138,
+            "edge": "lead",
+            "side": "inside",
+            "word": "this"
+          },
+          {
+            "cases": 114,
+            "count": 114,
+            "edge": "trail",
+            "side": "inside",
+            "word": "week"
+          },
+          {
+            "cases": 77,
+            "count": 70,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          }
+        ],
+        "slot_type": "date"
+      },
+      {
+        "located_mentions": 168,
+        "rules": [
+          {
+            "cases": 89,
+            "count": 89,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 38,
+            "count": 36,
+            "edge": "trail",
+            "side": "inside",
+            "word": "socket"
+          },
+          {
+            "cases": 32,
+            "count": 32,
+            "edge": "trail",
+            "side": "inside",
+            "word": "cleaner"
+          }
+        ],
+        "slot_type": "device_type"
+      },
+      {
+        "located_mentions": 820,
+        "rules": [
+          {
+            "cases": 118,
+            "count": 116,
+            "edge": "lead",
+            "side": "outside",
+            "word": "my"
+          },
+          {
+            "cases": 112,
+            "count": 112,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 98,
+            "count": 98,
+            "edge": "lead",
+            "side": "outside",
+            "word": "a"
+          }
+        ],
+        "slot_type": "event_name"
+      },
+      {
+        "located_mentions": 93,
+        "rules": [
+          {
+            "cases": 13,
+            "count": 13,
+            "edge": "lead",
+            "side": "outside",
+            "word": "a"
+          },
+          {
+            "cases": 19,
+            "count": 19,
+            "edge": "lead",
+            "side": "outside",
+            "word": "<preposition>"
+          },
+          {
+            "cases": 15,
+            "count": 15,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "food_type"
+      },
+      {
+        "located_mentions": 151,
+        "rules": [
+          {
+            "cases": 86,
+            "count": 85,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 41,
+            "count": 41,
+            "edge": "trail",
+            "side": "inside",
+            "word": "room"
+          },
+          {
+            "cases": 18,
+            "count": 16,
+            "edge": "lead",
+            "side": "outside",
+            "word": "my"
+          }
+        ],
+        "slot_type": "house_place"
+      },
+      {
+        "located_mentions": 121,
+        "rules": [
+          {
+            "cases": 91,
+            "count": 83,
+            "edge": "trail",
+            "side": "outside",
+            "word": "list"
+          },
+          {
+            "cases": 54,
+            "count": 53,
+            "edge": "lead",
+            "side": "outside",
+            "word": "my"
+          },
+          {
+            "cases": 19,
+            "count": 19,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          }
+        ],
+        "slot_type": "list_name"
+      },
+      {
+        "located_mentions": 51,
+        "rules": [
+          {
+            "cases": 25,
+            "count": 25,
+            "edge": "lead",
+            "side": "outside",
+            "word": "<preposition>"
+          },
+          {
+            "cases": 19,
+            "count": 19,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "meal_type"
+      },
+      {
+        "located_mentions": 307,
+        "rules": [
+          {
+            "cases": 28,
+            "count": 28,
+            "edge": "lead",
+            "side": "outside",
+            "word": "my"
+          },
+          {
+            "cases": 21,
+            "count": 20,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 15,
+            "count": 15,
+            "edge": "lead",
+            "side": "outside",
+            "word": "a"
+          }
+        ],
+        "slot_type": "media_type"
+      },
+      {
+        "located_mentions": 113,
+        "rules": [
+          {
+            "cases": 30,
+            "count": 25,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 22,
+            "count": 21,
+            "edge": "trail",
+            "side": "outside",
+            "word": "news"
+          },
+          {
+            "cases": 47,
+            "count": 47,
+            "edge": "lead",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "news_topic"
+      },
+      {
+        "located_mentions": 43,
+        "rules": [],
+        "slot_type": "order_type"
+      },
+      {
+        "located_mentions": 621,
+        "rules": [
+          {
+            "cases": 340,
+            "count": 340,
+            "edge": "lead",
+            "side": "outside",
+            "word": "<preposition>"
+          },
+          {
+            "cases": 121,
+            "count": 121,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "person"
+      },
+      {
+        "located_mentions": 735,
+        "rules": [
+          {
+            "cases": 84,
+            "count": 73,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 8,
+            "count": 8,
+            "edge": "trail",
+            "side": "inside",
+            "word": "station"
+          },
+          {
+            "cases": 538,
+            "count": 538,
+            "edge": "lead",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "place_name"
+      },
+      {
+        "located_mentions": 103,
+        "rules": [
+          {
+            "cases": 11,
+            "count": 11,
+            "edge": "lead",
+            "side": "outside",
+            "word": "song"
+          },
+          {
+            "cases": 47,
+            "count": 47,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "song_name"
+      },
+      {
+        "located_mentions": 559,
+        "rules": [
+          {
+            "cases": 205,
+            "count": 205,
+            "edge": "trail",
+            "side": "inside",
+            "word": "pm"
+          },
+          {
+            "cases": 147,
+            "count": 147,
+            "edge": "trail",
+            "side": "inside",
+            "word": "am"
+          },
+          {
+            "cases": 44,
+            "count": 38,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          }
+        ],
+        "slot_type": "time"
+      },
+      {
+        "located_mentions": 184,
+        "rules": [
+          {
+            "cases": 25,
+            "count": 25,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 10,
+            "count": 10,
+            "edge": "trail",
+            "side": "inside",
+            "word": "afternoon"
+          },
+          {
+            "cases": 39,
+            "count": 39,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "timeofday"
+      },
+      {
+        "located_mentions": 30,
+        "rules": [
+          {
+            "cases": 16,
+            "count": 16,
+            "edge": "lead",
+            "side": "outside",
+            "word": "an"
+          },
+          {
+            "cases": 10,
+            "count": 10,
+            "edge": "trail",
+            "side": "outside",
+            "word": "<preposition>"
+          }
+        ],
+        "slot_type": "transport_agency"
+      },
+      {
+        "located_mentions": 216,
+        "rules": [
+          {
+            "cases": 107,
+            "count": 107,
+            "edge": "lead",
+            "side": "outside",
+            "word": "a"
+          },
+          {
+            "cases": 31,
+            "count": 31,
+            "edge": "lead",
+            "side": "outside",
+            "word": "the"
+          },
+          {
+            "cases": 13,
+            "count": 13,
+            "edge": "lead",
+            "side": "outside",
+            "word": "next"
+          }
+        ],
+        "slot_type": "transport_type"
+      }
+    ],
+    "thresholds": {
+      "list_cap": 20,
+      "loo_closed": 0.9,
+      "scope_list_cap": 5,
+      "scope_min_occurrences": 5,
+      "semi_closed_coverage": 0.9,
+      "span_min_cases": 8,
+      "span_share": 0.8,
+      "tag_rate_high": 0.85,
+      "tag_rate_low": 0.35
+    },
+    "vocabulary": [
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 134,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.563319,
+        "n90": 112,
+        "pool_mentions": 229,
+        "slot_type": "business_name"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 44,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.730435,
+        "n90": 33,
+        "pool_mentions": 115,
+        "slot_type": "business_type"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 233,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.88785,
+        "n90": 94,
+        "pool_mentions": 1391,
+        "slot_type": "date"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 58,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.791667,
+        "n90": 42,
+        "pool_mentions": 168,
+        "slot_type": "device_type"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 295,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.725674,
+        "n90": 210,
+        "pool_mentions": 853,
+        "slot_type": "event_name"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 56,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.56701,
+        "n90": 47,
+        "pool_mentions": 97,
+        "slot_type": "food_type"
+      },
+      {
+        "class": "semi-closed",
+        "closed_value_list": null,
+        "distinct_values": 32,
+        "listed_coverage": 0.900662,
+        "listed_values": 17,
+        "loo_value_coverage": 0.887417,
+        "n90": 17,
+        "pool_mentions": 151,
+        "slot_type": "house_place"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 48,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.655738,
+        "n90": 36,
+        "pool_mentions": 122,
+        "slot_type": "list_name"
+      },
+      {
+        "class": "closed",
+        "closed_value_list": [
+          "dinner",
+          "lunch",
+          "breakfast"
+        ],
+        "distinct_values": 3,
+        "listed_coverage": 1.0,
+        "listed_values": 3,
+        "loo_value_coverage": 1.0,
+        "n90": 2,
+        "pool_mentions": 51,
+        "slot_type": "meal_type"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 71,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.84984,
+        "n90": 40,
+        "pool_mentions": 313,
+        "slot_type": "media_type"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 78,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.495798,
+        "n90": 67,
+        "pool_mentions": 119,
+        "slot_type": "news_topic"
+      },
+      {
+        "class": "closed",
+        "closed_value_list": [
+          "delivery",
+          "takeaway",
+          "deliver",
+          "take out",
+          "takeout",
+          "carryout",
+          "delivers",
+          "takeaways",
+          "to go"
+        ],
+        "distinct_values": 9,
+        "listed_coverage": 1.0,
+        "listed_values": 9,
+        "loo_value_coverage": 0.906977,
+        "n90": 5,
+        "pool_mentions": 43,
+        "slot_type": "order_type"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 406,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.577525,
+        "n90": 336,
+        "pool_mentions": 703,
+        "slot_type": "person"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 367,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.645248,
+        "n90": 293,
+        "pool_mentions": 747,
+        "slot_type": "place_name"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 88,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.28972,
+        "n90": 78,
+        "pool_mentions": 107,
+        "slot_type": "song_name"
+      },
+      {
+        "class": "open",
+        "closed_value_list": null,
+        "distinct_values": 181,
+        "listed_coverage": 0.0,
+        "listed_values": 0,
+        "loo_value_coverage": 0.792185,
+        "n90": 125,
+        "pool_mentions": 563,
+        "slot_type": "time"
+      },
+      {
+        "class": "closed",
+        "closed_value_list": [
+          "morning",
+          "tonight",
+          "noon",
+          "afternoon",
+          "evening",
+          "this afternoon",
+          "night",
+          "this evening",
+          "next morning",
+          "this am",
+          "tonight 's"
+        ],
+        "distinct_values": 11,
+        "listed_coverage": 1.0,
+        "listed_values": 11,
+        "loo_value_coverage": 0.983784,
+        "n90": 6,
+        "pool_mentions": 185,
+        "slot_type": "timeofday"
+      },
+      {
+        "class": "closed",
+        "closed_value_list": [
+          "uber",
+          "ola",
+          "golden taxi"
+        ],
+        "distinct_values": 3,
+        "listed_coverage": 1.0,
+        "listed_values": 3,
+        "loo_value_coverage": 0.966667,
+        "n90": 1,
+        "pool_mentions": 30,
+        "slot_type": "transport_agency"
+      },
+      {
+        "class": "closed",
+        "closed_value_list": [
+          "train",
+          "taxi",
+          "cab",
+          "ride",
+          "trains",
+          "car",
+          "driving",
+          "metro"
+        ],
+        "distinct_values": 8,
+        "listed_coverage": 1.0,
+        "listed_values": 8,
+        "loo_value_coverage": 0.986301,
+        "n90": 2,
+        "pool_mentions": 219,
+        "slot_type": "transport_type"
+      }
+    ]
+  },
+  "decision_rule": "NO-HARM ADMITTED: against the knowledge wave's SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the official pooled SLU-F1 delta (PRIMARY -- the mechanism acts on slots, so owner decision 133's intent-primary rule, scoped to intent-acting mechanisms, does not apply and decision 115's shape holds) is not below -1.2485 pp AND the paired CI95 lower bound of the intent-accuracy delta (the guard) is not below -0.9943 pp -- each at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A SLU-F1 CI95 lower bound above zero is REPORTED as a development-fold effect beside the no-harm verdict, never as an admission of benefit (the design's benefit floor is 2.5 pp and the measured analogue sits below it). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the per-type FN/FP table on the 19 revised types, the realised prompt-token delta per Solver/Reviewer/Planner contact and per row, and the K2/K3/K4 item classes of registered-facts-v1.json read on the sealed arm.",
+  "expectation_basis": {
+    "benefit_floor_pp": 2.5,
+    "declared": "no-harm (the analogue is below the floor)",
+    "m4b_analogue": {
+      "m4b_fn_items_on_its_eight_types": 349,
+      "m4b_pp_per_fn_item": {
+        "first": 0.007312,
+        "mean": 0.005863,
+        "replicate": 0.004413
+      },
+      "w4_expected_pp": {
+        "first": 2.2009,
+        "mean": 1.7647,
+        "replicate": 1.3285
+      },
+      "w4_fn_items_on_revised_types_with_card_delivered": 301
+    },
+    "m4b_verdicts": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md; docs/results/2026-09-19-slurp-b4b-replicate-verdict.md"
+  },
+  "fit": {
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w4-checks/check-slurp-native-stage3-w4-fold-a-v1.json",
+        "config_hash": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -418,
+            "phase": "perception",
+            "physical_margin_tokens": 2654,
+            "rendered_text_tokens": 21379,
+            "required_window_tokens": 21922,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -281,
+            "phase": "reviewer",
+            "physical_margin_tokens": 2791,
+            "rendered_text_tokens": 21242,
+            "required_window_tokens": 21785,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -221,
+            "phase": "planner",
+            "physical_margin_tokens": 2851,
+            "rendered_text_tokens": 21182,
+            "required_window_tokens": 21725,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -2246,
+            "phase": "solver",
+            "physical_margin_tokens": 826,
+            "rendered_text_tokens": 23207,
+            "required_window_tokens": 23750,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89",
+        "scientific_readiness": {
+          "reason": "Cell W4 registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decision 58) with one pin moved (owner decision 164). Comparator: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, never re-flown, read at the knowledge wave's shared in-chain A/A replicate SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (registered by the coordinator) flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4/w4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the slot store is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      },
+      "smoke": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w4-checks/check-slurp-native-stage3-w4-fold-a-smoke-4-v1.json",
+        "config_hash": "3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -417,
+            "phase": "perception",
+            "physical_margin_tokens": 2655,
+            "rendered_text_tokens": 21378,
+            "required_window_tokens": 21921,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -281,
+            "phase": "reviewer",
+            "physical_margin_tokens": 2791,
+            "rendered_text_tokens": 21242,
+            "required_window_tokens": 21785,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -220,
+            "phase": "planner",
+            "physical_margin_tokens": 2852,
+            "rendered_text_tokens": 21181,
+            "required_window_tokens": 21724,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -2246,
+            "phase": "solver",
+            "physical_margin_tokens": 826,
+            "rendered_text_tokens": 23207,
+            "required_window_tokens": 23750,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c",
+        "scientific_readiness": {
+          "reason": "Four-row form smoke of cell W4, registered before contact on 2026-09-27 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4/w4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the slot store is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
+  },
+  "fit_statement": "W1 has NOT landed (branch fable/w1 carries no commit beyond master at registration), so W4 is registered to fly ALONE on the AGREE form; it composes with W1 later without change (W4 only extends cards a row already receives). The audit's '226 tokens of headroom' is the PREFLIGHT operational margin measured by core.flight.cli check with its placeholder 4-bytes-per-token counter on the widest representative request; under the armed context_fit_policy compact-or-abstain a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin is recorded and proceeds (the AGREE and COMP-1 cells already read COMPACT_REQUIRED on the Solver), and only a negative physical margin refuses. The binding facts are therefore (a) the check's physical margin after W4 (folded in 'fit'), and (b) the realised requests, projected from the sealed AGREE trace, which stay far below the live budget (token_cost.compaction_projection).",
+  "fold_a_offline": {
+    "arm_read": {
+      "exact_tp_fp_fn": [
+        534,
+        487,
+        407
+      ],
+      "official": {
+        "intent_accuracy": 0.8583333333333333,
+        "slu_f1": 0.6515750027522969,
+        "span_f1": 0.5443425076452599
+      },
+      "pooled_span_f1": 54.4343,
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "boundary": "only error items on a type whose W4 card the row was actually delivered (the AGREE consumption records) are counted; gold read offline; counts only; development numbers (owner decisions 28 and 86)",
+    "estimate": {
+      "relpath": "analysis/SAEA-SLURP-W4-FOLD-A-OFFLINE-ESTIMATE-V1/estimate-v1.json",
+      "script": {
+        "relpath": "scripts/analysis/slurp_w4_fold_a_offline_estimate.py",
+        "sha256": "7eeaa13e6f6787cbcd053fab484f9be122430d8fa3bac9b8fbd84d7b49313408"
+      },
+      "sha256": "facd134e195e683945e8a95f0109a30a5d8cd929256aed948a89d26684409a90"
+    },
+    "items": {
+      "K2_omission_gold_value_in_w4_list_or_tagged_when_spoken": 74,
+      "K2_wrong_filler_gold_listed_prediction_not": 10,
+      "K3_over_emission_value_usually_untagged": 6,
+      "K4_containment_wrong_fillers": 68,
+      "K4_span_rule_would_fix": 5,
+      "risk_exact_tp_value_usually_untagged": 2,
+      "risk_listed_value_spoken_but_untagged_in_gold": 42
+    },
+    "per_type": {
+      "business_name": {
+        "fn_omitted_on_delivered": 9,
+        "over_emission_on_delivered": 16,
+        "wrong_filler_on_delivered": 23
+      },
+      "business_type": {
+        "K2_omission": 2,
+        "fn_omitted_on_delivered": 8,
+        "over_emission_on_delivered": 7,
+        "wrong_filler_on_delivered": 5
+      },
+      "date": {
+        "K2_omission": 29,
+        "K3_flag": 1,
+        "fn_omitted_on_delivered": 42,
+        "over_emission_on_delivered": 8,
+        "wrong_filler_on_delivered": 19
+      },
+      "device_type": {
+        "K3_flag": 1,
+        "fn_omitted_on_delivered": 3,
+        "over_emission_on_delivered": 16,
+        "wrong_filler_on_delivered": 1
+      },
+      "event_name": {
+        "K2_omission": 6,
+        "K3_flag": 1,
+        "fn_omitted_on_delivered": 10,
+        "over_emission_on_delivered": 18,
+        "wrong_filler_on_delivered": 9
+      },
+      "food_type": {
+        "fn_omitted_on_delivered": 5,
+        "over_emission_on_delivered": 20,
+        "wrong_filler_on_delivered": 14
+      },
+      "house_place": {
+        "K2_omission": 2,
+        "K4_fix": 2,
+        "fn_omitted_on_delivered": 2,
+        "over_emission_on_delivered": 6,
+        "wrong_filler_on_delivered": 4
+      },
+      "list_name": {
+        "K4_fix": 1,
+        "fn_omitted_on_delivered": 2,
+        "over_emission_on_delivered": 14,
+        "wrong_filler_on_delivered": 2
+      },
+      "meal_type": {
+        "K2_omission": 1,
+        "fn_omitted_on_delivered": 2,
+        "over_emission_on_delivered": 2,
+        "wrong_filler_on_delivered": 1
+      },
+      "media_type": {
+        "K2_omission": 4,
+        "K3_flag": 3,
+        "fn_omitted_on_delivered": 9,
+        "over_emission_on_delivered": 8,
+        "wrong_filler_on_delivered": 7
+      },
+      "news_topic": {
+        "fn_omitted_on_delivered": 3,
+        "over_emission_on_delivered": 9,
+        "wrong_filler_on_delivered": 4
+      },
+      "order_type": {
+        "K2_omission": 12,
+        "fn_omitted_on_delivered": 14,
+        "over_emission_on_delivered": 4,
+        "wrong_filler_on_delivered": 2
+      },
+      "person": {
+        "fn_omitted_on_delivered": 6,
+        "over_emission_on_delivered": 14,
+        "wrong_filler_on_delivered": 14
+      },
+      "place_name": {
+        "fn_omitted_on_delivered": 14,
+        "over_emission_on_delivered": 17,
+        "wrong_filler_on_delivered": 18
+      },
+      "song_name": {
+        "fn_omitted_on_delivered": 2,
+        "over_emission_on_delivered": 12,
+        "wrong_filler_on_delivered": 1
+      },
+      "time": {
+        "K4_fix": 2,
+        "fn_omitted_on_delivered": 8,
+        "over_emission_on_delivered": 11,
+        "wrong_filler_on_delivered": 19
+      },
+      "timeofday": {
+        "K2_omission": 3,
+        "fn_omitted_on_delivered": 3,
+        "over_emission_on_delivered": 4,
+        "wrong_filler_on_delivered": 1
+      },
+      "transport_type": {
+        "K2_omission": 15,
+        "fn_omitted_on_delivered": 15,
+        "over_emission_on_delivered": 2
+      }
+    },
+    "rows_touched": {
+      "K2": 80,
+      "K3": 6,
+      "K4": 5,
+      "risk_list": 41
+    },
+    "span_f1_oracle_ceilings_pp": {
+      "K2": 6.273,
+      "K3": 0.167,
+      "K4": 0.5097,
+      "all": 6.9451
+    }
+  },
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w4-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w4-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w4-fold-a-v1",
+      "composed_config_hash": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w4-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w4-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1",
+      "slot_store": {
+        "candidate_supply": {
+          "solver": {
+            "candidate_state_phase": "perception",
+            "compact_source_phase": "perception",
+            "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+            "max_candidates": 3,
+            "max_total_values": 28,
+            "max_values_per_candidate": 16,
+            "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+            "provider": "slurp-candidate-semantic-v1",
+            "rank_policy": "saea-ranked-candidate-round-robin-v1"
+          }
+        },
+        "release": {
+          "relpath": "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json",
+          "sha256": "c7bdeee6e0859fbba6bce79cd3d42347a5b74770f7564094e3d3a0edfe003fb0"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/semantic/slot-contracts-w4-v1/snapshot.json",
+          "sha256": "51d634cfcb398038377feca89d2783f59a705546390839e7cf4dd7d15ad3b9d6"
+        },
+        "store_role": "slot-contracts"
+      },
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w4-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w4-fold-a-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w4-fold-a-smoke-4-v1",
+      "composed_config_hash": "3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w4-fold-a-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 176,
+        "generation_calls_cap": 44,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 24,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 117
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w4-fold-a-smoke-4-fit-v1",
+        "contact_cap": 176,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "protocol_hash": "3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-V1",
+      "slot_store": {
+        "candidate_supply": {
+          "solver": {
+            "candidate_state_phase": "perception",
+            "compact_source_phase": "perception",
+            "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+            "max_candidates": 3,
+            "max_total_values": 28,
+            "max_values_per_candidate": 16,
+            "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+            "provider": "slurp-candidate-semantic-v1",
+            "rank_policy": "saea-ranked-candidate-round-robin-v1"
+          }
+        },
+        "release": {
+          "relpath": "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json",
+          "sha256": "c7bdeee6e0859fbba6bce79cd3d42347a5b74770f7564094e3d3a0edfe003fb0"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/semantic/slot-contracts-w4-v1/snapshot.json",
+          "sha256": "51d634cfcb398038377feca89d2783f59a705546390839e7cf4dd7d15ad3b9d6"
+        },
+        "store_role": "slot-contracts"
+      },
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "owner_decisions": {
+    "127": "the no-harm admission form and its margins at the design's measured floor",
+    "133": "intent is primary only for intent-acting mechanisms; a slot-acting mechanism keeps decision 115's shape (SLU primary, intent guard)",
+    "139": "no prior: the expectation is declared from a measured analogue only (M4b)",
+    "164": "knowledge-wave item W4 (slot conventions) prepared and registered now, to be flown in the knowledge wave after 09:00 (owner, 2026-09-27: agreed; start the analysis and preparation immediately)",
+    "28/86": "TRAIN Fold A numbers are development numbers, never a test claim"
+  },
+  "prohibitions": [
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE comparator.",
+    "No second factor: no other template, knob, store, roster, geometry or session change.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt, the coordinator registers the shared A/A and the cells are flipped.",
+    "A SLU gain is never reported as an admitted benefit under this no-harm declaration."
+  ],
+  "registered_at_utc": "2026-09-27T17:00:00.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: the slot-contracts-w4-v1 release loads by its pins, every extended card renders, every request fits and the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-W4-FOLD-A-V1": {
+      "admission": "no-harm",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "harm_margin_pp": 1.2485,
+      "harm_margin_pp_by_metric": {
+        "intent_accuracy": 0.9943,
+        "slu_f1": 1.2485
+      },
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "W4 acts on SLOTS, so SLU-F1 is primary and intent the guard (owner decision 133 scopes intent-primary to intent-acting mechanisms). The expectation is declared from the measured analogue only (row 139): M4b (cell B4b, the date/time slot-contract revision) moved official pooled SLU-F1 by +2.5519 (first) and +1.5403 (request-identical replicate) over 349 FN items on its eight revised types -- 0.004413 to 0.007312 pp per item; W4 targets 301 FN items on its 19 revised types where the card was delivered on the AGREE arm, so the analogue expects 1.3285 to 2.2009 pp (mean 1.7647). That is BELOW the design's 2.5 pp benefit floor at n = 1,080, so a benefit declaration would be refused (effect-below-floor) and the cell is declared NO-HARM: expected_effect_pp 0.0, claims_benefit false, harm_margin_pp 1.2485 (SLU, primary) with intent 0.9943 as the guard; the analogue is recorded in registered-facts-v1.json (expectation_basis) and never used as an admission bar. Read against the shared in-chain A/A flown in the same chain (rule 3).",
+      "primary_metric": "official pooled SLU-F1 (primary: a slot-acting mechanism, owner decision 133's scope), intent accuracy the non-inferiority guard",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "rows": 1080
+    }
+  },
+  "store": {
+    "all_key_text_unchanged": true,
+    "authored_source": {
+      "relpath": "prepared/SAEA-SLURP-SLOT-CONVENTIONS-W4-PREPARE-V1/authored-slot-contracts-w4-v1.json",
+      "root": "data",
+      "sha256": "7f50a8a8d45def936d916cf3b13ef53c2ff2aee787f6cee8027e37c4d54f8fc4"
+    },
+    "build_outputs": {
+      "CHANGES.json": "11f8367905aeaf517f538775d8c174a074ef9e9d4d22f84a56cee23daaef9209",
+      "authored-slot-contracts-w4-v1.json": "7f50a8a8d45def936d916cf3b13ef53c2ff2aee787f6cee8027e37c4d54f8fc4",
+      "conventions-v1.json": "7942d5945b418d6a79d1ee65ee616be8d372d79c5f9a40bce1e6ae397c85ba21",
+      "slot-support-w4-construction-roster.json": "f846d100af22bf8ed57d23b28df960571ac40b2e89b1429dad05acfa30ca3ea0"
+    },
+    "build_receipt_sha256": "acaad41b652efd87a1e21880373fbbe4a568b186a394e541128cd480458b5da1",
+    "changed_cards": [
+      "business_name",
+      "business_type",
+      "date",
+      "device_type",
+      "event_name",
+      "food_type",
+      "house_place",
+      "list_name",
+      "meal_type",
+      "media_type",
+      "news_topic",
+      "order_type",
+      "person",
+      "place_name",
+      "song_name",
+      "time",
+      "timeofday",
+      "transport_agency",
+      "transport_type"
+    ],
+    "completion": {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-w4-v1/completion.json",
+      "sha256": "1e71784e1af305dee8ead126449d44081fc3740e32d912a131625ece3897d834"
+    },
+    "contacts": {
+      "model": 0,
+      "scorer": 0,
+      "tool": 0
+    },
+    "exact_support_roster": {
+      "roster_id": "slurp-slot-conventions-w4-support-v1",
+      "roster_role": "construction",
+      "sample_count": 22416,
+      "split_identity_hash": "73e08e612ac7123004fbe7ee54afc15dbc84248dd1b122e0c25fe3bb048cc116",
+      "split_role": "discovery"
+    },
+    "forbidden_rosters": [
+      {
+        "roster_id": "SLURP-EVO-FOLD-A-V2",
+        "roster_role": "construction",
+        "sample_count": 1080,
+        "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+        "split_role": "discovery"
+      },
+      {
+        "roster_id": "SLURP-EVO-FOLD-B-V2",
+        "roster_role": "construction",
+        "sample_count": 1080,
+        "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+        "split_role": "discovery"
+      },
+      {
+        "roster_id": "dev-ladder-dev1000",
+        "roster_role": null,
+        "sample_count": 1000,
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "split_role": "dev"
+      }
+    ],
+    "permitted_roster": {
+      "relpath": "prepared/SAEA-SLURP-SLOT-CONVENTIONS-W4-PREPARE-V1/slot-support-w4-construction-roster.json",
+      "root": "data",
+      "sha256": "f846d100af22bf8ed57d23b28df960571ac40b2e89b1429dad05acfa30ca3ea0"
+    },
+    "registration": {
+      "relpath": "docs/readiness/2026-09-27-slurp-slot-contracts-w4-preparation-registration-v1.json",
+      "sha256": "ca2bd6cb48849c26ee692c25bf4682683ae63179c8df597cb7931869a1aeaa67"
+    },
+    "release": {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json",
+      "sha256": "c7bdeee6e0859fbba6bce79cd3d42347a5b74770f7564094e3d3a0edfe003fb0"
+    },
+    "replaces": {
+      "release": "knowledge/slurp/semantic/slot-contracts-v2/release.json (f8e42d4f...)",
+      "snapshot": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json (content d5992bd1...)"
+    },
+    "snapshot": {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-w4-v1/snapshot.json",
+      "sha256": "51d634cfcb398038377feca89d2783f59a705546390839e7cf4dd7d15ad3b9d6"
+    },
+    "source": "the R01-excluded TRAIN exemplar pool size-pool-annotated-exemplars-minus-r01 (8,554 utterances, content hash 6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63); no Fold A, Fold B, DEV or test byte, no flight output and no score read to author a value",
+    "total_added_bytes": 7886
+  },
+  "study_commit_at_registration": "eb450736",
+  "the_item": {
+    "cards_chosen_by": "the audit's per-type loss table plus its closed types (as the A3 audit chose M4b's cards); every value and count derived from the pool only",
+    "evidence": [
+      "docs/results/2026-09-27-slurp-knowledge-content-audit.md (branch fable/kaudit, commit 0d5e2693): K2 (157 gold items whose value TRAIN lists missed or wrong, SLU ceiling +9.29), K3 (278 over-emissions, 193 of 202 on intent-right rows type-legal, +9.30), K4 (91 of 183 wrong same-type fillers a sub/super-span, +5.33)",
+      "docs/results/2026-09-27-slurp-agree-arm-error-sources.md (branch fable/errsrc, commit 96666424): 27.13 of the 34.84 SLU-F1 points lost sit on intent-RIGHT rows; the slot card was delivered on 644 of 660 error items; relative-day dates the largest single item",
+      "docs/results/2026-09-27-slurp-mechanism-synthesis.md (branch fable/synthesis, commit 8366307c): gains come from row-matched content reaching the deciding node; M4b is the successful slot-contract precedent"
+    ],
+    "the_change": "the released slot-contracts-v2 cards with 19 cards' extraction_cues and admissible_formats extended by K2/K3/K4 conventions mined from the R01-excluded TRAIN exemplar pool; intent bindings, facet keys and every other card byte-identical"
+  },
+  "token_cost": {
+    "added_share_of_prompt_volume": 0.0636,
+    "chars_per_token_measured_on_the_agree_solver": 5.0067,
+    "compaction_projection": "the projected widest realised request per phase (the sealed AGREE per-contact prompt tokens plus that contact's W4 byte delta at the measured ratio) stays below the live operational budget (24,576 slot - 3,072 reserve - 512 completion = 20,992): no realised request is projected to compact",
+    "flight_total_added_tokens": 2395443.0,
+    "flight_total_prompt_tokens_realised_agree": 37676859,
+    "per_phase": {
+      "perception": {
+        "added_bytes_max": 0,
+        "added_bytes_mean": 0.0,
+        "added_tokens_max": 0.0,
+        "added_tokens_mean": 0.0,
+        "contacts": 1080,
+        "projected_prompt_tokens_max": 3769,
+        "realised_prompt_tokens_max": 3769,
+        "realised_prompt_tokens_mean": 3598.4
+      },
+      "planner": {
+        "added_bytes_max": 6380,
+        "added_bytes_mean": 3631.33,
+        "added_tokens_max": 1274.3,
+        "added_tokens_mean": 725.3,
+        "contacts": 1099,
+        "projected_prompt_tokens_max": 15607,
+        "realised_prompt_tokens_max": 14561,
+        "realised_prompt_tokens_mean": 10304.6
+      },
+      "reviewer": {
+        "added_bytes_max": 6380,
+        "added_bytes_mean": 3627.62,
+        "added_tokens_max": 1274.3,
+        "added_tokens_mean": 724.5,
+        "contacts": 1103,
+        "projected_prompt_tokens_max": 15459,
+        "realised_prompt_tokens_max": 14413,
+        "realised_prompt_tokens_mean": 10171.5
+      },
+      "solver": {
+        "added_bytes_max": 6380,
+        "added_bytes_mean": 3627.62,
+        "added_tokens_max": 1274.3,
+        "added_tokens_mean": 724.5,
+        "contacts": 1103,
+        "projected_prompt_tokens_max": 15472,
+        "realised_prompt_tokens_max": 14426,
+        "realised_prompt_tokens_mean": 10196.4
+      }
+    },
+    "per_row": {
+      "added_bytes_max": 32646,
+      "added_bytes_mean": 11105.0,
+      "added_tokens_max": 6520.4,
+      "added_tokens_mean": 2218.0,
+      "rows_touched": 1080
+    }
+  }
+}

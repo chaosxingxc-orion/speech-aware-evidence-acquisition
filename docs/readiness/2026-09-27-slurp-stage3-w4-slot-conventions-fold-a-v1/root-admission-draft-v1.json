@@ -1,0 +1,120 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/w4/w4_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "f1db13cc93cedefd45aadeccf679c834df2712d8b9ae2374618031ada556fb37"
+    },
+    "base_cell": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (owner decision 161): W4 is that fragment with one pin moved",
+    "build_script": {
+      "path": "scripts/build_slurp_slot_conventions_w4.py",
+      "sha256": "4c8c6ed0e77f7efe34e66423393ca53ef4677b3302a8e49094ebed5071d6a5c4"
+    },
+    "config_proof": {
+      "path": "tests/unit/test_w4_config.py",
+      "sha256": "16554b9bd1ff5cd6df29db3da00efd147a548664ead7eaf3530b95d34708b6ff"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "79885109a5219a8818f07489c136f71a2177ac58523b6b33ecebbea552d821b0"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "717af5d7cc8633a5e89f285a9b2ce013cb6a4208cfaa96fab01dcacf9c0ddd49"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/registered-facts-v1.json",
+      "sha256": "378d0d45756bff5ef4cb2851921270419114e416b399a25a0e2cd4a13d944d3a"
+    },
+    "registration_base_commit": "eb450736",
+    "store_registration": {
+      "path": "docs/readiness/2026-09-27-slurp-slot-contracts-w4-preparation-registration-v1.json",
+      "sha256": "ca2bd6cb48849c26ee692c25bf4682683ae63179c8df597cb7931869a1aeaa67"
+    }
+  },
+  "authorization_basis": "Owner decision 164 (knowledge wave W4); 133 (scope of intent-primary), 139 (expectation from a measured analogue), 127 (no-harm form), 28/86; the audit docs/results/2026-09-27-slurp-knowledge-content-audit.md (branch fable/kaudit, commit 0d5e2693); the instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 33930,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "cell_kind": "Stage-3 knowledge-wave item (label none), no-harm declaration. One arm on TRAIN Fold A 1,080 read at the knowledge wave's shared in-chain A/A, and a four-row form smoke.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a no-harm reading of one knowledge-content change on a development fold.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell W4: the retained AGREE arm with the slot-contracts store re-pinned to slot-contracts-w4-v1 (TRAIN-mined slot conventions appended to 19 existing cards), read at the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain; SLU-F1 primary, intent guard; no-harm at the Fold A half-widths.",
+  "decision_id": "slurp-stage3-w4-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-W4-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-W4-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped, the receipt is minted and the shared A/A is registered",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered pin"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
+      "protocol": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89"
+    },
+    "smoke": {
+      "composed_config": "3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992",
+      "protocol": "3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
