@@ -31,11 +31,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
-      "composed_config_hash": "87d3277ded278e7dd0584cc86e5646b9a9790cdd3a2d9c1f96f3b80f5df59176",
+      "composed_config_hash": "3198b28fd3e7c35087f8ffc1eedc8116b0b4200902cbadfefa489a2a811ab399",
       "experiment": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-FIT-V1",
-      "protocol_hash": "6ce5704b47dcbe53c21a0800367b3a8cb62a76beb97b47b45610c2fcf3e02dfa",
+      "protocol_hash": "a8611b9406a9234b591c8f922946c7a3108d948235b10693f6059716722e5428",
       "reviewer_instruction_template": "probes/slurp_native_role_reviewer_v1_g5_v1.txt",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1",
