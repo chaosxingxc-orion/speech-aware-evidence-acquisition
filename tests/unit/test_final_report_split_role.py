@@ -650,3 +650,412 @@ def test_a_preparation_run_id_keeps_one_recovery(tmp_path):
             None,
         )
     assert "allows at most 2 attempt(s)" in str(error.value)
+
+
+# --------------------------------------------------------------------------- #
+# 3. declared partitions of a final-report roster (owner decision 147)
+# --------------------------------------------------------------------------- #
+#
+# Decision 141 permitted a coverage-guaranteed test SAMPLE with its COMPLEMENT
+# sealed at the same moment; decision 146 adopted SLURP-TEST-SAMPLE-3010-V1 and
+# SLURP-TEST-CLOSURE-10068-V1, both ``derived_from`` the frozen parent
+# SLURP-TEST-FULL-13078-V1. A partition member shares every one of its ids with
+# its parent by construction, so the gate as built refused all three. Decision
+# 147: adjust WITH PROOF, never by relaxing -- the parent and the sibling(s) are
+# skipped only after the gate re-proves the partition from committed item
+# lists; every other intersection is unchanged.
+
+CLOSURE_IDS = (
+    "slurp:test:000002:audio--1000000002",
+    "slurp:test:000002:audio--1000000002-headset",
+    "slurp:test:000003:audio--1000000003",
+)
+PARENT_IDS = SAMPLE_IDS + CLOSURE_IDS
+PARENT_IDENTITY = identity_hash(PARENT_IDS)
+CLOSURE_IDENTITY = identity_hash(CLOSURE_IDS)
+PARENT_NAME = "slurp-test-full.json"
+SAMPLE_NAME = "slurp-test-sample.json"
+CLOSURE_NAME = "slurp-test-closure.json"
+PARENT_ROSTER_ID = "SLURP-TEST-FULL-13078-V1"
+SAMPLE_ROSTER_ID = "SLURP-TEST-SAMPLE-3010-V1"
+CLOSURE_ROSTER_ID = "SLURP-TEST-CLOSURE-10068-V1"
+
+
+def write_roster(root: Path, name: str, document: dict) -> str:
+    path = Path(root) / "docs/receipts/rosters" / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    raw = json.dumps(document, indent=2, sort_keys=True).encode("utf-8")
+    path.write_bytes(raw)
+    return hashlib.sha256(raw).hexdigest()
+
+
+def declaration(document: dict, name: str, sha256: str | None = None) -> dict:
+    value = {
+        "roster_id": document["roster_id"],
+        "repo_relpath": f"docs/receipts/rosters/{name}",
+        "split_identity_hash": document["split_identity_hash"],
+        "recordings": len(document["items"]),
+    }
+    if sha256 is not None:
+        value["sha256"] = sha256
+    return value
+
+
+def build_partition_gate(
+    tmp_path: Path,
+    *,
+    fly: str,
+    sample_ids=SAMPLE_IDS,
+    closure_ids=CLOSURE_IDS,
+    parent_ids=PARENT_IDS,
+    parent_split_role: str = FINAL_REPORT_SPLIT_ROLE,
+    closure_split_role: str = FINAL_REPORT_SPLIT_ROLE,
+    write_closure: bool = True,
+    mutate=None,
+) -> tuple[FrozenCoreGate, dict]:
+    """Three committed receipts -- parent, sample, closure -- declared as a
+    partition exactly as ``scripts/build_slurp_test_sample_roster.py`` writes
+    them, plus an allowance binding the roster named by ``fly``. ``mutate``
+    receives ``{"sample": doc, "closure": doc}`` after the declarations are
+    built and before the children are written."""
+
+    parent = roster_receipt(
+        parent_ids, roster_id=PARENT_ROSTER_ID, split_role=parent_split_role,
+        roster_role="evaluation",
+    )
+    parent_sha = write_roster(tmp_path, PARENT_NAME, parent)
+    sample = roster_receipt(
+        sample_ids, roster_id=SAMPLE_ROSTER_ID, split_role=FINAL_REPORT_SPLIT_ROLE,
+        roster_role="evaluation",
+    )
+    closure = roster_receipt(
+        closure_ids, roster_id=CLOSURE_ROSTER_ID, split_role=closure_split_role,
+        roster_role="evaluation",
+    )
+    sample["derived_from"] = {
+        "source_roster": declaration(parent, PARENT_NAME, parent_sha),
+        "sibling_roster": declaration(closure, CLOSURE_NAME),
+        "selection": "one seeded prompt draw; the sibling is the set difference",
+    }
+    closure["derived_from"] = {
+        "source_roster": declaration(parent, PARENT_NAME, parent_sha),
+        "sibling_roster": declaration(sample, SAMPLE_NAME),
+        "selection": "one seeded prompt draw; the sibling is the set difference",
+    }
+    if mutate is not None:
+        mutate({"sample": sample, "closure": closure})
+    write_roster(tmp_path, SAMPLE_NAME, sample)
+    if write_closure:
+        write_roster(tmp_path, CLOSURE_NAME, closure)
+
+    chosen = {"parent": parent, "sample": sample, "closure": closure}[fly]
+    digest = write_allowance(
+        tmp_path,
+        allowance_document(
+            split={
+                "carrier_lock_key": CARRIER,
+                "split_name": chosen["roster_id"],
+                "split_identity_hash": chosen["split_identity_hash"],
+            }
+        ),
+    )
+    data_root = tmp_path / "data"
+    data_root.mkdir(parents=True, exist_ok=True)
+    gate = FrozenCoreGate(
+        e0_receipt=tmp_path / "docs/receipts/e0-closure.json",
+        runtime_receipt=tmp_path / "docs/receipts/runtime.json",
+        data_root=data_root,
+        lock_path=tmp_path / "datasets.lock.json",
+        runtime_root=tmp_path / "runtime",
+        exposure_ledger=tmp_path / "docs/exposure-ledger.md",
+        source_root=tmp_path,
+    )
+    return gate, {
+        "split_identity_hash": chosen["split_identity_hash"],
+        "owner_allowance": {"path": ALLOWANCE_RELPATH, "sha256": digest},
+    }
+
+
+def exemptions(gate: FrozenCoreGate, flown: ExecutionPlan) -> dict[str, str]:
+    receipts = gate._carrier_roster_receipts(CARRIER)
+    relpath, document, ids = gate._final_report_roster(flown, receipts)
+    return gate._final_report_partition_exemptions(flown, relpath, document, ids, receipts)
+
+
+@pytest.mark.parametrize("fly", ["sample", "closure"])
+def test_a_proven_partition_member_is_admitted_against_its_parent_and_sibling(tmp_path, fly):
+    gate, fields = build_partition_gate(tmp_path, fly=fly)
+    write_snapshot(gate.data_root, "train-exemplars", OTHER_IDS)
+    flown = plan(**fields)
+    gate._require_final_report_isolation(flown, "bare-core")
+    sibling = CLOSURE_IDENTITY if fly == "sample" else TEST_IDENTITY
+    assert exemptions(gate, flown) == {
+        PARENT_IDENTITY: f"docs/receipts/rosters/{PARENT_NAME}",
+        sibling: f"docs/receipts/rosters/{CLOSURE_NAME if fly == 'sample' else SAMPLE_NAME}",
+    }
+
+
+def test_the_full_parent_is_admitted_against_its_own_children(tmp_path):
+    gate, fields = build_partition_gate(tmp_path, fly="parent")
+    flown = plan(**fields)
+    gate._require_final_report_isolation(flown, None)
+    assert exemptions(gate, flown) == {
+        TEST_IDENTITY: f"docs/receipts/rosters/{SAMPLE_NAME}",
+        CLOSURE_IDENTITY: f"docs/receipts/rosters/{CLOSURE_NAME}",
+    }
+
+
+@pytest.mark.parametrize("fly", ["sample", "closure", "parent"])
+def test_a_partition_member_is_still_refused_against_a_foreign_roster(tmp_path, fly):
+    """The exemption names the proven parent/sibling/children and nothing
+    else: a construction roster sharing one id refuses every member of the
+    partition with the message the gate has always given."""
+
+    gate, fields = build_partition_gate(tmp_path, fly=fly)
+    leaked = SAMPLE_IDS[0] if fly != "closure" else CLOSURE_IDS[0]
+    write_roster(
+        tmp_path,
+        "slurp-construction.json",
+        roster_receipt(
+            (leaked,) + OTHER_IDS, roster_id="SLURP-CONSTRUCTION-OVERLAP",
+            split_role="discovery", roster_role="construction",
+        ),
+    )
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert "shares 1 sample id(s) with the committed roster" in message
+    assert "slurp-construction.json" in message
+    assert "partition proof" not in message
+
+
+def test_a_partition_member_is_still_refused_against_a_leaky_knowledge_store(tmp_path):
+    gate, fields = build_partition_gate(tmp_path, fly="sample")
+    write_snapshot(gate.data_root, "leaky-pool", OTHER_IDS + (SAMPLE_IDS[1],))
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    assert "knowledge store / exemplar pool" in str(error.value)
+
+
+def test_a_non_partition_final_report_roster_is_intersected_exactly_as_before(tmp_path):
+    """No ``derived_from`` on either side: the exemption is empty and a second
+    final-report roster sharing an id is refused with the original message."""
+
+    gate, allowance = build_gate(tmp_path)
+    assert exemptions(gate, plan(owner_allowance=allowance)) == {}
+    write_roster(
+        tmp_path,
+        "slurp-test-other.json",
+        roster_receipt(
+            (SAMPLE_IDS[2],) + OTHER_IDS, roster_id="SLURP-TEST-OTHER",
+            split_role=FINAL_REPORT_SPLIT_ROLE, roster_role="evaluation",
+        ),
+    )
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(owner_allowance=allowance), None)
+    message = str(error.value)
+    assert message.startswith(
+        f"the {FINAL_REPORT_SPLIT_ROLE!r} roster docs/receipts/rosters/slurp-test-full.json "
+        "shares 1 sample id(s) with the committed roster "
+        "docs/receipts/rosters/slurp-test-other.json"
+    )
+
+
+@pytest.mark.parametrize("fly", ["sample", "parent"])
+def test_a_short_union_is_refused(tmp_path, fly):
+    gate, fields = build_partition_gate(tmp_path, fly=fly, closure_ids=CLOSURE_IDS[:-1])
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert "partition proof failed" in message
+    assert "is short of the declared parent" in message
+    assert PARENT_ROSTER_ID in message
+    assert "by 1 sample id(s)" in message
+
+
+@pytest.mark.parametrize("fly", ["sample", "parent"])
+def test_an_overlapping_sibling_is_refused(tmp_path, fly):
+    gate, fields = build_partition_gate(
+        tmp_path, fly=fly, closure_ids=CLOSURE_IDS + (SAMPLE_IDS[0],)
+    )
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert "partition proof failed" in message
+    assert "share 1 sample id(s)" in message
+    assert SAMPLE_ROSTER_ID in message and CLOSURE_ROSTER_ID in message
+
+
+def test_a_surplus_id_is_refused(tmp_path):
+    gate, fields = build_partition_gate(
+        tmp_path, fly="sample", closure_ids=CLOSURE_IDS + ("slurp:test:000009:audio--9",)
+    )
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert "are not in the declared parent" in message
+    assert PARENT_ROSTER_ID in message
+
+
+def test_a_roster_that_declares_a_parent_it_does_not_partition_is_refused(tmp_path):
+    """The declared parent is committed and final-report, but the roster's
+    ids are not inside it."""
+
+    other = roster_receipt(
+        OTHER_IDS + ("slurp:train:000002:audio--2",), roster_id="SLURP-OTHER-FULL",
+        split_role=FINAL_REPORT_SPLIT_ROLE, roster_role="evaluation",
+    )
+    other_sha = write_roster(tmp_path, "slurp-other-full.json", other)
+
+    def repoint(documents):
+        for document in documents.values():
+            document["derived_from"]["source_roster"] = declaration(
+                other, "slurp-other-full.json", other_sha
+            )
+
+    gate, fields = build_partition_gate(tmp_path, fly="sample", mutate=repoint)
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert "partition proof failed" in message
+    assert "SLURP-OTHER-FULL" in message
+
+
+def test_a_parent_that_is_not_final_report_is_refused(tmp_path):
+    gate, fields = build_partition_gate(tmp_path, fly="sample", parent_split_role="dev")
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert f"declared parent {PARENT_ROSTER_ID}" in message
+    assert "has split_role 'dev', not 'final-report'" in message
+
+
+def test_a_child_that_is_not_final_report_refuses_the_parent(tmp_path):
+    gate, fields = build_partition_gate(tmp_path, fly="parent", closure_split_role="dev")
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert CLOSURE_ROSTER_ID in message
+    assert "has split_role 'dev', not 'final-report'" in message
+
+
+def _sibling_not_committed(documents):
+    documents["sample"]["derived_from"]["sibling_roster"]["split_identity_hash"] = "d" * 64
+
+
+def _sibling_declares_another_parent(documents):
+    documents["closure"]["derived_from"]["source_roster"]["split_identity_hash"] = "e" * 64
+
+
+def _sibling_does_not_name_this_roster(documents):
+    documents["closure"]["derived_from"]["sibling_roster"]["split_identity_hash"] = "f" * 64
+
+
+def _sibling_declares_no_partition(documents):
+    del documents["closure"]["derived_from"]
+
+
+def _sibling_items_tampered(documents):
+    documents["closure"]["items"].append({"sample_id": "slurp:test:000009:audio--9", "stratum": "all"})
+
+
+def _sibling_forges_the_parent_pin(documents):
+    documents["sample"]["derived_from"]["source_roster"]["sha256"] = "0" * 64
+
+
+def _sibling_forges_the_parent_id(documents):
+    documents["sample"]["derived_from"]["source_roster"]["roster_id"] = "SLURP-TEST-FULL-FORGED"
+
+
+def _sibling_forges_the_sibling_relpath(documents):
+    documents["sample"]["derived_from"]["sibling_roster"]["repo_relpath"] = "docs/receipts/rosters/elsewhere.json"
+
+
+def _half_a_declaration(documents):
+    del documents["sample"]["derived_from"]["sibling_roster"]
+
+
+@pytest.mark.parametrize(
+    ("mutate", "fragment"),
+    [
+        (_sibling_not_committed, "declared sibling (dddddddddddd...) is not a committed roster receipt"),
+        (_sibling_declares_another_parent, "declares parent (eeeeeeeeeeee...), not this roster's parent"),
+        (_sibling_does_not_name_this_roster, "the declaration is not mutual"),
+        (_sibling_declares_no_partition, "declares no partition of its own, so it cannot be this roster's sibling"),
+        (_sibling_items_tampered, "refusing a tampered receipt"),
+        (_sibling_forges_the_parent_pin, "declared parent file sha256"),
+        (_sibling_forges_the_parent_id, "declared parent roster_id 'SLURP-TEST-FULL-FORGED'"),
+        (_sibling_forges_the_sibling_relpath, "declared sibling repo_relpath"),
+        (_half_a_declaration, "declares half a partition"),
+    ],
+)
+def test_a_forged_sibling_or_parent_declaration_is_refused(tmp_path, mutate, fragment):
+    gate, fields = build_partition_gate(tmp_path, fly="sample", mutate=mutate)
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    assert fragment in str(error.value)
+
+
+def test_the_parent_is_refused_while_a_declared_child_is_missing(tmp_path):
+    """Only the sample is committed: the parent's declared children do not
+    cover it and the sample names a sibling that is not there."""
+
+    gate, fields = build_partition_gate(tmp_path, fly="parent", write_closure=False)
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    message = str(error.value)
+    assert "partition proof failed" in message
+    assert "not exactly the other committed receipts that declare this roster as their parent" in message
+
+
+def test_a_child_whose_sibling_set_is_not_the_other_children_refuses_the_parent(tmp_path):
+    gate, fields = build_partition_gate(
+        tmp_path, fly="parent", mutate=_sibling_does_not_name_this_roster
+    )
+    with pytest.raises(GateClosed) as error:
+        gate._require_final_report_isolation(plan(**fields), None)
+    assert "not exactly the other committed receipts" in str(error.value)
+
+
+def test_the_committed_test_rosters_prove_their_partition_and_nothing_else_is_skipped():
+    """THIS repository's receipts: the sample, the closure and the FULL parent
+    each pass the roster intersection under the exemption they earn, and the
+    exemption names exactly the partition. Model-free: committed receipts only;
+    an empty data root, so no snapshot is opened."""
+
+    repo_root = Path(__file__).resolve().parents[2]
+    gate = FrozenCoreGate(
+        e0_receipt=repo_root / "docs/receipts/e0-closure.json",
+        runtime_receipt=repo_root / "docs/receipts/runtime.json",
+        data_root=repo_root / "docs/checks/does-not-exist",
+        lock_path=repo_root / "docs/datasets.lock.json",
+        runtime_root=repo_root,
+        exposure_ledger=repo_root / "docs/exposure-ledger.md",
+        source_root=repo_root,
+    )
+    names = {
+        "full": "slurp-test-full-13078-v1.json",
+        "sample": "slurp-test-sample-3010-v1.json",
+        "closure": "slurp-test-closure-10068-v1.json",
+    }
+    hashes = {
+        key: json.loads(
+            (repo_root / "docs/receipts/rosters" / name).read_text(encoding="utf-8")
+        )["split_identity_hash"]
+        for key, name in names.items()
+    }
+    assert hashes["sample"] == "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
+    assert hashes["closure"] == "377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b"
+    assert hashes["full"] == "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+    receipts = gate._carrier_roster_receipts(CARRIER)
+    for key, split_identity in hashes.items():
+        flown = plan(run_id=f"PROBE-{key.upper()}", split_identity_hash=split_identity)
+        relpath, document, ids = gate._final_report_roster(flown, receipts)
+        gate._require_final_report_disjointness(
+            flown, relpath, ids, document=document, receipts=receipts
+        )
+        skipped = gate._final_report_partition_exemptions(flown, relpath, document, ids, receipts)
+        others = {other for other in hashes if other != key}
+        assert skipped == {
+            hashes[other]: f"docs/receipts/rosters/{names[other]}" for other in others
+        }

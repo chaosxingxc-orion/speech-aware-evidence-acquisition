@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 from typing import Mapping
 
@@ -50,6 +51,15 @@ ALLOWED_CARRIER_PROFILES = frozenset(
 ROSTER_RECEIPTS_RELDIR = "docs/receipts/rosters"
 ROSTER_RECEIPT_SCHEMA = "saea-roster-receipt-v1"
 CONSTRUCTION_ROSTER_ROLE = "construction"
+
+#: The ``derived_from`` keys under which a partitioned ``final-report`` roster
+#: receipt declares its parent and its sibling(s) (owner decision 147;
+#: ``scripts/build_slurp_test_sample_roster.py`` writes both). The gate reads
+#: them only to decide WHICH committed receipts it must re-prove a partition
+#: against from their item lists; a declaration is never trusted on its own.
+PARTITION_PARENT_KEY = "source_roster"
+PARTITION_SIBLING_KEY = "sibling_roster"
+_SHA256_HEX = re.compile(r"[0-9a-f]{64}")
 
 
 class _ExposureAndCarrierMixin:
@@ -288,16 +298,23 @@ class _ExposureAndCarrierMixin:
         return rows
 
     def _final_report_roster(
-        self, plan: "ExecutionPlan"
-    ) -> tuple[str, frozenset[str]]:
+        self,
+        plan: "ExecutionPlan",
+        receipts: list[tuple[str, Mapping[str, object], frozenset[str], str]] | None = None,
+    ) -> tuple[str, Mapping[str, object], frozenset[str]]:
         """The ONE committed ``split_role: final-report`` roster of the plan's
-        carrier whose recomputed identity is the plan's own."""
+        carrier whose recomputed identity is the plan's own, as
+        ``(relpath, receipt document, sample ids)``.
 
+        ``receipts`` lets a caller that has already parsed the carrier's
+        receipts (:meth:`_require_final_report_isolation`) pass them in instead
+        of paying for the parse twice; ``None`` parses them here."""
+
+        if receipts is None:
+            receipts = self._carrier_roster_receipts(plan.carrier_lock_key)
         matches = [
-            (relpath, ids)
-            for relpath, document, ids, measured in self._carrier_roster_receipts(
-                plan.carrier_lock_key
-            )
+            (relpath, document, ids)
+            for relpath, document, ids, measured in receipts
             if document.get("split_role") == FINAL_REPORT_SPLIT_ROLE
             and measured == plan.split_identity_hash
         ]
@@ -310,6 +327,359 @@ class _ExposureAndCarrierMixin:
                 f"{len(matches)}; model touch refused"
             )
         return matches[0]
+
+    # ------------------------------------------------------------------ #
+    # Declared partitions of a final-report roster (owner decision 147)
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _declared_partition(
+        document: Mapping[str, object], relpath: str
+    ) -> tuple[Mapping[str, object] | None, tuple[Mapping[str, object], ...]]:
+        """``(parent declaration, sibling declarations)`` read off a roster
+        receipt's ``derived_from`` block, or ``(None, ())`` when the receipt
+        declares no partition at all.
+
+        A partitioned roster (``scripts/build_slurp_test_sample_roster.py``)
+        writes ``derived_from.source_roster`` (the parent) and
+        ``derived_from.sibling_roster`` (one mapping, or a list of mappings for
+        a partition into more than two parts), each naming a
+        ``split_identity_hash``. Half a declaration -- a parent without a
+        sibling or a sibling without a parent -- is refused rather than read as
+        "no partition": it can only come from a hand-edited receipt.
+        """
+
+        derived = document.get("derived_from")
+        if not isinstance(derived, Mapping):
+            return None, ()
+        parent = derived.get(PARTITION_PARENT_KEY)
+        siblings_raw = derived.get(PARTITION_SIBLING_KEY)
+        if parent is None and siblings_raw is None:
+            return None, ()
+        if not isinstance(parent, Mapping) or siblings_raw is None:
+            raise GateClosed(
+                f"roster receipt {relpath} declares half a partition: derived_from must "
+                f"carry BOTH a {PARTITION_PARENT_KEY!r} mapping and a "
+                f"{PARTITION_SIBLING_KEY!r} mapping (or list of mappings); model touch "
+                "refused"
+            )
+        siblings = (
+            tuple(siblings_raw) if isinstance(siblings_raw, list) else (siblings_raw,)
+        )
+        if not siblings or any(not isinstance(value, Mapping) for value in siblings):
+            raise GateClosed(
+                f"roster receipt {relpath} derived_from.{PARTITION_SIBLING_KEY} must be a "
+                "mapping or a non-empty list of mappings; model touch refused"
+            )
+        return parent, siblings
+
+    @staticmethod
+    def _declared_identity(
+        declaration: Mapping[str, object], what: str, relpath: str
+    ) -> str:
+        value = declaration.get("split_identity_hash")
+        if not isinstance(value, str) or _SHA256_HEX.fullmatch(value) is None:
+            raise GateClosed(
+                f"roster receipt {relpath} declares a {what} without a 64-hex "
+                "split_identity_hash; model touch refused"
+            )
+        return value
+
+    @staticmethod
+    def _label(document: Mapping[str, object], measured: str) -> str:
+        roster_id = document.get("roster_id")
+        return (
+            f"{roster_id} ({measured[:12]}...)"
+            if isinstance(roster_id, str) and roster_id
+            else f"({measured[:12]}...)"
+        )
+
+    def _require_items_partition(
+        self,
+        relpath: str,
+        whole_label: str,
+        whole_ids: frozenset[str],
+        parts: list[tuple[str, frozenset[str]]],
+    ) -> None:
+        """Prove from item lists that ``parts`` partition ``whole_ids``:
+        pairwise disjoint, and their union is exactly the whole (no id short,
+        no id surplus). Set equality of the carrier-prefixed ids implies
+        equality of the identity hashes by construction, and is the stronger
+        statement, so the ids are compared and no hash is trusted."""
+
+        for index, (left_label, left_ids) in enumerate(parts):
+            for right_label, right_ids in parts[index + 1 :]:
+                shared = left_ids & right_ids
+                if shared:
+                    raise GateClosed(
+                        f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                        f"{relpath}: partition members {left_label} and {right_label} share "
+                        f"{len(shared)} sample id(s) (first: {sorted(shared)[:3]}); model "
+                        "touch refused"
+                    )
+        union: set[str] = set()
+        for _label, ids in parts:
+            union |= ids
+        missing = whole_ids - union
+        if missing:
+            raise GateClosed(
+                f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                f"{relpath}: the union of {[label for label, _ids in parts]} is short of "
+                f"the declared parent {whole_label} by {len(missing)} sample id(s) (first: "
+                f"{sorted(missing)[:3]}); model touch refused"
+            )
+        surplus = union - whole_ids
+        if surplus:
+            raise GateClosed(
+                f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                f"{relpath}: {len(surplus)} sample id(s) of "
+                f"{[label for label, _ids in parts]} are not in the declared parent "
+                f"{whole_label} (first: {sorted(surplus)[:3]}); model touch refused"
+            )
+
+    def _final_report_partition_exemptions(
+        self,
+        plan: "ExecutionPlan",
+        relpath: str,
+        document: Mapping[str, object],
+        roster_ids: frozenset[str],
+        receipts: list[tuple[str, Mapping[str, object], frozenset[str], str]],
+    ) -> dict[str, str]:
+        """``{identity hash: relpath}`` of the committed receipts the roster
+        intersection of :meth:`_require_final_report_disjointness` may skip,
+        each one EARNED from committed item lists, never from a recorded hash.
+
+        Owner decision 147 (2026-09-27; design record
+        ``docs/readiness/2026-09-27-slurp-test-sample-design-v1.md`` section
+        7.3): a test SAMPLE and its CLOSURE complement partition the frozen
+        FULL test roster, so each shares every one of its ids with the parent by
+        construction. The exemption is narrow and symmetric:
+
+        * **the roster is a declared partition member** -- its receipt names a
+          parent (``derived_from.source_roster``) and sibling(s)
+          (``derived_from.sibling_roster``). The parent and every sibling must
+          be committed ``final-report`` receipts of the same carrier found by
+          their RECOMPUTED identity; every sibling must itself declare the same
+          parent and declare this roster (and the other siblings) as ITS
+          siblings; a declared ``roster_id``/``repo_relpath``/file ``sha256``
+          of the parent must match the committed file; and the item lists must
+          prove that the roster and every sibling are pairwise disjoint and
+          that their union is exactly the parent (no id short, no id surplus).
+          Then the parent and the siblings are skipped;
+        * **the roster is a declared parent** -- other committed receipts of
+          the carrier declare it as their ``source_roster``. All of them must be
+          ``final-report``, each must declare exactly the others as its
+          siblings, and their item lists must prove they partition this roster.
+          Then those children are skipped.
+
+        Anything else -- a roster that declares nothing and is declared by
+        nothing -- gets an empty mapping and the intersection runs exactly as
+        before. Any declared partition that does not prove is a REFUSAL naming
+        the identity that failed, never a fall-through: a roster that asks for
+        the exemption and cannot earn it does not fly.
+        """
+
+        by_hash = {
+            measured: (other_relpath, other_document, other_ids)
+            for other_relpath, other_document, other_ids, measured in receipts
+        }
+        exempt: dict[str, str] = {}
+
+        def committed_final_report(
+            declared_hash: str, what: str
+        ) -> tuple[str, Mapping[str, object], frozenset[str]]:
+            found = by_hash.get(declared_hash)
+            if found is None:
+                raise GateClosed(
+                    f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                    f"{relpath}: declared {what} ({declared_hash[:12]}...) is not a "
+                    f"committed roster receipt of carrier {plan.carrier_lock_key!r} (by "
+                    "recomputed identity); model touch refused"
+                )
+            found_relpath, found_document, _found_ids = found
+            if found_document.get("split_role") != FINAL_REPORT_SPLIT_ROLE:
+                raise GateClosed(
+                    f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                    f"{relpath}: declared {what} "
+                    f"{self._label(found_document, declared_hash)} at {found_relpath} "
+                    f"has split_role {found_document.get('split_role')!r}, not "
+                    f"{FINAL_REPORT_SPLIT_ROLE!r}; a partition of a final-reporting "
+                    "roster is final-reporting in every part; model touch refused"
+                )
+            return found
+
+        def require_declared_fields(
+            declaration: Mapping[str, object],
+            what: str,
+            found_relpath: str,
+            found_document: Mapping[str, object],
+        ) -> None:
+            declared_id = declaration.get("roster_id")
+            if declared_id is not None and declared_id != found_document.get("roster_id"):
+                raise GateClosed(
+                    f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                    f"{relpath}: declared {what} roster_id {declared_id!r} is not the "
+                    f"committed receipt's {found_document.get('roster_id')!r} at "
+                    f"{found_relpath}; model touch refused"
+                )
+            declared_relpath = declaration.get("repo_relpath")
+            if declared_relpath is not None and declared_relpath != found_relpath:
+                raise GateClosed(
+                    f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                    f"{relpath}: declared {what} repo_relpath {declared_relpath!r} is not "
+                    f"where the committed receipt of that identity lives ({found_relpath}); "
+                    "model touch refused"
+                )
+            declared_sha = declaration.get("sha256")
+            if declared_sha is not None:
+                actual = hashlib.sha256(
+                    (Path(self.source_root) / found_relpath).read_bytes()
+                ).hexdigest()
+                if actual != declared_sha:
+                    raise GateClosed(
+                        f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} "
+                        f"roster {relpath}: declared {what} file sha256 {declared_sha!r} "
+                        f"is not the committed bytes of {found_relpath} ({actual}); model "
+                        "touch refused"
+                    )
+
+        def sibling_hashes_of(
+            other_relpath: str, other_document: Mapping[str, object]
+        ) -> tuple[str, frozenset[str]]:
+            """``(declared parent hash, declared sibling hashes)`` of another
+            receipt, both required to be present."""
+
+            parent_declaration, sibling_declarations = self._declared_partition(
+                other_document, other_relpath
+            )
+            if parent_declaration is None:
+                raise GateClosed(
+                    f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                    f"{relpath}: committed receipt {other_relpath} declares no partition "
+                    "of its own, so it cannot be this roster's sibling; model touch refused"
+                )
+            return (
+                self._declared_identity(parent_declaration, "parent", other_relpath),
+                frozenset(
+                    self._declared_identity(value, "sibling", other_relpath)
+                    for value in sibling_declarations
+                ),
+            )
+
+        own_label = self._label(document, plan.split_identity_hash)
+
+        # (a) this roster declares a parent and sibling(s).
+        parent_declaration, sibling_declarations = self._declared_partition(document, relpath)
+        if parent_declaration is not None:
+            parent_hash = self._declared_identity(parent_declaration, "parent", relpath)
+            if parent_hash == plan.split_identity_hash:
+                raise GateClosed(
+                    f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                    f"{relpath}: it declares ITSELF as its parent; model touch refused"
+                )
+            parent_relpath, parent_document, parent_ids = committed_final_report(
+                parent_hash, "parent"
+            )
+            require_declared_fields(parent_declaration, "parent", parent_relpath, parent_document)
+            parent_label = self._label(parent_document, parent_hash)
+            declared_sibling_hashes = tuple(
+                self._declared_identity(value, "sibling", relpath) for value in sibling_declarations
+            )
+            if len(set(declared_sibling_hashes)) != len(declared_sibling_hashes):
+                raise GateClosed(
+                    f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                    f"{relpath}: a sibling is declared twice; model touch refused"
+                )
+            parts: list[tuple[str, frozenset[str]]] = [(own_label, roster_ids)]
+            members: dict[str, str] = {}
+            for declaration, sibling_hash in zip(sibling_declarations, declared_sibling_hashes):
+                if sibling_hash in (plan.split_identity_hash, parent_hash):
+                    raise GateClosed(
+                        f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                        f"{relpath}: declared sibling ({sibling_hash[:12]}...) is the roster "
+                        "itself or its parent; model touch refused"
+                    )
+                sibling_relpath, sibling_document, sibling_ids = committed_final_report(
+                    sibling_hash, "sibling"
+                )
+                require_declared_fields(declaration, "sibling", sibling_relpath, sibling_document)
+                sibling_label = self._label(sibling_document, sibling_hash)
+                # Mutual declaration: the sibling names the same parent and
+                # names this roster (and every other sibling) as its siblings.
+                their_parent, their_siblings = sibling_hashes_of(sibling_relpath, sibling_document)
+                if their_parent != parent_hash:
+                    raise GateClosed(
+                        f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                        f"{relpath}: declared sibling {sibling_label} at {sibling_relpath} "
+                        f"declares parent ({their_parent[:12]}...), not this roster's parent "
+                        f"{parent_label}; model touch refused"
+                    )
+                expected = (set(declared_sibling_hashes) - {sibling_hash}) | {
+                    plan.split_identity_hash
+                }
+                if set(their_siblings) != expected:
+                    raise GateClosed(
+                        f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                        f"{relpath}: declared sibling {sibling_label} at {sibling_relpath} "
+                        f"does not declare this roster {own_label} (and the other declared "
+                        "siblings) as its own siblings; the declaration is not mutual; model "
+                        "touch refused"
+                    )
+                parts.append((sibling_label, sibling_ids))
+                members[sibling_hash] = sibling_relpath
+            self._require_items_partition(relpath, parent_label, parent_ids, parts)
+            exempt[parent_hash] = parent_relpath
+            exempt.update(members)
+
+        # (b) other committed receipts declare THIS roster as their parent.
+        children: list[tuple[str, Mapping[str, object], frozenset[str], str]] = []
+        for other_relpath, other_document, other_ids, measured in receipts:
+            if measured == plan.split_identity_hash:
+                continue
+            derived = other_document.get("derived_from")
+            if not isinstance(derived, Mapping):
+                continue
+            declared_parent = derived.get(PARTITION_PARENT_KEY)
+            if (
+                isinstance(declared_parent, Mapping)
+                and declared_parent.get("split_identity_hash") == plan.split_identity_hash
+            ):
+                children.append((other_relpath, other_document, other_ids, measured))
+        if children:
+            child_hashes = {measured for _r, _d, _i, measured in children}
+            parts = []
+            for child_relpath, child_document, child_ids, child_hash in children:
+                child_label = self._label(child_document, child_hash)
+                if child_document.get("split_role") != FINAL_REPORT_SPLIT_ROLE:
+                    raise GateClosed(
+                        f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                        f"{relpath}: committed receipt {child_label} at {child_relpath} "
+                        f"declares this roster as its parent but has split_role "
+                        f"{child_document.get('split_role')!r}, not "
+                        f"{FINAL_REPORT_SPLIT_ROLE!r}; model touch refused"
+                    )
+                parent_declaration_of_child, _sibling_declarations = self._declared_partition(
+                    child_document, child_relpath
+                )
+                assert parent_declaration_of_child is not None  # selected on it above
+                require_declared_fields(
+                    parent_declaration_of_child, "parent", relpath, document
+                )
+                _their_parent, their_siblings = sibling_hashes_of(child_relpath, child_document)
+                if set(their_siblings) != child_hashes - {child_hash}:
+                    raise GateClosed(
+                        f"partition proof failed for the {FINAL_REPORT_SPLIT_ROLE!r} roster "
+                        f"{relpath}: child {child_label} at {child_relpath} declares "
+                        f"siblings {sorted(value[:12] for value in their_siblings)}, not "
+                        "exactly the other committed receipts that declare this roster as "
+                        f"their parent {sorted(value[:12] for value in child_hashes - {child_hash})}; "
+                        "model touch refused"
+                    )
+                parts.append((child_label, child_ids))
+            self._require_items_partition(relpath, own_label, roster_ids, parts)
+            for child_relpath, _d, _i, child_hash in children:
+                exempt[child_hash] = child_relpath
+        return exempt
 
     @staticmethod
     def _bytes_contain_any(path: Path, needles: tuple[bytes, ...]) -> bool:
@@ -337,7 +707,12 @@ class _ExposureAndCarrierMixin:
                 tail = window[-overlap:] if overlap else b""
 
     def _require_final_report_disjointness(
-        self, plan: "ExecutionPlan", relpath: str, roster_ids: frozenset[str]
+        self,
+        plan: "ExecutionPlan",
+        relpath: str,
+        roster_ids: frozenset[str],
+        document: Mapping[str, object] | None = None,
+        receipts: list[tuple[str, Mapping[str, object], frozenset[str], str]] | None = None,
     ) -> None:
         """Re-prove, at gate time, that nothing the control plane was built from
         intersects the final-reporting roster.
@@ -350,12 +725,36 @@ class _ExposureAndCarrierMixin:
         root. Only ``source_sample_ids`` is taken from a snapshot; its ``values``
         and ``facets`` blocks -- which carry the construction gold -- are never
         inspected.
+
+        The ONE exception (owner decision 147, 2026-09-27) is a receipt that this
+        roster is proven -- from committed item lists, by
+        :meth:`_final_report_partition_exemptions` -- to partition or be
+        partitioned by: its declared parent and sibling(s), or its declared
+        children. Those receipts overlap this roster by construction and only
+        they are skipped; every other receipt, and every snapshot, is
+        intersected exactly as before. ``document`` and ``receipts`` are the
+        roster's own receipt and the carrier's parsed receipts when the caller
+        already holds them; either may be ``None`` and is then looked up here.
         """
 
-        for other_relpath, _document, other_ids, measured in self._carrier_roster_receipts(
-            plan.carrier_lock_key
-        ):
+        if receipts is None:
+            receipts = self._carrier_roster_receipts(plan.carrier_lock_key)
+        if document is None:
+            document = next(
+                other_document
+                for _other_relpath, other_document, _other_ids, measured in receipts
+                if measured == plan.split_identity_hash
+            )
+        exempt = self._final_report_partition_exemptions(
+            plan, relpath, document, roster_ids, receipts
+        )
+        for other_relpath, _document, other_ids, measured in receipts:
             if measured == plan.split_identity_hash:
+                continue
+            if measured in exempt:
+                # Proven partition member (parent, sibling or child): the
+                # overlap is the roster itself by construction. Nothing else
+                # is ever skipped.
                 continue
             shared = roster_ids & other_ids
             if shared:
@@ -477,8 +876,11 @@ class _ExposureAndCarrierMixin:
                 f"only fly on a construction roster of a discovery split; a "
                 f"{FINAL_REPORT_SPLIT_ROLE!r} plan can never carry it; model touch refused"
             )
-        relpath, roster_ids = self._final_report_roster(plan)
-        self._require_final_report_disjointness(plan, relpath, roster_ids)
+        receipts = self._carrier_roster_receipts(plan.carrier_lock_key)
+        relpath, document, roster_ids = self._final_report_roster(plan, receipts)
+        self._require_final_report_disjointness(
+            plan, relpath, roster_ids, document=document, receipts=receipts
+        )
         self._require_final_report_attempt_budget(plan, allowance)
 
     def _require_exposure_preregistration(
