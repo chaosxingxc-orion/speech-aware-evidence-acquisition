@@ -63,11 +63,33 @@ log "driver-start" "{\"flight_commit\":\"$FLIGHT_COMMIT\",\"queue\":\"$QUEUE\"}"
 N=$($PY -c "import json;print(len(json.load(open('$QUEUE'))))")
 field() { $PY -c "import json,sys;d=json.load(open('$QUEUE'))[$1];v=d.get('$2');print('' if v is None else (str(v).lower() if isinstance(v,bool) else v))"; }
 
+# Owner decision 163: no step flies unless its registration is complete -- every generation and FIT
+# row of the arm, the smoke and every campaign-plan cell ROOT COUNTERSIGNED (never a draft), the
+# decision receipt each row names present under $DATA with the run id eligible, and the package's
+# analysis recipe declaring a READ run id whose ledger row exists (it may stay a draft until the
+# seal). The gate is the main checkout's copy, run against the flight worktree's own tree, because
+# the ledger the runtime reads is the flight commit's. Already-flown (resume) cells pass as
+# report-only. Before 2026-09-27 two defects slipped through without it: ROLL-3 flew on draft rows,
+# and AGREE / KPROBE / ROLL-3 had their READ rows registered only after the seal.
+REGCHECK=$MAIN/scripts/checks/flight_registration_check.py
+registration_gate() {  # $1 order; reads the step's exp / cell / sexp / scell / plan
+  [ -f "$REGCHECK" ] || stop "flight registration gate missing: $REGCHECK"
+  local args=(--repo-root "$REPO" --data-root "$DATA" --cell "$exp:$cell")
+  if [ -n "$sexp" ] && [ "$sexp" != "None" ]; then args+=(--cell "$sexp:$scell"); fi
+  if [ -n "$plan" ] && [ "$plan" != "None" ]; then args+=(--campaign-plan "$REPO/$plan"); fi
+  local out rc report=/home/chao/batch-regcheck-$1.out
+  out=$("$PY" -B "$REGCHECK" "${args[@]}" 2>&1); rc=$?
+  printf '%s\n' "$out" > "$report"
+  [ $rc -eq 0 ] || stop "flight registration gate REFUSED step $1 (exit $rc): $(printf '%s\n' "$out" | grep -E '^ +\[|ERROR' | head -4 | tr -s ' ' | tr '\n' ';' | cut -c1-700) -- countersign every flight row, mint the decision receipt with every run id eligible, and declare the READ run id (recipe run_ids.read) with its ledger row before launch; full report $report"
+  log "registration-gate-ok" "{\"step\":$1}"
+}
+
 prelaunch() {
   [ -e "$DATA/locks/flight.lock" ] && stop "flight.lock present before step $1"
   [ -z "$(pgrep -af 'core.flight.cli|lease_cli' | grep -v pgrep)" ] || stop "a flight or lease process is alive before step $1"
   local ok; ok=$(cd "$MAIN" && bash scripts/serving_session.sh status --session-id $SESSION 2>/dev/null | $PY -c "import json,sys;d=json.load(sys.stdin);m=d.get('last_monitor_sample') or {};print(m.get('server_ok'), (m.get('slots') or {}).get('busy'), (d.get('session') or {}).get('session_id'))" 2>/dev/null)
   case "$ok" in "True 0 $SESSION") ;; *) stop "serving session not idle/healthy before step $1: $ok";; esac
+  registration_gate "$1"
   # Do not allocate a second CUDA context for a synthetic warmup beside the model.
   # The shared transport and tokenizer check the opted-in resident resource receipt.
   log "prelaunch-ok" "{\"step\":$1,\"warmup\":\"registered-model-work-only\"}"
