@@ -30,7 +30,7 @@
     "repeated_speech_audio_seconds_cap": 33930
   },
   "plan_kind": "fit",
-  "preparation_base_commit": "81307ac3",
+  "preparation_base_commit": "8d403ffa",
   "prepared_phase_supply": {
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16). --allow-output-change must never be passed.",
     "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "3ba42dc0cabec4f37d8f72ede8616f00ec676681502d4c89d3a06c3b56a82ce9"
+    "sha256": "dc8268a15252072d577eddd948e17f7b994fffbe0688fa4f2a5cf925bb750311"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",

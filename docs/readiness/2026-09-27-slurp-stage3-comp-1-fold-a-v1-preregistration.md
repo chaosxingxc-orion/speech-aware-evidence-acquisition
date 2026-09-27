@@ -1,6 +1,6 @@
 # Cell COMP-1: preregistration
 
-Registered 2026-09-27 at study commit `81307ac3`, before any contact, from the sealed cell PLAN
+Registered 2026-09-27 at study commit `8d403ffa`, before any contact, from the sealed cell PLAN
 fragments by script (decision 58) with the agreement term, the centroid boundary key and the citation contract
 composed, under owner decisions 138 and 152. Development numbers only (owner decisions 28 and 86); never a test
 claim.

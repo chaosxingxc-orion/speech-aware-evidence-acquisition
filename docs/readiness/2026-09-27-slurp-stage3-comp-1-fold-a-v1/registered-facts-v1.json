@@ -491,8 +491,177 @@
       "solver_with_the_cited_instruction": 21412
     },
     "measured": {
-      "note": "run core.flight.cli check on the three cells after the exposure rows exist and re-run this writer with --check-dir",
-      "status": "PENDING_CHECK"
+      "cells": {
+        "aa": {
+          "blockers": null,
+          "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-aa-fold-a-v1.json",
+          "config_hash": "b06da99e98fa29179e24675f66cd8e75389a7bea28bdebf6bf8a1234f5ce7b9b",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1512,
+              "payload_sha256_prefix": "c6bcbb820887d9e2",
+              "phase": "perception",
+              "physical_margin_tokens": 4584,
+              "rendered_text_tokens": 19449,
+              "required_window_tokens": 19992,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1648,
+              "payload_sha256_prefix": "80e3924d991a438d",
+              "phase": "reviewer",
+              "physical_margin_tokens": 4720,
+              "rendered_text_tokens": 19313,
+              "required_window_tokens": 19856,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1709,
+              "payload_sha256_prefix": "8adac860cf952aa9",
+              "phase": "planner",
+              "physical_margin_tokens": 4781,
+              "rendered_text_tokens": 19252,
+              "required_window_tokens": 19795,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -317,
+              "payload_sha256_prefix": "44927c0871a44df3",
+              "phase": "solver",
+              "physical_margin_tokens": 2755,
+              "rendered_text_tokens": 21278,
+              "required_window_tokens": 21821,
+              "speech_feature_tokens": 29
+            }
+          ],
+          "protocol_hash": "2c753652197d396fee4cea6a93eb80c77d1bf3f1c9917da8bc271eb5a5fbdc83",
+          "scientific_readiness": {
+            "reason": "The in-chain A/A replicate of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58): the same baseline bytes at k 60, w_agree 0.0, no agreement_source, the written key, the un-armed citation default, its own run, attempt and fit ids. HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Its prepared supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f.",
+            "state": "held"
+          }
+        },
+        "arm": {
+          "blockers": null,
+          "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-fold-a-v1.json",
+          "config_hash": "6758750b713fe45358d9eb3c0f4a18d3e32ed0d3a84c85da195c6bfaad536b9b",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1510,
+              "payload_sha256_prefix": "c87e5b8564823f64",
+              "phase": "perception",
+              "physical_margin_tokens": 4582,
+              "rendered_text_tokens": 19451,
+              "required_window_tokens": 19994,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1647,
+              "payload_sha256_prefix": "6eba48ee2a227ae7",
+              "phase": "reviewer",
+              "physical_margin_tokens": 4719,
+              "rendered_text_tokens": 19314,
+              "required_window_tokens": 19857,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1708,
+              "payload_sha256_prefix": "142bcbc1fdef0fb4",
+              "phase": "planner",
+              "physical_margin_tokens": 4780,
+              "rendered_text_tokens": 19253,
+              "required_window_tokens": 19796,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -474,
+              "payload_sha256_prefix": "aab39423a8643fdd",
+              "phase": "solver",
+              "physical_margin_tokens": 2598,
+              "rendered_text_tokens": 21435,
+              "required_window_tokens": 21978,
+              "speech_feature_tokens": 29
+            }
+          ],
+          "protocol_hash": "255019cd07fe8eec84484d906076eeefe171f9883ade9bd2f7f95b5d9443cb7a",
+          "scientific_readiness": {
+            "reason": "Cell COMP-1 registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58) with the agreement term (as AGREE), the centroid key (as KPROBE) and the citation contract composed. Comparator: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, never re-flown, read at the in-chain A/A replicate SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 flown in the same campaign chain. HELD: the coordinator declares expected_effect_pp from the AGREE and KPROBE reads, root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+            "state": "held"
+          }
+        },
+        "smoke": {
+          "blockers": null,
+          "check_path": "/home/chao/saea-worktrees/.comp1-checks/check-slurp-native-stage3-comp1-fold-a-smoke-4-v1.json",
+          "config_hash": "d41618491332184d517d9d95fe2c82b614f778b92001d8ffe3c5ad8a18d7484d",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1511,
+              "payload_sha256_prefix": "ec3760850bee82b7",
+              "phase": "perception",
+              "physical_margin_tokens": 4583,
+              "rendered_text_tokens": 19450,
+              "required_window_tokens": 19993,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1647,
+              "payload_sha256_prefix": "0047741aadc992b2",
+              "phase": "reviewer",
+              "physical_margin_tokens": 4719,
+              "rendered_text_tokens": 19314,
+              "required_window_tokens": 19857,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1708,
+              "payload_sha256_prefix": "d54bdc888b1326af",
+              "phase": "planner",
+              "physical_margin_tokens": 4780,
+              "rendered_text_tokens": 19253,
+              "required_window_tokens": 19796,
+              "speech_feature_tokens": 29
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -474,
+              "payload_sha256_prefix": "df2b6724e19593b0",
+              "phase": "solver",
+              "physical_margin_tokens": 2598,
+              "rendered_text_tokens": 21435,
+              "required_window_tokens": 21978,
+              "speech_feature_tokens": 29
+            }
+          ],
+          "protocol_hash": "b92bff0abc3c7e325cd31ce04eb3dc3e85e3d75f36b00c69968c82ecf2a354c6",
+          "scientific_readiness": {
+            "reason": "Four-row form smoke of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN smoke fragments by script (decision 58). HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Structural form proof only: no score, no read, no claim.",
+            "state": "held"
+          }
+        }
+      },
+      "status": "MEASURED_BY_CHECK"
     },
     "rule": "the pre-flight prompt budget binds to the LIVE slot (24,576 tokens on the SLURP np4 session) with a reserve of one eighth of the slot (3,072); the Solver phase of the locked plan already reads COMPACT_REQUIRED with a positive physical margin and proceeds under context_fit_policy compact-or-abstain"
   },
@@ -640,7 +809,7 @@
       "rows": 1080
     }
   },
-  "study_commit_at_registration": "81307ac3",
+  "study_commit_at_registration": "8d403ffa",
   "the_composition": {
     "factor_1_agreement_term": {
       "agreement_receipt": {

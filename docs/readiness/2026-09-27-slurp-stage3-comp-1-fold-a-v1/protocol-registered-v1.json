@@ -322,7 +322,7 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1, branch fable/comp1",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_EXPECTATION_AND_READINESS_FLIP",
-  "study_commit_at_registration": "81307ac3",
+  "study_commit_at_registration": "8d403ffa",
   "the_composition": {
     "factor_1_agreement_term": {
       "agreement_receipt": {

@@ -1,6 +1,6 @@
 # Cell COMP-1: the first composed Stage-3 arm
 
-Registered before contact 2026-09-27 at study commit `81307ac3` (owner decisions 138 and 152);
+Registered before contact 2026-09-27 at study commit `8d403ffa` (owner decisions 138 and 152);
 all three cells **held**. Nothing here authorises a flight, a flip or an admission entry.
 
 **THE EXPECTATION IS NOT DECLARED YET, ON PURPOSE.** `stage3_measurement.SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1.expected_effect_pp`

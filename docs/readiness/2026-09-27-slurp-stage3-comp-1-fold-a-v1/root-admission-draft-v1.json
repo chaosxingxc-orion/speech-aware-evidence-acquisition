@@ -40,7 +40,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "3ba42dc0cabec4f37d8f72ede8616f00ec676681502d4c89d3a06c3b56a82ce9"
+      "sha256": "dc8268a15252072d577eddd948e17f7b994fffbe0688fa4f2a5cf925bb750311"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/README.md",
@@ -48,9 +48,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/registered-facts-v1.json",
-      "sha256": "923533e2c01cb534a2a88419cacb746da9b454216e3050411f1a6f39faa63682"
+      "sha256": "a933bf83cdc5ebb48983d7ecbeb42dda3fad0e695facfcebeada0297c5b7b45e"
     },
-    "registration_base_commit": "81307ac3"
+    "registration_base_commit": "8d403ffa"
   },
   "authorization_basis": "Owner decision 152 (fold the citation contract into COMP-1 = PLAN lock + agreement term + centroid key + citation, on Fold A 1,080 with an in-chain A/A, intent primary; the expectation composed from the AGREE and KPROBE reads) and decision 138 (the composed round is the cumulative no-harm check; no improvement is a conflict diagnosis). Standing: 133 (intent primary), 139 (no prior), 127 (the citation part is a no-harm base item), 101 (the Stage-3 label), 77 (flights only through the batch driver), and the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
   "budget": {
@@ -123,7 +123,7 @@
       "composed_config": "6758750b713fe45358d9eb3c0f4a18d3e32ed0d3a84c85da195c6bfaad536b9b",
       "protocol": "255019cd07fe8eec84484d906076eeefe171f9883ade9bd2f7f95b5d9443cb7a"
     },
-    "note": "the values of the fragments exactly as committed at 81307ac3 (readiness held, no decision requirement); repin_cell.py recomputes them at the flip",
+    "note": "the values of the fragments exactly as committed at 8d403ffa (readiness held, no decision requirement); repin_cell.py recomputes them at the flip",
     "smoke": {
       "composed_config": "d41618491332184d517d9d95fe2c82b614f778b92001d8ffe3c5ad8a18d7484d",
       "protocol": "b92bff0abc3c7e325cd31ce04eb3dc3e85e3d75f36b00c69968c82ecf2a354c6"
