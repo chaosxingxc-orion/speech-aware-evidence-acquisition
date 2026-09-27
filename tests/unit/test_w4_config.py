@@ -88,15 +88,29 @@ def test_receipts_are_appended_not_rewritten() -> None:
             "knowledge/slurp/semantic/slot-contracts-w4-v1/completion.json",
             "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json",
         ]
-        assert "prepared_phase_supply" not in diff["mine"].values
+        # none as registered (HELD); the flip's re-pin pins this cell's OWN minted supply, never a foreign one
+        supply = diff["mine"].values.get("prepared_phase_supply")
+        assert supply is None or supply["relpath"].startswith(f"prepared/{RUN[experiment]}/"), supply
 
 
 def test_cells_are_held_with_only_the_agreement_requirement() -> None:
+    agreement = "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl"
     for experiment in (ARM, SMOKE):
         cell = _read(REPO / "configs/experiment" / f"{experiment}.json")["cells"][0]
-        assert cell["readiness"]["state"] == "held"
+        # HELD with the agreement table alone as registered (6c2f6782); once flipped, the re-pin keeps the table
+        # (the foreign-requirement fix a9c4b735) and adds the family decision and this cell's own supply -- the
+        # COMP-1 flip is the pattern.
+        state = cell["readiness"]["state"]
+        assert state in ("held", "ready")
         reqs = cell["readiness"]["requirements"]
-        assert [r["relpath"] for r in reqs] == ["prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl"]
+        if state == "held":
+            assert [r["relpath"] for r in reqs] == [agreement]
+        else:
+            assert [r["relpath"] for r in reqs if r["kind"] == "preparation" and r["relpath"] == agreement] == [agreement]
+            assert [r.get("expected_decision_id") for r in reqs if r["kind"] == "decision"] == [
+                "slurp-stage3-w4-fold-a-admission-v1"]
+            own = [r for r in reqs if r["kind"] == "preparation" and r["relpath"] != agreement]
+            assert len(own) == 1 and own[0]["relpath"].startswith(f"prepared/{RUN[experiment]}/"), own
         assert cell["run_id"] == RUN[experiment]
 
 
