@@ -75,8 +75,10 @@ answers are not shaped that way supplies its own ``normalizer`` -- the
 
 from __future__ import annotations
 
+import itertools
 import json
 import math
+import operator
 import threading
 from dataclasses import dataclass
 from pathlib import Path
@@ -360,6 +362,220 @@ class _KeyNormCache:
 _KEY_NORMS = _KeyNormCache()
 
 
+# ---------------------------------------------------------------------------
+# The vectorised pre-selection: the exact loop's scores, a fraction of its time
+# ---------------------------------------------------------------------------
+
+#: The widening, in cosine units, of the vectorised pre-selection in
+#: :func:`_preselected_exact_scores`. The candidate set is every row whose
+#: BLAS cosine reaches ``max(k-th BLAS cosine, 0) - 2 * slack``; the proof in
+#: that function's docstring needs ``slack`` to bound the largest possible
+#: disagreement between a BLAS cosine and the builtin-``sum`` cosine of the
+#: same pair, which is ``2 * gamma_n + 4u`` (``u = 2**-53``,
+#: ``gamma_n = n*u / (1 - n*u)``) for width ``n``: 4.6e-13 at the 2,048-wide
+#: SLURP vectors and under 2.4e-10 at :data:`_PRESELECT_MAX_WIDTH`. 1e-9 keeps a
+#: factor of four over the widest width admitted.
+_PRESELECT_SLACK = 1e-9
+
+#: The widest vector the slack above is proven for; a wider one is scored by
+#: the exact loop.
+_PRESELECT_MAX_WIDTH = 1 << 20
+
+#: Every positive norm the pre-selection admits (key and query) lies in this
+#: range, so no dot product overflows (``|dot| <= 2**800``) and underflowed
+#: products are negligible against ``norm_q * norm_k >= 2**-800``: the rounding
+#: bound above then holds as stated. A norm outside it (never seen on a sealed,
+#: L2-normalised vector file) sends the dimension to the exact loop.
+_PRESELECT_NORM_RANGE = (2.0**-400, 2.0**400)
+
+
+class _KeyMatrix:
+    """One key set as a read-only float64 matrix, or a remembered refusal.
+
+    ``vectors`` holds the key vector OBJECTS the matrix was built from, in row
+    order, so a lookup matches by identity (the same tuples, never an equal
+    copy) and an ``id`` can never be recycled under it. ``matrix is None``
+    records a key set the pre-selection refused (a non-float component, a
+    non-finite value, a norm out of range) so the refusal is not re-derived
+    on every recall. ``norm_values`` are :func:`_l2_norm` floats -- the very
+    floats the exact loop divides by.
+    """
+
+    __slots__ = ("vectors", "matrix", "norms", "norm_values")
+
+    def __init__(self, vectors, matrix, norms, norm_values) -> None:
+        self.vectors = vectors
+        self.matrix = matrix
+        self.norms = norms
+        self.norm_values = norm_values
+
+
+class _KeyMatrixCache:
+    """The parsed key matrices, built once per key set per process.
+
+    The key vectors of a flight are the same tuple objects for its whole life
+    (``rails.phase_supply.load_sealed_vectors`` loads each file once), so the
+    float64 matrix the pre-selection multiplies is too. Bounded to the four
+    most recently used key sets -- a flight recalls against one or two -- so
+    alternating stores never rebuild and a long-lived process never pins a
+    retired key set. Lookups compare row objects by identity; builds are
+    serialised so two rows arriving together build one matrix, not two.
+    """
+
+    __slots__ = ("_entries", "_lock", "_build_lock", "_capacity")
+
+    def __init__(self, capacity: int = 4) -> None:
+        self._entries: list[_KeyMatrix] = []
+        self._lock = threading.Lock()
+        self._build_lock = threading.Lock()
+        self._capacity = capacity
+
+    def get(self, vectors: tuple) -> _KeyMatrix | None:
+        with self._lock:
+            for index, entry in enumerate(self._entries):
+                if len(entry.vectors) == len(vectors) and all(
+                    map(operator.is_, entry.vectors, vectors)
+                ):
+                    if index:
+                        self._entries.insert(0, self._entries.pop(index))
+                    return entry
+        return None
+
+    def get_or_build(self, vectors: tuple) -> _KeyMatrix:
+        entry = self.get(vectors)
+        if entry is not None:
+            return entry
+        with self._build_lock:
+            entry = self.get(vectors)
+            if entry is None:
+                entry = _build_key_matrix(vectors)
+                with self._lock:
+                    self._entries.insert(0, entry)
+                    del self._entries[self._capacity :]
+        return entry
+
+    def __len__(self) -> int:
+        return len(self._entries)
+
+
+def _norm_admitted(value: float) -> bool:
+    low, high = _PRESELECT_NORM_RANGE
+    return value == 0.0 or low <= value <= high
+
+
+def _build_key_matrix(vectors: tuple) -> _KeyMatrix:
+    """The float64 matrix of ``vectors`` (tuples of one width), or a refusal.
+
+    Only builtin ``float`` components are admitted: they convert to float64
+    exactly, which is the premise of the rounding bound. Norms come from
+    :data:`_KEY_NORMS`, i.e. :func:`_l2_norm`, the exact loop's own floats.
+    """
+
+    import numpy as np  # noqa: PLC0415 -- kept off the package's import path
+
+    refused = _KeyMatrix(vectors, None, None, None)
+    if set(map(type, itertools.chain.from_iterable(vectors))) - {float}:
+        return refused
+    matrix = np.array(vectors, dtype=np.float64)
+    if (
+        matrix.ndim != 2
+        or matrix.shape[0] != len(vectors)
+        or not np.isfinite(matrix).all()
+    ):
+        return refused
+    norm_values = tuple(_KEY_NORMS.norm(vector) for vector in vectors)
+    if not all(_norm_admitted(value) for value in norm_values):
+        return refused
+    norms = np.array(norm_values, dtype=np.float64)
+    matrix.flags.writeable = False
+    norms.flags.writeable = False
+    return _KeyMatrix(vectors, matrix, norms, norm_values)
+
+
+#: The one key-matrix cache :func:`multidim_recall` consults.
+_KEY_MATRICES = _KeyMatrixCache()
+
+
+def _preselected_exact_scores(
+    query_vector: Sequence[float],
+    query_norm: float,
+    facet_ids: Sequence[str],
+    vectors: tuple,
+    top_k: int,
+) -> list[tuple[float, str]] | None:
+    """The ``(score, facet_id)`` pairs of every row that can reach the top
+    ``top_k``, each scored by the EXACT loop's own arithmetic, in row order --
+    or ``None`` when the pre-selection does not apply (the caller then runs
+    the exact loop over every row, as before).
+
+    WHY. The exact loop scores every key with a builtin-``sum`` dot product:
+    9,354 x 2,048 multiplications in the interpreter, 1.1-1.4 s per row on
+    the SLURP exemplar store, run on the one event loop every in-flight row
+    shares (owner decision 159's gap decomposition). A BLAS product does the
+    same sweep in milliseconds, but in a different summation order, so its
+    floats differ from the exact loop's in the last bits and a near-tie could
+    swap. Nothing a BLAS float decides is delivered: it only chooses which
+    rows the exact loop re-scores.
+
+    THE PROOF that the delivered top ``k`` is unchanged. Let ``s`` be a row's
+    exact score and ``t`` its BLAS score, both divided by the same float
+    ``fl(norm_q * norm_k)``; ``|s - t| <= delta`` with ``delta`` =
+    :data:`_PRESELECT_SLACK` (see there). Let ``T`` be the ``k``-th largest
+    ``t`` (``-inf`` when there are at most ``k`` rows) and admit every row
+    with ``t >= max(T, 0) - 2 * delta``.
+
+    * A row the exact loop keeps has ``s > 0``, so ``t > -delta``: admitted
+      whenever ``T <= delta``.
+    * When ``T > delta``, the ``k`` rows with ``t >= T`` all have
+      ``s >= T - delta > 0``, so the exact loop's ``k``-th score is at least
+      ``T - delta``; every row it keeps has ``s`` at least that, hence
+      ``t >= T - 2 * delta``: admitted.
+
+    So every row of the exact top ``k`` -- ties included, since equal ``s``
+    means equal treatment -- is re-scored here by :func:`_cosine_with_norms`
+    with the same query norm and the same key norm, giving the same float;
+    rows are returned in row order, so the caller's stable
+    ``(-score, facet_id)`` sort and ``[:k]`` truncation yield the same list,
+    the same scores and the same order the exact loop yields. Rows admitted
+    beyond the top ``k`` are exact too and are cut by the same truncation.
+    """
+
+    if len(query_vector) > _PRESELECT_MAX_WIDTH:
+        return None
+    if any(type(x) is not float for x in query_vector):
+        return None
+    if query_norm == 0.0:
+        # _cosine_with_norms answers 0.0 for every pair and 0.0 is never
+        # admitted: the exact loop would keep nothing.
+        return []
+    if not _norm_admitted(query_norm):
+        return None
+    try:
+        import numpy as np  # noqa: PLC0415 -- kept off the package's import path
+    except ImportError:  # pragma: no cover - numpy ships with every study environment
+        return None
+    entry = _KEY_MATRICES.get_or_build(vectors)
+    if entry.matrix is None or entry.matrix.shape[1] != len(query_vector):
+        return None
+    query = np.array(query_vector, dtype=np.float64)
+    dots = entry.matrix @ query
+    approx = np.full(dots.shape, -np.inf)
+    np.divide(dots, entry.norms * query_norm, out=approx, where=entry.norms > 0.0)
+    count = approx.shape[0]
+    floor = 0.0
+    if count > top_k:
+        floor = max(float(np.partition(approx, count - top_k)[count - top_k]), 0.0)
+    rows = np.flatnonzero(approx >= floor - 2.0 * _PRESELECT_SLACK)
+    scored: list[tuple[float, str]] = []
+    for row in rows.tolist():
+        score = _cosine_with_norms(
+            query_vector, vectors[row], query_norm, entry.norm_values[row]
+        )
+        if score > 0.0:
+            scored.append((score, facet_ids[row]))
+    return scored
+
+
 def _facet_prior_mass(
     facet: KeyFacet, values_by_facet: Mapping[str, Sequence[ValueBundle]]
 ) -> float:
@@ -429,9 +645,17 @@ def multidim_recall(
             # have scored 0.0 is skipped here, and 0.0 was never admitted.
             query_is_vector = isinstance(query_vector, Sequence) and len(query_vector) > 0
             query_norm = _l2_norm(query_vector) if query_is_vector else 0.0
+            pair_ids: list[str] = []
+            pair_vectors: list[Sequence[float]] = []
+            # ``type(...) is dict`` / ``is tuple`` short-circuit the ABC
+            # checks for the types every sealed table uses (a dict IS a
+            # Mapping, a tuple IS a Sequence); any other type still takes the
+            # full check, so what is admitted and refused is unchanged.
             for facet in dim_facets:
                 candidate_vectors = facet_vectors(facet.facet_id)
-                if not isinstance(candidate_vectors, Mapping):
+                if type(candidate_vectors) is not dict and not isinstance(
+                    candidate_vectors, Mapping
+                ):
                     raise RailsError(
                         "multidim_recall: facet_vectors must return a mapping"
                     )
@@ -440,16 +664,44 @@ def multidim_recall(
                     continue
                 if (
                     not query_is_vector
-                    or not isinstance(facet_vector, Sequence)
+                    or (
+                        type(facet_vector) is not tuple
+                        and not isinstance(facet_vector, Sequence)
+                    )
                     or len(facet_vector) != len(query_vector)
                 ):
                     continue
-                score = _cosine_with_norms(
-                    query_vector, facet_vector, query_norm, _KEY_NORMS.norm(facet_vector)
-                )
+                pair_ids.append(facet.facet_id)
+                pair_vectors.append(facet_vector)
                 touched.add(id(facet_vector))
-                if score > 0.0:
-                    scored.append((score, facet.facet_id))
+            # Immutable key vectors (every sealed file) take the vectorised
+            # pre-selection, which returns the exact loop's own scores for
+            # every row that can reach the top k; anything else -- a list, a
+            # non-float component, a non-finite value -- takes the exact loop.
+            preselected = (
+                _preselected_exact_scores(
+                    query_vector,
+                    query_norm,
+                    pair_ids,
+                    tuple(pair_vectors),
+                    top_k_per_dimension,
+                )
+                if pair_vectors
+                and all(type(vector) is tuple for vector in pair_vectors)
+                else None
+            )
+            if preselected is not None:
+                scored.extend(preselected)
+            else:
+                for facet_id, facet_vector in zip(pair_ids, pair_vectors):
+                    score = _cosine_with_norms(
+                        query_vector,
+                        facet_vector,
+                        query_norm,
+                        _KEY_NORMS.norm(facet_vector),
+                    )
+                    if score > 0.0:
+                        scored.append((score, facet_id))
         scored.sort(key=lambda item: (-item[0], item[1]))
         for score, facet_id in scored[:top_k_per_dimension]:
             recalled.setdefault(facet_id, {})[dimension] = score
