@@ -42,10 +42,17 @@ sealed bytes (``analysis.deliver_normaliser_replay``).
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from typing import TYPE_CHECKING
 
 from ..core.base import DELIVERY_NORMALISERS, DeliveryNormalisation, DeliveryNormaliserError
+from .solver_citation import (
+    DELIVER_CITED_ANSWER_NORMALISE_V3_V1,
+    DELIVER_CITED_ANSWER_V1,
+    SolverCitationError,
+    parse_cited_answer,
+)
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from ..reproduction.slurp_scoring import LegalIntentInventory
@@ -275,11 +282,133 @@ class EarningsTextDeliveryNormaliser:
         return DeliveryNormalisation(text=hygiened, changed=changed, receipt=receipt).validate()
 
 
+#: Bumped when the UNWRAP RULE changes, never when this file is merely
+#: edited: an admission receipt and a preregistration quote it.
+DELIVER_CITED_ANSWER_V1_VERSION = "1"
+DELIVER_CITED_ANSWER_NORMALISE_V3_V1_VERSION = "1"
+
+
+class CitedAnswerUnwrapDeliveryNormaliser:
+    """``saea-deliver-cited-answer-v1``: deliver the ANSWER of a cited-answer
+    envelope (``rails.solver_citation``), applied once, immediately before
+    delivery.
+
+    Gap G1 plumbing. Under the cited-answer contract the Solver's model
+    response is ``{"schema", "answer", "citations"}``; the answer the row
+    delivers is the ``answer`` member's OWN BYTES, cut from the raw response
+    by :func:`rails.solver_citation.answer_span` -- the model's spacing and
+    key order, never a re-serialisation -- so the citation is metadata beside
+    the answer and never part of the delivered text. Pure and deterministic:
+    the same recorded response always yields the same bytes, which is what
+    invariant I7n replays at the seal and in the bundle.
+
+    Text the contract's parser refuses is delivered VERBATIM with
+    ``applied: false`` and the reason recorded, exactly as the v3 rule treats
+    an unparsed answer: the only way such text reaches delivery is the
+    finite-completion path (a truncated envelope the episode's own policy
+    chose to deliver), and a normaliser that invented an answer would be the
+    node writing one rather than unwrapping one.
+    ``rails.native_episode_config`` refuses a fragment that arms this rule
+    without the contract, or the contract without this rule (or its v3
+    composition below), so an envelope is never delivered as an answer.
+    """
+
+    id = DELIVER_CITED_ANSWER_V1
+    version = DELIVER_CITED_ANSWER_V1_VERSION
+    #: The contract cites intents and entities, the SLURP task's own shape.
+    carrier_lock_key = "slurp"
+
+    def __call__(self, text: str) -> DeliveryNormalisation:
+        if not isinstance(text, str):
+            raise TypeError("a delivery normaliser takes the delivered answer text")
+        try:
+            parsed = parse_cited_answer(text)
+        except SolverCitationError as error:
+            delivered, applied, reason, cited = text, False, str(error), ()
+        else:
+            delivered, applied, reason, cited = (
+                parsed.answer_text, True, None, parsed.cited_value_ids
+            )
+        changed = delivered != text
+        receipt: dict[str, object] = {
+            "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA,
+            "normaliser_id": self.id,
+            "version": self.version,
+            "rule_id": "cited-answer-unwrap-v1",
+            "carrier_lock_key": self.carrier_lock_key,
+            "applied": applied,
+            "changed": changed,
+            "input_sha256": _sha256(text),
+            "output_sha256": _sha256(delivered),
+            # Counts and a digest only; the ids themselves are sealed on the
+            # Solver state's ``cited_value_ids`` and in the row's
+            # ``solver_citations`` receipt block.
+            "cited_value_ids_count": len(cited),
+            "cited_value_ids_sha256": _sha256(json.dumps(list(cited))),
+            "reason": reason,
+        }
+        return DeliveryNormalisation(text=delivered, changed=changed, receipt=receipt).validate()
+
+
+class CitedAnswerNormaliseV3DeliveryNormaliser:
+    """``saea-deliver-cited-answer-normalise-v3-v1``: the unwrap above, then
+    the locked plan's own ``saea-deliver-normalise-v3`` over the unwrapped
+    answer, as ONE registered rule.
+
+    ``native_episode.deliver_normaliser`` names exactly one normaliser and the
+    v2.0 lock already spends it on projection v3, so a cell that arms the
+    cited-answer contract on the locked plan needs the composition under one
+    id. It composes the two REGISTERED callables rather than restating either
+    rule (one implementation, two callers, the discipline this module states
+    for v3 itself); the receipt carries both stage receipts under ``stages``
+    beside the top-level input/output digests I7n binds.
+    """
+
+    id = DELIVER_CITED_ANSWER_NORMALISE_V3_V1
+    version = DELIVER_CITED_ANSWER_NORMALISE_V3_V1_VERSION
+    carrier_lock_key = "slurp"
+
+    def __call__(
+        self, text: str, *, inventory: "LegalIntentInventory | None" = None
+    ) -> DeliveryNormalisation:
+        if not isinstance(text, str):
+            raise TypeError("a delivery normaliser takes the delivered answer text")
+        unwrap = DELIVERY_NORMALISERS.resolve(DELIVER_CITED_ANSWER_V1)(text)
+        projected = DELIVERY_NORMALISERS.resolve(DELIVER_NORMALISE_V3)(
+            unwrap.text, inventory=inventory
+        )
+        delivered = projected.text
+        changed = delivered != text
+        receipt: dict[str, object] = {
+            "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA,
+            "normaliser_id": self.id,
+            "version": self.version,
+            "rule_id": "cited-answer-unwrap-then-slurp-use-projection-v3",
+            "carrier_lock_key": self.carrier_lock_key,
+            "applied": bool(unwrap.receipt["applied"]) or bool(projected.receipt["applied"]),
+            "changed": changed,
+            "input_sha256": _sha256(text),
+            "output_sha256": _sha256(delivered),
+            "labels_changed": projected.receipt["labels_changed"],
+            "label_branch": projected.receipt["label_branch"],
+            "fillers_changed": projected.receipt["fillers_changed"],
+            "stages": [dict(unwrap.receipt), dict(projected.receipt)],
+            "reason": None,
+        }
+        return DeliveryNormalisation(text=delivered, changed=changed, receipt=receipt).validate()
+
+
 DELIVERY_NORMALISERS.register(
     DELIVER_NORMALISE_V3, SlurpProjectionV3DeliveryNormaliser()
 )
 DELIVERY_NORMALISERS.register(
     DELIVER_NORMALISE_EARNINGS_TEXT_V1, EarningsTextDeliveryNormaliser()
+)
+DELIVERY_NORMALISERS.register(
+    DELIVER_CITED_ANSWER_V1, CitedAnswerUnwrapDeliveryNormaliser()
+)
+DELIVERY_NORMALISERS.register(
+    DELIVER_CITED_ANSWER_NORMALISE_V3_V1, CitedAnswerNormaliseV3DeliveryNormaliser()
 )
 
 
@@ -289,6 +418,12 @@ __all__ = [
     "DELIVER_NORMALISE_V3_VERSION",
     "DELIVER_NORMALISE_EARNINGS_TEXT_V1",
     "DELIVER_NORMALISE_EARNINGS_TEXT_V1_VERSION",
+    "DELIVER_CITED_ANSWER_V1",
+    "DELIVER_CITED_ANSWER_V1_VERSION",
+    "DELIVER_CITED_ANSWER_NORMALISE_V3_V1",
+    "DELIVER_CITED_ANSWER_NORMALISE_V3_V1_VERSION",
     "SlurpProjectionV3DeliveryNormaliser",
     "EarningsTextDeliveryNormaliser",
+    "CitedAnswerUnwrapDeliveryNormaliser",
+    "CitedAnswerNormaliseV3DeliveryNormaliser",
 ]

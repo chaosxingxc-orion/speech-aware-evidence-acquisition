@@ -1635,6 +1635,43 @@ def load_native_episode_config(
                 "native_episode.deliver_normaliser cannot combine with a grouped "
                 "Solver visit (roles.solver.samples >= 2)"
             )
+    # Gap G1 plumbing (``rails.solver_citation``): the cited-answer contract
+    # and its unwrapping delivery normaliser are ONE arming, checked here,
+    # fail-closed, before any contact. The contract alone would deliver the
+    # citation envelope as the answer; the normaliser alone would unwrap an
+    # answer that is not an envelope; and only the ANSWERING node may cite,
+    # because its state is the one whose ``cited_value_ids`` the credit read
+    # consumes. Absent both -- every fragment written before this seam --
+    # nothing here is reachable.
+    from .solver_citation import (  # noqa: PLC0415
+        CITED_ANSWER_NORMALISER_IDS,
+        CITED_ANSWER_RESPONSE_FORMAT_ID,
+    )
+
+    citing_phases = [
+        phase.name for phase in program.phases
+        if phase.response_format_id == CITED_ANSWER_RESPONSE_FORMAT_ID
+    ]
+    solver_phase_id = next(role.phase_id for role in roles if role.role_kind == "solver")
+    if citing_phases and citing_phases != [solver_phase_id]:
+        raise ValueError(
+            "the cited-answer response format may be declared by the Solver phase only, "
+            f"got {citing_phases!r}"
+        )
+    unwraps = deliver_normaliser_id in CITED_ANSWER_NORMALISER_IDS
+    if citing_phases and not unwraps:
+        raise ValueError(
+            "a Solver phase declaring saea-solver-cited-answer-v1 requires "
+            "native_episode.deliver_normaliser to name one of "
+            f"{sorted(CITED_ANSWER_NORMALISER_IDS)}; otherwise the citation envelope "
+            "would be delivered as the answer"
+        )
+    if unwraps and not citing_phases:
+        raise ValueError(
+            f"deliver_normaliser {deliver_normaliser_id!r} unwraps a cited-answer "
+            "envelope, so the Solver phase must declare response_format_id "
+            "saea-solver-cited-answer-v1"
+        )
     if any(phase.barrier for phase in program.phases):
         raise ValueError("conditional native episodes cannot declare whole-roster phase barriers")
     if refresh_action is not None:

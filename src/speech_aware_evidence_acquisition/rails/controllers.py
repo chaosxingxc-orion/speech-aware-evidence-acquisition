@@ -1421,6 +1421,17 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-findings-v1": (
         "phase-native-candidates-review-revise-findings-v1.json"
     ),
+    # Gap G1 plumbing, 2026-09-26 (``rails.solver_citation``): the SAME four
+    # phases, the SAME episode shape and the SAME contact ceiling 11 as
+    # "phase-native-candidates-review-revise-v1", with the Solver phase
+    # declaring the registered "saea-solver-cited-answer-v1" output contract.
+    # A phase's output contract has exactly one authority, so the citing
+    # Solver is a program id rather than a flag on the review-revise program;
+    # rails.native_episode_config refuses it without a cited-answer delivery
+    # normaliser.
+    "phase-native-candidates-review-revise-cited-v1": (
+        "phase-native-candidates-review-revise-cited-v1.json"
+    ),
     # E1, 2026-09-16: the SAME four phases as
     # "phase-native-candidates-review-revise-v1", with the Reviewer/Planner
     # review loop switched off by the baseline's own native_episode.roles
@@ -1724,6 +1735,15 @@ def register_phase_programs_v1() -> None:
             default_controller_factory(
                 default_phase_program(
                     "phase-native-candidates-review-revise-findings-v1"
+                )
+            ),
+        )
+    if "phase-native-candidates-review-revise-cited-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-cited-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-cited-v1"
                 )
             ),
         )
@@ -2172,6 +2192,18 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "saea-review-findings-v1",
             review_findings_response_format,
+        )
+    # Gap G1 plumbing (2026-09-26, ``rails.solver_citation``): the Solver's
+    # cited-answer contract -- the answer object beside the supplied evidence
+    # ids it relied on, per intent and per entity. Registering the id changes
+    # no phase; a phase program binds it to its ANSWERING phase and the
+    # runner specialises it per contact to the ids that contact rendered.
+    if "saea-solver-cited-answer-v1" not in registered:
+        from .solver_citation import cited_answer_response_format
+
+        RESPONSE_FORMATS.register(
+            "saea-solver-cited-answer-v1",
+            cited_answer_response_format,
         )
     # E8b (2026-09-17, Node Context Policy level L2): the closed output
     # contract one context-cleaning contact answers under. It is the schema
