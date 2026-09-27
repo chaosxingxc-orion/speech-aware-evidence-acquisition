@@ -1,0 +1,269 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md rows 67, 68, 71, 76a and 139; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md rules 3 and 6 and section 2b; docs/results/stage2-results-ledger.md row A2T-NULL (NOT MEASURED); owner decisions 28 and 86 (development numbers), 101 (the Stage-3 algorithm label) and 140 (throughput reported beside)",
+  "cells": {
+    "a": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-a2t-stage3-aa-paired-400-a-generation-v1",
+      "baseline_fragment": "a2t-stage3-aa-paired-400-a-baseline-v1",
+      "cell": "a2t-stage3-aa-paired-400-a-v1",
+      "composed_config_hash": "2257e9f8aaff60592980d856d7f2ef55fb4e00f9b59dc451ad2b57b747bb17f6",
+      "dataset_fragment": "audio2tool-paired-400",
+      "declares_prepared_phase_supply": false,
+      "experiment": "a2t-stage3-aa-paired-400-a-v1",
+      "fit_attempt_id": "attempt-a2t-stage3-aa-paired-400-a-fit-v1",
+      "fit_contact_cap": 1201,
+      "fit_run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "a3eebde9f0aec4c0371dfaeb5b260066d8a39714593399a0a790259727c941ba",
+      "rows": 400,
+      "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1",
+      "service_session": "serving-a2t-native-role-base-np3-max2048-v3",
+      "serving_geometry": {
+        "max_tokens": 2048,
+        "slot_tokens": 32768,
+        "slots": 3
+      },
+      "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a"
+    },
+    "b": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-a2t-stage3-aa-paired-400-b-generation-v1",
+      "baseline_fragment": "a2t-stage3-aa-paired-400-b-baseline-v1",
+      "cell": "a2t-stage3-aa-paired-400-b-v1",
+      "composed_config_hash": "5287ee6e58bfa6048b2db894d44566061764905801568219300130841227514f",
+      "dataset_fragment": "audio2tool-paired-400",
+      "declares_prepared_phase_supply": false,
+      "experiment": "a2t-stage3-aa-paired-400-b-v1",
+      "fit_attempt_id": "attempt-a2t-stage3-aa-paired-400-b-fit-v1",
+      "fit_contact_cap": 1201,
+      "fit_run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-B-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "d00d21ce8c2a7699c8c3d3365d307a4f45a986b2ee7708f5a71eecf3f1c6a14a",
+      "rows": 400,
+      "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1",
+      "service_session": "serving-a2t-native-role-base-np3-max2048-v3",
+      "serving_geometry": {
+        "max_tokens": 2048,
+        "slot_tokens": 32768,
+        "slots": 3
+      },
+      "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-a2t-stage3-aa-paired-400-smoke-4-generation-v1",
+      "baseline_fragment": "a2t-stage3-aa-paired-400-smoke-4-baseline-v1",
+      "cell": "a2t-stage3-aa-paired-400-smoke-4-v1",
+      "composed_config_hash": "93e412fcdd1785d64bbfc67b0491ab7a0fbbd10f06e8f43ee609423d6acb04ed",
+      "dataset_fragment": "audio2tool-paired-400",
+      "declares_prepared_phase_supply": false,
+      "experiment": "a2t-stage3-aa-paired-400-smoke-4-v1",
+      "fit_attempt_id": "attempt-a2t-stage3-aa-paired-400-smoke-4-fit-v1",
+      "fit_contact_cap": 13,
+      "fit_run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "be349584e1f4d757bc5f873129b94f7b29d8ab874d7532c3074b44c211368d21",
+      "rows": 4,
+      "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1",
+      "service_session": "serving-a2t-native-role-base-np3-max2048-v3",
+      "serving_geometry": {
+        "max_tokens": 2048,
+        "slot_tokens": 32768,
+        "slots": 3
+      },
+      "split_identity_hash": "c7057020334be227c430d661953fa3ad3b0b044dfbc97c4e186c5777cb6a5baa"
+    }
+  },
+  "comparator": {
+    "attempt_id": "attempt-a2t-native-role-direct-union4000-generation-v1",
+    "config_hash": "000c05dea25a63d5a8cb74c42d086f8fecae5b9ea032227650e8f251939805cc",
+    "cost": {
+      "audio_seconds_used": 23418.083083330024,
+      "calls_used": 4000,
+      "completion_tokens_total": 68378,
+      "prompt_tokens_total": 14930993,
+      "tool_calls": 0
+    },
+    "how_it_is_read": "REPORTED BESIDE, never a gate: each pass is joined to the sealed direct rows of the same 400 ids on request_sha256 and response_text_sha256 (a cross-campaign, cross-session A/A) and on the official per-sample scores; the null this cell registers is the IN-CHAIN pair, pass A against pass B.",
+    "outputs": {
+      "relpath": "runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.outputs.jsonl",
+      "sha256": "658fd21d362467233e2e220f48334ac6894c74885b8677aeeee8980073810ba6"
+    },
+    "protocol_hash": "f9950652677c3b4efa87306865e20b99998914671aaadb71412996f7536eace8",
+    "role": "the sealed direct comparator of owner decision 76a: the direct-only phase program of the shared controller (phase-direct-only-v1) through FlightRuntime and the OpenJiuwen executor on all 4,000 union rows, under the official-protocol compact registry, promoted speech packets, c98304 np3 max2048. Its rows on these 400 ids are the cross-campaign comparator every paired cell is read against; nothing is re-flown on its side.",
+    "rows_covered": 400,
+    "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+    "run_manifest": {
+      "relpath": "runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.run-manifest.json",
+      "sha256": "a3fb34c6c1825a5bbb0642f88c8d130fd72f348c9b8c3d78e0f69d2c2c51d004"
+    },
+    "scorers": [
+      "a2t-toolcall-official",
+      "a2t-toolcall-v2",
+      "a2t-toolcall",
+      "cost"
+    ],
+    "scores": {
+      "relpath": "runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.scores.json",
+      "sha256": "2071602b9ea40dfa571ded2508d92051cd945ce4b2d50a6a9dd935367a058026"
+    },
+    "secondary_comparators": [
+      {
+        "attempt_id": "attempt-20260904T172609Z-t1officialpop500",
+        "role": "the 2026-09-04 official-protocol raw-audio flight that first sealed this row (named by the union fragment's own pairing); a different audio path and geometry, so reported beside, never a null",
+        "run_id": "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1"
+      },
+      {
+        "attempt_id": "attempt-20260904T193726Z-t258officialpop1500",
+        "role": "the 2026-09-04 official-protocol raw-audio flight that first sealed this row (named by the union fragment's own pairing); a different audio path and geometry, so reported beside, never a null",
+        "run_id": "SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1"
+      },
+      {
+        "attempt_id": "attempt-20260904T211040Z-t3467officialpop2000",
+        "role": "the 2026-09-04 official-protocol raw-audio flight that first sealed this row (named by the union fragment's own pairing); a different audio path and geometry, so reported beside, never a null",
+        "run_id": "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1"
+      }
+    ],
+    "session_receipt": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-a2t-native-role-base-np3-max2048-v2/session-receipt.json",
+      "sha256": "1f9a1bae83dbac48dc109e2bc369929fbfed1ef0c3029848d2c81603f7e153fb"
+    }
+  },
+  "decision_rule_fixed_here": "NONE. The read is descriptive: it delivers h_A2T and the byte-identity counts and states no verdict. Nothing is admitted, refuted or compared; the half-width is registered as the margin of every later Audio2Tool contrast on this roster (owner decision 68).",
+  "development_numbers_only": "Every number this cell will produce is a discovery-roster development number (owner decisions 28 and 86) and is never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, prompt, knowledge, geometry or cap change. A failure in the smoke stops the chain and pass A does not open; a failure in pass A stops the chain and pass B does not open. AT MOST ONE root-diagnosed recovery re-registration per run id, which needs BOTH a new generation attempt id AND a new live_phase_fit run and attempt id (a journaled fit cannot be retried under a spent fit identity); a second failure closes the cell and the fix is proven on a four-row dry run. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): an INFRASTRUCTURE abort with code and request bytes unchanged takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly under fresh identities. A partial manifest is never scored and never read. If pass A and pass B do not seal on ONE resident session, the pair is not request-identical and the null is not read from it.",
+  "geometry_and_session": {
+    "finding": "The last flown Audio2Tool cells (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1 and its dual-store sibling, 2026-09-15) served q4km-mmproj-free-a2t-native-role-np3-max2048-v1: -c 98304 -np 3 (three 32,768-token slots), max_tokens 2048, --no-mmproj, LLAMA_SPEECH_FEATURE_ROOT /home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a, port 8080, session serving-a2t-native-role-base-np3-max2048-v2. The resident SLURP session serving-slurp-native-candidate-five-train-a-np4-v1 serves q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1: -c 98304 -np 4 (four 24,576-token slots), max_tokens 512, LLAMA_SPEECH_FEATURE_ROOT /home/chao/feat-cache/slurp-q4km-packets-04ccc72a. FlightRuntime.serve attaches only to a session whose recorded identity (model fragment and its sha256, argv flag by flag, env) matches the cell's fragment, and the runtime refuses a speech_feature_root that disagrees with the promotion receipt's feature_root; the two sessions therefore differ in identity twice over (slot count and packet root) and NO Audio2Tool cell can attach to the resident SLURP session. Consequence: Audio2Tool cells do not interleave with SLURP cells inside one session. They fly only after the SLURP session is stopped and SAEA-Serving-A2T is resident (one geometry swap in, one back), which is why decision 69 pays the swap only when at least two Audio2Tool cells are ready -- this chain is three flights on one session.",
+    "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+    "predecessor_sessions": [
+      "serving-a2t-native-role-base-np3-max2048-v1",
+      "serving-a2t-native-role-base-np3-max2048-v2"
+    ],
+    "resident_slurp_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "same_as_the_resident_slurp_geometry": false,
+    "server_args": [
+      "-c",
+      "98304",
+      "-np",
+      "3",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "serving_geometry": {
+      "max_tokens": 2048,
+      "slot_tokens": 32768,
+      "slots": 3
+    },
+    "session_id": "serving-a2t-native-role-base-np3-max2048-v3",
+    "speech_feature_root": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a",
+    "swap_scripts": [
+      "scripts/flights/batch/serving_switch_to_a2t.sh (stop the SLURP session cleanly; refuses under a flight.lock or a live driver)",
+      "scripts/flights/batch/serving_task_entry_a2t.sh (Windows Scheduled Task SAEA-Serving-A2T: the resident A2T wrapper)",
+      "scripts/flights/batch/serving_monitor_start_a2t.sh (SAEA-Monitor-A2T)",
+      "scripts/flights/batch/a2t_wait_ready.sh (readiness wait on /health and /slots)",
+      "scripts/flights/batch/serving_switch_a2t_to_slurp.sh (stop the A2T session; SAEA-Serving and SAEA-Monitor restart from Windows; slurp_wait_ready.sh)"
+    ]
+  },
+  "model_free_proofs_landed_before_contact": {
+    "comparator_rows": {
+      "relpath": "docs/receipts/rosters/a2t-paired-400-v1.comparator-rows.json",
+      "sha256": "f43a83876d3fb6748c17ee1f3fed7adf05a69ec3ddd32eb627ccb1e6c27f40ef"
+    },
+    "d1_media_identity_closure": {
+      "d1_base_ids": 6,
+      "d1_ids_outside_the_closure": 0,
+      "d1_union_supplement_ids": 394,
+      "new_d1_media_supplement_required": false
+    },
+    "flight_roster_receipt": {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-a2t-paired-400-roster/flight-roster-receipt.json",
+      "sha256": "844354b53a77a399bde62f34f3f971c3ab77502fb3ea8daac33295a1a11fc96e"
+    },
+    "packet_coverage": {
+      "drawn_ids_with_a_promoted_packet": 400,
+      "packet_preparation_required": false,
+      "promotion_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+      "promotion_receipt_sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a"
+    },
+    "request_identity": {
+      "composed_keys_that_differ_between_pass_a_and_pass_b": [
+        "cells",
+        "experiment_id",
+        "generation_budget",
+        "live_phase_fit",
+        "own_null_pair",
+        "purpose",
+        "what_this_is"
+      ],
+      "none_of_them_enters_a_request": true,
+      "one_factor": "None. The two passes are request-identical by construction: the same baseline content as the sealed direct SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1 (the direct-only phase program of the shared controller, official-protocol compact registry, the same promoted speech packets, the same knowledge snapshot pin, the same scorers), the same model fragment and c98304 np3 max2048 geometry, the same resident session, the same 400 rows in the same order. Between pass A and pass B the only config bytes that differ are the live_phase_fit identities and the what_this_is prose, neither of which enters a request; between the passes and the sealed direct, the roster (400 of the same 4,000 ids) and the ceilings rescaled to it."
+    },
+    "roster_receipt": {
+      "relpath": "docs/receipts/rosters/a2t-paired-400-v1.json",
+      "sha256": "b57275736ff18c048e4d48414348443ce23afae0df1490821bafcae75e499c3d"
+    }
+  },
+  "one_factor": "None. The two passes are request-identical by construction: the same baseline content as the sealed direct SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1 (the direct-only phase program of the shared controller, official-protocol compact registry, the same promoted speech packets, the same knowledge snapshot pin, the same scorers), the same model fragment and c98304 np3 max2048 geometry, the same resident session, the same 400 rows in the same order. Between pass A and pass B the only config bytes that differ are the live_phase_fit identities and the what_this_is prose, neither of which enters a request; between the passes and the sealed direct, the roster (400 of the same 4,000 ids) and the ceilings rescaled to it.",
+  "packets": {
+    "drawn_ids_with_a_promoted_packet": 400,
+    "drawn_ids_without_a_promoted_packet": 0,
+    "feature_root": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a",
+    "finding": "Every one of the 400 rows already holds a promoted SpeechFeaturePacketV1 under /home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a, pinned by the sealed 2026-09-12 promotion receipt prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json (sha256 720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a) that the committed direct baseline pins; the roster builder proved 400 of 400 packet ids present. No CPU packet preparation is registered because none is owed: zero encoder contacts.",
+    "packet_preparation_required": false,
+    "packets_in_receipt": 4000,
+    "promotion_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+    "promotion_receipt_sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a",
+    "promotion_schema": "saea-legacy-speech-packet-promotion-receipt-v1",
+    "why": "the sealed promotion SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1 (2026-09-12, model-free, twenty CPU workers over the already-warm legacy cache) promoted every one of the union-4000 rows into the formal SpeechFeaturePacketV1 tree the committed direct baseline pins; a strict subset of the union needs nothing promoted"
+  },
+  "prohibitions": [
+    "No benefit, superiority, generalisation or admission claim from this cell, ever: it is an instrument.",
+    "No mechanism, no knowledge supply, no tool authority, no prompt or geometry change between the passes.",
+    "No flight on the resident SLURP session; the chain attaches only to serving-a2t-native-role-base-np3-max2048-v3 and never spawns or stops it.",
+    "No test-split contact, no confirmatory split, no paper-scale profile.",
+    "No re-flying of the sealed direct comparator; its rows are read from the seal.",
+    "No flight before root mints the decision receipt and the three cells are flipped at one commit; --allow-output-change is never passed.",
+    "No number from the smoke is a task measurement."
+  ],
+  "protocol_id": "a2t-stage3-aa-paired-400-v1-protocol",
+  "read_rule": {
+    "deliverable": "h_A2T: the CI95 half-width of the paired per-row difference (pass B minus pass A) on the official tool accuracy, tier-stratified paired bootstrap, 10,000 draws, seed 20260903 (the seed every Audio2Tool table in the results ledger already uses), in the natural-mixture weighting with the equal-tier weighting beside it; the same half-width on official exact match and on the repository scorer a2t-toolcall beside it; the count of rows whose delivered tool call is byte-identical between the passes (response_text_sha256 equal) out of 400, and the count whose request bytes are identical (request_sha256 equal), which must be 400 of 400 for the pair to be read as request-identical.",
+    "kind": "DESCRIPTIVE; no verdict, no admission, no comparator claim",
+    "primary_metric": "official Audio2Tool tool accuracy (scorer a2t-toolcall-official, the pinned release's own metrics.py; the repository scorer a2t-toolcall reported beside it), pooled over the 400 rows in the natural-mixture weighting, with the equal-tier weighting beside it",
+    "reported_beside": [
+      "per-tier table (50 rows per tier) with the paper column beside the repo column",
+      "per-domain table (smart_home 306 / wearables 74 / smart_car 20), domain resolved at analysis time from the released manifests",
+      "each pass against the sealed direct rows of the same 400 ids (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1): byte-identity counts and the paired official tool-accuracy delta with CI95 -- a cross-campaign A/A, reported and never a gate",
+      "contacts per minute, prompt and completion tokens per contact, GPU-hours from the session monitor summary, per pass (owner decision 140: sampling throughput is first-class)",
+      "parse rate and the count of rows whose response named more than one call, per pass"
+    ],
+    "what_it_never_is": "a benefit, an admission, a replication of a mechanism, a superiority or generalisation claim, or a test claim"
+  },
+  "registered_at_utc": "2026-09-27T00:48:15.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-a2taa, branch fable/a2taa",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "eb5e463b",
+  "the_question": "When the sealed Audio2Tool direct baseline is flown twice, request for request, on the same 400 rows in one chain on one resident session, how far do its numbers move? That distance is the carrier's own null, and every later Audio2Tool interval is read at it.",
+  "unchanged": "the baseline content (direct-only phase program, official-protocol compact registry, knowledge snapshot pin, preparation source receipts, scorers, prompt-fit multiple, whole-roster wave barrier), the model fragment and c98304 np3 x 32,768 max2048 geometry, the promoted packet root and promotion receipt, the session, the roster and its order",
+  "weightings": "natural mixture (50 per tier is the roster's own mixture) and equal-tier, both reported (owner decision 71)"
+}

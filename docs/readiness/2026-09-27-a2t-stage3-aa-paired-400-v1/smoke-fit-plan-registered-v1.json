@@ -1,0 +1,49 @@
+{
+  "attached_generation_run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1",
+  "cell": "a2t-stage3-aa-paired-400-smoke-4-v1",
+  "composed_config_hash": "93e412fcdd1785d64bbfc67b0491ab7a0fbbd10f06e8f43ee609423d6acb04ed",
+  "contact_cap": 13,
+  "execution_plan": {
+    "attempt_id": "attempt-a2t-stage3-aa-paired-400-smoke-4-fit-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 13,
+    "planned_speech_audio_seconds": 21,
+    "protocol_hash": "be349584e1f4d757bc5f873129b94f7b29d8ab874d7532c3074b44c211368d21",
+    "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "c7057020334be227c430d661953fa3ad3b0b044dfbc97c4e186c5777cb6a5baa",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared live phase-fit path (core.preparation_fit.build_live_phase_fit_gate) under this cell's own live_phase_fit identity, run by the same campaign or worker before its first generation wave; it tokenizes request envelopes and produces no generation.",
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v3",
+  "experiment": "a2t-stage3-aa-paired-400-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 13,
+    "generation_calls_cap": 4,
+    "gpu_hours_fit_inclusive": 0.2,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 21
+  },
+  "max_speech_packets": 1,
+  "one_factor": "None. The two passes are request-identical by construction: the same baseline content as the sealed direct SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1 (the direct-only phase program of the shared controller, official-protocol compact registry, the same promoted speech packets, the same knowledge snapshot pin, the same scorers), the same model fragment and c98304 np3 max2048 geometry, the same resident session, the same 400 rows in the same order. Between pass A and pass B the only config bytes that differ are the live_phase_fit identities and the what_this_is prose, neither of which enters a request; between the passes and the sealed direct, the roster (400 of the same 4,000 ids) and the ceilings rescaled to it.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "eb5e463b",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-a2t-stage3-aa-paired-400-v1/protocol-registered-v1.json",
+    "sha256": "bbbc0f7db1ca4517c53992eb83631785f926f94a99bb80207cb94ca083ab5e06"
+  },
+  "purpose": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-FIT-V1: the live phase-fit spend identity of SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1. It measures request envelopes only and reads nothing.",
+  "registered_at_utc": "2026-09-27T00:48:15.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "scoring": "No fit score.",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-a2taa, branch fable/a2taa",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

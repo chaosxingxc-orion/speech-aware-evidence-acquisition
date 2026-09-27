@@ -1,0 +1,77 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-a2t-stage3-aa-paired-400-a-generation-v1",
+      "baseline_fragment": "a2t-stage3-aa-paired-400-a-baseline-v1",
+      "cell_id": "a2t-stage3-aa-paired-400-a-v1",
+      "dataset_fragment": "audio2tool-paired-400",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "readiness": {
+        "reason": "Cell A2T-AA pass A -- the Audio2Tool carrier's own request-identical null on the paired 400 (owner decisions 67, 68, 71 and 139; measurement instrument rules 3 and 6), registered before contact on 2026-09-27 by script from the sealed direct baseline's own fragments (decision 58). HELD: root mints coordination/a2t-stage3-aa-paired-400-v1/root-admission-v1.json (decision id a2t-stage3-aa-paired-400-admission-v1) naming the six eligible run ids and this package's caps, then flips the smoke, pass A and pass B with scripts/flights/repin_cell.py --set-ready through scripts/flights/batch/a2taa_flip_all.sh. The program declares no supplied first phase (item E38), so the re-pin creates no prepared artifact and no preparation requirement; the requirements list is empty by design and --allow-output-change is never passed. The chain flies only on the Audio2Tool session serving-a2t-native-role-base-np3-max2048-v3 (c98304 np3 x 32,768 max2048, the A2T packet root), never on the resident SLURP np4 session. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1"
+    }
+  ],
+  "date": "2026-09-27",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 400,
+    "planned_speech_audio_seconds": 2761,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, prompt, knowledge, geometry or cap change. A failure in the smoke stops the chain and pass A does not open; a failure in pass A stops the chain and pass B does not open. AT MOST ONE root-diagnosed recovery re-registration per run id, which needs BOTH a new generation attempt id AND a new live_phase_fit run and attempt id (a journaled fit cannot be retried under a spent fit identity); a second failure closes the cell and the fix is proven on a four-row dry run. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): an INFRASTRUCTURE abort with code and request bytes unchanged takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly under fresh identities. A partial manifest is never scored and never read. If pass A and pass B do not seal on ONE resident session, the pair is not request-identical and the null is not read from it.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 1201,
+    "generation_calls_cap": 400,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 2761
+  },
+  "fragment_kind": "saea-a2t-stage3-aa-paired-400-v1",
+  "generation_budget": {
+    "cap": 400,
+    "definition": "The direct-only phase program (configs/policy/phase-direct-only-v1.json: one phase, max_contacts 1, always-run-full-program) makes exactly ONE contact per row, so 400 x 1 = 400 is the program's exact maximum and its expectation at once; the sealed direct baseline realised 4,000 contacts on 4,000 rows. The live phase fit makes 1 + (2 + 1) x 400 = 1201 tokenizer endpoint calls under its own run id SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1 -- the count core.preparation_fit.complete_phase_endpoint_count requires to the unit; the fit gate refuses any other cap. At the sealed direct baseline's own realised rate (4,000 contacts in 1,518.6 s of generation wall at np3) the generation wall is about 152 s; the GPU-hour ceiling of 0.5 covers fit, packet validation and client initialisation many times over and is a BOUND, never a target. Budgets are run-cumulative across every attempt of a run id.",
+    "target": 400
+  },
+  "own_null_pair": {
+    "chain": "one batch-driver chain on one resident session: smoke, pass A, pass B",
+    "comparator_rows": "docs/receipts/rosters/a2t-paired-400-v1.comparator-rows.json",
+    "comparator_run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+    "pass_a_run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1",
+    "pass_b_run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1",
+    "request_identical_to": "SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1 (None. The two passes are request-identical by construction: the same baseline content as the sealed direct SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1 (the direct-only phase program of the shared controller, official-protocol compact registry, the same promoted speech packets, the same knowledge snapshot pin, the same scorers), the same model fragment and c98304 np3 max2048 geometry, the same resident session, the same 400 rows in the same order. Between pass A and pass B the only config bytes that differ are the live_phase_fit identities and the what_this_is prose, neither of which enters a request; between the passes and the sealed direct, the roster (400 of the same 4,000 ids) and the ceilings rescaled to it.)",
+    "roster_receipt": "docs/receipts/rosters/a2t-paired-400-v1.json",
+    "smoke_run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1",
+    "this_cell": "pass A"
+  },
+  "population": {
+    "count": 400,
+    "dataset_fragment": "audio2tool-paired-400",
+    "decision_population": "A2T-PAIRED-400-V1 (docs/receipts/rosters/a2t-paired-400-v1.json): 50 rows per tier over the eight Audio2Tool tiers, one seeded draw (seed 20260921) by core.roster.freeze_roster from the sample ids of the sealed A2T-ORG1-UNION-4000 -- owner decisions 67 and 71; roster role evaluation, split role discovery; domains smart_home 306, wearables 74, smart_car 20; 2760.438042 s of speech, 1 654-second synthesis-defect row(s) kept because the comparator rows were sealed on exactly these rows. Every row already carries a sealed direct comparator row (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1) whose per-row hashes are frozen beside the roster; no new speech identity; the full 4,000 flies only for an admitted form.",
+    "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Cell A2T-AA pass A: Audio2Tool's own same-request null, the number every later Audio2Tool interval is read against (owner decision 68; instrument rule 6: the roster's own null is sealed BEFORE any contrast on it; decision 139 puts it on the GPU queue). Two request-identical passes of the sealed direct baseline fly on the paired 400 in ONE chain on ONE resident session -- pass A, then pass B -- and each pass attaches to the session and never spawns or stops it. The read (docs/readiness/2026-09-27-a2t-stage3-aa-paired-400-v1/analysis-recipe-v1.json) is DESCRIPTIVE: request identity per row is proven first (request_sha256 equal on 400 of 400); then per-row byte identity of the delivered tool call between the passes (the count identical of 400); then the pair's difference on the official Audio2Tool tool accuracy (a2t-toolcall-official, the paper-facing scorer, with the repository scorer a2t-toolcall beside it) with a tier-stratified paired bootstrap CI95 whose half-width becomes h_A2T, reported in the natural-mixture and the equal-tier weighting (decision 71) and per tier; beside it, each pass against the sealed direct union-4000 rows of the same 400 ids (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1, a cross-campaign A/A reported and never a gate), and contacts per minute (decision 140). It claims no benefit, admits nothing and compares no mechanism. Development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-a2t-native-role-base-np3-max2048-v3",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is the carrier's own measurement instrument -- two request-identical passes of the sealed direct baseline -- with no rollout, no per-sample scoring, no credit assignment, no update operator, no evolving store and no mechanism. It exists so that every later Audio2Tool cell, including the Audio2Tool instance of the locked families, is read at a measured margin rather than against zero (owner decision 68; instrument rule 6).",
+    "operators_used": []
+  }
+}
