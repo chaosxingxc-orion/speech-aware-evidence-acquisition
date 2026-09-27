@@ -225,9 +225,14 @@ def test_readiness_is_held_with_an_empty_requirements_list(experiment: dict) -> 
     readiness = experiment["cells"][0]["readiness"]
     # `held` with the empty requirements list before the flip; `ready` after the converging re-pin.
     assert readiness["state"] in ("held", "ready")
-    assert readiness["requirements"] == []
     if readiness["state"] == "held":
+        assert readiness["requirements"] == []
         assert "--allow-output-change must never be passed" in readiness["reason"]
+    else:
+        # after the flip every requirement (decision receipt, own prepared supply) names this cell's package
+        assert readiness["requirements"]
+        for req in readiness["requirements"]:
+            assert "kprobe" in json.dumps(req).lower(), req
 
 
 def test_caps_are_the_conv_arithmetic(experiment: dict, derivation: dict) -> None:
