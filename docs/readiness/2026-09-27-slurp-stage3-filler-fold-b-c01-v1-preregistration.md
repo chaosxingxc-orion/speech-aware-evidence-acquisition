@@ -1,0 +1,57 @@
+# Preregistration -- filler chunk c01 (owner decision 162)
+
+Registered before contact 2026-09-27 at study commit `bf483458`. Package `docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/`.
+
+## What flies
+
+The current best SLURP system -- the locked PLAN plan plus the agreement term retained into COMP-1 (owner decision
+161: w_agree 1.0 over the self-excluded exemplar-intent vote, recall k 60, fuse 8-1-8) -- in cell ROLL-2's
+grouped-Solver form (samples 5, temperature 0.7, seed_offset 0, plurality commit at min_support 3), on the 180
+TRAIN Fold B rows of `docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-v1.json` (split identity `a7f41a899ee466a3819c0601c73544459a33808a84320e44ef5ae68d738995ec`). Chunk c01 first flies a four-row structural smoke on `docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json`.
+Run ids: SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1, SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-FIT-V1, SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1, SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-FIT-V1.
+
+## Composed identity
+
+- `slurp-native-stage3-filler-fold-b-c01-smoke-4-v1`: composed config `ce5f93020fafb38cc42549f12552c2534cf608b30c261ddbb12163af3d0fc368`, protocol hash `e107acc10f5a1ceafd3a447d33f137181bd0fad45b32f05751e9b375a37065ee`
+- `slurp-native-stage3-filler-fold-b-c01-v1`: composed config `d4555edd3ce6251f41f2e12b95438929ba338ee3c04437c75f7a49cafbb8ea90`, protocol hash `0361018c0bb0e9500200e447c30a7dc18f54414eea9419c09e3421fecdbb629a`
+
+Every composed path that differs from cell ROLL-2 is an agreement pin, a roster pin or run-id / budget / prose
+bookkeeping (`registered-facts-v1.json`, `composed_diff_against_roll2`; re-proved by `tests/unit/test_filler_family.py`).
+
+## Measurement declaration
+
+DESCRIPTIVE by construction. `registered-facts-v1.json` carries the canonical block; repeated here:
+
+```json
+{
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The four-row structural smoke of the filler family's composed form proves FORM and nothing else (five custodied Solver samples per row, the plurality-commit replay, the agreement table loading, zero native task-contract calls, every request fitting). Scored by no one and read by no one; under the measurement instrument's rule 5 four rows can never be evidence of benefit.",
+      "primary_metric": "slu_f1",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "offline-sealed-pool",
+      "note": "Filler chunk c01 makes no effectiveness claim of its own: it seals a 180-row x 5-sample pool on TRAIN Fold B so that credit, selection, commit and verification rules of the training-free RL inner loop can be computed OFFLINE over sealed bytes. It is a batch under the instrument's 200-row MIN_BENEFIT_ROWS, so it is descriptive by size as well as by design; any benefit claim belongs to a later read over the pooled chunks, which declares its own block.",
+      "primary_metric": "slu_f1",
+      "rows": 180
+    }
+  }
+}
+```
+
+## Budgets and stops
+
+Ceilings are BOUNDS, never targets, and run-cumulative across attempts: SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1 generation 76, FIT 304, speech 194 s, GPU 1.0 h; SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1 generation 3420, FIT 13680, speech 10159 s, GPU 2.0 h.
+Stop and preserve on the first failure; the idle-filler queue HALTS on a STOP and never skips a failed chunk. No
+paper-scale profile, no test-split or DEV contact, no comparator flight, no admission entry, no transcript tokens.
+
+## Read
+
+`analysis-recipe-v1.json` via `scripts/flights/filler/filler_pool_read.sh 1`, registered as `SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-READ-V1`
+after the seal and before any number is read. TRAIN gold (`slurp-slu-official-projected-v3-train`); development numbers only.

@@ -1,0 +1,1702 @@
+{
+  "audio_seconds_total": 550.907625,
+  "authority": "owner decision 162 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md): a standing, pre-approved rollout FILLER family -- sealed five-sample pools of the current best SLURP system on TRAIN rows outside Fold A and outside every evaluation roster, in chunks of about 200 rows, each chunk its own run id, exposure rows and receipt.",
+  "carrier_lock_key": "slurp",
+  "chunk": 5,
+  "disjointness_proof": {
+    "inherited_from": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+    "statement": "a subset of the family roster, whose proof (every roster, every probe sample, devel, test, every knowledge source) holds for it verbatim"
+  },
+  "distinct_utterances": 180,
+  "draw_method": "No draw: a pure SELECTION of the family receipt's items by their chunk tag.",
+  "excluded_count": 0,
+  "generator": "scripts/flights/filler/build_filler_roster.py",
+  "headset_recordings": 88,
+  "items": [
+    {
+      "audio_seconds": 1.6,
+      "headset": true,
+      "id": "slurp:train:000159:audio-1502199196-headset",
+      "key": "slurp:slurp:train:000159:audio-1502199196-headset",
+      "sample_id": "slurp:train:000159:audio-1502199196-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000159"
+    },
+    {
+      "audio_seconds": 1.4078125,
+      "headset": false,
+      "id": "slurp:train:000180:audio-1497024355",
+      "key": "slurp:slurp:train:000180:audio-1497024355",
+      "sample_id": "slurp:train:000180:audio-1497024355",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:000180"
+    },
+    {
+      "audio_seconds": 4.736,
+      "headset": true,
+      "id": "slurp:train:000205:audio-1497437193-headset",
+      "key": "slurp:slurp:train:000205:audio-1497437193-headset",
+      "sample_id": "slurp:train:000205:audio-1497437193-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:000205"
+    },
+    {
+      "audio_seconds": 1.79175,
+      "headset": false,
+      "id": "slurp:train:000213:audio-1490104493",
+      "key": "slurp:slurp:train:000213:audio-1490104493",
+      "sample_id": "slurp:train:000213:audio-1490104493",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000213"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "headset": false,
+      "id": "slurp:train:000287:audio-1489154222",
+      "key": "slurp:slurp:train:000287:audio-1489154222",
+      "sample_id": "slurp:train:000287:audio-1489154222",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000287"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "headset": false,
+      "id": "slurp:train:000502:audio--1504192151",
+      "key": "slurp:slurp:train:000502:audio--1504192151",
+      "sample_id": "slurp:train:000502:audio--1504192151",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000502"
+    },
+    {
+      "audio_seconds": 1.984,
+      "headset": true,
+      "id": "slurp:train:000669:audio-1502198982-headset",
+      "key": "slurp:slurp:train:000669:audio-1502198982-headset",
+      "sample_id": "slurp:train:000669:audio-1502198982-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000669"
+    },
+    {
+      "audio_seconds": 4.352,
+      "headset": true,
+      "id": "slurp:train:000693:audio-1497265204-headset",
+      "key": "slurp:slurp:train:000693:audio-1497265204-headset",
+      "sample_id": "slurp:train:000693:audio-1497265204-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000693"
+    },
+    {
+      "audio_seconds": 5.12,
+      "headset": true,
+      "id": "slurp:train:000766:audio-1502891000-headset",
+      "key": "slurp:slurp:train:000766:audio-1502891000-headset",
+      "sample_id": "slurp:train:000766:audio-1502891000-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:000766"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "headset": false,
+      "id": "slurp:train:000880:audio-1495734649",
+      "key": "slurp:slurp:train:000880:audio-1495734649",
+      "sample_id": "slurp:train:000880:audio-1495734649",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:000880"
+    },
+    {
+      "audio_seconds": 2.048,
+      "headset": true,
+      "id": "slurp:train:000929:audio-1489673838-headset",
+      "key": "slurp:slurp:train:000929:audio-1489673838-headset",
+      "sample_id": "slurp:train:000929:audio-1489673838-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:000929"
+    },
+    {
+      "audio_seconds": 1.85575,
+      "headset": false,
+      "id": "slurp:train:001004:audio-1498572736",
+      "key": "slurp:slurp:train:001004:audio-1498572736",
+      "sample_id": "slurp:train:001004:audio-1498572736",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:001004"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:001064:audio--1505405558",
+      "key": "slurp:slurp:train:001064:audio--1505405558",
+      "sample_id": "slurp:train:001064:audio--1505405558",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001064"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "headset": false,
+      "id": "slurp:train:001119:audio-1490017663",
+      "key": "slurp:slurp:train:001119:audio-1490017663",
+      "sample_id": "slurp:train:001119:audio-1490017663",
+      "stratum": "news",
+      "utterance_id": "slurp:train:001119"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "headset": false,
+      "id": "slurp:train:001214:audio-1498578656",
+      "key": "slurp:slurp:train:001214:audio-1498578656",
+      "sample_id": "slurp:train:001214:audio-1498578656",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001214"
+    },
+    {
+      "audio_seconds": 3.9675,
+      "headset": false,
+      "id": "slurp:train:001356:audio-1499695466",
+      "key": "slurp:slurp:train:001356:audio-1499695466",
+      "sample_id": "slurp:train:001356:audio-1499695466",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001356"
+    },
+    {
+      "audio_seconds": 5.50325,
+      "headset": false,
+      "id": "slurp:train:001459:audio-1488989649",
+      "key": "slurp:slurp:train:001459:audio-1488989649",
+      "sample_id": "slurp:train:001459:audio-1488989649",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:001459"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "headset": false,
+      "id": "slurp:train:001501:audio-1492780974",
+      "key": "slurp:slurp:train:001501:audio-1492780974",
+      "sample_id": "slurp:train:001501:audio-1492780974",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:001501"
+    },
+    {
+      "audio_seconds": 3.007625,
+      "headset": false,
+      "id": "slurp:train:001632:audio-1490108320",
+      "key": "slurp:slurp:train:001632:audio-1490108320",
+      "sample_id": "slurp:train:001632:audio-1490108320",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001632"
+    },
+    {
+      "audio_seconds": 2.624,
+      "headset": true,
+      "id": "slurp:train:001645:audio-1501150952-headset",
+      "key": "slurp:slurp:train:001645:audio-1501150952-headset",
+      "sample_id": "slurp:train:001645:audio-1501150952-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:001645"
+    },
+    {
+      "audio_seconds": 3.008,
+      "headset": true,
+      "id": "slurp:train:001891:audio-1497017184-headset",
+      "key": "slurp:slurp:train:001891:audio-1497017184-headset",
+      "sample_id": "slurp:train:001891:audio-1497017184-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:001891"
+    },
+    {
+      "audio_seconds": 2.944,
+      "headset": true,
+      "id": "slurp:train:002012:audio-1490109654-headset",
+      "key": "slurp:slurp:train:002012:audio-1490109654-headset",
+      "sample_id": "slurp:train:002012:audio-1490109654-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002012"
+    },
+    {
+      "audio_seconds": 4.736,
+      "headset": true,
+      "id": "slurp:train:002022:audio-1497439415-headset",
+      "key": "slurp:slurp:train:002022:audio-1497439415-headset",
+      "sample_id": "slurp:train:002022:audio-1497439415-headset",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002022"
+    },
+    {
+      "audio_seconds": 2.56,
+      "headset": true,
+      "id": "slurp:train:002067:audio-1497192603-headset",
+      "key": "slurp:slurp:train:002067:audio-1497192603-headset",
+      "sample_id": "slurp:train:002067:audio-1497192603-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002067"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "headset": false,
+      "id": "slurp:train:002096:audio--1506079362",
+      "key": "slurp:slurp:train:002096:audio--1506079362",
+      "sample_id": "slurp:train:002096:audio--1506079362",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002096"
+    },
+    {
+      "audio_seconds": 2.944,
+      "headset": true,
+      "id": "slurp:train:002105:audio-1497881202-headset",
+      "key": "slurp:slurp:train:002105:audio-1497881202-headset",
+      "sample_id": "slurp:train:002105:audio-1497881202-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002105"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "headset": false,
+      "id": "slurp:train:002170:audio-1490369573",
+      "key": "slurp:slurp:train:002170:audio-1490369573",
+      "sample_id": "slurp:train:002170:audio-1490369573",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:002170"
+    },
+    {
+      "audio_seconds": 1.536,
+      "headset": true,
+      "id": "slurp:train:002180:audio-1495376434-headset",
+      "key": "slurp:slurp:train:002180:audio-1495376434-headset",
+      "sample_id": "slurp:train:002180:audio-1495376434-headset",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002180"
+    },
+    {
+      "audio_seconds": 5.184,
+      "headset": true,
+      "id": "slurp:train:002399:audio-1434539184-headset",
+      "key": "slurp:slurp:train:002399:audio-1434539184-headset",
+      "sample_id": "slurp:train:002399:audio-1434539184-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002399"
+    },
+    {
+      "audio_seconds": 1.792,
+      "headset": true,
+      "id": "slurp:train:002429:audio-1489673803-headset",
+      "key": "slurp:slurp:train:002429:audio-1489673803-headset",
+      "sample_id": "slurp:train:002429:audio-1489673803-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:002429"
+    },
+    {
+      "audio_seconds": 2.816,
+      "headset": true,
+      "id": "slurp:train:002439:audio-1497558004-headset",
+      "key": "slurp:slurp:train:002439:audio-1497558004-headset",
+      "sample_id": "slurp:train:002439:audio-1497558004-headset",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002439"
+    },
+    {
+      "audio_seconds": 1.856,
+      "headset": true,
+      "id": "slurp:train:002504:audio--1504198218-headset",
+      "key": "slurp:slurp:train:002504:audio--1504198218-headset",
+      "sample_id": "slurp:train:002504:audio--1504198218-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:002504"
+    },
+    {
+      "audio_seconds": 5.312,
+      "headset": true,
+      "id": "slurp:train:002617:audio-1490181957-headset",
+      "key": "slurp:slurp:train:002617:audio-1490181957-headset",
+      "sample_id": "slurp:train:002617:audio-1490181957-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:002617"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "headset": false,
+      "id": "slurp:train:002632:audio-1501609067",
+      "key": "slurp:slurp:train:002632:audio-1501609067",
+      "sample_id": "slurp:train:002632:audio-1501609067",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002632"
+    },
+    {
+      "audio_seconds": 2.88,
+      "headset": true,
+      "id": "slurp:train:002765:audio-1501768558-headset",
+      "key": "slurp:slurp:train:002765:audio-1501768558-headset",
+      "sample_id": "slurp:train:002765:audio-1501768558-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:002765"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:002778:audio-1502462016",
+      "key": "slurp:slurp:train:002778:audio-1502462016",
+      "sample_id": "slurp:train:002778:audio-1502462016",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:002778"
+    },
+    {
+      "audio_seconds": 2.24,
+      "headset": true,
+      "id": "slurp:train:002839:audio-1490193883-headset",
+      "key": "slurp:slurp:train:002839:audio-1490193883-headset",
+      "sample_id": "slurp:train:002839:audio-1490193883-headset",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002839"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:002895:audio-1490103491",
+      "key": "slurp:slurp:train:002895:audio-1490103491",
+      "sample_id": "slurp:train:002895:audio-1490103491",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:002895"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "headset": false,
+      "id": "slurp:train:002928:audio-1489498601",
+      "key": "slurp:slurp:train:002928:audio-1489498601",
+      "sample_id": "slurp:train:002928:audio-1489498601",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:002928"
+    },
+    {
+      "audio_seconds": 5.50325,
+      "headset": false,
+      "id": "slurp:train:002930:audio-1488992668",
+      "key": "slurp:slurp:train:002930:audio-1488992668",
+      "sample_id": "slurp:train:002930:audio-1488992668",
+      "stratum": "music",
+      "utterance_id": "slurp:train:002930"
+    },
+    {
+      "audio_seconds": 1.984,
+      "headset": true,
+      "id": "slurp:train:003075:audio--1505406537-headset",
+      "key": "slurp:slurp:train:003075:audio--1505406537-headset",
+      "sample_id": "slurp:train:003075:audio--1505406537-headset",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:003075"
+    },
+    {
+      "audio_seconds": 2.751625,
+      "headset": false,
+      "id": "slurp:train:003172:audio-1499245704",
+      "key": "slurp:slurp:train:003172:audio-1499245704",
+      "sample_id": "slurp:train:003172:audio-1499245704",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:003172"
+    },
+    {
+      "audio_seconds": 1.85575,
+      "headset": false,
+      "id": "slurp:train:003350:audio--1505406521",
+      "key": "slurp:slurp:train:003350:audio--1505406521",
+      "sample_id": "slurp:train:003350:audio--1505406521",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:003350"
+    },
+    {
+      "audio_seconds": 3.2740625,
+      "headset": false,
+      "id": "slurp:train:003410:audio-1501414590",
+      "key": "slurp:slurp:train:003410:audio-1501414590",
+      "sample_id": "slurp:train:003410:audio-1501414590",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003410"
+    },
+    {
+      "audio_seconds": 2.24,
+      "headset": true,
+      "id": "slurp:train:003457:audio-1498564955-headset",
+      "key": "slurp:slurp:train:003457:audio-1498564955-headset",
+      "sample_id": "slurp:train:003457:audio-1498564955-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:003457"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:003512:audio-1497557122",
+      "key": "slurp:slurp:train:003512:audio-1497557122",
+      "sample_id": "slurp:train:003512:audio-1497557122",
+      "stratum": "general",
+      "utterance_id": "slurp:train:003512"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "headset": false,
+      "id": "slurp:train:003527:audio-1490181031",
+      "key": "slurp:slurp:train:003527:audio-1490181031",
+      "sample_id": "slurp:train:003527:audio-1490181031",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:003527"
+    },
+    {
+      "audio_seconds": 2.2396875,
+      "headset": false,
+      "id": "slurp:train:003538:audio--1506521115",
+      "key": "slurp:slurp:train:003538:audio--1506521115",
+      "sample_id": "slurp:train:003538:audio--1506521115",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003538"
+    },
+    {
+      "audio_seconds": 3.2,
+      "headset": true,
+      "id": "slurp:train:003642:audio--1505405775-headset",
+      "key": "slurp:slurp:train:003642:audio--1505405775-headset",
+      "sample_id": "slurp:train:003642:audio--1505405775-headset",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:003642"
+    },
+    {
+      "audio_seconds": 5.6425,
+      "headset": false,
+      "id": "slurp:train:003732:audio-1502100117",
+      "key": "slurp:slurp:train:003732:audio-1502100117",
+      "sample_id": "slurp:train:003732:audio-1502100117",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003732"
+    },
+    {
+      "audio_seconds": 3.84,
+      "headset": true,
+      "id": "slurp:train:003747:audio-1501152285-headset",
+      "key": "slurp:slurp:train:003747:audio-1501152285-headset",
+      "sample_id": "slurp:train:003747:audio-1501152285-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003747"
+    },
+    {
+      "audio_seconds": 2.24,
+      "headset": true,
+      "id": "slurp:train:003879:audio-1497886882-headset",
+      "key": "slurp:slurp:train:003879:audio-1497886882-headset",
+      "sample_id": "slurp:train:003879:audio-1497886882-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:003879"
+    },
+    {
+      "audio_seconds": 6.208,
+      "headset": true,
+      "id": "slurp:train:004062:audio-1497437338-headset",
+      "key": "slurp:slurp:train:004062:audio-1497437338-headset",
+      "sample_id": "slurp:train:004062:audio-1497437338-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:004062"
+    },
+    {
+      "audio_seconds": 1.792,
+      "headset": true,
+      "id": "slurp:train:004070:audio--1504193351-headset",
+      "key": "slurp:slurp:train:004070:audio--1504193351-headset",
+      "sample_id": "slurp:train:004070:audio--1504193351-headset",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:004070"
+    },
+    {
+      "audio_seconds": 6.016,
+      "headset": true,
+      "id": "slurp:train:004358:audio-1498757802-headset",
+      "key": "slurp:slurp:train:004358:audio-1498757802-headset",
+      "sample_id": "slurp:train:004358:audio-1498757802-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:004358"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "headset": false,
+      "id": "slurp:train:004493:audio-1490105670",
+      "key": "slurp:slurp:train:004493:audio-1490105670",
+      "sample_id": "slurp:train:004493:audio-1490105670",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:004493"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "headset": false,
+      "id": "slurp:train:004661:audio-1498484057",
+      "key": "slurp:slurp:train:004661:audio-1498484057",
+      "sample_id": "slurp:train:004661:audio-1498484057",
+      "stratum": "news",
+      "utterance_id": "slurp:train:004661"
+    },
+    {
+      "audio_seconds": 3.4555625,
+      "headset": false,
+      "id": "slurp:train:004720:audio-1500898788",
+      "key": "slurp:slurp:train:004720:audio-1500898788",
+      "sample_id": "slurp:train:004720:audio-1500898788",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:004720"
+    },
+    {
+      "audio_seconds": 2.304,
+      "headset": true,
+      "id": "slurp:train:004785:audio-1501757777-headset",
+      "key": "slurp:slurp:train:004785:audio-1501757777-headset",
+      "sample_id": "slurp:train:004785:audio-1501757777-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:004785"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "headset": false,
+      "id": "slurp:train:004902:audio-1499696194",
+      "key": "slurp:slurp:train:004902:audio-1499696194",
+      "sample_id": "slurp:train:004902:audio-1499696194",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:004902"
+    },
+    {
+      "audio_seconds": 2.6236875,
+      "headset": false,
+      "id": "slurp:train:004940:audio-1490704554",
+      "key": "slurp:slurp:train:004940:audio-1490704554",
+      "sample_id": "slurp:train:004940:audio-1490704554",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:004940"
+    },
+    {
+      "audio_seconds": 1.984,
+      "headset": true,
+      "id": "slurp:train:004970:audio-1494608888-headset",
+      "key": "slurp:slurp:train:004970:audio-1494608888-headset",
+      "sample_id": "slurp:train:004970:audio-1494608888-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:004970"
+    },
+    {
+      "audio_seconds": 1.536,
+      "headset": true,
+      "id": "slurp:train:004983:audio-1490356056-headset",
+      "key": "slurp:slurp:train:004983:audio-1490356056-headset",
+      "sample_id": "slurp:train:004983:audio-1490356056-headset",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:004983"
+    },
+    {
+      "audio_seconds": 1.984,
+      "headset": true,
+      "id": "slurp:train:005048:audio-1490357309-headset",
+      "key": "slurp:slurp:train:005048:audio-1490357309-headset",
+      "sample_id": "slurp:train:005048:audio-1490357309-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:005048"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:005091:audio-1490204722",
+      "key": "slurp:slurp:train:005091:audio-1490204722",
+      "sample_id": "slurp:train:005091:audio-1490204722",
+      "stratum": "music",
+      "utterance_id": "slurp:train:005091"
+    },
+    {
+      "audio_seconds": 3.648,
+      "headset": true,
+      "id": "slurp:train:005120:audio-1501692417-headset",
+      "key": "slurp:slurp:train:005120:audio-1501692417-headset",
+      "sample_id": "slurp:train:005120:audio-1501692417-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:005120"
+    },
+    {
+      "audio_seconds": 2.752,
+      "headset": true,
+      "id": "slurp:train:005167:audio-1501767910-headset",
+      "key": "slurp:slurp:train:005167:audio-1501767910-headset",
+      "sample_id": "slurp:train:005167:audio-1501767910-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:005167"
+    },
+    {
+      "audio_seconds": 2.624,
+      "headset": true,
+      "id": "slurp:train:005234:audio-1497439656-headset",
+      "key": "slurp:slurp:train:005234:audio-1497439656-headset",
+      "sample_id": "slurp:train:005234:audio-1497439656-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:005234"
+    },
+    {
+      "audio_seconds": 2.4956875,
+      "headset": false,
+      "id": "slurp:train:005388:audio-1495370580",
+      "key": "slurp:slurp:train:005388:audio-1495370580",
+      "sample_id": "slurp:train:005388:audio-1495370580",
+      "stratum": "music",
+      "utterance_id": "slurp:train:005388"
+    },
+    {
+      "audio_seconds": 2.534,
+      "headset": false,
+      "id": "slurp:train:005454:audio-1501688614",
+      "key": "slurp:slurp:train:005454:audio-1501688614",
+      "sample_id": "slurp:train:005454:audio-1501688614",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:005454"
+    },
+    {
+      "audio_seconds": 1.92,
+      "headset": true,
+      "id": "slurp:train:005760:audio-1498565290-headset",
+      "key": "slurp:slurp:train:005760:audio-1498565290-headset",
+      "sample_id": "slurp:train:005760:audio-1498565290-headset",
+      "stratum": "play",
+      "utterance_id": "slurp:train:005760"
+    },
+    {
+      "audio_seconds": 2.944,
+      "headset": true,
+      "id": "slurp:train:005828:audio-1498646241-headset",
+      "key": "slurp:slurp:train:005828:audio-1498646241-headset",
+      "sample_id": "slurp:train:005828:audio-1498646241-headset",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:005828"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "headset": false,
+      "id": "slurp:train:005906:audio--1504191402",
+      "key": "slurp:slurp:train:005906:audio--1504191402",
+      "sample_id": "slurp:train:005906:audio--1504191402",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:005906"
+    },
+    {
+      "audio_seconds": 3.5195625,
+      "headset": false,
+      "id": "slurp:train:005913:audio-1497368790",
+      "key": "slurp:slurp:train:005913:audio-1497368790",
+      "sample_id": "slurp:train:005913:audio-1497368790",
+      "stratum": "music",
+      "utterance_id": "slurp:train:005913"
+    },
+    {
+      "audio_seconds": 2.368,
+      "headset": true,
+      "id": "slurp:train:005923:audio--1505407613-headset",
+      "key": "slurp:slurp:train:005923:audio--1505407613-headset",
+      "sample_id": "slurp:train:005923:audio--1505407613-headset",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:005923"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "headset": false,
+      "id": "slurp:train:006011:audio-1499090919",
+      "key": "slurp:slurp:train:006011:audio-1499090919",
+      "sample_id": "slurp:train:006011:audio-1499090919",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:006011"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "headset": false,
+      "id": "slurp:train:006033:audio-1497869407",
+      "key": "slurp:slurp:train:006033:audio-1497869407",
+      "sample_id": "slurp:train:006033:audio-1497869407",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:006033"
+    },
+    {
+      "audio_seconds": 2.304,
+      "headset": true,
+      "id": "slurp:train:006040:audio-1497881512-headset",
+      "key": "slurp:slurp:train:006040:audio-1497881512-headset",
+      "sample_id": "slurp:train:006040:audio-1497881512-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:006040"
+    },
+    {
+      "audio_seconds": 2.24,
+      "headset": true,
+      "id": "slurp:train:006091:audio-1498568243-headset",
+      "key": "slurp:slurp:train:006091:audio-1498568243-headset",
+      "sample_id": "slurp:train:006091:audio-1498568243-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:006091"
+    },
+    {
+      "audio_seconds": 2.816,
+      "headset": true,
+      "id": "slurp:train:006261:audio-1502112305-headset",
+      "key": "slurp:slurp:train:006261:audio-1502112305-headset",
+      "sample_id": "slurp:train:006261:audio-1502112305-headset",
+      "stratum": "general",
+      "utterance_id": "slurp:train:006261"
+    },
+    {
+      "audio_seconds": 2.176,
+      "headset": true,
+      "id": "slurp:train:006279:audio-1494512651-headset",
+      "key": "slurp:slurp:train:006279:audio-1494512651-headset",
+      "sample_id": "slurp:train:006279:audio-1494512651-headset",
+      "stratum": "general",
+      "utterance_id": "slurp:train:006279"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "headset": false,
+      "id": "slurp:train:006436:audio-1501764182",
+      "key": "slurp:slurp:train:006436:audio-1501764182",
+      "sample_id": "slurp:train:006436:audio-1501764182",
+      "stratum": "general",
+      "utterance_id": "slurp:train:006436"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "headset": false,
+      "id": "slurp:train:006481:audio-1497880739",
+      "key": "slurp:slurp:train:006481:audio-1497880739",
+      "sample_id": "slurp:train:006481:audio-1497880739",
+      "stratum": "general",
+      "utterance_id": "slurp:train:006481"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "headset": false,
+      "id": "slurp:train:006705:audio-1497270758",
+      "key": "slurp:slurp:train:006705:audio-1497270758",
+      "sample_id": "slurp:train:006705:audio-1497270758",
+      "stratum": "general",
+      "utterance_id": "slurp:train:006705"
+    },
+    {
+      "audio_seconds": 1.536,
+      "headset": true,
+      "id": "slurp:train:006707:audio-1497438363-headset",
+      "key": "slurp:slurp:train:006707:audio-1497438363-headset",
+      "sample_id": "slurp:train:006707:audio-1497438363-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:006707"
+    },
+    {
+      "audio_seconds": 2.879625,
+      "headset": false,
+      "id": "slurp:train:007391:audio-1434543470",
+      "key": "slurp:slurp:train:007391:audio-1434543470",
+      "sample_id": "slurp:train:007391:audio-1434543470",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:007391"
+    },
+    {
+      "audio_seconds": 1.472,
+      "headset": true,
+      "id": "slurp:train:007604:audio-1490287752-headset",
+      "key": "slurp:slurp:train:007604:audio-1490287752-headset",
+      "sample_id": "slurp:train:007604:audio-1490287752-headset",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:007604"
+    },
+    {
+      "audio_seconds": 3.264,
+      "headset": true,
+      "id": "slurp:train:007642:audio-1501772676-headset",
+      "key": "slurp:slurp:train:007642:audio-1501772676-headset",
+      "sample_id": "slurp:train:007642:audio-1501772676-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:007642"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "headset": false,
+      "id": "slurp:train:007673:audio-1434536160",
+      "key": "slurp:slurp:train:007673:audio-1434536160",
+      "sample_id": "slurp:train:007673:audio-1434536160",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:007673"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:007815:audio-1490356551",
+      "key": "slurp:slurp:train:007815:audio-1490356551",
+      "sample_id": "slurp:train:007815:audio-1490356551",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:007815"
+    },
+    {
+      "audio_seconds": 2.368,
+      "headset": true,
+      "id": "slurp:train:007822:audio-1490106444-headset",
+      "key": "slurp:slurp:train:007822:audio-1490106444-headset",
+      "sample_id": "slurp:train:007822:audio-1490106444-headset",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:007822"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:007850:audio-1500036311",
+      "key": "slurp:slurp:train:007850:audio-1500036311",
+      "sample_id": "slurp:train:007850:audio-1500036311",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:007850"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:007872:audio-1501771861",
+      "key": "slurp:slurp:train:007872:audio-1501771861",
+      "sample_id": "slurp:train:007872:audio-1501771861",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:007872"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "headset": false,
+      "id": "slurp:train:008081:audio-1501688363",
+      "key": "slurp:slurp:train:008081:audio-1501688363",
+      "sample_id": "slurp:train:008081:audio-1501688363",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:008081"
+    },
+    {
+      "audio_seconds": 2.944,
+      "headset": true,
+      "id": "slurp:train:008443:audio-1490184002-headset",
+      "key": "slurp:slurp:train:008443:audio-1490184002-headset",
+      "sample_id": "slurp:train:008443:audio-1490184002-headset",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:008443"
+    },
+    {
+      "audio_seconds": 3.456,
+      "headset": true,
+      "id": "slurp:train:008533:audio-1490106825-headset",
+      "key": "slurp:slurp:train:008533:audio-1490106825-headset",
+      "sample_id": "slurp:train:008533:audio-1490106825-headset",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:008533"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "headset": false,
+      "id": "slurp:train:009142:audio-1490192933",
+      "key": "slurp:slurp:train:009142:audio-1490192933",
+      "sample_id": "slurp:train:009142:audio-1490192933",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:009142"
+    },
+    {
+      "audio_seconds": 3.2635625,
+      "headset": false,
+      "id": "slurp:train:009635:audio-1500979687",
+      "key": "slurp:slurp:train:009635:audio-1500979687",
+      "sample_id": "slurp:train:009635:audio-1500979687",
+      "stratum": "play",
+      "utterance_id": "slurp:train:009635"
+    },
+    {
+      "audio_seconds": 2.368,
+      "headset": true,
+      "id": "slurp:train:009729:audio-1501698222-headset",
+      "key": "slurp:slurp:train:009729:audio-1501698222-headset",
+      "sample_id": "slurp:train:009729:audio-1501698222-headset",
+      "stratum": "play",
+      "utterance_id": "slurp:train:009729"
+    },
+    {
+      "audio_seconds": 2.944,
+      "headset": true,
+      "id": "slurp:train:009750:audio--1504198126-headset",
+      "key": "slurp:slurp:train:009750:audio--1504198126-headset",
+      "sample_id": "slurp:train:009750:audio--1504198126-headset",
+      "stratum": "play",
+      "utterance_id": "slurp:train:009750"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "headset": false,
+      "id": "slurp:train:009763:audio-1492783211",
+      "key": "slurp:slurp:train:009763:audio-1492783211",
+      "sample_id": "slurp:train:009763:audio-1492783211",
+      "stratum": "play",
+      "utterance_id": "slurp:train:009763"
+    },
+    {
+      "audio_seconds": 1.216,
+      "headset": true,
+      "id": "slurp:train:009987:audio-1500979559-headset",
+      "key": "slurp:slurp:train:009987:audio-1500979559-headset",
+      "sample_id": "slurp:train:009987:audio-1500979559-headset",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:009987"
+    },
+    {
+      "audio_seconds": 3.904,
+      "headset": true,
+      "id": "slurp:train:010018:audio-1490108719-headset",
+      "key": "slurp:slurp:train:010018:audio-1490108719-headset",
+      "sample_id": "slurp:train:010018:audio-1490108719-headset",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010018"
+    },
+    {
+      "audio_seconds": 2.048,
+      "headset": true,
+      "id": "slurp:train:010112:audio-1502199305-headset",
+      "key": "slurp:slurp:train:010112:audio-1502199305-headset",
+      "sample_id": "slurp:train:010112:audio-1502199305-headset",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010112"
+    },
+    {
+      "audio_seconds": 9.6,
+      "headset": true,
+      "id": "slurp:train:010149:audio-1497867702-headset",
+      "key": "slurp:slurp:train:010149:audio-1497867702-headset",
+      "sample_id": "slurp:train:010149:audio-1497867702-headset",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010149"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:010155:audio-1434532528",
+      "key": "slurp:slurp:train:010155:audio-1434532528",
+      "sample_id": "slurp:train:010155:audio-1434532528",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010155"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:010160:audio-1499694160",
+      "key": "slurp:slurp:train:010160:audio-1499694160",
+      "sample_id": "slurp:train:010160:audio-1499694160",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010160"
+    },
+    {
+      "audio_seconds": 3.072,
+      "headset": true,
+      "id": "slurp:train:010168:audio-1490957969-headset",
+      "key": "slurp:slurp:train:010168:audio-1490957969-headset",
+      "sample_id": "slurp:train:010168:audio-1490957969-headset",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010168"
+    },
+    {
+      "audio_seconds": 4.864,
+      "headset": true,
+      "id": "slurp:train:010200:audio-1502891272-headset",
+      "key": "slurp:slurp:train:010200:audio-1502891272-headset",
+      "sample_id": "slurp:train:010200:audio-1502891272-headset",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010200"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "headset": false,
+      "id": "slurp:train:010241:audio-1492779868",
+      "key": "slurp:slurp:train:010241:audio-1492779868",
+      "sample_id": "slurp:train:010241:audio-1492779868",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:010241"
+    },
+    {
+      "audio_seconds": 2.56,
+      "headset": true,
+      "id": "slurp:train:010269:audio-1492786067-headset",
+      "key": "slurp:slurp:train:010269:audio-1492786067-headset",
+      "sample_id": "slurp:train:010269:audio-1492786067-headset",
+      "stratum": "play",
+      "utterance_id": "slurp:train:010269"
+    },
+    {
+      "audio_seconds": 2.112,
+      "headset": true,
+      "id": "slurp:train:010373:audio-1501692300-headset",
+      "key": "slurp:slurp:train:010373:audio-1501692300-headset",
+      "sample_id": "slurp:train:010373:audio-1501692300-headset",
+      "stratum": "play",
+      "utterance_id": "slurp:train:010373"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:010392:audio-1499692672",
+      "key": "slurp:slurp:train:010392:audio-1499692672",
+      "sample_id": "slurp:train:010392:audio-1499692672",
+      "stratum": "play",
+      "utterance_id": "slurp:train:010392"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "headset": false,
+      "id": "slurp:train:010573:audio-1434542567",
+      "key": "slurp:slurp:train:010573:audio-1434542567",
+      "sample_id": "slurp:train:010573:audio-1434542567",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010573"
+    },
+    {
+      "audio_seconds": 1.79175,
+      "headset": false,
+      "id": "slurp:train:010603:audio-1490291055",
+      "key": "slurp:slurp:train:010603:audio-1490291055",
+      "sample_id": "slurp:train:010603:audio-1490291055",
+      "stratum": "music",
+      "utterance_id": "slurp:train:010603"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:010624:audio-1434541894",
+      "key": "slurp:slurp:train:010624:audio-1434541894",
+      "sample_id": "slurp:train:010624:audio-1434541894",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010624"
+    },
+    {
+      "audio_seconds": 2.368,
+      "headset": true,
+      "id": "slurp:train:010664:audio-1502112227-headset",
+      "key": "slurp:slurp:train:010664:audio-1502112227-headset",
+      "sample_id": "slurp:train:010664:audio-1502112227-headset",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010664"
+    },
+    {
+      "audio_seconds": 1.151875,
+      "headset": false,
+      "id": "slurp:train:010726:audio-1502197519",
+      "key": "slurp:slurp:train:010726:audio-1502197519",
+      "sample_id": "slurp:train:010726:audio-1502197519",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010726"
+    },
+    {
+      "audio_seconds": 2.24,
+      "headset": true,
+      "id": "slurp:train:010908:audio-1490194109-headset",
+      "key": "slurp:slurp:train:010908:audio-1490194109-headset",
+      "sample_id": "slurp:train:010908:audio-1490194109-headset",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010908"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "headset": false,
+      "id": "slurp:train:010953:audio-1499692301",
+      "key": "slurp:slurp:train:010953:audio-1499692301",
+      "sample_id": "slurp:train:010953:audio-1499692301",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010953"
+    },
+    {
+      "audio_seconds": 2.88,
+      "headset": true,
+      "id": "slurp:train:010968:audio-1502200841-headset",
+      "key": "slurp:slurp:train:010968:audio-1502200841-headset",
+      "sample_id": "slurp:train:010968:audio-1502200841-headset",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010968"
+    },
+    {
+      "audio_seconds": 2.816,
+      "headset": true,
+      "id": "slurp:train:010971:audio-1490262981-headset",
+      "key": "slurp:slurp:train:010971:audio-1490262981-headset",
+      "sample_id": "slurp:train:010971:audio-1490262981-headset",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:010971"
+    },
+    {
+      "audio_seconds": 2.943625,
+      "headset": false,
+      "id": "slurp:train:011069:audio-1497883291",
+      "key": "slurp:slurp:train:011069:audio-1497883291",
+      "sample_id": "slurp:train:011069:audio-1497883291",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:011069"
+    },
+    {
+      "audio_seconds": 1.79175,
+      "headset": false,
+      "id": "slurp:train:011167:audio-1498566709",
+      "key": "slurp:slurp:train:011167:audio-1498566709",
+      "sample_id": "slurp:train:011167:audio-1498566709",
+      "stratum": "lists",
+      "utterance_id": "slurp:train:011167"
+    },
+    {
+      "audio_seconds": 1.91975,
+      "headset": false,
+      "id": "slurp:train:011292:audio-1495370548",
+      "key": "slurp:slurp:train:011292:audio-1495370548",
+      "sample_id": "slurp:train:011292:audio-1495370548",
+      "stratum": "play",
+      "utterance_id": "slurp:train:011292"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "headset": false,
+      "id": "slurp:train:011352:audio-1498573740",
+      "key": "slurp:slurp:train:011352:audio-1498573740",
+      "sample_id": "slurp:train:011352:audio-1498573740",
+      "stratum": "play",
+      "utterance_id": "slurp:train:011352"
+    },
+    {
+      "audio_seconds": 5.2941875,
+      "headset": false,
+      "id": "slurp:train:011769:audio-1501696830",
+      "key": "slurp:slurp:train:011769:audio-1501696830",
+      "sample_id": "slurp:train:011769:audio-1501696830",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:011769"
+    },
+    {
+      "audio_seconds": 2.11175,
+      "headset": false,
+      "id": "slurp:train:011881:audio-1490022104",
+      "key": "slurp:slurp:train:011881:audio-1490022104",
+      "sample_id": "slurp:train:011881:audio-1490022104",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:011881"
+    },
+    {
+      "audio_seconds": 1.024,
+      "headset": true,
+      "id": "slurp:train:011895:audio-1494418149-headset",
+      "key": "slurp:slurp:train:011895:audio-1494418149-headset",
+      "sample_id": "slurp:train:011895:audio-1494418149-headset",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:011895"
+    },
+    {
+      "audio_seconds": 2.752,
+      "headset": true,
+      "id": "slurp:train:011908:audio-1495370706-headset",
+      "key": "slurp:slurp:train:011908:audio-1495370706-headset",
+      "sample_id": "slurp:train:011908:audio-1495370706-headset",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:011908"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:011956:audio-1495378241",
+      "key": "slurp:slurp:train:011956:audio-1495378241",
+      "sample_id": "slurp:train:011956:audio-1495378241",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:011956"
+    },
+    {
+      "audio_seconds": 2.687625,
+      "headset": false,
+      "id": "slurp:train:011960:audio-1502890148",
+      "key": "slurp:slurp:train:011960:audio-1502890148",
+      "sample_id": "slurp:train:011960:audio-1502890148",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:011960"
+    },
+    {
+      "audio_seconds": 2.304,
+      "headset": true,
+      "id": "slurp:train:011971:audio-1434535295-headset",
+      "key": "slurp:slurp:train:011971:audio-1434535295-headset",
+      "sample_id": "slurp:train:011971:audio-1434535295-headset",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:011971"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "headset": false,
+      "id": "slurp:train:012041:audio-1497024915",
+      "key": "slurp:slurp:train:012041:audio-1497024915",
+      "sample_id": "slurp:train:012041:audio-1497024915",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:012041"
+    },
+    {
+      "audio_seconds": 3.584,
+      "headset": true,
+      "id": "slurp:train:012101:audio-1494514602-headset",
+      "key": "slurp:slurp:train:012101:audio-1494514602-headset",
+      "sample_id": "slurp:train:012101:audio-1494514602-headset",
+      "stratum": "recommendation",
+      "utterance_id": "slurp:train:012101"
+    },
+    {
+      "audio_seconds": 2.816,
+      "headset": true,
+      "id": "slurp:train:012197:audio-1497192281-headset",
+      "key": "slurp:slurp:train:012197:audio-1497192281-headset",
+      "sample_id": "slurp:train:012197:audio-1497192281-headset",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012197"
+    },
+    {
+      "audio_seconds": 6.144,
+      "headset": true,
+      "id": "slurp:train:012344:audio-1502114556-headset",
+      "key": "slurp:slurp:train:012344:audio-1502114556-headset",
+      "sample_id": "slurp:train:012344:audio-1502114556-headset",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012344"
+    },
+    {
+      "audio_seconds": 3.136,
+      "headset": true,
+      "id": "slurp:train:012486:audio-1502218428-headset",
+      "key": "slurp:slurp:train:012486:audio-1502218428-headset",
+      "sample_id": "slurp:train:012486:audio-1502218428-headset",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012486"
+    },
+    {
+      "audio_seconds": 4.288,
+      "headset": true,
+      "id": "slurp:train:012568:audio-1502200892-headset",
+      "key": "slurp:slurp:train:012568:audio-1502200892-headset",
+      "sample_id": "slurp:train:012568:audio-1502200892-headset",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012568"
+    },
+    {
+      "audio_seconds": 6.1431875,
+      "headset": false,
+      "id": "slurp:train:012570:audio-1490017379",
+      "key": "slurp:slurp:train:012570:audio-1490017379",
+      "sample_id": "slurp:train:012570:audio-1490017379",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012570"
+    },
+    {
+      "audio_seconds": 2.17575,
+      "headset": false,
+      "id": "slurp:train:012653:audio-1502896493",
+      "key": "slurp:slurp:train:012653:audio-1502896493",
+      "sample_id": "slurp:train:012653:audio-1502896493",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012653"
+    },
+    {
+      "audio_seconds": 4.3514375,
+      "headset": false,
+      "id": "slurp:train:012691:audio-1501608611",
+      "key": "slurp:slurp:train:012691:audio-1501608611",
+      "sample_id": "slurp:train:012691:audio-1501608611",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012691"
+    },
+    {
+      "audio_seconds": 1.728,
+      "headset": true,
+      "id": "slurp:train:012907:audio-1434529817-headset",
+      "key": "slurp:slurp:train:012907:audio-1434529817-headset",
+      "sample_id": "slurp:train:012907:audio-1434529817-headset",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012907"
+    },
+    {
+      "audio_seconds": 4.16,
+      "headset": true,
+      "id": "slurp:train:012920:audio-1498567942-headset",
+      "key": "slurp:slurp:train:012920:audio-1498567942-headset",
+      "sample_id": "slurp:train:012920:audio-1498567942-headset",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012920"
+    },
+    {
+      "audio_seconds": 3.7115,
+      "headset": false,
+      "id": "slurp:train:012922:audio-1490203274",
+      "key": "slurp:slurp:train:012922:audio-1490203274",
+      "sample_id": "slurp:train:012922:audio-1490203274",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012922"
+    },
+    {
+      "audio_seconds": 2.8560625,
+      "headset": false,
+      "id": "slurp:train:013138:audio-1502113338",
+      "key": "slurp:slurp:train:013138:audio-1502113338",
+      "sample_id": "slurp:train:013138:audio-1502113338",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:013138"
+    },
+    {
+      "audio_seconds": 3.1995625,
+      "headset": false,
+      "id": "slurp:train:013170:audio-1488988051",
+      "key": "slurp:slurp:train:013170:audio-1488988051",
+      "sample_id": "slurp:train:013170:audio-1488988051",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:013170"
+    },
+    {
+      "audio_seconds": 3.3275625,
+      "headset": false,
+      "id": "slurp:train:013264:audio-1500037192",
+      "key": "slurp:slurp:train:013264:audio-1500037192",
+      "sample_id": "slurp:train:013264:audio-1500037192",
+      "stratum": "general",
+      "utterance_id": "slurp:train:013264"
+    },
+    {
+      "audio_seconds": 3.904,
+      "headset": true,
+      "id": "slurp:train:013295:audio-1490109516-headset",
+      "key": "slurp:slurp:train:013295:audio-1490109516-headset",
+      "sample_id": "slurp:train:013295:audio-1490109516-headset",
+      "stratum": "general",
+      "utterance_id": "slurp:train:013295"
+    },
+    {
+      "audio_seconds": 1.792,
+      "headset": true,
+      "id": "slurp:train:013992:audio-1501698308-headset",
+      "key": "slurp:slurp:train:013992:audio-1501698308-headset",
+      "sample_id": "slurp:train:013992:audio-1501698308-headset",
+      "stratum": "general",
+      "utterance_id": "slurp:train:013992"
+    },
+    {
+      "audio_seconds": 3.901,
+      "headset": false,
+      "id": "slurp:train:014028:audio-1501697798",
+      "key": "slurp:slurp:train:014028:audio-1501697798",
+      "sample_id": "slurp:train:014028:audio-1501697798",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:014028"
+    },
+    {
+      "audio_seconds": 2.752,
+      "headset": true,
+      "id": "slurp:train:014160:audio-1501776062-headset",
+      "key": "slurp:slurp:train:014160:audio-1501776062-headset",
+      "sample_id": "slurp:train:014160:audio-1501776062-headset",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:014160"
+    },
+    {
+      "audio_seconds": 1.664,
+      "headset": true,
+      "id": "slurp:train:014649:audio-1434531405-headset",
+      "key": "slurp:slurp:train:014649:audio-1434531405-headset",
+      "sample_id": "slurp:train:014649:audio-1434531405-headset",
+      "stratum": "cooking",
+      "utterance_id": "slurp:train:014649"
+    },
+    {
+      "audio_seconds": 2.304,
+      "headset": true,
+      "id": "slurp:train:014771:audio-1490194084-headset",
+      "key": "slurp:slurp:train:014771:audio-1490194084-headset",
+      "sample_id": "slurp:train:014771:audio-1490194084-headset",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:014771"
+    },
+    {
+      "audio_seconds": 2.688,
+      "headset": true,
+      "id": "slurp:train:014875:audio-1501697119-headset",
+      "key": "slurp:slurp:train:014875:audio-1501697119-headset",
+      "sample_id": "slurp:train:014875:audio-1501697119-headset",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:014875"
+    },
+    {
+      "audio_seconds": 1.4718125,
+      "headset": false,
+      "id": "slurp:train:014956:audio-1490201980",
+      "key": "slurp:slurp:train:014956:audio-1490201980",
+      "sample_id": "slurp:train:014956:audio-1490201980",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:014956"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "headset": false,
+      "id": "slurp:train:014969:audio-1490199729",
+      "key": "slurp:slurp:train:014969:audio-1490199729",
+      "sample_id": "slurp:train:014969:audio-1490199729",
+      "stratum": "general",
+      "utterance_id": "slurp:train:014969"
+    },
+    {
+      "audio_seconds": 4.0954375,
+      "headset": false,
+      "id": "slurp:train:015034:audio-1502302019",
+      "key": "slurp:slurp:train:015034:audio-1502302019",
+      "sample_id": "slurp:train:015034:audio-1502302019",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:015034"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:015111:audio-1490261967",
+      "key": "slurp:slurp:train:015111:audio-1490261967",
+      "sample_id": "slurp:train:015111:audio-1490261967",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:015111"
+    },
+    {
+      "audio_seconds": 2.432,
+      "headset": true,
+      "id": "slurp:train:015119:audio-1501764236-headset",
+      "key": "slurp:slurp:train:015119:audio-1501764236-headset",
+      "sample_id": "slurp:train:015119:audio-1501764236-headset",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:015119"
+    },
+    {
+      "audio_seconds": 2.176,
+      "headset": true,
+      "id": "slurp:train:015152:audio-1490355055-headset",
+      "key": "slurp:slurp:train:015152:audio-1490355055-headset",
+      "sample_id": "slurp:train:015152:audio-1490355055-headset",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015152"
+    },
+    {
+      "audio_seconds": 3.52,
+      "headset": true,
+      "id": "slurp:train:015224:audio-1498568930-headset",
+      "key": "slurp:slurp:train:015224:audio-1498568930-headset",
+      "sample_id": "slurp:train:015224:audio-1498568930-headset",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015224"
+    },
+    {
+      "audio_seconds": 1.984,
+      "headset": true,
+      "id": "slurp:train:015226:audio-1501777510-headset",
+      "key": "slurp:slurp:train:015226:audio-1501777510-headset",
+      "sample_id": "slurp:train:015226:audio-1501777510-headset",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015226"
+    },
+    {
+      "audio_seconds": 4.8633125,
+      "headset": false,
+      "id": "slurp:train:015324:audio-1502891102",
+      "key": "slurp:slurp:train:015324:audio-1502891102",
+      "sample_id": "slurp:train:015324:audio-1502891102",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015324"
+    },
+    {
+      "audio_seconds": 2.815625,
+      "headset": false,
+      "id": "slurp:train:015383:audio-1500418159",
+      "key": "slurp:slurp:train:015383:audio-1500418159",
+      "sample_id": "slurp:train:015383:audio-1500418159",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015383"
+    },
+    {
+      "audio_seconds": 6.478375,
+      "headset": false,
+      "id": "slurp:train:015430:audio-1501407213",
+      "key": "slurp:slurp:train:015430:audio-1501407213",
+      "sample_id": "slurp:train:015430:audio-1501407213",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015430"
+    },
+    {
+      "audio_seconds": 7.423,
+      "headset": false,
+      "id": "slurp:train:015510:audio-1501688494",
+      "key": "slurp:slurp:train:015510:audio-1501688494",
+      "sample_id": "slurp:train:015510:audio-1501688494",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015510"
+    },
+    {
+      "audio_seconds": 4.388625,
+      "headset": false,
+      "id": "slurp:train:015585:audio-1501155951",
+      "key": "slurp:slurp:train:015585:audio-1501155951",
+      "sample_id": "slurp:train:015585:audio-1501155951",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015585"
+    },
+    {
+      "audio_seconds": 7.744,
+      "headset": true,
+      "id": "slurp:train:015654:audio-1502376443-headset",
+      "key": "slurp:slurp:train:015654:audio-1502376443-headset",
+      "sample_id": "slurp:train:015654:audio-1502376443-headset",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015654"
+    },
+    {
+      "audio_seconds": 2.304,
+      "headset": true,
+      "id": "slurp:train:015666:audio-1490200743-headset",
+      "key": "slurp:slurp:train:015666:audio-1490200743-headset",
+      "sample_id": "slurp:train:015666:audio-1490200743-headset",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015666"
+    },
+    {
+      "audio_seconds": 2.816,
+      "headset": true,
+      "id": "slurp:train:015749:audio-1490105794-headset",
+      "key": "slurp:slurp:train:015749:audio-1490105794-headset",
+      "sample_id": "slurp:train:015749:audio-1490105794-headset",
+      "stratum": "email",
+      "utterance_id": "slurp:train:015749"
+    },
+    {
+      "audio_seconds": 3.692,
+      "headset": false,
+      "id": "slurp:train:015769:audio-1501691750",
+      "key": "slurp:slurp:train:015769:audio-1501691750",
+      "sample_id": "slurp:train:015769:audio-1501691750",
+      "stratum": "email",
+      "utterance_id": "slurp:train:015769"
+    },
+    {
+      "audio_seconds": 6.336,
+      "headset": true,
+      "id": "slurp:train:016023:audio-1497556965-headset",
+      "key": "slurp:slurp:train:016023:audio-1497556965-headset",
+      "sample_id": "slurp:train:016023:audio-1497556965-headset",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016023"
+    },
+    {
+      "audio_seconds": 3.071625,
+      "headset": false,
+      "id": "slurp:train:016039:audio-1490359399",
+      "key": "slurp:slurp:train:016039:audio-1490359399",
+      "sample_id": "slurp:train:016039:audio-1490359399",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016039"
+    },
+    {
+      "audio_seconds": 3.904,
+      "headset": true,
+      "id": "slurp:train:016328:audio-1502377468-headset",
+      "key": "slurp:slurp:train:016328:audio-1502377468-headset",
+      "sample_id": "slurp:train:016328:audio-1502377468-headset",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016328"
+    },
+    {
+      "audio_seconds": 4.544,
+      "headset": true,
+      "id": "slurp:train:016584:audio-1501152161-headset",
+      "key": "slurp:slurp:train:016584:audio-1501152161-headset",
+      "sample_id": "slurp:train:016584:audio-1501152161-headset",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016584"
+    },
+    {
+      "audio_seconds": 3.692,
+      "headset": false,
+      "id": "slurp:train:016667:audio-1502101363",
+      "key": "slurp:slurp:train:016667:audio-1502101363",
+      "sample_id": "slurp:train:016667:audio-1502101363",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016667"
+    },
+    {
+      "audio_seconds": 3.204375,
+      "headset": false,
+      "id": "slurp:train:016746:audio-1501152199",
+      "key": "slurp:slurp:train:016746:audio-1501152199",
+      "sample_id": "slurp:train:016746:audio-1501152199",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016746"
+    },
+    {
+      "audio_seconds": 1.151875,
+      "headset": false,
+      "id": "slurp:train:016762:audio-1494548291",
+      "key": "slurp:slurp:train:016762:audio-1494548291",
+      "sample_id": "slurp:train:016762:audio-1494548291",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016762"
+    },
+    {
+      "audio_seconds": 3.901,
+      "headset": false,
+      "id": "slurp:train:016982:audio-1502112392",
+      "key": "slurp:slurp:train:016982:audio-1502112392",
+      "sample_id": "slurp:train:016982:audio-1502112392",
+      "stratum": "email",
+      "utterance_id": "slurp:train:016982"
+    }
+  ],
+  "knowledge_source_guard": {
+    "inherited_from": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+    "shared_recordings_with_filler": 0
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "count": 1080,
+    "family": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+    "family_roster_id": "SLURP-STAGE3-FILLER-FOLD-B-V1",
+    "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "per_stratum": {
+    "alarm": 10,
+    "audio": 10,
+    "calendar": 10,
+    "cooking": 10,
+    "datetime": 10,
+    "email": 10,
+    "general": 10,
+    "iot": 10,
+    "lists": 10,
+    "music": 10,
+    "news": 10,
+    "play": 10,
+    "qa": 10,
+    "recommendation": 10,
+    "social": 10,
+    "takeaway": 10,
+    "transport": 10,
+    "weather": 10
+  },
+  "roster_id": "SLURP-STAGE3-FILLER-FOLD-B-C05-V1",
+  "roster_role": "construction",
+  "roster_role_note": "construction: TRAIN rows whose five-sample pools are the rollout substrate of the training-free RL inner loop. No filler flight reads gold at runtime or produces an admission verdict; the offline pool read scores the sealed samples against TRAIN gold (development numbers only, owner decisions 28 and 86).",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260927,
+  "selection_rule": "Chunk c05 of SLURP-STAGE3-FILLER-FOLD-B-V1: the items the family receipt tags chunk 5, in the parent's order.",
+  "split_identity_hash": "c4630f930d747d0ae1eec3d2302f8a807c2340538798e29ee21f67707666efa2",
+  "split_role": "discovery",
+  "strata_counts": {
+    "alarm": 10,
+    "audio": 10,
+    "calendar": 10,
+    "cooking": 10,
+    "datetime": 10,
+    "email": 10,
+    "general": 10,
+    "iot": 10,
+    "lists": 10,
+    "music": 10,
+    "news": 10,
+    "play": 10,
+    "qa": 10,
+    "recommendation": 10,
+    "social": 10,
+    "takeaway": 10,
+    "transport": 10,
+    "weather": 10
+  }
+}

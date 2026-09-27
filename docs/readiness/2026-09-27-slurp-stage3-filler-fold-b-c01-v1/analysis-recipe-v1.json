@@ -1,0 +1,37 @@
+{
+  "authority": "cell ROLL-3's sealed-pool recipe (docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1/analysis-recipe-v1.json, scripts/flights/roll3/roll3_pool_read.sh, scripts/analysis/stage3_pool_spread_read.py) with TRAIN gold, exactly as cell ROLL-2's read scored TRAIN Fold A.",
+  "claim_boundary": "DESCRIPTIVE: per-sample official SLU-F1 and intent accuracy (owner decisions 133 and 137), the within-flight spread and the oracle ceiling as an UPPER BOUND. No admission, no gate, never a test claim.",
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 5,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-READ-V1"
+  },
+  "privacy": "No utterance text, gold label, transcript or model output is printed or persisted by the summary files: ids, sample indices, scores, flags and hashes only.",
+  "read_driver": "scripts/flights/filler/filler_pool_read.sh",
+  "read_run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-READ-V1",
+  "recipe_id": "slurp-stage3-filler-fold-b-c01-sealed-pool-v1",
+  "registered_at_utc": "2026-09-27T00:00:00.000000+00:00",
+  "registration_guard": "stages 2-4 run only after the READ row SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-READ-V1 is a countersigned (not DRAFT) contract-table row of docs/exposure-ledger.md, registered after the seal and before any number is read; scripts/flights/filler/filler_pool_read.sh 1 refuses otherwise and prints the row to register.",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-v1.json",
+    "rows": 180,
+    "sha256": "7723f4d5a6881aa5493d6f91823a18106761a117d0dd1d87b0dca816d2b43749",
+    "split_identity_hash": "a7f41a899ee466a3819c0601c73544459a33808a84320e44ef5ae68d738995ec"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1",
+    "attempt": "attempt-slurp-native-stage3-filler-fold-b-c01-generation-v1"
+  },
+  "schema": "saea-slurp-sealed-pool-recipe-v1",
+  "stages": {
+    "1_render": "scripts/analysis/stage3_rollout_score.py --stage render: one outputs COPY per Solver sample index (0..4). Reads no gold.",
+    "2_score": "scripts/analysis/stage3_rollout_score.py --stage score --scorer-id slurp-slu-official-projected-v3-train: each copy scored ONCE through the registered TRAIN-gold sibling scorer (the devel scorer refuses a TRAIN prediction). Never core.scoring_batch.",
+    "3_pairs": "scripts/analysis/stage3_rollout_score.py --stage pairs: per-row best / worst and the sealed delivered score.",
+    "4_spread": "scripts/analysis/stage3_pool_spread_read.py --cluster-key utterance_id --channel-key headset --seed 20260915 --draws 10000 --expected-seeds 1249110493,1249110494,1249110495,1249110496,1249110497 --expected-temperature 0.7 --sealed-scorer-id slurp-slu-official-train: the within-flight spread, the oracle best-of-5 ceiling (an UPPER BOUND) beside the sealed delivered score, the row accounting."
+  }
+}

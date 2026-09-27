@@ -1,0 +1,74 @@
+{
+  "_draft_note": "A DRAFT written by the registration agent for root to mint on the data root with scripts/flights/filler/filler_mint.py --chunks <spec>, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided' (core.flight.campaign.declared_readiness refuses it).",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/analysis-recipe-v1.json",
+      "sha256": "78d8bb9be06af9df21c866c91971b9472d155b13ab0c49c23d1151b7bdcf63a6"
+    },
+    "chunk_roster": {
+      "path": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-v1.json",
+      "sha256": "7723f4d5a6881aa5493d6f91823a18106761a117d0dd1d87b0dca816d2b43749"
+    },
+    "config_proof": {
+      "path": "tests/unit/test_filler_family.py",
+      "sha256": null
+    },
+    "family_roster": {
+      "path": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+      "sha256": "ddbdf5f499b406965ee47688b1fa3e50b67b0aeba9e39eac1c74ed4517b15e15"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "0446b6f51e159fc55af85f26ec34da922304d75e30df9fa398588bee5f0570cc"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/protocol-registered-v1.json",
+      "sha256": "0c198ebb9346a4e87a4a90e17bbd96df5f0b68996afbc4373e255dad01aefea0"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/registered-facts-v1.json",
+      "sha256": "965cbe85f5b34438e3a68f9c49fe22c67afbca44a0af4dfeda14b1e4fbd8b7ef"
+    },
+    "registration_base_commit": "bf483458"
+  },
+  "authorization_basis": "owner decision 162 (a standing, pre-approved filler family, minted ahead in a batch; the queue flies a chunk only when no main-line chain is ready and no flight is running) and owner decision 161 (the agreement term is part of the current best system).",
+  "budget": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1": {
+      "fit_endpoint_calls_cap": 304,
+      "generation_calls_cap": 76,
+      "gpu_hours_fit_inclusive": 1.0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 194
+    },
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1": {
+      "fit_endpoint_calls_cap": 13680,
+      "generation_calls_cap": 3420,
+      "gpu_hours_fit_inclusive": 2.0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 10159
+    },
+    "paid_api_calls": 0
+  },
+  "cell_kind": "Stage-3 rollout FILLER chunk (shared-rollout). DESCRIPTIVE asset, never an admission cell.",
+  "coordinator": null,
+  "decision": "Fly filler chunk c01 when the idle-filler queue finds the card idle: a sealed five-sample pool of the current best SLURP system on 180 TRAIN Fold B rows, after its four-row structural smoke.",
+  "decision_id": "slurp-stage3-filler-fold-b-c01-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1",
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-FIT-V1",
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-FIT-V1"
+  ],
+  "owner": "root",
+  "recorded_at_utc": null,
+  "schema": "saea-campaign-decision-v1",
+  "status": "DRAFT-NOT-MINTED"
+}
