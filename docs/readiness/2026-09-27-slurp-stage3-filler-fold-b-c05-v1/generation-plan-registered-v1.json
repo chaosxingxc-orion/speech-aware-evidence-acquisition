@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-native-stage3-filler-fold-b-c05-v1",
+  "composed_config_hash": "2baed6b4151bfef99dac00a71b4f22b1b2dc35127003acb7e68a63422d9a4ced",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-filler-fold-b-c05-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 2.0,
+    "planned_model_calls": 3420,
+    "planned_speech_audio_seconds": 10468,
+    "protocol_hash": "3ca0e214c41d353da9f3560038e00e0d43a043a833dd50fcd181527fe33faa73",
+    "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C05-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "c4630f930d747d0ae1eec3d2302f8a807c2340538798e29ee21f67707666efa2",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "core.flight.cli campaign over configs/campaign/slurp-native-stage3-filler-fold-b-c05-v1.json (one cell), queued ONLY by the idle-filler queue scripts/flights/filler/filler_queue.sh through scripts/flights/filler/batch_chain_filler.sh and the SAEA-Batch-Driver path (decision 77).",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-filler-fold-b-c05-v1",
+  "family_budget": {
+    "fit_endpoint_calls_cap": 13680,
+    "generation_calls_cap": 3420,
+    "gpu_hours_fit_inclusive": 2.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 10468
+  },
+  "plan_kind": "generation",
+  "prepared_phase_supply": {
+    "note": "NONE committed: the flip mints this cell's OWN first-phase supply under its own run id (item E16).",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-FILLER-FOLD-B-C05-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c05-v1/protocol-registered-v1.json",
+    "sha256": "6df49e9fe59cd08a2597525e3b845460527d4d1122d6bfc5f679e776ffb6972f"
+  },
+  "purpose": "Filler chunk c05 (owner decision 162): seal a 180-row x 5-sample rollout pool of the current best SLURP system on TRAIN Fold B rows, flown ONLY when the GPU would otherwise idle (the idle-filler queue: no flight running, no main-line chain ready, the np4 session resident and healthy). The pool is the rollout substrate of the training-free RL inner loop (sealed-credit-system-policy-v1), read OFFLINE at zero further GPU cost. DESCRIPTIVE by construction: no comparator, no gate, no admission claim, no superiority, transfer, generalisation or confirmatory statement. Development numbers only (owner decisions 28 and 86); never a test claim.",
+  "quality_read_gate": "No read before the complete sealed manifest with exactly five custodied solver_group samples per row exists; a partial manifest is never read; a failed smoke stops the arm.",
+  "registered_at_utc": "2026-09-27T00:00:00.000000+00:00",
+  "registration_base_commit": "bf483458",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-filler, branch fable/filler",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_ROOT_ADMISSION_AND_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

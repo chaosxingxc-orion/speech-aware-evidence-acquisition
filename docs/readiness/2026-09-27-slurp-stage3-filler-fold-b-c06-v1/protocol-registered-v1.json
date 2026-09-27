@@ -1,0 +1,75 @@
+{
+  "accounting": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C06-V1": {
+      "audio_seconds": 512.799437,
+      "expected_contacts": 1499,
+      "expected_wall_minutes": 23.8,
+      "fit_endpoint_calls_cap": 13680,
+      "generation_calls_cap": 3420,
+      "gpu_hours_fit_inclusive": 2.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 9744,
+      "rows": 180
+    }
+  },
+  "authority": "owner decision 162 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md): the standing rollout FILLER family; owner decision 161 (the agreement term retained into COMP-1, so it is part of the current best system); owner decisions 77 (GPU flights only through the batch driver scheduled task), 101 (the Stage-3 algorithm label), 28 / 86 (development numbers only); the measurement instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "cells": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C06-V1": {
+      "cell": "slurp-native-stage3-filler-fold-b-c06-v1",
+      "composed_config_hash": "bab4ea152cfe19c85f73dfe5f308bb5163b4f970641c3b7039bd3e122631e1c0",
+      "protocol_hash": "d6f6bfb8e402968a5d4f91be214d9f447f43042b5372683cac74604a75cf8386",
+      "rows": 180,
+      "split_identity_hash": "fbfaf96c49e9e7d131612ad38e262ba071aec999ee45f451d7d3d7e80056036e"
+    }
+  },
+  "claim_boundary": "DESCRIPTIVE. An asset, never an admission cell: no comparison, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Development numbers only (owner decisions 28 and 86); never a test claim.",
+  "decision_rule": {
+    "no_gate_number": "No threshold is pre-registered on any number this cell produces.",
+    "rule": "DESCRIPTIVE, structural acceptance only: a clean seal, every row delivered, exactly five custodied Solver samples per row with the five registered seeds at temperature 0.7, the plurality-commit replay reproducing the delivered answer, zero native task-contract calls."
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "execution_route": "core.flight.cli campaign over configs/campaign/slurp-native-stage3-filler-fold-b-c06-v1.json (one cell), queued ONLY by the idle-filler queue scripts/flights/filler/filler_queue.sh through scripts/flights/filler/batch_chain_filler.sh and the SAEA-Batch-Driver path (decision 77).",
+  "measurement_design": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C06-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "offline-sealed-pool",
+      "note": "Filler chunk c06 makes no effectiveness claim of its own: it seals a 180-row x 5-sample pool on TRAIN Fold B so that credit, selection, commit and verification rules of the training-free RL inner loop can be computed OFFLINE over sealed bytes. It is a batch under the instrument's 200-row MIN_BENEFIT_ROWS, so it is descriptive by size as well as by design; any benefit claim belongs to a later read over the pooled chunks, which declares its own block.",
+      "primary_metric": "slu_f1",
+      "rows": 180
+    }
+  },
+  "prohibited": [
+    "paper-scale-confirmatory profile",
+    "any test-split or DEV contact",
+    "paid API spend",
+    "transcript tokens anywhere",
+    "--allow-output-change at the flip",
+    "coordinate_fit (double-charges the FIT rows)",
+    "a second recovery re-registration",
+    "flying while a main-line chain is ready"
+  ],
+  "registered_at_utc": "2026-09-27T00:00:00.000000+00:00",
+  "registration_base_commit": "bf483458",
+  "run_ids": [
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C06-V1",
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C06-FIT-V1"
+  ],
+  "schema": "saea-registered-protocol-v1",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_ROOT_ADMISSION_AND_FLIP",
+  "the_form": "cell ROLL-2's grouped-Solver form (samples 5, temperature 0.7, seed_offset 0, plurality commit at min_support 3 / similarity 0.8, program phase-native-candidates-review-revise-samples5-v1 at max_contacts 19, no deliver_normaliser) composed with cell AGREE's agreement pins (intent-boundary Perception: recall k 60, w_agree 1.0, agreement_source = this roster's own self-excluded exemplar-intent table; fuse_coverage 8-1-8 unchanged). Every other key -- stores, releases, snapshots, prompts, role graph, scorers, geometry, session -- is ROLL-2's, byte for byte (the composed-diff proof in registered-facts-v1.json).",
+  "what_moved": {
+    "agreement_pins": [
+      "perception.k 8 -> 60",
+      "perception.rank_weights.w_agree 0.0 -> 1.0",
+      "perception.agreement_source -> prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FILLER-FOLD-B-V1/agreement.jsonl"
+    ],
+    "roster": "TRAIN Fold A 1,080 -> SLURP-STAGE3-FILLER-FOLD-B-C06-V1 (180 TRAIN Fold B rows)",
+    "roster_bound_pins": [
+      "vectors/slurp-intent-boundaries-train-fold-b-1080-v1/query-vectors-speech-segments.jsonl",
+      "vectors/slurp-stage3-filler-fold-b-v1/query-vectors-speech-content-v1.jsonl",
+      "prepared/SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-B-ALIAS-V1/query-dimension-alias.json"
+    ]
+  }
+}

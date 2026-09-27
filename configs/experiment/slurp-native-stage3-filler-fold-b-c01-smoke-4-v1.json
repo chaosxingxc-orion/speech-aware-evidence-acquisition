@@ -1,0 +1,86 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-filler-fold-b-c01-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-filler-fold-b-c01-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-filler-fold-b-c01-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Filler chunk c01 four-row smoke (owner decision 162), registered before contact on 2026-09-27 by scripts/flights/filler/derive_filler_cells.py from cell ROLL-2's fragments plus cell AGREE's agreement pins. HELD: root mints the chunk's admission receipt (scripts/flights/filler/filler_mint.py) and flips with scripts/flights/filler/filler_flip.sh, whose re-pin (scripts/flights/repin_cell.py --set-ready) appends the decision requirement and mints this cell's OWN first-phase supply under its own run id (item E16); the agreement-table requirement below is kept beside it (fixed 2026-09-27, relpath identity). --allow-output-change must never be passed. DESCRIPTIVE: an asset, never an admission cell.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The filler roster's OWN pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the committed FILLER BASE cell slurp-native-stage3-filler-fold-b-base-v1 -- the pinned exemplar snapshot, the pinned pool key vectors and the sealed TRAIN Fold B speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver. Zero model, server, encoder, embedder, scorer, network and GPU contacts (ledger row SAEA-SLURP-STAGE3-FILLER-FOLD-B-PREPARE-V1).",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FILLER-FOLD-B-V1/agreement.jsonl",
+            "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-27",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 76,
+    "planned_speech_audio_seconds": 194,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. The idle-filler queue HALTS on any STOP and never skips a failed chunk. This registration pre-authorises no recovery; a root-diagnosed recovery re-registration is a separate act. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 304,
+    "generation_calls_cap": 76,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 194
+  },
+  "fragment_kind": "saea-slurp-native-stage3-filler-fold-b-c01-smoke-4-v1",
+  "generation_budget": {
+    "cap": 76,
+    "definition": "76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling at samples 5 as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (1 x 5 + 3 + 1) = 19 -- cell ROLL-2's arithmetic, unchanged by the agreement pins (they move ranking, not the role graph). The target is ROLL-2's MEASURED rate, 8,996 contacts over 1,080 rows (8.33 per row), so about 33 contacts; a ceiling is a BOUND, never a target, and budgets are run-cumulative across every attempt of a run id.",
+    "target": 33
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+    "decision_population": "4 TRAIN Fold B rows of docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json (SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1), the first 4 rows of chunk c01 by the parent's order. Structural form proof only: no score and no read.",
+    "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+    "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "ids": [
+        "slurp:train:000010:audio-1502199193",
+        "slurp:train:000029:audio-1488538279",
+        "slurp:train:000092:audio-1488560082",
+        "slurp:train:000097:audio-1498564512"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of the filler family's composed form (ROLL-2's grouped Solver plus AGREE's agreement pins), flown before chunk c01's arm: five custodied Solver samples per row, the plurality-commit replay, the agreement table loading and the boundary channel still delivering eight entries, zero native task-contract calls, every request fitting. Scored by no one and read by no one. Filler chunk c01 (owner decision 162): seal a 4-row x 5-sample rollout pool of the current best SLURP system on TRAIN Fold B rows, flown ONLY when the GPU would otherwise idle (the idle-filler queue: no flight running, no main-line chain ready, the np4 session resident and healthy). The pool is the rollout substrate of the training-free RL inner loop (sealed-credit-system-policy-v1), read OFFLINE at zero further GPU cost. DESCRIPTIVE by construction: no comparator, no gate, no admission claim, no superiority, transfer, generalisation or confirmatory statement. Development numbers only (owner decisions 28 and 86); never a test claim.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-B-V2",
+  "stage3_algorithm": {
+    "id": "shared-rollout",
+    "note": "Filler chunks are the registered algorithm-neutral rollout substrate, exactly as cells ROLL-1, ROLL-2 and ROLL-3 declared it: the grouped Solver, its per-sample custody and its plurality commit, applying NO learned context and carrying NO credit_assignment or update operator -- hence 'shared-rollout'. The pools they seal are the rollout substrate of the training-free RL inner loop sealed-credit-system-policy-v1 (owner decision 162), whose credit and update operators run OFFLINE over these sealed bytes; this cell is TRAJECTORY COLLECTION, not a policy arm, and no verdict attaches to it.",
+    "operators_used": [
+      "rollout"
+    ]
+  }
+}

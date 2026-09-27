@@ -1,0 +1,296 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (repeated in the preregistration fence; this copy has precedence).",
+  "budgets": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1": {
+      "audio_seconds": 10.181625,
+      "expected_contacts": 33,
+      "expected_wall_minutes": 0.5,
+      "fit_endpoint_calls_cap": 304,
+      "generation_calls_cap": 76,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 194,
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1": {
+      "audio_seconds": 534.680625,
+      "expected_contacts": 1499,
+      "expected_wall_minutes": 23.8,
+      "fit_endpoint_calls_cap": 13680,
+      "generation_calls_cap": 3420,
+      "gpu_hours_fit_inclusive": 2.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 10159,
+      "rows": 180
+    }
+  },
+  "chunk": 1,
+  "composed_diff_against_roll2": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1": {
+      "against": "slurp-native-stage3-roll-2-fold-a-smoke-4-v1",
+      "agreement_pins": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.kind",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree"
+      ],
+      "bookkeeping": [
+        "cells",
+        "date",
+        "execution_plan.planned_speech_audio_seconds",
+        "experiment_id",
+        "failure_policy",
+        "family_budget.repeated_speech_audio_seconds_cap",
+        "fragment_kind",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "purpose",
+        "stage3_algorithm.note",
+        "stage3_placeholders_filled",
+        "what_the_train_exemplars_store_is",
+        "what_this_is"
+      ],
+      "composed_config_hash": "ce5f93020fafb38cc42549f12552c2534cf608b30c261ddbb12163af3d0fc368",
+      "dataset_fragment_keys_moved_with_the_roster": [
+        "audio_seconds_total",
+        "d1_manifest_sha256",
+        "d1_media_supplement",
+        "d1_media_supplement_sha256",
+        "items",
+        "runtime_view_sha256",
+        "source_binding_sha256",
+        "split_identity_hash",
+        "split_name"
+      ],
+      "other": [],
+      "parent_composed_config_hash": "dc6f8e55bd35b330767479d2e3ceba3b7a0bbb164db29a037d823b2d4d9be9f2",
+      "roster_pins": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+        "population.dataset_fragment",
+        "population.decision_population",
+        "population.roster_receipt",
+        "population.split_identity_hash",
+        "populations",
+        "preparation_source_receipts",
+        "split_id"
+      ],
+      "rule": "every composed path that differs from cell ROLL-2's is an AGREE agreement pin (perception k, rank_weights.w_agree, agreement_source), a roster pin (the two query_source pins, the population, the preparation_source_receipts edits and the TRAIN Fold B dataset view) or run-id / budget / prose bookkeeping; the boundary k / rank_weights / fuse / rank_policy / facet_source equal cell AGREE's; the Solver exemplar spec moves only its query file; anything else refuses"
+    },
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1": {
+      "against": "slurp-native-stage3-roll-2-fold-a-v1",
+      "agreement_pins": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.kind",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree"
+      ],
+      "bookkeeping": [
+        "cells",
+        "date",
+        "execution_plan.planned_gpu_hours",
+        "execution_plan.planned_model_calls",
+        "execution_plan.planned_speech_audio_seconds",
+        "experiment_id",
+        "failure_policy",
+        "family_budget.fit_endpoint_calls_cap",
+        "family_budget.generation_calls_cap",
+        "family_budget.gpu_hours_fit_inclusive",
+        "family_budget.repeated_speech_audio_seconds_cap",
+        "fragment_kind",
+        "generation_budget.cap",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.contact_cap",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "purpose",
+        "stage3_algorithm.note",
+        "stage3_placeholders_filled",
+        "what_the_train_exemplars_store_is",
+        "what_this_is"
+      ],
+      "composed_config_hash": "d4555edd3ce6251f41f2e12b95438929ba338ee3c04437c75f7a49cafbb8ea90",
+      "dataset_fragment_keys_moved_with_the_roster": [
+        "audio_seconds_total",
+        "d1_manifest_sha256",
+        "d1_media_supplement",
+        "d1_media_supplement_sha256",
+        "items",
+        "runtime_view_sha256",
+        "source_binding_sha256",
+        "split_identity_hash",
+        "split_name"
+      ],
+      "other": [],
+      "parent_composed_config_hash": "6864487942f0da788410197f380a873f5b0b558bca215ab6f278d4532d58d962",
+      "roster_pins": [
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+        "population.count",
+        "population.dataset_fragment",
+        "population.decision_population",
+        "population.roster_receipt",
+        "population.split_identity_hash",
+        "populations",
+        "preparation_source_receipts",
+        "split_id"
+      ],
+      "rule": "every composed path that differs from cell ROLL-2's is an AGREE agreement pin (perception k, rank_weights.w_agree, agreement_source), a roster pin (the two query_source pins, the population, the preparation_source_receipts edits and the TRAIN Fold B dataset view) or run-id / budget / prose bookkeeping; the boundary k / rank_weights / fuse / rank_policy / facet_source equal cell AGREE's; the Solver exemplar spec moves only its query file; anything else refuses"
+    }
+  },
+  "expected_spend_basis": "cell ROLL-2's sealed arm on the same form: 8,996 contacts for 1,080 rows over 8,558 s of campaign wall (batch-status arm-start 2026-09-26T16:00:01Z, arm-exit 18:22:39Z), i.e. 8.33 contacts and 7.92 s per row at np4. The agreement pins add +1.4 prompt tokens per row (AGREE's measured cost) and no contact.",
+  "owner_decision": 162,
+  "prepared_artifacts": {
+    "agreement_table": {
+      "builder": "scripts/build_slurp_intent_exemplar_agreement.py",
+      "builder_sha256": "61808ae88f5db02c205480ea5375459dbe5810a761504249d989241b751e53f3",
+      "contacts": {
+        "embedder": 0,
+        "encoder": 0,
+        "gpu": 0,
+        "model": 0,
+        "network": 0,
+        "paid_api": 0,
+        "scorer": 0,
+        "server": 0
+      },
+      "ledger_row": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-PREPARE-V1",
+      "measured": {
+        "distinct_facets_ever_voted_for": 60,
+        "pool_values_without_a_build_time_target": 0,
+        "roster_rows": 1080,
+        "rows_with_a_self_excluded_exemplar": 0,
+        "rows_with_no_vote": 0,
+        "self_excluded_exemplars": 0,
+        "vote_total_histogram": {
+          "20": 1080
+        }
+      },
+      "receipt": {
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FILLER-FOLD-B-V1/receipt.json",
+        "sha256": "7e1bfe8bd61df1cadea686feab2c40d9f02abfed1cb2aeb32247ddf92801dc89"
+      },
+      "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FILLER-FOLD-B-V1/agreement.jsonl",
+      "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911",
+      "source_cell": "slurp-native-stage3-filler-fold-b-base-v1",
+      "source_split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+      "target_snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "vote_snapshot_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9",
+      "why_its_own_table": "AGREE's table (prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1) is keyed by TRAIN Fold A sample ids and is self-excluded for them; a Fold B row has no line in it. The filler table is the same builder over the same vote store, vote spec and target store, formed from the FILLER BASE cell, whose only difference from the flown chunk cells in the vote channel is none."
+    },
+    "boundary_query": {
+      "alias_receipt": {
+        "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-B-ALIAS-V1/query-dimension-alias.json",
+        "sha256": "78de8aa2d30afab442d286b1a14919e1dfc031f79b007f62b3eebd747a9d0ea0"
+      },
+      "encode_receipt": {
+        "relpath": "preparation-runs/SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+        "sha256": "583d37669b3a8275be6a244454e21ebd7b5fbe1fd90af2b73f251d86bf7d00eb"
+      },
+      "relpath": "vectors/slurp-intent-boundaries-train-fold-b-1080-v1/query-vectors-speech-segments.jsonl",
+      "sha256": "83c5da6190fb2a65edf98a8f9ef35ff2cb310eb4e4b94eba9e04f9eedce9f299",
+      "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1"
+    },
+    "content_query": {
+      "builder": "scripts/build_slurp_query_content_derivative.py",
+      "byte_identity_cross_check": "the same transform over the same parent reproduces the independently built vectors/slurp-system-update-fold-b-v1/query-vectors-speech-content-v1.jsonl byte for byte (sha256 573a8a37a63d790d6b849c11676b9463de28c92eeb92ab3e99177181a947c67f)",
+      "ledger_row": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-PREPARE-V1",
+      "provenance": {
+        "relpath": "vectors/slurp-stage3-filler-fold-b-v1/query-vectors-speech-content-v1.provenance.json",
+        "sha256": "6a6d0d0ff8312abb6ccd2de8e1ecce9355e8bd0b5d0f1abc5c7ce89b47f4802c"
+      },
+      "relpath": "vectors/slurp-stage3-filler-fold-b-v1/query-vectors-speech-content-v1.jsonl",
+      "sha256": "573a8a37a63d790d6b849c11676b9463de28c92eeb92ab3e99177181a947c67f"
+    }
+  },
+  "registered_at_utc": "2026-09-27T00:00:00.000000+00:00",
+  "roster": {
+    "chunk": {
+      "audio_seconds_total": 534.680625,
+      "per_stratum": {
+        "alarm": 10,
+        "audio": 10,
+        "calendar": 10,
+        "cooking": 10,
+        "datetime": 10,
+        "email": 10,
+        "general": 10,
+        "iot": 10,
+        "lists": 10,
+        "music": 10,
+        "news": 10,
+        "play": 10,
+        "qa": 10,
+        "recommendation": 10,
+        "social": 10,
+        "takeaway": 10,
+        "transport": 10,
+        "weather": 10
+      },
+      "relpath": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-v1.json",
+      "roster_id": "SLURP-STAGE3-FILLER-FOLD-B-C01-V1",
+      "rows": 180,
+      "sha256": "7723f4d5a6881aa5493d6f91823a18106761a117d0dd1d87b0dca816d2b43749",
+      "split_identity_hash": "a7f41a899ee466a3819c0601c73544459a33808a84320e44ef5ae68d738995ec"
+    },
+    "family": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+      "roster_id": "SLURP-STAGE3-FILLER-FOLD-B-V1",
+      "sha256": "ddbdf5f499b406965ee47688b1fa3e50b67b0aeba9e39eac1c74ed4517b15e15"
+    },
+    "smoke": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "sha256": "682093819313c0d2e2a1aa137d2a10e05003dea328486ee213e090f250d77d85",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    },
+    "why_train_fold_b": "the exemplar pool of the current best system is every TRAIN utterance except Fold A and Fold B, and the runner refuses a query row that is a knowledge source; the family roster receipt proves the admissible universe is exactly TRAIN Fold B and its disjointness from every evaluation roster."
+  },
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The four-row structural smoke of the filler family's composed form proves FORM and nothing else (five custodied Solver samples per row, the plurality-commit replay, the agreement table loading, zero native task-contract calls, every request fitting). Scored by no one and read by no one; under the measurement instrument's rule 5 four rows can never be evidence of benefit.",
+      "primary_metric": "slu_f1",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "offline-sealed-pool",
+      "note": "Filler chunk c01 makes no effectiveness claim of its own: it seals a 180-row x 5-sample pool on TRAIN Fold B so that credit, selection, commit and verification rules of the training-free RL inner loop can be computed OFFLINE over sealed bytes. It is a batch under the instrument's 200-row MIN_BENEFIT_ROWS, so it is descriptive by size as well as by design; any benefit claim belongs to a later read over the pooled chunks, which declares its own block.",
+      "primary_metric": "slu_f1",
+      "rows": 180
+    }
+  },
+  "study_commit_at_registration": "bf483458"
+}

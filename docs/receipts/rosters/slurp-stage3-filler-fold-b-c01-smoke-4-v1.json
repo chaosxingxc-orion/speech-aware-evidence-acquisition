@@ -1,0 +1,87 @@
+{
+  "audio_seconds_total": 10.181625,
+  "authority": "owner decision 162 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md): a standing, pre-approved rollout FILLER family -- sealed five-sample pools of the current best SLURP system on TRAIN rows outside Fold A and outside every evaluation roster, in chunks of about 200 rows, each chunk its own run id, exposure rows and receipt.",
+  "carrier_lock_key": "slurp",
+  "chunk": 1,
+  "disjointness_proof": {
+    "inherited_from": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json"
+  },
+  "distinct_utterances": 4,
+  "draw_method": "No draw: a prefix of the chunk c01 receipt.",
+  "excluded_count": 0,
+  "generator": "scripts/flights/filler/build_filler_roster.py",
+  "headset_recordings": 0,
+  "items": [
+    {
+      "audio_seconds": 1.79175,
+      "headset": false,
+      "id": "slurp:train:000010:audio-1502199193",
+      "key": "slurp:slurp:train:000010:audio-1502199193",
+      "sample_id": "slurp:train:000010:audio-1502199193",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000010"
+    },
+    {
+      "audio_seconds": 2.93,
+      "headset": false,
+      "id": "slurp:train:000029:audio-1488538279",
+      "key": "slurp:slurp:train:000029:audio-1488538279",
+      "sample_id": "slurp:train:000029:audio-1488538279",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000029"
+    },
+    {
+      "audio_seconds": 4.18,
+      "headset": false,
+      "id": "slurp:train:000092:audio-1488560082",
+      "key": "slurp:slurp:train:000092:audio-1488560082",
+      "sample_id": "slurp:train:000092:audio-1488560082",
+      "stratum": "takeaway",
+      "utterance_id": "slurp:train:000092"
+    },
+    {
+      "audio_seconds": 1.279875,
+      "headset": false,
+      "id": "slurp:train:000097:audio-1498564512",
+      "key": "slurp:slurp:train:000097:audio-1498564512",
+      "sample_id": "slurp:train:000097:audio-1498564512",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:000097"
+    }
+  ],
+  "knowledge_source_guard": {
+    "inherited_from": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+    "shared_recordings_with_filler": 0
+  },
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "chunk_roster": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-v1.json",
+    "count": 1080,
+    "family": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+    "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "per_stratum": {
+    "iot": 2,
+    "takeaway": 1,
+    "weather": 1
+  },
+  "roster_id": "SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1",
+  "roster_role": "construction",
+  "roster_role_note": "construction: TRAIN rows whose five-sample pools are the rollout substrate of the training-free RL inner loop. No filler flight reads gold at runtime or produces an admission verdict; the offline pool read scores the sealed samples against TRAIN gold (development numbers only, owner decisions 28 and 86).",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260927,
+  "selection_rule": "The FIRST 4 items of chunk c01 in the parent's order: the structural form smoke of the family's composed form.",
+  "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
+  "split_role": "discovery",
+  "strata_counts": {
+    "iot": 2,
+    "takeaway": 1,
+    "weather": 1
+  }
+}
