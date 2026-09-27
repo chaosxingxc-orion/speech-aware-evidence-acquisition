@@ -37,7 +37,7 @@ probed.
 | roles (perception / solver / reviewer / planner) | 1 / 1 / 3 / 1 | 1 / 1 / 3 / 1 | yes |
 
 `form.agrees = true`, no disagreements. Composed config hash of the smoke cell at the pre-flip bytes:
-`fb153e85b17327ed41743dd7c1fff6165f6fb618222c998a895e088903b00fcc` (the only place this note quotes it).
+`5e91c6f83983da147e8d9931cbf74599499c95c6da2d9064fdfabfdafed89786` (the only place this note quotes it).
 
 Two absences are part of the form and were measured, not assumed:
 
@@ -111,3 +111,5 @@ recorded here, not re-stamped into the plan files, so the ledger's Plan SHA256 v
 ## What the verdict is
 
 ok means: the composed episode IS cell ROLL-2's registered grouped-Solver form (proof 1), the five Solver samples are one request drawn five times at the declared temperature (proof 2), and every smoke row walks the whole graph and delivers with the DEV-2000-ADDED knowledge artifacts resolving at every node boundary (proof 3). The supply counts are INFORMATION: four rows cannot decide whether a route is inert.
+
+Re-run at the flipped bytes after the smoke flip (the coordinator, 2026-09-27, zero contacts): ok = true, form.agrees = true; the composed hash above is the flipped one.
