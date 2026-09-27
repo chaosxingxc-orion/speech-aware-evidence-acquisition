@@ -13,6 +13,10 @@ session restart wiped it mid-campaign; from now on they live here and every sche
 | `batch_driver_task.sh`, `batch_chain_*.sh` | scheduled-task entry points: pin the batch flight worktree at a flight commit, write the queue, run the driver |
 | `serving_task_entry*.sh`, `serving_monitor_start*.sh`, `serving_switch_to_e21.sh`, `e21_wait_ready.sh` | the resident serving sessions per geometry (SLURP np4; E21 cddb000c np4 max1024) and their monitors |
 | `serving_switch_to_slurp.sh`, `slurp_wait_ready.sh` | the reverse geometry switch after the E35 seal (stop the E21 session, then the SLURP tasks restart from Windows) and its readiness wait |
+| `serving_swap.sh <slurp-np4\|a2t-np3\|e21-np4\|det-np1> [--dry-run]` | THE geometry swap (owner decision 163): swap lock + pending marker, precise generation-flight check, resident session mapped onto the geometry table, host-memory pre-check BEFORE the stop (`serving_session.sh host-memory`, guard 12.0 GB + 0.5 GB margin), clean stop + port 8080 verified free, the Windows tasks stopped/started through `saea_task.ps1 -Start` over WSL interop, the monitor 20 s later, the strict wait, restore of the previous geometry on any failure after the stop, one final JSON summary line (also appended to `/home/chao/serving-swap.jsonl`). Exit 0 swapped/no-op, 7 flight, 8 host memory, 9 swap lock, 10 resident state, 11 stop failed, 12 restored, 13 unrestored |
+| `serving_wait_ready.sh <target> [--since EPOCH]` + `serving_ready_probe.py` | the strict readiness wait: fresh `session.json` of this start, no stop record, `/health` ok, `/props` slot geometry equal to the fragment, a fresh monitor sample; exit 0 only when READY (2 timeout, 3 stopped early, 4 wrong geometry). `slurp_wait_ready.sh`, `a2t_wait_ready.sh`, `e21_wait_ready.sh` are thin callers |
+| `serving_lib.sh` | the geometry table (session id, fragment, task names, entry scripts, log globs per target) and the shared predicates: precise generation-flight detection (`core.flight.cli campaign\|worker`, `batch_driver.sh`, `lease_cli`, `flight.lock` -- never a model-free `prepare-supply`/`check`), CPU sidecars, the swap pending marker, and the decision-162 sidecar admission used by `prep_generic_task_entry.sh` and `prep_test_sample.sh` (refuse a CPU sidecar unless a GPU session is resident and running and no swap is pending) |
+| `queue_lib.sh` | the unattended-queue pattern as functions (`ql_init`, `ql_commit`, `ql_wait_driver_start`, `ql_wait_terminal`, `ql_halt_on_stop`, `ql_swap`, `ql_chain`, `ql_wait_sidecars_gone`); every function returns the real exit status -- see the ten-line example in its header |
 | `repin_cell_generic.sh`, `rprim_repin_smoke.sh`, `rprim_repin_arm.sh`, `rprim_flip_both.sh`, `batch_chain_rprim.sh` | the per-cell re-pin flip (environment-parameterised) with the R-PRIM callers, and the R-PRIM queue chain (smoke, then the 1,080-row arm) |
 | `lease_reconcile_e35.sh` | the flight-lock quiescence receipt + move-aside after an abort (never deletes `generation.guard`) |
 | `repin_loop_generic.sh`, `b1_check_summary.py` | the readiness flip loop around `scripts/flights/repin_cell.py` |
@@ -23,3 +27,14 @@ session restart wiped it mid-campaign; from now on they live here and every sche
 
 Paths inside are absolute WSL paths of this machine (the study checkout on `/mnt/d`, the data root on `/mnt/e`, the runtime
 root `/home/chao`); they are operations scripts, not library code, and are excluded from the engineering-base line budget.
+
+## Serving lifecycle rules (owner decisions 162 and 163)
+
+- A geometry swap is ONE command, `bash scripts/flights/batch/serving_swap.sh <target>`, run from WSL; never a WSL switch
+  script plus a separate Windows task switch. Dry-run first when in doubt (`--dry-run` prints the plan and every
+  precondition verdict and acts on nothing). The four `serving_switch_*.sh` scripts remain for the queues that call them
+  and now carry the same precise flight check and the host-memory pre-check before their stop.
+- A CPU sidecar (the 8081 packet preprocess) starts only while a GPU session is resident and running and no swap is
+  pending; the preparation launchers refuse otherwise (exit 10). A swap refuses (exit 8) instead of stopping the running
+  geometry when the host reading proves the next start would fail its 12 GB guard, and names the sidecar holding memory.
+- A readiness wait exits 0 only on READY; a queue records every exit status (`rc=0; cmd || rc=$?`) and halts on a STOP.

@@ -11,6 +11,12 @@
 #   scripts/serving_session.sh resident            (exit 0 = one is resident,
 #                                                   3 = none, 2 = cannot tell)
 #   scripts/serving_session.sh stop   [--session-id ID] [--stale]
+#   scripts/serving_session.sh host-memory [--min-host-free-gb 12.0] \
+#                                    [--margin-gb 0.0]  (exit 0 = start would
+#                                                   pass its host guard, or the
+#                                                   reading is unavailable;
+#                                                   4 = the reading proves it
+#                                                   would refuse)
 #
 # `start` launches ONE llama-server for that fragment's geometry, built by
 # exactly the argument builder a flight uses (core.session.build_server_command
@@ -66,7 +72,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 usage() {
-    sed -n '2,61p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
+    sed -n '2,67p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
 }
 
 if [[ $# -lt 1 ]]; then
@@ -79,9 +85,9 @@ case "$1" in
         usage
         exit 0
         ;;
-    start|status|stop|resident) ;;
+    start|status|stop|resident|host-memory) ;;
     *)
-        echo "serving_session.sh: unknown command '$1' (expected start|status|stop|resident)" >&2
+        echo "serving_session.sh: unknown command '$1' (expected start|status|stop|resident|host-memory)" >&2
         exit 2
         ;;
 esac

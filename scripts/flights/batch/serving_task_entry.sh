@@ -23,7 +23,9 @@ bash scripts/serving_session.sh start q4km-mmproj-free-slurp-native-bounded-perc
   --session-id serving-slurp-native-candidate-five-train-a-np4-v1 --runtime-root /home/chao > /home/chao/serving-slurp-native-np4-$(date -u +%Y%m%dT%H%M%SZ).log 2>&1 &
 W=$!
 echo "wrapper pid $W"
-for i in $(seq 1 45); do sleep 2; [ -f "$S/session.json" ] && [ "$(stat -c %Y "$S/session.json")" -ge "$T0" ] && break; done
+# Owner decision 163: wait for the new session.json as long as the wrapper lives (a load over 90 s used to leave the stale
+# stop record in place, and a flight refuses to attach to a session that has one), not a fixed 90 s.
+for i in $(seq 1 450); do sleep 2; [ -f "$S/session.json" ] && [ "$(stat -c %Y "$S/session.json")" -ge "$T0" ] && break; kill -0 $W 2>/dev/null || break; done
 if [ -f "$S/session.json" ] && [ "$(stat -c %Y "$S/session.json")" -ge "$T0" ] && [ -f "$S/session-stop.json" ]; then
   A=$S/archive-stopped-$(date -u +%Y%m%dT%H%M%SZ); mkdir -p "$A"; mv "$S/session-stop.json" "$S/.session-stop.lock" "$A/" 2>/dev/null && echo "stale stop record archived to $A"
 fi

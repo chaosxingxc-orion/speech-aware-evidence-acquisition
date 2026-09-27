@@ -1509,3 +1509,45 @@ def test_status_reports_the_current_host_reading_beside_the_session(
 
     reported = json.loads(capsys.readouterr().out)
     assert reported["host_memory"] == _HEALTHY_HOST_MEMORY
+
+
+# ---------------------------------------------------------------------------
+# ``host-memory`` (owner decision 163): the start guard's verdict on the
+# CURRENT reading, asked by serving_swap.sh BEFORE it stops the resident
+# geometry (2026-09-27: two restarts refused at 11.7 and 10.1 GB after the
+# running server had already been stopped).
+# ---------------------------------------------------------------------------
+
+
+def test_host_memory_verdict_applies_the_guard_plus_the_margin():
+    from speech_aware_evidence_acquisition.core.session.serving import host_memory_verdict
+
+    short = host_memory_verdict({"host_free_gb": 12.3}, min_host_free_gb=12.0, margin_gb=0.5)
+    assert short["admits"] is False and short["required_gb"] == 12.5
+    enough = host_memory_verdict({"host_free_gb": 12.6}, min_host_free_gb=12.0, margin_gb=0.5)
+    assert enough["admits"] is True
+    bare = host_memory_verdict({"host_free_gb": 12.3}, min_host_free_gb=12.0)
+    assert bare["admits"] is True
+
+
+def test_host_memory_verdict_fails_open_like_the_start_guard():
+    from speech_aware_evidence_acquisition.core.session.serving import host_memory_verdict
+
+    for reading in ({"host_free_gb": None}, {}, {"host_free_gb": True}):
+        verdict = host_memory_verdict(reading, min_host_free_gb=12.0, margin_gb=0.5)
+        assert verdict["admits"] is None and verdict["host_free_gb"] is None
+
+
+def test_the_host_memory_command_exits_four_only_on_a_proven_shortfall(monkeypatch, capsys):
+    import speech_aware_evidence_acquisition.core.session.serving as serving_module
+
+    args = build_parser().parse_args(["host-memory", "--margin-gb", "0.5"])
+    assert args.min_host_free_gb == 12.0 and args.margin_gb == 0.5
+    monkeypatch.setattr(serving_module, "read_host_memory", lambda: {"host_free_gb": 11.7})
+    assert args.handler(args) == serving_module.HOST_MEMORY_SHORT_EXIT == 4
+    assert json.loads(capsys.readouterr().out)["admits"] is False
+    monkeypatch.setattr(serving_module, "read_host_memory", lambda: {"host_free_gb": 20.0})
+    assert args.handler(args) == 0
+    monkeypatch.setattr(serving_module, "read_host_memory", lambda: {"host_free_gb": None})
+    assert args.handler(args) == 0
+    assert json.loads(capsys.readouterr().out.strip().splitlines()[-1])["admits"] is None
