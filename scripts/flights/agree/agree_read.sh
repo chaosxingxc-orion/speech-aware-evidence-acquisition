@@ -33,7 +33,16 @@ for PASS in vs-aa vs-plan; do
   # plan_cell_read.py needs a registered-facts shape (comparator_official, lock_official, ...) this package does
   # not carry; the programme-standard paired roster read takes the two arms directly. Resampling unit per the
   # recipe: the row (cluster key sample_id), 10,000 draws, seed 20260926; TRAIN gold through the -train sibling.
-  $PY -B slurp_paired_roster_read.py --stage all     --left-run "$L_RUN" --left-attempt "$L_ATT" --left-label "$L_LABEL"     --right-run $ARM_RUN --right-attempt $ARM_ATT --right-label "cell AGREE (w_agree 1.0, k 60, fuse 8-1-8)"     --scorer-id slurp-slu-official-train --expected-split-role discovery     --roster docs/receipts/rosters/slurp-evo-fold-a-v2.json --cluster-key sample_id     --split-identity-hash 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6     --repo-root "$MAIN" --data-root "$SPEECHRL_DATA_DIR" --seed 20260926 --draws 10000     --recipe-id slurp-stage3-agree-w1-fold-a-paired-analysis-v1     --title "Cell AGREE ($PASS): the intent-boundary agreement term on TRAIN Fold A"     --analysis-root "$ROOT" > "$ROOT/stage-all.log" 2>&1     || { echo "READ FAILED ($PASS)"; tail -8 "$ROOT/stage-all.log" | cut -c1-300; exit 2; }
-  echo "### $PASS done: $(ls "$ROOT" | tr '
-' ' ')"
+  $PY -B slurp_paired_roster_read.py --stage all \
+    --left-run "$L_RUN" --left-attempt "$L_ATT" --left-label "$L_LABEL" \
+    --right-run $ARM_RUN --right-attempt $ARM_ATT --right-label "cell AGREE (w_agree 1.0, k 60, fuse 8-1-8)" \
+    --scorer-id slurp-slu-official-train --expected-split-role discovery \
+    --roster docs/receipts/rosters/slurp-evo-fold-a-v2.json --cluster-key sample_id \
+    --split-identity-hash 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6 \
+    --repo-root "$MAIN" --data-root "$SPEECHRL_DATA_DIR" --seed 20260926 --draws 10000 \
+    --recipe-id slurp-stage3-agree-w1-fold-a-paired-analysis-v1 \
+    --title "Cell AGREE ($PASS): the intent-boundary agreement term on TRAIN Fold A" \
+    --analysis-root "$ROOT" > "$ROOT/stage-all.log" 2>&1 \
+    || { echo "READ FAILED ($PASS)"; tail -8 "$ROOT/stage-all.log" | cut -c1-300; exit 2; }
+  echo "### $PASS done: $(ls "$ROOT" | tr '\n' ' ')"
 done
