@@ -63,7 +63,8 @@
       "SEALED ARTIFACT, INVALID MEMORY PLAN (system batch-synthesis001)",
       "CREATED, NOT EVALUATED (system batch-synthesis001 format)",
       "NO QUALIFIED UPDATE (system event-credit001)",
-      "NO DEMONSTRATED TASK IMPROVEMENT (system memory batch002)"
+      "NO DEMONSTRATED TASK IMPROVEMENT (system memory batch002)",
+      "CONFLICT (the run-root relocation audit, owner decision 148(b); an engineering-base audit, not a cell)"
     ],
     "note": "ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` field, because that is what the KC-E1f v2 re-decision's own first line says: \"**ADMITTED**, provisionally and with a replication obligation fixed in section 3\"."
   },
@@ -105,15 +106,15 @@
       "comparator_locked_at": "intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06)",
       "own_null_measured": "MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188",
       "own_null_source": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
-      "cells_flown": 43,
+      "cells_flown": 44,
       "admitted": 1,
       "aligned": 0,
       "neutral": 6,
       "rejected": 10,
-      "instrument": 18,
+      "instrument": 19,
       "closed_unread": 3,
       "pending": 12,
-      "rows": 50,
+      "rows": 51,
       "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     },
     {
@@ -4937,6 +4938,112 @@
       "flown": true,
       "pending": false,
       "provisional": null
+    },
+    {
+      "cell_id": "SLURP-DET",
+      "carrier": "SLURP",
+      "layer": "Stage-3 instrument (serving-geometry determinism pair)",
+      "title": "DET - the locked v2.0 plan flown twice, request-identical, in one chain on a single-slot prompt-cache-off serving geometry (np1 x 24,576, --no-cache-prompt, no --slot-prompt-similarity) on the first 50 TRAIN Fold A rows: per-row byte identity of the delivered answer between the passes, the pair's paired deltas, and (owner decision 140) the geometry's throughput beside the resident np4",
+      "date": "2026-09-27",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1",
+        "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1",
+        "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-READ-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-27-slurp-det-np1-pair-read.md",
+      "receipt": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/",
+      "preregistration": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1-preregistration.md",
+      "status": "DESCRIPTIVE (a reproducibility count on a 50-row TRAIN Fold A prefix whose pair is its own control; no admission, no effectiveness, superiority or generalisation claim, no floor re-estimate, no disposition)",
+      "status_source": "h1",
+      "status_quote": "# Cell DET read: 50 of 50 rows byte-identical between two request-identical passes on one slot with the prompt cache off (DESCRIPTIVE)",
+      "comparator": {
+        "text": "none: the pair is its own control (pass B against pass A, request-identical, consecutive in one chain on one resident session). ROLL-AA's within-flight np4 statistic (183 of 200 byte-identical, 91.5 %) and the cross-flight np4 disagreement of the instrument note (about 28 % of raw outputs, about 5 % of intents; VAR1 PLAN vs PLANR +1.87 pp SLU-F1, CI95 [+0.41, +3.36]) are reported beside, never as a comparator.",
+        "source": "docs/results/2026-09-27-slurp-det-np1-pair-read.md"
+      },
+      "rule": {
+        "text": "none as an effectiveness rule: the cell counts byte-identical rows and decides nothing (form-proof, claims_benefit false, expected_effect_pp 0.0, stage3_algorithm none). The recipe's gates: STOP unless both attempts FINALIZED and both manifests COMPLETED with an empty study_repo_dirt, both bound to the roster's split identity, both outputs files carrying exactly the roster's ids and every delivered text re-hashing to its recorded digest; per-row byte identity with the per-stratum table; the np4 statistics reported beside; paired deltas by row bootstrap (10,000 draws, seed 20260915) and flip shares where the per-sample rows carry the parsed prediction; throughput per pass beside ROLL-2's np4 numbers in one table; the routing rule quoted.",
+        "source": "docs/results/2026-09-27-slurp-det-np1-pair-read.md"
+      },
+      "primary": {
+        "text": "50 of 50 rows deliver a byte-identical answer between pass A and pass B (share 1.0; every stratum complete); scenario_action_exact disagreements 0 of 50; paired per-row SLU-F1 and intent deltas 0.0 pp with CI95 [0.0, 0.0] and sd 0.0; official scores identical on both passes (intent 84.00 %, scenario 84.00 %, action 90.00 %, SLU-F1 66.58 %, span F1 65.62 %); the intent-flip and entity-set-flip shares carry denominator 0 because the sealed per-sample scores hold no parsed prediction, so their zero is entailed by byte identity rather than measured through the scorer.",
+        "source": "docs/results/2026-09-27-slurp-det-np1-pair-read.md"
+      },
+      "margin": {
+        "text": "none - a byte-identity count and paired deltas of exactly 0.0 with CI95 [0.0, 0.0]; no bar and no margin applies. Throughput (decision 140): 15.09 / 14.89 contacts per minute and 1,991.6 / 1,965.4 prompt tokens per second on np1 with the cache off, against 63.07 / 9,515.8 on the resident np4 (ROLL-2 sealed arm): about 4.2x and 4.8x slower.",
+        "source": "docs/results/2026-09-27-slurp-det-np1-pair-read.md"
+      },
+      "margin_kind": "none - row bootstrap CI95 (10,000 draws, seed 20260915) around a zero paired delta",
+      "guards": {
+        "text": "STOP gate held on every clause (same study commit 99a3f1f5 on both passes, clean tree, delivered text re-hashed on both, expected session serving-slurp-native-det-np1-nocache-v1); manifests COMPLETED, attempts FINALIZED, 50 of 50 admitted and parsed on each pass, scored once each; both passes match on every sealed spend counter (208 contacts, 1,647,247 prompt and 12,426 completion tokens, Planner ACCEPT 49 / REVISE 3, deliver-normaliser changed 3 rows); dispositions finite_completion 1 row (the same row on both passes), context compaction 0, planner_action_illegal 0, tool calls 0.",
+        "source": "docs/results/2026-09-27-slurp-det-np1-pair-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "per pass 208 generation contacts of the 550 cap (4.16 per row), 445.863 s of repeated speech audio of the 1,184 cap, 13.00 / 13.23 monitored GPU-active minutes (0.2167 / 0.2204 GPU-h) in 13.55 / 13.77 min windows, 1,647,247 prompt / 12,426 completion tokens, 0 tool calls; whole cell 416 contacts, 891.725 s, 0.4371 GPU-h against a registered expectation of about 502 contacts and 1.36 GPU-h; the two FIT identities opened no attempt (208 tokenizer-class fit receipts inside each generation attempt).",
+        "source": "docs/results/2026-09-27-slurp-det-np1-pair-read.md"
+      },
+      "next_step": {
+        "text": "the owner's, in conversation (decision 139): the recipe's pre-declared routing rule (50 of 50 identical -> the coordinator registers the 200-row re-estimate) is quoted in the read and not applied; a 50-row cell cannot support a floor re-estimate; adoption of any geometry is decided on throughput (decision 140), and np1 is not adopted for sampling-heavy work on determinism alone.",
+        "source": "docs/results/2026-09-27-slurp-det-np1-pair-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "The reading the note states: the between-flight offset measured on np4 (instrument note section 2b) is a serving property of four-slot continuous batching with the prompt cache on over a q8_0 KV cache, not of the model or the harness, because the same model, q8_0 KV cache, harness, prompts and packets repeat byte for byte on one slot with the cache off; what the cell removed was batch composition and cache state, the quantised KV cache stayed. Wire-envelope digests (response_sha256) differ between the passes as they carry per-request fields; the identity is on the delivered answer text. The descriptive paired roster read (recipe slurp-stage3-det-np1-fold-a-50-paired-roster-read-v1) ran beside the primary read and carries no bar; its stage log is empty (0 bytes) while its seven files are present and hashed.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
+    },
+    {
+      "cell_id": "INFRA-RUNROOT-AUDIT",
+      "carrier": "all carriers (engineering base)",
+      "layer": "engineering base",
+      "title": "Run-root relocation audit (owner decision 148(b)): can the run root move from $SPEECHRL_DATA_DIR/runs to ext4 without weakening an enforcement point or breaking cited hashes?",
+      "date": "2026-09-27",
+      "run_ids": [],
+      "verdict_note": "docs/results/2026-09-27-run-root-relocation-audit.md",
+      "receipt": "docs/results/2026-09-26-slurp-seal-path-profile.md",
+      "preregistration": null,
+      "status": "CONFLICT (not implemented; owner decision 148(b))",
+      "status_source": "h1",
+      "status_quote": "# Run-root relocation audit (owner decision 148(b)): CONFLICT -- the run root does not move",
+      "comparator": {
+        "text": "none: an inventory of the code paths, receipts, confinement rules, lock readers and string-pinned records that resolve run outputs through the E: data root, not a measurement.",
+        "source": "docs/results/2026-09-27-run-root-relocation-audit.md"
+      },
+      "rule": {
+        "text": "owner decision 148(b): every check, receipt, confinement rule, lock reader and no-duplication rule that assumes run outputs live under the E: data root is inventoried; if none conflicts, run outputs are written to ext4 during a flight and the immutable sealed bundle is synced to E: as the archive after the seal; if any conflicts, the audit names it and the move waits. The standing rule that only mlruns lives on ext4 is amended only by the audit's outcome.",
+        "source": "docs/results/2026-09-27-run-root-relocation-audit.md"
+      },
+      "primary": {
+        "text": "three conflicts, so the run root does not move: (1) sealed manifests bind absolute artifact paths (core/bundle/manifest.py:41) and verify_bundle confines outputs, raw_trace, trace_manifest and scores to the manifest's own directory (core/bundle/verify.py:69-77 into core/bundle/artifacts.py:42), so a bundle sealed on ext4 and synced byte-identically to E: fails verification and rewriting its paths changes manifest_sha256, which is cited in 371 docs files, 101 configs, 72 scripts and 65 tests; (2) persist_flight_receipts positively confines flight-receipts.json to $SPEECHRL_DATA_DIR/runs (core/flight/receipts.py:203-209); (3) the bundle is not immutable at the seal, because deferred scoring rewrites the manifest through _attach_scores and writes scores.json and the ledger rows beside it afterwards (core/bundle/finalize.py:164-200, core/bundle/manifest.py:336-342), and the batch driver's inspect step follows the manifest's absolute paths verbatim.",
+        "source": "docs/results/2026-09-27-run-root-relocation-audit.md"
+      },
+      "margin": {
+        "text": "not applicable",
+        "source": "docs/results/2026-09-27-run-root-relocation-audit.md"
+      },
+      "margin_kind": "none",
+      "guards": {
+        "text": "the seal tax is recovered instead by the two code fixes of decision 148(a) on fable/tracefix (TraceSink.emit per-record open/append/close, 355.6 s per flight; read_attempt_trace_facts 8 KiB line scan, 14.6 s per seal), leaving about 6.7 s per seal to the mount; bash scripts/flights/batch/main_gates_generic.sh at master 1df49946: all seven exit 0.",
+        "source": "docs/results/2026-09-27-run-root-relocation-audit.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "model-free: zero model, server, encoder and scorer contacts; no file under src/ changed.",
+        "source": "docs/results/2026-09-27-run-root-relocation-audit.md"
+      },
+      "next_step": {
+        "text": "none from this audit: the move waits. A relocation, if ever wanted, has a manifest schema change as its precondition (run-dir-relative artifact paths, or a recorded run_root plus relative paths, with verify_bundle confining by relative path) and a migration for the cited hashes -- an owner decision, not a switch.",
+        "source": "docs/results/2026-09-27-run-root-relocation-audit.md"
+      },
+      "umbrella_values": [],
+      "notes": "Entered from the coordinator's draft (inventory at master 1df49946) with four citation corrections made while verifying every path:line against master e85b570c, where src/ and scripts/ are unchanged since 1df49946: core/bundle/manifest.py:40 -> :41; the confinement call sited at core/bundle/verify.py:69-77 (confine_to=run_dir_resolved) into _verify_artifact at core/bundle/artifacts.py:42; scripts/analysis/slurp_seal_path_profile.py:483 (the path rewrite) plus :676 (the verification label); session/serving.py and session/receipt.py -> core/session/serving.py:224 and core/session/receipt.py:246. The draft's count of 429 docs files pinning speechrl-data/runs/ literally was not reproduced at e85b570c (414 with the trailing slash, 423 without) and stands as the draft's own. Not a cell: no flight, no run id, no carrier; tally none so that no carrier summary counts it.",
+      "tally": "none",
+      "flown": false,
+      "pending": false,
+      "provisional": null
     }
   ],
   "operational_recovery": {
@@ -5648,7 +5755,8 @@
       "SLURP-VAR-1-AA",
       "SLURP-VAR-2",
       "SLURP-VERIFY-1",
-      "SLURP-CONV"
+      "SLURP-CONV",
+      "SLURP-DET"
     ],
     "algorithm_registry": {
       "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects were observed while these rows were written. The first is REPAIRED since: gepa-reflective-pareto-v1 and inference-time-verification-v1 both read status='planned' although CELL-1-GEPA and VERIFY-1 had flown and sealed, and both were corrected to status='base-loop' in commit 8b18f4ef of 2026-09-26 -- a status is a fact about this repository, not a statement of intent. The second stands and is reported rather than repaired: the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes), and this ledger resolves none of them.",
