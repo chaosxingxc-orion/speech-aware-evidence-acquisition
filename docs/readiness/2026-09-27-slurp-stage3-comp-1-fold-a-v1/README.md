@@ -1,0 +1,100 @@
+# Cell COMP-1: the first composed Stage-3 arm
+
+Registered before contact 2026-09-27 at study commit `81307ac3` (owner decisions 138 and 152);
+all three cells **held**. Nothing here authorises a flight, a flip or an admission entry.
+
+**THE EXPECTATION IS NOT DECLARED YET, ON PURPOSE.** `stage3_measurement.SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1.expected_effect_pp`
+is the literal string `TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS` in BOTH places the gate reads:
+`registered-facts-v1.json` (top-level `stage3_measurement`, canonical) and the fenced json block of
+`../2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md`. Owner decision 139 forbids a prior; decision 152 says the number is composed by the
+coordinator from the AGREE and KPROBE reads' measured m values. Until the coordinator replaces the string with
+a number in both places, `scripts/checks/stage3_effect_floor_check.py` refuses the arm as
+`unparsable-declaration` -- **that refusal is the intended state of this package**, and the flip must not be
+run before it clears. What the coordinator composes over is registered here: m_agree = 32 of 70 (read), m_kprobe
+(pending), the per-row headroom 0.092615 pp intent, and the four exclusive classes below -- the two
+newly-delivered sets share 47 of their 78 rows, so the two m values do not add.
+
+**What COMP-1 is.** The locked v2.0 plan (the sealed PLAN arm `SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1`) with FOUR changes composed,
+each registered and measured separately, and nothing else: (1) the agreement term exactly as cell AGREE carries
+it -- `w_agree` 1.0 over the self-excluded exemplar-intent vote, recall `k` 60, delivered `fuse_coverage` 8-1-8
+([`docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1`](../2026-09-26-slurp-stage3-agree-w1-fold-a-v1/README.md)); (2) the centroid boundary key exactly as cell KPROBE pins it --
+`facet_source` `prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl` sha256 `16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532`
+([`docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1`](../2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/README.md)); (3) the citation contract as a row-127 no-harm base item (decision
+152): policy `phase-native-candidates-review-revise-cited-v1`, Solver `response_format_id` `saea-solver-cited-answer-v1`,
+instruction `probes/slurp_native_role_solver_cited_v1.txt`, `deliver_normaliser`
+`saea-deliver-cited-answer-normalise-v3-v1` (`rails/solver_citation.py`; +134 instruction tokens per Solver contact,
++26 output skeleton and 12.71 per cited id, measured on the sealed PLAN trace; byte-identical default); (4) nothing
+else. The composed-config diff against the locked PLAN cell is proven in `registered-facts-v1.json`
+(`composed_config_diffs`: `arm_vs_locked_plan` = the three factor groups + `k` 8 -> 60 + bookkeeping;
+`aa_vs_locked_plan` = `k` alone + bookkeeping; `arm_vs_aa` = the three factor groups ALONE; `anything_else` empty
+in every entry) and re-proven by `tests/unit/test_comp1_config.py`.
+
+**Three cells, one chain.** `configs/campaign/slurp-native-stage3-comp1-fold-a-v1.json` carries the A/A replicate **and** the arm (instrument rule 4); the
+four-row smoke is outside the plan and never scored. The A/A is the PLAN lock's own bytes -- `w_agree` 0.0, no
+`agreement_source`, the written key, the un-armed citation default -- at the same recall `k` 60, so the two arms
+differ in the three composed factors alone. **Its prepared first-phase supply reproduces the sealed comparator's
+output digest `ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f` on all 1,080 rows (verified in this registration; 8,624 selected value ids).**
+The arm's own prepared supply carries output digest `ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a` (1,079 rows seeded, 8,626 ids)
+and the smoke's `1d55ea73ae0ef4ef2d175e66303eaa5b500c7fc2a3ac356f3808686deba051e0` (4 rows).
+
+**Composed delivery, measured model-free before contact** (`attribution-classes-v1.json`, by `scripts/flights/comp1/comp1_attribution_classes.py`):
+of the 191 PLAN intent-wrong rows the locked plan delivers the gold boundary entry on 86, the agreement term alone on
+156, the centroid key alone on 136, and **the composition on 162 (84.8 %)**. The five exclusive classes decision
+152's read is attributed over, membership fixed now, outcome read after the seal:
+
+| class | rows | delivered under COMP-1 | by bank class |
+| --- | ---: | ---: | --- |
+| delivered-but-wrong (delivered under the locked plan) | 86 | 82 | {'INTENT-COVERED': 59, 'INTENT-UNCOVERED': 27} |
+| newly-by-both (in CONV's 70 and KPROBE's 55) | 47 | 46 | {'INTENT-UNCOVERED': 47} |
+| newly-by-agree (CONV's roster only) | 23 | 23 | {'INTENT-UNCOVERED': 23} |
+| newly-by-centroid (KPROBE's roster only) | 8 | 6 | {'INTENT-COVERED': 1, 'INTENT-UNCOVERED': 7} |
+| catch-all | 27 | 5 | {'INTENT-COVERED': 1, 'INTENT-UNCOVERED': 26} |
+
+Seven rows a single factor or the plan delivers are NOT delivered under the composition, and five catch-all rows are
+delivered only under it (ids in the file). On the whole roster the composition gains delivery on 107 rows and loses
+it on 6 (by bank class in the file; the harm side of the read). **One row is seeded with no boundary entry at
+all** (`slurp:train:015793:audio-1490106752`, INTENT-UNCOVERED, catch-all): its sealed speech vector has cosine -0.0039 to its nearest
+centroid key (negative to all 60, against +0.0533 to the nearest written key), the fuser admits a candidate only at
+cosine >= tau 0.0, so nothing is admitted -- a property of the centroid key alone, tolerated by the runtime and
+reported by the read.
+
+**Fit.** The prompt budget binds to the live 24,576-token slot with a one-eighth reserve; the locked plan's Solver
+phase already reads COMPACT_REQUIRED with a positive physical margin (2,755 tokens at 21,278 rendered) and proceeds
+under `compact-or-abstain`; the cited Solver instruction adds 134 tokens, leaving a positive physical margin of about
+2,621 before compaction. The runtime's own `check` measurement is folded into `registered-facts-v1.json` (`fit`).
+
+**`stage3_algorithm`.** The arm and the smoke carry `sealed-credit-system-policy-v1` with `operators_used`
+`["context_application"]` -- the family's step (iv), the re-execution of a composed policy chosen and credited over
+sealed bytes, beside its in-chain replicate; this cell performs no rollout, scoring, credit or update of its own, and
+the citation credit table it seals is the INPUT to the next round's credit. The A/A carries `none`.
+
+| file | what it holds |
+| --- | --- |
+| `../2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md` | the preregistration proper, including the `stage3_measurement` fence (placeholder to be filled) |
+| `registered-facts-v1.json` | every model-free fact, the composed-config diffs, the CANONICAL `stage3_measurement` (placeholder to be filled), the two fill points |
+| `protocol-registered-v1.json` | identities, hashes, budgets, the decision rule, the claim boundary |
+| `generation-plan-registered-v1.json` / `fit-plan-registered-v1.json` | the arm's plans |
+| `aa-generation-plan-registered-v1.json` / `aa-fit-plan-registered-v1.json` | the in-chain A/A's plans |
+| `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the four-row smoke's plans |
+| `analysis-recipe-v1.json` | the paired read and the per-class attribution table, step by step |
+| `attribution-classes-v1.json` | the 191 rows' class membership and composed delivery, fixed before contact |
+| `root-admission-draft-v1.json` | the decision receipt root mints with `scripts/flights/comp1/comp1_mint_receipt.py` |
+
+**Budgets (the AGREE arithmetic; the citation adds tokens, never contacts).** Per generation cell 11880 contacts
+(1,080 x 11, run-cumulative), 47520 FIT endpoints, 6480 native task-contract calls,
+33930 repeated speech seconds, 12.0 GPU hours, one official complete score; the smoke
+44 / 176 / 117 s, no score.
+
+**Declare, mint, flip, queue.** (1) The coordinator replaces the placeholder with the composed number in the two
+places named above and commits. (2) Root countersigns the seven DRAFT exposure rows and mints
+`coordination/slurp-stage3-comp1-fold-a-v1/root-admission-v1.json` from the draft with `scripts/flights/comp1/comp1_mint_receipt.py` (decision id `slurp-stage3-comp1-fold-a-admission-v1`,
+the six eligible run ids). (3) `scripts/flights/comp1/comp1_flip.sh` re-pins smoke, A/A and arm through
+`repin_loop_generic.sh` until the package converges at one HEAD; `--allow-output-change` is never passed; the flip
+re-mints each cell's own supply and the A/A's output digest must again be `ba5e1faa...`. (4)
+`scripts/flights/comp1/batch_chain_comp1.sh` queues the smoke, then the A/A + arm campaign, behind whatever occupies
+the np4 session (decision 77).
+
+**Not authorised by this package.** No flight before the expectation is declared, the receipt is minted and all
+three cells are flipped; no contact by this registration; no re-flying of the comparator; no test-split, Fold B or
+DEV read; no fourth factor; no store rebuild or release; no re-pin of the 211 committed configs; the citation part is
+never reported as a gain.
