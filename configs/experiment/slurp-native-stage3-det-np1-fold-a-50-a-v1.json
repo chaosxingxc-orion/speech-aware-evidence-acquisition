@@ -1,0 +1,138 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-det-np1-fold-a-50-a-baseline-v1",
+      "cell_id": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Cell DET pass A, registered before contact on 2026-09-26 from the sealed PLAN lock fragments by script (decision 58): the locked plan on a single-slot, prompt-cache-off serving geometry, flown twice in one chain. HELD: root stops the resident np4 session, starts serving-slurp-native-det-np1-nocache-v1 from q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1, mints coordination/slurp-stage3-det-np1-fold-a-50-v1/root-admission-v1.json (decision id slurp-stage3-det-np1-fold-a-50-admission-v1) with the four eligible run ids and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement. The requirements list is empty by design (core.flight.repin._set_preparation_requirement rewrites every preparation entry) and --allow-output-change must never be passed: pass B's supply must reproduce pass A's byte for byte. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-det-np1-fold-a-50-admission-v1",
+            "relpath": "coordination/slurp-stage3-det-np1-fold-a-50-v1/root-admission-v1.json",
+            "sha256": "a825151a83c3a9de04e15504b6c43167a641546d04b00bf3f9947966f8993497",
+            "reason": "Decision slurp-stage3-det-np1-fold-a-50-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1/phase-supply-v1.json",
+            "sha256": "87c185b7deaf1e356e2b16f87d43ca335dc6e8b3775634b5550f032d665795b5",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1"
+    }
+  ],
+  "date": "2026-09-26",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 2.0,
+    "planned_model_calls": 550,
+    "planned_speech_audio_seconds": 1184,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration for this run, and a second failure closes the pass: the fix is proven on a four-row dry run first. A resident-session identity refusal (the np4 session still resident, or a session started from a different fragment) is not a flight failure and spends no contact: the coordinator swaps the session and relaunches. A partial manifest is never scored and never read, and a pass that seals alone answers nothing: the read needs both.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 2200,
+    "generation_calls_cap": 550,
+    "gpu_hours_fit_inclusive": 2.0,
+    "native_task_contract_calls_cap": 300,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 1184
+  },
+  "fragment_kind": "saea-slurp-native-stage3-det-np1-fold-a-50-a-v1",
+  "generation_budget": {
+    "cap": 550,
+    "definition": "The locked plan's role graph is unchanged: perception 1, solver 1, reviewer 3, planner 1, max_revisions 1, so rails.native_episode_config.load_native_episode_config resolves the program ceiling 1 + 2 * (1 + 3 + 1) = 11 contacts per row and 50 x 11 = 550 is the exact program maximum rather than a conservative safety bound. The sealed PLAN arm's realised rate was 5,425 contacts over 1,080 rows (5.023 per row), which on these 50 rows is about 251 contacts per pass. GPU hours: PLAN's own 3.6819 h per 5,425 contacts is 0.000679 h per contact on FOUR overlapping slots; a single slot serves one request at a time, so the per-contact cost is assumed to rise by up to 4x -- about 0.6814 h expected and 1.4931 h at the whole contact ceiling, registered as 2.0 h per pass. Both figures are assumptions the flight measures. The budget is RUN-CUMULATIVE across every attempt of this run id.",
+    "target": 251
+  },
+  "population": {
+    "count": 50,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The first 50 rows, in roster order, of TRAIN Fold A (SLURP-EVO-FOLD-A-V2), committed as docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json (SLURP-STAGE3-DET-FOLD-A-50-V1); the same first 50 rows the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 flew, so a third comparison -- against the sealed np4 answers of the same rows -- is available offline at no cost. A PREFIX of the Fold A receipt is not scenario-stratified: these rows cover 10 of the parent's 18 scenario strata; the per-stratum table is reported with that fact beside it.",
+    "roster_receipt": "docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json",
+    "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038",
+        "slurp:train:000036:audio-1502376074",
+        "slurp:train:000056:audio-1499089551",
+        "slurp:train:000057:audio-1490022060",
+        "slurp:train:000062:audio--1504198077-headset",
+        "slurp:train:000081:audio-1501753218-headset",
+        "slurp:train:000087:audio-1488558343",
+        "slurp:train:000094:audio--1504194187",
+        "slurp:train:000096:audio-1501776081-headset",
+        "slurp:train:000116:audio-1434537220",
+        "slurp:train:000118:audio-1498573321",
+        "slurp:train:000119:audio-1495378215-headset",
+        "slurp:train:000123:audio-1488984270",
+        "slurp:train:000130:audio-1501152584",
+        "slurp:train:000134:audio-1497868015",
+        "slurp:train:000145:audio-1497557747-headset",
+        "slurp:train:000149:audio-1489504137-headset",
+        "slurp:train:000154:audio-1497264179",
+        "slurp:train:000156:audio-1490281271",
+        "slurp:train:000157:audio-1490019455",
+        "slurp:train:000165:audio-1488551577",
+        "slurp:train:000166:audio-1501691974-headset",
+        "slurp:train:000172:audio-1490199218-headset",
+        "slurp:train:000187:audio-1502895034",
+        "slurp:train:000193:audio-1498564281-headset",
+        "slurp:train:000196:audio-1502894952-headset",
+        "slurp:train:000206:audio-1495378315-headset",
+        "slurp:train:000211:audio-1490801151-headset",
+        "slurp:train:000215:audio-1502200839",
+        "slurp:train:000240:audio-1501777467",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:000245:audio-1502894798",
+        "slurp:train:000257:audio-1490020145-headset",
+        "slurp:train:000300:audio-1434541216",
+        "slurp:train:000301:audio-1502195371-headset",
+        "slurp:train:000306:audio-1490800076-headset",
+        "slurp:train:000325:audio-1490108447-headset",
+        "slurp:train:000327:audio-1501775408-headset",
+        "slurp:train:000332:audio--1504192296",
+        "slurp:train:000339:audio-1498486417-headset",
+        "slurp:train:000349:audio-1502376665-headset",
+        "slurp:train:000356:audio-1501690110",
+        "slurp:train:000357:audio-1490366093-headset",
+        "slurp:train:000358:audio-1489498237",
+        "slurp:train:000377:audio-1490204763-headset",
+        "slurp:train:000378:audio-1500036058",
+        "slurp:train:000417:audio-1495734691-headset"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Pass A (SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1) of cell DET. Cell DET, the Stage-3 determinism probe: is the programme's measurement floor an engineering artefact of the serving geometry or a property of the model? Two request-identical flights of the locked plan differ by +1.87 pp SLU at n = 625 (VAR1 PLAN vs PLANR, CI95 excluding zero) while inside one flight only 91.5 % of delivered answers are byte-identical (ROLL-AA, 183 of 200) -- on a server running FOUR slots under continuous batching with the prompt cache ON and a q8_0 KV cache, the configuration in which llama.cpp greedy decoding is known not to be bitwise reproducible. This cell flies the locked plan TWICE in one chain (pass A, pass B) on the first 50 rows of TRAIN Fold A, on ONE 24,576-token slot with the prompt cache OFF, everything else byte-identical, and reads per row whether the delivered answer repeats. If 50 of 50 rows are byte-identical across the passes the between-flight offset is an artefact of batch composition and cache state and the coordinator scales the probe to 200 rows for a floor re-estimate; if they are not, the offset is intrinsic to the model's numerics on this hardware and the programme stops hoping for a cheaper instrument along this axis. A 50-row cell cannot support a floor re-estimate -- it decides only whether the 200-row re-estimate is worth flying. FORM PROOF: claims_benefit false, expected_effect_pp 0.0, no admission mode; development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-slurp-native-det-np1-nocache-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is the locked plan, byte-identical, re-flown on a different serving geometry to measure the MEASUREMENT INSTRUMENT -- no rollout, no per-sample scoring, no credit assignment, no update operator, no evolving store, no learned context. The nearest labelled precedent, ROLL-AA, was declared shared-rollout because it exercised the grouped-Solver substrate; DET exercises no substrate beyond the plan itself and is a property of the rig, not of any algorithm.",
+    "operators_used": []
+  }
+}

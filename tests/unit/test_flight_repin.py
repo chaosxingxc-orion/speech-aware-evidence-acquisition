@@ -574,13 +574,15 @@ def test_a_missing_preparation_requirement_is_created_on_first_pin(tmp_path):
     exp = tmp_path / "exp.json"
     exp.write_text(json.dumps({"cells": [{"cell_id": "c", "readiness": {"state": "held", "requirements": []}}]}), encoding="utf-8")
     pin = module.ArtifactPin(relpath="prepared/X/phase-supply-v1.json", sha256="a" * 64)
-    module._set_preparation_requirement(exp, cell_id="c", pin=pin)
+    module._set_preparation_requirement(exp, cell_id="c", run_id="X", previous_pin=None, pin=pin)
     doc = json.loads(exp.read_text(encoding="utf-8"))
     reqs = doc["cells"][0]["readiness"]["requirements"]
     assert [r["kind"] for r in reqs] == ["preparation"]
     assert reqs[0]["relpath"] == pin.relpath and reqs[0]["sha256"] == pin.sha256
     # a second pin updates in place, never duplicates
-    module._set_preparation_requirement(exp, cell_id="c", pin=module.ArtifactPin(relpath="prepared/X/phase-supply-v2.json", sha256="b" * 64))
+    module._set_preparation_requirement(
+        exp, cell_id="c", run_id="X", previous_pin=pin, pin=module.ArtifactPin(relpath="prepared/X/phase-supply-v2.json", sha256="b" * 64)
+    )
     doc = json.loads(exp.read_text(encoding="utf-8"))
     assert len(doc["cells"][0]["readiness"]["requirements"]) == 1
     assert doc["cells"][0]["readiness"]["requirements"][0]["sha256"] == "b" * 64
@@ -753,3 +755,67 @@ def test_a_stale_pin_on_an_ordinary_cell_still_rebuilds(tmp_path):
     report = summary["cells"][0]["artifact"]
     assert report["rebuilt"] is True
     assert report["new_pin"]["relpath"].endswith("phase-supply-v2.json")
+
+
+# --------------------------------------------------------------------------
+# 2026-09-26: a cell's OTHER 'preparation' requirements survive the flip.
+#
+# The registered AGREE cells carry two 'preparation' requirements -- the
+# pre-computed agreement table and their own supply. The pre-fix tool rewrote
+# every ``kind == "preparation"`` entry to the fresh supply pin; the fix
+# matches the own-supply entry by artifact identity and leaves the rest alone.
+# --------------------------------------------------------------------------
+
+
+FOREIGN_REQUIREMENT = {
+    "kind": "preparation",
+    "relpath": "prepared/AGREEMENT-TABLE-V1/agreement.jsonl",
+    "sha256": "c" * 64,
+    "reason": "a pre-computed table this cell ranks with; built elsewhere, never this cell's supply",
+}
+
+
+def _add_foreign_preparation_requirement(pkg: dict) -> None:
+    """Give the synthetic cell a second 'preparation' requirement that is NOT
+    its own supply (the AGREE shape: the foreign table first, the own supply
+    second), rewrite the registered hashes to the new composed identity, and
+    commit clean."""
+    repo = pkg["repo"]
+    experiment_path = repo / "configs/experiment" / f"{EXPERIMENT_ID}.json"
+    experiment = json.loads(experiment_path.read_text(encoding="utf-8"))
+    experiment["cells"][0]["readiness"]["requirements"].insert(0, dict(FOREIGN_REQUIREMENT))
+    _write(experiment_path, experiment)
+    composed = compose(repo, "model-1", "dataset-1", "baseline-1", EXPERIMENT_ID)
+    new_config = composed.config_hash
+    new_protocol = protocol_hash(new_config, "test-arm", split_identity_hash(prefixed(CARRIER_LOCK_KEY, IDS)))
+    targets = [p for p in pkg["readiness_dir"].glob("*") if p.is_file()] + [pkg["preregistration_path"], pkg["ledger_path"]]
+    for path in targets:
+        text = path.read_text(encoding="utf-8")
+        text = text.replace(pkg["old_config_hash"], new_config).replace(pkg["old_protocol_hash"], new_protocol)
+        path.write_text(text, encoding="utf-8", newline="\n")
+    pkg["old_config_hash"], pkg["old_protocol_hash"] = new_config, new_protocol
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "a second, foreign preparation requirement")
+
+
+def test_a_foreign_preparation_requirement_survives_the_flip(tmp_path):
+    """The AGREE shape end to end: with a stale own pin the re-pin mints a
+    fresh supply, rewrites ONLY the own-supply requirement, and leaves the
+    foreign one byte-for-byte where it was."""
+    pkg = build_package(tmp_path)
+    _add_foreign_preparation_requirement(pkg)
+    fake = Fake(mismatched={RUN_ID})
+
+    summary = run(pkg, fake)
+
+    report = summary["cells"][0]["artifact"]
+    assert report["rebuilt"] is True
+    assert report["readiness_requirement"] == {"updated": 1, "appended": 0, "kept": 1}
+    experiment = json.loads((pkg["repo"] / f"configs/experiment/{EXPERIMENT_ID}.json").read_text(encoding="utf-8"))
+    requirements = experiment["cells"][0]["readiness"]["requirements"]
+    assert len(requirements) == 2
+    assert json.dumps(requirements[0]) == json.dumps(FOREIGN_REQUIREMENT)
+    assert requirements[1]["relpath"] == report["new_pin"]["relpath"] == f"prepared/{RUN_ID}/phase-supply-v2.json"
+    assert requirements[1]["sha256"] == report["new_pin"]["sha256"]
+    assert requirements[1]["reason"] == "model-free prepared supply"
+    assert f"prepared/{RUN_ID}/phase-supply-v1.json" not in _all_text(pkg)

@@ -1,0 +1,142 @@
+{
+  "_draft_note": "A DRAFT written by the registration agent, in the repository, for root to mint on the data root with scripts/flights/det/det_mint_receipt.py, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided' (core.flight.campaign.declared_readiness refuses it).",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/analysis-recipe-v1.json",
+      "sha256": "f69504112f778d82b5b643e1e869f4c3bc62a9109e9306ffb086df27d40b94a4"
+    },
+    "base_cell": "the LOCKED default plan, cell PLAN (SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, v2.0 lock 2026-09-22): DET is that fragment byte for byte on a different serving geometry",
+    "clause_comparator": "none: the pair is its own control; no admission read",
+    "config_proof": {
+      "path": "tests/unit/test_stage3_det_np1_cells.py",
+      "sha256": "6a9349b460fcd6be68b6f2a48b1ea8bae4ffffd8a187374300ac649abfc84ac6"
+    },
+    "geometry_diff": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/geometry-diff-v1.json",
+      "sha256": "ca4423224175a79eb3d118aed7caced483a08634bfe42df720c51d5c196ed6d2"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "6fd6d6245b77c6bf35ec81c1229632c81dbff36cd0df61a601f5ea1be8604356"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/protocol-registered-v1.json",
+      "sha256": "8ce0ed5266c991f2838af24495f02dd9c056e9b1f9755de4233d75b462f530a1"
+    },
+    "read_driver": {
+      "path": "scripts/analysis/slurp_det_pair_read.py",
+      "sha256": "ffea63e6a4659ebd69c8478e9d3734c1ad1d3f986495d79059b2cbea6c1c0e16"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/registered-facts-v1.json",
+      "sha256": "c5191d7cff1dabb67c6186741f5cde3d8360c5e676f91467fb237a8257febfd0"
+    },
+    "registration_base_commit": "9255ac71",
+    "within_flight_null_read": {
+      "path": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md",
+      "sha256": "192c6e8b82aba2e1c05fdc82c89578ae5b6e60dd8c65c8c74a0e1db14506edeb"
+    }
+  },
+  "authorization_basis": "Owner decision 140 (2026-09-26); the measurement instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md (sections 2a-2d, rule 5); the within-flight null docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md; the VAR-1 evidence docs/results/2026-09-25-slurp-var1-complete-evidence.md; preregistration docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1-preregistration.md; owner decisions 28 and 86 (development numbers) and 101 (the Stage-3 algorithm label).",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "paid_api_calls": 0,
+    "pass_a": {
+      "ceiling_note": "11 contacts per row = 1 + 2 x (1 + 3 + 1); GPU hours at an assumed 4x np1 per-contact cost",
+      "expected_contacts": 251,
+      "expected_gpu_hours": 0.6814,
+      "fit_endpoint_calls_cap": 2200,
+      "generation_calls_cap": 550,
+      "gpu_hours_fit_inclusive": 2.0,
+      "native_task_contract_calls_cap": 300,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 1184
+    },
+    "pass_b": {
+      "expected_contacts": 251,
+      "expected_gpu_hours": 0.6814,
+      "fit_endpoint_calls_cap": 2200,
+      "generation_calls_cap": 550,
+      "gpu_hours_fit_inclusive": 2.0,
+      "native_task_contract_calls_cap": 300,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 1184
+    },
+    "plan_budget_is_run_cumulative": true
+  },
+  "cell_kind": "Stage-3 determinism probe (owner decision 140): the locked v2.0 plan, byte-identical, flown twice in one chain on a single-slot, prompt-cache-off serving geometry; DESCRIPTIVE, yields the per-row byte-identity count and the geometry's throughput.",
+  "claim_boundary": "No superiority, generalisation, component-causal, bar, admission, held-out, confirmatory or paper-scale claim of any kind. A byte-identity count measures the instrument, not an effect; 50 of 50 would not make a 200-row floor, and fewer would not make a defect.",
+  "coordinator": "Fable5.1",
+  "decision": "Cell DET is admitted as a cheap test: the locked plan on one 24,576-token slot with the prompt cache off, pass A then pass B, on the first 50 rows of TRAIN Fold A; the read is DESCRIPTIVE and yields the per-row byte-identity count of the delivered answer between the passes and the geometry's contacts per minute and prompt tokens per second beside ROLL-2's. It decides a determinism question and informs a throughput one; adoption of any geometry is decided on throughput.",
+  "decision_id": "slurp-stage3-det-np1-fold-a-50-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1",
+    "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1",
+    "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration per pass; a second failure closes the pass and the fix is proven on a four-row dry run. A resident-session identity refusal spends no contact and is not a flight failure. A pass that seals alone answers nothing: the read needs both.",
+  "not_authorized": [
+    "any flight before both passes are flipped and the DET session is the resident session",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any geometry, roster, prompt, store, k, fuse-policy or rank-weight change beyond the one registered geometry",
+    "adopting np1 for sampling-heavy work on determinism alone (decision 140)",
+    "a floor re-estimate from 50 rows; the 200-row re-estimate is a separate registration"
+  ],
+  "owner": "root",
+  "population": {
+    "fold_b_contact_authorized": false,
+    "pass_a": {
+      "count": 50,
+      "partition": "the first 50 rows of TRAIN Fold A in roster order (docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json; 10 of 18 scenarios)",
+      "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa",
+      "split_role": "discovery"
+    },
+    "pass_b": {
+      "count": 50,
+      "partition": "the same rows, request-identical",
+      "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa",
+      "split_role": "discovery"
+    },
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "minted by scripts/flights/repin_cell.py at the flip (each pass's own prepared first-phase supply under its run id, item E16); pass B's must reproduce pass A's byte for byte; not pinned by this receipt"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "note": "the values of the fragments exactly as committed at 9255ac71 (readiness held, no decision requirement); repin_cell.py recomputes them at the flip.",
+    "pass_a_composed_config": "658e8032585f7214133d21528d5b7b2afebabe8ebfb48432c6645cf45a2d2ac9",
+    "pass_a_protocol": "3c915405b94fac53bb59d91d34f098a56ac85adb3f0b9ff74cbf472dd5b77931",
+    "pass_b_composed_config": "068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d",
+    "pass_b_protocol": "d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43"
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-det-np1-nocache-v1",
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "note": "the coordinator stops the resident np4 session serving-slurp-native-candidate-five-train-a-np4-v1 and starts this one (scripts/flights/det/serving_task_entry_det.sh) before launch, restores the np4 session after the read; the flight attaches only, never spawns or stops. The geometry IS the factor.",
+    "prompt_cache": "off (--no-cache-prompt)",
+    "slot_prompt_similarity": "absent",
+    "slot_tokens": 24576,
+    "slots": 1,
+    "total_context": 24576
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

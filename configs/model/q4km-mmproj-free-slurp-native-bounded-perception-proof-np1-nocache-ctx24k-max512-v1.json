@@ -1,0 +1,44 @@
+{
+  "base_url": "http://127.0.0.1:8080",
+  "decoding_params": {
+    "id_slot": "per-sample",
+    "max_tokens": 512,
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "geometry_basis": "ONE decoder-only 24,576-token slot under c24576 np1 with the PROMPT CACHE OFF, for the Stage-3 determinism probe (cell DET). Against the resident geometry (q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1) exactly four flags move and nothing else: -np 4 -> 1 and -c 98304 -> 24576 (the slot stays 24,576 tokens, so prompt fit is unchanged), --cache-prompt -> --no-cache-prompt (llama.cpp defaults cache_prompt to TRUE and the transport sends no per-request cache_prompt field, so OFF must be the explicit server flag; with it the server sets n_past = 0 for every request and re-processes the whole prompt from an empty KV cache), and --slot-prompt-similarity 0 removed (slot selection by prompt similarity has no object with one slot and no cache). The same model file and sha256, the same runtime receipt (so --no-mmproj is injected exactly as before), -fa on, -ctk q8_0 -ctv q8_0, -b 2048 -ub 512, -ngl 999, --cache-ram 0, --no-cache-idle-slots, the same prepared speech packets, the same decoding params (temperature 0, seed 20260913, max_tokens 512, id_slot per-sample), the same prompt order and the same server_env. The geometry is the ONE experimental variable of cell DET: greedy decoding under four-slot continuous batching with a prompt cache and a quantised KV cache is exactly the configuration in which llama.cpp is known not to be bitwise reproducible, and this fragment removes the batch-composition and cache-state terms so the flight can measure whether the programme's between-flight offset survives without them. A flight on this fragment attaches ONLY to a resident session started from it (the identity check compares server_argv flag by flag), which is why it queues behind the resident np4 session: one resident server per geometry, and the coordinator swaps it.",
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "profile_slot_count": 1,
+  "prompt_order": "speech-query-prefix-v2",
+  "runtime_receipt": "receipts/runtime-q4km-mmproj-free.json",
+  "server_args": [
+    "-c",
+    "24576",
+    "-np",
+    "1",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--no-cache-prompt",
+    "--cache-ram",
+    "0",
+    "--no-cache-idle-slots"
+  ],
+  "server_env": {
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+  },
+  "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+  "timeout_seconds": 420,
+  "transport": "llama-server"
+}

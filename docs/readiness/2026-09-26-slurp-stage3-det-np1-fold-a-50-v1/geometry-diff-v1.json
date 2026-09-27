@@ -1,0 +1,550 @@
+{
+  "_note": "The ONE experimental variable of cell DET, proved model-free at registration through the harness's own functions: the model-fragment diff, the server argv diff flag by flag (the shape core.session.serving.identity_mismatches would print), both resolved serving profiles, the proof that the baseline's serving_slots/serving_slot_tokens and the fragment's -np/-c agree (merge_server_args is the identity), and the composed-config diff of each pass against the LOCKED PLAN cell, key by key and fragment by fragment.",
+  "composed_diff_against_plan_lock": {
+    "pass_a": {
+      "moved_by_fragment": {
+        "baseline": [
+          "native_contact_fit",
+          "prepared_phase_supply",
+          "serving_slots",
+          "what_this_is"
+        ],
+        "dataset": [],
+        "experiment": [
+          "cells",
+          "date",
+          "execution_plan",
+          "experiment_id",
+          "failure_policy",
+          "family_budget",
+          "fragment_kind",
+          "generation_budget",
+          "population",
+          "populations",
+          "purpose",
+          "service_session",
+          "stage3_algorithm"
+        ],
+        "model": [
+          "geometry_basis",
+          "profile_slot_count",
+          "server_args"
+        ]
+      },
+      "moved_values": {
+        "profile_slot_count": {
+          "left": 4,
+          "right": 1
+        },
+        "server_args": {
+          "left": [
+            "-c",
+            "98304",
+            "-np",
+            "4",
+            "-b",
+            "2048",
+            "-ub",
+            "512",
+            "-fa",
+            "on",
+            "-ngl",
+            "999",
+            "-ctk",
+            "q8_0",
+            "-ctv",
+            "q8_0",
+            "--cache-prompt",
+            "--cache-ram",
+            "0",
+            "--no-cache-idle-slots",
+            "--slot-prompt-similarity",
+            "0"
+          ],
+          "right": [
+            "-c",
+            "24576",
+            "-np",
+            "1",
+            "-b",
+            "2048",
+            "-ub",
+            "512",
+            "-fa",
+            "on",
+            "-ngl",
+            "999",
+            "-ctk",
+            "q8_0",
+            "-ctv",
+            "q8_0",
+            "--no-cache-prompt",
+            "--cache-ram",
+            "0",
+            "--no-cache-idle-slots"
+          ]
+        },
+        "serving_slots": {
+          "left": 4,
+          "right": 1
+        }
+      },
+      "unchanged_keys": [
+        "arm",
+        "audio_seconds_total",
+        "base_url",
+        "carrier_lock_key",
+        "count",
+        "d1_manifest_sha256",
+        "d1_media_supplement",
+        "d1_media_supplement_sha256",
+        "decoding_params",
+        "evidence_mismatch",
+        "evidence_source",
+        "execution_profile",
+        "items",
+        "knowledge_stores",
+        "model_lock_key",
+        "model_materialization_root",
+        "native_episode",
+        "phase_material",
+        "policy",
+        "preparation_source_receipts",
+        "preserve_wire_responses",
+        "prompt_order",
+        "runtime_receipt",
+        "runtime_view_sha256",
+        "schema",
+        "scorers",
+        "seed",
+        "server_env",
+        "serving_slot_tokens",
+        "source_binding_sha256",
+        "speech_feature_key_representation_id",
+        "speech_feature_matcher_policy_id",
+        "speech_feature_root",
+        "speech_packet_promotion_receipt",
+        "speech_packet_promotion_receipt_sha256",
+        "split_id",
+        "split_identity_hash",
+        "split_name",
+        "split_role",
+        "status",
+        "study",
+        "task_instruction_fill",
+        "task_instruction_template",
+        "task_instruction_template_active",
+        "timeout_seconds",
+        "transport",
+        "what_the_train_exemplars_store_is"
+      ]
+    },
+    "pass_b": {
+      "moved_by_fragment": {
+        "baseline": [
+          "native_contact_fit",
+          "prepared_phase_supply",
+          "serving_slots",
+          "what_this_is"
+        ],
+        "dataset": [],
+        "experiment": [
+          "cells",
+          "date",
+          "execution_plan",
+          "experiment_id",
+          "failure_policy",
+          "family_budget",
+          "fragment_kind",
+          "generation_budget",
+          "population",
+          "populations",
+          "purpose",
+          "service_session",
+          "stage3_algorithm"
+        ],
+        "model": [
+          "geometry_basis",
+          "profile_slot_count",
+          "server_args"
+        ]
+      },
+      "moved_values": {
+        "profile_slot_count": {
+          "left": 4,
+          "right": 1
+        },
+        "server_args": {
+          "left": [
+            "-c",
+            "98304",
+            "-np",
+            "4",
+            "-b",
+            "2048",
+            "-ub",
+            "512",
+            "-fa",
+            "on",
+            "-ngl",
+            "999",
+            "-ctk",
+            "q8_0",
+            "-ctv",
+            "q8_0",
+            "--cache-prompt",
+            "--cache-ram",
+            "0",
+            "--no-cache-idle-slots",
+            "--slot-prompt-similarity",
+            "0"
+          ],
+          "right": [
+            "-c",
+            "24576",
+            "-np",
+            "1",
+            "-b",
+            "2048",
+            "-ub",
+            "512",
+            "-fa",
+            "on",
+            "-ngl",
+            "999",
+            "-ctk",
+            "q8_0",
+            "-ctv",
+            "q8_0",
+            "--no-cache-prompt",
+            "--cache-ram",
+            "0",
+            "--no-cache-idle-slots"
+          ]
+        },
+        "serving_slots": {
+          "left": 4,
+          "right": 1
+        }
+      },
+      "unchanged_keys": [
+        "arm",
+        "audio_seconds_total",
+        "base_url",
+        "carrier_lock_key",
+        "count",
+        "d1_manifest_sha256",
+        "d1_media_supplement",
+        "d1_media_supplement_sha256",
+        "decoding_params",
+        "evidence_mismatch",
+        "evidence_source",
+        "execution_profile",
+        "items",
+        "knowledge_stores",
+        "model_lock_key",
+        "model_materialization_root",
+        "native_episode",
+        "phase_material",
+        "policy",
+        "preparation_source_receipts",
+        "preserve_wire_responses",
+        "prompt_order",
+        "runtime_receipt",
+        "runtime_view_sha256",
+        "schema",
+        "scorers",
+        "seed",
+        "server_env",
+        "serving_slot_tokens",
+        "source_binding_sha256",
+        "speech_feature_key_representation_id",
+        "speech_feature_matcher_policy_id",
+        "speech_feature_root",
+        "speech_packet_promotion_receipt",
+        "speech_packet_promotion_receipt_sha256",
+        "split_id",
+        "split_identity_hash",
+        "split_name",
+        "split_role",
+        "status",
+        "study",
+        "task_instruction_fill",
+        "task_instruction_template",
+        "task_instruction_template_active",
+        "timeout_seconds",
+        "transport",
+        "what_the_train_exemplars_store_is"
+      ]
+    }
+  },
+  "composed_diff_pass_a_vs_pass_b": {
+    "moved_by_fragment": {
+      "baseline": [
+        "native_contact_fit",
+        "what_this_is"
+      ],
+      "dataset": [],
+      "experiment": [
+        "cells",
+        "experiment_id",
+        "fragment_kind",
+        "purpose"
+      ],
+      "model": []
+    },
+    "moved_values": {},
+    "unchanged_keys": [
+      "arm",
+      "audio_seconds_total",
+      "base_url",
+      "carrier_lock_key",
+      "count",
+      "d1_manifest_sha256",
+      "d1_media_supplement",
+      "d1_media_supplement_sha256",
+      "date",
+      "decoding_params",
+      "evidence_mismatch",
+      "evidence_source",
+      "execution_plan",
+      "execution_profile",
+      "failure_policy",
+      "family_budget",
+      "generation_budget",
+      "geometry_basis",
+      "items",
+      "knowledge_stores",
+      "model_lock_key",
+      "model_materialization_root",
+      "native_episode",
+      "phase_material",
+      "policy",
+      "population",
+      "populations",
+      "preparation_source_receipts",
+      "preserve_wire_responses",
+      "profile_slot_count",
+      "prompt_order",
+      "runtime_receipt",
+      "runtime_view_sha256",
+      "schema",
+      "scorers",
+      "seed",
+      "server_args",
+      "server_env",
+      "service_session",
+      "serving_slot_tokens",
+      "serving_slots",
+      "source_binding_sha256",
+      "speech_feature_key_representation_id",
+      "speech_feature_matcher_policy_id",
+      "speech_feature_root",
+      "speech_packet_promotion_receipt",
+      "speech_packet_promotion_receipt_sha256",
+      "split_id",
+      "split_identity_hash",
+      "split_name",
+      "split_role",
+      "stage3_algorithm",
+      "status",
+      "study",
+      "task_instruction_fill",
+      "task_instruction_template",
+      "task_instruction_template_active",
+      "timeout_seconds",
+      "transport",
+      "what_the_train_exemplars_store_is"
+    ]
+  },
+  "det_model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1",
+  "model_fragment_keys_moved": [
+    "geometry_basis",
+    "profile_slot_count",
+    "server_args"
+  ],
+  "plan_lock_composed_config_hash": "55b06b12c70a49d79e1fe8de7af76a78f581946de250cb57f129354508a1be5b",
+  "resident_model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+  "schema": "saea-det-geometry-diff-v1",
+  "server_args": {
+    "det_np1": [
+      "-c",
+      "24576",
+      "-np",
+      "1",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--no-cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots"
+    ],
+    "resident_np4": [
+      "-c",
+      "98304",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ]
+  },
+  "server_argv_flag_diff": [
+    {
+      "det_np1": null,
+      "flag": "--cache-prompt",
+      "resident_np4": [
+        true
+      ]
+    },
+    {
+      "det_np1": [
+        true
+      ],
+      "flag": "--no-cache-prompt",
+      "resident_np4": null
+    },
+    {
+      "det_np1": null,
+      "flag": "--slot-prompt-similarity",
+      "resident_np4": [
+        "0"
+      ]
+    },
+    {
+      "det_np1": [
+        "24576"
+      ],
+      "flag": "-c",
+      "resident_np4": [
+        "98304"
+      ]
+    },
+    {
+      "det_np1": [
+        "1"
+      ],
+      "flag": "-np",
+      "resident_np4": [
+        "4"
+      ]
+    }
+  ],
+  "serving_profiles": {
+    "det_np1": {
+      "extra_argv": [
+        "-c",
+        "24576",
+        "-np",
+        "1",
+        "-b",
+        "2048",
+        "-ub",
+        "512",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--no-cache-prompt",
+        "--cache-ram",
+        "0",
+        "--no-cache-idle-slots"
+      ],
+      "model_fragment_sha256": "2618cda4e58e4c51eb6850c962564e8556d57833cb249dc33e99242262bd0424",
+      "model_root": "/home/chao",
+      "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+      "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+      "server_env": {
+        "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+        "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+      },
+      "serving_geometry": {
+        "max_tokens": 512,
+        "slot_tokens": 24576,
+        "slots": 1
+      },
+      "session_role": "inference"
+    },
+    "resident_np4": {
+      "extra_argv": [
+        "-c",
+        "98304",
+        "-np",
+        "4",
+        "-b",
+        "2048",
+        "-ub",
+        "512",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--cache-prompt",
+        "--cache-ram",
+        "0",
+        "--no-cache-idle-slots",
+        "--slot-prompt-similarity",
+        "0"
+      ],
+      "model_fragment_sha256": "3cce3c795a8d07a2bcfccc9f04c4d8d6b548b2ae104252a73eef0b464fe6c70a",
+      "model_root": "/home/chao",
+      "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+      "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+      "server_env": {
+        "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+        "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+      },
+      "serving_geometry": {
+        "max_tokens": 512,
+        "slot_tokens": 24576,
+        "slots": 4
+      },
+      "session_role": "inference"
+    },
+    "same_model_root_and_role": true,
+    "same_runtime_receipt": true,
+    "same_server_env": true
+  },
+  "two_halves_of_the_geometry": {
+    "baseline_serving_slot_tokens": 24576,
+    "baseline_serving_slots": 1,
+    "fragment_c": 24576,
+    "fragment_np": 1,
+    "merge_server_args_is_identity": true,
+    "why_both": "rails.adapters.runtime_view reads serving_slots/serving_slot_tokens from the composed values as the adapter's flight-side geometry; core.flight.FlightRuntime.serve writes that geometry back over the fragment's -np/-c through merge_server_args and builds the required session identity from the result, and the dispatcher sizes its concurrency by slots (workers = slots, so this flight submits ONE request at a time). A baseline that still said serving_slots 4 would demand -np 4 -c 98304 of the resident session and be refused. The geometry therefore moves serving_slots in the baseline as well as the fragment's flags, and the composed diff below names it as the one non-bookkeeping baseline key that moves. No code change is needed to express -np 1 or the prompt cache off; the legacy speech-native PROFILE driver's KV-policy binder (core.driver.speech_native.profile_agent_kv_policy) does require --cache-prompt, but it is reached only from the saea-driver speech-native-profile CLI, never from FlightRuntime."
+  },
+  "why_no_cache_prompt_is_explicit": "llama.cpp (the pinned featcache checkout, common/common.h) defaults cache_prompt to TRUE and exposes --cache-prompt / --no-cache-prompt as a boolean pair (common/arg.cpp); the server's per-request cache_prompt field defaults to the server value (tools/server/server-schema.cpp) and this study's transport sends none, so the prompt cache is OFF only when the server is started with --no-cache-prompt. With it the server sets n_past = 0 for every request (tools/server/server-context.cpp: 'if we don't cache the prompt, we have to remove all previous tokens') and re-processes the whole prompt from an empty KV cache. --slot-prompt-similarity governs which idle slot a request is routed to by cached-prefix similarity; with one slot and no cache it has no object."
+}
