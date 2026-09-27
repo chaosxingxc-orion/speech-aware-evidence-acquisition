@@ -1,0 +1,56 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-slotfill-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "role": "gating comparator, sealed, never re-flown",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-slotfill-aa-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the within-chain null and throughput baseline",
+      "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim, and it admits nothing beyond the no-harm entry it is registered for. No utterance text, transcript, gold label or model output is printed or persisted.",
+  "decision_rule": "NO-HARM ADMITTED (owner decisions 127 and 159): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). The item is NEVER reported as a gain on either metric. Beside the no-harm read, and as the item's declared ceiling, the THROUGHPUT read: contacts per GPU-hour over each arm's contact window and empty slot-seconds from the server's own per-slot task log joined one-to-one to each arm's sealed trace (scripts/analysis/slotfill_gap_decomposition.py, the note's accounting), arm against A/A. Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the delivered-answer agreement rate of arm and A/A, and the request-byte comparison of step 2.",
+  "margins": {
+    "h_intent": 0.9943,
+    "h_slu": 1.2485
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver_family": "scripts/analysis/plan_cell_read.py",
+  "recipe_id": "slurp-stage3-slotfill-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-27T15:02:02.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the SLOTFILL arm and the in-chain A/A carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score, and their config hashes are this package's (the arm's dispatch receipt carries slot_fill with all three switches, the A/A's carries none).",
+    "2. Structural stage: per (row, node, contact index) compare the two arms' sealed MODEL_REQUEST payloads with the request-id counter renamed to its (row, contact) identity and id_slot masked (the proof bench's own Normaliser, scripts/analysis/slotfill_fake_server_harness.py); report how many rows walked the same trajectory and, where a response differed (batch composition), how many request bytes then differ downstream of it. Counts only.",
+    "3. Score once per arm over the complete manifest with the dataset's standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded); take per row scenario_action_exact and the per-row SLU-F1 contributions.",
+    "4. Paired row bootstrap (10,000 draws, seed 20260927) of the arm minus in-chain A/A delta on intent accuracy and on official pooled SLU-F1; report the point estimate and CI95 of each; report the same paired delta against the sealed PLAN comparator BESIDE it, never instead of it.",
+    "5. Apply the no-harm rule: ADMITTED iff the intent lower bound >= -0.9943 and the SLU lower bound >= -1.2485; HARMFUL iff either upper bound < 0 (decision 25); otherwise NOT ADMITTED (width). Never write 'gain' or 'no gain' about quality.",
+    "6. Throughput read (the declared ceiling): run scripts/analysis/slotfill_gap_decomposition.py --run-id/--attempt-id/--fit-run-id/--fit-attempt-id for each arm over the resident session's server log; report contacts per GPU-hour over each contact window, empty slot-seconds and their share, all-slots-empty seconds, mean busy slots, and the per-role client turnaround, arm beside A/A.",
+    "7. Report beside every number: the per-scenario table in the natural-mixture and equal-stratum weightings; the frontier row (decision 75); the delivered-answer agreement rate of arm and A/A; the A/A's own delta against the sealed comparator as the instrument's reading."
+  ],
+  "title": "Cell SLOTFILL -- the standard paired roster read on intent + SLU at the in-chain A/A under the no-harm rule, and the throughput read of both arms"
+}

@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-slotfill-fold-a-v1",
+  "composed_config_hash": "4bf5297118adb89e9ace5ea77a3cb662a6743b69f98bd45b3397a17cb67b8697",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-slotfill-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "21381fcae367566af81d3a3bdaa80710bb602fe17e43c9873ec2a2394f091d43",
+    "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed campaign plan configs/campaign/slurp-native-stage3-slotfill-fold-a-v1.json, which carries the A/A replicate AND the SLOTFILL arm so the two fly in ONE chain on the same resident session; one official score per generation cell at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-slotfill-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "one_factor": "Composed key dispatch: absent -> {\"gc_freeze\": true, \"recall_prefetch\": true, \"role_input_offload\": true, \"schema\": \"saea-dispatch-slot-fill-v1\"}.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "583f04c99fc9b5bc8f2179761e210d6439c0a6fe",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "note": "NONE COMMITTED, by design: the flip mints each cell's own under its own run id (item E16), the readiness requirements list is empty, and --allow-output-change must never be passed. the dispatch key enters the first-phase supply's identity (the composed config) but not its computation, so every supply the flip mints for this family must carry this output digest on all 1,080 rows (the smoke on its four); a different digest means the knowledge channel moved -- stop and report. The model-free bench minted the key-on and key-off supplies of the same tree and they agree on the output bytes.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "ed54ddf9b5df86a51d978f1cc0cbf5455fca095bec2b55a0c87a342bd2239f45"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1: Cell SLOTFILL. NO-HARM ADMITTED (owner decisions 127 and 159): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). The item is NEVER reported as a gain on either metric. Beside the no-harm read, and as the item's declared ceiling, the THROUGHPUT read: contacts per GPU-hour over each arm's contact window and empty slot-seconds from the server's own per-slot task log joined one-to-one to each arm's sealed trace (scripts/analysis/slotfill_gap_decomposition.py, the note's accounting), arm against A/A. Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the delivered-answer agreement rate of arm and A/A, and the request-byte comparison of step 2.",
+  "quality_read_gate": "No task-quality or throughput read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the SLOTFILL arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
+  "registered_at_utc": "2026-09-27T15:02:02.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-slotfill, branch fable/slotfill",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

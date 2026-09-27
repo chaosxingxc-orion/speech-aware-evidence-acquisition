@@ -218,6 +218,10 @@ def test_the_effect_floor_gate_accepts_the_family() -> None:
 
     spec = importlib.util.spec_from_file_location("stage3_effect_floor_check", REPO / "scripts/checks/stage3_effect_floor_check.py")
     gate = importlib.util.module_from_spec(spec)
+    import sys
+
+    # a dataclass module must be importable by name while it is executed
+    sys.modules[spec.name] = gate
     spec.loader.exec_module(gate)
     data = gate.evaluate(REPO)
     ours = [f for f in data["findings"] if any(cell in f["message"] for cell in (ARM, AA, SMOKE))]
