@@ -106,15 +106,15 @@
       "comparator_locked_at": "intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06)",
       "own_null_measured": "MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188",
       "own_null_source": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
-      "cells_flown": 45,
-      "admitted": 1,
+      "cells_flown": 46,
+      "admitted": 2,
       "aligned": 0,
       "neutral": 6,
       "rejected": 10,
       "instrument": 20,
       "closed_unread": 3,
       "pending": 12,
-      "rows": 52,
+      "rows": 53,
       "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     },
     {
@@ -5098,6 +5098,61 @@
       "flown": false,
       "pending": false,
       "provisional": null
+    },
+    {
+      "cell_id": "SLURP-AGREE",
+      "carrier": "SLURP",
+      "layer": "Stage-3 system-level cell (benefit claim; cross-flight design with an in-chain A/A)",
+      "title": "AGREE - the intent-boundary Perception channel's own w_agree term at 1.0 over the pre-computed self-excluded exemplar-intent vote (recall width 60, delivered width 8), read against its in-chain A/A (w_agree 0.0) on TRAIN Fold A 1,080",
+      "date": "2026-09-27",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+        "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-PAIRED-ANALYSIS-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
+      "receipt": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/",
+      "preregistration": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1-preregistration.md",
+      "status": "ADMITTED (on TRAIN Fold A by the registered rule, pending fresh-roster replication under owner decisions 115 and 127; no disposition, decision 139)",
+      "status_source": "h1",
+      "status_quote": "# Cell AGREE read: intent +3.33 pp CI95 [+1.57, +5.09] and official SLU-F1 +1.85 pp [+0.23, +3.47] against the in-chain A/A on TRAIN Fold A (ADMITTED on Fold A by the registered rule, pending fresh-roster replication)",
+      "comparator": {
+        "text": "the in-chain A/A SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1 (w_agree 0.0 at the same recall width 60; the locked plan's own bytes, flown in the same chain directly before the arm) is the gating comparator; the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 is context only. The A/A reproduces PLAN: intent 82.50 vs 82.22 (+0.28 [-0.74, +1.30]) and PLANr 82.50, official SLU-F1 63.31 vs 63.63 (-0.32 [-1.74, +1.14]).",
+        "source": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md"
+      },
+      "rule": {
+        "text": "decision_rule_fixed_here: NEUTRAL when the CI95 lower bounds of the paired official pooled SLU-F1 delta and of the intent delta against the in-chain A/A are above -h_SLU 1.2485 and -h_intent 0.9943; ADMITTED when NEUTRAL and the SLU-F1 CI95 lower bound is above zero; HARMFUL on a measured loss on either guard. Owner decisions 133 and 143: intent accuracy primary, official SLU-F1 the non-inferiority guard; expected 2.96 pp intent against the 2.5 pp cross-flight floor at n = 1,080.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json"
+      },
+      "primary": {
+        "text": "intent (scenario_action_exact) 82.50 -> 85.83, +3.33 pp CI95 [+1.57, +5.09], 67 saves / 31 harms, McNemar p 0.00035; scenario +2.13 [+0.65, +3.70]; action +2.87 [+1.11, +4.63]. Per-scenario: intent up in 12 of 18 scenarios, down in 4 (one net row each); equal-scenario intent +3.33, SLU-F1 +2.05.",
+        "source": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md"
+      },
+      "margin": {
+        "text": "the plan's own cross-flight null on TRAIN Fold A 1,080, h_SLU 1.2485 / h_intent 0.9943 (PLAN vs PLANr), read against the in-chain A/A; zero for the ADMITTED clause.",
+        "source": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/registered-facts-v1.json"
+      },
+      "margin_kind": "own null (cross-flight, Fold A 1,080) for non-inferiority; zero-referenced for admission; paired row bootstrap CI95 (10,000 draws, seed 20260926)",
+      "guards": {
+        "text": "official pooled SLU-F1 63.31 -> 65.16, +1.85 pp CI95 [+0.23, +3.47] (guard held, lower bound above zero); delivery check held in every class (flown gold-boundary delivery equals the offline production replication: intent-wrong rows 86 -> 156 of 191, all rows 947 -> 1,040, 95 newly delivered, 2 newly lost; flown sets equal each arm's prepared supply on 1,080 of 1,080 rows); conversion 32 of the 72 newly delivered rows the A/A answered wrong (44.4 %, CONV probe 32 / 70); Perception block +1.36 tokens per row against the registered +1.4; both manifests COMPLETED, attempts FINALIZED, scored once; 0 tool calls, 0 compactions, planner_action_illegal 0.",
+        "source": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "arm 4,385 contacts, 12,518.316 speech-audio seconds, 1.8816 GPU-h; A/A 4,405 contacts, 12,571.195 s, 1.7309 GPU-h; smoke 16 contacts; the three FIT identities opened no attempt. Frontier: +3.33 pp intent at +0.1507 GPU-h per 1,080 rows (+8.7 %), +397.7 prefilled tokens per row (+4.8 %, almost all on the Solver) and +1,075.3 prompt tokens per row (+3.2 %, downstream: slot-contract items 11.95 -> 12.90 per row).",
+        "source": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md"
+      },
+      "next_step": {
+        "text": "the owner disposes in conversation (decision 139); under decisions 115 and 127 a system-level benefit claim needs replication on a fresh roster before it is final, and a Fold-A read is never a test or generalisation claim (decisions 28, 86).",
+        "source": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "The saves split 32 on newly delivered rows and 35 on rows delivered in both flights (the position prior); 29 of the 31 harms sit on rows delivered in both flights, 25 of them on rows the PLAN arm had intent-right. Smoke SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-V1 and the FIT identities SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1, SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-FIT-V1 and SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-SMOKE-4-FIT-V1 are closed in the exposure ledger and not cells.",
+      "tally": "admitted",
+      "flown": true,
+      "pending": false,
+      "provisional": "admitted on TRAIN Fold A only; a system-level benefit claim under owner decisions 115 and 127 stays provisional until replicated on a fresh roster, and the disposition is the owner's (decision 139)."
     }
   ],
   "operational_recovery": {
@@ -5811,7 +5866,8 @@
       "SLURP-VERIFY-1",
       "SLURP-CONV",
       "SLURP-DET",
-      "SLURP-ROLL-3"
+      "SLURP-ROLL-3",
+      "SLURP-AGREE"
     ],
     "algorithm_registry": {
       "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects were observed while these rows were written. The first is REPAIRED since: gepa-reflective-pareto-v1 and inference-time-verification-v1 both read status='planned' although CELL-1-GEPA and VERIFY-1 had flown and sealed, and both were corrected to status='base-loop' in commit 8b18f4ef of 2026-09-26 -- a status is a fact about this repository, not a statement of intent. The second stands and is reported rather than repaired: the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes), and this ledger resolves none of them.",
