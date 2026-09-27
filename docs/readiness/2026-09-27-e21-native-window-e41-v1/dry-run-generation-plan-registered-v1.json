@@ -21,7 +21,7 @@
     "planned_model_calls": 44,
     "planned_gpu_hours": 0.5,
     "planned_speech_audio_seconds": 3960,
-    "protocol_hash": "4c4f5d51b3b9b6c763d99adb488de4b5facb4e2741361118d9246f4f9ab0bd73"
+    "protocol_hash": "b1e88eaa78bf7719be5964f8859f8a37515e69c723e21379f00f5112d0744651"
   },
   "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/e21-native-window-system-four-row-e41-v1.json; the campaign acquires its own GenerationLease against the resident E21 session and attaches only.",
   "execution_location": "Shared six-node controller (phase-native-review-revise-acquire-v1: perception, solver, reviewer x3, planner, zero-contact acquisition, delivery normaliser) and the OpenJiuwen executor, through core.flight.FlightRuntime.",
@@ -53,7 +53,7 @@
   "prepared_phase_supply_note": "NONE and none is pinned: the program declares no supplied first phase (item E38); --allow-output-change must never be passed.",
   "fit_arithmetic": "4 units x 11 native contacts x (1 speech packet + 3 endpoints) = 176",
   "registration_state": "REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending); readiness HELD. The flip moves the composed and protocol hashes below and the re-pin tool rewrites them.",
-  "composed_config_hash": "a47088808842e76ce040a1678fa410d9346b5605a2266f95d4cc96878e18aaf8",
+  "composed_config_hash": "92d9644817e1c9d9640b015f0a9d999c502c91f2fbe08c4c72a4980eebf87c0a",
   "registered_at_utc": "2026-09-27T16:00:00.000000+00:00",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e41, branch fable/e41, base commit a50a0d1c",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",

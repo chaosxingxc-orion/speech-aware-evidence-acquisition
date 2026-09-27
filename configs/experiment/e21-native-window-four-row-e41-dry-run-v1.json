@@ -29,9 +29,17 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
+        "state": "ready",
         "reason": "E41 dry run (2026-09-27): registered before contact; decision id e21-native-window-e41-dry-run-admission-v1 at coordination/e21-native-window-e41-v1/root-admission-dry-run-v1.json; held until root mints and flips.",
-        "requirements": []
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "e21-native-window-e41-dry-run-admission-v1",
+            "relpath": "coordination/e21-native-window-e41-v1/root-admission-dry-run-v1.json",
+            "sha256": "f569b430183633481056154a59b3f4fdcb51a8391c20ad3974f583dd80db6143",
+            "reason": "Decision e21-native-window-e41-dry-run-admission-v1 pinned by scripts/flights/repin_cell.py."
+          }
+        ]
       },
       "execution_plan": {
         "split_role": "discovery",
