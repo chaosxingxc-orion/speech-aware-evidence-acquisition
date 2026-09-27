@@ -1,0 +1,588 @@
+{
+  "artifact": {
+    "dimension": "intent-boundary",
+    "line_schema": "sealed-vectors: one object per line with exactly 'id' and 'vectors'",
+    "loader": "speech_aware_evidence_acquisition.rails.phase_supply.load_sealed_vectors",
+    "read_back_through_the_production_loader": true,
+    "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+    "rows": 60,
+    "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+    "width": 2048
+  },
+  "artifact_id": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1",
+  "boundary": "A pre-computed model-free input, never an authorization: it opens no attempt, reserves no contact, admits no mechanism, releases or rebuilds no store and states no effectiveness claim. The released store, its facet ids and its delivered bodies are unchanged; only a retrieval key file exists beside them, to be pinned by one derived baseline. No gold label, reference transcript or future turn enters it.",
+  "builder_id": "saea-slurp-intent-boundary-centroid-keys-builder-v1",
+  "builder_sha256": "161a345e1b25a5d0973320a159b2101b34fdc5ca9a55c39e337afcfca9a976aa",
+  "construction": {
+    "arithmetic_source": {
+      "functions_used": [
+        "load_boundary",
+        "load_pool_vectors",
+        "unit_rows"
+      ],
+      "note": "imported byte-unchanged; the mean is bitwise the diagnostic's 'centroid' construction",
+      "relpath": "scripts/analysis/slurp_boundary_key_construction_diagnostic.py",
+      "sha256": "f126fd4ac68daa832c8d26bddca39e2791d6aa1d2db32a55567859ad77808137"
+    },
+    "construction_pool": "the R01-excluded pool, so one file is held out on TRAIN Fold A, ROLL-1 (R01C) and DEV-2000-ADDED alike",
+    "label_is": "the pool value's frozen build-time task_target, a released-store property; no gold label enters",
+    "label_key": "task_target",
+    "member_order": "pool facet ids ascending (the diagnostic's order)",
+    "rule": "for each released intent, take every construction-pool facet whose frozen build-time task_target names that intent, in pool facet-id order; unit-normalise each member vector in float64 (rails.kb_policy._cosine_with_norms' own quotient); take the arithmetic mean over the members; unit-normalise the mean. An intent with no member in this pool keeps the flown written key vector, byte for byte."
+  },
+  "contact_class": "model-free",
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "facets": [
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:alarm_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "31781600b0c0d2f2cffbafcbc91e413066876747f7ccec3affbcc028903af293",
+      "members": 73,
+      "vector_sha256": "954008180f210ab0905d4a83606ccec319944e58f5c725fd254540844a3d8ba8"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:alarm_remove",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "c69a7423602db97b05004394a17d3a3e55063fcf61444f2994525bcd0eaf2e77",
+      "members": 42,
+      "vector_sha256": "08292b8aa26964e2d96d2f9a2a0d94b378b51a41c7c85a42adeaca4f0655c0e7"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:alarm_set",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "e3ff6a7313642c87aaf4deb1b7ce9f7f8a8e1eb025978b570471b042c15a6c9e",
+      "members": 110,
+      "vector_sha256": "bb6a85d88d7924698efae6cceaecc1291167a2b22906bdd8c7145c72ef6d7da9"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:audio_volume_down",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "45b5a0786ffc170a3ce144a8376d0fd53003ace9b81dd0063c3eda04cc485e49",
+      "members": 25,
+      "vector_sha256": "adf1b306bdc4c07f77bca1b56e8078a3ac2bbcf254cc66eea3b2242d2869e607"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:audio_volume_mute",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "c1eec100430be001ff0f9f031993bd79b7943a037fd027008c91f942023f39c1",
+      "members": 45,
+      "vector_sha256": "2bf229919ff93d6593468bd367279bb864fde4a9119a03e8ed7cd04a15fe93c1"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:audio_volume_other",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "755c4bd0c4a77718ddbd4e56902f05f4d49fab8bb8e519ea194ea3ad358f043e",
+      "members": 8,
+      "vector_sha256": "7d3ed32c0072eb8733692f30b9fe0a7beec65ae2ae561ddd78b9c3f2e985afae"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:audio_volume_up",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "14006a4c0b0f99f01173cfd0b3e706f716f66f0158f9838b67cbdbdd82a5d7e0",
+      "members": 47,
+      "vector_sha256": "83003e8fd720a2be5f9f4f3ca1785c33a058aabf7fef34680844351ccf6776d3"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:calendar_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "fbafa3fc4cd5549c7532b636fd1a5add10f73e7b803268a2abd00a0706958507",
+      "members": 488,
+      "vector_sha256": "3c2badf53c604ee4fe2eabd75ac0a5a8d65228b68abee7303957f8111d86520a"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:calendar_remove",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "e1220a45f67f02b71303f37d1f22d7291cd74e4917e360a36fc8096af0567b64",
+      "members": 290,
+      "vector_sha256": "d1fd983025b8a5fbb8b686e010051defad437a36be5f4f31399a9debaca952b8"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:calendar_set",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "b5058d676b0f085c57d90ebdb87c53ff8bfbd8b0b34b107f8f247cca12ccd82a",
+      "members": 745,
+      "vector_sha256": "dd2572db70df8dd02443ab495e521e72ac53e2bf1375f9826b6754119099028a"
+    },
+    {
+      "construction": "written-fallback",
+      "id": "intent-boundary:cooking_query",
+      "l2_norm": 0.999999990697,
+      "member_ids_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "members": 0,
+      "vector_sha256": "ae70d7582a9801ea116689828d0a665edda998d377aa6a6b565863cb89f2a2d9"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:cooking_recipe",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "d8f8f50a66f5be6ce558dc8f5c93a6eb0badf34438ee8b99f92dc0e1543b6d21",
+      "members": 46,
+      "vector_sha256": "03a23686568e70e38e201b650529ecd9f64a0f63cc2d75ce1cc003d0bc4bdbf4"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:datetime_convert",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "e30f5a22972855aa9211bef4f234b09a14d7ab42b43acad0fe6e17058095ce5f",
+      "members": 23,
+      "vector_sha256": "0663c2c29a0c55d030be2b0d25ee69c42f30e32316b3d96f0694c46b8955f36a"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:datetime_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "84dd0c1ef4a420364c120ddd7b7cf1ff1420fbd7bf894eeeb7d7f9cde865d0aa",
+      "members": 214,
+      "vector_sha256": "d880d564591bae3877204464a5a9d98ae72a25a2f641e1b5601c3fc054be7f69"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:email_addcontact",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "70cfe4f6c899ba4e31e302b212ccdca3e4f28e78f24598c8e3f9298af5eb2336",
+      "members": 43,
+      "vector_sha256": "18cb60d6445db8c02b8725fbd1e64bb1bf35894ed1c92398a5fb4c07f0f019ba"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:email_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "ed7dd09db7a68797d1494ccf73db26aa97d6136e023227998c6d2c4ab6b09cfb",
+      "members": 350,
+      "vector_sha256": "266d976782a16cc3303e026a91bd03b1b93a0ce8d596e71eb2718a28f2c418bb"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:email_querycontact",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "f51cda676f86a33438806d0326c1157e63d32a124b90c7456a6fea2b0d247aaf",
+      "members": 106,
+      "vector_sha256": "61921967ee86f00d26634ac7bcb1caeaaede404e91a47283b5226552eb0fb183"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:email_sendemail",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "b34c0880dbb3f3a6f6a34f75878b185860247494dae78c037ac28a9b5a1fc31e",
+      "members": 289,
+      "vector_sha256": "d99f916ba7ae5f5521e6ebe732d576f0355e69673d0de987af9f30a07e93d783"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:general_greet",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "1b87495ec3c0f33bb3e7d897adc486d3676a024882d0a259f35a59cc9121eb12",
+      "members": 18,
+      "vector_sha256": "86936c338dced2685adf9a8ea51468c1957ab478880691a3f31abb913235564d"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:general_joke",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "ff7703e01a5ba87e68a6190179416fb0a213df0a2ec8e0cc577e8c3beb1ff40c",
+      "members": 57,
+      "vector_sha256": "feaf7b4880a24e0a67fd2981e78d5fba7fe05da643887f58cd526e6b1ef80470"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:general_quirky",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "3e2434f08c6e0932fc246afcc6cb15eaac606f1b9ac9c7ceb91d967249f072b5",
+      "members": 412,
+      "vector_sha256": "e0bfa430feeac4828760e03001e32f331abb2c534c6194f479416e04d2f7c1e7"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_cleaning",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "c4694e7405fe3aae36bd0c3ea2d6fe518ba42d9bf5d2c80153407bef81591ed1",
+      "members": 71,
+      "vector_sha256": "ec21b277326d0e318fb9b8da6ba2cc8d5cf47e70d631cf9afa836ef5b2b69345"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_coffee",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "04dcfa2abe919696d0cf6c5b71256c0c5ea712d38dbc896a37b39b3b2b43008e",
+      "members": 99,
+      "vector_sha256": "fd69c83ba0079252280e430253daca7923d39469bf23918a471ccbf4db001d57"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_hue_lightchange",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "a49560607f7155a7627e852ee57a840b50557a211e5549f3521edf1d4e7ab5a7",
+      "members": 92,
+      "vector_sha256": "1d49e5d161c82f249b7bd30202ce821f8b934aa8c363e28efa29b500bd03206a"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_hue_lightdim",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "c6e310234449e2367a02f0bff6afd40edff223f77830b43cfc8cd5c7dbc10e0a",
+      "members": 62,
+      "vector_sha256": "fd4ee12f9b11b7b40832e39783faef0078b5463e26a22e48a8582ed77a0460da"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_hue_lightoff",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "86b1a24a1049e14d2682dc8481e22c92c8cd0dd9722ba2f66e3011f521d72772",
+      "members": 124,
+      "vector_sha256": "99a552ccae1fea16728495e1f728d88e5d2bad3079d404c0f730983878b020f6"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_hue_lighton",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "3d6dd1b5cdb09d9a52208d86318ca62a7f366378b7333db7e788ac915cc3eb0b",
+      "members": 15,
+      "vector_sha256": "59035d19b1b887018ad50f595f56c9490781dc69b0960be87a0d3b6c6e0cd6c7"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_hue_lightup",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "3b2cfdc2c872f9881f0bd341bd9648edf3f163acc0a77698356ea62fe05d3497",
+      "members": 63,
+      "vector_sha256": "e736dc75f405f02ecaeda518dc4c31e9cebf6421151d2c784ffe297698b945bf"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_wemo_off",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "e32a2064488f5e78c0d5d37b62adc7cf2ec19cde73dbec894bbdd2e4813275c0",
+      "members": 42,
+      "vector_sha256": "238ad39d7781dbef808fdfde6406163cb669fd337402c50e3dcb188e1edb58b6"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:iot_wemo_on",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "12f2ca1ca2b2197c642f205be0701c8b856d48097ab2ad5a59455c11ae3e44d5",
+      "members": 36,
+      "vector_sha256": "46a5ca387bfb6d12d33aba354c4b3470d419129d9ce95c3886448d325fa3c52f"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:lists_createoradd",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "6e0f1afcde5864858dd10136b4171e20008cf93d81cb9e128c4998689c264e18",
+      "members": 117,
+      "vector_sha256": "006eaf89a87c7f85f0d225c385b9c69ff96f4d86127f258e856813198eddeded"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:lists_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "10cd2c3338531d4fbe6cabe75b7a9ff6dac114574b379080936806fc201c76dc",
+      "members": 139,
+      "vector_sha256": "6cceec024dc2d40ff27b8d128717e52626d799b06b03a1675610f260a7d88d0e"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:lists_remove",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "8a364f5cc23a6866d71c3668986dcd15614020d224fd03c997be05fd0d207cfa",
+      "members": 119,
+      "vector_sha256": "cb4b30a4c8c36d444abfb486fa7274ac092f229190d6074b128aea7838583cf8"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:music_dislikeness",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "ec43ca72dddafc5b9e4193d60a69a63589ed34cdf816fb215e1a3f5958f15cfa",
+      "members": 6,
+      "vector_sha256": "e80b50a00c9117863de0b89533a14f223544fab41dd319bf4e06a2de5e9c0bb7"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:music_likeness",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "14a90128df4721a8cc39774950337d3652fdf84b7b38ca47cdc4a45be3f1c5ff",
+      "members": 64,
+      "vector_sha256": "0265a18cff6f837a54878856b258cff9269de9074764e54be5a4bdfc63431e1e"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:music_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "a227279140babef1cc51a5776ba4c09ba311adbb5a744948a36026a3280f0abb",
+      "members": 71,
+      "vector_sha256": "9bc9ca4ed0c41425d0a9bd141ca5cf9bdfda60a652ee6b4c6077840a29e293e3"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:music_settings",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "d8a33994650483223bb3a28643d4c405b04281afb27b5126ea6d6dd95cffb2a2",
+      "members": 27,
+      "vector_sha256": "10d112537feac3090d4fa4613c2c20bf4aa7bc73eb01f9c2d0c42c5b6d1eaa6e"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:news_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "bb676ec23d1b62f72353eb22168b7ce9eb6adc2d0db2476d0ad2259c1450793e",
+      "members": 339,
+      "vector_sha256": "2ca949b1bf890f3bdba37f173751428d9c4a5088540161cef4ae8834ffdc6dfd"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:play_audiobook",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "edca3da9946a642c70bceb3dc738809d350841a192589b8b63f66709c97a94bc",
+      "members": 125,
+      "vector_sha256": "a1b2a303fec16d6be6c1e8aa7b6730832242cb30905ce75b99d278ff4db96b4c"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:play_game",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "72be2d17cb8e50a2dbd57cc3a406049539843f14201946da7d44964bbf16d010",
+      "members": 98,
+      "vector_sha256": "e99d48607f4a2e8c55a9b5c92f61adf06ad890d0d67f8f5b6656f5f00f13ba97"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:play_music",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "548590e6eefd955c19ac375f3380e583394c24815833df353cfdb4c6a3fbe3c6",
+      "members": 570,
+      "vector_sha256": "7f33fff7cb42f13ee3315f927a0293a1c0b9aac73bbc96ccfd8040111e0831d8"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:play_podcasts",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "8c83d29cd250e1d684b11be1e4b24b571b7ce93208d75563ddfaa7962e2aa5f4",
+      "members": 171,
+      "vector_sha256": "2d82fa286fd7416c2a767b9200c4df9e1a1dddaa8e0b4c1a64ba173b7f4999a6"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:play_radio",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "63c794ed84b59e09d9c0683a56ccaa7a3a8d40e2187b5924c5a9ca53cecd4a64",
+      "members": 249,
+      "vector_sha256": "d93652e551c4403ee74ec62ad5dec80ab729e479f7a3fad54305e087662de23c"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:qa_currency",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "b0397f1c261c9212f001ebb843405c9150ac3915d4a76dc852b643edf9381651",
+      "members": 128,
+      "vector_sha256": "562af1ee1d654490669301446dc30224e810a5ccc467fe043efd1ff5ffccf9ff"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:qa_definition",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "2c9b727c2dd5c6ddd79add0743c0da8d0a51cff63d14d03c7e4a7aae02ba82c4",
+      "members": 246,
+      "vector_sha256": "ea7509e15a627f65c28ab5b932bb60aeb6b3c449320d63a5e631acb3518c2104"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:qa_factoid",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "7ce7081132b5989de775060a962224b4a1a20328c5edc8e9a6fdfeb1e33afef0",
+      "members": 448,
+      "vector_sha256": "6bb5bca0558cce6beab555c184b0ff941314c0ffd3c7833aa752ee04f0d100e5"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:qa_maths",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "aff59ee5a3e942feae50e7d53fc3f7d2c864c875faba20a33285069f4998a206",
+      "members": 66,
+      "vector_sha256": "2f72a77da7ff69c4ed06ad48e61e06322ce0bf5ad237648478cd6ca77f8bb97a"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:qa_stock",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "17d68c9754767c0bdb9af0130cf956ed62c1673854198dcdf1018497e58c95a6",
+      "members": 131,
+      "vector_sha256": "4d045fb7276fd7ac81820acf73edea07955a5e060f9e15e051a8170bd728a9b0"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:recommendation_events",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "7d567b017a9f3e4b4b0466d62f2308730bd0256c456bed51081bb63da1871ee8",
+      "members": 118,
+      "vector_sha256": "404e0781630fe868e0972328ac4fe68ceb41f9adc3dba42c8169b8f4ddde1aae"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:recommendation_locations",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "4428bb2ad15390b454851c5d05684b7920f094e45514bc8ed98c980245c4772b",
+      "members": 109,
+      "vector_sha256": "0b250dfe68a0d233f71aec2af80addde0d6a33b4ef24b9d5a1a4e3f82830f766"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:recommendation_movies",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "00156f066915609f0fb1e2c218ef3729d81cd4b71c2a678be7e98bdc61b9d79b",
+      "members": 42,
+      "vector_sha256": "ee6a5cfb0ad58d1506ada73d69404383d6fcc67a2042314e61a351a5fdf3add0"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:social_post",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "5ca7651e2d5dbdaedcfff1a622d730a72cb7e9e8cb03a86cefb3d4709b940529",
+      "members": 166,
+      "vector_sha256": "a66da4b0fc26287f0eb15c821548bb6bc2f3c9d77e170f35d67d81f78d98c11e"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:social_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "54ecc79a04b4d66b94a690d022bdae2cbc04d326433fb69306cbc05b1e737621",
+      "members": 61,
+      "vector_sha256": "68ec70341606494fa9a4c4f07561478df28ec910e8d779646a62011bd9aca7a5"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:takeaway_order",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "42522ca4fd82f9037d5386235cb0b8a47c3890697a7aee8876bb68885163e595",
+      "members": 46,
+      "vector_sha256": "000010f7ed7de1beb8ac19ecb65504a3bb8662a6a2d310560bcec2fef8a749b6"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:takeaway_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "fd67aafc854cfa16cd2ad12a1fb3b905968875e5bab0d239fa6b701672a07f9c",
+      "members": 47,
+      "vector_sha256": "6091b0346b3ae005c0e75dfd9ebc4d896e370f7f3c6ba2bcf84eb0ff577465ad"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:transport_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "c5ac3d6088987f52c34f1567b51625ec71f9542af93d2f3c9ac8183865c0ca6e",
+      "members": 151,
+      "vector_sha256": "8e10ad2b63a02d6893d2ce3fb8436a9b2946e643aa9a5d49f16b959a677f5793"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:transport_taxi",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "db7dc69c8391a7d45191fee8468511200d12ca889cf7cc6c103c1ea448c57231",
+      "members": 73,
+      "vector_sha256": "335642af75e04c7eaf1038ed17ef980008d4a83384951f696754d50fed55c2fb"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:transport_ticket",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "f1e268c2ffddf3576b4e9abf9708b64e42ce2c542c30c094d2ecfe6cdbedc13e",
+      "members": 91,
+      "vector_sha256": "0ca6c27ba1798b3325e67eb481834c75cb72d939685d0d3c0304e8340f83afef"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:transport_traffic",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "787905088428f8f41f10d2d4967a95337c5c7afafe5c6a65b36d0fa3812b4b33",
+      "members": 92,
+      "vector_sha256": "e73464e4e61db47bbb323c15ff1fa6957e576eded0649e19c633a48f49f3d54a"
+    },
+    {
+      "construction": "centroid",
+      "id": "intent-boundary:weather_query",
+      "l2_norm": 1.0,
+      "member_ids_sha256": "6470f9bf2ec1749099034e880091d6b1cbb69d78ddf2ba57acffc89880024f4d",
+      "members": 409,
+      "vector_sha256": "414661a315aca4778e6b856caa87b3bbacb674b8398424911224ba3739108fde"
+    }
+  ],
+  "generated_at": "2026-09-27T05:44:37.450543+00:00",
+  "implementation": {
+    "speech_aware_evidence_acquisition.rails.kb_policy": "92cf457a2fcf1594050a4b23fe4d9443ff27927fbb0498e838d95638f5a49b8a",
+    "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+  },
+  "inputs": {
+    "construction_pool_snapshot": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "utterances": 8554
+    },
+    "pool_facet_vectors": {
+      "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "role": "one pinned vector per construction-TRAIN utterance; the members",
+      "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+    },
+    "same_space": {
+      "encoder_inventory_sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31",
+      "geometry": {
+        "audio": false,
+        "batch_size": 1,
+        "facet_dimension": "intent-boundary",
+        "prompt": "passage: "
+      },
+      "note": "both the written keys and the pool vectors were cut by the same frozen encoder under the same prefix; the diagnostic's section 0 proves the spaces comparable"
+    },
+    "target_store_snapshot": {
+      "facets": 60,
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+      "role": "the released intent-boundaries-v1 store; its facet ids and delivered bodies are unchanged",
+      "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+    },
+    "written_key_encoding_index": {
+      "encoded_is_representation": 60,
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/index.json",
+      "sha256": "f70cf26726143151e360015bf9a5c4b0922c9e1e9ecc0177878f9b5c77674dab"
+    },
+    "written_key_vectors": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+      "role": "the flown keys; the fallback source for an intent with no pool member",
+      "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2"
+    }
+  },
+  "kind": "centroid-over-pinned-utterance-vectors-v1",
+  "measured": {
+    "centroid_facets": 59,
+    "distinct_pool_labels": 59,
+    "intents": 60,
+    "key_to_key_cosine_max": 0.993,
+    "key_to_key_cosine_mean": 0.9326,
+    "members_max": 745,
+    "members_min_over_centroid_facets": 6,
+    "members_total": 8554,
+    "written_fallback_facets": 1,
+    "written_fallback_ids": [
+      "intent-boundary:cooking_query"
+    ]
+  },
+  "schema": "saea-centroid-key-receipt-v1",
+  "why_a_new_receipt_kind": "The text-facet kind pins a text_sha256 per facet because each written key WAS a text run through the encoder. A centroid has no text source and no encoder pass: it is arithmetic over already-pinned utterance vectors. This kind therefore pins, per facet, the construction, the member count, the sha256 of the sorted member facet-id list and the sha256 of the emitted vector, plus every input pin and the loader implementation hashes, so the file is reproducible from the pins alone."
+}

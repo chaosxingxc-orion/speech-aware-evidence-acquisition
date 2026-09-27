@@ -1,0 +1,68 @@
+{
+  "arms": {
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "per_row_intent_verdict_authority": {
+        "note": "the read re-derives the comparator's per-row verdict from the sealed PLAN arm's own official score as well and refuses on any disagreement.",
+        "relpath": "analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl",
+        "sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf"
+      },
+      "role": "sealed, already flown, never re-flown and not part of this campaign. It holds these 55 rows' comparator answers, and every one of them is intent-WRONG there: the bank's INTENT-UNCOVERED and INTENT-COVERED classes both collapse to INTENT-WRONG in its own convention. The probe therefore flies the TREATMENT ONLY and the contrast is per-row and offline.",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "probe": {
+      "attempt_id": "attempt-slurp-native-stage3-kprobe-fold-a-55-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim, and it admits nothing by itself. No utterance text, transcript, gold label string, intent name as content or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "interval": {
+    "kind": "binomial",
+    "no_bootstrap_because": "the estimand is one binomial proportion over independent rows, not a paired difference of pooled metrics",
+    "primary": "Wilson score CI95",
+    "reported_beside": "exact Clopper-Pearson CI95"
+  },
+  "metrics": [
+    "scenario_action_exact"
+  ],
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-CONDITIONAL-RATE-V1"
+  },
+  "read_driver": "scripts/analysis/slurp_kprobe_read.py",
+  "recipe_id": "slurp-stage3-kprobe-fold-a-55-conditional-rate-v1",
+  "registered_at_utc": "2026-09-27T06:18:00.000000+00:00",
+  "reported_beside_every_number": [
+    "the flown delivery check against the offline derivation's 55 (the gate)",
+    "the reverse count and the statement that it is zero by construction",
+    "the four-way transition split and the stay-wrong split",
+    "the re-declaration arithmetic and the 27-row threshold, stated and not applied",
+    "GOLD-SELECTED ROSTER: conditional rate only, no pooled or roster-level claim, and this cell cannot see harm on already-correct rows or on rows that lose their gold entry"
+  ],
+  "roster": {
+    "count": 55,
+    "id_list_sha256": "ad433b1fc3f21765af15d3aed4012264125d9f17fdd4cef837d67bcf50ddde02",
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/roster-derivation-v1.json",
+    "sha256": "ca2869c13e6e3394d9ce324e342e4548e1b2d134e48d88d9ef89daeb7f39eed8"
+  },
+  "schema": "saea-slurp-conditional-rate-recipe-v1",
+  "steps": [
+    "1. Refuse unless the sealed manifest is COMPLETE at 55 rows and its ids equal the committed roster's ids exactly (compare the id-list sha256, not a count), and the manifest's config hash is this cell's (the centroid file is what flew).",
+    "2. THE DELIVERY GATE: refuse unless the flown Perception consumption delivered the row's own gold intent boundary value id on all 55 rows. The offline derivation predicts 55; anything less is an engineering defect and closes the read with no conversion number (a refusal receipt is written instead).",
+    "3. Score once over the complete manifest with the dataset's standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded) and take ONE field per row: scenario_action_exact.",
+    "4. Establish the comparator's per-row intent verdict two ways and refuse on any disagreement: from the bad-case bank (plan_class INTENT-UNCOVERED or INTENT-COVERED, both intent-wrong, digest pinned above) and from the sealed PLAN arm's own official score for the same sample ids.",
+    "5. m = the count of rows whose probe verdict is exact and whose comparator verdict is not. r = the reverse count, which must be 0 because every comparator verdict on this roster is wrong; a non-zero r means the roster or the comparator was misread and closes the read.",
+    "6. Report P(correct | newly delivered) = m / 55 with a Wilson score CI95 and the exact Clopper-Pearson CI95 beside it. No bootstrap: the quantity is a single binomial proportion.",
+    "7. Report the FOUR-WAY transition split (wrong to gold; gold to wrong; the same wrong intent; a different wrong intent) and the stay-wrong split (byte-identical answer; same wrong intent in different bytes; different wrong intent), with the within-pair byte identity on rows whose intent did not change as context beside the ROLL-AA null, never against it.",
+    "8. State the re-declaration arithmetic and do not apply it: a later construction cell's expected_effect_pp = m x 0.092615 pp intent accuracy (owner decision 133) and m x 0.041615 pp SLU-F1 for the guard; state whether m >= 27 (the 2.5 pp intent bar at n = 1,080); and state in the same paragraph that this is a CONDITIONAL rate on a gold-selected roster and not a pooled effect."
+  ],
+  "title": "Cell KPROBE -- P(correct | newly delivered), the centroid key's conversion from delivery to correctness, measured",
+  "treatment_key_file": {
+    "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+    "rows": 60,
+    "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532"
+  }
+}

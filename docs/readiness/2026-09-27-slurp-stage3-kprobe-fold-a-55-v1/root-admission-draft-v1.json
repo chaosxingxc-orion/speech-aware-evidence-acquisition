@@ -1,0 +1,126 @@
+{
+  "_draft_note": "A DRAFT written by the registration agent, in the repository, for root to mint on the data root with scripts/flights/kprobe/kprobe_mint_receipt.py, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided' (core.flight.campaign.declared_readiness refuses it).",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/analysis-recipe-v1.json",
+      "sha256": "d294d20d1baa5f110f8d3a46cadd6d36190a2201b263d486703bfe7977ab5e4e"
+    },
+    "base_cell": "the LOCKED default plan, cell PLAN (SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, v2.0 lock 2026-09-22): KPROBE is that fragment with one pin moved",
+    "centroid_key_receipt_copy": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/centroid-keys-receipt-v1.json",
+      "sha256": "d5fa43dfb9cfe71402e256c015e5f0a1ce66e97b3ec5355a664eb9f69f8cdf0a"
+    },
+    "clause_comparator": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 on the same rows, never re-flown; no admission read",
+    "config_proof": {
+      "path": "tests/unit/test_kprobe_config.py",
+      "sha256": "b3dce593407fce7b2b4d07ad0175641946ed63f59d85a8ef7b5aec78078ad4b0"
+    },
+    "conv_precedent_read": {
+      "path": "docs/results/2026-09-27-slurp-conv-probe-read.md",
+      "sha256": "693c9e2707c981952222997931c8c2dbbe1122ef558b3b67d3901b986bfc80c5"
+    },
+    "diagnostic_note": {
+      "path": "docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md",
+      "sha256": "48b3ac1dd99375b28755fdb026da91a3675fc915c84d2cca3fa8adadbb0eb24f"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "6fd6d6245b77c6bf35ec81c1229632c81dbff36cd0df61a601f5ea1be8604356"
+    },
+    "owner_decision_145": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "f8dac6b0a4f369f0553ab1ac461b7af7cbb9f4e5e99d374d13afd16f2ed2894d"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/protocol-registered-v1.json",
+      "sha256": "2f33d2f6bf1cf9a8545b88ba89a4e1a4bff409191eb53328097c35bec37aa7f7"
+    },
+    "read_driver": {
+      "path": "scripts/analysis/slurp_kprobe_read.py",
+      "sha256": "12cc6a23d3d9955e7263938e9b8d4e91190935064c5cd01c997258ce6003f37c"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/registered-facts-v1.json",
+      "sha256": "e5af3dd1d44f8ba7b2d01ed3062be0793e5238c4936ab7f3619a32cd6c6c1f87"
+    },
+    "registration_base_commit": "08fd493c",
+    "roster_derivation": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/roster-derivation-v1.json",
+      "sha256": "ca2869c13e6e3394d9ce324e342e4548e1b2d134e48d88d9ef89daeb7f39eed8"
+    }
+  },
+  "authorization_basis": "Owner decision 145 (register a CONV-style probe for the centroid boundary key; the probe pins its own derived baseline and does NOT re-pin the 211 committed configs) and owner decision 133 (a mechanism acting on intent is reported on intent-recognition accuracy, with official SLU-F1 kept as the non-inferiority guard). Standing: decision 134 (probe before arm), 115 closure rule, 116 (the complete agentic system is the unit), 101 (every Stage-3 cell carries its algorithm label; this cell's label is honestly none), 77 (flights only through the batch driver scheduled task), and the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md. The population was selected using gold OFFLINE, which is legitimate for a conditional estimate on a TRAIN roster and is why the cell may never support a pooled claim.",
+  "budget": {
+    "asr_calls": 0,
+    "ceiling_note": "11 contacts per row = 1 + 2 x (1 + 3 + 1) at max_revisions 1; 1.0 GPU-h is a ceiling (CONV realized 0.12 h for 70 rows)",
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "expected_contacts": 276,
+    "fit_endpoint_calls_cap": 2420,
+    "generation_calls_cap": 605,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 330,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 1405
+  },
+  "cell_kind": "Stage-3 conditional-rate probe (label none: no rollout, no scoring, no credit, no update). One arm, 55 rows, no smoke and no comparator flight. It measures the conversion from delivery to correctness of the centroid boundary key the 2026-09-27 diagnostic put forward.",
+  "claim_boundary": "No superiority, generalisation, component-causal, bar, admission, held-out, confirmatory or paper-scale claim of any kind. A conditional rate on a gold-selected roster measures one factor of a later cell's expectation; it is never a pooled or roster-level number.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell KPROBE: the 55-row centroid-key conversion probe (owner decision 145). It runs the locked PLAN plan with exactly one pin moved -- the intent-boundary Perception facet_source, from the written-key file to the centroid-key file -- on exactly the TRAIN Fold A rows whose gold intent boundary entry is NEWLY delivered under that key, and on nothing else. The comparator needs no contacts: the sealed PLAN arm on Fold A already holds these rows' answers. The read is P(correct given newly delivered) -- m of 55 -- as a Wilson interval with an exact Clopper-Pearson beside it, on INTENT correctness per row, gated on delivery having held on every row.",
+  "decision_id": "slurp-stage3-kprobe-fold-a-55-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1",
+    "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cell is flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any k, tau, fuse-policy, rank-weight, store, release, snapshot, roster, prompt or geometry change beyond the one registered pin",
+    "re-pinning the 211 committed configs to the centroid file (decision 145: that waits on m)",
+    "a pooled, roster-level or admission read from this cell"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 55,
+    "fold_b_contact_authorized": false,
+    "partition": "the 55 intent-wrong TRAIN Fold A rows whose gold boundary entry the centroid key newly delivers (docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/roster-derivation-v1.json)",
+    "split_identity_hash": "d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "minted by scripts/flights/repin_cell.py at the flip (this cell's own, item E16); not pinned by this receipt"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "composed_config": "8ff881efbe1c3a35e0d05afbc5357cfc70ed79d14f6c95fe5699b75103488dd9",
+    "note": "the values of the fragments exactly as committed at 08fd493c (readiness held, no decision requirement); repin_cell.py recomputes them at the flip.",
+    "protocol": "c278e63b8e2a5bf84a307da40dcadf4f4a2783e902da5543def005f9d318f031"
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "note": "the resident SLURP np4 session; the flight attaches only, never spawns or stops",
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

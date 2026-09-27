@@ -1,0 +1,128 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-kprobe-fold-a-55-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-kprobe-fold-a-55-baseline-v1",
+      "cell_id": "slurp-native-stage3-kprobe-fold-a-55-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Cell KPROBE, the centroid-key conversion probe (owner decision 145), registered before contact on 2026-09-27 from the locked PLAN baseline's own fragments by script (decision 58) with one pin moved. Treatment only: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 holds these rows' comparator answers and is never re-flown. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement. The requirements list is empty by design and --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1"
+    }
+  ],
+  "date": "2026-09-27",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 605,
+    "planned_speech_audio_seconds": 1405,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration for this run, and a second failure closes this cell: no third registration, and the fix must be proven on a four-row dry run before another mechanism is admitted. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): if the abort is an INFRASTRUCTURE failure with code and request bytes unchanged, the one recovery takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the question, roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 2420,
+    "generation_calls_cap": 605,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 330,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 1405
+  },
+  "fragment_kind": "saea-slurp-native-stage3-kprobe-fold-a-55-v1",
+  "generation_budget": {
+    "cap": 605,
+    "definition": "The locked PLAN role graph is unchanged: perception 1, solver 1, reviewer 3, planner 1, max_revisions 1, so rails.native_episode_config.load_native_episode_config resolves the program ceiling 1 + 2 * (3 + 1 + 1) = 11 contacts per row and 55 * 11 = 605 is the exact program maximum rather than a conservative safety bound. The sealed PLAN arm's realized rate on the whole roster was 5,425 contacts over 1,080 rows (5.023 per row), which on these 55 rows would be about 276 contacts (cell CONV realized 4.13 per row on the same kind of roster); every row here is an intent-error row and so likelier than average to spend its revision budget, which is why the ceiling and not the average is registered. At the sealed arm's own 3.6819 GPU hours per 5,425 contacts the whole ceiling costs about 0.41 GPU hours. The train-exemplars store supplies the Solver phase and adds prompt tokens, never contacts. The budget is RUN-CUMULATIVE across every attempt of this run id, which is what makes the resume-recovery clause safe.",
+    "target": 276
+  },
+  "population": {
+    "count": 55,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The 55 rows of TRAIN Fold A that are intent-WRONG in the sealed PLAN arm (bad-case bank plan_class INTENT-UNCOVERED or INTENT-COVERED) and whose own gold intent's intent-boundary value id enters the fused Perception selection under the centroid key file and not under the written key file, both at the flown k 8 / fuse_coverage 8-1-8 / w_agree 0.0 through the production constructor -- derived from the pinned key file after the diagnostic's arithmetic, the file's production recall and the production constructor were each proven to agree (docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/roster-derivation-v1.json). Every row is intent-WRONG in the sealed comparator, so the conditional rate is the whole estimate. SELECTED USING GOLD, OFFLINE: conditional estimate only, no pooled or roster-level claim, ever.",
+    "split_identity_hash": "d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:000327:audio-1501775408-headset",
+        "slurp:train:000822:audio-1434535176",
+        "slurp:train:000871:audio-1501767528-headset",
+        "slurp:train:001663:audio-1501756828",
+        "slurp:train:001849:audio-1502218742-headset",
+        "slurp:train:003147:audio-1501758004",
+        "slurp:train:004754:audio-1490201898-headset",
+        "slurp:train:005313:audio-1502200943-headset",
+        "slurp:train:005338:audio-1434540035",
+        "slurp:train:005942:audio-1501686863-headset",
+        "slurp:train:006324:audio-1499246867-headset",
+        "slurp:train:006398:audio-1497867926-headset",
+        "slurp:train:006408:audio-1490193792",
+        "slurp:train:006644:audio-1497887514",
+        "slurp:train:006661:audio-1499694500",
+        "slurp:train:006712:audio-1500980407-headset",
+        "slurp:train:006765:audio-1501172651-headset",
+        "slurp:train:007772:audio-1501753944-headset",
+        "slurp:train:007864:audio-1434536288",
+        "slurp:train:008229:audio-1490106273",
+        "slurp:train:008348:audio-1490356207-headset",
+        "slurp:train:008940:audio-1492785556",
+        "slurp:train:010144:audio-1502375950",
+        "slurp:train:010161:audio-1497883488",
+        "slurp:train:010721:audio-1502376160-headset",
+        "slurp:train:010765:audio-1501754011",
+        "slurp:train:010930:audio-1502895782",
+        "slurp:train:011099:audio-1501754215-headset",
+        "slurp:train:011707:audio-1498572930",
+        "slurp:train:011984:audio-1490288002-headset",
+        "slurp:train:012191:audio-1498568799",
+        "slurp:train:013114:audio-1490106644-headset",
+        "slurp:train:013169:audio-1490106738",
+        "slurp:train:013212:audio-1490291531-headset",
+        "slurp:train:013443:audio-1498567184",
+        "slurp:train:013626:audio-1502112891",
+        "slurp:train:014300:audio-1501694638-headset",
+        "slurp:train:014548:audio-1490956004",
+        "slurp:train:014629:audio-1502890907-headset",
+        "slurp:train:014801:audio-1498571227",
+        "slurp:train:014936:audio-1502891319",
+        "slurp:train:015040:audio-1494548394-headset",
+        "slurp:train:015160:audio-1490182873-headset",
+        "slurp:train:015237:audio-1502195173",
+        "slurp:train:015253:audio-1434541435",
+        "slurp:train:015278:audio-1497438167-headset",
+        "slurp:train:015317:audio-1502891826-headset",
+        "slurp:train:015351:audio-1434532573-headset",
+        "slurp:train:015479:audio-1501765047-headset",
+        "slurp:train:015599:audio-1501406791-headset",
+        "slurp:train:015664:audio-1502894832-headset",
+        "slurp:train:015773:audio-1501692472",
+        "slurp:train:016243:audio-1499689044-headset"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Cell KPROBE on the 55 TRAIN Fold A rows the centroid boundary key newly delivers: of the rows that receive their own gold intent's boundary entry only because the retrieval key is the intent's mean construction-TRAIN utterance vector instead of its written description, what proportion move from a wrong intent to the gold intent? That proportion IS the conversion from delivery to correctness -- the quantity the boundary-key diagnostic (docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md) measured delivery for and could not measure. The deliverable is P(correct | newly delivered) with a binomial CI95 plus the reverse count and the four-way transition split; multiplying it by the registered per-row headroom of the class the gain lands on (12.04 / 130 = 0.092615 pp intent accuracy, primary under owner decision 133; 5.41 / 130 = 0.041615 pp SLU-F1 for the guard) gives the expectation a later 1,080-row construction cell would declare. The intent-boundary Perception channel's facet_source pin moves from the written-key file (prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl, one encoded one-line description per intent) to the centroid-key file (prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl, one unit-normalised mean construction-TRAIN utterance vector per intent from the R01-excluded pool, zero encoder contacts; the one intent with no pool member keeps its written key). Nothing else moves: k stays 8, fuse_coverage stays m 8 / c 1 / top_l 8, the rank weights stay w_cos 1.0 / w_prior 0.0 / w_agree 0.0, the intent-boundaries store snapshot, release and delivered bodies are the same bytes, and every other store, role, template, normaliser, scorer, geometry and session is the locked PLAN baseline's, byte for byte. The delivered block is unchanged, so the token cost is zero; only the retrieval key moves. THE ROSTER WAS SELECTED USING GOLD, OFFLINE, which is legitimate for a CONDITIONAL estimate on a TRAIN roster and for nothing else: NO POOLED OR ROSTER-LEVEL CLAIM MAY EVER BE MADE FROM THIS CELL, because its population was chosen by the mechanism's own effect. This cell claims NO benefit and asks for NO admission: under the measurement instrument's rule 5 a batch of 55 rows is a form proof by size, never evidence of benefit. Development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is a one-pin retrieval-key change chosen by an offline diagnostic over sealed bytes and flown on a gold-selected subset to measure one conditional rate -- no rollout, no per-sample scoring, no credit assignment, no update operator and no evolving store. The family whose description covers a typed construction/consumption action of this shape is sealed-credit-system-policy-v1, and this cell is deliberately NOT labelled with it: that id's first instance is reserved for the composed system policy, and a single key file is not a policy search. A measurement of a factor is even less of one.",
+    "operators_used": []
+  }
+}
