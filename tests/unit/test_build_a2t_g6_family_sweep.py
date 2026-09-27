@@ -1,16 +1,34 @@
+import importlib.util
 import json
+import sys
 from pathlib import Path
 
-from scripts.build_a2t_g6_family_sweep import (
-    NAMESPACE,
-    build_roster,
-    canonical_identity_hash,
-    manifest_identity_hash,
-    rank_digest,
-)
-
-
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def _load_builder():
+    """Load ``scripts/build_a2t_g6_family_sweep.py`` by PATH, not by dotted import: ``verl`` installs a
+    top-level ``scripts`` package in the shared venv, so ``from scripts.<name> import ...`` resolves to
+    site-packages and fails collection unless the repo root happens to precede it on ``sys.path``
+    (the same fix as ``test_e28_a2t_knowledge_index_view.py``)."""
+
+    path = ROOT / "scripts" / "build_a2t_g6_family_sweep.py"
+    spec = importlib.util.spec_from_file_location("build_a2t_g6_family_sweep_under_test", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules.setdefault(spec.name, module)
+    spec.loader.exec_module(module)
+    return module
+
+
+_BUILDER = _load_builder()
+NAMESPACE = _BUILDER.NAMESPACE
+build_roster = _BUILDER.build_roster
+canonical_identity_hash = _BUILDER.canonical_identity_hash
+manifest_identity_hash = _BUILDER.manifest_identity_hash
+rank_digest = _BUILDER.rank_digest
+
+
 G1 = ROOT / "docs/receipts/a2t/A2T-G1-104.json"
 G3 = ROOT / "docs/receipts/a2t/A2T-G3-PILOT-40.json"
 G5 = ROOT / "docs/receipts/a2t/A2T-G5-FIXED16-IDENTITY.json"

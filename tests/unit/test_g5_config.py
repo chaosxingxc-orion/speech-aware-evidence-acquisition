@@ -274,10 +274,18 @@ def test_the_measurement_declaration_is_a_no_harm_admission_at_the_fold_a_half_w
 
 def test_the_effect_floor_gate_accepts_the_family() -> None:
     import importlib.util
+    import sys
 
-    spec = importlib.util.spec_from_file_location("stage3_effect_floor_check", REPO / "scripts/checks/stage3_effect_floor_check.py")
-    gate = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(gate)
+    # The gate module declares dataclasses, which resolve their own module through sys.modules while the class
+    # body executes; an unregistered spec-loaded module therefore fails to import unless an EARLIER test had
+    # already imported it by name (order dependence: this test failed when run alone). Reuse the registered
+    # module when present, else register it before executing.
+    gate = sys.modules.get("stage3_effect_floor_check")
+    if gate is None:
+        spec = importlib.util.spec_from_file_location("stage3_effect_floor_check", REPO / "scripts/checks/stage3_effect_floor_check.py")
+        gate = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = gate
+        spec.loader.exec_module(gate)
     data = gate.evaluate(REPO)
     ours = [f for f in data["findings"] if any(cell in f["message"] for cell in (ARM, AA, SMOKE))]
     assert ours == [], ours

@@ -3,8 +3,19 @@
 from __future__ import annotations
 import json
 import re
+import sys
 from dataclasses import replace
+from pathlib import Path
 import pytest
+
+# The shared fixtures live in tests/unit/test_rails_runner.py. pytest's default (prepend) import mode puts only
+# THIS file's directory (tests/integration) on sys.path, and tests/integration is collected before tests/unit,
+# so the bare import below failed collection in a full-suite run (it only passed when tests/unit had already
+# been inserted). Put tests/unit on sys.path explicitly; the module name stays `test_rails_runner`, the same
+# name pytest itself gives that file, so both resolve to one module object.
+_UNIT_TESTS = str(Path(__file__).resolve().parents[1] / "unit")
+if _UNIT_TESTS not in sys.path:
+    sys.path.insert(0, _UNIT_TESTS)
 from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
 from speech_aware_evidence_acquisition.rails import controllers as rc
 from speech_aware_evidence_acquisition.rails import phase_tools

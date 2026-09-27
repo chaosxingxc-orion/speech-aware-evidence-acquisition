@@ -12,6 +12,22 @@ import test_e21_repair_loop as fixtures
 
 
 from speech_aware_evidence_acquisition.core.bundle import BundleError, verify_bundle
+
+
+@pytest.fixture(autouse=True)
+def _drop_synthetic_registrations():
+    """The synthetic delivery rules and scorers these tests register into the process-global
+    ``core.base.RESPONSE_POSTPROCESSORS`` / ``SCORERS`` (every such id starts ``synthetic-``) are removed after
+    each test, so no later module -- test_engineering_base_check's registry/source agreement -- sees them."""
+
+    from speech_aware_evidence_acquisition.core.base import RESPONSE_POSTPROCESSORS, SCORERS
+
+    before = {id(registry): set(registry._entries) for registry in (RESPONSE_POSTPROCESSORS, SCORERS)}
+    yield
+    for registry in (RESPONSE_POSTPROCESSORS, SCORERS):
+        for name in set(registry._entries) - before[id(registry)]:
+            if name.startswith("synthetic-"):
+                registry._entries.pop(name, None)
 from speech_aware_evidence_acquisition.core.bundle.delivery import build_delivery_bundle
 from speech_aware_evidence_acquisition.core.config import compose
 

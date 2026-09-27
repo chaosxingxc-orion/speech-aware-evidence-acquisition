@@ -4,7 +4,7 @@ import json
 from types import SimpleNamespace
 import pytest
 from speech_aware_evidence_acquisition.core import scoring_batch
-from speech_aware_evidence_acquisition.core.base import SCORERS, CoreError
+from speech_aware_evidence_acquisition.core.base import SCORERS
 
 SCORER = "test-derived-complete-score-v1"
 CALLS = []
@@ -32,10 +32,13 @@ def _score(path, _lock, _root):
     }
 
 
-try:
-    SCORERS.register(SCORER, _score)
-except CoreError:
-    pass
+@pytest.fixture(autouse=True)
+def _registered_scorer(monkeypatch):
+    # Registered per test and removed afterwards. It used to be registered at IMPORT time and never removed,
+    # so from collection onward the process-global core.base.SCORERS carried a test-only id, and
+    # test_engineering_base_check.py::test_regex_extraction_agrees_with_package_import (which compares the
+    # registry against the canonical source scan) failed in every full-suite run while passing alone.
+    monkeypatch.setitem(SCORERS._entries, SCORER, _score)
 
 
 def _fixture(tmp_path, monkeypatch):
