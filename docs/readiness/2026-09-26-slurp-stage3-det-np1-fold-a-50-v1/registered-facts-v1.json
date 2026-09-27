@@ -1,0 +1,396 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (a mapping keyed by run id: both passes declare the same block). The same block is repeated in the preregistration's fenced json for readability; this copy has precedence. Every value was measured or derived MODEL-FREE at registration: the composed and protocol hashes through core.config.compose / core.config.protocol_hash, the split identity through data.splits.split_identity_hash, the roster arithmetic from the committed Fold A receipt and runtime view, the serving profiles through core.session.serving.resolve_serving_profile. Zero model, tokenizer, encoder, scorer, GPU and network contacts; no audio sample decoded.",
+  "authority_relpaths": [
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md",
+    "docs/results/2026-09-25-slurp-var1-complete-evidence.md",
+    "docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1/README.md",
+    "tests/unit/test_stage3_det_np1_cells.py"
+  ],
+  "budget_arithmetic": {
+    "derivation": [
+      "generation_calls_cap = 50 rows x 11 contacts per row (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 * (1 + 3 + 1)) = 550 per pass",
+      "fit_endpoint_calls_cap = 4 x 550 = 2200 per pass, the PLAN family's own ratio",
+      "native_task_contract_calls_cap = 50 x 6 = 300 per pass, the PLAN family's own per-row figure on a tool-free form (expected 0)",
+      "repeated_speech_audio_seconds_cap = ceil(107.6111875 roster seconds x 11) = 1184 per pass",
+      "expected contacts per pass = 50 x 5425 / 1080 = 251 at the sealed PLAN arm's realised 5.023 per row; two passes about 502",
+      "GPU hours: PLAN's 3.6819 h / 5,425 contacts = 0.000679 h per contact on FOUR overlapping slots; ONE slot serves one request at a time, so up to 4x per contact is assumed: expected 0.6814 h per pass (0.1704 h at the np4 rate), 1.4931 h at the whole contact ceiling, registered as 2.0 h per pass; both figures are assumptions the flight measures (decision 140 makes the measured number a deliverable)",
+      "official_complete_scoring_jobs = 1 per pass, one job over the complete 50-row manifest through core.scoring_batch, never sharded; the byte-identity read needs none of it, the descriptive SLU/intent difference does"
+    ],
+    "per_pass": {
+      "fit_endpoint_calls_cap": 2200,
+      "generation_calls_cap": 550,
+      "gpu_hours_fit_inclusive": 2.0,
+      "native_task_contract_calls_cap": 300,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 1184
+    },
+    "run_cumulative": "every cap binds across ALL attempts of a run id, so the one permitted recovery re-registration spends from the same ceiling",
+    "whole_cell_expected": {
+      "contacts": 502,
+      "gpu_hours_at_assumed_np1_rate": 1.3628,
+      "gpu_hours_at_np4_rate": 0.3408
+    }
+  },
+  "cells": {
+    "a": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-det-np1-fold-a-50-a-baseline-v1",
+      "campaign_plan": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-a-v1.json",
+      "cell_id": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
+      "composed_config_hash": "1d871be17ee13c40548029ac9e755cde39de6b473d4ad5a01983f69133f630ca",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "declares_prepared_phase_supply": false,
+      "decoding_params": {
+        "id_slot": "per-sample",
+        "max_tokens": 512,
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 2.0,
+        "planned_model_calls": 550,
+        "planned_speech_audio_seconds": 1184,
+        "split_role": "discovery"
+      },
+      "experiment": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 2200,
+        "generation_calls_cap": 550,
+        "gpu_hours_fit_inclusive": 2.0,
+        "native_task_contract_calls_cap": 300,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 1184
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1",
+      "generation_budget_target": 251,
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1",
+      "native_episode_policies": {
+        "finite_completion_policy": "deliver-latest-or-abstain",
+        "react_exhaustion_policy": "continue-without-answer"
+      },
+      "pass": "a",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "5e820cd2cb9b842aac96e6ba7c20b1a541e16c83fc9d87b3472509d9087cd82f",
+      "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1",
+      "scorers": [
+        "slurp-slu-official-train",
+        "cost"
+      ],
+      "service_session": "serving-slurp-native-det-np1-nocache-v1",
+      "serving_slot_tokens": 24576,
+      "serving_slots": 1,
+      "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa"
+    },
+    "b": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-b-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-det-np1-fold-a-50-b-baseline-v1",
+      "campaign_plan": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-b-v1.json",
+      "cell_id": "slurp-native-stage3-det-np1-fold-a-50-b-v1",
+      "composed_config_hash": "068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "declares_prepared_phase_supply": false,
+      "decoding_params": {
+        "id_slot": "per-sample",
+        "max_tokens": 512,
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 2.0,
+        "planned_model_calls": 550,
+        "planned_speech_audio_seconds": 1184,
+        "split_role": "discovery"
+      },
+      "experiment": "slurp-native-stage3-det-np1-fold-a-50-b-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 2200,
+        "generation_calls_cap": 550,
+        "gpu_hours_fit_inclusive": 2.0,
+        "native_task_contract_calls_cap": 300,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 1184
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-FIT-V1",
+      "generation_budget_target": 251,
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1",
+      "native_episode_policies": {
+        "finite_completion_policy": "deliver-latest-or-abstain",
+        "react_exhaustion_policy": "continue-without-answer"
+      },
+      "pass": "b",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43",
+      "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1",
+      "scorers": [
+        "slurp-slu-official-train",
+        "cost"
+      ],
+      "service_session": "serving-slurp-native-det-np1-nocache-v1",
+      "serving_slot_tokens": 24576,
+      "serving_slots": 1,
+      "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa"
+    }
+  },
+  "committed_artifacts": {
+    "model_fragment": {
+      "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1.json",
+      "sha256": "1c9e46623e933ca4a1b5cdef76180586640e10fe9fc1698631f6a520bf8737ab"
+    },
+    "pass_a_baseline": {
+      "relpath": "configs/baseline/slurp-native-stage3-det-np1-fold-a-50-a-baseline-v1.json",
+      "sha256": "69349f2f9bbc2df9fb3168fcc31103e482e00756ecb3917948521516726673c9"
+    },
+    "pass_a_campaign_plan": {
+      "relpath": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-a-v1.json",
+      "sha256": "34c087dfb19a7a70e0d12314d42f6b4d5c7d99c5feec498b73c4d61973e7120a"
+    },
+    "pass_a_experiment": {
+      "relpath": "configs/experiment/slurp-native-stage3-det-np1-fold-a-50-a-v1.json",
+      "sha256": "660d7faeb832307b113caff2b8548ec23b7c051245ec718345531180410deb22"
+    },
+    "pass_b_baseline": {
+      "relpath": "configs/baseline/slurp-native-stage3-det-np1-fold-a-50-b-baseline-v1.json",
+      "sha256": "704c02b721b263c4b513c58af5e14fc51546f091a70142325d56789ce85e320f"
+    },
+    "pass_b_campaign_plan": {
+      "relpath": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-b-v1.json",
+      "sha256": "3ebfa5b482882e5df3325c4b0659471fd3616a20faa4dbf965434f4a9da23293"
+    },
+    "pass_b_experiment": {
+      "relpath": "configs/experiment/slurp-native-stage3-det-np1-fold-a-50-b-v1.json",
+      "sha256": "99a02b46c857c7ce8b4bff992c0ce675e08d5cd0c95c9eb37443cf62f8123227"
+    },
+    "prepared_phase_supply": "NONE COMMITTED, by design: the flip mints each pass's own under its own run id (item E16); pass B's output block must reproduce pass A's byte for byte, and --allow-output-change must never be passed. The requirements lists are empty because core.flight.repin._set_preparation_requirement rewrites every preparation entry.",
+    "read_driver": {
+      "relpath": "scripts/analysis/slurp_det_pair_read.py",
+      "sha256": "ffea63e6a4659ebd69c8478e9d3734c1ad1d3f986495d79059b2cbea6c1c0e16"
+    },
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json",
+      "sha256": "c68366a5e5d73c0de280a46f8ce16b746b93f334935270c48051fd5c356306a8"
+    },
+    "sha_note": "Every configs/baseline and configs/experiment hash above MOVES at the readiness flip (the re-pin writes each cell's prepared-supply pin into its baseline and the requirements into its experiment). The model fragment, roster, campaign plans and read driver do not: nothing in the flip touches them."
+  },
+  "decision_140": "Owner decision 140 (2026-09-26): the np1 cache-off test is authorised as a CHEAP TEST, but ADOPTION of any geometry is decided on THROUGHPUT, because future rounds need massive sampling. This cell decides a DETERMINISM question and INFORMS a THROUGHPUT one; the coordinator will not adopt np1 for sampling-heavy work on determinism alone. The read therefore reports, beside per-row byte identity, contacts per minute and prompt tokens per second for each pass at the np1 cache-off geometry -- from the sealed dispatch window (flight-receipts.json run_phases: wall_seconds, contact_window, contact_count) and the sealed generation manifest's cost block (prompt_tokens_total) -- and the same two numbers for the resident np4 geometry from ROLL-2's sealed arm (8,996 contacts, 81,435,827 prompt tokens, 16:00:01Z to 18:22:39Z, 8,558 s: 63.07 contacts per minute, 9,515.8 prompt tokens per second), so the trade is one table.",
+  "geometry": {
+    "det_model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1",
+    "geometry_diff_document": {
+      "relpath": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/geometry-diff-v1.json",
+      "sha256": "ca4423224175a79eb3d118aed7caced483a08634bfe42df720c51d5c196ed6d2"
+    },
+    "one_resident_server_per_geometry": "Flying this cell requires the coordinator to STOP the resident np4 session serving-slurp-native-candidate-five-train-a-np4-v1 and START serving-slurp-native-det-np1-nocache-v1 from q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1 (scripts/flights/det/serving_task_entry_det.sh); core.session.serving refuses two resident sessions and a listening port, and a flight attaches only to a session whose identity matches flag by flag. That is why this cell queues behind the CONV probe now in the air and why the np4 session is restored afterwards.",
+    "resident_model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "resident_service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "server_argv_flag_diff": [
+      {
+        "det_np1": null,
+        "flag": "--cache-prompt",
+        "resident_np4": [
+          true
+        ]
+      },
+      {
+        "det_np1": [
+          true
+        ],
+        "flag": "--no-cache-prompt",
+        "resident_np4": null
+      },
+      {
+        "det_np1": null,
+        "flag": "--slot-prompt-similarity",
+        "resident_np4": [
+          "0"
+        ]
+      },
+      {
+        "det_np1": [
+          "24576"
+        ],
+        "flag": "-c",
+        "resident_np4": [
+          "98304"
+        ]
+      },
+      {
+        "det_np1": [
+          "1"
+        ],
+        "flag": "-np",
+        "resident_np4": [
+          "4"
+        ]
+      }
+    ],
+    "service_session": "serving-slurp-native-det-np1-nocache-v1",
+    "serving_geometry": {
+      "max_tokens": 512,
+      "slot_tokens": 24576,
+      "slots": 1
+    }
+  },
+  "hypothesis": {
+    "if_all_50_repeat": "the between-flight offset is an artefact of batch composition and cache state; the cross-flight bar (2.5-3.0 pp) would collapse toward the within-flight 0.735 pp or lower at this geometry, at a throughput cost decision 140 weighs separately; the coordinator scales the probe to 200 rows (a separate registration) for the floor re-estimate",
+    "if_not_all_50_repeat": "single-slot, cache-off serving does not make the flight reproducible: the offset is intrinsic to the model's numerics on this hardware and the programme stops hoping for a cheaper instrument along this axis",
+    "measured_offsets_on_np4": {
+      "b6_pair_dev2000_added_n1000": {
+        "h_intent": 1.152,
+        "h_slu": 1.2525,
+        "slu_pp": -0.25
+      },
+      "plan_vs_planr_fold_a_n1080": {
+        "h_intent": 0.9943,
+        "h_slu": 1.2485,
+        "slu_pp": 0.17
+      },
+      "roll_aa_within_flight_n200": {
+        "byte_identical": "183 / 200",
+        "byte_identical_share": 0.915,
+        "h_within_slu": 0.735,
+        "intent_flips": 0,
+        "source": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md"
+      },
+      "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md sections 2a-2d",
+      "var1_plan_vs_planr_n625": {
+        "ci95_pp": [
+          0.41,
+          3.36
+        ],
+        "intent_pp": -1.28,
+        "slu_pp": 1.87,
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      }
+    },
+    "question": "Is the programme's between-flight measurement floor an engineering artefact of the serving geometry -- greedy decoding under four-slot continuous batching with a prompt cache and a quantised KV cache -- or a property of the model's numerics on this hardware?"
+  },
+  "prohibitions": [
+    "No effectiveness, superiority, generalisation, admission or floor-re-estimate claim from this cell: 50 rows decide only whether the 200-row re-estimate is worth flying.",
+    "No adoption of the np1 geometry for sampling-heavy work on determinism alone (decision 140): adoption is decided on throughput.",
+    "No test-split, Fold B or DEV contact or read.",
+    "No change to any knob of the locked plan; the geometry is the one variable and it is already fixed here.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt, countersigns the five rows, flips both passes, and swaps the resident session; the resident np4 session is never touched by the registration agent.",
+    "--allow-output-change is never passed."
+  ],
+  "registered_at_utc": "2026-09-27T00:36:00.000000+00:00",
+  "roster": {
+    "audio_seconds_total": 107.6111875,
+    "id_list_sha256": "1fed658cdf96580f021887e54b1964d544dd55e8d70afd39a7e3744640f2f4b5",
+    "relpath": "docs/receipts/rosters/slurp-stage3-det-fold-a-50-v1.json",
+    "roster_id": "SLURP-STAGE3-DET-FOLD-A-50-V1",
+    "rows": 50,
+    "same_rows_as": "the first 50 rows the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 flew (its populations list, the runtime view and the Fold A receipt share one order)",
+    "selection_rule": "the FIRST 50 items of docs/receipts/rosters/slurp-evo-fold-a-v2.json in the parent's own order; a pure selection, no draw",
+    "sha256": "c68366a5e5d73c0de280a46f8ce16b746b93f334935270c48051fd5c356306a8",
+    "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa",
+    "strata": {
+      "alarm": 7,
+      "audio": 3,
+      "datetime": 2,
+      "general": 5,
+      "iot": 9,
+      "music": 7,
+      "news": 2,
+      "play": 1,
+      "takeaway": 6,
+      "weather": 8
+    },
+    "strata_covered": 10,
+    "strata_in_parent": 18
+  },
+  "rows": 50,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The cell measures REPRODUCIBILITY -- per-row byte identity of the delivered answer across two request-identical passes on a single-slot, prompt-cache-off serving geometry, and the SLU/intent difference of the pair -- and makes NO effectiveness claim. Its 50 rows are under the measurement instrument's MIN_BENEFIT_ROWS, so under rule 5 this is a form proof by size; claims_benefit is false and expected_effect_pp is 0.0 because the cell registers no effect to look for: the passes are the same request and any difference between them is the instrument, not a mechanism. It is NOT an admission request: no admission mode is declared and no harm margin is claimed. A 50-row cell cannot support a floor re-estimate; it decides only whether the 200-row re-estimate is worth flying, and (decision 140) it decides a determinism question while merely informing a throughput one.",
+      "primary_metric": "per-row byte identity of the delivered answer between pass A and pass B (the count of identical rows out of 50), with the pair's pooled SLU-F1 and intent difference reported as descriptive numbers and, under decision 140, contacts per minute and prompt tokens per second per pass beside ROLL-2's np4 numbers",
+      "rows": 50
+    },
+    "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The cell measures REPRODUCIBILITY -- per-row byte identity of the delivered answer across two request-identical passes on a single-slot, prompt-cache-off serving geometry, and the SLU/intent difference of the pair -- and makes NO effectiveness claim. Its 50 rows are under the measurement instrument's MIN_BENEFIT_ROWS, so under rule 5 this is a form proof by size; claims_benefit is false and expected_effect_pp is 0.0 because the cell registers no effect to look for: the passes are the same request and any difference between them is the instrument, not a mechanism. It is NOT an admission request: no admission mode is declared and no harm margin is claimed. A 50-row cell cannot support a floor re-estimate; it decides only whether the 200-row re-estimate is worth flying, and (decision 140) it decides a determinism question while merely informing a throughput one.",
+      "primary_metric": "per-row byte identity of the delivered answer between pass A and pass B (the count of identical rows out of 50), with the pair's pooled SLU-F1 and intent difference reported as descriptive numbers and, under decision 140, contacts per minute and prompt tokens per second per pass beside ROLL-2's np4 numbers",
+      "rows": 50
+    }
+  },
+  "study_commit_at_registration": "9255ac71",
+  "throughput_reference_np4": {
+    "contacts": 8996,
+    "contacts_per_minute": 63.07,
+    "prompt_tokens": 81435827,
+    "prompt_tokens_per_second": 9515.8,
+    "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+    "wall_seconds": 8558,
+    "window_utc": "16:00:01Z to 18:22:39Z"
+  },
+  "what_does_not_move": {
+    "against_the_plan_lock": [
+      "arm",
+      "audio_seconds_total",
+      "base_url",
+      "carrier_lock_key",
+      "count",
+      "d1_manifest_sha256",
+      "d1_media_supplement",
+      "d1_media_supplement_sha256",
+      "decoding_params",
+      "evidence_mismatch",
+      "evidence_source",
+      "execution_profile",
+      "items",
+      "knowledge_stores",
+      "model_lock_key",
+      "model_materialization_root",
+      "native_episode",
+      "phase_material",
+      "policy",
+      "preparation_source_receipts",
+      "preserve_wire_responses",
+      "prompt_order",
+      "runtime_receipt",
+      "runtime_view_sha256",
+      "schema",
+      "scorers",
+      "seed",
+      "server_env",
+      "serving_slot_tokens",
+      "source_binding_sha256",
+      "speech_feature_key_representation_id",
+      "speech_feature_matcher_policy_id",
+      "speech_feature_root",
+      "speech_packet_promotion_receipt",
+      "speech_packet_promotion_receipt_sha256",
+      "split_id",
+      "split_identity_hash",
+      "split_name",
+      "split_role",
+      "status",
+      "study",
+      "task_instruction_fill",
+      "task_instruction_template",
+      "task_instruction_template_active",
+      "timeout_seconds",
+      "transport",
+      "what_the_train_exemplars_store_is"
+    ],
+    "note": "native_episode (role graph, both failure-mode policies, the deliver normaliser, review loop on, max_revisions 1), all three knowledge_stores with their release/snapshot pins, k, fuse and rank weights, phase_material, policy, scorers, decoding_params (temperature 0, seed 20260913, max_tokens 512, id_slot per-sample), prompt_order, speech_feature_root, server_env, the task instruction template and fill, preparation_source_receipts, the speech-feature identity ids and the packet promotion receipt -- byte-identical to the locked PLAN cell (tests/unit/test_stage3_det_np1_cells.py)."
+  }
+}

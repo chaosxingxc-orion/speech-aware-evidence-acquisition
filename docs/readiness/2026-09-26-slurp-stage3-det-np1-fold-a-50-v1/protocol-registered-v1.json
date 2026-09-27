@@ -1,0 +1,57 @@
+{
+  "cells": {
+    "a": {
+      "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-a-v1.json",
+      "cell_id": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
+      "composed_config_hash": "1d871be17ee13c40548029ac9e755cde39de6b473d4ad5a01983f69133f630ca",
+      "experiment": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1",
+      "protocol_hash": "5e820cd2cb9b842aac96e6ba7c20b1a541e16c83fc9d87b3472509d9087cd82f",
+      "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1",
+      "service_session": "serving-slurp-native-det-np1-nocache-v1",
+      "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa"
+    },
+    "b": {
+      "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-b-generation-v1",
+      "campaign_plan": "configs/campaign/slurp-native-stage3-det-np1-fold-a-50-b-v1.json",
+      "cell_id": "slurp-native-stage3-det-np1-fold-a-50-b-v1",
+      "composed_config_hash": "068fcbbf2e460b539d849b3a5229144f35953f34b6d96dfbc406fcafc8a2397d",
+      "experiment": "slurp-native-stage3-det-np1-fold-a-50-b-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-FIT-V1",
+      "protocol_hash": "d149258acbdc21711b38c94b7dac1c6d114b902baebdd27016cd7bb1b2e88a43",
+      "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1",
+      "service_session": "serving-slurp-native-det-np1-nocache-v1",
+      "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa"
+    }
+  },
+  "claim_boundary": "No superiority, generalisation, component-causal, bar, admission, held-out, confirmatory or paper-scale claim of any kind. A byte-identity count measures the instrument, not an effect; 50 of 50 would not make a 200-row floor, and fewer would not make a defect.",
+  "decision_140": "Owner decision 140 (2026-09-26): the np1 cache-off test is authorised as a CHEAP TEST, but ADOPTION of any geometry is decided on THROUGHPUT, because future rounds need massive sampling. This cell decides a DETERMINISM question and INFORMS a THROUGHPUT one; the coordinator will not adopt np1 for sampling-heavy work on determinism alone. The read therefore reports, beside per-row byte identity, contacts per minute and prompt tokens per second for each pass at the np1 cache-off geometry -- from the sealed dispatch window (flight-receipts.json run_phases: wall_seconds, contact_window, contact_count) and the sealed generation manifest's cost block (prompt_tokens_total) -- and the same two numbers for the resident np4 geometry from ROLL-2's sealed arm (8,996 contacts, 81,435,827 prompt tokens, 16:00:01Z to 18:22:39Z, 8,558 s: 63.07 contacts per minute, 9,515.8 prompt tokens per second), so the trade is one table.",
+  "decision_rule_fixed_here": "DESCRIPTIVE; there is no verdict and no admission. The deliverable is a COUNT: the number of the 50 rows whose delivered answer (the sealed outputs row's text, whose response_text_sha256 the read re-derives) is byte-identical between pass A and pass B, reported beside the same statistic ROLL-AA produced at np4 within one flight (183 of 200, 91.5 %) and the cross-flight np4 disagreement the instrument note records (about 28 % of raw outputs); the pair's pooled SLU-F1 and intent paired deltas with a CI95 by row bootstrap (10,000 draws, seed 20260915) as descriptive numbers; the intent-flip and entity-set-flip shares where the sealed per-sample scores carry the parsed prediction; and (decision 140) contacts per minute and prompt tokens per second per pass beside ROLL-2's np4 numbers, in one table. ROUTING: 50 of 50 identical -> the coordinator scales to 200 rows for the floor re-estimate (a separate registration); fewer -> the offset is intrinsic and the axis closes. A 50-row cell cannot support a floor re-estimate.",
+  "development_numbers_only": "TRAIN Fold A construction rows (owner decisions 28 and 86); never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration per pass; a second failure closes the pass and the fix is proven on a four-row dry run. A resident-session identity refusal spends no contact and is not a flight failure. A pass that seals alone answers nothing: the read needs both.",
+  "one_factor": "The serving geometry, and nothing else: one 24,576-token slot (np1 c24576) with the prompt cache OFF (--no-cache-prompt) and no --slot-prompt-similarity, against the resident np4 c98304 prompt-cache-on geometry. In the composed config it is the model fragment's server_args / profile_slot_count / geometry_basis plus the baseline's serving_slots 4 -> 1; every other non-bookkeeping key is the locked PLAN cell's own bytes.",
+  "prohibitions": [
+    "No effectiveness, superiority, generalisation, admission or floor-re-estimate claim from this cell: 50 rows decide only whether the 200-row re-estimate is worth flying.",
+    "No adoption of the np1 geometry for sampling-heavy work on determinism alone (decision 140): adoption is decided on throughput.",
+    "No test-split, Fold B or DEV contact or read.",
+    "No change to any knob of the locked plan; the geometry is the one variable and it is already fixed here.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt, countersigns the five rows, flips both passes, and swaps the resident session; the resident np4 session is never touched by the registration agent.",
+    "--allow-output-change is never passed."
+  ],
+  "protocol_id": "slurp-stage3-det-np1-fold-a-50-protocol-v1",
+  "read_recipe": {
+    "relpath": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/analysis-recipe-v1.json"
+  },
+  "registered_at_utc": "2026-09-27T00:36:00.000000+00:00",
+  "rows": 50,
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-det, branch fable/det",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "9255ac71",
+  "the_question": "Is the programme's between-flight measurement floor an engineering artefact of the serving geometry -- greedy decoding under four-slot continuous batching with a prompt cache and a quantised KV cache -- or a property of the model's numerics on this hardware?",
+  "unchanged": "native_episode (role graph, both failure-mode policies, the deliver normaliser, review loop on, max_revisions 1), all three knowledge_stores with their release/snapshot pins, k, fuse and rank weights, phase_material, policy, scorers, decoding_params (temperature 0, seed 20260913, max_tokens 512, id_slot per-sample), prompt_order, speech_feature_root, server_env, the task instruction template and fill, preparation_source_receipts, the speech-feature identity ids and the packet promotion receipt -- byte-identical to the locked PLAN cell (tests/unit/test_stage3_det_np1_cells.py)."
+}
