@@ -1779,6 +1779,28 @@ def build_knowledge_store_supply(
     # parsed, validated and receipted and then silently never called.
     if context_specs or candidate_callback is not None:
         route.automatic_for_phase = automatic_for_phase
+
+        def prefetch_recall(sample_id, submit):
+            """Owner decision 159 (``recall_prefetch``): forward the row to
+            every store whose plain later-phase retrieval ``automatic_for_phase``
+            composes. Nothing reads what this starts until that store's own
+            supply step for the row, which consumes it in place of the
+            identical recall it would otherwise compute."""
+
+            submitted = 0
+            for store_id in binding.store_ids:
+                if not any(
+                    (store_id, phase) in plain_later_phase_specs
+                    and (store_id, phase) not in context_specs
+                    for phase in specs_by_store.get(store_id, ())
+                ):
+                    continue
+                forward = getattr(callbacks.get(store_id), "prefetch_recall", None)
+                if callable(forward):
+                    submitted += forward(sample_id, submit)
+            return submitted
+
+        automatic_for_phase.prefetch_recall = prefetch_recall
     if proposal_specs:
         route.candidate_proposal_for_context = candidate_proposal_for_context
         automatic_for_phase.candidate_proposal_for_context = candidate_proposal_for_context

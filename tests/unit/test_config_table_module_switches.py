@@ -635,14 +635,19 @@ def test_the_run_switch_class_is_a_closed_allowlist():
     obs knob on that same fragment is refused, because a module that changes
     the request the core sees belongs in a config table.
 
-    Two keys today: ``obs_prefetch_depth`` (the cross-call dispatcher) and
+    Three keys today: ``obs_prefetch_depth`` (the cross-call dispatcher),
     ``slurp_projection_v3_delivery`` (E4, SLURP v2 base program module M3,
-    2026-09-17 -- section 9a below has that key's own dedicated proof)."""
+    2026-09-17 -- section 9a below has that key's own dedicated proof) and
+    ``dispatch`` (the native-episode slot fill, owner decision 159,
+    2026-09-27 -- its falsifier is tests/unit/test_dispatch_slot_fill.py and
+    the byte-identity receipt the harness-admission entry names)."""
 
     assert set(RUN_LEVEL_SWITCH_KEYS) == {
         "obs_prefetch_depth",
         "slurp_projection_v3_delivery",
+        "dispatch",
     }
+    assert resolve_run_switch_key("dispatch") == "dispatch"
     assert resolve_run_switch_key("obs_prefetch_depth") == "obs_prefetch_depth"
     for refused in ("obs_batch_slices", "obs_boundary_mode", "obs_buffer_seconds"):
         with pytest.raises(ConfigTableError, match="closed allowlist"):

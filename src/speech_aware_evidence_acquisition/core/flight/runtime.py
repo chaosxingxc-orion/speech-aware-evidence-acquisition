@@ -6307,6 +6307,22 @@ class FlightRuntime:
         )
 
         native_config = load_native_episode_config(self._composed.values, program)
+        # Owner decision 159: the dispatcher slot-fill switches, or None --
+        # the value of every committed configuration, under which nothing
+        # below changes. Scheduling only; refused outside a native episode,
+        # the one dispatch that implements it.
+        from ...rails.dispatch_slot_fill import (
+            DispatchSlotFillError, parse_dispatch_slot_fill,
+        )
+
+        try:
+            slot_fill = parse_dispatch_slot_fill(self._composed.values)
+        except DispatchSlotFillError as error:
+            raise FlightRuntimeError(str(error)) from error
+        if slot_fill is not None and native_config is None:
+            raise FlightRuntimeError(
+                "dispatch slot fill is implemented for the native role episode only"
+            )
         from ..preparation_fit import (
             build_live_phase_fit_gate,
             validate_live_phase_fit_config,
@@ -6491,6 +6507,8 @@ class FlightRuntime:
                 supply_variant_for_phase=self._supply_variant_binding(
                     native_config, program,
                 ),
+                # Owner decision 159: None unless ``dispatch`` is declared.
+                slot_fill=slot_fill,
             )
         catalog = self._load_system_policy_catalog(program)
         if catalog is not None:
@@ -6751,6 +6769,10 @@ class FlightRuntime:
                 }
             dispatch["barrier"] = "none: bounded native role graph per sample"
             dispatch["native_contact_fit_receipts"] = list(native_fit_gate.receipts)
+            if slot_fill is not None:
+                # Published only when armed, so an unarmed dispatch receipt
+                # keeps exactly its pre-decision-159 keys.
+                dispatch["slot_fill"] = slot_fill.as_json()
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)
