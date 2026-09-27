@@ -66,7 +66,12 @@
       "NO DEMONSTRATED TASK IMPROVEMENT (system memory batch002)",
       "CONFLICT (the run-root relocation audit, owner decision 148(b); an engineering-base audit, not a cell)"
     ],
-    "note": "ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` field, because that is what the KC-E1f v2 re-decision's own first line says: \"**ADMITTED**, provisionally and with a replication obligation fixed in section 3\"."
+    "note": "ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` field, because that is what the KC-E1f v2 re-decision's own first line says: \"**ADMITTED**, provisionally and with a replication obligation fixed in section 3\".",
+    "added by the 2026-09-27 reclassification (owner decision 166)": [
+      "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (a HARMFUL or loss reading whose effect lies inside the applicable floor)",
+      "NOT DISTINGUISHABLE FROM THE EARNINGS-21 OWN NULL (an admission granted inside the carrier's own null)",
+      "NOT EVIDENCE (per-stratum claims of a cross-flight contrast)"
+    ]
   },
   "carrier_summary": [
     {
@@ -109,13 +114,14 @@
       "cells_flown": 46,
       "admitted": 2,
       "aligned": 0,
-      "neutral": 6,
-      "rejected": 10,
+      "neutral": 7,
+      "rejected": 9,
       "instrument": 20,
       "closed_unread": 3,
       "pending": 12,
       "rows": 53,
-      "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
+      "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used.",
+      "reclassification_2026_09_27": "CELL-3's tally moved from rejected to neutral with its adjusted status word (item A6 of the reclassification note)."
     },
     {
       "carrier": "Audio2Tool",
@@ -1821,7 +1827,21 @@
       "tally": "instrument",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "B7",
+            "claim": "KU-S1c draft-revise control: intent +1.50",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "+1.50 at n = 1,000 against the 2.60 bar and against the DEV-1000 A/A's own bound (offset +0.50 + h 0.92 = 1.42); the revise contact's +0.30 [-0.40, +1.00] is inside every floor",
+            "rule_missed": "one cross-flight contrast, no in-chain A/A",
+            "settling": "none (the closed-list pipeline is superseded); the netting convention it introduced stays as method"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-KU-S1",
@@ -1973,7 +1993,7 @@
         "module": "silence tail on the delivered clip (tail_silence_seconds 2.0)",
         "carrier": "slurp",
         "switch": "observe.<phase>.tail_silence_seconds null -> 2.0 (table: observe)",
-        "status": "HARMFUL",
+        "status": "HARMFUL (2026-09-09) -> NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (not admitted for want of a readable gain; not barred for harm); the receipt docs/receipts/harness-admission.json itself is unchanged (2026-09-27, owner decision 166)",
         "plan_entry": "barred from every default plan; provisional obligation UNMET (the recorded switch form has never been flown on this carrier)",
         "source": "docs/receipts/harness-admission.json"
       },
@@ -1994,7 +2014,30 @@
       "tally": "rejected",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "C3a",
+            "claim": "SLURP silence tail: scientific status",
+            "class": "KEEP",
+            "arithmetic": "+1.30 at n = 1,000 is below the 2.60 bar and below the DEV-1000 A/A bound 1.42: no readable gain, so NOT ADMITTED holds under today's rules too",
+            "rule_missed": "none for the null verdict",
+            "settling": "none"
+          },
+          {
+            "id": "C3b",
+            "claim": "SLURP silence tail: harness HARMFUL and the 'redistribution' reading",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (not admitted for want of a readable gain; not barred for harm)",
+            "arithmetic": "the scenario guard's CI90 lower bound -0.69 failed an IMPORTED 0.60 margin, while SLURP's own scenario half-width is 0.8255; per-scenario losses on 39-60 rows sit inside the -5.13 to +5.41 swing of the DEV-1000 pure A/A",
+            "rule_missed": "imported margin; per-stratum sign rule treated as evidence",
+            "settling": "none owed; docs/receipts/harness-admission.json is not edited by this documents-only pass, and the coordinator supersedes its entry only if the owner wants the tail re-admissible"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-KU-S3",
@@ -3417,7 +3460,22 @@
       "tally": "neutral",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "C1",
+            "claim": "CELL-1 / CELL-2 / CELL-1-GEPA per-scenario content gains and arm-minus-twin terms",
+            "class": "ADJUST",
+            "new_reading": "NOT EVIDENCE (strata and twin terms of cross-flight contrasts, no CI, no A/A); the NEUTRAL status words stand",
+            "arithmetic": "a 60-row stratum's bar is 3.0 x sqrt(625/60) = 9.7 pp; the DEV-1000 pure A/A moved per-scenario intent by -5.13 to +5.41; CELL-3's byte-identical 355-row split moved -2.20; the twin terms (<= 0.83) are inside the 2.50 bar; the pooled arms were -0.48 / +0.64 / -0.04",
+            "rule_missed": "per-stratum reads of a cross-flight contrast used as evidence; no in-chain A/A",
+            "settling": "none; decision 110 rested on this reading and its cell (CELL-3) is A6; the line is closed (decision 111)"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-CELL-2",
@@ -3471,7 +3529,22 @@
       "tally": "neutral",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "C1",
+            "claim": "CELL-1 / CELL-2 / CELL-1-GEPA per-scenario content gains and arm-minus-twin terms",
+            "class": "ADJUST",
+            "new_reading": "NOT EVIDENCE (strata and twin terms of cross-flight contrasts, no CI, no A/A); the NEUTRAL status words stand",
+            "arithmetic": "a 60-row stratum's bar is 3.0 x sqrt(625/60) = 9.7 pp; the DEV-1000 pure A/A moved per-scenario intent by -5.13 to +5.41; CELL-3's byte-identical 355-row split moved -2.20; the twin terms (<= 0.83) are inside the 2.50 bar; the pooled arms were -0.48 / +0.64 / -0.04",
+            "rule_missed": "per-stratum reads of a cross-flight contrast used as evidence; no in-chain A/A",
+            "settling": "none; decision 110 rested on this reading and its cell (CELL-3) is A6; the line is closed (decision 111)"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-GEPA-R01",
@@ -3578,7 +3651,22 @@
       "tally": "neutral",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "C1",
+            "claim": "CELL-1 / CELL-2 / CELL-1-GEPA per-scenario content gains and arm-minus-twin terms",
+            "class": "ADJUST",
+            "new_reading": "NOT EVIDENCE (strata and twin terms of cross-flight contrasts, no CI, no A/A); the NEUTRAL status words stand",
+            "arithmetic": "a 60-row stratum's bar is 3.0 x sqrt(625/60) = 9.7 pp; the DEV-1000 pure A/A moved per-scenario intent by -5.13 to +5.41; CELL-3's byte-identical 355-row split moved -2.20; the twin terms (<= 0.83) are inside the 2.50 bar; the pooled arms were -0.48 / +0.64 / -0.04",
+            "rule_missed": "per-stratum reads of a cross-flight contrast used as evidence; no in-chain A/A",
+            "settling": "none; decision 110 rested on this reading and its cell (CELL-3) is A6; the line is closed (decision 111)"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-CELL-3",
@@ -3594,7 +3682,7 @@
       "verdict_note": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md",
       "receipt": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1/",
       "preregistration": "docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1-preregistration.md",
-      "status": "HARMFUL on the SLU guard by the registered rule",
+      "status": "HARMFUL on the SLU guard by the registered rule (2026-09-24) -> NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (instrument section 4, now carried on the status word) (2026-09-27, owner decision 166)",
       "status_source": "section 1 verdict table, status row",
       "status_quote": "**HARMFUL on the SLU guard by the registered rule (decision 25 Method B: CI95 upper bound below zero); intent NEUTRAL.** The twin is NEUTRAL, so the loss is attributed to the store's CONTENT on this roster, not to the form of carrying a supply.",
       "comparator": {
@@ -3630,10 +3718,27 @@
       },
       "umbrella_values": [],
       "notes": "The binding 2026-09-26 measurement instrument (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md, \"binding for every Stage-3 claim from this date\") corrects this record: CELL-3 \"was declared HARMFUL under the rule as it then stood. Its in-chain replicate read -0.25 with half-width 1.25, so the arm's loss does not exceed the offset bound: the honest reading is \"not distinguishable from flight variance\", not \"harmful\". Owner decision 111 (close the semantic-delta application line) still stands, because it rests on the absence of a demonstrated benefit across four cells, not on that single loss.\" The verdict's own status word is carried verbatim above and is not overwritten, and the tally follows that word, not the correction. CELL-3 is the one delta cell that flew its own null in chain. The loss diagnostic adds that the store's attributable part on supplied rows is -0.35 pp above its own null, that harm is diffuse over 120 values, and that a perfect gate reaches only 64.89 (-0.51 [-1.40, +0.37]). The tally follows this row's own status word mechanically; where the instrument corrects that word the correction is carried here and is NOT applied to the count, so both readings stay visible.",
-      "tally": "rejected",
+      "tally": "neutral",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A6",
+            "claim": "CELL-3 scenario-gated deltas on DEV-2000-ADDED",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (instrument section 4, now carried on the status word)",
+            "arithmetic": "in-chain replicate PLAN vs PLANr on the same roster: offset -0.25, h 1.2525, so the bound is 0.25 + 1.2525 = 1.50 > 1.44; intent 0.00 [-1.01, +1.00]; the 355 gate-closed rows, whose prompts were byte-identical to PLAN's, read -2.20 [-4.38, -0.03]",
+            "rule_missed": "a loss inside the in-chain replicate's offset-plus-half-width was read as HARMFUL (rule 3 read in the harm direction)",
+            "settling": "none; decision 111 closed the application line on the absence of a demonstrated benefit across four cells and stands"
+          }
+        ],
+        "tally_before": "rejected",
+        "tally_note": "moved to neutral with the adjusted word; carrier_summary SLURP updated (rejected 10 -> 9, neutral 6 -> 7)"
+      }
     },
     {
       "cell_id": "SLURP-AGG-1",
@@ -3739,7 +3844,21 @@
       "tally": "rejected",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F2",
+            "claim": "VERIFY-1 self-selection (recovery flight)",
+            "class": "KEEP",
+            "arithmetic": "the comparator is the mean of the same sealed samples, so the design carries no flight offset: SLU +0.70 [-0.26, +1.65] fails the benefit gate (offline floor 0.67); intent +0.544 [+0.032, +1.088] excludes zero against a within-flight intent floor of 0.000",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-VAR-1",
@@ -3800,7 +3919,29 @@
       "tally": "instrument",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A7",
+            "claim": "VAR-1 EX-DIV and PER-K16C5 against PLANR",
+            "class": "KEEP",
+            "arithmetic": "against PLAN the same arms read +0.17 / +0.16; the family's own in-chain A/A (PLANR - PLAN) is +1.87 with h 1.474, bound 3.34 > 1.71: the -1.70 / -1.71 are the A/A offset, not harms, which is what the note reported",
+            "rule_missed": "none: the one Stage-3 family that flew its own in-chain A/A",
+            "settling": "none"
+          },
+          {
+            "id": "F1",
+            "claim": "VAR-1 family read and its correction against PLANR",
+            "class": "KEEP",
+            "arithmetic": "K10 / K30 +0.07 / +0.09 over PLANR against an A/A offset of +1.87 (h 1.474); the note's own correction ('reading a variant against PLAN instead of PLANR repeats the coordinator's own error') is adopted into the instrument law",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-VAR-1-AA",
@@ -3911,7 +4052,21 @@
       "tally": "closed-unread",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F3",
+            "claim": "VAR-2 closure after its sole recovery",
+            "class": "KEEP",
+            "arithmetic": "no number; one-recovery rule obeyed",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-F10",
@@ -3967,7 +4122,29 @@
       "tally": "rejected",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F4",
+            "claim": "F10 empty-answer form: headline",
+            "class": "KEEP",
+            "arithmetic": "+0.34 [-1.42, +2.29] at n = 625 against the 3.00 bar: null; the pair was a fresh in-chain control and treatment with no A/A, so the closure records that the design could not have seen an effect below about 3 pp",
+            "rule_missed": "none for the null verdict (no in-chain A/A; the law post-dates the flight)",
+            "settling": "none"
+          },
+          {
+            "id": "F5",
+            "claim": "F10 mechanism counts ('the mechanism did what it was designed to do')",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "entity sets flip on 7.5 % of rows between two passes inside ONE flight and about 28 % of raw outputs differ across flights, so counts of 13-22 over 625 rows sit inside the cross-flight churn: direction only",
+            "rule_missed": "mechanism counts read from a cross-flight pair with no in-chain A/A",
+            "settling": "none unless re-opened; then same-flight paired (supply_variants, once core/bundle/outputs.py learns it) or offline over a sealed pool"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-EVIDENCE-PATH",
@@ -4023,7 +4200,21 @@
       "tally": "rejected",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F6",
+            "claim": "Evidence-path tools availability",
+            "class": "KEEP",
+            "arithmetic": "SLU +0.54 [-0.88, +2.00] and intent -0.64 CI90 [-2.24, +0.96] at n = 625 inside the 3.00 bar: null; the note names its own prefix defect (all 625 first-Perception requests differ) and says it measures an availability policy, not an invoked tool",
+            "rule_missed": "none for the null verdict (no in-chain A/A; the defect is disclosed)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-R-PRIM",
@@ -4348,7 +4539,21 @@
       "tally": "closed-unread",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F9",
+            "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+            "class": "KEEP",
+            "arithmetic": "4 inputs x 4 trajectories: form proofs under rule 5; no benefit claimed; the structural findings (credit given for tool events that never happened, invalid memory plans, summary fidelity limits) do not depend on n",
+            "rule_missed": "none (form proofs, declared as such)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-SYSTEM-SUMMARY001",
@@ -4404,7 +4609,21 @@
       "tally": "instrument",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F9",
+            "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+            "class": "KEEP",
+            "arithmetic": "4 inputs x 4 trajectories: form proofs under rule 5; no benefit claimed; the structural findings (credit given for tool events that never happened, invalid memory plans, summary fidelity limits) do not depend on n",
+            "rule_missed": "none (form proofs, declared as such)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-SYSTEM-COMPARISON001",
@@ -4455,7 +4674,21 @@
       "tally": "instrument",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F9",
+            "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+            "class": "KEEP",
+            "arithmetic": "4 inputs x 4 trajectories: form proofs under rule 5; no benefit claimed; the structural findings (credit given for tool events that never happened, invalid memory plans, summary fidelity limits) do not depend on n",
+            "rule_missed": "none (form proofs, declared as such)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-SYSTEM-GROUP-UPDATE001-FORMAT",
@@ -4506,7 +4739,21 @@
       "tally": "instrument",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F9",
+            "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+            "class": "KEEP",
+            "arithmetic": "4 inputs x 4 trajectories: form proofs under rule 5; no benefit claimed; the structural findings (credit given for tool events that never happened, invalid memory plans, summary fidelity limits) do not depend on n",
+            "rule_missed": "none (form proofs, declared as such)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-SYSTEM-BATCH-SYNTHESIS001",
@@ -4557,7 +4804,21 @@
       "tally": "rejected",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F9",
+            "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+            "class": "KEEP",
+            "arithmetic": "4 inputs x 4 trajectories: form proofs under rule 5; no benefit claimed; the structural findings (credit given for tool events that never happened, invalid memory plans, summary fidelity limits) do not depend on n",
+            "rule_missed": "none (form proofs, declared as such)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-SYSTEM-BATCH-SYNTHESIS001-FORMAT",
@@ -4608,7 +4869,21 @@
       "tally": "instrument",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F9",
+            "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+            "class": "KEEP",
+            "arithmetic": "4 inputs x 4 trajectories: form proofs under rule 5; no benefit claimed; the structural findings (credit given for tool events that never happened, invalid memory plans, summary fidelity limits) do not depend on n",
+            "rule_missed": "none (form proofs, declared as such)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-SYSTEM-EVENT-CREDIT001",
@@ -4659,7 +4934,21 @@
       "tally": "rejected",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F9",
+            "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+            "class": "KEEP",
+            "arithmetic": "4 inputs x 4 trajectories: form proofs under rule 5; no benefit claimed; the structural findings (credit given for tool events that never happened, invalid memory plans, summary fidelity limits) do not depend on n",
+            "rule_missed": "none (form proofs, declared as such)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-SYSTEM-MEMORY-BATCH002",
@@ -4719,7 +5008,21 @@
       "tally": "instrument",
       "flown": true,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F10",
+            "claim": "Memory batch002 consumption",
+            "class": "KEEP",
+            "arithmetic": "4 distinct TRAIN inputs x 4 trajectories per arm: a form proof under rule 5; the one-draw 59.78 -> 53.53 is not readable and the note claims no efficacy",
+            "rule_missed": "none (form proof)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-CAND-SUPPORT",
@@ -4772,7 +5075,21 @@
       "tally": "instrument",
       "flown": false,
       "pending": false,
-      "provisional": null
+      "provisional": null,
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F8",
+            "claim": "Acquisition re-query, pre-Solver decision state and candidate-support diagnostics",
+            "class": "KEEP",
+            "arithmetic": "no effect claim",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "cell_id": "SLURP-CAND-REC",
@@ -5152,7 +5469,21 @@
       "tally": "admitted",
       "flown": true,
       "pending": false,
-      "provisional": "admitted on TRAIN Fold A only; a system-level benefit claim under owner decisions 115 and 127 stays provisional until replicated on a fresh roster, and the disposition is the owner's (decision 139)."
+      "provisional": "admitted on TRAIN Fold A only; a system-level benefit claim under owner decisions 115 and 127 stays provisional until replicated on a fresh roster, and the disposition is the owner's (decision 139).",
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "D3",
+            "claim": "AGREE agreement term on TRAIN Fold A",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "intent +3.33 [+1.57, +5.09] against its in-chain A/A; A/A - PLAN offset +0.28 + h 0.9943 = 1.27 < 3.33 and 3.33 > 2.50: rule 3 met; 67 saves / 31 harms against about 15 / 15 between identical flights (27-33 intent disagreements per pair); SLU guard +1.85 [+0.23, +3.47]",
+            "rule_missed": "roster reused for selection and reading: the weight grid was chosen by the retrieval-rank diagnostic over Fold A gold, and the read is on Fold A",
+            "settling": "the COMP-1 DEV-2000-ADDED round (decision 161), already registered"
+          }
+        ]
+      }
     },
     {
       "cell_id": "A2T-AA",
@@ -5227,7 +5558,21 @@
       "meaning": "The recovered three-arm component comparison passes both registered entity-side gates and inherited joined-intent protection. It remains component evidence rather than a live full-system claim.",
       "supersedes_historical_cell_ids": [
         "SLURP-KU-S3"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "D1",
+            "claim": "KU-S3 speech-keyed fillers (ADMITTED_COMPONENT and its independent repeat)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "speech - twin +3.65 [+1.60, +5.70] and repeat - twin +4.20 [+2.14, +6.25] (per-row, n = 500, CI90) clear the 3.35 bar by 0.30 / 0.85, their lower bounds do not; repeat - original +0.54 [-0.67, +1.77] is a request-identical replicate whose bound 0.54 + 1.22 = 1.76 both clear",
+            "rule_missed": "the replicate did not fly in the twin's chain; n = 500",
+            "settling": "none owed: the component was absorbed into M1, whose speech-key term (+7.83 SLU) is 3.1x the Fold A bar"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5235,7 +5580,21 @@
       "status": "NUMERICALLY_REPRODUCED",
       "source": "docs/receipts/fable-result-reproduction-v1.json",
       "source_sha256": "57a19ffea284b3de7d8c4bd078c463cb9e52f0239d5c7c6089c65a3ba7d7fa89",
-      "meaning": "Original SLURP KC-S1b, existing max64 repeat analysis, E21 KC-E1f v1/v2 and historical KV recovery reproduce exactly. This added no generation or scoring and changes no original verdict."
+      "meaning": "Original SLURP KC-S1b, existing max64 repeat analysis, E21 KC-E1f v1/v2 and historical KV recovery reproduce exactly. This added no generation or scoring and changes no original verdict.",
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E4",
+            "claim": "Reproduction audit of the first-tenure results",
+            "class": "KEEP",
+            "arithmetic": "zero-contact recomputation; no effect claim",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5249,7 +5608,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "SLURP-KV-0"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E1",
+            "claim": "KV-0 examples-free base",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "official micro 44.35 -> 41.75 (-2.60) against the earlier sealed KC-S1b flight at n = 1,000: exactly at the 2.60 bar and above the DEV-1000 A/A bound on micro (0.29 + 1.18 = 1.47); no paired interval for KV-0 vs KC-S1b is reported",
+            "rule_missed": "one cross-flight contrast against an older sealed comparator; no paired CI",
+            "settling": "none (KV line closed; the retained base was later superseded by the native plan)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5263,7 +5636,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "SLURP-KV-1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E2",
+            "claim": "KV-1, KV-3 and the three KV twins",
+            "class": "KEEP",
+            "arithmetic": "KV-1 - KV-0 -0.87 [-2.12, +0.31], KV-3 - KV-0 +0.52 [-0.75, +1.80]: inside the 3.35 bar, null verdicts",
+            "rule_missed": "none for null verdicts",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5277,7 +5664,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "SLURP-KV-1-TWIN"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E2",
+            "claim": "KV-1, KV-3 and the three KV twins",
+            "class": "KEEP",
+            "arithmetic": "KV-1 - KV-0 -0.87 [-2.12, +0.31], KV-3 - KV-0 +0.52 [-0.75, +1.80]: inside the 3.35 bar, null verdicts",
+            "rule_missed": "none for null verdicts",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5291,7 +5692,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "SLURP-KV-2"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "C4",
+            "claim": "KV-2 vocabulary cards against their form twin",
+            "class": "KEEP",
+            "arithmetic": "vs KV-0 +7.16 [+5.24, +9.12] (2.1x the 3.35 bar at n = 500) stands; vs the twin +1.71 [+0.13, +3.27] is inside the bar, so NOT ADMITTED holds; the named reason (a rotating-stratum sign, one stratum -1.38) is not evidence, the pooled twin contrast carries the non-admission",
+            "rule_missed": "none for the null verdict (the named gate was a stratum sign)",
+            "settling": "none (KV line closed)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5305,7 +5720,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "SLURP-KV-2-TWIN"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E2",
+            "claim": "KV-1, KV-3 and the three KV twins",
+            "class": "KEEP",
+            "arithmetic": "KV-1 - KV-0 -0.87 [-2.12, +0.31], KV-3 - KV-0 +0.52 [-0.75, +1.80]: inside the 3.35 bar, null verdicts",
+            "rule_missed": "none for null verdicts",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5319,7 +5748,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "SLURP-KV-3"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E2",
+            "claim": "KV-1, KV-3 and the three KV twins",
+            "class": "KEEP",
+            "arithmetic": "KV-1 - KV-0 -0.87 [-2.12, +0.31], KV-3 - KV-0 +0.52 [-0.75, +1.80]: inside the 3.35 bar, null verdicts",
+            "rule_missed": "none for null verdicts",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5333,7 +5776,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "SLURP-KV-3-TWIN"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E2",
+            "claim": "KV-1, KV-3 and the three KV twins",
+            "class": "KEEP",
+            "arithmetic": "KV-1 - KV-0 -0.87 [-2.12, +0.31], KV-3 - KV-0 +0.52 [-0.75, +1.80]: inside the 3.35 bar, null verdicts",
+            "rule_missed": "none for null verdicts",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5344,7 +5801,21 @@
       "meaning": "The independent-process repeat passes the inherited component criterion against the retained control and form twin. It establishes neither repeat-original equivalence nor a live-system claim.",
       "run_ids": [
         "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "D1",
+            "claim": "KU-S3 speech-keyed fillers (ADMITTED_COMPONENT and its independent repeat)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "speech - twin +3.65 [+1.60, +5.70] and repeat - twin +4.20 [+2.14, +6.25] (per-row, n = 500, CI90) clear the 3.35 bar by 0.30 / 0.85, their lower bounds do not; repeat - original +0.54 [-0.67, +1.77] is a request-identical replicate whose bound 0.54 + 1.22 = 1.76 both clear",
+            "rule_missed": "the replicate did not fly in the twin's chain; n = 500",
+            "settling": "none owed: the component was absorbed into M1, whose speech-key term (+7.83 SLU) is 3.1x the Fold A bar"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5355,7 +5826,21 @@
       "meaning": "The N treatment fails the frozen noninferiority decision. G3 exemplar encoding and G4 remain held; KU-S3 is unaffected.",
       "run_ids": [
         "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E3",
+            "claim": "KU-S4N G2 intent-candidate narrowing",
+            "class": "KEEP",
+            "arithmetic": "micro -11.74 [-15.18, -8.16] (CI90, n = 500) is 3.5x the 3.35 bar, upper bound beyond it: a measured loss",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5366,7 +5851,21 @@
       "meaning": "The matched twin completed and supplies the frozen paired comparison. It has no independent admission and does not release G3 or G4.",
       "run_ids": [
         "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E3",
+            "claim": "KU-S4N G2 intent-candidate narrowing",
+            "class": "KEEP",
+            "arithmetic": "micro -11.74 [-15.18, -8.16] (CI90, n = 500) is 3.5x the 3.35 bar, upper bound beyond it: a measured loss",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5385,6 +5884,20 @@
       "derivative_declaration_source": {
         "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
         "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      },
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E5",
+            "claim": "E21 draft refresh, unit-constrained and unit-free deliveries",
+            "class": "KEEP",
+            "arithmetic": "unit-constrained PERSON -1.78 [-2.81, -0.85] against the E21 own-null PERSON half-width 0.250 (7.1x); unit-free corpus WER -5.55 [-5.98, -5.13] against 0.058; the E21 own null is the same request flown twice (a cross-flight A/A), so the carrier's band is measured",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
       }
     },
     {
@@ -5404,12 +5917,26 @@
       "derivative_declaration_source": {
         "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
         "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      },
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E5",
+            "claim": "E21 draft refresh, unit-constrained and unit-free deliveries",
+            "class": "KEEP",
+            "arithmetic": "unit-constrained PERSON -1.78 [-2.81, -0.85] against the E21 own-null PERSON half-width 0.250 (7.1x); unit-free corpus WER -5.55 [-5.98, -5.13] against 0.058; the E21 own null is the same request flown twice (a cross-flight A/A), so the carrier's band is measured",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
       }
     },
     {
       "date": "2026-09-10",
       "cell_id": "E21-DR-PACKETS-SELF-CONSTRAINED",
-      "status": "ADMITTED_AS_DISCOVERY_REFRESH_IMPROVEMENT",
+      "status": "ADMITTED_AS_DISCOVERY_REFRESH_IMPROVEMENT (2026-09-10) -> NOT DISTINGUISHABLE FROM THE EARNINGS-21 OWN NULL (no improvement readable; KC-E1f stays) (2026-09-27, owner decision 166)",
       "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md",
       "source_sha256": "e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f",
       "meaning": "The constrained self-draft derivative passes the discovery gates, with a small-effect and protocol-mismatch limitation; it does not replace KC-E1f.",
@@ -5423,6 +5950,21 @@
       "derivative_declaration_source": {
         "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
         "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      },
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E6",
+            "claim": "E21 draft refresh, self-constrained delivery",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM THE EARNINGS-21 OWN NULL (no improvement readable; KC-E1f stays)",
+            "arithmetic": "corpus WER 8.1995 -> 8.1940 (+0.0056 pp, 20 errors in 359,765 words) against the own-null half-width 0.058 (10x larger); PERSON +0.137 (4 of 2,917 mentions) against 0.250; the note itself says both gain intervals overlap the own-null bands",
+            "rule_missed": "an admission granted inside the carrier's own same-request null",
+            "settling": "none (Earnings moved to FlightRuntime, E35)"
+          }
+        ]
       }
     },
     {
@@ -5442,6 +5984,20 @@
       "derivative_declaration_source": {
         "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
         "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      },
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E7",
+            "claim": "E21 draft refresh, self-free delivery",
+            "class": "KEEP",
+            "arithmetic": "corpus WER +0.0017 [-0.053, +0.087] inside h 0.058: null",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
       }
     },
     {
@@ -5457,7 +6013,21 @@
       ],
       "supersedes_historical_cell_ids": [
         "E21-LOOP-1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E8",
+            "claim": "E21 loop packets (judge targeting)",
+            "class": "KEEP",
+            "arithmetic": "judge - twin PERSON +1.47 [+0.85, +2.14] (5.9x h 0.250); judge - historical KC-E1f PERSON -1.71 [-2.56, -0.89] (6.9x h); the comparison with a historical sealed arm is rule 4's shape, but the effect is far outside the carrier's measured cross-flight band",
+            "rule_missed": "none material",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-10",
@@ -5469,7 +6039,21 @@
       "run_ids": [
         "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1",
         "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E9",
+            "claim": "G6 live intent and slot contacts",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "row SLU-F1 +3.26 [+1.09, +5.50] (CI90, NEW500) sits 0.09 below the 3.35 bar: slot evidence is direction only; the failing guard is a point-estimate guard (scenario -0.2 against SLURP's own scenario half-width 0.8255), not a margin",
+            "rule_missed": "point-estimate guard in place of a non-inferiority margin; no in-chain A/A",
+            "settling": "none (superseded by the program-matched follow-up and the native system)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-11",
@@ -5481,7 +6065,21 @@
         "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1",
         "SAEA-E21-OFFLINE-KC-E1F-REPAIR-GENERATION-NP4-V1"
       ],
-      "source_sha256": "2805ae741e3e80cb4548c287aa160a4edb7a924b326c60ccaac1aaed03061a7b"
+      "source_sha256": "2805ae741e3e80cb4548c287aa160a4edb7a924b326c60ccaac1aaed03061a7b",
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E10",
+            "claim": "E21 offline direct-then-KC-E1f system",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "PERSON +3.39 [+2.45, +4.40] is 13.6x the own-null half-width 0.250 and stands; corpus WER +0.046 [+0.033, +0.059] is inside h 0.058; the refusal rests on a point guard (+5 insertions of 10,336; rate -0.0014 [-0.0032, +0.0003]) that the note itself calls not a calibrated non-inferiority test",
+            "rule_missed": "point-estimate guard in place of a margin at the carrier's own null",
+            "settling": "zero GPU, only if the owner re-opens the Earnings offline repair: re-read the sealed pair's insertion and non-entity rates against the E21 own null (non-entity h 0.06475)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-11",
@@ -5493,7 +6091,21 @@
         "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
         "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1"
       ],
-      "source_sha256": "edaf18d7a25438b0f6c7d54c126e548f0957bfdd1034c45ea2a94d682fd5dbbd"
+      "source_sha256": "edaf18d7a25438b0f6c7d54c126e548f0957bfdd1034c45ea2a94d682fd5dbbd",
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E11",
+            "claim": "Program-matched live follow-up",
+            "class": "KEEP",
+            "arithmetic": "row-F1 CI90 crosses zero and intent -0.2 is inside every floor: a null verdict; the 'intent guard failed' half is a point-guard artefact and is not needed for the refusal",
+            "rule_missed": "none for the null verdict",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-11",
@@ -5505,7 +6117,21 @@
         "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1",
         "SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-V1"
       ],
-      "source_sha256": "3335c8c0d206bd08f416753f34078783777b4510dada6b941446615494f6c2cb"
+      "source_sha256": "3335c8c0d206bd08f416753f34078783777b4510dada6b941446615494f6c2cb",
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E12",
+            "claim": "Discriminative value rendering (span pair)",
+            "class": "KEEP",
+            "arithmetic": "row-F1 -6.06 [-8.60, -3.87] (CI90, n = 500) is 1.8x the 3.35 bar with the upper bound beyond it; micro -3.91",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-11",
@@ -5518,7 +6144,21 @@
         "SAEA-SLURP-TASK-AGENT-KNOWLEDGE-V1",
         "SAEA-SLURP-TASK-AGENT-FRAME-V1"
       ],
-      "source_sha256": "7354e66cb93d82c86779f765fbff2ee5c9cd8925639e8e415b30d0b2c3b96920"
+      "source_sha256": "7354e66cb93d82c86779f765fbff2ee5c9cd8925639e8e415b30d0b2c3b96920",
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "D2",
+            "claim": "Compact-frame task agent (v1 and its replication)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "replication intent +4.20 [+2.33, +5.97] clears the 3.35 bar (stands); official micro SLU +2.99 [+1.06, +4.91] is below it (direction only); v1's +2.60 [+0.69, +4.40] is below the bar and repeated in direction by the replication",
+            "rule_missed": "no in-chain A/A; the SLU half inside the band",
+            "settling": "none (superseded by the native system, E18-E20)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-11",
@@ -5530,19 +6170,48 @@
       "run_ids": [
         "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1",
         "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "D2",
+            "claim": "Compact-frame task agent (v1 and its replication)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "replication intent +4.20 [+2.33, +5.97] clears the 3.35 bar (stands); official micro SLU +2.99 [+1.06, +4.91] is below it (direction only); v1's +2.60 [+0.69, +4.40] is below the bar and repeated in direction by the replication",
+            "rule_missed": "no in-chain A/A; the SLU half inside the band",
+            "settling": "none (superseded by the native system, E18-E20)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-11",
       "cell_id": "SLURP-ROLE-COVERAGE-MATCHED-V1",
-      "status": "DO_NOT_ADOPT_INTENT_NEGATIVE_ENTITY_UNRESOLVED",
+      "status": "DO_NOT_ADOPT_INTENT_NEGATIVE_ENTITY_UNRESOLVED (2026-09-11) -> DO NOT ADOPT (no benefit shown); INTENT LOSS NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (2026-09-27, owner decision 166)",
       "source": "docs/readiness/2026-09-11-slurp-role-coverage-result.md",
       "source_sha256": "0195b5289fba51e1e4a2b1fe486579f11b531ede7063edb8b74628d93466d436",
       "meaning": "Both complete 1000-row raw parents FINALIZED. NEW500 intent changes -2.200pp CI90[-3.950,-0.423], micro SLU F1 -0.541pp [-2.546,1.335]. Fewer spurious entities but more omissions. Close this package; retain the previous compact-frame baseline. Same retrieval selection/order but 170 plan texts differ; additional bytes and audit fingerprints remain part of the contrast.",
       "run_ids": [
         "SAEA-SLURP-ROLE-COVERAGE-CONTROL-V1",
         "SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A5",
+            "claim": "Role coverage, matched treatment",
+            "class": "ADJUST",
+            "new_reading": "DO NOT ADOPT (no benefit shown); INTENT LOSS NOT DISTINGUISHABLE FROM FLIGHT VARIANCE",
+            "arithmetic": "|-2.20| < 3.35 pp (the bar at n = 500); SLU micro -0.54 [-2.55, +1.34]; the DEV-1000 byte-identical re-flight moved 11 of 11 metrics in one direction with nothing changed",
+            "rule_missed": "one cross-flight pair with no A/A; not one factor (170 plan texts differ between the arms)",
+            "settling": "none; the package is closed and superseded by the native system (E18-E20)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-12",
@@ -5551,7 +6220,30 @@
       "source": "docs/readiness/2026-09-12-a2t-native-system-final-result-v1.md",
       "source_sha256": "166511373efe0eb1ed26666139551b4723150eedb2915634f1ae40417a3f0758",
       "meaning": "All three complete arms are finalized and first-scored. Exact match knowledge minus direct is -0.300pp and knowledge minus stage control is +0.650pp; both primary 97.5-percent interval rules fail. Tool accuracy declines. Preserve full strata, original failures and named-component limits; no additional generation.",
-      "supersedes_historical_cell_ids": []
+      "supersedes_historical_cell_ids": [],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E13",
+            "claim": "Audio2Tool native system recovery: headline",
+            "class": "KEEP",
+            "arithmetic": "knowledge - direct -0.30 [-1.12, +0.51] and knowledge - stage control +0.65 [-0.10, +1.43] (97.5 %) both miss the +1.0 threshold: null verdicts; the tool-accuracy decline (-3.475) is reported on a carrier with no measured own null",
+            "rule_missed": "none for the null verdict (Audio2Tool has no own null: A2T-NULL NOT MEASURED)",
+            "settling": "none"
+          },
+          {
+            "id": "E14",
+            "claim": "Audio2Tool native system recovery: 'the staged control is a harmful package'",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (Audio2Tool has no floor of its own; -0.95 is inside the scaled SLURP bar)",
+            "arithmetic": "n = 4,000 rows in 2,097 query clusters; the rule-3 bar scaled to 4,000 rows is 1.30 pp and 0.95 is inside it; no Audio2Tool A/A exists",
+            "rule_missed": "a harm claimed on an uncalibrated carrier from one cross-flight contrast",
+            "settling": "A2T-AA (decision 144) supplies the carrier's floor; re-read offline only if the staged form is re-opened"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-12",
@@ -5563,7 +6255,21 @@
       "run_ids": [
         "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
         "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E15",
+            "claim": "Fixed Whisper evidence",
+            "class": "KEEP",
+            "arithmetic": "NEW500 micro +0.83 [-1.10, +2.84] and intent -0.80 inside the 3.35 bar: null; the 'secondary full-roster intent negative' wording is not readable",
+            "rule_missed": "none for the null verdict",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-13",
@@ -5575,7 +6281,21 @@
       "run_ids": [
         "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
         "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E16",
+            "claim": "Native system vs direct on DEV-1000, its reboot recovery and the max512 base replication",
+            "class": "KEEP",
+            "arithmetic": "NEW500 micro +14.43 [+11.21, +17.59], +14.30 [+11.24, +17.50], +14.80 [+11.52, +18.01] (CI90): 4.3x-4.4x the 3.35 bar, three flights; intent +6.2 [+3.41, +9.17] is 1.9x",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-15",
@@ -5587,7 +6307,21 @@
       "run_ids": [
         "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
         "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E19",
+            "claim": "Audio2Tool native role base on union-4000",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "primary exact +4.05 [+2.96, +5.16] (CI95, 4,000 rows, 2,097 query clusters) is 3.1x the scaled bar 1.30 and tool accuracy -3.60 is 2.8x it, but Audio2Tool has no measured A/A and the refusal used a non-negative point guard, not a margin",
+            "rule_missed": "no carrier own null or in-chain A/A; point guard",
+            "settling": "A2T-AA (decision 144, registered), then a zero-GPU re-read of the sealed pair against its offset"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-15",
@@ -5599,7 +6333,21 @@
       "run_ids": [
         "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
         "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E20",
+            "claim": "Audio2Tool attributions and engineering proof (candidate attribution, ordered action, primary parameter, parameter value evidence, role engineering proof)",
+            "class": "KEEP",
+            "arithmetic": "no effect claim",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-16",
@@ -5610,7 +6358,21 @@
       "meaning": "Complete paired A1080: official SLU48.53363% to48.62037%, +0.08674pp CI95[-1.36499,1.65097]; coverage937 to951, common-covered final intent840 to834, finalintent842 to837. Primary gate fails. Retain maximum-three incumbent; root selects one typed role-context/evidence-review package versus matched direct for prospective admission. Full18 strata and historical process differences retained. No automatic width sweep, new-fold exposure, or RL claim.",
       "run_ids": [
         "SAEA-SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "E21",
+            "claim": "Maximum-five candidates and broad / factored knowledge on Fold A",
+            "class": "KEEP",
+            "arithmetic": "+0.09 [-1.36, +1.65] and -0.90 [-2.61, +0.78] inside the 2.50 bar: null verdicts",
+            "rule_missed": "none for null verdicts",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-17",
@@ -5664,25 +6426,55 @@
     {
       "date": "2026-09-17",
       "cell_id": "SLURP-B0-REVIEW-OFF-TRAIN-FOLD-A-V1",
-      "status": "HARMFUL_BY_RULE_WIDTH_FAILURE_REDECISION_REGISTERED",
+      "status": "HARMFUL_BY_RULE_WIDTH_FAILURE_REDECISION_REGISTERED (2026-09-17) -> NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; the loop-inertness finding stands (2026-09-27, owner decision 166)",
       "source": "docs/results/2026-09-17-slurp-b0-review-off-verdict.md",
       "source_sha256": "a36785b6dca3a7f41a99402c8474ca3b73cea10077f0b6b1abaf99281da34694",
       "meaning": "Module M0 (Reviewer/Planner loop off) on TRAIN A 1,080 against the sealed anchor: pooled official SLU +0.13 pp CI95 [-1.15, +1.45], intent -0.37 pp CI95 [-1.53, +0.82], 22 saves / 26 harms; against the released direct anchor +14.78 pp SLU. The preregistered intent clause fails because the imported 0.92 pp DEV1000 margin is narrower than the 1.175 pp CI95 half-width this roster yields, so the status is HARMFUL by rule while the loop is shown to change at most 2 of 1,080 delivered intents at 60 % of the contacts and 69 % of the GPU hours. A same-roster own-null replicate with a rule fixed before reading is registered for the re-decision.",
       "run_ids": [
         "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-V1",
         "SAEA-SLURP-NATIVE-REVIEW-OFF-SMOKE-4-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A1",
+            "claim": "B0 review loop off, first pass",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; the loop-inertness finding stands",
+            "arithmetic": "intent -0.37 [-1.53, +0.82], SLU +0.13 [-1.15, +1.45] at n = 1,080 against the sealed anchor: both points inside the roster's own null (B0r h 1.0051 / 1.1218) and far inside the 2.50 pp bar; 22 saves / 26 harms beside the 77 rows whose delivered intent changes between two byte-identical passes (B0r)",
+            "rule_missed": "HARMFUL declared by interval width on a nil point estimate; imported margin; one cross-flight contrast against a sealed anchor with no in-chain A/A (rule 4)",
+            "settling": "none owed: P0 (2026-09-23) re-read review-off on the locked plan as NEUTRAL and decision 105 keeps the pruning line closed; a re-opening reads it as a no-harm item under decision 127"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-17",
       "cell_id": "SLURP-B0-REVIEW-OFF-REDECISION-V2",
-      "status": "HARMFUL_UNDER_OWN_NULL_LOOP_RETAINED_LATER_CELLS_REBASED_ON_ANCHOR",
+      "status": "HARMFUL_UNDER_OWN_NULL_LOOP_RETAINED_LATER_CELLS_REBASED_ON_ANCHOR (2026-09-17) -> NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; B0r's own-null measurement (h 1.1218 / 1.0051) stands as an instrument (2026-09-27, owner decision 166)",
       "source": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
       "source_sha256": "cb04d406c520073e3a63ce3de4ea1996a2ace28fd26068eca8cad6338876f1ce",
       "meaning": "Module M0 (Reviewer/Planner loop off) re-decided under the TRAIN A own null measured by the byte-identical replicate B0r: half-widths pooled SLU 1.1218 pp, intent 1.0051 pp (77 of 1,080 rows change delivered intent between two greedy passes). The preregistered rule needs both passes non-inferior to the anchor at those margins; the intent clause fails on both (CI95 lower bounds -1.527 and -1.313) and the SLU clause fails once (-1.150) and passes once (-1.043). Status HARMFUL; the review loop stays in the default plan (recorded NEUTRAL in the harness-admission table: its ON-minus-OFF deltas +0.37 / +0.28 pp intent and -0.13 / -0.10 pp SLU sit inside the own null), and cells B1, B2 and B4 re-register on the anchor. Caveat on record: both anchor legs share the anchor's single realisation. Projection v3 beside: anchor 51.99 / 79.35, B0 52.16 / 79.07, B0r 51.91 / 79.44 (SLU / intent).",
       "run_ids": [
         "SAEA-SLURP-NATIVE-REVIEW-OFF-TRAIN-FOLD-A-REPLICATE-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A2",
+            "claim": "B0r re-decision v2 under the TRAIN A own null",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; B0r's own-null measurement (h 1.1218 / 1.0051) stands as an instrument",
+            "arithmetic": "loop-off minus anchor on the two passes: intent -0.37 / -0.28, SLU +0.13 / +0.10; every point inside h (1.0051 / 1.1218) and inside the 2.50 bar; the failure is interval width only, and both passes share one anchor realisation",
+            "rule_missed": "HARMFUL by width (the rule treated a non-inferiority failure as a harm); no in-chain A/A for the anchor leg",
+            "settling": "none owed (as A1); the loop stayed in the plan, so no plan decision rested on the word"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-17",
@@ -5694,7 +6486,21 @@
       "run_ids": [
         "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V2",
         "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-SMOKE-4-V2"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "B1",
+            "claim": "M4b slot store v2 (B4b and its replicate)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "first pass 2.55 against the 2.50 bar (+0.05), lower bound 1.13 inside it; replicate 1.54 < 2.50; both against ONE sealed anchor realisation; a third same-sign reading inside B5e (+1.20, B4); mechanism counts carry the direction (time-slot FN mass -32.9, filler-distance mass -28 %)",
+            "rule_missed": "no in-chain A/A (both passes read against one sealed anchor, rule 4); the replicate's effect is inside the band",
+            "settling": "only if the size matters: the lock minus slot store v2 against an in-chain A/A (about 3.5 GPU-h per arm); the v2.0 lock does not depend on M4b's size"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-17",
@@ -5707,7 +6513,21 @@
         "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TRAIN-FOLD-A-RECOVERY-V2",
         "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-RECOVERY-V2",
         "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-SMOKE-4-V2"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "B3",
+            "claim": "M1 speech-keyed exemplars: the intent part (B1, B1r, B1 minus twin)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "intent +2.22 [+0.74, +3.71], +2.13 [+0.81, +3.38], twin term +2.04 [+0.49, +3.78]: each below the 2.50 bar, all against one sealed anchor; direction repeated by a request-identical replicate. The SLU part is KEEP: +12.61 / +13.70 / +7.83 are 5.0x / 5.5x / 3.1x the bar",
+            "rule_missed": "no in-chain A/A; intent effect inside the band",
+            "settling": "none owed; decisions 18 and 37 rest on the SLU terms, which stand"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-18",
@@ -5718,7 +6538,21 @@
       "meaning": "The derangement twin of cell B1 (the same twenty-exemplar supply keyed by another Fold A row's sealed speech vector, token-matched on the wire at -0.25 % prompt tokens) on TRAIN A 1,080: B1 minus twin official pooled SLU-F1 53.30 -> 61.14, +7.83 pp CI95 [+5.85, +9.75], so clause 1b of the preregistered rule passes and cell B1 is ADMITTED, module M1 as speech-keyed exemplar supply; intent +2.04 [+0.49, +3.78]. The twin alone beats the anchor by +4.77 pp SLU [+3.20, +6.36] with nil intent (+0.19 [-1.03, +1.39]): exemplar presence buys 38 % of the SLU gain, the speech key 62 % and nearly all of the intent gain. Twin minus direct +19.42. Projection v3 55.76 / 80.09, symmetric 55.90. No scenario breaches the band on any gating contrast. Cost 5,429 contacts, 3.637 GPU hours. Module M1p (exemplar presence) is NOT registered: owner decision 18 branch B did not occur. Harness-admission entry M1 written (stores null form, key knowledge_stores.train-exemplars), provisional until the B5e/B5er combination replicates.",
       "run_ids": [
         "SAEA-SLURP-NATIVE-EXEMPLARS-K20-ANCHOR-TWIN-TRAIN-FOLD-A-V2"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "B3",
+            "claim": "M1 speech-keyed exemplars: the intent part (B1, B1r, B1 minus twin)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "intent +2.22 [+0.74, +3.71], +2.13 [+0.81, +3.38], twin term +2.04 [+0.49, +3.78]: each below the 2.50 bar, all against one sealed anchor; direction repeated by a request-identical replicate. The SLU part is KEEP: +12.61 / +13.70 / +7.83 are 5.0x / 5.5x / 3.1x the bar",
+            "rule_missed": "no in-chain A/A; intent effect inside the band",
+            "settling": "none owed; decisions 18 and 37 rest on the SLU terms, which stand"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-18",
@@ -5731,7 +6565,21 @@
         "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1",
         "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-V1",
         "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-SMOKE-4-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "B4",
+            "claim": "B5e: M4b's share inside the combination",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "+1.20 [-0.11, +2.48] over the sealed B1 arm: below the 2.50 bar with a CI crossing zero; readable only as a third same-sign reading of M4b (B1)",
+            "rule_missed": "one cross-flight contrast against a sealed arm, no A/A; effect inside the band",
+            "settling": "none (the combination question closed with the lock)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-18",
@@ -5742,7 +6590,21 @@
       "meaning": "Owner decision 25 (2026-09-18): for combination cells the HARMFUL trigger requires a measured loss (point estimate below -h or CI95 upper bound below zero); the B5e combination status is re-read as NEUTRAL with non-inferiority not proven at the request-identical margin (M4b inside the combination +1.20 pp SLU [-0.11, +2.48] over B1, intent tie), the beneficial gain recorded; the sealed verdict is not edited; the bar outcome (NOT MET on the official number), the decision-20 path and the non-registration of B5er are unchanged.",
       "run_ids": [
         "SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "B4",
+            "claim": "B5e: M4b's share inside the combination",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "+1.20 [-0.11, +2.48] over the sealed B1 arm: below the 2.50 bar with a CI crossing zero; readable only as a third same-sign reading of M4b (B1)",
+            "rule_missed": "one cross-flight contrast against a sealed arm, no A/A; effect inside the band",
+            "settling": "none (the combination question closed with the lock)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-19",
@@ -5766,7 +6628,21 @@
       "run_ids": [
         "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-REPLICATE-V2",
         "SAEA-SLURP-NATIVE-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-FIT-REPLICATE-V2"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "B1",
+            "claim": "M4b slot store v2 (B4b and its replicate)",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "first pass 2.55 against the 2.50 bar (+0.05), lower bound 1.13 inside it; replicate 1.54 < 2.50; both against ONE sealed anchor realisation; a third same-sign reading inside B5e (+1.20, B4); mechanism counts carry the direction (time-slot FN mass -32.9, filler-distance mass -28 %)",
+            "rule_missed": "no in-chain A/A (both passes read against one sealed anchor, rule 4); the replicate's effect is inside the band",
+            "settling": "only if the size matters: the lock minus slot store v2 against an in-chain A/A (about 3.5 GPU-h per arm); the v2.0 lock does not depend on M4b's size"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-19",
@@ -5783,26 +6659,56 @@
     {
       "date": "2026-09-19",
       "cell_id": "SLURP-B7A-NCP-L1-ANCHOR-V2",
-      "status": "HARMFUL_BY_THE_REGISTERED_RULE_INTERVAL_WIDTH_NOT_MEASURED_LOSS_L1_FAMILY_CLOSED",
+      "status": "HARMFUL_BY_THE_REGISTERED_RULE_INTERVAL_WIDTH_NOT_MEASURED_LOSS_L1_FAMILY_CLOSED (2026-09-19) -> NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; costs more for no measured benefit, not admitted (2026-09-27, owner decision 166)",
       "source": "docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md",
       "source_sha256": "98111be61c428cc82fc618371dcb251b0797fc38126baff85b7ebfe998873660",
       "meaning": "Cell B7a v2 (Node Context Policy L1 on the sealed anchor, flown with the finite-completion policy armed after v1 aborted twice) on TRAIN A 1,080: official pooled SLU-F1 48.53 -> 48.22, -0.31 pp CI95 [-1.81, +1.12]; intent -0.65 [-2.18, +0.87] against the -1.0051 margin; v3 -0.50 and TRAIN symmetric -0.68 same sign; 0 of 18 scenarios breach. HARMFUL under the registered NEUTRAL test (both guards fail on the CI95 lower bound; point estimates inside the margins, so interval width, not a measured loss). The module costs more for nothing: 5.21 contacts per row, 3.78 GPU hours (+11.6 %), +7.8 % prompt tokens, 59 revisions vs 6, and the structured review-finding boundaries fell back to raw on 100 % of rows. Diagnostics: 3 finite-completion rows retained (the policy let the flight finish), 2 illegal Planner actions retained, first request identical to the anchor's on 1,080 of 1,080 rows. Owner decision 32 fires: B7r and B7c close unflown, B8b is re-based on the anchor, L2 stays unflown.",
       "run_ids": [
         "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2",
         "SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-SMOKE-4-V2"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A3",
+            "claim": "B7a v2 Node Context Policy L1",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; costs more for no measured benefit, not admitted",
+            "arithmetic": "SLU -0.31 [-1.81, +1.12], intent -0.65 [-2.18, +0.87] at n = 1,080 against the sealed anchor: points inside the margins 1.1218 / 1.0051 and inside the 2.50 bar. Stands: 5.21 contacts per row, +11.6 % GPU-h, +7.8 % prompt tokens, 59 revisions against 6",
+            "rule_missed": "HARMFUL by width; one cross-flight contrast against a sealed anchor, no in-chain A/A",
+            "settling": "none owed; B7r / B7c stay closed (decision 32); a re-opening flies a no-harm read with an in-chain A/A"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-19",
       "cell_id": "SLURP-B4A-FALLBACK-QUIRKY-ANCHOR-V2",
-      "status": "HARMFUL_BY_THE_REGISTERED_RULE_FALLBACK_NEVER_CHOSEN_B4C_CLOSED",
+      "status": "HARMFUL_BY_THE_REGISTERED_RULE_FALLBACK_NEVER_CHOSEN_B4C_CLOSED (2026-09-19) -> NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; inert (appended on 1,052 rows, selected on 0), not admitted (2026-09-27, owner decision 166)",
       "source": "docs/results/2026-09-19-slurp-b4a-fallback-quirky-anchor-v2-verdict.md",
       "source_sha256": "1c09c0fb38f628be33c464f40cd1d827a63f7858f0a02c270721c294d4d0e976",
       "meaning": "Cell B4a v2 (standing general_quirky fallback candidate + intent-boundaries v2 with the qa/general contrast card, on the sealed anchor) on TRAIN A 1,080: intent +0.74 pp CI95 [-0.30, +1.75] (primary, fails the lower-bound-above-zero clause); official pooled SLU-F1 -0.70 [-2.29, +0.89] (the HARMFUL clause: lower bound below -1.1218); v3 and symmetric agree in sign; 0 of 18 scenarios breach. Interval width, not measured loss -- but the mechanism was ignored by the core: appended on 1,052 rows, coverage 24 % -> 100 %, selected on zero rows; general intent 36.67 % on both arms; cost +30 % prompt tokens, +39 % GPU hours. Owner decision 9: B4c (intent store v2 alone) closes unflown. Decision-30 streak of one-factor NEUTRAL/HARMFUL cells: two (B7a v2, B4a v2).",
       "run_ids": [
         "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2",
         "SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-SMOKE-4-V2"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A4",
+            "claim": "B4a v2 general_quirky fallback + intent-boundaries v2",
+            "class": "ADJUST",
+            "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; inert (appended on 1,052 rows, selected on 0), not admitted",
+            "arithmetic": "intent +0.74 [-0.30, +1.75], SLU -0.70 [-2.29, +0.89] at n = 1,080: both points inside the margins and the 2.50 bar. Stands: +30 % prompt tokens, +39 % GPU-h",
+            "rule_missed": "HARMFUL by width; one cross-flight contrast against a sealed anchor, no in-chain A/A",
+            "settling": "none owed; B4c stays closed (decision 9 required B4a to admit, which fails under either reading)"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-25",
@@ -5811,7 +6717,29 @@
       "source": "docs/results/2026-09-25-slurp-var1-feedback-v2.md",
       "source_sha256": "ba86aa4c536cffb35d2f21359c9d8733a82f8c8b626eb1fbb27d4e9a03c6121f",
       "meaning": "All six625 arms read; K10/K30 positive versus PLAN but not versus PLANR. Count feedback includes 191 empty targets; no learned-policy admission.",
-      "run_ids": []
+      "run_ids": [],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "A7",
+            "claim": "VAR-1 EX-DIV and PER-K16C5 against PLANR",
+            "class": "KEEP",
+            "arithmetic": "against PLAN the same arms read +0.17 / +0.16; the family's own in-chain A/A (PLANR - PLAN) is +1.87 with h 1.474, bound 3.34 > 1.71: the -1.70 / -1.71 are the A/A offset, not harms, which is what the note reported",
+            "rule_missed": "none: the one Stage-3 family that flew its own in-chain A/A",
+            "settling": "none"
+          },
+          {
+            "id": "F1",
+            "claim": "VAR-1 family read and its correction against PLANR",
+            "class": "KEEP",
+            "arithmetic": "K10 / K30 +0.07 / +0.09 over PLANR against an A/A offset of +1.87 (h 1.474); the note's own correction ('reading a variant against PLAN instead of PLANR repeats the coordinator's own error') is adopted into the instrument law",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-25",
@@ -5822,7 +6750,21 @@
       "meaning": "625 choices complete. SLU-F1 +0.7009pp CI95[-0.2551,1.6507] versus mean-single. Intent guard passes; no promotion or expansion.",
       "run_ids": [
         "SAEA-SLURP-STAGE3-VERIFY-1-RECOVERY-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F2",
+            "claim": "VERIFY-1 self-selection (recovery flight)",
+            "class": "KEEP",
+            "arithmetic": "the comparator is the mean of the same sealed samples, so the design carries no flight offset: SLU +0.70 [-0.26, +1.65] fails the benefit gate (offline floor 0.67); intent +0.544 [+0.032, +1.088] excludes zero against a within-flight intent floor of 0.000",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-25",
@@ -5834,7 +6776,29 @@
       "run_ids": [
         "SAEA-SLURP-STAGE3-F10-CONTROL-R01C-V1",
         "SAEA-SLURP-STAGE3-F10-EMPTY-R01C-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F4",
+            "claim": "F10 empty-answer form: headline",
+            "class": "KEEP",
+            "arithmetic": "+0.34 [-1.42, +2.29] at n = 625 against the 3.00 bar: null; the pair was a fresh in-chain control and treatment with no A/A, so the closure records that the design could not have seen an effect below about 3 pp",
+            "rule_missed": "none for the null verdict (no in-chain A/A; the law post-dates the flight)",
+            "settling": "none"
+          },
+          {
+            "id": "F5",
+            "claim": "F10 mechanism counts ('the mechanism did what it was designed to do')",
+            "class": "KEEP-PROVISIONAL",
+            "arithmetic": "entity sets flip on 7.5 % of rows between two passes inside ONE flight and about 28 % of raw outputs differ across flights, so counts of 13-22 over 625 rows sit inside the cross-flight churn: direction only",
+            "rule_missed": "mechanism counts read from a cross-flight pair with no in-chain A/A",
+            "settling": "none unless re-opened; then same-flight paired (supply_variants, once core/bundle/outputs.py learns it) or offline over a sealed pool"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-25",
@@ -5846,7 +6810,21 @@
       "run_ids": [
         "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1",
         "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F7",
+            "claim": "Complete-system group feedback and trajectory attribution over PLAN / PLANR",
+            "class": "KEEP",
+            "arithmetic": "descriptive; its 131 utility differences are between request-identical PLAN and PLANR episodes, i.e. they are the A/A band itself, which is consistent with the note's refusal to infer node credit from them",
+            "rule_missed": "none",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-25",
@@ -5859,7 +6837,21 @@
       "run_ids": [
         "SAEA-SLURP-STAGE3-EVIDENCE-PATH-CONTROL-R01C-V1",
         "SAEA-SLURP-STAGE3-EVIDENCE-PATH-TOOLS-R01C-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F6",
+            "claim": "Evidence-path tools availability",
+            "class": "KEEP",
+            "arithmetic": "SLU +0.54 [-0.88, +2.00] and intent -0.64 CI90 [-2.24, +0.96] at n = 625 inside the 3.00 bar: null; the note names its own prefix defect (all 625 first-Perception requests differ) and says it measures an availability policy, not an invoked tool",
+            "rule_missed": "none for the null verdict (no in-chain A/A; the defect is disclosed)",
+            "settling": "none"
+          }
+        ]
+      }
     },
     {
       "date": "2026-09-26",
@@ -5878,12 +6870,30 @@
         "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S3-RUN-V1",
         "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-MEMORY-S4-RECOVERY1-RUN-V1",
         "SAEA-SLURP-NATIVE-STAGE3-SYSTEM-MEMORY-BATCH002-EMPTY-S4-RECOVERY1-RUN-V1"
-      ]
+      ],
+      "reclassification_2026_09_27": {
+        "decision": 166,
+        "source": "docs/results/2026-09-27-verdict-reclassification.md",
+        "items": [
+          {
+            "id": "F10",
+            "claim": "Memory batch002 consumption",
+            "class": "KEEP",
+            "arithmetic": "4 distinct TRAIN inputs x 4 trajectories per arm: a form proof under rule 5; the one-draw 59.78 -> 53.53 is not readable and the note claims no efficacy",
+            "rule_missed": "none (form proof)",
+            "settling": "none"
+          }
+        ]
+      }
     }
   ],
   "stage3_measurement_instrument": {
     "text": "Binding for every Stage-3 claim from 2026-09-26. Where an earlier Stage-3 verdict conflicts with it, it wins and the earlier verdict is corrected by a successor note rather than rewritten. Its corrections are carried in each affected row's notes, never applied over the verdict's own status word or over this ledger's tally, so both readings stay visible: CELL-3's HARMFUL label is corrected to 'not distinguishable from flight variance'; CELL-1, CELL-2 and CELL-1-GEPA were read cross-flight with no in-chain replicate and support no verdict in either direction; VAR-1's exemplar-k variants are +0.07 / +0.09 pp over PLANR, not +1.94 / +1.95 over PLAN. Floor table: offline read over one sealed sample pool 0.67 pp at n = 625; two passes inside one flight 0.735 pp (intent 0.000) at n = 200; cross-flight at n = 625 a bar of about 3 pp with a measured +1.87 pp A/A offset; cross-flight at n = 1,080 about 2.5 pp; terminal feedback on 4 to 16 trajectories not readable.",
-    "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
+    "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "reclassification_2026_09_27": {
+      "text": "Superseded in part by owner decision 166 (2026-09-27): for the ADJUST rows of the reclassification the corrected word is now carried on the status field itself, with the original word and date kept visible before the arrow, and CELL-3's tally follows the corrected word. Every other correction stays in the notes as before.",
+      "source": "docs/results/2026-09-27-verdict-reclassification.md"
+    }
   },
   "stage3_summary": {
     "rows_added_on": "2026-09-26",
@@ -5937,5 +6947,765 @@
       "text": "Many registered Stage-3 flight rows are not recorded closed by the closure vocabulary this ledger's gate parses (COMPLETED, FINALIZED, FLOWN AND COMPLETE, ROW CLOSED, CLOSED <date>): the delta-cell form twins say 'SEALED:', the batch001 actor rows say 'Consumed and complete', and the 2026-09-26 system rows say 'Finalized' in mixed case. A non-pending row may not name such a run id without failing rule 1, so those run ids are named in the affected rows' notes instead of in run_ids. Repairing the wording is an exposure-ledger edit and is out of this file's ownership.",
       "source": "docs/exposure-ledger.md"
     }
+  },
+  "reclassification_2026_09_27": {
+    "decision": 166,
+    "date": "2026-09-27",
+    "owner_words_translated": "Do not completely overturn ChatGPT's earlier work; although he did not follow your rules, state our experiment rules explicitly to him in the handoff document. Where a conclusion is usable but the experiment non-rigorous, keep it provisionally; where both the conclusion and the experiment are unacceptable, adjust it.",
+    "note": {
+      "text": "the full table, the arithmetic and the decisions that rested on each verdict",
+      "source": "docs/results/2026-09-27-verdict-reclassification.md"
+    },
+    "rules_for_chatgpt": {
+      "text": "the experiment rules written for the ChatGPT side",
+      "source": "docs/handoff/EXPERIMENT-RULES-FOR-CHATGPT.md"
+    },
+    "instrument": {
+      "text": "floors and rule 3",
+      "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
+    },
+    "classes": {
+      "KEEP": "conclusion and experiment sound under today's rules; a null verdict is KEEP whatever its design's power, because a wider band only makes 'not established' truer",
+      "KEEP-PROVISIONAL": "conclusion usable, experiment below today's rules; the named rule and the settling action are recorded",
+      "ADJUST": "conclusion and experiment both unacceptable; the status word is changed in place with the original kept visible"
+    },
+    "counts": {
+      "ADJUST": 11,
+      "KEEP": 30,
+      "KEEP-PROVISIONAL": 16
+    },
+    "counts_by_session": {
+      "Fable 5.1 (2026-09-17 to 2026-09-24)": {
+        "ADJUST": 7,
+        "KEEP-PROVISIONAL": 6
+      },
+      "Codex session (2026-09-09 to 2026-09-16)": {
+        "ADJUST": 3,
+        "KEEP": 18,
+        "KEEP-PROVISIONAL": 7
+      },
+      "ChatGPT session (2026-09-25 to 2026-09-26)": {
+        "KEEP": 11,
+        "KEEP-PROVISIONAL": 1
+      },
+      "Fable 5.1 (first tenure, to 2026-09-09)": {
+        "KEEP-PROVISIONAL": 1,
+        "KEEP": 1,
+        "ADJUST": 1
+      },
+      "Claude Opus 5.5 (2026-09-27)": {
+        "KEEP-PROVISIONAL": 1
+      }
+    },
+    "items": [
+      {
+        "id": "A1",
+        "claim": "B0 review loop off, first pass",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "HARMFUL by the preregistered rule (intent CI95 lower bound -1.53 below an imported 0.92 pp margin)",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; the loop-inertness finding stands",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-B0-REVIEW-OFF-TRAIN-FOLD-A-V1"
+        ],
+        "source": "docs/results/2026-09-17-slurp-b0-review-off-verdict.md"
+      },
+      {
+        "id": "A2",
+        "claim": "B0r re-decision v2 under the TRAIN A own null",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "HARMFUL (intent lower bounds -1.527 / -1.313 against -1.0051; SLU -1.150 once)",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; B0r's own-null measurement (h 1.1218 / 1.0051) stands as an instrument",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-B0-REVIEW-OFF-REDECISION-V2"
+        ],
+        "source": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md"
+      },
+      {
+        "id": "A3",
+        "claim": "B7a v2 Node Context Policy L1",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "HARMFUL by the registered rule (interval width, not measured loss); L1 family closed",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; costs more for no measured benefit, not admitted",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-B7A-NCP-L1-ANCHOR-V2"
+        ],
+        "source": "docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md"
+      },
+      {
+        "id": "A4",
+        "claim": "B4a v2 general_quirky fallback + intent-boundaries v2",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "HARMFUL by the registered rule (SLU lower bound -2.29 against -1.1218); fallback never chosen",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; inert (appended on 1,052 rows, selected on 0), not admitted",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-B4A-FALLBACK-QUIRKY-ANCHOR-V2"
+        ],
+        "source": "docs/results/2026-09-19-slurp-b4a-fallback-quirky-anchor-v2-verdict.md"
+      },
+      {
+        "id": "A5",
+        "claim": "Role coverage, matched treatment",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "DO_NOT_ADOPT_INTENT_NEGATIVE_ENTITY_UNRESOLVED (NEW500 intent -2.20, CI90 [-3.95, -0.42])",
+        "class": "ADJUST",
+        "new_reading": "DO NOT ADOPT (no benefit shown); INTENT LOSS NOT DISTINGUISHABLE FROM FLIGHT VARIANCE",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-ROLE-COVERAGE-MATCHED-V1"
+        ],
+        "source": "docs/readiness/2026-09-11-slurp-role-coverage-result.md"
+      },
+      {
+        "id": "A6",
+        "claim": "CELL-3 scenario-gated deltas on DEV-2000-ADDED",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "HARMFUL on the SLU guard by the registered rule (-1.44 [-2.88, -0.05])",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (instrument section 4, now carried on the status word)",
+        "ledger_rows": [
+          "SLURP-CELL-3"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md"
+      },
+      {
+        "id": "A7",
+        "claim": "VAR-1 EX-DIV and PER-K16C5 against PLANR",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "numbers only (-1.70 [-3.39, -0.06] / -1.71 [-3.37, -0.07] vs PLANR); family NO ADMISSION; never called harms",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-VAR-1"
+        ],
+        "ledger_continuation_entries": [
+          "SLURP-STAGE3-VAR1-COMPLETE"
+        ],
+        "source": "docs/results/2026-09-25-slurp-var1-complete-evidence.md"
+      },
+      {
+        "id": "B1",
+        "claim": "M4b slot store v2 (B4b and its replicate)",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "ADMITTED (+2.55 [+1.13, +3.98]) -> REPLICATED (+1.54 [+0.30, +2.93])",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-B4B-SLOT-STORE-V2-ANCHOR-V2",
+          "SLURP-B4B-SLOT-STORE-V2-REPLICATE-V2"
+        ],
+        "source": "docs/results/2026-09-19-slurp-b4b-replicate-verdict.md"
+      },
+      {
+        "id": "B2",
+        "claim": "PLAN arm: intent +2.22 read as 'proven'",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "NEUTRAL (SLU +1.50 unproven); intent +2.22 [+0.92, +3.56] 'proven'",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md"
+      },
+      {
+        "id": "B3",
+        "claim": "M1 speech-keyed exemplars: the intent part (B1, B1r, B1 minus twin)",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "ADMITTED -> REPLICATED; intent +2.22 / +2.13 / +2.04",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-B1-EXEMPLARS-K20-ANCHOR-RECOVERY-V2",
+          "SLURP-B1-EXEMPLARS-K20-ANCHOR-TWIN-V2"
+        ],
+        "source": "docs/results/2026-09-19-slurp-b1-replicate-verdict.md"
+      },
+      {
+        "id": "B4",
+        "claim": "B5e: M4b's share inside the combination",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "combination NEUTRAL (decision 25 addendum); M4b share +1.20 recorded as 'beneficial, unproven'",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-B5E-COMBINATION-RECOVERY-V1",
+          "SLURP-B5E-COMBINATION-RECOVERY-V1-ADDENDUM-DECISION-25"
+        ],
+        "source": "docs/results/2026-09-18-slurp-b5e-combination-verdict-addendum-decision-25.md"
+      },
+      {
+        "id": "B5",
+        "claim": "IDX knowledge index: the intent 'measured loss'",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "HARMFUL, both guards a measured loss (intent -2.41 [-4.56, -0.32])",
+        "class": "ADJUST",
+        "new_reading": "intent loss NOT DISTINGUISHABLE FROM FLIGHT VARIANCE; the cell's HARMFUL stands on SLU (-7.37 [-9.72, -4.80], 2.9x the bar) and the twin's form loss (-9.97) stands",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-21-slurp-idx-knowledge-index-verdict.md"
+      },
+      {
+        "id": "B6",
+        "claim": "IDX minus IDXT content term",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "content +2.60 SLU / -2.59 intent (IDX minus its derangement twin)",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-21-slurp-idxt-knowledge-index-twin-verdict.md"
+      },
+      {
+        "id": "B7",
+        "claim": "KU-S1c draft-revise control: intent +1.50",
+        "session": "Fable 5.1 (first tenure, to 2026-09-09)",
+        "recorded": "REPORTED, NEVER DECIDED; intent +1.50 CI90 [+0.30, +2.70], +1.20 of it the control turn",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [
+          "SLURP-KU-S1C"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/readiness/2026-09-05-slurp-consumption-ku-s1-v1-verdict.md"
+      },
+      {
+        "id": "C1",
+        "claim": "CELL-1 / CELL-2 / CELL-1-GEPA per-scenario content gains and arm-minus-twin terms",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "content gains +7 to +15 pp where the store has reach (news +7.4, alarm +4.2, qa +4.2, weather +4.1 SLU); arm - twin +0.59 / +0.83 (CELL-2), +0.73 / +0.19 (GEPA)",
+        "class": "ADJUST",
+        "new_reading": "NOT EVIDENCE (strata and twin terms of cross-flight contrasts, no CI, no A/A); the NEUTRAL status words stand",
+        "ledger_rows": [
+          "SLURP-CELL-1",
+          "SLURP-CELL-2",
+          "SLURP-CELL-1-GEPA"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md"
+      },
+      {
+        "id": "C2",
+        "claim": "CELL-3 fresh-roster loss diagnostic",
+        "session": "Fable 5.1 (2026-09-17 to 2026-09-24)",
+        "recorded": "gated rows -2.20 vs PLANr +0.61 (noise); store part -0.35 pp above its null; harm diffuse over 120 values; no Fold A -> DEV transfer; perfect-gate bound about PLAN",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-24-slurp-cell3-fresh-roster-loss-diagnostic.md"
+      },
+      {
+        "id": "C3a",
+        "claim": "SLURP silence tail: scientific status",
+        "session": "Fable 5.1 (first tenure, to 2026-09-09)",
+        "recorded": "NOT ADMITTED (intent +1.30 CI90 [+0.19, +2.43] did not clear +0.60)",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-TAIL2S"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md"
+      },
+      {
+        "id": "C3b",
+        "claim": "SLURP silence tail: harness HARMFUL and the 'redistribution' reading",
+        "session": "Fable 5.1 (first tenure, to 2026-09-09)",
+        "recorded": "harness-admission HARMFUL, barred from every default plan; 'a redistribution with a positive sum' (5 scenarios lose, worst takeaway -10.26 on 39 rows = 4 harms)",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (not admitted for want of a readable gain; not barred for harm)",
+        "ledger_rows": [
+          "SLURP-TAIL2S"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/receipts/harness-admission.json"
+      },
+      {
+        "id": "C4",
+        "claim": "KV-2 vocabulary cards against their form twin",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "NOT_ADMITTED_ROTATING_TWIN_GATE_FAILED; vs KV-0 +7.16, vs twin +1.71",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-KV-2-CURRENT"
+        ],
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md"
+      },
+      {
+        "id": "D1",
+        "claim": "KU-S3 speech-keyed fillers (ADMITTED_COMPONENT and its independent repeat)",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "ADMITTED_COMPONENT; PASS_COMPONENT_REPEAT",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-KU-S3-MAX256-RECOVERY",
+          "SLURP-KU-S3-INDEPENDENT-REPEAT"
+        ],
+        "source": "docs/readiness/2026-09-10-ku-s3-independent-repeat-decision.md"
+      },
+      {
+        "id": "D2",
+        "claim": "Compact-frame task agent (v1 and its replication)",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "v1 INTENT_SIGNAL (+2.60); replication PRIMARY_INTENT_AND_ENTITY_POSITIVE (+4.20 / +2.99)",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-COMPLETE-TASK-AGENT-V1",
+          "SLURP-COMPLETE-TASK-AGENT-REPLICATION-V1"
+        ],
+        "source": "docs/readiness/2026-09-11-slurp-task-agent-replication-result.md"
+      },
+      {
+        "id": "D3",
+        "claim": "AGREE agreement term on TRAIN Fold A",
+        "session": "Claude Opus 5.5 (2026-09-27)",
+        "recorded": "ADMITTED on TRAIN Fold A, pending fresh-roster replication",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [
+          "SLURP-AGREE"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md"
+      },
+      {
+        "id": "E1",
+        "claim": "KV-0 examples-free base",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "HARMFUL; retain KC-S1b",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-KV-0-CURRENT"
+        ],
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json"
+      },
+      {
+        "id": "E2",
+        "claim": "KV-1, KV-3 and the three KV twins",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "NULL_COMPATIBLE (KV-1, KV-3); COMPARATOR_ONLY (twins)",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-KV-1-CURRENT",
+          "SLURP-KV-3-CURRENT",
+          "SLURP-KV-1-TWIN-CURRENT",
+          "SLURP-KV-2-TWIN-CURRENT",
+          "SLURP-KV-3-TWIN-CURRENT"
+        ],
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md"
+      },
+      {
+        "id": "E3",
+        "claim": "KU-S4N G2 intent-candidate narrowing",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "HOLD_NONINFERIORITY_FAILED",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-KU-S4N-G2-N",
+          "SLURP-KU-S4N-G2-TWIN"
+        ],
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s4n-g2-readout/decision.json"
+      },
+      {
+        "id": "E4",
+        "claim": "Reproduction audit of the first-tenure results",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "NUMERICALLY_REPRODUCED (16,560 statistical fields agree)",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "FABLE-RESULT-REPRODUCTION-AUDIT"
+        ],
+        "source": "docs/results/2026-09-10-fable-reproduction-audit.md"
+      },
+      {
+        "id": "E5",
+        "claim": "E21 draft refresh, unit-constrained and unit-free deliveries",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "REJECTED (both)",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "E21-DR-PACKETS-UNIT-CONSTRAINED",
+          "E21-DR-PACKETS-UNIT-FREE"
+        ],
+        "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md"
+      },
+      {
+        "id": "E6",
+        "claim": "E21 draft refresh, self-constrained delivery",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "ADMITTED_AS_DISCOVERY_REFRESH_IMPROVEMENT (small effect; does not replace KC-E1f)",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM THE EARNINGS-21 OWN NULL (no improvement readable; KC-E1f stays)",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "E21-DR-PACKETS-SELF-CONSTRAINED"
+        ],
+        "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md"
+      },
+      {
+        "id": "E7",
+        "claim": "E21 draft refresh, self-free delivery",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "NULL_NO_DEMONSTRATED_WER_GAIN",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "E21-DR-PACKETS-SELF-FREE"
+        ],
+        "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md"
+      },
+      {
+        "id": "E8",
+        "claim": "E21 loop packets (judge targeting)",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "RETAIN_KC_E1F_SYSTEM_FLOOR_FAILED",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "E21-LOOP-PACKETS-NP4"
+        ],
+        "source": "docs/readiness/2026-09-10-e21-loop-packets-decision.md"
+      },
+      {
+        "id": "E9",
+        "claim": "G6 live intent and slot contacts",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "NOT_FULLY_ADMITTED_GUARD_FAILED (positive slot evidence; scenario point guard -0.2 failed)",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-G6-LIVE-INTENT-SLOTS"
+        ],
+        "source": "docs/readiness/2026-09-10-slurp-live-intent-slots-result.md"
+      },
+      {
+        "id": "E10",
+        "claim": "E21 offline direct-then-KC-E1f system",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "SYSTEM_NOT_ADMITTED_INSERTION_GUARD_FAILED (PERSON +3.39; five extra insertions)",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "E21-OFFLINE-DIRECT-THEN-KC-E1F"
+        ],
+        "source": "docs/readiness/2026-09-11-e21-offline-system-result.md"
+      },
+      {
+        "id": "E11",
+        "claim": "Program-matched live follow-up",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "SYSTEM_NOT_ADMITTED_PRIMARY_AND_INTENT_GUARD_FAILED",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-PROGRAM-MATCHED-LIVE-FOLLOWUP"
+        ],
+        "source": "docs/readiness/2026-09-11-slurp-program-matched-result.md"
+      },
+      {
+        "id": "E12",
+        "claim": "Discriminative value rendering (span pair)",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "NEGATIVE_COMPONENT_NOT_SELECTED",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-DISCRIMINATIVE-VALUES-SPAN-PAIR"
+        ],
+        "source": "docs/readiness/2026-09-11-slurp-discriminative-values-result.md"
+      },
+      {
+        "id": "E13",
+        "claim": "Audio2Tool native system recovery: headline",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "SYSTEM_NOT_ADMITTED_KNOWLEDGE_NOT_ESTABLISHED",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "A2T-NATIVE-SYSTEM-RECOVERY-V1"
+        ],
+        "source": "docs/readiness/2026-09-12-a2t-native-system-final-result-v1.md"
+      },
+      {
+        "id": "E14",
+        "claim": "Audio2Tool native system recovery: 'the staged control is a harmful package'",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "staged control - direct -0.95 exact match, exploratory CI90 below zero: 'a harmful package in this run'",
+        "class": "ADJUST",
+        "new_reading": "NOT DISTINGUISHABLE FROM FLIGHT VARIANCE (Audio2Tool has no floor of its own; -0.95 is inside the scaled SLURP bar)",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "A2T-NATIVE-SYSTEM-RECOVERY-V1"
+        ],
+        "source": "docs/readiness/2026-09-12-a2t-native-system-final-result-v1.md"
+      },
+      {
+        "id": "E15",
+        "claim": "Fixed Whisper evidence",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "EFFECTIVENESS_NOT_ESTABLISHED",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-FIXED-WHISPER-EVIDENCE-V1"
+        ],
+        "source": "docs/readiness/2026-09-12-slurp-fixed-whisper-result-v1.md"
+      },
+      {
+        "id": "E16",
+        "claim": "Native system vs direct on DEV-1000, its reboot recovery and the max512 base replication",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "EXPLORATORY_SYSTEM_CANDIDATE; recovery pass; REPLICATED useful base",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1"
+        ],
+        "source": "docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md"
+      },
+      {
+        "id": "E17",
+        "claim": "TRAIN Fold A native anchor",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "COMPLETE_TRAIN_CONSTRUCTION_ANCHOR (48.53 / 77.96)",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-14-slurp-native-train-a-anchor.md"
+      },
+      {
+        "id": "E18",
+        "claim": "Distinct (delayed) commitment",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "SLU inconclusive; positive paired evidence for intent",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/readiness/2026-09-13-slurp-distinct-commitment-result-v1.md"
+      },
+      {
+        "id": "E19",
+        "claim": "Audio2Tool native role base on union-4000",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "PRIMARY_GAIN_TOOL_GUARD_FAILED_NOT_ADOPTED (+4.05 exact; tool accuracy -3.60)",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "A2T-NATIVE-ROLE-BASE-UNION4000-V1"
+        ],
+        "source": "docs/results/2026-09-15-a2t-native-role-base-full4000.md"
+      },
+      {
+        "id": "E20",
+        "claim": "Audio2Tool attributions and engineering proof (candidate attribution, ordered action, primary parameter, parameter value evidence, role engineering proof)",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "descriptive / engineering",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "A2T-NATIVE-ROLE-CANDIDATE-ATTRIBUTION-UNION4000-V1"
+        ],
+        "source": "docs/results/2026-09-15-a2t-ordered-action-attribution-v1.md"
+      },
+      {
+        "id": "E21",
+        "claim": "Maximum-five candidates and broad / factored knowledge on Fold A",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "NOT_ADVANCED (both)",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SLURP-NATIVE-CANDIDATE-FIVE-TRAIN-FOLD-A-V1"
+        ],
+        "source": "docs/results/2026-09-16-slurp-candidate-five-train-a.md"
+      },
+      {
+        "id": "E22",
+        "claim": "Typed-context package",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "CLOSED_SECOND_FAILURE_NO_FURTHER_RECOVERY (engineering; no read)",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/handoff/2026-09-16-fable51/TERMINAL-UPDATE-20260916.md"
+      },
+      {
+        "id": "E23",
+        "claim": "SLURP descriptive diagnostics of 2026-09-13 to 2026-09-16 (conditional commitment decomposition, top-3 source intent diagnostic, TRAIN A entity-loss attribution, review-stage attribution, review-context provenance, coverage-gap inventory, construction / consumption inventory, slot-binding footprint, temporal slot diagnosis, two-track synthesis)",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "descriptive",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md"
+      },
+      {
+        "id": "E24",
+        "claim": "Engineering results of 2026-09-10 to 2026-09-13 (E21 feature preparation, artifact result kind, native speech-tool engineering and recovery, native candidate source, role-request integration, TRAIN feedback bridge, bounded Perception proof, knowledge-fix dry run, role GPU proof, top-3 source and successor engineering)",
+        "session": "Codex session (2026-09-09 to 2026-09-16)",
+        "recorded": "engineering proofs",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-10-e21-dr-feature-preparation.md"
+      },
+      {
+        "id": "F1",
+        "claim": "VAR-1 family read and its correction against PLANR",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "NO ADMISSION; CONSTRUCTION READ, NO STABLE WINNER",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-VAR-1"
+        ],
+        "ledger_continuation_entries": [
+          "SLURP-STAGE3-VAR1-COMPLETE"
+        ],
+        "source": "docs/results/2026-09-25-slurp-var1-feedback-v2.md"
+      },
+      {
+        "id": "F2",
+        "claim": "VERIFY-1 self-selection (recovery flight)",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "BENEFIT NOT PROVEN; NO SYSTEM ADMISSION; intent guard passes",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-VERIFY-1"
+        ],
+        "ledger_continuation_entries": [
+          "SLURP-STAGE3-VERIFY1-RECOVERY"
+        ],
+        "source": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md"
+      },
+      {
+        "id": "F3",
+        "claim": "VAR-2 closure after its sole recovery",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "ENGINEERING-CLOSED, NO EFFECTIVENESS RESULT",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-VAR-2"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md"
+      },
+      {
+        "id": "F4",
+        "claim": "F10 empty-answer form: headline",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "BENEFIT_NOT_PROVEN; NOT_QUALIFIED; CLOSED",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-F10"
+        ],
+        "ledger_continuation_entries": [
+          "SLURP-STAGE3-F10"
+        ],
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      {
+        "id": "F5",
+        "claim": "F10 mechanism counts ('the mechanism did what it was designed to do')",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "empty-gold FP 142 -> 120 (-22; QA -21) against non-empty FN 384 -> 397 (+13): a specificity / omission trade-off",
+        "class": "KEEP-PROVISIONAL",
+        "ledger_rows": [
+          "SLURP-F10"
+        ],
+        "ledger_continuation_entries": [
+          "SLURP-STAGE3-F10"
+        ],
+        "source": "docs/results/2026-09-25-slurp-f10-complete-verdict.md"
+      },
+      {
+        "id": "F6",
+        "claim": "Evidence-path tools availability",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "NOT QUALIFIED (input-isolation defect named; zero tool calls)",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-EVIDENCE-PATH"
+        ],
+        "ledger_continuation_entries": [
+          "SAEA-SLURP-STAGE3-EVIDENCE-PATH-OFFICIAL-READ-V1"
+        ],
+        "source": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md"
+      },
+      {
+        "id": "F7",
+        "claim": "Complete-system group feedback and trajectory attribution over PLAN / PLANR",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "COMPLETE DIAGNOSTIC; NO POLICY UPDATE OR EFFECTIVENESS CLAIM",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [
+          "SAEA-SLURP-STAGE3-SYSTEM-GROUP-FEEDBACK-READ-V1"
+        ],
+        "source": "docs/results/2026-09-25-slurp-system-group-feedback.md"
+      },
+      {
+        "id": "F8",
+        "claim": "Acquisition re-query, pre-Solver decision state and candidate-support diagnostics",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "model-free construction diagnostics; no system-gain verdict",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-CAND-SUPPORT"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md"
+      },
+      {
+        "id": "F9",
+        "claim": "System-learning batch001 family (resource and learning diagnostic, no-update closure, provisional memory created not evaluated), summary001, comparison001, group-update001 format, batch-synthesis001 rejection, event-credit001",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "structural / diagnostic statuses (e.g. OBSERVED ERRORS IN SEMANTIC CREDIT, NO QUALIFIED UPDATE)",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-SYSTEM-BATCH001",
+          "SLURP-SYSTEM-SUMMARY001",
+          "SLURP-SYSTEM-COMPARISON001",
+          "SLURP-SYSTEM-GROUP-UPDATE001-FORMAT",
+          "SLURP-SYSTEM-BATCH-SYNTHESIS001",
+          "SLURP-SYSTEM-BATCH-SYNTHESIS001-FORMAT",
+          "SLURP-SYSTEM-EVENT-CREDIT001"
+        ],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-26-system-comparison001-learning-diagnostic.md"
+      },
+      {
+        "id": "F10",
+        "claim": "Memory batch002 consumption",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "NO DEMONSTRATED TASK IMPROVEMENT",
+        "class": "KEEP",
+        "ledger_rows": [
+          "SLURP-SYSTEM-MEMORY-BATCH002"
+        ],
+        "ledger_continuation_entries": [
+          "SLURP-SYSTEM-MEMORY-BATCH002-V1"
+        ],
+        "source": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md"
+      },
+      {
+        "id": "F11",
+        "claim": "Engineering: rollout batch / prefix capacity baseline and the memory resource-receipt defect",
+        "session": "ChatGPT session (2026-09-25 to 2026-09-26)",
+        "recorded": "engineering",
+        "class": "KEEP",
+        "ledger_rows": [],
+        "ledger_continuation_entries": [],
+        "source": "docs/results/2026-09-26-system-rollout-batch-prefix-capacity-baseline.md"
+      }
+    ]
   }
 }
