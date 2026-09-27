@@ -116,9 +116,10 @@
     "DET": "docs/results/2026-09-27-slurp-det-np1-pair-read.md",
     "RL3": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md",
     "TPT": "docs/results/2026-09-27-slurp-throughput-baseline-and-levers.md",
-    "AGR": "branch fable/agreerec (957091a6): docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
-    "CMP": "branch fable/comp1g5 (3667e01d): docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md and its README.md",
-    "KPB": "the decision-163 analysis brief (KPROBE m = 24 of 55); read row registered at master d1e2c61a; no read note on master at 89555832",
+    "AGR": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
+    "CMP": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md",
+    "KPB": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md (expected_effect_declaration: KPROBE 24 of 55)",
+    "CMR": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/README.md",
     "HND": "docs/handoff/HANDOFF-TO-CHATGPT.md",
     "G5": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1-preregistration.md"
   },
@@ -1922,7 +1923,7 @@
       "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
       "sources": [
         "docs/results/2026-09-27-slurp-conv-probe-read.md",
-        "branch fable/agreerec (957091a6): docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
+        "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
         "docs/results/stage2-results-ledger.md"
       ],
       "source_keys": [
@@ -1950,8 +1951,8 @@
       "instrument_flag": "n/a",
       "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
       "sources": [
-        "the decision-163 analysis brief (KPROBE m = 24 of 55); read row registered at master d1e2c61a; no read note on master at 89555832",
-        "branch fable/comp1g5 (3667e01d): docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md and its README.md"
+        "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md (expected_effect_declaration: KPROBE 24 of 55)",
+        "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md"
       ],
       "source_keys": [
         "KPB",
@@ -1977,7 +1978,7 @@
       "instrument_flag": "ok",
       "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
       "sources": [
-        "branch fable/agreerec (957091a6): docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
+        "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
         "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
       ],
       "source_keys": [

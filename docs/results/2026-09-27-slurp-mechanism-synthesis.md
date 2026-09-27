@@ -2,7 +2,7 @@
 
 Date: 2026-09-27. Author: Claude Opus 5.5, analysis track of owner decision 163 (row 163 of
 `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`), worktree
-`/home/chao/saea-worktrees/fable-synthesis`, branch `fable/synthesis`, based on master `89555832`.
+`/home/chao/saea-worktrees/fable-synthesis`, branch `fable/synthesis`, rebased on master `610cd583`.
 
 **Status: DESCRIPTIVE.** This note decides nothing, admits nothing, authorises no flight and registers
 no cell. The ranking in section 5 is a ranking, not a decision (owner decision 139). Every number is a
@@ -17,11 +17,9 @@ along a chain, row counts converted to points at 1 row = 0.0926 pp on the 1,080-
 is marked "computed here". No utterance text, transcript, gold string, delivered answer or knowledge
 body appears anywhere.
 
-**Three sources are not on master at `89555832`** and are cited by branch and commit: the AGREE read
-(`fable/agreerec`, `957091a6`), the combined-commit offline read (`fable/commit`, `71bf3b0f`) and the
-COMP-1 registration (`fable/comp1g5`, `3667e01d`). The KPROBE value m = 24 of 55 is taken from the
-decision-163 analysis brief; its read row is registered at master `d1e2c61a` but no read note is on
-master yet. The machine twin of section 1 is
+**One source is not on master at `610cd583`** and is cited by branch and commit: the combined-commit
+offline read (`fable/commit`, `71bf3b0f`). The KPROBE value m = 24 of 55 is quoted from COMP-1's
+expected-effect declaration on master [KPB]; no KPROBE read note is on master yet. The machine twin of section 1 is
 `docs/results/2026-09-27-slurp-mechanism-synthesis/mechanism-table.json` (same rows, same sources).
 
 ## 0. The answer in ten lines
@@ -376,7 +374,7 @@ rosters [ILC].
 | **relevance order at the rendering boundary** | exemplars are the cosine top-20 on 1,080 of 1,080 rows but rendered in lexicographic id order; Spearman between position and rank 0.007 [M1C]; AGREE's 35 saves on rows delivered in both flights come from re-ordering the eight entries [AGR] | never a cell; zero-token change | after AGREE, 89 Fold A rows have the gold boundary delivered and the intent still wrong (40 newly delivered + 49 delivered in both) = 8.2 pp (computed here from [AGR]) |
 | **slot-side retrieval and filtering** | the candidate-conditioned slot view is built and registered but disabled (decision 125); it projects the whole store and never retrieves (decision 126); the slot-contract block is about 4,855 tokens per Solver contact on the B1 arm and 90.6 % of its characters are cards for slot types neither the core nor the annotation used [M1C] (5,359 tokens of slot-contract cards per first Solver contact on ROLL-2 [TPT]); KU-S3's speech key read +3.65 [KU3]; the staged fetch of slot exemplars keyed by speech plus the drafted intent (decision 47) never flew | the programme moved to intent after the lock | ENTITY-MIXED 193 / 195 rows, +17.4 / +16.5 SLU oracle on Fold A / DEV (decision 127 quoting [BNK]) |
 | **an explicit empty-entity decision** | 114 of 191 empty-gold R01C rows emit entities [TRJ]; ENTITY-FP-ONLY 131 / 108 rows [BNK]; the support filter's +1.40 is FP suppression [AGG]; F10 made emptiness explicit and traded FP -22 for FN +13 [F10] | F10 closed on a pooled number; no row-level signal was used | the FP-only class is 12.1 % / 10.8 % of rows [BNK] |
-| **utterance-space intent keys** | centroid key delivers gold on 71.2 % of Fold A intent-wrong rows vs 45.0 % written; an all-utterances key 88.0 % [BKC]; the agreement term realised most of it (156 of 191) [AGR] | the key file was rebuilt only for the KPROBE probe | COMP-1's composition delivers 162 of 191; of the 27 catch-all rows no single factor delivers, the composition reaches 5 [CMP] |
+| **utterance-space intent keys** | centroid key delivers gold on 71.2 % of Fold A intent-wrong rows vs 45.0 % written; an all-utterances key 88.0 % [BKC]; the agreement term realised most of it (156 of 191) [AGR] | the key file was rebuilt only for the KPROBE probe | COMP-1's composition delivers 162 of 191; of the 27 catch-all rows no single factor delivers, the composition reaches 5 [CMR] |
 | **the catch-all intent** | `general_quirky` owns 25.5-31.4 % of not-delivered intent-wrong rows [IRR]; 3.33 of Fold A's 17.78 error points [ILC]; 36 distinct top-1 rivals [KBP]; AGREE moved `general` intent 40.00 -> 50.00 (7 saves / 1 harm) [AGR] | B4a added a candidate, not a decision rule | at most 3.33 pp intent on Fold A [ILC] |
 | **discriminative boundary keys and bodies** | the 60 boundary bodies share a mean Jaccard word overlap of 0.6073 [KBP]; the key is an 84-character facet text, not the body [BKC]; top confusions are within-scenario pairs and the catch-all [BNK] | rewriting is a construction act with its own authority (decision 142) | the confusion pairs of [BNK] section 1a (7, 6, 4, 4, 4 rows ...) |
 | **high-FN slot types beyond date/time** | FN rates order_type 77.3 %, audiobook_name 75.0 %, radio_name 65.2 %, song_name 63.6 %, business_name 57.4 %, date 45.8 % of 310 gold mentions [KCF section 5.2]; M4b's contract revision replicated on dates [B4BR] | M4b stopped at date and time | per-type FN mass (for example business_name 39 FN, date 142 FN over the two PLAN rosters [KCF]) |
@@ -392,13 +390,13 @@ gold-selected conversion probe 0.12 [CNV]; an offline read over a sealed pool 0.
 
 | rank | mechanism | metric | evidence rows | headroom | design (floor) | GPU-h | why this rank |
 | ---: | --- | --- | --- | --- | --- | ---: | --- |
-| 1 | **fresh-roster replication of the agreement term** (COMP-1's DEV-2000-ADDED round) | intent | C19, C17; [IRR] section 3 | on DEV the agree-1 term delivers gold on 78.0 % of the 232 intent-wrong rows vs 35.8 % (+42.2 points, about 98 rows computed here) against +36.6 on Fold A | cross-flight with in-chain A/A (bar about 2.5 pp at n = 1,000) | ~3.4 | the only mechanism with a gain that clears rule 3 on intent; replication is also the precondition for any claim (decisions 115, 161) and for the test-sample milestone (decision 151) |
+| 1 | **fresh-roster replication of the agreement term** (COMP-1's DEV-2000-ADDED round, after the registered Fold A arm, declared +3.23 pp intent [CMP]) | intent | C19, C17; [IRR] section 3; [CMP] | on DEV the agree-1 term delivers gold on 78.0 % of the 232 intent-wrong rows vs 35.8 % (+42.2 points, about 98 rows computed here) against +36.6 on Fold A | cross-flight with in-chain A/A (bar about 2.5 pp at n = 1,000) | ~3.4 | the only mechanism with a gain that clears rule 3 on intent; replication is also the precondition for any claim (decisions 115, 161) and for the test-sample milestone (decision 151) |
 | 2 | **rank-ordered, rank-visible rendering of the delivered boundary and exemplar blocks** | intent (selection given delivery) | B7 [M1C] (order discarded, Spearman 0.007), C19 (35 re-ordering saves), [GPS] | 89 delivered-but-wrong Fold A rows after AGREE (8.2 pp) | conversion probe on the delivered-but-wrong rows first (0.12), then arm + in-chain A/A | 0.1 + 3.5 | zero-token form change aimed at the largest remaining intent mass; the one form change in the record that ADDS a row-matched signal (rank) rather than volume |
 | 3 | **slot-side retrieval**: enable the candidate-conditioned slot view with a retrieval / legality / top-k filter, plus speech-plus-candidate-keyed slot-filler exemplars | SLU-F1 (intent guard) | A3, A14, B7 [M1C], [KCF], decisions 47, 125, 126 | ENTITY-MIXED +17.4 / +16.5 SLU oracle; about nine tenths of a ~4.9k-token contract block is for unused slot types [M1C] | arm + in-chain A/A, SLU primary | ~3.5 | the one family (row-matched slot knowledge) with repeated admitted gains, now aimed at the largest SLU mass; also a prefill saving |
 | 4 | **explicit empty-entity decision** fed by sample agreement on emptiness | SLU-F1 (FP) | B10, C9, C12, [TRJ], [BNK] | FP-only 12.1 % / 10.8 % of rows | OFFLINE first over the sealed ROLL-2 (Fold A) and ROLL-3 (DEV) pools (floor 0.51-0.67 pp [HND, INS]), a flight only if it clears | 0 (+3.5) | free to read; a positive signal (FP suppression) exists but has never been isolated from the whole-answer commit |
-| 5 | **discriminative key and body rewrite for the confusion pairs and the catch-all** | intent | B13, C18, [KBP], [BKC], [BNK], [ILC], [CMP] | catch-all at most 3.33 pp; 22 of the 27 catch-all rows stay undelivered even under COMP-1 [CMP] | offline delivery read (0), conversion probe (0.1), then arm + A/A | 0.1 + 3.5 | bounded ceiling and a construction step first, but it attacks the rows COMP-1 cannot reach |
+| 5 | **discriminative key and body rewrite for the confusion pairs and the catch-all** | intent | B13, C18, [KBP], [BKC], [BNK], [ILC], [CMP] | catch-all at most 3.33 pp; 22 of the 27 catch-all rows stay undelivered even under COMP-1 [CMR] | offline delivery read (0), conversion probe (0.1), then arm + A/A | 0.1 + 3.5 | bounded ceiling and a construction step first, but it attacks the rows COMP-1 cannot reach |
 | 6 | **contract revision for the high-FN slot types** (M4b successor) | SLU-F1 | B6, [KCF] section 5.2 | per-type FN mass | arm + A/A | ~3.5 | the M4b mechanism replicated, but each type is small and the gain is SLU-only |
-| 7 | **centroid key as its own factor** | intent | C18, [CMP] | +6 delivered rows over AGREE on the 191 (156 -> 162); x 0.436 is about 2.6 rows = 0.24 pp (computed here) | inside COMP-1 only; not separately readable at any floor | 0 marginal | nearly nested in the agreement term (47 of its 55 rows shared) |
+| 7 | **centroid key as its own factor** | intent | C18, [CMP] | +6 delivered rows over AGREE on the 191 (156 -> 162) [AGR, CMR]; x 0.436 is about 2.6 rows = 0.24 pp (computed here); COMP-1's own upper reading is 8 x 0.4364 x 0.0926 = 0.32 pp [CMP] | inside COMP-1 only; not separately readable at any floor | 0 marginal | nearly nested in the agreement term (47 of its 55 rows shared) |
 | 8 | **Reviewer entity audit on the locked plan**, after G5 | SLU-F1 | B15, B23, [TRJ], [RPG] | unknown | arm + A/A | ~3.5 (+13.5 %) | the control loop's reach is the binding limit; low expected return until the loop can change answers |
 
 **Multipliers, not gains** (each raises the gain per GPU hour of every row above): the dispatcher slot fill
@@ -458,7 +456,7 @@ decided by interval width is the same reading turned around.
   written or amended. The results ledger is a transcription of verdicts and this note is not a verdict,
   so it adds no ledger heading.
 - `scripts/checks/handoff_freshness_check.py` compares the handoff stamp with the newest
-  `docs/results/*.md`; master already reads stale at `89555832` (the newest results commit is
+  `docs/results/*.md`; master already reads stale at `610cd583` (the newest results commit, `500973ed`, is
   2026-09-27T13:48:43Z against the stamp 2026-09-27T10:28:14Z [HND]), and merging this note moves the
   newest result date again, so the handoff stamp needs its usual refresh after the merge.
 
@@ -561,8 +559,9 @@ is named).
 | DET | `docs/results/2026-09-27-slurp-det-np1-pair-read.md` |
 | RL3 | `docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md` |
 | TPT | `docs/results/2026-09-27-slurp-throughput-baseline-and-levers.md` |
-| AGR | branch fable/agreerec (957091a6): docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md |
-| CMP | branch fable/comp1g5 (3667e01d): docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md and its README.md |
-| KPB | the decision-163 analysis brief (KPROBE m = 24 of 55); read row registered at master d1e2c61a; no read note on master at 89555832 |
+| AGR | `docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md` |
+| CMP | `docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md` |
+| KPB | `docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md (expected_effect_declaration: KPROBE 24 of 55)` |
+| CMR | `docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/README.md` |
 | HND | `docs/handoff/HANDOFF-TO-CHATGPT.md` |
 | G5 | `docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1-preregistration.md` |
