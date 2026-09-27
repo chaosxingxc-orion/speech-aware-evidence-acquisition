@@ -49,11 +49,13 @@ def test_roster_table_has_exactly_the_registered_rosters() -> None:
     # Stage-3 S3-1 construction roster and its one recovery, owner decision 107's
     # devel-remainder expansion plus its 4-row np8 geometry-equivalence preflight, and
     # the final-report test-full roster (owner decisions 99 and 107), whose own coverage
-    # lives in tests/unit/test_slurp_test_full_preprocess_roster.py. The union receipt
+    # lives in tests/unit/test_slurp_test_full_preprocess_roster.py, and the final-report
+    # test-sample-3010 roster (owner decisions 151 and 156), covered by
+    # tests/unit/test_slurp_test_sample_preparations.py. The union receipt
     # still covers the two folds only.
     assert set(module.PREPROCESS_ROSTERS) == {
         "fold-a", "fold-b", "dev2000-added", "stage3-construction-r01", "stage3-construction-r01-recovery",
-        "devel-remainder", "devel-remainder-np8-equivalence-4", "test-full",
+        "devel-remainder", "devel-remainder-np8-equivalence-4", "test-full", "test-sample-3010",
     }
     assert module.FOLD_ROSTER_KEYS == ("fold-a", "fold-b")
 

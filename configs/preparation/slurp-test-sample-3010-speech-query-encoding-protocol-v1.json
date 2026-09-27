@@ -1,0 +1,43 @@
+{
+  "answer_authority": "No answers are generated; these are frozen retrieval-tool query vectors.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/slurp-test-sample-3010-speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry, fallback, or automatic restart.",
+  "cpu_workers": 8,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 3010,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read only the registered speech of the SLURP test SAMPLE carried by SLURP-TEST-SAMPLE-3010-V1. Do not read reference transcripts, task labels, intent/slot annotations, sentences, prior answers, feedback from any sealed SLURP roster, or future turns. This pass produces retrieval vectors over the speech signal alone; the sample's answer surface is untouched and stays reserved for its owner-named one-attempt milestone reads.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "48d9fb336ce99ad1725bf5ca0f74687d37711d685fa9fb4f594b2f1d88344e6d",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-test-sample-3010-speech-query-source-inventory-v1.json",
+    "sha256": "77fce38e3825dff6f4bb409e2c4839c34a6bb41b55735feafab72ffc10e07a19",
+    "schema": "saea-speech-query-source-inventory-v1",
+    "built_by": "scripts/flights/testsample/derive_test_sample_preparations.py inventory (model-free AND media-free: a byte-reproducible restriction of the committed runtime view; source_frames = audio_seconds x sample_rate_hz, exact; no media byte, container header, decoder, encoder, tokenizer or network). scripts/flights/testsample/prep_test_sample.sh writes it create-only as step 2a and refuses unless it hashes to the sha256 above.",
+    "derived_from": {
+      "runtime_view": {
+        "path": "configs/dataset/slurp-speech-native-test-sample-3010.json",
+        "raw_sha256": "854cad007729a2211b2b076d0dfcd6aec90bb00c29bf91594360b8f7df215a4f",
+        "canonical_runtime_view_sha256": "862bef37cf2617e42ac668051612cb9a62e77d38381dcc896d0593d6e119f900"
+      },
+      "roster_receipt": {
+        "path": "docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+        "sha256": "48d9fb336ce99ad1725bf5ca0f74687d37711d685fa9fb4f594b2f1d88344e6d"
+      }
+    },
+    "registration_note": "Registered 2026-09-27 under owner decision 156 (step 2a of preparation 2, zero contacts): 3,010 rows, split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9, audio_seconds_total 8206.436875. The FULL registration's inventory was built by re-hashing media, which a registration of the sample may not do; this one is derived from committed bytes alone and pinned before any contact, and core.preparation_speech_queries re-hashes every media file and re-reads every header against its rows before the first encoder forward. cpu_workers is 8, the ceiling core.speech_preparation_runtime enforces and the standing CPU rule allows."
+  }
+}
