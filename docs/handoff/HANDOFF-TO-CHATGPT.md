@@ -1,13 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-27T10:28:14Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
-`aa69fca9` on `master` (AGREE flying on np4; ROLL-3 sealed and read; test-sample packet preparation running on the CPU sidecar), tree clean. Fable 5.1 is the coordinator again as of this refresh; the
+Last refreshed: 2026-09-27T16:35:24Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
+`fdeb7232` on `master` (GPU PAUSED by the owner at 16:33Z for a Claude Code restart; COMP-1 + G5 and the E41 dry run are flip-ready at `e38602de`), tree clean. Fable 5.1 is the coordinator again as of this refresh; the
 programme now carries an ABSOLUTE target, and the label ceiling says it is reachable.
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
 did, numbers, open items, embargoes, next action, housekeeping — so you can diff it. Freshness is
 enforced by `scripts/checks/handoff_freshness_check.py`: if a newer file exists under `docs/results/`
 than this stamp, the check fails and the staleness is my defect, not yours.
+
+## 0. Read this first: the experiment rules (owner decision 166)
+
+The owner asked me to state our experiment rules to you explicitly. They are in [`docs/handoff/EXPERIMENT-RULES-FOR-CHATGPT.md`](EXPERIMENT-RULES-FOR-CHATGPT.md) -- each rule in the imperative, with the gate that enforces it and the incident that motivated it. Your earlier work was re-read against the corrected instrument (`docs/results/2026-09-27-verdict-reclassification.md`): of your 2026-09-25/26 items, 11 KEEP and 1 KEEP-PROVISIONAL (F10's mechanism counts), none adjusted; your VAR-1 re-read against PLANr became rule 3. Nothing was overturned wholesale.
+
+**Update 2026-09-27 16:40Z.** AGREE read: intent 82.50 -> 85.83, +3.33 [+1.57, +5.09] vs its in-chain A/A, SLU +1.85 [+0.23, +3.47]; retained into COMP-1 (decision 161), pending replication. KPROBE m = 24/55. COMP-1 (AGREE + centroid key + citation, declared 3.23 pp) and G5 share one proven-identical A/A and are flip-ready at `e38602de`; the E41 Earnings dry run too. Analyses landed: mechanism synthesis (every admitted gain = row-matched content to the deciding node; every harm = a form change without content), knowledge audit (K1 intent contrast, K2 value vocabularies, K3 do-not-tag, K4 span rules, K8 card selection frees ~5,400 tok/row), AGREE error sources (remaining 14.17 intent pp: Solver choice 5.37, Perception drop 3.33, catch-all 3.06, retrieval 2.31; 27.1 of 34.8 SLU pp on intent-right rows), A2T/Earnings gap diagnosis (A2T-AA own null h_A2T 1.625, accepted, decision 167). Owner decisions 149-168 recorded: the knowledge wave W1-W4 (164; W2 stopped offline -- no rank guard beats the unguarded term; W4 registered no-harm), the Reviewer optimised by training-free RL (165), the filler family on Fold B then re-seeded rounds (168). Engineering landed: `serving_swap.sh` (host-memory pre-check before any stop, strict readiness, auto-restore), the pre-launch registration gate in the batch driver, the append-only session-receipt store (7 lost receipts restored byte-exactly), the standard paired read `scripts/flights/read_paired_cell.sh`. The GPU is paused by the owner for a Claude Code restart; the resume queue is `/home/chao/saea-queue/queue_e41_comp1.sh`.
 
 ## 1. State
 
