@@ -31,7 +31,7 @@
   },
   "one_factor": "knowledge_stores.slot-contracts: slot-contracts-v2 -> slot-contracts-w4-v1 (release c7bdeee6e0859fbba6bce79cd3d42347a5b74770f7564094e3d3a0edfe003fb0, snapshot content 51d634cfcb398038377feca89d2783f59a705546390839e7cf4dd7d15ad3b9d6) and its two receipts appended to preparation_source_receipts",
   "plan_kind": "fit",
-  "preparation_base_commit": "9558e2af",
+  "preparation_base_commit": "eb450736",
   "prepared_phase_supply": {
     "expected_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
     "note": "the slot-contracts store is not an input to the first-phase (Perception boundary) supply, so the supply the flip mints for the arm must carry the AGREE arm's output digest and the smoke's the AGREE smoke's; a different digest means the boundary channel moved -- stop and report",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "ec078c9f28c23a5f5485c6a1a1a6b05a6bb354b8a8aec86c9bfbeb170210c5bf"
+    "sha256": "717af5d7cc8633a5e89f285a9b2ce013cb6a4208cfaa96fab01dcacf9c0ddd49"
   },
   "purpose": "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score exist for BOTH this arm and the shared in-chain A/A; a verdict against the sealed comparator alone is refused.",

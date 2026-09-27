@@ -8,7 +8,7 @@
     "base_cell": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (owner decision 161): W4 is that fragment with one pin moved",
     "build_script": {
       "path": "scripts/build_slurp_slot_conventions_w4.py",
-      "sha256": "a9ca632797b3ca0d0b60226a6d7bc03a6b9d1bbe6f53c6cd6774706e8669fd5e"
+      "sha256": "4c8c6ed0e77f7efe34e66423393ca53ef4677b3302a8e49094ebed5071d6a5c4"
     },
     "config_proof": {
       "path": "tests/unit/test_w4_config.py",
@@ -28,7 +28,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "ec078c9f28c23a5f5485c6a1a1a6b05a6bb354b8a8aec86c9bfbeb170210c5bf"
+      "sha256": "717af5d7cc8633a5e89f285a9b2ce013cb6a4208cfaa96fab01dcacf9c0ddd49"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/README.md",
@@ -36,9 +36,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/registered-facts-v1.json",
-      "sha256": "590d11e17d5f0eb6e4c0959937d6c055de931842231b0bb1c5780ee01ed2f2ef"
+      "sha256": "378d0d45756bff5ef4cb2851921270419114e416b399a25a0e2cd4a13d944d3a"
     },
-    "registration_base_commit": "9558e2af",
+    "registration_base_commit": "eb450736",
     "store_registration": {
       "path": "docs/readiness/2026-09-27-slurp-slot-contracts-w4-preparation-registration-v1.json",
       "sha256": "ca2bd6cb48849c26ee692c25bf4682683ae63179c8df597cb7931869a1aeaa67"

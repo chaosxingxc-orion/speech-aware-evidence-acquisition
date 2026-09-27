@@ -1,6 +1,6 @@
 # Cell W4 (slot conventions): preregistration
 
-Registered 2026-09-27 at study commit `9558e2af`, before any contact, from the retained AGREE
+Registered 2026-09-27 at study commit `eb450736`, before any contact, from the retained AGREE
 arm fragments by script (decision 58) with one pin moved, under owner decision 164. Development numbers only.
 
 ## The cell

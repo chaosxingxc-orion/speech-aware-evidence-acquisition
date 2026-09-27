@@ -60,7 +60,6 @@ from speech_aware_evidence_acquisition.data.slurp import (  # noqa: E402
     _tokens_by_id,
 )
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash  # noqa: E402
-from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot  # noqa: E402
 from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (  # noqa: E402
     SlotEntity,
     parse_slu_response,

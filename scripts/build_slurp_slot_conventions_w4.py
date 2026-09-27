@@ -58,7 +58,6 @@ import argparse
 import hashlib
 import json
 import os
-import re
 import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
@@ -417,7 +416,7 @@ def render_additions(slot_type: str, vocab: dict, scope: dict, extent: dict) -> 
         if untagged:
             parts.append("usually left untagged: " + ", ".join(
                 f"{r['value']} {r['tagged']}/{r['tagged'] + r['untagged']}" for r in untagged))
-        line = f"Annotation scope (TRAIN, tagged/spoken under this card's intents): " + "; ".join(parts) + "."
+        line = "Annotation scope (TRAIN, tagged/spoken under this card's intents): " + "; ".join(parts) + "."
         if untagged:
             line += " Leave a usually-untagged word out unless it names the specific item requested."
         cues.append(line)

@@ -1720,7 +1720,113 @@
     "m4b_verdicts": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md; docs/results/2026-09-19-slurp-b4b-replicate-verdict.md"
   },
   "fit": {
-    "status": "PENDING_CHECK"
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w4-checks/check-slurp-native-stage3-w4-fold-a-v1.json",
+        "config_hash": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -418,
+            "phase": "perception",
+            "physical_margin_tokens": 2654,
+            "rendered_text_tokens": 21379,
+            "required_window_tokens": 21922,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -281,
+            "phase": "reviewer",
+            "physical_margin_tokens": 2791,
+            "rendered_text_tokens": 21242,
+            "required_window_tokens": 21785,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -221,
+            "phase": "planner",
+            "physical_margin_tokens": 2851,
+            "rendered_text_tokens": 21182,
+            "required_window_tokens": 21725,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -2246,
+            "phase": "solver",
+            "physical_margin_tokens": 826,
+            "rendered_text_tokens": 23207,
+            "required_window_tokens": 23750,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89",
+        "scientific_readiness": {
+          "reason": "Cell W4 registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decision 58) with one pin moved (owner decision 164). Comparator: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, never re-flown, read at the knowledge wave's shared in-chain A/A replicate SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (registered by the coordinator) flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4/w4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the slot store is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      },
+      "smoke": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w4-checks/check-slurp-native-stage3-w4-fold-a-smoke-4-v1.json",
+        "config_hash": "3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -417,
+            "phase": "perception",
+            "physical_margin_tokens": 2655,
+            "rendered_text_tokens": 21378,
+            "required_window_tokens": 21921,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -281,
+            "phase": "reviewer",
+            "physical_margin_tokens": 2791,
+            "rendered_text_tokens": 21242,
+            "required_window_tokens": 21785,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -220,
+            "phase": "planner",
+            "physical_margin_tokens": 2852,
+            "rendered_text_tokens": 21181,
+            "required_window_tokens": 21724,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -2246,
+            "phase": "solver",
+            "physical_margin_tokens": 826,
+            "rendered_text_tokens": 23207,
+            "required_window_tokens": 23750,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c",
+        "scientific_readiness": {
+          "reason": "Four-row form smoke of cell W4, registered before contact on 2026-09-27 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4/w4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the slot store is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
   },
   "fit_statement": "W1 has NOT landed (branch fable/w1 carries no commit beyond master at registration), so W4 is registered to fly ALONE on the AGREE form; it composes with W1 later without change (W4 only extends cards a row already receives). The audit's '226 tokens of headroom' is the PREFLIGHT operational margin measured by core.flight.cli check with its placeholder 4-bytes-per-token counter on the widest representative request; under the armed context_fit_policy compact-or-abstain a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin is recorded and proceeds (the AGREE and COMP-1 cells already read COMPACT_REQUIRED on the Solver), and only a negative physical margin refuses. The binding facts are therefore (a) the check's physical margin after W4 (folded in 'fit'), and (b) the realised requests, projected from the sealed AGREE trace, which stay far below the live budget (token_cost.compaction_projection).",
   "fold_a_offline": {
@@ -1743,7 +1849,7 @@
       "relpath": "analysis/SAEA-SLURP-W4-FOLD-A-OFFLINE-ESTIMATE-V1/estimate-v1.json",
       "script": {
         "relpath": "scripts/analysis/slurp_w4_fold_a_offline_estimate.py",
-        "sha256": "21564c4e5a33af2482d80c24815dd468c67956fe0e173c8304cd9fba8fad6359"
+        "sha256": "7eeaa13e6f6787cbcd053fab484f9be122430d8fa3bac9b8fbd84d7b49313408"
       },
       "sha256": "facd134e195e683945e8a95f0109a30a5d8cd929256aed948a89d26684409a90"
     },
@@ -2052,7 +2158,7 @@
       "conventions-v1.json": "7942d5945b418d6a79d1ee65ee616be8d372d79c5f9a40bce1e6ae397c85ba21",
       "slot-support-w4-construction-roster.json": "f846d100af22bf8ed57d23b28df960571ac40b2e89b1429dad05acfa30ca3ea0"
     },
-    "build_receipt_sha256": "fc7b556fb7956005e8516fb34465d9cc193faa352d74727eae051f4b0cd44d5b",
+    "build_receipt_sha256": "acaad41b652efd87a1e21880373fbbe4a568b186a394e541128cd480458b5da1",
     "changed_cards": [
       "business_name",
       "business_type",
@@ -2137,7 +2243,7 @@
     "source": "the R01-excluded TRAIN exemplar pool size-pool-annotated-exemplars-minus-r01 (8,554 utterances, content hash 6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63); no Fold A, Fold B, DEV or test byte, no flight output and no score read to author a value",
     "total_added_bytes": 7886
   },
-  "study_commit_at_registration": "9558e2af",
+  "study_commit_at_registration": "eb450736",
   "the_item": {
     "cards_chosen_by": "the audit's per-type loss table plus its closed types (as the A3 audit chose M4b's cards); every value and count derived from the pool only",
     "evidence": [

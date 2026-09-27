@@ -61,6 +61,6 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w4, branch fable/w4",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "9558e2af",
+  "study_commit_at_registration": "eb450736",
   "the_question": "With the slot-contract cards extended by TRAIN-mined slot conventions (value vocabulary, annotation scope, span extent) and nothing else changed, does the official pooled SLU-F1 on TRAIN Fold A 1,080 stay within the design's null -- and where does it move -- read against the knowledge wave's shared in-chain A/A?"
 }

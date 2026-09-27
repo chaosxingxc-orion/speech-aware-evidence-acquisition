@@ -1,6 +1,6 @@
 # Cell W4: slot conventions (knowledge wave, owner decision 164)
 
-Registered before contact 2026-09-27 at study commit `9558e2af`; both cells **held**.
+Registered before contact 2026-09-27 at study commit `eb450736`; both cells **held**.
 Nothing here authorises a flight, a flip or an admission entry. Development numbers only (owner decisions 28 and 86).
 
 **What W4 is.** The retained AGREE arm (`SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1`, official SLU-F1 65.16 / intent 85.83 on TRAIN Fold A)
@@ -113,7 +113,16 @@ Solver. the projected widest realised request per phase (the sealed AGREE per-co
 
 W1 has NOT landed (branch fable/w1 carries no commit beyond master at registration), so W4 is registered to fly ALONE on the AGREE form; it composes with W1 later without change (W4 only extends cards a row already receives). The audit's '226 tokens of headroom' is the PREFLIGHT operational margin measured by core.flight.cli check with its placeholder 4-bytes-per-token counter on the widest representative request; under the armed context_fit_policy compact-or-abstain a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin is recorded and proceeds (the AGREE and COMP-1 cells already read COMPACT_REQUIRED on the Solver), and only a negative physical margin refuses. The binding facts are therefore (a) the check's physical margin after W4 (folded in 'fit'), and (b) the realised requests, projected from the sealed AGREE trace, which stay far below the live budget (token_cost.compaction_projection).
 
-PENDING: core.flight.cli check not yet folded in.
+| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |
+| --- | --- | --- | ---: | ---: | ---: |
+| arm | perception | COMPACT_REQUIRED | 21379 | -418 | 2654 |
+| arm | reviewer | COMPACT_REQUIRED | 21242 | -281 | 2791 |
+| arm | planner | COMPACT_REQUIRED | 21182 | -221 | 2851 |
+| arm | solver | COMPACT_REQUIRED | 23207 | -2246 | 826 |
+| smoke | perception | COMPACT_REQUIRED | 21378 | -417 | 2655 |
+| smoke | reviewer | COMPACT_REQUIRED | 21242 | -281 | 2791 |
+| smoke | planner | COMPACT_REQUIRED | 21181 | -220 | 2852 |
+| smoke | solver | COMPACT_REQUIRED | 23207 | -2246 | 826 |
 
 ## Fold A offline estimate (the AGREE arm, types whose W4 card was delivered; counts)
 
