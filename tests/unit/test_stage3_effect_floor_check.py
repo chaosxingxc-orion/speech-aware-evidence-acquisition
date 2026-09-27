@@ -662,6 +662,88 @@ def test_a_harm_margin_at_the_floor_is_admitted(tmp_path: Path) -> None:
     assert data["passed"] is True
 
 
+def test_the_no_harm_floor_is_the_sampling_half_width_alone() -> None:
+    """Owner decision 127 names the harm margins: 0.67 offline, 0.735 same-flight,
+    1.2485 cross-flight at Fold A 1,080, 1.2525 at DEV 1,000 -- the sampling half-widths.
+
+    The rule-3 admission bar (2.5 pp at 1,080) is what a cross-flight GAIN must exceed over
+    its replicate's offset; a no-harm cell claims no gain, so the bar is not its floor. The
+    benefit floor is unchanged.
+    """
+
+    design = "cross-flight-with-in-chain-replicate"
+    assert gate.floor_for(design, 1080, purpose="harm")[0] == pytest.approx(1.2485)
+    assert gate.floor_for(design, 1000, purpose="harm")[0] == pytest.approx(1.2525)
+    assert gate.floor_for(design, 625, purpose="harm")[0] == pytest.approx(1.474)
+    assert gate.floor_for(design, 1080)[0] == pytest.approx(2.5)
+    assert gate.floor_for(design, 1080, purpose="benefit")[0] == pytest.approx(2.5)
+    assert gate.floor_for("offline-sealed-pool", 625, purpose="harm")[0] == pytest.approx(0.67)
+    assert gate.floor_for("same-flight-paired", 200, purpose="harm")[0] == pytest.approx(0.735)
+    assert gate.floor_for("form-proof", 4, purpose="harm")[0] is None
+    assert gate.floor_for("cross-flight-no-replicate", 625, purpose="harm")[0] == math.inf
+    assert "not applied" in " ".join(gate.floor_for(design, 1080, purpose="harm")[1])
+    with pytest.raises(ValueError):
+        gate.floor_for(design, 1080, purpose="gain")
+
+
+def _cross_flight_no_harm(**overrides) -> dict:
+    block = {
+        "measurement_design": "cross-flight-with-in-chain-replicate",
+        "expected_effect_pp": 0.0,
+        "rows": 1080,
+        "claims_benefit": False,
+        "admission": "no-harm",
+        "replicate_run_id": "SAEA-SYNTHETIC-AA-FOLD-A-V1",
+    }
+    block.update(overrides)
+    return _declaration(**block)
+
+
+def test_a_cross_flight_no_harm_margin_at_the_fold_a_half_width_is_admitted(
+    tmp_path: Path,
+) -> None:
+    """Cell G5's own declaration: harm_margin_pp 1.2485 at n = 1,080 with an in-chain replicate."""
+
+    _build(
+        tmp_path,
+        rows=1080,
+        declaration=_cross_flight_no_harm(harm_margin_pp=1.2485),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == []
+    assert data["passed"] is True
+
+
+def test_a_cross_flight_no_harm_margin_under_the_half_width_is_refused_at_the_half_width(
+    tmp_path: Path,
+) -> None:
+    _build(
+        tmp_path,
+        rows=1080,
+        declaration=_cross_flight_no_harm(harm_margin_pp=1.0),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["harm-margin-below-floor"]
+    message = data["findings"][0]["message"]
+    assert "no-harm floor 1.2485 pp" in message
+    assert "2.5000" not in message
+    assert data["passed"] is False
+
+
+def test_a_cross_flight_no_harm_cell_still_owes_its_in_chain_replicate(tmp_path: Path) -> None:
+    _build(
+        tmp_path,
+        rows=1080,
+        declaration=_cross_flight_no_harm(harm_margin_pp=1.2485, replicate_run_id=None),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert "missing-in-chain-replicate" in _kinds(data)
+    assert data["passed"] is False
+
+
 def test_a_no_harm_admission_may_not_also_claim_a_benefit(tmp_path: Path) -> None:
     _build(
         tmp_path,
