@@ -1,0 +1,101 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/wave/wave_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "daca664193174fa81f5152ad5ffd7f5046102df58ad68ca64b97640a016e7ef6"
+    },
+    "base_cell": "the retained AGREE arm (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, decision 161): the A/A is that fragment re-flown",
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "79885109a5219a8818f07489c136f71a2177ac58523b6b33ecebbea552d821b0"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "9d899f2fba641d73728835f0d2f0d6cd598e0c2b814e6172c10f29792a53fef3"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/registered-facts-v1.json",
+      "sha256": "dc35cc20aad1b51252fa57ddf7a66c89e83df6b3d8d16e194c5c52eb5beb31dc"
+    },
+    "registration_base_commit": "8cb78788ad74582ac769b9bb7e1631bf31148c56",
+    "shared_aa_proof": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/shared-aa-proof-v1.json",
+      "sha256": "d72782951ae104ba5bf587fbdfc4c5a9e10cc74cebdd9eeac52960a2764227b2"
+    }
+  },
+  "authorization_basis": "Owner decision 164 (the knowledge wave, one shared in-chain A/A of the AGREE arm's own bytes), 160 (the shared-A/A precedent), 161 (AGREE retained); standing: 25, 28, 77, 86, 101, and docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "expected_contacts_per_1080_row_cell": 4385,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "cell_kind": "Stage-3 in-chain A/A replicate (label none): the retained AGREE arm's own bytes, the shared within-chain null of the knowledge wave's arms W1, W3 and W4.",
+  "claim_boundary": "No claim of any kind: an instrument cell.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly the knowledge wave's shared in-chain A/A in step 1 of the wave chain beside the W1 arm, W3 and W4 following in the same chain, each arm read at it.",
+  "decision_id": "slurp-stage3-wave1-aa-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts. A failed A/A stops the wave chain: no wave arm is read without it.",
+  "not_authorized": [
+    "any flight before the cell is flipped and the receipt is minted",
+    "flying the A/A outside the wave chain",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change against the AGREE arm's bytes"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "partition": "TRAIN Fold A 1,080",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "minted by scripts/flights/repin_cell.py at the flip (item E16); expected output digest eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "aa": {
+      "composed_config": "6e88ca60de9f81530d261d6afe8c71d602836c5d622fcbf7e32ae15e95888b20",
+      "protocol": "19a9058d3d4b71e343dd4b74d54c71f862398314f160af36a7730e9a4428e387"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "note": "the resident SLURP np4 session; the flight attaches only",
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
