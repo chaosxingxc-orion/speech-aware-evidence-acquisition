@@ -1,0 +1,4109 @@
+{
+  "audio_seconds_basis": "exact wav header value (frames / sample rate), measured from the file here",
+  "audio_seconds_longest_item": 654.635667,
+  "audio_seconds_shortest_item": 0.696875,
+  "audio_seconds_total": 2760.438042,
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md rows 67, 68, 71, 76a and 139 (the paired 400-row subset of the sealed union-4000, drawn once at seed 20260921; A2T-NULL first; the sealed direct rows as the comparator; the own null on the GPU queue); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md rules 3 and 6",
+  "carrier": "audio2tool",
+  "contacts": {
+    "audio": "wav bytes hashed and wav headers read for duration; no decoding",
+    "model": "none",
+    "network": "none",
+    "scorer": "none"
+  },
+  "count": 400,
+  "coverage": {
+    "d1_base_ids": 6,
+    "d1_ids_outside_the_closure": 0,
+    "d1_media_supplement_sha256": "b94439af4f51d648d8969f6ff876d3a24ccd49836bac011dc8f2bb0c9364ec59",
+    "d1_media_supplement_to_configure": "receipts/artifacts/d1-a2t-org1-union-4000.json",
+    "d1_union_supplement_ids": 394,
+    "new_d1_media_supplement_required": false,
+    "new_probe_sample_view_required": false,
+    "probe_sample_ids_covered": 400,
+    "probe_sample_ids_uncovered": 0,
+    "probe_sample_receipts": {
+      "a2t-tier1-official-population-500": 48,
+      "a2t-tier258-official-population-1500": 145,
+      "a2t-tier3467-official-population-2000": 196,
+      "r1-audio2tool-sample": 6,
+      "select-fill-agentloop-104-postseal-scoring": 3,
+      "semantic-agentloop-104-postseal-scoring": 2
+    },
+    "why_no_new_supplement": "contracts.gate_media_identity accepts exactly one supplement path per run and verifies only the samples the binding names, so the paired cells configure the union's own supplement; a subset copy would duplicate already-bound identities for no gate the union supplement does not already close",
+    "why_no_probe_view": "every drawn id already resolves inside data.audio2tool's frozen-receipt universe; data.audio2tool._resolve_items refuses a sample id two probe-sample receipts claim, so an additive view for this roster would break the loader outright rather than add anything"
+  },
+  "design": "The PAIRED 400 (owner decisions 67 and 71), roster_role 'evaluation': a 400-row tier-stratified subset (50 per tier over all eight tiers) of the sealed A2T-ORG1-UNION-4000, drawn ONCE by core.roster.freeze_roster at seed 20260921. Every Audio2Tool engineering cell of the current programme -- A2T-NULL (the carrier's own request-identical null, decision 68, flown first), A2T-NOTOOL, A2T-IDX, A2T-IDXT and the decision-76a direct-versus-system comparison -- reads on this roster, in both the natural-mixture and the equal-tier weighting, against the sealed union-4000 outputs of the same sample ids. The full 4,000 flies only for an admitted form.",
+  "domain_counts": {
+    "smart_car": 20,
+    "smart_home": 306,
+    "wearables": 74
+  },
+  "exposure_row": "SAEA-SN-MF-A2T-PAIRED-400-ROSTER-V1",
+  "flight_split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a",
+  "flight_split_identity_hash_convention": "data.splits.split_identity_hash(prefixed('audio2tool', sample_ids)) over audio2tool/<tier>:<id6> -- the value core.flight.FlightRuntime.preflight computes at flight time, and the value the frozen construction roster receipt beside this one already carries as its own split_identity_hash",
+  "generator": "scripts/build_a2t_paired_400_roster.py",
+  "items": [
+    {
+      "audio_seconds": 2.616875,
+      "audio_sha256": "e6eb82285178a5cc7f942228493cacc7a3aca609f8c1cb7e3f4dbe4fb864f258",
+      "id": 69,
+      "key": "audio2tool:tier1_direct:000069",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00035/speaker_13_ecapa_speaker_22787.wav",
+      "query_idx": 2134,
+      "sample_id": "tier1_direct:000069",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.336875,
+      "audio_sha256": "99bb8e0eafb31dfb76c8b628cb1fe761507afc418bf959a277290aeb862dea61",
+      "id": 85,
+      "key": "audio2tool:tier1_direct:000085",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00043/speaker_05_ecapa_speaker_34316.wav",
+      "query_idx": 2142,
+      "sample_id": "tier1_direct:000085",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.396083333,
+      "audio_sha256": "ac45bb02cb4db0e4d90288ddd4d83744235f92d3b943c954e7738f99689b5121",
+      "id": 119,
+      "key": "audio2tool:tier1_direct:000119",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00060/speaker_00_voxpopuli_speaker_124702.wav",
+      "query_idx": 2159,
+      "sample_id": "tier1_direct:000119",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "df303260d4e0ee8a91f1f5dde6e0bc163ca507788492f2de42a108b5719b8fc0",
+      "id": 431,
+      "key": "audio2tool:tier1_direct:000431",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00216/speaker_10_ecapa_speaker_20623.wav",
+      "query_idx": 2315,
+      "sample_id": "tier1_direct:000431",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.234166667,
+      "audio_sha256": "90620d5435ea97d0d1ff8d6461ee97738f617b11d10a385078dd63faa55ee916",
+      "id": 561,
+      "key": "audio2tool:tier1_direct:000561",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00281/speaker_01_voxpopuli_speaker_127096.wav",
+      "query_idx": 2380,
+      "sample_id": "tier1_direct:000561",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.176875,
+      "audio_sha256": "ffa8248b38ddd84beea7db6c4a81c18ee2fa6fd974ecdf9eecf61bc1abadfddc",
+      "id": 639,
+      "key": "audio2tool:tier1_direct:000639",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00320/speaker_08_3dspeaker_speaker_3D_SPK_09068.wav",
+      "query_idx": 2419,
+      "sample_id": "tier1_direct:000639",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.256875,
+      "audio_sha256": "39e08236983f688b628a685db66b934ca82b8a9b314066b3207d8cb1066f3dae",
+      "id": 749,
+      "key": "audio2tool:tier1_direct:000749",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00375/speaker_07_ecapa_speaker_37288.wav",
+      "query_idx": 2474,
+      "sample_id": "tier1_direct:000749",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "audio_sha256": "2b76ed051236c1b5479ba1c9b359f4ccee3a18e33699b02cb1b48e2e6d8d51ca",
+      "id": 801,
+      "key": "audio2tool:tier1_direct:000801",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00401/speaker_04_3dspeaker_speaker_3D_SPK_00165.wav",
+      "query_idx": 2500,
+      "sample_id": "tier1_direct:000801",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.313958333,
+      "audio_sha256": "57d79ad1b95a969833c69ecba4b85bf1d9fa163e0c0c95fda7ad03b394863380",
+      "id": 921,
+      "key": "audio2tool:tier1_direct:000921",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00461/speaker_01_voxpopuli_speaker_124879.wav",
+      "query_idx": 2560,
+      "sample_id": "tier1_direct:000921",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "f4cb409cf33da56acef9b7380152f22d7ad82c945eff43182c67cee8252a8dcf",
+      "id": 969,
+      "key": "audio2tool:tier1_direct:000969",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00485/speaker_05_3dspeaker_speaker_3D_SPK_08647.wav",
+      "query_idx": 2584,
+      "sample_id": "tier1_direct:000969",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.456875,
+      "audio_sha256": "6fd56b49f3baa1b76e5e16679a889b0621af1a86ecbd30de7f0fa08c6b3543cb",
+      "id": 1029,
+      "key": "audio2tool:tier1_direct:001029",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00515/speaker_08_3dspeaker_speaker_3D_SPK_00481.wav",
+      "query_idx": 2614,
+      "sample_id": "tier1_direct:001029",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "audio_sha256": "7e733fe0270b7778a00db656e2fe0bbdfc22522d89c6939bfb40a94f8ccb622b",
+      "id": 1073,
+      "key": "audio2tool:tier1_direct:001073",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00537/speaker_07_ecapa_speaker_35733.wav",
+      "query_idx": 2636,
+      "sample_id": "tier1_direct:001073",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.456875,
+      "audio_sha256": "4cc32ebd493294549a36c92ff36a70a9922c0d482c51da851576fff16d698066",
+      "id": 1391,
+      "key": "audio2tool:tier1_direct:001391",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00696/speaker_16_ecapa_speaker_13758.wav",
+      "query_idx": 2795,
+      "sample_id": "tier1_direct:001391",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "audio_sha256": "492d854a60acd2a9f1869a377c30e16f5474e6b4288adf814fea406a752d3fef",
+      "id": 1439,
+      "key": "audio2tool:tier1_direct:001439",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00720/speaker_22_yodas_speaker_qlZUlplKVQY.wav",
+      "query_idx": 2819,
+      "sample_id": "tier1_direct:001439",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.416875,
+      "audio_sha256": "221dc58b21852afc8a3308e0622e8ac44724b22772602c48f205750cfeefc408",
+      "id": 1471,
+      "key": "audio2tool:tier1_direct:001471",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00736/speaker_10_ecapa_speaker_45523.wav",
+      "query_idx": 2835,
+      "sample_id": "tier1_direct:001471",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "ea9152643d6c03bf81fa9df2500dcce9e9fd0a2c17d766154d5395ee130c5f1e",
+      "id": 1507,
+      "key": "audio2tool:tier1_direct:001507",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00754/speaker_05_ecapa_speaker_42827.wav",
+      "query_idx": 2853,
+      "sample_id": "tier1_direct:001507",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "9cd16233c0f1e631540666eb211df6780b2e13dac52ad0f1885d389f6b810238",
+      "id": 1525,
+      "key": "audio2tool:tier1_direct:001525",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00763/speaker_13_ecapa_speaker_34048.wav",
+      "query_idx": 2862,
+      "sample_id": "tier1_direct:001525",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.236375,
+      "audio_sha256": "15abffc13dffddd9fc3437c461e00ea77050022afd01660334da27ad13ed5e1e",
+      "id": 1625,
+      "key": "audio2tool:tier1_direct:001625",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00813/speaker_01_voxpopuli_speaker_39717.wav",
+      "query_idx": 2912,
+      "sample_id": "tier1_direct:001625",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "audio_sha256": "e5b1a28fc77d7c0c81b04a163ae8eca2f4d3225b1cda32272d9ca5cf15dcff92",
+      "id": 1631,
+      "key": "audio2tool:tier1_direct:001631",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00816/speaker_04_3dspeaker_speaker_3D_SPK_00165.wav",
+      "query_idx": 2915,
+      "sample_id": "tier1_direct:001631",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.096875,
+      "audio_sha256": "85eb254c8849b86eab8105e415760704733282419e5d20a70a38b966a35356ac",
+      "id": 1637,
+      "key": "audio2tool:tier1_direct:001637",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00819/speaker_04_3dspeaker_speaker_3D_SPK_04060.wav",
+      "query_idx": 2918,
+      "sample_id": "tier1_direct:001637",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "330ee0d3b264566509dc2cbfdb27d134c02871642ae88aa703373d995a375a85",
+      "id": 1707,
+      "key": "audio2tool:tier1_direct:001707",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00854/speaker_07_ecapa_speaker_37859.wav",
+      "query_idx": 2953,
+      "sample_id": "tier1_direct:001707",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.416875,
+      "audio_sha256": "ae52d7b4e073d7cd97119e1439bed09783fb71871a2fe97107b2fa46db9b5318",
+      "id": 1803,
+      "key": "audio2tool:tier1_direct:001803",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00902/speaker_16_ecapa_speaker_6450.wav",
+      "query_idx": 3001,
+      "sample_id": "tier1_direct:001803",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "audio_sha256": "046a3f15281ffbb867e6a35a9bbddc77f04b5f8292edc92f6a019b08d8c75fd4",
+      "id": 1833,
+      "key": "audio2tool:tier1_direct:001833",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00917/speaker_15_ecapa_speaker_30411.wav",
+      "query_idx": 3016,
+      "sample_id": "tier1_direct:001833",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "audio_sha256": "a3cfb06108c9632283e12c3726c4d7d251897e3f4e6aa97203092dfa8c7c03f8",
+      "id": 2015,
+      "key": "audio2tool:tier1_direct:002015",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01008/speaker_07_ecapa_speaker_35733.wav",
+      "query_idx": 3107,
+      "sample_id": "tier1_direct:002015",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "audio_sha256": "002ce71ed16b9cca99af7561cb4b6a496a34b8112f2d11ed309d1f8283bb8caf",
+      "id": 2109,
+      "key": "audio2tool:tier1_direct:002109",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01055/speaker_19_yodas_speaker_Ktog0P985wc.wav",
+      "query_idx": 3154,
+      "sample_id": "tier1_direct:002109",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.336875,
+      "audio_sha256": "8d92bcdbaf4352c2940ebd97a8f037619abaf8874f58511e8a339a67201f8bb3",
+      "id": 2113,
+      "key": "audio2tool:tier1_direct:002113",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01057/speaker_13_yodas_speaker__SgaT_tZbXQ.wav",
+      "query_idx": 3156,
+      "sample_id": "tier1_direct:002113",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.256875,
+      "audio_sha256": "3e492cd82762a8c6ee608307e690979829709cb2dec02fb981ccd166b4870da0",
+      "id": 2119,
+      "key": "audio2tool:tier1_direct:002119",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01060/speaker_04_ecapa_speaker_28775.wav",
+      "query_idx": 3159,
+      "sample_id": "tier1_direct:002119",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "audio_sha256": "818a31aed9ce579ac0fe22ce769b531cba3849249445ecab63dd6cfcf9057a12",
+      "id": 2233,
+      "key": "audio2tool:tier1_direct:002233",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01117/speaker_12_ecapa_speaker_18923.wav",
+      "query_idx": 3216,
+      "sample_id": "tier1_direct:002233",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.277541667,
+      "audio_sha256": "c41c3d528f0f9c7b7cf5fe0023cd42286ba74047ac0f35cbc2b856c83c11f709",
+      "id": 2251,
+      "key": "audio2tool:tier1_direct:002251",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01126/speaker_02_voxpopuli_speaker_23691.wav",
+      "query_idx": 3225,
+      "sample_id": "tier1_direct:002251",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "a8a43fff5128283b99af7181630f3ae22cfcffb18408692ddb69b37922c778a7",
+      "id": 2303,
+      "key": "audio2tool:tier1_direct:002303",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01152/speaker_17_yodas_speaker_YO02VkkXUBu.wav",
+      "query_idx": 3251,
+      "sample_id": "tier1_direct:002303",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "28778685e7a36363ff43554b7575151ea2d023167c550687e76e81173c2994a0",
+      "id": 2371,
+      "key": "audio2tool:tier1_direct:002371",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01186/speaker_08_ecapa_speaker_37770.wav",
+      "query_idx": 3285,
+      "sample_id": "tier1_direct:002371",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "d509cf2206a97f54e4b4671e0469a90fc12f896310cbfd8dd70625925730ff5c",
+      "id": 2393,
+      "key": "audio2tool:tier1_direct:002393",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01197/speaker_17_yodas_speaker_ZSORyLdbqJu.wav",
+      "query_idx": 3296,
+      "sample_id": "tier1_direct:002393",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "audio_sha256": "7bab969814516ce414f2d0dff72614e972bf15b11176a4f7ccb94143816026f4",
+      "id": 2463,
+      "key": "audio2tool:tier1_direct:002463",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01232/speaker_11_ecapa_speaker_21661.wav",
+      "query_idx": 3331,
+      "sample_id": "tier1_direct:002463",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.256875,
+      "audio_sha256": "68de24951452fc0b3adf1e36131c5c0d8be11261d83d98bd11988cda7a268ee0",
+      "id": 2499,
+      "key": "audio2tool:tier1_direct:002499",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01250/speaker_04_ecapa_speaker_35733.wav",
+      "query_idx": 3349,
+      "sample_id": "tier1_direct:002499",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.1955,
+      "audio_sha256": "f751ca74520ee3981362b89a1a6963b8e4f31656fb24a455be2804f9b2580400",
+      "id": 2737,
+      "key": "audio2tool:tier1_direct:002737",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01369/speaker_00_voxpopuli_speaker_4267.wav",
+      "query_idx": 3468,
+      "sample_id": "tier1_direct:002737",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.256875,
+      "audio_sha256": "8dd19ef17b2ae4aefa62f1fffe7f09457d94df9b985e5df3f2c9e9d1677abf8c",
+      "id": 2913,
+      "key": "audio2tool:tier1_direct:002913",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01457/speaker_17_yodas_speaker_MgdL5ixcxmI.wav",
+      "query_idx": 3856,
+      "sample_id": "tier1_direct:002913",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "audio_sha256": "ef203c4fe01df46c3c51d6b4087343dca6f86c07eb1bf138342846f169fcab6c",
+      "id": 3149,
+      "key": "audio2tool:tier1_direct:003149",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01575/speaker_18_yodas_speaker_TYL0TKViy0M.wav",
+      "query_idx": 4424,
+      "sample_id": "tier1_direct:003149",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.472791667,
+      "audio_sha256": "3f95dc951ecc42b89cc97627c2c46f960034b568f67665a168969dded3804738",
+      "id": 3157,
+      "key": "audio2tool:tier1_direct:003157",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01579/speaker_00_voxpopuli_speaker_112760.wav",
+      "query_idx": 4428,
+      "sample_id": "tier1_direct:003157",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "1f12349641b535c26f95647baf269ca32bb34b5137d7d2ee07c2555adf7d8460",
+      "id": 3189,
+      "key": "audio2tool:tier1_direct:003189",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01595/speaker_14_yodas_speaker_tEOYwwoaiY8.wav",
+      "query_idx": 3544,
+      "sample_id": "tier1_direct:003189",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.096875,
+      "audio_sha256": "645f2735b5d2d55409dcf04557d57d7bc1a03d2cf72d3a3dd982fe377abd8c61",
+      "id": 3225,
+      "key": "audio2tool:tier1_direct:003225",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01613/speaker_13_ecapa_speaker_1143.wav",
+      "query_idx": 3562,
+      "sample_id": "tier1_direct:003225",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.517041667,
+      "audio_sha256": "71d9888dc6bb25b4dcdc22e358e510ea2d2818d477051ff7559c8e86f1748e4c",
+      "id": 3231,
+      "key": "audio2tool:tier1_direct:003231",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01616/speaker_00_voxpopuli_speaker_96710.wav",
+      "query_idx": 3565,
+      "sample_id": "tier1_direct:003231",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.776875,
+      "audio_sha256": "c9f58bd96ae0c0a95ce5b8af5c692844f422c4628a84c4513b6b9811b96b19a5",
+      "id": 3475,
+      "key": "audio2tool:tier1_direct:003475",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01738/speaker_16_ecapa_speaker_6450.wav",
+      "query_idx": 3687,
+      "sample_id": "tier1_direct:003475",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.096875,
+      "audio_sha256": "dc23691e07d2a53717a448246f387ec5e6bd1109a7beed744a0ec7a21dd3e9b1",
+      "id": 3511,
+      "key": "audio2tool:tier1_direct:003511",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01756/speaker_16_yodas_speaker_sMIEu7ZVzBE.wav",
+      "query_idx": 3705,
+      "sample_id": "tier1_direct:003511",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "audio_sha256": "f256e51f17c1449fbdbead04ca4bf623bd8ec5982feb19c2b22d80e3074d91b1",
+      "id": 3525,
+      "key": "audio2tool:tier1_direct:003525",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01763/speaker_04_3dspeaker_speaker_3D_SPK_01992.wav",
+      "query_idx": 3712,
+      "sample_id": "tier1_direct:003525",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "2f1612f0a1f17af57fd9afe41eeed839b96089cd607a4479a0ab1937ad869351",
+      "id": 3781,
+      "key": "audio2tool:tier1_direct:003781",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01891/speaker_03_3dspeaker_speaker_3D_SPK_07983.wav",
+      "query_idx": 4470,
+      "sample_id": "tier1_direct:003781",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.596791667,
+      "audio_sha256": "f91daa9b980f978cf3217700767fc28dc780cc90a52f3bfb292d31e011e82b47",
+      "id": 3797,
+      "key": "audio2tool:tier1_direct:003797",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01899/speaker_02_voxpopuli_speaker_2054.wav",
+      "query_idx": 4478,
+      "sample_id": "tier1_direct:003797",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.696875,
+      "audio_sha256": "9430a60b5092272cbff8de7e722a96f13bc02fee97f0c695d51d004786fee8a3",
+      "id": 3903,
+      "key": "audio2tool:tier1_direct:003903",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01952/speaker_06_ecapa_speaker_6652.wav",
+      "query_idx": 4531,
+      "sample_id": "tier1_direct:003903",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.913375,
+      "audio_sha256": "aed6670782f3360eb81bd2fb08f8a47386ef535246a08b44b4b532f9f78a513e",
+      "id": 4095,
+      "key": "audio2tool:tier1_direct:004095",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_02048/speaker_01_voxpopuli_speaker_2119.wav",
+      "query_idx": 1091,
+      "sample_id": "tier1_direct:004095",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "audio_sha256": "6bdc2b9dd5ff12ae22da1559d7d8b2ac4056e94dd999715541187a5d98f2975c",
+      "id": 4255,
+      "key": "audio2tool:tier1_direct:004255",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_02128/speaker_01_3dspeaker_speaker_3D_SPK_08647.wav",
+      "query_idx": 4042,
+      "sample_id": "tier1_direct:004255",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "audio_sha256": "bb8c94c63a93eefa5fe0910e686a8dc681d8fd9f8428f3861363dbbc96c3dbda",
+      "id": 4273,
+      "key": "audio2tool:tier1_direct:004273",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_02137/speaker_12_yodas_speaker_Z5lB5s5Y1r8.wav",
+      "query_idx": 4174,
+      "sample_id": "tier1_direct:004273",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "audio_sha256": "d1213c69fcf959981cf245082efa5d2a52eb32dd2f6fbd5e0370de2295534170",
+      "id": 5,
+      "key": "audio2tool:tier2_parametric:000005",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00003/speaker_00_3dspeaker_speaker_3D_SPK_08649.wav",
+      "query_idx": 2152,
+      "sample_id": "tier2_parametric:000005",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "audio_sha256": "a2f176a164db0065aad41113796b7b212eed3c3e8220f420bb98d7b1f3d07be9",
+      "id": 95,
+      "key": "audio2tool:tier2_parametric:000095",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00048/speaker_01_ecapa_speaker_4767.wav",
+      "query_idx": 2197,
+      "sample_id": "tier2_parametric:000095",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "audio_sha256": "35e3fe654a6ebb7bdc45d28cf84d470852e10a11c91d335bba2774b208530a75",
+      "id": 149,
+      "key": "audio2tool:tier2_parametric:000149",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00075/speaker_01_yodas_speaker_TYL0TKViy0M.wav",
+      "query_idx": 2274,
+      "sample_id": "tier2_parametric:000149",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.416875,
+      "audio_sha256": "36e90c5682fa977710a50f088e8892bf85fef054856252f8e99f52f50ba45a3e",
+      "id": 203,
+      "key": "audio2tool:tier2_parametric:000203",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00102/speaker_02_ecapa_speaker_42252.wav",
+      "query_idx": 2351,
+      "sample_id": "tier2_parametric:000203",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.336875,
+      "audio_sha256": "ef34853d71a84dd468431dedd28628f590f3173f84b6e6bed2cd4f212623d6a5",
+      "id": 427,
+      "key": "audio2tool:tier2_parametric:000427",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00214/speaker_01_3dspeaker_speaker_3D_SPK_00332.wav",
+      "query_idx": 2513,
+      "sample_id": "tier2_parametric:000427",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.456875,
+      "audio_sha256": "c7962fe242537b175d9028ce08c716004cb2f94885ad1cd7d67d21d8e6e72c6d",
+      "id": 455,
+      "key": "audio2tool:tier2_parametric:000455",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00228/speaker_00_ecapa_speaker_3578.wav",
+      "query_idx": 2527,
+      "sample_id": "tier2_parametric:000455",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "audio_sha256": "2a848fd5f57866bab959a413ded15b3514c6607890bd5dd010a341abbb22ae39",
+      "id": 543,
+      "key": "audio2tool:tier2_parametric:000543",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00272/speaker_02_ecapa_speaker_6754.wav",
+      "query_idx": 2571,
+      "sample_id": "tier2_parametric:000543",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "audio_sha256": "963b64db88d8fdc1eaf86e69f1f8de19bb43c7a5e469428f7c2e2541ee29e106",
+      "id": 857,
+      "key": "audio2tool:tier2_parametric:000857",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00429/speaker_01_ecapa_speaker_34810.wav",
+      "query_idx": 2828,
+      "sample_id": "tier2_parametric:000857",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "audio_sha256": "2e52c8f356ff807f09bd7c4a2f3e4a41a655569be97315e2572101956a4a91e1",
+      "id": 899,
+      "key": "audio2tool:tier2_parametric:000899",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00450/speaker_00_voxpopuli_speaker_1403.wav",
+      "query_idx": 2849,
+      "sample_id": "tier2_parametric:000899",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "audio_sha256": "b38e96347a10f9a3ebb9c655b9eaf09d7743baa132087bf28ec083ccb3d09829",
+      "id": 1123,
+      "key": "audio2tool:tier2_parametric:001123",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00562/speaker_01_ecapa_speaker_4257.wav",
+      "query_idx": 2961,
+      "sample_id": "tier2_parametric:001123",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "audio_sha256": "3e57d3d22df7da13bea2505f1e9bf2554e72034391e8427f0c4648d097d8fda5",
+      "id": 1131,
+      "key": "audio2tool:tier2_parametric:001131",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00566/speaker_00_ecapa_speaker_30578.wav",
+      "query_idx": 2965,
+      "sample_id": "tier2_parametric:001131",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 0.696875,
+      "audio_sha256": "e2024c81c27a067015de1bd019d2e2371895f772fa60036a1a5514bd8a82a7a6",
+      "id": 1249,
+      "key": "audio2tool:tier2_parametric:001249",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00625/speaker_00_voxpopuli_speaker_39318.wav",
+      "query_idx": 3024,
+      "sample_id": "tier2_parametric:001249",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "audio_sha256": "1239c56b0ee8888ab93b00aa456bdf2b91d66a7b84e6bbf926ed76d180398461",
+      "id": 1307,
+      "key": "audio2tool:tier2_parametric:001307",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00654/speaker_02_ecapa_speaker_18923.wav",
+      "query_idx": 3053,
+      "sample_id": "tier2_parametric:001307",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "audio_sha256": "4af891c5d485919054946dfed8c47cbdf409b56658259f41d1f4523c83ea3d97",
+      "id": 1347,
+      "key": "audio2tool:tier2_parametric:001347",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00674/speaker_02_yodas_speaker_JgG2sdwiDkk.wav",
+      "query_idx": 3073,
+      "sample_id": "tier2_parametric:001347",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "audio_sha256": "67be3d815fe7009f58815b9ef1a8c3e7877aec84caeecfab84848e7d6366392a",
+      "id": 1495,
+      "key": "audio2tool:tier2_parametric:001495",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00748/speaker_00_ecapa_speaker_20197.wav",
+      "query_idx": 3147,
+      "sample_id": "tier2_parametric:001495",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "audio_sha256": "cd13dc125718236bba774201d4d4f71e32b9d62cb756d2ab7e120afff01682c3",
+      "id": 1973,
+      "key": "audio2tool:tier2_parametric:001973",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_00987/speaker_00_ecapa_speaker_28775.wav",
+      "query_idx": 3386,
+      "sample_id": "tier2_parametric:001973",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "audio_sha256": "62ac9947d414073980b28fe173c866a38971b71f54e7dcc1cbd344a4be41f9b9",
+      "id": 2175,
+      "key": "audio2tool:tier2_parametric:002175",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01088/speaker_01_yodas_speaker_EhzkV2p3ZhI.wav",
+      "query_idx": 3487,
+      "sample_id": "tier2_parametric:002175",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "fc1041672446fb89ce147d69d017e6c918589b02005744bf8732cb4c15db1ed2",
+      "id": 2319,
+      "key": "audio2tool:tier2_parametric:002319",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01160/speaker_01_yodas_speaker_IaSD5peeA8I.wav",
+      "query_idx": 3559,
+      "sample_id": "tier2_parametric:002319",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "audio_sha256": "e6cea81b03dc5ea31ea5c6074246c2d98a3fdee89cfeb511afb3ca17bb2d87fa",
+      "id": 2403,
+      "key": "audio2tool:tier2_parametric:002403",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01202/speaker_00_ecapa_speaker_7572.wav",
+      "query_idx": 3601,
+      "sample_id": "tier2_parametric:002403",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.696875,
+      "audio_sha256": "5abed2dff02286de3f868bba242ea5a7e84a7c300d082a8775afa2d3aa546521",
+      "id": 2523,
+      "key": "audio2tool:tier2_parametric:002523",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01262/speaker_00_voxpopuli_speaker_124879.wav",
+      "query_idx": 3661,
+      "sample_id": "tier2_parametric:002523",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "audio_sha256": "57cd7c75e82804d76d411684acaf8afbda25deed5c9ca8b43e83036bc100bc2e",
+      "id": 2767,
+      "key": "audio2tool:tier2_parametric:002767",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01384/speaker_00_voxpopuli_speaker_112760.wav",
+      "query_idx": 3783,
+      "sample_id": "tier2_parametric:002767",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.376875,
+      "audio_sha256": "e28bb408d0a90bd0ff685b63e7f3cf5ed2ca74333cc5ce9d4cb80cbd4a623db3",
+      "id": 2835,
+      "key": "audio2tool:tier2_parametric:002835",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01418/speaker_00_voxpopuli_speaker_204332.wav",
+      "query_idx": 3817,
+      "sample_id": "tier2_parametric:002835",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "audio_sha256": "b554edcc2d4db8cdb8efa23a56eefa0d8c51635144c34efeb910b427f63e0d04",
+      "id": 3063,
+      "key": "audio2tool:tier2_parametric:003063",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01532/speaker_01_ecapa_speaker_42252.wav",
+      "query_idx": 3931,
+      "sample_id": "tier2_parametric:003063",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.616875,
+      "audio_sha256": "0150de664bb494e5f9582f87741e3cbaa1449b6a46ddad042c55afc2f9c744be",
+      "id": 3273,
+      "key": "audio2tool:tier2_parametric:003273",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01637/speaker_00_voxpopuli_speaker_197841.wav",
+      "query_idx": 4036,
+      "sample_id": "tier2_parametric:003273",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.616875,
+      "audio_sha256": "6c63e65837be0f6cd8365a7d51b368bc9d13faef8d7edbe609ccde355a674039",
+      "id": 3319,
+      "key": "audio2tool:tier2_parametric:003319",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01660/speaker_00_ecapa_speaker_30411.wav",
+      "query_idx": 4059,
+      "sample_id": "tier2_parametric:003319",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "audio_sha256": "9e581f278a7f87527e7baf2f954e03dd26a027ef84a9bb3ae875e866a072de1c",
+      "id": 3429,
+      "key": "audio2tool:tier2_parametric:003429",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01715/speaker_02_yodas_speaker_WWsnB8jvP8E.wav",
+      "query_idx": 4114,
+      "sample_id": "tier2_parametric:003429",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "audio_sha256": "81c746a53b87efabe486ac7dccbc0a6e1afe0fbfb6de3a552a15ab0eb1d96317",
+      "id": 3465,
+      "key": "audio2tool:tier2_parametric:003465",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_01733/speaker_00_ecapa_speaker_12656.wav",
+      "query_idx": 4132,
+      "sample_id": "tier2_parametric:003465",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.776875,
+      "audio_sha256": "d201a7de4f628c69f61486818c0cda105286e9c50e0c29d60a695c02e0522e8a",
+      "id": 4013,
+      "key": "audio2tool:tier2_parametric:004013",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02007/speaker_01_ecapa_speaker_3139.wav",
+      "query_idx": 4506,
+      "sample_id": "tier2_parametric:004013",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "audio_sha256": "d843bd4c8925513afbaf22256f9fe4e9227a84927be91fd09b71591f2fd19b34",
+      "id": 4057,
+      "key": "audio2tool:tier2_parametric:004057",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02029/speaker_00_3dspeaker_speaker_3D_SPK_10898.wav",
+      "query_idx": 4528,
+      "sample_id": "tier2_parametric:004057",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "audio_sha256": "398a2bedd5cb50bbaec4719bf5c31fbd62a372351cc3b163fa03fedbe36e6100",
+      "id": 4217,
+      "key": "audio2tool:tier2_parametric:004217",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02109/speaker_00_3dspeaker_speaker_3D_SPK_08244.wav",
+      "query_idx": 4708,
+      "sample_id": "tier2_parametric:004217",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "audio_sha256": "af53b91296a7bc17be6c04a1662ddf49e917d4581c2976ee5ed2b8a1380c0615",
+      "id": 4225,
+      "key": "audio2tool:tier2_parametric:004225",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02113/speaker_00_3dspeaker_speaker_3D_SPK_10914.wav",
+      "query_idx": 4712,
+      "sample_id": "tier2_parametric:004225",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "audio_sha256": "90d919d10146731cab6c28a9ae3d2cb4ee5c48aa6c1e534fa5b5a4249b4374bf",
+      "id": 4351,
+      "key": "audio2tool:tier2_parametric:004351",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02176/speaker_00_3dspeaker_speaker_3D_SPK_09068.wav",
+      "query_idx": 4825,
+      "sample_id": "tier2_parametric:004351",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "audio_sha256": "ced04b74a3a84fc7f87ebe4f944b04461a47af0dfd6c10e090b45dc986438a28",
+      "id": 4501,
+      "key": "audio2tool:tier2_parametric:004501",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02251/speaker_02_ecapa_speaker_45523.wav",
+      "query_idx": 4900,
+      "sample_id": "tier2_parametric:004501",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "audio_sha256": "df5d41f111e38150a5bb344856d423fdc2d150ee506d0e22f2a1bcad65289ee6",
+      "id": 4729,
+      "key": "audio2tool:tier2_parametric:004729",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02365/speaker_01_3dspeaker_speaker_3D_SPK_05744.wav",
+      "query_idx": 5264,
+      "sample_id": "tier2_parametric:004729",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "audio_sha256": "8c7fa060f5b618043dccd4dc3a432b0030ab5de7a0377299186ad5e5202e1617",
+      "id": 4841,
+      "key": "audio2tool:tier2_parametric:004841",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02421/speaker_00_voxpopuli_speaker_1873.wav",
+      "query_idx": 5570,
+      "sample_id": "tier2_parametric:004841",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.976875,
+      "audio_sha256": "9d275b5c1ec341b09aa5d232b8c851831417a576c16d4dc85945d2c9ed3d6bc2",
+      "id": 4867,
+      "key": "audio2tool:tier2_parametric:004867",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02434/speaker_01_ecapa_speaker_2967.wav",
+      "query_idx": 5583,
+      "sample_id": "tier2_parametric:004867",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "audio_sha256": "5cdc4f97e4583f1ffb769b01147cbed967dca6aa0b84d3c126ba93c877c99c8a",
+      "id": 4929,
+      "key": "audio2tool:tier2_parametric:004929",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02465/speaker_01_ecapa_speaker_3578.wav",
+      "query_idx": 5614,
+      "sample_id": "tier2_parametric:004929",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "audio_sha256": "2c511a644276d03eb8b88419e54f74584362186e3415755a5c7176c248d64733",
+      "id": 4975,
+      "key": "audio2tool:tier2_parametric:004975",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02488/speaker_01_ecapa_speaker_13555.wav",
+      "query_idx": 5637,
+      "sample_id": "tier2_parametric:004975",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "audio_sha256": "a73e14cc86291abd5197f4afa98839d13bd3de46cae99736a2dc11fd392fdcb5",
+      "id": 4997,
+      "key": "audio2tool:tier2_parametric:004997",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02499/speaker_00_ecapa_speaker_29670.wav",
+      "query_idx": 5648,
+      "sample_id": "tier2_parametric:004997",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "audio_sha256": "1206cbaa2de3f7bfcbba4ba61d9c0251a05c653344b82fa977fb466380c939a2",
+      "id": 5097,
+      "key": "audio2tool:tier2_parametric:005097",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02549/speaker_01_ecapa_speaker_6450.wav",
+      "query_idx": 4398,
+      "sample_id": "tier2_parametric:005097",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.336875,
+      "audio_sha256": "d2abdc96f1377e7cfe65a593d37525f58e60d34652db121768667201de772c29",
+      "id": 5185,
+      "key": "audio2tool:tier2_parametric:005185",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02593/speaker_01_ecapa_speaker_26224.wav",
+      "query_idx": 4492,
+      "sample_id": "tier2_parametric:005185",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "audio_sha256": "07928a777b6b6b4308e7d614d2adb9f6afc99222b804cd181009fbbd9bd64b51",
+      "id": 5363,
+      "key": "audio2tool:tier2_parametric:005363",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02682/speaker_01_ecapa_speaker_27844.wav",
+      "query_idx": 4681,
+      "sample_id": "tier2_parametric:005363",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "audio_sha256": "75348dcb8665068b758cb000190a075fb5c8bce9a63a3b2045cc6dd3133bdc4e",
+      "id": 5413,
+      "key": "audio2tool:tier2_parametric:005413",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02707/speaker_00_3dspeaker_speaker_3D_SPK_00165.wav",
+      "query_idx": 4756,
+      "sample_id": "tier2_parametric:005413",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "audio_sha256": "cb824cc8fccf018baaee7995360b29492a8de5f679c10851f8800cf3904da7a9",
+      "id": 5429,
+      "key": "audio2tool:tier2_parametric:005429",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02715/speaker_01_ecapa_speaker_2077.wav",
+      "query_idx": 4764,
+      "sample_id": "tier2_parametric:005429",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "audio_sha256": "53b6785313cb4f0b737b948298808d1e8ea01de5375360be0a156f812c52bbb3",
+      "id": 5439,
+      "key": "audio2tool:tier2_parametric:005439",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02720/speaker_00_ecapa_speaker_8936.wav",
+      "query_idx": 4769,
+      "sample_id": "tier2_parametric:005439",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "audio_sha256": "5262e67a1be5ac7b358a4aeea75825126fbc306ac7124016ced7fcd485a140ef",
+      "id": 5613,
+      "key": "audio2tool:tier2_parametric:005613",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02807/speaker_00_ecapa_speaker_34316.wav",
+      "query_idx": 5306,
+      "sample_id": "tier2_parametric:005613",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "audio_sha256": "27fe52c9df2db1626cd4dde94d9b778ed1475600134d5bef3a842f965a56bbd0",
+      "id": 5771,
+      "key": "audio2tool:tier2_parametric:005771",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02886/speaker_00_voxpopuli_speaker_39318.wav",
+      "query_idx": 5435,
+      "sample_id": "tier2_parametric:005771",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "audio_sha256": "5ebe2daf4db2e9f0d3e344befff3667d971517f4a99030363f5ee9e979a87d4b",
+      "id": 5945,
+      "key": "audio2tool:tier2_parametric:005945",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02973/speaker_01_ecapa_speaker_47764.wav",
+      "query_idx": 5672,
+      "sample_id": "tier2_parametric:005945",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "audio_sha256": "0bc830812196e14a8658b03e98d941b8aa527dc9164f395dd90a31e7c15447da",
+      "id": 6079,
+      "key": "audio2tool:tier2_parametric:006079",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_03040/speaker_01_yodas_speaker_-ACo-lMw92y.wav",
+      "query_idx": 5789,
+      "sample_id": "tier2_parametric:006079",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "9a54421ef966635524addb7eef3110e5be5e5c64a7fe79536557933e3e7446a1",
+      "id": 6221,
+      "key": "audio2tool:tier2_parametric:006221",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_03111/speaker_01_ecapa_speaker_27996.wav",
+      "query_idx": 1509,
+      "sample_id": "tier2_parametric:006221",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 8.776875,
+      "audio_sha256": "1ebbcb5dbfad3840ef7b1f4069d2d94d3ba3e3d6433bc864a00f1ac9faaf7d9e",
+      "id": 139,
+      "key": "audio2tool:tier3_multi_intent:000139",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00070/speaker_19_yodas_speaker_fDqvqnccx4y.wav",
+      "query_idx": 2169,
+      "sample_id": "tier3_multi_intent:000139",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "audio_sha256": "a9d7f7ff0ea1f183cf987d746d7ef89a5d5c901ca68c7a8bcb30d13cff04505b",
+      "id": 167,
+      "key": "audio2tool:tier3_multi_intent:000167",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00084/speaker_13_ecapa_speaker_18890.wav",
+      "query_idx": 2183,
+      "sample_id": "tier3_multi_intent:000167",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.376875,
+      "audio_sha256": "049b7edede8436c2dbd9db6b3c802df96e8cd06612ec8a37686fa8d2f0ad0493",
+      "id": 199,
+      "key": "audio2tool:tier3_multi_intent:000199",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00100/speaker_05_3dspeaker_speaker_3D_SPK_09044.wav",
+      "query_idx": 2199,
+      "sample_id": "tier3_multi_intent:000199",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.656875,
+      "audio_sha256": "5bf557706fcbb9e10506cb957d669aa946c651ede19789c35592edd0bbac46f8",
+      "id": 359,
+      "key": "audio2tool:tier3_multi_intent:000359",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00180/speaker_04_3dspeaker_speaker_3D_SPK_03314.wav",
+      "query_idx": 2279,
+      "sample_id": "tier3_multi_intent:000359",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "audio_sha256": "446c9039a64cbc89877010a86bde22d8318c3007bf572ddc92e29e80db28041a",
+      "id": 431,
+      "key": "audio2tool:tier3_multi_intent:000431",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00216/speaker_03_3dspeaker_speaker_3D_SPK_09068.wav",
+      "query_idx": 2315,
+      "sample_id": "tier3_multi_intent:000431",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.456875,
+      "audio_sha256": "f310ffe3c66971e12a7a7f396e3fee93330d88253cffa29e8e6d89425bbb200b",
+      "id": 511,
+      "key": "audio2tool:tier3_multi_intent:000511",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00256/speaker_07_ecapa_speaker_37859.wav",
+      "query_idx": 2355,
+      "sample_id": "tier3_multi_intent:000511",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "audio_sha256": "4e2f025937b8e39de2b355095291a99d40d0b2a8b4850f68e093d5ea7fb926bf",
+      "id": 521,
+      "key": "audio2tool:tier3_multi_intent:000521",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00261/speaker_10_ecapa_speaker_19305.wav",
+      "query_idx": 2360,
+      "sample_id": "tier3_multi_intent:000521",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "audio_sha256": "e8520d4e712569ed9b1bfbe433c82f72f73a55b6ec19f2d7103ecd4502ee8ca8",
+      "id": 583,
+      "key": "audio2tool:tier3_multi_intent:000583",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00292/speaker_01_3dspeaker_speaker_3D_SPK_07907.wav",
+      "query_idx": 2391,
+      "sample_id": "tier3_multi_intent:000583",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "audio_sha256": "4e205c3f7798d4d0187ee5634e46e077b250848a5e74aeeee784589879ba40d2",
+      "id": 635,
+      "key": "audio2tool:tier3_multi_intent:000635",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00318/speaker_12_ecapa_speaker_13180.wav",
+      "query_idx": 2417,
+      "sample_id": "tier3_multi_intent:000635",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.536875,
+      "audio_sha256": "216392084ca292e84999317f134a0f48d4def0db83a4d5cc2e7a2c5f7c1dac1e",
+      "id": 647,
+      "key": "audio2tool:tier3_multi_intent:000647",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00324/speaker_12_ecapa_speaker_34048.wav",
+      "query_idx": 2423,
+      "sample_id": "tier3_multi_intent:000647",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.776875,
+      "audio_sha256": "ff7e357c5c352cd1601487ae06c1558afb7363ac39566a12a5874fb0986ad317",
+      "id": 801,
+      "key": "audio2tool:tier3_multi_intent:000801",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00401/speaker_04_3dspeaker_speaker_3D_SPK_00165.wav",
+      "query_idx": 2500,
+      "sample_id": "tier3_multi_intent:000801",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.585291667,
+      "audio_sha256": "625f7d0743fa1c4826374a01e30ac190ae5d0d814bde2c8119df38145fd29c93",
+      "id": 993,
+      "key": "audio2tool:tier3_multi_intent:000993",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00497/speaker_02_voxpopuli_speaker_129073.wav",
+      "query_idx": 2596,
+      "sample_id": "tier3_multi_intent:000993",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "audio_sha256": "f113b80be365ba92db6a774897b7d36544f62399677e5bad16747df38830b7f1",
+      "id": 1101,
+      "key": "audio2tool:tier3_multi_intent:001101",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00551/speaker_01_3dspeaker_speaker_3D_SPK_09197.wav",
+      "query_idx": 2650,
+      "sample_id": "tier3_multi_intent:001101",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "audio_sha256": "7d2042c66676eae227636d6e166bbc7bafbcc623b00c80dcdc6295998dc320e1",
+      "id": 1261,
+      "key": "audio2tool:tier3_multi_intent:001261",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00631/speaker_08_ecapa_speaker_13973.wav",
+      "query_idx": 2730,
+      "sample_id": "tier3_multi_intent:001261",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "audio_sha256": "37672bbb292e6f39bfa3509f2a7be21b6ea2786047e84974fff46a191720b651",
+      "id": 1391,
+      "key": "audio2tool:tier3_multi_intent:001391",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00696/speaker_13_ecapa_speaker_25404.wav",
+      "query_idx": 2795,
+      "sample_id": "tier3_multi_intent:001391",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "audio_sha256": "6d80ee68ae859c982300273d05c8233933bb18a404eb942a54f139b4340f687d",
+      "id": 1651,
+      "key": "audio2tool:tier3_multi_intent:001651",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00826/speaker_17_yodas_speaker_AcmYKJdu3xQ.wav",
+      "query_idx": 2925,
+      "sample_id": "tier3_multi_intent:001651",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.416875,
+      "audio_sha256": "13ca0f1bd660e5805d8f623f86fe0994ab407d977f01d7f009cbb08cd6ae9928",
+      "id": 1655,
+      "key": "audio2tool:tier3_multi_intent:001655",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00828/speaker_18_yodas_speaker__gIXWAe5YAA.wav",
+      "query_idx": 2927,
+      "sample_id": "tier3_multi_intent:001655",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "audio_sha256": "09e05f48681b193bfc4a33e7dfcb6d2b67434bbd739dffe0bf9498a4d18aed02",
+      "id": 1699,
+      "key": "audio2tool:tier3_multi_intent:001699",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00850/speaker_12_ecapa_speaker_39857.wav",
+      "query_idx": 2949,
+      "sample_id": "tier3_multi_intent:001699",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "audio_sha256": "40ede772e5d5310e0ad0b7864359c00b300733ee15fe117dc2c7a613ab1277e2",
+      "id": 1887,
+      "key": "audio2tool:tier3_multi_intent:001887",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00944/speaker_12_ecapa_speaker_42856.wav",
+      "query_idx": 3043,
+      "sample_id": "tier3_multi_intent:001887",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "audio_sha256": "2958b662cbe075cd3a25807f48e3684ce8f156436186e98b0a353b514bce9835",
+      "id": 1889,
+      "key": "audio2tool:tier3_multi_intent:001889",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00945/speaker_06_3dspeaker_speaker_3D_SPK_03314.wav",
+      "query_idx": 3044,
+      "sample_id": "tier3_multi_intent:001889",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.656875,
+      "audio_sha256": "000d0ed416db53a05a888b6d6977012dd385e47fa458f764df8cdb85754e04c5",
+      "id": 1895,
+      "key": "audio2tool:tier3_multi_intent:001895",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00948/speaker_12_ecapa_speaker_4613.wav",
+      "query_idx": 3047,
+      "sample_id": "tier3_multi_intent:001895",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "audio_sha256": "a6505b6bfb86151200cabe34afa19b6ac82c90fa4dee262f712dd80c045e8286",
+      "id": 1973,
+      "key": "audio2tool:tier3_multi_intent:001973",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_00987/speaker_18_yodas_speaker_90ZXVzYMIj8.wav",
+      "query_idx": 3086,
+      "sample_id": "tier3_multi_intent:001973",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.496875,
+      "audio_sha256": "18afededbfafe0d018fdfff0ac368e648a28ea74f26c362899440d56d0344584",
+      "id": 2037,
+      "key": "audio2tool:tier3_multi_intent:002037",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01019/speaker_12_ecapa_speaker_1888.wav",
+      "query_idx": 3118,
+      "sample_id": "tier3_multi_intent:002037",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "audio_sha256": "126d356068adb9bdc1806f907dab25ba683ef5b27103f6376c03a773abc67166",
+      "id": 2051,
+      "key": "audio2tool:tier3_multi_intent:002051",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01026/speaker_05_ecapa_speaker_44644.wav",
+      "query_idx": 3125,
+      "sample_id": "tier3_multi_intent:002051",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "audio_sha256": "23a2399c67c255e472b99e6dbe09e1f66bfee208b4d7ebeac92a89db141300b3",
+      "id": 2069,
+      "key": "audio2tool:tier3_multi_intent:002069",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01035/speaker_05_ecapa_speaker_19305.wav",
+      "query_idx": 3134,
+      "sample_id": "tier3_multi_intent:002069",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "audio_sha256": "ba98b64c7d723ba0d139451bbb7bd5e47db3cb75c5e187636992a15338c71f33",
+      "id": 2237,
+      "key": "audio2tool:tier3_multi_intent:002237",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01119/speaker_16_ecapa_speaker_49394.wav",
+      "query_idx": 3218,
+      "sample_id": "tier3_multi_intent:002237",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "audio_sha256": "b9b357e8983417010787e28350578dd28768c026b703dc0313eba918087ca7de",
+      "id": 2275,
+      "key": "audio2tool:tier3_multi_intent:002275",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01138/speaker_05_ecapa_speaker_12656.wav",
+      "query_idx": 3237,
+      "sample_id": "tier3_multi_intent:002275",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.896875,
+      "audio_sha256": "039cd1ae196db20cffe2ce08a41ed917ba79de18ad2ff2c398613d75fdd23215",
+      "id": 2373,
+      "key": "audio2tool:tier3_multi_intent:002373",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01187/speaker_16_yodas_speaker_-ACo-lMw92y.wav",
+      "query_idx": 3286,
+      "sample_id": "tier3_multi_intent:002373",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "audio_sha256": "a4d67b5cebfbf17d2ee74b21fe0634d7fc6a5bcab6dea3f622c1e28aa78aad6c",
+      "id": 2429,
+      "key": "audio2tool:tier3_multi_intent:002429",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01215/speaker_12_ecapa_speaker_44959.wav",
+      "query_idx": 3314,
+      "sample_id": "tier3_multi_intent:002429",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 9.109875,
+      "audio_sha256": "e99014b1f15caec6b40a819a8ffa45472ace24241b63aa798032f5e69835fd4c",
+      "id": 2541,
+      "key": "audio2tool:tier3_multi_intent:002541",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01271/speaker_02_voxpopuli_speaker_124702.wav",
+      "query_idx": 3370,
+      "sample_id": "tier3_multi_intent:002541",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "audio_sha256": "8446edc0627ffb111d928adfc4dbae53defaf226c9aff836bdebd046a2943332",
+      "id": 2583,
+      "key": "audio2tool:tier3_multi_intent:002583",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01292/speaker_09_ecapa_speaker_6931.wav",
+      "query_idx": 3391,
+      "sample_id": "tier3_multi_intent:002583",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "audio_sha256": "db6b5f8f15fe63b133aae332e4e445ce1e8d5de8d433b9eacb202e1f47b3e85e",
+      "id": 2623,
+      "key": "audio2tool:tier3_multi_intent:002623",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01312/speaker_10_yodas_speaker_TYL0TKViy0M.wav",
+      "query_idx": 3411,
+      "sample_id": "tier3_multi_intent:002623",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.193041667,
+      "audio_sha256": "67a20e9963f46ae6db64f95c6043e825e12800fcd4667819ae6519d66a450e46",
+      "id": 2661,
+      "key": "audio2tool:tier3_multi_intent:002661",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01331/speaker_03_voxpopuli_speaker_39717.wav",
+      "query_idx": 3430,
+      "sample_id": "tier3_multi_intent:002661",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.776875,
+      "audio_sha256": "f0dde3fbd1488e53eb4dfe2f3b4eadcd5c72a253408c63ee931fda327e79915c",
+      "id": 2669,
+      "key": "audio2tool:tier3_multi_intent:002669",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01335/speaker_03_3dspeaker_speaker_3D_SPK_05744.wav",
+      "query_idx": 3434,
+      "sample_id": "tier3_multi_intent:002669",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.656875,
+      "audio_sha256": "63ec4f8e38a7ebf84269c0e5b142238731f415e7a9ce669d2e35a7382935f021",
+      "id": 2723,
+      "key": "audio2tool:tier3_multi_intent:002723",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01362/speaker_07_ecapa_speaker_37288.wav",
+      "query_idx": 3461,
+      "sample_id": "tier3_multi_intent:002723",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "audio_sha256": "09c3ef39c50de8a52dbde408e2128541e12c459b838523343f3e8b59f29ed28a",
+      "id": 2777,
+      "key": "audio2tool:tier3_multi_intent:002777",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01389/speaker_07_ecapa_speaker_12656.wav",
+      "query_idx": 3488,
+      "sample_id": "tier3_multi_intent:002777",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 8.296875,
+      "audio_sha256": "0a66d61fc24014c5d6bd243d47cc31cf4498f81bedec5eb709945ead13d03105",
+      "id": 2841,
+      "key": "audio2tool:tier3_multi_intent:002841",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01421/speaker_13_ecapa_speaker_27996.wav",
+      "query_idx": 3520,
+      "sample_id": "tier3_multi_intent:002841",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 6.456875,
+      "audio_sha256": "1254d4cce8850ffec11f7cafb343346033dce36e1810c18c51f2bad9e4aead11",
+      "id": 2955,
+      "key": "audio2tool:tier3_multi_intent:002955",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01478/speaker_14_yodas_speaker_MeIk5eL69CE.wav",
+      "query_idx": 4327,
+      "sample_id": "tier3_multi_intent:002955",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "audio_sha256": "54c06bc2eaea0b2b1a6afb7387c54af6d950599bbf3c4ce8ab5d9bcfafe46639",
+      "id": 3291,
+      "key": "audio2tool:tier3_multi_intent:003291",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01646/speaker_05_ecapa_speaker_29670.wav",
+      "query_idx": 3595,
+      "sample_id": "tier3_multi_intent:003291",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 2.216875,
+      "audio_sha256": "e27c3a9073cab265c23d2500fce34217202ff01eb3be38c67319108af6309fd4",
+      "id": 3309,
+      "key": "audio2tool:tier3_multi_intent:003309",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01655/speaker_02_3dspeaker_speaker_3D_SPK_09068.wav",
+      "query_idx": 3604,
+      "sample_id": "tier3_multi_intent:003309",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.31325,
+      "audio_sha256": "3427033c80304ef130581b49ee26e6758557269becd2ef280b6e6262036a7fa6",
+      "id": 3359,
+      "key": "audio2tool:tier3_multi_intent:003359",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01680/speaker_00_voxpopuli_speaker_5729.wav",
+      "query_idx": 3629,
+      "sample_id": "tier3_multi_intent:003359",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "audio_sha256": "ad10c174879bf6ebd2bcb5a46d442c6bd7da3499bde568367e0eaa29ee3e49b4",
+      "id": 3511,
+      "key": "audio2tool:tier3_multi_intent:003511",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01756/speaker_21_yodas_speaker_MgdL5ixcxmI.wav",
+      "query_idx": 3705,
+      "sample_id": "tier3_multi_intent:003511",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "audio_sha256": "948888b717762ab9315c102fdea06b12cbf344bab374e66eae7a8efa0d59010a",
+      "id": 3711,
+      "key": "audio2tool:tier3_multi_intent:003711",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01856/speaker_13_ecapa_speaker_50050.wav",
+      "query_idx": 3805,
+      "sample_id": "tier3_multi_intent:003711",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 4.696875,
+      "audio_sha256": "5003e10ea0bef833ccd68252e7b3b930ce1490e270cd3c239c469bfc8e5a145f",
+      "id": 3797,
+      "key": "audio2tool:tier3_multi_intent:003797",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01899/speaker_11_ecapa_speaker_8936.wav",
+      "query_idx": 4478,
+      "sample_id": "tier3_multi_intent:003797",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 2.875083333,
+      "audio_sha256": "e80b348fa8303597ff171e10188efd6a9f16baafd80c33a0a0a8cc08fb15d905",
+      "id": 3881,
+      "key": "audio2tool:tier3_multi_intent:003881",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01941/speaker_00_voxpopuli_speaker_23691.wav",
+      "query_idx": 4520,
+      "sample_id": "tier3_multi_intent:003881",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.656875,
+      "audio_sha256": "28cdc393c39b8db2c51da91d2aae1de77ef8ba2f41239faeec312cef0bed6ef2",
+      "id": 3943,
+      "key": "audio2tool:tier3_multi_intent:003943",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01972/speaker_19_yodas_speaker_EhzkV2p3ZhI.wav",
+      "query_idx": 4551,
+      "sample_id": "tier3_multi_intent:003943",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 7.496875,
+      "audio_sha256": "cf52e7da67e55a0aca068f937a4bb145beeb23b59b169c2bce95299965277e32",
+      "id": 3983,
+      "key": "audio2tool:tier3_multi_intent:003983",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01992/speaker_11_ecapa_speaker_10485.wav",
+      "query_idx": 178,
+      "sample_id": "tier3_multi_intent:003983",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "audio_sha256": "33f9e1938be918b46838ef0cc0be47b3592960639792c8e39e4033e71ad70e2e",
+      "id": 4095,
+      "key": "audio2tool:tier3_multi_intent:004095",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_02048/speaker_08_ecapa_speaker_20139.wav",
+      "query_idx": 1056,
+      "sample_id": "tier3_multi_intent:004095",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "audio_sha256": "03447d9a7a5334afb94aa532f0b2ebd2ee47622395488f0a9b63fe2401c887fb",
+      "id": 4165,
+      "key": "audio2tool:tier3_multi_intent:004165",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_02083/speaker_14_yodas_speaker_Cppv76hZ3E0.wav",
+      "query_idx": 1567,
+      "sample_id": "tier3_multi_intent:004165",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "audio_sha256": "3df75021506da4c67de2a0e773b4cab49aa127defc3e2eb5f22016a332811e6d",
+      "id": 4181,
+      "key": "audio2tool:tier3_multi_intent:004181",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_02091/speaker_16_ecapa_speaker_5692.wav",
+      "query_idx": 1690,
+      "sample_id": "tier3_multi_intent:004181",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "audio_sha256": "130e5178d1390885ad8def83ac300c34162f4110ff1a0007bc012f1d5326362b",
+      "id": 101,
+      "key": "audio2tool:tier4_implicit:000101",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00051/speaker_15_yodas_speaker_qR1t8R1QEng.wav",
+      "query_idx": 2151,
+      "sample_id": "tier4_implicit:000101",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "fe4471e26d6f9bc39128296960f29b40430d468a7dea365b361954d73a99f783",
+      "id": 213,
+      "key": "audio2tool:tier4_implicit:000213",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00107/speaker_06_3dspeaker_speaker_3D_SPK_09044.wav",
+      "query_idx": 2207,
+      "sample_id": "tier4_implicit:000213",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "audio_sha256": "63f533e31a3c5571e9fb0ca59f788e26686617d3a82329ff970ed5c5524d1057",
+      "id": 517,
+      "key": "audio2tool:tier4_implicit:000517",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00256/speaker_10_ecapa_speaker_19305.wav",
+      "query_idx": 2360,
+      "sample_id": "tier4_implicit:000517",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "audio_sha256": "af5dce9092952dbdbc5980ce686064b7def25301125cb10eb14685b66dd4ba02",
+      "id": 567,
+      "key": "audio2tool:tier4_implicit:000567",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00281/speaker_05_3dspeaker_speaker_3D_SPK_08177.wav",
+      "query_idx": 2386,
+      "sample_id": "tier4_implicit:000567",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "audio_sha256": "d26e9eb544e4433ab714d7f8696d670d421f021c5d2c52ad2ac15a6bc8fcbf52",
+      "id": 623,
+      "key": "audio2tool:tier4_implicit:000623",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00309/speaker_06_ecapa_speaker_6652.wav",
+      "query_idx": 2414,
+      "sample_id": "tier4_implicit:000623",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "audio_sha256": "04289c86264ee21ffb832d65ff6215e9e31afb1724426de6dcb07cdca0b7e98b",
+      "id": 679,
+      "key": "audio2tool:tier4_implicit:000679",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00337/speaker_12_ecapa_speaker_50050.wav",
+      "query_idx": 2442,
+      "sample_id": "tier4_implicit:000679",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.112375,
+      "audio_sha256": "f72e6f3410fce56e0f4585c7e6fd0ceb831718d1693e62b0d201ecc611a858a0",
+      "id": 701,
+      "key": "audio2tool:tier4_implicit:000701",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00348/speaker_00_voxpopuli_speaker_5729.wav",
+      "query_idx": 2453,
+      "sample_id": "tier4_implicit:000701",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "audio_sha256": "c4be08f27f1158e2a47c318cab0b48bde614e985525acab79984939980a883ec",
+      "id": 835,
+      "key": "audio2tool:tier4_implicit:000835",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00415/speaker_21_yodas_speaker_G4o5iF_MnHg.wav",
+      "query_idx": 2521,
+      "sample_id": "tier4_implicit:000835",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.816875,
+      "audio_sha256": "14c2b88a5408a64a2b78fa2ea4bda87b4683041bbedfcb29c32fb28e520f36c1",
+      "id": 1015,
+      "key": "audio2tool:tier4_implicit:001015",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00504/speaker_12_ecapa_speaker_13758.wav",
+      "query_idx": 2610,
+      "sample_id": "tier4_implicit:001015",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.256875,
+      "audio_sha256": "6e5bbd33763ff9b7d81a763e1de0ae680fa4cee9c134010a7c26636192472221",
+      "id": 1071,
+      "key": "audio2tool:tier4_implicit:001071",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00532/speaker_02_ecapa_speaker_13555.wav",
+      "query_idx": 2638,
+      "sample_id": "tier4_implicit:001071",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.536875,
+      "audio_sha256": "78e99e7e0b364b8d58d6557af822d2168fb05c265f46c4a4d7b05fa54d1c43ec",
+      "id": 1109,
+      "key": "audio2tool:tier4_implicit:001109",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00551/speaker_04_3dspeaker_speaker_3D_SPK_00165.wav",
+      "query_idx": 2657,
+      "sample_id": "tier4_implicit:001109",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.075916667,
+      "audio_sha256": "d218647fc0033d716f4fe23280d908c225edbcabd5cbfefb233ad6d5d79a4adb",
+      "id": 1133,
+      "key": "audio2tool:tier4_implicit:001133",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00563/speaker_00_voxpopuli_speaker_97228.wav",
+      "query_idx": 2669,
+      "sample_id": "tier4_implicit:001133",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.075916667,
+      "audio_sha256": "e2085e8043acbcb23cb463ca19d96a143723d5d3cd429fafb04351a1f4d3faee",
+      "id": 1167,
+      "key": "audio2tool:tier4_implicit:001167",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00580/speaker_01_voxpopuli_speaker_97228.wav",
+      "query_idx": 2686,
+      "sample_id": "tier4_implicit:001167",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.456875,
+      "audio_sha256": "70c026a5aa8d2d2e4e297d83960ce4053f2c5f3fc509c210b931e8cb06e3f8e1",
+      "id": 1269,
+      "key": "audio2tool:tier4_implicit:001269",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00631/speaker_06_ecapa_speaker_47764.wav",
+      "query_idx": 2737,
+      "sample_id": "tier4_implicit:001269",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.496875,
+      "audio_sha256": "413340ef06d01a76470f84d3bd14dff64d3a79298dbc93143d85918af6a8d54a",
+      "id": 1591,
+      "key": "audio2tool:tier4_implicit:001591",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00791/speaker_12_ecapa_speaker_18923.wav",
+      "query_idx": 2898,
+      "sample_id": "tier4_implicit:001591",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "audio_sha256": "0f7b34973f6d02ce88d571458ba450a0e49baae1d4299fe1891ce876da25eb4e",
+      "id": 1661,
+      "key": "audio2tool:tier4_implicit:001661",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00826/speaker_10_ecapa_speaker_39642.wav",
+      "query_idx": 2933,
+      "sample_id": "tier4_implicit:001661",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "audio_sha256": "b442a351ae2e285e78e600a5be75c3c2f14cbaf7e76a4c81f43b963650e154a4",
+      "id": 1679,
+      "key": "audio2tool:tier4_implicit:001679",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00835/speaker_07_ecapa_speaker_30578.wav",
+      "query_idx": 2942,
+      "sample_id": "tier4_implicit:001679",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "3bd69f755e1fc45ad1bab88b8aa403466117c921359915da4d42c438c4730a08",
+      "id": 1725,
+      "key": "audio2tool:tier4_implicit:001725",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00858/speaker_04_3dspeaker_speaker_3D_SPK_08647.wav",
+      "query_idx": 2965,
+      "sample_id": "tier4_implicit:001725",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "audio_sha256": "da3ce2cb69a07bc9cf1bb10cd50b9a3b58a199faa452148a1217a65e96fb50cd",
+      "id": 1737,
+      "key": "audio2tool:tier4_implicit:001737",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00863/speaker_08_ecapa_speaker_44644.wav",
+      "query_idx": 2970,
+      "sample_id": "tier4_implicit:001737",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "audio_sha256": "e97c5955652dfedb6a120129cbda1e17e2d678008035207521a9f8a3b0d0806d",
+      "id": 1801,
+      "key": "audio2tool:tier4_implicit:001801",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00895/speaker_15_ecapa_speaker_27844.wav",
+      "query_idx": 3002,
+      "sample_id": "tier4_implicit:001801",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.636208333,
+      "audio_sha256": "ef1cd97c78169b6e5fd8d8b915219403f3da19217e6dee74a2f74a44a2706efc",
+      "id": 1845,
+      "key": "audio2tool:tier4_implicit:001845",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_00917/speaker_02_voxpopuli_speaker_39318.wav",
+      "query_idx": 3024,
+      "sample_id": "tier4_implicit:001845",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "audio_sha256": "ef19a51cae747f8989e961a5c6c816b431498a3924f13c9805da99097816263a",
+      "id": 2037,
+      "key": "audio2tool:tier4_implicit:002037",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01012/speaker_10_ecapa_speaker_13555.wav",
+      "query_idx": 3119,
+      "sample_id": "tier4_implicit:002037",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "audio_sha256": "06ec7740c37afc081c8ec1f4c498ed80192820ea354c5d4442d9fbaf8b36950e",
+      "id": 2039,
+      "key": "audio2tool:tier4_implicit:002039",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01013/speaker_07_ecapa_speaker_37859.wav",
+      "query_idx": 3120,
+      "sample_id": "tier4_implicit:002039",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "audio_sha256": "63e2112116eaa80561e0d8ec4c7e60ad061f25c20a074cd528354a6ff7816393",
+      "id": 2119,
+      "key": "audio2tool:tier4_implicit:002119",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01053/speaker_12_ecapa_speaker_27996.wav",
+      "query_idx": 3160,
+      "sample_id": "tier4_implicit:002119",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.416875,
+      "audio_sha256": "fdbc10823ecf8de4178d964a04d7d7673948ace0dd08d66ec6b6a82503af6f37",
+      "id": 2343,
+      "key": "audio2tool:tier4_implicit:002343",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01165/speaker_06_ecapa_speaker_7803.wav",
+      "query_idx": 3274,
+      "sample_id": "tier4_implicit:002343",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.456875,
+      "audio_sha256": "a20483f31b65e7f09b34b7b22ea6d5c359d08bf795a9f6444d3c790deb48d0e8",
+      "id": 2423,
+      "key": "audio2tool:tier4_implicit:002423",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01205/speaker_04_3dspeaker_speaker_3D_SPK_09044.wav",
+      "query_idx": 3314,
+      "sample_id": "tier4_implicit:002423",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "audio_sha256": "c191c7cba95698baae1c9c12277da262cb65643022a4f738bac87f3bec674cfc",
+      "id": 2443,
+      "key": "audio2tool:tier4_implicit:002443",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01215/speaker_18_yodas_speaker_vUCXxKPxZSU.wav",
+      "query_idx": 3324,
+      "sample_id": "tier4_implicit:002443",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "audio_sha256": "21a51f600c5d9807cfbc4e8d48588f51b4fa27ede3a4888812c967bfdc23d7be",
+      "id": 2507,
+      "key": "audio2tool:tier4_implicit:002507",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01247/speaker_04_ecapa_speaker_4767.wav",
+      "query_idx": 3356,
+      "sample_id": "tier4_implicit:002507",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "726aa0341df0db79aba67a63f811ba59a5d3477a0b541ed9eac0726fce0e0be2",
+      "id": 2563,
+      "key": "audio2tool:tier4_implicit:002563",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01275/speaker_08_ecapa_speaker_8936.wav",
+      "query_idx": 3385,
+      "sample_id": "tier4_implicit:002563",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.715208333,
+      "audio_sha256": "13db86fe88dd7e19a69a54de2892e95bb153d54ddadc543c8174ecf1eb4f5c4c",
+      "id": 2637,
+      "key": "audio2tool:tier4_implicit:002637",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01312/speaker_00_voxpopuli_speaker_5729.wav",
+      "query_idx": 3422,
+      "sample_id": "tier4_implicit:002637",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.23225,
+      "audio_sha256": "f13be559bf7bb5cc1045c7b97e93f356d9b4a9d003607abb50bdb58794d90602",
+      "id": 2651,
+      "key": "audio2tool:tier4_implicit:002651",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01319/speaker_00_voxpopuli_speaker_204332.wav",
+      "query_idx": 3429,
+      "sample_id": "tier4_implicit:002651",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "audio_sha256": "901b18ca81bad9e12955752a9c2b85741ff8b18069eb6433455fa28f82b62fc5",
+      "id": 2751,
+      "key": "audio2tool:tier4_implicit:002751",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01369/speaker_11_ecapa_speaker_35314.wav",
+      "query_idx": 3481,
+      "sample_id": "tier4_implicit:002751",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.427916667,
+      "audio_sha256": "a60a5652f2f604e17fbf045cbf9c56e373ea0a14dc30f6de4d38a3fde7673af8",
+      "id": 2813,
+      "key": "audio2tool:tier4_implicit:002813",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01400/speaker_00_voxpopuli_speaker_4267.wav",
+      "query_idx": 3512,
+      "sample_id": "tier4_implicit:002813",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "audio_sha256": "a90acbd9d2dfb9df489b4345e1adf253e811ad415fc3b9b4c14b2651c6a2a492",
+      "id": 2825,
+      "key": "audio2tool:tier4_implicit:002825",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01406/speaker_11_ecapa_speaker_5666.wav",
+      "query_idx": 3518,
+      "sample_id": "tier4_implicit:002825",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.576875,
+      "audio_sha256": "2193dcc4d1352e5d32e7b8f3c39b88e05439f9f3880f170e585400c1e23442df",
+      "id": 2841,
+      "key": "audio2tool:tier4_implicit:002841",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01414/speaker_12_yodas_speaker_cDdqxiHGF8Y.wav",
+      "query_idx": 3526,
+      "sample_id": "tier4_implicit:002841",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.896875,
+      "audio_sha256": "09578527378561dc877f3eab42b1626f4064cb4088fca97c20e293d31ff07ef0",
+      "id": 2853,
+      "key": "audio2tool:tier4_implicit:002853",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01420/speaker_18_yodas_speaker_BSu8eGY6kEo.wav",
+      "query_idx": 3532,
+      "sample_id": "tier4_implicit:002853",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.736875,
+      "audio_sha256": "cef6a93232a0c53b66539c78e1f81ba1ffae45a8f3b54276f1d457b323f39fb7",
+      "id": 2859,
+      "key": "audio2tool:tier4_implicit:002859",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01423/speaker_14_ecapa_speaker_1143.wav",
+      "query_idx": 3535,
+      "sample_id": "tier4_implicit:002859",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "audio_sha256": "010af4e63c681459b92b8e0049fce5955088ce07d0deef44f5ef438dc71d1c3e",
+      "id": 2897,
+      "key": "audio2tool:tier4_implicit:002897",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01442/speaker_03_3dspeaker_speaker_3D_SPK_08647.wav",
+      "query_idx": 3854,
+      "sample_id": "tier4_implicit:002897",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "audio_sha256": "80f9f4fb0684fe82593eefec8ed4eb41a777269b31da6b0b888d0a0bb53d688e",
+      "id": 2905,
+      "key": "audio2tool:tier4_implicit:002905",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01446/speaker_08_ecapa_speaker_44805.wav",
+      "query_idx": 3858,
+      "sample_id": "tier4_implicit:002905",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 5.11125,
+      "audio_sha256": "0e31a518571d52eacadac12ede21318999dbec6032c780bca534d6f34ec1f203",
+      "id": 2967,
+      "key": "audio2tool:tier4_implicit:002967",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01477/speaker_00_voxpopuli_speaker_204332.wav",
+      "query_idx": 4339,
+      "sample_id": "tier4_implicit:002967",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 2.476041667,
+      "audio_sha256": "61d8503b1d0687bb34608ae09c907a9fb5afa12a8cd63e3e822d67585a552384",
+      "id": 3165,
+      "key": "audio2tool:tier4_implicit:003165",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01576/speaker_02_voxpopuli_speaker_39717.wav",
+      "query_idx": 4439,
+      "sample_id": "tier4_implicit:003165",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "audio_sha256": "4e0bae3450f36d108ad721676ccc3e83d04c6d1725ebe5d97a43594faf2a7f03",
+      "id": 3171,
+      "key": "audio2tool:tier4_implicit:003171",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01579/speaker_14_yodas_speaker_AcmYKJdu3xQ.wav",
+      "query_idx": 3542,
+      "sample_id": "tier4_implicit:003171",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "audio_sha256": "f5f226c729eea4dde2a4e9ae841de62126df90eb064c9568c44b3fa2d43e90a0",
+      "id": 3323,
+      "key": "audio2tool:tier4_implicit:003323",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01655/speaker_12_yodas_speaker_tX6u_L5iTiQ.wav",
+      "query_idx": 3618,
+      "sample_id": "tier4_implicit:003323",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.198083333,
+      "audio_sha256": "02ffef5b25e6a0989eb8e995e6f8c46723ecedcf47cc3b85292264afaceca0a2",
+      "id": 3345,
+      "key": "audio2tool:tier4_implicit:003345",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01666/speaker_02_voxpopuli_speaker_1952.wav",
+      "query_idx": 3629,
+      "sample_id": "tier4_implicit:003345",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 4.632541667,
+      "audio_sha256": "9c3aed82e9e65ac72862d445ea9fca2b95d36ef476376fbac0d01cfbeb4b6654",
+      "id": 3585,
+      "key": "audio2tool:tier4_implicit:003585",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01786/speaker_00_voxpopuli_speaker_2119.wav",
+      "query_idx": 3749,
+      "sample_id": "tier4_implicit:003585",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.03175,
+      "audio_sha256": "ca1c2abc129dea3010ec54036f22e5ea6caeaca9a81c8a5c149281137d5355fd",
+      "id": 3603,
+      "key": "audio2tool:tier4_implicit:003603",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01795/speaker_00_voxpopuli_speaker_112760.wav",
+      "query_idx": 3758,
+      "sample_id": "tier4_implicit:003603",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "audio_sha256": "238226623178a5d6c80ece06835e44ec9777ea5a1b4d79cd4e166bcbd32197d0",
+      "id": 3781,
+      "key": "audio2tool:tier4_implicit:003781",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01884/speaker_12_ecapa_speaker_13180.wav",
+      "query_idx": 4477,
+      "sample_id": "tier4_implicit:003781",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "audio_sha256": "eeeca75fe432d09dfad7398edee05fbbbabcbca8c2098e6c019a8019d2ff4409",
+      "id": 3877,
+      "key": "audio2tool:tier4_implicit:003877",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01932/speaker_10_ecapa_speaker_30411.wav",
+      "query_idx": 4525,
+      "sample_id": "tier4_implicit:003877",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "audio_sha256": "e81924f43c3ae94ed1f624fb5040d7c6e802d21a457f3360c977ca11a342f148",
+      "id": 3895,
+      "key": "audio2tool:tier4_implicit:003895",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_01941/speaker_07_ecapa_speaker_20061.wav",
+      "query_idx": 4534,
+      "sample_id": "tier4_implicit:003895",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 3.976875,
+      "audio_sha256": "3aefd4e623d77505d851512067e8cb77fb7e1b0e1e451fee97c401fa3ab1d880",
+      "id": 4237,
+      "key": "audio2tool:tier4_implicit:004237",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_02112/speaker_08_ecapa_speaker_30578.wav",
+      "query_idx": 4012,
+      "sample_id": "tier4_implicit:004237",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 9.736875,
+      "audio_sha256": "181fa01b39279fa1031b13eaa772d5e7b232cdd52acfc2a62d2c5744de01e50b",
+      "id": 25,
+      "key": "audio2tool:tier5_needle:000025",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00013/speaker_07_ecapa_speaker_43324.wav",
+      "query_idx": 2112,
+      "sample_id": "tier5_needle:000025",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.016875,
+      "audio_sha256": "775d039fa8f8beecb8ad21aeb2e4aa4aadec330640e5e8248f173e461973042e",
+      "id": 119,
+      "key": "audio2tool:tier5_needle:000119",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00060/speaker_02_3dspeaker_speaker_3D_SPK_07983.wav",
+      "query_idx": 2159,
+      "sample_id": "tier5_needle:000119",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.176875,
+      "audio_sha256": "f6256a3470460a3d18ead035d1440ccd85acea51b09935a629b6246cf0908cc0",
+      "id": 213,
+      "key": "audio2tool:tier5_needle:000213",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00107/speaker_00_voxpopuli_speaker_204332.wav",
+      "query_idx": 2206,
+      "sample_id": "tier5_needle:000213",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.216875,
+      "audio_sha256": "fcbc61f0e5d0b1d3ac2e989991853146ab23498e92a690f6777ef6807161424f",
+      "id": 379,
+      "key": "audio2tool:tier5_needle:000379",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00190/speaker_13_yodas_speaker_Cppv76hZ3E0.wav",
+      "query_idx": 2289,
+      "sample_id": "tier5_needle:000379",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.856875,
+      "audio_sha256": "278c8284e5cc921fcdbc19ed453cdf6f95c66cf831524bec11e9c17f5fb3b0c1",
+      "id": 455,
+      "key": "audio2tool:tier5_needle:000455",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00228/speaker_01_voxpopuli_speaker_132191.wav",
+      "query_idx": 2327,
+      "sample_id": "tier5_needle:000455",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.696875,
+      "audio_sha256": "4d60612939a844a1a4f4617322240d56f6f1ebeaadcb9494a2b71f6a62813054",
+      "id": 597,
+      "key": "audio2tool:tier5_needle:000597",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00299/speaker_03_ecapa_speaker_33645.wav",
+      "query_idx": 2398,
+      "sample_id": "tier5_needle:000597",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.456875,
+      "audio_sha256": "507deb4b7065e5775f268a4179474b2819d91265e939aa3dd8a8f7bad2031ad1",
+      "id": 695,
+      "key": "audio2tool:tier5_needle:000695",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00348/speaker_04_3dspeaker_speaker_3D_SPK_06428.wav",
+      "query_idx": 2447,
+      "sample_id": "tier5_needle:000695",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.536875,
+      "audio_sha256": "55131b9782a3e9e2022f9de4bf11ea520e9632c26ad6596c7efa44ec334a003d",
+      "id": 891,
+      "key": "audio2tool:tier5_needle:000891",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00446/speaker_05_3dspeaker_speaker_3D_SPK_08177.wav",
+      "query_idx": 2545,
+      "sample_id": "tier5_needle:000891",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.056875,
+      "audio_sha256": "b2551d8e97ee4dd1a3135aaec201cca424eba9ea74c8f846be06ee45b0ffc3eb",
+      "id": 993,
+      "key": "audio2tool:tier5_needle:000993",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00497/speaker_13_ecapa_speaker_49394.wav",
+      "query_idx": 2596,
+      "sample_id": "tier5_needle:000993",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 7.336875,
+      "audio_sha256": "3a6fba5cb70066bad3cce34d46a82e049dc134f0511d7e7690302a95ed1f44d3",
+      "id": 1001,
+      "key": "audio2tool:tier5_needle:001001",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00501/speaker_13_ecapa_speaker_6450.wav",
+      "query_idx": 2600,
+      "sample_id": "tier5_needle:001001",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.656875,
+      "audio_sha256": "ccb58a23908607479efc5dd567d18b8567499276eeac71c37d493886a787e194",
+      "id": 1029,
+      "key": "audio2tool:tier5_needle:001029",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00515/speaker_11_ecapa_speaker_20139.wav",
+      "query_idx": 2614,
+      "sample_id": "tier5_needle:001029",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.096875,
+      "audio_sha256": "f519891be88adcf92a65bbf6b6400c4b5a246e5b8da889ae69dba1d233e3b352",
+      "id": 1177,
+      "key": "audio2tool:tier5_needle:001177",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00589/speaker_12_ecapa_speaker_27844.wav",
+      "query_idx": 2688,
+      "sample_id": "tier5_needle:001177",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.176875,
+      "audio_sha256": "0462f3e3b8d77abaf245af1a86ef54f5f36a4ecb4dbdd90b69551942daceec9d",
+      "id": 1269,
+      "key": "audio2tool:tier5_needle:001269",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00635/speaker_12_ecapa_speaker_32144.wav",
+      "query_idx": 2734,
+      "sample_id": "tier5_needle:001269",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 7.496875,
+      "audio_sha256": "f074c7454a8d8bcf15f5ae70d4c548ab815b1de79a513d1c48fd2d3c7b793ede",
+      "id": 1291,
+      "key": "audio2tool:tier5_needle:001291",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00646/speaker_04_3dspeaker_speaker_3D_SPK_04703.wav",
+      "query_idx": 2745,
+      "sample_id": "tier5_needle:001291",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.376875,
+      "audio_sha256": "9d88d568700d085ef7242d0912ebe1019d5e433ba59d2ee68f84e05a4eac6148",
+      "id": 1313,
+      "key": "audio2tool:tier5_needle:001313",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00657/speaker_03_3dspeaker_speaker_3D_SPK_09648.wav",
+      "query_idx": 2756,
+      "sample_id": "tier5_needle:001313",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.576875,
+      "audio_sha256": "7a036441dec56e394f2b2a8c363c056e831cf28f21cb013e37cf42a891623757",
+      "id": 1337,
+      "key": "audio2tool:tier5_needle:001337",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00669/speaker_01_3dspeaker_speaker_3D_SPK_05228.wav",
+      "query_idx": 2768,
+      "sample_id": "tier5_needle:001337",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.616875,
+      "audio_sha256": "3b3d1a760f100200938a0358ad13bfaed1f7f80e1d136200c86cecdfe9e96b0f",
+      "id": 1625,
+      "key": "audio2tool:tier5_needle:001625",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00813/speaker_07_3dspeaker_speaker_3D_SPK_05962.wav",
+      "query_idx": 2912,
+      "sample_id": "tier5_needle:001625",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.656875,
+      "audio_sha256": "a32a86418dbcb487326c4e81e010feebb59d8543acf79ba6ab908cf3919c3750",
+      "id": 1639,
+      "key": "audio2tool:tier5_needle:001639",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00820/speaker_17_yodas_speaker_QGoBLv2tXd4.wav",
+      "query_idx": 2919,
+      "sample_id": "tier5_needle:001639",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.576875,
+      "audio_sha256": "a9b653d73475b430e5998f961db45210e2b38f9557760801b57dce7b50be6990",
+      "id": 1651,
+      "key": "audio2tool:tier5_needle:001651",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00826/speaker_03_ecapa_speaker_20061.wav",
+      "query_idx": 2925,
+      "sample_id": "tier5_needle:001651",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.016875,
+      "audio_sha256": "2afefda04c0d0180ea8041999a1e88667090683f35c7ac38ecbe55da0ea9ec58",
+      "id": 1655,
+      "key": "audio2tool:tier5_needle:001655",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00828/speaker_05_ecapa_speaker_20061.wav",
+      "query_idx": 2927,
+      "sample_id": "tier5_needle:001655",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 13.016875,
+      "audio_sha256": "6167886899bf38a8b70a66539644ddaadada252eb42fc402f69a8a527cbbbb51",
+      "id": 1659,
+      "key": "audio2tool:tier5_needle:001659",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00830/speaker_13_ecapa_speaker_1888.wav",
+      "query_idx": 2929,
+      "sample_id": "tier5_needle:001659",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.216875,
+      "audio_sha256": "5180ad77b669b9bb8f6c537a53d5f03b1ce09c2077efd5017f2c11755f660dc1",
+      "id": 1699,
+      "key": "audio2tool:tier5_needle:001699",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00850/speaker_17_yodas_speaker_Jy_jAo62j0E.wav",
+      "query_idx": 2949,
+      "sample_id": "tier5_needle:001699",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.536875,
+      "audio_sha256": "c33ea956c435783591c2cbc845b495e083ef980cc7798d25b4f3cb48da460d3e",
+      "id": 1701,
+      "key": "audio2tool:tier5_needle:001701",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00851/speaker_02_voxpopuli_speaker_39717.wav",
+      "query_idx": 2950,
+      "sample_id": "tier5_needle:001701",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.576875,
+      "audio_sha256": "bdae9cc44101432224c4f1bceabb914a28a092725724709689c2b1e2ea45e7d6",
+      "id": 1715,
+      "key": "audio2tool:tier5_needle:001715",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00858/speaker_03_3dspeaker_speaker_3D_SPK_05744.wav",
+      "query_idx": 2957,
+      "sample_id": "tier5_needle:001715",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.896875,
+      "audio_sha256": "255bd0d696236dd635da010b333b09048b0c424b8f03b3e140adc183444f5bed",
+      "id": 1747,
+      "key": "audio2tool:tier5_needle:001747",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00874/speaker_04_ecapa_speaker_13555.wav",
+      "query_idx": 2973,
+      "sample_id": "tier5_needle:001747",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.136875,
+      "audio_sha256": "4e7043ce429623ecfc3f0ad5be6e1eedf5358e3588d44acffd8a410e9044aa7d",
+      "id": 1803,
+      "key": "audio2tool:tier5_needle:001803",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00902/speaker_10_ecapa_speaker_32144.wav",
+      "query_idx": 3001,
+      "sample_id": "tier5_needle:001803",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.456875,
+      "audio_sha256": "e162d123f6d70f6c226782ee36b7385f57d3c42fbf00d5e5f56f0b774765ae4e",
+      "id": 1819,
+      "key": "audio2tool:tier5_needle:001819",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00910/speaker_04_3dspeaker_speaker_3D_SPK_00332.wav",
+      "query_idx": 3009,
+      "sample_id": "tier5_needle:001819",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.776875,
+      "audio_sha256": "8a79a8c1557e506483d6c715c90c6a8e589c4f63d018fd07cc90fcb311aa16d0",
+      "id": 1973,
+      "key": "audio2tool:tier5_needle:001973",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00987/speaker_02_voxpopuli_speaker_38398.wav",
+      "query_idx": 3086,
+      "sample_id": "tier5_needle:001973",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.976875,
+      "audio_sha256": "aa963694289d5047e7c7dde8ef84db3e48ccec53e13c1051443b611ff9289061",
+      "id": 2025,
+      "key": "audio2tool:tier5_needle:002025",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01013/speaker_00_voxpopuli_speaker_38398.wav",
+      "query_idx": 3112,
+      "sample_id": "tier5_needle:002025",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.136875,
+      "audio_sha256": "e8afe670bd815bef53ca44ab2ea892f51adbe0a47fac6fbf2b3e52749474f231",
+      "id": 2037,
+      "key": "audio2tool:tier5_needle:002037",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01019/speaker_03_voxpopuli_speaker_2054.wav",
+      "query_idx": 3118,
+      "sample_id": "tier5_needle:002037",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.656875,
+      "audio_sha256": "232cd47db1478ae33d2100978b55034521e4f036f6341ae55bf8fba84918f706",
+      "id": 2087,
+      "key": "audio2tool:tier5_needle:002087",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01044/speaker_05_3dspeaker_speaker_3D_SPK_01831.wav",
+      "query_idx": 3143,
+      "sample_id": "tier5_needle:002087",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.816875,
+      "audio_sha256": "61bff202c4a414c24b1209335fe8bfba795520780f38892e832c023baf3e067b",
+      "id": 2295,
+      "key": "audio2tool:tier5_needle:002295",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01148/speaker_08_ecapa_speaker_20139.wav",
+      "query_idx": 3247,
+      "sample_id": "tier5_needle:002295",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 6.296875,
+      "audio_sha256": "407d2d82d261e7dc3381d64f9ca22144272e69b767bc723bd65faa4afc01ffcb",
+      "id": 2409,
+      "key": "audio2tool:tier5_needle:002409",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01205/speaker_04_voxpopuli_speaker_197841.wav",
+      "query_idx": 3304,
+      "sample_id": "tier5_needle:002409",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.616875,
+      "audio_sha256": "a82488266bce2cbab5fc83052c921bd01161461bb3452ff3294ef00d4262e2e7",
+      "id": 2435,
+      "key": "audio2tool:tier5_needle:002435",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01218/speaker_08_ecapa_speaker_37062.wav",
+      "query_idx": 3317,
+      "sample_id": "tier5_needle:002435",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.616875,
+      "audio_sha256": "60f431ed410077d34dca027dc89c9f042f8953e0edc7dd72a87689ef318bc6c6",
+      "id": 2495,
+      "key": "audio2tool:tier5_needle:002495",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01248/speaker_14_yodas_speaker_tX6u_L5iTiQ.wav",
+      "query_idx": 3347,
+      "sample_id": "tier5_needle:002495",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 14.936875,
+      "audio_sha256": "8e4901b1598fa10aff095c0818aeda76ae44d792379e6c6b614a74ac852f749d",
+      "id": 2499,
+      "key": "audio2tool:tier5_needle:002499",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01250/speaker_15_yodas_speaker_ZDsfbzH3Bvc.wav",
+      "query_idx": 3349,
+      "sample_id": "tier5_needle:002499",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.096875,
+      "audio_sha256": "e2511558168e42f69fe41280a60f7d38c12be0919f4eda5ac757b2b6ac06f57c",
+      "id": 2623,
+      "key": "audio2tool:tier5_needle:002623",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01312/speaker_09_yodas_speaker_Cppv76hZ3E0.wav",
+      "query_idx": 3411,
+      "sample_id": "tier5_needle:002623",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 12.536875,
+      "audio_sha256": "0995e4cc60b90e2743a4234394aff8b407252aad88032bac7e7621fdfee8c99e",
+      "id": 2655,
+      "key": "audio2tool:tier5_needle:002655",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01328/speaker_05_ecapa_speaker_7466.wav",
+      "query_idx": 3427,
+      "sample_id": "tier5_needle:002655",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.056875,
+      "audio_sha256": "1d0c17d20e1758b5691fa8fd86599a89b460c39c9843f9a8971b3ea68f7b2ade",
+      "id": 2661,
+      "key": "audio2tool:tier5_needle:002661",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01331/speaker_14_ecapa_speaker_4257.wav",
+      "query_idx": 3430,
+      "sample_id": "tier5_needle:002661",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.976875,
+      "audio_sha256": "2137e6a6d67819cee04d7280712d62c6da5200e955f8d987f7e47fb3c7098f15",
+      "id": 2697,
+      "key": "audio2tool:tier5_needle:002697",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01349/speaker_00_voxpopuli_speaker_4267.wav",
+      "query_idx": 3448,
+      "sample_id": "tier5_needle:002697",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.216875,
+      "audio_sha256": "eb33781c8dcafed5206a4a160864c2def1a87f57626f04fbeff8c7690d22a8a1",
+      "id": 2847,
+      "key": "audio2tool:tier5_needle:002847",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01424/speaker_06_ecapa_speaker_13555.wav",
+      "query_idx": 3523,
+      "sample_id": "tier5_needle:002847",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.496875,
+      "audio_sha256": "2cbb3a12e70a5a5c946b649f5ab114c7cb1112337f5807a23c8dcd8b1e5f4e23",
+      "id": 2859,
+      "key": "audio2tool:tier5_needle:002859",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01430/speaker_12_ecapa_speaker_8936.wav",
+      "query_idx": 3529,
+      "sample_id": "tier5_needle:002859",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.496875,
+      "audio_sha256": "f14a0f126ae77b8d878cc7ead623f7c19b3a1eb8a154a656062b59fd58446943",
+      "id": 2913,
+      "key": "audio2tool:tier5_needle:002913",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01457/speaker_01_3dspeaker_speaker_3D_SPK_05744.wav",
+      "query_idx": 3856,
+      "sample_id": "tier5_needle:002913",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 11.336875,
+      "audio_sha256": "da7ae42a2743c233108f17ab3428017db315a65609ef1ec94ccb273e1112566d",
+      "id": 2949,
+      "key": "audio2tool:tier5_needle:002949",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01475/speaker_16_ecapa_speaker_27996.wav",
+      "query_idx": 4324,
+      "sample_id": "tier5_needle:002949",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.376875,
+      "audio_sha256": "cc8830e0ff55ea9cda932a6121903d6e03cd5d327dc392b55d9398a86419fbee",
+      "id": 3327,
+      "key": "audio2tool:tier5_needle:003327",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01664/speaker_05_3dspeaker_speaker_3D_SPK_09044.wav",
+      "query_idx": 3613,
+      "sample_id": "tier5_needle:003327",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.976875,
+      "audio_sha256": "b2cbbf9828e037a72f367c871369b2b1ed77d253bd65fd39d3ad9a22846cc3e6",
+      "id": 3473,
+      "key": "audio2tool:tier5_needle:003473",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01737/speaker_02_3dspeaker_speaker_3D_SPK_09197.wav",
+      "query_idx": 3686,
+      "sample_id": "tier5_needle:003473",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.976875,
+      "audio_sha256": "f414c2bedeb7c14c7d47126958de9aee15bdfb13a2b4abd0967593e732d947fd",
+      "id": 3489,
+      "key": "audio2tool:tier5_needle:003489",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01745/speaker_18_yodas_speaker_JItaEMrnjyy.wav",
+      "query_idx": 3694,
+      "sample_id": "tier5_needle:003489",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 10.376875,
+      "audio_sha256": "71b8415a03b9ff47ae25588f398fc128b9c9e610911628d88f033a39499aa9ac",
+      "id": 3831,
+      "key": "audio2tool:tier5_needle:003831",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01916/speaker_04_3dspeaker_speaker_3D_SPK_06428.wav",
+      "query_idx": 4495,
+      "sample_id": "tier5_needle:003831",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 9.096875,
+      "audio_sha256": "5bf87dc0181e88addbcea094f63d6d1ae3d0abea235d640918a9e3a9e26235c7",
+      "id": 3931,
+      "key": "audio2tool:tier5_needle:003931",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_01966/speaker_11_ecapa_speaker_13758.wav",
+      "query_idx": 4545,
+      "sample_id": "tier5_needle:003931",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 8.136875,
+      "audio_sha256": "222d0708e5e97b2e4a7369e4f1c18858711e69fcdbe6c06b3ec2a749e106d1fb",
+      "id": 4017,
+      "key": "audio2tool:tier5_needle:004017",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_02009/speaker_07_ecapa_speaker_33645.wav",
+      "query_idx": 433,
+      "sample_id": "tier5_needle:004017",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "audio_sha256": "a9790e29b2a145dce5e39b0f8321aff5caac78b8a77de9444b9112e26dab13dc",
+      "id": 111,
+      "key": "audio2tool:tier6_correction:000111",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00056/speaker_05_ecapa_speaker_18053.wav",
+      "query_idx": 2155,
+      "sample_id": "tier6_correction:000111",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "audio_sha256": "1bbcacdb9d4f554e057eee91d363901f28ff932b01750ed14634a6b3f6d9dae1",
+      "id": 119,
+      "key": "audio2tool:tier6_correction:000119",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00060/speaker_15_yodas_speaker_sMIEu7ZVzBE.wav",
+      "query_idx": 2159,
+      "sample_id": "tier6_correction:000119",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.896875,
+      "audio_sha256": "b0bcc5ba5a7bc9c9a54dd1a797d8f6f6c5cbae509913b1ebeb53d40d4a4e65fb",
+      "id": 149,
+      "key": "audio2tool:tier6_correction:000149",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00075/speaker_01_3dspeaker_speaker_3D_SPK_01062.wav",
+      "query_idx": 2174,
+      "sample_id": "tier6_correction:000149",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.549875,
+      "audio_sha256": "075eba1a73e922b5426e1ffceb5aca67395c33382f3205d7caf2c24407a2bb73",
+      "id": 213,
+      "key": "audio2tool:tier6_correction:000213",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00107/speaker_00_voxpopuli_speaker_204332.wav",
+      "query_idx": 2206,
+      "sample_id": "tier6_correction:000213",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "audio_sha256": "d8294de99afad61b4c957b6cdca908328ecea9fed8fadd67f3faf5a7724c58fc",
+      "id": 261,
+      "key": "audio2tool:tier6_correction:000261",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00131/speaker_11_ecapa_speaker_1888.wav",
+      "query_idx": 2230,
+      "sample_id": "tier6_correction:000261",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "audio_sha256": "20206974d5c09fe52d80c44ebfc7e2ca73d1f56f95021c53e11faa23bd1a90e2",
+      "id": 503,
+      "key": "audio2tool:tier6_correction:000503",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00252/speaker_07_ecapa_speaker_44437.wav",
+      "query_idx": 2351,
+      "sample_id": "tier6_correction:000503",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.816875,
+      "audio_sha256": "deaba60ba5a12d900592081f0d7e7964f66f51585013773829f40aca9e6d990a",
+      "id": 583,
+      "key": "audio2tool:tier6_correction:000583",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00292/speaker_05_ecapa_speaker_29670.wav",
+      "query_idx": 2391,
+      "sample_id": "tier6_correction:000583",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "audio_sha256": "d7af64f449e4e6086f1534dd2a987c56cabbc6378e38f44052a2f49267b218a4",
+      "id": 745,
+      "key": "audio2tool:tier6_correction:000745",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00373/speaker_11_ecapa_speaker_7803.wav",
+      "query_idx": 2472,
+      "sample_id": "tier6_correction:000745",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "audio_sha256": "474906b2cd8e814063f746fff4b038c02eddbcf0c9309f2ffe6aab145271d8eb",
+      "id": 759,
+      "key": "audio2tool:tier6_correction:000759",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00380/speaker_07_ecapa_speaker_23877.wav",
+      "query_idx": 2479,
+      "sample_id": "tier6_correction:000759",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.856875,
+      "audio_sha256": "e10e5f27ac1b166c5cb820965c092230e2652bfe0b8d73fb33fd51b5ccd77112",
+      "id": 891,
+      "key": "audio2tool:tier6_correction:000891",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00446/speaker_05_3dspeaker_speaker_3D_SPK_08177.wav",
+      "query_idx": 2545,
+      "sample_id": "tier6_correction:000891",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.336875,
+      "audio_sha256": "ef8414efed0de95b9baf9b3f74bb4d90052d2200a9d8489c974ccabbc9f8133b",
+      "id": 899,
+      "key": "audio2tool:tier6_correction:000899",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00450/speaker_11_ecapa_speaker_3139.wav",
+      "query_idx": 2549,
+      "sample_id": "tier6_correction:000899",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 14.136875,
+      "audio_sha256": "95ab974a12f872776ef6cc4a813a38a0d339a1a0acd9fc5191e6e6f5980c0b34",
+      "id": 1177,
+      "key": "audio2tool:tier6_correction:001177",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00589/speaker_19_yodas_speaker_Jr43JUhwBpo.wav",
+      "query_idx": 2688,
+      "sample_id": "tier6_correction:001177",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "audio_sha256": "1102f14126524b19e4ebea2d618c933a31b99fc3b0eddbf064e2f229cb3991f1",
+      "id": 1219,
+      "key": "audio2tool:tier6_correction:001219",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00610/speaker_03_3dspeaker_speaker_3D_SPK_09068.wav",
+      "query_idx": 2709,
+      "sample_id": "tier6_correction:001219",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "audio_sha256": "3c8498b9081017897e5547c7622fe71d60e021c902a82370c7ac4561dcf8a3fa",
+      "id": 1261,
+      "key": "audio2tool:tier6_correction:001261",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00631/speaker_03_3dspeaker_speaker_3D_SPK_00165.wav",
+      "query_idx": 2730,
+      "sample_id": "tier6_correction:001261",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.576875,
+      "audio_sha256": "84aa630dee3dfb2eb7cd6a95efa07898f9f77ad6c6a47799bfdfc244271a6e5d",
+      "id": 1267,
+      "key": "audio2tool:tier6_correction:001267",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00634/speaker_03_3dspeaker_speaker_3D_SPK_08649.wav",
+      "query_idx": 2733,
+      "sample_id": "tier6_correction:001267",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 7.656875,
+      "audio_sha256": "a2acdd924b7513eb15786541ec2539333a15e0bf7c000a3ef7fa75c43871daca",
+      "id": 1359,
+      "key": "audio2tool:tier6_correction:001359",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00680/speaker_03_3dspeaker_speaker_3D_SPK_08244.wav",
+      "query_idx": 2779,
+      "sample_id": "tier6_correction:001359",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.629375,
+      "audio_sha256": "05e25304eb8f4db9a8acf51527a4deb2a0b806b0a68d95eef466a1dc8cefa314",
+      "id": 1383,
+      "key": "audio2tool:tier6_correction:001383",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00692/speaker_02_voxpopuli_speaker_112760.wav",
+      "query_idx": 2791,
+      "sample_id": "tier6_correction:001383",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.029958333,
+      "audio_sha256": "0854d634f20681ecd389a934287196ceca8f8a548f5dd0b19adb08ad51ae92fd",
+      "id": 1391,
+      "key": "audio2tool:tier6_correction:001391",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00696/speaker_01_voxpopuli_speaker_124879.wav",
+      "query_idx": 2795,
+      "sample_id": "tier6_correction:001391",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "audio_sha256": "a95d883eb8010a72f2ccbc093b8ce6f4e5dfe8f7bf75807c8d6e18cbe244e725",
+      "id": 1467,
+      "key": "audio2tool:tier6_correction:001467",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00734/speaker_01_3dspeaker_speaker_3D_SPK_08649.wav",
+      "query_idx": 2833,
+      "sample_id": "tier6_correction:001467",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.472833333,
+      "audio_sha256": "07572cbeac61fca14866013d61b98a7fd43cfc41451acbb5c17dbadddc85c20d",
+      "id": 1669,
+      "key": "audio2tool:tier6_correction:001669",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00835/speaker_01_voxpopuli_speaker_2054.wav",
+      "query_idx": 2934,
+      "sample_id": "tier6_correction:001669",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 16.620625,
+      "audio_sha256": "763752cbae0ad504a0f3d5bd97f70320ed413d159677ccb2b6f825e41b46b248",
+      "id": 1829,
+      "key": "audio2tool:tier6_correction:001829",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00915/speaker_00_voxpopuli_speaker_129073.wav",
+      "query_idx": 3014,
+      "sample_id": "tier6_correction:001829",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.536875,
+      "audio_sha256": "9889b1d01cb58d828dc9edb743cec3ef3f85a92e4b436be79d98c6afe0323890",
+      "id": 1887,
+      "key": "audio2tool:tier6_correction:001887",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00944/speaker_10_3dspeaker_speaker_3D_SPK_08647.wav",
+      "query_idx": 3043,
+      "sample_id": "tier6_correction:001887",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.336875,
+      "audio_sha256": "3941d5bc29d2eba09532f7614e61817174fbc3e5dd8683f4ffb4f3e235fe84cb",
+      "id": 1911,
+      "key": "audio2tool:tier6_correction:001911",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00956/speaker_04_ecapa_speaker_37770.wav",
+      "query_idx": 3055,
+      "sample_id": "tier6_correction:001911",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.456875,
+      "audio_sha256": "8a388c4d1bf1a6c9190f80516cad0fb9e3633c67a8a722865c9925b03a1c6225",
+      "id": 1975,
+      "key": "audio2tool:tier6_correction:001975",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00988/speaker_10_ecapa_speaker_47764.wav",
+      "query_idx": 3087,
+      "sample_id": "tier6_correction:001975",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 6.136875,
+      "audio_sha256": "c66fcfee748d716a87856ac46e3e7dae9c366a693db4e3a304d2da1db6308dff",
+      "id": 2225,
+      "key": "audio2tool:tier6_correction:002225",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01113/speaker_08_ecapa_speaker_34316.wav",
+      "query_idx": 3212,
+      "sample_id": "tier6_correction:002225",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.776875,
+      "audio_sha256": "e6d019c4fcf5e32ef6a83b0cd725b5f81a4fd9001a38984303f571e536457f81",
+      "id": 2237,
+      "key": "audio2tool:tier6_correction:002237",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01119/speaker_08_ecapa_speaker_13555.wav",
+      "query_idx": 3218,
+      "sample_id": "tier6_correction:002237",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "audio_sha256": "995db4e2d4b53a90c866c15ff9e0a6ebfbb7e7044233daa80988a0861d1c55a0",
+      "id": 2281,
+      "key": "audio2tool:tier6_correction:002281",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01141/speaker_07_ecapa_speaker_3578.wav",
+      "query_idx": 3240,
+      "sample_id": "tier6_correction:002281",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.616875,
+      "audio_sha256": "2d9c4f5194e5a0de26ca1ea6d3dde617d0b244fff539f8a2ed44ea6eed8fb105",
+      "id": 2389,
+      "key": "audio2tool:tier6_correction:002389",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01195/speaker_08_ecapa_speaker_6931.wav",
+      "query_idx": 3294,
+      "sample_id": "tier6_correction:002389",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "audio_sha256": "abcddfa48304355bd4af3750de86e67ffdb849f333b97b0748db5ea5a7e68774",
+      "id": 2431,
+      "key": "audio2tool:tier6_correction:002431",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01216/speaker_14_yodas_speaker_Z5lB5s5Y1r8.wav",
+      "query_idx": 3315,
+      "sample_id": "tier6_correction:002431",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "audio_sha256": "cfbcab74da6c524f088eec5f1fc943e8aa146e35ae2aa64ecb1f7afb612c1cd3",
+      "id": 2459,
+      "key": "audio2tool:tier6_correction:002459",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01230/speaker_22_yodas_speaker_I8cMNYjtqfE.wav",
+      "query_idx": 3329,
+      "sample_id": "tier6_correction:002459",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.976875,
+      "audio_sha256": "9bdf9a04e3c46d851d13e9a75a64a36123342c0f2fb12ce6c2d6e4da9a3ede0e",
+      "id": 2463,
+      "key": "audio2tool:tier6_correction:002463",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01232/speaker_18_yodas_speaker_Jy_jAo62j0E.wav",
+      "query_idx": 3331,
+      "sample_id": "tier6_correction:002463",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.736875,
+      "audio_sha256": "2ac7ef2be6e5b44e3ce74ffb5c40e77bcbf56024bdbf4faa573ffd013e131519",
+      "id": 2471,
+      "key": "audio2tool:tier6_correction:002471",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01236/speaker_06_ecapa_speaker_2967.wav",
+      "query_idx": 3335,
+      "sample_id": "tier6_correction:002471",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 8.056875,
+      "audio_sha256": "9fb0ef508609c63b53e9541097fff8926d4ad5ef2ff428db70475665fe19efaf",
+      "id": 2621,
+      "key": "audio2tool:tier6_correction:002621",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01311/speaker_06_ecapa_speaker_13555.wav",
+      "query_idx": 3410,
+      "sample_id": "tier6_correction:002621",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "audio_sha256": "1be037fd87ba21c42754fe34fd49c695665328ee01f8f8e703e4d8cf3ce2feab",
+      "id": 2721,
+      "key": "audio2tool:tier6_correction:002721",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01361/speaker_02_3dspeaker_speaker_3D_SPK_09998.wav",
+      "query_idx": 3460,
+      "sample_id": "tier6_correction:002721",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.656875,
+      "audio_sha256": "9f99b986e13786b52ab1d868137fafa558605390365c65905c822be11dbb97da",
+      "id": 2737,
+      "key": "audio2tool:tier6_correction:002737",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01369/speaker_06_ecapa_speaker_37859.wav",
+      "query_idx": 3468,
+      "sample_id": "tier6_correction:002737",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "audio_sha256": "3a37675563f1790cd85806f6e442b5621851541610f9b771f04c7156c4ec3c36",
+      "id": 2739,
+      "key": "audio2tool:tier6_correction:002739",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01370/speaker_15_yodas_speaker_fDqvqnccx4y.wav",
+      "query_idx": 3469,
+      "sample_id": "tier6_correction:002739",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "audio_sha256": "1af07fae83a221af85a53a955c3171934f37affa9381d8e13fe04a50377a50c7",
+      "id": 2797,
+      "key": "audio2tool:tier6_correction:002797",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01399/speaker_11_ecapa_speaker_43324.wav",
+      "query_idx": 3498,
+      "sample_id": "tier6_correction:002797",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.416875,
+      "audio_sha256": "e8aeae74e854de3265e779841f7cd2539eefd5c93ee3900574c3143784da1e6f",
+      "id": 2811,
+      "key": "audio2tool:tier6_correction:002811",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01406/speaker_14_ecapa_speaker_20197.wav",
+      "query_idx": 3505,
+      "sample_id": "tier6_correction:002811",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.256875,
+      "audio_sha256": "a5aa860c49af30458f5b97c155b28e9375a8ea45d0f64429e06eeff92839bc07",
+      "id": 2955,
+      "key": "audio2tool:tier6_correction:002955",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01478/speaker_15_yodas_speaker_3pj3cUijpG4.wav",
+      "query_idx": 4327,
+      "sample_id": "tier6_correction:002955",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.736875,
+      "audio_sha256": "3f3b3c10b936881f09977c1ea36e70d257af432bbb0df4cae77c802c9a94c3e5",
+      "id": 3001,
+      "key": "audio2tool:tier6_correction:003001",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01501/speaker_06_ecapa_speaker_23010.wav",
+      "query_idx": 4350,
+      "sample_id": "tier6_correction:003001",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "audio_sha256": "a3fa3487efe20385e0de76febdb198b2ae59d3d8156bc1a471978d2ca4e089e1",
+      "id": 3047,
+      "key": "audio2tool:tier6_correction:003047",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01524/speaker_12_ecapa_speaker_20623.wav",
+      "query_idx": 4373,
+      "sample_id": "tier6_correction:003047",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.216875,
+      "audio_sha256": "e81607c8f3bb3623a21c1cb59c71cfbf8e97a7eb81e68cd3219117c34a77f93f",
+      "id": 3191,
+      "key": "audio2tool:tier6_correction:003191",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01596/speaker_14_ecapa_speaker_28785.wav",
+      "query_idx": 3545,
+      "sample_id": "tier6_correction:003191",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.536875,
+      "audio_sha256": "7d3d32786f2e5d55a392b5736cfd07b0d89de85aecad2732f62d8786abf02dd9",
+      "id": 3411,
+      "key": "audio2tool:tier6_correction:003411",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01706/speaker_08_ecapa_speaker_42856.wav",
+      "query_idx": 3655,
+      "sample_id": "tier6_correction:003411",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.176875,
+      "audio_sha256": "d4ba9ec5903219749960c80a127c2cfd6dbce3cc1738529a7a17d414a730828b",
+      "id": 3781,
+      "key": "audio2tool:tier6_correction:003781",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01891/speaker_08_ecapa_speaker_13555.wav",
+      "query_idx": 4470,
+      "sample_id": "tier6_correction:003781",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.936875,
+      "audio_sha256": "a00bc8e882c9161ad3c3c8e6549434281f22bc602da791ade9772d816b82461a",
+      "id": 3805,
+      "key": "audio2tool:tier6_correction:003805",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01903/speaker_12_ecapa_speaker_50050.wav",
+      "query_idx": 4482,
+      "sample_id": "tier6_correction:003805",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.296875,
+      "audio_sha256": "598dcc59df0dc16bbd1eecaa834cb7c2e23c233ee307b0e176c4eb04f2b3ea5c",
+      "id": 3829,
+      "key": "audio2tool:tier6_correction:003829",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01915/speaker_03_3dspeaker_speaker_3D_SPK_08244.wav",
+      "query_idx": 4494,
+      "sample_id": "tier6_correction:003829",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.346416667,
+      "audio_sha256": "a68be82e343b9801ddec0d66c7326cfb3ee66b10baee209eead84a59ba277495",
+      "id": 3939,
+      "key": "audio2tool:tier6_correction:003939",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01970/speaker_01_voxpopuli_speaker_132191.wav",
+      "query_idx": 4549,
+      "sample_id": "tier6_correction:003939",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.584,
+      "audio_sha256": "2ab93c0111a82cf1a318a03d517a296269b38757ad157c1ad5bd4b1fbac14116",
+      "id": 3943,
+      "key": "audio2tool:tier6_correction:003943",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01972/speaker_00_voxpopuli_speaker_1873.wav",
+      "query_idx": 4551,
+      "sample_id": "tier6_correction:003943",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 5.016875,
+      "audio_sha256": "ec78ce16d7b0120f5bc55fe5fabcca79e8c55e23634b74314a9bd5b5a35b3953",
+      "id": 4095,
+      "key": "audio2tool:tier6_correction:004095",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_02048/speaker_15_ecapa_speaker_27844.wav",
+      "query_idx": 1064,
+      "sample_id": "tier6_correction:004095",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.496875,
+      "audio_sha256": "5af001967878c2eb157e674168ea0f6716886fa457f9d9b9cb7612600de9f911",
+      "id": 4255,
+      "key": "audio2tool:tier6_correction:004255",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_02128/speaker_16_yodas_speaker__SgaT_tZbXQ.wav",
+      "query_idx": 4048,
+      "sample_id": "tier6_correction:004255",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 4.696875,
+      "audio_sha256": "b7a1a313f210fb993a9ca1886727cc515a215aa7bbf1b465ec2c1ee05c21e9f3",
+      "id": 42,
+      "key": "audio2tool:tier7_multiturn:000042",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00042/turn_00_user_ecapa_speaker_30577.wav",
+      "query_idx": 2141,
+      "sample_id": "tier7_multiturn:000042",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.136875,
+      "audio_sha256": "3fa66b12cc94692bb9614e2041b23ac0d19c6718b4c502aaa5e9c8f21e2c4a14",
+      "id": 58,
+      "key": "audio2tool:tier7_multiturn:000058",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00058/turn_00_user_yodas_speaker_z7XoLOJi6mk.wav",
+      "query_idx": 2157,
+      "sample_id": "tier7_multiturn:000058",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.016875,
+      "audio_sha256": "78fb6b60e4edc06ca965b69c31b8f6853a6f072d81e8228e3d06d386d7fb182d",
+      "id": 59,
+      "key": "audio2tool:tier7_multiturn:000059",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00059/turn_00_user_3dspeaker_speaker_3D_SPK_05744.wav",
+      "query_idx": 2158,
+      "sample_id": "tier7_multiturn:000059",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.896875,
+      "audio_sha256": "cbed3dae621283bf50dc95f4358e38689b7cd5e41c3445df21e43e08cf384af3",
+      "id": 73,
+      "key": "audio2tool:tier7_multiturn:000073",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00073/turn_00_user_ecapa_speaker_37288.wav",
+      "query_idx": 2172,
+      "sample_id": "tier7_multiturn:000073",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 19.096875,
+      "audio_sha256": "8d180809b2a6a73b539a89ede0902019db8a476f9d0f7862bfc76cdfda110bad",
+      "id": 123,
+      "key": "audio2tool:tier7_multiturn:000123",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00123/turn_00_user_yodas_speaker__6imHfabxY4.wav",
+      "query_idx": 2222,
+      "sample_id": "tier7_multiturn:000123",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.216875,
+      "audio_sha256": "bd25dd7db2c59ff2f1aace5f40a298a371808923d69972bc3f5134f6168871a9",
+      "id": 137,
+      "key": "audio2tool:tier7_multiturn:000137",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00137/turn_00_user_3dspeaker_speaker_3D_SPK_07983.wav",
+      "query_idx": 2236,
+      "sample_id": "tier7_multiturn:000137",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 11.416875,
+      "audio_sha256": "9d174a21cf9b1503eb35ab03f79fb5901f1ea5d33aa209f729c8219ba14fd0c4",
+      "id": 159,
+      "key": "audio2tool:tier7_multiturn:000159",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00159/turn_00_user_ecapa_speaker_1888.wav",
+      "query_idx": 2258,
+      "sample_id": "tier7_multiturn:000159",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.576875,
+      "audio_sha256": "3b75771a8336dd494740d5e08b178b4f36e92d8a09d423ee5430cf7c495c7ddb",
+      "id": 174,
+      "key": "audio2tool:tier7_multiturn:000174",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00174/turn_00_user_yodas_speaker_EN9F2DKNyq0.wav",
+      "query_idx": 2273,
+      "sample_id": "tier7_multiturn:000174",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "audio_sha256": "220d578bfefa10f1143bea355c0667108ad79c559d91f0a193b03e0a1d92e17d",
+      "id": 224,
+      "key": "audio2tool:tier7_multiturn:000224",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00224/turn_00_user_ecapa_speaker_39857.wav",
+      "query_idx": 2323,
+      "sample_id": "tier7_multiturn:000224",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 1.656875,
+      "audio_sha256": "c2a4e91fe8299f2c8ebe1c7480478f6907675f05ad048acebe10a84dd56091cd",
+      "id": 258,
+      "key": "audio2tool:tier7_multiturn:000258",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00258/turn_00_user_ecapa_speaker_33645.wav",
+      "query_idx": 2357,
+      "sample_id": "tier7_multiturn:000258",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.296875,
+      "audio_sha256": "b84b81cc3ae1b688c3ac8801aa473753e6480d31039a1c0c3c559e794943e969",
+      "id": 299,
+      "key": "audio2tool:tier7_multiturn:000299",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00299/turn_00_user_ecapa_speaker_13180.wav",
+      "query_idx": 2398,
+      "sample_id": "tier7_multiturn:000299",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.816875,
+      "audio_sha256": "7c48e6edb6bf6a66093bcea35f0a83312bfb24730ea21eff8d0db111d08a8335",
+      "id": 379,
+      "key": "audio2tool:tier7_multiturn:000379",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00379/turn_00_user_ecapa_speaker_33198.wav",
+      "query_idx": 2478,
+      "sample_id": "tier7_multiturn:000379",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 9.016875,
+      "audio_sha256": "1c4b143b1f6391d989b2731a465dc2f8f369e55625cab4e8aa15902dc594003e",
+      "id": 413,
+      "key": "audio2tool:tier7_multiturn:000413",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00413/turn_00_user_3dspeaker_speaker_3D_SPK_08177.wav",
+      "query_idx": 2512,
+      "sample_id": "tier7_multiturn:000413",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.096875,
+      "audio_sha256": "ff17f5ab3387a509952d457a9c0d3ae17b4c3def6f7bdcf06780ff7b5ff9e8af",
+      "id": 421,
+      "key": "audio2tool:tier7_multiturn:000421",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00421/turn_00_user_ecapa_speaker_19305.wav",
+      "query_idx": 2520,
+      "sample_id": "tier7_multiturn:000421",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "audio_sha256": "fe561c391976370215dc0aac772ab4ac7ac73008e984b36abf58f25c11a68a3a",
+      "id": 498,
+      "key": "audio2tool:tier7_multiturn:000498",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00498/turn_00_user_ecapa_speaker_37288.wav",
+      "query_idx": 2597,
+      "sample_id": "tier7_multiturn:000498",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.776875,
+      "audio_sha256": "e88dda904e5d56fbb6c77bd3c2882dc339f8f1aa9c0d49b62c667e88dc9f93c4",
+      "id": 521,
+      "key": "audio2tool:tier7_multiturn:000521",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00521/turn_00_user_3dspeaker_speaker_3D_SPK_07674.wav",
+      "query_idx": 2620,
+      "sample_id": "tier7_multiturn:000521",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.456875,
+      "audio_sha256": "eefdb45842d5107ef63dd5b87b3ba46678ca10ee9f0c1b948bbb254fdb34f854",
+      "id": 522,
+      "key": "audio2tool:tier7_multiturn:000522",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00522/turn_00_user_ecapa_speaker_44437.wav",
+      "query_idx": 2621,
+      "sample_id": "tier7_multiturn:000522",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.936875,
+      "audio_sha256": "fdc6ddf6a54af1549d3e26c821e1e301c6e780f8e45e58538179b1f3eade0bbd",
+      "id": 560,
+      "key": "audio2tool:tier7_multiturn:000560",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00560/turn_00_user_ecapa_speaker_13180.wav",
+      "query_idx": 2659,
+      "sample_id": "tier7_multiturn:000560",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.616875,
+      "audio_sha256": "d2bfbb694dffa7f2c307018ccadd8a46c5569c853117e85be5dab156bfc37bc1",
+      "id": 569,
+      "key": "audio2tool:tier7_multiturn:000569",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00569/turn_00_user_ecapa_speaker_42827.wav",
+      "query_idx": 2668,
+      "sample_id": "tier7_multiturn:000569",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 31.95375,
+      "audio_sha256": "56f096d536d5640e097d5636838d24a1bb1159f14ce72a640caeb01155d55940",
+      "id": 596,
+      "key": "audio2tool:tier7_multiturn:000596",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00596/turn_00_user_ecapa_speaker_30578.wav",
+      "query_idx": 2695,
+      "sample_id": "tier7_multiturn:000596",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.856875,
+      "audio_sha256": "ce045961b28d24dd849f202b5fc1e42b16def77ba0587c1af5b18a7f9572807c",
+      "id": 710,
+      "key": "audio2tool:tier7_multiturn:000710",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00710/turn_00_user_3dspeaker_speaker_3D_SPK_09197.wav",
+      "query_idx": 2809,
+      "sample_id": "tier7_multiturn:000710",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.416875,
+      "audio_sha256": "31c86f76265c93b2b22ef5ef3424e15058a5f207a143ccd1231d4c563650edd1",
+      "id": 714,
+      "key": "audio2tool:tier7_multiturn:000714",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00714/turn_00_user_ecapa_speaker_49394.wav",
+      "query_idx": 2813,
+      "sample_id": "tier7_multiturn:000714",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 0.936875,
+      "audio_sha256": "c609f895503054fc9fef3b65d869a4b712658d1f5cd375faa7d27b0f0ad1359b",
+      "id": 757,
+      "key": "audio2tool:tier7_multiturn:000757",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00757/turn_00_user_3dspeaker_speaker_3D_SPK_01831.wav",
+      "query_idx": 2856,
+      "sample_id": "tier7_multiturn:000757",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 5.665208333,
+      "audio_sha256": "3a95523375bf3bbc324ce57aeb8d83f01b6197229765ac0d4a1bdbb11a0b4afd",
+      "id": 856,
+      "key": "audio2tool:tier7_multiturn:000856",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00856/turn_00_user_voxpopuli_speaker_129073.wav",
+      "query_idx": 2955,
+      "sample_id": "tier7_multiturn:000856",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "audio_sha256": "44195f19123429721842523159630f9fa325a848757c778f6fcff78cdb6fedcd",
+      "id": 890,
+      "key": "audio2tool:tier7_multiturn:000890",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00890/turn_00_user_yodas_speaker_9IVKPWzNuTc.wav",
+      "query_idx": 2989,
+      "sample_id": "tier7_multiturn:000890",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.376875,
+      "audio_sha256": "924baf87687f8908ba405c189c24dff7df5afe6184a5ce9f7161fa7aa5becf0b",
+      "id": 997,
+      "key": "audio2tool:tier7_multiturn:000997",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_00997/turn_00_user_3dspeaker_speaker_3D_SPK_07983.wav",
+      "query_idx": 3096,
+      "sample_id": "tier7_multiturn:000997",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 1.336875,
+      "audio_sha256": "b8742f15103d664f9ab78ad27114f8b20b8d1f2fd89d715ded722e24a01c50dc",
+      "id": 1018,
+      "key": "audio2tool:tier7_multiturn:001018",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01018/turn_00_user_ecapa_speaker_30411.wav",
+      "query_idx": 3117,
+      "sample_id": "tier7_multiturn:001018",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 30.67375,
+      "audio_sha256": "743df9bd2513bf066b7d4dc63439b36b14b8d36a9c50048552667f9cf8f1a54a",
+      "id": 1025,
+      "key": "audio2tool:tier7_multiturn:001025",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01025/turn_00_user_yodas_speaker_EN9F2DKNyq0.wav",
+      "query_idx": 3124,
+      "sample_id": "tier7_multiturn:001025",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 654.635666667,
+      "audio_sha256": "906bd5a19ab6c28a89d8abffe6770ee4e9eb0e1d2cb8e1363a3230c8f112b5ad",
+      "id": 1033,
+      "key": "audio2tool:tier7_multiturn:001033",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01033/turn_00_user_voxpopuli_speaker_129073.wav",
+      "query_idx": 3132,
+      "sample_id": "tier7_multiturn:001033",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 8.296875,
+      "audio_sha256": "66078596ec18a5eca108e3e5ce97ca96b18560c4f84b1ea2be04786c315c4321",
+      "id": 1230,
+      "key": "audio2tool:tier7_multiturn:001230",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01230/turn_00_user_ecapa_speaker_50050.wav",
+      "query_idx": 3329,
+      "sample_id": "tier7_multiturn:001230",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.176875,
+      "audio_sha256": "16281d0e90798ca721a8ae8fad0c1a5d7ef6c41c918d3475c8f2845a6285776b",
+      "id": 1250,
+      "key": "audio2tool:tier7_multiturn:001250",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01250/turn_00_user_ecapa_speaker_46191.wav",
+      "query_idx": 3349,
+      "sample_id": "tier7_multiturn:001250",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.075916667,
+      "audio_sha256": "600cdc29c0b5b34fde78b3b712f5c90e303d54e79b79566cbb618a4c49455161",
+      "id": 1304,
+      "key": "audio2tool:tier7_multiturn:001304",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01304/turn_00_user_voxpopuli_speaker_197841.wav",
+      "query_idx": 3403,
+      "sample_id": "tier7_multiturn:001304",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.376875,
+      "audio_sha256": "7d689d1a3bf5f206c2c7fc4269f786e791e2e8a0d1c05c35943afb6d9ad68d53",
+      "id": 1337,
+      "key": "audio2tool:tier7_multiturn:001337",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01337/turn_00_user_ecapa_speaker_44437.wav",
+      "query_idx": 3436,
+      "sample_id": "tier7_multiturn:001337",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.656875,
+      "audio_sha256": "7d3c34da4d0a7ffaca99ddf8a7fca37d740f970c830685db199511d21885d534",
+      "id": 1353,
+      "key": "audio2tool:tier7_multiturn:001353",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01353/turn_00_user_ecapa_speaker_7803.wav",
+      "query_idx": 3452,
+      "sample_id": "tier7_multiturn:001353",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.096875,
+      "audio_sha256": "2e55e374c94a1b14ba2815634d73ec33c19960d6b2e16e4edf9fc85ec5f83a4c",
+      "id": 1399,
+      "key": "audio2tool:tier7_multiturn:001399",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01399/turn_00_user_ecapa_speaker_44644.wav",
+      "query_idx": 3498,
+      "sample_id": "tier7_multiturn:001399",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 21.096875,
+      "audio_sha256": "17f350860633751bda9529c80d15231d4bbed152b8b53bad22691776e195779a",
+      "id": 1423,
+      "key": "audio2tool:tier7_multiturn:001423",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01423/turn_00_user_ecapa_speaker_41759.wav",
+      "query_idx": 3522,
+      "sample_id": "tier7_multiturn:001423",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 16.376875,
+      "audio_sha256": "5ef387a602f9b4278195e9e9150c932d5929a79b4420f8dbc9f853b263ced8bf",
+      "id": 1430,
+      "key": "audio2tool:tier7_multiturn:001430",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01430/turn_00_user_yodas_speaker_5vB_9z5w0oQ.wav",
+      "query_idx": 3529,
+      "sample_id": "tier7_multiturn:001430",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "audio_sha256": "1fb9af1bd1c10ffbb53cc79015c0b0d93f1429342f9d897943ce0af28e8e670d",
+      "id": 1460,
+      "key": "audio2tool:tier7_multiturn:001460",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01460/turn_00_user_ecapa_speaker_4767.wav",
+      "query_idx": 3859,
+      "sample_id": "tier7_multiturn:001460",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 3.256875,
+      "audio_sha256": "fb9ab5b40c13beb2fd4d880e5ce70a5b9d097f5c53647ddb28fb43f955af620a",
+      "id": 1461,
+      "key": "audio2tool:tier7_multiturn:001461",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01461/turn_00_user_ecapa_speaker_5692.wav",
+      "query_idx": 3860,
+      "sample_id": "tier7_multiturn:001461",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 6.056875,
+      "audio_sha256": "950283e1355b96be3fc741bd4139777a03301d7298d77af8ce209d28372d627a",
+      "id": 1533,
+      "key": "audio2tool:tier7_multiturn:001533",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01533/turn_00_user_3dspeaker_speaker_3D_SPK_09998.wav",
+      "query_idx": 4382,
+      "sample_id": "tier7_multiturn:001533",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "audio_sha256": "fe2cb5907403562f92cd76aa19a4ce45cb4c9f975ed1faef4073b68f07fe452c",
+      "id": 1733,
+      "key": "audio2tool:tier7_multiturn:001733",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01733/turn_00_user_ecapa_speaker_21897.wav",
+      "query_idx": 3682,
+      "sample_id": "tier7_multiturn:001733",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.056875,
+      "audio_sha256": "a3f0cdcae564718807e39dbda691f1038918f5bbd527d544a05f74cae0ad44eb",
+      "id": 1745,
+      "key": "audio2tool:tier7_multiturn:001745",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01745/turn_00_user_ecapa_speaker_21897.wav",
+      "query_idx": 3694,
+      "sample_id": "tier7_multiturn:001745",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 1.676791667,
+      "audio_sha256": "9c2a3a7b8d4d4fd678bde6a2225ceb736039087195d7e006325ff4be68766f93",
+      "id": 1832,
+      "key": "audio2tool:tier7_multiturn:001832",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01832/turn_00_user_voxpopuli_speaker_5729.wav",
+      "query_idx": 3781,
+      "sample_id": "tier7_multiturn:001832",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.136875,
+      "audio_sha256": "b840614cffe4893b1d4b7d047f7833176219eea133067b830245271f5fe3a3f8",
+      "id": 1870,
+      "key": "audio2tool:tier7_multiturn:001870",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01870/turn_00_user_ecapa_speaker_23877.wav",
+      "query_idx": 4449,
+      "sample_id": "tier7_multiturn:001870",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.256875,
+      "audio_sha256": "d2bdb72fe503396630280e7a606a372283d5e9b656fc9c4643cbff55eca4ef48",
+      "id": 1883,
+      "key": "audio2tool:tier7_multiturn:001883",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01883/turn_00_user_yodas_speaker_3pj3cUijpG4.wav",
+      "query_idx": 4462,
+      "sample_id": "tier7_multiturn:001883",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.856875,
+      "audio_sha256": "14d6845abdd8ede4c680cf0dbf6bc4763c258e2094d428b0b02704664b419db3",
+      "id": 1953,
+      "key": "audio2tool:tier7_multiturn:001953",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01953/turn_00_user_3dspeaker_speaker_3D_SPK_00481.wav",
+      "query_idx": 4532,
+      "sample_id": "tier7_multiturn:001953",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 2.076833333,
+      "audio_sha256": "782f3a392cb7c96c7e4356239a5cc3b0f4e0764b63e7eb17e990c7e03df5c6a9",
+      "id": 1958,
+      "key": "audio2tool:tier7_multiturn:001958",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01958/turn_00_user_voxpopuli_speaker_1952.wav",
+      "query_idx": 4537,
+      "sample_id": "tier7_multiturn:001958",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 10.376875,
+      "audio_sha256": "f5f374a413895c0b00ea27ecdd81bf22730c59dea9f41822c70d88d790cc3bec",
+      "id": 1959,
+      "key": "audio2tool:tier7_multiturn:001959",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01959/turn_00_user_ecapa_speaker_22787.wav",
+      "query_idx": 4538,
+      "sample_id": "tier7_multiturn:001959",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.896875,
+      "audio_sha256": "39b94eb0a6579acdb1dd24058fdb16e50ee9ac48650c0f93802777f2fea37423",
+      "id": 2124,
+      "key": "audio2tool:tier7_multiturn:002124",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_02124/turn_00_user_3dspeaker_speaker_3D_SPK_01831.wav",
+      "query_idx": 3970,
+      "sample_id": "tier7_multiturn:002124",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 7.106916667,
+      "audio_sha256": "6e5e67ff2e9ee4f9693a9c25566800b02bbdfa3630971755f12803f6e98ea74e",
+      "id": 2141,
+      "key": "audio2tool:tier7_multiturn:002141",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_02141/turn_00_user_voxpopuli_speaker_112760.wav",
+      "query_idx": 4239,
+      "sample_id": "tier7_multiturn:002141",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 15.337,
+      "audio_sha256": "7df689fb73bff4ea60c036aac5b5818a3a9be003d6c81d899acd613ae577d4d6",
+      "id": 1,
+      "key": "audio2tool:tier8_intent_blending:000001",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00001/mixed.wav",
+      "query_idx": 334,
+      "sample_id": "tier8_intent_blending:000001",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.737,
+      "audio_sha256": "7019bc50575a474ebe2176c3fc26288123f21f787e016ad8d9ec2f676542a467",
+      "id": 6,
+      "key": "audio2tool:tier8_intent_blending:000006",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00006/mixed.wav",
+      "query_idx": 339,
+      "sample_id": "tier8_intent_blending:000006",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.777,
+      "audio_sha256": "945783e3d6cdb2b8264d2bada3d57c2a840e08e355bd4e712b86593eff3f2468",
+      "id": 31,
+      "key": "audio2tool:tier8_intent_blending:000031",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00031/mixed.wav",
+      "query_idx": 364,
+      "sample_id": "tier8_intent_blending:000031",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.737,
+      "audio_sha256": "4216cfbffedff025542061b9fcc9a9314e3a109b9dc54ed04553bfcdb407cba1",
+      "id": 45,
+      "key": "audio2tool:tier8_intent_blending:000045",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00045/mixed.wav",
+      "query_idx": 378,
+      "sample_id": "tier8_intent_blending:000045",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.617,
+      "audio_sha256": "7ddc8ac5a1370a94485725ed10cf81bcbb2755cf28b87d3f8177af1654e10ad8",
+      "id": 58,
+      "key": "audio2tool:tier8_intent_blending:000058",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00058/mixed.wav",
+      "query_idx": 391,
+      "sample_id": "tier8_intent_blending:000058",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.777,
+      "audio_sha256": "d2ded29d802c3e878d420a6f0f0ab9d1759acecf25b0052cd569d099f908f2be",
+      "id": 61,
+      "key": "audio2tool:tier8_intent_blending:000061",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00061/mixed.wav",
+      "query_idx": 394,
+      "sample_id": "tier8_intent_blending:000061",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.868,
+      "audio_sha256": "79a0241527d564e684d317cd26407cc87fa1b543181fc6aad8553292325fa1fc",
+      "id": 76,
+      "key": "audio2tool:tier8_intent_blending:000076",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00076/mixed.wav",
+      "query_idx": 409,
+      "sample_id": "tier8_intent_blending:000076",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.937,
+      "audio_sha256": "607d4a4f55e2d97f91e01cb7ce12c639de10bed8ce6b24a254a17d7decbbbb62",
+      "id": 106,
+      "key": "audio2tool:tier8_intent_blending:000106",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00106/mixed.wav",
+      "query_idx": 439,
+      "sample_id": "tier8_intent_blending:000106",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.097,
+      "audio_sha256": "aca348e35d15856fe03485aaf837e5045623679aeec20f9507163802f1e3c598",
+      "id": 114,
+      "key": "audio2tool:tier8_intent_blending:000114",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00114/mixed.wav",
+      "query_idx": 447,
+      "sample_id": "tier8_intent_blending:000114",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.417,
+      "audio_sha256": "1ea230a495fe436ad15bc05a109c0df2d868ce9db0d411d37f13991570bda48c",
+      "id": 122,
+      "key": "audio2tool:tier8_intent_blending:000122",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00122/mixed.wav",
+      "query_idx": 455,
+      "sample_id": "tier8_intent_blending:000122",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.417,
+      "audio_sha256": "2b4933bc682151e6a2c879fd73968ac3f0c88f899d6af6e4cbc219c8d5cc93b0",
+      "id": 134,
+      "key": "audio2tool:tier8_intent_blending:000134",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00134/mixed.wav",
+      "query_idx": 467,
+      "sample_id": "tier8_intent_blending:000134",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.377,
+      "audio_sha256": "ac71a4352306eb369b5635f2f3a492ddb36cd89fd34290a96ced8c7b2928f060",
+      "id": 136,
+      "key": "audio2tool:tier8_intent_blending:000136",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00136/mixed.wav",
+      "query_idx": 469,
+      "sample_id": "tier8_intent_blending:000136",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.497,
+      "audio_sha256": "6b3bee01194257ad765388777e817f6f0accf144009cbc5d70d5cd279a3181a2",
+      "id": 139,
+      "key": "audio2tool:tier8_intent_blending:000139",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00139/mixed.wav",
+      "query_idx": 472,
+      "sample_id": "tier8_intent_blending:000139",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.657,
+      "audio_sha256": "5287058377be819ccf29ac0bfefdd2da3cb747262672621406d227eb422b758a",
+      "id": 157,
+      "key": "audio2tool:tier8_intent_blending:000157",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00157/mixed.wav",
+      "query_idx": 490,
+      "sample_id": "tier8_intent_blending:000157",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 8.777,
+      "audio_sha256": "26b8f9a1e58bd452c544edb76800d7c90993070342ceba3ccadc98bce84a1426",
+      "id": 168,
+      "key": "audio2tool:tier8_intent_blending:000168",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00168/mixed.wav",
+      "query_idx": 501,
+      "sample_id": "tier8_intent_blending:000168",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.177,
+      "audio_sha256": "b5f3100b85a01a94fc227fe6b954b0f98ebb0b853c3b7a6a01057ece4a3d52f0",
+      "id": 190,
+      "key": "audio2tool:tier8_intent_blending:000190",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00190/mixed.wav",
+      "query_idx": 523,
+      "sample_id": "tier8_intent_blending:000190",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 10.777,
+      "audio_sha256": "cb6702239645084576b02bdb5a190a74a80d8d5e702898f5799a37700dc80aa1",
+      "id": 191,
+      "key": "audio2tool:tier8_intent_blending:000191",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00191/mixed.wav",
+      "query_idx": 524,
+      "sample_id": "tier8_intent_blending:000191",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.137,
+      "audio_sha256": "4ec119a9eb58d732bc02f337a69844233dd4907745680bfcfe593138e66b62f8",
+      "id": 211,
+      "key": "audio2tool:tier8_intent_blending:000211",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00211/mixed.wav",
+      "query_idx": 544,
+      "sample_id": "tier8_intent_blending:000211",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 10.697,
+      "audio_sha256": "7d37f69c92037dd01fe3701ffa935a9aadc49562dad896648737be7917d67e32",
+      "id": 215,
+      "key": "audio2tool:tier8_intent_blending:000215",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00215/mixed.wav",
+      "query_idx": 548,
+      "sample_id": "tier8_intent_blending:000215",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.257,
+      "audio_sha256": "30d0d8a4af5f093cbef72dc8c75932ac137a6d7bd9a9c16a97c1250ea920e767",
+      "id": 217,
+      "key": "audio2tool:tier8_intent_blending:000217",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00217/mixed.wav",
+      "query_idx": 550,
+      "sample_id": "tier8_intent_blending:000217",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.697,
+      "audio_sha256": "7287fbbcd1b0bbe14915d792494373ed160b40cbc1584b45b01e3902fb472102",
+      "id": 225,
+      "key": "audio2tool:tier8_intent_blending:000225",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00225/mixed.wav",
+      "query_idx": 558,
+      "sample_id": "tier8_intent_blending:000225",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.857,
+      "audio_sha256": "820ce5c733433a4e79b49f774f4aba7c6c06bc94ea02b527aedbbebfd9268fc0",
+      "id": 239,
+      "key": "audio2tool:tier8_intent_blending:000239",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00239/mixed.wav",
+      "query_idx": 572,
+      "sample_id": "tier8_intent_blending:000239",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 9.417,
+      "audio_sha256": "fdcc074973890577d083d68c82449ad4c19ca2bc71fd4f6b314890adee5bb8eb",
+      "id": 293,
+      "key": "audio2tool:tier8_intent_blending:000293",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00293/mixed.wav",
+      "query_idx": 626,
+      "sample_id": "tier8_intent_blending:000293",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 12.857,
+      "audio_sha256": "879d11ef86fb081f9509ac9b71eff525a05cd582a0b99d26d77934ea7e8436b4",
+      "id": 306,
+      "key": "audio2tool:tier8_intent_blending:000306",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00306/mixed.wav",
+      "query_idx": 639,
+      "sample_id": "tier8_intent_blending:000306",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.497,
+      "audio_sha256": "1371f76d5ab49debc03983ed19cfa2d35b1d50293a1625b9d840dadd7ec6cb8e",
+      "id": 333,
+      "key": "audio2tool:tier8_intent_blending:000333",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00333/mixed.wav",
+      "query_idx": 666,
+      "sample_id": "tier8_intent_blending:000333",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 3.417,
+      "audio_sha256": "6c1063a6cd344be0c02daad68da9a7491e048e0e55b4d1deb8ce137257b3fa74",
+      "id": 339,
+      "key": "audio2tool:tier8_intent_blending:000339",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00339/mixed.wav",
+      "query_idx": 672,
+      "sample_id": "tier8_intent_blending:000339",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.817,
+      "audio_sha256": "7188c10957727df8575646166fa81aea2724ac25f427cb416db4f66b2afbca7e",
+      "id": 379,
+      "key": "audio2tool:tier8_intent_blending:000379",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00379/mixed.wav",
+      "query_idx": 712,
+      "sample_id": "tier8_intent_blending:000379",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.017,
+      "audio_sha256": "4365150aab1a8b9c90ccb1a0957d7da4da3a924d2f1cfa3594067d60969c5e9e",
+      "id": 407,
+      "key": "audio2tool:tier8_intent_blending:000407",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00407/mixed.wav",
+      "query_idx": 740,
+      "sample_id": "tier8_intent_blending:000407",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.177,
+      "audio_sha256": "a37b48d30161d6fb8768952b8a6ace64aabb0e61346c2b621111185d82a7e33f",
+      "id": 409,
+      "key": "audio2tool:tier8_intent_blending:000409",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00409/mixed.wav",
+      "query_idx": 742,
+      "sample_id": "tier8_intent_blending:000409",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 3.657,
+      "audio_sha256": "f2beb1289b7bc68cb2c55b95c7c83f4352af52c69fe5e8662eec9205bca62835",
+      "id": 411,
+      "key": "audio2tool:tier8_intent_blending:000411",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00411/mixed.wav",
+      "query_idx": 744,
+      "sample_id": "tier8_intent_blending:000411",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.192,
+      "audio_sha256": "2b70455cc2b595e247b968f246825af670d68dc0f35242fd4a061306d7c4b8e5",
+      "id": 424,
+      "key": "audio2tool:tier8_intent_blending:000424",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00424/mixed.wav",
+      "query_idx": 757,
+      "sample_id": "tier8_intent_blending:000424",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.497,
+      "audio_sha256": "49e6bb492de280a851b84c07498d72ac2df279ca00b0b2663a9bf0ec8fd2187a",
+      "id": 427,
+      "key": "audio2tool:tier8_intent_blending:000427",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00427/mixed.wav",
+      "query_idx": 760,
+      "sample_id": "tier8_intent_blending:000427",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.697,
+      "audio_sha256": "e6c36177baf5de38f3b3cbca29e152bffb8fdba399211f85625a6304036c3e47",
+      "id": 504,
+      "key": "audio2tool:tier8_intent_blending:000504",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00504/mixed.wav",
+      "query_idx": 837,
+      "sample_id": "tier8_intent_blending:000504",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.017,
+      "audio_sha256": "b5f62a7d58f26a3afa01fff6f79e0952b28b1e911148fb19aa557b23a655764c",
+      "id": 531,
+      "key": "audio2tool:tier8_intent_blending:000531",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00531/mixed.wav",
+      "query_idx": 864,
+      "sample_id": "tier8_intent_blending:000531",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.057,
+      "audio_sha256": "f8ac214bd88ac69458854d8101d646d21089679250979243068572214a1e77e9",
+      "id": 557,
+      "key": "audio2tool:tier8_intent_blending:000557",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00557/mixed.wav",
+      "query_idx": 890,
+      "sample_id": "tier8_intent_blending:000557",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.097,
+      "audio_sha256": "1a1497dea85a6358ac67d76260555fbfae99683aa45efac559f63ae64416ae21",
+      "id": 564,
+      "key": "audio2tool:tier8_intent_blending:000564",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00564/mixed.wav",
+      "query_idx": 897,
+      "sample_id": "tier8_intent_blending:000564",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.577,
+      "audio_sha256": "724a49352e441ef01e0ec883647f8c8128c66c89445b501b9f89b676338b9ff8",
+      "id": 591,
+      "key": "audio2tool:tier8_intent_blending:000591",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00591/mixed.wav",
+      "query_idx": 924,
+      "sample_id": "tier8_intent_blending:000591",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 6.377,
+      "audio_sha256": "20291c0774b5fa5345c97ad03757bd1c01318c379e4af1b3dbfdf20f490b623c",
+      "id": 595,
+      "key": "audio2tool:tier8_intent_blending:000595",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00595/mixed.wav",
+      "query_idx": 928,
+      "sample_id": "tier8_intent_blending:000595",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.553,
+      "audio_sha256": "52e76790cc3fb8d89072c2d676a187ae23733789cc36dc4042089c2fd9739038",
+      "id": 639,
+      "key": "audio2tool:tier8_intent_blending:000639",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00639/mixed.wav",
+      "query_idx": 972,
+      "sample_id": "tier8_intent_blending:000639",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.097,
+      "audio_sha256": "2651a9c1b46ebdfcd9bd30a91fbaca2b62a13a93546ce2bcc6a63d57d8a2ed09",
+      "id": 640,
+      "key": "audio2tool:tier8_intent_blending:000640",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00640/mixed.wav",
+      "query_idx": 973,
+      "sample_id": "tier8_intent_blending:000640",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.017,
+      "audio_sha256": "1d8c9ef3dbb4ea6e0d9954e67c7c3cdde429b7ac52b67d7dbfc36f95a4850567",
+      "id": 641,
+      "key": "audio2tool:tier8_intent_blending:000641",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00641/mixed.wav",
+      "query_idx": 974,
+      "sample_id": "tier8_intent_blending:000641",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.337,
+      "audio_sha256": "7acba9cbfdad762364174af7518f3a87850d3ec4675ca0b032a8fb153b1e594e",
+      "id": 645,
+      "key": "audio2tool:tier8_intent_blending:000645",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00645/mixed.wav",
+      "query_idx": 978,
+      "sample_id": "tier8_intent_blending:000645",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.057,
+      "audio_sha256": "5b9f22ab6752d0209978fdf8b220de6b4147341933b8bfc27a02d6bd0e7fc503",
+      "id": 653,
+      "key": "audio2tool:tier8_intent_blending:000653",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00653/mixed.wav",
+      "query_idx": 986,
+      "sample_id": "tier8_intent_blending:000653",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.257,
+      "audio_sha256": "743ad015106e367ebd158bfd9d42d1e247b44588908e4807d2af425b2c82e28c",
+      "id": 660,
+      "key": "audio2tool:tier8_intent_blending:000660",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00660/mixed.wav",
+      "query_idx": 993,
+      "sample_id": "tier8_intent_blending:000660",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 5.657,
+      "audio_sha256": "e5f1812b32ed9e781d8ac329603f49d6254003a05b84fd676ca677fa951455df",
+      "id": 668,
+      "key": "audio2tool:tier8_intent_blending:000668",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00668/mixed.wav",
+      "query_idx": 2,
+      "sample_id": "tier8_intent_blending:000668",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.737,
+      "audio_sha256": "41ab2f6fe5d4bc50b64194e003ea860f3d4ee5087f05ecf60628bc88c175a8bb",
+      "id": 681,
+      "key": "audio2tool:tier8_intent_blending:000681",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00681/mixed.wav",
+      "query_idx": 39,
+      "sample_id": "tier8_intent_blending:000681",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 3.992,
+      "audio_sha256": "e047a8287876152b39390113f5131145abb0ae14c809a2921c11f4510efba945",
+      "id": 708,
+      "key": "audio2tool:tier8_intent_blending:000708",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00708/mixed.wav",
+      "query_idx": 92,
+      "sample_id": "tier8_intent_blending:000708",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 7.337,
+      "audio_sha256": "537c0552b0403353ff524fa07d918b80773b31199bd88de731224732240bd743",
+      "id": 782,
+      "key": "audio2tool:tier8_intent_blending:000782",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00782/mixed.wav",
+      "query_idx": 248,
+      "sample_id": "tier8_intent_blending:000782",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 3.737,
+      "audio_sha256": "b4a969afa873a19fa9f4843c973ee55189cec06c5849e7978cdf9a9a0e97f625",
+      "id": 795,
+      "key": "audio2tool:tier8_intent_blending:000795",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00795/mixed.wav",
+      "query_idx": 272,
+      "sample_id": "tier8_intent_blending:000795",
+      "tier": "tier8_intent_blending"
+    },
+    {
+      "audio_seconds": 4.937,
+      "audio_sha256": "04b410f93732f9076d1aedc15d4f10edfa8601de6935470ddab7a2f9b51480b0",
+      "id": 803,
+      "key": "audio2tool:tier8_intent_blending:000803",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00803/mixed.wav",
+      "query_idx": 288,
+      "sample_id": "tier8_intent_blending:000803",
+      "tier": "tier8_intent_blending"
+    }
+  ],
+  "media_measured_seconds": 3.637,
+  "media_roster_sha256": "6f8238f531142a013a3ebf20f1a0d00d4e34d51070e09b18ff1e28aa564536e3",
+  "packet_coverage": {
+    "drawn_ids_with_a_promoted_packet": 400,
+    "drawn_ids_without_a_promoted_packet": 0,
+    "feature_root": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a",
+    "packet_preparation_required": false,
+    "packets_in_receipt": 4000,
+    "promotion_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+    "promotion_receipt_sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a",
+    "promotion_schema": "saea-legacy-speech-packet-promotion-receipt-v1",
+    "why": "the sealed promotion SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1 (2026-09-12, model-free, twenty CPU workers over the already-warm legacy cache) promoted every one of the union-4000 rows into the formal SpeechFeaturePacketV1 tree the committed direct baseline pins; a strict subset of the union needs nothing promoted"
+  },
+  "pairing": "every one of these 400 rows carries a SEALED direct row from SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1 (attempt-a2t-native-role-direct-union4000-generation-v1) -- the decision-76a comparator, same request protocol, same packets, same geometry -- and a sealed official-protocol raw-audio output from the 2026-09-04 official-population flights; every paired cell is read against those bytes and nothing is re-flown on the comparator side",
+  "role": "the roster of every Audio2Tool engineering cell of the current programme, A2T-NULL first; it decides nothing by itself",
+  "roster_role": "evaluation",
+  "schema": "saea-a2t-agentloop-flight-roster-receipt-v1",
+  "seed": 20260921,
+  "selection_rule": "core.roster.freeze_roster over the union receipt's own 4,000 items, stratum = tier, per_stratum = 50, seed 20260921, one shared rng advanced across strata in ascending name order; no exclusion and no group key, because the parent population is already the sealed draw. The seed is owner decision 71's, stated there before this draw.",
+  "source_roster": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+  "source_roster_count": 4000,
+  "source_roster_exposure_rows": [
+    "SAEA-A2T-TIER1-OFFICIAL-POPULATION-V1",
+    "SAEA-A2T-TIER258-OFFICIAL-POPULATION-V1",
+    "SAEA-A2T-TIER3467-OFFICIAL-POPULATION-V1",
+    "SAEA-A2T-ORG1-DOMAIN-GROUPED-V1",
+    "SAEA-A2T-NATIVE-SYSTEM-DIRECT-V1",
+    "SAEA-A2T-NATIVE-SYSTEM-RECOVERY-DIRECT-V1",
+    "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+    "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1"
+  ],
+  "source_roster_sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+  "source_roster_split_name": "A2T-ORG1-UNION-4000",
+  "split_identity_hash": "be22b91664ac0f81a144f785917fce178e316fd1d158dfdbabc29bd91f114c9b",
+  "split_identity_hash_convention": "sha256 over the LF-joined sorted 'key' values (audio2tool:<tier>:<id6>, UTF-8, no trailing newline) -- the Audio2Tool probe-receipt integrity convention",
+  "split_name": "A2T-PAIRED-400-V1",
+  "split_role": "discovery",
+  "status": "PREPARED_NOT_CONTACT_AUTHORITY",
+  "strata": "tier (50 per tier, all eight) and domain",
+  "strata_basis": "tier is carried per item. Domain is NOT: it is the domain column of each tier's released manifest, recorded here as aggregate counts exactly as the union receipt records it, and resolved per sample at ANALYSIS time from the same manifests. Keeping it out of the item rows keeps this receipt's item shape identical to the union's and keeps a gold-adjacent label out of the file the flight entry point reads to build its samples",
+  "strata_counts": {
+    "tier1_direct": 50,
+    "tier2_parametric": 50,
+    "tier3_multi_intent": 50,
+    "tier4_implicit": 50,
+    "tier5_needle": 50,
+    "tier6_correction": 50,
+    "tier7_multiturn": 50,
+    "tier8_intent_blending": 50
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "tier_counts": {
+    "tier1_direct": 50,
+    "tier2_parametric": 50,
+    "tier3_multi_intent": 50,
+    "tier4_implicit": 50,
+    "tier5_needle": 50,
+    "tier6_correction": 50,
+    "tier7_multiturn": 50,
+    "tier8_intent_blending": 50
+  }
+}
