@@ -1059,3 +1059,276 @@ def test_the_committed_test_rosters_prove_their_partition_and_nothing_else_is_sk
         assert skipped == {
             hashes[other]: f"docs/receipts/rosters/{names[other]}" for other in others
         }
+
+
+# --------------------------------------------------------------------------- #
+# 4. the SAMPLE allowance signed under owner decision 151 (2026-09-27)
+# --------------------------------------------------------------------------- #
+#
+# ``docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json`` is the
+# first receipt in this repository whose status is ``authorised``. These tests
+# load the COMMITTED bytes and prove what the gate accepts and what it still
+# refuses: a sample-identity ``bounded-discovery-probe`` plan for every run id
+# the owner named is accepted (plan level and gate level); the closure identity
+# is refused naming both hashes; ``paper-scale-confirmatory`` is refused; and
+# the FULL receipt of 2026-09-23 still refuses everything (``pending-owner``).
+# Model-free: committed receipts only, an empty data root, no media opened.
+
+SAMPLE_ALLOWANCE_RELPATH = (
+    f"{OWNER_SPLIT_ALLOWANCE_RELDIR}/2026-09-27-slurp-test-sample-allowance-v1.json"
+)
+COMMITTED_SAMPLE_IDENTITY = "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
+COMMITTED_CLOSURE_IDENTITY = "377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b"
+COMMITTED_FULL_IDENTITY = "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+SAMPLE_PREPARATION_RUN_IDS = (
+    "SAEA-SN-TEST-SAMPLE-3010-PREPROCESS",
+    "SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1",
+)
+SAMPLE_READ_RUN_IDS = (
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-02-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-03-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-04-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-05-V1",
+)
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def _committed(relpath: str) -> tuple[bytes, dict, str]:
+    raw = (_repo_root() / relpath).read_bytes()
+    return raw, json.loads(raw.decode("utf-8")), hashlib.sha256(raw).hexdigest()
+
+
+def sample_plan(**overrides) -> ExecutionPlan:
+    _raw, _document, digest = _committed(SAMPLE_ALLOWANCE_RELPATH)
+    fields = {
+        "run_id": SAMPLE_READ_RUN_IDS[0],
+        "split_identity_hash": COMMITTED_SAMPLE_IDENTITY,
+        "planned_model_calls": 3010,
+        "planned_gpu_hours": 10.0,
+        "planned_speech_audio_seconds": 8207,
+        "attempt_id": "attempt-test-sample-v1",
+        "owner_allowance": {"path": SAMPLE_ALLOWANCE_RELPATH, "sha256": digest},
+    }
+    fields.update(overrides)
+    return plan(**fields)
+
+
+def _committed_gate() -> FrozenCoreGate:
+    repo_root = _repo_root()
+    return FrozenCoreGate(
+        e0_receipt=repo_root / "docs/receipts/e0-closure.json",
+        runtime_receipt=repo_root / "docs/receipts/runtime.json",
+        data_root=repo_root / "docs/checks/does-not-exist",
+        lock_path=repo_root / "docs/datasets.lock.json",
+        runtime_root=repo_root,
+        exposure_ledger=repo_root / "docs/exposure-ledger.md",
+        source_root=repo_root,
+    )
+
+
+def test_the_sample_allowance_is_signed_under_decision_151():
+    _raw, document, _digest = _committed(SAMPLE_ALLOWANCE_RELPATH)
+    assert document["schema"] == OWNER_SPLIT_ALLOWANCE_SCHEMA
+    assert document["study"] == "speech-aware-evidence-acquisition"
+    assert document["status"] == "authorised"
+    decision = document["dated_owner_decision"]
+    assert "decision 151" in decision and "2026-09-27" in decision
+    # The owner's words, verbatim, and their translation.
+    assert "决策3：现在签" in decision
+    assert "Decision 3: sign now." in decision
+    assert document["venue"].strip()
+    assert document["split"]["carrier_lock_key"] == CARRIER
+    assert document["split"]["split_identity_hash"] == COMMITTED_SAMPLE_IDENTITY
+    gate = document["first_contact_gate"]
+    assert gate["verbatim_from_decision_151"] == (
+        "the FIRST CONTACT with the sample is nevertheless gated on the coordinator reporting a "
+        "dev-admitted composed arm to the owner in conversation"
+    )
+    assert "pending-owner" in document["closure_status"]
+    assert COMMITTED_CLOSURE_IDENTITY in document["closure_status"]
+
+
+def test_the_sample_allowance_names_exactly_the_owner_s_run_ids_and_no_direct_read():
+    _raw, document, _digest = _committed(SAMPLE_ALLOWANCE_RELPATH)
+    permitted = document["permitted_run_ids"]
+    assert len(set(permitted)) == len(permitted)
+    assert set(document["read_run_ids"]) == set(SAMPLE_READ_RUN_IDS)
+    assert set(document["preparation_run_ids"]) == set(SAMPLE_PREPARATION_RUN_IDS)
+    assert set(document["read_run_ids"]) | set(document["preparation_run_ids"]) == set(permitted)
+    assert not set(document["read_run_ids"]) & set(document["preparation_run_ids"])
+    assert not any("DIRECT" in run_id for run_id in permitted)
+    assert set(document["run_ids"]) == set(permitted)
+    for run_id in SAMPLE_READ_RUN_IDS:
+        assert document["run_ids"][run_id]["kind"] == "read"
+        assert "one attempt" in document["run_ids"][run_id]["what"]
+    for run_id in SAMPLE_PREPARATION_RUN_IDS:
+        assert document["run_ids"][run_id]["kind"] == "preparation"
+        assert document["run_ids"][run_id]["reads_labels"] is False
+    assert document["attempt_budget"]["read_run_ids"] == 1
+    assert document["attempt_budget"]["preparation_run_ids"] == 2
+
+
+def test_the_sample_allowance_binds_the_committed_sample_roster_and_its_partition():
+    """Every hash and count in the receipt's ``split`` and ``derived_from``
+    blocks is recomputed here from the committed roster receipts."""
+
+    repo_root = _repo_root()
+    _raw, document, _digest = _committed(SAMPLE_ALLOWANCE_RELPATH)
+    split = document["split"]
+    roster_raw, roster, roster_digest = _committed(split["roster_receipt_relpath"])
+    assert roster["roster_id"] == split["roster_id"] == "SLURP-TEST-SAMPLE-3010-V1"
+    assert roster["split_role"] == FINAL_REPORT_SPLIT_ROLE
+    assert roster_digest == split["roster_receipt_sha256"]
+
+    ids = [item["sample_id"] for item in roster["items"]]
+    assert len(ids) == len(set(ids)) == split["recordings"] == 3010
+    assert identity_hash(ids) == split["split_identity_hash"] == COMMITTED_SAMPLE_IDENTITY
+    bare = hashlib.sha256("\n".join(sorted(ids)).encode("utf-8")).hexdigest()
+    assert bare == split["carrier_split_identity_hash"] == roster["carrier_split_identity_hash"]
+    assert len({item["utterance_id"] for item in roster["items"]}) == split["utterances"] == 682
+    assert sum(1 for item in roster["items"] if item["headset"]) == split["headset_recordings"]
+    assert sum(1 for item in roster["items"] if not item["headset"]) == split["far_field_recordings"]
+    assert abs(sum(item["audio_seconds"] for item in roster["items"]) - split["audio_seconds_total"]) < 1e-9
+
+    derived = document["derived_from"]
+    _closure_raw, closure, closure_digest = _committed(derived["sibling_roster"]["repo_relpath"])
+    _full_raw, full, full_digest = _committed(derived["source_roster"]["repo_relpath"])
+    assert closure_digest == derived["sibling_roster"]["sha256"]
+    assert full_digest == derived["source_roster"]["sha256"]
+    closure_ids = [item["sample_id"] for item in closure["items"]]
+    full_ids = [item["sample_id"] for item in full["items"]]
+    assert identity_hash(closure_ids) == derived["sibling_roster"]["split_identity_hash"] == COMMITTED_CLOSURE_IDENTITY
+    assert identity_hash(full_ids) == derived["source_roster"]["split_identity_hash"] == COMMITTED_FULL_IDENTITY
+    assert not set(ids) & set(closure_ids)
+    assert set(ids) | set(closure_ids) == set(full_ids)
+    arithmetic = derived["partition_proof_receipt"]["arithmetic"]
+    assert arithmetic["union_split_identity_hash"] == identity_hash(set(ids) | set(closure_ids))
+    assert arithmetic["intersection_recordings"] == 0 and arithmetic["union_equals_parent"] is True
+    proof_digest = hashlib.sha256(
+        (repo_root / derived["partition_proof_receipt"]["repo_relpath"]).read_bytes()
+    ).hexdigest()
+    assert proof_digest == derived["partition_proof_receipt"]["sha256"] == split["disjointness_receipt_sha256"]
+
+    # The receipt's media bytes are the committed D1 supplement's per-row bytes
+    # summed over exactly the sample's ids; no audio is opened here either.
+    _d1_raw, d1, _d1_digest = _committed("docs/receipts/artifacts/d1-slurp-test-full.json")
+    by_id = {row["id"]: row["bytes"] for row in d1["manifest"]}
+    assert sum(by_id[value] for value in ids) == split["media_bytes_total"]
+
+
+@pytest.mark.parametrize("run_id", SAMPLE_PREPARATION_RUN_IDS + SAMPLE_READ_RUN_IDS)
+def test_the_sample_allowance_accepts_a_sample_plan_for_every_permitted_run_id(run_id):
+    """The one acceptance path, on the committed bytes, resolved against the
+    module's own checkout root exactly as a production caller resolves it."""
+
+    validated = sample_plan(run_id=run_id).validate()
+    assert validated.split_role == FINAL_REPORT_SPLIT_ROLE
+    assert validated.split_identity_hash == COMMITTED_SAMPLE_IDENTITY
+    document = require_owner_split_allowance(
+        run_id=run_id,
+        execution_profile=FINAL_REPORT_EXECUTION_PROFILE,
+        carrier_lock_key=CARRIER,
+        split_identity_hash=COMMITTED_SAMPLE_IDENTITY,
+        owner_allowance=validated.owner_allowance,
+    )
+    assert document["status"] == "authorised"
+    assert run_id in document["permitted_run_ids"]
+
+
+def test_the_sample_allowance_passes_the_gate_on_the_committed_receipts():
+    """Gate level: allowance, no construction-visible arm, the partition-aware
+    disjointness re-proof against every committed ``slurp`` roster receipt,
+    and the one-attempt budget (no attempt exists) -- all on committed bytes."""
+
+    gate = _committed_gate()
+    for run_id in (SAMPLE_READ_RUN_IDS[0], SAMPLE_READ_RUN_IDS[1], SAMPLE_PREPARATION_RUN_IDS[0]):
+        gate._require_final_report_isolation(sample_plan(run_id=run_id), None)
+
+
+def test_the_sample_allowance_refuses_the_closure_identity_naming_both_hashes():
+    with pytest.raises(ExecutionScopeError) as error:
+        sample_plan(split_identity_hash=COMMITTED_CLOSURE_IDENTITY).validate()
+    message = str(error.value)
+    assert "authorises split identity" in message
+    assert COMMITTED_SAMPLE_IDENTITY in message
+    assert COMMITTED_CLOSURE_IDENTITY in message
+
+    gate = _committed_gate()
+    with pytest.raises(ExecutionScopeError) as gate_error:
+        gate._require_final_report_isolation(
+            sample_plan(split_identity_hash=COMMITTED_CLOSURE_IDENTITY), None
+        )
+    assert COMMITTED_CLOSURE_IDENTITY in str(gate_error.value)
+
+
+def test_the_sample_allowance_refuses_the_full_parent_identity():
+    with pytest.raises(ExecutionScopeError) as error:
+        sample_plan(split_identity_hash=COMMITTED_FULL_IDENTITY).validate()
+    assert COMMITTED_FULL_IDENTITY in str(error.value)
+
+
+def test_the_sample_allowance_refuses_a_paper_scale_confirmatory_profile():
+    with pytest.raises(ExecutionScopeError):
+        sample_plan(execution_profile="paper-scale-confirmatory").validate()
+    _raw, _document, digest = _committed(SAMPLE_ALLOWANCE_RELPATH)
+    with pytest.raises(ExecutionScopeError) as error:
+        require_owner_split_allowance(
+            run_id=SAMPLE_READ_RUN_IDS[0],
+            execution_profile="paper-scale-confirmatory",
+            carrier_lock_key=CARRIER,
+            split_identity_hash=COMMITTED_SAMPLE_IDENTITY,
+            owner_allowance={"path": SAMPLE_ALLOWANCE_RELPATH, "sha256": digest},
+        )
+    assert "runs only under execution profile 'bounded-discovery-probe'" in str(error.value)
+
+
+def test_the_sample_allowance_refuses_a_run_id_the_owner_did_not_name():
+    with pytest.raises(ExecutionScopeError) as error:
+        sample_plan(run_id="SAEA-SLURP-TEST-SAMPLE-3010-DIRECT-V1").validate()
+    assert "is not in the owner allowance's permitted_run_ids" in str(error.value)
+
+
+def test_the_full_receipt_still_refuses_after_the_sample_signature():
+    """Signing the sample changed nothing for the FULL split: its receipt is
+    byte-for-byte the pending-owner document, and it refuses a FULL plan and a
+    sample plan alike at check 6."""
+
+    raw, document, digest = _committed(ALLOWANCE_RELPATH)
+    assert document["status"] == "pending-owner"
+    for run_id, split_identity in (
+        (PREP_RUN_ID, COMMITTED_FULL_IDENTITY),
+        (READ_RUN_ID, COMMITTED_FULL_IDENTITY),
+        (PREP_RUN_ID, COMMITTED_SAMPLE_IDENTITY),
+    ):
+        with pytest.raises(ExecutionScopeError) as error:
+            plan(
+                run_id=run_id,
+                split_identity_hash=split_identity,
+                owner_allowance={"path": ALLOWANCE_RELPATH, "sha256": digest},
+            ).validate()
+        assert "status is 'pending-owner', not 'authorised'" in str(error.value)
+
+
+def test_no_committed_receipt_authorises_the_closure_identity():
+    """The closure stays pending-owner until the Stage-3 closure read
+    (decision 151): no receipt under docs/receipts/owner/ binds its hash with
+    status ``authorised``."""
+
+    owner_dir = _repo_root() / OWNER_SPLIT_ALLOWANCE_RELDIR
+    receipts = sorted(owner_dir.glob("*.json"))
+    assert receipts
+    for path in receipts:
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if document.get("schema") != OWNER_SPLIT_ALLOWANCE_SCHEMA:
+            continue
+        bound = document["split"]["split_identity_hash"]
+        if bound == COMMITTED_CLOSURE_IDENTITY:
+            assert document["status"] != "authorised", path
+        if document["status"] == "authorised":
+            assert bound == COMMITTED_SAMPLE_IDENTITY, path
