@@ -538,5 +538,11 @@ def test_primitive_verdict_stats_on_zero_armed_rows_returns_none_rates():
 
 
 def test_primitive_arms_is_empty_until_r_prim_flies():
-    # The living-receipt discipline: this module never invents a sealed arm.
-    assert verifier.PRIMITIVE_ARMS == ()
+    # The living-receipt discipline: this module never invents a sealed arm. Empty before R-PRIM flew; since
+    # 0bd8157e (2026-09-22) it binds exactly the sealed R-PRIM arm, whose run id carries a committed exposure-ledger
+    # row and whose verdict document is committed.
+    ledger = (REPO_ROOT / "docs/exposure-ledger.md").read_text(encoding="utf-8")
+    assert [arm.key for arm in verifier.PRIMITIVE_ARMS] in ([], ["rprim"])
+    for arm in verifier.PRIMITIVE_ARMS:
+        assert f"| {arm.run_id} |" in ledger, arm.run_id
+        assert (REPO_ROOT / arm.verdict).is_file(), arm.verdict

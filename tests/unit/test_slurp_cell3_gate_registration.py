@@ -203,11 +203,26 @@ def test_the_smokes_carry_their_own_fit_and_feature_identities() -> None:
         assert "smoke_note" in smoke
 
 
+#: The generation run each derived baseline serves; its minted supply lives under prepared/<run id>/.
+_BASELINE_RUN_IDS = {
+    ARM.name: "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-V1",
+    TWIN.name: "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-TWIN-V1",
+    SMOKE.name: "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-V1",
+    TWIN_SMOKE.name: "SAEA-SLURP-STAGE3-DELTA-CELL-R03-GATE-SMOKE-4-TWIN-V1",
+    PLANR.name: "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-REPLICATE-V1",
+}
+
+
 def test_no_committed_baseline_carries_a_prepared_phase_supply_pin() -> None:
-    """The cell-P0 form: core.flight.repin mints each cell's own at the flip."""
+    """The cell-P0 form: core.flight.repin mints each cell's own at the flip.
+
+    As registered (4b3779e5) no baseline carried a pin; the flips (19cc490d arm, ae8f6ca4 twin, a855b92e PLANr)
+    pinned each baseline's OWN minted supply. Either state is recorded truth; a foreign pin never is."""
 
     for path in _cell_baselines() + (PLANR,):
-        assert "prepared_phase_supply" not in _load(path), path.name
+        supply = _load(path).get("prepared_phase_supply")
+        if supply is not None:
+            assert supply["relpath"] == f"prepared/{_BASELINE_RUN_IDS[path.name]}/phase-supply-v1.json", path.name
         assert "readiness" not in _load(path), path.name
 
 
@@ -242,11 +257,23 @@ def test_every_registered_cell_is_held_and_names_its_own_identities() -> None:
         assert fragment["split_id"] == "DEV-2000-ADDED", name
         assert fragment["execution_profile"] == "bounded-discovery-probe", name
         for cell in fragment["cells"]:
-            assert cell["readiness"]["state"] == "held", cell["cell_id"]
+            # `held` as registered (4b3779e5); the generation cells were flipped to `ready` (19cc490d, ae8f6ca4,
+            # a855b92e and their smoke siblings), which adds the family's decision receipt and this cell's OWN
+            # minted supply. The fit cells stay held.
+            state = cell["readiness"]["state"]
+            assert state in ("held", "ready"), cell["cell_id"]
+            if cell["cell_id"].endswith("-fit-v1"):
+                assert state == "held", cell["cell_id"]
             assert cell["dataset_fragment"] == "slurp-speech-native-dev2000-added"
             assert cell["readiness"]["requirements"], cell["cell_id"]
-            for item in cell["readiness"]["requirements"]:
-                assert item["kind"] == "preparation", cell["cell_id"]
+            kinds = [item["kind"] for item in cell["readiness"]["requirements"]]
+            if state == "held":
+                assert set(kinds) == {"preparation"}, cell["cell_id"]
+            else:
+                assert set(kinds) == {"decision", "preparation"}, cell["cell_id"]
+                own_supply = f"prepared/{cell['run_id']}/phase-supply-v1.json"
+                assert any(item["kind"] == "preparation" and item["relpath"] == own_supply
+                           for item in cell["readiness"]["requirements"]), cell["cell_id"]
             seen[cell["cell_id"]] = cell["run_id"]
     assert seen == expected
 

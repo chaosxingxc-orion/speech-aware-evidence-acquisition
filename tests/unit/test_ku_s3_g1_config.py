@@ -17,8 +17,22 @@ MODEL = "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
 DATASET = "slurp-speech-native-dev1000"
 
 
+#: a7e688c3 ("bind verified KU-S3 prepared supply and owner successor",
+#: docs/readiness/2026-09-09-ku-s3-g1-successor.md) bound each experiment's prepared supply to the verified G1
+#: preparation run; before it the fragments carried none.
+G1_PREPARATION_PREFIX = "prepared/SAEA-SLURP-KU-S3-G1-PREPARE-V1/"
+
+
 def load(path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _assert_no_supply_or_the_verified_g1_preparation(values):
+    supply = values.get("prepared_phase_supply")
+    if supply is None:
+        return
+    assert supply["relpath"].startswith(G1_PREPARATION_PREFIX), supply
+    assert len(supply["sha256"]) == 64 and not supply["sha256"].startswith("PENDING"), supply
 
 
 @pytest.mark.parametrize("path", EXPERIMENTS)
@@ -45,7 +59,7 @@ def test_ku_s3_g1_fit_budget_and_pending_supply_are_fail_closed(path):
     doc = load(path)
     basis = doc["execution_plan_basis"]["fit"]
     assert "3,001" in basis
-    assert "prepared_phase_supply" not in doc
+    _assert_no_supply_or_the_verified_g1_preparation(doc)
     assert doc["pending_preparation"]["phase_supply"]["artifact_sha256"].startswith("PENDING-")
     generation = doc["cells"][1]
     assert generation["readiness"]["requirements"] == []
@@ -85,7 +99,7 @@ def test_ku_s3_g1_composition_strips_only_unbound_runtime_pins(path, baseline):
         experiment=path.stem,
     )
     assert composed.values["experiment_id"] == load(path)["experiment_id"]
-    assert "prepared_phase_supply" not in composed.values
+    _assert_no_supply_or_the_verified_g1_preparation(composed.values)
     assert "pending_preparation" in composed.values
 
 

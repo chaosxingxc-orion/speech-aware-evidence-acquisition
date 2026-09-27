@@ -236,5 +236,14 @@ def test_the_experiment_fragments_are_held_and_budgeted_at_the_ceiling(
     assert document["stage3_algorithm"]["id"] == "shared-rollout"
     assert document["stage3_algorithm"]["operators_used"] == ["rollout"]
     for cell in document["cells"]:
-        assert cell["readiness"]["state"] == "held"
-        assert cell["readiness"]["requirements"] == []
+        # `held` with no requirements as registered (5744ed8c); the flips (2aabfc26 arm, bfcd0f22 smoke) set
+        # `ready` with the family's decision receipt and the cell's OWN minted supply.
+        readiness = cell["readiness"]
+        assert readiness["state"] in ("held", "ready")
+        if readiness["state"] == "held":
+            assert readiness["requirements"] == []
+        else:
+            by_kind = {req["kind"]: req for req in readiness["requirements"]}
+            assert len(by_kind) == len(readiness["requirements"]) == 2, readiness["requirements"]
+            assert by_kind["decision"]["expected_decision_id"] == "slurp-stage3-roll-aa-admission-v1"
+            assert by_kind["preparation"]["relpath"] == f"prepared/{cell['run_id']}/phase-supply-v1.json"

@@ -13,7 +13,15 @@ def test_replica_keeps_four_fragments_and_held_readiness():
     assert document["experiment_id"] == "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1"
     assert fit["run_id"] == "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-FIT-V1"
     assert generation["run_id"] == document["experiment_id"]
-    assert fit["readiness"]["state"] == generation["readiness"]["state"] == "held"
+    assert fit["readiness"]["state"] == "held"
+    # The generation cell was held as registered (a1042b0c) and flipped to ready by 0805094f ("register fitted KC
+    # replication"), whose only requirement is the fit cell's own complete request fit.
+    assert generation["readiness"]["state"] in ("held", "ready")
+    if generation["readiness"]["state"] == "ready":
+        requirements = generation["readiness"]["requirements"]
+        assert [req["kind"] for req in requirements] == ["preparation"]
+        assert requirements[0]["relpath"] == f"prepared/{fit['run_id']}/request-fit.json"
+        assert requirements[0] == {**requirements[0], **{k: document["prepared_request_fit"][k] for k in ("relpath", "sha256")}}
     assert fit["allowed_execution_stages"] == ["check", "wire-check", "prompt-fit"]
     assert generation["allowed_execution_stages"] == ["check", "wire-check", "prepare-supply", "worker", "campaign"]
     assert fit["baseline_fragment"] == generation["baseline_fragment"] == "slurp-phase-slots-given-intent-schema-v1"

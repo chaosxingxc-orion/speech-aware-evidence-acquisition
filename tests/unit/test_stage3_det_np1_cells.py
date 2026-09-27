@@ -79,8 +79,27 @@ EXPERIMENT_BOOKKEEPING = frozenset({
 })
 
 
+#: Cell DET as REGISTERED (8bcd4eb3), before the flips (3e882625 pass a, 99a3f1f5 pass b) re-pinned it with
+#: core.flight.repin: each flip set readiness ready and pinned the pass's OWN minted supply into its baseline.
+_REGISTERED_COMMIT = "8bcd4eb3"
+DECISION_ID = "slurp-stage3-det-np1-fold-a-50-admission-v1"
+
+
 def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _registered_bytes(relpath: str) -> bytes:
+    import subprocess
+
+    return subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "show", f"{_REGISTERED_COMMIT}:{relpath}"],
+        check=True, capture_output=True,
+    ).stdout
+
+
+def _own_supply(p: str) -> str:
+    return f"prepared/{RUNS[p]}/phase-supply-v1.json"
 
 
 def _derive_module():
@@ -194,7 +213,8 @@ def test_each_baseline_moves_only_serving_slots_against_the_plan_lock(p: str) ->
     assert moved == {GEOMETRY_KEY}, sorted(moved)
     assert plan["serving_slots"] == 4 and det["serving_slots"] == 1
     assert det["serving_slot_tokens"] == plan["serving_slot_tokens"] == 24576
-    assert "prepared_phase_supply" not in det
+    # absent as registered; after the flip, this pass's own minted supply and never a foreign one
+    assert det.get("prepared_phase_supply", {"relpath": _own_supply(p)})["relpath"] == _own_supply(p)
     assert det["native_contact_fit"] == {
         "attempt_id": f"attempt-slurp-native-stage3-det-np1-fold-a-50-{p}-fit-v1",
         "contact_cap": ROWS * CEILING * 4,
@@ -215,7 +235,10 @@ def test_pass_b_equals_pass_a_except_its_fit_identity_and_prose() -> None:
     a = _load(BASELINES / "slurp-native-stage3-det-np1-fold-a-50-a-baseline-v1.json")
     b = _load(BASELINES / "slurp-native-stage3-det-np1-fold-a-50-b-baseline-v1.json")
     moved = {key for key in set(a) | set(b) if a.get(key) != b.get(key)}
-    assert moved == {"native_contact_fit", "what_this_is"}, sorted(moved)
+    # each pass's flip pins its own minted supply, so the pin differs by run id once either pass is flipped
+    assert moved - {"prepared_phase_supply"} == {"native_contact_fit", "what_this_is"}, sorted(moved)
+    for p, baseline in (("a", a), ("b", b)):
+        assert baseline.get("prepared_phase_supply", {"relpath": _own_supply(p)})["relpath"] == _own_supply(p)
 
 
 # --------------------------------------------------------------------------
@@ -251,7 +274,15 @@ def test_the_experiment_fragments_are_held_and_budgeted_at_the_ceiling(p: str) -
     assert cell["model_fragment"] == DET_MODEL
     assert cell["baseline_fragment"] == f"slurp-native-stage3-det-np1-fold-a-50-{p}-baseline-v1"
     assert cell["dataset_fragment"] == DATASET
-    assert cell["readiness"]["state"] == "held" and cell["readiness"]["requirements"] == []
+    readiness = cell["readiness"]
+    assert readiness["state"] in ("held", "ready")
+    if readiness["state"] == "held":
+        assert readiness["requirements"] == []
+    else:
+        by_kind = {req["kind"]: req for req in readiness["requirements"]}
+        assert len(by_kind) == len(readiness["requirements"]) == 2, readiness["requirements"]
+        assert by_kind["decision"]["expected_decision_id"] == DECISION_ID
+        assert by_kind["preparation"]["relpath"] == _own_supply(p)
     assert cell["allowed_execution_stages"] == ["check", "prepare-supply", "worker", "campaign"]
     assert document["service_session"] == SESSION
     assert document["split_id"] == plan["split_id"] == "SLURP-EVO-FOLD-A-V2"
@@ -275,9 +306,10 @@ def test_the_experiment_fragments_are_held_and_budgeted_at_the_ceiling(p: str) -
 
 
 def test_the_derivation_reproduces_every_committed_file() -> None:
+    # Against the files as REGISTERED: the flips re-pinned the baselines and plans this derivation wrote.
     module = _derive_module()
     for relpath, text in module.derived_artifacts(REPO_ROOT):
-        assert (REPO_ROOT / relpath).read_bytes().decode("utf-8") == text, relpath
+        assert _registered_bytes(relpath).decode("utf-8") == text, relpath
 
 
 # --------------------------------------------------------------------------

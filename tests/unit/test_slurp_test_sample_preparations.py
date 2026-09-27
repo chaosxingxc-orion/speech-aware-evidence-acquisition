@@ -428,10 +428,32 @@ def test_the_driver_accepts_the_allowance_before_it_would_open_media(
 # ------------------------------------------------------------------ ledger rows and the guard
 
 
+# The ledger AS REGISTERED, before the countersignature: aa69fca9 countersigned the three rows (owner decision
+# 156) and a run of the preparations will later mark them consumed, so the working-tree ledger no longer carries
+# the pending state these registration and guard proofs are about. The fixture is the committed ledger blob of
+# a430011a (the merge that registered the rows; the parent of aa69fca9), materialised once per session -- the
+# pattern of 643afc37.
+_REGISTERED_COMMIT = "a430011a"
+_REGISTERED_LEDGER: Path | None = None
+
+
+def _registered_ledger() -> Path:
+    global _REGISTERED_LEDGER
+    if _REGISTERED_LEDGER is None:
+        import tempfile
+
+        blob = subprocess.run(
+            ["git", "-C", str(REPO), "show", f"{_REGISTERED_COMMIT}:docs/exposure-ledger.md"],
+            check=True, capture_output=True,
+        ).stdout
+        target = Path(tempfile.mkdtemp(prefix="saea-testsample-registered-")) / "exposure-ledger.md"
+        target.write_bytes(blob)
+        _REGISTERED_LEDGER = target
+    return _REGISTERED_LEDGER
+
+
 def _rows():
-    return _parse_ledger_tables(
-        (REPO / "docs/exposure-ledger.md").read_text(encoding="utf-8")
-    )
+    return _parse_ledger_tables(_registered_ledger().read_text(encoding="utf-8"))
 
 
 def test_the_three_rows_are_registered_once_unconsumed_and_pending() -> None:
@@ -511,7 +533,9 @@ def test_every_milestone_read_id_is_refused(milestone) -> None:
 
 
 def test_the_guard_step_refuses_today(capsys) -> None:
-    assert steps.main(["--repo-root", str(REPO), "guard", "--stage", "all"]) == 1
+    # "today" is the registration day: the guard reads the registered (pre-countersignature) ledger blob.
+    assert steps.main(["--repo-root", str(REPO), "guard", "--stage", "all",
+                       "--ledger", str(_registered_ledger())]) == 1
     printed = capsys.readouterr().out
     assert printed.count("REFUSED:") == 3
 
