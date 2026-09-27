@@ -40,6 +40,8 @@ ONE_PIN = "phase_material.reviewer.instruction_template"
 BOOKKEEPING = ("native_contact_fit.", "prepared_phase_supply", "what_this_is")
 H_SLU, H_INTENT = 1.2485, 0.9943
 PLAN_SUPPLY_OUTPUT_SHA = "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f"
+RUN = {ARM: ARM_RUN, AA: AA_RUN, SMOKE: SMOKE_RUN}
+DECISION_ID = "slurp-stage3-g5-fold-a-admission-v1"
 
 
 def _read(path: Path) -> dict:
@@ -64,6 +66,17 @@ def _compose(experiment: str):
     document = _read(REPO / "configs/experiment" / f"{experiment}.json")
     cell = document["cells"][0]
     return document, compose(REPO, cell["model_fragment"], cell["dataset_fragment"], cell["baseline_fragment"], experiment)
+
+
+def _assert_no_supply_or_the_cells_own(values: dict, experiment: str) -> None:
+    """Before the flip no prepared supply is committed; the flip (scripts/flights/repin_cell.py --set-ready, the
+    pattern of KPROBE's flip baa5ff99) pins this cell's OWN first-phase supply under its own run id (item E16)
+    into the derived baseline. Either state is registered truth; a foreign supply never is."""
+
+    supply = values.get("prepared_phase_supply")
+    if supply is None:
+        return
+    assert supply["relpath"].startswith(f"prepared/{RUN[experiment]}/"), supply
 
 
 def _diff(experiment: str) -> dict:
@@ -169,7 +182,8 @@ def test_arm_and_smoke_differ_from_their_locked_plan_parent_by_the_one_pin_and_b
     for key in ("knowledge_stores", "native_episode", "scorers", "policy", "arm", "evidence_source", "task_instruction_template",
                 "task_instruction_fill", "serving_slot_tokens", "serving_slots", "preparation_source_receipts"):
         assert mine[key] == parent[key], key
-    assert "phase_tools" not in mine and "prepared_phase_supply" not in mine
+    assert "phase_tools" not in mine
+    _assert_no_supply_or_the_cells_own(mine, experiment)
 
 
 def test_the_in_chain_aa_is_the_locked_plan_with_bookkeeping_alone() -> None:
@@ -180,7 +194,8 @@ def test_the_in_chain_aa_is_the_locked_plan_with_bookkeeping_alone() -> None:
     assert mine["phase_material"]["reviewer"]["instruction_template"] == "probes/slurp_native_role_reviewer_v1.txt"
     for key in ("knowledge_stores", "native_episode", "scorers", "policy", "arm", "preparation_source_receipts"):
         assert mine[key] == parent[key], key
-    assert "phase_tools" not in mine and "prepared_phase_supply" not in mine
+    assert "phase_tools" not in mine
+    _assert_no_supply_or_the_cells_own(mine, AA)
 
 
 def test_the_arm_and_the_aa_differ_from_each_other_in_the_one_pin_and_their_own_identities_only() -> None:
@@ -199,9 +214,22 @@ def test_the_arm_and_the_aa_differ_from_each_other_in_the_one_pin_and_their_own_
 def test_readiness_is_held_with_an_empty_requirements_list_and_the_policies_the_gates_require(experiment: str) -> None:
     document, composed = _compose(experiment)
     readiness = document["cells"][0]["readiness"]
-    assert readiness["state"] == "held" and readiness["requirements"] == []
-    assert "--allow-output-change must never be passed" in readiness["reason"]
-    assert PLAN_SUPPLY_OUTPUT_SHA in readiness["reason"]
+    # `held` with the empty requirements list as registered (b23b0fd7); `ready` after the converging re-pin, whose
+    # requirements are this family's own decision receipt and this cell's own prepared supply (the KPROBE flip
+    # baa5ff99 and its test repair 324808a5 are the pattern).
+    assert readiness["state"] in ("held", "ready")
+    if readiness["state"] == "held":
+        assert readiness["requirements"] == []
+        assert "--allow-output-change must never be passed" in readiness["reason"]
+        assert PLAN_SUPPLY_OUTPUT_SHA in readiness["reason"]
+    else:
+        kinds = sorted(req["kind"] for req in readiness["requirements"])
+        assert kinds == ["decision", "preparation"], kinds
+        for req in readiness["requirements"]:
+            if req["kind"] == "decision":
+                assert req["expected_decision_id"] == DECISION_ID, req
+            else:
+                assert req["relpath"].startswith(f"prepared/{RUN[experiment]}/"), req
     episode = composed.values["native_episode"]
     assert episode["finite_completion_policy"] == "deliver-latest-or-abstain"
     assert episode["react_exhaustion_policy"] == "continue-without-answer"
@@ -274,10 +302,18 @@ def test_the_measurement_declaration_is_a_no_harm_admission_at_the_fold_a_half_w
 
 def test_the_effect_floor_gate_accepts_the_family() -> None:
     import importlib.util
+    import sys
 
-    spec = importlib.util.spec_from_file_location("stage3_effect_floor_check", REPO / "scripts/checks/stage3_effect_floor_check.py")
-    gate = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(gate)
+    # The gate module declares dataclasses, which resolve their own module through sys.modules while the class
+    # body executes; an unregistered spec-loaded module therefore fails to import unless an EARLIER test had
+    # already imported it by name (order dependence: this test failed when run alone). Reuse the registered
+    # module when present, else register it before executing.
+    gate = sys.modules.get("stage3_effect_floor_check")
+    if gate is None:
+        spec = importlib.util.spec_from_file_location("stage3_effect_floor_check", REPO / "scripts/checks/stage3_effect_floor_check.py")
+        gate = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = gate
+        spec.loader.exec_module(gate)
     data = gate.evaluate(REPO)
     ours = [f for f in data["findings"] if any(cell in f["message"] for cell in (ARM, AA, SMOKE))]
     assert ours == [], ours

@@ -72,6 +72,15 @@ def fake_scorer(outputs_path, lock, root):
     }
 
 
+@pytest.fixture(autouse=True)
+def _unregister_fake_scorer():
+    # The fake scorer is registered into the process-global core.base.SCORERS by the tests that need it; drop it
+    # after every test so no later module (test_engineering_base_check's registry/source agreement) sees a
+    # test-only id.
+    yield
+    SCORERS._entries.pop(FAKE_SCORER_ID, None)
+
+
 def _register_fake_scorer():
     try:
         SCORERS.register(FAKE_SCORER_ID, fake_scorer)

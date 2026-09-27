@@ -25,6 +25,10 @@ def _runtime(tmp_path: Path) -> FlightRuntime:
     runtime._data_root.mkdir()
     runtime._attempt_store_factory = lambda root: AttemptStore(root / "attempts")
     runtime._execution_policy = None
+    # FlightRuntime.assert_generation_lease reads both since e20cdd2d (the resident-resource guard before
+    # system rollout contacts); a runtime that was never composed or attached carries None for each.
+    runtime._composed = None
+    runtime._session = None
     runtime._whisper_inventory_verifier = lambda value: dict(value)
     runtime._live_speech_attempt_handle = None
     runtime._live_speech_provider = None

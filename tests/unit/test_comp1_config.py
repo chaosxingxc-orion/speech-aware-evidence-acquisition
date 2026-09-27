@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import io
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -45,8 +46,30 @@ RECALL = f"{BOUNDARY}.k"
 BOOKKEEPING = ("native_contact_fit.", "prepared_phase_supply", "preparation_source_receipts", "what_this_is")
 
 
+DECISION_ID = "slurp-stage3-comp1-fold-a-admission-v1"
+
+
 def _read(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _is_own_supply(relpath: str, run_id: str) -> bool:
+    """This cell's own first-phase supply: phase-supply-v1.json as registered (3667e01d); the flips (b7cbfe69,
+    dc63fe64, bf483458) re-pinned the same bytes as phase-supply-v2.json through scripts/flights/repin_cell.py."""
+
+    return re.fullmatch(rf"prepared/{re.escape(run_id)}/phase-supply-v\d+\.json", relpath) is not None
+
+
+def _own_supply(cell: dict) -> dict:
+    own = [r for r in cell["readiness"]["requirements"] if _is_own_supply(r["relpath"], cell["run_id"])]
+    assert len(own) == 1, cell["readiness"]["requirements"]
+    return own[0]
+
+
+def _declared(value) -> bool:
+    """True once the coordinator replaced the placeholder with a number (43027f59: 3.23 pp)."""
+
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
 def _flatten(node, prefix: str = "") -> dict:
@@ -198,18 +221,26 @@ def test_the_receipts_are_the_parent_s_plus_the_two_factor_receipts(cells, paren
 
 def test_no_prepared_phase_supply_is_committed_and_each_cell_pins_its_own(cells):
     for name, (doc, cell, composed) in cells.items():
-        assert "prepared_phase_supply" not in composed.values
         run_id, fit_run = RUNS[name]
+        # nothing committed as registered; after the flip the baseline pins this cell's OWN supply, never a foreign one
+        supply = composed.values.get("prepared_phase_supply")
+        assert supply is None or _is_own_supply(supply["relpath"], run_id), supply
         assert cell["run_id"] == run_id
         assert composed.values["native_contact_fit"]["run_id"] == fit_run
         readiness = cell["readiness"]
-        assert readiness["state"] == "held"
-        own = [r for r in readiness["requirements"] if r["relpath"] == f"prepared/{run_id}/phase-supply-v1.json"]
-        assert len(own) == 1 and own[0]["kind"] == "preparation"
-        assert own[0]["sha256"] != "0" * 64 and len(own[0]["sha256"]) == 64
+        assert readiness["state"] in ("held", "ready")
+        own = _own_supply(cell)
+        assert own["kind"] == "preparation"
+        assert own["sha256"] != "0" * 64 and len(own["sha256"]) == 64
+        if supply is not None:
+            assert supply == {"relpath": own["relpath"], "sha256": own["sha256"]}
         table = [r for r in readiness["requirements"] if r["relpath"].endswith("agreement.jsonl")]
         assert len(table) == (0 if name == AA else 1)
-        assert not [r for r in readiness["requirements"] if r["kind"] == "decision"]
+        decisions = [r for r in readiness["requirements"] if r["kind"] == "decision"]
+        if readiness["state"] == "held":
+            assert not decisions
+        else:
+            assert [r["expected_decision_id"] for r in decisions] == [DECISION_ID]
         assert "--allow-output-change must never be passed" in readiness["reason"]
 
 
@@ -233,7 +264,15 @@ def test_the_caps_are_the_plan_family_s_own(cells):
 def test_the_measurement_declaration_leaves_the_arm_s_expectation_to_the_coordinator(facts):
     block = facts["stage3_measurement"]
     arm, aa, smoke = (block[RUNS[n][0]] for n in (ARM, AA, SMOKE))
-    assert arm["expected_effect_pp"] == PLACEHOLDER
+    # The placeholder as registered (3667e01d); the coordinator's number since 43027f59 (3.23 pp, owner decisions
+    # 139, 152, 161), with the token then retired from every prose field (234f7dde: the minter refuses on any
+    # occurrence).
+    declared = _declared(arm["expected_effect_pp"])
+    if declared:
+        assert arm["expected_effect_declaration"]
+        assert PLACEHOLDER not in json.dumps(facts)
+    else:
+        assert arm["expected_effect_pp"] == PLACEHOLDER
     assert arm["claims_benefit"] is True
     assert arm["measurement_design"] == "cross-flight-with-in-chain-replicate"
     assert arm["replicate_run_id"] == RUNS[AA][0]
@@ -241,7 +280,9 @@ def test_the_measurement_declaration_leaves_the_arm_s_expectation_to_the_coordin
     assert aa["expected_effect_pp"] == 0.0 and aa["claims_benefit"] is False and aa["replicate_run_id"] == RUNS[ARM][0]
     assert smoke["measurement_design"] == "form-proof" and smoke["claims_benefit"] is False and smoke["rows"] == 4
     fill = facts["the_expectation_the_coordinator_declares"]["where_to_fill"]
-    assert len(fill) == 2 and all(entry["currently"] == PLACEHOLDER for entry in fill)
+    assert len(fill) == 2
+    if not declared:
+        assert all(entry["currently"] == PLACEHOLDER for entry in fill)
 
 
 def test_the_preregistration_fence_repeats_the_canonical_block(facts):
@@ -249,7 +290,8 @@ def test_the_preregistration_fence_repeats_the_canonical_block(facts):
     start = text.index("```json")
     fenced = json.loads(text[text.index("\n", start) + 1 : text.index("```", start + 7)])
     assert fenced["stage3_measurement"] == facts["stage3_measurement"]
-    assert PLACEHOLDER in text
+    declared = _declared(facts["stage3_measurement"][RUNS[ARM][0]]["expected_effect_pp"])
+    assert (PLACEHOLDER not in text) if declared else (PLACEHOLDER in text)
 
 
 def test_the_stage3_labels_resolve_and_say_what_the_cells_are(cells):
@@ -284,7 +326,7 @@ def test_the_plan_documents_carry_the_recomposed_hashes(cells):
             assert plan["execution_plan"]["protocol_hash"] == expected
             assert plan["execution_plan"]["run_id"] == run
             assert plan["execution_plan"]["split_identity_hash"] == split
-            own = next(r for r in cell["readiness"]["requirements"] if r["relpath"].endswith("phase-supply-v1.json"))
+            own = _own_supply(cell)
             assert plan["prepared_phase_supply"]["sha256"] == own["sha256"]
         if name == AA:
             assert _read(PACKAGE / "aa-generation-plan-registered-v1.json")["byte_identity_obligation"]["this_cell_output_sha256"] == PLAN_SUPPLY_OUTPUT_SHA
@@ -302,7 +344,7 @@ def test_the_registered_facts_prove_the_byte_identity_and_the_diffs(facts, cells
     for name in (ARM, AA, SMOKE):
         key = {ARM: "arm", AA: "aa", SMOKE: "smoke"}[name]
         assert facts["cells"][key]["composed_config_hash"] == cells[name][2].config_hash
-        own = next(r for r in cells[name][1]["readiness"]["requirements"] if r["relpath"].endswith("phase-supply-v1.json"))
+        own = _own_supply(cells[name][1])
         assert facts["prepared_supplies"][key]["file_sha256"] == own["sha256"]
 
 
@@ -320,7 +362,7 @@ def test_the_attribution_classes_partition_the_191_intent_wrong_rows(facts, cell
     summary = classes["summary"]
     assert summary["delivered_under_comp1"] == sum(r["delivered_comp1"] for r in classes["per_row"].values())
     for key in ("arm", "aa"):
-        own = next(r for r in cells[{"arm": ARM, "aa": AA}[key]][1]["readiness"]["requirements"] if r["relpath"].endswith("phase-supply-v1.json"))
+        own = _own_supply(cells[{"arm": ARM, "aa": AA}[key]][1])
         assert classes["inputs"][f"{key}_supply"]["sha256"] == own["sha256"]
     assert classes["inputs"]["aa_supply"]["output_sha256"] == PLAN_SUPPLY_OUTPUT_SHA
     assert facts["composed_delivery_model_free"]["summary"] == summary

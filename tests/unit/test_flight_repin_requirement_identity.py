@@ -451,12 +451,28 @@ def test_every_committed_cell_rewrites_byte_identically_unless_the_legacy_tool_w
                     if not own and isinstance(entry, Mapping) and entry.get("kind") == "preparation":
                         protected.append((fragment.stem, cell_id, str(entry.get("relpath"))))
 
-    # The three registered AGREE cells are exactly the protected shape.
+    # The agreement table is the protected foreign requirement of AGREE's arm and smoke, and of every later cell
+    # registered to rank with the same table (COMP-1's arm and smoke since 3667e01d, W4's since 6c2f6782, and
+    # whichever cell the knowledge wave registers next). A hard-coded list went red on each such registration, so
+    # the property is stated structurally: the AGREE cells are protected, and every protected agreement-table
+    # requirement belongs to a cell whose composed boundary Perception supply consumes exactly that table.
+    from speech_aware_evidence_acquisition.core.config import compose
+
     agree = {(stem, cell_id) for stem, cell_id, relpath in protected if relpath == AGREEMENT_TABLE_RELPATH}
-    assert agree == {
+    assert {
         (AGREE_W1_FRAGMENT.stem, AGREE_ARM_CELL),
         (AGREE_SMOKE_FRAGMENT.stem, AGREE_SMOKE_CELL),
-    }
+    } <= agree
+    for stem, cell_id in sorted(agree):
+        document = json.loads((REPO_ROOT / "configs/experiment" / f"{stem}.json").read_text(encoding="utf-8"))
+        cell = next(c for c in document["cells"] if c.get("cell_id") == cell_id)
+        values = compose(
+            REPO_ROOT, str(cell["model_fragment"]), str(cell["dataset_fragment"]), str(cell["baseline_fragment"]), stem
+        ).values
+        source = values["knowledge_stores"]["intent-boundaries"]["phase_supply"]["perception"].get("agreement_source")
+        table = next(r for r in cell["readiness"]["requirements"] if r.get("relpath") == AGREEMENT_TABLE_RELPATH)
+        assert isinstance(source, Mapping) and source.get("relpath") == AGREEMENT_TABLE_RELPATH, (stem, cell_id)
+        assert source.get("sha256") == table.get("sha256"), (stem, cell_id)
     assert counts["one requirement, its own supply: byte-identical"] > 0
     assert counts["pin source: composed"] > 0
     print("\ncommitted-package identity proof:")

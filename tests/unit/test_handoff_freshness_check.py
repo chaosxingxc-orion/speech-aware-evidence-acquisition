@@ -186,10 +186,16 @@ def test_a_stamp_older_than_the_newest_ledger_heading_fails(tmp_path: Path) -> N
 
 def test_a_ledger_with_no_date_led_heading_is_not_a_finding(tmp_path: Path) -> None:
     _build(tmp_path)
-    (tmp_path / "docs" / "results" / "stage2-results-ledger.md").write_text(
+    ledger = tmp_path / "docs" / "results" / "stage2-results-ledger.md"
+    ledger.write_text(
         "# Stage-2 results ledger\n\n## The rules this ledger follows\n\nsynthetic\n",
         encoding="utf-8",
     )
+    # Re-pin the rewritten ledger's mtime to the synthetic clock _build uses: left at the wall-clock time of the
+    # write, it is newer than the pinned stamp on any day after 2026-09-26 and the gate (correctly) reports
+    # stale-vs-results -- the test went red on the calendar, not on a change.
+    stamp_seconds = (NOW - dt.timedelta(hours=4)).timestamp()
+    os.utime(ledger, (stamp_seconds, stamp_seconds))
     data = _evaluate(tmp_path)
     assert data["newest_ledger_entry"]["heading_date"] is None
     assert _kinds(data) == []

@@ -155,17 +155,21 @@ def test_every_treatment_knob_is_the_agree_arm_s(composed) -> None:
     )
 
 
-def test_no_prepared_phase_supply_is_committed_anywhere(
+def test_prepared_phase_supply_is_absent_or_the_cells_own(
     composed, experiment: dict
 ) -> None:
     """The agreement merge invalidated every prepared_phase_supply pin; this
-    cell carries none and the flip mints its own (item E16)."""
+    cell carried none as registered (baa97b1b) and the flip (9255ac71) minted
+    its own (item E16). Either state is recorded truth; a foreign supply never is."""
 
-    assert "prepared_phase_supply" not in composed.values
     baseline = _read(
         REPO / "configs/baseline" / (experiment["cells"][0]["baseline_fragment"] + ".json")
     )
-    assert "prepared_phase_supply" not in baseline
+    for doc in (composed.values, baseline):
+        supply = doc.get("prepared_phase_supply")
+        if supply is None:
+            continue
+        assert supply["relpath"].startswith(f"prepared/{RUN}/"), supply
 
 
 def test_readiness_is_held_with_an_empty_requirements_list(experiment: dict) -> None:
@@ -174,9 +178,18 @@ def test_readiness_is_held_with_an_empty_requirements_list(experiment: dict) -> 
     would be silently clobbered."""
 
     readiness = experiment["cells"][0]["readiness"]
-    assert readiness["state"] == "held"
-    assert readiness["requirements"] == []
-    assert "--allow-output-change must never be passed" in readiness["reason"]
+    # `held` with the empty list as registered (baa97b1b); `ready` after the flip (9255ac71), whose re-pin appends
+    # exactly the decision receipt and this cell's OWN prepared supply.
+    assert readiness["state"] in ("held", "ready")
+    if readiness["state"] == "held":
+        assert readiness["requirements"] == []
+        assert "--allow-output-change must never be passed" in readiness["reason"]
+    else:
+        kinds = sorted(req["kind"] for req in readiness["requirements"])
+        assert kinds == ["decision", "preparation"], kinds
+        for req in readiness["requirements"]:
+            if req["kind"] == "preparation":
+                assert req["relpath"].startswith(f"prepared/{RUN}/"), req
 
 
 def test_caps_are_the_declared_arithmetic(experiment: dict, derivation: dict) -> None:
@@ -296,5 +309,6 @@ def test_both_exposure_rows_exist_and_no_cell_contains_a_pipe() -> None:
         assert len(parts) == 17, parts[:3]
         cells = [part.strip() for part in parts[1:-1]]
         assert cells[6] == "discovery"
-        assert cells[8] == "no"
+        # "no" as registered; "yes" once the flight sealed (SEALED AND READ 2026-09-27, flight commit 9255ac71).
+        assert cells[8] in ("no", "yes")
         assert "P(correct given newly delivered)" in line or cells[1] == FIT_RUN

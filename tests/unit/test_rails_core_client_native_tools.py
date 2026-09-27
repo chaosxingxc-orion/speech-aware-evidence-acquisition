@@ -303,7 +303,11 @@ def test_native_packet_arm_requires_tool_schemas(tmp_path):
         )
 
 
-def test_native_packet_arm_rejects_an_empty_tool_schemas_sequence(tmp_path):
+@pytest.mark.parametrize("empty", [[], None], ids=["empty-list", "none"])
+def test_native_packet_arm_rejects_an_empty_tool_schemas_sequence(tmp_path, empty):
+    # Item E23b (b5b13d72) made the explicit empty TUPLE the tool-free native arm's accepted contract
+    # (rails.core_client.tool_free_native_schemas; proven in test_e23_tool_free_native_arm.py). Every other empty
+    # value -- an empty list, or no schemas at all -- is still refused by _validate_tool_schemas.
     world = _World(tmp_path)
     feature_root, _packet, bindings = _speech_feature_world(world, tmp_path)
     with pytest.raises(FrozenCoreClientError, match="non-empty tool_schemas"):
@@ -313,7 +317,7 @@ def test_native_packet_arm_rejects_an_empty_tool_schemas_sequence(tmp_path):
             arm="speech-feature-query-native-tools",
             speech_feature_root=feature_root,
             speech_packet_bindings=bindings,
-            tool_schemas=(),
+            tool_schemas=empty,
         )
 
 

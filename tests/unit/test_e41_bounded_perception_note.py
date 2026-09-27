@@ -71,6 +71,26 @@ DRY_BOOKKEEPING = {
 }
 
 
+#: Each cell's own decision id (registered c3b02e38). The dry run was flipped to ready at 55bcc54d with exactly this
+#: decision as its one requirement (Earnings pins no prepared supply, item E38); the sub10 cell follows once its
+#: own decision is minted.
+DECISION_IDS = {
+    DRY[2]: "e21-native-window-e41-dry-run-admission-v1",
+    SUB10[2]: "e21-native-window-e41-sub10-admission-v1",
+}
+#: The readiness leaves the flip moves; everything else in DRY_BOOKKEEPING must differ from E39b in either state.
+_READINESS_LEAVES = {p for p in DRY_BOOKKEEPING if p.startswith("cells[0].readiness.")}
+
+
+def _assert_held_or_flipped(readiness: dict, run_id: str) -> None:
+    assert readiness["state"] in ("held", "ready"), readiness
+    if readiness["state"] == "held":
+        assert readiness["requirements"] == [], readiness
+    else:
+        assert [req["kind"] for req in readiness["requirements"]] == ["decision"], readiness
+        assert readiness["requirements"][0]["expected_decision_id"] == DECISION_IDS[run_id]
+
+
 def _walk(node, prefix=""):
     if isinstance(node, dict):
         if not node:
@@ -143,8 +163,8 @@ def test_both_cells_compose_at_base_lock_v31_with_the_bounded_note():
         assert material["reviewer"]["instruction_template"] == "probes/e21_native_window_system_reviewer_v2.txt"
         assert composed.values["serving_geometry"] == e39b.values["serving_geometry"]
         document = _json(REPO / "configs/experiment" / f"{experiment}.json")
-        assert document["cells"][0]["readiness"] == {
-            "state": "held", "reason": document["cells"][0]["readiness"]["reason"], "requirements": []}
+        assert set(document["cells"][0]["readiness"]) == {"state", "reason", "requirements"}
+        _assert_held_or_flipped(document["cells"][0]["readiness"], run_id)
         record, operators = validate_stage3_algorithm_label(document["stage3_algorithm"], cell=cell_id)
         assert record.id == "none" and operators == ()
 
@@ -154,7 +174,10 @@ def test_the_dry_run_differs_from_e39b_by_one_pin_plus_bookkeeping():
     _, dry = _composed(*DRY[:2])
     diff = _diff(e39b, dry)
     assert diff[PIN] == (OLD_PROBE, NEW_PROBE)
-    assert set(diff) - {PIN} == DRY_BOOKKEEPING
+    # The readiness leaves differ from E39b while the dry run is held and may coincide in shape once it is
+    # flipped (55bcc54d); every other bookkeeping leaf must differ, and nothing outside the list may.
+    assert set(diff) - {PIN} <= DRY_BOOKKEEPING, sorted(set(diff) - {PIN} - DRY_BOOKKEEPING)
+    assert DRY_BOOKKEEPING - _READINESS_LEAVES <= set(diff), sorted(DRY_BOOKKEEPING - _READINESS_LEAVES - set(diff))
     # No budget, roster, geometry, scorer, instruction or episode leaf moved.
     for path in diff:
         assert not path.startswith(("execution_plan.", "cells[0].execution_plan", "prepared_", "serving_",
@@ -258,7 +281,8 @@ def test_the_finite_completion_gate_passes_and_sees_both_held_cells():
     assert data["passed"], data["violations"]
     in_scope = {row["run_id"]: row for row in data["in_scope_plan_cells"]}
     for run_id in (DRY[2], SUB10[2]):
-        assert in_scope[run_id]["readiness_state"] == "held"
+        # held as registered; the dry run is ready since its flip (55bcc54d)
+        assert in_scope[run_id]["readiness_state"] in ("held", "ready")
     scopes = {row["run_id"]: row for row in data["scope_report"]}
     for run_id in (DRY[2], SUB10[2]):
         assert scopes[run_id][gate.SCOPE_KEY] == "answering-node"
@@ -271,7 +295,11 @@ def test_the_ledger_carries_five_unconsumed_draft_rows_with_no_pipe_in_any_cell(
     expected = [DRY[2], DRY[2] + "-FIT-V1", SUB10[2], SUB10[2] + "-FIT-V1", "SAEA-E21-E41-PERCEPTION-NOTE-TRACE-READ-V1"]
     for run_id in expected:
         row = rows[run_id]
-        assert row["consumed"] == "no"
-        assert "DRAFT, root countersignature pending" in row["notes"]
+        # DRAFT as registered; countersigned before contact (c75ad044 for the dry run's two rows); consumed once
+        # a flight seals.
+        assert row["consumed"] in ("no", "yes")
+        assert row["consumed"] == "yes" or (
+            "DRAFT, root countersignature pending" in row["notes"] or "root countersigned" in row["notes"]
+        ), row["notes"][:200]
     raw = [line for line in text.splitlines() if any(f"| {r} |" in line for r in expected)]
     assert len(raw) == 5 and all(line.count("|") == 16 for line in raw)
