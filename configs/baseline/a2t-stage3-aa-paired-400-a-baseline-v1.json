@@ -1,0 +1,91 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+  "knowledge_snapshot_sha256": "7084f9c56b361ab8f38d2e0a6864ccb2d05bcc053dc70441de263b410ca6041f",
+  "live_phase_fit": {
+    "attempt_id": "attempt-a2t-stage3-aa-paired-400-a-fit-v1",
+    "contact_cap": 1201,
+    "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1"
+  },
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/task_agent_solve_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/audio2tool/parameter-meaning-v1/release.json",
+      "root": "data",
+      "sha256": "7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373"
+    },
+    {
+      "relpath": "knowledge/audio2tool/tool-activation-v1/release.json",
+      "root": "data",
+      "sha256": "3fe5686762468c34ff441ddfa3a8591889726676258d352cf04367544fca43a1"
+    },
+    {
+      "relpath": "coordination/a2t-agent-base-transfer-v1/candidate-route-source-verification-v2.json",
+      "root": "data",
+      "sha256": "e00c7514fd02799c3f0e0f8809658c040d18df193b6bfc85e506a6dd503e99a3"
+    },
+    {
+      "relpath": "coordination/a2t-agent-base-transfer-v1/shared-route-engineering-verification-v2.json",
+      "root": "data",
+      "sha256": "8c93be72d6085b0d765add088d1a1ca1053637eb45f4a25f6eaf8c22f49f4041"
+    },
+    {
+      "relpath": "coordination/a2t-query-encoding-root-closure-v1.json",
+      "root": "data",
+      "sha256": "8127de087876b43a22ba26f0564a61b8e00619148a5c664e19d09556c46da91d"
+    },
+    {
+      "relpath": "coordination/a2t-native-key-root-closure-v1.json",
+      "root": "data",
+      "sha256": "95b74158f1c5356288e5a42c6a0012e7a38957a3618a2d3e7ef7af792a4e42cd"
+    },
+    {
+      "relpath": "coordination/a2t-agent-base-transfer-v1/compiled-store-binding-v1.json",
+      "root": "data",
+      "sha256": "915a837babe4721876057b631a56cbdbb14108ebc40d84b9dc532a2a48909a1e"
+    },
+    {
+      "relpath": "knowledge/audio2tool/tool-activation-v1/completion.json",
+      "root": "data",
+      "sha256": "dfdcaaccc15ca5ec7682bce3312d5566888891d1e7973f3ee2536e82c08df82e"
+    },
+    {
+      "relpath": "knowledge/audio2tool/parameter-meaning-v1/completion.json",
+      "root": "data",
+      "sha256": "24071625a272ac39b64090f8f1da90d847468523185de0317c32591dbdd1f90a"
+    }
+  ],
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "a2t-toolcall-official",
+    "a2t-toolcall-v2",
+    "a2t-toolcall",
+    "cost"
+  ],
+  "serving_geometry": {
+    "max_tokens": 2048,
+    "slot_tokens": 32768,
+    "slots": 3
+  },
+  "serving_slot_tokens": 32768,
+  "serving_slots": 3,
+  "speech_feature_key_representation_id": "saea-a2t-native-system-v1:complete-speech",
+  "speech_feature_matcher_policy_id": "saea-a2t-native-system-v1",
+  "speech_packet_promotion_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+  "speech_packet_promotion_receipt_sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a",
+  "task_contract_source": "active-instruction",
+  "task_instruction_fill": "audio2tool-registry-compact",
+  "task_instruction_template": "probes/r1_audio2tool_official.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Cell A2T-AA pass A: the sealed direct baseline a2t-native-role-direct-union4000-v1, byte-for-byte in every request-shaping field, re-declared under its own live phase-fit identity for a flight on the paired 400 (A2T-PAIRED-400-V1). One complete direct answer per row through the shared controller's direct-only phase program, FlightRuntime and OpenJiuwen; no knowledge supply, no analytical tools, no native tool authority. It is the Audio2Tool carrier's own request-identical null: nothing here is a mechanism and nothing here claims a benefit.",
+  "whole_roster_wave_barrier": true
+}
