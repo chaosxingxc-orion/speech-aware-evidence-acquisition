@@ -160,3 +160,34 @@ def test_explicit_knobs_are_required_and_the_pure_rule_validates():
         total=2,
     )
     assert selected == ("v1", "v3") and supporting == ("f1", "f3")
+
+
+def test_the_prompt_bound_counts_the_delivered_width_under_the_target_cap_fuser():
+    """The pre-flight prompt bound counts the longest ``min(k, top_l)`` values under this fuser, as
+    under the associated-values fuser: the walk stops at ``top_l`` values overall, so a cell that
+    recalls 300 and delivers 20 is bounded at 20 blocks, not 300. The flown supply filter keeps ``k``."""
+
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.rails import controllers as rc
+    from speech_aware_evidence_acquisition.rails.kb_policy import FUSE_POLICY_ID
+
+    program = rc.default_phase_program("phase-direct-evidence-alpha-blend-v1")
+    snapshot = _store([f"t{n % 7}" for n in range(60)])
+
+    def bound(k: int, top_l: int, fuse_policy: str) -> int:
+        stub = SimpleNamespace(
+            _composed=SimpleNamespace(values={"phase_supply": {"evidence": {
+                "provider": "kb-facet-v1", "rank_policy": "saea-rank-wcos-prior-agree-v1",
+                "fuse_policy": fuse_policy, "k": k, "tau": 0.0, "dimensions": ["content"],
+                "expose_facets": False, "fuse_coverage": {"m": k, "c": 5, "top_l": top_l},
+                "query_source": {"kind": "sealed-vectors", "relpath": "v/q.jsonl", "sha256": "d" * 64,
+                                 "tool_contact_ledger_row": "TEST-EMB-0001", "embedded_signal": "speech: synthetic"},
+            }}}),
+            _load_knowledge_snapshot=lambda: snapshot,
+        )
+        return len(FlightRuntime._phase_supply_prompt_bound(stub, program)["evidence"])
+
+    assert bound(50, 20, TARGET_CAP_FUSE_POLICY_ID) == 20
+    assert bound(50, 20, FUSE_POLICY_ID) == 50

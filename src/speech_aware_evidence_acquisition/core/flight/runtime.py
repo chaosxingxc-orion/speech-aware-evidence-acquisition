@@ -2237,8 +2237,17 @@ class FlightRuntime:
                 # 16 = 16, and one declares k = 60 with top_l = 61 -- so
                 # ``min`` returns today's ``spec.k`` in all 174 cases and no
                 # existing bound, receipt or budget verdict moves.
+                #
+                # W3 (owner decision 164): ``saea-fuse-supplyfilter-target-cap-v1``
+                # is the second fuser whose ``top_l`` is a hard cap on the total --
+                # ``rails.kb_policy.select_target_capped`` stops the walk at
+                # ``len(taken) == total`` -- so it narrows the same way. It is the
+                # only committed use of that id, so no other bound moves.
                 value_width = spec.k
-                if spec.fuse_policy == _kb_policy.ASSOCIATED_VALUES_FUSE_POLICY_ID:
+                if spec.fuse_policy in (
+                    _kb_policy.ASSOCIATED_VALUES_FUSE_POLICY_ID,
+                    _kb_policy.TARGET_CAP_FUSE_POLICY_ID,
+                ):
                     value_width = min(spec.k, spec.fuse_knobs().top_l)
                 for value in by_length[:value_width]:
                     if store_id is None:
