@@ -100,7 +100,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "b0a40cd3fe4c9f324170870c45a0ff2034989ef3e4a000fdc3940f0919dea892"
+    "sha256": "e7b7d2fc33debca9ea7bff58f26453421025937b79119c3620fe4d158c6dae82"
   },
   "purpose": "DESCRIPTIVE. This cell is an ASSET and makes NO comparison, no admission claim, no gate, no superiority, transfer, generalisation, component-causal or confirmatory statement. Its only deliverable is a sealed five-sample pool on DEV-2000-ADDED plus the structural proof that the pool is well formed. Any later read over that pool is registered separately.",
   "quality_read_gate": "No read of any kind before the complete sealed manifest and the exact ordered outputs with exactly five custodied solver_group samples per row exist. A partial manifest is never read; a failed smoke stops the arm and it does not open.",

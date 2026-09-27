@@ -83,7 +83,7 @@ object of `docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1/regist
 | campaign plan | `configs/campaign/slurp-native-stage3-roll-3-dev2000-added-v1.json` |
 | serving session (attach only) | `serving-slurp-native-candidate-five-train-a-np4-v1` |
 
-Composed config hash `9ff4253e8d422de5c863e0fa22ca6fc115009fb65c4d9f9a259ac60c7b54b5d4`, protocol hash `07d824a00e73d9b71b303109751e2aaafa64a5bd99ab883c367d2252a4c1fa6b` (arm); `5e91c6f83983da147e8d9931cbf74599499c95c6da2d9064fdfabfdafed89786` / `f61458df3365ea3313f4f12829e7c1f76e96b43fdee7e9b1b120d61c8cccd466`
+Composed config hash `c1d46e45fa74ee4a92cec4a9fb91506d19baf0b77ecebbc50fa1aa6d12549414`, protocol hash `aff61447c94cfe38247fa0944fc0c10e7498aef5f0618490e56b63233f9504c0` (arm); `5e91c6f83983da147e8d9931cbf74599499c95c6da2d9064fdfabfdafed89786` / `f61458df3365ea3313f4f12829e7c1f76e96b43fdee7e9b1b120d61c8cccd466`
 (smoke). Every one of these MOVES at the readiness flip, which re-pins this cell's own prepared
 phase supply into the baseline fragment; `scripts/flights/batch/repin_loop_generic.sh` rewrites
 each document that quotes them, including this one and the exposure-ledger rows.

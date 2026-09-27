@@ -16,6 +16,13 @@
         "reason": "Stage-3 cell ROLL-3: cell ROLL-2's grouped-Solver form (samples 5, temperature 0.7, seed_offset 0, plurality commit at min_support 3) on DEV-2000-ADDED, the evaluation roster where every admitted policy must later be replicated, to create the SEALED five-sample pool the program has on R01C and TRAIN Fold A and lacks there. DESCRIPTIVE: an asset, not a comparison. HELD: root mints the admission receipt coordination/slurp-stage3-roll-3-dev2000-added-v1/root-admission-v1.json (decision id slurp-stage3-roll-3-dev2000-added-admission-v1), rewrites its eligible_run_ids to this family's FOUR run ids -- SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1, SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-FIT-V1, SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-SMOKE-4-V1, SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-SMOKE-4-FIT-V1 -- and its budget caps to this family's, then re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's OWN first-phase supply artifact under its own run id (harness item E16) and inserts the matching preparation requirement. The committed baseline carries NO prepared_phase_supply key; --allow-output-change must never be passed. The two FIT ids are SPEND identities and are never flown as generation cells.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-roll-3-dev2000-added-admission-v1",
+            "relpath": "coordination/slurp-stage3-roll-3-dev2000-added-v1/root-admission-v1.json",
+            "sha256": "e4cd0f4f321e17e6ee45abf0c03962314fc46d2731ce9b5de1454a9b8802fd27",
+            "reason": "Decision slurp-stage3-roll-3-dev2000-added-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The released train-exemplars store this cell retrieves from: size-pool-annotated-exemplars, the parent pool the sealed DEV-2000-ADDED plan arm and the sealed Fold A lock arm both read (TRAIN-built; no DEV-2000-ADDED recording is in it). Nothing new is released by this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
             "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
@@ -26,9 +33,15 @@
             "reason": "The DEV-2000-ADDED query-dimension alias both DEV-2000-ADDED query_source pins descend from (prepared under SAEA-SLURP-DEV2000-ADDED-ALIAS-V1 from the sealed SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1 vectors, and already consumed by cell B6's plan arm, its replicate PLANr-DEV2000 and cell CELL-3). Nothing new is encoded for this cell: every DEV-2000-ADDED vector line it reads is the sealed parent's own line bytes. The cell stays HELD on a root admission decision.",
             "relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-ALIAS-V1/query-dimension-alias.json",
             "sha256": "9d41262d18b7dc524807e36fb1d97b859f43920524a6dfe85f1bead2b07a5768"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1/phase-supply-v1.json",
+            "sha256": "77284f0687290c6fbc79d2cb876e80436e5f314f1750a7ab77650d550ba49b46",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1"
     }
