@@ -330,3 +330,119 @@ def test_a_cell_without_a_readiness_block_is_still_refused(tmp_path):
 )
 def test_is_own_supply_requirement_matches_on_relpath_identity_never_on_kind_alone(entry, previous_relpath, expected):
     assert is_own_supply_requirement(entry, run_id="MINE", previous_relpath=previous_relpath) is expected
+
+
+# --------------------------------------------------------------------------
+# The committed packages, read-only: behaviour is byte-identical to the
+# pre-fix tool wherever a cell's single 'preparation' requirement is its own
+# supply (and wherever it has none), and differs ONLY where the pre-fix tool
+# would have clobbered a requirement that is not this cell's supply.
+# --------------------------------------------------------------------------
+
+
+def _committed_previous_pin(cell: Mapping, experiment: str) -> tuple[ArtifactPin | None, str]:
+    """The composed ``prepared_phase_supply`` exactly as ``compute_cell_identity``
+    reads it. A fragment the tool itself cannot compose (placeholder baselines
+    of never-registered cells) falls back to its baseline file so the survey
+    still classifies the cell; only the relpath matters for identity."""
+    from speech_aware_evidence_acquisition.core.config import compose
+
+    try:
+        composed = compose(
+            REPO_ROOT, str(cell["model_fragment"]), str(cell["dataset_fragment"]), str(cell["baseline_fragment"]), experiment
+        )
+        pin, source = composed.values.get("prepared_phase_supply"), "composed"
+    except Exception:  # noqa: BLE001 -- a cell the tool cannot re-pin either
+        pin, source = None, "uncomposable"
+        baseline = REPO_ROOT / "configs/baseline" / f"{cell.get('baseline_fragment')}.json"
+        if baseline.is_file():
+            try:
+                document = json.loads(baseline.read_text(encoding="utf-8"))
+                pin = document.get("prepared_phase_supply") if isinstance(document, Mapping) else None
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                pin = None
+    relpath = pin.get("relpath") if isinstance(pin, Mapping) else None
+    if not isinstance(relpath, str) or not relpath:
+        return None, source
+    return ArtifactPin(relpath, "0" * 64), source
+
+
+def _moved(entry: Mapping, pin: ArtifactPin) -> dict:
+    moved = dict(entry)
+    moved["relpath"], moved["sha256"] = pin.relpath, pin.sha256
+    return moved
+
+
+def test_every_committed_cell_rewrites_byte_identically_unless_the_legacy_tool_would_clobber_a_foreign_requirement(tmp_path):
+    from collections import Counter
+
+    counts: Counter[str] = Counter()
+    protected: list[tuple[str, str, str]] = []
+    for fragment in sorted((REPO_ROOT / "configs/experiment").glob("*.json")):
+        document = json.loads(fragment.read_text(encoding="utf-8"))
+        if not isinstance(document, Mapping) or not isinstance(document.get("cells"), list):
+            counts["fragment without cells"] += 1
+            continue
+        for cell in document["cells"]:
+            if not isinstance(cell, Mapping) or not isinstance(cell.get("run_id"), str) or not isinstance(cell.get("cell_id"), str):
+                counts["cell without run_id (not re-pinnable)"] += 1
+                continue
+            if not isinstance(cell.get("readiness"), Mapping):
+                counts["cell without readiness (refused as before)"] += 1
+                continue
+            run_id, cell_id = cell["run_id"], cell["cell_id"]
+            previous, source = _committed_previous_pin(cell, fragment.stem)
+            counts[f"pin source: {source}"] += 1
+            requirements = cell["readiness"].get("requirements")
+            requirements = list(requirements) if isinstance(requirements, list) else []
+            preparation = [entry for entry in requirements if isinstance(entry, Mapping) and entry.get("kind") == "preparation"]
+            own_mask = [
+                is_own_supply_requirement(entry, run_id=run_id, previous_relpath=previous.relpath if previous else None)
+                for entry in requirements
+            ]
+            own_count, foreign_count = sum(own_mask), len(preparation) - sum(own_mask)
+            new_pin = ArtifactPin(f"prepared/{run_id}/phase-supply-v999.json", NEW_SHA)
+
+            fixed, legacy, report = _both(tmp_path, fragment, cell_id=cell_id, run_id=run_id, previous_pin=previous, pin=new_pin)
+            after = _requirements(fixed, cell_id)
+
+            # The fixed tool: every own entry moved, every other entry kept
+            # byte-for-byte in place, exactly one appended iff nothing matched.
+            expected = [_moved(entry, new_pin) if own else entry for entry, own in zip(requirements, own_mask)]
+            assert _canonical(after[: len(requirements)]) == _canonical(expected), (fragment.name, cell_id)
+            assert len(after) == len(requirements) + (0 if own_count else 1), (fragment.name, cell_id)
+            assert report == {"updated": own_count, "appended": 0 if own_count else 1, "kept": foreign_count}, (fragment.name, cell_id)
+            # The legacy tool agrees byte-for-byte iff it had no foreign entry to clobber.
+            identical = fixed.read_bytes() == legacy.read_bytes()
+            assert identical == (foreign_count == 0), (fragment.name, cell_id)
+
+            if not preparation:
+                counts["no preparation requirement: one appended, byte-identical"] += 1
+            elif len(preparation) == 1 and own_count == 1:
+                counts["one requirement, its own supply: byte-identical"] += 1
+            elif len(preparation) == 1:
+                counts["one requirement, NOT its supply: kept + one appended (legacy clobbered it)"] += 1
+                protected.append((fragment.stem, cell_id, str(preparation[0].get("relpath"))))
+            elif foreign_count == 0:
+                counts["two or more, all its own supply (duplicates): all moved, byte-identical"] += 1
+            else:
+                counts["two or more with a foreign entry: own moved, foreign kept (legacy clobbered it)"] += 1
+                for entry, own in zip(requirements, own_mask):
+                    if not own and isinstance(entry, Mapping) and entry.get("kind") == "preparation":
+                        protected.append((fragment.stem, cell_id, str(entry.get("relpath"))))
+
+    # The three registered AGREE cells are exactly the protected shape.
+    agree = {(stem, cell_id) for stem, cell_id, relpath in protected if relpath == AGREEMENT_TABLE_RELPATH}
+    assert agree == {
+        (AGREE_W1_FRAGMENT.stem, AGREE_ARM_CELL),
+        (AGREE_SMOKE_FRAGMENT.stem, AGREE_SMOKE_CELL),
+    }
+    assert counts["one requirement, its own supply: byte-identical"] > 0
+    assert counts["pin source: composed"] > 0
+    print("\ncommitted-package identity proof:")
+    for key, value in sorted(counts.items()):
+        print(f"  {value:4d}  {key}")
+    prefixes = Counter("/".join(relpath.split("/")[:2]) for _stem, _cell, relpath in protected)
+    print("  foreign requirements the fix protects, by directory:")
+    for prefix, value in prefixes.most_common():
+        print(f"    {value:3d}  {prefix}")
