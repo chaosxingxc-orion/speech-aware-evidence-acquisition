@@ -50,7 +50,7 @@ contacts per minute (decision 140). There is no verdict and no admission.
 | --- | --- | --- | --- | ---: | --- | --- |
 | smoke | `SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1` | `attempt-a2t-stage3-aa-paired-400-smoke-4-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-FIT-V1` (13) | 4 | `9adcadaa534c75e9d0f13a5a12fbd7bd979423dec7edbb33f258204fdeb8e63a` | `d5769316f8634c9e76333a8e483dc2bda9afe6633f726726a917867716a552a7` |
 | pass A | `SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1` | `attempt-a2t-stage3-aa-paired-400-a-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1` (1201) | 400 | `cfd6783ce1ebd696329bede91fdc2bc91cabe119c283756f2464b443fc435f95` | `fabed23cfe5b85be32ce6a30b302cf8f0306eb1e6277d3b507cf6011ff9b32d5` |
-| pass B | `SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1` | `attempt-a2t-stage3-aa-paired-400-b-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-B-FIT-V1` (1201) | 400 | `5287ee6e58bfa6048b2db894d44566061764905801568219300130841227514f` | `d00d21ce8c2a7699c8c3d3365d307a4f45a986b2ee7708f5a71eecf3f1c6a14a` |
+| pass B | `SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1` | `attempt-a2t-stage3-aa-paired-400-b-generation-v1` | `SAEA-A2T-STAGE3-AA-PAIRED-400-B-FIT-V1` (1201) | 400 | `bad06cd4ef11a7f41dfdbaed0910f317c2c108937dfa66d745000e4c83a158d0` | `b538d2aa3b81a5e12312dbe69c43c2c9381aea237b63ffcccd06dbca5f58ddd7` |
 
 **Budgets, as arithmetic.** Per pass: 400 generation contacts (400 rows x 1,
 the direct-only program's exact maximum), 1201 live-fit endpoints
