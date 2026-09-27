@@ -1,7 +1,7 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-27T05:23:19Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
-`bc507604`+ on `master` (DET flying at np1, ROLL-3 flipped, A2T-AA / keys / cite / decomp / tput / testsample merged), tree clean. Fable 5.1 is the coordinator again as of this refresh; the
+Last refreshed: 2026-09-27T06:19:56Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
+`c2eba79e` on `master` (ROLL-3 flying on np4, AGREE and A2T-AA flip-ready and queued, DET sealed and read, partition gate and DET/audit records merged), tree clean. Fable 5.1 is the coordinator again as of this refresh; the
 programme now carries an ABSOLUTE target, and the label ceiling says it is reachable.
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
@@ -166,16 +166,7 @@ are identical, and those are what every read consumes.
 
 ## 7. My next action
 
-**In the air / just sealed.** ROLL-2 sealed (Fold A 1,080 x 5, 8,996 contacts). The CONV probe sealed at
-00:05Z: 70 Fold A rows whose gold intent entry is newly delivered under `w_agree` 1.0, treatment only, read
-as P(correct | newly delivered) on intent per row. **Read: m = 32 of 70** -- 45.71 %, Wilson CI95
-[34.57, 57.30] %, exact [33.74, 58.06] %; delivery gate held 70/70; wrong->gold 32, gold->wrong 0,
-same-wrong 22, different-wrong 16; the tracer marks the gold entry used on 42 and ignored on 28; 289
-contacts, 0.124 GPU-h. Under decision 133 the arm's re-declared expectation is 32 x 0.092615 = 2.96 pp
-intent against a 2.5 pp bar -- the point estimate clears it, the CI95 in rows [24.2, 40.1] spans the 27
-line; under the retired SLU-F1 framing it is 1.33 pp. **Owner decision 139 forbids any pre-committed
-disposition; the AGREE arm's fate is being decided in conversation on this number.** Its receipt, flip
-scripts and chain script are ready; the re-pin fix it needed is merged.
+**In the air / just sealed (2026-09-27, 06:30Z refresh).** DET sealed and read (`docs/results/2026-09-27-slurp-det-np1-pair-read.md`): two request-identical flights of the locked plan on np1 x 24,576 with the prompt cache off delivered **50 of 50 rows byte-identical**, 0 intent disagreements, paired deltas 0.0 [0.0, 0.0] -- the between-flight band on np4 is a serving property (batching + prompt cache + q8 KV), not the model or the harness. Throughput, the adoption criterion of decision 140: 15.09 / 14.89 contacts per minute and 1,991.6 / 1,965.4 prompt tok/s against the np4 ROLL-2 arm's 63.07 / 9,515.8, a 4.2x / 4.8x cost, so np1 is **not adopted** for sampling-heavy work; the recipe's pre-declared routing rule names a 200-row floor re-estimate as a separate registration (no disposition pre-written, decision 139). The card was swapped back to np4 at 05:48Z and **ROLL-3 is flying** (flight commit `bc507604`, smoke passed 05:56Z, arm generating from 06:05Z, ~3.3 GPU-h). **Owner decisions 143-148 are recorded:** the AGREE arm FLIES AS A BENEFIT CLAIM, re-declared to intent primary at 2.96 pp against the 2.5 pp bar (143; flipped at `05e8053a`, six rows countersigned); A2T-AA flies on the new `A2T-PAIRED-400-V1` roster (144; receipt minted, seven rows countersigned, three cells flipped at `1cda1a6b`); the centroid-key conversion probe is being registered (145); the test sample is 3,000 (146); the final-report disjointness gate was adjusted WITH PROOF -- one enforcement point, partition re-proved from committed item lists, 80 tests, merged as `7aea4483` (147); the run-root relocation was audited and found in CONFLICT with `verify_bundle`'s confinement, the flight-receipt guard and post-seal scoring rewrites, so it is NOT done and the two `TraceSink` fixes on `fable/tracefix` carry the recovery (148; `docs/results/2026-09-27-run-root-relocation-audit.md`). **Unattended queue armed:** `SAEA-Queue-ROLL3-AGREE` launches the AGREE chain (smoke -> in-chain A/A -> arm, ~7 GPU-h) the moment ROLL-3 seals; `SAEA-Queue-AGREE-A2T` then swaps the geometry to A2T np3, flies A2T-AA (smoke, pass A, pass B) and swaps back to np4; both halt, never skip, on a STOP. Housekeeping: 7 merged worktrees removed (2.0 GB); 143 unregistered orphan directories (~40 GB, admin dirs long pruned, HEAD unresolvable) await the owner's deletion decision -- the five `codex-*` ones are yours and are never touched.
 
 **Landed since the last stamp.** Owner decisions 138-142: the cumulative-harm check is folded into the
 optimisation rounds and a non-improving round is read as a conflict between information elements (138);
