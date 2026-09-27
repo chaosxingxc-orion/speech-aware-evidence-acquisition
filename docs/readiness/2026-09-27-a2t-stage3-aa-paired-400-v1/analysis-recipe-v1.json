@@ -1,0 +1,91 @@
+{
+  "arms": {
+    "pass_a": {
+      "attempt_id": "attempt-a2t-stage3-aa-paired-400-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "pass_b": {
+      "attempt_id": "attempt-a2t-stage3-aa-paired-400-b-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "sealed_direct_comparator": {
+      "attempt_id": "attempt-a2t-native-role-direct-union4000-generation-v1",
+      "outputs": {
+        "relpath": "runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.outputs.jsonl",
+        "sha256": "658fd21d362467233e2e220f48334ac6894c74885b8677aeeee8980073810ba6"
+      },
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+      "run_manifest": {
+        "relpath": "runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.run-manifest.json",
+        "sha256": "a3fb34c6c1825a5bbb0642f88c8d130fd72f348c9b8c3d78e0f69d2c2c51d004"
+      },
+      "scores": {
+        "relpath": "runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.scores.json",
+        "sha256": "2071602b9ea40dfa571ded2508d92051cd945ce4b2d50a6a9dd935367a058026"
+      }
+    }
+  },
+  "cell_kind": "A/A NULL -- two request-identical passes of the sealed direct baseline in one chain on one resident session; DESCRIPTIVE, no admission verdict, no comparator claim, no gate.",
+  "claim_boundary": "No superiority, generalisation, component-causal, bar, admission or confirmatory claim of any kind. The only output is a measurement floor, valid at n = 400 on the paired 400 under the c98304 np3 x 32,768 max2048 Audio2Tool geometry with the sealed direct baseline's request form.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": {
+    "output": "h_A2T (official tool accuracy), h_A2T_em (official exact match), h_A2T_repo (a2t-toolcall), each in both weightings; they become the registered margins of every later Audio2Tool contrast on this roster",
+    "rule": "NONE -- descriptive; the deliverable is h_A2T and the byte-identity counts"
+  },
+  "interval": {
+    "draws": 10000,
+    "half_width_is_the_deliverable": true,
+    "kind": "paired bootstrap",
+    "level": "CI95",
+    "seed": 20260903,
+    "stratification": "tier"
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-A2T-STAGE3-AA-PAIRED-400-READ-V1"
+  },
+  "privacy": "No query text, transcript, gold tool, expected call, model output text or annotation is printed or persisted by the read: per_row.json and null.json carry ids, tier names, flags, scores and hashes only.",
+  "recipe_id": "a2t-stage3-aa-paired-400-v1-own-null-read",
+  "registered_at_utc": "2026-09-27T00:48:15.000000+00:00",
+  "roster": {
+    "comparator_rows": "docs/receipts/rosters/a2t-paired-400-v1.comparator-rows.json",
+    "relpath": "docs/receipts/rosters/a2t-paired-400-v1.json",
+    "roster_id": "A2T-PAIRED-400-V1",
+    "rows": 400,
+    "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a"
+  },
+  "run_ids": {
+    "fit_a": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-FIT-V1",
+    "fit_b": "SAEA-A2T-STAGE3-AA-PAIRED-400-B-FIT-V1",
+    "fit_smoke": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-FIT-V1",
+    "pass_a": "SAEA-A2T-STAGE3-AA-PAIRED-400-A-V1",
+    "pass_b": "SAEA-A2T-STAGE3-AA-PAIRED-400-B-V1",
+    "read": "SAEA-A2T-STAGE3-AA-PAIRED-400-READ-V1",
+    "smoke": "SAEA-A2T-STAGE3-AA-PAIRED-400-SMOKE-4-V1"
+  },
+  "schema": "saea-a2t-own-null-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless both passes' manifests are COMPLETED at 400 rows, both attempts FINALIZED, both manifests carry the same study_commit and the same session receipt path, and each manifest's id set equals the frozen roster's ids exactly (compare the id-list identity hash, not a count).",
+    "2. Request identity: join the two outputs files on sample_id and count rows whose request_sha256 is equal. The pair is read as request-identical only at 400 of 400; any other count is reported as the finding and the null is NOT registered from it.",
+    "3. Byte identity: count rows whose response_text_sha256 is equal between the passes (identical of 400); report the count of rows whose official primary tool differs and whose official exact-match verdict differs.",
+    "4. Scores: read each pass's sealed scores.json (already produced ONCE per complete manifest at finalize through core.scoring_batch; nothing is re-scored). Primary: a2t-toolcall-official per-sample tool accuracy. Beside: official exact match, official parameter F1 (macro and micro), a2t-toolcall tool accuracy and exact match, a2t-toolcall-v2 ordered tool accuracy, parse rate.",
+    "5. The null: per row delta = pass B minus pass A on each metric; pooled mean delta with a tier-stratified paired bootstrap CI95 (10,000 draws, seed 20260903, the row as the resampling unit within tier) in the natural-mixture weighting and in the equal-tier weighting; h_A2T = the CI95 half-width on the official tool accuracy; the same half-widths on official exact match and on a2t-toolcall beside it.",
+    "6. Per-tier table (50 rows each) and per-domain table (domain resolved at analysis time from the released tier manifests, never at request time), each carrying the paper column (a2t-toolcall-official) beside the repo column (a2t-toolcall).",
+    "7. Cross-campaign context, REPORTED BESIDE and never a gate: each pass joined to the sealed direct rows of the same 400 ids (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1) on request_sha256 and response_text_sha256 (identity counts) and on the official per-sample scores (paired delta with the same bootstrap); the comparator flew the same fragment bytes on a different day and session (v2 against v3).",
+    "8. Throughput (owner decision 140): contacts per minute, prompt and completion tokens per contact, generation wall seconds and the session monitor summary (active seconds, mean and peak power) per pass.",
+    "9. Write per_row.json (sample_id, tier, the two request and response hashes, the identity flags, the per-metric deltas; ids, flags, scores and hashes only) and null.json (the pooled numbers, both weightings, per-tier and per-domain tables, the comparator context, the throughput block, the registered h_A2T) under the analysis root; append the results-ledger row A2T-NULL with its status word MEASURED and the two half-widths."
+  ],
+  "title": "Cell A2T-AA -- Audio2Tool's own request-identical null on the paired 400"
+}
