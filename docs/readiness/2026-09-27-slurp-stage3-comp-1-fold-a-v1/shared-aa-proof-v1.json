@@ -1,0 +1,380 @@
+{
+  "cells": {
+    "comp1_aa": {
+      "baseline_fragment": "slurp-native-stage3-comp1-aa-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:b06da99e98fa2917",
+      "experiment": "slurp-native-stage3-comp1-aa-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:2c753652197d396f",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1"
+    },
+    "g5_aa": {
+      "baseline_fragment": "slurp-native-stage3-g5-aa-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:fa5f5b2650cd1216",
+      "experiment": "slurp-native-stage3-g5-aa-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:cbf039dc491d5238",
+      "run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1"
+    }
+  },
+  "composed_config_diff": {
+    "by_class": {
+      "bookkeeping": 19,
+      "supply-recall-width": 1
+    },
+    "differing_leaves": [
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
+        "g5_aa": "attempt-slurp-native-stage3-g5-aa-fold-a-generation-v1",
+        "leaf": "cells[0].attempt_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "slurp-native-stage3-comp1-aa-fold-a-baseline-v1",
+        "g5_aa": "slurp-native-stage3-g5-aa-fold-a-baseline-v1",
+        "leaf": "cells[0].baseline_fragment",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "slurp-native-stage3-comp1-aa-fold-a-v1",
+        "g5_aa": "slurp-native-stage3-g5-aa-fold-a-v1",
+        "leaf": "cells[0].cell_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "The in-chain A/A replicate of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN fragments by script (decision 58): the same baseline bytes at k 60, w_agree 0.0, no agreement_source, the written key, the un-armed citation default, its own run, attempt and fit ids. HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Its prepared supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f.",
+        "g5_aa": "The in-chain A/A replicate of cell G5, registered before contact on 2026-09-27 from the locked cell PLAN fragments by script (decision 58): the same baseline bytes, the OLD Reviewer instruction, its own run, attempt and fit ids. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement; the requirements list is empty by design, --allow-output-change must never be passed, and the minted supply must reproduce the sealed PLAN output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f (the Reviewer instruction is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "leaf": "cells[0].readiness.reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "<absent>",
+        "g5_aa": [],
+        "leaf": "cells[0].readiness.requirements",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "preparation",
+        "g5_aa": "<absent>",
+        "leaf": "cells[0].readiness.requirements[0].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors and the same sealed SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 facet vectors the sealed PLAN arm used, with zero model, tokenizer, encoder, scorer or server contacts. Its output digest must equal the sealed PLAN preparation's ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f (the byte-identity proof that the A/A flies the locked plan's own bytes). E16: this cell pins its own rather than inheriting the PLAN arm's. --allow-output-change must never be passed.",
+        "g5_aa": "<absent>",
+        "leaf": "cells[0].readiness.requirements[0].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/phase-supply-v1.json",
+        "g5_aa": "<absent>",
+        "leaf": "cells[0].readiness.requirements[0].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "sha256-prefix16:445e1acc7d5d867b",
+        "g5_aa": "<absent>",
+        "leaf": "cells[0].readiness.requirements[0].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+        "g5_aa": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+        "leaf": "cells[0].run_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+        "g5_aa": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+        "leaf": "experiment_id",
+        "reason": "the experiment's registered id (ledger and receipts)",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "saea-slurp-native-stage3-comp1-aa-fold-a-v1",
+        "g5_aa": "saea-slurp-native-stage3-g5-aa-fold-a-v1",
+        "leaf": "fragment_kind",
+        "reason": "the fragment's self-description tag",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "The sealed B1 recovery arm's role graph is unchanged: perception 1, solver 1, reviewer 3, planner 1, max_revisions 1, so rails.native_episode_config.load_native_episode_config resolves the program ceiling 1 + 2 * (3 + 1 + 1) = 11 contacts per row and 1,080 * 11 = 11,880 is the exact program maximum rather than a conservative safety bound. Cell B1's own realized cost was 5,425 contacts (5.023 per row), 15,494.60 repeated speech seconds and 3.6819 GPU hours, so the expected spend is about 5,400 contacts and about 3.7 GPU hours. The train-exemplars store supplies the Solver phase and adds prompt tokens, never contacts. The budget is RUN-CUMULATIVE across every attempt of this run id, which is what makes the resume-recovery clause safe.",
+        "g5_aa": "The locked PLAN role graph is unchanged: perception 1, solver 1, reviewer 3, planner 1, max_revisions 1, so rails.native_episode_config.load_native_episode_config resolves the program ceiling 1 + 2 * (3 + 1 + 1) = 11 contacts per row and 1,080 * 11 = 11,880 is the exact program maximum rather than a conservative safety bound. The sealed PLAN arm's own realized cost was 4,424 contacts (4.096 per row, of which 1,108 Reviewer contacts) and about 3.7 GPU hours, so the expected spend is about 4,424 contacts and about 3.7 GPU hours -- less 51 prefill tokens per Reviewer contact, which no cap is denominated in. The train-exemplars store supplies the Solver phase and adds prompt tokens, never contacts. The budget is RUN-CUMULATIVE across every attempt of this run id, which is what makes the resume-recovery clause safe.",
+        "leaf": "generation_budget.definition",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": 5425,
+        "g5_aa": 4424,
+        "leaf": "generation_budget.target",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false
+      },
+      {
+        "class": "supply-recall-width",
+        "comp1_aa": 60,
+        "g5_aa": 8,
+        "leaf": "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+        "reason": "the first-phase supply's recall width: read only by the prepared supply's recall (rails.phase_supply); it reaches a request only through the supply's OUTPUT, so it is output-neutral exactly when the two prepared supply output digests are equal",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "attempt-slurp-native-stage3-comp1-aa-fold-a-fit-v1",
+        "g5_aa": "attempt-slurp-native-stage3-g5-aa-fold-a-fit-v1",
+        "leaf": "native_contact_fit.attempt_id",
+        "reason": "the cell's own FIT spend identity (an attempt id)",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-FIT-V1",
+        "g5_aa": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1",
+        "leaf": "native_contact_fit.run_id",
+        "reason": "the cell's own FIT spend identity (a run id)",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "The in-chain A/A replicate of cell COMP-1: the locked plan's own form, unchanged, re-flown in the same campaign chain, to supply the within-chain null the composed delta is read at. It makes no claim of its own and admits nothing; it is the instrument. Development numbers only (owner decisions 28 and 86).",
+        "g5_aa": "The in-chain A/A replicate of cell G5: the locked plan's own form, unchanged, re-flown in the same campaign chain, to supply the within-chain null the G5 no-harm read is taken at. It makes no claim of its own and admits nothing; it is the instrument. Development numbers only (owner decisions 28 and 86).",
+        "leaf": "purpose",
+        "reason": "prose",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "This cell carries NO training-free RL operator and says so explicitly: it is the locked plan's own form re-flown in the same chain as the in-chain null and instrument of the composed COMP-1 arm -- w_agree 0.0, no agreement_source, the written boundary key, the un-armed citation default. Its prepared first-phase supply reproduces the sealed comparator's output digest exactly, which is what makes it the instrument.",
+        "g5_aa": "This cell carries NO training-free RL operator and says so explicitly: it is a one-pin instruction repair -- the deletion of an order to use a retired tool -- chosen by a model-free audit over sealed bytes and flown as a row-127 engineering-base no-harm item, with no rollout, no per-sample scoring, no credit assignment, no update operator and no evolving store. It is deliberately NOT labelled sealed-credit-system-policy-v1: that id's first instance is reserved for the composed system policy, and a deletion is not a policy search.",
+        "leaf": "stage3_algorithm.note",
+        "reason": "the Stage-3 algorithm label and its prose (the label gate reads it)",
+        "request_affecting": false
+      },
+      {
+        "class": "bookkeeping",
+        "comp1_aa": "The IN-CHAIN A/A REPLICATE and control of cell COMP-1: the locked v2.0 plan's own bytes -- w_agree 0.0 with no agreement_source, the WRITTEN boundary key, the un-armed citation default (policy phase-native-candidates-review-revise-v1, Solver template slurp_native_role_solver_v2.txt, no response format, deliver normaliser saea-deliver-normalise-v3) -- carrying the SAME widened recall (k 60, delivered width 8) as the arm so the two differ in the three composed factors alone, re-flown in the same campaign chain as cell COMP-1 so the composed delta is read against a within-chain null instead of a between-flight offset (measurement instrument rules 3 and 4). Its own prepared first-phase supply must reproduce the sealed PLAN preparation's output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f exactly, as the AGREE A/A did at the same k 60; that equality is the byte-identity proof that the A/A flies the lock's own bytes.",
+        "g5_aa": "The IN-CHAIN A/A REPLICATE of cell G5: the locked v2.0 plan's own form, the OLD Reviewer instruction (probes/slurp_native_role_reviewer_v1.txt) and every other byte unchanged, re-flown in the same campaign chain as cell G5 so the no-harm read is taken against a within-chain null instead of a between-flight offset. Authority: docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md rules 3 and 4. Its own prepared first-phase supply must reproduce the sealed PLAN preparation's output digest ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f exactly. If round 3 flies several consumption-form items in one chain, one A/A serves them all and this cell is dropped from the campaign plan before the flip.",
+        "leaf": "what_this_is",
+        "reason": "prose",
+        "request_affecting": false
+      }
+    ],
+    "reading": "every differing leaf is bookkeeping except the first-phase supply's recall width k (COMP-1's A/A 60, G5's 8), which reaches a request only through the supply's output; proof 2 finds the two outputs byte-identical, and proof 3 finds every request byte identical, so the width is output-neutral on this roster",
+    "request_affecting_leaves": [],
+    "supply_recall_width": [
+      {
+        "comp1_aa": 60,
+        "g5_aa": 8,
+        "leaf": "knowledge_stores.intent-boundaries.phase_supply.perception.k"
+      }
+    ]
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "generated_at_utc": "2026-09-27T13:50:48.075760+00:00",
+  "hash_quoting": "64-hex identities other than the prepared-supply output digests and the study commit are quoted as sha256-prefix16:<first 16 hex>: core.flight.repin rewrites every JSON file of a readiness package from a cell's old identity hashes to its new ones at the flip and refuses any old hash left under docs/, so a full quote would either be rewritten -- falsifying this record of what was computed at study_commit -- or block the flip; the full values are recomputable from study_commit",
+  "owner_decision": 160,
+  "prepared_supply": {
+    "artifact_input_differences": [
+      {
+        "class": "supply-config-identity-hash (covers the recall width k)",
+        "comp1_aa": "sha256-prefix16:b620b66780cdc001",
+        "g5_aa": "sha256-prefix16:fe7bf109cda2b2fc",
+        "leaf": "config_sha256"
+      },
+      {
+        "class": "supply-recall-width",
+        "comp1_aa": 60,
+        "g5_aa": 8,
+        "leaf": "sources.supply_spec.k"
+      }
+    ],
+    "both_equal_sealed_plan": true,
+    "comp1_aa": {
+      "command": "core.flight.cli prepare-supply --experiment slurp-native-stage3-comp1-aa-fold-a-v1 --cell slurp-native-stage3-comp1-aa-fold-a-v1 --output <scratch>/comp1_aa/phase-supply-v1.json",
+      "file_sha256": "sha256-prefix16:445e1acc7d5d867b",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "rows_seeded": 1080,
+      "seconds": 34.4,
+      "selected_value_ids": 8624
+    },
+    "g5_aa": {
+      "command": "core.flight.cli prepare-supply --experiment slurp-native-stage3-g5-aa-fold-a-v1 --cell slurp-native-stage3-g5-aa-fold-a-v1 --output <scratch>/g5_aa/phase-supply-v1.json",
+      "file_sha256": "sha256-prefix16:c79550b4a3b260c7",
+      "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+      "rows_seeded": 1080,
+      "seconds": 35.3,
+      "selected_value_ids": 8624
+    },
+    "note": "file_sha256 differs whenever an artifact INPUT differs (the recall width k is an input); output_sha256 is core.preparation.digest over the {facets, values} payload -- the same value ids in the same order on every row -- and is what the flip's byte-identity check and the request composer consume",
+    "output_digests_equal": true,
+    "sealed_plan_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f"
+  },
+  "question": "Do COMP-1's in-chain A/A (SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1) and G5's (SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1) have byte-identical prepared first-phase supply digests and byte-identical composed request bytes? If so, one shared A/A serves both arms (decision 160); if not, the two families fly separately as registered.",
+  "request_bytes": {
+    "canned_answers": {
+      "perception": "candidates weather_query, alarm_set, play_music (schema-valid)",
+      "planner": "REVISE on the first visit for rows whose sha256(sample_id) ends odd, else ACCEPT",
+      "reviewer": "one fixed sentence",
+      "solver": "scenario weather, action query, no entities"
+    },
+    "common_run_id": {
+      "comp1_aa": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 382.1,
+        "wire_check_run_id": "WIRECHECK-COMP1-G5-SHARED-AA-PROOF-1790516568566"
+      },
+      "comparison": {
+        "contacts_comp1_aa": 663,
+        "contacts_g5_aa": 663,
+        "first_mismatches": [],
+        "keys_equal": true,
+        "only_in_comp1_aa": [],
+        "only_in_g5_aa": [],
+        "payload_bytes_identical": true,
+        "payload_mismatches": 0,
+        "post_body_bytes_identical": true,
+        "post_body_mismatches": 0,
+        "run_id_normalized_payload_bytes_identical": true,
+        "run_id_normalized_payload_mismatches": 0
+      },
+      "g5_aa": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 378.7,
+        "wire_check_run_id": "WIRECHECK-COMP1-G5-SHARED-AA-PROOF-1790516568566"
+      }
+    },
+    "method": "FlightRuntime._dispatch_phase_program(model_free_check=True) on each A/A's own composed fragments, against the composed model fragment's REAL llama-server transport (render, allowlist, speech-feature packet binding) with its POST replaced by a fake server that records the body bytes and answers a canned, role-appropriate completion; a fake session receipt bound to the fragment's decoder identity; keyed by (sample_id, contact_id); dispatched serially (one slot, one row in flight) so the per-process request counter and the slot id are assigned in roster order in both runs",
+    "modes": {
+      "common_run_id": "both cells under ONE scratch run id (each under its own attempt id): the decisive mode -- every canonical payload byte and every POST body byte must match",
+      "own_run_ids": "each cell under its own run id, as a flight is: every POST body byte must match; the canonical payloads differ ONLY in history[].source_query_state_sha256 (rails.knowledge.QueryState.content_hash, whose query_id is <run id>:<sample id>:step<n> -- custody, never sent to the model, different between any two runs of the same cell)"
+    },
+    "own_run_ids": {
+      "comp1_aa": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 380.3,
+        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1-1790516577270"
+      },
+      "comparison": {
+        "contacts_comp1_aa": 663,
+        "contacts_g5_aa": 663,
+        "first_mismatches": [
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:planner:1:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:reviewer:1:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:solver:1:slurp:train:000007:audio--1504197557",
+          "slurp:train:000009:audio-1497557594-headset|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000009:audio-1497557594-headset|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000009:audio-1497557594-headset|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:planner:1:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:reviewer:1:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:solver:1:slurp:train:000015:audio-1488524781",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:planner:1:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:reviewer:1:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000023:audio-1490956038"
+        ],
+        "keys_equal": true,
+        "only_in_comp1_aa": [],
+        "only_in_g5_aa": [],
+        "payload_bytes_identical": false,
+        "payload_mismatches": 543,
+        "post_body_bytes_identical": true,
+        "post_body_mismatches": 0,
+        "run_id_normalized_payload_bytes_identical": true,
+        "run_id_normalized_payload_mismatches": 0
+      },
+      "g5_aa": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 383.3,
+        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1-1790516577500"
+      }
+    },
+    "scheduling_self_control": {
+      "contacts": 66,
+      "keys_equal": true,
+      "payload_fields_differing": {
+        "decoding_params.id_slot": 23,
+        "evidence_provenance[].relpath": 47,
+        "history[].source_query_state_sha256": 54,
+        "request_id": 47
+      },
+      "post_body_fields_differing": {
+        "id_slot": 23
+      },
+      "rows": 12,
+      "what": "cell COMP-1's A/A dispatched twice, both at the production concurrency (np4 geometry: four slots, queue depth 16), each under its own scratch run id; the number of contacts on which each field differs between the two dispatches of the SAME cell. These fields are assigned by arrival order (request_id, the rails-message/<request_id>/ provenance relpaths, the slot id) or derived from the run id (source_query_state_sha256), which is why the A/A comparison dispatches serially and reads the run-id-derived field separately"
+    }
+  },
+  "schema": "saea-comp1-g5-shared-aa-proof-v1",
+  "scratch": "/tmp/comp1g5-shared-aa-proof-1790516497",
+  "study_commit": "abf29aecb9b4b0089d386d52a1b010cd8abeb9db",
+  "tool": "scripts/flights/comp1/comp1_g5_shared_aa_proof.py",
+  "verdict": "IDENTICAL"
+}

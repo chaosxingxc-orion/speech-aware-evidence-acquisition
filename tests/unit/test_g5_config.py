@@ -236,10 +236,14 @@ def test_the_fit_identity_is_each_cell_s_own(experiment: str, fit_run: str) -> N
     assert fit["contact_cap"] == document["family_budget"]["fit_endpoint_calls_cap"]
 
 
-def test_the_campaign_plan_is_the_aa_then_the_arm_and_the_smoke_is_outside_it() -> None:
+def test_the_campaign_plan_is_the_arm_alone_and_the_smoke_is_outside_it() -> None:
+    """Owner decision 160: the G5 A/A is dropped from the plan -- the shared A/A (COMP-1's) flies in COMP-1's
+    plan in the SAME chain (scripts/flights/comp1/batch_chain_comp1_g5.sh). The superseded A/A cell itself is
+    left exactly as registered."""
+
     plan = _read(REPO / "configs/campaign" / f"{ARM}.json")
     assert plan["schema"] == "saea-campaign-plan-v1"
-    assert plan["cells"] == [{"cell": AA, "experiment": AA}, {"cell": ARM, "experiment": ARM}]
+    assert plan["cells"] == [{"cell": ARM, "experiment": ARM}]
     for experiment in (ARM, AA):
         assert "campaign" in _read(REPO / "configs/experiment" / f"{experiment}.json")["cells"][0]["allowed_execution_stages"]
     assert "campaign" not in _read(REPO / "configs/experiment" / f"{SMOKE}.json")["cells"][0]["allowed_execution_stages"]
@@ -257,10 +261,13 @@ def test_the_measurement_declaration_is_a_no_harm_admission_at_the_fold_a_half_w
     assert block["harm_margin_pp_by_metric"] == {"intent_accuracy": H_INTENT, "slu_f1": H_SLU}
     assert block["claims_benefit"] is False and block["expected_effect_pp"] == 0.0
     assert block["measurement_design"] == "cross-flight-with-in-chain-replicate"
-    assert block["replicate_run_id"] == AA_RUN and block["rows"] == 1080
+    # owner decision 160: re-declared to the shared in-chain A/A, COMP-1's
+    assert block["replicate_run_id"] == "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1" and block["rows"] == 1080
+    assert "decision 160" in block["replicate_note"] and "shared-aa-proof-v1.json" in block["replicate_note"]
     assert "intent accuracy" in block["primary_metric"]
     aa = facts["stage3_measurement"][AA_RUN]
     assert aa["claims_benefit"] is False and aa["replicate_run_id"] == ARM_RUN and "admission" not in aa
+    assert aa["status"].startswith("superseded-unflown")
     smoke = facts["stage3_measurement"][SMOKE_RUN]
     assert smoke["measurement_design"] == "form-proof" and smoke["claims_benefit"] is False and smoke["rows"] == 4
 

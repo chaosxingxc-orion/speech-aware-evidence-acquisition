@@ -10,7 +10,7 @@
       "sha256": "ef43e5175deff1805a54c07d3cb651d2b3f126fd382e5d4dfe9364797e1c36b9"
     },
     "base_cell": "the LOCKED default plan, cell PLAN (SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, v2.0 lock 2026-09-22): G5 is that fragment with one pin moved",
-    "clause_comparator": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, never re-flown, read at the in-chain A/A SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+    "clause_comparator": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1, never re-flown, read at the shared in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 (owner decision 160; G5's own A/A pair SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1 / SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1 superseded unflown and not eligible under --drop-aa)",
     "comp2_pin": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/comp2-pin-v1.json",
       "sha256": "3b1a46b830d5e65f0803e6b5e3360751cda0409605c62a2702ab194b9989b6d3"

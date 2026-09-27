@@ -1,10 +1,6 @@
 {
   "cells": [
     {
-      "cell": "slurp-native-stage3-g5-aa-fold-a-v1",
-      "experiment": "slurp-native-stage3-g5-aa-fold-a-v1"
-    },
-    {
       "cell": "slurp-native-stage3-g5-fold-a-v1",
       "experiment": "slurp-native-stage3-g5-fold-a-v1"
     }

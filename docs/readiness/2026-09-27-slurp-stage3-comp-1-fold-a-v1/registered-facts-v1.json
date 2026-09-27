@@ -781,6 +781,29 @@
   },
   "rows": 1080,
   "schema": "saea-registered-facts-v1",
+  "shared_in_chain_replicate": {
+    "chain": "scripts/flights/comp1/batch_chain_comp1_g5.sh: ONE batch-driver queue of two steps on the np4 session -- step 1 the COMP-1 four-row smoke then this package's campaign plan (the shared A/A, then the COMP-1 arm); step 2 the G5 four-row smoke then the G5 arm alone. The driver flies one smoke per step, so the decision's single campaign is realised as two steps of one chain, the A/A in the first",
+    "comp1_is_unchanged": "nothing in COMP-1's cells, campaign plan, declaration or placeholder moves: its A/A is read by two arms instead of one",
+    "condition_proof": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json",
+      "sha256": "d3df20acf2845e1e59da23faf777c8de69c1c5e640d420e54d9a47683f98a5e0",
+      "summary": "proof docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json (sha256 d3df20acf2845e1e59da23faf777c8de69c1c5e640d420e54d9a47683f98a5e0, verdict IDENTICAL, study commit abf29aec): both A/As' prepared first-phase supplies, minted model-free by core.flight.cli prepare-supply, carry output digest ba5e1faa on all 1,080 rows; their real dispatch against the real llama-server transport with a fake POST produced byte-identical canonical payloads and POST bodies on all 663 contacts of 120 rows under one scratch run id, and byte-identical POST bodies (payloads equal up to the run-id-derived custody hash) under their own run ids; every differing composed-config leaf is bookkeeping except the first-phase recall width k (60 vs 8), which is output-neutral by the equal supply digests",
+      "tool": "scripts/flights/comp1/comp1_g5_shared_aa_proof.py",
+      "verdict": "IDENTICAL"
+    },
+    "decision_relpath": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "flip": "scripts/flights/comp1/comp1_g5_flip.sh (this package's three cycles, then G5's smoke and arm, converged at ONE HEAD)",
+    "g5_package": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1",
+    "g5_superseded_unflown": [
+      "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1"
+    ],
+    "owner_decision": 160,
+    "this_aa_serves": [
+      "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+      "SAEA-SLURP-STAGE3-G5-FOLD-A-V1"
+    ]
+  },
   "stage3_measurement": {
     "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1": {
       "claims_benefit": false,

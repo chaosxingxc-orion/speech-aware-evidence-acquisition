@@ -79,20 +79,47 @@ the citation credit table it seals is the INPUT to the next round's credit. The 
 | `analysis-recipe-v1.json` | the paired read and the per-class attribution table, step by step |
 | `attribution-classes-v1.json` | the 191 rows' class membership and composed delivery, fixed before contact |
 | `root-admission-draft-v1.json` | the decision receipt root mints with `scripts/flights/comp1/comp1_mint_receipt.py` |
+| `shared-aa-proof-v1.json` | owner decision 160's condition, proven model-free: the two A/As' composed configs, prepared supplies and request bytes compared (identity hashes quoted by 16-hex prefix, because the flip re-pins every JSON file of this package) |
 
 **Budgets (the AGREE arithmetic; the citation adds tokens, never contacts).** Per generation cell 11880 contacts
 (1,080 x 11, run-cumulative), 47520 FIT endpoints, 6480 native task-contract calls,
 33930 repeated speech seconds, 12.0 GPU hours, one official complete score; the smoke
 44 / 176 / 117 s, no score.
 
-**Declare, mint, flip, queue.** (1) The coordinator replaces the placeholder with the composed number in the two
-places named above and commits. (2) Root countersigns the seven DRAFT exposure rows and mints
-`coordination/slurp-stage3-comp1-fold-a-v1/root-admission-v1.json` from the draft with `scripts/flights/comp1/comp1_mint_receipt.py` (decision id `slurp-stage3-comp1-fold-a-admission-v1`,
-the six eligible run ids). (3) `scripts/flights/comp1/comp1_flip.sh` re-pins smoke, A/A and arm through
-`repin_loop_generic.sh` until the package converges at one HEAD; `--allow-output-change` is never passed; the flip
-re-mints each cell's own supply and the A/A's output digest must again be `ba5e1faa...`. (4)
-`scripts/flights/comp1/batch_chain_comp1.sh` queues the smoke, then the A/A + arm campaign, behind whatever occupies
-the np4 session (decision 77).
+**Owner decision 160: this A/A is ALSO cell G5's in-chain replicate.** COMP-1 and G5
+([`../2026-09-27-slurp-stage3-g5-fold-a-v1`](../2026-09-27-slurp-stage3-g5-fold-a-v1/README.md)) each registered an in-chain A/A that re-flies the locked
+PLAN plan's own request bytes; decision 160 (row 160 of `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`)
+flies ONE, this package's `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`, in the same chain as both arms, conditional on the two
+A/As being byte-identical -- checked model-free before any flip, **verdict `IDENTICAL`**
+([`shared-aa-proof-v1.json`](shared-aa-proof-v1.json), by `scripts/flights/comp1/comp1_g5_shared_aa_proof.py`, zero
+contacts):
+
+| proof | what it compared | result |
+| --- | --- | --- |
+| 1. composed config | every leaf of the two composed A/A configs, flattened | 20 differing leaves: 19 bookkeeping (cell / run / attempt / FIT ids, the readiness block and its requirement pin, prose, the generation-budget target) and ONE supply-recall-width leaf, `knowledge_stores.intent-boundaries.phase_supply.perception.k` 60 vs 8; nothing request-affecting |
+| 2. prepared supply | `core.flight.cli prepare-supply` for both A/As into a scratch directory | output digest `ba5e1faa...` on both, 1,080 rows, 8,624 value ids each -- the recall width is output-neutral; this A/A's fresh mint reproduces its registered pin byte for byte |
+| 3. request bytes | each A/A's REAL dispatch against the REAL llama-server transport with a fake POST (canned role answers; Planner REVISE on first visit for 61 of 120 rows), serial | under ONE scratch run id: all 663 canonical payloads and all 663 POST bodies byte-identical; under their OWN run ids: all 663 POST bodies byte-identical, payloads identical up to `history[].source_query_state_sha256` (a custody hash over a QueryState whose `query_id` embeds the run id -- never sent to the model) |
+| self-control | this A/A dispatched twice at the production np4 concurrency, 12 rows | the SAME cell differs from itself in `request_id`, the provenance relpaths, `source_query_state_sha256` and the POST body's `id_slot` -- arrival-order and run-id fields, which is why proof 3 dispatches serially |
+
+Nothing in COMP-1's cells, campaign plan, declaration or placeholder moves. G5's arm re-declares its
+`replicate_run_id` to this A/A, G5's own A/A pair is superseded unflown, G5's campaign plan carries its arm alone, and
+both families flip and fly together (below). Both arms are read at the same null in the same serving state.
+
+**The coordinator sequence (decision 160).** (1) **Declare**: the coordinator replaces the placeholder with the number
+composed from the AGREE and KPROBE reads in the two places named above and commits (decisions 139 and 152); nothing
+else in either package waits on it. (2) **Merge** the branch carrying decision 160's wiring to master. (3) **Mint**:
+root runs `scripts/flights/comp1/comp1_mint_receipt.py` (six eligible run ids; it refuses while the placeholder
+stands) and `scripts/flights/g5/g5_mint_receipt.py --drop-aa` (four eligible run ids: G5's arm, smoke and their FIT
+identities). (4) **Countersign** COMP-1's seven DRAFT rows and G5's five live DRAFT rows (never G5's superseded A/A
+pair). (5) **Flip**: `scripts/flights/comp1/comp1_g5_flip.sh` refuses unless the proof says `IDENTICAL`, the G5 plan
+is the arm alone and the G5 receipt was minted without its A/A; it runs `comp1_flip.sh` (the placeholder refusal and
+this package's three cycles -- the A/A's re-minted supply must again be `ba5e1faa...`), then G5's smoke and arm
+cycles, then re-runs all five cycles until one whole pass commits nothing, and writes the ONE converged HEAD to
+`/home/chao/comp1g5-flight-commit.txt`; `--allow-output-change` is never passed. (6) **Queue**
+`scripts/flights/comp1/batch_chain_comp1_g5.sh` behind whatever occupies the np4 session (decision 77): ONE driver queue
+of two steps -- the COMP-1 smoke, then this package's plan (the shared A/A, then the COMP-1 arm); the G5 smoke, then the
+G5 arm -- because the batch driver flies one smoke per step. `batch_chain_comp1.sh` alone now refuses (it would leave G5
+without its in-chain null) unless `COMP1_ALONE=1` records that the owner withdrew G5 from the chain.
 
 **Not authorised by this package.** No flight before the expectation is declared, the receipt is minted and all
 three cells are flipped; no contact by this registration; no re-flying of the comparator; no test-split, Fold B or

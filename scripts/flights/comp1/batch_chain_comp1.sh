@@ -14,6 +14,13 @@ MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-eviden
 REPO=/home/chao/saea-worktrees/fable-batch-flight
 LOG=/home/chao/batch-chain-comp1.out
 COMMIT=$(cat /home/chao/comp1-flight-commit.txt) || exit 1
+# Owner decision 160 (2026-09-27): COMP-1's A/A is ALSO cell G5's in-chain replicate. While the G5 campaign
+# plan carries the G5 arm alone (the shared mode), COMP-1 flies ONLY in the combined chain
+# scripts/flights/comp1/batch_chain_comp1_g5.sh, or G5 loses its in-chain null; COMP1_ALONE=1 overrides,
+# and only when the owner has withdrawn G5 from the chain.
+if [ "${COMP1_ALONE:-0}" != "1" ] && ! grep -q "slurp-native-stage3-g5-aa-fold-a-v1" /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/campaign/slurp-native-stage3-g5-fold-a-v1.json; then
+  echo "refusing (owner decision 160): the shared A/A must fly beside BOTH arms -- use scripts/flights/comp1/batch_chain_comp1_g5.sh"; exit 6
+fi
 export BATCH_SESSION=serving-slurp-native-candidate-five-train-a-np4-v1
 echo "chain start $(date -u +%FT%TZ) commit $COMMIT session $BATCH_SESSION" >> $LOG
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh' | grep -v pgrep)" ]; then echo "a batch is running; abort" >> $LOG; exit 7; fi

@@ -13,12 +13,17 @@
       "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
     },
     "in_chain_replicate": {
-      "attempt_id": "attempt-slurp-native-stage3-g5-aa-fold-a-generation-v1",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
       "outputs_sha256": "PENDING_SEAL",
-      "role": "the within-chain null the delta is read at",
-      "run_id": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+      "registered_by": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1",
+      "role": "the within-chain null the delta is read at -- COMP-1's in-chain A/A, shared with G5 under owner decision 160",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
       "run_manifest_sha256": "PENDING_SEAL",
-      "scores_sha256": "PENDING_SEAL"
+      "scores_sha256": "PENDING_SEAL",
+      "superseded_registration": [
+        "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1",
+        "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-FIT-V1"
+      ]
     }
   },
   "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim, and it admits nothing beyond the no-harm entry it is registered for. No utterance text, transcript, gold label or model output is printed or persisted.",
@@ -44,7 +49,7 @@
   },
   "schema": "saea-slurp-paired-analysis-recipe-v1",
   "steps": [
-    "1. Refuse unless BOTH the G5 arm and the in-chain A/A carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score, and their config hashes are this package's (the arm flew the repaired instruction, the A/A the old one).",
+    "1. Refuse unless BOTH the G5 arm and the shared in-chain A/A (SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1, owner decision 160) carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score, and they flew in the SAME batch-driver chain on the same resident session; the arm's config hash is this package's (the repaired instruction) and the A/A's is COMP-1's package's (the old instruction, the locked plan's own request bytes, proven byte-identical to G5's superseded A/A in docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/shared-aa-proof-v1.json).",
     "2. Structural stage: on both arms, 0 tool schemas and 0 tool calls on every contact; the Reviewer contact rate per row; the Reviewer prompt tokens per contact from the sealed COST records, whose arm-minus-A/A difference must sit at the measured -51 (a boundary token of tolerance); and a model-free count of Reviewer responses on each arm whose text narrates a tool call or a tool result (counts only, no text persisted).",
     "3. Score once per arm over the complete manifest with the dataset's standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded); take per row scenario_action_exact and the per-row SLU-F1 contributions.",
     "4. Paired row bootstrap (10,000 draws, seed 20260927) of the arm minus in-chain A/A delta on intent accuracy and on official pooled SLU-F1; report the point estimate and CI95 of each; report the same paired delta against the sealed PLAN comparator BESIDE it, never instead of it.",
