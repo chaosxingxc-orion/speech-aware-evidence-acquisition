@@ -131,8 +131,8 @@ change).
 
 **Algorithm `sealed-credit-system-policy-v1`**, applied NODE-SCOPED as owner decision 165 rules it (per-node credit: the Reviewer's
 revise / keep decisions and their outcomes in the sealed pools are the reward signal); its update step is a reflective
-proposal in GEPA's manner (arXiv:2507.19457) restricted to one node, and every step is scored where this rig can see: (1) *rollout* is not an operator of this algorithm -- it consumes
-sealed pools already on disk and the flights this design queues; (2) *scoring* -- offline, per draft, against gold on the scoring side; (3) *credit
+proposal in GEPA's manner (arXiv:2507.19457) restricted to one node, and every step is scored where this rig can see: (1) *rollout* -- the sealed pools already on disk and the flights
+this design queues; (2) *scoring* -- offline, per draft, against gold on the scoring side; (3) *credit
 assignment* -- per Reviewer VISIT, by the pre-review draft's error class; (4) *update* -- a reflective proposal of the
 node's policy from the credit table (the proposer reads the table, names the failing class, and edits the policy for
 it); (5) *selection* -- over sealed pools of TRAIN rows outside Fold A; (6) *context application* -- one flight of the

@@ -280,7 +280,6 @@ def main(argv: list[str] | None = None) -> int:
     expected = round(fs["paired_difference_intent_pp"] * base_wrong_rate / r01c_wrong_rate, 2)
     expected_lo = round(fs["paired_difference_ci95"][0] * base_wrong_rate / r01c_wrong_rate, 2)
     expected_hi = round(fs["paired_difference_ci95"][1] * base_wrong_rate / r01c_wrong_rate, 2)
-    candrec = next(p for p in summary["pools"] if p["label"] == "candrec")
     arm_contacts_per_row = 3657 / 625
     arm_gpu_h = round(AGREE_GPU_H_PER_1080 * arm_contacts_per_row / AGREE_CONTACTS_PER_ROW, 2)
     expected_arm_contacts = round(1080 * arm_contacts_per_row)
@@ -799,8 +798,8 @@ change).
 
 **Algorithm `{ALGORITHM_ID}`**, applied NODE-SCOPED as owner decision 165 rules it (per-node credit: the Reviewer's
 revise / keep decisions and their outcomes in the sealed pools are the reward signal); its update step is a reflective
-proposal in GEPA's manner (arXiv:2507.19457) restricted to one node, and every step is scored where this rig can see: (1) *rollout* is not an operator of this algorithm -- it consumes
-sealed pools already on disk and the flights this design queues; (2) *scoring* -- offline, per draft, against gold on the scoring side; (3) *credit
+proposal in GEPA's manner (arXiv:2507.19457) restricted to one node, and every step is scored where this rig can see: (1) *rollout* -- the sealed pools already on disk and the flights
+this design queues; (2) *scoring* -- offline, per draft, against gold on the scoring side; (3) *credit
 assignment* -- per Reviewer VISIT, by the pre-review draft's error class; (4) *update* -- a reflective proposal of the
 node's policy from the credit table (the proposer reads the table, names the failing class, and edits the policy for
 it); (5) *selection* -- over sealed pools of TRAIN rows outside Fold A; (6) *context application* -- one flight of the
