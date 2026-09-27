@@ -2,7 +2,8 @@
 
 Date: 2026-09-27. Author: Claude Opus 5.5, analysis track of owner decision 163 (row 163 of
 `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`), worktree
-`/home/chao/saea-worktrees/fable-synthesis`, branch `fable/synthesis`, rebased on master `610cd583`.
+`/home/chao/saea-worktrees/fable-synthesis`, branch `fable/synthesis`; every cited file was read at master `610cd583` (the branch is rebased
+onto the current master before each commit).
 
 **Status: DESCRIPTIVE.** This note decides nothing, admits nothing, authorises no flight and registers
 no cell. The ranking in section 5 is a ranking, not a decision (owner decision 139). Every number is a
