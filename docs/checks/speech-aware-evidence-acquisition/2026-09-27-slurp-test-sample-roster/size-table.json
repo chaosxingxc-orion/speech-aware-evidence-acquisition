@@ -1,0 +1,267 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md owner decision 141 (2026-09-27): a coverage-guaranteed sample of the test split is permitted for comparison; drawn once, complement sealed at the same moment as the closure roster; test gold read for stratification offline only; every contact behind the final-report owner allowance",
+  "design_floor": {
+    "closure": 5,
+    "sample": 5
+  },
+  "full_test_reference": {
+    "h_abs_pp_at_p95": {
+      "rho0_recordings": 0.374,
+      "rho1_utterances": 0.783
+    },
+    "h_paired_pp_scaled_from_dev_null": 0.638,
+    "recordings": 13078,
+    "utterances": 2974
+  },
+  "generator": "scripts/build_slurp_test_sample_roster.py",
+  "instrument": {
+    "absolute": "CI95 half-width of a proportion, 1.96*sqrt(p(1-p)/n_eff), at the target p=0.95 (decision 137) and at today's p=0.8222 (v2.0 lock, TRAIN Fold A)",
+    "cost_model": {
+      "dev2000_added_replicate_np4": {
+        "contacts_per_row": 4.09,
+        "gpu_hours_per_row": 0.001649
+      },
+      "direct_arm_contacts_per_row": 1.0,
+      "protocol_7_3": {
+        "contacts_per_row": 5.021,
+        "gpu_hours_per_row": 0.003208425925925926
+      }
+    },
+    "dev_own_null": {
+      "clustering": "utterance-clustered CI95 bootstrap",
+      "h_intent_pp": 1.152,
+      "h_slu_pp": 1.2525,
+      "recordings": 1000,
+      "source": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-OWN-NULL-V1 (2026-09-24)",
+      "utterances": 913
+    },
+    "paired": "the DEV-2000-ADDED own-null intent half-width scaled by sqrt(913 / prompts); the PLAN-vs-PLANr null is the programme's own paired instrument",
+    "weighted": "the natural-mixture number of a floored roster is POST-STRATIFIED (per-intent accuracy weighted by full-test recording shares) and the equal-stratum number weights every intent 1/K; their half-widths are 1.96*sqrt(sum w_i^2 p(1-p)/n_i) over the per-intent prompt counts (rho=1) or expected recordings (rho=0) the floor rule leaves in each roster, at p=0.95; an intent absent from a roster is dropped and the weights renormalised"
+  },
+  "rows": [
+    {
+      "closure_h_abs_pp_at_p82": {
+        "rho0_recordings": 0.682,
+        "rho1_utterances": 1.43
+      },
+      "closure_h_abs_pp_at_p95": {
+        "rho0_recordings": 0.389,
+        "rho1_utterances": 0.815
+      },
+      "closure_h_paired_pp_scaled_from_dev_null": 0.664,
+      "closure_recordings": 12078,
+      "closure_utterances": 2747,
+      "cost_per_milestone_system_arm": {
+        "contacts_np4_replicate": 4090,
+        "contacts_protocol_7_3": 5021,
+        "direct_arm_contacts": 1000,
+        "gpu_hours_np4_replicate": 1.65,
+        "gpu_hours_protocol_7_3": 3.21
+      },
+      "feasible_at_design_floor": false,
+      "floor_driven_share_of_sample": 1.229,
+      "floor_driven_utterances_at_design_floor": 279,
+      "floor_driven_utterances_by_floor": {
+        "3": 171,
+        "5": 279,
+        "8": 429
+      },
+      "infeasibility_note": "the floor rule alone needs 279 prompts (about 1227 recordings); a 1000-recording sample cannot carry every intent at floor 5",
+      "remainder_utterances": -52,
+      "sample_h_abs_pp_at_p82": {
+        "rho0_recordings": 2.37,
+        "rho1_utterances": 4.974
+      },
+      "sample_h_abs_pp_at_p95": {
+        "rho0_recordings": 1.351,
+        "rho1_utterances": 2.835
+      },
+      "sample_h_paired_pp_scaled_from_dev_null": 2.31,
+      "sample_utterances": 227,
+      "target_recordings": 1000
+    },
+    {
+      "closure_equal_stratum_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.699,
+        "rho1_prompts": 1.623
+      },
+      "closure_h_abs_pp_at_p82": {
+        "rho0_recordings": 0.696,
+        "rho1_utterances": 1.46
+      },
+      "closure_h_abs_pp_at_p95": {
+        "rho0_recordings": 0.397,
+        "rho1_utterances": 0.832
+      },
+      "closure_h_paired_pp_scaled_from_dev_null": 0.678,
+      "closure_natural_mixture_poststratified_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.401,
+        "rho1_prompts": 0.872
+      },
+      "closure_recordings": 11578,
+      "closure_utterances": 2633,
+      "cost_per_milestone_system_arm": {
+        "contacts_np4_replicate": 6135,
+        "contacts_protocol_7_3": 7532,
+        "direct_arm_contacts": 1500,
+        "gpu_hours_np4_replicate": 2.47,
+        "gpu_hours_protocol_7_3": 4.81
+      },
+      "feasible_at_design_floor": true,
+      "floor_driven_share_of_sample": 0.818,
+      "floor_driven_utterances_at_design_floor": 279,
+      "floor_driven_utterances_by_floor": {
+        "3": 171,
+        "5": 279,
+        "8": 429
+      },
+      "infeasibility_note": null,
+      "intents_absent_from_sample": [
+        "general_greet"
+      ],
+      "remainder_utterances": 62,
+      "sample_equal_stratum_h_pp_at_p95": {
+        "rho0_expected_recordings": 1.154,
+        "rho1_prompts": 2.462
+      },
+      "sample_h_abs_pp_at_p82": {
+        "rho0_recordings": 1.935,
+        "rho1_utterances": 4.058
+      },
+      "sample_h_abs_pp_at_p95": {
+        "rho0_recordings": 1.103,
+        "rho1_utterances": 2.313
+      },
+      "sample_h_paired_pp_scaled_from_dev_null": 1.885,
+      "sample_natural_mixture_poststratified_h_pp_at_p95": {
+        "rho0_expected_recordings": 1.289,
+        "rho1_prompts": 2.689
+      },
+      "sample_utterances": 341,
+      "target_recordings": 1500
+    },
+    {
+      "closure_equal_stratum_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.712,
+        "rho1_prompts": 1.651
+      },
+      "closure_h_abs_pp_at_p82": {
+        "rho0_recordings": 0.712,
+        "rho1_utterances": 1.493
+      },
+      "closure_h_abs_pp_at_p95": {
+        "rho0_recordings": 0.406,
+        "rho1_utterances": 0.851
+      },
+      "closure_h_paired_pp_scaled_from_dev_null": 0.694,
+      "closure_natural_mixture_poststratified_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.41,
+        "rho1_prompts": 0.893
+      },
+      "closure_recordings": 11078,
+      "closure_utterances": 2519,
+      "cost_per_milestone_system_arm": {
+        "contacts_np4_replicate": 8180,
+        "contacts_protocol_7_3": 10042,
+        "direct_arm_contacts": 2000,
+        "gpu_hours_np4_replicate": 3.3,
+        "gpu_hours_protocol_7_3": 6.42
+      },
+      "feasible_at_design_floor": true,
+      "floor_driven_share_of_sample": 0.613,
+      "floor_driven_utterances_at_design_floor": 279,
+      "floor_driven_utterances_by_floor": {
+        "3": 171,
+        "5": 279,
+        "8": 429
+      },
+      "infeasibility_note": null,
+      "intents_absent_from_sample": [
+        "general_greet"
+      ],
+      "remainder_utterances": 176,
+      "sample_equal_stratum_h_pp_at_p95": {
+        "rho0_expected_recordings": 1.046,
+        "rho1_prompts": 2.243
+      },
+      "sample_h_abs_pp_at_p82": {
+        "rho0_recordings": 1.676,
+        "rho1_utterances": 3.513
+      },
+      "sample_h_abs_pp_at_p95": {
+        "rho0_recordings": 0.955,
+        "rho1_utterances": 2.003
+      },
+      "sample_h_paired_pp_scaled_from_dev_null": 1.632,
+      "sample_natural_mixture_poststratified_h_pp_at_p95": {
+        "rho0_expected_recordings": 1.035,
+        "rho1_prompts": 2.182
+      },
+      "sample_utterances": 455,
+      "target_recordings": 2000
+    },
+    {
+      "closure_equal_stratum_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.733,
+        "rho1_prompts": 1.693
+      },
+      "closure_h_abs_pp_at_p82": {
+        "rho0_recordings": 0.746,
+        "rho1_utterances": 1.565
+      },
+      "closure_h_abs_pp_at_p95": {
+        "rho0_recordings": 0.426,
+        "rho1_utterances": 0.892
+      },
+      "closure_h_paired_pp_scaled_from_dev_null": 0.727,
+      "closure_natural_mixture_poststratified_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.431,
+        "rho1_prompts": 0.938
+      },
+      "closure_recordings": 10078,
+      "closure_utterances": 2292,
+      "cost_per_milestone_system_arm": {
+        "contacts_np4_replicate": 12270,
+        "contacts_protocol_7_3": 15063,
+        "direct_arm_contacts": 3000,
+        "gpu_hours_np4_replicate": 4.95,
+        "gpu_hours_protocol_7_3": 9.63
+      },
+      "feasible_at_design_floor": true,
+      "floor_driven_share_of_sample": 0.409,
+      "floor_driven_utterances_at_design_floor": 279,
+      "floor_driven_utterances_by_floor": {
+        "3": 171,
+        "5": 279,
+        "8": 429
+      },
+      "infeasibility_note": null,
+      "intents_absent_from_sample": [
+        "general_greet"
+      ],
+      "remainder_utterances": 403,
+      "sample_equal_stratum_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.929,
+        "rho1_prompts": 2.003
+      },
+      "sample_h_abs_pp_at_p82": {
+        "rho0_recordings": 1.368,
+        "rho1_utterances": 2.87
+      },
+      "sample_h_abs_pp_at_p95": {
+        "rho0_recordings": 0.78,
+        "rho1_utterances": 1.636
+      },
+      "sample_h_paired_pp_scaled_from_dev_null": 1.333,
+      "sample_natural_mixture_poststratified_h_pp_at_p95": {
+        "rho0_expected_recordings": 0.805,
+        "rho1_prompts": 1.709
+      },
+      "sample_utterances": 682,
+      "target_recordings": 3000
+    }
+  ],
+  "schema": "saea-test-sample-size-table-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "unit_note": "The draw is a partition by test PROMPT, so the conservative n is the prompt count: rho is the within-prompt correlation of intent correctness across a prompt's recordings (about 4.4 per prompt). rho=0 treats recordings as independent; rho=1 treats every recording of a prompt as one observation. The truth lies between and is closer to rho=1 for a text-driven intent error."
+}
