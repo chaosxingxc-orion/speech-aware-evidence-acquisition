@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-det-np1-fold-a-50-a-v1",
-  "composed_config_hash": "1d871be17ee13c40548029ac9e755cde39de6b473d4ad5a01983f69133f630ca",
+  "composed_config_hash": "658e8032585f7214133d21528d5b7b2afebabe8ebfb48432c6645cf45a2d2ac9",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-det-np1-fold-a-50-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 2.0,
     "planned_model_calls": 2200,
     "planned_speech_audio_seconds": 1184,
-    "protocol_hash": "5e820cd2cb9b842aac96e6ba7c20b1a541e16c83fc9d87b3472509d9087cd82f",
+    "protocol_hash": "3c915405b94fac53bb59d91d34f098a56ac85adb3f0b9ff74cbf472dd5b77931",
     "run_id": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "af8154d5dedd3768b145a9d5f5ef6d90eb0ab0f6611a02ee82b2f22fd73a07fa",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1/protocol-registered-v1.json",
-    "sha256": "6d5667c39799c6ce299da3e5b9794ba9a4764f92ebb6d1a7315e64c03f11426d"
+    "sha256": "8ce0ed5266c991f2838af24495f02dd9c056e9b1f9755de4233d75b462f530a1"
   },
   "purpose": "SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-FIT-V1: cell DET pass A FIT identity. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No read before BOTH passes' complete sealed manifests, exact ordered outputs, native phase summaries and single successful complete official TRAIN scores exist, and before the stop stage of scripts/analysis/slurp_det_pair_read.py has verified both attempts FINALIZED, both manifests COMPLETED on the 50-row split identity, and every delivered text re-hashing to its recorded digest. A partial manifest is never scored and never read.",
