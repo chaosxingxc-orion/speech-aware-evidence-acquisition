@@ -1,0 +1,193 @@
+{
+  "cells": {
+    "arm": {
+      "check": {
+        "blockers": null,
+        "config_hash": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
+        "generation_authorized": false,
+        "path_outside_git": "/home/chao/w3-scratch/check-slurp-native-stage3-w3-fold-a-v1.json",
+        "per_phase": {
+          "perception": {
+            "agree_registered_rendered_text_tokens": 19449,
+            "decision": "ALLOW",
+            "delta_vs_agree": -362,
+            "operational_margin_tokens": 1874,
+            "physical_margin_tokens": 4946,
+            "rendered_text_tokens": 19087,
+            "required_window_tokens": 19630
+          },
+          "planner": {
+            "agree_registered_rendered_text_tokens": 19252,
+            "decision": "ALLOW",
+            "delta_vs_agree": -362,
+            "operational_margin_tokens": 2071,
+            "physical_margin_tokens": 5143,
+            "rendered_text_tokens": 18890,
+            "required_window_tokens": 19433
+          },
+          "reviewer": {
+            "agree_registered_rendered_text_tokens": 19313,
+            "decision": "ALLOW",
+            "delta_vs_agree": -362,
+            "operational_margin_tokens": 2010,
+            "physical_margin_tokens": 5082,
+            "rendered_text_tokens": 18951,
+            "required_window_tokens": 19494
+          },
+          "solver": {
+            "agree_registered_rendered_text_tokens": 21278,
+            "decision": "ALLOW",
+            "delta_vs_agree": -362,
+            "operational_margin_tokens": 45,
+            "physical_margin_tokens": 3117,
+            "rendered_text_tokens": 20916,
+            "required_window_tokens": 21459
+          }
+        },
+        "prepared_artifacts_ok": true,
+        "protocol_hash": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f",
+        "readiness": "held",
+        "sample_count": 1080,
+        "serving_geometry": {
+          "max_tokens": 512,
+          "slot_tokens": 24576,
+          "slots": 4
+        },
+        "sha256": "d3d3635a2ed5646e733f4fbe4c0925ddbcdbe08e5e38764657a15bfac111d9ed",
+        "study_commit": "32a700dfed6ccec216984cbc176c462ac47f527b"
+      },
+      "first_phase_supply_proof": {
+        "agree_family_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+        "identical": true,
+        "implementation": {
+          "runtime": "25c472f2a8507b3d3d2c91fa445ff52928e0a15b1af168f6f416e76dcd19980c",
+          "speech_aware_evidence_acquisition.rails.kb_policy": "19a11ca7ea18c4e5ae6411b972c99cbd91a1ad127ca04c386b3277a3ec24da20",
+          "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+          "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
+          "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+        },
+        "minted_by": "core.flight.cli prepare-supply --output <scratch path> --workers 4 (not under prepared/)",
+        "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+        "path_outside_git": "/home/chao/w3-scratch/supply-proof-slurp-native-stage3-w3-fold-a-v1.json",
+        "rows": 1080,
+        "selected_value_ids": 8624,
+        "sha256": "bac03b49903728bb552ce457c3628a3af63c3669f041c69950c9c7ce9dc9d55c"
+      }
+    },
+    "smoke": {
+      "check": {
+        "blockers": null,
+        "config_hash": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
+        "generation_authorized": false,
+        "path_outside_git": "/home/chao/w3-scratch/check-slurp-native-stage3-w3-fold-a-smoke-4-v1.json",
+        "per_phase": {
+          "perception": {
+            "agree_registered_rendered_text_tokens": 19449,
+            "decision": "ALLOW",
+            "delta_vs_agree": -362,
+            "operational_margin_tokens": 1874,
+            "physical_margin_tokens": 4946,
+            "rendered_text_tokens": 19087,
+            "required_window_tokens": 19630
+          },
+          "planner": {
+            "agree_registered_rendered_text_tokens": 19252,
+            "decision": "ALLOW",
+            "delta_vs_agree": -362,
+            "operational_margin_tokens": 2071,
+            "physical_margin_tokens": 5143,
+            "rendered_text_tokens": 18890,
+            "required_window_tokens": 19433
+          },
+          "reviewer": {
+            "agree_registered_rendered_text_tokens": 19313,
+            "decision": "ALLOW",
+            "delta_vs_agree": -363,
+            "operational_margin_tokens": 2011,
+            "physical_margin_tokens": 5083,
+            "rendered_text_tokens": 18950,
+            "required_window_tokens": 19493
+          },
+          "solver": {
+            "agree_registered_rendered_text_tokens": 21278,
+            "decision": "ALLOW",
+            "delta_vs_agree": -363,
+            "operational_margin_tokens": 46,
+            "physical_margin_tokens": 3118,
+            "rendered_text_tokens": 20915,
+            "required_window_tokens": 21458
+          }
+        },
+        "prepared_artifacts_ok": true,
+        "protocol_hash": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1",
+        "readiness": "held",
+        "sample_count": 4,
+        "serving_geometry": {
+          "max_tokens": 512,
+          "slot_tokens": 24576,
+          "slots": 4
+        },
+        "sha256": "e59f73dde34c8cd1d9cfb98f8efa6f46f522d3771118d186ac2dc3c6d12dcd19",
+        "study_commit": "32a700dfed6ccec216984cbc176c462ac47f527b"
+      },
+      "first_phase_supply_proof": {
+        "agree_family_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
+        "identical": true,
+        "implementation": {
+          "runtime": "25c472f2a8507b3d3d2c91fa445ff52928e0a15b1af168f6f416e76dcd19980c",
+          "speech_aware_evidence_acquisition.rails.kb_policy": "19a11ca7ea18c4e5ae6411b972c99cbd91a1ad127ca04c386b3277a3ec24da20",
+          "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+          "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
+          "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+        },
+        "minted_by": "core.flight.cli prepare-supply --output <scratch path> --workers 4 (not under prepared/)",
+        "output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
+        "path_outside_git": "/home/chao/w3-scratch/supply-proof-slurp-native-stage3-w3-fold-a-smoke-4-v1.json",
+        "rows": 4,
+        "selected_value_ids": 32,
+        "sha256": "6a349b004494f932a92e3bb84dee86e00dd872785fa843d566b9c5862eb1800e"
+      }
+    }
+  },
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0
+  },
+  "line": "The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; the offline projection moves a Solver contact by -53.886 tokens on average (max +75.528, 52 rows above zero). Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5).",
+  "realised_agree_requests": {
+    "cost_records": 4385,
+    "max_prompt_tokens": 14561,
+    "per_contact_prompt_limit_tokens": 20990,
+    "trace": {
+      "relpath": "runs/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1.trace.jsonl",
+      "sha256": "faffbcca32eeec86dab97f11f4499a6b82fc8181bff6c3d9c97636f676883472"
+    }
+  },
+  "request_size_projection": {
+    "cards_token_delta_per_later_contact": {
+      "max": -3,
+      "mean": -60.494,
+      "min": -106
+    },
+    "chars_per_token": 5.13,
+    "exemplar_block_char_delta": {
+      "max": 685,
+      "mean": 33.901,
+      "min": -463
+    },
+    "net_token_delta_per_solver_contact": {
+      "max": 75.528,
+      "mean": -53.886,
+      "min": -174.253,
+      "rows_above_zero": 52
+    },
+    "note": "the cards reach all four roles; the exemplar block reaches the Solver and every later contact. An estimate for the realised request, beside the pre-flight check's placeholder counts."
+  },
+  "schema": "saea-w3-preflight-proofs-v1"
+}

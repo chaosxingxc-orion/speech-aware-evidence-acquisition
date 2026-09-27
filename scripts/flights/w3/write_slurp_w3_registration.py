@@ -40,6 +40,7 @@ from speech_aware_evidence_acquisition.core.config import (  # noqa: E402
 PACKAGE = "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1"
 PREREG = PACKAGE + "-preregistration.md"
 OFFLINE = PACKAGE + "/offline-estimates-v1.json"
+PROOFS = PACKAGE + "/preflight-proofs-v1.json"
 CARDS = "docs/receipts/knowledge/slurp-intent-contrast-cards-v1.json"
 LEDGER = "docs/exposure-ledger.md"
 
@@ -229,7 +230,7 @@ def main(argv: list[str] | None = None) -> int:
             smoke_supply = json.loads(candidates[-1].read_text(encoding="utf-8"))["output_sha256"]
     AGREE_SUPPLY_OUTPUT_SHA["smoke"] = smoke_supply
     fits = {"arm": fit_numbers(args.check_arm), "smoke": fit_numbers(args.check_smoke)}
-    fit_summary = json.loads(Path(args.fit_summary).read_text(encoding="utf-8")) if args.fit_summary else None
+    fit_summary = json.loads(Path(PROOFS).read_text(encoding="utf-8")) if Path(PROOFS).is_file() else None
 
     wrong_rows = contrast_a["wrong_rows"]
     named_before = contrast_a["pair_named_on_a_delivered_card_before"]
@@ -400,8 +401,14 @@ def main(argv: list[str] | None = None) -> int:
         "expectation": expectation,
         "attribution_split": split_note,
         "fit_gate": {
-            "arm": fits["arm"], "smoke": fits["smoke"], "summary": fit_summary,
-            "headroom_before": "the AGREE arm registered Solver 21,278 of 21,504 usable tokens (np4 slot 24,576 minus the 3,072 reserve): 226 tokens of headroom",
+            "proofs": ({"relpath": PROOFS, "sha256": sha_file(PROOFS), "line": fit_summary["line"],
+                        "per_cell": {key: {"per_phase": cell["check"]["per_phase"], "blockers": cell["check"]["blockers"],
+                                           "first_phase_supply_output_sha256": cell["first_phase_supply_proof"]["output_sha256"],
+                                           "identical_to_agree": cell["first_phase_supply_proof"]["identical"]}
+                                     for key, cell in fit_summary["cells"].items()},
+                        "realised_agree_requests": fit_summary["realised_agree_requests"]}
+                       if fit_summary else None),
+            "headroom_before": "the AGREE arm registered Solver 21,278 of 21,504 usable tokens (np4 slot 24,576 minus the 3,072 reserve): 226 tokens of headroom on the pre-flight placeholder count",
             "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -{} tokens); the capped block still carries 20 exemplars, whose lengths differ row by row".format(-tokens["delta_all_60"]),
             "what_must_be_freed": "nothing for W3 alone; W1's saving is not needed and is not spent",
         },
@@ -631,6 +638,7 @@ def main(argv: list[str] | None = None) -> int:
             "registered_facts": {"path": PACKAGE + "/registered-facts-v1.json", "sha256": facts_sha},
             "analysis_recipe": {"path": PACKAGE + "/analysis-recipe-v1.json", "sha256": recipe_sha},
             "offline_estimates": {"path": OFFLINE, "sha256": sha_file(OFFLINE)},
+            "preflight_proofs": {"path": PROOFS, "sha256": sha_file(PROOFS) if Path(PROOFS).is_file() else None},
             "contrast_card_receipt": {"path": CARDS, "sha256": sha_file(CARDS)},
             "config_proof": {"path": CONFIG_TEST, "sha256": sha_file(CONFIG_TEST) if Path(CONFIG_TEST).is_file() else None},
             "base_cell": f"the retained AGREE arm ({COMPARATOR_RUN}): W3 is that fragment with two knowledge-content pins",
@@ -658,9 +666,9 @@ def main(argv: list[str] | None = None) -> int:
     draft_sha = wjson(PACKAGE + "/root-admission-draft-v1.json", draft)
 
     fence = json.dumps({"stage3_measurement": measurement}, indent=2, ensure_ascii=False, sort_keys=True)
-    fit_line = "not measured in this write (pass --check-arm)"
+    fit_line = "not measured in this write (run scripts/flights/w3/w3_preflight_proofs.py first)"
     if fit_summary:
-        fit_line = fit_summary.get("line", fit_line)
+        fit_line = fit_summary["line"] + " Receipt: [`preflight-proofs-v1.json`](preflight-proofs-v1.json)."
     table_b = "\n".join(
         f"| {n} | {row['gain_wrong_plurality_removed']} | {row['harm_gold_plurality_removed']} | {row['net']} | {row['gold_presence_gained']} | {row['absolute_gold_majority_broken']} | {row['blocks_changed']} | {row['blocks_filled_to_20']} |"
         for n, row in sorted(tuning["table"].items(), key=lambda item: -int(item[0])) if int(n) >= max(cap - 4, 1)
@@ -759,7 +767,8 @@ output digests), and queues the arm in the wave-1 chain beside `{SHARED_AA}` (de
 | `generation-plan-registered-v1.json` / `fit-plan-registered-v1.json` | the arm's plans |
 | `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the smoke's plans |
 | `analysis-recipe-v1.json` | the paired read at the shared A/A, with `run_ids.read` |
-| `offline-estimates-v1.json` | the Fold B tuning table and the Fold A counts (the membership sets' counts) |
+| `offline-estimates-v1.json` | the Fold B tuning table, the Fold A counts (the membership sets' counts) and the request-size projection |
+| `preflight-proofs-v1.json` | the held check per phase (Fit), the scratch-minted first-phase supply digests, the realised AGREE request sizes |
 | `root-admission-draft-v1.json` | the decision receipt root mints with `w3_mint_receipt.py` |
 
 **Not authorised by this package.** No flight before the receipt is minted and the cells are flipped; no contact by this

@@ -100,6 +100,7 @@ AGREE = {
 ROSTERS = {"fold_a": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
            "fold_b": "docs/receipts/rosters/slurp-evo-fold-b-v2.json"}
 FOLD_B_AGREEMENT_TARGET = "intent-boundary:"
+CHARS_PER_TOKEN = 5.13
 
 
 class ReadError(RuntimeError):
@@ -150,6 +151,7 @@ def load_pool(root: Path) -> dict:
     matrix /= np.linalg.norm(matrix, axis=1, keepdims=True)
     return {"facets": facets, "by_facet": by_facet, "matrix": matrix,
             "targets_by_facet": {facet: [pair] for facet, pair in by_facet.items()},
+            "value_chars": {value.value_id: len(value.content) for value in snap.values},
             "value_intent": {value_id: target for value_id, target in by_facet.values()}}
 
 
@@ -378,6 +380,34 @@ def main(argv: list[str] | None = None) -> int:
 
     cap_table = {"wrong_rows": cap_effect(wrong), "right_rows": cap_effect(right)}
 
+    # ---- request-size projection (counts only) ------------------------------
+    # Per Fold A row: the exact token change of the eight delivered cards (the contrast receipt's own
+    # per-card counts) and the character change of the capped exemplar block, converted at the
+    # measured 5.13 characters per token (docs/results/2026-09-19-slurp-m1-exemplar-compression-analysis-v1.md).
+    receipt_cards = json.loads((REPO_ROOT / CONTRAST_RECEIPT).read_text(encoding="utf-8"))["cards"]
+    card_delta = {i: c["tokens_rebuilt"] - c["tokens_flown"] for i, c in receipt_cards.items()}
+    nets, ex_chars, card_tokens = [], [], []
+    for s, ranked in ranked_a:
+        before = block(ranked, pool, TOTAL, depth)
+        after = block(ranked, pool, cap, depth)
+        dc = sum(pool["value_chars"][v] for v in after) - sum(pool["value_chars"][v] for v in before)
+        dt = sum(card_delta[i] for i in agree["consumption"][s]["boundary"])
+        ex_chars.append(dc)
+        card_tokens.append(dt)
+        nets.append(dt + dc / CHARS_PER_TOKEN)
+    projection = {
+        "chars_per_token": CHARS_PER_TOKEN,
+        "cards_token_delta_per_later_contact": {"min": min(card_tokens), "max": max(card_tokens),
+                                                "mean": round(sum(card_tokens) / len(card_tokens), 3)},
+        "exemplar_block_char_delta": {"min": min(ex_chars), "max": max(ex_chars),
+                                      "mean": round(sum(ex_chars) / len(ex_chars), 3)},
+        "net_token_delta_per_solver_contact": {"min": round(min(nets), 3), "max": round(max(nets), 3),
+                                               "mean": round(sum(nets) / len(nets), 3),
+                                               "rows_above_zero": sum(n > 0 for n in nets)},
+        "note": ("the cards reach all four roles; the exemplar block reaches the Solver and every later contact. "
+                 "An estimate for the realised request, beside the pre-flight check's placeholder counts."),
+    }
+
     result = {
         "schema": SCHEMA,
         "read_id": READ_ID,
@@ -416,6 +446,7 @@ def main(argv: list[str] | None = None) -> int:
             "note": "counts only; never a tuning input; the AGREE arm's own chosen intents and delivered sets",
             "contrast_cards": contrast_table,
             "exemplar_cap": cap_table,
+            "request_size_projection": projection,
         },
     }
     out_dir = root / ANALYSIS_DIR

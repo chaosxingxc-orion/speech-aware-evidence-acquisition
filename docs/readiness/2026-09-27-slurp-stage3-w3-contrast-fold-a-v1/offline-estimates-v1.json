@@ -13,7 +13,7 @@
   },
   "driver": {
     "relpath": "scripts/analysis/slurp_w3_contrast_cap_offline.py",
-    "sha256": "852bee7c15a083188b28010dbee4e46aa9cc300233dfe8840ff9b115cd83a8d2"
+    "sha256": "3853a58d86022a31c3e4ea15d565d0ee5897ccab2c887dd4c288d96326ebdf85"
   },
   "fold_a_estimates": {
     "contrast_cards": {
@@ -55,7 +55,27 @@
         "wrong_plurality_removed": 0
       }
     },
-    "note": "counts only; never a tuning input; the AGREE arm's own chosen intents and delivered sets"
+    "note": "counts only; never a tuning input; the AGREE arm's own chosen intents and delivered sets",
+    "request_size_projection": {
+      "cards_token_delta_per_later_contact": {
+        "max": -3,
+        "mean": -60.494,
+        "min": -106
+      },
+      "chars_per_token": 5.13,
+      "exemplar_block_char_delta": {
+        "max": 685,
+        "mean": 33.901,
+        "min": -463
+      },
+      "net_token_delta_per_solver_contact": {
+        "max": 75.528,
+        "mean": -53.886,
+        "min": -174.253,
+        "rows_above_zero": 52
+      },
+      "note": "the cards reach all four roles; the exemplar block reaches the Solver and every later contact. An estimate for the realised request, beside the pre-flight check's placeholder counts."
+    }
   },
   "fold_b_tuning": {
     "admission_depth_rule": "the smallest listed depth at which the capped block fills 20 on every Fold B row the uncapped block fills",
@@ -283,7 +303,7 @@
       }
     }
   },
-  "generated_at_utc": "2026-09-27T16:08:36+00:00",
+  "generated_at_utc": "2026-09-27T16:28:25+00:00",
   "inputs": {
     "agree_arm": {
       "attempt": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
