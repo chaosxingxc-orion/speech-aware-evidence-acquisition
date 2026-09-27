@@ -287,7 +287,18 @@ SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (
 #: read via ``bool(values.get(key))``, and this class's own null-arm rule,
 #: :func:`is_run_null_arm`, already treats both as the null arm for an
 #: integer-valued run key).
-RUN_LEVEL_SWITCH_KEYS = frozenset({"obs_prefetch_depth", "slurp_projection_v3_delivery"})
+#:
+#: ``dispatch`` (owner decision 159, 2026-09-27) is the third: the dispatcher
+#: slot-fill switches (``rails.dispatch_slot_fill``) read by
+#: ``core.flight.runtime.FlightRuntime._dispatch_phase_program`` for the
+#: native role episode. It schedules -- a row's Perception-independent recall
+#: computed ahead, the role-input builder off the shared event loop, the
+#: loaded heap frozen out of the collector -- and moves no request byte, which
+#: its falsifier receipt proves on a registered cell against a fake server;
+#: absent is OFF (a block that arms no switch is refused by the parser).
+RUN_LEVEL_SWITCH_KEYS = frozenset(
+    {"obs_prefetch_depth", "slurp_projection_v3_delivery", "dispatch"}
+)
 
 #: The ``run`` class's null arm, in the two spellings a fragment may use: the
 #: key absent, or the driver's own documented default. ``obs_prefetch_depth``

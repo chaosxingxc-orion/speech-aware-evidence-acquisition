@@ -1,0 +1,346 @@
+{
+ "byte_identity": {
+  "all_identical": true,
+  "comparisons": {
+   "off vs all": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "off vs all2": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "off vs gc": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "off vs off2": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "off vs offload": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "off vs pfgc": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "off vs pfoff": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "off vs prefetch": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   },
+   "sealoff vs sealon": {
+    "per_row_dispatch_rows": true,
+    "per_row_outputs": true,
+    "request_bodies_id_slot_masked": true,
+    "request_payloads_id_slot_masked": true,
+    "trace_records": true,
+    "trace_records_normalised_multiset_sha256": true
+   }
+  },
+  "contacts": 285,
+  "experiment": "slurp-native-default-plan-lock-v1",
+  "groups": {
+   "main": [
+    "off",
+    "off2",
+    "all",
+    "all2",
+    "prefetch",
+    "pfgc",
+    "pfoff",
+    "offload",
+    "gc"
+   ],
+   "seal": [
+    "sealoff",
+    "sealon"
+   ]
+  },
+  "minted_first_phase_supplies": {
+   "by_run": {
+    "all-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "all2-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "gc-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "off-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "off2-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "off3-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "offload-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "pfgc-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "pfoff-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "prefetch-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "prefetch2-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "sealoff": "b33fe65b60cfc9e7466e28a6545e2a52d470e765143fdc7946c71b4a41022554",
+    "sealon": "b33fe65b60cfc9e7466e28a6545e2a52d470e765143fdc7946c71b4a41022554"
+   },
+   "count": 13,
+   "output_sha256_values": [
+    "b33fe65b60cfc9e7466e28a6545e2a52d470e765143fdc7946c71b4a41022554",
+    "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f"
+   ]
+  },
+  "normalisation": "exactly two facts are assigned by ARRIVAL and already differ between two runs of today's dispatcher: the request-id counter (flight-<n>) and the slot number (id_slot on the wire, slot_id / slot_ids in the sealed waves); each flight-<n> and each request sha256 is renamed to its own (row, contact) identity, the slot keys are masked, the runtime-trace digest (computed over the slot ids) is masked while its preimage records are compared, and latency_seconds is dropped. Every other byte is compared.",
+  "reference": "off",
+  "rows": 60,
+  "runs": [
+   "off",
+   "off2",
+   "all",
+   "all2",
+   "prefetch",
+   "pfgc",
+   "pfoff",
+   "offload",
+   "gc",
+   "sealoff",
+   "sealon"
+  ],
+  "seal": {
+   "sealoff": "VERIFIED",
+   "sealon": "VERIFIED"
+  },
+  "seal_all_verified": true,
+  "supply_output_sha256_by_run": {
+   "all": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "all2": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "gc": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "off": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "off2": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "offload": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "pfgc": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "pfoff": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "prefetch": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+   "sealoff": "ce052954298c27082d1db90315322d9be22ba3c2f137fee39eab51801cb9cb55",
+   "sealon": "ce052954298c27082d1db90315322d9be22ba3c2f137fee39eab51801cb9cb55"
+  },
+  "supply_outputs_identical_within_each_group": true
+ },
+ "contacts_made": 0,
+ "mechanism": {
+  "default": "absent key = every committed configuration = the dispatch exactly as before; the parser refuses unknown keys, a wrong schema, non-boolean switches and a block that arms nothing",
+  "dependency_verified": "1b is POSSIBLE for the recall and IMPOSSIBLE for the rest: the exemplar recall's inputs are the frozen snapshot, the row's own sealed speech query record and the key vectors (rails.phase_supply supply_for_phase -> KbFacetProvider.candidates -> multidim_recall), none of which is the Perception answer; the rank, fusion and the candidate-bound slot-contract selection (candidate_supply.solver, candidate_state_phase perception) DO read the sealed Perception state and stay exactly where they are.",
+  "finding": "Rows in flight already exceed the slots (queue depth 4 x slots = 16 admitted rows over 4 slots), but every admitted row is pinned to one llama.cpp slot from its first contact to its delivery, because 88.9 % of the flown prompt tokens are served from that slot's KV prefix; releasing a slot between contacts would re-prefill a row's whole supply block (about 7,500 tokens, 3.3 s) to save a 0.5 s gap. The slots therefore empty while their OWN row prepares the next contact. The largest part of that preparation is the first Solver visit's role input: settle -> the train-exemplars recall (rails.kb_policy.multidim_recall, a pure-Python cosine over every exemplar key vector) -> material, run synchronously in the OpenJiuwen role-query component on the ONE asyncio event loop every row shares, so while one row recalls, no other row can route or dispatch; full garbage collections over the loaded key vectors freeze every thread at once.",
+  "switches": {
+   "gc_freeze": "gc.collect(); gc.freeze() before the first episode, gc.unfreeze() after the last",
+   "recall_prefetch": "the row's Perception-independent recall submitted to one background worker at admission; the Solver visit consumes it through the provider's existing prepared-recall path; a revisit recomputes live",
+   "role_input_offload": "the role-input builder awaited on ONE dedicated worker thread (role inputs stay mutually exclusive across rows, the calling task's context variables carried over)"
+  }
+ },
+ "reproduction": {
+  "all_idle_s": 1055.3,
+  "client_turnaround_slot_s": 7287.3,
+  "empty_slot_s": 8997.4,
+  "fit_gate": {
+   "clock_note": "fit times are drvfs file times; the two causal bounds on the clock offset conflict at the 0.1 % tails (about +/-0.6 s of file-time jitter), so only medians of the split are read",
+   "fit_duration_s": {
+    "max": 1.664,
+    "mean": 0.096,
+    "n": 8994,
+    "p50": 0.063,
+    "p90": 0.108,
+    "sum": 867.446
+   },
+   "fit_intervals_overlapping_their_predecessor": 0,
+   "fit_lock_busy_share_of_window": 0.1054
+  },
+  "joined_contacts": 8994,
+  "matches_note": true,
+  "matches_note_detail": {
+   "all_idle_s": true,
+   "client_turnaround_slot_s": true,
+   "empty_slot_s": true,
+   "joined_contacts": true,
+   "turnaround_by_role": true
+  },
+  "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+  "server_lifetime_index": 11,
+  "slot_seconds_total": 32908.6,
+  "solver1_turnaround_mean_s": 2.67,
+  "solver_role_input_s_offline": 1.4332,
+  "turnaround_slot_s_by_role": {
+   "perception": 557.5,
+   "planner": 858.5,
+   "reviewer": 681.1,
+   "solver#1": 3023.7,
+   "solver#2-5(full hit)": 2166.6
+  },
+  "wall_s": 8227.2
+ },
+ "schema": "saea-slotfill-proof-summary-v1",
+ "throughput": {
+  "flown_bound_statement": "about +5 % contacts per GPU-hour on a flown cell (the bench's 0.35 s of wall per row against ROLL-2's flown 7.62 s per row), bounded above by lever 1b's +10.1 % for this mechanism; no number is claimed for lever 1a (the flight's 1,055 s of all-slots-empty time is not reproduced on the bench), and the note's +37.6 % lever-1 bound is not approached.",
+  "off_vs_off_spread_pct": 0.3,
+  "offline_contacts_per_hour_off": 2735.8,
+  "offline_contacts_per_hour_on": 2898.8,
+  "offline_empty_share_off_pct": 15.56,
+  "offline_empty_share_on_pct": 10.55,
+  "offline_gain_pct": 6.0,
+  "service_model": "each request holds its slot for a deterministic draw from the sealed ROLL-2 per-role server busy times (launch to release) of the same role",
+  "statement": "On the proof bench (the locked PLAN cell, 60 rows, 285 contacts per run, each request holding its slot for a draw from ROLL-2's own per-role server busy times) the key moved the empty-slot share 15.6 % -> 10.5 % and contacts per hour of contact window 2,736 -> 2,899 (+6.0 %; the two key-on runs +7.3 % and +4.6 %, the two key-off runs within 0.3 %; the sealed pair +6.1 %), removing 1.40 slot-seconds of empty slot and 0.35 s of wall per row; recall_prefetch alone +6.4 %, role_input_offload alone +2.1 %, gc_freeze alone +1.0 %.",
+  "table": {
+   "all": {
+    "all_slots_empty_s": 0.172,
+    "contact_window_s": 349.384,
+    "contacts_per_hour_of_window": 2936.6,
+    "dispatch": {
+     "gc_freeze": true,
+     "recall_prefetch": true,
+     "role_input_offload": true,
+     "schema": "saea-dispatch-slot-fill-v1"
+    },
+    "empty_slot_share_pct": 9.38,
+    "gc_pause_s_sum": 7.426,
+    "mean_busy_slots": 3.625,
+    "process_cpu_s": 125.284,
+    "solver_role_input_mean_s": 0.4629
+   },
+   "all2": {
+    "all_slots_empty_s": 0.221,
+    "contact_window_s": 358.612,
+    "contacts_per_hour_of_window": 2861.0,
+    "dispatch": {
+     "gc_freeze": true,
+     "recall_prefetch": true,
+     "role_input_offload": true,
+     "schema": "saea-dispatch-slot-fill-v1"
+    },
+    "empty_slot_share_pct": 11.71,
+    "gc_pause_s_sum": 8.23,
+    "mean_busy_slots": 3.532,
+    "process_cpu_s": 128.024,
+    "solver_role_input_mean_s": 0.5616
+   },
+   "gc": {
+    "all_slots_empty_s": 1.204,
+    "contact_window_s": 371.268,
+    "contacts_per_hour_of_window": 2763.5,
+    "dispatch": {
+     "gc_freeze": true,
+     "schema": "saea-dispatch-slot-fill-v1"
+    },
+    "empty_slot_share_pct": 14.71,
+    "gc_pause_s_sum": 6.394,
+    "mean_busy_slots": 3.411,
+    "process_cpu_s": 121.7,
+    "solver_role_input_mean_s": 1.3264
+   },
+   "off": {
+    "all_slots_empty_s": 0.15,
+    "contact_window_s": 374.449,
+    "contacts_per_hour_of_window": 2740.0,
+    "dispatch": null,
+    "empty_slot_share_pct": 15.43,
+    "gc_pause_s_sum": 11.794,
+    "mean_busy_slots": 3.383,
+    "process_cpu_s": 131.322,
+    "solver_role_input_mean_s": 1.4332
+   },
+   "off2": {
+    "all_slots_empty_s": 1.444,
+    "contact_window_s": 375.623,
+    "contacts_per_hour_of_window": 2731.5,
+    "dispatch": null,
+    "empty_slot_share_pct": 15.69,
+    "gc_pause_s_sum": 12.125,
+    "mean_busy_slots": 3.372,
+    "process_cpu_s": 127.709,
+    "solver_role_input_mean_s": 1.4034
+   },
+   "offload": {
+    "all_slots_empty_s": 1.255,
+    "contact_window_s": 367.281,
+    "contacts_per_hour_of_window": 2793.5,
+    "dispatch": {
+     "role_input_offload": true,
+     "schema": "saea-dispatch-slot-fill-v1"
+    },
+    "empty_slot_share_pct": 13.77,
+    "gc_pause_s_sum": 11.887,
+    "mean_busy_slots": 3.449,
+    "process_cpu_s": 123.957,
+    "solver_role_input_mean_s": 1.5647
+   },
+   "pfgc": {
+    "all_slots_empty_s": 0.282,
+    "contact_window_s": 357.514,
+    "contacts_per_hour_of_window": 2869.8,
+    "dispatch": {
+     "gc_freeze": true,
+     "recall_prefetch": true,
+     "schema": "saea-dispatch-slot-fill-v1"
+    },
+    "empty_slot_share_pct": 11.44,
+    "gc_pause_s_sum": 8.287,
+    "mean_busy_slots": 3.542,
+    "process_cpu_s": 126.844,
+    "solver_role_input_mean_s": 0.5099
+   },
+   "pfoff": {
+    "all_slots_empty_s": 0.711,
+    "contact_window_s": 364.716,
+    "contacts_per_hour_of_window": 2813.1,
+    "dispatch": {
+     "recall_prefetch": true,
+     "role_input_offload": true,
+     "schema": "saea-dispatch-slot-fill-v1"
+    },
+    "empty_slot_share_pct": 13.03,
+    "gc_pause_s_sum": 14.917,
+    "mean_busy_slots": 3.479,
+    "process_cpu_s": 135.366,
+    "solver_role_input_mean_s": 0.6778
+   },
+   "prefetch": {
+    "all_slots_empty_s": 0.11,
+    "contact_window_s": 352.467,
+    "contacts_per_hour_of_window": 2910.9,
+    "dispatch": {
+     "recall_prefetch": true,
+     "schema": "saea-dispatch-slot-fill-v1"
+    },
+    "empty_slot_share_pct": 10.12,
+    "gc_pause_s_sum": 12.283,
+    "mean_busy_slots": 3.595,
+    "process_cpu_s": 125.657,
+    "solver_role_input_mean_s": 0.5344
+   }
+  }
+ }
+}

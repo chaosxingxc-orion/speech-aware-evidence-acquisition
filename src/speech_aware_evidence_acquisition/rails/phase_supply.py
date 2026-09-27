@@ -97,6 +97,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -121,6 +122,8 @@ from .kb_policy import (
     _fused_label_scores,
     _label_identities,
     default_label_normalizer,
+    multidim_recall,
+    multidim_segment_recall,
 )
 
 #: The one query/facet vector source kind this module implements: a
@@ -1217,6 +1220,78 @@ def build_supply_for_phase(
         )
 
     seeded = set(seed_phases)
+    # Owner decision 159 (``rails.dispatch_slot_fill``, ``recall_prefetch``):
+    # the Perception-independent recall a later phase's decision will make,
+    # computed ahead on a caller-supplied worker. Empty -- and every branch
+    # below that reads it unreachable -- unless ``prefetch_recall`` is called,
+    # which only an armed ``dispatch`` block does.
+    recall_prefetches: dict[tuple[str, str], object] = {}
+    prefetch_lock = threading.Lock()
+    prefetchable = {
+        phase: spec
+        for phase, spec in specs.items()
+        if phase not in seeded
+        and provider_for_phase is None
+        and spec.provider == "kb-facet-v1"
+        and (prepared_recall_by_phase is None or prepared_recall_by_phase.get(phase) is None)
+    }
+
+    def _recall_now(phase: str, query_record: object) -> dict[str, dict[str, float]]:
+        """EXACTLY the recall ``KbFacetProvider.candidates`` makes for this
+        phase and row: the same function, the same snapshot object, the same
+        key-vector lookup and the same ``top_k_per_dimension`` (the spec's
+        ``k``, as ``_provider_factory`` passes it)."""
+
+        table = facet_tables[phase]
+
+        def lookup(facet_id: str) -> Mapping[str, Sequence[float]]:
+            return table.get(facet_id, {})
+
+        if isinstance(query_record, SealedSegmentQuery):
+            return multidim_segment_recall(
+                snapshot, query_record.segments, lookup, specs[phase].k
+            )
+        return multidim_recall(snapshot, dict(query_record), lookup, specs[phase].k)
+
+    def prefetch_recall(sample_id: str, submit: Callable[..., object]) -> int:
+        """Submit this row's later-phase recall(s) through ``submit``
+        (``Executor.submit``-shaped). Returns how many were submitted."""
+
+        submitted = 0
+        for phase in sorted(prefetchable):
+            query_record = query_tables[phase].get(sample_id)
+            if not query_record:
+                continue
+            key = (phase, sample_id)
+            with prefetch_lock:
+                if key in recall_prefetches:
+                    continue
+                recall_prefetches[key] = submit(_recall_now, phase, query_record)
+            submitted += 1
+        return submitted
+
+    def _take_prefetched(phase: str, sample_id: str, query_state: QueryState):
+        if not recall_prefetches:
+            return None
+        with prefetch_lock:
+            future = recall_prefetches.pop((phase, sample_id), None)
+        if future is None:
+            return None
+        recall = future.result()
+        # The provider keys prepared recall by the QueryState's own query
+        # sample; a row whose query sample differs recomputes live.
+        if getattr(query_state, "query_sample_id", None) != sample_id:
+            return None
+        return _provider_factory(
+            specs[phase],
+            snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256,
+            facet_vectors=facet_tables[phase],
+            provider_for_phase=None,
+            prepared_recall={sample_id: recall},
+            agreement_scores=agreement_tables[phase],
+        )()
+
     # The alpha-blend head, when a spec declares ``alpha`` -- computed from
     # rails.kb_policy's OWN functions, not reimplemented, so the decision is
     # the locked ``saea-kb-alpha-blend-v1`` decision expressed on the base.
@@ -1268,7 +1343,9 @@ def build_supply_for_phase(
         # last-candidates() rank result on the instance, and
         # rails.runner runs trajectories concurrently, so one shared
         # instance would let two samples interleave their decisions.
-        provider = provider_factories[phase_name]()
+        provider = _take_prefetched(phase_name, sample_id, query_state)
+        if provider is None:
+            provider = provider_factories[phase_name]()
         ranking = provider.candidates(provider_query, k=spec.k)
         fusion_decision = provider.fuse(
             [ranking], k=spec.k, policy_id=spec.fuse_policy
@@ -1395,6 +1472,7 @@ def build_supply_for_phase(
     supply_for_phase.source_audio_bindings = (  # type: ignore[attr-defined]
         validated_source_bindings
     )
+    supply_for_phase.prefetch_recall = prefetch_recall  # type: ignore[attr-defined]
     return supply_for_phase
 
 

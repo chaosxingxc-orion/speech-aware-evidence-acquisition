@@ -1902,6 +1902,7 @@ async def _invoke_native_role_episode(
     *, state, run_contact, session, binding, adapter, core_client, snapshot,
     snapshot_sha256, protected_material, base_decoding_params, run_id,
     knowledge_value_renderer, run_local=None, system_policy_decision=None,
+    role_input_runner=None,
 ):
     """Collect one public role graph through the shared speech request custody.
 
@@ -3887,7 +3888,14 @@ async def _invoke_native_role_episode(
                 finite_completion_scope=config.finite_completion_scope,
             ),
             nodes=NativeEpisodeNodes(**nodes),
-            role_input_builder=role_input,
+            role_input_builder=(
+                role_input if role_input_runner is None
+                # Owner decision 159 (``role_input_offload``): the SAME
+                # builder, awaited off the shared event loop.
+                else (lambda phase_id, episode_state: role_input_runner(
+                    role_input, phase_id, episode_state
+                ))
+            ),
         )
         result = await workflow.invoke_direct(state.prepared.task_contract, (), session=session)
         receipt = result["state"]
@@ -4364,6 +4372,86 @@ def _flush_agent_state_traces(states, trace_sink) -> None:
             state.trace_buffers[key].flush_into(trace_sink)
 
 
+class _SlotFillScheduler:
+    """Owner decision 159 (``rails.dispatch_slot_fill``): the three scheduling
+    switches of one native dispatch, owned for exactly its duration.
+
+    Nothing here produces, reads or reorders a byte any node sees. The recall
+    worker computes a function of a row's own sealed query that the row's
+    supply step would otherwise compute itself (``rails.phase_supply``,
+    ``prefetch_recall``); the role-input worker runs the unchanged builder on
+    ONE dedicated thread, so role inputs stay mutually exclusive across rows
+    exactly as they are on the event loop, with the calling task's context
+    variables carried over; ``gc_freeze`` only moves the already-loaded heap
+    out of the collector's generations.
+    """
+
+    def __init__(self, switches) -> None:
+        from concurrent.futures import ThreadPoolExecutor
+
+        self.switches = switches
+        self._recall = (
+            ThreadPoolExecutor(max_workers=1, thread_name_prefix="saea-slotfill-recall")
+            if switches.recall_prefetch else None
+        )
+        self._role_input = (
+            ThreadPoolExecutor(max_workers=1, thread_name_prefix="saea-slotfill-role-input")
+            if switches.role_input_offload else None
+        )
+        self._froze = False
+        if switches.gc_freeze:
+            import gc
+
+            gc.collect()
+            gc.freeze()
+            self._froze = True
+        self.prefetched_rows = 0
+
+    @classmethod
+    def open(cls, switches):
+        if switches is None:
+            return None
+        from .dispatch_slot_fill import DispatchSlotFill
+
+        if not isinstance(switches, DispatchSlotFill):
+            raise RailsRunnerError("slot fill requires a parsed DispatchSlotFill")
+        return cls(switches)
+
+    def prefetch(self, binding, sample_id: str) -> None:
+        if self._recall is None:
+            return
+        forward = getattr(binding.supply_for_phase, "prefetch_recall", None)
+        if callable(forward) and forward(sample_id, self._recall.submit):
+            self.prefetched_rows += 1
+
+    @property
+    def role_input_runner(self):
+        if self._role_input is None:
+            return None
+        executor = self._role_input
+
+        async def run(builder, phase_id, episode_state):
+            import asyncio
+            import contextvars
+
+            context = contextvars.copy_context()
+            return await asyncio.get_running_loop().run_in_executor(
+                executor, context.run, builder, phase_id, episode_state
+            )
+
+        return run
+
+    def close(self) -> None:
+        for executor in (self._recall, self._role_input):
+            if executor is not None:
+                executor.shutdown(wait=True, cancel_futures=True)
+        if self._froze:
+            import gc
+
+            gc.unfreeze()
+            self._froze = False
+
+
 def _run_agent_openjiuwen(
     *,
     prepared_tasks: Sequence[_PreparedAgentTask],
@@ -4412,6 +4500,10 @@ def _run_agent_openjiuwen(
             _ContactAgentState(prepared=task, controller=None, query_state=task.initial_query_state)
             for task in prepared_tasks
         ]
+        # Owner decision 159 (rails.dispatch_slot_fill): scheduling only.
+        # ``None`` -- every committed configuration -- leaves every line below
+        # exactly as it was; see _SlotFillScheduler for what each switch does.
+        slot_fill = _SlotFillScheduler.open(native_episode_binding.slot_fill)
 
         async def invoke_episode(state, run_contact, session, *, run_local=None):
             selected_binding = native_episode_binding
@@ -4430,6 +4522,8 @@ def _run_agent_openjiuwen(
                     {"org_system_policy_decision": decision},
                 )
                 state.trace_buffers[(-1, 0)] = policy_trace
+            if slot_fill is not None:
+                slot_fill.prefetch(selected_binding, state.prepared.sample.sample_id)
             await _invoke_native_role_episode(
                 state=state, run_contact=run_contact, session=session, run_local=run_local,
                 binding=selected_binding, adapter=adapter,
@@ -4438,6 +4532,9 @@ def _run_agent_openjiuwen(
                 snapshot_sha256=snapshot_sha256, protected_material=protected_material,
                 base_decoding_params=base_decoding_params, run_id=run_id,
                 knowledge_value_renderer=knowledge_value_renderer,
+                role_input_runner=(
+                    None if slot_fill is None else slot_fill.role_input_runner
+                ),
             )
 
         try:
@@ -4451,6 +4548,9 @@ def _run_agent_openjiuwen(
         except BaseException:
             _flush_agent_state_traces(states, trace_sink)
             raise
+        finally:
+            if slot_fill is not None:
+                slot_fill.close()
         if any(state.final_outcome is None for state in states):
             raise RailsRunnerError("native graph ended without an accepted Solver outcome")
         return tuple(state.final_outcome for state in states)

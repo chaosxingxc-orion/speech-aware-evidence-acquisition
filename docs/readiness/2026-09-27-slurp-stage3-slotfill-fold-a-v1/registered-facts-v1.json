@@ -1,0 +1,755 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (keyed by run id; the arm's block is the no-harm declaration). The same block is repeated in the preregistration's fenced json for readability; this copy has precedence.",
+  "authority_relpaths": [
+    "docs/results/2026-09-27-slurp-throughput-baseline-and-levers.md",
+    "docs/receipts/slurp-throughput-baseline-and-levers-v1.json",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/receipts/harness-admission.json",
+    "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/README.md",
+    "scripts/checks/stage3_effect_floor_check.py",
+    "docs/checks/speech-aware-evidence-acquisition/2026-09-27-dispatch-slot-fill-byte-identity-v1/README.md"
+  ],
+  "budget_arithmetic": {
+    "arm_and_aa_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "caps_are_the_locked_family_arithmetic": true,
+    "derivation": [
+      "generation_calls_cap = 1,080 rows x 11 contacts per row (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 * (3 + 1 + 1)) = 11,880; the A/A the same; the smoke 4 x 11 = 44",
+      "fit_endpoint_calls_cap = 4 x generation = 47,520 (smoke 176); native_task_contract_calls_cap = 1,080 x 6 = 6,480 (smoke 24); repeated_speech_audio_seconds_cap 33,930 (smoke 117); gpu_hours_fit_inclusive 12.0 (smoke 1.0), the locked family's own ceilings (G5 and AGREE carry the same)",
+      "expected spend per 1,080-row cell at the sealed PLAN arm's own realized rate: about 4,424 contacts (4.096 per row) and about 3.7 GPU hours on the A/A; the arm moves no contact and no token, only wall time",
+      "official_complete_scoring_jobs = 1 per 1,080-row cell, one job over the complete manifest through core.scoring_batch, never sharded; the smoke is never scored"
+    ],
+    "run_cumulative": "every cap binds across ALL attempts of a run id, so the one permitted recovery re-registration spends from the same ceiling",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "byte_identity": {
+    "all_identical": true,
+    "comparisons": {
+      "off vs all": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "off vs all2": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "off vs gc": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "off vs off2": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "off vs offload": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "off vs pfgc": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "off vs pfoff": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "off vs prefetch": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      },
+      "sealoff vs sealon": {
+        "per_row_dispatch_rows": true,
+        "per_row_outputs": true,
+        "request_bodies_id_slot_masked": true,
+        "request_payloads_id_slot_masked": true,
+        "trace_records": true,
+        "trace_records_normalised_multiset_sha256": true
+      }
+    },
+    "contacts": 285,
+    "experiment": "slurp-native-default-plan-lock-v1",
+    "groups": {
+      "main": [
+        "off",
+        "off2",
+        "all",
+        "all2",
+        "prefetch",
+        "pfgc",
+        "pfoff",
+        "offload",
+        "gc"
+      ],
+      "seal": [
+        "sealoff",
+        "sealon"
+      ]
+    },
+    "minted_first_phase_supplies": {
+      "by_run": {
+        "all-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "all2-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "gc-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "off-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "off2-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "off3-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "offload-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "pfgc-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "pfoff-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "prefetch-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "prefetch2-s": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+        "sealoff": "b33fe65b60cfc9e7466e28a6545e2a52d470e765143fdc7946c71b4a41022554",
+        "sealon": "b33fe65b60cfc9e7466e28a6545e2a52d470e765143fdc7946c71b4a41022554"
+      },
+      "count": 13,
+      "output_sha256_values": [
+        "b33fe65b60cfc9e7466e28a6545e2a52d470e765143fdc7946c71b4a41022554",
+        "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f"
+      ]
+    },
+    "normalisation": "exactly two facts are assigned by ARRIVAL and already differ between two runs of today's dispatcher: the request-id counter (flight-<n>) and the slot number (id_slot on the wire, slot_id / slot_ids in the sealed waves); each flight-<n> and each request sha256 is renamed to its own (row, contact) identity, the slot keys are masked, the runtime-trace digest (computed over the slot ids) is masked while its preimage records are compared, and latency_seconds is dropped. Every other byte is compared.",
+    "reference": "off",
+    "rows": 60,
+    "runs": [
+      "off",
+      "off2",
+      "all",
+      "all2",
+      "prefetch",
+      "pfgc",
+      "pfoff",
+      "offload",
+      "gc",
+      "sealoff",
+      "sealon"
+    ],
+    "seal": {
+      "sealoff": "VERIFIED",
+      "sealon": "VERIFIED"
+    },
+    "seal_all_verified": true,
+    "supply_output_sha256_by_run": {
+      "all": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "all2": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "gc": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "off": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "off2": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "offload": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "pfgc": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "pfoff": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "prefetch": "53fbfe16ea079cfb80aa795ed05885d4651dba58c1e8285aec2819c96b22f6bc",
+      "sealoff": "ce052954298c27082d1db90315322d9be22ba3c2f137fee39eab51801cb9cb55",
+      "sealon": "ce052954298c27082d1db90315322d9be22ba3c2f137fee39eab51801cb9cb55"
+    },
+    "supply_outputs_identical_within_each_group": true
+  },
+  "byte_identity_expectation": {
+    "claim": "the dispatch key enters the first-phase supply's identity (the composed config) but not its computation, so every supply the flip mints for this family must carry this output digest on all 1,080 rows (the smoke on its four); a different digest means the knowledge channel moved -- stop and report. The model-free bench minted the key-on and key-off supplies of the same tree and they agree on the output bytes.",
+    "sealed_plan_supply_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f"
+  },
+  "ceiling_unlocked": "What the item unlocks (row 127 asks for the ceiling, not a gain): throughput -- the same contacts in less wall. ROLL-2's slot capacity was 27.3 % empty (8,997 of 32,909 slot-seconds; docs/results/2026-09-27-slurp-throughput-baseline-and-levers.md), reproduced here to the tenth of a second; the first Solver visit alone waited 2.67 s per row on the client. The model-free bench on the locked PLAN cell measured the empty share 15.56 % -> 10.55 % and 2,736 -> 2,899 contacts per hour of contact window (+6.0 %) under the sealed ROLL-2 per-role service times; the honest bound for a flown cell is about +5 % contacts per GPU-hour on a flown cell (the bench's 0.35 s of wall per row against ROLL-2's flown 7.62 s per row), bounded above by lever 1b's +10.1 % for this mechanism; no number is claimed for lever 1a (the flight's 1,055 s of all-slots-empty time is not reproduced on the bench), and the note's +37.6 % lever-1 bound is not approached.",
+  "committed_artifacts": {
+    "prepared_phase_supply": "NONE COMMITTED, by design: the flip mints each cell's own under its own run id (item E16), the readiness requirements list is empty, and --allow-output-change must never be passed."
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+    "in_chain_replicate": {
+      "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1",
+      "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate; the A/A is the locked plan's own form without the key, re-flown in the SAME campaign chain"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "the plan's own null on this roster, PLAN vs PLANr (SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d"
+    },
+    "never_reflown": true,
+    "official": {
+      "intent_accuracy": 82.2222,
+      "slu_f1": 63.6304
+    },
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+  },
+  "composed_config_diff_against_the_locked_plan_cell": {
+    "aa": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "parent_experiment": "slurp-native-default-plan-lock-v1",
+      "the_one_key": []
+    },
+    "arm": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "parent_experiment": "slurp-native-default-plan-lock-v1",
+      "the_one_key": [
+        "dispatch.gc_freeze",
+        "dispatch.recall_prefetch",
+        "dispatch.role_input_offload",
+        "dispatch.schema"
+      ]
+    },
+    "note": "computed by flattening both composed configs (core.config.compose) and listing every path whose value differs: the one key (arm and smoke; none on the A/A), the baseline's per-flight bookkeeping (this cell's FIT identities and cap, the dropped prepared_phase_supply, what_this_is) and the experiment fragment's own block. The unit test tests/unit/test_slotfill_config.py re-proves it.",
+    "smoke": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "parent_experiment": "slurp-native-default-plan-lock-smoke-4-v1",
+      "the_one_key": [
+        "dispatch.gc_freeze",
+        "dispatch.recall_prefetch",
+        "dispatch.role_input_offload",
+        "dispatch.schema"
+      ]
+    }
+  },
+  "identity": {
+    "aa": {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-slotfill-aa-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-slotfill-aa-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-slotfill-aa-fold-a-v1",
+      "composed_config_hash": "b46c65869b70b61d9105f15493e92511916cb0a6887a0640c96843b72c11c375",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "dispatch": null,
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 12.0,
+        "planned_model_calls": 11880,
+        "planned_speech_audio_seconds": 33930,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-slotfill-aa-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-slotfill-aa-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-FIT-V1"
+      },
+      "generation_budget_target": 4424,
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "native_episode_policies": {
+        "finite_completion_policy": "deliver-latest-or-abstain",
+        "react_exhaustion_policy": "continue-without-answer"
+      },
+      "parent_baseline_fragment": "slurp-native-default-plan-lock-baseline-v1",
+      "parent_composed_config_hash": "55b06b12c70a49d79e1fe8de7af76a78f581946de250cb57f129354508a1be5b",
+      "parent_experiment": "slurp-native-default-plan-lock-v1",
+      "protocol_hash": "3457a9f2a2f5b66f0e0ded4da6942b434f5146dc44c8f5fa151636848f7b3ec3",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "arm": {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-slotfill-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-slotfill-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-slotfill-fold-a-v1",
+      "composed_config_hash": "4bf5297118adb89e9ace5ea77a3cb662a6743b69f98bd45b3397a17cb67b8697",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "dispatch": {
+        "gc_freeze": true,
+        "recall_prefetch": true,
+        "role_input_offload": true,
+        "schema": "saea-dispatch-slot-fill-v1"
+      },
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 12.0,
+        "planned_model_calls": 11880,
+        "planned_speech_audio_seconds": 33930,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-slotfill-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-slotfill-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-FIT-V1"
+      },
+      "generation_budget_target": 4424,
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "native_episode_policies": {
+        "finite_completion_policy": "deliver-latest-or-abstain",
+        "react_exhaustion_policy": "continue-without-answer"
+      },
+      "parent_baseline_fragment": "slurp-native-default-plan-lock-baseline-v1",
+      "parent_composed_config_hash": "55b06b12c70a49d79e1fe8de7af76a78f581946de250cb57f129354508a1be5b",
+      "parent_experiment": "slurp-native-default-plan-lock-v1",
+      "protocol_hash": "21381fcae367566af81d3a3bdaa80710bb602fe17e43c9873ec2a2394f091d43",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-slotfill-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-slotfill-fold-a-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-slotfill-fold-a-smoke-4-v1",
+      "composed_config_hash": "a3827612c578eba7707b30c4d2c5ad4d38e9c1c999e00aa365a90c49140dbc07",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "dispatch": {
+        "gc_freeze": true,
+        "recall_prefetch": true,
+        "role_input_offload": true,
+        "schema": "saea-dispatch-slot-fill-v1"
+      },
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 44,
+        "planned_speech_audio_seconds": 117,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-slotfill-fold-a-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 176,
+        "generation_calls_cap": 44,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 24,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 117
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-slotfill-fold-a-smoke-4-fit-v1",
+        "contact_cap": 176,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-SMOKE-4-FIT-V1"
+      },
+      "generation_budget_target": null,
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "native_episode_policies": {
+        "finite_completion_policy": "deliver-latest-or-abstain",
+        "react_exhaustion_policy": "continue-without-answer"
+      },
+      "parent_baseline_fragment": "slurp-native-default-plan-lock-smoke-4-baseline-v1",
+      "parent_composed_config_hash": "732bf81f874677e33abfd992300171555dd1aa283884a92a6c40b74ac85afcb5",
+      "parent_experiment": "slurp-native-default-plan-lock-smoke-4-v1",
+      "protocol_hash": "72222cf3e4a30e395651888ca475a693881b899203ed593ff718e19b766fbbde",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "no_harm_rule": "NO-HARM ADMITTED (owner decisions 127 and 159): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (PLAN vs PLANr, docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION (decision 127). The item is NEVER reported as a gain on either metric. Beside the no-harm read, and as the item's declared ceiling, the THROUGHPUT read: contacts per GPU-hour over each arm's contact window and empty slot-seconds from the server's own per-slot task log joined one-to-one to each arm's sealed trace (scripts/analysis/slotfill_gap_decomposition.py, the note's accounting), arm against A/A. Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the delivered-answer agreement rate of arm and A/A, and the request-byte comparison of step 2.",
+  "owner_decisions": {
+    "127": "the ENGINEERING-BASE admission: sound logic, a stated ceiling, a no-harm reading at a preregistered margin equal to the design's measured floor; never reported as a gain",
+    "140": "sampling throughput (contacts per GPU-hour) is a first-class objective of the engineering base",
+    "159": "the dispatcher slot fill is unfinished Stage-2 base and a PRIORITY engineering item: keep every slot loaded, proven byte-identical in every request body and every sealed per-row state, admitted on no harm plus the measured contacts per GPU-hour; it enters the base for cells flipped after it lands and never alters a pinned flight commit",
+    "77": "GPU flights only through the batch driver from the queue; the coordinator enqueues"
+  },
+  "pinned_flights_untouched": "Every pinned flight commit keeps its code: this item lands on master for cells flipped after it, the 211 committed configs declare no dispatch key (tests/unit/test_dispatch_slot_fill.py), and the runtime reads the key only where it is declared. Because the prepared-supply identity binds the implementation files it names (item E16), a cell flipped at a commit before this item keeps its own pin and its own code; a cell flipped after it mints its own supply at its flip, as every cell does.",
+  "prohibitions": [
+    "Never reported as a gain on intent or SLU: a no-harm item is admitted on the reading and two base items are never assumed to add (decision 127).",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed comparator.",
+    "No second factor: no template, knob, store, release, snapshot, roster, geometry or session change; the committed configs are NOT re-pinned to the key.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped."
+  ],
+  "proof_receipt": {
+    "directory": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-dispatch-slot-fill-byte-identity-v1",
+    "gap_decomposition": {
+      "relpath": "scripts/analysis/slotfill_gap_decomposition.py",
+      "sha256": "b8b6435385b2735c7bbcd7dcba3a1275a894029304f31bba57d4af08a3697dc8"
+    },
+    "harness": {
+      "relpath": "scripts/analysis/slotfill_fake_server_harness.py",
+      "sha256": "b32d0aedda58b09e47446cc7b4790a9f8a9c7966eb4bcfbf940e15be3664bb22"
+    },
+    "summary": {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-dispatch-slot-fill-byte-identity-v1/proof-summary-v1.json",
+      "sha256": "e0d9765dee4ff59dfe857f58be7282c0a2802f0614338ffbaaf39c36189a9cac"
+    },
+    "unit_tests": {
+      "relpath": "tests/unit/test_dispatch_slot_fill.py",
+      "sha256": "2c72ad87a7bbcff64bc7531ed153e51737cd9fff131bc8c707cd627d0d94f4dc"
+    }
+  },
+  "registered_at_utc": "2026-09-27T15:02:02.000000+00:00",
+  "reproduced_accounting": {
+    "all_idle_s": 1055.3,
+    "client_turnaround_slot_s": 7287.3,
+    "empty_slot_s": 8997.4,
+    "fit_gate": {
+      "clock_note": "fit times are drvfs file times; the two causal bounds on the clock offset conflict at the 0.1 % tails (about +/-0.6 s of file-time jitter), so only medians of the split are read",
+      "fit_duration_s": {
+        "max": 1.664,
+        "mean": 0.096,
+        "n": 8994,
+        "p50": 0.063,
+        "p90": 0.108,
+        "sum": 867.446
+      },
+      "fit_intervals_overlapping_their_predecessor": 0,
+      "fit_lock_busy_share_of_window": 0.1054
+    },
+    "joined_contacts": 8994,
+    "matches_note": true,
+    "matches_note_detail": {
+      "all_idle_s": true,
+      "client_turnaround_slot_s": true,
+      "empty_slot_s": true,
+      "joined_contacts": true,
+      "turnaround_by_role": true
+    },
+    "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+    "server_lifetime_index": 11,
+    "slot_seconds_total": 32908.6,
+    "solver1_turnaround_mean_s": 2.67,
+    "solver_role_input_s_offline": 1.4332,
+    "turnaround_slot_s_by_role": {
+      "perception": 557.5,
+      "planner": 858.5,
+      "reviewer": 681.1,
+      "solver#1": 3023.7,
+      "solver#2-5(full hit)": 2166.6
+    },
+    "wall_s": 8227.2
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The A/A replicate is the INSTRUMENT, not a claim: it re-flies the locked plan's own form without the dispatch key, so the SLOTFILL deltas -- quality and throughput -- are read against a within-chain twin.",
+      "primary_metric": "intent accuracy (scenario_action exact) and official pooled SLU-F1, as the instrument",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1",
+      "rows": 1080
+    },
+    "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: that the dispatch key parses and arms on the resident geometry, that every request fits and that the episode completes and seals. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1": {
+      "admission": "no-harm",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "harm_margin_pp": 1.2485,
+      "harm_margin_pp_by_metric": {
+        "intent_accuracy": 0.9943,
+        "slu_f1": 1.2485
+      },
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "A row-127 ENGINEERING-BASE item under owner decision 159, admitted on NO HARM and never reported as a gain: expected_effect_pp is 0.0 because the item changes no byte a node sees, claims_benefit is false, and the harm margin is the measured floor of this design at n = 1,080 -- the Fold A own-null half-width of PLAN vs PLANr, SLU 1.2485 (the gate's single harm_margin_pp field) and intent 0.9943 (the primary metric's own half-width, applied by the read; harm_margin_pp_by_metric). The delta is read against the in-chain A/A replicate flown in the same chain (rule 3). The throughput read is the declared ceiling (throughput_ceiling).",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1",
+      "rows": 1080,
+      "throughput_ceiling": {
+        "claims_gain": false,
+        "metric": "contacts per GPU-hour over the contact window, and empty slot-seconds (server per-slot task log joined to the sealed trace)",
+        "note": "a declared CEILING, measured and reported; not an admission criterion and never a quality claim",
+        "offline_estimate_gain_pct": 6.0,
+        "read_against": "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1"
+      }
+    }
+  },
+  "study_commit_at_registration": "583f04c99fc9b5bc8f2179761e210d6439c0a6fe",
+  "the_item": {
+    "default": "absent key = every committed configuration = the dispatch exactly as before; the parser refuses unknown keys, a wrong schema, non-boolean switches and a block that arms nothing",
+    "dependency_verified": "1b is POSSIBLE for the recall and IMPOSSIBLE for the rest: the exemplar recall's inputs are the frozen snapshot, the row's own sealed speech query record and the key vectors (rails.phase_supply supply_for_phase -> KbFacetProvider.candidates -> multidim_recall), none of which is the Perception answer; the rank, fusion and the candidate-bound slot-contract selection (candidate_supply.solver, candidate_state_phase perception) DO read the sealed Perception state and stay exactly where they are.",
+    "finding": "Rows in flight already exceed the slots (queue depth 4 x slots = 16 admitted rows over 4 slots), but every admitted row is pinned to one llama.cpp slot from its first contact to its delivery, because 88.9 % of the flown prompt tokens are served from that slot's KV prefix; releasing a slot between contacts would re-prefill a row's whole supply block (about 7,500 tokens, 3.3 s) to save a 0.5 s gap. The slots therefore empty while their OWN row prepares the next contact. The largest part of that preparation is the first Solver visit's role input: settle -> the train-exemplars recall (rails.kb_policy.multidim_recall, a pure-Python cosine over every exemplar key vector) -> material, run synchronously in the OpenJiuwen role-query component on the ONE asyncio event loop every row shares, so while one row recalls, no other row can route or dispatch; full garbage collections over the loaded key vectors freeze every thread at once.",
+    "switches": {
+      "gc_freeze": "gc.collect(); gc.freeze() before the first episode, gc.unfreeze() after the last",
+      "recall_prefetch": "the row's Perception-independent recall submitted to one background worker at admission; the Solver visit consumes it through the provider's existing prepared-recall path; a revisit recomputes live",
+      "role_input_offload": "the role-input builder awaited on ONE dedicated worker thread (role inputs stay mutually exclusive across rows, the calling task's context variables carried over)"
+    }
+  },
+  "throughput_estimate": {
+    "flown_bound_statement": "about +5 % contacts per GPU-hour on a flown cell (the bench's 0.35 s of wall per row against ROLL-2's flown 7.62 s per row), bounded above by lever 1b's +10.1 % for this mechanism; no number is claimed for lever 1a (the flight's 1,055 s of all-slots-empty time is not reproduced on the bench), and the note's +37.6 % lever-1 bound is not approached.",
+    "off_vs_off_spread_pct": 0.3,
+    "offline_contacts_per_hour_off": 2735.8,
+    "offline_contacts_per_hour_on": 2898.8,
+    "offline_empty_share_off_pct": 15.56,
+    "offline_empty_share_on_pct": 10.55,
+    "offline_gain_pct": 6.0,
+    "service_model": "each request holds its slot for a deterministic draw from the sealed ROLL-2 per-role server busy times (launch to release) of the same role",
+    "statement": "On the proof bench (the locked PLAN cell, 60 rows, 285 contacts per run, each request holding its slot for a draw from ROLL-2's own per-role server busy times) the key moved the empty-slot share 15.6 % -> 10.5 % and contacts per hour of contact window 2,736 -> 2,899 (+6.0 %; the two key-on runs +7.3 % and +4.6 %, the two key-off runs within 0.3 %; the sealed pair +6.1 %), removing 1.40 slot-seconds of empty slot and 0.35 s of wall per row; recall_prefetch alone +6.4 %, role_input_offload alone +2.1 %, gc_freeze alone +1.0 %.",
+    "table": {
+      "all": {
+        "all_slots_empty_s": 0.172,
+        "contact_window_s": 349.384,
+        "contacts_per_hour_of_window": 2936.6,
+        "dispatch": {
+          "gc_freeze": true,
+          "recall_prefetch": true,
+          "role_input_offload": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "empty_slot_share_pct": 9.38,
+        "gc_pause_s_sum": 7.426,
+        "mean_busy_slots": 3.625,
+        "process_cpu_s": 125.284,
+        "solver_role_input_mean_s": 0.4629
+      },
+      "all2": {
+        "all_slots_empty_s": 0.221,
+        "contact_window_s": 358.612,
+        "contacts_per_hour_of_window": 2861.0,
+        "dispatch": {
+          "gc_freeze": true,
+          "recall_prefetch": true,
+          "role_input_offload": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "empty_slot_share_pct": 11.71,
+        "gc_pause_s_sum": 8.23,
+        "mean_busy_slots": 3.532,
+        "process_cpu_s": 128.024,
+        "solver_role_input_mean_s": 0.5616
+      },
+      "gc": {
+        "all_slots_empty_s": 1.204,
+        "contact_window_s": 371.268,
+        "contacts_per_hour_of_window": 2763.5,
+        "dispatch": {
+          "gc_freeze": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "empty_slot_share_pct": 14.71,
+        "gc_pause_s_sum": 6.394,
+        "mean_busy_slots": 3.411,
+        "process_cpu_s": 121.7,
+        "solver_role_input_mean_s": 1.3264
+      },
+      "off": {
+        "all_slots_empty_s": 0.15,
+        "contact_window_s": 374.449,
+        "contacts_per_hour_of_window": 2740.0,
+        "dispatch": null,
+        "empty_slot_share_pct": 15.43,
+        "gc_pause_s_sum": 11.794,
+        "mean_busy_slots": 3.383,
+        "process_cpu_s": 131.322,
+        "solver_role_input_mean_s": 1.4332
+      },
+      "off2": {
+        "all_slots_empty_s": 1.444,
+        "contact_window_s": 375.623,
+        "contacts_per_hour_of_window": 2731.5,
+        "dispatch": null,
+        "empty_slot_share_pct": 15.69,
+        "gc_pause_s_sum": 12.125,
+        "mean_busy_slots": 3.372,
+        "process_cpu_s": 127.709,
+        "solver_role_input_mean_s": 1.4034
+      },
+      "offload": {
+        "all_slots_empty_s": 1.255,
+        "contact_window_s": 367.281,
+        "contacts_per_hour_of_window": 2793.5,
+        "dispatch": {
+          "role_input_offload": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "empty_slot_share_pct": 13.77,
+        "gc_pause_s_sum": 11.887,
+        "mean_busy_slots": 3.449,
+        "process_cpu_s": 123.957,
+        "solver_role_input_mean_s": 1.5647
+      },
+      "pfgc": {
+        "all_slots_empty_s": 0.282,
+        "contact_window_s": 357.514,
+        "contacts_per_hour_of_window": 2869.8,
+        "dispatch": {
+          "gc_freeze": true,
+          "recall_prefetch": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "empty_slot_share_pct": 11.44,
+        "gc_pause_s_sum": 8.287,
+        "mean_busy_slots": 3.542,
+        "process_cpu_s": 126.844,
+        "solver_role_input_mean_s": 0.5099
+      },
+      "pfoff": {
+        "all_slots_empty_s": 0.711,
+        "contact_window_s": 364.716,
+        "contacts_per_hour_of_window": 2813.1,
+        "dispatch": {
+          "recall_prefetch": true,
+          "role_input_offload": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "empty_slot_share_pct": 13.03,
+        "gc_pause_s_sum": 14.917,
+        "mean_busy_slots": 3.479,
+        "process_cpu_s": 135.366,
+        "solver_role_input_mean_s": 0.6778
+      },
+      "prefetch": {
+        "all_slots_empty_s": 0.11,
+        "contact_window_s": 352.467,
+        "contacts_per_hour_of_window": 2910.9,
+        "dispatch": {
+          "recall_prefetch": true,
+          "schema": "saea-dispatch-slot-fill-v1"
+        },
+        "empty_slot_share_pct": 10.12,
+        "gc_pause_s_sum": 12.283,
+        "mean_busy_slots": 3.595,
+        "process_cpu_s": 125.657,
+        "solver_role_input_mean_s": 0.5344
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import inspect
 import json
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -492,6 +493,12 @@ class _RoleQuery(WorkflowComponent):
             stage=self._stage,
         )
         query = self._builder(self._role_id, copy.deepcopy(state))
+        if inspect.isawaitable(query):
+            # Owner decision 159 (``rails.dispatch_slot_fill``,
+            # ``role_input_offload``): the SAME builder, run off the shared
+            # event loop. A synchronous builder -- every configuration that
+            # does not arm the switch -- never reaches this line.
+            query = await query
         if not isinstance(query, str) or not query:
             raise NativeEpisodeError(
                 f"role input builder returned no query for {self._role_id!r}"

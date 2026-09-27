@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-slotfill-fold-a-smoke-4-v1",
+  "composed_config_hash": "a3827612c578eba7707b30c4d2c5ad4d38e9c1c999e00aa365a90c49140dbc07",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-slotfill-fold-a-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "72222cf3e4a30e395651888ca475a693881b899203ed593ff718e19b766fbbde",
+    "run_id": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; it measures request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-slotfill-fold-a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "one_factor": "Composed key dispatch: absent -> {\"gc_freeze\": true, \"recall_prefetch\": true, \"role_input_offload\": true, \"schema\": \"saea-dispatch-slot-fill-v1\"}.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "583f04c99fc9b5bc8f2179761e210d6439c0a6fe",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
+    "note": "NONE COMMITTED, by design: the flip mints each cell's own under its own run id (item E16), the readiness requirements list is empty, and --allow-output-change must never be passed. the dispatch key enters the first-phase supply's identity (the composed config) but not its computation, so every supply the flip mints for this family must carry this output digest on all 1,080 rows (the smoke on its four); a different digest means the knowledge channel moved -- stop and report. The model-free bench minted the key-on and key-off supplies of the same tree and they agree on the output bytes.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "ed54ddf9b5df86a51d978f1cc0cbf5455fca095bec2b55a0c87a342bd2239f45"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-SMOKE-4-FIT-V1: Four-row form smoke of cell SLOTFILL. It measures request envelopes only and reads nothing.",
+  "quality_read_gate": "No task-quality or throughput read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the SLOTFILL arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
+  "registered_at_utc": "2026-09-27T15:02:02.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-slotfill, branch fable/slotfill",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

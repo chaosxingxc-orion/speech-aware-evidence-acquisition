@@ -717,6 +717,11 @@ class NativeEpisodeRunBinding:
     # Optional source-bound interpretation of this episode's original
     # Perception and actual exemplar selection. Shared by all downstream roles.
     candidate_proposal_for_context: Callable | None = None
+    # Owner decision 159 (2026-09-27): the dispatcher slot-fill switches
+    # (``rails.dispatch_slot_fill.DispatchSlotFill``). Scheduling only -- no
+    # request, state, output or trace byte depends on it. None, the value of
+    # every committed configuration, leaves the dispatch exactly as it was.
+    slot_fill: object = None
 
 
 @dataclass(frozen=True)
