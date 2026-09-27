@@ -15,8 +15,8 @@ Development numbers only (owner decisions 28 and 86); never a test claim.
 | in-chain replicate | none, and none is owed: the design is `form-proof`, no cross-flight contrast is computed, and the comparator's per-row verdict is constant on this population |
 | runs | `SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1` / `SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-FIT-V1` |
 | rows | 55 |
-| composed config hash | `8ff881efbe1c3a35e0d05afbc5357cfc70ed79d14f6c95fe5699b75103488dd9` |
-| protocol hash | `c278e63b8e2a5bf84a307da40dcadf4f4a2783e902da5543def005f9d318f031` |
+| composed config hash | `94be16b9e1b113e1f29301625c179b2189fca7243e8c27863309ee6e0cc416bd` |
+| protocol hash | `be30ff1386801a5ffcbfb9a5c1f4e092e799f197d5b3e2e6984f041f5a6b749d` |
 | split identity | `d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31` |
 | id-list sha256 | `ad433b1fc3f21765af15d3aed4012264125d9f17fdd4cef837d67bcf50ddde02` |
 | key file | `prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl` sha256 `16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532`; receipt `prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json` sha256 `d5fa43dfb9cfe71402e256c015e5f0a1ce66e97b3ec5355a664eb9f69f8cdf0a` |

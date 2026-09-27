@@ -14,8 +14,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Cell KPROBE, the centroid-key conversion probe (owner decision 145), registered before contact on 2026-09-27 from the locked PLAN baseline's own fragments by script (decision 58) with one pin moved. Treatment only: the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 holds these rows' comparator answers and is never re-flown. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement. The requirements list is empty by design and --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-kprobe-fold-a-55-admission-v1",
+            "relpath": "coordination/slurp-stage3-kprobe-fold-a-55-v1/root-admission-v1.json",
+            "sha256": "73721238a6238c62835075cc11b7cfef2b2d009aa6760b55a31d4f2090090d40",
+            "reason": "Decision slurp-stage3-kprobe-fold-a-55-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1/phase-supply-v1.json",
+            "sha256": "f836bf678bee1153e97d46271426d3fe83fedca6b5a0e253837eb312cff577ae",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1"
     }

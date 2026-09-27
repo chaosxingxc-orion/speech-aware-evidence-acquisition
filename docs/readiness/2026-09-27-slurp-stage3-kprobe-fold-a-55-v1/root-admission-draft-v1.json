@@ -37,7 +37,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/protocol-registered-v1.json",
-      "sha256": "2f33d2f6bf1cf9a8545b88ba89a4e1a4bff409191eb53328097c35bec37aa7f7"
+      "sha256": "6c2ed3a2611889c096ca6f85a16582462959f3f3970425cbec94445e91b25f56"
     },
     "read_driver": {
       "path": "scripts/analysis/slurp_kprobe_read.py",
@@ -107,9 +107,9 @@
   },
   "recorded_at_utc": null,
   "registered_hashes": {
-    "composed_config": "8ff881efbe1c3a35e0d05afbc5357cfc70ed79d14f6c95fe5699b75103488dd9",
+    "composed_config": "94be16b9e1b113e1f29301625c179b2189fca7243e8c27863309ee6e0cc416bd",
     "note": "the values of the fragments exactly as committed at 08fd493c (readiness held, no decision requirement); repin_cell.py recomputes them at the flip.",
-    "protocol": "c278e63b8e2a5bf84a307da40dcadf4f4a2783e902da5543def005f9d318f031"
+    "protocol": "be30ff1386801a5ffcbfb9a5c1f4e092e799f197d5b3e2e6984f041f5a6b749d"
   },
   "schema": "saea-campaign-decision-v1",
   "service": {

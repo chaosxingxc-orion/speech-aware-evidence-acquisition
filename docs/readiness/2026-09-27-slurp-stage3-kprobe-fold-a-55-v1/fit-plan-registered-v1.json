@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-kprobe-fold-a-55-v1",
-  "composed_config_hash": "8ff881efbe1c3a35e0d05afbc5357cfc70ed79d14f6c95fe5699b75103488dd9",
+  "composed_config_hash": "94be16b9e1b113e1f29301625c179b2189fca7243e8c27863309ee6e0cc416bd",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-kprobe-fold-a-55-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 2420,
     "planned_speech_audio_seconds": 1405,
-    "protocol_hash": "c278e63b8e2a5bf84a307da40dcadf4f4a2783e902da5543def005f9d318f031",
+    "protocol_hash": "be30ff1386801a5ffcbfb9a5c1f4e092e799f197d5b3e2e6984f041f5a6b749d",
     "run_id": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "d5fa899db921562b3e98a0c2aba72d8edab1c1885969f0332dce67a623527b31",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1/protocol-registered-v1.json",
-    "sha256": "2f33d2f6bf1cf9a8545b88ba89a4e1a4bff409191eb53328097c35bec37aa7f7"
+    "sha256": "6c2ed3a2611889c096ca6f85a16582462959f3f3970425cbec94445e91b25f56"
   },
   "purpose": "SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-V1: cell KPROBE. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for this cell, and before the flown delivery check agrees with the offline derivation on all 55 rows. A partial manifest is never scored and never read.",
