@@ -1,8 +1,8 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-26T19:30:57Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
-`4b8f4c5c`+ on `master`, tree clean. ROLL-2 has flown and sealed; seven measurements landed
-today and five of them correct something this program believed this morning.
+Last refreshed: 2026-09-27T00:29:42Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
+`c8b1`+ (repin fix merged) on `master`, tree clean. Fable 5.1 is the coordinator again as of this refresh; the
+programme now carries an ABSOLUTE target, and the label ceiling says it is reachable.
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
 did, numbers, open items, embargoes, next action, housekeeping — so you can diff it. Freshness is
@@ -12,15 +12,27 @@ than this stamp, the check fails and the staleness is my defect, not yours.
 ## 1. State
 
 Stage 2's frozen four-node system is the asset: +27.3 pp SLU / +14.9 pp intent over the bare core on
-the fresh DEV-2000-ADDED roster, replicated. **Stage 3 still has no learned update with an established
-benefit**, and the owner's goal of 2026-09-26 sets the closure condition: build the academic baseline
-and the optimisation space on the locked training-free RL families, name their shortcomings on these
-tasks, improve the algorithm, lock on SLURP, then extend to Audio2Tool and E21 / E22 — Stage 3 closes
-on a **stable gain validated on the test split**.
+the fresh DEV-2000-ADDED roster, replicated. **Owner decision 137 (2026-09-26) sets an ABSOLUTE target:
+95 % intent-recognition accuracy.** The lock arm reads intent **82.2222** on TRAIN Fold A (scenario exact
+87.3148, action exact 83.5185, SLU-F1 63.6304), so the gap is **12.78 points**. Decision 133 makes intent
+the primary metric for any mechanism acting on intent, with official SLU-F1 as the non-inferiority guard.
 
-The dominant finding of my last working block is about the instrument, and it changes how every
-number in this program must be read. It is written up in
-`docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md` and is binding from 2026-09-26.
+**The label ceiling audit says the dataset is not the obstacle**
+(`docs/results/2026-09-26-slurp-intent-label-ceiling-audit.md`): sentence-level ambiguity caps SLURP at
+99.94-99.97 % corpus-wide and at **100.0000 % on R01C, Fold A and DEV-2000-ADDED**; `general_quirky` shares
+no sentence with any other intent; the lock arm's 17.78 points of Fold A error are **0.00 unwinnable, 3.33
+on the catch-all, 14.44 plainly ours**. Published best in the record is 84.84 (HerMiT on gold transcripts).
+The route to 95 is a composition problem and nothing else.
+
+**Where the error lives, measured today:** the binding constraint is UNRETRIEVED knowledge -- absent 2
+items in 2,705 rows, budget-excluded 0 rows and structurally unreachable (`k == top_l == m`), and 55-64 %
+of intent-wrong rows never received their own gold intent's boundary entry although the store holds all 60.
+The cause is the key space: the boundary channel scores speech against a written description (gold at rank
+1 on 65.6 %), the exemplar channel scores the same speech against 11,514 utterances (76.1 %). Widening `k`
+is refuted (gold's median rank 13/10/14, spread down the tail). The entity half is 92-100 % delivered-but-
+unused -- a consumption-form problem. Three coordinator claims were corrected by measurement: `w_prior` is
+dead (0 of 60 values carry a prior), the locked plan supplies k=20 not top-5, and text-only rows CAN be
+retrieved because the key side is text by design.
 
 ## 2. What I did (2026-09-26, after the quota gap)
 
@@ -154,24 +166,44 @@ are identical, and those are what every read consumes.
 
 ## 7. My next action
 
-**The binding constraint is now measured, and it is unretrieved knowledge.**
-`docs/results/2026-09-26-slurp-knowledge-coverage-and-failure-mode-attribution.md` puts decision 123's five
-modes at: absent **2 items in 2,705 rows**; budget-excluded **0 rows, 0 values** and *structurally
-unreachable* because `k == top_l == m`; and **55.4 / 55.0 / 64.2 %** of intent-wrong rows never received the
-boundary entry for their own gold intent although the store holds all 60 -- against 94.5-97.6 % delivery on
-the rows that answered. The entity half is not a knowledge story: 92-100 % of entity items sit in the
-delivered-but-ignored residual, which needs contacts to split.
+**In the air / just sealed.** ROLL-2 sealed (Fold A 1,080 x 5, 8,996 contacts). The CONV probe sealed at
+00:05Z: 70 Fold A rows whose gold intent entry is newly delivered under `w_agree` 1.0, treatment only, read
+as P(correct | newly delivered) on intent per row -- its m re-declares the AGREE arm (arm clears its 2.5 pp
+intent bar iff m >= 27 of 70; the retired SLU-F1 framing needed 61). Read in progress.
 
-So the next measurement, running now, is where the gold intent *ranks* (`fable/rank`): if 9-20, a wider `k`
-reaches it; if 40+, the query or embedding is at fault and no `k` helps. The flown configuration is `k` 8
-over 60 intents at pure cosine (`w_prior` and `w_agree` are both 0.0). That read decides the next flight.
-After it: teach `stage3_effect_floor_check.py` the no-harm design and a harm-margin field, which decision
-127 requires and which two reports have now flagged as missing; then repair G5 below.
+**Landed since the last stamp.** Owner decisions 138-142: the cumulative-harm check is folded into the
+optimisation rounds and a non-improving round is read as a conflict between information elements (138);
+no if-then pre-commitment on a sealed-but-unread result -- the AGREE arm waits for the CONV probe's m and a
+conversation (139); the np1 cache-off determinism test is authorised as a cheap test but **sampling
+throughput is now a first-class engineering objective** and adoption of any geometry is decided on it
+(140); the 95 % is a TEST-SET number, dev sampling first for iteration, and a coverage-guaranteed test
+sample is permitted -- drawn once, complement sealed the same moment as the closure roster (141). The owner's
+"knowledge base too dense, prune it" hypothesis was measured and refuted for removal: only 2 of 60 intent
+keys have a positive masking net and both destroy correct work, `general_quirky` is net -21 (missed, not
+crowding), pool pruning is monotone the wrong way -- but the 60 boundary descriptions share a mean Jaccard
+overlap of 0.6073, so the lever is rewriting keys, not removing them (142). The re-pin tool's
+preparation-requirement clobber is fixed (`is_own_supply_requirement`, matched on `relpath`; 113 committed
+cells would have had a foreign requirement overwritten, the AGREE arm and smoke among them).
 
-**Please do not spend GPU on the per-group knowledge construction as prepared.** Its contexts are
-50,659-52,178 tokens against a 49,152-token slot -- a capacity failure, not a reserve failure -- and owner
-decision 130 approves a rebuild sequenced *after* the attribution above, because if the mass is
-delivered-but-unused then editing knowledge values is not where it is. `launch_authority` stays false.
+**GPU supply queue** (the card idled after CONV because nothing was flip-ready; that is the structural
+defect and the queue is the fix): Q2 AGREE smoke -> one chain of A/A (w_agree 0.0, which reproduced the
+sealed PLAN prepared-output digest on all 1,080 rows) then arm (w_agree 1.0), ~7 GPU-h, blocked only on the
+re-pin tool fix for cells carrying two preparation requirements; Q3 an np1 cache-off request-identical pair
+(50 x 2) to test whether the +1.87 pp between-flight offset is a continuous-batching artefact -- if it is,
+every floor halves; Q4 ROLL-3, the five-sample pool on DEV-2000-ADDED; Q5 Audio2Tool's own null. Receipts
+for CONV and AGREE are minted; `batch_chain_agree.sh` is landed.
+
+**Zero-contact reads running:** knowledge-base pruning by per-key masking with held-out validation; gold
+position inside the delivered block and whether the Solver is constrained to Perception's candidates at
+all; a Solver citation field (`cited_value_ids` is empty in 4,209/4,209 states -- without it no entry-level
+credit exists for the knowledge-construction RL you and the owner both want); scenario x action error
+decomposition; the seal-path profile. **Please do not spend GPU on the per-group knowledge construction as
+prepared** (owner decision 130: rebuild after the attribution; `launch_authority` stays false).
+
+**Two things I owe the owner an answer on and have flagged:** a no-harm base item under decision 127 admits
+on "point estimate >= 0", so harm across N base items is unbounded -- I have proposed a system-regression
+flight every k=3 base items; and the between-flight offset is a serving property (greedy + np4 + prompt
+cache + q8 KV), not a law -- Q3 tests it.
 
 ## 8. Housekeeping we share
 
