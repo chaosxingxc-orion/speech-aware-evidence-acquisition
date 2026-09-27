@@ -46,10 +46,10 @@ NEUTRAL: both guards non-inferior at the plan's own null -- the CI95 lower bound
     },
     "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1": {
       "claims_benefit": true,
-      "expected_effect_pp": 1.363,
+      "expected_effect_pp": 2.96,
       "measurement_design": "cross-flight-with-in-chain-replicate",
-      "note": "Cell AGREE claims a benefit and is the first cell of this programme to do so on well-evidenced grounds. The expectation is DERIVED, not guessed: the measured newly-delivered row counts per bad-case class times that class's measured perfect-repair headroom, times a STATED conversion of 0.467895 that is UNMEASURED. Delivery is not correctness; the conversion is the cell's own primary unknown, and the declared number is a construction, not a prediction. Ceiling at conversion 1.0 is 2.9131 pp, so this design's 2.5 pp admission bar at n = 1,080 is NOT cleared by the declared expectation -- reported, not engineered around.",
-      "primary_metric": "slu_f1",
+      "note": "Re-declared 2026-09-27 from the CONV probe (owner decisions 139 and 143): m = 32 of 70 newly-delivered rows converted wrong->gold (45.71 %, Wilson CI95 [34.57, 57.30] %), so the expectation is 32 x 0.092615 = 2.96 pp intent against this design's 2.5 pp bar at n = 1,080. Under the retired SLU-F1 framing it would be 1.33 pp. The position read's finding that the term also moves gold to position 1 on 35 of the 86 already-delivered-but-wrong rows is a PRIOR this arm measures, not part of the declared expectation. CONV's row interval [24.2, 40.1] spans 27, so a NEUTRAL-by-width read remains possible; per rows 127 and 139 its disposition is then taken on the number, in conversation. Delivery is not correctness.",
+      "primary_metric": "intent accuracy (scenario_action exact), official SLU-F1 the non-inferiority guard (owner decision 133)",
       "replicate_run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
       "rows": 1080
     }
