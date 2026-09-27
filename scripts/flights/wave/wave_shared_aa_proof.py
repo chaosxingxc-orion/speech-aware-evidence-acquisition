@@ -214,21 +214,26 @@ def _lift_agree_pin() -> None:
     """In a capture worker for the AGREE arm: dispatch it as a flip would mint it at this HEAD.
 
     Its committed ``prepared_phase_supply`` pin cannot load here (see :func:`prove_supply`), so the pin is
-    removed from the built runtime's composed values and the first-phase supply is computed LIVE through the
-    same ``_phase_supply_seeds`` path the A/A uses. Proof 2 separately shows the A/A's minted output equals the
-    committed artifact's output byte for byte, so the live supply is the AGREE arm's own.
+    removed from the AGREE arm's composed values as the runtime composes them (``FlightRuntime._prepare``) and
+    the first-phase supply is computed LIVE through the same ``_phase_supply_seeds`` path the A/A uses. Proof 2
+    separately shows the A/A's minted output equals the committed artifact's output byte for byte, so the live
+    supply is the AGREE arm's own. Nothing else in the composed values is touched.
     """
 
-    from speech_aware_evidence_acquisition.core.flight import factory
+    import dataclasses
 
-    real = factory.build_flight_runtime
+    from speech_aware_evidence_acquisition.core.flight import runtime as flight_runtime
 
-    def build(*args, **kwargs):
-        runtime = real(*args, **kwargs)
-        runtime._composed.values.pop("prepared_phase_supply", None)
-        return runtime
+    real = flight_runtime.compose
 
-    factory.build_flight_runtime = build
+    def compose(repo_root, model, dataset, baseline, experiment, *args, **kwargs):
+        composed = real(repo_root, model, dataset, baseline, experiment, *args, **kwargs)
+        if experiment != CELLS["agree_arm"] or "prepared_phase_supply" not in composed.values:
+            return composed
+        values = {key: value for key, value in composed.values.items() if key != "prepared_phase_supply"}
+        return dataclasses.replace(composed, values=values)
+
+    flight_runtime.compose = compose
 
 
 def _launch_worker(repo: Path, args, *, cell: str, out: Path, rows: int | None,
