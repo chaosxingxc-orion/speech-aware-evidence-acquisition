@@ -15,6 +15,13 @@
         "reason": "Four-row form smoke of cell COMP-1, registered before contact on 2026-09-27 from the sealed cell PLAN smoke fragments by script (decision 58). HELD until root mints the admission receipt and re-pins with --set-ready, which re-mints this cell's own first-phase supply (item E16); --allow-output-change must never be passed. Structural form proof only: no score, no read, no claim.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-v1.json",
+            "sha256": "7c6f93577dbf9719a64fe6a2a82aa72ba6c99cd5010dc7db4e8db6d4fcd5a4a5",
+            "reason": "Decision slurp-stage3-comp1-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, exactly the artifact cell AGREE registered: built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded rows, 0 rows with no vote, all 60 boundary facets reachable. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -23,11 +30,11 @@
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors, the CENTROID key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the sealed agreement table, with zero model, tokenizer, encoder, scorer or server contacts. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1/phase-supply-v2.json",
             "sha256": "af53ea707e9ca742c8383c5d2fa7379c4c18c5dbb83c22acdaa3a9e97000d732"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1"
     }
