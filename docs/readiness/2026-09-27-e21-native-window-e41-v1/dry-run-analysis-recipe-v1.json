@@ -71,5 +71,7 @@
     "verdict_document": "docs/results/2026-09-2x-e21-native-window-e41-four-row-dry-run-read.md",
     "prints_only_aggregates": "counts, role ids, reasons, booleans and hashes only",
     "harness_admission": "NONE -- a base item admits no module"
-  }
+  },
+  "read_run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1-READ-V1",
+  "read_run_id_note": "Declared 2026-09-27 by the coordinator before contact; the READ row was registered and countersigned in docs/exposure-ledger.md at the same time (the package predates the pre-launch gate that requires it)."
 }

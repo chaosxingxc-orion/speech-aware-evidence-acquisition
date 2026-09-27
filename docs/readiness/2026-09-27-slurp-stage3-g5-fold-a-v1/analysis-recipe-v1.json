@@ -57,5 +57,7 @@
     "6. Report beside every number: the per-scenario table in the natural-mixture and equal-stratum weightings; the frontier row (decision 75); the measured token delta per Reviewer contact and per row; the tool-narration counts of step 2; and the A/A's own delta against the sealed comparator as the instrument's reading.",
     "7. Hand the admitted pin (comp2-pin-v1.json) to COMP-2 for the cumulative check (decision 138); an unadmitted pin is withdrawn from COMP-2 with the tool-narration counts as the first root-cause lead."
   ],
-  "title": "Cell G5 -- the standard paired roster read on intent + SLU against the sealed PLAN arm, at the in-chain A/A null flown beside it, under the no-harm rule"
+  "title": "Cell G5 -- the standard paired roster read on intent + SLU against the sealed PLAN arm, at the in-chain A/A null flown beside it, under the no-harm rule",
+  "read_run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-PAIRED-ANALYSIS-V1",
+  "read_run_id_note": "Declared 2026-09-27 by the coordinator before contact; the READ row was registered and countersigned in docs/exposure-ledger.md at the same time (the package predates the pre-launch gate that requires it)."
 }

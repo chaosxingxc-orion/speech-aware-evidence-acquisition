@@ -82,5 +82,7 @@
     "8. The per-scenario tables in the natural-mixture and equal-stratum weightings, the frontier row (effect x prefilled tokens per row x GPU hours per 1,080 rows), and the realized spend against the caps.",
     "9. Write the read under its own later-registered read id; state that every number is a TRAIN Fold A development number, never a test claim; never write 'no gain'."
   ],
-  "title": "Cell COMP-1 -- the composed read against the in-chain A/A, with the per-class attribution table owner decision 138 requires"
+  "title": "Cell COMP-1 -- the composed read against the in-chain A/A, with the per-class attribution table owner decision 138 requires",
+  "read_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-PAIRED-ANALYSIS-V1",
+  "read_run_id_note": "Declared 2026-09-27 by the coordinator before contact; the READ row was registered and countersigned in docs/exposure-ledger.md at the same time (the package predates the pre-launch gate that requires it)."
 }
