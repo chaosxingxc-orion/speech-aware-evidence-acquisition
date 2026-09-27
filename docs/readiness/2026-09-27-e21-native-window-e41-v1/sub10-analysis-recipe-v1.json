@@ -1,0 +1,90 @@
+{
+  "schema": "saea-descriptive-structural-read-recipe-v1",
+  "recipe_id": "e21-native-window-e41-sub10-descriptive-read-v1",
+  "registered_at_utc": "2026-09-27T16:00:00.000000+00:00",
+  "title": "Item E41 sub10 re-read of the Earnings21+ConEC system form: descriptive structural read against the sealed E35 direct arm, bound per window",
+  "cell_kind": "DESCRIPTIVE STRUCTURAL READ below every power floor (n = 10 calls, 342 windows); stage3_measurement form-proof, claims_benefit false.",
+  "authority": {
+    "item": "E41, rows 103 and 158; row 98 (the Earnings full-discovery calibration n >= 400 stays after the SLURP main line)",
+    "attribution_method": "docs/results/2026-09-22-e21-native-window-e35-sub10-diagnosis.md section 0 ('Attribution method and its validation') and sections 1-5",
+    "comparator_binding": "docs/readiness/2026-09-27-e21-native-window-e41-v1/sub10-comparator-binding-v1.json"
+  },
+  "gate_before_any_read": "The E41 dry-run read holds R1-R3 and is committed BEFORE this cell is flipped; this read starts only after the single attempt's manifest is sealed COMPLETE.",
+  "claim_boundary": "No effectiveness, superiority, generalization, admission or paper claim. WER is reported as the carrier's standard scorer, not as the agentic task; entity and numeric metrics are reported beside it. Every number is descriptive and development-grade (decisions 28, 86).",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "server": 0,
+    "tokenizer": 0,
+    "scorer": "the ONE complete scoring job the flight's finalize runs over the complete manifest; the read itself runs none"
+  },
+  "run_ids": {
+    "arm": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1",
+    "fit": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-FIT-V1"
+  },
+  "comparators": {
+    "direct": {
+      "run": "SAEA-E21-NATIVE-WINDOW-DIRECT-SUB10-V1",
+      "attempt": "attempt-e21-native-window-direct-sub10-v1",
+      "cell": "e21-native-window-direct-sub10-v1",
+      "flight_commit": "1a9c78d2",
+      "role": "the bare-core comparator, bound per window by execution_unit_id; its sealed scores are read, never re-scored"
+    },
+    "e35_system": {
+      "run": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1",
+      "attempt": "attempt-e21-native-window-system-sub10-v1",
+      "flight_commit": "1a9c78d2",
+      "role": "the same six-node form BEFORE v3.1 and E41 (episode scope, cap 1,024, Reviewer probe v1, Perception note v1): the structural contrast"
+    }
+  },
+  "structural_readings": [
+    {
+      "id": "S1",
+      "statement": "windows whose terminal_disposition names perception or reviewer with an abstention: TARGET ZERO (R1 at scale; E35 sealed 75 + 1)"
+    },
+    {
+      "id": "S2",
+      "statement": "windows delivering the empty string (delivery_text_sha256 = e3b0c442...): TARGET ZERO beyond the direct arm's own count (E35 system 76, E35 direct 1)"
+    },
+    {
+      "id": "S3",
+      "statement": "the Perception truncation rate (finish_reason 'length' at 640 over 342 Perception contacts): TARGET ZERO, reported with its count; the Reviewer truncation count beside it (E35 sealed Perception 75 / 342 and Reviewer 30 / 428 at 1,024)"
+    },
+    {
+      "id": "S4",
+      "statement": "contacts per window, role visits, Planner routes, byte-identical second Solver drafts, terminal reasons (finite_completion / revision_limit / none), against the E35 system arm's 4.67 contacts per window"
+    },
+    {
+      "id": "S5",
+      "statement": "Perception note compliance with the E41 bound over the 342 sealed notes, counted with scripts/analysis/e21_e41_perception_note_trace_read.py's feature code (lines, words per line, repetition share, window-transcript re-emission against the bound direct arm): counts only"
+    }
+  ],
+  "scores_reported_descriptively": {
+    "from": "the sealed E41 arm's own scores.json (one complete job) beside the sealed E35 direct arm's scores.json (never re-scored)",
+    "carrier_standard_scorer": "asr-wer-whisper: corpus WER, S / D / I, per-call WER (Whisper-normalised, beside saea-scoring-v1)",
+    "agentic_metrics": [
+      "conec-entity-wer-official: per-entity-class WER (PERSON first, ORG, GPE, PRODUCT) -- a DEFINITION MIRROR of fstalign RecordTagWer with official_tool_run false; the official ConEC tool (revdotcom/fstalign, a C++/OpenFST binary) is NOT installed or runnable in this repository and is not run for this read; the label 'mirror' travels with every number",
+      "numeric-value-accuracy-v1: accuracy, expected / matched / spurious numeric words, by kind",
+      "semantic-high-impact-error-rate-v1: rate (advisory: the taxonomy's only HIGH trigger is negation)"
+    ]
+  },
+  "per_window_attribution": {
+    "method": "exactly the E35 diagnosis's: reference tokens via data.references.reference_tokens + reproduction.asr_wer_whisper.normalize_whisper_english (the sealed scorer's own normaliser); alignment path from rapidfuzz.distance.Levenshtein.opcodes; the reference partition into windows taken ONCE from the DIRECT arm's alignment and reused for both arms, so per-window deltas are on identical reference spans",
+    "validation": "the recomputed edit distance per call must equal the sealed per-call edit distance on both arms (10 / 10) before any per-window number is reported; a mismatch stops the read",
+    "tables": [
+      "delivered-token / reference-word ratio per window, bucketed (0, < 0.25, 0.25-0.75, 0.75-1.25, >= 1.25), both arms",
+      "per-window extra error mass (E41 errors minus direct errors on the same span): windows carrying 50 / 80 / 90 % of the positive mass and their delivery sources",
+      "by delivery source (accepted Solver / terminal Solver / abstention), by terminal reason, by contacts per window: windows, extra errors per window, reference words per window",
+      "which node's text was delivered, by hash equality of deliver_normaliser.input_sha256 against each contact's stripped response",
+      "numeric shortfall by window class (the E35 diagnosis section 4 table)",
+      "the same per-window table for the sealed E35 system arm beside it (sealed, recomputed from its own outputs)"
+    ],
+    "boundary": "reference text is loaded in memory for alignment only (the scorer's own normaliser); the read prints and persists counts, rates, ids and hashes, never reference, transcript or delivered text"
+  },
+  "what_is_not_here": "No paired estimator, no bootstrap CI as a claim, no margin, no bar, no admission, no frontier row: n = 10 calls cannot carry them (row 98 sequences the n >= 400 Earnings calibration after the SLURP main line).",
+  "output": {
+    "verdict_document": "docs/results/2026-09-2x-e21-native-window-e41-sub10-read.md",
+    "harness_admission": "NONE -- a base item admits no module"
+  }
+}

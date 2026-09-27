@@ -1,0 +1,132 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "native_contact_fit": {
+    "attempt_id": "attempt-e21-native-window-system-sub10-e41-v1-fit",
+    "contact_cap": 15048,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-FIT-V1"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "e21-native-window-system-sub10-e41-v1",
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-earnings-text-v1"
+    },
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "react_exhaustion_policy": "continue-without-answer",
+    "max_revisions": 1,
+    "review_loop": "on",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception",
+        "max_completion_tokens": 640
+      },
+      "planner": {
+        "max_iterations": 1,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer",
+        "max_completion_tokens": 640
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      },
+      "acquisition": {
+        "phase_id": "acquisition",
+        "max_iterations": 0,
+        "kinds": [
+          "knowledge-requery"
+        ]
+      }
+    },
+    "acquisition": {
+      "policy": "saea-acquire-knowledge-requery-v1",
+      "budget": {
+        "max_acquisitions_per_row": 1,
+        "contact_budget": 0
+      }
+    },
+    "schema": "saea-native-episode-config-v1",
+    "finite_completion_scope": "answering-node"
+  },
+  "ojw_workflow_timeout_seconds": 21600,
+  "phase_material": {
+    "perception": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_system_perception_v2.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_system_planner_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_system_reviewer_v2.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "solver": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_direct_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "policy": "phase-native-review-revise-acquire-v1",
+  "prepared_execution_units": {
+    "batch": "SAEA-E21-NATIVE-WINDOW-SUB10-V1",
+    "registry_run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+    "relpath": "analysis/SAEA-E21-NATIVE-WINDOW-SUB10-V1/window-inventory.json",
+    "sha256": "57ee023e4c1e38a79f99418c9e9dd5e4f87233a2162eac213ac070a73a31bba5",
+    "split_identity_hash": "744c4b2e2d2eece3b05c68089c02000e38c96d5c62db8055d9c421fd509a8f61",
+    "unit_count": 342
+  },
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-NATIVE-WINDOW-SUB10-V1/window-feature-packets.json",
+    "sha256": "8bf4584eef07091c4f70bbfa31d6b5280306793a5d038c83e4f5059ffaf6f929"
+  },
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-e21-native-window-v1:current-window",
+  "speech_feature_matcher_policy_id": "saea-e21-native-window-v1",
+  "task_contract_source": "active-instruction",
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Preserve spoken names, numbers and repetitions. Do not add explanations, speaker labels, timestamps or words unsupported by the audio. Output only the transcript text.",
+  "what_this_is": "Item E41 (owner decisions 103 and 158, 2026-09-27), the sub10 re-read, HELD: the Earnings21 + ConEC six-node native system form exactly as base lock v3.1 carries it (finite_completion_scope answering-node, per-role caps Perception 640 / Reviewer 640, tool-free Reviewer probe v2) with ONE pin moved -- the Perception node's instruction, from the free-text working note (probes/e21_native_window_system_perception_v1.txt) to the BOUNDED note (probes/e21_native_window_system_perception_v2.txt): a numbered list of at most 5 lines, at most 20 words each, at most 4 quoted spoken words per reading, never repeated, explicitly not a transcript. The E35 sub10 read and the E39 / E39b dry runs traced every Earnings Perception truncation to an unbounded note (loops, open enumerations, transcript re-emission and long prose; docs/readiness/2026-09-27-e21-native-window-e41-v1/perception-trace-read-v1.json). NO optimisation, NO new mechanism, NO flight: a registered-before-contact engineering-base proof; no score, comparison, effectiveness or generalization claim may be made from it.",
+  "knowledge_snapshot_relpath": "knowledge/e21/governed/participant-roster-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "72e7ddff84b6996ccb924564975a92352d186861347760ab9f39c07218ccdb93",
+  "readiness": {
+    "state": "held",
+    "reason": "E41 the sub10 re-read (2026-09-27): registered before contact; the flight-readiness authority is the experiment cell's readiness block, flipped by scripts/flights/repin_cell.py after root mints coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json (e21-native-window-e41-sub10-admission-v1)."
+  }
+}

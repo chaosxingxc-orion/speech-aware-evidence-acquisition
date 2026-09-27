@@ -1,0 +1,708 @@
+{
+ "schema": "saea-e41-composed-config-diff-v1",
+ "registered_at_utc": "2026-09-27T16:00:00.000000+00:00",
+ "method": "core.flight.repin.compute_cell_identity + core.config.compose over the committed fragments at registration (readiness HELD, no decision requirement); every composed leaf compared by dotted path; a string longer than 160 characters is shown by length and sha256",
+ "classification": {
+  "pin": [
+   "phase_material.perception.instruction_template"
+  ],
+  "base-lock-v3.1": [
+   "native_episode.finite_completion_scope",
+   "native_episode.roles.perception.max_completion_tokens",
+   "native_episode.roles.reviewer.max_completion_tokens",
+   "phase_material.reviewer.instruction_template"
+  ],
+  "base-lock-v3.1_note": "the leaves the E39 / E39b dry runs proved and base lock v3.1 (decision 103) carries into every Earnings native cell; they differ only in the sub10 cell's diff, whose parent is the PRE-v3.1 E35 sub10 system arm, and never in the dry run's diff against E39b",
+  "bookkeeping": "every other differing leaf: run / attempt / fit / episode ids, experiment ids and dates, the one-arm execution-plan ceilings (sub10: the E35 experiment carried the PAIR total), service_session, prose (purpose, what_this_is, notes), readiness blocks, the decision-101 label; the sub10 diff also lists the E35 experiment's second cell (the direct arm, cells[0]) as removed and its system cell re-identified, because the E35 experiment fragment declared both arms"
+ },
+ "diffs": {
+  "dry-run": {
+   "parent": {
+    "experiment": "e21-native-window-four-row-e39b-dry-run-v1",
+    "cell": "e21-native-window-system-four-row-e39b-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1",
+    "composed_config_hash_as_committed": "615d7f227348e7c71ac0fd9bc266dfe3693d22c2d86381055c915802f2680630",
+    "protocol_hash_as_committed": "a06b65a712a72b29a002131b2261ab6cdbf7baab1cf190a9a6b6fd7783986cec"
+   },
+   "child": {
+    "experiment": "e21-native-window-four-row-e41-dry-run-v1",
+    "cell": "e21-native-window-system-four-row-e41-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1"
+   },
+   "differing_leaf_paths": 26,
+   "pins": [
+    {
+     "path": "phase_material.perception.instruction_template",
+     "old": "probes/e21_native_window_system_perception_v1.txt",
+     "new": "probes/e21_native_window_system_perception_v2.txt",
+     "class": "pin"
+    }
+   ],
+   "rows": [
+    {
+     "path": "cells[0].attempt_id",
+     "old": "attempt-e21-native-window-system-four-row-e39b-v1",
+     "new": "attempt-e21-native-window-system-four-row-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].attempt_note",
+     "old": {
+      "chars": 465,
+      "sha256": "14f79c4dd814199175b2b71b43ab90101bbc1552540fc2c90882c1dceb4b0380"
+     },
+     "new": {
+      "chars": 466,
+      "sha256": "5609c729409b6254fe635bbc3064c50cf9b99bcfc5001ff32bb634fea150e931"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].baseline_fragment",
+     "old": "e21-native-window-system-four-row-e39b-v1",
+     "new": "e21-native-window-system-four-row-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].cell_id",
+     "old": "e21-native-window-system-four-row-e39b-v1",
+     "new": "e21-native-window-system-four-row-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.reason",
+     "old": {
+      "chars": 299,
+      "sha256": "8c59c10b9739b924934109808f2f313efd21f97cf499d71e620659a758b5ea14"
+     },
+     "new": {
+      "chars": 213,
+      "sha256": "dbe4e21efba638b3590a3bc18d1ddc47076e151075225d9edcdf24060c986652"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements",
+     "old": "<absent>",
+     "new": [],
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].expected_decision_id",
+     "old": "e21-native-window-four-row-e39b-admission-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].kind",
+     "old": "decision",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].reason",
+     "old": "Decision e21-native-window-four-row-e39b-admission-v1 pinned by scripts/flights/repin_cell.py.",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].relpath",
+     "old": "coordination/e21-native-window-four-row-e39b-v1/root-admission-v1.json",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].sha256",
+     "old": "19d23854cffd89d65021aadc11f31c47164c362a53564b8bee88cbbf442cf912",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.state",
+     "old": "ready",
+     "new": "held",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].run_id",
+     "old": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1",
+     "new": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "date",
+     "old": "2026-09-22",
+     "new": "2026-09-27",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "execution_plan_note",
+     "old": {
+      "chars": 439,
+      "sha256": "dcbed8d22654dc73979e05e3e090aa90ea30d7dc982ecda7798f2be572063479"
+     },
+     "new": {
+      "chars": 444,
+      "sha256": "6122292fbb82c9ae9a8e46c1a17cf41e40cc260036aed135d4e93155f6c05c42"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "experiment_id",
+     "old": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-E39-DRY-RUN-V1",
+     "new": "SAEA-E21-NATIVE-WINDOW-FOUR-ROW-E41-DRY-RUN-V1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "native_contact_fit.attempt_id",
+     "old": "attempt-e21-native-window-system-four-row-e39b-v1-fit",
+     "new": "attempt-e21-native-window-system-four-row-e41-v1-fit",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "native_contact_fit.run_id",
+     "old": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E39B-V1-FIT-V1",
+     "new": "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1-FIT-V1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "native_episode.episode_id",
+     "old": "e21-native-window-system-four-row-e39b-v1",
+     "new": "e21-native-window-system-four-row-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "phase_material.perception.instruction_template",
+     "old": "probes/e21_native_window_system_perception_v1.txt",
+     "new": "probes/e21_native_window_system_perception_v2.txt",
+     "class": "pin"
+    },
+    {
+     "path": "purpose",
+     "old": {
+      "chars": 739,
+      "sha256": "e6895c3211c5661f104a67a29a70e4bf032f0a7c74931c6c75c8b8e821bbdd43"
+     },
+     "new": {
+      "chars": 566,
+      "sha256": "c9788252e9acb38122ad251320b3d217270aba477cf0efa321e3413d775f9739"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "readiness.reason",
+     "old": {
+      "chars": 320,
+      "sha256": "727f69b6f88c2c5f131df1b2e29be3b3557620b1c7c70e44caefb69ac709d723"
+     },
+     "new": {
+      "chars": 311,
+      "sha256": "335575d94eabb7e9a42bd0ccf4c8fb3449be6b2940b889cdc2dc76b73a04478c"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "stage3_algorithm.id",
+     "old": "<absent>",
+     "new": "none",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "stage3_algorithm.note",
+     "old": "<absent>",
+     "new": {
+      "chars": 379,
+      "sha256": "9dea063bb34683b2d5b0b23d7c72ab1d19aff8785466034cfdbab54fe95c5153"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "stage3_algorithm.operators_used",
+     "old": "<absent>",
+     "new": [],
+     "class": "bookkeeping"
+    },
+    {
+     "path": "what_this_is",
+     "old": {
+      "chars": 1073,
+      "sha256": "d316cf4405b8bbfe1425c800f4dcadda1d9406ae675cd27e20c4ca033a2d0c79"
+     },
+     "new": {
+      "chars": 1083,
+      "sha256": "4d4e1def7191565b2962415d38aacd08a42b902479bad231eba85ef1aebf9825"
+     },
+     "class": "bookkeeping"
+    }
+   ],
+   "episode_config": {
+    "parent": {
+     "finite_completion_scope": "answering-node",
+     "role_completion_caps": {
+      "perception": 640,
+      "reviewer": 640
+     },
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    },
+    "child": {
+     "finite_completion_scope": "answering-node",
+     "role_completion_caps": {
+      "perception": 640,
+      "reviewer": 640
+     },
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    }
+   }
+  },
+  "sub10": {
+   "parent": {
+    "experiment": "e21-native-window-sub10-direct-vs-system-v1",
+    "cell": "e21-native-window-system-sub10-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1",
+    "composed_config_hash_as_committed": "5ad96f131472dbca64d5ef03b8e3feac32b2af2fe244dfa2c50c6cabc60607c2",
+    "protocol_hash_as_committed": "bc7dbaab9ddda427447bf7a4e94f8c1e124617999d5c136dfe036c4ed903616f"
+   },
+   "child": {
+    "experiment": "e21-native-window-sub10-e41-v1",
+    "cell": "e21-native-window-system-sub10-e41-v1",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1"
+   },
+   "differing_leaf_paths": 61,
+   "pins": [
+    {
+     "path": "phase_material.perception.instruction_template",
+     "old": "probes/e21_native_window_system_perception_v1.txt",
+     "new": "probes/e21_native_window_system_perception_v2.txt",
+     "class": "pin"
+    }
+   ],
+   "rows": [
+    {
+     "path": "cells[0].attempt_id",
+     "old": "attempt-e21-native-window-direct-sub10-v1",
+     "new": "attempt-e21-native-window-system-sub10-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].attempt_note",
+     "old": "<absent>",
+     "new": {
+      "chars": 393,
+      "sha256": "965cc13d0f54a907845bf76c1dc84cf676eec32292dd05818b7a1a3cb74632ee"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].baseline_fragment",
+     "old": "e21-native-window-direct-sub10-v1",
+     "new": "e21-native-window-system-sub10-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].cell_id",
+     "old": "e21-native-window-direct-sub10-v1",
+     "new": "e21-native-window-system-sub10-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].execution_plan.planned_gpu_hours",
+     "old": 1.5,
+     "new": 12.0,
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].execution_plan.planned_model_calls",
+     "old": 342,
+     "new": 3762,
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].execution_plan.planned_speech_audio_seconds",
+     "old": 30407,
+     "new": 334477,
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].policy",
+     "old": "phase-direct-only-v1",
+     "new": "phase-native-review-revise-acquire-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.reason",
+     "old": {
+      "chars": 240,
+      "sha256": "bf8bc98f0c0079667bf0c56e4629ee1fda4f775370c3f6daa1005d976fd585ce"
+     },
+     "new": {
+      "chars": 286,
+      "sha256": "62768969307c546a589ed7bbc2e9331e7963e67b71c83d9e051794c989f1a198"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements",
+     "old": "<absent>",
+     "new": [],
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].expected_decision_id",
+     "old": "e21-native-window-flightruntime-e35-admission-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].kind",
+     "old": "decision",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].reason",
+     "old": "Decision e21-native-window-flightruntime-e35-admission-v1 pinned by scripts/flights/repin_cell.py.",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].relpath",
+     "old": "coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.requirements[0].sha256",
+     "old": "bfdfa4b739e79a49a19d14c553f1fd118b08974b61c5965f73271d05fe1ff761",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].readiness.state",
+     "old": "ready",
+     "new": "held",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[0].run_id",
+     "old": "SAEA-E21-NATIVE-WINDOW-DIRECT-SUB10-V1",
+     "new": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].allowed_execution_stages[0]",
+     "old": "check",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].allowed_execution_stages[1]",
+     "old": "worker",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].allowed_execution_stages[2]",
+     "old": "campaign",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].arm",
+     "old": "speech-feature-query",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].attempt_id",
+     "old": "attempt-e21-native-window-system-sub10-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].baseline_fragment",
+     "old": "e21-native-window-system-sub10-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].cell_id",
+     "old": "e21-native-window-system-sub10-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].dataset_fragment",
+     "old": "e21-native-window-sub10-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].execution_plan.planned_gpu_hours",
+     "old": 12.0,
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].execution_plan.planned_model_calls",
+     "old": 3762,
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].execution_plan.planned_speech_audio_seconds",
+     "old": 30407,
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].execution_plan.split_role",
+     "old": "discovery",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].model_fragment",
+     "old": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].policy",
+     "old": "phase-native-review-revise-acquire-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].readiness.reason",
+     "old": {
+      "chars": 240,
+      "sha256": "bf8bc98f0c0079667bf0c56e4629ee1fda4f775370c3f6daa1005d976fd585ce"
+     },
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].readiness.requirements[0].expected_decision_id",
+     "old": "e21-native-window-flightruntime-e35-admission-v1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].readiness.requirements[0].kind",
+     "old": "decision",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].readiness.requirements[0].reason",
+     "old": "Decision e21-native-window-flightruntime-e35-admission-v1 pinned by scripts/flights/repin_cell.py.",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].readiness.requirements[0].relpath",
+     "old": "coordination/e21-native-window-flightruntime-e35-v1/root-admission-v1.json",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].readiness.requirements[0].sha256",
+     "old": "bfdfa4b739e79a49a19d14c553f1fd118b08974b61c5965f73271d05fe1ff761",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].readiness.state",
+     "old": "ready",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "cells[1].run_id",
+     "old": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1",
+     "new": "<absent>",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "date",
+     "old": "2026-09-22",
+     "new": "2026-09-27",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "execution_plan.planned_gpu_hours",
+     "old": 13.5,
+     "new": 12.0,
+     "class": "bookkeeping"
+    },
+    {
+     "path": "execution_plan.planned_model_calls",
+     "old": 4104,
+     "new": 3762,
+     "class": "bookkeeping"
+    },
+    {
+     "path": "execution_plan.planned_speech_audio_seconds",
+     "old": 364884,
+     "new": 334477,
+     "class": "bookkeeping"
+    },
+    {
+     "path": "execution_plan_note",
+     "old": {
+      "chars": 382,
+      "sha256": "56f7628b2f05c50217b7b94ddd952c57e0bf67d6bd1e5c6d88d00a9a0a85daec"
+     },
+     "new": {
+      "chars": 469,
+      "sha256": "784a82b2a65d783356d8cb1a7aae9caba78846131f59a8f6a5086c39f3bad903"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "experiment_id",
+     "old": "SAEA-E21-NATIVE-WINDOW-SUB10-DIRECT-VS-SYSTEM-V1",
+     "new": "SAEA-E21-NATIVE-WINDOW-SUB10-E41-V1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "native_contact_fit.attempt_id",
+     "old": "attempt-e21-native-window-system-sub10-v1-fit",
+     "new": "attempt-e21-native-window-system-sub10-e41-v1-fit",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "native_contact_fit.run_id",
+     "old": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-V1-FIT",
+     "new": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-FIT-V1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "native_episode.episode_id",
+     "old": "e21-native-window-system-sub10-v1",
+     "new": "e21-native-window-system-sub10-e41-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "native_episode.finite_completion_scope",
+     "old": "<absent>",
+     "new": "answering-node",
+     "class": "base-lock-v3.1"
+    },
+    {
+     "path": "native_episode.roles.perception.max_completion_tokens",
+     "old": "<absent>",
+     "new": 640,
+     "class": "base-lock-v3.1"
+    },
+    {
+     "path": "native_episode.roles.reviewer.max_completion_tokens",
+     "old": "<absent>",
+     "new": 640,
+     "class": "base-lock-v3.1"
+    },
+    {
+     "path": "phase_material.perception.instruction_template",
+     "old": "probes/e21_native_window_system_perception_v1.txt",
+     "new": "probes/e21_native_window_system_perception_v2.txt",
+     "class": "pin"
+    },
+    {
+     "path": "phase_material.reviewer.instruction_template",
+     "old": "probes/e21_native_window_system_reviewer_v1.txt",
+     "new": "probes/e21_native_window_system_reviewer_v2.txt",
+     "class": "base-lock-v3.1"
+    },
+    {
+     "path": "purpose",
+     "old": {
+      "chars": 710,
+      "sha256": "e55b8573ceac8fdf09faff52c29dda6e28fd82ff7eb40539372236b82eec487a"
+     },
+     "new": {
+      "chars": 647,
+      "sha256": "ead88d48d7d077c4ff33c16f7a9c3c4c1c81fb187a16a3cb33235dfd70615042"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "readiness.reason",
+     "old": "<absent>",
+     "new": {
+      "chars": 304,
+      "sha256": "d318538df2b94efb5cfe148ff1f33e1df712a0d0ffe99573604fd812a7741788"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "readiness.state",
+     "old": "<absent>",
+     "new": "held",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "service_session",
+     "old": "<absent>",
+     "new": "serving-e21-native-window-flightruntime-np4-max1024-v1",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "stage3_algorithm.id",
+     "old": "<absent>",
+     "new": "none",
+     "class": "bookkeeping"
+    },
+    {
+     "path": "stage3_algorithm.note",
+     "old": "<absent>",
+     "new": {
+      "chars": 379,
+      "sha256": "9dea063bb34683b2d5b0b23d7c72ab1d19aff8785466034cfdbab54fe95c5153"
+     },
+     "class": "bookkeeping"
+    },
+    {
+     "path": "stage3_algorithm.operators_used",
+     "old": "<absent>",
+     "new": [],
+     "class": "bookkeeping"
+    },
+    {
+     "path": "what_this_is",
+     "old": {
+      "chars": 1057,
+      "sha256": "2255d2683e701338aab2b1e8a8838c37df1a38b11a85de596ae0e8e8ed8bdb48"
+     },
+     "new": {
+      "chars": 1080,
+      "sha256": "cf06272ef11cebbaab8de8dd35e99285d8a463b1f0e26f2617852767bb58592f"
+     },
+     "class": "bookkeeping"
+    }
+   ],
+   "episode_config": {
+    "parent": {
+     "finite_completion_scope": "episode",
+     "role_completion_caps": {},
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    },
+    "child": {
+     "finite_completion_scope": "answering-node",
+     "role_completion_caps": {
+      "perception": 640,
+      "reviewer": 640
+     },
+     "finite_completion_policy": "deliver-latest-or-abstain",
+     "react_exhaustion_policy": "continue-without-answer",
+     "max_contacts": 11
+    }
+   }
+  }
+ }
+}

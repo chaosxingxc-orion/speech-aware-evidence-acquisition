@@ -1,0 +1,91 @@
+{
+  "_draft_note": "A DRAFT written by the registration agent for root to mint on the data root with scripts/flights/e41/e41_mint_receipt.py --which dry-run, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided'.",
+  "schema": "saea-campaign-decision-v1",
+  "decision_id": "e21-native-window-e41-dry-run-admission-v1",
+  "status": "DRAFT-NOT-MINTED",
+  "recorded_at_utc": null,
+  "owner": "root",
+  "coordinator": "Fable5.1",
+  "eligible_run_ids": [
+    "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1",
+    "SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-E41-V1-FIT-V1"
+  ],
+  "cell_kind": "Stage-2 engineering-base item E41, the four-row dry run: the Earnings21 + ConEC system form at base lock v3.1 with the bounded Perception note; label none (decision 101); form-proof, claims_benefit false",
+  "decision": "Admit E41 the four-row dry run: the base lock v3.1 Earnings system form with one pin moved (phase_material.perception.instruction_template probes/e21_native_window_system_perception_v1.txt -> probes/e21_native_window_system_perception_v2.txt). Receipts only (R1-R3; R3 = Perception truncation rate, target zero).",
+  "authorization_basis": "Owner decisions 103 and 158; 89 / 91 / 92 / 98; decision 77 (flights only through the batch driver); base lock v3.1.",
+  "antecedents": {
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-e21-native-window-e41-v1-preregistration.md",
+      "sha256": null
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-e21-native-window-e41-v1/README.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-e21-native-window-e41-v1/protocol-registered-v1.json",
+      "sha256": "6a6a3161c190dd2a896b008b8935449eeeb8e28f44b3b3931cd3cae8452436e3"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-e21-native-window-e41-v1/registered-facts-v1.json",
+      "sha256": "b732df9e0ce95a3977e06deb6d44d3f6f8535573eeb20c5db3b28adaa00cfa1b"
+    },
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-e21-native-window-e41-v1/dry-run-analysis-recipe-v1.json",
+      "sha256": "5c1991a25784276ae4cfa81c7f9670c07d9e82dbcf895a509d8d541991b02614"
+    },
+    "perception_trace_read": {
+      "path": "docs/readiness/2026-09-27-e21-native-window-e41-v1/perception-trace-read-v1.json",
+      "sha256": "76144236860eadf3edc4b37f19d3876a112d8f9252e5ef050d5d56f87626c0cd"
+    },
+    "token_measurement": {
+      "path": "docs/readiness/2026-09-27-e21-native-window-e41-v1/instruction-token-measurement-v1.json",
+      "sha256": "ba8b927a89fbcc48fd07dea7c42e40eb175d3d150f6f3243258d8d85ebed3bc7"
+    },
+    "bounded_instruction": {
+      "path": "configs/probes/e21_native_window_system_perception_v2.txt",
+      "sha256": "dbc2e691e21f59dff33657e1691259815c1afce3f305d1bb6712bfee93b15bfa"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": null
+    },
+    "e39b_read": {
+      "path": "docs/results/2026-09-23-e21-native-window-e39b-four-row-dry-run-read.md",
+      "sha256": null
+    },
+    "e35_read": {
+      "path": "docs/results/2026-09-22-e21-native-window-flightruntime-e35-read.md",
+      "sha256": null
+    },
+    "registration_base_commit": "a50a0d1c"
+  },
+  "service": {
+    "expected_session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1",
+    "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+    "slots": 4,
+    "slot_tokens": 24576,
+    "max_tokens": 1024,
+    "no_child_start_stop": true,
+    "note": "the E21 geometry runs under the Windows Scheduled Task SAEA-Serving-E21 while this cell flies; the SLURP session is stopped for the duration and restarted afterwards (decision 91)"
+  },
+  "budget": {
+    "arm": {
+      "generation_calls_cap": 44,
+      "fit_endpoint_calls_cap": 176,
+      "repeated_speech_audio_seconds_cap": 3960,
+      "gpu_hours_fit_inclusive_cap": 0.5,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_score_jobs": 1
+    }
+  },
+  "claim_boundary": "No effectiveness, superiority or generalization claim; form-proof (claims_benefit false).",
+  "failure_policy": "Stop and preserve on the first failure; one root-diagnosed recovery re-registration at most; the dry run flies first and the sub10 re-read only after its receipts read holds.",
+  "not_authorized": [
+    "any ASR, transcript, encoder or paid-API contact",
+    "any test-split or Earnings22 contact",
+    "re-flying or re-scoring a sealed arm",
+    "any Earnings optimisation cell",
+    "any change beyond the one pin"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+ "boundary": "No utterance, transcript, reference, gold or model output text is printed or persisted: the receipt holds counts, rates, ids and hashes; synthetic note text is held in memory for the counts and dropped.",
+ "completion_side_bound": {
+  "bound": {
+   "max_lines": 5,
+   "max_quoted_words_per_reading": 4,
+   "max_words_per_line": 20,
+   "readings_per_line": 2
+  },
+  "cap": 640,
+  "note": "the digit-dense worst case fills every reading with four 12-character numerals (one token per digit or separator on this vocabulary); a note that obeys the v2 form cannot exceed the cap, so any length-truncated contact under v2 is a NON-compliant note by construction, which the dry run's R3 counts",
+  "ratio_bound_derivation": "5 lines x 20 words x 2.7162 tokens per whitespace word (the MAXIMUM observed over every sealed Perception note of this carrier)",
+  "ratio_bound_tokens": 271.6,
+  "synthetic_compliant_notes": {
+   "digit_dense_worst_case_compliant_note": {
+    "lines": 5,
+    "max_words_per_line": 14,
+    "sha256": "43acf10e6ce2418a8d24fb164f5abd9f41e02cd19909405f10cf28b3e764af81",
+    "tokens": 574
+   },
+   "typical_compliant_note": {
+    "lines": 5,
+    "max_words_per_line": 11,
+    "sha256": "8eb08843ac5dfa73ab187a9a66247bd4f240494d7d9c9cf9f04348d0fc9e0fba",
+    "tokens": 75
+   }
+  },
+  "worst_case_headroom_tokens": 66
+ },
+ "contacts": {
+  "embedder": 0,
+  "encoder": 0,
+  "gpu": 0,
+  "model": 0,
+  "network": 0,
+  "paid_api": 0,
+  "scorer": 0,
+  "server": 0,
+  "tokenizer_process_vocab_only": 6
+ },
+ "instruction_files": {
+  "new": {
+   "bytes": 754,
+   "relpath": "configs/probes/e21_native_window_system_perception_v2.txt",
+   "sha256": "dbc2e691e21f59dff33657e1691259815c1afce3f305d1bb6712bfee93b15bfa"
+  },
+  "old": {
+   "bytes": 410,
+   "relpath": "configs/probes/e21_native_window_system_perception_v1.txt",
+   "sha256": "a1a46c22e1fdf6b87450d9eefb97a869f47e83d3ba4f8b2a2cb1e17cf8f19581"
+  }
+ },
+ "item": "E41 (owner decisions 103, 158)",
+ "limits_object_sha256": "ebb01af3cdfe4943110fb6f5d77e373e658ab5f57b71d4e60d20d4395877b19a",
+ "measured_at_utc": "2026-09-27T11:34:46.098264+00:00",
+ "prompt_side_delta_per_flight": {
+  "four_row_dry_run": 392,
+  "note": "one Perception contact per window (role_max_iterations 1); the instruction is sent once, as the last text part of that contact's user turn",
+  "sub10_re_read": 33516
+ },
+ "prompt_side_delta_per_perception_contact": 98,
+ "prompt_side_tokens": {
+  "new_as_wire_user_turn": 243,
+  "new_instruction": 173,
+  "old_as_wire_user_turn": 145,
+  "old_instruction": 75
+ },
+ "schema": "saea-e41-instruction-token-measurement-v1",
+ "tokenizer": {
+  "argv_shape": "-m <gguf> -f <file> --no-bos --no-escape --show-count --log-disable --ids",
+  "binary": "/home/chao/llama.cpp/build/bin/llama-tokenize",
+  "invocations": 6,
+  "mode": "vocab-only local process: no server, no port, no GPU",
+  "model_relpath": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+ }
+}
