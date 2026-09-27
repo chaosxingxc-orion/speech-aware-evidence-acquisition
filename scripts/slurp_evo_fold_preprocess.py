@@ -129,6 +129,15 @@ into the ``--output`` report.
   ``docs/receipts/owner/2026-09-23-slurp-test-split-allowance-v1.json`` says
   ``pending-owner``. The refusal is raised BEFORE the data root is opened, so
   not one test media file is read while the allowance is pending.
+- ``test-sample-3010`` -- the SLURP test SAMPLE ``SLURP-TEST-SAMPLE-3010-V1``
+  (``slurp:test:...`` rows, ``split_role="final-report"``, 3,010 rows /
+  8,206.436875 speech seconds), preparation 1 of 3 of the sample. Its pinned
+  allowance ``docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json``
+  says ``authorised`` (owner decision 151), and owner decision 156 lets the
+  three label-free preparations run ahead of the milestone gate. The allowance
+  check above still runs in every mode; the exposure row's root
+  countersignature is checked by ``scripts/flights/testsample/prep_test_sample.sh``
+  before this driver is launched.
 
 Modes::
 
@@ -143,6 +152,7 @@ Modes::
     python scripts/slurp_evo_fold_preprocess.py --roster devel-remainder-np8-equivalence-4 --run
     python scripts/slurp_evo_fold_preprocess.py --roster devel-remainder --run --workers 8
     python scripts/slurp_evo_fold_preprocess.py --roster test-full --preflight-only  # refuses
+    python scripts/slurp_evo_fold_preprocess.py --roster test-sample-3010 --run  # via prep_test_sample.sh
 """
 
 from __future__ import annotations
@@ -416,6 +426,22 @@ PREPROCESS_ROSTERS: dict[str, RosterSpec] = {
         promotion_receipt_name="TEST-FULL-promotion.json",
         default_attempt_id="attempt-packets-test-full-v1",
         plan_calls=13078, plan_speech_seconds=36912, plan_gpu_hours=1.0,
+    ),
+    # Owner decisions 151 and 156 (2026-09-27): preparation 1 of 3 of the test
+    # SAMPLE SLURP-TEST-SAMPLE-3010-V1, the label-free restriction of the FULL
+    # roster above to the sample's 3,010 ids. 3,010 rows / 8,206.436875 audio
+    # seconds (declared 8,207 = the ceiling) / 1.0 declared GPU hours against
+    # 0.0 consumed (-ngl 0 --no-mmproj-offload). Its allowance is authorised;
+    # the countersignature of its exposure row is what gates the launch.
+    "test-sample-3010": RosterSpec(
+        run_id="SAEA-SN-TEST-SAMPLE-3010-PREPROCESS",
+        dataset_fragment="slurp-speech-native-test-sample-3010",
+        experiment_fragment="slurp-test-sample-3010-preprocess",
+        sample_id_prefix="slurp:test:",
+        split_role=FINAL_REPORT_SPLIT_ROLE,
+        promotion_receipt_name="TEST-SAMPLE-3010-promotion.json",
+        default_attempt_id="attempt-packets-test-sample-3010-v1",
+        plan_calls=3010, plan_speech_seconds=8207, plan_gpu_hours=1.0,
     ),
 }
 

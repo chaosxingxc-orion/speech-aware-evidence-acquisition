@@ -76,7 +76,8 @@ def test_the_roster_is_appended_at_the_end_of_the_table() -> None:
     """Appended, never inserted: the order is the registration order."""
 
     keys = list(module.PREPROCESS_ROSTERS)
-    assert keys[-1] == ROSTER_KEY
+    # ``test-sample-3010`` (owner decisions 151 and 156, 2026-09-27) was appended
+    # after this roster; everything up to and including this roster is unmoved.
     assert keys == [
         "fold-a",
         "fold-b",
@@ -86,6 +87,7 @@ def test_the_roster_is_appended_at_the_end_of_the_table() -> None:
         "devel-remainder",
         "devel-remainder-np8-equivalence-4",
         ROSTER_KEY,
+        "test-sample-3010",
     ]
     # The union receipt still covers the two TRAIN folds only.
     assert module.FOLD_ROSTER_KEYS == ("fold-a", "fold-b")
@@ -111,14 +113,17 @@ def test_no_other_roster_moved_or_grew_an_allowance() -> None:
     """A Stage-2 roster that declared an allowance would be refused by
     ``ExecutionPlan.validate``; none does, and none changed its role."""
 
+    # The test SAMPLE roster is final-report by design and pins its OWN
+    # allowance; tests/unit/test_slurp_test_sample_preparations.py covers it.
+    final_report = {ROSTER_KEY, "test-sample-3010"}
     roles = {
         key: spec.split_role
         for key, spec in module.PREPROCESS_ROSTERS.items()
-        if key != ROSTER_KEY
+        if key not in final_report
     }
     assert set(roles.values()) == {"discovery", "dev"}
     for key, spec in module.PREPROCESS_ROSTERS.items():
-        if key == ROSTER_KEY:
+        if key in final_report:
             continue
         values = module.compose(
             module.REPO,

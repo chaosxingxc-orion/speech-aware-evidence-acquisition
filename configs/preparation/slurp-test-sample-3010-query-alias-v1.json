@@ -1,0 +1,32 @@
+{
+  "expected_rows": 3010,
+  "how_to_fill": "TEMPLATE, not directly loadable: strip this key and replace PENDING_STEP_2B_QUERIES_SHA256 with the step-2b receipt's query_rows_sha256 and PENDING_STEP_2B_RECEIPT_SHA256 with the raw sha256 of that receipt.json, then pass the materialised copy to core.preparation_vectors, whose config contract accepts exactly the other eight keys. scripts/flights/batch/prep_generic_steps.materialise_alias_config performs exactly that transform and is roster-agnostic; scripts/flights/testsample/prep_test_sample_steps.py calls it unchanged. The committed bytes here stay a template and are never edited in place.",
+  "output_relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
+  "receipt_relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-ALIAS-V1/query-dimension-alias.json",
+  "schema": "saea-sealed-segment-vector-dimension-alias-v1",
+  "source": {
+    "dimension": "content",
+    "kind": "sealed-segment-vectors",
+    "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+    "sha256": "PENDING_STEP_2B_QUERIES_SHA256"
+  },
+  "source_receipts": [
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "PENDING_STEP_2B_RECEIPT_SHA256"
+    },
+    {
+      "relpath": "configs/dataset/slurp-speech-native-test-sample-3010.json",
+      "root": "repository",
+      "sha256": "854cad007729a2211b2b076d0dfcd6aec90bb00c29bf91594360b8f7df215a4f"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+      "root": "repository",
+      "sha256": "48d9fb336ce99ad1725bf5ca0f74687d37711d685fa9fb4f594b2f1d88344e6d"
+    }
+  ],
+  "target_dimension": "intent-boundary",
+  "vector_width": 2048
+}
