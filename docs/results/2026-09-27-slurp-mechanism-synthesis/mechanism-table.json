@@ -1,0 +1,1990 @@
+{
+  "schema": "saea-slurp-mechanism-table-v1",
+  "note": "Model-free transcription of sealed SLURP reads, 2026-09-27 (owner decision 163, analysis track). Every value is copied from the rows' source paths; Wilson intervals and chain differences are arithmetic on those values. Development numbers only (owner decisions 28 and 86); never a test claim. No utterance text, gold string or model output is carried.",
+  "companion": "docs/results/2026-09-27-slurp-mechanism-synthesis.md",
+  "families": {
+    "KC": "KNOWLEDGE CONTENT supplied",
+    "KR": "KNOWLEDGE RETRIEVAL / KEY",
+    "CF": "CONSUMPTION FORM",
+    "NP": "NODE PROGRAM / CONTROL",
+    "SA": "SAMPLING / AGGREGATION / SELECTION",
+    "TF": "TF-RL LEARNED DELTAS",
+    "EN": "ENGINEERING (delivery, rendering, serving, repair)",
+    "OB": "OBSERVATION (media / transcript supply)",
+    "SY": "WHOLE SYSTEM vs DIRECT (composite)",
+    "IN": "INSTRUMENT (null / A-A / probe)"
+  },
+  "instrument_flags": {
+    "ok": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+    "cons": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+    "RR-harm": "RE-READ: 'HARMFUL' by interval width against a sealed cross-flight comparator with no in-chain A/A -> 'not distinguishable from flight variance'",
+    "RR-gain": "RE-READ: a gain claim whose size is inside the cross-flight band (bar ~2.5 pp at n 1,080, ~3 pp at n 500-625) with no in-chain A/A -> direction only",
+    "RR-part": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+    "corr": "already corrected by the instrument note section 4",
+    "n/a": "no effectiveness contrast (instrument, probe, structural or engineering closure)"
+  },
+  "sources": {
+    "LED": "docs/results/stage2-results-ledger.md",
+    "DEC": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "INS": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "CLB": "docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-verdict.md",
+    "PRJ": "docs/readiness/2026-09-06-slurp-legal-label-projection-v2-verdict.md",
+    "KCS": "docs/readiness/2026-09-05-slurp-slot-stage-kc-s1-v1-verdict.md",
+    "KU1": "docs/readiness/2026-09-05-slurp-consumption-ku-s1-v1-verdict.md",
+    "EVO": "docs/readiness/2026-09-06-slurp-evo-s1-round-1-verdict.md",
+    "T2S": "docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md",
+    "NUL": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
+    "LGP": "docs/readiness/2026-09-09-slurp-logprob-judge-probe-v1-verdict.md",
+    "KV": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+    "KU3": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/README.md",
+    "KU4": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s4n-g2-readout/decision.json",
+    "G6": "docs/readiness/2026-09-10-slurp-live-intent-slots-result.md",
+    "PMF": "docs/readiness/2026-09-11-slurp-program-matched-result.md",
+    "DSV": "docs/readiness/2026-09-11-slurp-discriminative-values-result.md",
+    "TAR": "docs/readiness/2026-09-11-slurp-task-agent-replication-result.md",
+    "RCV": "docs/readiness/2026-09-11-slurp-role-coverage-result.md",
+    "WHS": "docs/readiness/2026-09-12-slurp-fixed-whisper-result-v1.md",
+    "NAT": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md",
+    "DSR": "docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md",
+    "ANC": "docs/results/2026-09-14-slurp-native-train-a-anchor.md",
+    "DIR": "docs/results/2026-09-17-slurp-train-a-direct-anchor-release.md",
+    "C5": "docs/results/2026-09-16-slurp-candidate-five-train-a.md",
+    "BFK": "docs/results/2026-09-16-slurp-broad-factored-train-a.md",
+    "TTS": "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md",
+    "B0": "docs/results/2026-09-17-slurp-b0-review-off-verdict.md",
+    "B0R": "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
+    "B4B": "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md",
+    "B4BR": "docs/results/2026-09-19-slurp-b4b-replicate-verdict.md",
+    "B1": "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md",
+    "B1T": "docs/results/2026-09-18-slurp-b1-twin-verdict.md",
+    "B1R": "docs/results/2026-09-19-slurp-b1-replicate-verdict.md",
+    "M1C": "docs/results/2026-09-19-slurp-m1-exemplar-compression-analysis-v1.md",
+    "B5E": "docs/results/2026-09-18-slurp-b5e-combination-verdict.md",
+    "B5A": "docs/results/2026-09-18-slurp-b5e-combination-verdict-addendum-decision-25.md",
+    "B2": "docs/results/2026-09-19-slurp-b2-samples5-verdict.md",
+    "B8A": "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md",
+    "A1": "docs/results/2026-09-17-slurp-a1-use-projection-audit-v1.md",
+    "B7A": "docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md",
+    "B4A": "docs/results/2026-09-19-slurp-b4a-fallback-quirky-anchor-v2-verdict.md",
+    "EFF": "docs/results/2026-09-19-slurp-eff1-tool-constant-verdict.md",
+    "B8B": "docs/results/2026-09-19-slurp-b8b-anchor-reviewer-audit-verdict.md",
+    "B1N": "docs/results/2026-09-20-slurp-b1-notool-verdict.md",
+    "IDX": "docs/results/2026-09-21-slurp-idx-knowledge-index-verdict.md",
+    "IDT": "docs/results/2026-09-21-slurp-idxt-knowledge-index-twin-verdict.md",
+    "PLN": "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md",
+    "PLR": "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md",
+    "LCK": "docs/results/2026-09-22-slurp-v2-lock-v1.md",
+    "B9A": "docs/results/2026-09-22-slurp-b9a-rec-acquisition-node-verdict.md",
+    "B6": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md",
+    "RPM": "docs/results/2026-09-22-slurp-review-primitives-verdict.md",
+    "P1": "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md",
+    "P0": "docs/results/2026-09-23-slurp-prune-review-off-verdict.md",
+    "ADV": "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md",
+    "CL1": "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+    "CL2": "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md",
+    "GEP": "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md",
+    "CL3": "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md",
+    "CL3D": "docs/results/2026-09-24-slurp-cell3-fresh-roster-loss-diagnostic.md",
+    "GEN": "docs/results/2026-09-24-slurp-general-scenario-diagnostic.md",
+    "RAA": "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md",
+    "AGG": "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md",
+    "BNK": "docs/results/2026-09-24-slurp-plan-bad-case-bank.md",
+    "VR1": "docs/results/2026-09-25-slurp-var1-complete-evidence.md",
+    "VR2": "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md",
+    "VFY": "docs/results/2026-09-25-slurp-verify1-complete-evidence.md",
+    "F10": "docs/results/2026-09-25-slurp-f10-complete-verdict.md",
+    "EVP": "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md",
+    "CSD": "docs/results/2026-09-25-slurp-candidate-support-diagnostic.md",
+    "TRJ": "docs/results/2026-09-25-slurp-system-trajectory-attribution.md",
+    "REQ": "docs/results/2026-09-25-slurp-system-acquisition-requery.md",
+    "DSA": "docs/results/2026-09-25-slurp-system-decision-state-audit.md",
+    "GRP": "docs/results/2026-09-25-slurp-system-group-feedback.md",
+    "COM": "branch fable/commit (71bf3b0f): docs/results/2026-09-26-slurp-combined-commit-offline-read.md",
+    "IED": "docs/results/2026-09-26-slurp-intent-error-decomposition.md",
+    "ILC": "docs/results/2026-09-26-slurp-intent-label-ceiling-audit.md",
+    "IRR": "docs/results/2026-09-26-slurp-intent-retrieval-rank-diagnostic.md",
+    "KBP": "docs/results/2026-09-26-slurp-knowledge-base-pruning-measurement.md",
+    "KCF": "docs/results/2026-09-26-slurp-knowledge-coverage-and-failure-mode-attribution.md",
+    "GPS": "docs/results/2026-09-26-slurp-gold-position-and-solver-freedom-read.md",
+    "RPG": "docs/results/2026-09-26-slurp-reviewer-planner-global-state-audit.md",
+    "DDP": "docs/results/2026-09-26-slurp-supply-dedup-and-rerank-measurement.md",
+    "TSY": "docs/results/2026-09-26-slurp-train-synthetic-efficient-use-analysis.md",
+    "MEM": "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md",
+    "MEV": "docs/results/2026-09-26-system-event-credit001-verdict.md",
+    "BKC": "docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md",
+    "CNV": "docs/results/2026-09-27-slurp-conv-probe-read.md",
+    "DET": "docs/results/2026-09-27-slurp-det-np1-pair-read.md",
+    "RL3": "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md",
+    "TPT": "docs/results/2026-09-27-slurp-throughput-baseline-and-levers.md",
+    "AGR": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
+    "CMP": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md",
+    "KPB": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md (expected_effect_declaration: KPROBE 24 of 55)",
+    "CMR": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/README.md",
+    "HND": "docs/handoff/HANDOFF-TO-CHATGPT.md",
+    "G5": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1-preregistration.md"
+  },
+  "rows": [
+    {
+      "id": "A1",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "SLURP-CL-BASE",
+      "family_codes": [
+        "CF",
+        "KC"
+      ],
+      "family": "CONSUMPTION FORM + KNOWLEDGE CONTENT supplied",
+      "what_changed": "the legal label inventory placed in the direct prompt (closed list)",
+      "roster": "DEV-1000 (1,000)",
+      "comparator_and_null": "sealed M0 arm; no null yet",
+      "delta_intent_pp": "+17.80 [+15.70, +19.90]",
+      "delta_slu_f1_pp": "-1.10 pooled; per-row slot -1.70 [-2.94, -0.48]",
+      "interval": "CI90",
+      "verdict_as_recorded": "BASELINE LOCKED",
+      "replication": "byte-for-byte re-flight = own null (A8)",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/readiness/2026-09-05-slurp-closed-list-direct-baseline-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "CLB",
+        "LED"
+      ]
+    },
+    {
+      "id": "A2",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "SLURP-PROJ-V2",
+      "family_codes": [
+        "EN"
+      ],
+      "family": "ENGINEERING (delivery, rendering, serving, repair)",
+      "what_changed": "deterministic legal-label projection of the sealed answers (offline)",
+      "roster": "DEV-1000",
+      "comparator_and_null": "v1 projection, same sealed outputs",
+      "delta_intent_pp": "+1.50 [+1.0, +2.1]",
+      "delta_slu_f1_pp": "0.00 by construction",
+      "interval": "CI90",
+      "verdict_as_recorded": "RE-LOCKED (a repair: 15 saves / 0 harms, one stratum)",
+      "replication": "offline",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/readiness/2026-09-06-slurp-legal-label-projection-v2-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "PRJ",
+        "LED"
+      ]
+    },
+    {
+      "id": "A3",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KC-S1b",
+      "family_codes": [
+        "KC"
+      ],
+      "family": "KNOWLEDGE CONTENT supplied",
+      "what_changed": "per-intent TRAIN slot schema on a separate slot contact",
+      "roster": "DEV-1000; NEW500 per-row",
+      "comparator_and_null": "closed-list baseline; KC-S1a equal-contact control",
+      "delta_intent_pp": "0.00 by construction",
+      "delta_slu_f1_pp": "pooled 35.80 -> 44.35 (+8.55); NEW500 per-row +10.11 [+8.11, +12.19]; vs KC-S1a +10.02 [+8.01, +12.10]",
+      "interval": "CI90",
+      "verdict_as_recorded": "ADMITTED",
+      "replication": "numerically reproduced, not re-flown",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/readiness/2026-09-05-slurp-slot-stage-kc-s1-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KCS",
+        "LED"
+      ]
+    },
+    {
+      "id": "A4",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KC-S1a",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "a second slot-only contact, no schema (equal-contact control)",
+      "roster": "DEV-1000 NEW500",
+      "comparator_and_null": "closed-list baseline",
+      "delta_intent_pp": "0.00 by construction",
+      "delta_slu_f1_pp": "per-row +0.09 [-0.20, +0.38]",
+      "interval": "CI90",
+      "verdict_as_recorded": "NULL",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/readiness/2026-09-05-slurp-slot-stage-kc-s1-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KCS",
+        "LED"
+      ]
+    },
+    {
+      "id": "A5",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KU-S1c",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "two-contact draft-revise program, no knowledge",
+      "roster": "DEV-1000",
+      "comparator_and_null": "closed-list baseline",
+      "delta_intent_pp": "+1.50 [+0.30, +2.70] (revise contact alone +0.30 [-0.40, +1.00])",
+      "delta_slu_f1_pp": "+0.12",
+      "interval": "CI90",
+      "verdict_as_recorded": "REPORTED (control, no gate)",
+      "replication": "-",
+      "instrument_flag": "RR-gain",
+      "instrument_flag_meaning": "RE-READ: a gain claim whose size is inside the cross-flight band (bar ~2.5 pp at n 1,080, ~3 pp at n 500-625) with no in-chain A/A -> direction only",
+      "sources": [
+        "docs/readiness/2026-09-05-slurp-consumption-ku-s1-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KU1",
+        "LED"
+      ]
+    },
+    {
+      "id": "A6",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "EVO-S1 round 1",
+      "family_codes": [
+        "TF"
+      ],
+      "family": "TF-RL LEARNED DELTAS",
+      "what_changed": "slot-schema evolution loop (propose, fold A select, fold B confirm)",
+      "roster": "TRAIN folds (120 targeted rows)",
+      "comparator_and_null": "incumbent A_0 through the same harness",
+      "delta_intent_pp": "-",
+      "delta_slu_f1_pp": "targeted +2.50 [-0.000, +5.417]",
+      "interval": "CI90",
+      "verdict_as_recorded": "REJECT (lower bound exactly 0); 28.1 % of byte-identical requests returned different text",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/readiness/2026-09-06-slurp-evo-s1-round-1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "EVO",
+        "LED"
+      ]
+    },
+    {
+      "id": "A7",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "TAIL2S",
+      "family_codes": [
+        "OB"
+      ],
+      "family": "OBSERVATION (media / transcript supply)",
+      "what_changed": "2.0 s silence appended to the delivered clip",
+      "roster": "DEV-1000",
+      "comparator_and_null": "re-locked closed-list comparator; imported +-0.60, then own null",
+      "delta_intent_pp": "+1.30 [+0.19, +2.43]",
+      "delta_slu_f1_pp": "non-inferior (LB +0.15)",
+      "interval": "CI90",
+      "verdict_as_recorded": "NOT ADMITTED (harness HARMFUL: 5 of 18 scenarios lose)",
+      "replication": "-",
+      "instrument_flag": "RR-gain",
+      "instrument_flag_meaning": "RE-READ: a gain claim whose size is inside the cross-flight band (bar ~2.5 pp at n 1,080, ~3 pp at n 500-625) with no in-chain A/A -> direction only",
+      "sources": [
+        "docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "T2S",
+        "LED"
+      ]
+    },
+    {
+      "id": "A8",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "SLURP-NULL",
+      "family_codes": [
+        "IN"
+      ],
+      "family": "INSTRUMENT (null / A-A / probe)",
+      "what_changed": "byte-identical re-flight of the comparator",
+      "roster": "DEV-1000",
+      "comparator_and_null": "itself",
+      "delta_intent_pp": "+0.50 [-0.40, +1.43]",
+      "delta_slu_f1_pp": "+0.29 [-0.91, +1.45]",
+      "interval": "CI90",
+      "verdict_as_recorded": "NONE (instrument): 11 of 11 metrics moved up under a pure null",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "NUL",
+        "LED"
+      ]
+    },
+    {
+      "id": "A9",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "SLURP-LOGPROB",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "decode-confidence (min token logprob) as an error judge",
+      "roster": "DEV-1000",
+      "comparator_and_null": "fixed AUROC / precision bars",
+      "delta_intent_pp": "AUROC 0.6935 [0.6660, 0.7202]; precision@86 51.16 % vs bar 72.09 %",
+      "delta_slu_f1_pp": "-",
+      "interval": "CI90",
+      "verdict_as_recorded": "NOT ADMITTED; loses to the free legality judge",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/readiness/2026-09-09-slurp-logprob-judge-probe-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "LGP",
+        "LED"
+      ]
+    },
+    {
+      "id": "A10",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KV-0",
+      "family_codes": [
+        "CF"
+      ],
+      "family": "CONSUMPTION FORM",
+      "what_changed": "the five examples removed from the KC-S1b slot schema",
+      "roster": "DEV-1000",
+      "comparator_and_null": "KC-S1b",
+      "delta_intent_pp": "0 by construction",
+      "delta_slu_f1_pp": "official micro 41.75 (KC-S1b 44.35)",
+      "interval": "-",
+      "verdict_as_recorded": "HARMFUL (family report: keep the example-bearing base)",
+      "replication": "-",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KV",
+        "LED"
+      ]
+    },
+    {
+      "id": "A11",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KV-2 (+twin)",
+      "family_codes": [
+        "KC"
+      ],
+      "family": "KNOWLEDGE CONTENT supplied",
+      "what_changed": "TRAIN vocabulary cards in the slot contact",
+      "roster": "DEV-1000 NEW500 per-row",
+      "comparator_and_null": "KV-0 and a form twin",
+      "delta_intent_pp": "0 by construction",
+      "delta_slu_f1_pp": "vs KV-0 +7.16 [+5.24, +9.12]; vs twin +1.71 [+0.13, +3.27]; rotating stratum -1.38",
+      "interval": "CI90",
+      "verdict_as_recorded": "NOT ADMITTED (twin gate)",
+      "replication": "-",
+      "instrument_flag": "RR-part",
+      "instrument_flag_meaning": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+      "sources": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KV",
+        "LED"
+      ]
+    },
+    {
+      "id": "A12",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KV-1 (+twin)",
+      "family_codes": [
+        "KC"
+      ],
+      "family": "KNOWLEDGE CONTENT supplied",
+      "what_changed": "TRAIN-derived slot type descriptions",
+      "roster": "DEV-1000 NEW500 per-row",
+      "comparator_and_null": "KV-0 and a form twin",
+      "delta_intent_pp": "0 by construction",
+      "delta_slu_f1_pp": "vs KV-0 -0.87 [-2.12, +0.31]",
+      "interval": "CI90",
+      "verdict_as_recorded": "NULL_COMPATIBLE",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KV",
+        "LED"
+      ]
+    },
+    {
+      "id": "A13",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KV-3 (+twin)",
+      "family_codes": [
+        "KC"
+      ],
+      "family": "KNOWLEDGE CONTENT supplied",
+      "what_changed": "TRAIN exemplars in the slot contact",
+      "roster": "DEV-1000 NEW500 per-row",
+      "comparator_and_null": "KV-0 and a form twin",
+      "delta_intent_pp": "0 by construction",
+      "delta_slu_f1_pp": "vs KV-0 +0.52 [-0.75, +1.80]",
+      "interval": "CI90",
+      "verdict_as_recorded": "NULL_COMPATIBLE",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KV",
+        "LED"
+      ]
+    },
+    {
+      "id": "A14",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KU-S3 max256",
+      "family_codes": [
+        "KR",
+        "KC"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY + KNOWLEDGE CONTENT supplied",
+      "what_changed": "speech-keyed TRAIN slot fillers as typed content",
+      "roster": "DEV-1000 NEW500 per-row",
+      "comparator_and_null": "matched control; form twin (other row's key)",
+      "delta_intent_pp": "joined-intent protection passes",
+      "delta_slu_f1_pp": "speech - twin +3.65 [+1.60, +5.70]; twin - control +2.98 [+1.35, +4.67]; speech - control +6.64 [+4.65, +8.63]",
+      "interval": "CI90",
+      "verdict_as_recorded": "ADMITTED_COMPONENT",
+      "replication": "independent repeat PASS",
+      "instrument_flag": "RR-part",
+      "instrument_flag_meaning": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+      "sources": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/README.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KU3",
+        "LED"
+      ]
+    },
+    {
+      "id": "A15",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "KU-S4N G2",
+      "family_codes": [
+        "KR"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY",
+      "what_changed": "intent candidate NARROWING before the answer",
+      "roster": "NEW500",
+      "comparator_and_null": "aligned control",
+      "delta_intent_pp": "-2.20 [-5.08, +0.82]",
+      "delta_slu_f1_pp": "micro -11.74 [-15.18, -8.16]",
+      "interval": "CI90",
+      "verdict_as_recorded": "HOLD_NONINFERIORITY_FAILED",
+      "replication": "-",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s4n-g2-readout/decision.json",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "KU4",
+        "LED"
+      ]
+    },
+    {
+      "id": "A16",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "G6 live intent+slots",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "live intent and slot contacts on speech",
+      "roster": "NEW500",
+      "comparator_and_null": "control recovery arm",
+      "delta_intent_pp": "scenario guard fails",
+      "delta_slu_f1_pp": "positive slot evidence",
+      "interval": "CI90",
+      "verdict_as_recorded": "NOT_FULLY_ADMITTED",
+      "replication": "program-matched follow-up (A17)",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/readiness/2026-09-10-slurp-live-intent-slots-result.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "G6",
+        "LED"
+      ]
+    },
+    {
+      "id": "A17",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "program-matched follow-up",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "the G6 program against a program-matched control",
+      "roster": "NEW500",
+      "comparator_and_null": "matched control",
+      "delta_intent_pp": "-0.2",
+      "delta_slu_f1_pp": "row-F1 CI90 crosses zero",
+      "interval": "CI90",
+      "verdict_as_recorded": "SYSTEM_NOT_ADMITTED",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/readiness/2026-09-11-slurp-program-matched-result.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "PMF",
+        "LED"
+      ]
+    },
+    {
+      "id": "A18",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "discriminative values (span pair)",
+      "family_codes": [
+        "CF"
+      ],
+      "family": "CONSUMPTION FORM",
+      "what_changed": "discriminative value rendering of the slot knowledge",
+      "roster": "NEW500",
+      "comparator_and_null": "historical form",
+      "delta_intent_pp": "-",
+      "delta_slu_f1_pp": "row-F1 -6.06",
+      "interval": "CI90",
+      "verdict_as_recorded": "NEGATIVE_COMPONENT_NOT_SELECTED",
+      "replication": "-",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/readiness/2026-09-11-slurp-discriminative-values-result.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "DSV",
+        "LED"
+      ]
+    },
+    {
+      "id": "A19",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "task agent (compact frame) replication",
+      "family_codes": [
+        "SY"
+      ],
+      "family": "WHOLE SYSTEM vs DIRECT (composite)",
+      "what_changed": "compact-frame task agent vs direct, replicated",
+      "roster": "NEW500",
+      "comparator_and_null": "direct (same family)",
+      "delta_intent_pp": "+4.20 (CI90 > 0)",
+      "delta_slu_f1_pp": "micro +2.99 (CI90 > 0)",
+      "interval": "CI90",
+      "verdict_as_recorded": "PRIMARY POSITIVE, exploratory working baseline",
+      "replication": "yes (replication of the 09-11 family)",
+      "instrument_flag": "RR-part",
+      "instrument_flag_meaning": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+      "sources": [
+        "docs/readiness/2026-09-11-slurp-task-agent-replication-result.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "TAR",
+        "LED"
+      ]
+    },
+    {
+      "id": "A20",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "role coverage (matched)",
+      "family_codes": [
+        "CF"
+      ],
+      "family": "CONSUMPTION FORM",
+      "what_changed": "role-coverage matched treatment",
+      "roster": "NEW500",
+      "comparator_and_null": "matched control",
+      "delta_intent_pp": "-2.20 (CI90 < 0)",
+      "delta_slu_f1_pp": "micro -0.54 (unresolved)",
+      "interval": "CI90",
+      "verdict_as_recorded": "DO_NOT_ADOPT (intent negative)",
+      "replication": "-",
+      "instrument_flag": "RR-harm",
+      "instrument_flag_meaning": "RE-READ: 'HARMFUL' by interval width against a sealed cross-flight comparator with no in-chain A/A -> 'not distinguishable from flight variance'",
+      "sources": [
+        "docs/readiness/2026-09-11-slurp-role-coverage-result.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "RCV",
+        "LED"
+      ]
+    },
+    {
+      "id": "A21",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "fixed Whisper evidence",
+      "family_codes": [
+        "OB"
+      ],
+      "family": "OBSERVATION (media / transcript supply)",
+      "what_changed": "a fixed ASR transcript supplied before revision",
+      "roster": "NEW500 / DEV-1000",
+      "comparator_and_null": "observation control",
+      "delta_intent_pp": "-0.80",
+      "delta_slu_f1_pp": "NEW500 micro +0.83 [-1.10, +2.84]",
+      "interval": "CI90",
+      "verdict_as_recorded": "EFFECTIVENESS_NOT_ESTABLISHED",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/readiness/2026-09-12-slurp-fixed-whisper-result-v1.md",
+        "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "WHS",
+        "TTS",
+        "LED"
+      ]
+    },
+    {
+      "id": "A22",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "native system vs direct",
+      "family_codes": [
+        "SY"
+      ],
+      "family": "WHOLE SYSTEM vs DIRECT (composite)",
+      "what_changed": "native Perception / Solver / Reviewer / Planner system vs one direct request",
+      "roster": "DEV-1000 NEW500",
+      "comparator_and_null": "direct, same resident process",
+      "delta_intent_pp": "72.4 -> 78.6, +6.2 [+3.41, +9.17]",
+      "delta_slu_f1_pp": "36.25 -> 50.68, +14.43 [+11.21, +17.59]",
+      "interval": "CI90",
+      "verdict_as_recorded": "EXPLORATORY_SYSTEM_CANDIDATE",
+      "replication": "yes (A23)",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "NAT",
+        "LED"
+      ]
+    },
+    {
+      "id": "A23",
+      "era": "Stage-2 DEV-1000 era",
+      "cell": "max512 dual-store base replication",
+      "family_codes": [
+        "SY"
+      ],
+      "family": "WHOLE SYSTEM vs DIRECT (composite)",
+      "what_changed": "the retained dual-store native agent vs direct, replicated",
+      "roster": "DEV-1000 NEW500",
+      "comparator_and_null": "direct",
+      "delta_intent_pp": "-",
+      "delta_slu_f1_pp": "35.89 -> 50.69, +14.80 [+11.52, +18.01]",
+      "interval": "CI90",
+      "verdict_as_recorded": "REPLICATED useful base",
+      "replication": "yes",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-14-slurp-dual-store-base-replication-verdict-v1.md",
+        "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "DSR",
+        "TTS",
+        "LED"
+      ]
+    },
+    {
+      "id": "B1",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "TRAIN-A anchor vs direct",
+      "family_codes": [
+        "SY"
+      ],
+      "family": "WHOLE SYSTEM vs DIRECT (composite)",
+      "what_changed": "dual-store native agent (anchor) vs the released direct max512 arm",
+      "roster": "TRAIN Fold A (1,080)",
+      "comparator_and_null": "released direct anchor 33.885 / 73.70",
+      "delta_intent_pp": "+4.26 [+2.15, +6.46]",
+      "delta_slu_f1_pp": "+14.65 [+11.79, +17.51]",
+      "interval": "CI95",
+      "verdict_as_recorded": "anchor released (48.53 / 77.96)",
+      "replication": "DEV pair A22/A23",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-17-slurp-train-a-direct-anchor-release.md",
+        "docs/results/2026-09-14-slurp-native-train-a-anchor.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "DIR",
+        "ANC",
+        "LED"
+      ]
+    },
+    {
+      "id": "B2",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "maximum-five candidates",
+      "family_codes": [
+        "KR"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY",
+      "what_changed": "Perception candidate width 3 -> 5",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor",
+      "delta_intent_pp": "842 -> 837 correct rows",
+      "delta_slu_f1_pp": "+0.09 [-1.36, +1.65]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NOT_ADVANCED",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-16-slurp-candidate-five-train-a.md",
+        "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "C5",
+        "TTS",
+        "LED"
+      ]
+    },
+    {
+      "id": "B3",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "broad / factored knowledge",
+      "family_codes": [
+        "KR",
+        "KC"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY + KNOWLEDGE CONTENT supplied",
+      "what_changed": "broad K60 supply plus factored rendering",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor",
+      "delta_intent_pp": "842 -> 841 correct rows",
+      "delta_slu_f1_pp": "-0.90 [-2.61, +0.78]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NOT_ADVANCED",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-16-slurp-broad-factored-train-a.md",
+        "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md"
+      ],
+      "source_keys": [
+        "BFK",
+        "TTS"
+      ]
+    },
+    {
+      "id": "B4",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "typed-context package",
+      "family_codes": [
+        "CF"
+      ],
+      "family": "CONSUMPTION FORM",
+      "what_changed": "typed role context + structured review + target lookup",
+      "roster": "Fold A",
+      "comparator_and_null": "direct (complete)",
+      "delta_intent_pp": "-",
+      "delta_slu_f1_pp": "-",
+      "interval": "-",
+      "verdict_as_recorded": "CLOSED: aborted twice (one Reviewer request 24,878 tokens > 24,576 slot); no quality read",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/stage2-results-ledger.md",
+        "docs/results/2026-09-16-slurp-two-track-evidence-synthesis.md"
+      ],
+      "source_keys": [
+        "LED",
+        "TTS"
+      ]
+    },
+    {
+      "id": "B5",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B0 / B0r review loop off",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "Reviewer and Planner removed (Perception -> Solver -> delivery)",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor; imported 0.92, then B0r own null 1.1218 / 1.0051",
+      "delta_intent_pp": "-0.37 [-1.53, +0.82]",
+      "delta_slu_f1_pp": "+0.13 [-1.15, +1.45]",
+      "interval": "CI95",
+      "verdict_as_recorded": "HARMFUL by width (twice); loop changed <= 2 of 1,080 delivered intents",
+      "replication": "B0r = own null",
+      "instrument_flag": "RR-harm",
+      "instrument_flag_meaning": "RE-READ: 'HARMFUL' by interval width against a sealed cross-flight comparator with no in-chain A/A -> 'not distinguishable from flight variance'",
+      "sources": [
+        "docs/results/2026-09-17-slurp-b0-review-off-verdict.md",
+        "docs/results/2026-09-17-slurp-b0-review-off-redecision-v2.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B0",
+        "B0R",
+        "LED"
+      ]
+    },
+    {
+      "id": "B6",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B4b slot store v2 (M4b)",
+      "family_codes": [
+        "KC"
+      ],
+      "family": "KNOWLEDGE CONTENT supplied",
+      "what_changed": "date / time slot-contract revision",
+      "roster": "Fold A",
+      "comparator_and_null": "sealed anchor",
+      "delta_intent_pp": "+0.56 [-0.71, +1.82]",
+      "delta_slu_f1_pp": "+2.55 [+1.13, +3.98]; replicate +1.54 [+0.30, +2.93]",
+      "interval": "CI95",
+      "verdict_as_recorded": "ADMITTED -> REPLICATED",
+      "replication": "yes, both passes vs the same sealed anchor",
+      "instrument_flag": "RR-gain",
+      "instrument_flag_meaning": "RE-READ: a gain claim whose size is inside the cross-flight band (bar ~2.5 pp at n 1,080, ~3 pp at n 500-625) with no in-chain A/A -> direction only",
+      "sources": [
+        "docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md",
+        "docs/results/2026-09-19-slurp-b4b-replicate-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B4B",
+        "B4BR",
+        "LED"
+      ]
+    },
+    {
+      "id": "B7",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B1 exemplars k20 (M1) + B1r",
+      "family_codes": [
+        "KR",
+        "KC"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY + KNOWLEDGE CONTENT supplied",
+      "what_changed": "speech-keyed top-20 TRAIN exemplars supplied to the Solver",
+      "roster": "Fold A",
+      "comparator_and_null": "sealed anchor",
+      "delta_intent_pp": "+2.22 [+0.74, +3.71]; B1r +2.13 [+0.81, +3.38]",
+      "delta_slu_f1_pp": "+12.61 [+10.54, +14.60]; B1r +13.70 [+11.64, +15.73]",
+      "interval": "CI95",
+      "verdict_as_recorded": "ADMITTED -> REPLICATED",
+      "replication": "yes (B1r, request-identical)",
+      "instrument_flag": "RR-part",
+      "instrument_flag_meaning": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+      "sources": [
+        "docs/results/2026-09-17-slurp-b1-exemplars-k20-verdict.md",
+        "docs/results/2026-09-19-slurp-b1-replicate-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B1",
+        "B1R",
+        "LED"
+      ]
+    },
+    {
+      "id": "B8",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B1 derangement twin",
+      "family_codes": [
+        "KR"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY",
+      "what_changed": "same exemplar supply keyed by ANOTHER row's speech vector",
+      "roster": "Fold A",
+      "comparator_and_null": "B1 and anchor",
+      "delta_intent_pp": "B1 - twin +2.04 [+0.49, +3.78]; twin - anchor +0.19 [-1.03, +1.39]",
+      "delta_slu_f1_pp": "B1 - twin +7.83 [+5.85, +9.75]; twin - anchor +4.77 [+3.20, +6.36]",
+      "interval": "CI95",
+      "verdict_as_recorded": "decomposition: key 62 % / presence 38 % of the SLU gain",
+      "replication": "-",
+      "instrument_flag": "RR-part",
+      "instrument_flag_meaning": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+      "sources": [
+        "docs/results/2026-09-18-slurp-b1-twin-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B1T",
+        "LED"
+      ]
+    },
+    {
+      "id": "B9",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B5e (M1 + M4b)",
+      "family_codes": [
+        "KC"
+      ],
+      "family": "KNOWLEDGE CONTENT supplied",
+      "what_changed": "early combination of M1 and M4b",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor; B1",
+      "delta_intent_pp": "vs B1 -0.09 [-1.51, +1.38]",
+      "delta_slu_f1_pp": "62.34; vs B1 +1.20 [-0.11, +2.48]; vs anchor +13.80 [+11.77, +15.80]",
+      "interval": "CI95",
+      "verdict_as_recorded": "combination NEUTRAL (decision 25 addendum)",
+      "replication": "-",
+      "instrument_flag": "RR-gain",
+      "instrument_flag_meaning": "RE-READ: a gain claim whose size is inside the cross-flight band (bar ~2.5 pp at n 1,080, ~3 pp at n 500-625) with no in-chain A/A -> direction only",
+      "sources": [
+        "docs/results/2026-09-18-slurp-b5e-combination-verdict.md",
+        "docs/results/2026-09-18-slurp-b5e-combination-verdict-addendum-decision-25.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B5E",
+        "B5A",
+        "LED"
+      ]
+    },
+    {
+      "id": "B10",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B2 v3 grouped samples N=5 (M2)",
+      "family_codes": [
+        "SA"
+      ],
+      "family": "SAMPLING / AGGREGATION / SELECTION",
+      "what_changed": "five Solver samples committed as a group",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor",
+      "delta_intent_pp": "+0.83 [-0.30, +1.88]",
+      "delta_slu_f1_pp": "+0.06 [-1.46, +1.60]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL (spurious mentions 362 -> 303, omissions up)",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-19-slurp-b2-samples5-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B2",
+        "LED"
+      ]
+    },
+    {
+      "id": "B11",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B8a delivery normaliser (M3)",
+      "family_codes": [
+        "EN"
+      ],
+      "family": "ENGINEERING (delivery, rendering, serving, repair)",
+      "what_changed": "projection v3 executed inside the agent (label rule + filler surface normalisation)",
+      "roster": "Fold A; node ON vs OFF on the same sealed arms",
+      "comparator_and_null": "same sealed arm, node off (offline)",
+      "delta_intent_pp": "anchor +1.39 [+0.71, +2.04]; B1 +1.57",
+      "delta_slu_f1_pp": "anchor +3.46 [+2.78, +4.18]; B1 +1.53 [+1.05, +2.03]",
+      "interval": "CI95",
+      "verdict_as_recorded": "ADMITTED as a surface-convention repair (symmetric scorer moves <= +0.16)",
+      "replication": "three arms, offline",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-19-slurp-b8a-deliver-normalise-verdict.md",
+        "docs/results/2026-09-17-slurp-a1-use-projection-audit-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B8A",
+        "A1",
+        "LED"
+      ]
+    },
+    {
+      "id": "B12",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B7a v2 NCP L1",
+      "family_codes": [
+        "CF",
+        "NP"
+      ],
+      "family": "CONSUMPTION FORM + NODE PROGRAM / CONTROL",
+      "what_changed": "template-built structured context at every node boundary",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor",
+      "delta_intent_pp": "-0.65 [-2.18, +0.87]",
+      "delta_slu_f1_pp": "-0.31 [-1.81, +1.12]",
+      "interval": "CI95",
+      "verdict_as_recorded": "HARMFUL by width; +11.6 % GPU-h, 59 revisions vs 6",
+      "replication": "-",
+      "instrument_flag": "RR-harm",
+      "instrument_flag_meaning": "RE-READ: 'HARMFUL' by interval width against a sealed cross-flight comparator with no in-chain A/A -> 'not distinguishable from flight variance'",
+      "sources": [
+        "docs/results/2026-09-19-slurp-b7a-ncp-l1-anchor-v2-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B7A",
+        "LED"
+      ]
+    },
+    {
+      "id": "B13",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B4a v2 general_quirky fallback",
+      "family_codes": [
+        "KR"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY",
+      "what_changed": "catch-all fallback candidate + intent-boundaries v2",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor",
+      "delta_intent_pp": "+0.74 [-0.30, +1.75]",
+      "delta_slu_f1_pp": "-0.70 [-2.29, +0.89]",
+      "interval": "CI95",
+      "verdict_as_recorded": "HARMFUL by width; fallback appended on 1,052 rows, selected on 0",
+      "replication": "-",
+      "instrument_flag": "RR-harm",
+      "instrument_flag_meaning": "RE-READ: 'HARMFUL' by interval width against a sealed cross-flight comparator with no in-chain A/A -> 'not distinguishable from flight variance'",
+      "sources": [
+        "docs/results/2026-09-19-slurp-b4a-fallback-quirky-anchor-v2-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B4A",
+        "LED"
+      ]
+    },
+    {
+      "id": "B14",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "EFF-1 constant tool rendering",
+      "family_codes": [
+        "EN"
+      ],
+      "family": "ENGINEERING (delivery, rendering, serving, repair)",
+      "what_changed": "Reviewer tools array rendered into every role's system message",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor",
+      "delta_intent_pp": "-9.17 [-11.64, -6.79]",
+      "delta_slu_f1_pp": "-4.39 [-6.69, -2.17]",
+      "interval": "CI95",
+      "verdict_as_recorded": "HARMFUL (measured): 145 tool-call-shaped Solver answers, 137 unparseable rows",
+      "replication": "-",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-19-slurp-eff1-tool-constant-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "EFF",
+        "LED"
+      ]
+    },
+    {
+      "id": "B15",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B8b-anchor Reviewer slot audit",
+      "family_codes": [
+        "KC",
+        "NP"
+      ],
+      "family": "KNOWLEDGE CONTENT supplied + NODE PROGRAM / CONTROL",
+      "what_changed": "deterministic slot-audit block attached to the Reviewer",
+      "roster": "Fold A",
+      "comparator_and_null": "anchor",
+      "delta_intent_pp": "+1.20 [-0.19, +2.59]",
+      "delta_slu_f1_pp": "+0.87 [-0.63, +2.37]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL (every metric positive; +13.5 % GPU-h)",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-19-slurp-b8b-anchor-reviewer-audit-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B8B",
+        "LED"
+      ]
+    },
+    {
+      "id": "B16",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B1-notool (0-B)",
+      "family_codes": [
+        "EN"
+      ],
+      "family": "ENGINEERING (delivery, rendering, serving, repair)",
+      "what_changed": "Reviewer task-contract tool withdrawn",
+      "roster": "Fold A",
+      "comparator_and_null": "B1",
+      "delta_intent_pp": "-0.19 [-1.33, +0.91]",
+      "delta_slu_f1_pp": "+0.99 [-0.59, +2.50]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL; prefill per row -69 %, GPU-h 3.851 -> 1.611",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-20-slurp-b1-notool-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B1N",
+        "LED"
+      ]
+    },
+    {
+      "id": "B17",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "IDX knowledge index + pointers",
+      "family_codes": [
+        "CF"
+      ],
+      "family": "CONSUMPTION FORM",
+      "what_changed": "index-centred context assembly (constant index, pointer block, bounded expansion)",
+      "roster": "Fold A",
+      "comparator_and_null": "B1-notool",
+      "delta_intent_pp": "-2.41 [-4.56, -0.32]",
+      "delta_slu_f1_pp": "-7.37 [-9.72, -4.80]",
+      "interval": "CI95",
+      "verdict_as_recorded": "HARMFUL (measured on SLU)",
+      "replication": "-",
+      "instrument_flag": "RR-part",
+      "instrument_flag_meaning": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+      "sources": [
+        "docs/results/2026-09-21-slurp-idx-knowledge-index-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "IDX",
+        "LED"
+      ]
+    },
+    {
+      "id": "B18",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "IDXT index twin",
+      "family_codes": [
+        "CF"
+      ],
+      "family": "CONSUMPTION FORM",
+      "what_changed": "the same index form with deranged content",
+      "roster": "Fold A",
+      "comparator_and_null": "B1-notool; IDX",
+      "delta_intent_pp": "+0.19 [-2.00, +2.31]; content IDX - IDXT -2.59 [-4.33, -0.86]",
+      "delta_slu_f1_pp": "-9.97 [-12.46, -7.32]; content IDX - IDXT +2.60 [+0.80, +4.49]",
+      "interval": "CI95",
+      "verdict_as_recorded": "HARMFUL as a control: the loss is the FORM",
+      "replication": "-",
+      "instrument_flag": "RR-part",
+      "instrument_flag_meaning": "RE-READ in part: the large term stands, the named smaller term is inside the band",
+      "sources": [
+        "docs/results/2026-09-21-slurp-idxt-knowledge-index-twin-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "IDT",
+        "LED"
+      ]
+    },
+    {
+      "id": "B19",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "PLAN (v2.0 lock arm)",
+      "family_codes": [
+        "SY"
+      ],
+      "family": "WHOLE SYSTEM vs DIRECT (composite)",
+      "what_changed": "M1 + M4b + M3 + retired toolkit + E13 / E20 / E22 as one arm",
+      "roster": "Fold A",
+      "comparator_and_null": "B1-notool",
+      "delta_intent_pp": "+2.22 [+0.92, +3.56]",
+      "delta_slu_f1_pp": "+1.50 [-0.04, +3.24]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL (intent 'proven', SLU unproven); 63.63 / 82.22",
+      "replication": "PLANr (B20)",
+      "instrument_flag": "RR-gain",
+      "instrument_flag_meaning": "RE-READ: a gain claim whose size is inside the cross-flight band (bar ~2.5 pp at n 1,080, ~3 pp at n 500-625) with no in-chain A/A -> direction only",
+      "sources": [
+        "docs/results/2026-09-21-slurp-plan-v2-lock-arm-verdict.md",
+        "docs/results/2026-09-22-slurp-v2-lock-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "PLN",
+        "LCK",
+        "LED"
+      ]
+    },
+    {
+      "id": "B20",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "PLANr",
+      "family_codes": [
+        "IN"
+      ],
+      "family": "INSTRUMENT (null / A-A / probe)",
+      "what_changed": "request-identical replicate of PLAN",
+      "roster": "Fold A",
+      "comparator_and_null": "PLAN",
+      "delta_intent_pp": "+0.28 [-0.74, +1.25]",
+      "delta_slu_f1_pp": "+0.17 [-1.11, +1.38]",
+      "interval": "CI95",
+      "verdict_as_recorded": "REPLICATED; v2.0 LOCKED; own null h 1.2485 / 0.9943",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-22-slurp-planr-v2-lock-replicate-verdict.md",
+        "docs/results/2026-09-22-slurp-v2-lock-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "PLR",
+        "LCK",
+        "LED"
+      ]
+    },
+    {
+      "id": "B21",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B9a-rec Acquisition node",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "kind (a) knowledge re-query node",
+      "roster": "Fold A",
+      "comparator_and_null": "PLAN",
+      "delta_intent_pp": "0.00 [-1.10, +1.08]",
+      "delta_slu_f1_pp": "+0.26 [-1.19, +1.60]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NON-INFERIORITY NOT PROVEN; inert (18 ACQUIRE, 0 items returned)",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-22-slurp-b9a-rec-acquisition-node-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B9A",
+        "LED"
+      ]
+    },
+    {
+      "id": "B22",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "B6 PLAN vs direct",
+      "family_codes": [
+        "SY"
+      ],
+      "family": "WHOLE SYSTEM vs DIRECT (composite)",
+      "what_changed": "the locked plan vs the bare core, same chain",
+      "roster": "DEV-2000-ADDED (1,000)",
+      "comparator_and_null": "direct 38.09 / 61.7",
+      "delta_intent_pp": "+14.90 [+11.78, +18.03]",
+      "delta_slu_f1_pp": "+27.30 [+24.05, +30.50]",
+      "interval": "CI95",
+      "verdict_as_recorded": "DESCRIPTIVE (65.40 / 76.6; replicate 65.15 / 76.8)",
+      "replication": "PLANr on DEV (CELL-3 chain)",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md",
+        "docs/results/2026-09-24-slurp-plan-bad-case-bank.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "B6",
+        "BNK",
+        "LED"
+      ]
+    },
+    {
+      "id": "B23",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "R-PRIM Reviewer primitives",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "Reviewer verdict as a closed primitive vocabulary",
+      "roster": "Fold A",
+      "comparator_and_null": "PLAN",
+      "delta_intent_pp": "-0.09 [-1.16, +0.94]",
+      "delta_slu_f1_pp": "+0.58 [-0.82, +1.80]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL; parse 100 %, ACCEPT 1,073 of 1,091, REVISE recall 0.017",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-22-slurp-review-primitives-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "RPM",
+        "LED"
+      ]
+    },
+    {
+      "id": "B24",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "P1 Reviewer 3 -> 1",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "Reviewer max_iterations 3 -> 1",
+      "roster": "Fold A",
+      "comparator_and_null": "R-PRIM",
+      "delta_intent_pp": "+0.09 [-0.69, +0.90]",
+      "delta_slu_f1_pp": "-0.15 [-1.38, +1.24]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL (near no-op: 11 rows had a second visit)",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-23-slurp-prune-reviewer1-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "P1",
+        "LED"
+      ]
+    },
+    {
+      "id": "B25",
+      "era": "Stage-2 native agent, TRAIN Fold A",
+      "cell": "P0 review loop off",
+      "family_codes": [
+        "NP"
+      ],
+      "family": "NODE PROGRAM / CONTROL",
+      "what_changed": "Reviewer 0 / Planner 0 on the locked plan",
+      "roster": "Fold A",
+      "comparator_and_null": "R-PRIM",
+      "delta_intent_pp": "-0.56 [-1.60, +0.52]",
+      "delta_slu_f1_pp": "-0.36 [-1.45, +0.78]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL; contacts 4.03 -> 2.00 per row",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-23-slurp-prune-review-off-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "P0",
+        "LED"
+      ]
+    },
+    {
+      "id": "C1",
+      "era": "Stage 3",
+      "cell": "ADV-1 semantic advantage",
+      "family_codes": [
+        "TF"
+      ],
+      "family": "TF-RL LEARNED DELTAS",
+      "what_changed": "system-level advantage statements over ROLL-1 groups",
+      "roster": "R01C 225 disagreeing rows",
+      "comparator_and_null": "-",
+      "delta_intent_pp": "-",
+      "delta_slu_f1_pp": "-",
+      "interval": "-",
+      "verdict_as_recorded": "STRUCTURAL PASS (no effect claim)",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-23-slurp-stage3-advantage-r01-read.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "ADV",
+        "LED"
+      ]
+    },
+    {
+      "id": "C2",
+      "era": "Stage 3",
+      "cell": "CELL-1 (TF-GRPO deltas v1r)",
+      "family_codes": [
+        "TF"
+      ],
+      "family": "TF-RL LEARNED DELTAS",
+      "what_changed": "379 node-targeted deltas applied to the locked plan",
+      "roster": "Fold A",
+      "comparator_and_null": "sealed PLAN (no in-chain A/A)",
+      "delta_intent_pp": "-0.74 [-2.17, +0.57]; twin +0.09",
+      "delta_slu_f1_pp": "-0.48 [-2.18, +1.24]; twin -0.44",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL by width",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-23-slurp-stage3-delta-cell-r01-verdict.md",
+        "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "CL1",
+        "INS",
+        "LED"
+      ]
+    },
+    {
+      "id": "C3",
+      "era": "Stage 3",
+      "cell": "CELL-2 (v2 retained deltas)",
+      "family_codes": [
+        "TF"
+      ],
+      "family": "TF-RL LEARNED DELTAS",
+      "what_changed": "200 retained deltas (per-scenario frontier retention)",
+      "roster": "Fold A",
+      "comparator_and_null": "sealed PLAN (no in-chain A/A)",
+      "delta_intent_pp": "-0.09 [-1.22, +0.96]; twin -0.93",
+      "delta_slu_f1_pp": "+0.64 [-0.76, +1.92]; twin +0.05",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL by width; per-scenario content gains +7 to +15 pp reported",
+      "replication": "-",
+      "instrument_flag": "RR-gain",
+      "instrument_flag_meaning": "RE-READ: a gain claim whose size is inside the cross-flight band (bar ~2.5 pp at n 1,080, ~3 pp at n 500-625) with no in-chain A/A -> direction only",
+      "sources": [
+        "docs/results/2026-09-24-slurp-stage3-delta-cell-r02-verdict.md",
+        "docs/results/2026-09-24-slurp-general-scenario-diagnostic.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "CL2",
+        "GEN",
+        "LED"
+      ]
+    },
+    {
+      "id": "C4",
+      "era": "Stage 3",
+      "cell": "CELL-1-GEPA",
+      "family_codes": [
+        "TF"
+      ],
+      "family": "TF-RL LEARNED DELTAS",
+      "what_changed": "448 GEPA reflective-proposer deltas",
+      "roster": "Fold A",
+      "comparator_and_null": "sealed PLAN (no in-chain A/A)",
+      "delta_intent_pp": "-0.09 [-1.54, +1.32]; twin -0.28",
+      "delta_slu_f1_pp": "-0.04 [-1.58, +1.39]; twin -0.76",
+      "interval": "CI95",
+      "verdict_as_recorded": "NEUTRAL by width",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-24-slurp-stage3-delta-cell-gepa-r01-verdict.md",
+        "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "GEP",
+        "INS",
+        "LED"
+      ]
+    },
+    {
+      "id": "C5",
+      "era": "Stage 3",
+      "cell": "CELL-3 scenario-gated deltas",
+      "family_codes": [
+        "TF"
+      ],
+      "family": "TF-RL LEARNED DELTAS",
+      "what_changed": "coverage-gated application of the v2 store",
+      "roster": "DEV-2000-ADDED",
+      "comparator_and_null": "sealed PLAN; in-chain PLANr own null",
+      "delta_intent_pp": "0.00 [-1.01, +1.00]",
+      "delta_slu_f1_pp": "-1.44 [-2.88, -0.05]; twin +0.38",
+      "interval": "CI95",
+      "verdict_as_recorded": "HARMFUL by rule -> 'not distinguishable from flight variance' (instrument sec. 4)",
+      "replication": "PLANr -0.25",
+      "instrument_flag": "corr",
+      "instrument_flag_meaning": "already corrected by the instrument note section 4",
+      "sources": [
+        "docs/results/2026-09-24-slurp-stage3-delta-cell-r03-gate-verdict.md",
+        "docs/results/2026-09-24-slurp-cell3-fresh-roster-loss-diagnostic.md",
+        "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "CL3",
+        "CL3D",
+        "INS",
+        "LED"
+      ]
+    },
+    {
+      "id": "C6",
+      "era": "Stage 3",
+      "cell": "ROLL-AA within-flight A/A",
+      "family_codes": [
+        "IN"
+      ],
+      "family": "INSTRUMENT (null / A-A / probe)",
+      "what_changed": "two greedy passes of the locked plan inside one flight",
+      "roster": "R01C 200",
+      "comparator_and_null": "itself",
+      "delta_intent_pp": "0 of 200 intent flips",
+      "delta_slu_f1_pp": "-0.284 [-1.096, +0.373]; 91.5 % byte-identical",
+      "interval": "CI95",
+      "verdict_as_recorded": "h_within 0.735 (SLU) / 0.000 (intent)",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-24-slurp-stage3-roll-aa-within-flight-null-read.md",
+        "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
+      ],
+      "source_keys": [
+        "RAA",
+        "INS"
+      ]
+    },
+    {
+      "id": "C7",
+      "era": "Stage 3",
+      "cell": "VAR-1 (K10 / K30 / DIV / K16C5 / PLANR)",
+      "family_codes": [
+        "KR",
+        "KC"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY + KNOWLEDGE CONTENT supplied",
+      "what_changed": "exemplar budget 10 / 30, diverse exemplars, Perception k16 + 5 candidates",
+      "roster": "R01C 625",
+      "comparator_and_null": "PLANR (in-chain request-identical replicate)",
+      "delta_intent_pp": "PLAN 70.56, PLANR 69.28, K10 69.76, K30 70.72, DIV 70.88, K16C5 70.88",
+      "delta_slu_f1_pp": "vs PLANR: K10 +0.07 [-1.48, +1.58], K30 +0.09 [-1.47, +1.60], DIV -1.70 [-3.39, -0.06], K16C5 -1.71 [-3.37, -0.07]; PLANR - PLAN +1.87 [+0.41, +3.36]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NO ADMISSION; measured the cross-flight A/A floor",
+      "replication": "PLANR",
+      "instrument_flag": "RR-harm",
+      "instrument_flag_meaning": "RE-READ: 'HARMFUL' by interval width against a sealed cross-flight comparator with no in-chain A/A -> 'not distinguishable from flight variance'",
+      "sources": [
+        "docs/results/2026-09-25-slurp-var1-complete-evidence.md",
+        "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "VR1",
+        "INS",
+        "LED"
+      ]
+    },
+    {
+      "id": "C8",
+      "era": "Stage 3",
+      "cell": "VAR-2 supply variants",
+      "family_codes": [
+        "SA"
+      ],
+      "family": "SAMPLING / AGGREGATION / SELECTION",
+      "what_changed": "per-row supply-variant interleaving at the Solver",
+      "roster": "R01C",
+      "comparator_and_null": "-",
+      "delta_intent_pp": "-",
+      "delta_slu_f1_pp": "-",
+      "interval": "-",
+      "verdict_as_recorded": "ENGINEERING-CLOSED, no number (cumulative supply 40 > bound 38)",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-25-slurp-var2-closed-engineering-failure.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "VR2",
+        "LED"
+      ]
+    },
+    {
+      "id": "C9",
+      "era": "Stage 3",
+      "cell": "ROLL-1 + AGG offline read",
+      "family_codes": [
+        "SA"
+      ],
+      "family": "SAMPLING / AGGREGATION / SELECTION",
+      "what_changed": "five T 0.7 Solver samples; 13 delivery rules read offline",
+      "roster": "R01C 625 (sealed pool)",
+      "comparator_and_null": "mean single sample, same pool",
+      "delta_intent_pp": "mean single 70.18; flown 70.56",
+      "delta_slu_f1_pp": "medoid +0.03 [-0.63, +0.71]; support s3 +1.40 [+0.55, +2.29]; flown commit +1.62 [+0.77, +2.51]; oracle +6.55 [+5.56, +7.56]",
+      "interval": "CI95",
+      "verdict_as_recorded": "aggregation route CLOSED (decision 112): edits are FP suppression already flown; nil on the 225 disagreeing rows",
+      "replication": "offline",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-24-slurp-sample-aggregation-offline-read.md",
+        "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+      ],
+      "source_keys": [
+        "AGG",
+        "DEC"
+      ]
+    },
+    {
+      "id": "C10",
+      "era": "Stage 3",
+      "cell": "VERIFY-1 self-selection",
+      "family_codes": [
+        "SA"
+      ],
+      "family": "SAMPLING / AGGREGATION / SELECTION",
+      "what_changed": "the core chooses one of its five sealed samples",
+      "roster": "R01C 625",
+      "comparator_and_null": "mean single sample, same pool",
+      "delta_intent_pp": "+0.544 [+0.032, +1.088]",
+      "delta_slu_f1_pp": "+0.70 [-0.26, +1.65]",
+      "interval": "CI95",
+      "verdict_as_recorded": "BENEFIT NOT PROVEN (the only non-noise Stage-3 intent signal before AGREE)",
+      "replication": "-",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-25-slurp-verify1-complete-evidence.md",
+        "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "VFY",
+        "INS",
+        "LED"
+      ]
+    },
+    {
+      "id": "C11",
+      "era": "Stage 3",
+      "cell": "combined-commit offline read",
+      "family_codes": [
+        "SA"
+      ],
+      "family": "SAMPLING / AGGREGATION / SELECTION",
+      "what_changed": "29 delivery / commit rules incl. legality prune and per-field composition",
+      "roster": "R01C 625 (sealed pool)",
+      "comparator_and_null": "flown plurality-support commit",
+      "delta_intent_pp": "self-selection agrees with plurality on 615 of 625",
+      "delta_slu_f1_pp": "best +0.117 [-0.87, +0.99]; 15 rules clear the floor as LOSSES; per-field ceiling +0.036 over whole-answer",
+      "interval": "CI95",
+      "verdict_as_recorded": "0 of 29 as a gain; commit line closed",
+      "replication": "offline",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "branch fable/commit (71bf3b0f): docs/results/2026-09-26-slurp-combined-commit-offline-read.md",
+        "docs/handoff/HANDOFF-TO-CHATGPT.md"
+      ],
+      "source_keys": [
+        "COM",
+        "HND"
+      ]
+    },
+    {
+      "id": "C12",
+      "era": "Stage 3",
+      "cell": "F10 empty-answer demonstrations",
+      "family_codes": [
+        "CF",
+        "KC"
+      ],
+      "family": "CONSUMPTION FORM + KNOWLEDGE CONTENT supplied",
+      "what_changed": "explicit empty-answer form in the exemplar view",
+      "roster": "R01C 625",
+      "comparator_and_null": "in-chain control arm (no A/A)",
+      "delta_intent_pp": "70.72 -> 70.88",
+      "delta_slu_f1_pp": "+0.34 [-1.42, +2.29]; empty-gold FP -22 vs non-empty FN +13",
+      "interval": "CI95",
+      "verdict_as_recorded": "BENEFIT_NOT_PROVEN, CLOSED",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-25-slurp-f10-complete-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "F10",
+        "LED"
+      ]
+    },
+    {
+      "id": "C13",
+      "era": "Stage 3",
+      "cell": "evidence-path tools availability",
+      "family_codes": [
+        "NP",
+        "EN"
+      ],
+      "family": "NODE PROGRAM / CONTROL + ENGINEERING (delivery, rendering, serving, repair)",
+      "what_changed": "native lookup schemas exposed to the Reviewer (0 calls made)",
+      "roster": "R01C 625",
+      "comparator_and_null": "in-chain control arm (no A/A)",
+      "delta_intent_pp": "-0.64, CI90 [-2.24, +0.96]",
+      "delta_slu_f1_pp": "+0.54 [-0.88, +2.00]",
+      "interval": "CI95",
+      "verdict_as_recorded": "NOT QUALIFIED; input-isolation defect (prefix changed on all 625)",
+      "replication": "-",
+      "instrument_flag": "cons",
+      "instrument_flag_meaning": "verdict word already consistent with the corrected instrument (NEUTRAL / not proven)",
+      "sources": [
+        "docs/results/2026-09-25-slurp-evidence-path-system-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "EVP",
+        "LED"
+      ]
+    },
+    {
+      "id": "C14",
+      "era": "Stage 3",
+      "cell": "system memory family (batch001 / 002, event credit, group update)",
+      "family_codes": [
+        "TF"
+      ],
+      "family": "TF-RL LEARNED DELTAS",
+      "what_changed": "whole-system semantic memory learned from 4-input batches",
+      "roster": "4 TRAIN inputs x 4 trajectories",
+      "comparator_and_null": "empty memory",
+      "delta_intent_pp": "-",
+      "delta_slu_f1_pp": "no demonstrated gain (one draw 59.78 -> 53.53)",
+      "interval": "-",
+      "verdict_as_recorded": "CONSTRUCTION DIAGNOSTIC; learner credited tool events that never happened",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-26-system-memory-batch002-consumption-verdict.md",
+        "docs/results/2026-09-26-system-event-credit001-verdict.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "MEM",
+        "MEV",
+        "LED"
+      ]
+    },
+    {
+      "id": "C15",
+      "era": "Stage 3",
+      "cell": "DET np1 cache-off pair",
+      "family_codes": [
+        "IN"
+      ],
+      "family": "INSTRUMENT (null / A-A / probe)",
+      "what_changed": "the locked plan twice on one slot, prompt cache off",
+      "roster": "Fold A 50",
+      "comparator_and_null": "itself",
+      "delta_intent_pp": "0.0 [0.0, 0.0]",
+      "delta_slu_f1_pp": "0.0 [0.0, 0.0]; 50 of 50 byte-identical",
+      "interval": "CI95",
+      "verdict_as_recorded": "DESCRIPTIVE: the band is an np4 serving property; np1 4.2x slower",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-27-slurp-det-np1-pair-read.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "DET",
+        "LED"
+      ]
+    },
+    {
+      "id": "C16",
+      "era": "Stage 3",
+      "cell": "ROLL-3 DEV pool",
+      "family_codes": [
+        "SA"
+      ],
+      "family": "SAMPLING / AGGREGATION / SELECTION",
+      "what_changed": "five T 0.7 samples of the locked form on the evaluation roster",
+      "roster": "DEV-2000-ADDED 1,000 (sealed pool)",
+      "comparator_and_null": "-",
+      "delta_intent_pp": "per-sample mean 75.76; any-sample 77.5 (+1.74); one intent on 90.5 % of rows",
+      "delta_slu_f1_pp": "per-sample 61.94-64.01; oracle 71.06",
+      "interval": "-",
+      "verdict_as_recorded": "DESCRIPTIVE: intent errors are systematic across samples",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md",
+        "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "RL3",
+        "INS",
+        "LED"
+      ]
+    },
+    {
+      "id": "C17",
+      "era": "Stage 3",
+      "cell": "CONV conversion probe",
+      "family_codes": [
+        "KR"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY",
+      "what_changed": "AGREE treatment on the 70 rows whose gold boundary it newly delivers",
+      "roster": "Fold A 70 (gold-selected)",
+      "comparator_and_null": "sealed PLAN answers",
+      "delta_intent_pp": "m = 32 of 70 = 45.71 % [34.57, 57.30] (Wilson)",
+      "delta_slu_f1_pp": "-",
+      "interval": "CI95",
+      "verdict_as_recorded": "DESCRIPTIVE (form proof, no pooled claim)",
+      "replication": "AGREE flown conversion 32 of 72 (44.4 %)",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/results/2026-09-27-slurp-conv-probe-read.md",
+        "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
+        "docs/results/stage2-results-ledger.md"
+      ],
+      "source_keys": [
+        "CNV",
+        "AGR",
+        "LED"
+      ]
+    },
+    {
+      "id": "C18",
+      "era": "Stage 3",
+      "cell": "KPROBE conversion probe",
+      "family_codes": [
+        "KR"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY",
+      "what_changed": "centroid boundary key on the 55 rows whose gold boundary it newly delivers",
+      "roster": "Fold A 55 (gold-selected)",
+      "comparator_and_null": "sealed PLAN answers",
+      "delta_intent_pp": "m = 24 of 55 = 43.64 % [31.37, 56.73] (Wilson, computed here)",
+      "delta_slu_f1_pp": "-",
+      "interval": "CI95",
+      "verdict_as_recorded": "DESCRIPTIVE (form proof)",
+      "replication": "-",
+      "instrument_flag": "n/a",
+      "instrument_flag_meaning": "no effectiveness contrast (instrument, probe, structural or engineering closure)",
+      "sources": [
+        "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md (expected_effect_declaration: KPROBE 24 of 55)",
+        "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1-preregistration.md"
+      ],
+      "source_keys": [
+        "KPB",
+        "CMP"
+      ]
+    },
+    {
+      "id": "C19",
+      "era": "Stage 3",
+      "cell": "AGREE (agreement term)",
+      "family_codes": [
+        "KR"
+      ],
+      "family": "KNOWLEDGE RETRIEVAL / KEY",
+      "what_changed": "exemplar-intent agreement fused into Perception's boundary ranking (w_agree 1.0, recall k 60, 8-1-8)",
+      "roster": "Fold A 1,080",
+      "comparator_and_null": "in-chain A/A (w_agree 0.0), same campaign",
+      "delta_intent_pp": "82.50 -> 85.83, +3.33 [+1.57, +5.09] (67 saves / 31 harms)",
+      "delta_slu_f1_pp": "63.31 -> 65.16, +1.85 [+0.23, +3.47]",
+      "interval": "CI95",
+      "verdict_as_recorded": "ADMITTED on Fold A, pending fresh-roster replication; retained into COMP-1 (decision 161)",
+      "replication": "pending (COMP-1 DEV round)",
+      "instrument_flag": "ok",
+      "instrument_flag_meaning": "stands under the corrected instrument (effect far outside the band, offline, or same-pool)",
+      "sources": [
+        "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md",
+        "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+      ],
+      "source_keys": [
+        "AGR",
+        "DEC"
+      ]
+    }
+  ]
+}
