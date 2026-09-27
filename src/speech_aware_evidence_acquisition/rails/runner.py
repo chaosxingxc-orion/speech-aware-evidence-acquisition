@@ -45,6 +45,15 @@ from .knowledge import (
 )
 from .native_episode_config import NativeEpisodeRunBinding
 from .obs import ObsPacket, default_obs_packet
+from .solver_citation import (
+    CITED_ANSWER_NORMALISER_IDS,
+    CITED_ANSWER_RESPONSE_FORMAT_ID,
+    SOLVER_CITATIONS_RECEIPT_SCHEMA,
+    SolverCitationError,
+    bind_cited_completion,
+    cited_answer_response_format,
+    cited_answer_response_format_for,
+)
 from .observe import ObserveStep
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 from .task_adapter import TaskAdapter, TaskSample
@@ -2076,6 +2085,13 @@ async def _invoke_native_role_episode(
     # byte-identical to the pre-E17 tree's, and the per-role digests are
     # already sealed per request in ``rails.core_client.RequestTiming``.
     tool_rendering_records: list[dict[str, object]] = []
+    # Gap G1 plumbing (``rails.solver_citation``): the supplied-id set of
+    # every cited-answer contact, keyed by contact id, and the per-row
+    # citation records sealed under ``solver_citations``. Both stay empty --
+    # and the receipt byte-identical -- unless the ANSWERING phase declares
+    # ``saea-solver-cited-answer-v1``.
+    citation_contacts: dict[str, dict[str, object]] = {}
+    citation_records: list[dict[str, object]] = []
 
     def context():
         return _runtime_context(
@@ -2731,6 +2747,46 @@ async def _invoke_native_role_episode(
             prior = proposal_contacts.setdefault(plan.contact_id, record)
             if prior != record:
                 raise RailsRunnerError("one native contact changed its candidate proposal view")
+        if program.phase(request.role_id).response_format_id == CITED_ANSWER_RESPONSE_FORMAT_ID:
+            # Gap G1 plumbing (``rails.solver_citation``): the citation arrays
+            # of this contact's response format may spell only the evidence
+            # ids THIS request renders -- the same enumeration the role-context
+            # and node-context seams take as ``available_evidence_ids`` -- so an
+            # unsupplied citation is impossible under constrained decoding and
+            # is refused again at the seal (``capture_completion``). Only the
+            # response format moves: every message byte is the un-armed
+            # contact's own, and the plan is re-bound so the sealed contact
+            # plan carries the decoding it actually sent.
+            if material.response_format != cited_answer_response_format():
+                raise RailsRunnerError(
+                    "cited-answer phase material differs from the registered contract"
+                )
+            if config.deliver_normaliser_id not in CITED_ANSWER_NORMALISER_IDS:
+                # The loader refuses this pairing before contact; restated
+                # here so a binding built around the loader cannot deliver
+                # the envelope as the answer either.
+                raise RailsRunnerError(
+                    "the cited-answer contract requires a cited-answer delivery normaliser"
+                )
+            if request.context.variant_arm_id is not None:
+                raise RailsRunnerError(
+                    "the cited-answer contract does not compose with supply-variant arms"
+                )
+            supplied_ids = tuple(dict.fromkeys(
+                part["evidence_id"] for part in messages[1]["content"]
+                if isinstance(part, Mapping) and isinstance(part.get("evidence_id"), str)
+            ))
+            decoding = {
+                **decoding, "response_format": cited_answer_response_format_for(supplied_ids),
+            }
+            plan = replace(plan, decoding_params=decoding).validate()
+            state.current_contact = plan
+            citation_record = {"supplied_value_ids": supplied_ids}
+            prior_citation = citation_contacts.setdefault(plan.contact_id, citation_record)
+            if prior_citation != citation_record:
+                raise RailsRunnerError(
+                    "one native contact changed its cited-answer supplied set"
+                )
         return NativeRoleSpeechBinding(
             role_id=request.role_id, sample_id=ctx.sample_id,
             role_query=visit["query"], base_messages=messages,
@@ -2774,12 +2830,40 @@ async def _invoke_native_role_episode(
             )
         if before is None or plan is None or request.context.agent_contact_id != plan.contact_id:
             raise RailsRunnerError("native completion lost its actual speech contact")
+        state_content, cited_value_ids = completion.text, ()
+        citation = citation_contacts.get(plan.contact_id)
+        if citation is not None:
+            # Gap G1 plumbing (``rails.solver_citation``): the sealed state is
+            # the ANSWER's own bytes and ``cited_value_ids`` the ids it cites,
+            # validated against the ids this very contact rendered; the raw
+            # envelope stays bound through ``source_response_sha256``. A
+            # citation of unsupplied evidence is a refusal, never a silent
+            # drop. A non-``stop`` finish is sealed verbatim with no citation
+            # and left to the finite-completion policy that owns it.
+            try:
+                capture = bind_cited_completion(
+                    completion.text, finish_reason=completion.finish_reason,
+                    supplied_value_ids=citation["supplied_value_ids"],
+                    contact_id=plan.contact_id, role_id=request.role_id,
+                    response_text_sha256=completion.response_text_sha256,
+                )
+            except SolverCitationError as error:
+                raise RailsRunnerError(f"cited-answer contract refused: {error}") from error
+            state_content, cited_value_ids = capture.state_content, capture.cited_value_ids
+            prior_records = [
+                row for row in citation_records if row["contact_id"] == plan.contact_id
+            ]
+            if prior_records and prior_records != [dict(capture.record)]:
+                raise RailsRunnerError("one native contact sealed two different citations")
+            if not prior_records:
+                citation_records.append(dict(capture.record))
         source = seal_phase_response_state(
             phase_name=request.role_id, sample_id=before.sample_id,
-            state_content=completion.text, raw_response_text=completion.text,
+            state_content=state_content, raw_response_text=completion.text,
             source_query_state_sha256=before.query_state.content_hash(),
             producer_policy_id=program.program_id,
             state_namespace=plan.contact_id,
+            cited_value_ids=cited_value_ids,
         )
         if constant_tool_names is not None:
             # E17: the constancy evidence. ``tool_schemas_sha256`` is the
@@ -4090,6 +4174,20 @@ async def _invoke_native_role_episode(
             # fillers. Never the text: a delivered SLURP answer carries slot
             # fillers taken from speech.
             compact_receipt["deliver_normaliser"] = deliver_normaliser_receipt
+        if citation_records:
+            # Gap G1 plumbing (``rails.solver_citation``): one block per row,
+            # one record per cited-answer contact -- the ids this contact
+            # rendered, the ids its answer cited (intent and per entity), the
+            # answer's digest and the raw response digest it was cut from.
+            # Ids, counts and digests only; never the answer or a knowledge
+            # body. Absent on every un-armed row, so such a row's receipt is
+            # byte-identical to its prior self. This is the per-row half of
+            # the credit edge ``analysis.citation_credit`` aggregates.
+            compact_receipt["solver_citations"] = {
+                "schema": SOLVER_CITATIONS_RECEIPT_SCHEMA,
+                "response_format_id": CITED_ANSWER_RESPONSE_FORMAT_ID,
+                "contacts": [dict(row) for row in citation_records],
+            }
         if acquisition_policy is not None:
             # E18: one block per row, naming the node, its registered policy
             # and budget, and one row per acquisition visit -- kind, policy,

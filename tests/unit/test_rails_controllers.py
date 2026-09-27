@@ -77,6 +77,12 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-findings-v1": (
         ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
     ),
+    # Gap G1 plumbing, 2026-09-26 (rails.solver_citation): the same four
+    # phases and ceiling 11; only the Solver's response_format_id moves, to
+    # the registered cited-answer contract.
+    "phase-native-candidates-review-revise-cited-v1": (
+        ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
+    ),
     # E1, 2026-09-16 (M0): the same four phases with the review loop off, so
     # Reviewer and Planner never get a node -- ceiling drops from 11 to 2.
     "phase-native-candidates-solve-v1": (
