@@ -1277,6 +1277,52 @@ def _refuse_low_host_memory(min_host_free_gb: float) -> None:
         )
 
 
+#: ``host-memory`` exits with this when the reading PROVES the start guard
+#: would refuse -- distinct from 0 (admits, or the reading is unavailable and
+#: ``start`` fails open) and from 2 (a usage or configuration refusal).
+HOST_MEMORY_SHORT_EXIT = 4
+
+
+def host_memory_verdict(
+    host_memory: Mapping[str, object], *, min_host_free_gb: float, margin_gb: float = 0.0
+) -> dict[str, object]:
+    """Would ``start``'s host-memory guard admit a new server right now?
+
+    ``admits`` is ``True``/``False`` on a numeric Windows reading and ``None``
+    when the reading is unavailable -- the same fail-open rule as
+    :func:`_refuse_low_host_memory`, so a swap never refuses on a reading the
+    start itself would ignore. ``margin_gb`` is headroom demanded ON TOP of
+    the guard: a geometry swap reads the host while the OLD server is still
+    resident and must not stop it on a reading that sits exactly at the line
+    (2026-09-27: 11.7 GB and 10.1 GB against 12.0 left the card empty twice).
+    """
+
+    free_gb = host_memory.get("host_free_gb")
+    required = float(min_host_free_gb) + float(margin_gb)
+    numeric = not isinstance(free_gb, bool) and isinstance(free_gb, (int, float))
+    return {
+        "schema": "saea-serving-host-memory-check-v1",
+        "host_free_gb": float(free_gb) if numeric else None,
+        "min_host_free_gb": float(min_host_free_gb),
+        "margin_gb": float(margin_gb),
+        "required_gb": required,
+        "admits": (float(free_gb) >= required) if numeric else None,
+        "host_memory": dict(host_memory),
+    }
+
+
+def _host_memory(args) -> int:
+    """Print the start guard's verdict on the CURRENT host reading without
+    starting anything (scripts/flights/batch/serving_swap.sh asks this BEFORE
+    it stops the resident geometry)."""
+
+    verdict = host_memory_verdict(
+        read_host_memory(), min_host_free_gb=args.min_host_free_gb, margin_gb=args.margin_gb
+    )
+    print(json.dumps(verdict, ensure_ascii=False, sort_keys=True))
+    return HOST_MEMORY_SHORT_EXIT if verdict["admits"] is False else 0
+
+
 def _start(args) -> int:
     from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
@@ -1819,6 +1865,21 @@ def build_parser():
             f"{NO_RESIDENT_SESSION_EXIT} when none is (for scripts that kill servers)"
         ),
     ).set_defaults(handler=_resident)
+    host_memory = subparsers.add_parser(
+        "host-memory",
+        help=(
+            "print whether start's host-memory guard would admit a new server now; exit "
+            f"{HOST_MEMORY_SHORT_EXIT} when the reading proves it would refuse"
+        ),
+    )
+    host_memory.add_argument("--min-host-free-gb", type=float, default=12.0)
+    host_memory.add_argument(
+        "--margin-gb",
+        type=float,
+        default=0.0,
+        help="headroom demanded on top of --min-host-free-gb (a swap reads before its stop)",
+    )
+    host_memory.set_defaults(handler=_host_memory)
     stop = subparsers.add_parser(
         "stop", parents=[common], help="stop the session and write session-stop.json"
     )
@@ -1860,6 +1921,7 @@ if __name__ == "__main__":  # pragma: no cover -- operator entry point
 
 __all__ = [
     "GPU_IDLE_MEMORY_MIB",
+    "HOST_MEMORY_SHORT_EXIT",
     "MONITOR_JSONL_NAME",
     "NO_RESIDENT_SESSION_EXIT",
     "REPO_ROOT",
@@ -1880,6 +1942,7 @@ __all__ = [
     "build_parser",
     "build_session_document",
     "find_resident_session",
+    "host_memory_verdict",
     "identity_mismatches",
     "main",
     "merge_server_args",

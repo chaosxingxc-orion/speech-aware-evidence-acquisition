@@ -47,6 +47,14 @@ mkdir -p "$OUT"
 python -B scripts/slurp_evo_fold_preprocess.py --roster "$ROSTER" --preflight-only --workers "$WORKERS" \
   || { echo "PREFLIGHT FAILED"; exit 3; }
 
+# Owner decision 162 (enforced for decision 163): every serving geometry starts BEFORE any CPU sidecar, and a sidecar
+# runs only beside a resident GPU session. On 2026-09-27 a resident sidecar held the host under the serving start
+# guard and two geometry restarts failed with the card empty. Refuse while no GPU session is resident and running, or
+# while a serving swap (serving_swap.sh) holds its pending marker.
+# shellcheck source=serving_lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/serving_lib.sh"
+saea_sidecar_admission "${SAEA_SERVING_SESSION:-$REPO/scripts/serving_session.sh}" || { echo "SIDECAR REFUSED"; exit 10; }
+
 (
   while true; do
     AV=$(free -g | awk '/^Mem:/{print $7}')

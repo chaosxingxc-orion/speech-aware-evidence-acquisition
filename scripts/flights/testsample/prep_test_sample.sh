@@ -89,6 +89,13 @@ run_packets() {
       resident_cpu_servers
       return 4
     fi
+    # Owner decision 162 (enforced for decision 163): the CPU sidecar starts only beside a resident, running GPU
+    # session and never during a serving swap; prep_generic_task_entry.sh refuses the same way (exit 10).
+    # shellcheck source=../batch/serving_lib.sh
+    source "$REPO/scripts/flights/batch/serving_lib.sh"
+    if ! saea_sidecar_admission "${SAEA_SERVING_SESSION:-$REPO/scripts/serving_session.sh}"; then
+      return 10
+    fi
     echo "packets: ENCODE + PROMOTE via prep_generic_task_entry.sh (roster test-sample-3010, workers 4, promote 8) $(date -u +%T)"
     PREP_ROSTER=test-sample-3010 PREP_REPO="$REPO" PREP_WORKERS=4 PREP_PROMOTE_WORKERS=8 \
       PREP_OUT="$PREPARED/packets" PREP_PROMOTION_RECEIPT="$PROMOTION_RECEIPT" \
