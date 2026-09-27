@@ -1,0 +1,71 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "role": "the sealed AGREE arm, context beside the A/A, never the bar",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "registered_by": "the coordinator",
+      "role": "the within-chain null the delta is read at (the attempt id is the coordinator's registration; read it from that package if it differs)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim, and it admits nothing beyond the no-harm entry it is registered for. No utterance text, transcript, gold label string, knowledge body or model output is printed or persisted.",
+  "decision_rule": "NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text or to exemplar composition, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name and to the rows the cap newly gives a gold exemplar (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
+  "margins": {
+    "h_intent": 0.9943,
+    "h_slu": 1.2485
+  },
+  "membership_sets": {
+    "fixed_before_contact": true,
+    "note": "the offline read's Fold A counts define the attribution groups; the per-row membership is recomputed by the same script at read time from the same pinned inputs and must reproduce these counts exactly",
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json",
+    "sha256": "3cc7cb802225b2b5917151e5dc9f42314d33b8bc641e5a430c3b54ab77f01225"
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver": "scripts/analysis/stage3_paired_read.py (branch fable/launchgate; --stage3 --package)",
+  "read_run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1",
+  "recipe_id": "slurp-stage3-w3-contrast-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-27T16:30:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired)"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
+    "comparator": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+    "in_chain_replicate": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+    "read": "SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the W3 arm and the shared A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score, and their config hashes are the registered ones.",
+    "2. Structural stage: on the arm, the Perception consumption's delivered boundary ids must equal the AGREE arm's on every row (W3 moves no key); the Solver consumption must carry 20 exemplars with at most the registered cap per intent on every row the offline read fills; the delivered card bodies must hash to the contrast release. A mismatch is an engineering defect, not an effect, and closes the read.",
+    "3. Score once per arm over the complete manifest with the standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded).",
+    "4. Paired row bootstrap (10,000 draws, seed 20260927) of the arm minus shared A/A delta on intent accuracy and on official pooled SLU-F1; the same against the sealed AGREE arm BESIDE it, never instead of it.",
+    "5. Apply the no-harm rule: ADMITTED iff the intent lower bound >= -0.9943 and the SLU lower bound >= -1.2485; HARMFUL iff either upper bound < 0 (decision 25); otherwise NOT ADMITTED (width). Never write 'gain' or 'no gain'.",
+    "6. Row attribution: the intent transition table (A/A -> arm) on the rows whose chosen-vs-gold pair the contrast lines newly name, on the rows the cap newly gives a gold exemplar, on the right rows whose block the cap changed, and on the rest -- counts only.",
+    "7. Report beside every number: the per-scenario table in the natural-mixture and equal-scenario weightings; the frontier row (decision 75); the Solver prompt tokens per contact from the sealed COST records against the A/A; the A/A's own delta against the sealed AGREE arm as the instrument's reading."
+  ],
+  "title": "Cell W3 -- the standard paired roster read on intent + SLU at the shared wave-1 in-chain A/A, under the no-harm rule, with row attribution to the fixed contrast and cap membership sets"
+}

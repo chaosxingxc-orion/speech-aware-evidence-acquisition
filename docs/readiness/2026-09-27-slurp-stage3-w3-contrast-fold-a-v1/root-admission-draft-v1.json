@@ -1,0 +1,128 @@
+{
+  "_draft_note": "A DRAFT written by the registration agent, in the repository, for root to mint on the data root with scripts/flights/w3/w3_mint_receipt.py, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "b44aa99de2f3097a1205db84fd03e1f96005ad065302d7698039184e3bb74b7b"
+    },
+    "base_cell": "the retained AGREE arm (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1): W3 is that fragment with two knowledge-content pins",
+    "config_proof": {
+      "path": "tests/unit/test_w3_config.py",
+      "sha256": "9abf0b322f82b8bcc54d7c4c2e136260061159ffb087762a0277723e1292fcb6"
+    },
+    "contrast_card_receipt": {
+      "path": "docs/receipts/knowledge/slurp-intent-contrast-cards-v1.json",
+      "sha256": "cec36eae9c87f00ef58622c10a62ce1522ab29476f203fbcd7183f69a15c0fe0"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "offline_estimates": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json",
+      "sha256": "3cc7cb802225b2b5917151e5dc9f42314d33b8bc641e5a430c3b54ab77f01225"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "0446b6f51e159fc55af85f26ec34da922304d75e30df9fa398588bee5f0570cc"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "d23595db8707f23b7cfe37af9842f62670fe0b5f28e92c85fbd6124ea1eb0e62"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/registered-facts-v1.json",
+      "sha256": "c6b0dbe804a752ff313912b744d2a32e7e433cfe88b28b4b8548175b56a8cf22"
+    },
+    "registration_base_commit": "9673e9e2"
+  },
+  "authorization_basis": "Owner decision 164 (the knowledge wave); rows 139, 133, 28, 86, 101, 77; the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "expected_contacts_per_1080_row_cell": 4385,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 33930,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "cell_kind": "Stage-3 knowledge-content cell (label none), registered as a no-harm read. One arm on TRAIN Fold A 1,080 read at the shared wave-1 in-chain A/A (the coordinator's, under its own receipt), and a four-row form smoke outside the chain.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a no-harm read of one knowledge-content cell, never reported as a gain.",
+  "coordinator": "Claude Opus 5.5",
+  "decision": "Fly cell W3: the retained AGREE arm with the intent-boundaries store moved to the contrast-card release and the Solver exemplar block capped at 11 per intent (still 20), against the sealed AGREE arm read at the shared wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1. Admission is NO HARM at the Fold A own-null half-widths (intent 0.9943, SLU 1.2485); the cell is never reported as a gain.",
+  "decision_id": "slurp-stage3-w3-contrast-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-W3-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "the shared wave-1 A/A (the coordinator's own receipt)",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "reporting the cell as a gain"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "partition": "TRAIN Fold A 1,080",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "minted by scripts/flights/repin_cell.py at the flip (each cell's own, item E16); expected output digest eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
+      "protocol": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f"
+    },
+    "note": "the values of the fragments exactly as committed at 9673e9e2; repin_cell.py recomputes them at the flip.",
+    "smoke": {
+      "composed_config": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
+      "protocol": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
