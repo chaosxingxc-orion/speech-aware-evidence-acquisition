@@ -1,0 +1,857 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (keyed by run id). The same block is repeated in the preregistration's fenced json for readability; this copy has precedence.",
+  "attribution_split": {
+    "affordable": true,
+    "cost_each": "about 1.8816 GPU hours and about 4,385 contacts per 1,080-row cell at the sealed AGREE arm's own rate (frontier read), read at the same shared A/A -- so the attribution split costs about 3.8 GPU hours for the pair",
+    "how_to_derive": "W3a alone = this baseline with the train-exemplars Solver supply restored to AGREE's (fuse_policy saea-fuse-supplyfilter-v1, k 20, m/c/top_l 20); W3b alone = this baseline with the intent-boundaries pins and the two added receipts restored to AGREE's. Each is one derive_slurp_w3_cells.py flag away and re-uses this package's recipe shape.",
+    "registered": false,
+    "what_attribution_is_available_without_it": "the read attributes the delta row by row to the fixed membership sets of offline-estimates-v1.json (rows whose pair the contrast lines newly name; rows the cap newly gives a gold exemplar), which is attribution by exposure, not by ablation",
+    "why_not_registered": "the brief registers the split only if the coordinator asks; nothing here registers W3a or W3b alone"
+  },
+  "authority_relpaths": [
+    "docs/results/2026-09-27-slurp-knowledge-content-audit.md",
+    "docs/results/2026-09-27-slurp-agree-arm-error-sources.md",
+    "docs/results/2026-09-27-slurp-mechanism-synthesis.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/README.md",
+    "scripts/checks/stage3_effect_floor_check.py"
+  ],
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "caps_are_the_agree_arithmetic": true,
+    "derivation": [
+      "generation_calls_cap = 1,080 rows x 11 contacts per row (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1) = 11,880; the smoke 4 x 11 = 44",
+      "fit_endpoint_calls_cap = 4 x generation = 47,520 (smoke 176); native_task_contract_calls_cap 6,480 (smoke 24); repeated_speech_audio_seconds_cap 33,930 (smoke 117); gpu_hours_fit_inclusive 12.0 (smoke 1.0) -- the AGREE family's own ceilings",
+      "expected spend at the sealed AGREE arm's own realized rate: about 4,385 contacts and about 1.8816 GPU hours per 1,080 rows",
+      "official_complete_scoring_jobs = 1 for the arm, one job over the complete manifest through core.scoring_batch, never sharded; the smoke is never scored"
+    ],
+    "run_cumulative": "every cap binds across ALL attempts of a run id",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "byte_identity_expectation": {
+    "agree_arm_supply_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "agree_smoke_supply_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
+    "claim": "the first-phase (Perception) supply reads facet keys, the agreement table and value ids; W3 moves none of them (the contrast release keeps every facet and value id), so every supply the flip mints must carry the AGREE family's own output digest -- a different digest means the boundary retrieval moved: stop and report"
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "in_chain_replicate": {
+      "registered_by": "the coordinator (the shared wave-1 A/A)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "the plan's own null on this roster (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d)"
+    },
+    "never_reflown": true,
+    "official": {
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575
+    },
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "composed_config_diff_against_the_agree_cell": {
+    "arm": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "frozen_source_receipts": [
+        "preparation_source_receipts"
+      ],
+      "w3a_contrast_store_pins": [
+        "knowledge_stores.intent-boundaries.release.relpath",
+        "knowledge_stores.intent-boundaries.release.sha256",
+        "knowledge_stores.intent-boundaries.snapshot.relpath",
+        "knowledge_stores.intent-boundaries.snapshot.sha256"
+      ],
+      "w3b_exemplar_cap_pins": [
+        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c",
+        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m",
+        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_policy",
+        "knowledge_stores.train-exemplars.phase_supply.solver.k"
+      ]
+    },
+    "note": "flattened composed configs (core.config.compose); re-proven by tests/unit/test_w3_config.py",
+    "smoke": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "frozen_source_receipts": [
+        "preparation_source_receipts"
+      ],
+      "w3a_contrast_store_pins": [
+        "knowledge_stores.intent-boundaries.release.relpath",
+        "knowledge_stores.intent-boundaries.release.sha256",
+        "knowledge_stores.intent-boundaries.snapshot.relpath",
+        "knowledge_stores.intent-boundaries.snapshot.sha256"
+      ],
+      "w3b_exemplar_cap_pins": [
+        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c",
+        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m",
+        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_policy",
+        "knowledge_stores.train-exemplars.phase_supply.solver.k"
+      ]
+    }
+  },
+  "expectation": {
+    "claims_benefit": false,
+    "declared_expected_effect_pp": 0.0,
+    "scale_only_not_declared": {
+      "cap_wrong_rows_gold_exemplar_newly_present": 6,
+      "contrast_rows_newly_named_on_a_delivered_card": 48,
+      "note": "For scale only, NOT a declaration and NOT used by any gate: the rows W3 newly reaches times the CONV delivery rate, as the knowledge audit quoted its own ceilings. 1 row = 0.0926 pp on 1,080 rows.",
+      "rows_ceiling_pp": 5.0,
+      "rows_times_conv_rate_pp": 2.286
+    },
+    "why_no_benefit_is_declared": "Row 139: an expectation may be declared only from a measured conversion analogue. The two measured conversions on this programme are DELIVERY conversions of the gold boundary card to Perception (CONV 32 of 70 = 0.457143, KPROBE 24 of 55 = 0.436364). W3a delivers nothing new -- the delivered set is the AGREE arm's own, byte for byte -- it changes what an already-delivered card SAYS, and no contrast text has ever been flown and read; W3b changes the composition of a block delivered to the SOLVER, a different node and channel from the one CONV measured. Neither analogue applies, so the cell is registered as a no-harm read and says so."
+  },
+  "fit_gate": {
+    "headroom_before": "the AGREE arm registered Solver 21,278 of 21,504 usable tokens (np4 slot 24,576 minus the 3,072 reserve): 226 tokens of headroom on the pre-flight placeholder count",
+    "proofs": {
+      "line": "The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; the offline projection moves a Solver contact by -53.886 tokens on average (max +75.528, 52 rows above zero). Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5).",
+      "per_cell": {
+        "arm": {
+          "blockers": null,
+          "first_phase_supply_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+          "identical_to_agree": true,
+          "per_phase": {
+            "perception": {
+              "agree_registered_rendered_text_tokens": 19449,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 1874,
+              "physical_margin_tokens": 4946,
+              "rendered_text_tokens": 19087,
+              "required_window_tokens": 19630
+            },
+            "planner": {
+              "agree_registered_rendered_text_tokens": 19252,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 2071,
+              "physical_margin_tokens": 5143,
+              "rendered_text_tokens": 18890,
+              "required_window_tokens": 19433
+            },
+            "reviewer": {
+              "agree_registered_rendered_text_tokens": 19313,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 2010,
+              "physical_margin_tokens": 5082,
+              "rendered_text_tokens": 18951,
+              "required_window_tokens": 19494
+            },
+            "solver": {
+              "agree_registered_rendered_text_tokens": 21278,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 45,
+              "physical_margin_tokens": 3117,
+              "rendered_text_tokens": 20916,
+              "required_window_tokens": 21459
+            }
+          }
+        },
+        "smoke": {
+          "blockers": null,
+          "first_phase_supply_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
+          "identical_to_agree": true,
+          "per_phase": {
+            "perception": {
+              "agree_registered_rendered_text_tokens": 19449,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 1874,
+              "physical_margin_tokens": 4946,
+              "rendered_text_tokens": 19087,
+              "required_window_tokens": 19630
+            },
+            "planner": {
+              "agree_registered_rendered_text_tokens": 19252,
+              "decision": "ALLOW",
+              "delta_vs_agree": -362,
+              "operational_margin_tokens": 2071,
+              "physical_margin_tokens": 5143,
+              "rendered_text_tokens": 18890,
+              "required_window_tokens": 19433
+            },
+            "reviewer": {
+              "agree_registered_rendered_text_tokens": 19313,
+              "decision": "ALLOW",
+              "delta_vs_agree": -363,
+              "operational_margin_tokens": 2011,
+              "physical_margin_tokens": 5083,
+              "rendered_text_tokens": 18950,
+              "required_window_tokens": 19493
+            },
+            "solver": {
+              "agree_registered_rendered_text_tokens": 21278,
+              "decision": "ALLOW",
+              "delta_vs_agree": -363,
+              "operational_margin_tokens": 46,
+              "physical_margin_tokens": 3118,
+              "rendered_text_tokens": 20915,
+              "required_window_tokens": 21458
+            }
+          }
+        }
+      },
+      "realised_agree_requests": {
+        "cost_records": 4385,
+        "max_prompt_tokens": 14561,
+        "per_contact_prompt_limit_tokens": 20990,
+        "trace": {
+          "relpath": "runs/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1.trace.jsonl",
+          "sha256": "faffbcca32eeec86dab97f11f4499a6b82fc8181bff6c3d9c97636f676883472"
+        }
+      },
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/preflight-proofs-v1.json",
+      "sha256": "31bd7f9833836c8a2989e26ce85882390d6683f64411773a4abc92338c31cbf2"
+    },
+    "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -457 tokens); the capped block still carries 20 exemplars, whose lengths differ row by row",
+    "what_must_be_freed": "nothing for W3 alone; W1's saving is not needed and is not spent"
+  },
+  "fold_a_offline_estimates": {
+    "contrast_cards": {
+      "both_cards_delivered_neither_names_the_other_before": 75,
+      "of_which_named_after": 41,
+      "pair_named_on_a_delivered_card_after": 89,
+      "pair_named_on_a_delivered_card_before": 41,
+      "wrong_rows": 153
+    },
+    "exemplar_cap": {
+      "right_rows": {
+        "absolute_gold_majority_broken": 0,
+        "block_changed": 700,
+        "chosen_intent_majority_before": 0,
+        "gold_count_down": 665,
+        "gold_count_up": 21,
+        "gold_zero_before": 9,
+        "gold_zero_to_present": 4,
+        "plurality_GOLD_to_GOLD": 791,
+        "plurality_TIE_to_TIE": 22,
+        "plurality_WRONG_to_WRONG": 114,
+        "rows": 927,
+        "unique_gold_plurality_broken": 0,
+        "wrong_plurality_removed": 0
+      },
+      "wrong_rows": {
+        "absolute_gold_majority_broken": 0,
+        "block_changed": 47,
+        "chosen_intent_majority_before": 95,
+        "gold_count_down": 5,
+        "gold_count_up": 28,
+        "gold_zero_before": 38,
+        "gold_zero_to_present": 6,
+        "plurality_GOLD_to_GOLD": 17,
+        "plurality_TIE_to_TIE": 19,
+        "plurality_WRONG_to_WRONG": 117,
+        "rows": 153,
+        "unique_gold_plurality_broken": 0,
+        "wrong_plurality_removed": 0
+      }
+    },
+    "note": "counts only over the AGREE arm's sealed Fold A rows (gold offline); never a tuning input",
+    "risk": {
+      "right_rows_absolute_gold_majority_broken": 0,
+      "right_rows_unique_gold_plurality_broken": 0
+    },
+    "source": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json",
+      "script": {
+        "relpath": "scripts/analysis/slurp_w3_contrast_cap_offline.py",
+        "sha256": "3853a58d86022a31c3e4ea15d565d0ee5897ccab2c887dd4c288d96326ebdf85"
+      },
+      "sha256": "4f9fa9c38b38e2f064b245e666f5ed1bd048a37f9e744df4b109055c73a8eca8"
+    }
+  },
+  "identity": {
+    "arm": {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w3-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w3-fold-a-v1",
+      "composed_config_hash": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w3-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-FIT-V1"
+      },
+      "frozen_source_receipts_added": [
+        {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/completion.json",
+          "root": "data",
+          "sha256": "7858ea595d60e0713fabccacd1cc6283364196213eb99b498560d7a4e7c06421"
+        },
+        {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/release.json",
+          "root": "data",
+          "sha256": "38af21d35a2efe9d62163f8824b80a159692e4ccab36e46d5db66c05d2d9df31"
+        }
+      ],
+      "generation_budget_target": 4385,
+      "intent_boundaries_pins": {
+        "release": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/release.json",
+          "sha256": "38af21d35a2efe9d62163f8824b80a159692e4ccab36e46d5db66c05d2d9df31"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/snapshot.json",
+          "sha256": "130e9e2e7942a70ec2c556fd6846b7c3a3bd19572222c1b32f11d41e4ff1c2fb"
+        }
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
+      "solver_exemplar_supply": {
+        "fuse_coverage": {
+          "c": 11,
+          "m": 300,
+          "top_l": 20
+        },
+        "fuse_policy": "saea-fuse-supplyfilter-target-cap-v1",
+        "k": 300,
+        "rank_policy": "saea-rank-wcos-prior-agree-v1",
+        "rank_weights": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "tau": 0.0
+      },
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w3-fold-a-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w3-fold-a-smoke-4-v1",
+      "composed_config_hash": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w3-fold-a-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 176,
+        "generation_calls_cap": 44,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 24,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 117
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-smoke-4-fit-v1",
+        "contact_cap": 176,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-FIT-V1"
+      },
+      "frozen_source_receipts_added": [
+        {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/completion.json",
+          "root": "data",
+          "sha256": "7858ea595d60e0713fabccacd1cc6283364196213eb99b498560d7a4e7c06421"
+        },
+        {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/release.json",
+          "root": "data",
+          "sha256": "38af21d35a2efe9d62163f8824b80a159692e4ccab36e46d5db66c05d2d9df31"
+        }
+      ],
+      "generation_budget_target": null,
+      "intent_boundaries_pins": {
+        "release": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/release.json",
+          "sha256": "38af21d35a2efe9d62163f8824b80a159692e4ccab36e46d5db66c05d2d9df31"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/snapshot.json",
+          "sha256": "130e9e2e7942a70ec2c556fd6846b7c3a3bd19572222c1b32f11d41e4ff1c2fb"
+        }
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "protocol_hash": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1",
+      "solver_exemplar_supply": {
+        "fuse_coverage": {
+          "c": 11,
+          "m": 300,
+          "top_l": 20
+        },
+        "fuse_policy": "saea-fuse-supplyfilter-target-cap-v1",
+        "k": 300,
+        "rank_policy": "saea-rank-wcos-prior-agree-v1",
+        "rank_weights": {
+          "w_agree": 0.0,
+          "w_cos": 1.0,
+          "w_prior": 0.0
+        },
+        "tau": 0.0
+      },
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "implementation_identity": "rails/kb_policy.py gains the registered fuser (the canonical registration site). Its sha256 is part of every prepared supply's identity (core.flight.runtime._phase_seed_inputs sources.implementation), so on the merge every READY-but-unflown cell of another family must be re-pinned at the flight commit before it flies; the flown default selection is unchanged (tests/unit/test_kb_policy_target_cap.py and the existing kb_policy tests).",
+  "no_harm_rule": "NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text or to exemplar composition, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name and to the rows the cap newly gives a gold exemplar (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
+  "owner_decisions": {
+    "133": "intent accuracy primary, official SLU-F1 the guard",
+    "139": "an expectation is declared only from a measured conversion analogue; otherwise the read is no-harm or form-proof and says so",
+    "164": "the knowledge wave: W3 = intent contrast cards + a per-intent exemplar cap, prepared now, flip-ready by about 01:00Z 2026-09-28, read at the shared wave-1 A/A",
+    "28 and 86": "TRAIN Fold A numbers are development numbers, never a test claim"
+  },
+  "prohibitions": [
+    "Never reported as a gain (no benefit declared).",
+    "No test-split contact, no DEV read; Fold B was read OFFLINE for tuning only (gold labels and pinned vectors, no contact).",
+    "No re-flying of the sealed AGREE arm; no registration of the shared A/A by this package.",
+    "No third factor: roster, geometry, session, program, agreement term, slot store, role graph, templates and scorers are AGREE's.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped."
+  ],
+  "registered_at_utc": "2026-09-27T16:30:00.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: that the contrast release loads, that the capped Solver block still delivers twenty exemplars, that every request fits and that the episode completes. Scored by no one, read by no one (instrument rule 5).",
+      "primary_metric": "none (structural form only)",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-W3-FOLD-A-V1": {
+      "admission": "no-harm",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "harm_margin_pp": 1.2485,
+      "harm_margin_pp_by_metric": {
+        "intent_accuracy": 0.9943,
+        "slu_f1": 1.2485
+      },
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "A knowledge-content cell registered as a NO-HARM read because no measured conversion applies (row 139; registered-facts-v1.json expectation). The harm margin is the measured floor of this design at n = 1,080 -- the Fold A own-null half-width, SLU 1.2485 (the gate's single field) and intent 0.9943 (the primary metric's own, applied by the read). The delta is read against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1, registered by the coordinator and flown in the same chain (rule 3), never against the sealed AGREE arm alone. Never reported as a gain.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "rows": 1080
+    }
+  },
+  "study_commit_at_registration": "701bd63a",
+  "the_item": {
+    "evidence": {
+      "K1": "docs/results/2026-09-27-slurp-knowledge-content-audit.md section 1: every card has exactly one activation sentence and one confusable exclusion, 57.7 % of each card is boilerplate; on 75 of the AGREE arm's 153 intent-wrong rows both the right and the chosen card are delivered and neither names the other; 119 distinct confusion pairs",
+      "K6": "docs/results/2026-09-27-slurp-knowledge-content-audit.md section 2.3: 38 wrong rows have 0 gold-intent exemplars among the 20; the exemplar majority is the chosen (wrong) intent on 93",
+      "error_sources": "docs/results/2026-09-27-slurp-agree-arm-error-sources.md: the wrong answer is Perception's first guess on 132 of 153; the 20 exemplars outvote gold on 107 of 152",
+      "synthesis": "docs/results/2026-09-27-slurp-mechanism-synthesis.md: every gain so far was row-matched CONTENT to the deciding node; every harm a FORM change without content -- so W3 adds content and changes no form it does not pay for in content"
+    },
+    "w3a": {
+      "build_script": {
+        "relpath": "scripts/build_slurp_intent_contrast_cards.py",
+        "sha256": "ebd5b1e5dd10b23f4e639678e06e54c32a0613108b52842c32bc76a60d801274"
+      },
+      "card_format": [
+        "Intent <id>.",
+        "Activation boundary:",
+        "- <authored, verbatim>",
+        "Confusable exclusions:",
+        "- <authored, verbatim>",
+        "Nearest rivals, typical TRAIN words (this intent | rival):",
+        "- <rival intent>: <word>, <word> [<slot type>] | <word>, <word> [<slot type>]   (2-4 lines, nearest first)",
+        "Limitations:",
+        "- <card-specific bullets only, verbatim; the section is absent when the card had none>"
+      ],
+      "derivation": {
+        "cues_per_side": 2,
+        "header": "Nearest rivals, typical TRAIN words (this intent | rival):",
+        "max_rivals": 5,
+        "min_df_gap": 0.05,
+        "min_support_utterances": 3,
+        "removed_boilerplate": {
+          "shared_limitation_bullets": 1,
+          "uncertainty_behavior_identical_on_all_cards": true
+        },
+        "stopword_count": 76,
+        "token_rule": "rivals nearest-first while the rebuilt card tokenises to no more tokens than the flown card",
+        "type_gap": 0.3,
+        "types_per_side": 1
+      },
+      "invariants": {
+        "every_card_tokens_not_above_flown": true,
+        "facets_unchanged": true,
+        "value_ids_unchanged": true
+      },
+      "receipt": {
+        "relpath": "docs/receipts/knowledge/slurp-intent-contrast-cards-v1.json",
+        "sha256": "cec36eae9c87f00ef58622c10a62ce1522ab29476f203fbcd7183f69a15c0fe0"
+      },
+      "release": {
+        "builder_policy_id": "saea-slurp-intent-contrast-cards-v1",
+        "completion": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/completion.json",
+          "sha256": "7858ea595d60e0713fabccacd1cc6283364196213eb99b498560d7a4e7c06421"
+        },
+        "namespace": "knowledge/slurp/semantic/intent-boundaries-contrast-v1",
+        "release": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/release.json",
+          "sha256": "38af21d35a2efe9d62163f8824b80a159692e4ccab36e46d5db66c05d2d9df31"
+        },
+        "reloaded_through_load_knowledge_store_binding": true,
+        "snapshot": {
+          "content_sha256": "130e9e2e7942a70ec2c556fd6846b7c3a3bd19572222c1b32f11d41e4ff1c2fb",
+          "file_sha256": "12632527421ed80b844bbab55d4b8e0b520d1844665cee259ba1b55a3983259a",
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/snapshot.json"
+        },
+        "source": {
+          "relpath": "prepared/SAEA-SLURP-W3-INTENT-CONTRAST-CARDS-V1/source-v1.json",
+          "sha256": "ecc804bb0f78425c5e8d3f357bb05adbab3a0e1ecec351668809581abbb456e9"
+        },
+        "source_split_identity_hash": "de224e5b080fb3b9b657a64677ff96cb914e335daae18464111e92737060d87f"
+      },
+      "rivals_carried_distribution": {
+        "2": 11,
+        "3": 38,
+        "4": 11
+      },
+      "tokens": {
+        "all_60_cards_flown": 7389,
+        "all_60_cards_rebuilt": 6932,
+        "delta_all_60": -457,
+        "max_card_delta": 0,
+        "min_card_delta": -19,
+        "tokenizer": {
+          "binary": "/home/chao/llama.cpp/build/bin/llama-tokenize",
+          "invocations": 300,
+          "model": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "same_as": "scripts/analysis/slurp_g5_reviewer_instruction_token_measurement.py"
+        }
+      },
+      "what": "the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added"
+    },
+    "w3b": {
+      "cap": 11,
+      "depth": 300,
+      "fold_b_tuning": {
+        "admission_depth_rule": "the smallest listed depth at which the capped block fills 20 on every Fold B row the uncapped block fills",
+        "chosen_cap": 11,
+        "chosen_depth": 300,
+        "depth_table_at_the_chosen_cap": {
+          "100": {
+            "fold_a_filled": 991,
+            "fold_b_filled": 985
+          },
+          "1000": {
+            "fold_a_filled": 1080,
+            "fold_b_filled": 1080
+          },
+          "20": {
+            "fold_a_filled": 333,
+            "fold_b_filled": 370
+          },
+          "200": {
+            "fold_a_filled": 1074,
+            "fold_b_filled": 1072
+          },
+          "2000": {
+            "fold_a_filled": 1080,
+            "fold_b_filled": 1080
+          },
+          "300": {
+            "fold_a_filled": 1080,
+            "fold_b_filled": 1080
+          },
+          "500": {
+            "fold_a_filled": 1080,
+            "fold_b_filled": 1080
+          },
+          "60": {
+            "fold_a_filled": 860,
+            "fold_b_filled": 868
+          },
+          "9354": {
+            "fold_a_filled": 1080,
+            "fold_b_filled": 1080
+          }
+        },
+        "rule": "the smallest cap N whose GAIN (unique wrong-intent pluralities the cap removes) is at least its HARM (unique gold pluralities the cap removes), over TRAIN Fold B 1,080 with gold read offline; fixed before the table was read",
+        "table": {
+          "1": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 1080,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 262,
+            "gold_presence_gained": 52,
+            "harm_gold_plurality_removed": 778,
+            "net": -516
+          },
+          "10": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 782,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 8,
+            "gold_presence_gained": 9,
+            "harm_gold_plurality_removed": 41,
+            "net": -33
+          },
+          "11": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 710,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 9,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "12": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 661,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 8,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "13": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 618,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 6,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "14": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 558,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 5,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "15": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 506,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 5,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "16": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 439,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 5,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "17": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 360,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 0,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "18": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 261,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 0,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "19": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 146,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 0,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "2": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 1080,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 262,
+            "gold_presence_gained": 38,
+            "harm_gold_plurality_removed": 778,
+            "net": -516
+          },
+          "20": {
+            "absolute_gold_majority_broken": 0,
+            "blocks_changed": 0,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 0,
+            "gold_presence_gained": 0,
+            "harm_gold_plurality_removed": 0,
+            "net": 0
+          },
+          "3": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 1070,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 257,
+            "gold_presence_gained": 33,
+            "harm_gold_plurality_removed": 774,
+            "net": -517
+          },
+          "4": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 1057,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 234,
+            "gold_presence_gained": 23,
+            "harm_gold_plurality_removed": 743,
+            "net": -509
+          },
+          "5": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 1035,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 191,
+            "gold_presence_gained": 17,
+            "harm_gold_plurality_removed": 651,
+            "net": -460
+          },
+          "6": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 992,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 130,
+            "gold_presence_gained": 15,
+            "harm_gold_plurality_removed": 522,
+            "net": -392
+          },
+          "7": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 948,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 87,
+            "gold_presence_gained": 14,
+            "harm_gold_plurality_removed": 363,
+            "net": -276
+          },
+          "8": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 893,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 57,
+            "gold_presence_gained": 11,
+            "harm_gold_plurality_removed": 249,
+            "net": -192
+          },
+          "9": {
+            "absolute_gold_majority_broken": 673,
+            "blocks_changed": 832,
+            "blocks_filled_to_20": 1080,
+            "gain_wrong_plurality_removed": 27,
+            "gold_presence_gained": 10,
+            "harm_gold_plurality_removed": 140,
+            "net": -113
+          }
+        }
+      },
+      "fuser": {
+        "id": "saea-fuse-supplyfilter-target-cap-v1",
+        "module": "src/speech_aware_evidence_acquisition/rails/kb_policy.py",
+        "pure_rule": "select_target_capped",
+        "unit_tests": "tests/unit/test_kb_policy_target_cap.py"
+      },
+      "what": "the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to saea-fuse-supplyfilter-target-cap-v1: walk the pure-cosine ranking, take at most 11 exemplars per intent, stop at 20; admission depth and recall k 300",
+      "why_this_cap": "the declared rule (smallest N whose GAIN >= HARM on TRAIN Fold B) selects N = 11: at N = 11 GAIN 0 / HARM 0 / presence 9; at N = 10 GAIN 8 / HARM 41. Every smaller cap breaks more right-intent pluralities than wrong-intent ones on Fold B, so the registered cap is the one that removes no gold majority while still letting other intents into blocks one intent used to fill."
+    }
+  }
+}

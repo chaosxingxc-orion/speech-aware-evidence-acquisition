@@ -1,0 +1,369 @@
+{
+  "contacts": {
+    "asr": 0,
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "driver": {
+    "relpath": "scripts/analysis/slurp_w3_contrast_cap_offline.py",
+    "sha256": "3853a58d86022a31c3e4ea15d565d0ee5897ccab2c887dd4c288d96326ebdf85"
+  },
+  "fold_a_estimates": {
+    "contrast_cards": {
+      "both_cards_delivered_neither_names_the_other_before": 75,
+      "of_which_named_after": 41,
+      "pair_named_on_a_delivered_card_after": 89,
+      "pair_named_on_a_delivered_card_before": 41,
+      "wrong_rows": 153
+    },
+    "exemplar_cap": {
+      "right_rows": {
+        "absolute_gold_majority_broken": 0,
+        "block_changed": 700,
+        "chosen_intent_majority_before": 0,
+        "gold_count_down": 665,
+        "gold_count_up": 21,
+        "gold_zero_before": 9,
+        "gold_zero_to_present": 4,
+        "plurality_GOLD_to_GOLD": 791,
+        "plurality_TIE_to_TIE": 22,
+        "plurality_WRONG_to_WRONG": 114,
+        "rows": 927,
+        "unique_gold_plurality_broken": 0,
+        "wrong_plurality_removed": 0
+      },
+      "wrong_rows": {
+        "absolute_gold_majority_broken": 0,
+        "block_changed": 47,
+        "chosen_intent_majority_before": 95,
+        "gold_count_down": 5,
+        "gold_count_up": 28,
+        "gold_zero_before": 38,
+        "gold_zero_to_present": 6,
+        "plurality_GOLD_to_GOLD": 17,
+        "plurality_TIE_to_TIE": 19,
+        "plurality_WRONG_to_WRONG": 117,
+        "rows": 153,
+        "unique_gold_plurality_broken": 0,
+        "wrong_plurality_removed": 0
+      }
+    },
+    "note": "counts only; never a tuning input; the AGREE arm's own chosen intents and delivered sets",
+    "request_size_projection": {
+      "cards_token_delta_per_later_contact": {
+        "max": -3,
+        "mean": -60.494,
+        "min": -106
+      },
+      "chars_per_token": 5.13,
+      "exemplar_block_char_delta": {
+        "max": 685,
+        "mean": 33.901,
+        "min": -463
+      },
+      "net_token_delta_per_solver_contact": {
+        "max": 75.528,
+        "mean": -53.886,
+        "min": -174.253,
+        "rows_above_zero": 52
+      },
+      "note": "the cards reach all four roles; the exemplar block reaches the Solver and every later contact. An estimate for the realised request, beside the pre-flight check's placeholder counts."
+    }
+  },
+  "fold_b_tuning": {
+    "admission_depth_rule": "the smallest listed depth at which the capped block fills 20 on every Fold B row the uncapped block fills",
+    "chosen_cap": 11,
+    "chosen_depth": 300,
+    "depth_table_at_the_chosen_cap": {
+      "100": {
+        "fold_a_filled": 991,
+        "fold_b_filled": 985
+      },
+      "1000": {
+        "fold_a_filled": 1080,
+        "fold_b_filled": 1080
+      },
+      "20": {
+        "fold_a_filled": 333,
+        "fold_b_filled": 370
+      },
+      "200": {
+        "fold_a_filled": 1074,
+        "fold_b_filled": 1072
+      },
+      "2000": {
+        "fold_a_filled": 1080,
+        "fold_b_filled": 1080
+      },
+      "300": {
+        "fold_a_filled": 1080,
+        "fold_b_filled": 1080
+      },
+      "500": {
+        "fold_a_filled": 1080,
+        "fold_b_filled": 1080
+      },
+      "60": {
+        "fold_a_filled": 860,
+        "fold_b_filled": 868
+      },
+      "9354": {
+        "fold_a_filled": 1080,
+        "fold_b_filled": 1080
+      }
+    },
+    "rule": "the smallest cap N whose GAIN (unique wrong-intent pluralities the cap removes) is at least its HARM (unique gold pluralities the cap removes), over TRAIN Fold B 1,080 with gold read offline; fixed before the table was read",
+    "table": {
+      "1": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 1080,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 262,
+        "gold_presence_gained": 52,
+        "harm_gold_plurality_removed": 778,
+        "net": -516
+      },
+      "10": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 782,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 8,
+        "gold_presence_gained": 9,
+        "harm_gold_plurality_removed": 41,
+        "net": -33
+      },
+      "11": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 710,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 9,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "12": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 661,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 8,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "13": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 618,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 6,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "14": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 558,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 5,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "15": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 506,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 5,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "16": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 439,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 5,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "17": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 360,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 0,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "18": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 261,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 0,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "19": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 146,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 0,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "2": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 1080,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 262,
+        "gold_presence_gained": 38,
+        "harm_gold_plurality_removed": 778,
+        "net": -516
+      },
+      "20": {
+        "absolute_gold_majority_broken": 0,
+        "blocks_changed": 0,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 0,
+        "gold_presence_gained": 0,
+        "harm_gold_plurality_removed": 0,
+        "net": 0
+      },
+      "3": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 1070,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 257,
+        "gold_presence_gained": 33,
+        "harm_gold_plurality_removed": 774,
+        "net": -517
+      },
+      "4": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 1057,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 234,
+        "gold_presence_gained": 23,
+        "harm_gold_plurality_removed": 743,
+        "net": -509
+      },
+      "5": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 1035,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 191,
+        "gold_presence_gained": 17,
+        "harm_gold_plurality_removed": 651,
+        "net": -460
+      },
+      "6": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 992,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 130,
+        "gold_presence_gained": 15,
+        "harm_gold_plurality_removed": 522,
+        "net": -392
+      },
+      "7": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 948,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 87,
+        "gold_presence_gained": 14,
+        "harm_gold_plurality_removed": 363,
+        "net": -276
+      },
+      "8": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 893,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 57,
+        "gold_presence_gained": 11,
+        "harm_gold_plurality_removed": 249,
+        "net": -192
+      },
+      "9": {
+        "absolute_gold_majority_broken": 673,
+        "blocks_changed": 832,
+        "blocks_filled_to_20": 1080,
+        "gain_wrong_plurality_removed": 27,
+        "gold_presence_gained": 10,
+        "harm_gold_plurality_removed": 140,
+        "net": -113
+      }
+    }
+  },
+  "generated_at_utc": "2026-09-27T16:28:25+00:00",
+  "inputs": {
+    "agree_arm": {
+      "attempt": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "outputs_sha256": "6a4256e09278722518236912701e890369f70e1808b664118a4c6a87a983d4c1",
+      "phases_sha256": "783299f156269acbf11a162e37d788e92987252e3a3a4204c8e82031046c27d1",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "base_cards": {
+      "content_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json"
+    },
+    "contrast_source": {
+      "relpath": "prepared/SAEA-SLURP-W3-INTENT-CONTRAST-CARDS-V1/source-v1.json",
+      "sha256": "ecc804bb0f78425c5e8d3f357bb05adbab3a0e1ecec351668809581abbb456e9"
+    },
+    "fold_a_queries": {
+      "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+      "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff"
+    },
+    "fold_b_agreement": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FILLER-FOLD-B-V1/agreement.jsonl",
+      "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+    },
+    "fold_b_queries": {
+      "relpath": "vectors/slurp-stage3-filler-fold-b-v1/query-vectors-speech-content-v1.jsonl",
+      "sha256": "573a8a37a63d790d6b849c11676b9463de28c92eeb92ab3e99177181a947c67f"
+    },
+    "pool": {
+      "content_sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json"
+    },
+    "pool_keys": {
+      "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e"
+    },
+    "rosters": {
+      "fold_a": {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+      },
+      "fold_b": {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+      }
+    },
+    "train_gold": {
+      "relpath": "datasets/slurp/metadata/train.jsonl",
+      "sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e"
+    }
+  },
+  "owner_decision": 164,
+  "read_id": "SAEA-SLURP-W3-CONTRAST-CAP-OFFLINE-V1",
+  "schema": "saea-slurp-w3-contrast-cap-offline-v1",
+  "validation": {
+    "fold_a_right_rows": 927,
+    "fold_a_top20_equals_agree_solver_consumption": "1080 of 1080",
+    "fold_a_wrong_rows": 153,
+    "fold_b_top20_intent_shares_equal_pinned_agreement_table": "1080 of 1080",
+    "selection_rule": "rails.kb_policy.select_target_capped (the registered fuser's own function)"
+  }
+}

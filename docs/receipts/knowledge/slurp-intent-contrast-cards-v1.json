@@ -1,0 +1,3178 @@
+{
+  "artifact_id": "SAEA-SLURP-W3-INTENT-CONTRAST-CARDS-V1",
+  "boundary": "No card text, cue word, utterance, span or filler appears in this receipt: intent ids, slot TYPE names, counts, token counts and hashes only.",
+  "builder": {
+    "relpath": "scripts/build_slurp_intent_contrast_cards.py",
+    "sha256": "ebd5b1e5dd10b23f4e639678e06e54c32a0613108b52842c32bc76a60d801274"
+  },
+  "cards": {
+    "alarm_query": {
+      "authored_exclusion_named": [
+        "alarm_set"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 652,
+      "chars_rebuilt": 494,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_set",
+          "types_rival": [
+            "time"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_remove",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 73,
+      "rivals_by_centroid": [
+        "alarm_set",
+        "calendar_query",
+        "alarm_remove",
+        "lists_query",
+        "general_quirky"
+      ],
+      "rivals_carried": [
+        "alarm_set",
+        "calendar_query",
+        "alarm_remove",
+        "lists_query"
+      ],
+      "tokens_flown": 117,
+      "tokens_rebuilt": 114
+    },
+    "alarm_remove": {
+      "authored_exclusion_named": [
+        "alarm_set"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 650,
+      "chars_rebuilt": 452,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_remove",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_query",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_set",
+          "types_rival": [
+            "time"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 42,
+      "rivals_by_centroid": [
+        "calendar_remove",
+        "alarm_query",
+        "alarm_set",
+        "lists_remove",
+        "audio_volume_mute"
+      ],
+      "rivals_carried": [
+        "calendar_remove",
+        "alarm_query",
+        "alarm_set"
+      ],
+      "tokens_flown": 116,
+      "tokens_rebuilt": 102
+    },
+    "alarm_set": {
+      "authored_exclusion_named": [
+        "calendar_set"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 649,
+      "chars_rebuilt": 462,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_query",
+          "types_rival": [],
+          "types_this": [
+            "time"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_remove",
+          "types_rival": [],
+          "types_this": [
+            "time"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_set",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": [
+            "time"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 110,
+      "rivals_by_centroid": [
+        "alarm_query",
+        "alarm_remove",
+        "calendar_set",
+        "calendar_query",
+        "calendar_remove"
+      ],
+      "rivals_carried": [
+        "alarm_query",
+        "alarm_remove",
+        "calendar_set"
+      ],
+      "tokens_flown": 115,
+      "tokens_rebuilt": 108
+    },
+    "audio_volume_down": {
+      "authored_exclusion_named": [
+        "audio_volume_mute"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 690,
+      "chars_rebuilt": 532,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_up",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_mute",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_other",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightdim",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 25,
+      "rivals_by_centroid": [
+        "audio_volume_up",
+        "audio_volume_mute",
+        "audio_volume_other",
+        "iot_hue_lightdim",
+        "iot_hue_lightup"
+      ],
+      "rivals_carried": [
+        "audio_volume_up",
+        "audio_volume_mute",
+        "audio_volume_other",
+        "iot_hue_lightdim"
+      ],
+      "tokens_flown": 121,
+      "tokens_rebuilt": 121
+    },
+    "audio_volume_mute": {
+      "authored_exclusion_named": [
+        "audio_volume_down"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 788,
+      "chars_rebuilt": 589,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_down",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_up",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_other",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 45,
+      "rivals_by_centroid": [
+        "audio_volume_down",
+        "audio_volume_up",
+        "audio_volume_other",
+        "music_settings",
+        "iot_hue_lighton"
+      ],
+      "rivals_carried": [
+        "audio_volume_down",
+        "audio_volume_up",
+        "audio_volume_other"
+      ],
+      "tokens_flown": 139,
+      "tokens_rebuilt": 126
+    },
+    "audio_volume_other": {
+      "authored_exclusion_named": [
+        "audio_volume_down"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 690,
+      "chars_rebuilt": 539,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_up",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_down",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_mute",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightup",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 8,
+      "rivals_by_centroid": [
+        "audio_volume_up",
+        "audio_volume_down",
+        "audio_volume_mute",
+        "iot_hue_lightup",
+        "music_settings"
+      ],
+      "rivals_carried": [
+        "audio_volume_up",
+        "audio_volume_down",
+        "audio_volume_mute",
+        "iot_hue_lightup"
+      ],
+      "tokens_flown": 117,
+      "tokens_rebuilt": 117
+    },
+    "audio_volume_up": {
+      "authored_exclusion_named": [
+        "audio_volume_other"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 676,
+      "chars_rebuilt": 516,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_down",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_other",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightup",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_mute",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 47,
+      "rivals_by_centroid": [
+        "audio_volume_down",
+        "audio_volume_other",
+        "iot_hue_lightup",
+        "audio_volume_mute",
+        "iot_hue_lightdim"
+      ],
+      "rivals_carried": [
+        "audio_volume_down",
+        "audio_volume_other",
+        "iot_hue_lightup",
+        "audio_volume_mute"
+      ],
+      "tokens_flown": 117,
+      "tokens_rebuilt": 117
+    },
+    "calendar_query": {
+      "authored_exclusion_named": [
+        "recommendation_events"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 697,
+      "chars_rebuilt": 516,
+      "lines": [
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "event_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": [
+            "date"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "recommendation_events",
+          "types_rival": [
+            "place_name"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 488,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "lists_query",
+        "recommendation_events",
+        "alarm_query",
+        "datetime_query"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "lists_query",
+        "recommendation_events"
+      ],
+      "tokens_flown": 112,
+      "tokens_rebuilt": 103
+    },
+    "calendar_remove": {
+      "authored_exclusion_named": [
+        "alarm_remove"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 671,
+      "chars_rebuilt": 510,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_remove",
+          "types_rival": [
+            "list_name"
+          ],
+          "types_this": [
+            "event_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_remove",
+          "types_rival": [],
+          "types_this": [
+            "event_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_set",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 290,
+      "rivals_by_centroid": [
+        "lists_remove",
+        "alarm_remove",
+        "calendar_set",
+        "calendar_query",
+        "lists_createoradd"
+      ],
+      "rivals_carried": [
+        "lists_remove",
+        "alarm_remove",
+        "calendar_set"
+      ],
+      "tokens_flown": 116,
+      "tokens_rebuilt": 111
+    },
+    "calendar_set": {
+      "authored_exclusion_named": [
+        "calendar_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 687,
+      "chars_rebuilt": 506,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "alarm_set",
+          "types_rival": [
+            "time"
+          ],
+          "types_this": [
+            "event_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_remove",
+          "types_rival": [],
+          "types_this": [
+            "event_name"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 745,
+      "rivals_by_centroid": [
+        "calendar_query",
+        "alarm_set",
+        "calendar_remove",
+        "alarm_query",
+        "alarm_remove"
+      ],
+      "rivals_carried": [
+        "calendar_query",
+        "alarm_set",
+        "calendar_remove"
+      ],
+      "tokens_flown": 118,
+      "tokens_rebuilt": 108
+    },
+    "cooking_query": {
+      "authored_exclusion_named": [
+        "cooking_recipe"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 895,
+      "chars_rebuilt": 730,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 0,
+          "rival": "cooking_recipe",
+          "types_rival": [
+            "food_type"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 0,
+          "rival": "iot_coffee",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 0,
+          "rival": "takeaway_order",
+          "types_rival": [
+            "food_type"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 0,
+          "rival": "calendar_set",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 0,
+      "rivals_by_centroid": [
+        "cooking_recipe",
+        "iot_coffee",
+        "takeaway_order",
+        "calendar_set",
+        "takeaway_query"
+      ],
+      "rivals_carried": [
+        "cooking_recipe",
+        "iot_coffee",
+        "takeaway_order",
+        "calendar_set"
+      ],
+      "tokens_flown": 149,
+      "tokens_rebuilt": 148
+    },
+    "cooking_recipe": {
+      "authored_exclusion_named": [
+        "cooking_query"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 880,
+      "chars_rebuilt": 678,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "food_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_definition",
+          "types_rival": [
+            "definition_word"
+          ],
+          "types_this": [
+            "food_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 46,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "qa_definition",
+        "lists_query",
+        "qa_factoid",
+        "lists_createoradd"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "qa_definition"
+      ],
+      "tokens_flown": 152,
+      "tokens_rebuilt": 137
+    },
+    "datetime_convert": {
+      "authored_exclusion_named": [
+        "datetime_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 706,
+      "chars_rebuilt": 557,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "datetime_query",
+          "types_rival": [],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "transport_query",
+          "types_rival": [
+            "transport_type"
+          ],
+          "types_this": [
+            "time_zone"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "date"
+          ],
+          "types_this": [
+            "place_name"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 23,
+      "rivals_by_centroid": [
+        "datetime_query",
+        "transport_query",
+        "calendar_query",
+        "weather_query",
+        "general_quirky"
+      ],
+      "rivals_carried": [
+        "datetime_query",
+        "transport_query",
+        "calendar_query"
+      ],
+      "tokens_flown": 122,
+      "tokens_rebuilt": 120
+    },
+    "datetime_query": {
+      "authored_exclusion_named": [
+        "datetime_convert"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 682,
+      "chars_rebuilt": 521,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "weather_query",
+          "types_rival": [
+            "weather_descriptor"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 214,
+      "rivals_by_centroid": [
+        "calendar_query",
+        "general_quirky",
+        "weather_query",
+        "qa_factoid",
+        "news_query"
+      ],
+      "rivals_carried": [
+        "calendar_query",
+        "general_quirky",
+        "weather_query"
+      ],
+      "tokens_flown": 121,
+      "tokens_rebuilt": 118
+    },
+    "email_addcontact": {
+      "authored_exclusion_named": [
+        "email_sendemail"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 646,
+      "chars_rebuilt": 439,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_sendemail",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_querycontact",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_query",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 43,
+      "rivals_by_centroid": [
+        "email_sendemail",
+        "email_querycontact",
+        "email_query",
+        "lists_createoradd",
+        "calendar_set"
+      ],
+      "rivals_carried": [
+        "email_sendemail",
+        "email_querycontact",
+        "email_query"
+      ],
+      "tokens_flown": 115,
+      "tokens_rebuilt": 99
+    },
+    "email_query": {
+      "authored_exclusion_named": [
+        "email_querycontact"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 697,
+      "chars_rebuilt": 518,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "social_query",
+          "types_rival": [
+            "media_type"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_querycontact",
+          "types_rival": [
+            "personal_info"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 350,
+      "rivals_by_centroid": [
+        "social_query",
+        "general_quirky",
+        "email_querycontact",
+        "email_sendemail",
+        "calendar_query"
+      ],
+      "rivals_carried": [
+        "social_query",
+        "general_quirky",
+        "email_querycontact"
+      ],
+      "tokens_flown": 123,
+      "tokens_rebuilt": 113
+    },
+    "email_querycontact": {
+      "authored_exclusion_named": [
+        "email_addcontact"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 845,
+      "chars_rebuilt": 681,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "person"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_factoid",
+          "types_rival": [],
+          "types_this": [
+            "personal_info"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": [
+            "person"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 106,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "qa_factoid",
+        "lists_query",
+        "email_query",
+        "calendar_query"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "qa_factoid",
+        "lists_query"
+      ],
+      "tokens_flown": 143,
+      "tokens_rebuilt": 140
+    },
+    "email_sendemail": {
+      "authored_exclusion_named": [
+        "social_post"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 669,
+      "chars_rebuilt": 473,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_query",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "social_post",
+          "types_rival": [
+            "media_type"
+          ],
+          "types_this": [
+            "person"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_addcontact",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 289,
+      "rivals_by_centroid": [
+        "email_query",
+        "social_post",
+        "email_addcontact",
+        "email_querycontact",
+        "calendar_set"
+      ],
+      "rivals_carried": [
+        "email_query",
+        "social_post",
+        "email_addcontact"
+      ],
+      "tokens_flown": 119,
+      "tokens_rebuilt": 106
+    },
+    "general_greet": {
+      "authored_exclusion_named": [
+        "datetime_query"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 823,
+      "chars_rebuilt": 639,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_definition",
+          "types_rival": [
+            "definition_word"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "date"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 18,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "qa_definition",
+        "calendar_query",
+        "lists_query",
+        "weather_query"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "qa_definition",
+        "calendar_query"
+      ],
+      "tokens_flown": 143,
+      "tokens_rebuilt": 134
+    },
+    "general_joke": {
+      "authored_exclusion_named": [
+        "general_quirky"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 685,
+      "chars_rebuilt": 511,
+      "lines": [
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "joke_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_definition",
+          "types_rival": [
+            "definition_word"
+          ],
+          "types_this": [
+            "joke_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": [
+            "joke_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 57,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "qa_definition",
+        "lists_query",
+        "qa_factoid",
+        "news_query"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "qa_definition",
+        "lists_query"
+      ],
+      "tokens_flown": 122,
+      "tokens_rebuilt": 120
+    },
+    "general_quirky": {
+      "authored_exclusion_named": [
+        "qa_factoid"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 849,
+      "chars_rebuilt": 691,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "qa_definition",
+          "types_rival": [
+            "definition_word"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "calendar_query",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "qa_factoid",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 412,
+      "rivals_by_centroid": [
+        "lists_query",
+        "qa_definition",
+        "calendar_query",
+        "qa_factoid",
+        "email_querycontact"
+      ],
+      "rivals_carried": [
+        "lists_query",
+        "qa_definition",
+        "calendar_query",
+        "qa_factoid"
+      ],
+      "tokens_flown": 150,
+      "tokens_rebuilt": 147
+    },
+    "iot_cleaning": {
+      "authored_exclusion_named": [
+        "iot_wemo_on"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 669,
+      "chars_rebuilt": 487,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lighton",
+          "types_rival": [],
+          "types_this": [
+            "device_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_mute",
+          "types_rival": [],
+          "types_this": [
+            "device_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_wemo_on",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 71,
+      "rivals_by_centroid": [
+        "iot_hue_lighton",
+        "audio_volume_mute",
+        "iot_wemo_on",
+        "iot_hue_lightoff",
+        "general_quirky"
+      ],
+      "rivals_carried": [
+        "iot_hue_lighton",
+        "audio_volume_mute",
+        "iot_wemo_on"
+      ],
+      "tokens_flown": 122,
+      "tokens_rebuilt": 119
+    },
+    "iot_coffee": {
+      "authored_exclusion_named": [
+        "takeaway_order"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 804,
+      "chars_rebuilt": 610,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_createoradd",
+          "types_rival": [
+            "list_name"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "music_likeness",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 99,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "lists_createoradd",
+        "music_likeness",
+        "iot_cleaning",
+        "play_radio"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "lists_createoradd",
+        "music_likeness"
+      ],
+      "tokens_flown": 139,
+      "tokens_rebuilt": 132
+    },
+    "iot_hue_lightchange": {
+      "authored_exclusion_named": [
+        "iot_hue_lightdim"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 855,
+      "chars_rebuilt": 633,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightdim",
+          "types_rival": [],
+          "types_this": [
+            "color_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightup",
+          "types_rival": [],
+          "types_this": [
+            "color_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 92,
+      "rivals_by_centroid": [
+        "iot_hue_lightdim",
+        "iot_hue_lightup",
+        "iot_hue_lighton",
+        "iot_hue_lightoff",
+        "audio_volume_other"
+      ],
+      "rivals_carried": [
+        "iot_hue_lightdim",
+        "iot_hue_lightup"
+      ],
+      "tokens_flown": 153,
+      "tokens_rebuilt": 141
+    },
+    "iot_hue_lightdim": {
+      "authored_exclusion_named": [
+        "iot_hue_lightoff"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 636,
+      "chars_rebuilt": 423,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightup",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lighton",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightoff",
+          "types_rival": [
+            "house_place"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 62,
+      "rivals_by_centroid": [
+        "iot_hue_lightup",
+        "iot_hue_lighton",
+        "iot_hue_lightoff",
+        "iot_hue_lightchange",
+        "audio_volume_down"
+      ],
+      "rivals_carried": [
+        "iot_hue_lightup",
+        "iot_hue_lighton",
+        "iot_hue_lightoff"
+      ],
+      "tokens_flown": 116,
+      "tokens_rebuilt": 110
+    },
+    "iot_hue_lightoff": {
+      "authored_exclusion_named": [
+        "iot_wemo_off"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 629,
+      "chars_rebuilt": 382,
+      "lines": [
+        {
+          "cue_words_rival": 0,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lighton",
+          "types_rival": [],
+          "types_this": [
+            "house_place"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightdim",
+          "types_rival": [],
+          "types_this": [
+            "house_place"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 124,
+      "rivals_by_centroid": [
+        "iot_hue_lighton",
+        "iot_hue_lightdim",
+        "iot_wemo_off",
+        "iot_hue_lightup",
+        "iot_wemo_on"
+      ],
+      "rivals_carried": [
+        "iot_hue_lighton",
+        "iot_hue_lightdim"
+      ],
+      "tokens_flown": 118,
+      "tokens_rebuilt": 99
+    },
+    "iot_hue_lighton": {
+      "authored_exclusion_named": [
+        "iot_hue_lightup"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 693,
+      "chars_rebuilt": 464,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 0,
+          "rival": "iot_hue_lightoff",
+          "types_rival": [
+            "house_place"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "iot_hue_lightup",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "iot_hue_lightdim",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 15,
+      "rivals_by_centroid": [
+        "iot_hue_lightoff",
+        "iot_hue_lightup",
+        "iot_hue_lightdim",
+        "iot_wemo_on",
+        "iot_hue_lightchange"
+      ],
+      "rivals_carried": [
+        "iot_hue_lightoff",
+        "iot_hue_lightup",
+        "iot_hue_lightdim"
+      ],
+      "tokens_flown": 125,
+      "tokens_rebuilt": 114
+    },
+    "iot_hue_lightup": {
+      "authored_exclusion_named": [
+        "iot_hue_lighton"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 641,
+      "chars_rebuilt": 419,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightdim",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lighton",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "audio_volume_up",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 63,
+      "rivals_by_centroid": [
+        "iot_hue_lightdim",
+        "iot_hue_lighton",
+        "audio_volume_up",
+        "iot_hue_lightchange",
+        "iot_hue_lightoff"
+      ],
+      "rivals_carried": [
+        "iot_hue_lightdim",
+        "iot_hue_lighton",
+        "audio_volume_up"
+      ],
+      "tokens_flown": 119,
+      "tokens_rebuilt": 106
+    },
+    "iot_wemo_off": {
+      "authored_exclusion_named": [
+        "iot_hue_lightoff"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 643,
+      "chars_rebuilt": 449,
+      "lines": [
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 1,
+          "rival": "iot_wemo_on",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightoff",
+          "types_rival": [
+            "house_place"
+          ],
+          "types_this": [
+            "device_type"
+          ]
+        },
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lighton",
+          "types_rival": [],
+          "types_this": [
+            "device_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 42,
+      "rivals_by_centroid": [
+        "iot_wemo_on",
+        "iot_hue_lightoff",
+        "iot_hue_lighton",
+        "audio_volume_mute",
+        "iot_cleaning"
+      ],
+      "rivals_carried": [
+        "iot_wemo_on",
+        "iot_hue_lightoff",
+        "iot_hue_lighton"
+      ],
+      "tokens_flown": 123,
+      "tokens_rebuilt": 119
+    },
+    "iot_wemo_on": {
+      "authored_exclusion_named": [
+        "iot_hue_lighton"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 635,
+      "chars_rebuilt": 442,
+      "lines": [
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 1,
+          "rival": "iot_wemo_off",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lighton",
+          "types_rival": [],
+          "types_this": [
+            "device_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "iot_hue_lightoff",
+          "types_rival": [
+            "house_place"
+          ],
+          "types_this": [
+            "device_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 36,
+      "rivals_by_centroid": [
+        "iot_wemo_off",
+        "iot_hue_lighton",
+        "iot_hue_lightoff",
+        "iot_cleaning",
+        "iot_hue_lightup"
+      ],
+      "rivals_carried": [
+        "iot_wemo_off",
+        "iot_hue_lighton",
+        "iot_hue_lightoff"
+      ],
+      "tokens_flown": 121,
+      "tokens_rebuilt": 118
+    },
+    "lists_createoradd": {
+      "authored_exclusion_named": [
+        "lists_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 639,
+      "chars_rebuilt": 420,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_remove",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "list_name"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 117,
+      "rivals_by_centroid": [
+        "lists_query",
+        "lists_remove",
+        "general_quirky",
+        "music_likeness",
+        "music_settings"
+      ],
+      "rivals_carried": [
+        "lists_query",
+        "lists_remove",
+        "general_quirky"
+      ],
+      "tokens_flown": 114,
+      "tokens_rebuilt": 100
+    },
+    "lists_query": {
+      "authored_exclusion_named": [
+        "lists_createoradd"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 661,
+      "chars_rebuilt": 509,
+      "lines": [
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_createoradd",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "date"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_querycontact",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 139,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "lists_createoradd",
+        "calendar_query",
+        "email_querycontact",
+        "qa_definition"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "lists_createoradd",
+        "calendar_query",
+        "email_querycontact"
+      ],
+      "tokens_flown": 120,
+      "tokens_rebuilt": 120
+    },
+    "lists_remove": {
+      "authored_exclusion_named": [
+        "calendar_remove"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 662,
+      "chars_rebuilt": 474,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_createoradd",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_remove",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": [
+            "list_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 119,
+      "rivals_by_centroid": [
+        "lists_createoradd",
+        "calendar_remove",
+        "lists_query",
+        "alarm_remove",
+        "general_quirky"
+      ],
+      "rivals_carried": [
+        "lists_createoradd",
+        "calendar_remove",
+        "lists_query"
+      ],
+      "tokens_flown": 118,
+      "tokens_rebuilt": 107
+    },
+    "music_dislikeness": {
+      "authored_exclusion_named": [
+        "audio_volume_down"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 688,
+      "chars_rebuilt": 484,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "music_likeness",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "play_music",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 1,
+          "rival": "music_query",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 6,
+      "rivals_by_centroid": [
+        "music_likeness",
+        "general_quirky",
+        "play_music",
+        "music_query",
+        "play_podcasts"
+      ],
+      "rivals_carried": [
+        "music_likeness",
+        "general_quirky",
+        "play_music",
+        "music_query"
+      ],
+      "tokens_flown": 123,
+      "tokens_rebuilt": 111
+    },
+    "music_likeness": {
+      "authored_exclusion_named": [
+        "play_music"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 763,
+      "chars_rebuilt": 601,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_music",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 0,
+          "cue_words_this": 2,
+          "rival": "music_settings",
+          "types_rival": [
+            "player_setting"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "music_dislikeness",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 64,
+      "rivals_by_centroid": [
+        "play_music",
+        "general_quirky",
+        "music_settings",
+        "music_dislikeness",
+        "play_audiobook"
+      ],
+      "rivals_carried": [
+        "play_music",
+        "general_quirky",
+        "music_settings",
+        "music_dislikeness"
+      ],
+      "tokens_flown": 134,
+      "tokens_rebuilt": 134
+    },
+    "music_query": {
+      "authored_exclusion_named": [
+        "play_music"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 658,
+      "chars_rebuilt": 475,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "music_likeness",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_music",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_factoid",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 71,
+      "rivals_by_centroid": [
+        "music_likeness",
+        "play_music",
+        "qa_factoid",
+        "general_quirky",
+        "qa_definition"
+      ],
+      "rivals_carried": [
+        "music_likeness",
+        "play_music",
+        "qa_factoid",
+        "general_quirky"
+      ],
+      "tokens_flown": 114,
+      "tokens_rebuilt": 111
+    },
+    "music_settings": {
+      "authored_exclusion_named": [
+        "play_music"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 778,
+      "chars_rebuilt": 617,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_music",
+          "types_rival": [],
+          "types_this": [
+            "player_setting"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 0,
+          "rival": "music_likeness",
+          "types_rival": [],
+          "types_this": [
+            "player_setting"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_radio",
+          "types_rival": [
+            "radio_name"
+          ],
+          "types_this": [
+            "player_setting"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 27,
+      "rivals_by_centroid": [
+        "play_music",
+        "music_likeness",
+        "play_radio",
+        "audio_volume_mute",
+        "play_audiobook"
+      ],
+      "rivals_carried": [
+        "play_music",
+        "music_likeness",
+        "play_radio"
+      ],
+      "tokens_flown": 137,
+      "tokens_rebuilt": 136
+    },
+    "news_query": {
+      "authored_exclusion_named": [
+        "qa_factoid"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 650,
+      "chars_rebuilt": 473,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "social_query",
+          "types_rival": [
+            "media_type"
+          ],
+          "types_this": [
+            "news_topic"
+          ]
+        },
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "news_topic"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": [
+            "news_topic"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 339,
+      "rivals_by_centroid": [
+        "social_query",
+        "general_quirky",
+        "lists_query",
+        "qa_factoid",
+        "calendar_query"
+      ],
+      "rivals_carried": [
+        "social_query",
+        "general_quirky",
+        "lists_query"
+      ],
+      "tokens_flown": 115,
+      "tokens_rebuilt": 110
+    },
+    "play_audiobook": {
+      "authored_exclusion_named": [
+        "play_music"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 666,
+      "chars_rebuilt": 509,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_podcasts",
+          "types_rival": [
+            "podcast_descriptor"
+          ],
+          "types_this": [
+            "audiobook_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_music",
+          "types_rival": [],
+          "types_this": [
+            "player_setting"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "music_likeness",
+          "types_rival": [],
+          "types_this": [
+            "player_setting"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 125,
+      "rivals_by_centroid": [
+        "play_podcasts",
+        "play_music",
+        "music_likeness",
+        "play_radio",
+        "music_settings"
+      ],
+      "rivals_carried": [
+        "play_podcasts",
+        "play_music",
+        "music_likeness"
+      ],
+      "tokens_flown": 119,
+      "tokens_rebuilt": 119
+    },
+    "play_game": {
+      "authored_exclusion_named": [
+        "play_music"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 623,
+      "chars_rebuilt": 455,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_music",
+          "types_rival": [],
+          "types_this": [
+            "game_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_podcasts",
+          "types_rival": [
+            "podcast_descriptor"
+          ],
+          "types_this": [
+            "game_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "game_name"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 98,
+      "rivals_by_centroid": [
+        "play_music",
+        "play_podcasts",
+        "general_quirky",
+        "play_audiobook",
+        "play_radio"
+      ],
+      "rivals_carried": [
+        "play_music",
+        "play_podcasts",
+        "general_quirky"
+      ],
+      "tokens_flown": 112,
+      "tokens_rebuilt": 111
+    },
+    "play_music": {
+      "authored_exclusion_named": [
+        "music_settings"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 682,
+      "chars_rebuilt": 491,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_radio",
+          "types_rival": [
+            "radio_name"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "music_likeness",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "music_settings",
+          "types_rival": [
+            "player_setting"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 570,
+      "rivals_by_centroid": [
+        "play_radio",
+        "music_likeness",
+        "music_settings",
+        "play_podcasts",
+        "play_audiobook"
+      ],
+      "rivals_carried": [
+        "play_radio",
+        "music_likeness",
+        "music_settings"
+      ],
+      "tokens_flown": 119,
+      "tokens_rebuilt": 108
+    },
+    "play_podcasts": {
+      "authored_exclusion_named": [
+        "play_audiobook"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 686,
+      "chars_rebuilt": 495,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_audiobook",
+          "types_rival": [
+            "audiobook_name"
+          ],
+          "types_this": [
+            "podcast_descriptor"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_radio",
+          "types_rival": [
+            "radio_name"
+          ],
+          "types_this": [
+            "podcast_descriptor"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 171,
+      "rivals_by_centroid": [
+        "play_audiobook",
+        "play_radio",
+        "play_music",
+        "general_quirky",
+        "music_likeness"
+      ],
+      "rivals_carried": [
+        "play_audiobook",
+        "play_radio"
+      ],
+      "tokens_flown": 120,
+      "tokens_rebuilt": 108
+    },
+    "play_radio": {
+      "authored_exclusion_named": [
+        "play_music"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 620,
+      "chars_rebuilt": 403,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_music",
+          "types_rival": [],
+          "types_this": [
+            "radio_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "play_podcasts",
+          "types_rival": [
+            "podcast_descriptor"
+          ],
+          "types_this": [
+            "radio_name"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 249,
+      "rivals_by_centroid": [
+        "play_music",
+        "play_podcasts",
+        "play_audiobook",
+        "music_settings",
+        "music_likeness"
+      ],
+      "rivals_carried": [
+        "play_music",
+        "play_podcasts"
+      ],
+      "tokens_flown": 111,
+      "tokens_rebuilt": 93
+    },
+    "qa_currency": {
+      "authored_exclusion_named": [
+        "qa_stock"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 679,
+      "chars_rebuilt": 463,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_stock",
+          "types_rival": [
+            "business_name"
+          ],
+          "types_this": [
+            "currency_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "currency_name"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 128,
+      "rivals_by_centroid": [
+        "qa_stock",
+        "general_quirky",
+        "qa_factoid",
+        "datetime_query",
+        "qa_maths"
+      ],
+      "rivals_carried": [
+        "qa_stock",
+        "general_quirky"
+      ],
+      "tokens_flown": 120,
+      "tokens_rebuilt": 101
+    },
+    "qa_definition": {
+      "authored_exclusion_named": [
+        "qa_factoid"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 689,
+      "chars_rebuilt": 536,
+      "lines": [
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "definition_word"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_factoid",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": [
+            "definition_word"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": [
+            "definition_word"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 246,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "qa_factoid",
+        "lists_query",
+        "email_querycontact",
+        "news_query"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "qa_factoid",
+        "lists_query"
+      ],
+      "tokens_flown": 124,
+      "tokens_rebuilt": 119
+    },
+    "qa_factoid": {
+      "authored_exclusion_named": [
+        "qa_definition"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 664,
+      "chars_rebuilt": 503,
+      "lines": [
+        {
+          "cue_words_rival": 1,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "person"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_definition",
+          "types_rival": [
+            "definition_word"
+          ],
+          "types_this": [
+            "person"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_querycontact",
+          "types_rival": [
+            "personal_info"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 448,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "qa_definition",
+        "email_querycontact",
+        "news_query",
+        "lists_query"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "qa_definition",
+        "email_querycontact"
+      ],
+      "tokens_flown": 118,
+      "tokens_rebuilt": 112
+    },
+    "qa_maths": {
+      "authored_exclusion_named": [
+        "qa_currency"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 642,
+      "chars_rebuilt": 482,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_definition",
+          "types_rival": [
+            "definition_word"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_factoid",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "lists_query",
+          "types_rival": [],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 66,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "qa_definition",
+        "qa_factoid",
+        "lists_query",
+        "email_querycontact"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "qa_definition",
+        "qa_factoid",
+        "lists_query"
+      ],
+      "tokens_flown": 108,
+      "tokens_rebuilt": 108
+    },
+    "qa_stock": {
+      "authored_exclusion_named": [
+        "qa_currency"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 655,
+      "chars_rebuilt": 433,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "business_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "news_query",
+          "types_rival": [
+            "news_topic"
+          ],
+          "types_this": [
+            "business_name"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 131,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "news_query",
+        "qa_factoid",
+        "social_query",
+        "email_querycontact"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "news_query"
+      ],
+      "tokens_flown": 111,
+      "tokens_rebuilt": 93
+    },
+    "recommendation_events": {
+      "authored_exclusion_named": [
+        "calendar_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 692,
+      "chars_rebuilt": 511,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "news_query",
+          "types_rival": [
+            "news_topic"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 118,
+      "rivals_by_centroid": [
+        "calendar_query",
+        "general_quirky",
+        "news_query",
+        "recommendation_locations",
+        "social_query"
+      ],
+      "rivals_carried": [
+        "calendar_query",
+        "general_quirky",
+        "news_query"
+      ],
+      "tokens_flown": 114,
+      "tokens_rebuilt": 108
+    },
+    "recommendation_locations": {
+      "authored_exclusion_named": [
+        "transport_query"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 761,
+      "chars_rebuilt": 568,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "takeaway_query",
+          "types_rival": [
+            "order_type"
+          ],
+          "types_this": [
+            "business_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "recommendation_events",
+          "types_rival": [],
+          "types_this": [
+            "business_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 109,
+      "rivals_by_centroid": [
+        "takeaway_query",
+        "recommendation_events",
+        "general_quirky",
+        "takeaway_order",
+        "qa_factoid"
+      ],
+      "rivals_carried": [
+        "takeaway_query",
+        "recommendation_events"
+      ],
+      "tokens_flown": 134,
+      "tokens_rebuilt": 117
+    },
+    "recommendation_movies": {
+      "authored_exclusion_named": [
+        "recommendation_locations"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 792,
+      "chars_rebuilt": 635,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "recommendation_events",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "recommendation_locations",
+          "types_rival": [
+            "business_type"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 42,
+      "rivals_by_centroid": [
+        "recommendation_events",
+        "general_quirky",
+        "recommendation_locations",
+        "calendar_query",
+        "news_query"
+      ],
+      "rivals_carried": [
+        "recommendation_events",
+        "general_quirky",
+        "recommendation_locations"
+      ],
+      "tokens_flown": 132,
+      "tokens_rebuilt": 121
+    },
+    "social_post": {
+      "authored_exclusion_named": [
+        "social_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 654,
+      "chars_rebuilt": 496,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "social_query",
+          "types_rival": [],
+          "types_this": [
+            "business_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "media_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_sendemail",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": [
+            "media_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 166,
+      "rivals_by_centroid": [
+        "social_query",
+        "general_quirky",
+        "email_sendemail",
+        "email_querycontact",
+        "email_query"
+      ],
+      "rivals_carried": [
+        "social_query",
+        "general_quirky",
+        "email_sendemail"
+      ],
+      "tokens_flown": 113,
+      "tokens_rebuilt": 111
+    },
+    "social_query": {
+      "authored_exclusion_named": [
+        "social_post"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 642,
+      "chars_rebuilt": 473,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "news_query",
+          "types_rival": [
+            "news_topic"
+          ],
+          "types_this": [
+            "media_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "media_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "email_query",
+          "types_rival": [],
+          "types_this": [
+            "media_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 61,
+      "rivals_by_centroid": [
+        "news_query",
+        "general_quirky",
+        "email_query",
+        "lists_query",
+        "calendar_query"
+      ],
+      "rivals_carried": [
+        "news_query",
+        "general_quirky",
+        "email_query"
+      ],
+      "tokens_flown": 113,
+      "tokens_rebuilt": 110
+    },
+    "takeaway_order": {
+      "authored_exclusion_named": [
+        "takeaway_query"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 872,
+      "chars_rebuilt": 686,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "takeaway_query",
+          "types_rival": [
+            "order_type"
+          ],
+          "types_this": [
+            "food_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "recommendation_locations",
+          "types_rival": [
+            "business_type"
+          ],
+          "types_this": [
+            "food_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 46,
+      "rivals_by_centroid": [
+        "takeaway_query",
+        "recommendation_locations",
+        "general_quirky",
+        "iot_coffee",
+        "lists_createoradd"
+      ],
+      "rivals_carried": [
+        "takeaway_query",
+        "recommendation_locations"
+      ],
+      "tokens_flown": 146,
+      "tokens_rebuilt": 132
+    },
+    "takeaway_query": {
+      "authored_exclusion_named": [
+        "takeaway_order"
+      ],
+      "card_specific_limitations_kept": 1,
+      "chars_flown": 825,
+      "chars_rebuilt": 640,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "takeaway_order",
+          "types_rival": [
+            "food_type"
+          ],
+          "types_this": [
+            "order_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "recommendation_locations",
+          "types_rival": [
+            "business_type"
+          ],
+          "types_this": [
+            "order_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 47,
+      "rivals_by_centroid": [
+        "takeaway_order",
+        "recommendation_locations",
+        "general_quirky",
+        "calendar_query",
+        "email_querycontact"
+      ],
+      "rivals_carried": [
+        "takeaway_order",
+        "recommendation_locations"
+      ],
+      "tokens_flown": 139,
+      "tokens_rebuilt": 125
+    },
+    "transport_query": {
+      "authored_exclusion_named": [
+        "transport_ticket"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 684,
+      "chars_rebuilt": 531,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "transport_traffic",
+          "types_rival": [],
+          "types_this": [
+            "transport_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "date"
+          ],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "datetime_query",
+          "types_rival": [],
+          "types_this": [
+            "transport_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 151,
+      "rivals_by_centroid": [
+        "transport_traffic",
+        "calendar_query",
+        "datetime_query",
+        "general_quirky",
+        "transport_ticket"
+      ],
+      "rivals_carried": [
+        "transport_traffic",
+        "calendar_query",
+        "datetime_query"
+      ],
+      "tokens_flown": 116,
+      "tokens_rebuilt": 110
+    },
+    "transport_taxi": {
+      "authored_exclusion_named": [
+        "transport_ticket"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 642,
+      "chars_rebuilt": 418,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "takeaway_order",
+          "types_rival": [
+            "food_type"
+          ],
+          "types_this": [
+            "transport_type"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "transport_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 73,
+      "rivals_by_centroid": [
+        "takeaway_order",
+        "general_quirky",
+        "transport_query",
+        "iot_coffee",
+        "takeaway_query"
+      ],
+      "rivals_carried": [
+        "takeaway_order",
+        "general_quirky"
+      ],
+      "tokens_flown": 115,
+      "tokens_rebuilt": 96
+    },
+    "transport_ticket": {
+      "authored_exclusion_named": [
+        "transport_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 659,
+      "chars_rebuilt": 509,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "transport_query",
+          "types_rival": [],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "transport_taxi",
+          "types_rival": [
+            "transport_agency"
+          ],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": [
+            "transport_type"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 91,
+      "rivals_by_centroid": [
+        "transport_query",
+        "transport_taxi",
+        "calendar_query",
+        "general_quirky",
+        "calendar_set"
+      ],
+      "rivals_carried": [
+        "transport_query",
+        "transport_taxi",
+        "calendar_query"
+      ],
+      "tokens_flown": 112,
+      "tokens_rebuilt": 109
+    },
+    "transport_traffic": {
+      "authored_exclusion_named": [
+        "transport_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 682,
+      "chars_rebuilt": 503,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "place_name"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "weather_query",
+          "types_rival": [
+            "weather_descriptor"
+          ],
+          "types_this": []
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "qa_factoid",
+          "types_rival": [
+            "person"
+          ],
+          "types_this": []
+        }
+      ],
+      "pool_utterances_this_intent": 92,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "weather_query",
+        "qa_factoid",
+        "news_query",
+        "transport_query"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "weather_query",
+        "qa_factoid"
+      ],
+      "tokens_flown": 115,
+      "tokens_rebuilt": 108
+    },
+    "weather_query": {
+      "authored_exclusion_named": [
+        "datetime_query"
+      ],
+      "card_specific_limitations_kept": 0,
+      "chars_flown": 691,
+      "chars_rebuilt": 552,
+      "lines": [
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "general_quirky",
+          "types_rival": [],
+          "types_this": [
+            "weather_descriptor"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "calendar_query",
+          "types_rival": [
+            "event_name"
+          ],
+          "types_this": [
+            "weather_descriptor"
+          ]
+        },
+        {
+          "cue_words_rival": 2,
+          "cue_words_this": 2,
+          "rival": "datetime_query",
+          "types_rival": [],
+          "types_this": [
+            "weather_descriptor"
+          ]
+        }
+      ],
+      "pool_utterances_this_intent": 409,
+      "rivals_by_centroid": [
+        "general_quirky",
+        "calendar_query",
+        "datetime_query",
+        "news_query",
+        "transport_traffic"
+      ],
+      "rivals_carried": [
+        "general_quirky",
+        "calendar_query",
+        "datetime_query"
+      ],
+      "tokens_flown": 120,
+      "tokens_rebuilt": 117
+    }
+  },
+  "contacts": {
+    "asr": 0,
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer_process_vocab_only": 300
+  },
+  "exposure_ledger_row": "SAEA-SLURP-W3-INTENT-CONTRAST-CARDS-BUILD-V1",
+  "inputs": {
+    "base_release": {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    "base_snapshot": {
+      "content_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json"
+    },
+    "centroid_keys": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+      "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532"
+    },
+    "construction_pool": {
+      "content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "utterances": 8554
+    },
+    "forbidden_rosters": {
+      "docs/receipts/rosters/slurp-evo-fold-a-v2.json": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "docs/receipts/rosters/slurp-evo-fold-b-v2.json": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "docs/receipts/rosters/slurp-stage3-construction-r01.json": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+    }
+  },
+  "invariants": {
+    "every_card_tokens_not_above_flown": true,
+    "facets_unchanged": true,
+    "value_ids_unchanged": true
+  },
+  "owner_decision": 164,
+  "release": {
+    "builder_policy_id": "saea-slurp-intent-contrast-cards-v1",
+    "completion": {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/completion.json",
+      "sha256": "7858ea595d60e0713fabccacd1cc6283364196213eb99b498560d7a4e7c06421"
+    },
+    "namespace": "knowledge/slurp/semantic/intent-boundaries-contrast-v1",
+    "release": {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/release.json",
+      "sha256": "38af21d35a2efe9d62163f8824b80a159692e4ccab36e46d5db66c05d2d9df31"
+    },
+    "reloaded_through_load_knowledge_store_binding": true,
+    "snapshot": {
+      "content_sha256": "130e9e2e7942a70ec2c556fd6846b7c3a3bd19572222c1b32f11d41e4ff1c2fb",
+      "file_sha256": "12632527421ed80b844bbab55d4b8e0b520d1844665cee259ba1b55a3983259a",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-contrast-v1/snapshot.json"
+    },
+    "source": {
+      "relpath": "prepared/SAEA-SLURP-W3-INTENT-CONTRAST-CARDS-V1/source-v1.json",
+      "sha256": "ecc804bb0f78425c5e8d3f357bb05adbab3a0e1ecec351668809581abbb456e9"
+    },
+    "source_split_identity_hash": "de224e5b080fb3b9b657a64677ff96cb914e335daae18464111e92737060d87f"
+  },
+  "rivals_carried_distribution": {
+    "2": 11,
+    "3": 38,
+    "4": 11
+  },
+  "rule": {
+    "cues_per_side": 2,
+    "header": "Nearest rivals, typical TRAIN words (this intent | rival):",
+    "max_rivals": 5,
+    "min_df_gap": 0.05,
+    "min_support_utterances": 3,
+    "removed_boilerplate": {
+      "shared_limitation_bullets": 1,
+      "uncertainty_behavior_identical_on_all_cards": true
+    },
+    "stopword_count": 76,
+    "token_rule": "rivals nearest-first while the rebuilt card tokenises to no more tokens than the flown card",
+    "type_gap": 0.3,
+    "types_per_side": 1
+  },
+  "schema": "saea-slurp-intent-contrast-cards-receipt-v1",
+  "tokens": {
+    "all_60_cards_flown": 7389,
+    "all_60_cards_rebuilt": 6932,
+    "delta_all_60": -457,
+    "max_card_delta": 0,
+    "min_card_delta": -19,
+    "tokenizer": {
+      "binary": "/home/chao/llama.cpp/build/bin/llama-tokenize",
+      "invocations": 300,
+      "model": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "same_as": "scripts/analysis/slurp_g5_reviewer_instruction_token_measurement.py"
+    }
+  }
+}

@@ -117,6 +117,11 @@ _ALPHA_BLEND_INSTRUCTIONS = {
 RANK_POLICY_ID = "saea-rank-wcos-prior-agree-v1"
 FUSE_POLICY_ID = "saea-fuse-supplyfilter-v1"
 ASSOCIATED_VALUES_FUSE_POLICY_ID = "saea-fuse-associated-values-v1"
+#: Knowledge-wave item W3 (owner decision 164): the supply-filter selection
+#: with a PER-TARGET cap and a TOTAL width, so a block of exemplars can
+#: carry at most ``c`` values of one task target while still delivering
+#: ``top_l`` values. See :func:`select_target_capped`.
+TARGET_CAP_FUSE_POLICY_ID = "saea-fuse-supplyfilter-target-cap-v1"
 CONTROLLER_POLICY_ID = "saea-kb-alpha-blend-v1"
 
 _DIRECT_CONTACT_ID = "direct-decode"
@@ -1212,6 +1217,126 @@ def fuse_associated_values_factory(
     return fuser
 
 
+def select_target_capped(
+    ranked: Sequence[tuple[str, float]],
+    *,
+    targets_by_facet: Mapping[str, Sequence[tuple[str, str]]],
+    per_target_cap: int,
+    total: int,
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """The W3 selection rule as a pure function (owner decision 164).
+
+    ``ranked`` is the admitted candidate list in RANK ORDER as
+    ``(facet_id, score)``; ``targets_by_facet`` maps a facet id to the
+    ``(value_id, task_target)`` pairs it supports, each list in value-id
+    order. Walk the facets in rank order and, within a facet, its values in
+    value-id order; take a value unless its task target already holds
+    ``per_target_cap`` taken values or the value was already taken; stop at
+    ``total`` values. Returns ``(selected value ids in selection order,
+    supporting facet ids in rank order)``.
+
+    With ``per_target_cap >= total`` this is exactly the first ``total``
+    values of the admitted ranking, which on a one-value-per-facet store is
+    the flown ``saea-fuse-supplyfilter-v1`` selection at ``m = c = top_l``
+    (``tests/unit/test_kb_policy_target_cap.py`` proves it). The offline
+    tuning read (``scripts/analysis/slurp_w3_contrast_cap_offline.py``)
+    imports THIS function, so the registered numbers and the flown selection
+    are one rule.
+    """
+
+    for name, value in (("per_target_cap", per_target_cap), ("total", total)):
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise RailsError(f"select_target_capped: {name} must be a positive int")
+    taken: list[str] = []
+    seen: set[str] = set()
+    supporting: list[str] = []
+    per_target: dict[str, int] = {}
+    for facet_id, _score in ranked:
+        took_here = False
+        for value_id, target in targets_by_facet.get(facet_id, ()):
+            if value_id in seen or per_target.get(target, 0) >= per_target_cap:
+                continue
+            taken.append(value_id)
+            seen.add(value_id)
+            per_target[target] = per_target.get(target, 0) + 1
+            took_here = True
+            if len(taken) == total:
+                break
+        if took_here:
+            supporting.append(facet_id)
+        if len(taken) == total:
+            break
+    return tuple(taken), tuple(supporting)
+
+
+def fuse_supplyfilter_target_cap_factory(
+    knobs: FuseKnobs | None = None,
+) -> Callable[..., FusionDecision]:
+    """``saea-fuse-supplyfilter-target-cap-v1`` (knowledge-wave item W3).
+
+    The knobs keep their :class:`FuseKnobs` meaning, read for this rule as:
+    ``m`` the admission depth (the first ``m`` ranked facets whose best
+    COSINE clears ``tau`` -- :func:`cosine_dimension_items`, never an
+    agreement score, exactly as :func:`_fuse_supply_filter` admits), ``c``
+    the per-task-target cap, and ``top_l`` the total number of values
+    delivered. Values already visible on the query state are skipped and
+    consume no budget, as in the supply filter; a value with no task target
+    is never supplied, as in the supply filter. Explicit knobs are required:
+    this rule has no default policy file.
+    """
+
+    if knobs is None:
+        raise RailsError("target-capped supply-filter fusion requires explicit FuseKnobs")
+    resolved = knobs.validate()
+
+    def fuser(
+        *,
+        snapshot: KnowledgeSnapshot,
+        snapshot_sha256: str,
+        query_state: QueryState,
+        rank_result: RankResult,
+        recall_scores: Mapping[str, Mapping[str, float]],
+    ) -> FusionDecision:
+        rank_result.validate()
+        visible = set(query_state.retrieved_value_ids)
+        targets_by_facet: dict[str, list[tuple[str, str]]] = {}
+        for value in snapshot.values:
+            if value.value_id in visible or value.task_target is None:
+                continue
+            for facet_id in value.associated_facet_ids:
+                targets_by_facet.setdefault(facet_id, []).append(
+                    (value.value_id, value.task_target)
+                )
+        for entries in targets_by_facet.values():
+            entries.sort()
+        admitted: list[tuple[str, float]] = []
+        for candidate in rank_result.candidates[: resolved.m]:
+            cosines = [
+                score
+                for _dimension, score in cosine_dimension_items(
+                    recall_scores.get(candidate.facet_id, {})
+                )
+            ]
+            if cosines and max(cosines) >= resolved.tau:
+                admitted.append((candidate.facet_id, candidate.score))
+        selected, supporting = select_target_capped(
+            admitted,
+            targets_by_facet=targets_by_facet,
+            per_target_cap=resolved.c,
+            total=resolved.top_l,
+        )
+        return FusionDecision(
+            snapshot_sha256=snapshot_sha256,
+            query_state_sha256=query_state.content_hash(),
+            rank_result_sha256=rank_result.content_hash(),
+            fusion_policy_id=TARGET_CAP_FUSE_POLICY_ID,
+            supporting_facet_ids=tuple(sorted(supporting)),
+            selected_value_ids=tuple(sorted(selected)),
+        ).validate()
+
+    return fuser
+
+
 # ---------------------------------------------------------------------------
 # Stage 4: alpha-blend controller
 # ---------------------------------------------------------------------------
@@ -1979,6 +2104,10 @@ def register_kb_policy_v1() -> None:
         KNOWLEDGE_FUSERS.register(
             ASSOCIATED_VALUES_FUSE_POLICY_ID, fuse_associated_values_factory
         )
+    if TARGET_CAP_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
+        KNOWLEDGE_FUSERS.register(
+            TARGET_CAP_FUSE_POLICY_ID, fuse_supplyfilter_target_cap_factory
+        )
     if CONTROLLER_POLICY_ID not in AGENT_CONTROLLERS.names():
         AGENT_CONTROLLERS.register(CONTROLLER_POLICY_ID, _default_controller_factory)
 
@@ -2005,6 +2134,9 @@ __all__ = [
     "default_label_normalizer",
     "fuse_knobs_from_config",
     "fuse_supplyfilter_factory",
+    "fuse_supplyfilter_target_cap_factory",
+    "select_target_capped",
+    "TARGET_CAP_FUSE_POLICY_ID",
     "load_policy_config",
     "compute_alpha_blend_decision",
     "make_kb_alpha_blend_controller_factory",
