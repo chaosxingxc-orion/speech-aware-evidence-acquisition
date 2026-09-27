@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1-aa-fold-a-v1",
-  "composed_config_hash": "4b22af26b265f785d875557499b466df17c607d528414abbd5b3ac8a98c149bf",
+  "composed_config_hash": "e1baf39fa0a7258687b38b214bf2879a78cbb3af3487bd13579fbb5b1d55df78",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "b33edd493c5165a14fd2818ff7187f1b3cc6930d3ac2860d9a8fd3d55c5e3b30",
+    "protocol_hash": "f734266c7907464e9806d1cb2a0781a5d9b4bd0af42f1b30e7470ca832611330",
     "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -35,11 +35,11 @@
     "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply in this registration (item E16). --allow-output-change must never be passed.",
     "output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
     "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/phase-supply-v1.json",
-    "sha256": "445e1acc7d5d867b0edd5b2cc0837d3afef567ca9ab76930bfa02bad50471a2a"
+    "sha256": "2dfe068f4f3f2a39ca0e7d2568cf90097ff012157e44d2f9bc19719b21fca0ee"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "9e8c6ef1e2616cb64dfc5f6c45fbb8e537c3566f774571d8d262d00fac154612"
+    "sha256": "908c717ed71b61a2e8bff8069357302a276624bc6cd576305bfb198c46310a45"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",
