@@ -765,7 +765,8 @@ arms). No candidate policy is evaluated on a descriptive pool.
   never breaks a right one: 64 intent repairs against 9 intent breaks over the selection pools, 22 against 8 on Fold
   A. Its revisions of FALSE-POSITIVE-entity drafts also help (ENT-FP: 17 entity repairs, 1 harm; ENT-MIXED 22 / 2).
 - **Useless, mostly: reach.** It routes REVISE on 5.45 % of visits; on drafts whose gold intent sat on Perception's
-  own shortlist (the "Solver choice" class) on 8.89 %, and 9.39 % of those rows are reached at all. The text
+  own shortlist (the "Solver choice" class) on 8.89 %; on first visits the Planner routes REVISE on only 52 of
+  the 554 such drafts (9.39 %). The text
   narrates a tool on {narr:,} of {allv:,} visits ({100 * narr / allv:.1f} %) -- the retired-tool order G5 removes --
   and a Reviewer whose text endorses the draft is followed to ACCEPT on {stance['ENDORSE']['route_ACCEPT']:,} of
   {stance['ENDORSE']['visits']:,} visits.
@@ -775,7 +776,8 @@ arms). No candidate policy is evaluated on a descriptive pool.
   {min(loop[lb]['as_built_vs_first_draft']['intent_pp'] for lb in sel_locked):+.2f} to
   {max(loop[lb]['as_built_vs_first_draft']['intent_pp'] for lb in sel_locked):+.2f} pp over the eleven locked selection pools, mean
   {fs['locked_loop_intent_pp_mean']:+.3f}; on Fold A {loop['agree-aa']['as_built_vs_first_draft']['intent_pp']:+.3f} (AGREE A/A) and
-  {loop['agree-w1']['as_built_vs_first_draft']['intent_pp']:+.3f} (AGREE); SLU-F1 within about +-0.3 everywhere.
+  {loop['agree-w1']['as_built_vs_first_draft']['intent_pp']:+.3f} (AGREE); SLU-F1 from
+  {min(v['as_built_vs_first_draft']['slu_pp'] for v in loop.values()):+.3f} to {max(v['as_built_vs_first_draft']['slu_pp'] for v in loop.values()):+.3f} over all 22 arms, most intervals spanning zero.
 - **The contrastive form acts on almost every row and harms little.** It routes REVISE on 46.24 % of visits (57-58 %
   on wrong-intent drafts, 33 % on correct ones), yet its 65 revisions of correct drafts broke intent once and entities
   4 times, and over all 386 revisions it repaired intent 19 times against 3 breaks and cut the entity-error count by
@@ -796,8 +798,8 @@ draft -- the "top-2 contrast" is already inside that history and the instruction
 change).
 
 **Algorithm `{ALGORITHM_ID}`** (registered in `core/stage3_algorithms.py`; GEPA's reflective update, arXiv:2507.19457,
-restricted to one node and scored where this rig can see): (1) *rollout* -- sealed pools already on disk, plus the
-flights this design queues; (2) *scoring* -- offline, per draft, against gold on the scoring side; (3) *credit
+restricted to one node and scored where this rig can see): (1) *rollout* is not an operator of this algorithm -- it consumes
+sealed pools already on disk and the flights this design queues; (2) *scoring* -- offline, per draft, against gold on the scoring side; (3) *credit
 assignment* -- per Reviewer VISIT, by the pre-review draft's error class; (4) *update* -- a reflective proposal of the
 node's policy from the credit table (the proposer reads the table, names the failing class, and edits the policy for
 it); (5) *selection* -- over sealed pools of TRAIN rows outside Fold A; (6) *context application* -- one flight of the

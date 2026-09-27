@@ -1,0 +1,560 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (keyed by run id). The preregistration fence repeats it; this copy has precedence.",
+  "byte_identity_expectation": {
+    "claim": "the Reviewer instruction is not an input to the first-phase supply, so every 1,080-row supply the flip mints for the arm and the A/A must carry this output digest; a different digest means the knowledge channel moved -- stop and report",
+    "sealed_agree_supply_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae"
+  },
+  "comparator": {
+    "context_only": [
+      "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+      "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1"
+    ],
+    "in_chain_replicate": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1",
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d"
+    }
+  },
+  "composed_config_diff_against_the_agree_parent": {
+    "aa": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "the_one_pin": [
+        "phase_material.reviewer.instruction_template"
+      ]
+    },
+    "arm": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "the_one_pin": [
+        "phase_material.reviewer.instruction_template"
+      ]
+    },
+    "smoke": {
+      "anything_else": [],
+      "baseline_bookkeeping_only": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.id",
+        "stage3_algorithm.note",
+        "stage3_algorithm.operators_used"
+      ],
+      "the_one_pin": [
+        "phase_material.reviewer.instruction_template"
+      ]
+    }
+  },
+  "confound_stated": "The selection's measured object is the review loop of the sealed candidate-recovery control arm, which also changed the Planner's routing text, the Solver's instruction and the candidate proposal. This cell moves the Reviewer instruction ALONE (the brief scopes the optimisation to the node); the Planner keeps the locked routing text and the Solver the locked revision clause. The transfer is therefore an assumption stated here and tested by the read: the arm's own per-visit credit (REVISE rate per class, helped / hurt per revision, the entity-error delta on CORRECT drafts) is compared with the source arm's sealed credit, and a loop value far below the source's is read as 'the lift lived in the Planner / Solver texts', which names the next round's node.",
+  "expectation_arithmetic": "Measured, never a prior (decision 139): on the SAME 625 TRAIN R01C rows (outside Fold A), the contrastive form's review loop moved intent by +2.56 pp over its own first drafts and the locked form's by +0.738 pp (mean of 11 sealed pools); paired per row the difference is +1.697 pp CI95 [+0.263, +3.143] (whole-utterance cluster bootstrap, 2000 draws, seed 20260927). A review loop can only act on a wrong draft, so the transfer to the base scales by the first-draft intent-wrong rate: R01C 1920/6399 = 30.00 % under the locked form, the base 14.17 % (the sealed AGREE arm's official intent 85.83, docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md). Expected intent effect 1.697 x 0.1417 / 0.3000 = +0.80 pp (interval +0.12 to +1.48), BELOW the cross-flight benefit bar of about 2.5 pp at n = 1,080 and below the intent own-null half-width 0.9943: the design cannot see it as a gain, so the cell claims none and is admitted on NO HARM; the node's own within-trajectory loop value is read beside it.",
+  "gpu_budget": {
+    "next_round_selection_flights": "Reviewer variants the offline loop cannot score are flown on TRAIN rows outside Fold A (R01C, or the decision-162 filler chunks), K variants plus the as-built control in ONE campaign, each read by its own within-trajectory loop value: about 625 x 5.85 x 0.000429 = 1.6 GPU-h per 625-row variant, so K = 3 plus control is about 6.3 GPU-h; only the winner re-enters Fold A beside an in-chain A/A (about 4.6 GPU-h).",
+    "offline_rounds": "0 GPU-h: the credit table, the gate x scope grid, the cross-fit and the form selection are model-free over sealed bytes",
+    "rate_source": "docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md: the AGREE arm's measured 1.8816 GPU-h per 1,080 rows at 4.06 contacts per row (serving monitor active seconds)",
+    "this_cell": {
+      "arm": "about 6,319 contacts (5.85 per row, the sealed contrastive-review rate of the candidate-recovery control arm: 3,657 contacts on 625 rows), about 2.71 GPU-h",
+      "in_chain_aa": "about 4385 contacts, about 1.8816 GPU-h (the AGREE rate)",
+      "smoke": "4 rows, at most 44 contacts, about 0.01 GPU-h",
+      "total": "about 4.6 GPU-h, one official complete score per 1,080-row cell; caps 11,880 generation contacts and 12.0 GPU-h per cell as ceilings"
+    }
+  },
+  "identity": {
+    "aa": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-revtfrl-aa-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-revtfrl-aa-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-revtfrl-aa-fold-a-v1",
+      "composed_config_hash": "ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-revtfrl-aa-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-revtfrl-aa-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368",
+      "reviewer_instruction_template": "probes/slurp_native_role_reviewer_v1_g5_v1.txt",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-revtfrl-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-revtfrl-fold-a-v1",
+      "composed_config_hash": "0d1451cfe6f3b875c8696b2ff2895bbbbc2f2b4415453503684a7d45debe9a5a",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-revtfrl-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "721bd0ab1f45f0ea215258d1d0e907606d946964dd97285b8e4487fdaa08c907",
+      "reviewer_instruction_template": "probes/slurp_native_role_reviewer_contrastive_v1.txt",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-revtfrl-fold-a-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-revtfrl-fold-a-smoke-4-v1",
+      "composed_config_hash": "6473bef148414d15ebcda4fc92b7314356e58d6d217a0f31409cd8aeae2bd189",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-revtfrl-fold-a-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 176,
+        "generation_calls_cap": 44,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 24,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 117
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-smoke-4-fit-v1",
+        "contact_cap": 176,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "protocol_hash": "0112f962b4b80a05f7076511157449a03a29fd36355c7388b8a92960b8b56e67",
+      "reviewer_instruction_template": "probes/slurp_native_role_reviewer_contrastive_v1.txt",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "no_harm_rule": "NO-HARM ADMITTED (owner decision 127): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION. The cell is NEVER reported as a gain, whatever the point estimate. Beside the verdict, never instead of it, the read reports the NODE CREDIT: on each arm, the loop value (delivered answer minus the same trajectory's first Solver draft, intent and official pooled SLU-F1, paired within the flight, cluster CI95) and the per-visit credit table by pre-review error class computed by scripts/analysis/slurp_reviewer_credit_table.py's own functions; the arm-minus-A/A difference of loop values set beside the declared expectation +0.80 pp; the Reviewer contact rate and REVISE rate; the per-scenario table in both weightings and the frontier row (decision 75); and a model-free count of Reviewer responses narrating a tool call on each arm.",
+  "offline_and_flight_split": {
+    "needs_a_flight": [
+      "any Reviewer text or evidence view no sealed arm flew: its findings, the Planner's routing on them and the Solver's revision are new model contacts",
+      "a trigger that makes the Reviewer act on rows where no sealed revision exists (a gate can only REMOVE sealed revisions offline, never add one)"
+    ],
+    "scored_offline_exactly": [
+      "WHEN a Reviewer verdict may change the answer (a gate over the sealed revision events: every gate of the grid, on each sealed pool, by re-scoring the answer the gated policy would deliver -- the pre-review draft when the gate refuses, the revised draft when it honours)",
+      "WHAT a revision may change (scope: full, intent-only, entities-only), by merging the sealed pre-review and revised drafts and re-scoring",
+      "the node's CREDIT per visit (helped / hurt / neutral on intent and on the row's entity errors, by the pre-review draft's error class) and its loop value over its own first drafts",
+      "the choice between Reviewer FORMS that some sealed arm already flew, by their loop values on the same rows"
+    ],
+    "why_the_flight_read_is_still_precise_for_the_node": "every trajectory seals the pre-review draft beside the delivered answer, so the node's loop value is a paired WITHIN-trajectory contrast with no flight offset -- the between-flight band that swamps a cross-flight system read does not enter it"
+  },
+  "offline_selection": {
+    "credit_summary": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/credit-table-summary-v1.json",
+      "sha256": "5f5a98159556ed33ef7319fa11011fd0ec052b75ae1a9aeaf62f8a9644ad3751"
+    },
+    "form_selection": {
+      "contrastive_loop_intent_pp": 2.56,
+      "contrastive_pool": "candrec",
+      "draws": 2000,
+      "locked_loop_intent_pp_mean": 0.738,
+      "locked_pools": [
+        "var1-plan",
+        "var1-planr",
+        "var1-ex-div",
+        "var1-ex-k10",
+        "var1-ex-k30",
+        "var1-per-k16c5",
+        "f10-control",
+        "f10-empty",
+        "evpath-control",
+        "roll-1",
+        "roll-aa"
+      ],
+      "paired_difference_ci95": [
+        0.263,
+        3.143
+      ],
+      "paired_difference_intent_pp": 1.697,
+      "rows": 625,
+      "seed": 20260927,
+      "unit": "whole-utterance cluster bootstrap"
+    },
+    "gate_scope_grid": {
+      "contrastive-candrec": {
+        "folds": {
+          "0": {
+            "held_out_fold_value": [
+              0.0,
+              0.0
+            ],
+            "policy": "Reviewer text raises an issue | full",
+            "selected_on_fold": 0,
+            "train_fold_value": [
+              0.0,
+              0.161
+            ]
+          },
+          "1": {
+            "held_out_fold_value": [
+              0.0,
+              0.0
+            ],
+            "policy": "all (as built) | full",
+            "selected_on_fold": 1,
+            "train_fold_value": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "top_by_mean_intent_vs_as_built": [
+          [
+            "Reviewer does not narrate a tool | full",
+            {
+              "mean_honoured": 386.0,
+              "mean_intent_pp": 0.0,
+              "mean_intent_pp_vs_first_draft": 2.56,
+              "mean_slu_pp": 0.0,
+              "mean_slu_pp_vs_first_draft": 0.677,
+              "pools": 1,
+              "pools_intent_negative": 0
+            }
+          ],
+          [
+            "Reviewer text raises an issue | full",
+            {
+              "mean_honoured": 385.0,
+              "mean_intent_pp": 0.0,
+              "mean_intent_pp_vs_first_draft": 2.56,
+              "mean_slu_pp": 0.079,
+              "mean_slu_pp_vs_first_draft": 0.756,
+              "pools": 1,
+              "pools_intent_negative": 0
+            }
+          ],
+          [
+            "all (as built) | full",
+            {
+              "mean_honoured": 386.0,
+              "mean_intent_pp": 0.0,
+              "mean_intent_pp_vs_first_draft": 2.56,
+              "mean_slu_pp": 0.0,
+              "mean_slu_pp_vs_first_draft": 0.677,
+              "pools": 1,
+              "pools_intent_negative": 0
+            }
+          ],
+          [
+            "revision changes the intent | full",
+            {
+              "mean_honoured": 50.0,
+              "mean_intent_pp": 0.0,
+              "mean_intent_pp_vs_first_draft": 2.56,
+              "mean_slu_pp": -0.291,
+              "mean_slu_pp_vs_first_draft": 0.386,
+              "pools": 1,
+              "pools_intent_negative": 0
+            }
+          ],
+          [
+            "Reviewer does not narrate a tool | intent-only",
+            {
+              "mean_honoured": 386.0,
+              "mean_intent_pp": -0.32,
+              "mean_intent_pp_vs_first_draft": 2.24,
+              "mean_slu_pp": -0.677,
+              "mean_slu_pp_vs_first_draft": 0.0,
+              "pools": 1,
+              "pools_intent_negative": 1
+            }
+          ],
+          [
+            "Reviewer text raises an issue | intent-only",
+            {
+              "mean_honoured": 385.0,
+              "mean_intent_pp": -0.32,
+              "mean_intent_pp_vs_first_draft": 2.24,
+              "mean_slu_pp": -0.677,
+              "mean_slu_pp_vs_first_draft": 0.0,
+              "pools": 1,
+              "pools_intent_negative": 1
+            }
+          ]
+        ]
+      },
+      "locked-v1": {
+        "folds": {
+          "0": {
+            "held_out_fold_value": [
+              -0.024,
+              -0.204
+            ],
+            "policy": "draft was not the exemplar-vote top | full",
+            "selected_on_fold": 0,
+            "train_fold_value": [
+              0.03,
+              -0.054
+            ]
+          },
+          "1": {
+            "held_out_fold_value": [
+              -0.18,
+              -0.002
+            ],
+            "policy": "Reviewer text raises an issue | full",
+            "selected_on_fold": 1,
+            "train_fold_value": [
+              0.0,
+              0.111
+            ]
+          }
+        },
+        "top_by_mean_intent_vs_as_built": [
+          [
+            "draft off the shortlist or not vote top | full",
+            {
+              "mean_honoured": 19.3,
+              "mean_intent_pp": 0.002,
+              "mean_intent_pp_vs_first_draft": 0.74,
+              "mean_slu_pp": -0.136,
+              "mean_slu_pp_vs_first_draft": -0.024,
+              "pools": 11,
+              "pools_intent_negative": 2
+            }
+          ],
+          [
+            "draft off the shortlist or not vote top | intent-only",
+            {
+              "mean_honoured": 19.3,
+              "mean_intent_pp": 0.002,
+              "mean_intent_pp_vs_first_draft": 0.74,
+              "mean_slu_pp": -0.112,
+              "mean_slu_pp_vs_first_draft": 0.0,
+              "pools": 11,
+              "pools_intent_negative": 2
+            }
+          ],
+          [
+            "draft was not the exemplar-vote top | full",
+            {
+              "mean_honoured": 18.9,
+              "mean_intent_pp": 0.002,
+              "mean_intent_pp_vs_first_draft": 0.74,
+              "mean_slu_pp": -0.13,
+              "mean_slu_pp_vs_first_draft": -0.018,
+              "pools": 11,
+              "pools_intent_negative": 2
+            }
+          ],
+          [
+            "draft was not the exemplar-vote top | intent-only",
+            {
+              "mean_honoured": 18.9,
+              "mean_intent_pp": 0.002,
+              "mean_intent_pp_vs_first_draft": 0.74,
+              "mean_slu_pp": -0.112,
+              "mean_slu_pp_vs_first_draft": 0.0,
+              "pools": 11,
+              "pools_intent_negative": 2
+            }
+          ],
+          [
+            "all (as built) | full",
+            {
+              "mean_honoured": 32.3,
+              "mean_intent_pp": 0.0,
+              "mean_intent_pp_vs_first_draft": 0.738,
+              "mean_slu_pp": 0.0,
+              "mean_slu_pp_vs_first_draft": 0.112,
+              "pools": 11,
+              "pools_intent_negative": 0
+            }
+          ],
+          [
+            "all (as built) | intent-only",
+            {
+              "mean_honoured": 32.3,
+              "mean_intent_pp": 0.0,
+              "mean_intent_pp_vs_first_draft": 0.738,
+              "mean_slu_pp": -0.112,
+              "mean_slu_pp_vs_first_draft": 0.0,
+              "pools": 11,
+              "pools_intent_negative": 0
+            }
+          ]
+        ]
+      }
+    },
+    "reading": "No gate and no revision scope over the sealed revisions beat honouring every revision: the cross-fitted choices returned 0.000 / 0.000 (contrastive) and -0.024 / -0.18 intent (locked) on their held-out folds. The node's existing revisions are net useful on intent; its deficit is REACH. The offline loop therefore selects on the one policy dimension where a sealed alternative exists -- the Reviewer's form -- and leaves gating and scope as they are.",
+    "selection_pools": [
+      "var1-plan",
+      "var1-planr",
+      "var1-ex-div",
+      "var1-ex-k10",
+      "var1-ex-k30",
+      "var1-per-k16c5",
+      "f10-control",
+      "f10-empty",
+      "evpath-control",
+      "roll-1",
+      "roll-aa",
+      "candrec"
+    ]
+  },
+  "owner_decisions": {
+    "127": "no-harm admission of an item whose effect the design cannot see as a gain; never reported as a gain",
+    "133": "intent primary, official SLU-F1 the guard",
+    "139": "expectations from measured numbers only; no conditional pre-commitment",
+    "153": "G5 (the base's Reviewer text) prepared and flown as a no-harm item",
+    "161": "the agreement term retained (the base's AGREE form)",
+    "165": "nodes like the Reviewer can all be optimised; do not mechanically throw them away -- optimise its behaviour on its own with training-free RL"
+  },
+  "prohibitions": [
+    "Never reported as a gain.",
+    "No Fold A gold was used for selection; Fold A pools entered the credit table descriptively only.",
+    "No test-split, Fold B or DEV contact; no re-flying of any sealed cell.",
+    "No second factor: no Planner, Solver, store, roster, geometry or session change.",
+    "No paper-scale profile; no flight before root mints the decision receipt and the cells are flipped."
+  ],
+  "registered_at_utc": "2026-09-27T21:00:00.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The in-chain null: the base (AGREE with G5's Reviewer instruction) re-flown in the same chain. Its expected effect is zero by construction.",
+      "primary_metric": "intent accuracy and official pooled SLU-F1, as the instrument",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1",
+      "rows": 1080
+    },
+    "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM only: the new instruction loads by its relpath, every request fits, the Reviewer answers with findings and no tool call, the episode completes. Never scored or read.",
+      "primary_metric": "none (structural form only)",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1": {
+      "admission": "no-harm",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.8,
+      "harm_margin_pp": 1.2485,
+      "harm_margin_pp_by_metric": {
+        "intent_accuracy": 0.9943,
+        "slu_f1": 1.2485
+      },
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "Admitted on NO HARM and never reported as a gain. expected_effect_pp is the MEASURED transfer of the offline selection statistic (registered-facts-v1.json expectation_arithmetic), below the design's benefit bar, which is why claims_benefit is false; the harm margin is the design's measured sampling floor at n = 1,080 (Fold A own null, PLAN vs PLANr). The node credit (within-flight loop value per arm) is read beside the verdict and is the next optimisation round's reward signal.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1",
+      "rows": 1080
+    }
+  },
+  "study_commit_at_registration": "1c196a5d",
+  "the_policy": {
+    "adapted_from_the_sealed_form": {
+      "flown_by": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+      "sha256": "fb9502619e9dbaf973c2d44a022e04bcd60a7a54da82475208078c4ec0593faa",
+      "value": "probes/slurp_native_role_reviewer_candidate_recovery_v1.txt"
+    },
+    "composed_key": "phase_material.reviewer.instruction_template",
+    "edit_proof": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/instruction-edit-proof-v1.json",
+      "sha256": "f696a727428c0b097f50cbe8706d2fa141b302c500b8a94b4fbc16d1a9c99793"
+    },
+    "from": {
+      "sha256": "724a437de1eeb1167d11395ad78605d595e324e682cff552c27cb84caa8cef35",
+      "value": "probes/slurp_native_role_reviewer_v1_g5_v1.txt"
+    },
+    "node": "Reviewer",
+    "to": {
+      "sha256": "2b6de3b6cfdba2c248efc5a36e1d29b58220c09e0b673a9285cb1cf2ad51e3cf",
+      "value": "probes/slurp_native_role_reviewer_contrastive_v1.txt"
+    },
+    "untouched": "Planner and Solver templates, the agreement term, the three stores, the program and its ceiling, roster, geometry, normaliser, scorers"
+  }
+}

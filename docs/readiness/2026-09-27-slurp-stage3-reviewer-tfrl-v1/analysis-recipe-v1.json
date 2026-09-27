@@ -1,0 +1,72 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "context": {
+      "role": "sealed AGREE family, context beside the A/A, never the bar",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1"
+      ]
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-revtfrl-aa-fold-a-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the within-chain null the delta is read at",
+      "run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold string, Reviewer text or model output is printed or persisted.",
+  "decision_rule": "NO-HARM ADMITTED (owner decision 127): against the IN-CHAIN A/A arm flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). NEUTRAL-BY-WIDTH IS THE ADMISSION. The cell is NEVER reported as a gain, whatever the point estimate. Beside the verdict, never instead of it, the read reports the NODE CREDIT: on each arm, the loop value (delivered answer minus the same trajectory's first Solver draft, intent and official pooled SLU-F1, paired within the flight, cluster CI95) and the per-visit credit table by pre-review error class computed by scripts/analysis/slurp_reviewer_credit_table.py's own functions; the arm-minus-A/A difference of loop values set beside the declared expectation +0.80 pp; the Reviewer contact rate and REVISE rate; the per-scenario table in both weightings and the frontier row (decision 75); and a model-free count of Reviewer responses narrating a tool call on each arm.",
+  "declared_expectation": {
+    "arithmetic": "Measured, never a prior (decision 139): on the SAME 625 TRAIN R01C rows (outside Fold A), the contrastive form's review loop moved intent by +2.56 pp over its own first drafts and the locked form's by +0.738 pp (mean of 11 sealed pools); paired per row the difference is +1.697 pp CI95 [+0.263, +3.143] (whole-utterance cluster bootstrap, 2000 draws, seed 20260927). A review loop can only act on a wrong draft, so the transfer to the base scales by the first-draft intent-wrong rate: R01C 1920/6399 = 30.00 % under the locked form, the base 14.17 % (the sealed AGREE arm's official intent 85.83, docs/results/2026-09-27-slurp-agree-w1-fold-a-read.md). Expected intent effect 1.697 x 0.1417 / 0.3000 = +0.80 pp (interval +0.12 to +1.48), BELOW the cross-flight benefit bar of about 2.5 pp at n = 1,080 and below the intent own-null half-width 0.9943: the design cannot see it as a gain, so the cell claims none and is admitted on NO HARM; the node's own within-trajectory loop value is read beside it.",
+    "expected_effect_pp": 0.8
+  },
+  "margins": {
+    "h_intent": 0.9943,
+    "h_slu": 1.2485
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1"
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1",
+  "recipe_id": "slurp-stage3-revtfrl-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-27T21:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired); the node loop value uses the whole-utterance cluster bootstrap of the credit driver"
+  },
+  "run_ids": {
+    "aa": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1",
+    "arm": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1",
+    "fit_aa": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1",
+    "fit_arm": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-FIT-V1",
+    "fit_smoke": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-FIT-V1",
+    "read": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the arm and the in-chain A/A carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score, their config hashes are this package's (the arm the contrastive Reviewer file, the A/A the G5 file), and the READ row is countersigned.",
+    "2. Structural: 0 tool schemas and 0 tool calls on every contact of both arms; Reviewer contacts per row; REVISE routes per row; a model-free count of Reviewer responses narrating a tool call (counts only).",
+    "3. The paired system read: arm minus in-chain A/A, intent and official pooled SLU-F1, 10,000 paired draws, seed 20260927 (scripts/analysis/plan_cell_read.py family); apply the no-harm rule; never write 'gain' or 'no gain'.",
+    "4. The NODE CREDIT on each arm with scripts/analysis/slurp_reviewer_credit_table.py's own functions (visit_records, credit_table, loop value against the trajectory's own first draft): the per-class credit table, the loop value with its cluster CI95, and the arm-minus-A/A difference of loop values beside the declared expectation.",
+    "5. Beside every number: the per-scenario table in both weightings, the frontier row (decision 75), the arm's credit table next to the sealed source arm's (the confound check stated in the protocol).",
+    "6. Hand the arm's per-visit credit table to the next proposer round as its reward signal; an unadmitted policy is withdrawn with the credit table as the first root-cause lead."
+  ],
+  "title": "Cell REV-TFRL-1 -- the paired roster read against the in-chain A/A under the no-harm rule, with the Reviewer node's within-trajectory credit on both arms"
+}

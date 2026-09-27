@@ -1,0 +1,59 @@
+{
+  "edits_against_the_source": [
+    {
+      "new_words": "Perception candidates.",
+      "op": "replace",
+      "source_words": "candidate proposal."
+    },
+    {
+      "new_words": "Perception's",
+      "op": "replace",
+      "source_words": "The original"
+    },
+    {
+      "new_words": "the retrieved examples",
+      "op": "replace",
+      "source_words": "exemplar-supported additions"
+    },
+    {
+      "new_words": "evidence and",
+      "op": "replace",
+      "source_words": "evidence,"
+    },
+    {
+      "new_words": "result.",
+      "op": "replace",
+      "source_words": "result, and call only tools actually exposed in this turn."
+    },
+    {
+      "new_words": "request a transcript,",
+      "op": "insert",
+      "source_words": ""
+    }
+  ],
+  "new": {
+    "characters": 1343,
+    "relpath": "configs/probes/slurp_native_role_reviewer_contrastive_v1.txt",
+    "sha256": "2b6de3b6cfdba2c248efc5a36e1d29b58220c09e0b673a9285cb1cf2ad51e3cf",
+    "words": 194
+  },
+  "replaces": {
+    "relpath": "configs/probes/slurp_native_role_reviewer_v1_g5_v1.txt",
+    "sha256": "724a437de1eeb1167d11395ad78605d595e324e682cff552c27cb84caa8cef35",
+    "words": 28
+  },
+  "schema": "saea-revtfrl-instruction-edit-proof-v1",
+  "source": {
+    "flown_by": "SAEA-SLURP-NATIVE-STAGE3-CANDIDATE-RECOVERY-CONTROL-R01C-SEAL-RECOVERY1-V1",
+    "relpath": "configs/probes/slurp_native_role_reviewer_candidate_recovery_v1.txt",
+    "sha256": "fb9502619e9dbaf973c2d44a022e04bcd60a7a54da82475208078c4ec0593faa",
+    "words": 199
+  },
+  "token_note": "Not tokenised here (this registration contacts no tokenizer): the new text has 194 words against the G5 text's 28, so each Reviewer contact carries a few hundred more prompt tokens against a slot of 24,576 and a sealed Reviewer prompt near 10,000; the flip's FIT stage measures every request envelope before any generation contact.",
+  "why_each_edit": [
+    "'candidate proposal' -> 'Perception candidates' and 'The original candidates and exemplar-supported additions' -> 'Perception's candidates and the retrieved examples': this plan carries no derived candidate proposal and no exemplar-supported additions; it carries Perception's own 1-3 candidates and the retrieved TRAIN exemplars, which the renamed words now name",
+    "'and call only tools actually exposed in this turn' deleted: no tool is exposed to any role of this plan (item E25; G5 deleted the locked text's retired-tool order for the same reason)",
+    "'Do not request a transcript' kept from the locked and G5 Reviewer text: a standing boundary of this study (no transcript state anywhere)"
+  ],
+  "words_kept_in_order_from_the_source": 182
+}
