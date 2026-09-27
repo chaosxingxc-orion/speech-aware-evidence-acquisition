@@ -7,7 +7,7 @@ session restart wiped it mid-campaign; from now on they live here and every sche
 | script | role |
 | --- | --- |
 | `saea_task.ps1` | register / start / stop / query one scheduled task (`-Name`, `-Script <wsl path>`, `-Status`, `-Stop`); battery and idle conditions off, no time limit |
-| `batch_driver.sh` | the unattended queue driver: `/home/chao/batch-queue.json` steps, `batch-status.jsonl` events, `batch-STOP` on first failure, `batch-done` at the end; `BATCH_SESSION` selects the resident session |
+| `batch_driver.sh` | the unattended queue driver: `/home/chao/batch-queue.json` steps, `batch-status.jsonl` events, `batch-STOP` on first failure, `batch-done` at the end; `BATCH_SESSION` selects the resident session; `prelaunch` refuses a step unless `scripts/checks/flight_registration_check.py` passes on its arm, smoke and campaign-plan cells (owner decision 163: rows root countersigned, decision receipt present with the run ids eligible, READ run id declared and registered) |
 | `batch_inspect.py` | structural acceptance of a sealed smoke or arm (attempt FINALIZED, manifest COMPLETED at the flight commit, rows, ceilings, tool surface, one score job) |
 | `gpu_ramp_test.sh` | the non-model GPU preflight (fp16 matmul burst; refuse below 30 TFLOP/s) |
 | `batch_driver_task.sh`, `batch_chain_*.sh` | scheduled-task entry points: pin the batch flight worktree at a flight commit, write the queue, run the driver |
