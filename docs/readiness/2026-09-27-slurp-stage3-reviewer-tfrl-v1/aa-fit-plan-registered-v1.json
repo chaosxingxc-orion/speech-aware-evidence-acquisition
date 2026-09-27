@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-revtfrl-aa-fold-a-v1",
+  "composed_config_hash": "ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-revtfrl-aa-fold-a-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 47520,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368",
+    "run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; it measures request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-revtfrl-aa-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "one_factor": "none: the base (AGREE with G5's Reviewer instruction)",
+  "plan_kind": "fit",
+  "preparation_base_commit": "4d459858",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "note": "the Reviewer instruction is not an input to the first-phase supply, so every 1,080-row supply the flip mints for the arm and the A/A must carry this output digest; a different digest means the knowledge channel moved -- stop and report",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
+    "sha256": "6ba5f22f93614ad797afd2220c927655f4e692b73fe566a3f4b3c18fc05f4055"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1: The in-chain A/A replicate of cell REV-TFRL-1 (the base: AGREE with G5's Reviewer instruction). It measures request envelopes only and reads nothing.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",
+  "registered_at_utc": "2026-09-27T21:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-revtfrl, branch fable/revtfrl",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
