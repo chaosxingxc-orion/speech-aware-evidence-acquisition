@@ -1,0 +1,91 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-roll-3-dev2000-added-smoke-4-v1-generation",
+      "baseline_fragment": "slurp-native-stage3-roll-3-dev2000-added-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-roll-3-dev2000-added-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row structural form smoke of Stage-3 cell ROLL-3 on the first 4 rows, by roster order, of the unchanged DEV-2000-ADDED roster docs/receipts/rosters/slurp-dev-2000-added-v1.json: slurp:devel:000017:audio-1501773854-headset, slurp:devel:000024:audio-1490195864-headset, slurp:devel:000026:audio-1502216425-headset, slurp:devel:000026:audio-1502301875 (the last two are the roster's own two recordings of one utterance), 8.1276875 s of audio, split identity fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0 computed by the repository's own data.splits.split_identity_hash(data.splits.prefixed('slurp', ids)) -- the call that reproduces the committed 1,000-row identity ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67 from this receipt and cell ROLL-2's smoke identity from the Fold A receipt's first four rows. No earlier smoke on this roster used these rows: cell B6 registered no smoke and cell CELL-3's smoke took roster positions 1, 2, 8 and 14 under its own gate-defined split identity.. It proves the grouped-Solver form on this roster (five custodied Solver samples per row in solver_group, the plurality-commit replay reproducing the sealed delivered answer, zero native task-contract calls, every request fitting) and produces no score and no read. Stage-3 cell ROLL-3: cell ROLL-2's grouped-Solver form (samples 5, temperature 0.7, seed_offset 0, plurality commit at min_support 3) on DEV-2000-ADDED, the evaluation roster where every admitted policy must later be replicated, to create the SEALED five-sample pool the program has on R01C and TRAIN Fold A and lacks there. DESCRIPTIVE: an asset, not a comparison. HELD: root mints the admission receipt coordination/slurp-stage3-roll-3-dev2000-added-v1/root-admission-v1.json (decision id slurp-stage3-roll-3-dev2000-added-admission-v1), rewrites its eligible_run_ids to this family's FOUR run ids -- SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1, SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-FIT-V1, SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-SMOKE-4-V1, SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-SMOKE-4-FIT-V1 -- and its budget caps to this family's, then re-pins this cell with scripts/flights/repin_cell.py --set-ready, which mints this cell's OWN first-phase supply artifact under its own run id (harness item E16) and inserts the matching preparation requirement. The committed baseline carries NO prepared_phase_supply key; --allow-output-change must never be passed. The two FIT ids are SPEND identities and are never flown as generation cells.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The released train-exemplars store this cell retrieves from: size-pool-annotated-exemplars, the parent pool the sealed DEV-2000-ADDED plan arm and the sealed Fold A lock arm both read (TRAIN-built; no DEV-2000-ADDED recording is in it). Nothing new is released by this cell; the requirement states what the fragment binds. The cell stays HELD on a root admission decision.",
+            "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
+            "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The DEV-2000-ADDED query-dimension alias both DEV-2000-ADDED query_source pins descend from (prepared under SAEA-SLURP-DEV2000-ADDED-ALIAS-V1 from the sealed SAEA-SLURP-DEV2000-ADDED-SPEECH-QUERY-ENCODING-V1 vectors, and already consumed by cell B6's plan arm, its replicate PLANr-DEV2000 and cell CELL-3). Nothing new is encoded for this cell: every DEV-2000-ADDED vector line it reads is the sealed parent's own line bytes. The cell stays HELD on a root admission decision.",
+            "relpath": "prepared/SAEA-SLURP-DEV2000-ADDED-ALIAS-V1/query-dimension-alias.json",
+            "sha256": "9d41262d18b7dc524807e36fb1d97b859f43920524a6dfe85f1bead2b07a5768"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-26",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 76,
+    "planned_speech_audio_seconds": 155,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-SMOKE-4-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. This registration pre-authorises no recovery; a root-diagnosed recovery re-registration is a separate act once the cell is flown. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 304,
+    "generation_calls_cap": 76,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 155
+  },
+  "fragment_kind": "saea-slurp-native-stage3-roll-3-dev2000-added-smoke-4-v1",
+  "generation_budget": {
+    "cap": 76,
+    "definition": "19,000 = 1,000 DEV-2000-ADDED rows x 19 and 76 = 4 rows x 19, where 19 is the grouped-Solver graph's OWN ceiling at samples 5 as rails.native_episode_config.load_native_episode_config resolves it: perception.max_iterations + (max_revisions + 1) x (solver.max_iterations x solver.samples + reviewer.max_iterations + planner.max_iterations) = 1 + 2 x (1 x 5 + 3 + 1) = 19. matching configs/policy/phase-native-candidates-review-revise-samples5-v1.json max_contacts 19. Verified offline at registration by the dry run: the composed program phase-native-candidates-review-revise-samples5-v1 declares max_contacts 19 and the loader's own graph ceiling resolves to 19 (a disagreement is refused by name). FIT: 76,000 = 19,000 x (1 speech packet + 3 endpoints) and 304 = 76 x 4 -- cell ROLL-1's own native_contact_fit mode and multiplier, rescaled to this roster. It is the exact program maximum, not a conservative safety bound. Cell ROLL-1 MEASURED 8.5504 contacts per row on this same form (cell ROLL-2: 8.33 on TRAIN Fold A), so about 8,550 contacts and about 3.3 GPU hours are the ESTIMATE for this arm -- never a target. Ceilings are bounds, and budgets are run-cumulative across every attempt of a run id.",
+    "target": 34
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-dev2000-added",
+    "decision_population": "The first 4 rows, by roster order, of the unchanged DEV-2000-ADDED roster docs/receipts/rosters/slurp-dev-2000-added-v1.json: slurp:devel:000017:audio-1501773854-headset, slurp:devel:000024:audio-1490195864-headset, slurp:devel:000026:audio-1502216425-headset, slurp:devel:000026:audio-1502301875 (the last two are the roster's own two recordings of one utterance), 8.1276875 s of audio, split identity fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0 computed by the repository's own data.splits.split_identity_hash(data.splits.prefixed('slurp', ids)) -- the call that reproduces the committed 1,000-row identity ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67 from this receipt and cell ROLL-2's smoke identity from the Fold A receipt's first four rows. No earlier smoke on this roster used these rows: cell B6 registered no smoke and cell CELL-3's smoke took roster positions 1, 2, 8 and 14 under its own gate-defined split identity. Structural form proof only: no score and no read.",
+    "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "ids": [
+        "slurp:devel:000017:audio-1501773854-headset",
+        "slurp:devel:000024:audio-1490195864-headset",
+        "slurp:devel:000026:audio-1502216425-headset",
+        "slurp:devel:000026:audio-1502301875"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of cell ROLL-3. Cell ROLL-3: a system-level trajectory-collection rollout of the LOCKED v2.0 plan on DEV-2000-ADDED (1,000 rows) with the Solver grouped at samples 5, temperature 0.7 -- the same form cell ROLL-1 flew on the 625-row construction subset R01C and cell ROLL-2 flew today on TRAIN Fold A, moved to the evaluation roster. PRIMARY DELIVERABLE: a SEALED five-sample pool on the roster where every admitted policy must later be replicated. The measurement instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md establishes that an action whose effect is computable over a SEALED sample pool is read at about 0.67 pp at n = 625 (about 0.53 pp at n = 1,000, scaling by the square root of n) at zero GPU cost, while a cross-flight contrast at this scale carries a measured +1.87 pp A/A offset. The program has such a pool on R01C and, since cell ROLL-2 sealed today, on TRAIN Fold A -- and NONE on DEV-2000-ADDED, the evaluation roster where every admitted policy must later be replicated and where the owner names dev sampling first (owner decisions 34, 79, 139, 141). This cell creates that pool. SECONDARY PRODUCTS, all free once the pool is sealed: the within-flight sample spread on DEV-2000-ADDED, the oracle best-of-5 ceiling on DEV-2000-ADDED, and the material for a verifier-selection arm. STATUS: DESCRIPTIVE. It is an asset, not a comparison, and it makes NO admission claim: no comparator, no gate number, and no superiority, transfer or generalisation statement. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "DEV-2000-ADDED",
+  "stage3_algorithm": {
+    "id": "shared-rollout",
+    "note": "ROLL-3 is the registered algorithm-neutral rollout substrate, exactly as cells ROLL-1 and ROLL-2 declared it: the grouped Solver, its per-sample custody and its plurality commit, applying NO learned context and carrying NO credit_assignment or update operator. Declared 'shared-rollout' for that reason. This cell is TRAJECTORY COLLECTION for the sealed-pool measurement instrument -- it exists so that offline actions over a sealed sample pool become readable at about 0.53 pp on the evaluation roster at zero GPU cost -- and it is NOT a policy arm. No family owns it and no verdict attaches to it.",
+    "operators_used": [
+      "rollout"
+    ]
+  }
+}
