@@ -1153,8 +1153,8 @@
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "split_id": "SLURP-EVO-FOLD-A-V2",
   "stage3_algorithm": {
-    "id": "reviewer-node-sealed-credit-v1",
-    "note": "The first cell of reviewer-node-sealed-credit-v1 (owner decision 165): the Reviewer node's policy -- its instruction -- was proposed reflectively over a per-visit credit table built from sealed trajectories and SELECTED OFFLINE over sealed TRAIN R01C pools (rows outside Fold A) by the node's own within-trajectory loop value; this flight is the context_application step on Fold A, and its sealed Reviewer visits are the next round's credit input.",
+    "id": "sealed-credit-system-policy-v1",
+    "note": "sealed-credit-system-policy-v1 applied NODE-SCOPED to the Reviewer, as owner decision 165 rules (per-node credit; the Reviewer's revise/keep decisions and their outcomes in the sealed pools are the reward signal): the node's policy -- its instruction -- was proposed reflectively over a per-visit credit table built from sealed trajectories and SELECTED OFFLINE over sealed TRAIN R01C pools (rows outside Fold A) by the node's own within-trajectory loop value; this flight is the context_application step on Fold A, and its sealed Reviewer visits are the next round's credit input.",
     "operators_used": [
       "context_application"
     ]

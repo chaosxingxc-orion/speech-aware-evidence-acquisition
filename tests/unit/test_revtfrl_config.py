@@ -116,7 +116,7 @@ def test_ids_readiness_and_label(experiment: str) -> None:
     if experiment == AA:
         assert record.id == "none" and used == ()
     else:
-        assert record.id == "reviewer-node-sealed-credit-v1" and used == ("context_application",)
+        assert record.id == "sealed-credit-system-policy-v1" and used == ("context_application",)
     assert ("campaign" in cell["allowed_execution_stages"]) is (experiment != SMOKE)
 
 

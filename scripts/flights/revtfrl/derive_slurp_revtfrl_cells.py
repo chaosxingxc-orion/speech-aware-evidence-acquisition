@@ -71,7 +71,7 @@ THE_ONE_PIN = "phase_material.reviewer.instruction_template"
 
 CAMPAIGN = "configs/campaign/slurp-native-stage3-revtfrl-fold-a-v1.json"
 PACKAGE = "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1"
-ALGORITHM_ID = "reviewer-node-sealed-credit-v1"
+ALGORITHM_ID = "sealed-credit-system-policy-v1"
 
 THE_POLICY = (
     "The Reviewer node's instruction moves from the G5 text (the locked Reviewer instruction with the "
@@ -89,8 +89,9 @@ THE_POLICY = (
 )
 
 ARM_ALGORITHM_NOTE = (
-    "The first cell of reviewer-node-sealed-credit-v1 (owner decision 165): the Reviewer node's policy -- its "
-    "instruction -- was proposed reflectively over a per-visit credit table built from sealed trajectories "
+    "sealed-credit-system-policy-v1 applied NODE-SCOPED to the Reviewer, as owner decision 165 rules (per-node "
+    "credit; the Reviewer's revise/keep decisions and their outcomes in the sealed pools are the reward signal): the "
+    "node's policy -- its instruction -- was proposed reflectively over a per-visit credit table built from sealed trajectories "
     "and SELECTED OFFLINE over sealed TRAIN R01C pools (rows outside Fold A) by the node's own within-"
     "trajectory loop value; this flight is the context_application step on Fold A, and its sealed Reviewer "
     "visits are the next round's credit input."
