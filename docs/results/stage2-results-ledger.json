@@ -2,7 +2,7 @@
   "schema": "saea-stage2-results-ledger-v1",
   "study": "speech-aware-evidence-acquisition",
   "authority": "owner Decision 14-Q, 2026-09-09",
-  "generated_on": "2026-09-26",
+  "generated_on": "2026-09-27",
   "profile": "model-free-check: zero model, GPU, tool, embedder, tokenizer, network and audio-decode contacts",
   "scope": "every cell decided by a verdict note dated 2026-09-04 to 2026-09-09, plus the four entries of docs/receipts/harness-admission.json and registered cells whose scientific decisions remain pending; the 2026-09-09 owner recovery adds operational completion for all seven KV flights without inspecting their score values; and, added 2026-09-26, one row per Stage-3 cell (2026-09-22 to 2026-09-26) so this machine-readable authority covers the stage its markdown twin already carries. A Stage-3 row's numbers and status word are that cell's own verdict note's, cited in the row's source fields; where a cell has no verdict note the row is PENDING and states no number.",
   "sign_convention": "minus signs are ASCII; every value is the cited verdict's or receipt's own",
@@ -105,15 +105,15 @@
       "comparator_locked_at": "intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06)",
       "own_null_measured": "MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188",
       "own_null_source": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
-      "cells_flown": 42,
+      "cells_flown": 43,
       "admitted": 1,
       "aligned": 0,
       "neutral": 6,
       "rejected": 10,
-      "instrument": 17,
+      "instrument": 18,
       "closed_unread": 3,
       "pending": 12,
-      "rows": 49,
+      "rows": 50,
       "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used."
     },
     {
@@ -4884,6 +4884,59 @@
       "flown": true,
       "pending": false,
       "provisional": null
+    },
+    {
+      "cell_id": "SLURP-CONV",
+      "carrier": "SLURP",
+      "layer": "Stage-3 instrument (conditional-rate probe)",
+      "title": "CONV - the 70-row conversion probe of the AGREE arm: P(correct given newly delivered) on the TRAIN Fold A INTENT-UNCOVERED rows whose gold intent boundary entry the agreement term newly delivers, treatment only, read against the sealed PLAN comparator",
+      "date": "2026-09-27",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1"
+      ],
+      "verdict_note": "docs/results/2026-09-27-slurp-conv-probe-read.md",
+      "receipt": "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1/",
+      "preregistration": "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1-preregistration.md",
+      "status": "DESCRIPTIVE (a conditional rate on a gold-selected TRAIN roster; no admission, no pooled or roster-level claim, no superiority or generalisation claim)",
+      "status_source": "h1",
+      "status_quote": "# Cell CONV read: m = 32 of 70 newly delivered rows moved from a wrong intent to the gold intent (DESCRIPTIVE)",
+      "comparator": {
+        "text": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 on the same 70 rows, intent-wrong on every one of them by construction (INTENT-UNCOVERED in the bad-case bank); the contrast is per-row and offline and the comparator was never re-flown.",
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md"
+      },
+      "rule": {
+        "text": "none as an effectiveness rule: the cell measures one binomial proportion and decides nothing (form-proof, claims_benefit false, expected_effect_pp 0.0). The recipe's gates: manifest COMPLETED at 70 rows with the committed id-list hash; the gold boundary entry delivered on all 70 rows; one official complete score; the comparator verdict agreed two ways; reverse count zero.",
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md"
+      },
+      "primary": {
+        "text": "m = 32 of 70 rows moved from a wrong intent to the gold intent: P(correct given newly delivered) = 45.71 %, Wilson CI95 [34.57 %, 57.30 %], Clopper-Pearson CI95 [33.74 %, 58.06 %]; reverse count 0; unchanged wrong 22 (13 byte-identical to the comparator, 59.1 %); a different wrong intent 16.",
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md"
+      },
+      "margin": {
+        "text": "none - a binomial proportion with its own interval; no bootstrap and no paired margin applies. Stated, not applied: under owner decision 133 the AGREE arm's re-declared expectation is 32 x 0.092615 = 2.9637 pp intent against the 2.5 pp bar at n = 1,080, which needs m >= 27 (m is above by 5 rows; the CI95 in rows, [24.2, 40.1], spans the line); under the retired SLU-F1 framing 1.3317 pp against 61 rows (below).",
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md"
+      },
+      "margin_kind": "none - binomial CI95 (Wilson, with Clopper-Pearson beside it)",
+      "guards": {
+        "text": "delivery gate 70 / 70; bank class and sealed official score agree on all 70 comparator verdicts; the parsed probe intent agrees with the scorer's exact flag on all 70; manifest COMPLETED, attempt FINALIZED, scored once; dispositions finite_completion 0, revision_limit 0, planner_action_illegal 0, ReAct exhaustion 0; Planner REVISE on 3 rows.",
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none",
+      "cost": {
+        "text": "289 generation contacts of the 770 cap (4.13 per row), 707.123 s of repeated speech audio, 7.43 monitored GPU-active minutes (0.1239 GPU-h) in an 8.73 min window, 2,723,441 prompt / 18,565 completion tokens, 0 tool calls; the FIT identity opened no attempt (289 tokenizer-class fit receipts inside the generation attempt).",
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md"
+      },
+      "next_step": {
+        "text": "the coordinator's call pending the owner's answer: re-declare the AGREE arm as a benefit claim under decision 133, fly it as a no-harm base item under decision 127, or close it; the read recommends none.",
+        "source": "docs/results/2026-09-27-slurp-conv-probe-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "The population was selected with gold, offline (the mechanism's own beneficiaries), so no pooled or roster-level number may ever be read off this cell and it cannot see harm on rows the comparator already gets right. The 59.1 % within-pair byte identity is context beside the ROLL-AA within-flight null (91.5 %), not an A/A figure: the treatment changes the Perception supply on every row by construction and the two arms are different flights.",
+      "tally": "instrument",
+      "flown": true,
+      "pending": false,
+      "provisional": null
     }
   ],
   "operational_recovery": {
@@ -5594,7 +5647,8 @@
       "SLURP-VAR-1",
       "SLURP-VAR-1-AA",
       "SLURP-VAR-2",
-      "SLURP-VERIFY-1"
+      "SLURP-VERIFY-1",
+      "SLURP-CONV"
     ],
     "algorithm_registry": {
       "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects were observed while these rows were written. The first is REPAIRED since: gepa-reflective-pareto-v1 and inference-time-verification-v1 both read status='planned' although CELL-1-GEPA and VERIFY-1 had flown and sealed, and both were corrected to status='base-loop' in commit 8b18f4ef of 2026-09-26 -- a status is a fact about this repository, not a statement of intent. The second stands and is reported rather than repaired: the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes), and this ledger resolves none of them.",
