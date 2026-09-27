@@ -197,15 +197,25 @@ def load_roster(repo_root: Path, relpath: str) -> tuple[dict[str, str], str, str
     measurement.load_roster`` idiom): a construction roster (``saea-roster-
     receipt-v1``) and an older evaluation-roster receipt (e.g. TRAIN Fold A)
     both carry ``items[].sample_id`` / ``items[].stratum``, and neither is
-    re-verified here -- this CLI reads identity, not authorises a draw."""
+    re-verified here -- this CLI reads identity, not authorises a draw.
+
+    An evaluation roster that declares ``stratum_withheld_per_item`` (the
+    DEV-2000-ADDED receipt, cell ROLL-3) carries no scenario per item by
+    design; its rows are then grouped by the recording CHANNEL the receipt
+    does carry (``items[].headset`` -> ``headset`` / ``far-field``), which
+    is the per-channel table that roster's recipe asks for. A roster that
+    neither carries a stratum nor declares it withheld is still refused."""
 
     path = repo_root / relpath
     file_sha256 = sha256_file(path)
     document = json.loads(path.read_text(encoding="utf-8"))
+    withheld = document.get("stratum_withheld_per_item") is True
     strata: dict[str, str] = {}
     for item in document["items"]:
         sample_id = str(item["sample_id"])
         stratum = item.get("stratum")
+        if (not isinstance(stratum, str) or not stratum) and withheld and "headset" in item:
+            stratum = "headset" if item["headset"] else "far-field"
         if not isinstance(stratum, str) or not stratum:
             raise Stage3ScoreError(f"roster item {sample_id!r} carries no stratum")
         strata[sample_id] = stratum
