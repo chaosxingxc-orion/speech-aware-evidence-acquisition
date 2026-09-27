@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "55336318a1c07bdde8a2b8d690d310282217639a77da94ab9262a6702d74b6e1"
+    "sha256": "c67c8fa5116fb74c22e5dd1581c32bb5cb4012e1aeae3873445d97d7c7d538cd"
   },
   "purpose": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1: The in-chain A/A replicate of cell AGREE. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the AGREE arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
