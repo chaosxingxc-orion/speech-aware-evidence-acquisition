@@ -108,6 +108,19 @@ class World:
         self.measurement: dict | None = None
         self.supply_variants: dict | None = None
 
+    def write_roster_receipt(
+        self, roster_id: str, disjointness_proof: dict | None = None, **extra: object
+    ) -> None:
+        """A roster receipt under ``docs/receipts/rosters/`` (item D3's tuning/read overlap
+        check reads exactly this convention: filename slug, top-level ``roster_id``,
+        ``disjointness_proof``)."""
+
+        payload: dict = {"schema": "saea-roster-receipt-v1", "roster_id": roster_id}
+        if disjointness_proof is not None:
+            payload["disjointness_proof"] = disjointness_proof
+        payload.update(extra)
+        _write(self.repo / "docs" / "receipts" / "rosters" / f"{roster_id.lower()}.json", payload)
+
     def build(self) -> "World":
         receipt = {
             "schema": "saea-campaign-decision-v1",
@@ -450,6 +463,122 @@ def test_a_cell_with_no_stage3_measurement_at_all_is_not_checked(world: World) -
     assert "variant-claim-not-nominated" not in kinds
     cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
     assert cell.get("supply_variant") is None
+
+
+# --------------------------------------------------------------------------
+# tuning/read roster split registration (item D3, docs/results/2026-09-27-verdict-
+# reclassification.md: the AGREE agreement term was tuned and read on the same TRAIN Fold A
+# roster; docs/readiness/2026-09-27-slurp-stage3-replan-v2.md section 3, row "Circular reads")
+# --------------------------------------------------------------------------
+
+
+def _cross_flight_measurement(**roster_fields: object) -> dict:
+    # measurement_design deliberately NOT one of the supply-variant instrument designs: item D3's
+    # own AGREE cell was a plain cross-flight cell, and the split must be checked there too.
+    return {
+        "measurement_design": "cross-flight-with-in-chain-replicate",
+        "expected_effect_pp": 3.33,
+        "replicate_run_id": "SAEA-SLURP-STAGE3-SOME-REPLICATE-V1",
+        **roster_fields,
+    }
+
+
+def test_tuning_read_overlap_blocks_on_a_direct_name_match(world: World) -> None:
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-STAGE3-FOLD-A-V1", read_roster="SLURP-STAGE3-FOLD-A-V1"
+    )
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "tuning-read-overlap" in _kinds(data)
+    assert not data["passed"]
+    assert data["blocking_cells"] == [EXPERIMENT]
+
+
+def test_tuning_read_overlap_blocks_when_a_roster_receipt_proves_shared_recordings(
+    world: World,
+) -> None:
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-TUNE-POOL-V1", read_roster="SLURP-READ-FOLD-A-V1"
+    )
+    world.build()
+    world.write_roster_receipt(
+        "SLURP-TUNE-POOL-V1",
+        disjointness_proof={"slurp-read-fold-a-v1": {"shared_recordings": 12, "shared_utterances": 3}},
+    )
+    world.write_roster_receipt("SLURP-READ-FOLD-A-V1")
+    data = world.run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "tuning-read-overlap" in kinds
+    assert "tuning-roster-unverified" not in kinds
+    assert not data["passed"]
+
+
+def test_disjoint_rosters_with_a_zero_overlap_receipt_pass(world: World) -> None:
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-TUNE-POOL-V1", read_roster="SLURP-READ-FOLD-A-V1"
+    )
+    world.build()
+    world.write_roster_receipt(
+        "SLURP-TUNE-POOL-V1",
+        disjointness_proof={"slurp-read-fold-a-v1": {"shared_recordings": 0, "shared_utterances": 0}},
+    )
+    world.write_roster_receipt("SLURP-READ-FOLD-A-V1")
+    data = world.run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "tuning-read-overlap" not in kinds
+    assert "tuning-roster-unverified" not in kinds
+    assert data["passed"]
+
+
+def test_tuning_roster_missing_is_advisory_on_an_otherwise_blocking_cell(world: World) -> None:
+    world.measurement = _cross_flight_measurement()  # no tuning_roster / read_roster at all
+    data = world.build().run(cells=[EXPERIMENT])
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["severity"] == "blocking"  # ready, unflown, named: this cell IS blocking-severity
+    finding = next(f for f in cell["findings"] if f["kind"] == "tuning-roster-missing")
+    assert finding["severity"] == "advisory"
+    assert data["passed"]  # the advisory finding alone never fails the gate
+    assert data["blocking_cells"] == []
+
+
+def test_a_receipt_less_named_roster_is_advisory_not_blocked(world: World) -> None:
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-NO-RECEIPT-TUNE-V1", read_roster="SLURP-NO-RECEIPT-READ-V1"
+    )
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "tuning-roster-unverified" in kinds
+    assert "tuning-read-overlap" not in kinds
+    finding = next(f for f in data["cells"][0]["findings"] if f["kind"] == "tuning-roster-unverified")
+    assert finding["severity"] == "advisory"
+    assert data["passed"]
+
+
+def test_explicit_none_tuning_roster_skips_the_overlap_check(world: World) -> None:
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="none", read_roster="SLURP-READ-FOLD-A-V1"
+    )
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "tuning-read-overlap" not in kinds
+    assert "tuning-roster-unverified" not in kinds
+    assert "tuning-roster-missing" not in kinds
+    assert data["passed"]
+
+
+def test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap(world: World) -> None:
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-STAGE3-FOLD-A-V1", read_roster="SLURP-STAGE3-FOLD-A-V1"
+    )
+    world.rows[RUN] = _row(RUN, DRAFT)
+    world.build()
+    (world.data / "runs" / RUN / "attempt-x").mkdir(parents=True)
+    data = world.run(cells=[EXPERIMENT])
+    cell = data["cells"][0]
+    assert cell["severity"] == "advisory"
+    assert cell["consumed_by"] == f"runs/{RUN}"
+    assert "tuning-read-overlap" in _kinds(data)
+    assert data["passed"]
+    assert data["blocking_cells"] == []
 
 
 def test_the_batch_driver_runs_the_gate_in_prelaunch() -> None:

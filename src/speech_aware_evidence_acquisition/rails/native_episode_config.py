@@ -1271,6 +1271,7 @@ def load_native_episode_config(
     # exactly as they were.
     supply_variant_group = None
     if "supply_variants" in raw_roles["solver"]:
+        from .knowledge_stores import declared_alternate_release_relpaths
         from .supply_variants import SupplyVariantError, parse_supply_variants
 
         declared_stores = values.get("knowledge_stores")
@@ -1283,6 +1284,13 @@ def load_native_episode_config(
                 first_phase_id=program.phase_names()[0],
                 declared_stores=(
                     None if declared_stores is None else tuple(declared_stores)
+                ),
+                # Coordinator amendment, 2026-09-28: an arm's release_swap is
+                # refused by name here when it names a release the store's
+                # base config does not also declare under its own
+                # ``alternates``.
+                declared_alternate_relpaths=declared_alternate_release_relpaths(
+                    declared_stores
                 ),
             )
         except SupplyVariantError as error:
