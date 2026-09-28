@@ -1,0 +1,475 @@
+{
+  "cells": {
+    "agree_arm": {
+      "baseline_fragment": "slurp-native-stage3-agree-w1-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:9a21f53e5319ab6f",
+      "experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:d33252e173b23f74",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "wave_aa": {
+      "baseline_fragment": "slurp-native-stage3-wave1-aa-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:6e88ca60de9f8153",
+      "experiment": "slurp-native-stage3-wave1-aa-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:19a9058d3d4b71e3",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1"
+    }
+  },
+  "composed_config_diff": {
+    "by_class": {
+      "bookkeeping": 30,
+      "supply-pin": 2
+    },
+    "differing_leaves": [
+      {
+        "agree_arm": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].attempt_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1"
+      },
+      {
+        "agree_arm": "slurp-native-stage3-agree-w1-fold-a-baseline-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].baseline_fragment",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "slurp-native-stage3-wave1-aa-fold-a-baseline-v1"
+      },
+      {
+        "agree_arm": "slurp-native-stage3-agree-w1-fold-a-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].cell_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "slurp-native-stage3-wave1-aa-fold-a-v1"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<long>"
+      },
+      {
+        "agree_arm": "slurp-stage3-agree-w1-fold-a-admission-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].expected_decision_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "decision",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "preparation"
+      },
+      {
+        "agree_arm": "Decision slurp-stage3-agree-w1-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py.",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<long>"
+      },
+      {
+        "agree_arm": "coordination/slurp-stage3-agree-w1-fold-a-v1/root-admission-v1.json",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl"
+      },
+      {
+        "agree_arm": "sha256-prefix16:ebdf2f439bf2254c",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "sha256-prefix16:018ca6ef0d10bbf8"
+      },
+      {
+        "agree_arm": "preparation",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "sha256-prefix16:018ca6ef0d10bbf8",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "preparation",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "sha256-prefix16:be70d4d0fa990a1b",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "ready",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.state",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "held"
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].run_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "wave_aa": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1"
+      },
+      {
+        "agree_arm": "2026-09-26",
+        "class": "bookkeeping",
+        "leaf": "date",
+        "reason": "the registration date",
+        "request_affecting": false,
+        "wave_aa": "2026-09-27"
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "class": "bookkeeping",
+        "leaf": "experiment_id",
+        "reason": "the experiment's registered id (ledger and receipts)",
+        "request_affecting": false,
+        "wave_aa": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "failure_policy",
+        "reason": "prose",
+        "request_affecting": false,
+        "wave_aa": "<long>"
+      },
+      {
+        "agree_arm": "saea-slurp-native-stage3-agree-w1-fold-a-v1",
+        "class": "bookkeeping",
+        "leaf": "fragment_kind",
+        "reason": "the fragment's self-description tag",
+        "request_affecting": false,
+        "wave_aa": "saea-slurp-native-stage3-wave1-aa-fold-a-v1"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "generation_budget.definition",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false,
+        "wave_aa": "<long>"
+      },
+      {
+        "agree_arm": 5425,
+        "class": "bookkeeping",
+        "leaf": "generation_budget.target",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false,
+        "wave_aa": 4385
+      },
+      {
+        "agree_arm": "attempt-slurp-native-stage3-agree-w1-fold-a-fit-v1",
+        "class": "bookkeeping",
+        "leaf": "native_contact_fit.attempt_id",
+        "reason": "the cell's own FIT spend identity (an attempt id)",
+        "request_affecting": false,
+        "wave_aa": "attempt-slurp-native-stage3-wave1-aa-fold-a-fit-v1"
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1",
+        "class": "bookkeeping",
+        "leaf": "native_contact_fit.run_id",
+        "reason": "the cell's own FIT spend identity (a run id)",
+        "request_affecting": false,
+        "wave_aa": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1"
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+        "class": "supply-pin",
+        "leaf": "prepared_phase_supply.relpath",
+        "reason": "the AGREE arm's committed prepared first-phase supply pin (relpath + file sha256); the A/A drops it so the flip mints its own under its own run id (item E16). It reaches a request only through the supply's OUTPUT, so it is output-neutral exactly when the two prepared supply output digests are equal",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "sha256-prefix16:be70d4d0fa990a1b",
+        "class": "supply-pin",
+        "leaf": "prepared_phase_supply.sha256",
+        "reason": "the AGREE arm's committed prepared first-phase supply pin (relpath + file sha256); the A/A drops it so the flip mints its own under its own run id (item E16). It reaches a request only through the supply's OUTPUT, so it is output-neutral exactly when the two prepared supply output digests are equal",
+        "request_affecting": false,
+        "wave_aa": "<absent>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "purpose",
+        "reason": "prose",
+        "request_affecting": false,
+        "wave_aa": "<long>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "stage3_algorithm.note",
+        "reason": "the Stage-3 algorithm label and its prose (the label gate reads it)",
+        "request_affecting": false,
+        "wave_aa": "<long>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "what_this_is",
+        "reason": "prose",
+        "request_affecting": false,
+        "wave_aa": "<long>"
+      }
+    ],
+    "reading": "every differing leaf is bookkeeping except the AGREE arm's committed supply pin, which the A/A drops (item E16) and which reaches a request only through the supply's output; proof 2 finds the outputs byte-identical to each other, to the registered digest and to the committed artifact, and proof 3 finds every request byte identical",
+    "request_affecting_leaves": []
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "generated_at_utc": "2026-09-28T00:10:52.747459+00:00",
+  "hash_quoting": "64-hex identities other than the prepared-supply output digests and the study commit are quoted as sha256-prefix16:<first 16 hex> (core.flight.repin rewrites package JSON from old identity hashes to new ones at the flip and refuses any old hash left under docs/); the full values are recomputable from study_commit",
+  "owner_decision": 164,
+  "precedent": "owner decision 160 (scripts/flights/comp1/comp1_g5_shared_aa_proof.py)",
+  "prepared_supply": {
+    "agree_arm": {
+      "file_sha256_matches_pin": true,
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "output_sha256_recomputed": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+      "rows_seeded": 1080,
+      "selected_value_ids": 8624,
+      "source": "the AGREE arm's committed artifact (the one that flew), read raw -- not re-minted"
+    },
+    "agree_arm_registered_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "artifact_input_differences": [
+      {
+        "agree_arm": "sha256-prefix16:d81f4f3935cd637c",
+        "leaf": "config_sha256",
+        "wave_aa": "sha256-prefix16:70def7e40b81b7e4"
+      },
+      {
+        "agree_arm": "sha256-prefix16:ee97b82a20cb34fe",
+        "leaf": "sources.implementation.runtime",
+        "wave_aa": "sha256-prefix16:b87e4237306d6df6"
+      },
+      {
+        "agree_arm": "sha256-prefix16:92cf457a2fcf1594",
+        "leaf": "sources.implementation.speech_aware_evidence_acquisition.rails.kb_policy",
+        "wave_aa": "sha256-prefix16:b0d8d9d46d69f57c"
+      },
+      {
+        "agree_arm": "sha256-prefix16:2740d2e262de8c29",
+        "leaf": "sources.implementation.speech_aware_evidence_acquisition.rails.knowledge_stores",
+        "wave_aa": "sha256-prefix16:e0a50973992a2da9"
+      },
+      {
+        "agree_arm": "sha256-prefix16:c315c35959489cc8",
+        "leaf": "sources.implementation.speech_aware_evidence_acquisition.rails.phase_supply",
+        "wave_aa": "sha256-prefix16:5cf42534f370b66a"
+      }
+    ],
+    "equal_registered_and_committed": true,
+    "note": "the recorded INPUTS differ (the run id, and the implementation identity the W3 merge moved), which is why the committed artifact no longer loads at HEAD; output_sha256 is core.preparation.digest over the {facets, values} payload and is what the flip's byte-identity check and the request composer consume",
+    "output_digests_equal": true,
+    "wave_aa": {
+      "command": "core.flight.cli prepare-supply --experiment slurp-native-stage3-wave1-aa-fold-a-v1 --cell slurp-native-stage3-wave1-aa-fold-a-v1 --output <scratch>/wave_aa/phase-supply-v1.json",
+      "file_sha256": "sha256-prefix16:e0edc080a3c3b5b6",
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "rows_seeded": 1080,
+      "seconds": 28.9,
+      "selected_value_ids": 8624
+    }
+  },
+  "question": "Is the knowledge wave's shared in-chain A/A (SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1) the retained AGREE arm's own bytes (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1): byte-identical prepared first-phase supply output and byte-identical composed request bytes? If so, W1, W3 and W4 are each read at it (decision 164).",
+  "request_bytes": {
+    "common_run_id": {
+      "agree_arm": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 127.3,
+        "wire_check_run_id": "WIRECHECK-WAVE1-SHARED-AA-PROOF-1790553937395"
+      },
+      "comparison": {
+        "contacts_agree_arm": 663,
+        "contacts_wave_aa": 663,
+        "first_mismatches": [],
+        "keys_equal": true,
+        "only_in_agree_arm": [],
+        "only_in_wave_aa": [],
+        "payload_bytes_identical": true,
+        "payload_mismatches": 0,
+        "post_body_bytes_identical": true,
+        "post_body_mismatches": 0,
+        "run_id_normalized_payload_bytes_identical": true,
+        "run_id_normalized_payload_mismatches": 0
+      },
+      "wave_aa": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 127.4,
+        "wire_check_run_id": "WIRECHECK-WAVE1-SHARED-AA-PROOF-1790553937395"
+      }
+    },
+    "method": "the decision-160 method verbatim (P160.capture_requests): FlightRuntime._dispatch_phase_program(model_free_check=True) on each cell's own composed fragments, against the composed model fragment's REAL llama-server transport with its POST replaced by a fake server that records the body bytes and answers a canned, role-appropriate completion; a fake session receipt bound to the fragment's decoder identity; keyed by (sample_id, contact_id); dispatched serially",
+    "own_run_ids": {
+      "agree_arm": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 121.3,
+        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1-1790554082960"
+      },
+      "comparison": {
+        "contacts_agree_arm": 663,
+        "contacts_wave_aa": 663,
+        "first_mismatches": [
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:planner:1:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:reviewer:1:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000007:audio--1504197557",
+          "slurp:train:000007:audio--1504197557|phase-native-candidates-review-revise-v1:solver:1:slurp:train:000007:audio--1504197557",
+          "slurp:train:000009:audio-1497557594-headset|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000009:audio-1497557594-headset|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000009:audio-1497557594-headset|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000009:audio-1497557594-headset",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:planner:1:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:reviewer:1:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000015:audio-1488524781",
+          "slurp:train:000015:audio-1488524781|phase-native-candidates-review-revise-v1:solver:1:slurp:train:000015:audio-1488524781",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:planner:0:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:planner:1:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:reviewer:0:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:reviewer:1:slurp:train:000023:audio-1490956038",
+          "slurp:train:000023:audio-1490956038|phase-native-candidates-review-revise-v1:solver:0:slurp:train:000023:audio-1490956038"
+        ],
+        "keys_equal": true,
+        "only_in_agree_arm": [],
+        "only_in_wave_aa": [],
+        "payload_bytes_identical": false,
+        "payload_mismatches": 543,
+        "post_body_bytes_identical": true,
+        "post_body_mismatches": 0,
+        "run_id_normalized_payload_bytes_identical": true,
+        "run_id_normalized_payload_mismatches": 0
+      },
+      "wave_aa": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 120.8,
+        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1-1790554082972"
+      }
+    },
+    "rows": 120,
+    "scheduling_self_control": {
+      "contacts": 66,
+      "keys_equal": true,
+      "payload_fields_differing": {
+        "decoding_params.id_slot": 34,
+        "evidence_provenance[].relpath": 49,
+        "history[].source_query_state_sha256": 54,
+        "request_id": 49
+      },
+      "post_body_fields_differing": {
+        "id_slot": 34
+      },
+      "rows": 12,
+      "what": "the wave A/A dispatched twice, both at the production concurrency (np4 geometry: four slots, queue depth 16), each under its own scratch run id; the number of contacts on which each field differs between the two dispatches of the SAME cell. These fields are assigned by arrival order (request_id, the rails-message/<request_id>/ provenance relpaths, the slot id) or derived from the run id (source_query_state_sha256), which is why the A/A comparison dispatches serially and reads the run-id-derived field separately"
+    }
+  },
+  "schema": "saea-wave1-shared-aa-proof-v1",
+  "scratch": "/home/chao/wave-aa-proof-scratch2",
+  "study_commit": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
+  "tool": "scripts/flights/wave/wave_shared_aa_proof.py",
+  "verdict": "IDENTICAL"
+}

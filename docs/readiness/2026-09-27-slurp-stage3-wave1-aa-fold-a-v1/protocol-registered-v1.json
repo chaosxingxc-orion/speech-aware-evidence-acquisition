@@ -1,0 +1,65 @@
+{
+  "cells": {
+    "aa": {
+      "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1",
+      "cell": "slurp-native-stage3-wave1-aa-fold-a-v1",
+      "composed_config_hash": "6e88ca60de9f81530d261d6afe8c71d602836c5d622fcbf7e32ae15e95888b20",
+      "experiment": "slurp-native-stage3-wave1-aa-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1",
+      "protocol_hash": "19a9058d3d4b71e343dd4b74d54c71f862398314f160af36a7730e9a4428e387",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    }
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "never_reflown": true,
+    "official": {
+      "calls_used": 4385,
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575,
+      "span_f1": 54.4343
+    },
+    "role": "the sealed source of the A/A's bytes; context for the offset read",
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "development_numbers_only": "TRAIN Fold A construction-fold development numbers (owner decisions 28 and 86); never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts. A failed A/A stops the wave chain: no wave arm is read without it.",
+  "one_factor": "none: the retained AGREE arm's bytes, re-flown",
+  "prohibitions": [
+    "Never reported as a gain or as a result of its own: it is the instrument.",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE arm under its own run id.",
+    "No change of any kind against the AGREE arm's bytes.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cell is flipped, and never outside the wave chain."
+  ],
+  "protocol_id": "slurp-stage3-wave1-aa-fold-a-protocol-v1",
+  "read_rule_fixed_here": "The A/A carries no admission of its own. Its own READ (SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-PAIRED-READ-V1) reports the pair (sealed AGREE arm, wave A/A) on intent accuracy and official pooled SLU-F1 with a paired row bootstrap -- the cross-flight offset of the resident session at the wave's flight time -- beside the Fold A own-null half-widths (intent 0.9943 / SLU 1.2485; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d), as CONTEXT for the three arm reads, never as a gate on them and never as a claim. Each wave arm's no-harm verdict is its own package's rule, read at THIS A/A.",
+  "readers": {
+    "W1": {
+      "package": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1",
+      "read_run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1",
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1"
+    },
+    "W3": {
+      "package": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1",
+      "read_run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1",
+      "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1"
+    },
+    "W4": {
+      "package": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1",
+      "read_run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-PAIRED-READ-V1",
+      "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1"
+    }
+  },
+  "registered_at_utc": "2026-09-27T23:56:09.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-waveaa, branch fable/waveaa",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
+  "the_question": "None of its own: the A/A is the within-chain null the knowledge wave's arms are read at (owner decision 164).",
+  "unchanged": "everything: the roster (TRAIN Fold A 1,080, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6), the model fragment and serving geometry (np4 x 24,576), the session serving-slurp-native-candidate-five-train-a-np4-v1, the program and its 11-contact ceiling, all three stores and their pins, the agreement term (w_agree 1.0, recall k 60, delivered width 8), the exemplar k of 20, the card route's caps (3 / 16 / 28), the role graph, every template, the deliver normaliser, the scorers and every budget"
+}

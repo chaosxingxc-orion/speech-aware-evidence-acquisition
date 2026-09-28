@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-w3-fold-a-smoke-4-v1",
-  "composed_config_hash": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
+  "composed_config_hash": "cb4b2b74df1214e0858db84425d0eee7ac3f1d957464429c2ecb06b2b41cacbd",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1",
+    "protocol_hash": "4ddc7b3f9fcc09ee1695520b612322910a557d0bfffd76130a0fb7090e8c5b9e",
     "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -29,8 +29,11 @@
     "official_complete_scoring_jobs": 0,
     "repeated_speech_audio_seconds_cap": 117
   },
+  "one_pin": {
+    "w3a": "the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added"
+  },
   "plan_kind": "fit",
-  "preparation_base_commit": "701bd63a",
+  "preparation_base_commit": "e9b4a8ee",
   "prepared_phase_supply": {
     "expected_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
     "note": "the first-phase (Perception) supply reads facet keys, the agreement table and value ids; W3 moves none of them (the contrast release keeps every facet and value id), so every supply the flip mints must carry the AGREE family's own output digest -- a different digest means the boundary retrieval moved: stop and report",
@@ -39,17 +42,13 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "988d82247948672ab110f13f4255297a30ab14c405a7294287a6d0d8cefb5683"
+    "sha256": "7dd769821cf98630d73f49d1e71428eae5b51ee1fc53fddedc310295ef1f05ff"
   },
   "purpose": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-FIT-V1: Four-row form smoke of cell W3. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W3 arm and the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1. A verdict computed against the sealed AGREE arm alone is refused.",
-  "registered_at_utc": "2026-09-27T16:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-28T00:25:55.000000+00:00",
   "schema": "saea-registered-fit-plan-v1",
-  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w3, branch fable/w3",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-waveaa, branch fable/waveaa",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "two_pins": {
-    "w3a": "the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added",
-    "w3b": "the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to saea-fuse-supplyfilter-target-cap-v1: walk the pure-cosine ranking, take at most 11 exemplars per intent, stop at 20; admission depth and recall k 300"
-  },
   "unused_budget_is_not_attempt_authority": true
 }

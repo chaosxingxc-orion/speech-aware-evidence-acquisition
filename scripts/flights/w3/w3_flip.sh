@@ -25,7 +25,7 @@ fi
 W3=$(dirname "$0")
 for K in smoke arm; do
 cat > /home/chao/w3-$K-commit.txt <<M
-research: flip W3 ($K) to ready (knowledge-wave item W3, owner decision 164: the retained AGREE arm with the intent-boundaries store moved to the contrast-card release intent-boundaries-contrast-v1 and the Solver exemplar block capped per intent by saea-fuse-supplyfilter-target-cap-v1, tuned on TRAIN Fold B; read on no harm at the shared wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-w3-contrast-fold-a-admission-v1)
+research: flip W3a ($K) to ready (knowledge-wave item W3 as W3a alone, owner decision 164 and the coordinator ruling of 2026-09-27: the retained AGREE arm with the intent-boundaries store moved to the contrast-card release intent-boundaries-contrast-v1, the Solver exemplar supply the AGREE arm's own; read on no harm at the shared wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-w3-contrast-fold-a-admission-v1)
 
 Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
 M

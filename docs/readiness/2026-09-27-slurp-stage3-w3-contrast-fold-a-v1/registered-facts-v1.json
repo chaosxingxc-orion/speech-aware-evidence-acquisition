@@ -5,8 +5,10 @@
     "cost_each": "about 1.8816 GPU hours and about 4,385 contacts per 1,080-row cell at the sealed AGREE arm's own rate (frontier read), read at the same shared A/A -- so the attribution split costs about 3.8 GPU hours for the pair",
     "how_to_derive": "W3a alone = this baseline with the train-exemplars Solver supply restored to AGREE's (fuse_policy saea-fuse-supplyfilter-v1, k 20, m/c/top_l 20); W3b alone = this baseline with the intent-boundaries pins and the two added receipts restored to AGREE's. Each is one derive_slurp_w3_cells.py flag away and re-uses this package's recipe shape.",
     "registered": false,
-    "what_attribution_is_available_without_it": "the read attributes the delta row by row to the fixed membership sets of offline-estimates-v1.json (rows whose pair the contrast lines newly name; rows the cap newly gives a gold exemplar), which is attribution by exposure, not by ablation",
-    "why_not_registered": "the brief registers the split only if the coordinator asks; nothing here registers W3a or W3b alone"
+    "registered_now": "W3a ALONE, in place of the composed W3 (re-registered in place, same run ids): the how_to_derive recipe below was followed on the coordinator's ruling; W3b alone is not registered",
+    "ruling": "Coordinator ruling (Fable 5.1, 2026-09-27) under owner decision 164's one-change rule: the wave's W3 cell is re-derived as W3a ALONE -- the intent contrast cards with the Solver exemplar supply restored to exactly the AGREE arm's (no per-intent exemplar cap). W3b is dropped as a second change with no measured upside: (1) on Fold A the cap removes 0 wrong-intent pluralities on the 153 intent-wrong rows (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.wrong_rows.wrong_plurality_removed); (2) on Fold B the chosen cap N = 11 scores GAIN 0 / HARM 0 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_b_tuning.table[\"11\"]); (3) it changes 700 Solver blocks on the 927 rows the AGREE arm got right, lowering the gold exemplar count on 665 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.right_rows.block_changed / gold_count_down).",
+    "what_attribution_is_available_without_it": "W3a alone is ONE change against the AGREE arm, so the arm-minus-A/A delta is the contrast cards' by construction; the row attribution to the fixed membership set of offline-estimates-v1.json (rows whose pair the contrast lines newly name) remains attribution by exposure",
+    "why_not_registered": "first registration: the brief registered the split only if the coordinator asked; superseded by the re-registration as W3a alone"
   },
   "authority_relpaths": [
     "docs/results/2026-09-27-slurp-knowledge-content-audit.md",
@@ -103,12 +105,7 @@
         "knowledge_stores.intent-boundaries.snapshot.relpath",
         "knowledge_stores.intent-boundaries.snapshot.sha256"
       ],
-      "w3b_exemplar_cap_pins": [
-        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c",
-        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m",
-        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_policy",
-        "knowledge_stores.train-exemplars.phase_supply.solver.k"
-      ]
+      "w3b_exemplar_cap_pins": []
     },
     "note": "flattened composed configs (core.config.compose); re-proven by tests/unit/test_w3_config.py",
     "smoke": {
@@ -138,30 +135,25 @@
         "knowledge_stores.intent-boundaries.snapshot.relpath",
         "knowledge_stores.intent-boundaries.snapshot.sha256"
       ],
-      "w3b_exemplar_cap_pins": [
-        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c",
-        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m",
-        "knowledge_stores.train-exemplars.phase_supply.solver.fuse_policy",
-        "knowledge_stores.train-exemplars.phase_supply.solver.k"
-      ]
+      "w3b_exemplar_cap_pins": []
     }
   },
   "expectation": {
     "claims_benefit": false,
     "declared_expected_effect_pp": 0.0,
     "scale_only_not_declared": {
-      "cap_wrong_rows_gold_exemplar_newly_present": 6,
       "contrast_rows_newly_named_on_a_delivered_card": 48,
-      "note": "For scale only, NOT a declaration and NOT used by any gate: the rows W3 newly reaches times the CONV delivery rate, as the knowledge audit quoted its own ceilings. 1 row = 0.0926 pp on 1,080 rows.",
-      "rows_ceiling_pp": 5.0,
-      "rows_times_conv_rate_pp": 2.286
+      "first_registration_w3a_plus_w3b_rows_times_conv_rate_pp": 2.286,
+      "note": "For scale only, NOT a declaration and NOT used by any gate: the rows W3a newly reaches times the CONV delivery rate, as the knowledge audit quoted its own ceilings. 1 row = 0.0926 pp on 1,080 rows. W3a alone: the rows the dropped cap newly gave a gold exemplar are no longer counted.",
+      "rows_ceiling_pp": 4.444,
+      "rows_times_conv_rate_pp": 2.032
     },
-    "why_no_benefit_is_declared": "Row 139: an expectation may be declared only from a measured conversion analogue. The two measured conversions on this programme are DELIVERY conversions of the gold boundary card to Perception (CONV 32 of 70 = 0.457143, KPROBE 24 of 55 = 0.436364). W3a delivers nothing new -- the delivered set is the AGREE arm's own, byte for byte -- it changes what an already-delivered card SAYS, and no contrast text has ever been flown and read; W3b changes the composition of a block delivered to the SOLVER, a different node and channel from the one CONV measured. Neither analogue applies, so the cell is registered as a no-harm read and says so."
+    "why_no_benefit_is_declared": "Row 139: an expectation may be declared only from a measured conversion analogue. The two measured conversions on this programme are DELIVERY conversions of the gold boundary card to Perception (CONV 32 of 70 = 0.457143, KPROBE 24 of 55 = 0.436364). W3a delivers nothing new -- the delivered set is the AGREE arm's own, byte for byte -- it changes what an already-delivered card SAYS, and no contrast text has ever been flown and read. The analogue does not apply, so the cell is registered as a no-harm read and says so. The 2026-09-27 re-registration as W3a alone keeps this declaration: the package declares no separate W3a number from a measured basis."
   },
   "fit_gate": {
     "headroom_before": "the AGREE arm registered Solver 21,278 of 21,504 usable tokens (np4 slot 24,576 minus the 3,072 reserve): 226 tokens of headroom on the pre-flight placeholder count",
     "proofs": {
-      "line": "The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; the offline projection moves a Solver contact by -53.886 tokens on average (max +75.528, 52 rows above zero). Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5).",
+      "line": "The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; W3a moves every later contact by the card delta alone, -60.494 tokens on average (min -106, max -3: no contact grows), because the Solver exemplar block is the AGREE arm's own. Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5).",
       "per_cell": {
         "arm": {
           "blockers": null,
@@ -260,9 +252,9 @@
         }
       },
       "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/preflight-proofs-v1.json",
-      "sha256": "31bd7f9833836c8a2989e26ce85882390d6683f64411773a4abc92338c31cbf2"
+      "sha256": "bcac9416bc9a336b5f744580d0d9a4470b3d90f793ba2f6efeb9545bf7ada018"
     },
-    "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -457 tokens); the capped block still carries 20 exemplars, whose lengths differ row by row",
+    "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -457 tokens); the Solver exemplar block is the AGREE arm's own",
     "what_must_be_freed": "nothing for W3 alone; W1's saving is not needed and is not spent"
   },
   "fold_a_offline_estimates": {
@@ -332,7 +324,7 @@
       "baseline_fragment": "slurp-native-stage3-w3-fold-a-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w3-fold-a-v1",
-      "composed_config_hash": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
+      "composed_config_hash": "3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-w3-fold-a-v1",
@@ -379,17 +371,17 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
-      "protocol_hash": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f",
+      "protocol_hash": "b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
       "solver_exemplar_supply": {
         "fuse_coverage": {
-          "c": 11,
-          "m": 300,
+          "c": 20,
+          "m": 20,
           "top_l": 20
         },
-        "fuse_policy": "saea-fuse-supplyfilter-target-cap-v1",
-        "k": 300,
+        "fuse_policy": "saea-fuse-supplyfilter-v1",
+        "k": 20,
         "rank_policy": "saea-rank-wcos-prior-agree-v1",
         "rank_weights": {
           "w_agree": 0.0,
@@ -411,7 +403,7 @@
       "baseline_fragment": "slurp-native-stage3-w3-fold-a-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w3-fold-a-smoke-4-v1",
-      "composed_config_hash": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
+      "composed_config_hash": "cb4b2b74df1214e0858db84425d0eee7ac3f1d957464429c2ecb06b2b41cacbd",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-w3-fold-a-smoke-4-v1",
@@ -458,17 +450,17 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
-      "protocol_hash": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1",
+      "protocol_hash": "4ddc7b3f9fcc09ee1695520b612322910a557d0bfffd76130a0fb7090e8c5b9e",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1",
       "solver_exemplar_supply": {
         "fuse_coverage": {
-          "c": 11,
-          "m": 300,
+          "c": 20,
+          "m": 20,
           "top_l": 20
         },
-        "fuse_policy": "saea-fuse-supplyfilter-target-cap-v1",
-        "k": 300,
+        "fuse_policy": "saea-fuse-supplyfilter-v1",
+        "k": 20,
         "rank_policy": "saea-rank-wcos-prior-agree-v1",
         "rank_weights": {
           "w_agree": 0.0,
@@ -481,12 +473,13 @@
     }
   },
   "implementation_identity": "rails/kb_policy.py gains the registered fuser (the canonical registration site). Its sha256 is part of every prepared supply's identity (core.flight.runtime._phase_seed_inputs sources.implementation), so on the merge every READY-but-unflown cell of another family must be re-pinned at the flight commit before it flies; the flown default selection is unchanged (tests/unit/test_kb_policy_target_cap.py and the existing kb_policy tests).",
-  "no_harm_rule": "NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text or to exemplar composition, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name and to the rows the cap newly gives a gold exemplar (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
+  "no_harm_rule": "NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
   "owner_decisions": {
     "133": "intent accuracy primary, official SLU-F1 the guard",
     "139": "an expectation is declared only from a measured conversion analogue; otherwise the read is no-harm or form-proof and says so",
-    "164": "the knowledge wave: W3 = intent contrast cards + a per-intent exemplar cap, prepared now, flip-ready by about 01:00Z 2026-09-28, read at the shared wave-1 A/A",
-    "28 and 86": "TRAIN Fold A numbers are development numbers, never a test claim"
+    "164": "the knowledge wave: W3 = intent contrast cards (+ a per-intent exemplar cap in the first registration), prepared now, flip-ready by about 01:00Z 2026-09-28, read at the shared wave-1 A/A",
+    "28 and 86": "TRAIN Fold A numbers are development numbers, never a test claim",
+    "coordinator ruling (under 164's one-change rule)": "Coordinator ruling (Fable 5.1, 2026-09-27) under owner decision 164's one-change rule: the wave's W3 cell is re-derived as W3a ALONE -- the intent contrast cards with the Solver exemplar supply restored to exactly the AGREE arm's (no per-intent exemplar cap). W3b is dropped as a second change with no measured upside: (1) on Fold A the cap removes 0 wrong-intent pluralities on the 153 intent-wrong rows (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.wrong_rows.wrong_plurality_removed); (2) on Fold B the chosen cap N = 11 scores GAIN 0 / HARM 0 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_b_tuning.table[\"11\"]); (3) it changes 700 Solver blocks on the 927 rows the AGREE arm got right, lowering the gold exemplar count on 665 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.right_rows.block_changed / gold_count_down)."
   },
   "prohibitions": [
     "Never reported as a gain (no benefit declared).",
@@ -496,7 +489,7 @@
     "No paper-scale profile.",
     "No flight before root mints the decision receipt and the cells are flipped."
   ],
-  "registered_at_utc": "2026-09-27T16:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-28T00:25:55.000000+00:00",
   "rows": 1080,
   "schema": "saea-registered-facts-v1",
   "stage3_measurement": {
@@ -504,7 +497,7 @@
       "claims_benefit": false,
       "expected_effect_pp": 0.0,
       "measurement_design": "form-proof",
-      "note": "Four rows prove FORM and nothing else: that the contrast release loads, that the capped Solver block still delivers twenty exemplars, that every request fits and that the episode completes. Scored by no one, read by no one (instrument rule 5).",
+      "note": "Four rows prove FORM and nothing else: that the contrast release loads, that every request fits and that the episode completes. Scored by no one, read by no one (instrument rule 5).",
       "primary_metric": "none (structural form only)",
       "rows": 4
     },
@@ -524,7 +517,7 @@
       "rows": 1080
     }
   },
-  "study_commit_at_registration": "701bd63a",
+  "study_commit_at_registration": "e9b4a8ee",
   "the_item": {
     "evidence": {
       "K1": "docs/results/2026-09-27-slurp-knowledge-content-audit.md section 1: every card has exactly one activation sentence and one confusable exclusion, 57.7 % of each card is boilerplate; on 75 of the AGREE arm's 153 intent-wrong rows both the right and the chosen card are delivered and neither names the other; 119 distinct confusion pairs",
@@ -615,7 +608,7 @@
       },
       "what": "the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added"
     },
-    "w3b": {
+    "w3b_dropped": {
       "cap": 11,
       "depth": 300,
       "fold_b_tuning": {
@@ -850,7 +843,9 @@
         "pure_rule": "select_target_capped",
         "unit_tests": "tests/unit/test_kb_policy_target_cap.py"
       },
-      "what": "the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to saea-fuse-supplyfilter-target-cap-v1: walk the pure-cosine ranking, take at most 11 exemplars per intent, stop at 20; admission depth and recall k 300",
+      "status": "DROPPED 2026-09-27, never flown: the Solver's train-exemplars supply is the AGREE arm's own (saea-fuse-supplyfilter-v1, k 20, c/m/top_l 20)",
+      "what": "(first registration only) the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to saea-fuse-supplyfilter-target-cap-v1: walk the pure-cosine ranking, take at most 11 exemplars per intent, stop at 20; admission depth and recall k 300",
+      "why_dropped": "Coordinator ruling (Fable 5.1, 2026-09-27) under owner decision 164's one-change rule: the wave's W3 cell is re-derived as W3a ALONE -- the intent contrast cards with the Solver exemplar supply restored to exactly the AGREE arm's (no per-intent exemplar cap). W3b is dropped as a second change with no measured upside: (1) on Fold A the cap removes 0 wrong-intent pluralities on the 153 intent-wrong rows (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.wrong_rows.wrong_plurality_removed); (2) on Fold B the chosen cap N = 11 scores GAIN 0 / HARM 0 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_b_tuning.table[\"11\"]); (3) it changes 700 Solver blocks on the 927 rows the AGREE arm got right, lowering the gold exemplar count on 665 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.right_rows.block_changed / gold_count_down).",
       "why_this_cap": "the declared rule (smallest N whose GAIN >= HARM on TRAIN Fold B) selects N = 11: at N = 11 GAIN 0 / HARM 0 / presence 9; at N = 10 GAIN 8 / HARM 41. Every smaller cap breaks more right-intent pluralities than wrong-intent ones on Fold B, so the registered cap is the one that removes no gold majority while still letting other intents into blocks one intent used to fill."
     }
   }

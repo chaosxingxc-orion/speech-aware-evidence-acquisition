@@ -3,12 +3,12 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/analysis-recipe-v1.json",
-      "sha256": "3f714c376a44a97e35029f8adfb71b456ed59961c7e48bb4f1eaa43a5c5c6f0d"
+      "sha256": "ab93f02da0bf21f3f5d1acb38af172be73444f0f63521da8a909ec31c2e9819e"
     },
-    "base_cell": "the retained AGREE arm (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1): W3 is that fragment with two knowledge-content pins",
+    "base_cell": "the retained AGREE arm (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1): W3 is that fragment with one knowledge-content pin (W3a alone; re-registered 2026-09-27)",
     "config_proof": {
       "path": "tests/unit/test_w3_config.py",
-      "sha256": "43b3259b2b4a5c7906465396ba6d3e34eeae8e5e503348c3fde9ffaffb07bbae"
+      "sha256": "2da2ec3f8396c21673e3f93a7f0f6d9204314abd53ddf8d7f8b26fea33e72e29"
     },
     "contrast_card_receipt": {
       "path": "docs/receipts/knowledge/slurp-intent-contrast-cards-v1.json",
@@ -28,7 +28,7 @@
     },
     "preflight_proofs": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/preflight-proofs-v1.json",
-      "sha256": "31bd7f9833836c8a2989e26ce85882390d6683f64411773a4abc92338c31cbf2"
+      "sha256": "bcac9416bc9a336b5f744580d0d9a4470b3d90f793ba2f6efeb9545bf7ada018"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1-preregistration.md",
@@ -36,7 +36,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "988d82247948672ab110f13f4255297a30ab14c405a7294287a6d0d8cefb5683"
+      "sha256": "7dd769821cf98630d73f49d1e71428eae5b51ee1fc53fddedc310295ef1f05ff"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/README.md",
@@ -44,9 +44,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/registered-facts-v1.json",
-      "sha256": "ec3b1ee0984a69414d736acacd97e1f5ce9514e1fb75fe8b290f86af3e49d099"
+      "sha256": "adddab75a4a77305b4bd6f33cad1fbe49481f761c330f920ecd11b98c2aac897"
     },
-    "registration_base_commit": "701bd63a"
+    "registration_base_commit": "e9b4a8ee"
   },
   "authorization_basis": "Owner decision 164 (the knowledge wave); rows 139, 133, 28, 86, 101, 77; the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
   "budget": {
@@ -77,7 +77,7 @@
   "cell_kind": "Stage-3 knowledge-content cell (label none), registered as a no-harm read. One arm on TRAIN Fold A 1,080 read at the shared wave-1 in-chain A/A (the coordinator's, under its own receipt), and a four-row form smoke outside the chain.",
   "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a no-harm read of one knowledge-content cell, never reported as a gain.",
   "coordinator": "Claude Opus 5.5",
-  "decision": "Fly cell W3: the retained AGREE arm with the intent-boundaries store moved to the contrast-card release and the Solver exemplar block capped at 11 per intent (still 20), against the sealed AGREE arm read at the shared wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1. Admission is NO HARM at the Fold A own-null half-widths (intent 0.9943, SLU 1.2485); the cell is never reported as a gain.",
+  "decision": "Fly cell W3 as W3a alone: the retained AGREE arm with the intent-boundaries store moved to the contrast-card release (the Solver exemplar supply the AGREE arm's own), against the sealed AGREE arm read at the shared wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1. Admission is NO HARM at the Fold A own-null half-widths (intent 0.9943, SLU 1.2485); the cell is never reported as a gain.",
   "decision_id": "slurp-stage3-w3-contrast-fold-a-admission-v1",
   "eligible_run_ids": [
     "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
@@ -110,13 +110,13 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
-      "protocol": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f"
+      "composed_config": "3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046",
+      "protocol": "b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88"
     },
-    "note": "the values of the fragments exactly as committed at 701bd63a; repin_cell.py recomputes them at the flip.",
+    "note": "the values of the fragments exactly as committed at e9b4a8ee; repin_cell.py recomputes them at the flip.",
     "smoke": {
-      "composed_config": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
-      "protocol": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1"
+      "composed_config": "cb4b2b74df1214e0858db84425d0eee7ac3f1d957464429c2ecb06b2b41cacbd",
+      "protocol": "4ddc7b3f9fcc09ee1695520b612322910a557d0bfffd76130a0fb7090e8c5b9e"
     }
   },
   "schema": "saea-campaign-decision-v1",

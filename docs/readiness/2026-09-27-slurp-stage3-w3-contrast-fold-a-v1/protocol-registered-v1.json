@@ -4,11 +4,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-generation-v1",
       "cell": "slurp-native-stage3-w3-fold-a-v1",
-      "composed_config_hash": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
+      "composed_config_hash": "3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046",
       "experiment": "slurp-native-stage3-w3-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-w3-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-FIT-V1",
-      "protocol_hash": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f",
+      "protocol_hash": "b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
@@ -16,11 +16,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-w3-fold-a-smoke-4-v1",
-      "composed_config_hash": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
+      "composed_config_hash": "cb4b2b74df1214e0858db84425d0eee7ac3f1d957464429c2ecb06b2b41cacbd",
       "experiment": "slurp-native-stage3-w3-fold-a-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-w3-fold-a-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-FIT-V1",
-      "protocol_hash": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1",
+      "protocol_hash": "4ddc7b3f9fcc09ee1695520b612322910a557d0bfffd76130a0fb7090e8c5b9e",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
@@ -45,19 +45,23 @@
     },
     "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
   },
-  "decision_rule_fixed_here": "NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text or to exemplar composition, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name and to the rows the cap newly gives a gold exemplar (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
+  "decision_rule_fixed_here": "NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
   "development_numbers_only": "Every number this family will produce is a TRAIN Fold A construction-fold development number (owner decisions 28 and 86) and is never a test claim.",
+  "dropped": {
+    "w3b": "(first registration only) the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to saea-fuse-supplyfilter-target-cap-v1: walk the pure-cosine ranking, take at most 11 exemplars per intent, stop at 20; admission depth and recall k 300",
+    "why": "Coordinator ruling (Fable 5.1, 2026-09-27) under owner decision 164's one-change rule: the wave's W3 cell is re-derived as W3a ALONE -- the intent contrast cards with the Solver exemplar supply restored to exactly the AGREE arm's (no per-intent exemplar cap). W3b is dropped as a second change with no measured upside: (1) on Fold A the cap removes 0 wrong-intent pluralities on the 153 intent-wrong rows (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.wrong_rows.wrong_plurality_removed); (2) on Fold B the chosen cap N = 11 scores GAIN 0 / HARM 0 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_b_tuning.table[\"11\"]); (3) it changes 700 Solver blocks on the 927 rows the AGREE arm got right, lowering the gold exemplar count on 665 (docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json fold_a_estimates.exemplar_cap.right_rows.block_changed / gold_count_down)."
+  },
   "expectation": {
     "claims_benefit": false,
     "declared_expected_effect_pp": 0.0,
     "scale_only_not_declared": {
-      "cap_wrong_rows_gold_exemplar_newly_present": 6,
       "contrast_rows_newly_named_on_a_delivered_card": 48,
-      "note": "For scale only, NOT a declaration and NOT used by any gate: the rows W3 newly reaches times the CONV delivery rate, as the knowledge audit quoted its own ceilings. 1 row = 0.0926 pp on 1,080 rows.",
-      "rows_ceiling_pp": 5.0,
-      "rows_times_conv_rate_pp": 2.286
+      "first_registration_w3a_plus_w3b_rows_times_conv_rate_pp": 2.286,
+      "note": "For scale only, NOT a declaration and NOT used by any gate: the rows W3a newly reaches times the CONV delivery rate, as the knowledge audit quoted its own ceilings. 1 row = 0.0926 pp on 1,080 rows. W3a alone: the rows the dropped cap newly gave a gold exemplar are no longer counted.",
+      "rows_ceiling_pp": 4.444,
+      "rows_times_conv_rate_pp": 2.032
     },
-    "why_no_benefit_is_declared": "Row 139: an expectation may be declared only from a measured conversion analogue. The two measured conversions on this programme are DELIVERY conversions of the gold boundary card to Perception (CONV 32 of 70 = 0.457143, KPROBE 24 of 55 = 0.436364). W3a delivers nothing new -- the delivered set is the AGREE arm's own, byte for byte -- it changes what an already-delivered card SAYS, and no contrast text has ever been flown and read; W3b changes the composition of a block delivered to the SOLVER, a different node and channel from the one CONV measured. Neither analogue applies, so the cell is registered as a no-harm read and says so."
+    "why_no_benefit_is_declared": "Row 139: an expectation may be declared only from a measured conversion analogue. The two measured conversions on this programme are DELIVERY conversions of the gold boundary card to Perception (CONV 32 of 70 = 0.457143, KPROBE 24 of 55 = 0.436364). W3a delivers nothing new -- the delivered set is the AGREE arm's own, byte for byte -- it changes what an already-delivered card SAYS, and no contrast text has ever been flown and read. The analogue does not apply, so the cell is registered as a no-harm read and says so. The 2026-09-27 re-registration as W3a alone keeps this declaration: the package declares no separate W3a number from a measured basis."
   },
   "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
   "model_free_proofs_landed_before_contact": {
@@ -91,12 +95,7 @@
           "knowledge_stores.intent-boundaries.snapshot.relpath",
           "knowledge_stores.intent-boundaries.snapshot.sha256"
         ],
-        "w3b_exemplar_cap_pins": [
-          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c",
-          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m",
-          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_policy",
-          "knowledge_stores.train-exemplars.phase_supply.solver.k"
-        ]
+        "w3b_exemplar_cap_pins": []
       },
       "note": "flattened composed configs (core.config.compose); re-proven by tests/unit/test_w3_config.py",
       "smoke": {
@@ -126,12 +125,7 @@
           "knowledge_stores.intent-boundaries.snapshot.relpath",
           "knowledge_stores.intent-boundaries.snapshot.sha256"
         ],
-        "w3b_exemplar_cap_pins": [
-          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c",
-          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m",
-          "knowledge_stores.train-exemplars.phase_supply.solver.fuse_policy",
-          "knowledge_stores.train-exemplars.phase_supply.solver.k"
-        ]
+        "w3b_exemplar_cap_pins": []
       }
     },
     "contrast_release": {
@@ -159,6 +153,9 @@
       "selection_rule": "rails.kb_policy.select_target_capped (the registered fuser's own function)"
     }
   },
+  "one_pin": {
+    "w3a": "the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added"
+  },
   "prohibitions": [
     "Never reported as a gain (no benefit declared).",
     "No test-split contact, no DEV read; Fold B was read OFFLINE for tuning only (gold labels and pinned vectors, no contact).",
@@ -168,16 +165,12 @@
     "No flight before root mints the decision receipt and the cells are flipped."
   ],
   "protocol_id": "slurp-stage3-w3-contrast-fold-a-protocol-v1",
-  "registered_at_utc": "2026-09-27T16:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-28T00:25:55.000000+00:00",
   "schema": "saea-registered-protocol-v1",
-  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w3, branch fable/w3",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-waveaa, branch fable/waveaa",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "701bd63a",
-  "the_question": "With the intent cards carrying TRAIN-derived contrast lines in place of boilerplate (no more tokens per card) and the Solver's exemplar block capped at 11 per intent (still 20 exemplars), do the official intent accuracy and pooled SLU-F1 on TRAIN Fold A 1,080 stay within the design's own null, read against the shared wave-1 in-chain A/A? A no-harm question, because no measured conversion applies (row 139).",
-  "two_pins": {
-    "w3a": "the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added",
-    "w3b": "the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to saea-fuse-supplyfilter-target-cap-v1: walk the pure-cosine ranking, take at most 11 exemplars per intent, stop at 20; admission depth and recall k 300"
-  },
-  "unchanged": "everything but the two pins, the contrast release's two frozen source receipts and per-flight bookkeeping: the roster (TRAIN Fold A 1,080, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6), the model fragment and serving geometry (np4 x 24,576), the session serving-slurp-native-candidate-five-train-a-np4-v1, the phase program and its 11-contact ceiling, the agreement term (w_agree 1.0, k 60, fuse 8-1-8), the facet keys, the slot-contracts store, the role graph, the response formats, every template, the deliver normaliser, the scorers and every budget",
-  "what_a_harmful_read_would_mean": "That replacing boilerplate with contrast text, or diversifying the exemplar block, costs the deciding nodes more than the content gives -- read row by row against the fixed membership sets before anything is withdrawn; W3a and W3b are then separated by the registered-ready split (registered-facts-v1.json attribution_split)."
+  "study_commit_at_registration": "e9b4a8ee",
+  "the_question": "With the intent cards carrying TRAIN-derived contrast lines in place of boilerplate (no more tokens per card) and nothing else changed (W3a alone; the Solver exemplar block is the AGREE arm's own), do the official intent accuracy and pooled SLU-F1 on TRAIN Fold A 1,080 stay within the design's own null, read against the shared wave-1 in-chain A/A? A no-harm question, because no measured conversion applies (row 139).",
+  "unchanged": "everything but the one pin, the contrast release's two frozen source receipts and per-flight bookkeeping: the roster (TRAIN Fold A 1,080, split identity 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6), the model fragment and serving geometry (np4 x 24,576), the session serving-slurp-native-candidate-five-train-a-np4-v1, the phase program and its 11-contact ceiling, the agreement term (w_agree 1.0, k 60, fuse 8-1-8), the Solver exemplar supply (saea-fuse-supplyfilter-v1 at k 20), the facet keys, the slot-contracts store, the role graph, the response formats, every template, the deliver normaliser, the scorers and every budget",
+  "what_a_harmful_read_would_mean": "That replacing boilerplate with contrast text costs the deciding nodes more than the content gives -- read row by row against the fixed membership set before anything is withdrawn; W3a is the only change, so no further split is needed."
 }

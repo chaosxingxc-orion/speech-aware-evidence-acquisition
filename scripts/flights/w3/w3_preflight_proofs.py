@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Fold the W3 pre-flight proofs into one package file (owner decision 164). Model-free.
 
+W3 is W3a ALONE since the 2026-09-27 re-registration (the per-intent exemplar cap W3b dropped), so the
+request-size line quotes the card delta alone: the Solver exemplar block is the AGREE arm's own.
+
 Reads, for the W3 arm and its smoke:
 
 * the HELD ``core.flight.cli check`` output (the pre-flight prompt budget per phase: the Fit gate
@@ -105,6 +108,7 @@ def main(argv: list[str] | None = None) -> int:
                 realised.append(int(json.loads(line)["payload"].get("prompt_tokens") or 0))
     offline = json.loads(Path(OFFLINE).read_text(encoding="utf-8"))
     projection = offline["fold_a_estimates"]["request_size_projection"]
+    cards_delta = projection["cards_token_delta_per_later_contact"]
     solver = cells["arm"]["check"]["per_phase"]["solver"]
     line = (
         f"The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all "
@@ -115,10 +119,10 @@ def main(argv: list[str] | None = None) -> int:
         f"19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- "
         f"Solver operational margin {solver['operational_margin_tokens']} and physical margin {solver['physical_margin_tokens']:,} "
         f"on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was "
-        f"{max(realised):,} tokens over {len(realised):,} contacts against the per-contact limit {PROMPT_LIMIT:,}; the offline "
-        f"projection moves a Solver contact by {projection['net_token_delta_per_solver_contact']['mean']:+} tokens on average "
-        f"(max {projection['net_token_delta_per_solver_contact']['max']:+}, {projection['net_token_delta_per_solver_contact']['rows_above_zero']} "
-        f"rows above zero). Nothing must be freed for W3. The first-phase supply minted to a scratch path at this "
+        f"{max(realised):,} tokens over {len(realised):,} contacts against the per-contact limit {PROMPT_LIMIT:,}; W3a moves "
+        f"every later contact by the card delta alone, {cards_delta['mean']:+} tokens on average (min {cards_delta['min']:+}, "
+        f"max {cards_delta['max']:+}: no contact grows), because the Solver exemplar block is the AGREE arm's own. Nothing "
+        f"must be freed for W3. The first-phase supply minted to a scratch path at this "
         f"implementation carries the AGREE family's own digests (arm {cells['arm']['first_phase_supply_proof']['output_sha256'][:8]}, "
         f"{cells['arm']['first_phase_supply_proof']['selected_value_ids']:,} ids on {cells['arm']['first_phase_supply_proof']['rows']:,} rows; smoke "
         f"{cells['smoke']['first_phase_supply_proof']['output_sha256'][:8]})."
@@ -133,6 +137,10 @@ def main(argv: list[str] | None = None) -> int:
             "per_contact_prompt_limit_tokens": PROMPT_LIMIT,
         },
         "request_size_projection": projection,
+        "w3a_request_size_projection": {
+            "cards_token_delta_per_later_contact": cards_delta,
+            "note": "W3a alone (2026-09-27 re-registration): the exemplar block is the AGREE arm's own, so only the card delta applies; the net Solver projection in request_size_projection includes the dropped cap and does not apply",
+        },
         "line": line,
     }
     Path(OUT).write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")

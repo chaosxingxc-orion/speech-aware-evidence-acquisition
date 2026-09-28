@@ -13,6 +13,8 @@
       "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
     },
     "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1",
+      "registered_in": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1 (the coordinator's shared A/A package; attempt id added 2026-09-27 so scripts/flights/read_paired_cell.sh can open the A/A's sealed manifest -- stage3_paired_read.py reads arms.in_chain_replicate.attempt_id)",
       "role": "the within-chain null (registered by the coordinator)",
       "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
       "run_manifest_sha256": "PENDING_SEAL"

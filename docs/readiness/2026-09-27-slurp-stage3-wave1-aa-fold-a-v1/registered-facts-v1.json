@@ -1,0 +1,334 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (keyed by run id). The preregistration's fence repeats it; this copy has precedence.",
+  "authority_relpaths": [
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1/README.md",
+    "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/README.md",
+    "scripts/checks/stage3_effect_floor_check.py"
+  ],
+  "budget_arithmetic": {
+    "derivation": [
+      "generation_calls_cap = 1,080 x 11 (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 x (3 + 1 + 1)) = 11,880",
+      "fit_endpoint_calls_cap = 4 x generation = 47,520; native_task_contract_calls_cap 6,480; repeated_speech_audio_seconds_cap 33,930; gpu_hours_fit_inclusive 12.0: the AGREE family's own ceilings",
+      "expected spend at the sealed AGREE arm's own rate: about 4,385 contacts, about 1.9 GPU hours",
+      "official_complete_scoring_jobs = 1 through core.scoring_batch, never sharded"
+    ],
+    "family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "run_cumulative": "every cap binds across ALL attempts of a run id"
+  },
+  "byte_identity": {
+    "claim": "the A/A's composed config differs from the AGREE arm's only in bookkeeping and the dropped supply pin; its prepared first-phase supply must carry the AGREE arm's output digest; its request bytes must equal the AGREE arm's",
+    "expected_supply_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "proof": {
+      "common_run_id_payload_and_body_identical": true,
+      "config_classes": {
+        "bookkeeping": 30,
+        "supply-pin": 2
+      },
+      "contacts_compared": 663,
+      "own_run_ids_body_identical": true,
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/shared-aa-proof-v1.json",
+      "rows_dispatched": 120,
+      "status": "PROVEN",
+      "study_commit": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
+      "supply_equal_registered_and_committed": true,
+      "supply_output_sha256": {
+        "agree_arm": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+        "wave_aa": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae"
+      },
+      "verdict": "IDENTICAL"
+    }
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "never_reflown": true,
+    "official": {
+      "calls_used": 4385,
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575,
+      "span_f1": 54.4343
+    },
+    "role": "the sealed source of the A/A's bytes; context for the offset read",
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "composed_config_diff_against_the_agree_arm": {
+    "by_class": {
+      "bookkeeping": 30,
+      "supply-pin": 2
+    },
+    "leaves": [
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].attempt_id"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].baseline_fragment"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].cell_id"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.reason"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].expected_decision_id"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].kind"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].reason"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].relpath"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].sha256"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].kind"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].reason"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].relpath"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].sha256"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].kind"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].reason"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].relpath"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].sha256"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.state"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "cells[0].run_id"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "date"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "experiment_id"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "failure_policy"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "fragment_kind"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "generation_budget.definition"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "generation_budget.target"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "native_contact_fit.attempt_id"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "native_contact_fit.run_id"
+      },
+      {
+        "class": "supply-pin",
+        "leaf": "prepared_phase_supply.relpath"
+      },
+      {
+        "class": "supply-pin",
+        "leaf": "prepared_phase_supply.sha256"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "purpose"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "stage3_algorithm.note"
+      },
+      {
+        "class": "bookkeeping",
+        "leaf": "what_this_is"
+      }
+    ],
+    "request_affecting": []
+  },
+  "fit": {
+    "measured": {
+      "blockers": null,
+      "prompt_budget_per_phase": [
+        {
+          "decision": "ALLOW",
+          "operational_margin_tokens": 1512,
+          "phase": "perception",
+          "physical_margin_tokens": 4584,
+          "rendered_text_tokens": 19449,
+          "required_window_tokens": 19992
+        },
+        {
+          "decision": "ALLOW",
+          "operational_margin_tokens": 1648,
+          "phase": "reviewer",
+          "physical_margin_tokens": 4720,
+          "rendered_text_tokens": 19313,
+          "required_window_tokens": 19856
+        },
+        {
+          "decision": "ALLOW",
+          "operational_margin_tokens": 1709,
+          "phase": "planner",
+          "physical_margin_tokens": 4781,
+          "rendered_text_tokens": 19252,
+          "required_window_tokens": 19795
+        },
+        {
+          "decision": "COMPACT_REQUIRED",
+          "operational_margin_tokens": -317,
+          "phase": "solver",
+          "physical_margin_tokens": 2755,
+          "rendered_text_tokens": 21278,
+          "required_window_tokens": 21821
+        }
+      ],
+      "scientific_readiness": {
+        "reason": "The knowledge wave's shared in-chain A/A, registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decisions 58, 161 and 164; the decision-160 precedent) with nothing changed but per-flight bookkeeping. It flies in the wave campaign plan configs/campaign/slurp-native-stage3-wave1-fold-a-v1.json beside the W1 arm, and W3 and W4 are read at it from the later steps of the same chain. HELD: root mints the A/A's admission receipt (scripts/flights/wave/wave_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/wave/wave_flip.sh), which mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own output digest eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "state": "held"
+      },
+      "status": "MEASURED_BY_CHECK"
+    },
+    "rule": "the pre-flight prompt budget binds to the LIVE slot (24,576 tokens, np4) with a reserve of one eighth; the A/A is the AGREE arm's form, whose Solver phase reads COMPACT_REQUIRED with a positive physical margin and proceeds under context_fit_policy compact-or-abstain"
+  },
+  "identity": {
+    "arm": "speech-feature-query-native-tools",
+    "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1",
+    "baseline_fragment": "slurp-native-stage3-wave1-aa-fold-a-baseline-v1",
+    "carrier_lock_key": "slurp",
+    "cell": "slurp-native-stage3-wave1-aa-fold-a-v1",
+    "composed_config_hash": "6e88ca60de9f81530d261d6afe8c71d602836c5d622fcbf7e32ae15e95888b20",
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "execution_profile": "bounded-discovery-probe",
+    "experiment": "slurp-native-stage3-wave1-aa-fold-a-v1",
+    "family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "fit": {
+      "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-fit-v1",
+      "contact_cap": 47520,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1"
+    },
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+    "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+    "protocol_hash": "19a9058d3d4b71e343dd4b74d54c71f862398314f160af36a7730e9a4428e387",
+    "rows": 1080,
+    "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "owner_decisions": {
+    "160": "COMP-1 and G5 fly in ONE campaign with ONE shared in-chain A/A, on the condition that the shared A/A is byte-identical to what each arm is read against (the precedent)",
+    "161": "AGREE retained; later items derive from the retained AGREE arm",
+    "164": "the knowledge wave W1 -> W2 -> W3 -> W4, each W cell derived from the retained AGREE arm with ONE change, the arms read against ONE shared in-chain A/A of the AGREE arm's own bytes (row 160's precedent)"
+  },
+  "prohibitions": [
+    "Never reported as a gain or as a result of its own: it is the instrument.",
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE arm under its own run id.",
+    "No change of any kind against the AGREE arm's bytes.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cell is flipped, and never outside the wave chain."
+  ],
+  "read_rule": "The A/A carries no admission of its own. Its own READ (SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-PAIRED-READ-V1) reports the pair (sealed AGREE arm, wave A/A) on intent accuracy and official pooled SLU-F1 with a paired row bootstrap -- the cross-flight offset of the resident session at the wave's flight time -- beside the Fold A own-null half-widths (intent 0.9943 / SLU 1.2485; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d), as CONTEXT for the three arm reads, never as a gate on them and never as a claim. Each wave arm's no-harm verdict is its own package's rule, read at THIS A/A.",
+  "registered_at_utc": "2026-09-27T23:56:09.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The A/A replicate is the INSTRUMENT, not a claim: it re-flies the retained AGREE arm's own bytes so the knowledge wave's arms W1, W3 and W4 (owner decision 164) are each read against a within-chain null flown in the same chain on the same resident session (rule 3; the decision-160 precedent of one shared A/A). Its expected effect against the sealed AGREE arm (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, the request-identical source of its bytes, proven by shared-aa-proof-v1.json) is exactly zero by construction; a non-zero read on that pair is a measurement of the cross-flight offset, which is what it is for.",
+      "primary_metric": "intent accuracy (scenario_action exact) and official pooled SLU-F1, as the instrument",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+      "rows": 1080
+    }
+  },
+  "study_commit_at_registration": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
+  "the_cell": {
+    "readers": {
+      "W1": {
+        "package": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1",
+        "read_run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1",
+        "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1"
+      },
+      "W3": {
+        "package": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1",
+        "read_run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1",
+        "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1"
+      },
+      "W4": {
+        "package": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1",
+        "read_run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-PAIRED-READ-V1",
+        "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1"
+      }
+    },
+    "readers_note": "W1 SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1 (read SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1); W3 SAEA-SLURP-STAGE3-W3-FOLD-A-V1 (read SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1); W4 SAEA-SLURP-STAGE3-W4-FOLD-A-V1 (read SAEA-SLURP-STAGE3-W4-FOLD-A-PAIRED-READ-V1)",
+    "what": "the retained AGREE arm's own bytes re-flown under the A/A's own run, attempt and FIT ids; nothing in any request moves",
+    "where_it_flies": "step 1 of scripts/flights/wave/batch_chain_wave.sh, inside the wave campaign plan configs/campaign/slurp-native-stage3-wave1-fold-a-v1.json = [this A/A, the W1 arm], after the W1 four-row smoke; W3 and W4 fly as steps 2 and 3 of the same chain on the same resident session serving-slurp-native-candidate-five-train-a-np4-v1",
+    "why_no_smoke": "the AGREE and COMP-1 A/A cells carried none: the A/A is the AGREE arm's already-flown form, and the chain smokes W1 before anything is spent"
+  }
+}

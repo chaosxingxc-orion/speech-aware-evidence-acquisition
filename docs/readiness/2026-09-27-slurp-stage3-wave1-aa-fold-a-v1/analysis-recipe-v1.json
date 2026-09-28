@@ -1,0 +1,68 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "role": "the SEALED request-identical source of the A/A's bytes (not flown in this chain): the pass vs-aa of scripts/flights/read_paired_cell.sh then reads the A/A minus AGREE delta, which is the cross-flight offset",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold filler or model output is printed or persisted.",
+  "decision_rule": "The A/A carries no admission of its own. Its own READ (SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-PAIRED-READ-V1) reports the pair (sealed AGREE arm, wave A/A) on intent accuracy and official pooled SLU-F1 with a paired row bootstrap -- the cross-flight offset of the resident session at the wave's flight time -- beside the Fold A own-null half-widths (intent 0.9943 / SLU 1.2485; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d), as CONTEXT for the three arm reads, never as a gate on them and never as a claim. Each wave arm's no-harm verdict is its own package's rule, read at THIS A/A.",
+  "margins": {
+    "h_intent": 0.9943,
+    "h_slu": 1.2485
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-PAIRED-READ-V1"
+  },
+  "read_driver": "scripts/flights/wave/wave_read.sh (a thin wrapper over scripts/flights/read_paired_cell.sh)",
+  "read_run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-PAIRED-READ-V1",
+  "readers": {
+    "W1": {
+      "package": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1",
+      "read_run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1",
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1"
+    },
+    "W3": {
+      "package": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1",
+      "read_run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1",
+      "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1"
+    },
+    "W4": {
+      "package": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1",
+      "read_run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-PAIRED-READ-V1",
+      "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1"
+    }
+  },
+  "recipe_id": "slurp-stage3-wave1-aa-fold-a-paired-read-v1",
+  "registered_at_utc": "2026-09-27T23:56:09.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired)"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+    "in_chain_replicate": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+    "read": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-PAIRED-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless the A/A carries a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids and one successful complete official TRAIN score.",
+    "2. Structural stage: the A/A's prepared first-phase supply output digest equals eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae; the per-phase contact counts against the sealed AGREE arm.",
+    "3. Paired row bootstrap (10,000 draws, seed 20260927) of the A/A minus AGREE delta on intent accuracy and official pooled SLU-F1, point and CI95, both weightings: the cross-flight offset, reported beside the own-null half-widths.",
+    "4. Report only; no admission, no gain, no gate on the arm reads. Each arm read (W1, W3, W4) uses THIS A/A as its in-chain replicate."
+  ],
+  "title": "The knowledge wave's shared A/A -- the cross-flight offset read (sealed AGREE arm vs the wave A/A), context for W1, W3 and W4"
+}
