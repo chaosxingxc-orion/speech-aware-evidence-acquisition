@@ -1,0 +1,129 @@
+{
+  "_draft_note": "A DRAFT in the repository for root to mint on the data root with scripts/flights/rankvis/rankvis_mint_receipt.py, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "0bc09896b63ac248b9938d5d04b9fdf70db57069deb7ecc77815b5ed1cd93270"
+    },
+    "clause_comparator": "the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 on the same rows, never re-flown; no admission read",
+    "config_proofs": [
+      {
+        "path": "tests/unit/test_rankvis_config.py",
+        "sha256": "8ccaa7d958d3ff3778b87705fede4f3313d4bf9d6e6bb7fc3ed5667effeb15eb"
+      },
+      {
+        "path": "tests/unit/test_knowledge_value_rendering.py",
+        "sha256": "44d2b5a5f6d068d80cb8dd5baa60b4aed7cb4a4cffcba75904da40e815bffb37"
+      },
+      {
+        "path": "tests/unit/test_rankvis_probe_read.py",
+        "sha256": "9801a710244065be976f61091b587ba974c73d53374b755e0ec989d7fda0d40b"
+      }
+    ],
+    "error_sources": {
+      "path": "docs/results/2026-09-27-slurp-agree-arm-error-sources.md",
+      "sha256": "9e57b9f557cfb674d0181a5e2d6b79c1951e99504bd0d7691b9cab8ef88d455c"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "15098058c9c7692d91032b25792610f673fb755bb74a6fbbf8b1447025a2644e"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "0108400a674592a7cc8460c3bbe3b27ca3c6f0414a22b06381111c8ab7bece70"
+    },
+    "read_driver": {
+      "path": "scripts/analysis/rankvis_probe_read.py",
+      "sha256": "b1a5811e1f1e74eef49841649bfcec73cd4ca9ef79d7af58fa33a1695bbbca6a"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/registered-facts-v1.json",
+      "sha256": "22f61dbf9b7609a60b5f102064cb1729be4c202373920feda318ac8b489645a6"
+    },
+    "registration_base_commit": "64665c90",
+    "roster_derivation": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/roster-derivation-v1.json",
+      "sha256": "8b7aca8cd2d36a486ccee146afcdfcb0b897dec8aca12f895e7ac4dd6443d61e"
+    },
+    "synthesis": {
+      "path": "docs/results/2026-09-27-slurp-mechanism-synthesis.md",
+      "sha256": "5fa65f5ef1f448b584fc0b21e310ee10287db77577cbb703a8195d5ace077d3c"
+    }
+  },
+  "authorization_basis": "Owner decision 171; standing decisions 134 (probe before arm), 139 (the arm declares its expectation from the probe's m against the no-op expectation), 101 (algorithm label, honestly none), 77 (flights only through the batch driver), 163 (registration gate) and the binding instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md. The population was selected using gold OFFLINE: a conditional estimate only, never a pooled claim.",
+  "budget": {
+    "asr_calls": 0,
+    "ceiling_note": "11 contacts per row = 1 + 2 x (1 + 3 + 1) at max_revisions 1; 1.5 GPU-h is a ceiling",
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 5236,
+    "generation_calls_cap": 1309,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 714,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 3420
+  },
+  "cell_kind": "Stage-3 conditional-rate probe (label none). One arm, 119 rows, no smoke and no comparator flight: the rank-ordered, rank-visible rendering of the delivered boundary and exemplar blocks, converted on AGREE's delivered-but-wrong rows.",
+  "claim_boundary": "No superiority, generalisation, component-causal, bar, admission, held-out, confirmatory or paper-scale claim; a conditional rate on a gold-selected roster only.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell RANKVIS (owner decision 171): the registered AGREE arm with one native_episode key added (knowledge_value_rendering), on exactly the 119 TRAIN Fold A rows AGREE delivered the gold boundary entry for and still answered wrong. The read is m of 119 with a Wilson CI95 and Clopper-Pearson beside it, against the no-op expectation 15.906, gated on the rendering verified from the sealed request records.",
+  "decision_id": "slurp-stage3-rankvis-fold-a-119-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1",
+    "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cell is flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell (AGREE included)",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the one registered key",
+    "a pooled, roster-level or admission read from this cell"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 119,
+    "fold_b_contact_authorized": false,
+    "partition": "AGREE Fold A rows whose intent is wrong and whose gold intent-boundary entry is among the eight delivered: stages ['CONSUMPTION-PERCEPTION-DROP', 'CONSUMPTION-SOLVER-CHOICE'] (catch-all rows included) plus the UNPARSED row(s) whose gold entry was delivered",
+    "split_identity_hash": "8af458d8cfc91cb705a4891fa39245bac87c4f3b46f1931d7989bb553f78aaac",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "minted by scripts/flights/repin_cell.py at the flip (this cell's own, item E16); not pinned by this receipt"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "composed_config": "674efb292dc5140922ddfe47ee9812b04a7a82b8f7094901c4eca5a6072e60c4",
+    "note": "as composed at 64665c90 (readiness held); repin_cell.py recomputes them at the flip.",
+    "protocol": "38b3ace20cb5602d707775da1dae535fb7750a830244aaf464d9cad6559bc4f6"
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "note": "the resident SLURP np4 session; the flight attaches only, never spawns or stops",
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

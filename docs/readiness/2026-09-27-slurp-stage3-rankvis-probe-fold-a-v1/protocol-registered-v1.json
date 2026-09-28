@@ -1,0 +1,115 @@
+{
+  "authority": "owner decision 171 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); the mechanism synthesis docs/results/2026-09-27-slurp-mechanism-synthesis.md (section 5, rank 2); the AGREE error-source read docs/results/2026-09-27-slurp-agree-arm-error-sources.md; the measurement instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md (rule 5, the form-proof row); owner decisions 28 and 86 (development numbers), 101 (the Stage-3 algorithm label), 134 (probe before arm) and 139 (an arm declares its expectation from its probe)",
+  "cells": {
+    "probe": {
+      "attempt_id": "attempt-slurp-native-stage3-rankvis-fold-a-119-generation-v1",
+      "cell": "slurp-native-stage3-rankvis-fold-a-119-v1",
+      "composed_config_hash": "674efb292dc5140922ddfe47ee9812b04a7a82b8f7094901c4eca5a6072e60c4",
+      "experiment": "slurp-native-stage3-rankvis-fold-a-119-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-rankvis-fold-a-119-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-FIT-V1",
+      "protocol_hash": "38b3ace20cb5602d707775da1dae535fb7750a830244aaf464d9cad6559bc4f6",
+      "rows": 119,
+      "run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1",
+      "split_identity_hash": "8af458d8cfc91cb705a4891fa39245bac87c4f3b46f1931d7989bb553f78aaac"
+    }
+  },
+  "comparator": "the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (intent-wrong on all 119 rows); never re-flown",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration for this run, and a second failure closes this cell: no third registration, and the fix must be proven on a four-row dry run before another mechanism is admitted. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): if the abort is an INFRASTRUCTURE failure with code and request bytes unchanged, the one recovery takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the question, roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 5236,
+    "generation_calls_cap": 1309,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 714,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 3420
+  },
+  "gold_selection": "SELECTED USING GOLD, OFFLINE: conditional estimate only; no pooled or roster-level claim; harm on rows AGREE answers correctly is invisible here",
+  "no_op_expectation": {
+    "definition": "expected wrong-to-correct flips on this roster under a request-identical re-flight of the AGREE bytes: sum over rows of the committed null save rate of the row's AGREE gold-position band (note section 1.1, pooled over three null pairs)",
+    "expected_null_conversions": 15.905795032829003,
+    "expected_null_conversions_synthesis_subset": 11.459320582357979,
+    "null_save_rate": {
+      "1": 0.3870967741935484,
+      "2-8": 0.08849557522123894
+    },
+    "rows_by_band": {
+      "1": 18,
+      "2-8": 101
+    }
+  },
+  "no_smoke": "No smoke, as the CONV (70 rows) and KPROBE (55 rows) precedents: 119 rows is itself a form proof (claims_benefit false) and no smoke row was registered. The rendering code path is exercised by two real native episodes in tests/unit/test_knowledge_value_rendering.py, and the read's rendering gate refuses a number unless the flown Solver requests carry the labels on every row.",
+  "one_factor": "ONE KEY. native_episode.knowledge_value_rendering {schema saea-knowledge-value-rendering-v1, order retrieval-rank, rank_visible true, stores [intent-boundaries, train-exemplars]} added to the registered AGREE arm's baseline; every other composed byte is the AGREE arm's (tests/unit/test_rankvis_config.py).",
+  "re_declaration_rule": {
+    "m_needed_for_the_2p5_pp_bar": 43,
+    "pp_per_row": 0.09259259259259259,
+    "statement": "a later 1,080-row arm with an in-chain A/A declares expected_effect_pp = (m - 15.9) x 0.0926 pp intent accuracy (decision 139); stated, not applied"
+  },
+  "read_rule": {
+    "deliverable": "m of 119 wrong-to-gold conversions with a Wilson CI95 and the exact Clopper-Pearson CI95 beside it; the reverse count is 0 by construction",
+    "read_against": "the no-op expectation 15.906 conversions (never zero)",
+    "read_driver": "scripts/analysis/rankvis_probe_read.py (KPROBE shape); shell wrapper scripts/flights/rankvis/rankvis_read.sh",
+    "rendering_gate": "the read refuses unless every flown Solver request carries the rank labels and the rendered exemplar order equals the recomputed retrieval-rank order on every row",
+    "splits": [
+      "four-way transition (wrong to gold, gold to wrong, same wrong intent, different wrong intent)",
+      "the same read on the 89-row synthesis subset (no-op expectation 11.459)",
+      "by stage (PERCEPTION-DROP / SOLVER-CHOICE / UNPARSED)"
+    ]
+  },
+  "registered_at_utc": "2026-09-28T06:36:34.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, master at 64665c90 (registration completed by the flight-operations agent under owner decision 171)",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "A one-key rendering change measured on a gold-selected subset: no rollout, no per-sample scoring, no credit assignment, no update operator, no evolving store.",
+    "operators_used": []
+  },
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The cell measures a CONDITIONAL RATE and makes NO effectiveness claim. 119 rows is under the instrument's MIN_BENEFIT_ROWS, so under rule 5 this is a form proof by size; expected_effect_pp is 0.0 because the cell registers no effect to look for. RE-DECLARATION RULE (decision 139): a later 1,080-row arm with an in-chain A/A declares (m - 15.9) x 0.0926 pp intent accuracy, never a midpoint. No admission mode is declared.",
+      "primary_metric": "per-row intent correctness (official scorer's scenario_action_exact), reported as the conditional rate m/119 against the no-op flip expectation",
+      "rows": 119
+    }
+  },
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "the_one_change": {
+    "code": {
+      "src/speech_aware_evidence_acquisition/rails/native_episode_config.py": "parse_knowledge_value_rendering; NativeEpisodeConfig.knowledge_value_rendering_json (default None)",
+      "src/speech_aware_evidence_acquisition/rails/runner.py": "order_supply_by_retrieval_rank at the native supply step; rank_visible_value_renderer; RANK_VISIBLE_LABEL 'retrieval rank {rank}: '"
+    },
+    "config_key": "native_episode.knowledge_value_rendering",
+    "default": "absent -> None -> today's supplied order and unlabelled content, byte for byte",
+    "identity_modules_unchanged": [
+      "rails.kb_policy",
+      "rails.knowledge_provider",
+      "rails.phase_supply",
+      "rails.knowledge_stores",
+      "core.flight.runtime",
+      "core.model.transport",
+      "core.preparation_fit",
+      "core.preparation",
+      "rails.core_client"
+    ],
+    "tests": [
+      "tests/unit/test_knowledge_value_rendering.py",
+      "tests/unit/test_rankvis_config.py"
+    ],
+    "value": {
+      "order": "retrieval-rank",
+      "rank_visible": true,
+      "schema": "saea-knowledge-value-rendering-v1",
+      "stores": [
+        "intent-boundaries",
+        "train-exemplars"
+      ]
+    }
+  },
+  "the_question": "m of 119 wrong-to-gold conversions with a Wilson CI95 and the exact Clopper-Pearson CI95 beside it; the reverse count is 0 by construction"
+}

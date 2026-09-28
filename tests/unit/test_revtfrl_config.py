@@ -11,6 +11,7 @@ import difflib
 import hashlib
 import io
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -36,7 +37,17 @@ NEW = "probes/slurp_native_role_reviewer_contrastive_v1.txt"
 G5 = "probes/slurp_native_role_reviewer_v1_g5_v1.txt"
 SOURCE = "probes/slurp_native_role_reviewer_candidate_recovery_v1.txt"
 AGREEMENT = "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl"
+AGREEMENT_SHA = "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+DECISION_ID = "slurp-stage3-revtfrl-fold-a-admission-v1"
 CAMPAIGN = REPO / "configs/campaign/slurp-native-stage3-revtfrl-fold-a-v1.json"
+
+
+def _is_own_supply(relpath: str, run_id: str) -> bool:
+    """This cell's own first-phase supply, minted under its own run id at the flip
+    (item E16); the relpath/prefix identifies the cell, the digest is rewritten by
+    scripts/flights/repin_cell.py and is never asserted here."""
+
+    return re.fullmatch(rf"prepared/{re.escape(run_id)}/phase-supply-v\d+\.json", relpath) is not None
 
 
 def _read(path: Path) -> dict:
@@ -97,7 +108,11 @@ def test_the_base_is_the_agree_form_with_no_tools_and_no_committed_supply(experi
     assert perception["k"] == 60 and perception["fuse_coverage"] == {"m": 8, "c": 1, "top_l": 8}
     assert perception["agreement_source"]["relpath"] == AGREEMENT
     assert "phase_tools" not in values
-    assert "prepared_phase_supply" not in values
+    # HELD as registered; the flip's re-pin mints this cell's OWN first-phase supply under its
+    # own run id (item E16), never a foreign one -- the COMP-1 flip is the pattern.
+    supply = values.get("prepared_phase_supply")
+    run_id = RUNS[experiment][0]
+    assert supply is None or _is_own_supply(supply["relpath"], run_id), supply
 
 
 @pytest.mark.parametrize("experiment", [ARM, AA, SMOKE])
@@ -109,9 +124,18 @@ def test_ids_readiness_and_label(experiment: str) -> None:
     baseline = _read(REPO / "configs/baseline" / f"{cell['baseline_fragment']}.json")
     assert baseline["native_contact_fit"]["run_id"] == fit_run_id
     readiness = cell["readiness"]
-    assert readiness["state"] == "held"
-    assert [r["relpath"] for r in readiness["requirements"]] == [AGREEMENT]
-    assert not any(r.get("kind") == "decision" for r in readiness["requirements"])
+    assert readiness["state"] in ("held", "ready")
+    agreement_reqs = [r for r in readiness["requirements"] if r["relpath"] == AGREEMENT]
+    assert len(agreement_reqs) == 1
+    assert agreement_reqs[0]["sha256"] == AGREEMENT_SHA
+    decisions = [r for r in readiness["requirements"] if r.get("kind") == "decision"]
+    if readiness["state"] == "held":
+        assert [r["relpath"] for r in readiness["requirements"]] == [AGREEMENT]
+        assert not decisions
+    else:
+        assert [d["expected_decision_id"] for d in decisions] == [DECISION_ID]
+        own = [r for r in readiness["requirements"] if r["kind"] == "preparation" and r["relpath"] != AGREEMENT]
+        assert len(own) == 1 and _is_own_supply(own[0]["relpath"], run_id), own
     record, used = registry.validate_stage3_algorithm_label(document["stage3_algorithm"], cell=experiment)
     if experiment == AA:
         assert record.id == "none" and used == ()

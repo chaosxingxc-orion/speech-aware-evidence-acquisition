@@ -6,6 +6,7 @@ Config only: no data root, no lock, no adapter, no contact.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -23,6 +24,15 @@ PARENT = "slurp-native-stage3-agree-w1-fold-a-v1"
 PACKAGE = REPO / "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1"
 ONE_KEY = "native_episode.knowledge_value_rendering"
 BOOKKEEPING = ("native_contact_fit.", "prepared_phase_supply", "what_this_is")
+DECISION_ID = "slurp-stage3-rankvis-fold-a-119-admission-v1"
+
+
+def _is_own_supply(relpath: str, run_id: str) -> bool:
+    """This cell's own first-phase supply, minted under its own run id at the flip
+    (item E16); the relpath/prefix identifies the cell, the digest is rewritten by
+    scripts/flights/repin_cell.py and is never asserted here."""
+
+    return re.fullmatch(rf"prepared/{re.escape(run_id)}/phase-supply-v\d+\.json", relpath) is not None
 
 
 def _read(path: Path) -> dict:
@@ -83,7 +93,7 @@ def test_the_key_parses_through_the_real_loader():
     assert load_native_episode_config(parent_values, default_phase_program(parent_values["policy"])).knowledge_value_rendering is None
 
 
-def test_the_roster_is_the_derivation_and_is_held(experiment: dict):
+def test_the_roster_is_the_derivation_and_readiness_is_flip_indifferent(experiment: dict):
     derivation = _read(PACKAGE / "roster-derivation-v1.json")
     ids = derivation["roster"]["ids"]
     assert len(ids) == ROWS == experiment["population"]["count"]
@@ -93,8 +103,18 @@ def test_the_roster_is_the_derivation_and_is_held(experiment: dict):
     assert derivation["synthesis_subset"]["matches_synthesis"] is True
     cell = experiment["cells"][0]
     assert cell["run_id"] == RUN
-    assert cell["readiness"]["state"] == "held"
-    assert cell["readiness"]["requirements"] == []
+    readiness = cell["readiness"]
+    assert readiness["state"] in ("held", "ready")
+    # HELD as registered; the flip's re-pin adds the family decision and mints this cell's OWN
+    # first-phase supply under its own run id (item E16), never a foreign one -- the COMP-1
+    # flip is the pattern.
+    if readiness["state"] == "held":
+        assert readiness["requirements"] == []
+    else:
+        decisions = [r for r in readiness["requirements"] if r.get("kind") == "decision"]
+        assert [d["expected_decision_id"] for d in decisions] == [DECISION_ID]
+        own = [r for r in readiness["requirements"] if r["kind"] == "preparation"]
+        assert len(own) == 1 and _is_own_supply(own[0]["relpath"], cell["run_id"]), own
     assert experiment["stage3_algorithm"]["id"] == "none"
     facts = _read(PACKAGE / "registered-facts-v1.json")
     assert facts["stage3_measurement"][RUN]["claims_benefit"] is False
@@ -104,5 +124,8 @@ def test_the_roster_is_the_derivation_and_is_held(experiment: dict):
 
 def test_no_prepared_supply_is_committed():
     baseline = _read(REPO / "configs/baseline" / f"slurp-native-stage3-rankvis-fold-a-{ROWS}-baseline-v1.json")
-    assert "prepared_phase_supply" not in baseline
+    # HELD as registered; the flip's re-pin mints this cell's OWN first-phase supply under its
+    # own run id (item E16), never a foreign one -- the COMP-1 flip is the pattern.
+    supply = baseline.get("prepared_phase_supply")
+    assert supply is None or _is_own_supply(supply["relpath"], RUN), supply
     assert baseline["native_contact_fit"]["contact_cap"] == ROWS * 11 * 4

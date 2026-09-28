@@ -1,0 +1,51 @@
+{
+  "cell": "slurp-native-stage3-rankvis-fold-a-119-v1",
+  "composed_config_hash": "674efb292dc5140922ddfe47ee9812b04a7a82b8f7094901c4eca5a6072e60c4",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-rankvis-fold-a-119-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.5,
+    "planned_model_calls": 5236,
+    "planned_speech_audio_seconds": 3420,
+    "protocol_hash": "38b3ace20cb5602d707775da1dae535fb7750a830244aaf464d9cad6559bc4f6",
+    "run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8af458d8cfc91cb705a4891fa39245bac87c4f3b46f1931d7989bb553f78aaac",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; it measures request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-rankvis-fold-a-119-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 5236,
+    "generation_calls_cap": 1309,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 714,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 3420
+  },
+  "one_factor": "ONE KEY. native_episode.knowledge_value_rendering {schema saea-knowledge-value-rendering-v1, order retrieval-rank, rank_visible true, stores [intent-boundaries, train-exemplars]} added to the registered AGREE arm's baseline; every other composed byte is the AGREE arm's (tests/unit/test_rankvis_config.py).",
+  "plan_kind": "fit",
+  "preparation_base_commit": "64665c90",
+  "prepared_phase_supply": {
+    "note": "NONE COMMITTED, by design: the flip mints this cell's own under its own run id (item E16) and --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "0108400a674592a7cc8460c3bbe3b27ca3c6f0414a22b06381111c8ab7bece70"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1: cell RANKVIS. It measures request envelopes only and reads nothing.",
+  "quality_read_gate": "No read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist, and before the rendering gate verifies the rank labels and order from the sealed MODEL_REQUEST records on all 119 rows. A partial manifest is never scored and never read.",
+  "registered_at_utc": "2026-09-28T06:36:34.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, master at 64665c90 (registration completed by the flight-operations agent under owner decision 171)",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

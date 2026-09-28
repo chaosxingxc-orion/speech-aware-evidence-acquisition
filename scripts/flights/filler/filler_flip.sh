@@ -58,7 +58,7 @@ for K in $CHUNKS; do
     cat > /home/chao/filler-c$K2-$KIND-commit.txt <<M
 research: flip filler chunk c$K2 ($KIND) to ready (owner decision 162: the standing rollout filler family -- a sealed five-sample pool of the current best SLURP system, the locked PLAN plan plus the agreement term (decision 161), in cell ROLL-2's grouped-Solver form on TRAIN Fold B rows outside Fold A and every evaluation roster; DESCRIPTIVE, never an admission cell; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-filler-fold-b-c$K2-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
     export FILLER_CHUNK=$K FILLER_KIND=$KIND
     bash "$SP/repin_loop_generic.sh" "$FD/filler_repin_cell.sh" "$RD" "$CELL" "$PLAN" "/home/chao/filler-c$K2-$KIND-commit.txt" || { echo "FLIP STOPPED at c$K2 $KIND"; exit 7; }

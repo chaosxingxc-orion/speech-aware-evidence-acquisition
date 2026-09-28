@@ -12,7 +12,7 @@ DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 cat > /home/chao/e41-sub10-commit.txt <<M
 research: flip the E41 sub10 re-read to ready (owner decisions 103 and 158, after the E41 dry run held R1-R3: the Earnings21 + ConEC system form at base lock v3.1 with the bounded Perception note on the E35 sub10 roster, 10 calls / 342 windows, E21 geometry; a descriptive structural read against the sealed E35 sub10 direct arm bound per window; form-proof, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt e21-native-window-e41-sub10-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 E41=$(dirname "$0")
 bash $SP/repin_loop_generic.sh $E41/e41_repin_sub10.sh $RD e21-native-window-system-sub10-e41-v1 sub10-generation /home/chao/e41-sub10-commit.txt || exit $?
