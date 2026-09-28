@@ -7,6 +7,7 @@ Config only: no data root, no lock, no adapter, no contact.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -27,7 +28,16 @@ ONE_KEY = "knowledge_stores.slot-contracts.candidate_supply.solver.candidate_leg
 BOOKKEEPING = ("native_contact_fit.", "prepared_phase_supply", "what_this_is", "preparation_source_receipts")
 LEGALITY_RELPATH = "prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/legality.json"
 LEGALITY_RECEIPT = "prepared/SAEA-SLURP-INTENT-SLOT-LEGALITY-POOL-V1/receipt.json"
+DECISION_ID = "slurp-stage3-w1-cardsel-fold-a-admission-v1"
 H_SLU, H_INTENT = 1.2485, 0.9943
+
+
+def _is_own_supply(relpath: str, run_id: str) -> bool:
+    """This cell's own first-phase supply, minted under its own run id at the flip
+    (item E16); the relpath/prefix identifies the cell, the digest is rewritten by
+    scripts/flights/repin_cell.py and is never asserted here."""
+
+    return re.fullmatch(rf"prepared/{re.escape(run_id)}/phase-supply-v\d+\.json", relpath) is not None
 
 
 def _read(path: Path) -> dict:
@@ -65,7 +75,11 @@ def test_the_composed_diff_is_the_one_key_plus_bookkeeping(experiment):
     other = [k for k in changed if k not in one_key and k not in bookkeeping and k not in block]
     assert other == []
     assert {k.rsplit(".", 1)[1] for k in one_key} == {"kind", "relpath", "sha256", "tool_contact_ledger_row", "embedded_signal"}
-    assert "prepared_phase_supply" not in mine.values
+    # HELD as registered; the flip's re-pin mints this cell's OWN first-phase supply under its
+    # own run id (item E16), never a foreign one -- the COMP-1 flip is the pattern.
+    supply = mine.values.get("prepared_phase_supply")
+    run_id = document["cells"][0]["run_id"]
+    assert supply is None or _is_own_supply(supply["relpath"], run_id), supply
     route = mine.values["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solver"]
     assert route["candidate_legality_source"]["relpath"] == LEGALITY_RELPATH
     assert (route["max_candidates"], route["max_values_per_candidate"], route["max_total_values"]) == (3, 16, 28)
@@ -83,9 +97,19 @@ def test_the_composed_diff_is_the_one_key_plus_bookkeeping(experiment):
 def test_readiness_is_held_with_the_agreement_table_only(experiment):
     cell = _read(REPO / "configs/experiment" / f"{experiment}.json")["cells"][0]
     parent_cell = _read(REPO / "configs/experiment" / f"{PARENT[experiment]}.json")["cells"][0]
-    assert cell["readiness"]["state"] == "held"
+    readiness = cell["readiness"]
+    assert readiness["state"] in ("held", "ready")
     agreement = [r for r in parent_cell["readiness"]["requirements"] if r["relpath"].endswith("agreement.jsonl")]
-    assert cell["readiness"]["requirements"] == agreement
+    mine_agreement = [r for r in readiness["requirements"] if r["relpath"].endswith("agreement.jsonl")]
+    assert mine_agreement == agreement
+    others = [r for r in readiness["requirements"] if not r["relpath"].endswith("agreement.jsonl")]
+    if readiness["state"] == "held":
+        assert others == []
+    else:
+        decisions = [r for r in others if r.get("kind") == "decision"]
+        assert [d["expected_decision_id"] for d in decisions] == [DECISION_ID]
+        own = [r for r in others if r not in decisions]
+        assert len(own) == 1 and _is_own_supply(own[0]["relpath"], cell["run_id"]), own
 
 
 def test_the_campaign_plan_carries_the_arm_alone():
