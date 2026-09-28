@@ -184,3 +184,16 @@ includes zero: the pooled movement is carried by the larger strata and offset in
 - The FP-only share by scorer counts (16.2 % per sample) differs from the synthesis' 10.8 % for DEV; the
   definitions differ (section 5).
 - TRAIN Fold A (ROLL-2) is registered to be read beside once its stage 1-3 read exists; it was not run here.
+
+## Coordinator verdict (Fable 5.1, 2026-09-28)
+
+**INERT-BY-INSTRUMENT.** The SLU-F1 movement +0.256 [+0.067, +0.445] is a real but tiny gain: its interval
+excludes zero, but it is about 17 % of the pool's own sample-vs-sample null (1.547 pp). No arm is registered.
+
+Instrument finding recorded: the offline null of a multi-sample pool on DEV-2000-ADDED is 1.547 pp SLU-F1 /
+0.810 intent, 2.3 x the 0.67 pp one-pool floor the synthesis assumed, so offline rule designs read on
+multi-sample pools have little room to clear. The FP-only share is 16.2 % by the scorer's per-row
+definition, against the 10.8 % the synthesis quoted.
+
+The agent's numbers above are unchanged. The results-ledger SHA-256 `ffcfb945...` pins this note as the
+agent wrote it, before this section was appended.

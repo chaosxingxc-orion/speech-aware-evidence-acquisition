@@ -57,3 +57,22 @@ The shared A/A is sealed but is read only together with its arm; no score of it 
   terminal at 03:50:52Z, moved the marker aside, and started `batch_chain_wave.sh` at flight commit
   `5f8b4c9d53862e0243ff4c9610e90189423057d4` (driver start 03:50:54Z; the W1 smoke passed at 03:52:17Z and the
   W1 step's arm started at 03:52:27Z). REV-TFRL-1 follows the wave in the same queue.
+
+## 5. Recovery staged (amendment, 2026-09-28)
+
+- The coordinator chose recovery variant 2, the `-REC` recovery re-registration
+  (`SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-V1`, a full 1,080-row re-fly under a fresh run id). The owner's ruling
+  on variant 1, the resume under owner decision 22, is still open; the resume variant stays HELD and is not
+  queued.
+- The `-REC` smoke and arm were flipped to ready on master; flight commit
+  `472474bfc` (arm flip, after the smoke flip `fba40286c`). Decision receipt:
+  `coordination/slurp-stage3-comp1-fold-a-v1/root-admission-rec-v1.json` under `SPEECHRL_DATA_DIR`
+  (decision id `slurp-stage3-comp1-fold-a-rec-admission-v1`).
+- Queue: the scheduled task `SAEA-Queue-AFTER-REVTFRL` waits on the knowledge wave and REV-TFRL-1, then flies
+  `-REC` + G5, then the E41 sub10 re-read, then the filler (behind its hold switch).
+- Two tool gaps found while staging:
+  1. `scripts/flights/repin_cell.py`'s "old hash residue" check scans all of `docs/` and `configs/` and trips
+     on a parent package's sealed pins when a derived cell inherits them; the `-REC` flip needed three flip
+     runs to converge.
+  2. The flip scripts `scripts/flights/e41/e41_flip_sub10.sh` and `scripts/flights/revtfrl/revtfrl_flip.sh`
+     still hard-code the old commit trailer.

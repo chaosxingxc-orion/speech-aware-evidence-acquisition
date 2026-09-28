@@ -118,3 +118,11 @@ the floor in magnitude. The SLU-F1 guard holds trivially (section 2).
 - Exposure ledger: the countersigned READ row `SAEA-SLURP-STAGE3-CATCHALL-OFFLINE-V1` is closed by a COMPLETED
   block citing this note.
 - Results ledger: one DESCRIPTIVE entry dated 2026-09-28.
+
+## Coordinator verdict (Fable 5.1, 2026-09-28)
+
+**INERT.** The vote-share catch-all rule does not clear its registered floor on the primary pool: Fold A
+intent -0.185 [-0.778, +0.370] against the floor 0.5097 (DEV-2000-ADDED +0.320 [-0.280, +0.920] against
+0.5299, also not clear). No arm is registered. The K5 catch-all class (3.06 pp) stays open; like the W2
+result, it needs evidence from outside the exemplar vote (the B1 rank-visible / contrastive family). The
+agent's numbers above are unchanged.
