@@ -1,15 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-28T11:08:59Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge and records agent, Claude Opus 5.5) · HEAD at writing `9d8ba00d` on `master`, tree clean. **GPU flying:**
-the knowledge wave (W1, W3a, W4 on the shared in-chain A/A) and then REV-TFRL-1, from their own flight
-worktree at `5f8b4c9d`, through the batch driver under queue task `SAEA-Queue-WAVE-REVTFRL`. Coordinator
-state: the wave's A/A, W1 and W3a are sealed and read; **W1 is NEUTRAL, retained as an enabler**; **W3a is
-NOT ADMITTED (neutral by width; the card form of K1 is closed)**; W4 is in flight since 09:16Z, then
-REV-TFRL-1. Status lines from `/home/chao/batch-status.jsonl`, quoted only: 09:14:38Z `arm-inspect`
-(SAEA-SLURP-STAGE3-W3-FOLD-A-V1, FINALIZED, 4,364 calls), `step-done` `w3`; 09:14:58Z `step-start` step 3
-`w4`; 09:16:09Z `smoke-inspect` (SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-V1, pass); 09:16:19Z `arm-start` step 3
-(no later event at 11:08Z).
+Last refreshed: 2026-09-28T11:38:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge and records agent, Claude Opus 5.5) · HEAD at writing `06810352` on `master`, tree clean. **GPU flying:**
+REV-TFRL-1, from its own flight worktree at `5f8b4c9d`, through the batch driver under queue task
+`SAEA-Queue-WAVE-REVTFRL`: smoke passed 11:17:57Z, arm-start 11:18:08Z, in flight since 11:16Z. **The
+knowledge wave is complete:** the shared A/A, W1, W3a and W4 are sealed and read; **W1 is NEUTRAL, retained
+as an enabler**; **W3a is NOT ADMITTED (neutral by width; the card form of K1 is closed)**; **W4 is NOT
+ADMITTED (neutral by width) and is re-registered as the first cell of the same-flight supply-variant
+instrument** (section 2).
 **Queued behind it:** `SAEA-Queue-AFTER-REVTFRL` waits for REV-TFRL-1's batch-done at `5f8b4c9d`, then flies
 COMP-1 `-REC` + G5 at `472474bf` -> RANKVIS at `b0c6c608` (same slurp-np4 geometry) -> the E41 sub10 re-read
 at `bf6db903` (swap to e21-np4, fly, swap back) -> removes the filler hold (`/home/chao/saea-queue/filler.hold`)
@@ -101,7 +99,18 @@ retrieved because the key side is text by design.
 | **RANKVIS** (B1 rank-visible probe, 119 Fold A rows AGREE got wrong): registration completed, exposure rows countersigned, flipped ready | flip `b0c6c608` (flight commit in `/home/chao/rankvis-flight-commit.txt`) | queued in `SAEA-Queue-AFTER-REVTFRL` after `-REC` + G5 |
 | **Same-flight supply-variant instrument, merge set B** (decision 172) | merge of `fable/svinst` (`0f17a5e1`) | merged on master; queued flights are unaffected because they fly at their own flight commits |
 | Tool-gap fixes: the repin residue scan is scoped to the cell, the flip scripts carry the current trailer; config tests made flip-state agnostic | merges of `fable/repinfix2` (`da541f92`) and `fable/cfgtests` (`18f1ae2e`) | merged; both gaps from the `-REC` staging are closed |
+| **W4 slot conventions read** against the shared wave A/A (TRAIN Fold A, n = 1,080): official SLU-F1 (primary) +0.79 [-0.56, +2.12], intent guard -0.09 [-1.02, +0.83] (13 saves / 14 harms); the SLU no-harm margin (1.2485) holds but the result sits below the M4b analogue's lower end (1.3285) and far below the 2.5 pp cross-flight floor; the intent guard misses its margin (0.9943) by 0.024 pp, under one row's step (0.0926), so the cell is in the residual branch; entity classes SPURIOUS -29, BOUNDARY -12, MISSING +14, WRONG-TYPE -4 (FP 506 -> 461); cost +3,529 prompt tokens per row, +1,207.8 per Solver contact (registered +724.5), +0.1643 GPU-h per 1,080 rows | `docs/results/2026-09-28-slurp-w4-fold-a-read.md` (read `d28f098d`, verdict `06810352`) | **NOT ADMITTED (neutral by width)** (coordinator); does not enter COMP-2, not an enabler. **Re-registered as the first real cell of the same-flight supply-variant instrument's phase 1** (decision 172; spec `docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md`): Solver-local columns with an in-flight twin arm; base = the AGREE arm bytes; arm A = the AGREE Solver supply; arm B = the W4 conventions; twin = a replicate of A; `arm_visits: "first"`; claim `"nominated"` only. Its plausible effect (about 0.8 pp SLU) is the size that design reads (about 0.7 pp at n = 200) and the cross-flight design cannot |
 | Coordinator ratification of the two model-free W4 rows `SAEA-SLURP-SLOT-CONVENTIONS-W4-PREPARE-V1` and `SAEA-SLURP-W4-FOLD-A-OFFLINE-ESTIMATE-V1`, countersigned beyond the admission list | exposure ledger | ratified |
+
+### What the wave taught
+
+No knowledge-form item moved the numbers at the cross-flight floor: W1 (card selection), W3a (intent
+contrast cards) and W4 (slot conventions) all read within width against the shared in-chain A/A. Only W1
+saved cost (-3,379.5 prompt tokens per row, -8.0 % GPU-h); W3a's saving came with a negative intent point
+estimate and W4 cost more than registered. This is consistent with
+`docs/results/2026-09-27-slurp-mechanism-synthesis.md` section 2.1: gains need row-matched content at the
+deciding node, not a new form of the same content. Effects of W4's size (about 0.8 pp) go to the same-flight
+supply-variant instrument, not to another cross-flight cell.
 
 Before set B merged, `core.flight.cli check` on the E41 sub10 cell and the `-REC` arm read `ready` with `prepared_artifacts_ok: true` and unchanged hashes. After set B, `-REC` and RANKVIS read `prepared_artifacts_ok: false` on master by design (the isolation fact above); they stay ready at their flight commits. No `cli check` runs while the queue is live.
 
@@ -187,16 +196,16 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 | W1 | Card selection. Sealed and read: **NEUTRAL (no-harm holds; retained as an enabler).** |
 | W2 | Stopped offline. |
 | W3 | W3a alone. Sealed and read: **NOT ADMITTED (neutral by width; the card form of K1 is closed).** |
-| W4 | Slot conventions, no-harm. Its base is AGREE. In flight since 09:16Z at `5f8b4c9d`. |
+| W4 | Slot conventions. Sealed and read: **NOT ADMITTED (neutral by width)**; re-registered as the first cell of the same-flight supply-variant instrument's phase 1. |
 | W5 | Held (outcome of 170). |
 
-The wave (W1, W3a, W4 on the shared A/A) is flying at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP. The A/A, W1 and W3a are sealed; W4 is in flight; REV-TFRL-1 follows in the same queue.
+The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP, and is complete: all four arms are sealed and read. REV-TFRL-1 is in flight in the same queue (smoke passed 11:17:57Z, arm-start 11:18:08Z).
 
-**Same-flight supply-variant instrument (decision 172).** Merge set A (`2cef09ec`) and merge set B (`0f17a5e1`) are both on master. Set B touches identity-bound implementation files; the queued flights fly at their own flight commits and are not affected. VAR-2 as a mechanism stays closed.
+**Same-flight supply-variant instrument (decision 172).** Merge set A (`2cef09ec`) and merge set B (`0f17a5e1`) are both on master. Set B touches identity-bound implementation files; the queued flights fly at their own flight commits and are not affected. VAR-2 as a mechanism stays closed. Its first real phase-1 cell is W4's slot conventions (arm A = the AGREE Solver supply, arm B = the W4 conventions, twin = a replicate of A, `arm_visits: "first"`, claim `"nominated"`); not yet registered as a flight.
 
 ## 7. My next action
 
-1. Let `SAEA-Queue-WAVE-REVTFRL` finish (W4 on the shared A/A, then REV-TFRL-1), then read each with the standard paired read; W1 is read (NEUTRAL, enabler), W3a is read (NOT ADMITTED). W5 stays held.
+1. Let `SAEA-Queue-WAVE-REVTFRL` finish REV-TFRL-1 (in flight since 11:16Z at `5f8b4c9d`), then read it with the standard paired read. The wave is complete: W1 NEUTRAL (enabler), W3a NOT ADMITTED, W4 NOT ADMITTED (moving to the same-flight instrument as its first cell). W5 stays held.
 2. `SAEA-Queue-AFTER-REVTFRL` then flies COMP-1 `-REC` + G5 (`472474bf`) and RANKVIS (`b0c6c608`); read them against the sealed shared A/A. The owner's ruling on resume vs `-REC` stays open; `-REC` is the default, and there is no second recovery.
 3. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), replacing the placeholder in both places the gate reads; then flip A2 (arm + A/A + smoke) and queue it.
 4. The same queue flies the E41 sub10 re-read (`bf6db903`) after `-REC` + G5, then the filler once its hold is released. Earnings E-C1 is registered only after sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
