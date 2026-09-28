@@ -1250,7 +1250,7 @@ def test_a_twin_does_not_collide_with_the_identical_override_refusal():
     assert group.arm_ids == ("aa", "plan")
 
 
-def test_the_receipt_carries_replicate_of_and_the_v2_schema():
+def test_the_receipt_carries_replicate_of_and_the_v3_schema():
     group = _parse(_twin_block())
     records = [
         supply_variant_arm_record(
@@ -1263,11 +1263,15 @@ def test_the_receipt_carries_replicate_of_and_the_v2_schema():
         ),
     ]
     receipt = supply_variant_receipt(group=group, phase_id="solver", records=records)
-    assert receipt["schema"] == "saea-supply-variant-arms-v2"
+    assert receipt["schema"] == "saea-supply-variant-arms-v3"
     assert receipt["arm_visits"] == "every"
     assert receipt["visit_index"] == 0
     assert receipt["arms"][0]["replicate_of"] == "plan"
     assert receipt["arms"][1]["replicate_of"] is None
+    # Neither the twin nor the delivering arm carries a release_swap: this
+    # block has none declared at all.
+    assert receipt["arms"][0]["release_swap"] is None
+    assert receipt["arms"][1]["release_swap"] is None
     validate_supply_variant_receipt(
         receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
     )
@@ -1292,12 +1296,46 @@ def test_a_v1_receipt_still_validates_unchanged():
         "delivered_arm_id": "plan",
         "fit_estimate": group.fit_estimate.as_json(),
         "arms": [
-            {k: v for k, v in record.items() if k != "replicate_of"}
+            {k: v for k, v in record.items() if k not in ("replicate_of", "release_swap")}
             for record in records
         ],
     }
     validate_supply_variant_receipt(
         v1_receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+    )
+
+
+def test_a_v2_receipt_still_validates_unchanged():
+    """Coordinator amendment, 2026-09-28: a v2 receipt sealed before the
+    release-swap route existed (no ``release_swap`` key on any arm row) still
+    validates unchanged -- no sealed E42b data is rewritten."""
+
+    group = _parse(_twin_block())
+    records = [
+        supply_variant_arm_record(
+            arm=group.arm("aa"), arm_index=0, contact_id="c0",
+            supplied_value_ids=("b::1",),
+        ),
+        supply_variant_arm_record(
+            arm=group.arm("plan"), arm_index=1, contact_id="c1",
+            supplied_value_ids=("b::1",),
+        ),
+    ]
+    v2_receipt = {
+        "schema": "saea-supply-variant-arms-v2",
+        "phase_id": "solver",
+        "arm_count": 2,
+        "delivered_arm_id": "plan",
+        "arm_visits": "every",
+        "visit_index": 0,
+        "fit_estimate": group.fit_estimate.as_json(),
+        "arms": [
+            {k: v for k, v in record.items() if k != "release_swap"}
+            for record in records
+        ],
+    }
+    validate_supply_variant_receipt(
+        v2_receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
     )
 
 
@@ -1368,6 +1406,37 @@ def test_the_variantsnfirst_fragments_compose_to_base_plus_k_minus_one(
     ONCE as (K - 1)."""
 
     values = _fragment(COMP1_FRAGMENT)
+    values["policy"] = program_id
+    values["native_episode"]["roles"]["solver"]["supply_variants"] = _first_visit_block(
+        arm_count
+    )
+    program = default_phase_program(program_id)
+    assert program.max_contacts == expected_ceiling
+    config = load_native_episode_config(values, program)
+    assert config.max_contacts == expected_ceiling
+    assert config.supply_variant_group.arm_visits == "first"
+    assert config.supply_variant_group.arm_count == arm_count
+
+
+@pytest.mark.parametrize(
+    "program_id,arm_count,expected_ceiling",
+    [
+        ("phase-native-candidates-review-revise-variants2first-v1", 2, 12),
+        ("phase-native-candidates-review-revise-variants3first-v1", 3, 13),
+    ],
+)
+def test_the_uncited_variantsnfirst_fragments_compose_to_base_plus_k_minus_one(
+    program_id, arm_count, expected_ceiling,
+):
+    """Coordinator amendment, 2026-09-28: the UNCITED twins of the cited
+    variantsNfirst fragments above compose to the SAME ceiling arithmetic --
+    the uncited 11-contact anchor plus (K - 1) -- since the formula depends
+    only on ``arm_visits: "first"`` and the arm count, never on the Solver's
+    response format. ``VAR2_FRAGMENT`` is the uncited baseline (its own
+    ``deliver_normaliser`` does not unwrap a cited-answer envelope, so it
+    composes with a Solver ``response_format_id`` of ``null``)."""
+
+    values = _fragment(VAR2_FRAGMENT)
     values["policy"] = program_id
     values["native_episode"]["roles"]["solver"]["supply_variants"] = _first_visit_block(
         arm_count

@@ -138,6 +138,21 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-cited-variants3first-v1": (
         ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
     ),
+    # Coordinator amendment, 2026-09-28 (docs/superpowers/specs/2026-09-27-
+    # same-flight-supply-variant-instrument-design.md, "Coordinator amendment
+    # (2026-09-28)"): the UNCITED twin of
+    # "phase-native-candidates-review-revise-cited-variants2first-v1" above --
+    # the uncited review-revise program (anchor 11) with the Solver visit
+    # fanned out to TWO declared supply-variant arms under arm_visits
+    # "first", so the ceiling is the anchor's 11 + (K - 1) = 12.
+    "phase-native-candidates-review-revise-variants2first-v1": (
+        ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
+    ),
+    # Coordinator amendment, 2026-09-28: the same shape with a THIRD arm
+    # (K = 3), so the ceiling is 11 + (3 - 1) = 13.
+    "phase-native-candidates-review-revise-variants3first-v1": (
+        ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the
     # review-revise program with ONE declared cleaning boundary, so the
     # ceiling is 1 + (1+1)*(1 + 3 + 1 + 1) = 13.

@@ -9,7 +9,7 @@ import re
 import threading
 from pathlib import Path
 from types import MappingProxyType
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from ..core.base import KNOWLEDGE_FUSERS, KNOWLEDGE_RANKERS
 
@@ -26,9 +26,18 @@ COMPOSITE_CONTEXT_FUSE_POLICY_ID = "saea-named-context-composite-fuse-v1"
 _STORE_ID = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _STORE_KEYS = frozenset({"store_role", "snapshot", "release"})
+#: ``alternates`` (coordinator amendment, 2026-09-28, docs/superpowers/specs/
+#: 2026-09-27-same-flight-supply-variant-instrument-design.md, "Coordinator
+#: amendment (2026-09-28)"): zero or more ADDITIONAL pinned release+snapshot
+#: pairs this store also declares, reachable only through a supply-variant
+#: arm's release-swap route (``rails.supply_variants.SupplyVariantReleaseSwap``)
+#: -- never loaded onto the ordinary composite snapshot every arm's router
+#: builds from by default. Absent, every store composes exactly as it always
+#: did.
 _STORE_OPTIONAL_KEYS = frozenset(
-    {"phase_supply", "candidate_supply", "context_supply"}
+    {"phase_supply", "candidate_supply", "context_supply", "alternates"}
 )
+_ALTERNATE_KEYS = frozenset({"release", "snapshot"})
 _PIN_KEYS = frozenset({"relpath", "sha256"})
 _RELEASE_KEYS = frozenset(
     {
@@ -100,6 +109,27 @@ def qualify_id(store_id: str, local_id: str) -> str:
 
 
 @dataclass(frozen=True)
+class KnowledgeStoreAlternate:
+    """One additional pinned release+snapshot a store's base config declares.
+
+    Coordinator amendment, 2026-09-28: the arm's own release-swap override
+    names an alternate by its ``release_pin["relpath"]``; the alternate's
+    bytes are validated with the SAME rigor as the primary (schema, hash and
+    cross-check) only at the point a router actually resolves it
+    (``core.flight.runtime.FlightRuntime._supply_action_router``), by
+    substituting these pins for the store's primary ones and re-running
+    :func:`load_knowledge_store_binding` -- so declaring an alternate that is
+    never selected by any arm costs no extra load at flight assembly.
+    """
+
+    release_pin: Mapping[str, str]
+    snapshot_pin: Mapping[str, str]
+
+    def as_json(self) -> dict[str, object]:
+        return {"release": dict(self.release_pin), "snapshot": dict(self.snapshot_pin)}
+
+
+@dataclass(frozen=True)
 class KnowledgeStore:
     store_id: str
     store_role: str
@@ -110,6 +140,19 @@ class KnowledgeStore:
     phase_supply: Mapping[str, object]
     candidate_supply: Mapping[str, object]
     context_supply: Mapping[str, object] = field(default_factory=dict)
+    # Coordinator amendment, 2026-09-28: declared LAST, so every store parsed
+    # before this field existed composes byte-identically (empty tuple).
+    alternates: tuple[KnowledgeStoreAlternate, ...] = field(default_factory=tuple)
+
+    def alternate(self, release_relpath: str) -> "KnowledgeStoreAlternate":
+        for alt in self.alternates:
+            if alt.release_pin["relpath"] == release_relpath:
+                return alt
+        raise KnowledgeStoreError(
+            f"knowledge store {self.store_id!r} declares no alternate release "
+            f"{release_relpath!r}; declared alternates are "
+            f"{[a.release_pin['relpath'] for a in self.alternates]}"
+        )
 
 
 @dataclass(frozen=True)
@@ -385,6 +428,40 @@ def load_knowledge_store_binding(
             raise KnowledgeStoreError(
                 f"knowledge store {store_id} context_supply must be a mapping"
             )
+        raw_alternates = spec.get("alternates", [])
+        if not isinstance(raw_alternates, Sequence) or isinstance(
+            raw_alternates, (str, bytes)
+        ):
+            raise KnowledgeStoreError(
+                f"knowledge store {store_id} alternates must be a list"
+            )
+        alternates: list[KnowledgeStoreAlternate] = []
+        seen_release_relpaths = {release_pin["relpath"]}
+        for index, raw_alternate in enumerate(raw_alternates):
+            if not isinstance(raw_alternate, Mapping) or set(raw_alternate) != _ALTERNATE_KEYS:
+                raise KnowledgeStoreError(
+                    f"knowledge_stores[{store_id!r}].alternates[{index}] must "
+                    f"carry exactly {sorted(_ALTERNATE_KEYS)}"
+                )
+            alt_release_pin = _pin(
+                raw_alternate["release"],
+                f"knowledge_stores[{store_id!r}].alternates[{index}].release",
+            )
+            alt_snapshot_pin = _pin(
+                raw_alternate["snapshot"],
+                f"knowledge_stores[{store_id!r}].alternates[{index}].snapshot",
+            )
+            if alt_release_pin["relpath"] in seen_release_relpaths:
+                raise KnowledgeStoreError(
+                    f"knowledge store {store_id} declares the same alternate "
+                    f"release relpath twice: {alt_release_pin['relpath']!r}"
+                )
+            seen_release_relpaths.add(alt_release_pin["relpath"])
+            alternates.append(
+                KnowledgeStoreAlternate(
+                    release_pin=alt_release_pin, snapshot_pin=alt_snapshot_pin,
+                )
+            )
         stores[store_id] = KnowledgeStore(
             store_id,
             role,
@@ -395,10 +472,51 @@ def load_knowledge_store_binding(
             MappingProxyType(dict(phase_supply)),
             MappingProxyType(dict(candidate_supply)),
             MappingProxyType(dict(context_supply)),
+            tuple(alternates),
         )
     proxy = MappingProxyType(stores)
     composite = _composite(proxy)
     return KnowledgeStoreBinding(proxy, composite, composite.content_hash())
+
+
+def declared_alternate_release_relpaths(
+    raw_stores: object,
+) -> Mapping[str, tuple[str, ...]]:
+    """Best-effort ``{store_id: (alternate release relpath, ...)}`` off the
+    RAW, not-yet-loaded ``knowledge_stores`` config mapping.
+
+    Coordinator amendment, 2026-09-28: this is what
+    ``rails.native_episode_config`` passes to
+    ``rails.supply_variants.parse_supply_variants`` as
+    ``declared_alternate_relpaths``, so an arm's release-swap override is
+    refused by NAME before any contact when it names a release the store's
+    base config does not also declare. Malformed shapes are ignored here
+    rather than raised: this function only narrows what a knob path may
+    legally name; :func:`load_knowledge_store_binding` is what actually
+    hash-verifies an alternate's bytes once an arm selects it, and raises by
+    name on anything this pre-check let through.
+    """
+
+    if not isinstance(raw_stores, Mapping):
+        return {}
+    result: dict[str, tuple[str, ...]] = {}
+    for store_id, spec in raw_stores.items():
+        if not isinstance(store_id, str) or not isinstance(spec, Mapping):
+            continue
+        raw_alternates = spec.get("alternates")
+        if not isinstance(raw_alternates, Sequence) or isinstance(
+            raw_alternates, (str, bytes)
+        ):
+            continue
+        relpaths = []
+        for alternate in raw_alternates:
+            if not isinstance(alternate, Mapping):
+                continue
+            release = alternate.get("release")
+            if isinstance(release, Mapping) and isinstance(release.get("relpath"), str):
+                relpaths.append(release["relpath"])
+        result[store_id] = tuple(relpaths)
+    return result
 
 
 def build_knowledge_store_supply(
@@ -1866,9 +1984,11 @@ def _composite_context_fuse(_knobs=None):
 __all__ = [
     "KNOWLEDGE_STORE_RELEASE_SCHEMA",
     "KnowledgeStore",
+    "KnowledgeStoreAlternate",
     "KnowledgeStoreBinding",
     "KnowledgeStoreError",
     "build_knowledge_store_supply",
+    "declared_alternate_release_relpaths",
     "load_knowledge_store_binding",
     "qualify_id",
 ]

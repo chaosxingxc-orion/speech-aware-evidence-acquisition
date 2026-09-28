@@ -327,6 +327,52 @@ def _sha256_file(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def _knowledge_store_alternate_identity(raw_stores: object) -> Mapping[str, object]:
+    """The declared ``alternates`` pins of every named knowledge store, by id.
+
+    Coordinator amendment (2026-09-28, docs/superpowers/specs/2026-09-27-
+    same-flight-supply-variant-instrument-design.md, "Coordinator amendment
+    (2026-09-28)"): a base's ``knowledge_stores.<store>.alternates`` never
+    enters the flight's own served composite snapshot -- only a supply-
+    variant arm's release-swap route ever loads one
+    (:meth:`FlightRuntime._supply_action_router`) -- so it is invisible to
+    :meth:`FlightRuntime._phase_seed_inputs`'s ``sources["snapshot"]``
+    composite-snapshot hash. It is still part of ``self._composed.values``
+    and therefore already inside ``core.preparation.artifact_inputs``'s own
+    ``config_sha256``; this is a second, EXPLICIT binding of exactly those
+    pins, so a prepared artifact's identity is provably sensitive to an
+    alternate release or snapshot pin changing even if some future
+    config-hashing narrowing ever excluded another part of
+    ``knowledge_stores``.
+    """
+
+    if not isinstance(raw_stores, Mapping):
+        return {}
+    identity: dict[str, object] = {}
+    for store_id in sorted(raw_stores):
+        spec = raw_stores[store_id]
+        if not isinstance(spec, Mapping):
+            continue
+        raw_alternates = spec.get("alternates")
+        if not isinstance(raw_alternates, Sequence) or isinstance(
+            raw_alternates, (str, bytes)
+        ):
+            continue
+        rows = []
+        for alternate in raw_alternates:
+            if not isinstance(alternate, Mapping):
+                continue
+            release = alternate.get("release")
+            snapshot = alternate.get("snapshot")
+            rows.append({
+                "release": dict(release) if isinstance(release, Mapping) else release,
+                "snapshot": dict(snapshot) if isinstance(snapshot, Mapping) else snapshot,
+            })
+        if rows:
+            identity[store_id] = rows
+    return identity
+
+
 def _default_token_counter(payload_bytes: bytes) -> int:
     """Placeholder-only ~4-bytes/token heuristic.
 
@@ -2949,8 +2995,22 @@ class FlightRuntime:
             similarity=similarity,
         )
 
-    def _supply_action_router(self, program, action_id, knobs):
-        """Build a selection-only action from the already admitted store binding."""
+    def _supply_action_router(self, program, action_id, knobs, *, release_swap=None):
+        """Build a selection-only action from the already admitted store binding.
+
+        Coordinator amendment, 2026-09-28 (docs/superpowers/specs/2026-09-27-
+        same-flight-supply-variant-instrument-design.md, "Coordinator
+        amendment (2026-09-28)"): ``release_swap``
+        (``rails.supply_variants.SupplyVariantReleaseSwap`` or ``None``)
+        additionally repoints ONE named store's ``release``/``snapshot`` pins
+        to one of that store's own base-declared ``alternates`` before the
+        binding reloads. This is the ONE named exception to the refusal
+        below, which otherwise still requires the reloaded composite snapshot
+        to equal the flight's own: every store BESIDE the one ``release_swap``
+        names must still resolve to exactly the flight's own pins, and the
+        named store must resolve to exactly the selected alternate -- never a
+        release or snapshot this arm discovered on its own.
+        """
         from ...rails.knowledge_stores import (  # noqa: PLC0415
             KnowledgeStoreError, build_knowledge_store_supply, load_knowledge_store_binding,
         )
@@ -2973,13 +3033,71 @@ class FlightRuntime:
                     f"supply action {action_id!r} overrides undeclared path {knob.path!r}"
                 )
             holder[segments[-1]] = knob.value
+        if release_swap is not None:
+            stores = values.get("knowledge_stores")
+            store_spec = stores.get(release_swap.store_id) if isinstance(stores, Mapping) else None
+            if not isinstance(store_spec, dict):
+                raise FlightRuntimeError(
+                    f"supply action {action_id!r} release_swap names undeclared "
+                    f"store {release_swap.store_id!r}"
+                )
+            matched = None
+            for alternate in store_spec.get("alternates") or ():
+                if (
+                    isinstance(alternate, Mapping)
+                    and isinstance(alternate.get("release"), Mapping)
+                    and alternate["release"].get("relpath") == release_swap.release_relpath
+                ):
+                    matched = alternate
+                    break
+            if matched is None:
+                raise FlightRuntimeError(
+                    f"supply action {action_id!r} release_swap names release "
+                    f"{release_swap.release_relpath!r}, which store "
+                    f"{release_swap.store_id!r} does not declare as an alternate"
+                )
+            store_spec["release"] = matched["release"]
+            store_spec["snapshot"] = matched["snapshot"]
+            # The swapped-in release becomes this one-off router's own
+            # primary; its store's own ``alternates`` (if the selected
+            # alternate happens to declare any of its own -- it never does
+            # today, since only the BASE declares alternates) would otherwise
+            # collide with itself on reload (the same relpath now named both
+            # as the primary and as an alternate of itself).
+            store_spec.pop("alternates", None)
         try:
             binding = load_knowledge_store_binding(values, data_root=self._data_root)
-            if binding is None or (
-                binding.composite_snapshot.content_hash()
-                != store_binding.composite_snapshot.content_hash()
-            ):
-                raise KnowledgeStoreError("supply action changed the released composite snapshot")
+            if binding is None:
+                raise KnowledgeStoreError("supply action produced no knowledge-store binding")
+            if release_swap is None:
+                if (
+                    binding.composite_snapshot.content_hash()
+                    != store_binding.composite_snapshot.content_hash()
+                ):
+                    raise KnowledgeStoreError(
+                        "supply action changed the released composite snapshot"
+                    )
+            else:
+                if binding.store_ids != store_binding.store_ids:
+                    raise KnowledgeStoreError(
+                        "supply action release_swap changed the declared store set"
+                    )
+                for store_id, store in binding.stores.items():
+                    if store_id == release_swap.store_id:
+                        if store.release_pin["relpath"] != release_swap.release_relpath:
+                            raise KnowledgeStoreError(
+                                "supply action release_swap resolved the wrong release"
+                            )
+                        continue
+                    base_store = store_binding.store(store_id)
+                    if (
+                        store.release_pin != base_store.release_pin
+                        or store.snapshot_pin != base_store.snapshot_pin
+                    ):
+                        raise KnowledgeStoreError(
+                            "supply action release_swap changed a store beside "
+                            "the one it names"
+                        )
             return build_knowledge_store_supply(
                 binding, program=program, data_root=self._data_root, **options,
             )
@@ -3065,6 +3183,12 @@ class FlightRuntime:
           own ``supply_for_phase``, which is what makes ``rails.runner``'s
           live equality check on it a re-derivation rather than a restatement.
 
+        Coordinator amendment, 2026-09-28: an arm that declares a
+        ``release_swap`` (never the delivering arm or its twin) is the ONE
+        exception -- its router is built over the base's own alternate
+        release+snapshot for that ONE named store instead, via
+        :meth:`_supply_action_router`'s own ``release_swap`` parameter.
+
         The routers are built once, at assembly, before any contact. Nothing
         here touches a model, a tokenizer or the network.
         """
@@ -3087,7 +3211,9 @@ class FlightRuntime:
                 "with the same options"
             )
         routers = {
-            arm.arm_id: self._supply_action_router(program, arm.arm_id, arm.knobs).automatic_for_phase
+            arm.arm_id: self._supply_action_router(
+                program, arm.arm_id, arm.knobs, release_swap=arm.release_swap,
+            ).automatic_for_phase
             for arm in group.arms
         }
 
@@ -7522,6 +7648,9 @@ class FlightRuntime:
             "snapshot": binding["knowledge_snapshot"].content_hash(),
             "supply_spec": spec.as_json(),
             "packets": dict(binding["speech_packet_bindings"]),
+            "knowledge_store_alternates": _knowledge_store_alternate_identity(
+                self._composed.values.get("knowledge_stores")
+            ),
             "implementation": {
                 **{
                     module.__name__: _sha256_file(Path(module.__file__))

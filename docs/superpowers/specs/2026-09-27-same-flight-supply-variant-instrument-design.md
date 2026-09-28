@@ -48,8 +48,11 @@ constructions per row at temperature 0 (owner decision 172: temperature sampling
 **Phases** (Q1 ruling):
 
 - **Phase 1 (this spec)** is the Solver-local column read with an in-flight twin arm. It can read
-  cells whose variant is a knob tail: slot-side and Solver-supply cells, namely **W4**, **W5** and
-  the **citation contract**.
+  cells whose variant is a knob tail OR a release swap (Coordinator amendment, 2026-09-28, section 2):
+  slot-side and Solver-supply cells, namely **W4**, **W5** and the **citation contract** -- each of
+  these three is a RELEASE SWAP (an alternative pinned release+snapshot of a named store), not a knob
+  tail as this sentence originally scoped them; no cell in this program is read as a knob-tail variant
+  as of this amendment.
 - **Phase 2** is an episode-level fork for Perception-phase variants: K full episodes per row with
   their own A/A, which ROLL-AA does not measure. Phase 1 cannot read the **agreement term**
   (`w_agree`), the **contrast cards** or the **centroid key**: a first-phase selection is seeded
@@ -110,6 +113,73 @@ plus its own worst case.
 **Fit gate.** `fit_estimate`'s four numbers are MEASURED on the cell's own `native_contact_fit`
 pass at the new ceiling, never round placeholders as in VAR-2. The runtime `max_supplied_items`
 refusal stays.
+
+**Coordinator amendment (2026-09-28): the release-swap route.** Two extensions, both engineering
+base, on top of everything above. `rails/supply_variants.py`'s docstring said an arm "never swaps a
+component or repoints a release"; this amendment adds the ONE named exception.
+
+- **Base field.** A base's `knowledge_stores.<store>` gains an optional `alternates` field: a list of
+  zero or more `{release, snapshot}` pin pairs, each hash-pinned exactly like the primary (same
+  `{relpath, sha256}` shape, same escape-the-data-root refusal). Absent, a store composes exactly as
+  before this amendment (`rails/knowledge_stores.py::KnowledgeStore.alternates` defaults to `()`).
+  Example:
+  ```json
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "store_role": "intent-boundaries",
+      "snapshot": {"relpath": "knowledge/intent-boundaries/snapshot.json", "sha256": "<64-hex>"},
+      "release": {"relpath": "knowledge/intent-boundaries/release.json", "sha256": "<64-hex>"},
+      "alternates": [
+        {
+          "release": {"relpath": "knowledge/intent-boundaries/w4-release.json", "sha256": "<64-hex>"},
+          "snapshot": {"relpath": "knowledge/intent-boundaries/w4-snapshot.json", "sha256": "<64-hex>"}
+        }
+      ]
+    }
+  }
+  ```
+  An alternate's bytes are hash-verified with the same rigor as the primary only at the point some
+  arm actually selects it (`rails/knowledge_stores.py::load_knowledge_store_binding`, re-run with the
+  alternate's pins substituted for the primary's) -- declaring one that no arm ever selects costs no
+  extra load at flight assembly. `rails/knowledge_stores.py::declared_alternate_release_relpaths`
+  reads the raw, not-yet-loaded config for the by-name pre-check below.
+- **Arm route.** An arm may ADDITIONALLY declare `release_swap`, disjoint from `overrides`, naming ONE
+  store the fragment already declares and ONE alternate release by its relpath:
+  ```json
+  {"arm_id": "w4-alt", "max_supplied_items": 8,
+   "release_swap": {"store_id": "intent-boundaries",
+                     "release": "knowledge/intent-boundaries/w4-release.json"}}
+  ```
+  (`rails/supply_variants.py::SupplyVariantReleaseSwap`, `parse_supply_variant_release_swap`, wired
+  into `parse_supply_variants` via a new `declared_alternate_relpaths` parameter that
+  `rails/native_episode_config.py` derives from the base's own `knowledge_stores`.) The delivering arm
+  A never carries one (refused, the same reason it carries no knob override); a twin (`replicate_of`)
+  never carries one either, so its wire bytes stay byte-identical to A's under this extension; two arms
+  naming the identical `{store_id, release}` are refused as the same "identical overrides" defect a
+  duplicate knob set already is. An arm may never name a release absent from the named store's declared
+  `alternates` -- refused by name, before any contact, with a message naming the store and its declared
+  alternates.
+- **Runtime.** `core/flight/runtime.py::FlightRuntime._supply_action_router` gains a `release_swap`
+  parameter: when set, it repoints the named store's `release`/`snapshot` to the matched alternate
+  before reloading the binding, and its ONE exception to "the reloaded composite snapshot must equal
+  the flight's own" is that this ONE named store may legitimately differ, resolved to exactly the
+  selected alternate; every OTHER store must still resolve to exactly the flight's own pins, or the
+  router refuses. `_supply_variant_binding` passes each arm's own `release_swap` through.
+- **Receipt (I7v binding extended).** The supply-variant receipt schema bumps
+  `saea-supply-variant-arms-v2` to `-v3` (`rails/supply_variants.py`,
+  `rails/native_episode_receipt.py::validate_supply_variant_receipt`): every arm row gains
+  `release_swap` -- `null` absent one, else the declared `{store_id, release}` the arm consumed. A v1
+  or v2 receipt still validates unchanged; the delivering arm and any twin must declare `release_swap:
+  null`, exactly as they must resolve no knobs.
+- **Identity.** `core/flight/runtime.py::FlightRuntime._phase_seed_inputs` already binds
+  `config=self._composed.values` (which includes `knowledge_stores.<store>.alternates` verbatim) into
+  `core/preparation.py::artifact_inputs`'s `config_sha256`; this amendment additionally adds an
+  EXPLICIT `sources["knowledge_store_alternates"]` entry
+  (`_knowledge_store_alternate_identity`), so a prepared artifact's identity is provably sensitive to
+  an alternate's pins changing even under a future narrowing of what `config_sha256` covers. This file
+  is identity-bound already (`sources["implementation"]["runtime"]` hashes its own bytes); that a merge
+  here busts every prepared artifact's identity is accepted -- flipped cells fly from their flight
+  commits, held cells re-pin at flip.
 
 ## 3. Outputs, scoring and the paired read
 
@@ -253,6 +323,23 @@ is a loop-form `scripts/flights/repin_cell.py` pass of every ready cell at the f
    and `-variants3first-v1` (13) registered in `rails/controllers.py`; AT3, AT6.
 6. Registration (coordinator): dry run, `native_contact_fit` at the new ceiling with measured
    `fit_estimate`, four-row smoke, first instrument read with its twin.
+
+**Coordinator amendment (2026-09-28), added to merge set B** (section 2 has the full design):
+
+7. Release-swap route: `rails/knowledge_stores.py` (`KnowledgeStoreAlternate`,
+   `declared_alternate_release_relpaths`), `rails/supply_variants.py`
+   (`SupplyVariantReleaseSwap`, `parse_supply_variant_release_swap`, receipt schema v3),
+   `rails/native_episode_receipt.py` (v3 `release_swap` field), `rails/native_episode_config.py`
+   (`declared_alternate_relpaths` wiring), `core/flight/runtime.py`
+   (`_supply_action_router`'s `release_swap` parameter, `_supply_variant_binding`,
+   `_knowledge_store_alternate_identity` in `_phase_seed_inputs`); tests in
+   `tests/unit/test_knowledge_store_release_alternates.py` and the extended
+   `tests/unit/test_stage3_supply_variant_interleaving.py`.
+8. Two UNCITED program fragments, copies of `phase-native-candidates-review-revise-v1` with
+   `arm_visits: "first"` ceilings per the same formula as item 5's cited pair:
+   `configs/policy/phase-native-candidates-review-revise-variants2first-v1.json` (ceiling 12) and
+   `-variants3first-v1` (13), registered in `rails/controllers.py` exactly like the cited variants
+   fragments in item 5; the existing cited fragments and every existing config stay byte-identical.
 
 No instrument cell registers before set B. Neither `kb_policy.py` nor
 `candidate_semantic_supply.py` changes. Gates after each task in both sets: `pytest`,

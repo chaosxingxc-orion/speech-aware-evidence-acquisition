@@ -1225,11 +1225,15 @@ def validate_solver_group_receipt(
 #: Item E42 (2026-09-25, Stage-3 family VAR-2). Bumped to v2 by owner
 #: decision 172 (2026-09-27, merge set B): v2 adds ``arm_visits`` and
 #: ``visit_index`` at the block level and ``replicate_of`` on every arm row
-#: (``rails.supply_variants``). A v1 receipt -- every VAR-2 cell sealed
-#: before this decision -- still validates unchanged below: no sealed data
-#: is rewritten.
+#: (``rails.supply_variants``). Bumped again to v3 by the coordinator
+#: amendment (2026-09-28, docs/superpowers/specs/2026-09-27-same-flight-
+#: supply-variant-instrument-design.md, "Coordinator amendment (2026-09-28)"):
+#: v3 adds ``release_swap`` on every arm row. A v1 or v2 receipt -- every
+#: VAR-2 / E42b cell sealed before this decision -- still validates unchanged
+#: below: no sealed data is rewritten.
 SUPPLY_VARIANT_RECEIPT_SCHEMA_V1 = "saea-supply-variant-arms-v1"
-SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v2"
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V2 = "saea-supply-variant-arms-v2"
+SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v3"
 
 _SUPPLY_VARIANT_FIELDS_V1 = frozenset(
     {"schema", "phase_id", "arm_count", "delivered_arm_id", "fit_estimate", "arms"}
@@ -1242,6 +1246,7 @@ _SUPPLY_VARIANT_ARM_FIELDS_V1 = frozenset(
     }
 )
 _SUPPLY_VARIANT_ARM_FIELDS_V2 = _SUPPLY_VARIANT_ARM_FIELDS_V1 | {"replicate_of"}
+_SUPPLY_VARIANT_ARM_FIELDS_V3 = _SUPPLY_VARIANT_ARM_FIELDS_V2 | {"release_swap"}
 _SUPPLY_VARIANT_FIT_FIELDS = frozenset(
     {
         "slot_tokens", "completion_ceiling", "base_prompt_tokens",
@@ -1288,18 +1293,24 @@ def validate_supply_variant_receipt(
     sealed state does not claim. Omitted (a reader with no state to compare) the
     rest of the walk is unchanged.
 
-    Accepts both schemas (owner decision 172, merge set B). A v1 receipt
-    (``schema`` ``saea-supply-variant-arms-v1``) validates exactly as before
-    this decision. A v2 receipt additionally carries ``arm_visits`` (``"every"``
-    or ``"first"``) and ``visit_index`` (always 0: only the first Solver visit
-    is ever sealed), and its arm rows carry ``replicate_of`` -- the delivering
+    Accepts all three schemas (owner decision 172, merge set B; coordinator
+    amendment, 2026-09-28). A v1 receipt (``schema``
+    ``saea-supply-variant-arms-v1``) validates exactly as before decision 172.
+    A v2 receipt additionally carries ``arm_visits`` (``"every"`` or
+    ``"first"``) and ``visit_index`` (always 0: only the first Solver visit is
+    ever sealed), and its arm rows carry ``replicate_of`` -- the delivering
     arm's own id, naming that row the read's TWIN: no overrides, exempt from
     the "at least one knob" rule, and required to resolve exactly the
-    delivering arm's own supplied ids. ``arm_visits``, when given, is the
-    CONFIGURATION's own declared value; the receipt's arm_visits (v2) or the
-    implied ``"every"`` (v1) must equal it. Omitted, no such cross-check is
-    made (``core.bundle.outputs`` reads a sealed row with no composed
-    configuration to compare against).
+    delivering arm's own supplied ids. A v3 receipt (``schema``
+    ``saea-supply-variant-arms-v3``) additionally carries ``release_swap`` on
+    every arm row -- ``None``, or the declared ``{store_id, release}`` of the
+    ONE store the arm repoints; the delivering arm and any twin must declare
+    none, and it satisfies the "at least one knob" rule exactly as a knob
+    override does. ``arm_visits``, when given, is the CONFIGURATION's own
+    declared value; the receipt's arm_visits (v2/v3) or the implied
+    ``"every"`` (v1) must equal it. Omitted, no such cross-check is made
+    (``core.bundle.outputs`` reads a sealed row with no composed configuration
+    to compare against).
     """
 
     declared = list(arm_ids)
@@ -1315,13 +1326,20 @@ def validate_supply_variant_receipt(
         _raise(error_type, "supply variant receipt has an invalid shape")
     schema = supply_variants.get("schema")
     if schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V1:
-        is_v2 = False
+        is_v2_or_later = False
+        is_v3 = False
         expected_fields = _SUPPLY_VARIANT_FIELDS_V1
         arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V1
-    elif schema == SUPPLY_VARIANT_RECEIPT_SCHEMA:
-        is_v2 = True
+    elif schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V2:
+        is_v2_or_later = True
+        is_v3 = False
         expected_fields = _SUPPLY_VARIANT_FIELDS_V2
         arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V2
+    elif schema == SUPPLY_VARIANT_RECEIPT_SCHEMA:
+        is_v2_or_later = True
+        is_v3 = True
+        expected_fields = _SUPPLY_VARIANT_FIELDS_V2
+        arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V3
     else:
         _raise(error_type, "supply variant receipt has an unregistered schema")
     if set(supply_variants) != expected_fields:
@@ -1335,7 +1353,7 @@ def validate_supply_variant_receipt(
         )
     if supply_variants["delivered_arm_id"] != delivered_arm_id:
         _raise(error_type, "supply variant receipt names another delivering arm")
-    if is_v2:
+    if is_v2_or_later:
         receipt_arm_visits = supply_variants["arm_visits"]
         if receipt_arm_visits not in _SUPPLY_VARIANT_ARM_VISITS_VALUES:
             _raise(error_type, "supply variant receipt has an invalid arm_visits")
@@ -1388,7 +1406,7 @@ def validate_supply_variant_receipt(
         if not isinstance(contact_id, str) or not contact_id:
             _raise(error_type, "supply variant arm lacks its contact identity")
         contact_ids.append(contact_id)
-        replicate_of = row.get("replicate_of") if is_v2 else None
+        replicate_of = row.get("replicate_of") if is_v2_or_later else None
         if replicate_of is not None:
             if not isinstance(replicate_of, str) or not replicate_of:
                 _raise(
@@ -1444,11 +1462,40 @@ def validate_supply_variant_receipt(
                 "a supply variant twin arm (replicate_of) must resolve no "
                 "knobs: it resolves exactly the delivering arm's ids",
             )
-        if not deliver and not paths and replicate_of is None:
+        release_swap = row.get("release_swap") if is_v3 else None
+        if release_swap is not None:
+            if (
+                not isinstance(release_swap, Mapping)
+                or set(release_swap) != {"store_id", "release"}
+                or not isinstance(release_swap["store_id"], str)
+                or not release_swap["store_id"]
+                or not isinstance(release_swap["release"], str)
+                or not release_swap["release"]
+            ):
+                _raise(
+                    error_type,
+                    "supply variant arm release_swap has an invalid shape",
+                )
+            if deliver:
+                _raise(
+                    error_type,
+                    "the delivering supply variant arm must declare no "
+                    "release_swap: it is the unvaried construction over the "
+                    "base's own released stores",
+                )
+            if replicate_of is not None:
+                _raise(
+                    error_type,
+                    "a supply variant twin arm (replicate_of) must declare no "
+                    "release_swap: it resolves exactly the delivering arm's "
+                    "ids",
+                )
+        if not deliver and not paths and replicate_of is None and release_swap is None:
             _raise(
                 error_type,
                 "a non-delivering supply variant arm must resolve at least one "
-                "knob, or it is a second spelling of the delivering arm",
+                "knob or a release_swap, or it is a second spelling of the "
+                "delivering arm",
             )
         ids = _sequence(
             row["supplied_value_ids"], "supply variant arm supplied_value_ids",
