@@ -125,3 +125,33 @@ without its in-chain null) unless `COMP1_ALONE=1` records that the owner withdre
 three cells are flipped; no contact by this registration; no re-flying of the comparator; no test-split, Fold B or
 DEV read; no fourth factor; no store rebuild or release; no re-pin of the 211 committed configs; the citation part is
 never reported as a gain.
+
+## Recovery attempt (resume)
+
+The arm attempt `attempt-slurp-native-stage3-comp1-fold-a-generation-v1` ABORTED on 2026-09-28 at contact
+`flight-1854` (flight commit `cb628f59`; 471 rows settled, 1 incomplete, 608 never started; 1,913 contacts; trace
+SHA-256 `029a2dbb...61997`) on a Solver citation-contract refusal
+(`docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md`; fix `a451f942`). The shared A/A FINALIZED
+before the arm opened and is never re-flown; G5 never started. The owner rules between two HELD recovery forms;
+**either is COMP-1's ONE recovery re-registration** and a second failure closes the cell.
+
+**Variant 1, the resume (owner decision 22, item E10).** The same run id under
+`attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume` with `resume_from` the aborted attempt and its trace
+SHA-256; 471 rows kept under I7r custody, 609 flown; run-cumulative worst case 8,612 of 11,880. Package
+[`../2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1/`](../2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1/),
+note `../2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1-preregistration.md`. Decision 22's letter (code and
+request bytes unchanged) is broken by the citation fix and by the resume-replay repair
+(`core.flight.resume.NON_WIRE_CONTACT_BLOCKS`, without which the replay classified 0 of 471 settled rows
+COMPLETE); its purpose is proven by `scripts/flights/comp1/comp1_resume_byte_identity_proof.py` (PASS: 481 of 481
+kept citation records byte-identical under the fixed code; the one changed disposition lies in the re-flown row).
+Flip `scripts/flights/comp1/comp1_resume_flip.sh`; launch `scripts/flights/comp1/batch_chain_comp1_resume.sh`.
+
+## Recovery re-registration (-REC)
+
+**Variant 2, the full re-fly.** `SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-V1` over all 1,080 rows plus its four-row smoke
+`SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-V1`, the parent bytes except identities and the recovery note, the
+measurement declaration identical to the arm's (3.23 pp; not re-declared), the aborted run's rows marked
+`consumed = yes` at countersignature. Package
+[`../2026-09-28-slurp-stage3-comp-1-fold-a-rec-v1/`](../2026-09-28-slurp-stage3-comp-1-fold-a-rec-v1/), note
+`../2026-09-28-slurp-stage3-comp-1-fold-a-rec-v1-preregistration.md`. Flip `scripts/flights/comp1/comp1_rec_flip.sh`;
+launch `scripts/flights/comp1/batch_chain_comp1_rec.sh`.

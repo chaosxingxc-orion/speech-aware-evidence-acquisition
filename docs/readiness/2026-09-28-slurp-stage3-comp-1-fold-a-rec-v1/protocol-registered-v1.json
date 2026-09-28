@@ -1,0 +1,73 @@
+{
+  "schema": "saea-registered-protocol-v1",
+  "protocol_id": "slurp-stage3-comp1-fold-a-rec-protocol-v1",
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_AWAITING_OWNER_RECOVERY_RULING",
+  "registered_at_utc": "2026-09-28T12:00:00.000000+00:00",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1res, branch fable/comp1res (from fable/comp1rec at a451f942)",
+  "study_commit_at_registration": "49f88ce6",
+  "parent_protocol": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "7ca1ba9a0496134a527952c38ea1b0677147f57fb6beee95d3ee191e8fd509c9",
+    "rule": "Everything the parent fixes -- the question, the composition, the comparator, the decision rule, the margins, the attribution table, the prohibitions -- stands unchanged and is not re-litigated."
+  },
+  "abort": {
+    "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
+    "flight_commit": "cb628f592934921a48102a5451ce1dd2f5c0fc98",
+    "failing_contact": "flight-1854",
+    "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997",
+    "counts": {
+      "calls": 1913,
+      "audio_seconds": 5171.3779375,
+      "complete_rows": 471,
+      "incomplete_rows": 1,
+      "unstarted_rows": 608,
+      "trace_records": 10035,
+      "trace_bytes": 132650912
+    },
+    "diagnosis": "docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md",
+    "root_cause": "rails.solver_citation.parse_cited_answer refused a repeated intent citation id that the per-contact grammar admits (no uniqueItems); the error had no per-row disposition, so native_episode.invoke_direct aborted the arm.",
+    "fix": {
+      "commit": "a451f942",
+      "files": [
+        "src/speech_aware_evidence_acquisition/rails/solver_citation.py"
+      ],
+      "identity_set": "outside the prepared-supply identity set (runtime.py _phase_seed_inputs)"
+    }
+  },
+  "recovery_counter": "COMP-1's ONE root-diagnosed recovery re-registration; a second failure closes the cell (no third registration).",
+  "shared_in_chain_replicate": {
+    "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+    "state": "FINALIZED, COMPLETED at cb628f59, scored",
+    "rule": "never re-flown; the recovered arm is read at it. It flew in the aborted chain on 2026-09-28; the recovered arm flies in a LATER chain, so the replicate is no longer strictly in-chain for this arm -- disclosed, not re-declared."
+  },
+  "cells": {
+    "arm": {
+      "cell": "slurp-native-stage3-comp1-fold-a-rec-v1",
+      "experiment": "slurp-native-stage3-comp1-fold-a-rec-v1",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-V1",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-fit-v1",
+      "composed_config_hash": "64bb126ca7fac98e289720a07ebc2796c294fb893368616e37417380c1b243c2",
+      "protocol_hash": "c40db6da48b2330398477408992e78073feb2cb870c2c9ba5fee1d5e3e1f4ce2"
+    },
+    "smoke": {
+      "cell": "slurp-native-stage3-comp1-fold-a-rec-smoke-4-v1",
+      "experiment": "slurp-native-stage3-comp1-fold-a-rec-smoke-4-v1",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-smoke-4-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-smoke-4-fit-v1",
+      "composed_config_hash": "8f04845975a6cc2488893fd299927d5bcadc79419bb8839a2d6c3720eb7122fb",
+      "protocol_hash": "83a3c7dd837b55f38ef9b7a31962c920753c5519b51ecc7c120d222945b72e0d"
+    }
+  },
+  "recovery_form": "ordinary recovery re-registration under a fresh -REC run id (precedent B5e recovery)",
+  "aborted_run_disposition": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1's exposure row is marked consumed = yes at countersignature; its 1,913 contacts stay charged to it; nothing of it is kept or read.",
+  "rows": {
+    "flown": 1080,
+    "kept": 0
+  },
+  "stage3_measurement_rule": "identical to the arm's declared block (expected_effect_pp 3.23, cross-flight-with-in-chain-replicate at SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1); the recovery does NOT re-declare."
+}
