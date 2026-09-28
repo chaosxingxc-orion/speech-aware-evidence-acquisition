@@ -1,0 +1,36 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-native-candidates-review-revise-variants2first-v1",
+  "phases": [
+    {
+      "name": "perception",
+      "purpose": "form-candidates",
+      "knowledge": "supplied",
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "barrier": false
+    },
+    {
+      "name": "reviewer",
+      "purpose": "review-evidence",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "planner",
+      "purpose": "choose-next-action",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "solver",
+      "purpose": "answer",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 12,
+  "stop_rule": "native-role-episode"
+}

@@ -1380,6 +1380,37 @@ def test_the_variantsnfirst_fragments_compose_to_base_plus_k_minus_one(
     assert config.supply_variant_group.arm_count == arm_count
 
 
+@pytest.mark.parametrize(
+    "program_id,arm_count,expected_ceiling",
+    [
+        ("phase-native-candidates-review-revise-variants2first-v1", 2, 12),
+        ("phase-native-candidates-review-revise-variants3first-v1", 3, 13),
+    ],
+)
+def test_the_uncited_variantsnfirst_fragments_compose_to_base_plus_k_minus_one(
+    program_id, arm_count, expected_ceiling,
+):
+    """Coordinator amendment, 2026-09-28: the UNCITED twins of the cited
+    variantsNfirst fragments above compose to the SAME ceiling arithmetic --
+    the uncited 11-contact anchor plus (K - 1) -- since the formula depends
+    only on ``arm_visits: "first"`` and the arm count, never on the Solver's
+    response format. ``VAR2_FRAGMENT`` is the uncited baseline (its own
+    ``deliver_normaliser`` does not unwrap a cited-answer envelope, so it
+    composes with a Solver ``response_format_id`` of ``null``)."""
+
+    values = _fragment(VAR2_FRAGMENT)
+    values["policy"] = program_id
+    values["native_episode"]["roles"]["solver"]["supply_variants"] = _first_visit_block(
+        arm_count
+    )
+    program = default_phase_program(program_id)
+    assert program.max_contacts == expected_ceiling
+    config = load_native_episode_config(values, program)
+    assert config.max_contacts == expected_ceiling
+    assert config.supply_variant_group.arm_visits == "first"
+    assert config.supply_variant_group.arm_count == arm_count
+
+
 def test_a_variantsnfirst_program_under_the_default_every_ceiling_is_refused():
     """The variants2first program's OWN ceiling (12) is only ever reached
     under "first"; the ordinary "every" multiplication would need 1 +

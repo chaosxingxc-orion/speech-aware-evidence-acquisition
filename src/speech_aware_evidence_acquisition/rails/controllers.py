@@ -1527,6 +1527,30 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-cited-variants3first-v1": (
         "phase-native-candidates-review-revise-cited-variants3first-v1.json"
     ),
+    # Coordinator amendment, 2026-09-28 (docs/superpowers/specs/2026-09-27-
+    # same-flight-supply-variant-instrument-design.md, "Coordinator amendment
+    # (2026-09-28)"): an UNCITED twin of
+    # "phase-native-candidates-review-revise-cited-variants2first-v1" directly
+    # above -- the SAME four phases, the SAME episode_id and the SAME role
+    # graph as "phase-native-candidates-review-revise-v1" (max_contacts 11,
+    # the Solver's response_format_id null instead of the cited-answer
+    # contract) -- with the Solver visit fanned out to TWO declared
+    # supply-variant arms under ``arm_visits: "first"``, so the bounded graph
+    # ceiling is the anchor's 11 plus (K - 1) = 12, by the same
+    # ``rails.native_episode_config`` formula as its cited sibling. A separate
+    # program id, never a flag on the uncited program, for the reason every
+    # comment above states: two program ids must never resolve to the same
+    # object when their contact ceilings differ.
+    "phase-native-candidates-review-revise-variants2first-v1": (
+        "phase-native-candidates-review-revise-variants2first-v1.json"
+    ),
+    # Coordinator amendment, 2026-09-28: the SAME shape as the uncited
+    # variants2first program directly above, with a THIRD arm, so K = 3 and
+    # the bounded graph ceiling is 11 + (3 - 1) = 13 -- the uncited twin of
+    # "phase-native-candidates-review-revise-cited-variants3first-v1".
+    "phase-native-candidates-review-revise-variants3first-v1": (
+        "phase-native-candidates-review-revise-variants3first-v1.json"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the SAME
     # four phases, the SAME episode_id and the SAME role graph as
     # "phase-native-candidates-review-revise-v1" -- reviewer 3 / planner 1 /
@@ -1828,6 +1852,24 @@ def register_phase_programs_v1() -> None:
             default_controller_factory(
                 default_phase_program(
                     "phase-native-candidates-review-revise-cited-variants3first-v1"
+                )
+            ),
+        )
+    if "phase-native-candidates-review-revise-variants2first-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-variants2first-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-variants2first-v1"
+                )
+            ),
+        )
+    if "phase-native-candidates-review-revise-variants3first-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-variants3first-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-variants3first-v1"
                 )
             ),
         )
