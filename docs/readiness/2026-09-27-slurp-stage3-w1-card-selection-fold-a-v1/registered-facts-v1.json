@@ -186,7 +186,7 @@
         },
         "smoke": {
           "blockers": null,
-          "config_hash": "c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde",
+          "config_hash": "1daf0fed20686170b688f175674ba673d1acd0fb981c2128612cd2726f423ce1",
           "prompt_budget_per_phase": [
             {
               "decision": "ALLOW",
@@ -225,7 +225,7 @@
               "required_window_tokens": 19815
             }
           ],
-          "protocol_hash": "35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50",
+          "protocol_hash": "3ed39903556d37426c9a89b16a40167b9049dd69c56a8db28aa16edb36920a31",
           "scientific_readiness": {
             "reason": "Four-row form smoke of cell W1, registered before contact on 2026-09-27 from the retained AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE preparation's output digest (the card route is not an input to the first-phase supply). Nothing here authorises a flight, a readiness flip or an admission entry.",
             "state": "held"
@@ -303,7 +303,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
-      "composed_config_hash": "c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde",
+      "composed_config_hash": "1daf0fed20686170b688f175674ba673d1acd0fb981c2128612cd2726f423ce1",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-w1-cardsel-fold-a-smoke-4-v1",
@@ -327,7 +327,7 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
-      "protocol_hash": "35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50",
+      "protocol_hash": "3ed39903556d37426c9a89b16a40167b9049dd69c56a8db28aa16edb36920a31",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1",
       "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"

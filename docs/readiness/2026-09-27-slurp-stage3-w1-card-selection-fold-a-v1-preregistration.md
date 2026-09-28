@@ -13,8 +13,8 @@ Development numbers only (owner decisions 28 and 86); never a test claim.
 | declared ceiling | -1185.83 tokens per Solver contact (mean), -3629.596 per row; pre-flight card envelope 57,846 -> 50,030 bytes |
 | registered risk | 5 rows / 5 gold items lose their type's card (1 delivered right by AGREE) |
 | runs | `SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1` / `SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-FIT-V1`; READ `SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1` |
-| composed config hashes | arm `8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2`; smoke `c79c1f2dd5ce16e664586074d2dcc760ea707a97326b4a65091f767429a77cde` |
-| protocol hashes | arm `f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9`; smoke `35be4f375a2061a345d2c6b6c935ed31e5c5b5f50ea7841c2428674948b02f50` |
+| composed config hashes | arm `8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2`; smoke `1daf0fed20686170b688f175674ba673d1acd0fb981c2128612cd2726f423ce1` |
+| protocol hashes | arm `f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9`; smoke `3ed39903556d37426c9a89b16a40167b9049dd69c56a8db28aa16edb36920a31` |
 | split identity | arm `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 
 ## Decision rule (fixed here)
