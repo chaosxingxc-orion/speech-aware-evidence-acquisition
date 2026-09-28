@@ -18,7 +18,8 @@
 # Flags: --dry-run (decide and log, never launch; LAUNCH is logged as "DRY-RUN would launch")
 #        --once (one tick, then exit)   --interval S (default 60)
 #        --status-json FILE (dry runs only: read the serving status from FILE instead of serving_session.sh)
-# Environment: FILLER_HOME (default /home/chao), FILLER_QUEUE_LOG, FILLER_STATE, SAEA_MAIN, SPEECHRL_DATA_DIR.
+# Environment: FILLER_HOME (default /home/chao), FILLER_QUEUE_LOG, FILLER_STATE, SAEA_MAIN, SPEECHRL_DATA_DIR,
+#              FILLER_HOLD (default /home/chao/saea-queue/filler.hold: while it exists, log "filler held" and exit 0).
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 FD=$MAIN/scripts/flights/filler
 PY=${FILLER_PY:-/home/chao/.venvs/speechrl/bin/python}
@@ -27,6 +28,7 @@ LOG=${FILLER_QUEUE_LOG:-$H/filler-queue.out}
 STATE=${FILLER_STATE:-$H/filler-queue-state.jsonl}
 DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 CHAIN=${FILLER_CHAIN:-$FD/batch_chain_filler.sh}
+HOLD=${FILLER_HOLD:-/home/chao/saea-queue/filler.hold}
 DRY=0; ONCE=0; INTERVAL=60; STATUS_JSON=""
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -44,6 +46,10 @@ say () { echo "$(date -u +%FT%TZ) $*" >> "$LOG"; }
 field () { "$PY" -c "import json,sys; d=json.loads(sys.argv[1]); v=d.get(sys.argv[2]); print('' if v is None else v)" "$1" "$2"; }
 say "queue start pid $$ dry_run=$DRY once=$ONCE interval=${INTERVAL}s main=$MAIN"
 while true; do
+  # HOLD switch (coordinator, 2026-09-28): while the hold file exists the filler launches nothing -- it logs
+  # "filler held" and exits 0, so a queue that ends in this script hands the card on without flying a chunk.
+  # Checked on every tick, before any decision. Remove the file to release the filler.
+  if [ -e "$HOLD" ]; then say "filler held ($HOLD present); exit 0 before launching anything"; echo "filler held"; exit 0; fi
   ARGS=(--home "$H" --data-root "$DATA" --main "$MAIN" --state-file "$STATE")
   [ -n "$STATUS_JSON" ] && ARGS+=(--status-json "$STATUS_JSON")
   D=$("$PY" -B "$FD/filler_queue_decide.py" "${ARGS[@]}" 2>&1)
