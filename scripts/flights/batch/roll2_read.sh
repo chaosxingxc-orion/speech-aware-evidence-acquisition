@@ -26,6 +26,13 @@ ATTEMPT=${ATTEMPT:-attempt-slurp-native-stage3-roll-2-fold-a-v1-generation}
 ROSTER=${ROSTER:-docs/receipts/rosters/slurp-evo-fold-a-v2.json}
 SCORER=${SCORER:-slurp-slu-official-projected-v3-train}
 ROOT=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1
+READ_ID=SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1
+# Registration guard (agree_read.sh's shape): stage 2 reads TRAIN gold, so nothing runs before the READ row
+# is a countersigned, non-DRAFT contract-table row. The full four-stage read (render before the guard, then
+# score / pairs / spread) is scripts/flights/roll2/roll2_pool_read.sh -- prefer it.
+row=$(grep -E "^\| [^|]* \| $READ_ID \|" "$MAIN/docs/exposure-ledger.md" | head -1)
+{ [ -n "$row" ] && ! echo "$row" | grep -q "DRAFT" && echo "$row" | grep -q "root countersigned"; }   || { echo "REFUSED: the $READ_ID row is missing, DRAFT or not root countersigned"; exit 3; }
+$PY -B -c "import speech_aware_evidence_acquisition as m, sys; sys.exit(0 if m.__file__.startswith('$MAIN') else 9)"   || { echo "REFUSED: the package under test is not $MAIN (shared-venv hijack)"; exit 9; }
 mkdir -p "$ROOT" && cp "$MAIN/scripts/analysis/stage3_rollout_score.py" "$ROOT/stage3_rollout_score.py" || exit 1
 cd "$ROOT" || exit 1
 echo "driver sha256 $(sha256sum stage3_rollout_score.py | cut -c1-16)"
