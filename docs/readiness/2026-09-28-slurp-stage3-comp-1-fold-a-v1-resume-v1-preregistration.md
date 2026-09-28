@@ -31,7 +31,7 @@ before the arm opened; **it is never re-flown**.
 | --- | --- |
 | experiment / cell | `slurp-native-stage3-comp1-fold-a-v1-resume` |
 | run id | `SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1` -- **unchanged; this is what a resume is** |
-| generation attempt | `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume` |
+| generation attempt | `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2` (attempt 2; attempt 1 `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume` ABORTED 2026-09-28T15:20:45Z on a server CUDA abort after 4 calls) |
 | FIT run / attempt | `SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1` (unchanged) / `attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume` |
 | `resume_from` | `{"attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1", "trace_sha256": "029a2dbb...61997"}` |
 | baseline | `configs/baseline/slurp-native-stage3-comp1-fold-a-baseline-v1-resume.json` (the arm's, except the FIT attempt id and the note) |

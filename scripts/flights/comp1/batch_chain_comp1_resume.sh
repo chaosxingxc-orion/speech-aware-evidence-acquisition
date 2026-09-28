@@ -46,7 +46,7 @@ with trace.open("rb") as handle:
     for block in iter(lambda: handle.read(1 << 20), b""):
         digest.update(block)
 assert digest.hexdigest() == TRACE, "the predecessor trace moved"
-assert not (data / f"runs/{RUN}/attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume").exists(), "a resume attempt already exists"
+assert not (data / f"runs/{RUN}/attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2").exists(), "resume attempt 2 already exists"
 assert load(data / "coordination/slurp-stage3-comp1-fold-a-v1/resume-byte-identity-proof-v1.json")["verdict"] == "PASS"
 assert load(data / "attempts/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1.json")["state"] == "FINALIZED"
 facts = load(repo / "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/registered-facts-v1.json")
@@ -68,7 +68,7 @@ steps = [
      "campaign_plan": "configs/campaign/slurp-native-stage3-comp1-fold-a-v1-resume.json",
      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
-     "gen_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume",
+     "gen_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2",
      "smoke_run_id": None, "smoke_attempt_id": None,
      "expected_rows": 1080, "contacts_per_row": 5, "ceiling_per_row": 11, "notool": True,
      "owner": "root-slurp-native-stage3-comp1-fold-a-v1-resume"},

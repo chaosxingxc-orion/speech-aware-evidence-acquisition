@@ -33,3 +33,17 @@ COMP-1's **ONE** recovery re-registration. A second failure closes cell COMP-1.
 Never write, move or compress anything under
 `runs/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/attempt-slurp-native-stage3-comp1-fold-a-generation-v1/`: the resume
 refuses before contact if its trace no longer hashes to `029a2dbb...61997`.
+
+## Resume attempt 2 (2026-09-28)
+
+Resume attempt 1 `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume` (flight commit 902454db) aborted
+at 2026-09-28T15:20:45Z on a server CUDA abort after 4 calls (llama-server `ggml_cuda_op_mul_mat_cublas` launch
+failure three seconds after its first Perception wave; `RemoteDisconnected` -> ExecutionError 100054 ->
+NativeEpisodeError); 10.56 s audio, 0 rows sealed; the resume loader and replay worked. It is retried as attempt 2
+`attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2` under decision 22 (infrastructure, code
+unchanged), `resume_from` still the ORIGINAL aborted attempt `attempt-slurp-native-stage3-comp1-fold-a-generation-v1`
+(trace `029a2dbb...61997`; 471 kept, 609 flown). The one recovery of row 175 is unchanged: one recovery, retried
+after an infrastructure abort. Attempt 1's 4 calls stay charged run-cumulatively (worst case 1,913 + 4 + 609 x 11 =
+8,616 within 11,880). The FIT attempt id is unchanged (attempt 1 never reached FIT). The decision receipt is
+re-minted as `coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v2.json` (same decision id,
+`eligible_attempt_ids` naming attempt 2). Never write, move or compress anything under attempt 1's directory either.

@@ -94,7 +94,7 @@ RESUME = {
     "baseline": "slurp-native-stage3-comp1-fold-a-baseline-v1-resume",
     "campaign": "configs/campaign/slurp-native-stage3-comp1-fold-a-v1-resume.json",
     "run_id": RUN_ID,
-    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume",
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2",  # attempt 2 (2026-09-28: attempt 1 aborted on a server CUDA abort)
     "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
     "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume",
     "decision_relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v1.json",

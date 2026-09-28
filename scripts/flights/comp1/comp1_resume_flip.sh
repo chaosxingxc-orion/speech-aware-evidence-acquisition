@@ -51,9 +51,9 @@ with trace.open("rb") as handle:
         digest.update(block)
 if digest.hexdigest() != TRACE:
     problems.append(f"the predecessor trace hashes to {digest.hexdigest()}, not the declared {TRACE}")
-receipt_path = data / "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v1.json"
+receipt_path = data / "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v2.json"
 if not receipt_path.is_file():
-    problems.append("the resume decision receipt root-admission-resume-v1.json is not minted")
+    problems.append("the resume decision receipt root-admission-resume-v2.json (attempt 2) is not minted")
 else:
     receipt = load(receipt_path)
     if RUN not in receipt.get("eligible_run_ids", []):
@@ -75,15 +75,15 @@ sys.exit(1 if problems else 0)
 PY
 
 cat > /home/chao/comp1-resume-commit.txt <<M
-research: flip the COMP-1 RESUME-RECOVERY to ready (owner decision 22, harness item E10: the same run id SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1 under attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume, resume_from the aborted attempt's trace 029a2dbb..., 471 rows kept under I7r custody and 609 flown; admitted on the model-free byte-identity proof coordination/slurp-stage3-comp1-fold-a-v1/resume-byte-identity-proof-v1.json; COMP-1's ONE recovery re-registration; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-comp1-fold-a-resume-admission-v1)
+research: flip the COMP-1 RESUME-RECOVERY to ready (owner decision 22, harness item E10: the same run id SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1 under attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2 (resume attempt 2; attempt 1 aborted 15:20:45Z on a server CUDA abort after 4 calls, retried under decision 22 as an infrastructure failure), resume_from the aborted attempt's trace 029a2dbb..., 471 rows kept under I7r custody and 609 flown; admitted on the model-free byte-identity proof coordination/slurp-stage3-comp1-fold-a-v1/resume-byte-identity-proof-v1.json; COMP-1's ONE recovery re-registration; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-comp1-fold-a-resume-admission-v1)
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 M
 for K in smoke arm; do
 cat > /home/chao/g5-$K-commit.txt <<M
 research: re-converge G5 ($K) at the COMP-1 resume flight commit (G5 never started in the aborted chain; its registration, receipt and replicate SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 are unchanged; owner decisions 127, 135, 138, 153 and 160; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-g5-fold-a-admission-v1)
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 M
 done
 

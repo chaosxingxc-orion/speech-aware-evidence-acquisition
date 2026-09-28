@@ -7,7 +7,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2",
       "baseline_fragment": "slurp-native-stage3-comp1-fold-a-baseline-v1-resume",
       "cell_id": "slurp-native-stage3-comp1-fold-a-v1-resume",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
