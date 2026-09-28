@@ -49,8 +49,8 @@
       "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-generation-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-FIT-V1",
       "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-fit-v1",
-      "composed_config_hash": "64bb126ca7fac98e289720a07ebc2796c294fb893368616e37417380c1b243c2",
-      "protocol_hash": "c40db6da48b2330398477408992e78073feb2cb870c2c9ba5fee1d5e3e1f4ce2"
+      "composed_config_hash": "67063b2cbbfafcc66f8e6d4fe925c469e9406497948b40d5023dac20f46413e3",
+      "protocol_hash": "7edf51c132f0a5d23656915e8432d555ee4bc4e82aa0a5abce0b2625029e8edc"
     },
     "smoke": {
       "cell": "slurp-native-stage3-comp1-fold-a-rec-smoke-4-v1",
