@@ -211,6 +211,11 @@ class CellReport:
     #: Set only for a cell whose ``stage3_measurement.measurement_design`` is one of
     #: :data:`SUPPLY_VARIANT_INSTRUMENT_DESIGNS` -- owner decision 172, section 4.
     supply_variant: dict[str, Any] | None = None
+    #: Set only for a cell whose ``stage3_measurement.measurement_design`` is
+    #: ``same-flight-perception-variant`` -- same-flight instrument, PHASE 2 (merge set C,
+    #: design docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-
+    #: variants-design.md section 4).
+    perception_branch: dict[str, Any] | None = None
     #: Set for EVERY cell that declares a ``stage3_measurement`` block, whatever its design --
     #: item D3: ``{"tuning_roster": ..., "read_roster": ...}``, the raw values as registered.
     roster_split: dict[str, Any] | None = None
@@ -234,6 +239,7 @@ class CellReport:
             "receipts": dict(self.receipts),
             "findings": [finding.as_dict() for finding in self.findings],
             "supply_variant": self.supply_variant,
+            "perception_branch": self.perception_branch,
             "roster_split": self.roster_split,
         }
 
@@ -723,6 +729,132 @@ def _check_supply_variant_registration(
 
 # --------------------------------------------------------------------------
 # tuning/read roster split registration (item D3; every Stage-3 cell, every design)
+
+# --------------------------------------------------------------------------
+# Perception-branch instrument registration (same-flight instrument, PHASE 2, merge set C,
+# docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md
+# section 4, "Registration")
+# --------------------------------------------------------------------------
+
+#: The one design whose cells declare a ``roles.perception.branches`` group. Phase 2 registers no
+#: ``offline-sealed-pool``-style rollout use (design section 5's inner-loop use is a phase-1-only
+#: concept); a phase-2 cell always names this one design.
+PERCEPTION_VARIANT_INSTRUMENT_DESIGNS = ("same-flight-perception-variant",)
+
+#: The path a Perception ``branches`` block is composed under in a baseline fragment (see
+#: ``rails.native_episode_config``'s ``roles.perception.branches``).
+PERCEPTION_BRANCH_PATH = ("native_episode", "roles", "perception", "branches")
+
+#: Design section 8 (O1 ruling): never "admitted", whatever the level -- a level-1 result
+#: nominates only into level 2; only a level-2 result nominates the full-system read.
+PERCEPTION_BRANCH_CLAIM_CEILING = "nominated"
+
+
+def _perception_branches_block(baseline: dict[str, Any] | None) -> Any:
+    """The cell's ``native_episode.roles.perception.branches`` block, or ``None``."""
+
+    node: Any = baseline
+    for key in PERCEPTION_BRANCH_PATH:
+        if not isinstance(node, dict):
+            return None
+        node = node.get(key)
+    return node
+
+
+def _check_perception_branch_registration(
+    report: CellReport,
+    fragment: dict[str, Any],
+    baseline: dict[str, Any] | None,
+    floor_gate: Any,
+    repo_root: Path,
+) -> None:
+    """Design section 4 registration fields and gate findings for a Perception-branch cell.
+
+    A no-op when the declaration is absent or unreadable, when it names a design outside
+    :data:`PERCEPTION_VARIANT_INSTRUMENT_DESIGNS`, or when the cell declares no
+    ``roles.perception.branches`` block at all -- the same three-guard shape
+    :func:`_check_supply_variant_registration` uses, for the same reason.
+
+    Three findings, matching the coordinator's stated scope for this gate (level-declared, twin
+    present, claim nominated): ``branch-level-missing``, ``aa-arm-missing`` (reused from phase 1:
+    the required twin, T, is absent or its id disagrees with the registered ``aa_arm_id``), and
+    ``variant-claim-not-nominated`` (reused from phase 1 verbatim). NOT implemented here:
+    ``branch-seed-unpinned`` (design section 4 also names it) -- checking that every non-A,
+    non-T branch's PRE-FLIGHT seed is pinned as its own prepared artifact needs the runtime's
+    prepared-artifact registration, which this static-config gate does not read.
+    """
+
+    block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
+    if not isinstance(block, dict):
+        return
+    design = block.get("measurement_design")
+    if design not in PERCEPTION_VARIANT_INSTRUMENT_DESIGNS:
+        return
+    branches_block = _perception_branches_block(baseline)
+    if not isinstance(branches_block, dict):
+        return
+
+    branches = branches_block.get("branches")
+    branch_count = len(branches) if isinstance(branches, list) else None
+    declared_level = branches_block.get("level")
+
+    report.perception_branch = {
+        "measurement_design": design,
+        "level": declared_level,
+        "branches": branch_count,
+        "variant_cost": block.get("variant_cost"),
+        "claim": block.get("claim"),
+        "tuning_roster": block.get("tuning_roster"),
+        "read_roster": block.get("read_roster"),
+        "aa_arm_id": block.get("aa_arm_id"),
+    }
+
+    if declared_level not in (1, 2):
+        report.findings.append(Finding(
+            "branch-level-missing",
+            f"{report.run_id}: measurement_design {design!r} is the phase-2 Perception-branch "
+            "instrument design (design section 3, 'Two levels'), but "
+            f"roles.perception.branches.level is {declared_level!r}, not 1 or 2",
+            report.run_id,
+        ))
+
+    twin_id = None
+    if isinstance(branches, list):
+        for row in branches:
+            if isinstance(row, dict) and row.get("replicate_of") is not None:
+                twin_id = row.get("branch_id")
+                break
+    aa_arm_id = block.get("aa_arm_id")
+    if twin_id is None:
+        report.findings.append(Finding(
+            "aa-arm-missing",
+            f"{report.run_id}: measurement_design {design!r} declares no twin (T) branch -- no "
+            "branch row names replicate_of -- but design section 4 ('A/A = twin') requires "
+            "exactly one on every same-flight-perception-variant read",
+            report.run_id,
+        ))
+    elif aa_arm_id != twin_id:
+        report.findings.append(Finding(
+            "aa-arm-missing",
+            f"{report.run_id}: stage3_measurement.aa_arm_id is {aa_arm_id!r}, but the branch "
+            f"group's own twin (the branch naming replicate_of) is {twin_id!r}",
+            report.run_id,
+        ))
+
+    claim = block.get("claim")
+    if claim != PERCEPTION_BRANCH_CLAIM_CEILING:
+        report.findings.append(Finding(
+            "variant-claim-not-nominated",
+            f"{report.run_id}: measurement_design {design!r} may claim only "
+            f"{PERCEPTION_BRANCH_CLAIM_CEILING!r} (design section 8, O1 ruling: a level-1 result "
+            "nominates only into level 2; only a level-2 result nominates the full-system read), "
+            f"but claim is {claim!r}",
+            report.run_id,
+        ))
+
+
+# --------------------------------------------------------------------------
+# tuning/read roster split registration (item D3; every Stage-3 cell, every design)
 # --------------------------------------------------------------------------
 
 
@@ -947,6 +1079,7 @@ def check_cell(
 ) -> None:
     floor_gate = _floor_gate_module(index.repo_root)
     _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
+    _check_perception_branch_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_roster_split_registration(report, fragment, floor_gate, index.repo_root)
 
     run_ids = {"generation": report.run_id, **fit_run_ids(fragment, baseline)}

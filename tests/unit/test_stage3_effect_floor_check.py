@@ -228,6 +228,46 @@ def test_same_flight_supply_variant_effect_above_floor_passes(tmp_path: Path) ->
     assert data["passed"] is True
 
 
+def test_same_flight_perception_variant_is_a_design_sharing_the_roll_aa_anchor() -> None:
+    # phase-2 design section 4 ("A/A = twin"): provisionally the same ROLL-AA
+    # anchor (0.735 at n = 200) until a phase-2 cell has flown its own twin.
+    assert "same-flight-perception-variant" in gate.DESIGNS
+    assert gate.floor_for("same-flight-perception-variant", 200)[0] == pytest.approx(0.735)
+    assert gate.floor_for("same-flight-perception-variant", 800)[0] == pytest.approx(0.735 / 2)
+
+
+def test_same_flight_perception_variant_effect_below_floor_is_refused(tmp_path: Path) -> None:
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-perception-variant",
+            expected_effect_pp=0.3,
+            rows=200,
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["effect-below-floor"]
+    message = data["findings"][0]["message"]
+    assert "0.7350 pp" in message and "n = 200" in message
+    assert data["passed"] is False
+
+
+def test_same_flight_perception_variant_effect_above_floor_passes(tmp_path: Path) -> None:
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-perception-variant",
+            expected_effect_pp=1.0,
+            rows=200,
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert data["findings"] == []
+    assert data["passed"] is True
+
+
 # --------------------------------------------------------------------------
 # scope, advisory and blocking
 # --------------------------------------------------------------------------

@@ -272,6 +272,32 @@ FLOOR_TABLE: dict[str, Floor] = {
         ),
         sampling=((200, 0.735),),
     ),
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md): the Perception-branch episode-level fork, read against its
+    # required A/A twin (T). NOTE: the design document's own section 4 names
+    # this value ``same-flight-perception-branch``; it is registered here as
+    # ``same-flight-perception-variant`` to match the coordinator's naming for
+    # this gate, and the discrepancy is flagged for reconciliation at the
+    # design's next revision (no phase-2 cell has registered under either
+    # spelling yet).
+    "same-flight-perception-variant": Floor(
+        source=(
+            "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-"
+            "perception-variants-design.md section 4 ('A/A = twin', extending phase "
+            "1's Q3 ruling): the design's own floor is the twin's (T's) paired-"
+            "difference null on the Perception-branch estimand (level 1: per-row "
+            "top1 or present difference; level 2: the branch Solver column); until a "
+            "phase-2 cell has flown and measured that null, the provisional floor "
+            f"anchor is {INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, "
+            "h_within 0.735 SLU / 0.000 intent at n = 200) -- the same anchor "
+            "'same-flight-supply-variant' uses, kept as its own design value because "
+            "the estimand (an episode-level Perception fork with its own twin, not a "
+            "Solver-local arm sharing the row's own QueryState) and the claim ceiling "
+            "(level 1 nominates only into level 2, design section 8 O1) both differ"
+        ),
+        sampling=((200, 0.735),),
+    ),
     "cross-flight-with-in-chain-replicate": Floor(
         source=(
             f"{INSTRUMENT_NOTE} section 2b/2d rows 3-5 (sampling half-widths 1.474 at 625, "
