@@ -1250,7 +1250,7 @@ def test_a_twin_does_not_collide_with_the_identical_override_refusal():
     assert group.arm_ids == ("aa", "plan")
 
 
-def test_the_receipt_carries_replicate_of_and_the_v2_schema():
+def test_the_receipt_carries_replicate_of_and_the_v3_schema():
     group = _parse(_twin_block())
     records = [
         supply_variant_arm_record(
@@ -1263,11 +1263,15 @@ def test_the_receipt_carries_replicate_of_and_the_v2_schema():
         ),
     ]
     receipt = supply_variant_receipt(group=group, phase_id="solver", records=records)
-    assert receipt["schema"] == "saea-supply-variant-arms-v2"
+    assert receipt["schema"] == "saea-supply-variant-arms-v3"
     assert receipt["arm_visits"] == "every"
     assert receipt["visit_index"] == 0
     assert receipt["arms"][0]["replicate_of"] == "plan"
     assert receipt["arms"][1]["replicate_of"] is None
+    # Neither the twin nor the delivering arm carries a release_swap: this
+    # block has none declared at all.
+    assert receipt["arms"][0]["release_swap"] is None
+    assert receipt["arms"][1]["release_swap"] is None
     validate_supply_variant_receipt(
         receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
     )
@@ -1292,12 +1296,46 @@ def test_a_v1_receipt_still_validates_unchanged():
         "delivered_arm_id": "plan",
         "fit_estimate": group.fit_estimate.as_json(),
         "arms": [
-            {k: v for k, v in record.items() if k != "replicate_of"}
+            {k: v for k, v in record.items() if k not in ("replicate_of", "release_swap")}
             for record in records
         ],
     }
     validate_supply_variant_receipt(
         v1_receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+    )
+
+
+def test_a_v2_receipt_still_validates_unchanged():
+    """Coordinator amendment, 2026-09-28: a v2 receipt sealed before the
+    release-swap route existed (no ``release_swap`` key on any arm row) still
+    validates unchanged -- no sealed E42b data is rewritten."""
+
+    group = _parse(_twin_block())
+    records = [
+        supply_variant_arm_record(
+            arm=group.arm("aa"), arm_index=0, contact_id="c0",
+            supplied_value_ids=("b::1",),
+        ),
+        supply_variant_arm_record(
+            arm=group.arm("plan"), arm_index=1, contact_id="c1",
+            supplied_value_ids=("b::1",),
+        ),
+    ]
+    v2_receipt = {
+        "schema": "saea-supply-variant-arms-v2",
+        "phase_id": "solver",
+        "arm_count": 2,
+        "delivered_arm_id": "plan",
+        "arm_visits": "every",
+        "visit_index": 0,
+        "fit_estimate": group.fit_estimate.as_json(),
+        "arms": [
+            {k: v for k, v in record.items() if k != "release_swap"}
+            for record in records
+        ],
+    }
+    validate_supply_variant_receipt(
+        v2_receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
     )
 
 

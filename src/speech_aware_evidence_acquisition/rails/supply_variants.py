@@ -43,6 +43,19 @@ contract, the tool authority, the role graph, the phase program or the
 response format: none of those is addressable by a knob path this module
 admits, and an unknown path is refused by name before any contact.
 
+THE ONE NAMED EXCEPTION: THE RELEASE-SWAP ROUTE. Coordinator amendment,
+2026-09-28 (docs/superpowers/specs/2026-09-27-same-flight-supply-variant-
+instrument-design.md, "Coordinator amendment (2026-09-28)"): an arm may
+ADDITIONALLY declare :class:`SupplyVariantReleaseSwap`, naming ONE store the
+fragment already declares and ONE alternate release relpath that store's base
+config ALSO declares under ``knowledge_stores.<store>.alternates`` --
+pinned, hash-verified bytes exactly like the primary, never a component this
+module discovers on its own. This is the sole exception to "an arm re-caps a
+selection, it never swaps a component or repoints a release": every other
+sentence in this docstring, and every refusal below, still holds for the
+knob-tail route. The delivering arm and its twin (``replicate_of``) never
+carry one, for the same reason neither carries a knob override.
+
 CUSTODY, AND THE ONE DIVERGENCE THIS FORM INTRODUCES. Every arm's request,
 resolved knobs, supplied value ids and item count are sealed under the arm's
 own id, and the K contacts are recorded as ONE ``AgentContactBatch`` with
@@ -71,9 +84,14 @@ from .errors import RailsError
 #: The receipt schema one arm group seals under. Bumped to v2 by owner
 #: decision 172 (2026-09-27, merge set B): v2 adds ``arm_visits`` and
 #: ``visit_index`` at the block level and ``replicate_of`` on every arm row.
+#: Bumped again to v3 by the coordinator amendment (2026-09-28): v3 adds
+#: ``release_swap`` on every arm row -- ``None`` for the delivering arm, its
+#: twin, and every arm that re-caps only a knob tail; the declared
+#: ``{store_id, release}`` of the ONE store this arm repoints, otherwise.
 #: ``rails.native_episode_receipt.validate_supply_variant_receipt`` still
-#: accepts a v1 receipt unchanged -- no sealed VAR-2 data is rewritten.
-SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v2"
+#: accepts a v1 or v2 receipt unchanged -- no sealed VAR-2 / E42b data is
+#: rewritten.
+SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v3"
 
 #: The two values ``supply_variants.arm_visits`` may declare. The PARSER
 #: default is ``"every"`` -- every fragment written before this key existed
@@ -131,8 +149,12 @@ SUPPLY_VARIANT_ARM_REQUIRED_KEYS = frozenset({"arm_id", "max_supplied_items"})
 #: arm's own id, which makes it the read's TWIN (the delivering arm's greedy
 #: repeat, Q3 ruling): no overrides, exempt from the identical-override-set
 #: refusal and from the receipt rule that a non-delivering arm must resolve
-#: at least one knob.
-SUPPLY_VARIANT_ARM_OPTIONAL_KEYS = frozenset({"deliver", "overrides", "replicate_of"})
+#: at least one knob. ``release_swap`` (coordinator amendment, 2026-09-28):
+#: the arm's release-swap selection, disjoint from ``overrides`` -- see
+#: :class:`SupplyVariantReleaseSwap` and :func:`parse_supply_variant_release_swap`.
+SUPPLY_VARIANT_ARM_OPTIONAL_KEYS = frozenset(
+    {"deliver", "overrides", "replicate_of", "release_swap"}
+)
 
 #: Keys the ``fit_estimate`` block carries, exactly. Every one is a MEASURED,
 #: pinned number the fragment author reads off an already-sealed cell, never a
@@ -189,6 +211,27 @@ class SupplyVariantKnob:
 
 
 @dataclass(frozen=True)
+class SupplyVariantReleaseSwap:
+    """One arm's selection of an ALTERNATIVE pinned release+snapshot for ONE
+    store the base config also declares (coordinator amendment, 2026-09-28,
+    docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-
+    design.md, "Coordinator amendment (2026-09-28)").
+
+    Unlike every :class:`SupplyVariantKnob`, this does not re-cap a SELECTION
+    over the base's own released stores -- it repoints which release the
+    arm's own router loads for the named store, to one the base ALSO pins and
+    declares by name under ``knowledge_stores.<store>.alternates``. The
+    delivering arm and its twin never carry one.
+    """
+
+    store_id: str
+    release_relpath: str
+
+    def as_json(self) -> dict[str, object]:
+        return {"store_id": self.store_id, "release": self.release_relpath}
+
+
+@dataclass(frozen=True)
 class SupplyVariantArm:
     """One arm of one node's supply-variant group."""
 
@@ -202,6 +245,11 @@ class SupplyVariantArm:
     # field existed and for every ordinary (non-twin) arm. Declared LAST, so
     # every arm parsed before this field existed composes byte-identically.
     replicate_of: str | None = None
+    # Coordinator amendment, 2026-09-28: this arm's release-swap selection, or
+    # ``None`` for every arm parsed before the route existed and for every arm
+    # that re-caps only a knob tail. Declared LAST, so every arm parsed before
+    # this field existed composes byte-identically.
+    release_swap: SupplyVariantReleaseSwap | None = None
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -211,6 +259,7 @@ class SupplyVariantArm:
             "knobs": [knob.as_json() for knob in self.knobs],
             "max_supplied_items": self.max_supplied_items,
             "replicate_of": self.replicate_of,
+            "release_swap": None if self.release_swap is None else self.release_swap.as_json(),
         }
 
 
@@ -389,6 +438,49 @@ def parse_supply_variant_knob(
     )
 
 
+def parse_supply_variant_release_swap(
+    block: object,
+    *,
+    declared_stores: Sequence[str] | None = None,
+    declared_alternate_relpaths: Mapping[str, Sequence[str]] | None = None,
+) -> SupplyVariantReleaseSwap:
+    """Parse ONE ``arms[i].release_swap`` entry, refusing everything it does
+    not admit (coordinator amendment, 2026-09-28).
+
+    ``declared_stores`` is the same set :func:`parse_supply_variant_knob`
+    checks a knob's store against. ``declared_alternate_relpaths`` is
+    ``{store_id: (admitted alternate release relpath, ...)}``
+    (``rails.knowledge_stores.declared_alternate_release_relpaths``); an arm
+    may never name a release absent from it, refused by name -- the base's
+    OWN pin verification (``rails.knowledge_stores.load_knowledge_store_
+    binding``) still runs when the swap is actually resolved, so this is a
+    by-name pre-check, not the hash proof.
+    """
+
+    if not isinstance(block, Mapping) or set(block) != {"store_id", "release"}:
+        raise SupplyVariantError(
+            "supply_variants arm release_swap must be an object with exactly "
+            "store_id and release"
+        )
+    store_id = _nonempty_str(block["store_id"], field="release_swap.store_id")
+    release_relpath = _nonempty_str(block["release"], field="release_swap.release")
+    if declared_stores is not None and store_id not in set(declared_stores):
+        raise SupplyVariantError(
+            f"supply-variant release_swap names store {store_id!r}, which this "
+            f"configuration does not declare; declared stores are "
+            f"{sorted(set(declared_stores))}"
+        )
+    if declared_alternate_relpaths is not None:
+        admitted = tuple(declared_alternate_relpaths.get(store_id, ()))
+        if release_relpath not in admitted:
+            raise SupplyVariantError(
+                f"supply-variant release_swap names release {release_relpath!r} "
+                f"for store {store_id!r}, which is absent from its declared "
+                f"alternates {sorted(admitted)}"
+            )
+    return SupplyVariantReleaseSwap(store_id=store_id, release_relpath=release_relpath)
+
+
 def parse_supply_variant_fit_estimate(block: object) -> SupplyVariantFitEstimate:
     """Parse the fail-closed prompt-fit estimate, exactly."""
 
@@ -430,6 +522,7 @@ def parse_supply_variants(
     phase_id: str,
     first_phase_id: str,
     declared_stores: Sequence[str] | None = None,
+    declared_alternate_relpaths: Mapping[str, Sequence[str]] | None = None,
 ) -> SupplyVariantGroup:
     """Parse ``roles.<role>.supply_variants``, fail-closed.
 
@@ -443,14 +536,19 @@ def parse_supply_variants(
     3. an arm row with unknown or missing keys;
     4. an arm id collision;
     5. zero or several arms carrying ``deliver``;
-    6. a delivering arm that is not the LAST arm, or that carries overrides;
+    6. a delivering arm that is not the LAST arm, or that carries overrides or
+       a release_swap;
     7. an override path this module does not admit -- unknown root, unknown
        route, unknown knob, an undeclared store, the program's first phase, or
        another node's phase (:func:`parse_supply_variant_knob`);
-    8. two arms whose whole override set is identical (two spellings of one
-       arm cost a contact per row and measure nothing);
+    8. two arms whose whole override set (knobs plus any release_swap) is
+       identical (two spellings of one arm cost a contact per row and measure
+       nothing);
     9. an arm whose estimated prompt exceeds the live slot with the registered
-       reserve.
+       reserve;
+    10. a release_swap naming an undeclared store, or a release absent from
+        that store's declared ``alternates`` (:func:`parse_supply_variant_
+        release_swap`), or declared beside ``replicate_of``.
     """
 
     if (
@@ -536,6 +634,20 @@ def parse_supply_variants(
                 "declare no overrides: it resolves exactly the delivering "
                 "arm's ids"
             )
+        raw_release_swap = row.get("release_swap")
+        if raw_release_swap is not None:
+            release_swap = parse_supply_variant_release_swap(
+                raw_release_swap, declared_stores=declared_stores,
+                declared_alternate_relpaths=declared_alternate_relpaths,
+            )
+        else:
+            release_swap = None
+        if replicate_of is not None and release_swap is not None:
+            raise SupplyVariantError(
+                f"supply_variants.arms[{position}] names replicate_of and must "
+                "declare no release_swap: it resolves exactly the delivering "
+                "arm's ids"
+            )
         arms.append(SupplyVariantArm(
             arm_id=arm_id,
             deliver=deliver,
@@ -545,6 +657,7 @@ def parse_supply_variants(
                 field=f"supply_variants.arms[{position}].max_supplied_items",
             ),
             replicate_of=replicate_of,
+            release_swap=release_swap,
         ))
     ids = [arm.arm_id for arm in arms]
     if len(set(ids)) != len(ids):
@@ -568,6 +681,12 @@ def parse_supply_variants(
             "is what makes its request bytes the locked plan's by construction "
             "rather than by claim"
         )
+    if arms[-1].release_swap is not None:
+        raise SupplyVariantError(
+            f"supply_variants delivering arm {arms[-1].arm_id!r} must declare no "
+            "release_swap: it is rendered from the episode's own QueryState "
+            "over the base's own released stores"
+        )
     delivered_arm_id = arms[-1].arm_id
     for arm in arms:
         if arm.replicate_of is not None and arm.replicate_of != delivered_arm_id:
@@ -577,7 +696,13 @@ def parse_supply_variants(
                 f"{delivered_arm_id!r}"
             )
     signatures = [
-        tuple((knob.path, knob.value) for knob in arm.knobs) for arm in arms
+        (
+            tuple((knob.path, knob.value) for knob in arm.knobs),
+            None if arm.release_swap is None else (
+                arm.release_swap.store_id, arm.release_swap.release_relpath,
+            ),
+        )
+        for arm in arms
         if arm.replicate_of is None
     ]
     if len(set(signatures)) != len(signatures):
@@ -709,6 +834,15 @@ def supply_variant_arm_record(
         "arm_id": arm.arm_id,
         "deliver": bool(arm.deliver),
         "replicate_of": arm.replicate_of,
+        # Coordinator amendment, 2026-09-28: which release this arm actually
+        # consumed -- ``None`` absent a release-swap route, the declared
+        # {store_id, release} otherwise. This is the DECLARED selection
+        # (exactly as ``resolved_knobs`` below records ``arm.knobs``, not a
+        # live re-verification): ``core.flight.runtime.FlightRuntime.
+        # _supply_action_router`` already refuses, before any contact, an
+        # arm whose release_swap does not resolve to the base's own declared
+        # alternate.
+        "release_swap": None if arm.release_swap is None else arm.release_swap.as_json(),
         "contact_id": _nonempty_str(
             contact_id, field=f"supply-variant arm {arm.arm_id!r} contact_id"
         ),
@@ -781,9 +915,11 @@ __all__ = [
     "SupplyVariantFitEstimate",
     "SupplyVariantGroup",
     "SupplyVariantKnob",
+    "SupplyVariantReleaseSwap",
     "arm_supplied_value_ids",
     "parse_supply_variant_fit_estimate",
     "parse_supply_variant_knob",
+    "parse_supply_variant_release_swap",
     "parse_supply_variants",
     "supply_variant_arm_record",
     "supply_variant_receipt",
