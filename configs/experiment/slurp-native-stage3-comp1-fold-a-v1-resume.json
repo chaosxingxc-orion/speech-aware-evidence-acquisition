@@ -16,6 +16,13 @@
         "reason": "Cell COMP-1 RESUME-RECOVERY (owner decision 22, harness item E10), HELD pending the owner's recovery ruling. The arm attempt attempt-slurp-native-stage3-comp1-fold-a-generation-v1 of run SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1 ABORTED on 2026-09-28 at contact flight-1854 at flight commit cb628f59: 471 rows settled, 1 incomplete, 608 never started, 1,913 contacts, trace SHA-256 029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997. Root cause named to a component (docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md): rails.solver_citation.parse_cited_answer refused a repeated intent citation id that the per-contact grammar legally admits; fixed at a451f942 (rails/solver_citation.py only, outside the prepared identity set). The resume replay itself needed one harness repair to read this cell's receipts (core.flight.resume.NON_WIRE_CONTACT_BLOCKS: the context_fit and solver_citations annotation blocks are no longer claimed as wire contacts; before it, 0 of 471 settled rows classified COMPLETE). THE LETTER OF DECISION 22 IS BROKEN: it admits a resume only when code and request bytes are unchanged, and two harness files changed. Its PURPOSE is proven model-free by scripts/flights/comp1/comp1_resume_byte_identity_proof.py (receipt coordination/slurp-stage3-comp1-fold-a-v1/resume-byte-identity-proof-v1.json): every cited grammar re-renders byte-identically, 481 of 481 kept citation records are identical under the fixed code, and the one changed disposition (flight-1854) lies in the one INCOMPLETE row, which is re-flown. The owner rules whether that admits a resume. THIS IS COMP-1's ONE recovery re-registration: 471 rows kept under I7r custody without selection, 609 rows flown under the SAME run id; a second failure CLOSES cell COMP-1. The shared in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 is FINALIZED and scored and is never re-flown. Registered before contact by the COMP-1 recovery registration agent (Claude Opus 5.5) on 2026-09-28; HELD. The coordinator, once the owner rules for this variant, countersigns its DRAFT rows, mints coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v1.json (decision id slurp-stage3-comp1-fold-a-resume-admission-v1) and flips with scripts/flights/repin_cell.py --set-ready, which rebuilds the inherited supply pin under this cell's own run id and asserts its output unchanged. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1-fold-a-resume-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v1.json",
+            "sha256": "e12e21751bed0b4208414412c077ca6671f2e66d2d92222dd5f277eb490f47b3",
+            "reason": "Decision slurp-stage3-comp1-fold-a-resume-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, exactly the artifact cell AGREE registered: built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded rows, 0 rows with no vote, all 60 boundary facets reachable. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -24,11 +31,11 @@
           {
             "kind": "preparation",
             "reason": "INHERITED from SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1: that cell's own model-free first-phase Perception supply (built by core.flight.cli prepare-supply with zero model, tokenizer, encoder, scorer or server contacts). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, cell and attempt identities included, so scripts/flights/repin_cell.py rebuilds it model-free into prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v<N>.json, ASSERTS the new output equals this artifact's output (ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a) and re-pins it in the same cycle. --allow-output-change must NEVER be passed: an output that moved means the knowledge channel moved and the recovery is no longer the arm.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v3.json",
-            "sha256": "a0af76daa8917fe29e38a68dc2761005509fca6c099fcc0a2d7ab2c1c475aa10"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v4.json",
+            "sha256": "467625864a12b216a5167ff9c2c518a1a924b7a461d64a87f0df3b4d0ac7b65b"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "resume_from": {
         "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
