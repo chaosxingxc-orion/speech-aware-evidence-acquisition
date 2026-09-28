@@ -1,8 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-27T16:35:24Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
-`fdeb7232` on `master` (GPU PAUSED by the owner at 16:33Z for a Claude Code restart; COMP-1 + G5 and the E41 dry run are flip-ready at `e38602de`), tree clean. Fable 5.1 is the coordinator again as of this refresh; the
-programme now carries an ABSOLUTE target, and the label ceiling says it is reachable.
+Last refreshed: 2026-09-28T01:01:04Z · maintainer: Fable 5.1 (root coordinator) · HEAD at writing
+`e2884b91` on `master`, tree clean. **GPU flying:** COMP-1 + G5 run from their own flight worktree at
+`cb628f59`, behind the E41 Earnings dry run, through the batch driver (queue task `SAEA-Queue-E41-COMP1`,
+log `/home/chao/queue-e41-comp1.out`; its rows are not quoted here). Master commits do not touch that flight.
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
 did, numbers, open items, embargoes, next action, housekeeping — so you can diff it. Freshness is
@@ -11,9 +12,24 @@ than this stamp, the check fails and the staleness is my defect, not yours.
 
 ## 0. Read this first: the experiment rules (owner decision 166)
 
-The owner asked me to state our experiment rules to you explicitly. They are in [`docs/handoff/EXPERIMENT-RULES-FOR-CHATGPT.md`](EXPERIMENT-RULES-FOR-CHATGPT.md) -- each rule in the imperative, with the gate that enforces it and the incident that motivated it. Your earlier work was re-read against the corrected instrument (`docs/results/2026-09-27-verdict-reclassification.md`): of your 2026-09-25/26 items, 11 KEEP and 1 KEEP-PROVISIONAL (F10's mechanism counts), none adjusted; your VAR-1 re-read against PLANr became rule 3. Nothing was overturned wholesale.
+The owner asked me to state our experiment rules to you explicitly. They are in [`docs/handoff/EXPERIMENT-RULES-FOR-CHATGPT.md`](EXPERIMENT-RULES-FOR-CHATGPT.md). Each rule is in the imperative, with the gate that enforces it and the incident that motivated it. Your earlier work was re-read against the corrected instrument (`docs/results/2026-09-27-verdict-reclassification.md`). Of your 2026-09-25/26 items, 11 are KEEP and 1 is KEEP-PROVISIONAL (F10's mechanism counts), and none was adjusted. Your VAR-1 re-read against PLANr became rule 3. Nothing was overturned wholesale.
 
-**Update 2026-09-27 16:40Z.** AGREE read: intent 82.50 -> 85.83, +3.33 [+1.57, +5.09] vs its in-chain A/A, SLU +1.85 [+0.23, +3.47]; retained into COMP-1 (decision 161), pending replication. KPROBE m = 24/55. COMP-1 (AGREE + centroid key + citation, declared 3.23 pp) and G5 share one proven-identical A/A and are flip-ready at `e38602de`; the E41 Earnings dry run too. Analyses landed: mechanism synthesis (every admitted gain = row-matched content to the deciding node; every harm = a form change without content), knowledge audit (K1 intent contrast, K2 value vocabularies, K3 do-not-tag, K4 span rules, K8 card selection frees ~5,400 tok/row), AGREE error sources (remaining 14.17 intent pp: Solver choice 5.37, Perception drop 3.33, catch-all 3.06, retrieval 2.31; 27.1 of 34.8 SLU pp on intent-right rows), A2T/Earnings gap diagnosis (A2T-AA own null h_A2T 1.625, accepted, decision 167). Owner decisions 149-168 recorded: the knowledge wave W1-W4 (164; W2 stopped offline -- no rank guard beats the unguarded term; W4 registered no-harm), the Reviewer optimised by training-free RL (165), the filler family on Fold B then re-seeded rounds (168). Engineering landed: `serving_swap.sh` (host-memory pre-check before any stop, strict readiness, auto-restore), the pre-launch registration gate in the batch driver, the append-only session-receipt store (7 lost receipts restored byte-exactly), the standard paired read `scripts/flights/read_paired_cell.sh`. The GPU is paused by the owner for a Claude Code restart; the resume queue is `/home/chao/saea-queue/queue_e41_comp1.sh`.
+**The plan now in force is the re-plan v2** (`docs/readiness/2026-09-27-slurp-stage3-replan-v2.md`). The owner accepted all six items as recommended ("Decisions 1-6: all agreed; execute as recommended"), recorded as owner decisions 169-174 in `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`:
+
+- 169: A2, the COMP-1 replication on DEV-2000-ADDED, flies right after COMP-1 + G5 and before wave 1.
+- 170: W5, slot-side retrieval, is registered as the fifth wave cell.
+- 171: the B1 rank-visible conversion probe, the B3 catch-all offline design and the B4 empty-entity offline design are registered model-free.
+- 172: the same-flight supply-variant instrument is authorised as an engineering-base item.
+- 173: A2T-ORG-1 is re-read against h_A2T now; A-C1 comes after the SLURP lock.
+- 174: Earnings E-C1 comes after E41 sub10 passes its form gates.
+
+**Outcome of decision 170 (2026-09-28 00:20Z):** W5 stays registered and **HELD, not flown**. Its offline estimate is 0.14 pp SLU (ceiling 0.548), under the 1.2485 floor, and all 414 rows without gold slots would receive nine exemplars (`docs/results/2026-09-28-slurp-w5-slot-exemplar-offline-estimate.md`). The SLU main line is re-pointed at USE, not delivery:
+
+- W4 conventions read no-harm;
+- B4, an explicit empty-entity decision;
+- slot-side contrastive consumption at the Solver, in B1's family.
+
+The +17.4 figure is an oracle and does not measure delivery headroom.
 
 ## 1. State
 
@@ -40,17 +56,21 @@ unused -- a consumption-form problem. Three coordinator claims were corrected by
 dead (0 of 60 values carry a prior), the locked plan supplies k=20 not top-5, and text-only rows CAN be
 retrieved because the key side is text by design.
 
-## 2. What I did (2026-09-26, after the quota gap)
+**Current best arm, pending replication.** AGREE (the boundary agreement term) reads intent 82.50 -> **85.83**, +3.33 [+1.57, +5.09] against its in-chain A/A, with SLU +1.85 [+0.23, +3.47] on TRAIN Fold A. That leaves 9.17 points to 95. Under decision 166 it is KEEP-PROVISIONAL because the roster was reused for selection and for reading. COMP-1 composes AGREE + the centroid key + the citation contract and is flying now. A2 (COMP-1 on DEV-2000-ADDED) settles AGREE's classification and gates every wave item into COMP-2 (row 138).
+
+## 2. What landed (2026-09-27 evening to 2026-09-28, all zero-contact)
 
 | work | artefact | state |
 | --- | --- | --- |
-| Landed your uncommitted per-group knowledge-proposal work unchanged so the tree is clean (a dirty tree refuses `core.flight.cli check`) | `15c13a00` — knowledge_edit_context per-group contexts, the group text baseline and probe, the system event view, 23 tests, design note, readiness receipt | merged |
-| Stopped the stale Running scheduled task `SAEA-System-Batch001-Monitor`, then brought the resident np4 session back up so the core is loaded before the next registration lands | `SAEA-Serving` Running, llama-server pid 712, `-np 4 -c 98304` (24,576 per slot), 22,954 MiB, no `flight.lock`, no `batch-STOP` | done |
-| Wrote the measurement instrument law | `1a82c9f8` — `docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md` | binding |
-| Made the numbered decisions note the single registry again: your dated rulings are rows 115–125, with the missing outcome lines for 112–114 | `2e6274eb` — `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md` | merged |
-| Closed the five record debts: results-ledger entries and exposure closures for VAR-1, VAR-2, VERIFY-1, F10 and the evidence-path policy (53 exposure rows consumed) | `a88798c2` | merged |
-| Landed the two enforcement checks with 70 passing tests, and added them to the study guide's gate list | `bfd2ca1e` — `scripts/checks/stage3_effect_floor_check.py`, `scripts/checks/handoff_freshness_check.py` | merged, live |
-| In flight as I write: ROLL-2 registration (Fold A 1,080 × 5 samples), the combined-commit offline read, the academic-baseline report | branches `fable/roll2`, `fable/commit`, `fable/baseline` | landing today |
+| A2T-ORG-1 re-read against h_A2T 1.625 (decisions 166, 167, 173): official tool accuracy -3.225 [-4.30, -2.13] at n = 4,000, 2.0x h_A2T | `docs/results/2026-09-27-a2t-org-1-reread-against-h-a2t.md`, ledger annotated in both halves | **KEEP** (secondary-loss claim KEEP-PROVISIONAL) |
+| Test fixes: the A2T comparator-rows companion is recognised, the sys.path quarantine scan is narrowed, and the Perception-state parser is excluded from renderer catalogue coverage | merge of `fable/testfix` | merged |
+| COMP-1 on DEV-2000-ADDED (A2): arm, in-chain A/A of the PLAN lock's bytes, four-row smoke; own null h 1.1520 intent / 1.2525 SLU | `docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/` | registered, **HELD**. `expected_effect_pp` is the placeholder `TO-BE-DECLARED-BY-COORDINATOR-FROM-THE-COMP-1-FOLD-A-READ` until the Fold A arm is read (row 139), so `stage3_effect_floor_check.py` refuses this one cell by design |
+| The knowledge wave's shared in-chain A/A `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1` | `docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/` | registered; proven **IDENTICAL** to the AGREE arm's bytes |
+| W3 re-derived and re-registered as **W3a alone** (intent contrast cards; the per-intent exemplar cap dropped under decision 164's one-change rule) | `docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/` (same run ids, rewritten in place) | registered, held |
+| W5 slot-side retrieval, with its offline estimate | `docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/`, `docs/results/2026-09-28-slurp-w5-slot-exemplar-offline-estimate.md` | registered, **HELD** (outcome of 170) |
+| B1 / B3 / B4 (decision 171): `native_episode.knowledge_value_rendering` behind a config key (off by default); RANKVIS probe on the 119 Fold A rows AGREE got wrong (held); CATCHALL offline rule; EMPTYENT offline null + rule | merge of `fable/consume` | registered. **B3 (CATCHALL) is blocked on the ROLL-2 per-sample scoring** (its stage 1-3 read is still owed) |
+
+After the merge that carries the config key, `core.flight.cli check` on the ready COMP-1 arm still reads `ready` with `prepared_artifacts_ok: true`. The flying cells' prepared-artifact identity did not move.
 
 ## 3. The numbers that matter (all from sealed arms; nothing re-run)
 
@@ -102,130 +122,48 @@ it flew PLANR** — EX-K10 / EX-K30 are +0.07 / +0.09 over PLANR, not +1.94 / +1
 
 ## 6. Open items and embargoes I am honouring
 
-Yours, unchanged: revalidate live identity before acting, never treat historical PIDs as targets, no
-progress-monitor subagents, one generating flight plus one scorer, ≤8 preparation workers during a
-campaign; control625 quality unread; DEV6570 and test13078 closed; no second recovery on any closed
-family; do not restart semantic-delta, VAR-2, F10 or evidence-path arms; power mode settled.
-Mine, added: no cross-flight claim without an in-chain replicate; no benefit claim under 200 rows.
+Yours, unchanged:
 
-Open and needing an owner decision, not mine to take: re-authorising the `supply_variants` mechanism
-(closed family, but it is the only sub-1 pp instrument for actions that need new contacts), and the
-`core/bundle/outputs.py` I7g gap that must close before any interleaved number is reported.
+- Revalidate live identity before acting, and never treat historical PIDs as targets.
+- Run no progress-monitor subagents.
+- Run one generating flight plus one scorer, with ≤8 preparation workers during a campaign.
+- control625 quality stays unread; DEV6570 and test13078 stay closed.
+- Run no second recovery on any closed family.
+- Do not restart the semantic-delta, VAR-2, F10 or evidence-path arms.
+- Power mode is settled.
 
-**Two things that now bind your cells too.** (1) `stage3_effect_floor_check.py` is live: every cell
-registered from **2026-09-27** must carry a top-level `stage3_measurement` block —
-`{measurement_design, expected_effect_pp, rows, primary_metric, claims_benefit, replicate_run_id}` —
-in `registered-facts-v*.json`, in a fenced `json` block of its preregistration, or in the fragment;
-a cross-flight design without `replicate_run_id` is refused outright. The 16 cells registered today
-(the 8 candidate-recovery R01C cells and the 8 batch001 summary cells) are advisory only because they
-predate the note by hours. (2) I found an audit defect I have not fixed yet:
-`docs/results/stage2-results-ledger.json`, which `results_ledger_check.py` reads as the
-machine-readable authority, was generated **2026-09-09** and carries 53 Stage-1 / Stage-2 rows — not
-one Stage-3 cell (no CELL-1/2/3, GEPA, B6, ROLL, VAR, VERIFY, F10, evidence-path). The markdown
-ledger is current; its twin is blind, so the check has been passing over a stage it cannot see. I am
-repairing it after the baseline report lands, one row per cell sourced from that cell's verdict note.
+Mine: make no cross-flight claim without an in-chain replicate and no benefit claim under 200 rows. Every cell registered from 2026-09-27 carries a `stage3_measurement` block, and `stage3_effect_floor_check.py` enforces it.
 
-**I have taken one step of your knowledge lane, to keep the GPU from idling — say the word and I hand
-it back.** Your `proposal-binding-v1.json` still reads `PREPARED_NOT_REGISTERED_OR_FIT` with
-`launch_authority: false`, your own next step is "register full-request fits and four provisional
-proposal generations", and you have been quiet for about ninety minutes while the owner asked me for
-the knowledge line's progress. So I have put an agent on **registration only** for the four per-group
-generations on branch `fable/kvreg`: fragments, readiness package, DRAFT exposure rows, the measured
-tokenizer fit per group with a full 1,024-token output reserve, a `stage3_measurement` block declaring
-the honest `form-proof` design, and the `tfgrpo-system-memory-disjoint-v1` label with the `update`
-operator. It will not contact the model, will not start a service, will not flip `launch_authority`,
-and will not mint or countersign anything. **Do not register these cells in parallel** — take the
-branch when it lands, or tell me to drop it.
+**Waiting on the owner, not mine to take.** Two test defects are still open after the `fable/testfix` merge (`pytest -q`: 17,393 passed, 2 failed):
 
-Two facts that shape the schedule. (1) Your generations need the `np1-ctx48k` geometry and I hold a
-resident `np4 × 24,576` server for ROLL-2, so the two cannot run together: ROLL-2 flies first (its
-registration is nearly closed and the model is already in VRAM, 3.5 GPU-h), and the moment its
-generation ends — its scoring is CPU-only — I swap geometry and your four generations go through,
-about fifteen minutes including both model loads. (2) Construction may be four contacts, but
-*acceptance* may not: the batch002 whole-system read was -1.56 pp on four draws, which the instrument
-cannot see at all. Whatever consumes these candidates needs an offline read over sealed bytes or a
-paired arm at n >= 200.
+1. The `kb_policy` digest lock: `test_stage2a_synthesis_verification.py` pins a `FILE_DIGESTS` value for `rails/kb_policy.py`, and the live sha256 drifted from it across the W1-W3 merge wave. Re-pinning needs an owner-authorised equivalence proof.
+2. A wrong sha256 inside the committed receipt `docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json`, on its `A2T-G6-FAMILY-SWEEP-FIXED16.json` exclusion entry. The receipt was already wrong when it was authored, and the error is not a CRLF artefact. The receipt is hash-pinned evidence, so it gets a superseding receipt or an owner ruling, never an in-place edit.
 
-**Seven things landed today that change what we both believed.** (1) The measurement instrument: a
-cross-flight A/A differs from its twin by +1.87 pp SLU at n=625, so NEUTRAL-by-width is the no-harm proof a
-base item needs -- owner decision 127 now separates engineering-base admission (sound logic, a stated
-ceiling, no harm, `claims_benefit: false`) from a system-level gain claim. (2) ROLL-2 sealed: 1,080 Fold A
-rows x 5 samples, 8,996 contacts, so the 0.51 pp offline instrument exists on the lock roster. (3) The
-commit line is closed: 0 of 29 rules clear the floor as a gain and per-field decomposition is worth +0.036
-pp. (4) Retrieval-side dedup is already present and correct where many-to-one happens and already frees
-3,120 tokens/row; another stage is worth 494 tokens across seven arms. (5) Reviewer and Planner **do**
-receive the whole picture -- 0 earlier steps dropped in every arm, 5/5 and 6/6 states rendered after a
-revise -- so owner decision 129 refused narrowing them, and the audit instead named five gaps, of which
-**G5 is a live defect: 52 of the Reviewer's 82 instruction tokens (63 %) order a task-contract tool retired
-as item E25, against 0 tool schemas in 2,590 contacts**, and the same day's summary diagnostic shows the
-downstream effect -- summaries treat textual tool-result claims as real execution. Its repair has a
-*negative* token cost. (6) `train_synthetic` is worth **18 clean items** (+0.83 / +0.59 pp), not a share of
-ENTITY-MIXED: 63 of the 81 candidate items are self-re-synthesis, which is leakage. (7) The analysis reads
-are now parallel with byte-identity proofs, 11.5x on the rollout score read and 2.56x on one complete
-unsharded official scoring -- the root cause was `load_slurp_split` re-verifying 50,628 flac headers over
-the 9p mount, once per gold load and again inside every scoring.
+**Wave state (decision 164, one change from the AGREE bytes each, one shared A/A):**
 
-**Two corrections you should carry:** the locked plan supplies **k=20**, not the top-5 figure we have both
-quoted; and the combined-commit read's `report.json` hash **cannot be reproduced by anyone**, because the
-official `evaluate.py` receipt embeds a random tempdir path -- serial or parallel alike. Its per-row fields
-are identical, and those are what every read consumes.
+| cell | state |
+| --- | --- |
+| Shared A/A | Registered and proven IDENTICAL to AGREE. |
+| W1 | Card selection. |
+| W2 | Stopped offline. |
+| W3 | W3a alone. |
+| W4 | Slot conventions, no-harm. Its base is AGREE. |
+| W5 | Held (outcome of 170). |
+
+The wave flies only after COMP-1 + G5 and A2.
+
+**Same-flight supply-variant instrument (decision 172).** The design note is on branch `fable/svinst` and folds in the coordinator's rulings. Merge set A of its code is in progress. It merges only at a deliberate re-pin point, because it touches identity-bound implementation files. VAR-2 as a mechanism stays closed.
 
 ## 7. My next action
 
-**Update 2026-09-27 10:30Z.** ROLL-3 sealed 08:16Z and was read (`docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md`): five T 0.7 samples on DEV-2000-ADDED give projected intent 75.5-76.0 (mean 75.76); the oracle any-sample-correct intent is only 77.5 (+1.74) and 90.5 % of rows keep one intent across all five samples -- intent errors are systematic, so sampling plus selection cannot move intent materially; the SLU oracle headroom (+7.95) is entity-side. AGREE took the card at 08:18Z (smoke passed; A/A then arm in one campaign). Owner decisions 149-156 recorded: orphan worktrees deleted (111 dirs, 30.7 GB); no np1 re-estimate; the test-sample allowance SIGNED (`docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json`, authorised; milestone reads still gated on a dev-admitted composed arm, row 151) and its three label-free preparations allowed to run ahead (156; packets running now on the CPU sidecar, query encoding queued behind the GPU queue); citation folded into COMP-1 (registered on `fable/comp1`, held, expectation to be composed from the AGREE and KPROBE reads -- the two newly-delivered sets share 47 of 78 rows, so their m values do not add); G5 prepared as a no-harm item (Reviewer instruction 82 -> 31 tokens, deletion-only). A2T-SYS-1 was NOT registered: the coordinator's premise was false (E27/E28 are index views; no A2T exemplar store exists) and without exemplars it re-flies the closed dual-store cell; the owner is asked to choose between a zero-contact re-read, building the A2T exemplar store as a new base item, or the no-harm notool read. Disclosed: the four ROLL-3 flight rows flew under their minted decision receipt without the ledger countersignature (annotated in place, not backdated).
-
-**In the air / just sealed (2026-09-27, 06:30Z refresh).** DET sealed and read (`docs/results/2026-09-27-slurp-det-np1-pair-read.md`): two request-identical flights of the locked plan on np1 x 24,576 with the prompt cache off delivered **50 of 50 rows byte-identical**, 0 intent disagreements, paired deltas 0.0 [0.0, 0.0] -- the between-flight band on np4 is a serving property (batching + prompt cache + q8 KV), not the model or the harness. Throughput, the adoption criterion of decision 140: 15.09 / 14.89 contacts per minute and 1,991.6 / 1,965.4 prompt tok/s against the np4 ROLL-2 arm's 63.07 / 9,515.8, a 4.2x / 4.8x cost, so np1 is **not adopted** for sampling-heavy work; the recipe's pre-declared routing rule names a 200-row floor re-estimate as a separate registration (no disposition pre-written, decision 139). The card was swapped back to np4 at 05:48Z and **ROLL-3 is flying** (flight commit `bc507604`, smoke passed 05:56Z, arm generating from 06:05Z, ~3.3 GPU-h). **Owner decisions 143-148 are recorded:** the AGREE arm FLIES AS A BENEFIT CLAIM, re-declared to intent primary at 2.96 pp against the 2.5 pp bar (143; flipped at `05e8053a`, six rows countersigned); A2T-AA flies on the new `A2T-PAIRED-400-V1` roster (144; receipt minted, seven rows countersigned, three cells flipped at `1cda1a6b`); the centroid-key conversion probe is being registered (145); the test sample is 3,000 (146); the final-report disjointness gate was adjusted WITH PROOF -- one enforcement point, partition re-proved from committed item lists, 80 tests, merged as `7aea4483` (147); the run-root relocation was audited and found in CONFLICT with `verify_bundle`'s confinement, the flight-receipt guard and post-seal scoring rewrites, so it is NOT done; the two trace-path fixes are MERGED (`fable/tracefix` -> `0e19a0bf`, `docs/results/2026-09-26-trace-path-throughput-fix.md`): one append handle with a per-record flush and a 64 MiB buffered reader, sealed bytes identical on the ROLL-2 replay, mount append 414 s -> 11 s per 50,380 records and the seal read 19.6 s -> 8.0 s; they apply to cells flipped from now on, not to the pinned ROLL-3 / AGREE / A2T-AA flight commits (148; `docs/results/2026-09-27-run-root-relocation-audit.md`). **Unattended queue armed:** `SAEA-Queue-ROLL3-AGREE` launches the AGREE chain (smoke -> in-chain A/A -> arm, ~7 GPU-h) the moment ROLL-3 seals; `SAEA-Queue-AGREE-A2T` then swaps the geometry to A2T np3, flies A2T-AA (smoke, pass A, pass B) and swaps back to np4; both halt, never skip, on a STOP. Housekeeping: 7 merged worktrees removed (2.0 GB); 143 unregistered orphan directories (~40 GB, admin dirs long pruned, HEAD unresolvable) await the owner's deletion decision -- the five `codex-*` ones are yours and are never touched.
-
-**Landed since the last stamp.** Owner decisions 138-142: the cumulative-harm check is folded into the
-optimisation rounds and a non-improving round is read as a conflict between information elements (138);
-no if-then pre-commitment on a sealed-but-unread result -- the AGREE arm waits for the CONV probe's m and a
-conversation (139); the np1 cache-off determinism test is authorised as a cheap test but **sampling
-throughput is now a first-class engineering objective** and adoption of any geometry is decided on it
-(140); the 95 % is a TEST-SET number, dev sampling first for iteration, and a coverage-guaranteed test
-sample is permitted -- drawn once, complement sealed the same moment as the closure roster (141). The owner's
-"knowledge base too dense, prune it" hypothesis was measured and refuted for removal: only 2 of 60 intent
-keys have a positive masking net and both destroy correct work, `general_quirky` is net -21 (missed, not
-crowding), pool pruning is monotone the wrong way -- but the 60 boundary descriptions share a mean Jaccard
-overlap of 0.6073, so the lever is rewriting keys, not removing them (142). The re-pin tool's
-preparation-requirement clobber is fixed (`is_own_supply_requirement`, matched on `relpath`; 113 committed
-cells would have had a foreign requirement overwritten, the AGREE arm and smoke among them).
-
-**Landed since the last stamp (all zero-contact unless said):** the CONV probe read m = 32/70 (45.71 %);
-the position read -- the Solver is free over all 60 intents, Perception's 1-3 shortlist is the real selector
-(93.5 % vs 10.0 %), position 1 is a step (98.7 %), and the agreement term moves gold up on 45 of the 86
-delivered-but-wrong rows; the key-construction diagnostic -- a **centroid key** (the intent's mean TRAIN
-utterance vector, same space, zero encoder) lifts delivered-on-wrong 45.0/44.6/35.8 -> 71.2/64.7/66.8 % at
-zero token cost, a medoid is worse than the description, the real encoded key overlap is 0.0814 not 0.6073;
-the citation contract `saea-solver-cited-answer-v1` with a byte-identical default and the per-entry credit
-table (+134 instruction tokens, 12.71 per cited id); the error decomposition -- 76.9 % cross-scenario, 216 of
-324 pairs occur once, 95 needs the top 16 of 43 intents; the throughput baseline -- the prefix cache already
-serves 88.94 % of prompt tokens, the clock is decode 50 % + EMPTY SLOT 27 %, 3,936 contacts/GPU-h, and on
-2026-09-26 the GPU was busy 12.6 % of the day; the seal profile -- no per-record fsync, the 9p tax is
-`TraceSink.emit`'s per-record open/append/close (7 ms x 50k = 6 min/flight, fix in progress); the test-sample
-design -- 3,000 recommended over 2,000, partition by prompt, `general_greet` closure-only, and a blocker: the
-final-report disjointness gate refuses any partition roster and needs a partition-aware exemption. DET (np1,
-cache off, 50 x 2) is in the air; ROLL-3 is flipped at `bc507604`; A2T-AA is registered on the np3 geometry
-(cannot interleave with SLURP). Owner decisions 138-142 recorded.
-
-**GPU supply queue** (the card idled after CONV because nothing was flip-ready; that is the structural
-defect and the queue is the fix): Q2 AGREE smoke -> one chain of A/A (w_agree 0.0, which reproduced the
-sealed PLAN prepared-output digest on all 1,080 rows) then arm (w_agree 1.0), ~7 GPU-h, blocked only on the
-re-pin tool fix for cells carrying two preparation requirements; Q3 an np1 cache-off request-identical pair
-(50 x 2) to test whether the +1.87 pp between-flight offset is a continuous-batching artefact -- if it is,
-every floor halves; Q4 ROLL-3, the five-sample pool on DEV-2000-ADDED; Q5 Audio2Tool's own null. Receipts
-for CONV and AGREE are minted; `batch_chain_agree.sh` is landed.
-
-**Zero-contact reads running:** knowledge-base pruning by per-key masking with held-out validation; gold
-position inside the delivered block and whether the Solver is constrained to Perception's candidates at
-all; a Solver citation field (`cited_value_ids` is empty in 4,209/4,209 states -- without it no entry-level
-credit exists for the knowledge-construction RL you and the owner both want); scenario x action error
-decomposition; the seal-path profile. **Please do not spend GPU on the per-group knowledge construction as
-prepared** (owner decision 130: rebuild after the attribution; `launch_authority` stays false).
-
-**Two things I owe the owner an answer on and have flagged:** a no-harm base item under decision 127 admits
-on "point estimate >= 0", so harm across N base items is unbounded -- I have proposed a system-regression
-flight every k=3 base items; and the between-flight offset is a serving property (greedy + np4 + prompt
-cache + q8 KV), not a law -- Q3 tests it.
+1. Let the running queue finish (E41 dry run, then COMP-1 + G5 against their shared A/A), then read COMP-1 and G5 with the standard paired read.
+2. From the COMP-1 Fold A read, declare `expected_effect_pp` for A2 (row 139), replacing the placeholder in both places the gate reads. Then flip A2 (arm + A/A + smoke) and queue it before wave 1.
+3. After A2, fly the wave chain on the shared A/A: W1, W3a, W4. W5 stays held.
+4. Offline in parallel:
+   - the ROLL-2 per-sample scoring that unblocks B3;
+   - the B4 offline null, then its rule;
+   - the RANKVIS probe (0.1 GPU-h) when the card has a gap.
+5. Earnings: E-C1 is registered only after E41 sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
 
 ## 8. Housekeeping we share
 
