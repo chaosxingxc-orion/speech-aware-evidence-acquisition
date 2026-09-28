@@ -38,7 +38,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "4d8363133692318c5c2fb126477e8efb3787451fcc838f348d188fd62b3ccb37"
+      "sha256": "0108400a674592a7cc8460c3bbe3b27ca3c6f0414a22b06381111c8ab7bece70"
     },
     "read_driver": {
       "path": "scripts/analysis/rankvis_probe_read.py",
@@ -110,9 +110,9 @@
   },
   "recorded_at_utc": null,
   "registered_hashes": {
-    "composed_config": "98580c69f104f97b1686e61585bffa595af723db16d5c1ee5025c491e80db293",
+    "composed_config": "674efb292dc5140922ddfe47ee9812b04a7a82b8f7094901c4eca5a6072e60c4",
     "note": "as composed at 64665c90 (readiness held); repin_cell.py recomputes them at the flip.",
-    "protocol": "d6241508df1bc05f02996be1c1bfd82c58199d362d005dd6312580e7f38f1428"
+    "protocol": "38b3ace20cb5602d707775da1dae535fb7750a830244aaf464d9cad6559bc4f6"
   },
   "schema": "saea-campaign-decision-v1",
   "service": {

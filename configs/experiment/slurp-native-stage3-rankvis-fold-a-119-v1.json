@@ -14,8 +14,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Cell RANKVIS, the rank-visible rendering conversion probe (owner decision 171), registered before contact on 2026-09-27 from the registered AGREE arm's own fragments with one native_episode key added. Treatment only: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 holds these rows' comparator answers and is never re-flown. HELD: root merges the knowledge_value_rendering runner change, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement. The requirements list is empty by design and --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-rankvis-fold-a-119-admission-v1",
+            "relpath": "coordination/slurp-stage3-rankvis-fold-a-119-v1/root-admission-v1.json",
+            "sha256": "3c8b78fd617ae815464c6aa0e3086c68e8926ac3d68b07dfe645336a62d59477",
+            "reason": "Decision slurp-stage3-rankvis-fold-a-119-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1/phase-supply-v1.json",
+            "sha256": "3a81d7c83e1a7fe6196de3a0bccd5808be18547feb6502340aecf2d954a89a35",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1"
     }

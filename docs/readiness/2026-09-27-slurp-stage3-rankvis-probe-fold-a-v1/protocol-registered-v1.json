@@ -4,11 +4,11 @@
     "probe": {
       "attempt_id": "attempt-slurp-native-stage3-rankvis-fold-a-119-generation-v1",
       "cell": "slurp-native-stage3-rankvis-fold-a-119-v1",
-      "composed_config_hash": "98580c69f104f97b1686e61585bffa595af723db16d5c1ee5025c491e80db293",
+      "composed_config_hash": "674efb292dc5140922ddfe47ee9812b04a7a82b8f7094901c4eca5a6072e60c4",
       "experiment": "slurp-native-stage3-rankvis-fold-a-119-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-rankvis-fold-a-119-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-FIT-V1",
-      "protocol_hash": "d6241508df1bc05f02996be1c1bfd82c58199d362d005dd6312580e7f38f1428",
+      "protocol_hash": "38b3ace20cb5602d707775da1dae535fb7750a830244aaf464d9cad6559bc4f6",
       "rows": 119,
       "run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1",
       "split_identity_hash": "8af458d8cfc91cb705a4891fa39245bac87c4f3b46f1931d7989bb553f78aaac"
