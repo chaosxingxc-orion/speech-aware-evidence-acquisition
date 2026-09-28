@@ -12,12 +12,17 @@ package's no-harm declaration.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
 
 from speech_aware_evidence_acquisition.core.base import KNOWLEDGE_FUSERS
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
+# Registers saea-fuse-supplyfilter-v1 (and its siblings) into KNOWLEDGE_FUSERS at import time;
+# without this the module-under-test check below is collection-order-dependent on some other
+# test module happening to import the rails knowledge stack first.
+from speech_aware_evidence_acquisition.rails import kb_policy  # noqa: F401
 
 REPO = Path(__file__).resolve().parents[2]
 
@@ -38,7 +43,16 @@ PINNED_W3A = {IB + "release.relpath", IB + "release.sha256", IB + "snapshot.relp
 PINNED_W3B = {SOLVER + "fuse_policy", SOLVER + "k", SOLVER + "fuse_coverage.c", SOLVER + "fuse_coverage.m"}
 RECEIPTS = "preparation_source_receipts"
 BOOKKEEPING = ("native_contact_fit.", "prepared_phase_supply", "what_this_is")
+DECISION_ID = "slurp-stage3-w3-contrast-fold-a-admission-v1"
 H_SLU, H_INTENT = 1.2485, 0.9943
+
+
+def _is_own_supply(relpath: str, run_id: str) -> bool:
+    """This cell's own first-phase supply, minted under its own run id at the flip
+    (item E16); the relpath/prefix identifies the cell, the digest is rewritten by
+    scripts/flights/repin_cell.py and is never asserted here."""
+
+    return re.fullmatch(rf"prepared/{re.escape(run_id)}/phase-supply-v\d+\.json", relpath) is not None
 
 
 def _read(path: Path) -> dict:
@@ -96,7 +110,11 @@ def test_composed_diff_is_the_one_pin_the_receipts_and_bookkeeping(experiment):
     assert mine["knowledge_stores"]["intent-boundaries"]["phase_supply"] == parent["knowledge_stores"]["intent-boundaries"]["phase_supply"]
     assert mine["phase_material"] == parent["phase_material"]
     assert mine["native_episode"] == parent["native_episode"]
-    assert "prepared_phase_supply" not in mine
+    # HELD as registered; the flip's re-pin mints this cell's OWN first-phase supply under its
+    # own run id (item E16), never a foreign one -- the COMP-1 flip is the pattern.
+    supply = mine.get("prepared_phase_supply")
+    run_id = ARM_RUN if experiment == ARM else SMOKE_RUN
+    assert supply is None or _is_own_supply(supply["relpath"], run_id), supply
 
 
 @pytest.mark.parametrize("experiment", [ARM, SMOKE])
@@ -126,7 +144,15 @@ def test_cells_are_held_with_empty_requirements_and_their_own_ids():
         document, composed = _compose(experiment)
         cell = document["cells"][0]
         assert cell["run_id"] == run_id
-        assert cell["readiness"]["state"] == "held" and cell["readiness"]["requirements"] == []
+        readiness = cell["readiness"]
+        assert readiness["state"] in ("held", "ready")
+        if readiness["state"] == "held":
+            assert readiness["requirements"] == []
+        else:
+            decisions = [r for r in readiness["requirements"] if r.get("kind") == "decision"]
+            assert [d["expected_decision_id"] for d in decisions] == [DECISION_ID]
+            own = [r for r in readiness["requirements"] if r["kind"] == "preparation"]
+            assert len(own) == 1 and _is_own_supply(own[0]["relpath"], run_id), own
         assert composed.values["native_contact_fit"]["run_id"] == FIT[run_id]
         assert document["stage3_algorithm"]["id"] == "none"
         assert composed.values["native_episode"]["finite_completion_policy"] == "deliver-latest-or-abstain"

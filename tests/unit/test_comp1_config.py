@@ -388,7 +388,9 @@ def test_all_seven_exposure_rows_exist_and_no_cell_contains_a_pipe():
         assert len(parts) == 17, (run, len(parts))
         cells = [part.strip() for part in parts[1:-1]]
         assert cells[6] == "discovery"
-        assert cells[8] == "no"
+        # "consumed" is operational lifecycle state (yes once the row is actually contacted),
+        # never design identity; the schema position/enum is what a registered row must hold.
+        assert cells[8] in ("yes", "no")
         if run == CLASSES_ROW:
             assert cells[2] == "model-free-check" and cells[9] == "0"
         elif run == RUNS[ARM][0]:
