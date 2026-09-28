@@ -1,0 +1,125 @@
+{
+  "_draft_note": "A DRAFT written by the registration agent for root to mint on the data root with scripts/flights/comp1dev/comp1dev_mint_receipt.py (status 'decided', recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided', and root mints it ONLY after the coordinator has declared expected_effect_pp in both places.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/analysis-recipe-v1.json",
+      "sha256": "01ba48f82c1c1f379786c3e7bbfef9d686086485f724281e4a62dbd10f8cdf5a"
+    },
+    "base_cell": "the sealed DEV-2000-ADDED plan arm (SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1)",
+    "fold_a_registration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/registered-facts-v1.json",
+      "sha256": "db008d0da36b90728505f0e6f10d323032b934a68b41426c50292574ccda9e3d"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "79885109a5219a8818f07489c136f71a2177ac58523b6b33ecebbea552d821b0"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/protocol-registered-v1.json",
+      "sha256": "fd2917ef9cf1efbf8c75ab14b30fb15292dfbd6e57b1ce64157b4e315753efc8"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/README.md",
+      "sha256": null
+    },
+    "reclassification": {
+      "path": "docs/results/2026-09-27-verdict-reclassification.md",
+      "sha256": "9d7acbd229528e4eb43c34619bdcd4cd21333dcd8360b8dced963083181e69fa"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/registered-facts-v1.json",
+      "sha256": "f971ba0ab2e6e27e84c5d7114a6b9b92de892bf23ad7cfe673028057c4b67e6a"
+    },
+    "registration_base_commit": "09f1b31e",
+    "roster_receipt": {
+      "path": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+    }
+  },
+  "authorization_basis": "Owner decision 161 (AGREE enters COMP-1 pending the DEV replication) with 138 and 152; docs/results/2026-09-27-verdict-reclassification.md; standing 133, 139, 127, 101, 77; the instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 32819,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 90
+    }
+  },
+  "cell_kind": "Stage-3 composed system-policy arm replicated on DEV-2000-ADDED (label sealed-credit-system-policy-v1, operator context_application) with its four-row smoke and its in-chain A/A: three cells, six run ids, one chain for the A/A and the arm.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim. The citation part is never reported as a gain. Development numbers only.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell COMP-1 on DEV-2000-ADDED 1,000 beside its in-chain A/A in one campaign chain after its four-row smoke; read at intent primary with official SLU-F1 (slurp-slu-official) the guard against the coordinator's declared expected_effect_pp.",
+  "decision_id": "slurp-stage3-comp1-dev2000-added-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-V1",
+    "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-FIT-V1",
+    "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1",
+    "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-FIT-V1",
+    "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. Budgets are run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before expected_effect_pp is declared, the rows are countersigned, the receipt is minted and all three cells are flipped",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any fourth factor or any k, tau, fuse-policy, w_prior, store, release, snapshot, roster or geometry change"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1000,
+    "partition": "DEV-2000-ADDED 1,000, unchanged; the smoke flies its first four rows",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "aa": {
+      "composed_config": "71462277daeea3f0c9b08c1f099b64fd79949a3f8659177013756871ecac7dd3",
+      "protocol": "5bc29d22e2fa75481cfe3ff9158fbe1e6388657a7f57de83fac2446bee18488c"
+    },
+    "arm": {
+      "composed_config": "4f544523febc8b01e788bd246b3c23dd270fac21f98e230db0bb5dcc71634ba2",
+      "protocol": "79c6da8e291152b27ef8ad1426a7428c5fd17dc60480970faca73549268d7a62"
+    },
+    "smoke": {
+      "composed_config": "eda8affdb54e1c61e552af4e6f7b3457fcfa6382d190fe3f146f809dc97e805a",
+      "protocol": "1d91efb82053c665c022f3cb365e2d587ce02d45415bbcb7a324aec5d4f5ef40"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

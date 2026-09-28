@@ -1,0 +1,136 @@
+{
+  "authority": "owner decisions 161, 138, 152 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); docs/results/2026-09-27-verdict-reclassification.md; the COMP-1 Fold A registration docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1; the roster moves of docs/readiness/2026-09-22-slurp-b6-dev2000-added-v1 and docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1; the instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "cells": {
+    "aa": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-dev2000-added-generation-v1",
+      "boundary_facet_source_sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+      "cell": "slurp-native-stage3-comp1-aa-dev2000-added-v1",
+      "composed_config_hash": "71462277daeea3f0c9b08c1f099b64fd79949a3f8659177013756871ecac7dd3",
+      "declares_agreement_source": false,
+      "experiment": "slurp-native-stage3-comp1-aa-dev2000-added-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-aa-dev2000-added-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-FIT-V1",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "5bc29d22e2fa75481cfe3ff9158fbe1e6388657a7f57de83fac2446bee18488c",
+      "rows": 1000,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1",
+      "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+    },
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-dev2000-added-generation-v1",
+      "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "cell": "slurp-native-stage3-comp1-dev2000-added-v1",
+      "composed_config_hash": "4f544523febc8b01e788bd246b3c23dd270fac21f98e230db0bb5dcc71634ba2",
+      "declares_agreement_source": true,
+      "experiment": "slurp-native-stage3-comp1-dev2000-added-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-dev2000-added-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-FIT-V1",
+      "policy": "phase-native-candidates-review-revise-cited-v1",
+      "protocol_hash": "79c6da8e291152b27ef8ad1426a7428c5fd17dc60480970faca73549268d7a62",
+      "rows": 1000,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-V1",
+      "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-dev2000-added-smoke-4-generation-v1",
+      "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "cell": "slurp-native-stage3-comp1-dev2000-added-smoke-4-v1",
+      "composed_config_hash": "eda8affdb54e1c61e552af4e6f7b3457fcfa6382d190fe3f146f809dc97e805a",
+      "declares_agreement_source": true,
+      "experiment": "slurp-native-stage3-comp1-dev2000-added-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-dev2000-added-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-FIT-V1",
+      "policy": "phase-native-candidates-review-revise-cited-v1",
+      "protocol_hash": "1d91efb82053c665c022f3cb365e2d587ce02d45415bbcb7a324aec5d4f5ef40",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-V1",
+      "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0"
+    }
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+    "in_chain_replicate": {
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1",
+      "why": "rule 4: a cross-flight contrast with no in-chain replicate is refused outright"
+    },
+    "margins": {
+      "h_intent": 1.152,
+      "h_slu": 1.2525,
+      "measured_offset_slu_pp": -0.25,
+      "n": 1000,
+      "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, row 'cross-flight A/A, DEV-2000-ADDED' (the B6 pair)"
+    },
+    "never_reflown": true,
+    "official": {
+      "intent_accuracy": 76.6,
+      "slu_f1": 65.4
+    },
+    "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1"
+  },
+  "decision_rule_fixed_here": "Read against the IN-CHAIN A/A, never against the sealed DEV plan arm alone (instrument rules 3 and 4). PRIMARY: intent accuracy (scenario_action exact), paired, utterance-clustered (913 utterances), 10,000 bootstrap draws. GUARD: official pooled SLU-F1 (slurp-slu-official) non-inferior at the plan's own null on this roster (h_SLU 1.2525). REPLICATED: the intent CI95 lower bound above zero AND the guard holds AND the declared expected_effect_pp was on the record before the seal. NEUTRAL: both metrics inside the own null (h_intent 1.1520 / h_SLU 1.2525) without a replicated gain -- read under decision 138 as a conflict diagnosis, never 'no gain'. HARMFUL: a measured loss on either metric (decision 25). The citation part is never reported as a gain.",
+  "development_numbers_only": "Every number this cell produces is a DEV-2000-ADDED development number (owner decisions 28 and 86), never a test claim.",
+  "expectation": {
+    "bar_at_n_1000_pp": 2.6,
+    "gate_state_until_then": "scripts/checks/stage3_effect_floor_check.py: FAIL [unparsable-declaration] on the arm (expected_effect_pp must be a number) -- INTENDED, exactly the state COMP-1 Fold A was registered in (its commits 3667e01d..d9cef3e7 carried the same one expected FAIL until 43027f59 declared 3.23 pp); the A/A and the smoke parse.",
+    "own_null_on_this_roster": {
+      "h_intent": 1.152,
+      "h_slu": 1.2525,
+      "measured_offset_slu_pp": -0.25,
+      "n": 1000,
+      "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, row 'cross-flight A/A, DEV-2000-ADDED' (the B6 pair)"
+    },
+    "placeholder": "TO-BE-DECLARED-BY-COORDINATOR-FROM-THE-COMP-1-FOLD-A-READ",
+    "what_composes_it": "the COMP-1 Fold A read (its measured intent delta against its in-chain A/A and its per-class conversions), declared by the coordinator only after that read is on the record (decision 139)",
+    "where_to_fill": [
+      {
+        "currently": "TO-BE-DECLARED-BY-COORDINATOR-FROM-THE-COMP-1-FOLD-A-READ",
+        "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/registered-facts-v1.json",
+        "json_path": "stage3_measurement.SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-V1.expected_effect_pp"
+      },
+      {
+        "currently": "TO-BE-DECLARED-BY-COORDINATOR-FROM-THE-COMP-1-FOLD-A-READ",
+        "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1-preregistration.md",
+        "location": "the fenced json block under '## The measurement declaration', key stage3_measurement.SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-V1.expected_effect_pp"
+      }
+    ]
+  },
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. Budgets are run-cumulative across attempts.",
+  "knowledge_exclusion": {
+    "agreement_table": "its vote pool is the same train-exemplars snapshot (vote_snapshot_sha256 4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9); the builder's utterance-identity self-exclusion MEASURED self_excluded_exemplars = 0 and rows_with_a_self_excluded_exemplar = 0 over all 1,000 rows (prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/receipt.json)",
+    "centroid_keys": "built from the R01-excluded construction-TRAIN pool (knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json, 8,554 TRAIN utterances), whose receipt states the one file is held out on TRAIN Fold A, ROLL-1 (R01C) and DEV-2000-ADDED alike (prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json construction.construction_pool); a subset of the TRAIN pool above, so the same disjointness proof covers it",
+    "claim": "No knowledge the arm or the A/A reads was constructed from a DEV-2000-ADDED row.",
+    "roster_receipt": {
+      "disjointness_proof": {
+        "added_utterances_with_two_recordings": 87,
+        "max_recordings_per_added_utterance": 2,
+        "non_devel_ids_added": 0,
+        "shared_with_dev1000_recordings": 0,
+        "shared_with_dev1000_utterances": 0,
+        "shared_with_final60_utterances": 0,
+        "shared_with_probe60_utterances": 0,
+        "shared_with_test_recordings": 0,
+        "shared_with_train_construction_recordings": 0
+      },
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+    },
+    "stores_and_releases": "intent-boundaries-v1 and slot-contracts-v1 snapshots and releases unchanged from the sealed DEV plan arm (proof (a): no store path moves)",
+    "train_exemplars_store": "size-pool-annotated-exemplars, the PARENT TRAIN-built pool the sealed DEV plan arm, PLANr-DEV2000, CELL-3 and ROLL-3 all read (docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1/registered-facts-v1.json train_exemplars_store): disjoint from every DEV-2000-ADDED recording by the roster receipt's disjointness_proof (shared_with_train_construction_recordings = 0, non_devel_ids_added = 0)"
+  },
+  "prohibitions": [
+    "No flight before the coordinator declares expected_effect_pp in both places, root countersigns the rows, mints the decision receipt and all three cells are flipped.",
+    "No re-flying of the sealed DEV plan arm; no test-split, DEV-1000 or Fold B contact or read.",
+    "No fourth factor; no k, tau, fuse_coverage, w_prior, store, release, snapshot or roster change beyond the registered roster move.",
+    "The citation part may never be reported as a gain (decision 127).",
+    "No paper-scale profile. --allow-output-change is never passed."
+  ],
+  "protocol_id": "slurp-stage3-comp1-dev2000-added-protocol-v1",
+  "registered_at_utc": "2026-09-27T23:55:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1dev, branch fable/comp1dev",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_EXPECTATION_AND_READINESS_FLIP",
+  "study_commit_at_registration": "09f1b31e",
+  "the_composition": "cell COMP-1's composed plan with only the roster moved: the locked v2.0 plan as the sealed DEV-2000-ADDED plan arm flew it + (1) the agreement term as AGREE carries it (w_agree 1.0 over the exemplar-intent vote, recall k 60, delivered 8-1-8; the vote table is this roster's own SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1) + (2) the centroid boundary key as KPROBE pins it (facet_source prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl) + (3) the citation contract (policy phase-native-candidates-review-revise-cited-v1, Solver response_format_id saea-solver-cited-answer-v1, instruction probes/slurp_native_role_solver_cited_v1.txt, deliver_normaliser saea-deliver-cited-answer-normalise-v3-v1) + (4) nothing else",
+  "the_question": "Does cell COMP-1's composition (the agreement term, the centroid boundary key and the citation contract on the locked plan) raise intent-recognition accuracy on the fresh evaluation roster DEV-2000-ADDED 1,000, read at its in-chain A/A, with official SLU-F1 non-inferior?",
+  "unchanged": "the roster re-point of the sealed DEV plan arm, the geometry (np4 x 24,576), the session serving-slurp-native-candidate-five-train-a-np4-v1, the 11-contact ceiling, all stores' pins, the exemplar k of 20, the role graph, the Perception / Reviewer / Planner templates, the DEV scorer and every budget"
+}
