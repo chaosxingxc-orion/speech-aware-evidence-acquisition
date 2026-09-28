@@ -64,8 +64,8 @@
       "sha256": "e49c3a48b204920a9c4eaae58c1571483504fde8877cb94e2f3c3243c2bec46a"
     },
     "dry_run_read": {
-      "path": "docs/results/<the committed E41 dry-run read; root fills this path before minting>",
-      "sha256": null
+      "path": "docs/results/2026-09-28-e21-e41-four-row-dry-run-read.md",
+      "sha256": "3eb4cd403ef05d31390711e9225fd962597ccc953cf53033d0d74f9c7b65d384"
     }
   },
   "service": {
