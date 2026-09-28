@@ -23,7 +23,15 @@ other one):
 * :func:`parse_cited_answer` is the strict parser (no text repair): the
   envelope is ``{"schema", "answer", "citations": {"intent", "entities"}}``
   and the ANSWER is an ordinary JSON object the model writes exactly as it
-  writes today's answer. The delivered text is the answer's OWN BYTES, cut
+  writes today's answer. A citation list is a SET of ids: an id the model
+  repeats inside one list is collapsed to its first occurrence and COUNTED
+  (``duplicate_ids_dropped``), never refused -- the per-contact grammar
+  cannot express ``uniqueItems`` (the rendered format deliberately carries
+  none, and llama.cpp's schema-to-grammar has no such constraint), so a
+  repeat is a legal output of the constrained decoder; refusing it aborted
+  the COMP-1 arm at one row
+  (``docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md``).
+  The delivered text is the answer's OWN BYTES, cut
   from the raw response by :func:`answer_span` -- never a re-serialisation --
   so the citation is metadata beside the answer and never part of it.
 * :func:`bind_cited_completion` is what the runner seals: the state content
@@ -269,6 +277,9 @@ class CitedAnswer:
     answer: Mapping[str, object]
     intent_evidence_ids: tuple[str, ...]
     entity_citations: tuple[EntityCitation, ...]
+    #: How many repeated ids the parser collapsed across every citation list
+    #: (intent and each entity). Zero on every envelope without a repeat.
+    duplicate_ids_dropped: int = 0
 
     @property
     def cited_value_ids(self) -> tuple[str, ...]:
@@ -309,17 +320,27 @@ def parse_cited_answer(text: str) -> CitedAnswer:
     except json.JSONDecodeError as error:
         raise SolverCitationError("cited answer does not match its JSON contract") from error
     citations = document["citations"]
-    intent_ids = tuple(citations["intent"])
+    # A citation list is a set of ids. The per-contact grammar admits a
+    # repeated id (it cannot express ``uniqueItems``), so a repeat is
+    # collapsed to its first occurrence and counted: the answer bytes, the
+    # cited set and ``cited_value_ids`` are exactly what they would be
+    # without the repeat. A BLANK id is still refused: the per-contact
+    # grammar enumerates supplied non-empty ids, so a blank one means the
+    # server did not honour the grammar.
+    dropped = 0
+    raw_intent = tuple(citations["intent"])
+    if any(not value.strip() for value in raw_intent):
+        raise SolverCitationError("intent citations must be non-blank ids")
+    intent_ids = tuple(dict.fromkeys(raw_intent))
+    dropped += len(raw_intent) - len(intent_ids)
     entities = []
     for entity in citations["entities"]:
-        ids = tuple(entity["evidence_ids"])
-        if len(set(ids)) != len(ids):
-            raise SolverCitationError("an entity citation repeats an evidence id")
-        if any(not value.strip() for value in ids) or not entity["type"].strip():
+        raw_ids = tuple(entity["evidence_ids"])
+        if any(not value.strip() for value in raw_ids) or not entity["type"].strip():
             raise SolverCitationError("citation ids and entity types cannot be blank")
+        ids = tuple(dict.fromkeys(raw_ids))
+        dropped += len(raw_ids) - len(ids)
         entities.append(EntityCitation(type=entity["type"], evidence_ids=ids))
-    if len(set(intent_ids)) != len(intent_ids) or any(not value.strip() for value in intent_ids):
-        raise SolverCitationError("intent citations must be unique non-blank ids")
     start, end = answer_span(text)
     return CitedAnswer(
         schema=document["schema"],
@@ -327,6 +348,7 @@ def parse_cited_answer(text: str) -> CitedAnswer:
         answer=document["answer"],
         intent_evidence_ids=intent_ids,
         entity_citations=tuple(entities),
+        duplicate_ids_dropped=dropped,
     )
 
 
@@ -370,7 +392,10 @@ def bind_cited_completion(
     satisfy the contract -- under constrained decoding it does by
     construction, and a server that did not honour the grammar is a refusal
     here rather than an envelope delivered as an answer -- and may cite only
-    supplied ids. Any other finish (a ``length`` truncation, which the
+    supplied ids. A repeated id is NOT a grammar violation (the grammar
+    cannot forbid it): the parser collapses it and the record carries
+    ``duplicate_citation_ids_dropped`` -- present only when nonzero, so every
+    record without a repeat is byte-identical to its prior self. Any other finish (a ``length`` truncation, which the
     episode's own finite-completion policy disposes of after this seal) is
     sealed verbatim with no citation and the reason recorded, so the seal
     never invents a citation and never blocks the policy that owns the
@@ -397,6 +422,11 @@ def bind_cited_completion(
         )
     parsed = parse_cited_answer(text)
     validate_citations_supplied(parsed, supplied)
+    duplicates = (
+        {"duplicate_citation_ids_dropped": parsed.duplicate_ids_dropped}
+        if parsed.duplicate_ids_dropped
+        else {}
+    )
     return CitedCapture(
         state_content=parsed.answer_text,
         cited_value_ids=parsed.cited_value_ids,
@@ -411,6 +441,7 @@ def bind_cited_completion(
             "entity_citations": parsed.citations_json()["entities"],
             "answer_sha256": _sha256(parsed.answer_text),
             "response_text_sha256": response_text_sha256,
+            **duplicates,
         },
     )
 

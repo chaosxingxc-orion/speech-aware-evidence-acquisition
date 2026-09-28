@@ -327,6 +327,72 @@ def native_context_abstention_records(
     return request_id, request, response
 
 
+def native_seal_refusal_abstention_records(
+    *, sample_id: str, source_contact: Mapping[str, object],
+    seal_refusal: Mapping[str, object],
+) -> tuple[str, dict[str, object], dict[str, object]]:
+    """Item E43 (2026-09-28): derive empty delivery for a row whose deciding
+    completion a structured-output contract's own seal refused.
+
+    Mirrors :func:`native_abstention_records` -- the SAME
+    ``deliver-latest-or-abstain`` policy, the SAME quarantined-source
+    derivation, no new model call -- with the one difference the facts
+    force: there is no ``finish_reason`` to record. The refused completion
+    is always a grammar-valid ``"stop"`` finish (the seal, never the wire,
+    refused it), so the disposition's own ``seal_refusal`` record -- the
+    refusal's exception class and message, never the answer -- takes that
+    field's place.
+    """
+
+    if not isinstance(sample_id, str) or not sample_id:
+        raise ValueError("native abstention requires a sample identity")
+    if (
+        not isinstance(seal_refusal, Mapping)
+        or set(seal_refusal) != {"error_class", "message"}
+        or not isinstance(seal_refusal["error_class"], str) or not seal_refusal["error_class"]
+        or not isinstance(seal_refusal["message"], str) or not seal_refusal["message"]
+    ):
+        raise ValueError("native abstention requires its seal-refusal record")
+    fields = ("agent_contact_id", "request_id", "request_sha256",
+              "response_sha256", "response_text_sha256")
+    if not isinstance(source_contact, Mapping):
+        raise ValueError("native abstention requires source contact custody")
+    source = {key: source_contact.get(key) for key in fields}
+    for key, value in source.items():
+        if not isinstance(value, str) or not value:
+            raise ValueError("native abstention source identity is invalid")
+        if key.endswith("sha256") and (
+            len(value) != 64 or any(c not in "0123456789abcdef" for c in value)
+        ):
+            raise ValueError("native abstention source hash is invalid")
+
+    def digest(value):
+        return hashlib.sha256(json.dumps(
+            value, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")).hexdigest()
+
+    request_id = f"{source['request_id']}/delivery/native-seal-refusal-abstention-v1"
+    request = {
+        "tool_id": "native-terminal-seal-refusal-abstention-v1",
+        "sample_id": sample_id,
+        "source": {"source_request_id": source["request_id"], "contact": source},
+        "seal_refusal": dict(seal_refusal),
+        "policy": "deliver-latest-or-abstain",
+        "disposition": "no-completed-solver",
+    }
+    request["payload_sha256"] = digest(request)
+    response = {
+        "text": normalize_terminal_response(None, skipped=True),
+        "source_request_id": source["request_id"],
+        "delivery_kind": "abstention",
+        "request_sha256": request["payload_sha256"],
+    }
+    response["response_sha256"] = digest(response)
+    response["response_text_sha256"] = hashlib.sha256(b"").hexdigest()
+    return request_id, request, response
+
+
 def native_abstention_records(
     *, sample_id: str, source_contact: Mapping[str, object], finish_reason: str,
 ) -> tuple[str, dict[str, object], dict[str, object]]:

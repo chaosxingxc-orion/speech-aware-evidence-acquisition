@@ -318,6 +318,18 @@ def validate_native_episode_delivery_receipt(
             _context_fit_delivery(receipt, role_visits, error_type=error_type)
         )
     if (
+        isinstance(disposition, Mapping)
+        and disposition.get("reason") == SEAL_REFUSAL_DISPOSITION
+    ):
+        # E43: checked BEFORE the finite branch, for the same reason the
+        # context-fit branch above is -- a seal-refusal row carries the same
+        # ``interrupted_role``/``abstention_receipt`` marks a finite row
+        # does and would otherwise be read (and rejected) as a malformed
+        # finite one.
+        return _with_exhaustion(
+            _seal_refusal_delivery(receipt, role_visits, error_type=error_type)
+        )
+    if (
         isinstance(disposition, Mapping) and disposition.get("reason") == "finite_completion"
         or receipt.get("abstention_receipt") is not None
         or receipt.get("interrupted_role") is not None
@@ -604,6 +616,108 @@ def _finite_delivery(receipt, visits, *, error_type):
         return NativeEpisodeDelivery("finite", terminal, terminal["final_contact"], disposition, None)
     if terminal is not None or abstention != {"source_contact": rejected}:
         _raise(error_type, "finite episode without a Solver requires a bound abstention")
+    return NativeEpisodeDelivery("abstention", None, rejected, disposition, None)
+
+
+#: Item E43 (2026-09-28, coordinator ruling on
+#: ``docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md``): the
+#: ``terminal_disposition.reason`` of a row whose deciding completion -- a
+#: grammar-valid ``stop`` finish -- the seal itself refused (a
+#: ``rails.errors.RailsError`` raised by a structured-output contract's
+#: parser, never by the wire). The COMP-1/B7a/B8b-anchor abort class: a
+#: parser refusal with no per-row disposition, aborting the whole arm at one
+#: row. Restated here for the same reason :data:`CONTEXT_COMPACTION_DISPOSITION`
+#: is: this module keeps no runtime import.
+SEAL_REFUSAL_DISPOSITION = "seal_refusal"
+
+#: The exact field set of that disposition. No ``finish_reason``: the
+#: completion a contract seal can refuse is always a ``"stop"`` finish by
+#: construction (``rails.solver_citation.bind_cited_completion`` parses only
+#: on that finish), so the field would carry no information the reason does
+#: not already give a reader.
+_SEAL_REFUSAL_DISPOSITION_FIELDS = frozenset({
+    "reason", "role_id", "stage", "revision_count", "planner_accepted",
+    "rejected_contact", "seal_refusal",
+})
+
+
+def _seal_refusal_delivery(receipt, visits, *, error_type):
+    """E43: validate a retained row whose deciding completion the seal refused.
+
+    Built to the E13 contract (:func:`_finite_delivery`) with one forced
+    difference: the refused contact never reached ``capture_completion``'s
+    own custody bookkeeping (the seal refused it before that ran), so the
+    interrupted role's execution receipt carries exactly the one rejected
+    contact and nothing earlier to cross-check it against.
+    """
+
+    disposition = receipt.get("terminal_disposition")
+    if (
+        not isinstance(disposition, Mapping)
+        or set(disposition) != _SEAL_REFUSAL_DISPOSITION_FIELDS
+    ):
+        _raise(error_type, "seal-refusal terminal disposition is malformed")
+    if (
+        disposition["reason"] != SEAL_REFUSAL_DISPOSITION
+        or disposition["stage"] not in ("perception", "solver", "review", "planner", "acquisition")
+        or not isinstance(disposition["role_id"], str) or not disposition["role_id"]
+        or isinstance(disposition["revision_count"], bool)
+        or not isinstance(disposition["revision_count"], int)
+        or disposition["revision_count"] < 0
+        or disposition["planner_accepted"] is not False
+        or receipt.get("accepted_solver_receipt") is not None
+    ):
+        _raise(error_type, "seal-refusal terminal disposition has invalid authority")
+    refusal = disposition["seal_refusal"]
+    if (
+        not isinstance(refusal, Mapping)
+        or set(refusal) != {"error_class", "message"}
+        or not isinstance(refusal["error_class"], str) or not refusal["error_class"]
+        or not isinstance(refusal["message"], str) or not refusal["message"]
+    ):
+        _raise(error_type, "seal-refusal record is malformed")
+    rejected = _checked_contact(disposition["rejected_contact"], error_type=error_type)
+    interrupted = receipt.get("interrupted_role")
+    if (
+        not isinstance(interrupted, Mapping)
+        or interrupted.get("role_id") != disposition["role_id"]
+        or interrupted.get("stage") != disposition["stage"]
+    ):
+        _raise(error_type, "seal-refusal disposition differs from its interrupted role")
+    execution = _receipt(
+        interrupted.get("execution_receipt"), "interrupted role", error_type=error_type
+    )
+    if execution["final_contact"] != rejected or execution["contacts"] != [rejected]:
+        _raise(error_type, "seal-refusal disposition differs from its rejected contact")
+    used = set()
+    solvers = []
+    for visit in visits:
+        if not isinstance(visit, Mapping):
+            _raise(error_type, "seal-refusal episode role visit must be a mapping")
+        prior = _receipt(
+            visit.get("execution_receipt"), "completed role", error_type=error_type
+        )
+        for contact in prior["contacts"]:
+            _checked_contact(contact, error_type=error_type)
+            pair = contact["agent_contact_id"], contact["request_id"]
+            if pair in used:
+                _raise(error_type, "seal-refusal episode duplicates completed contacts")
+            used.add(pair)
+        if visit.get("stage") == "solver":
+            solvers.append(prior)
+    pair = rejected["agent_contact_id"], rejected["request_id"]
+    if pair in used:
+        _raise(error_type, "seal-refusal interrupted role repeats a completed contact")
+    terminal = receipt.get("terminal_solver_receipt")
+    abstention = receipt.get("abstention_receipt")
+    if solvers:
+        if terminal != solvers[-1] or abstention is not None:
+            _raise(error_type, "seal-refusal delivery must retain the last completed Solver")
+        return NativeEpisodeDelivery(
+            "finite", terminal, terminal["final_contact"], disposition, None
+        )
+    if terminal is not None or abstention != {"source_contact": rejected}:
+        _raise(error_type, "seal-refusal episode without a Solver requires a bound abstention")
     return NativeEpisodeDelivery("abstention", None, rejected, disposition, None)
 
 
