@@ -1,0 +1,71 @@
+{
+  "arms": {
+    "comparator": {
+      "role": "the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (intent-wrong on all 119 rows); never re-flown",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "probe": {
+      "attempt_id": "attempt-slurp-native-stage3-rankvis-fold-a-119-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a pooled or roster-level claim, and it admits nothing. No utterance text, transcript, gold label string or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "interval": {
+    "kind": "binomial",
+    "primary": "Wilson score CI95",
+    "reported_beside": "exact Clopper-Pearson CI95"
+  },
+  "metrics": [
+    "scenario_action_exact"
+  ],
+  "no_op_expectation": {
+    "definition": "expected wrong-to-correct flips on this roster under a request-identical re-flight of the AGREE bytes: sum over rows of the committed null save rate of the row's AGREE gold-position band (note section 1.1, pooled over three null pairs)",
+    "expected_null_conversions": 15.905795032829003,
+    "expected_null_conversions_synthesis_subset": 11.459320582357979,
+    "null_save_rate": {
+      "1": 0.3870967741935484,
+      "2-8": 0.08849557522123894
+    },
+    "rows_by_band": {
+      "1": 18,
+      "2-8": 101
+    }
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1-READ-V1"
+  },
+  "re_declaration_rule": {
+    "m_needed_for_the_2p5_pp_bar": 43,
+    "pp_per_row": 0.09259259259259259,
+    "statement": "a later 1,080-row arm with an in-chain A/A declares expected_effect_pp = (m - 15.9) x 0.0926 pp intent accuracy (decision 139); stated, not applied"
+  },
+  "read_driver": "scripts/analysis/rankvis_probe_read.py",
+  "read_rule": {
+    "deliverable": "m of 119 wrong-to-gold conversions with a Wilson CI95 and the exact Clopper-Pearson CI95 beside it; the reverse count is 0 by construction",
+    "read_against": "the no-op expectation 15.906 conversions (never zero)",
+    "read_driver": "scripts/analysis/rankvis_probe_read.py (KPROBE shape); shell wrapper scripts/flights/rankvis/rankvis_read.sh",
+    "rendering_gate": "the read refuses unless every flown Solver request carries the rank labels and the rendered exemplar order equals the recomputed retrieval-rank order on every row",
+    "splits": [
+      "four-way transition (wrong to gold, gold to wrong, same wrong intent, different wrong intent)",
+      "the same read on the 89-row synthesis subset (no-op expectation 11.459)",
+      "by stage (PERCEPTION-DROP / SOLVER-CHOICE / UNPARSED)"
+    ]
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1-READ-V1",
+  "read_wrapper": "scripts/flights/rankvis/rankvis_read.sh",
+  "recipe_id": "slurp-stage3-rankvis-fold-a-119-conditional-rate-v1",
+  "registered_at_utc": "2026-09-28T06:36:34.000000+00:00",
+  "roster": {
+    "count": 119,
+    "id_list_sha256": "dcb885e1c51d496e1a446c231d23b183fd112f4d7e7f73dc2c13f37664711500",
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/roster-derivation-v1.json",
+    "sha256": "8b7aca8cd2d36a486ccee146afcdfcb0b897dec8aca12f895e7ac4dd6443d61e",
+    "split_identity_hash": "8af458d8cfc91cb705a4891fa39245bac87c4f3b46f1931d7989bb553f78aaac"
+  },
+  "schema": "saea-slurp-conditional-rate-recipe-v1",
+  "title": "Cell RANKVIS -- m of 119 wrong-to-gold conversions under rank-ordered, rank-visible rendering, against the no-op expectation"
+}
