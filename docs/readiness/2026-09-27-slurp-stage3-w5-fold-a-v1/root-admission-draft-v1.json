@@ -1,0 +1,120 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/w5/w5_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "cca647140f1f56c11aa713df4db304cebf824916ec5d1f0071bcc1ab5744777c"
+    },
+    "base_cell": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (owner decision 161): W5 is that fragment with one store added",
+    "build_script": {
+      "path": "scripts/build_slurp_slot_exemplar_scope_w5.py",
+      "sha256": "b07b8925b131f573fbec85a961f3422004d46a39a4a8ca937d6028c8d4727db1"
+    },
+    "config_proof": {
+      "path": "tests/unit/test_w5_config.py",
+      "sha256": "1e4058197fe3ebae28c61ee2f859cafcc52ce7590b3470c8bdcd92360c02e451"
+    },
+    "estimate_script": {
+      "path": "scripts/analysis/slurp_w5_fold_a_offline_estimate.py",
+      "sha256": "93ff55b116aa601d16eb82367ba326680fbd885585edd6ebcac96f6f39cbe23b"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "79885109a5219a8818f07489c136f71a2177ac58523b6b33ecebbea552d821b0"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "0a8688084762386a32d85819f4ab97f38be68f5b9dc656920a1b9349ae8574a6"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/registered-facts-v1.json",
+      "sha256": "77bb19c10eb9ecb1181a7e515bbb64e90b890d4d151ecb45e8cdcdd87800deea"
+    },
+    "registration_base_commit": "29ec0008"
+  },
+  "authorization_basis": "Owner decision 170 (W5 in knowledge wave 1); 164 (the wave), 133 (scope of intent-primary), 139 (expectation from measured numbers), 127 (no-harm form), 28/86; the synthesis docs/results/2026-09-27-slurp-mechanism-synthesis.md; the instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 33930,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "cell_kind": "Stage-3 knowledge-wave item (label none), no-harm declaration. One arm on TRAIN Fold A 1,080 read at the knowledge wave's shared in-chain A/A, and a four-row form smoke.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a no-harm reading of one knowledge-retrieval change on a development fold.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell W5: the retained AGREE arm with ONE store added (knowledge_stores.slot-exemplars: nine slot-bearing TRAIN exemplars per row to the Solver, scoped by the row's retrieval shortlist), read at the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain; SLU-F1 primary, intent guard; no-harm at the Fold A half-widths.",
+  "decision_id": "slurp-stage3-w5-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-W5-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-W5-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped, the receipt is minted and the shared A/A is registered",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered store"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "31668ed5113b748f3db9f83778a488b01efa42bed66a96725b45813273e25e06",
+      "protocol": "ab7db61205b8048f2246de1e42ef8c0eda6f59ad472ac5fa45944bf7c04097de"
+    },
+    "smoke": {
+      "composed_config": "8c6740d1b20405d6730bdebc8b255a099c938e5d631f07ca7e4cd016f2614daf",
+      "protocol": "f410dfdcf48fb09f7f6f101610f252250eda68454b9addf96be742c51fd300d2"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

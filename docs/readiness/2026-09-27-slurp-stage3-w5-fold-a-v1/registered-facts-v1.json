@@ -1,0 +1,859 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py resolves (keyed by run id).",
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 47520,
+      "generation_calls_cap": 11880,
+      "gpu_hours_fit_inclusive": 12.0,
+      "native_task_contract_calls_cap": 6480,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 33930
+    },
+    "note": "the AGREE arithmetic (1,080 x 11 contacts, run-cumulative); W5 adds prompt tokens, never contacts",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "byte_identity_expectation": {
+    "agree_first_phase_supply_output_sha256": {
+      "arm": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "smoke": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9"
+    },
+    "claim": "the added store serves the Solver only and is not an input to the first-phase (Perception boundary) supply, so the supply the flip mints for the arm must carry the AGREE arm's output digest and the smoke's the AGREE smoke's; a different digest means the boundary channel moved -- stop and report"
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "in_chain_replicate": {
+      "registered_by": "the coordinator (knowledge wave shared A/A, branch fable/waveaa)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "why": "rule 4 refuses a cross-flight contrast with no in-chain replicate"
+    },
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d"
+    },
+    "never_reflown": true,
+    "official": {
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575
+    },
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "composed_config_diff_against_the_agree_cell": {
+    "arm": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "the_added_store": [
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.embedded_signal",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.kind",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.relpath",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.sha256",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.dimensions",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.expose_facets",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.embedded_signal",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.kind",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.relpath",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.sha256",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.tool_contact_ledger_row",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_coverage.c",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_coverage.m",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_coverage.top_l",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_policy",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.k",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.provider",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.embedded_signal",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.kind",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.relpath",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.sha256",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_policy",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_weights.w_agree",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_weights.w_cos",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_weights.w_prior",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.tau",
+        "knowledge_stores.slot-exemplars.release.relpath",
+        "knowledge_stores.slot-exemplars.release.sha256",
+        "knowledge_stores.slot-exemplars.snapshot.relpath",
+        "knowledge_stores.slot-exemplars.snapshot.sha256",
+        "knowledge_stores.slot-exemplars.store_role"
+      ]
+    },
+    "smoke": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.run_id",
+        "preparation_source_receipts",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "experiment_id",
+        "failure_policy",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "the_added_store": [
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.embedded_signal",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.kind",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.relpath",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.sha256",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.dimensions",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.expose_facets",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.embedded_signal",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.kind",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.relpath",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.sha256",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.facet_source.tool_contact_ledger_row",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_coverage.c",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_coverage.m",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_coverage.top_l",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.fuse_policy",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.k",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.provider",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.embedded_signal",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.kind",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.relpath",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.sha256",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_policy",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_weights.w_agree",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_weights.w_cos",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.rank_weights.w_prior",
+        "knowledge_stores.slot-exemplars.phase_supply.solver.tau",
+        "knowledge_stores.slot-exemplars.release.relpath",
+        "knowledge_stores.slot-exemplars.release.sha256",
+        "knowledge_stores.slot-exemplars.snapshot.relpath",
+        "knowledge_stores.slot-exemplars.snapshot.sha256",
+        "knowledge_stores.slot-exemplars.store_role"
+      ]
+    }
+  },
+  "decision_rule": "NO-HARM ADMITTED: against the knowledge wave's SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the official pooled SLU-F1 delta (PRIMARY -- SLU-F1 is PRIMARY because W5 acts on SLOTS: it adds row-matched slot-bearing TRAIN exemplars to the node that fills slots (the M1 mechanism, whose admitted gains were slot-only: 213 of 277 B1 saves changed only slots), and owner decision 133 makes intent primary only for intent-acting mechanisms. Among the wave's cells W1 (card selection) and W3 (intent contrast) read intent primary; W4 (slot conventions) and W5 read SLU primary -- W5 is the wave's one slot-RETRIEVAL cell (row-matched content keyed by the row's own speech), W4 a card-content cell.) is not below -1.2485 pp AND the paired CI95 lower bound of the intent-accuracy delta (the guard) is not below -0.9943 pp -- each at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A SLU-F1 CI95 lower bound above zero is REPORTED as a development-fold effect beside the no-harm verdict, never as an admission of benefit (the design's benefit floor is 2.5 pp and the measured expectation sits far below it). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the entity item classes of the error-source read (MISSING, SPURIOUS, WRONG-TYPE, BOUNDARY, WRONG-VALUE, NEAR, FORMAT) arm vs A/A, the SPURIOUS count on empty-gold rows, and the realised prompt-token delta per Solver/Reviewer/Planner contact and per row.",
+  "expectation_basis": {
+    "benefit_floor_pp": 2.5,
+    "declared": "no-harm (the measured expectation is below the floor)",
+    "expected_pp": 0.1355,
+    "m1_replicate": {
+      "slu_pp": 13.7,
+      "why_not_the_declared_basis": "M1 was read against a system WITHOUT exemplars; W5 adds to a system that already carries M1's twenty, so only the residual the W5 block newly prints can convert"
+    },
+    "measured_conversion": {
+      "basis": {
+        "filler_recall_k20": 0.5719,
+        "fold_a_gold_items": 941,
+        "newly_correct_fillers_printed": 133
+      },
+      "isolated_repairs": {
+        "BOUNDARY": {
+          "items": 75,
+          "pp": 2.88
+        },
+        "MISSING": {
+          "items": 173,
+          "pp": 9.8
+        },
+        "NEAR": {
+          "items": 56,
+          "pp": 1.84
+        },
+        "WRONG-TYPE": {
+          "items": 51,
+          "pp": 4.63
+        },
+        "WRONG-VALUE": {
+          "items": 41,
+          "pp": 2.12
+        }
+      },
+      "m1_delivered_filler_conversion": 0.2471
+    },
+    "oracle_pp": 0.5482,
+    "per_kind": {
+      "BOUNDARY": {
+        "expected_pp": 0.0095,
+        "newly_printed_items": 1,
+        "pp_per_repaired_item": 0.0384
+      },
+      "MISSING": {
+        "expected_pp": 0.126,
+        "newly_printed_items": 9,
+        "pp_per_repaired_item": 0.056647
+      },
+      "NEAR": {
+        "expected_pp": 0.0,
+        "newly_printed_items": 0,
+        "pp_per_repaired_item": 0.032857
+      },
+      "WRONG-TYPE": {
+        "expected_pp": 0.0,
+        "newly_printed_items": 0,
+        "pp_per_repaired_item": 0.090784
+      },
+      "WRONG-VALUE": {
+        "expected_pp": 0.0,
+        "newly_printed_items": 0,
+        "pp_per_repaired_item": 0.051707
+      }
+    },
+    "var1_analogue": {
+      "ci95": [
+        -1.47,
+        1.6
+      ],
+      "k30_vs_k20_slu_pp": 0.09,
+      "roster": "R01C 625",
+      "source": "docs/results/2026-09-27-slurp-mechanism-synthesis.md row C7"
+    }
+  },
+  "fit": {
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w5-checks/check-slurp-native-stage3-w5-fold-a-v1.json",
+        "config_hash": "31668ed5113b748f3db9f83778a488b01efa42bed66a96725b45813273e25e06",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1512,
+            "phase": "perception",
+            "physical_margin_tokens": 4584,
+            "rendered_text_tokens": 19449,
+            "required_window_tokens": 19992,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1648,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4720,
+            "rendered_text_tokens": 19313,
+            "required_window_tokens": 19856,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1709,
+            "phase": "planner",
+            "physical_margin_tokens": 4781,
+            "rendered_text_tokens": 19252,
+            "required_window_tokens": 19795,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -1076,
+            "phase": "solver",
+            "physical_margin_tokens": 1996,
+            "rendered_text_tokens": 22037,
+            "required_window_tokens": 22580,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "ab7db61205b8048f2246de1e42ef8c0eda6f59ad472ac5fa45944bf7c04097de",
+        "scientific_readiness": {
+          "reason": "Cell W5 registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decision 58) with one store added (owner decision 170). Comparator: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, never re-flown, read at the knowledge wave's shared in-chain A/A replicate SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (registered by the coordinator) flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w5/w5_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the added store serves the Solver only). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      },
+      "smoke": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w5-checks/check-slurp-native-stage3-w5-fold-a-smoke-4-v1.json",
+        "config_hash": "8c6740d1b20405d6730bdebc8b255a099c938e5d631f07ca7e4cd016f2614daf",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1512,
+            "phase": "perception",
+            "physical_margin_tokens": 4584,
+            "rendered_text_tokens": 19449,
+            "required_window_tokens": 19992,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1649,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4721,
+            "rendered_text_tokens": 19312,
+            "required_window_tokens": 19855,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1710,
+            "phase": "planner",
+            "physical_margin_tokens": 4782,
+            "rendered_text_tokens": 19251,
+            "required_window_tokens": 19794,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -1075,
+            "phase": "solver",
+            "physical_margin_tokens": 1997,
+            "rendered_text_tokens": 22036,
+            "required_window_tokens": 22579,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "f410dfdcf48fb09f7f6f101610f252250eda68454b9addf96be742c51fd300d2",
+        "scientific_readiness": {
+          "reason": "Four-row form smoke of cell W5, registered before contact on 2026-09-27 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w5/w5_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the added store serves the Solver only). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
+  },
+  "fit_statement": "W5 is registered to fly ALONE on the AGREE form, like W4; it composes with W1 and W4 later without change (it adds a store, it edits none). The binding facts are (a) the physical margin the runtime's own pre-flight (core.flight.cli check, placeholder 4 bytes per token on the widest representative request) reports after W5 -- a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin proceeds under the armed compact-or-abstain policy (the AGREE, COMP-1 and W4 cells already read COMPACT_REQUIRED on the Solver), a negative one refuses -- and (b) the realised requests projected from the sealed AGREE trace (token_cost.compaction_projection).",
+  "fold_a_offline": {
+    "boundary": "gold read offline; counts only; development numbers (owner decisions 28 and 86)",
+    "error_items_by_kind": {
+      "BOUNDARY": 75,
+      "FORMAT": 11,
+      "MISSING": 173,
+      "NEAR": 56,
+      "SPURIOUS": 253,
+      "WRONG-TYPE": 51,
+      "WRONG-VALUE": 41
+    },
+    "estimate": {
+      "relpath": "analysis/SAEA-SLURP-W5-FOLD-A-OFFLINE-ESTIMATE-V1/estimate-v1.json",
+      "script": {
+        "relpath": "scripts/analysis/slurp_w5_fold_a_offline_estimate.py",
+        "sha256": "93ff55b116aa601d16eb82367ba326680fbd885585edd6ebcac96f6f39cbe23b"
+      },
+      "sha256": "b65a9165dd2468bcbc4113e913d8c87d83b3fc7fc2bb4c8daa162aec09d6f83f"
+    },
+    "gold_pair_already_printed_by_m1": {
+      "BOUNDARY": 29,
+      "FORMAT": 4,
+      "MISSING": 90,
+      "NEAR": 20,
+      "WRONG-TYPE": 14,
+      "WRONG-VALUE": 6
+    },
+    "gold_pair_printed_by_w5": {
+      "BOUNDARY": 18,
+      "MISSING": 72,
+      "NEAR": 6,
+      "WRONG-TYPE": 4,
+      "WRONG-VALUE": 3
+    },
+    "newly_printed_by_type": {
+      "BOUNDARY": {
+        "date": 1
+      },
+      "MISSING": {
+        "business_name": 1,
+        "date": 2,
+        "device_type": 1,
+        "media_type": 2,
+        "news_topic": 1,
+        "order_type": 1,
+        "podcast_name": 1
+      }
+    },
+    "newly_printed_by_w5_not_m1": {
+      "BOUNDARY": 1,
+      "MISSING": 9
+    },
+    "risk": {
+      "empty_gold_rows": 414,
+      "empty_gold_rows_where_w5_prints_slots": 414,
+      "intent_correct_rows_gold_outside_shortlist": 18,
+      "rows_gold_intent_outside_shortlist": 89,
+      "rows_w5_block_without_gold_intent": 98,
+      "w5_printed_pairs": 12345,
+      "w5_printed_pairs_of_types_absent_from_gold": 9119
+    },
+    "rows_touched": 10,
+    "taxonomy": "the error-source read's entity item classes (scripts/analysis/slurp_agree_arm_error_sources.py entity_items), imported unchanged"
+  },
+  "identity": {
+    "arm": {
+      "added_store": {
+        "phase_supply": {
+          "solver": {
+            "agreement_source": {
+              "embedded_signal": "derived: a strictly decreasing per-row ORDER over this store's recalled facets, pre-computed model-free by scripts/build_slurp_slot_exemplar_scope_w5.py: the nearest slot-bearing exemplars (by the row's own sealed speech vector) of each of the first three intents of the row's AGREE intent-boundary ranking (written-key cosine + 1.0 x the pinned self-excluded exemplar-intent vote), round-robin, never an utterance the row's M1 exemplar route already delivers, then the nearest other slot-bearing exemplars as fill; shares (L - j) / sum. Speech-keyed and gold-free: no label, transcript, flight output or future turn of the evaluated row enters it. The reserved agreement dimension is reused as the ranker's one pre-computed per-row signal slot.",
+              "kind": "sealed-agreement",
+              "relpath": "prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/agreement.jsonl",
+              "sha256": "f12540f19730d713594c4f63ce7b68c66ef508b8bb2dbb897ae9541087aceb96",
+              "tool_contact_ledger_row": "SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1"
+            },
+            "dimensions": [
+              "content"
+            ],
+            "expose_facets": false,
+            "facet_source": {
+              "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+              "kind": "sealed-vectors",
+              "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+              "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+              "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 300,
+              "top_l": 9
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k": 300,
+            "provider": "kb-facet-v1",
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-vectors",
+              "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+              "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_policy": "saea-rank-wcos-prior-agree-v1",
+            "rank_weights": {
+              "w_agree": 1.0,
+              "w_cos": 0.0,
+              "w_prior": 0.0
+            },
+            "tau": 0.0
+          }
+        },
+        "release": {
+          "relpath": "knowledge/slurp/saea-kb-distmodel-v1/slot-exemplars-w5-v1/release.json",
+          "sha256": "83f175704a09e1721e4d61666979925133a25ea80fc4918fc68a56e527a122a3"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+          "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+        },
+        "store_role": "train-exemplars"
+      },
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w5-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w5-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w5-fold-a-v1",
+      "composed_config_hash": "31668ed5113b748f3db9f83778a488b01efa42bed66a96725b45813273e25e06",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w5-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 47520,
+        "generation_calls_cap": 11880,
+        "gpu_hours_fit_inclusive": 12.0,
+        "native_task_contract_calls_cap": 6480,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 33930
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w5-fold-a-fit-v1",
+        "contact_cap": 47520,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "ab7db61205b8048f2246de1e42ef8c0eda6f59ad472ac5fa45944bf7c04097de",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "added_store": {
+        "phase_supply": {
+          "solver": {
+            "agreement_source": {
+              "embedded_signal": "derived: a strictly decreasing per-row ORDER over this store's recalled facets, pre-computed model-free by scripts/build_slurp_slot_exemplar_scope_w5.py: the nearest slot-bearing exemplars (by the row's own sealed speech vector) of each of the first three intents of the row's AGREE intent-boundary ranking (written-key cosine + 1.0 x the pinned self-excluded exemplar-intent vote), round-robin, never an utterance the row's M1 exemplar route already delivers, then the nearest other slot-bearing exemplars as fill; shares (L - j) / sum. Speech-keyed and gold-free: no label, transcript, flight output or future turn of the evaluated row enters it. The reserved agreement dimension is reused as the ranker's one pre-computed per-row signal slot.",
+              "kind": "sealed-agreement",
+              "relpath": "prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/agreement.jsonl",
+              "sha256": "f12540f19730d713594c4f63ce7b68c66ef508b8bb2dbb897ae9541087aceb96",
+              "tool_contact_ledger_row": "SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1"
+            },
+            "dimensions": [
+              "content"
+            ],
+            "expose_facets": false,
+            "facet_source": {
+              "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+              "kind": "sealed-vectors",
+              "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+              "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+              "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 300,
+              "top_l": 9
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k": 300,
+            "provider": "kb-facet-v1",
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-vectors",
+              "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+              "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_policy": "saea-rank-wcos-prior-agree-v1",
+            "rank_weights": {
+              "w_agree": 1.0,
+              "w_cos": 0.0,
+              "w_prior": 0.0
+            },
+            "tau": 0.0
+          }
+        },
+        "release": {
+          "relpath": "knowledge/slurp/saea-kb-distmodel-v1/slot-exemplars-w5-v1/release.json",
+          "sha256": "83f175704a09e1721e4d61666979925133a25ea80fc4918fc68a56e527a122a3"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+          "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+        },
+        "store_role": "train-exemplars"
+      },
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-w5-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w5-fold-a-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-w5-fold-a-smoke-4-v1",
+      "composed_config_hash": "8c6740d1b20405d6730bdebc8b255a099c938e5d631f07ca7e4cd016f2614daf",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-w5-fold-a-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 176,
+        "generation_calls_cap": 44,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 24,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 117
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-w5-fold-a-smoke-4-fit-v1",
+        "contact_cap": 176,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "protocol_hash": "f410dfdcf48fb09f7f6f101610f252250eda68454b9addf96be742c51fd300d2",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "owner_decisions": {
+    "125/126": "the candidate-conditioned slot view native-candidate-slot-view-v1 exists and is disabled; it projects the whole store and never retrieves -- W5 does NOT enable it (see the_item.what_w5_is_not)",
+    "127": "the no-harm admission form and its margins at the design's measured floor",
+    "133": "intent is primary only for intent-acting mechanisms; a slot-acting mechanism keeps decision 115's shape (SLU primary, intent guard)",
+    "139": "no prior: the expectation is declared from measured numbers only",
+    "164": "the knowledge wave: every W cell derives from the retained AGREE arm with ONE change, TRAIN-only construction, expectation from measured numbers, one shared in-chain A/A",
+    "170": "W5, slot-side retrieval, is the fifth cell of knowledge wave 1, read against the wave's shared in-chain A/A; one change from the AGREE arm bytes; knowledge from TRAIN rows outside Fold A only (the R01-excluded exemplar pool)",
+    "28/86": "TRAIN Fold A numbers are development numbers, never a test claim",
+    "47": "the staged fetch of slot-filler exemplars keyed by speech plus the drafted intent -- the design W5 realises pre-flight, with the retrieval shortlist standing in for the drafted intent"
+  },
+  "primary_metric_why": "SLU-F1 is PRIMARY because W5 acts on SLOTS: it adds row-matched slot-bearing TRAIN exemplars to the node that fills slots (the M1 mechanism, whose admitted gains were slot-only: 213 of 277 B1 saves changed only slots), and owner decision 133 makes intent primary only for intent-acting mechanisms. Among the wave's cells W1 (card selection) and W3 (intent contrast) read intent primary; W4 (slot conventions) and W5 read SLU primary -- W5 is the wave's one slot-RETRIEVAL cell (row-matched content keyed by the row's own speech), W4 a card-content cell.",
+  "prohibitions": [
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE comparator.",
+    "No second factor: no other template, knob, store, view, roster, geometry or session change.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt, the coordinator registers the shared A/A and the cells are flipped.",
+    "A SLU gain is never reported as an admitted benefit under this no-harm declaration."
+  ],
+  "registered_at_utc": "2026-09-27T20:00:00.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: the slot-exemplars store loads by its pins, the scope table loads, the Solver receives the nine W5 exemplars beside the M1 twenty, every request fits and the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "rows": 4
+    },
+    "SAEA-SLURP-STAGE3-W5-FOLD-A-V1": {
+      "admission": "no-harm",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "harm_margin_pp": 1.2485,
+      "harm_margin_pp_by_metric": {
+        "intent_accuracy": 0.9943,
+        "slu_f1": 1.2485
+      },
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "W5 acts on SLOTS, so SLU-F1 is primary and intent the guard (owner decision 133 scopes intent-primary to intent-acting mechanisms). The expectation is declared from MEASURED numbers only (row 139). The entity taxonomy is the 2026-09-27 error-source read's (MISSING / SPURIOUS / WRONG-TYPE / BOUNDARY / WRONG-VALUE / NEAR / FORMAT, its entity_items function imported unchanged). On the sealed AGREE rows the W5 block prints the gold (type, value) of 72 MISSING items, but the row's own M1 block already prints 90 MISSING items' values and was not converted; W5 NEWLY prints 9 MISSING and 1 BOUNDARY items (of 173 / 75; of the audit's 157 in-list items at most these). At M1's measured delivered-filler conversion (133 newly correct printed fillers over 0.5719 x 941 printed gold fillers = 0.2471, a lower bound) and the error-source read's isolated pp per repaired item (MISSING 9.80 / 173), the expectation is 0.1355 pp (oracle, every newly printed item converted: 0.5482 pp). The directly measured analogue of more speech-keyed exemplars on a system that already has M1 agrees: VAR-1 on R01C 625, exemplar budget 30 vs 20 read +0.09 [-1.47, +1.60] SLU vs PLANR. Both sit far below the design's 2.5 pp benefit floor at n = 1,080, so a benefit declaration would be refused (effect-below-floor) and the cell is declared NO-HARM: expected_effect_pp 0.0, claims_benefit false, harm_margin_pp 1.2485 (SLU, primary) with intent 0.9943 as the guard. Named harm risks: every one of the 414 empty-gold rows receives nine slot-bearing exemplars (SPURIOUS is the largest error class, 253 items), and on 89 rows the gold intent is outside the shortlist that scopes the block (18 of them intent-correct on AGREE). Read against the shared in-chain A/A flown in the same chain (rule 3).",
+      "primary_metric": "official pooled SLU-F1 (primary: a slot-acting mechanism -- slot-side retrieval of row-matched TRAIN exemplars to the Solver -- owner decision 133's scope), intent accuracy the non-inferiority guard",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "rows": 1080
+    }
+  },
+  "store": {
+    "build_measure": {
+      "delivered_tier_a_share": 0.8594,
+      "fill_items_per_row_histogram": {
+        "0": 639,
+        "1": 45,
+        "2": 90,
+        "3": 214,
+        "4": 23,
+        "5": 16,
+        "6": 48,
+        "7": 2,
+        "8": 1,
+        "9": 2
+      },
+      "n": 9,
+      "per_candidate": 3,
+      "recall_k": 300,
+      "rows": 1080,
+      "shortlist": 3,
+      "shortlist_intents_with_full_p": 2687,
+      "shortlist_intents_with_no_item": 343,
+      "shortlist_intents_without_slot_bearing_pool_items": 61,
+      "slot_bearing_pool_values": 5813,
+      "tier_a_items_per_row_histogram": {
+        "0": 2,
+        "1": 1,
+        "2": 2,
+        "3": 48,
+        "4": 16,
+        "5": 23,
+        "6": 214,
+        "7": 90,
+        "8": 45,
+        "9": 639
+      }
+    },
+    "contacts": {
+      "embedder": 0,
+      "encoder": 0,
+      "gpu": 0,
+      "model": 0,
+      "network": 0,
+      "paid_api": 0,
+      "scorer": 0,
+      "server": 0,
+      "tokenizer": 0
+    },
+    "phase_supply_solver": {
+      "agreement_source": {
+        "embedded_signal": "derived: a strictly decreasing per-row ORDER over this store's recalled facets, pre-computed model-free by scripts/build_slurp_slot_exemplar_scope_w5.py: the nearest slot-bearing exemplars (by the row's own sealed speech vector) of each of the first three intents of the row's AGREE intent-boundary ranking (written-key cosine + 1.0 x the pinned self-excluded exemplar-intent vote), round-robin, never an utterance the row's M1 exemplar route already delivers, then the nearest other slot-bearing exemplars as fill; shares (L - j) / sum. Speech-keyed and gold-free: no label, transcript, flight output or future turn of the evaluated row enters it. The reserved agreement dimension is reused as the ranker's one pre-computed per-row signal slot.",
+        "kind": "sealed-agreement",
+        "relpath": "prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/agreement.jsonl",
+        "sha256": "f12540f19730d713594c4f63ce7b68c66ef508b8bb2dbb897ae9541087aceb96",
+        "tool_contact_ledger_row": "SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1"
+      },
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "facet_source": {
+        "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "fuse_coverage": {
+        "c": 1,
+        "m": 300,
+        "top_l": 9
+      },
+      "fuse_policy": "saea-fuse-associated-values-v1",
+      "k": 300,
+      "provider": "kb-facet-v1",
+      "query_source": {
+        "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+        "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+        "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+      },
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "rank_weights": {
+        "w_agree": 1.0,
+        "w_cos": 0.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    },
+    "release": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/slot-exemplars-w5-v1/release.json",
+      "sha256": "83f175704a09e1721e4d61666979925133a25ea80fc4918fc68a56e527a122a3"
+    },
+    "roster_exclusion_proof": {
+      "fold_a_utterances_in_pool": 0,
+      "m1_pool_utterances_outside_this_pool": 800,
+      "pool_recordings": 34474,
+      "pool_snapshot_content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "pool_source_split_identity_hash": "461b64287b522ac89e7af910a8a319ca0b6e11af6289e86d64d67f649b33d500",
+      "pool_utterances": 8554,
+      "pool_utterances_outside_the_flown_m1_pool": 0,
+      "pool_values": 8554,
+      "roster_rows": 1080,
+      "roster_utterances": 1080,
+      "rule": "utterance identity = the first three fields of a sample id; any recording of a Fold A utterance would refuse the build",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "scope_receipt": {
+      "relpath": "prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/receipt.json",
+      "sha256": "40cfd8bbfa5aa2c49e9670a2d7849b76c132fe8a657784ee13f8e3b255ba0f6c"
+    },
+    "scope_table": {
+      "embedded_signal": "derived: a strictly decreasing per-row ORDER over this store's recalled facets, pre-computed model-free by scripts/build_slurp_slot_exemplar_scope_w5.py: the nearest slot-bearing exemplars (by the row's own sealed speech vector) of each of the first three intents of the row's AGREE intent-boundary ranking (written-key cosine + 1.0 x the pinned self-excluded exemplar-intent vote), round-robin, never an utterance the row's M1 exemplar route already delivers, then the nearest other slot-bearing exemplars as fill; shares (L - j) / sum. Speech-keyed and gold-free: no label, transcript, flight output or future turn of the evaluated row enters it. The reserved agreement dimension is reused as the ranker's one pre-computed per-row signal slot.",
+      "kind": "sealed-agreement",
+      "relpath": "prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/agreement.jsonl",
+      "sha256": "f12540f19730d713594c4f63ce7b68c66ef508b8bb2dbb897ae9541087aceb96",
+      "tool_contact_ledger_row": "SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1"
+    },
+    "selection_ids": {
+      "relpath": "prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/selection-v1.jsonl",
+      "sha256": "b2afd19089bb3cb6a0dba6b3c7c19c3175fac96863b35d736fd9d94f3cb39d2c"
+    },
+    "snapshot": {
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+    },
+    "source": "the R01-excluded TRAIN exemplar pool size-pool-annotated-exemplars-minus-r01 (8,554 utterances, content hash 6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63), ALREADY RELEASED; the new release only binds it under the store id slot-exemplars. No Fold A, Fold B, DEV or test byte, no flight output and no score was read to build the order; the Fold A side is each row's own sealed speech vector and the deterministic AGREE boundary ranking over it.",
+    "store_id": "slot-exemplars",
+    "store_role": "train-exemplars",
+    "verification": {
+      "flown_route_reproduces_intended_selection": 1080,
+      "replayed_boundary_order_reproduces_delivered_eight": 1080,
+      "rows": 1080
+    }
+  },
+  "study_commit_at_registration": "29ec0008",
+  "the_item": {
+    "entity_taxonomy": "the error-source read's classes (MISSING, SPURIOUS, WRONG-TYPE, BOUNDARY, WRONG-VALUE, NEAR, FORMAT)",
+    "evidence": [
+      "docs/results/2026-09-27-slurp-mechanism-synthesis.md section 5 rank 3 (slot-side retrieval; ENTITY-MIXED oracle +17.4 / +16.5 SLU) and section 2.7",
+      "docs/results/2026-09-27-slurp-agree-arm-error-sources.md section 3-4: MISSING 173 (9.80), SPURIOUS 253 (8.46), WRONG-TYPE 51 (4.63), BOUNDARY 75 (2.88); the type card delivered on 644 of 660 error items",
+      "docs/results/2026-09-27-slurp-knowledge-content-audit.md K2/K3/K4 (9.29 / 9.30 / 5.33; 157 missed or wrong gold values are in TRAIN's list)",
+      "docs/results/2026-09-19-slurp-m1-exemplar-compression-analysis-v1.md section 3.2: M1 is convention transfer (133 of 154 newly correct fillers printed in the block)"
+    ],
+    "the_change": "ONE store added: knowledge_stores.slot-exemplars, phase_supply.solver, nine slot-bearing TRAIN exemplars per row from the R01-excluded pool, three per intent of the row's retrieval shortlist, nearest first by the row's own speech, never one M1 already delivers",
+    "what_w5_is_not": "It does NOT enable native-candidate-slot-view-v1 (decisions 125/126): that view scopes the intent-role rows of the slot-contract cards a row already receives and performs no retrieval, selection or filtering (its own docstring: 'No selection, retrieval, answer generation, or tokenization occurs here'); card selection is W1's factor and card content W4's. Enabling it here would be a second factor. It does NOT change the M1 route or read Perception's live candidates (no code path conditions a phase supply on them; the pre-flight retrieval shortlist stands in)."
+  },
+  "token_cost": {
+    "added_share_of_prompt_volume": 0.0395,
+    "block": {
+      "chars_per_row": {
+        "max": 2227,
+        "mean": 1638.9,
+        "min": 1348
+      },
+      "exemplars_per_row": 9,
+      "tokens_per_contact": {
+        "max": 612.8,
+        "mean": 451.0
+      }
+    },
+    "chars_per_token": 3.634,
+    "chars_per_token_source": "measured on the flown M1 exemplar block (docs/results/2026-09-19-slurp-m1-exemplar-compression-analysis-v1.md section 1); the block W5 adds has the same line form",
+    "compaction_projection": "the widest realised request per phase on the sealed AGREE trace plus that contact's W5 block (every Solver, Reviewer and Planner contact carries the M1 block and would carry the W5 block the same way) stays below the live operational budget (24576 slot - 3072 reserve - 512 completion = 20992): Solver 14426 -> 14918, Reviewer 14413 -> 14905, Planner 14561 -> 15053; no realised request is projected to compact",
+    "flight_total_added_tokens": 1488957,
+    "flight_total_prompt_tokens_realised_agree": 37676859,
+    "live_slot": {
+      "completion": 512,
+      "operational_budget": 20992,
+      "reserve": 3072,
+      "serving_slot_tokens": 24576
+    },
+    "per_phase": {
+      "perception": {
+        "added_tokens_max": 0.0,
+        "added_tokens_mean": 0.0,
+        "contacts": 1080,
+        "contacts_carrying_the_m1_block": 0,
+        "projected_prompt_tokens_max": 3769,
+        "realised_prompt_tokens_max": 3769
+      },
+      "planner": {
+        "added_tokens_max": 612.8,
+        "added_tokens_mean": 450.5,
+        "contacts": 1099,
+        "contacts_carrying_the_m1_block": 1099,
+        "projected_prompt_tokens_max": 15053,
+        "realised_prompt_tokens_max": 14561
+      },
+      "reviewer": {
+        "added_tokens_max": 612.8,
+        "added_tokens_mean": 450.5,
+        "contacts": 1103,
+        "contacts_carrying_the_m1_block": 1103,
+        "projected_prompt_tokens_max": 14905,
+        "realised_prompt_tokens_max": 14413
+      },
+      "solver": {
+        "added_tokens_max": 612.8,
+        "added_tokens_mean": 450.5,
+        "contacts": 1103,
+        "contacts_carrying_the_m1_block": 1103,
+        "projected_prompt_tokens_max": 14918,
+        "realised_prompt_tokens_max": 14426
+      }
+    },
+    "per_row": {
+      "added_tokens_max": 3056.1,
+      "added_tokens_mean": 1378.7
+    }
+  },
+  "wave_chain": "Append W5 to the knowledge-wave chain (scripts/flights/wave/batch_chain_wave.sh, branch fable/waveaa) as one more step after W4: add a catalogue entry 'w5' with experiment/cell slurp-native-stage3-w5-fold-a-v1, smoke slurp-native-stage3-w5-fold-a-smoke-4-v1, campaign_plan configs/campaign/slurp-native-stage3-w5-fold-a-v1.json, run ids SAEA-SLURP-STAGE3-W5-FOLD-A-V1 / -FIT-V1 / -SMOKE-4-V1, owner root-slurp-native-stage3-w5-fold-a-v1, and accept step lists ending in 'w4 w5'."
+}

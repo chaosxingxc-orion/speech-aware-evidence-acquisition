@@ -1,0 +1,84 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-w5-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w5-fold-a-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-w5-fold-a-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell W5, registered before contact on 2026-09-27 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w5/w5_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the added store serves the Solver only). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+            "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed per-row ORDER the added slot-exemplars route ranks with, built model-free by scripts/build_slurp_slot_exemplar_scope_w5.py from the AGREE arm's own composed config (roster, packets, the flown boundary and M1 channel specs), the pinned speech query vectors, the pinned TRAIN key vectors, the pinned agreement table and the released R01-excluded pool snapshot, through the flight's own build_supply_for_phase / KbFacetProvider recall, ranker and fuser -- zero model, server, tokenizer, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, nine listed exemplars delivered per row (85.94 % from the shortlist tier), the replayed boundary order reproduces the delivered eight on 1,080 of 1,080 rows, and the route as it will fly reproduces the intended selection on 1,080 of 1,080 rows; no Fold A utterance is in the pool (roster exclusion proof in the receipt prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/receipt.json).",
+            "relpath": "prepared/SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1/agreement.jsonl",
+            "sha256": "f12540f19730d713594c4f63ce7b68c66ef508b8bb2dbb897ae9541087aceb96"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-27",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell W5 and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-w5-fold-a-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of cell W5: that the slot-exemplars store loads by its pins, that the scope table loads and the Solver receives nine W5 exemplars beside the M1 twenty, that every request fits and that the episode completes. It is scored by no one and read by no one: four rows can never be evidence of benefit or of harm. ONE change against the retained AGREE arm: ONE store is ADDED, knowledge_stores.slot-exemplars -- a second speech-keyed TRAIN exemplar route delivered to the Solver (the node that fills slots). It binds the already released R01-excluded TRAIN exemplar pool (size-pool-annotated-exemplars-minus-r01, 8,554 utterances, snapshot content 6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63) under the release slot-exemplars-w5-v1 (sha256 83f175704a09e1721e4d61666979925133a25ea80fc4918fc68a56e527a122a3), and serves phase_supply.solver with the M1 route's own speech query vectors and TRAIN key vectors: recall k 300, ranked by saea-rank-wcos-prior-agree-v1 at w_cos 0 / w_prior 0 / w_agree 1 over the pinned per-row order SAEA-SLURP-W5-SLOT-EXEMPLAR-SCOPE-FOLD-A-V1 (sha256 f12540f19730d713594c4f63ce7b68c66ef508b8bb2dbb897ae9541087aceb96), fused by saea-fuse-associated-values-v1 (m 300, c 1, top_l 9): nine slot-bearing TRAIN exemplars per row, three per intent of the row's retrieval shortlist (the first three entries of the AGREE Perception boundary ranking, speech plus the pinned exemplar vote), nearest first by the row's own speech, never an utterance the M1 route already delivers on that row, filled by the nearest other slot-bearing exemplars where a shortlist intent has fewer than three inside the recall. Built model-free by scripts/build_slurp_slot_exemplar_scope_w5.py (no Fold A gold, no flight output). The release and the scope receipt are appended to preparation_source_receipts. Nothing else moves: the M1 route (train-exemplars), the intent-boundary channel and its agreement term (w_agree 1.0, k 60, fuse 8-1-8), the slot-contract cards and their candidate supply, roster, geometry, session, program and its 11-contact ceiling, every template, the deliver normaliser and the scorers are the AGREE arm's, byte for byte.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is a one-store knowledge retrieval change -- a second speech-keyed exemplar route, scoped by the row's retrieval shortlist and ordered by a model-free pre-computed table -- with no rollout, no per-sample scoring, no credit assignment, no update operator and no evolving store.",
+    "operators_used": []
+  }
+}
