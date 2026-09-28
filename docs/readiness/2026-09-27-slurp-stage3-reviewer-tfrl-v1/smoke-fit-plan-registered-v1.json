@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-revtfrl-fold-a-smoke-4-v1",
-  "composed_config_hash": "399c9f3ac6542918afafc7281c7411f6db2f1a5f5379618c3ef7cd8da877e495",
+  "composed_config_hash": "f57a564fd2c6583c968655bcb8a07e875c2ed5254610872f2dce688c7d4cda51",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-revtfrl-fold-a-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "aee8ecadf5868a2bb9f1c58e9632797126984dbf82e339f62e50196ae2dc1e1d",
+    "protocol_hash": "cbd445b5392ad239fb6c3c343e0cf77ac55a0e78cf7c590948c218ece25a92e5",
     "run_id": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-    "sha256": "6ba5f22f93614ad797afd2220c927655f4e692b73fe566a3f4b3c18fc05f4055"
+    "sha256": "229de549b256272bd7daddc38a0efc89be9f3f215a77c462ac4b4229ae052f7d"
   },
   "purpose": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-FIT-V1: Four-row form smoke of cell REV-TFRL-1. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",
