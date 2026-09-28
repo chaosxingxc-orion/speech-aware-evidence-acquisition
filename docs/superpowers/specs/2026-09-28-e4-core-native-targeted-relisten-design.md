@@ -263,7 +263,6 @@ section 7 and supersede section 2's dependency paragraph where they differ.
 5. **Shadow delivery, on TRAIN Fold A first (Q5).**
 6. **Host plan: the AGREE arm bytes (Q6),** that is COMP-1's successor after its read. One experiment in flight.
 7. **Expected effect and bar.** Both columns declare `expected_effect_pp` 0.0 with claim ceiling `nominated`, since
-   no measured analogue exists; the bar is the twin/shadow null. Section 2's `harm_margin_pp 0.32` stands as the
-   no-harm margin.
+   no measured analogue exists; the bar is the twin/shadow null.
 8. **Metrics.** Official pooled SLU-F1 (micro) is the primary metric for both columns; intent is identical between
    columns by construction and is tested as a guard (section 4).
