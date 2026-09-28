@@ -1,0 +1,210 @@
+{
+  "authorised_by": "owner decision 177",
+  "carrier": "audio2tool",
+  "contacts": {
+    "audio": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0
+  },
+  "count": 8,
+  "date": "2026-09-03",
+  "exclusions": [
+    {
+      "count": 16,
+      "path": "docs/receipts/a2t/A2T-G5-FIXED16-IDENTITY.json",
+      "sha256": "81e3703f0529882c943f71dbe213e1c2d9bcd4e9b00fabf51e5499bae3501ffe"
+    },
+    {
+      "count": 16,
+      "path": "docs/receipts/a2t/A2T-G6-FAMILY-SWEEP-FIXED16.json",
+      "sha256": "3a7a59d389765ca1d44accb685ed945da6485849d6bbe412c366f55242fc9c34"
+    },
+    {
+      "count": 16,
+      "path": "docs/receipts/a2t/A2T-G7-EXAMPLE-FIXED16.json",
+      "sha256": "8be941c6e82527f9b63cd1f9ea09449f6cabbf175e7b2401642de455edc975c3"
+    },
+    {
+      "count": 16,
+      "path": "docs/receipts/a2t/A2T-G8-ACTION-SUPPORT-FIXED16.json",
+      "sha256": "c752fa6e273edbc064a66c388ae5b7dee31d456bcc210af0e346b9dac62f3888"
+    },
+    {
+      "count": 16,
+      "path": "docs/receipts/a2t/A2T-G8B-ACTION-SUPPORT-FIXED16.json",
+      "sha256": "9a7b60394f53578d5ab948d1e5de4737cff73d1803a86883182c90fd0cc48705"
+    },
+    {
+      "count": 12,
+      "path": "docs/receipts/a2t/A2T-G8C-ACTION-SUPPORT-FIXED12.json",
+      "sha256": "f00ab9486d978c334e14c96231ac45968f24c3bf8792181427703b738260dac0"
+    },
+    {
+      "count": 8,
+      "path": "docs/receipts/a2t/A2T-NATIVE-STRUCTURED-ACTION-FIXED8.json",
+      "sha256": "b777f05e830af84209d6aa3403fe86d3835991452f983b3185214990004a4be3"
+    }
+  ],
+  "execution_profile": "model-free-check",
+  "issued": "2026-09-28",
+  "purpose": "Identity-only secondary discovery roster for the canonical family proposal-content reachability screen; this receipt authorizes no contact.",
+  "schema": "saea-a2t-canonical-family-secondary-fixed8-proposed-receipt-v1",
+  "selected": [
+    {
+      "audio_seconds": 2.137,
+      "audio_sha256": "554a1768f3ec65d9c07344748c77656f97114534ecc07f5d55c9139fa10ad2a0",
+      "id": 3668,
+      "key": "audio2tool:tier1_direct:003668",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_01834/speaker_17_ecapa_speaker_1302.wav",
+      "packet_id": "tier1_direct/003668",
+      "query_block": "tier1_direct:query-01834",
+      "query_idx": 1834,
+      "sample_id": "tier1_direct:003668",
+      "selection_rank_sha256": "0f831de42f791fc9925a94bbf021b0c3bd55777e26281d95ebccab991737f913",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 3.097,
+      "audio_sha256": "467dcb28d91a70d2b60649c23b3deb2778cc3e18f173a4f4cffe9b8418606432",
+      "id": 5859,
+      "key": "audio2tool:tier2_parametric:005859",
+      "media_relpath": "datasets/audio2tool/public/tier2_parametric_audios/query_02930/speaker_02_yodas_speaker_6_gw7Do-v_g.wav",
+      "packet_id": "tier2_parametric/005859",
+      "query_block": "tier2_parametric:query-02930",
+      "query_idx": 2930,
+      "sample_id": "tier2_parametric:005859",
+      "selection_rank_sha256": "0b73788a60388ebd9109d326b881173f5944ea7c867877bcb29b5d63c45d5bd5",
+      "tier": "tier2_parametric"
+    },
+    {
+      "audio_seconds": 4.857,
+      "audio_sha256": "e573ed0144806e763a20cab39b613cd6f189213873d5baabaa9ab3a161ca3b73",
+      "id": 3740,
+      "key": "audio2tool:tier3_multi_intent:003740",
+      "media_relpath": "datasets/audio2tool/public/tier3_multi_intent_audios/query_01870/speaker_20_yodas_speaker_g0QuUU70BEo.wav",
+      "packet_id": "tier3_multi_intent/003740",
+      "query_block": "tier3_multi_intent:query-01870",
+      "query_idx": 1870,
+      "sample_id": "tier3_multi_intent:003740",
+      "selection_rank_sha256": "13e990680ec188888af866f6df865de2d640ed56d2ab45c67f54dbf80a46efaf",
+      "tier": "tier3_multi_intent"
+    },
+    {
+      "audio_seconds": 3.337,
+      "audio_sha256": "557110fd3b4d1ffd2e2e0ddd4c6b34baf206d088d8c99d98a2c1fb71e53dc21a",
+      "id": 4273,
+      "key": "audio2tool:tier4_implicit:004273",
+      "media_relpath": "datasets/audio2tool/public/tier4_implicit_audios/query_02130/speaker_02_3dspeaker_speaker_3D_SPK_07674.wav",
+      "packet_id": "tier4_implicit/004273",
+      "query_block": "tier4_implicit:query-02130",
+      "query_idx": 2130,
+      "sample_id": "tier4_implicit:004273",
+      "selection_rank_sha256": "134b3a7b8f620356ebc48c3a6dd238a691f37df1d498e390f610d3f5a3c4780b",
+      "tier": "tier4_implicit"
+    },
+    {
+      "audio_seconds": 11.177,
+      "audio_sha256": "202e9c09b2565b4ba5df1a42cfe52edd4aaa24ff876552fb1470f0efb33514e0",
+      "id": 1323,
+      "key": "audio2tool:tier5_needle:001323",
+      "media_relpath": "datasets/audio2tool/public/tier5_needle_audios/query_00662/speaker_09_3dspeaker_speaker_3D_SPK_00175.wav",
+      "packet_id": "tier5_needle/001323",
+      "query_block": "tier5_needle:query-00662",
+      "query_idx": 662,
+      "sample_id": "tier5_needle:001323",
+      "selection_rank_sha256": "13580dee802f571b12cac029a01754cd6655937f2a3853b7e0c209eee83f6014",
+      "tier": "tier5_needle"
+    },
+    {
+      "audio_seconds": 4.457,
+      "audio_sha256": "981d0eb85a89a77757e1bfc05fad89404a1c92f2f0197e7ada6de84ed5b0189d",
+      "id": 8,
+      "key": "audio2tool:tier6_correction:000008",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_00004/speaker_10_ecapa_speaker_49339.wav",
+      "packet_id": "tier6_correction/000008",
+      "query_block": "tier6_correction:query-00004",
+      "query_idx": 4,
+      "sample_id": "tier6_correction:000008",
+      "selection_rank_sha256": "1d849316950ccd83b5994e900645c5d14bf4c730df85805f80bd4fce0240e478",
+      "tier": "tier6_correction"
+    },
+    {
+      "audio_seconds": 3.817,
+      "audio_sha256": "f243d838746e36f5ff9d1837832fcd231aaf64bb4efc743ebe81862f3df3ba8f",
+      "id": 1732,
+      "key": "audio2tool:tier7_multiturn:001732",
+      "media_relpath": "datasets/audio2tool/public/tier7_multiturn_audios/query_01732/turn_04_user_3dspeaker_speaker_3D_SPK_01831.wav",
+      "packet_id": "tier7_multiturn/001732",
+      "query_block": "tier7_multiturn:query-01732",
+      "query_idx": 1732,
+      "sample_id": "tier7_multiturn:001732",
+      "selection_rank_sha256": "06c376b7e1c96c51562c283f240c1e4ec4e9f0add0d5dcb6bb7af23f693e9f69",
+      "tier": "tier7_multiturn"
+    },
+    {
+      "audio_seconds": 4.057,
+      "audio_sha256": "bedb0d0e43041778df890f574604a432c34a2a3428035e8bab645d6e44890fb8",
+      "id": 284,
+      "key": "audio2tool:tier8_intent_blending:000284",
+      "media_relpath": "datasets/audio2tool/public/tier8_intent_blending_audios/query_00284/mixed.wav",
+      "packet_id": "tier8_intent_blending/000284",
+      "query_block": "tier8_intent_blending:query-00284",
+      "query_idx": 284,
+      "sample_id": "tier8_intent_blending:000284",
+      "selection_rank_sha256": "13dbd7c3dee23ee42715694192d417b9cd7f6e28873335ff910f3b34d4fad5a8",
+      "tier": "tier8_intent_blending"
+    }
+  ],
+  "selected_audio_seconds_total": 36.936,
+  "selected_query_block_count": 8,
+  "selected_tier_counts": {
+    "tier1_direct": 1,
+    "tier2_parametric": 1,
+    "tier3_multi_intent": 1,
+    "tier4_implicit": 1,
+    "tier5_needle": 1,
+    "tier6_correction": 1,
+    "tier7_multiturn": 1,
+    "tier8_intent_blending": 1
+  },
+  "selection": {
+    "algorithm": "Within each tier after identity-only exclusions, sort by SHA-256(namespace NUL sample_id), then sample_id, and retain the first row.",
+    "eligible_count": 96,
+    "eligible_per_tier": {
+      "tier1_direct": 12,
+      "tier2_parametric": 12,
+      "tier3_multi_intent": 12,
+      "tier4_implicit": 12,
+      "tier5_needle": 12,
+      "tier6_correction": 12,
+      "tier7_multiturn": 12,
+      "tier8_intent_blending": 12
+    },
+    "namespace": "speech-aware-evidence-acquisition-canonical-family-action-ground-secondary-fixed8-v1",
+    "uses_audio": false,
+    "uses_future_turns": false,
+    "uses_gold": false,
+    "uses_model_or_tool": false,
+    "uses_network_or_tokenizer_or_scorer": false,
+    "uses_outputs": false,
+    "uses_rewards": false,
+    "uses_scores": false,
+    "uses_task_text": false,
+    "uses_test": false
+  },
+  "source": {
+    "count": 104,
+    "path": "docs/receipts/a2t/A2T-GROUND-QUAL-104.json",
+    "run_identity_hash": "fbd4addd541ff29214cbff7c35564b15f27e2fb7f438202b79d694b1c5961d4b",
+    "sha256": "eeb90abbe8695e449c676f18339db6618cb6d606d6c1e7c656626e4e9b6b6c16",
+    "split_identity_hash": "c6bb080bb264733087b3da352fe930702ec6509bc02e6a639b0f4c30c5017dac"
+  },
+  "split_identity_hash": "00ec7f8278e0d1414b6f6772809ed0f58e9a3c4cecda9f38dd05a138cb31f0e7",
+  "split_name": "A2T-CANONICAL-FAMILY-SECONDARY-FIXED8",
+  "split_role": "discovery",
+  "status": "PROPOSED_IDENTITY_ONLY_NO_CONTACT_AUTHORIZATION",
+  "study": "speech-aware-evidence-acquisition",
+  "superseded_reason": "The digest of the exclusion file A2T-G6-FAMILY-SWEEP-FIXED16.json was mis-recorded at authoring; content is otherwise identical.",
+  "supersedes": "A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json"
+}
