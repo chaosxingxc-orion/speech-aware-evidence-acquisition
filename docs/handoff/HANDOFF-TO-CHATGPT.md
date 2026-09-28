@@ -1,14 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-28T04:53:17Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge and records agent, Claude Opus 5.5) · HEAD at writing `e4742aea` on `master`, tree clean. **GPU flying:**
+Last refreshed: 2026-09-28T06:27:27Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge and records agent, Claude Opus 5.5) · HEAD at writing `7490dfa4` on `master`, tree clean. **GPU flying:**
 the knowledge wave (W1, W3a, W4 on the shared in-chain A/A) and then REV-TFRL-1, from their own flight
-worktree at `5f8b4c9d`, through the batch driver under queue task `SAEA-Queue-WAVE-REVTFRL` (log
-`/home/chao/queue-wave-revtfrl.out`; status lines only: 03:50:52Z queue start; the COMP-1 + G5 STOP recorded
-as already terminal, "launching the wave fresh after it ..., not chained onto it"; 03:50:52Z launching the
-knowledge wave at 5f8b4c9d (steps w1 w3 w4); chain `batch_chain_wave.sh` start. The driver's status stream
-shows the W1 smoke passed at 03:52:17Z and the W1 step's arm started at 03:52:27Z). Master commits do not
-touch that flight. **COMP-1 + G5 STOPPED** at 03:28:18Z (section 2).
+worktree at `5f8b4c9d`, through the batch driver under queue task `SAEA-Queue-WAVE-REVTFRL`. Coordinator
+state: the wave's A/A is done and W1 is in flight. Status lines from `/home/chao/batch-status.jsonl`, quoted
+only: 03:50:54Z `driver-start` (flight commit 5f8b4c9d); 03:50:54Z `step-start` step 1 `w1`; 03:50:58Z
+`registration-gate-ok`, `prelaunch-ok`; 03:52:17Z `smoke-worker-exit` rc 0, `smoke-inspect`
+(SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-SMOKE-4-V1); 03:52:27Z `arm-start` step 1 (no later event at 06:25Z).
+**Queued behind it:** `SAEA-Queue-AFTER-REVTFRL` waits -- COMP-1 `-REC` + G5 at flight commit `472474bf`,
+then the E41 sub10 re-read at `bf6db903`, then the filler once its hold (`/home/chao/saea-queue/filler.hold`)
+is released. Master commits do not touch those flights. **COMP-1 + G5 STOPPED** at 03:28:18Z; recovery
+staged (section 2).
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
 did, numbers, open items, embargoes, next action, housekeeping — so you can diff it. Freshness is
@@ -61,7 +64,7 @@ unused -- a consumption-form problem. Three coordinator claims were corrected by
 dead (0 of 60 values carry a prior), the locked plan supplies k=20 not top-5, and text-only rows CAN be
 retrieved because the key side is text by design.
 
-**Current best arm, pending replication.** AGREE (the boundary agreement term) reads intent 82.50 -> **85.83**, +3.33 [+1.57, +5.09] against its in-chain A/A, with SLU +1.85 [+0.23, +3.47] on TRAIN Fold A. That leaves 9.17 points to 95. Under decision 166 it is KEEP-PROVISIONAL because the roster was reused for selection and for reading. COMP-1 composes AGREE + the centroid key + the citation contract; its arm **ABORTED** at 1,913 calls on the citation contract (section 2), so it is unread and in recovery. A2 (COMP-1 on DEV-2000-ADDED) settles AGREE's classification and gates every wave item into COMP-2 (row 138); it waits for the COMP-1 recovery.
+**Current best arm, pending replication.** AGREE (the boundary agreement term) reads intent 82.50 -> **85.83**, +3.33 [+1.57, +5.09] against its in-chain A/A, with SLU +1.85 [+0.23, +3.47] on TRAIN Fold A. That leaves 9.17 points to 95. Under decision 166 it is KEEP-PROVISIONAL because the roster was reused for selection and for reading. COMP-1 composes AGREE + the centroid key + the citation contract; its arm **ABORTED** at 1,913 calls on the citation contract (section 2), so it is unread; the `-REC` re-fly is queued. A2 (COMP-1 on DEV-2000-ADDED) settles AGREE's classification and gates every wave item into COMP-2 (row 138); its per-class attribution is now fixed model-free, and its declaration formula waits for the COMP-1 Fold A read.
 
 ## 2. What landed (2026-09-27 evening to 2026-09-28)
 
@@ -74,15 +77,20 @@ retrieved because the key side is text by design.
 | W3 re-derived and re-registered as **W3a alone** (intent contrast cards; the per-intent exemplar cap dropped under decision 164's one-change rule) | `docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/` (same run ids, rewritten in place) | registered, held |
 | W5 slot-side retrieval, with its offline estimate | `docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/`, `docs/results/2026-09-28-slurp-w5-slot-exemplar-offline-estimate.md` | registered, **HELD** (outcome of 170) |
 | B1 / B3 / B4 (decision 171): `native_episode.knowledge_value_rendering` behind a config key (off by default); RANKVIS probe on the 119 Fold A rows AGREE got wrong (held); CATCHALL offline rule; EMPTYENT offline null + rule | merge of `fable/consume` | registered |
-| **COMP-1 + G5 chain STOP**, 2026-09-28T03:28:18Z at `cb628f59`: COMP-1 smoke COMPLETED (16 calls); shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1` COMPLETED (4,435 calls); the COMP-1 arm ABORTED after 1,913 calls on the Solver cited-answer contract refusal "intent citations must be unique non-blank ids"; G5 never started | `docs/results/2026-09-28-slurp-comp1-g5-chain-stop.md` | nothing read. Diagnosis and the ONE recovery re-registration are in progress on branch `fable/comp1rec`; the wave was launched fresh after the STOP, not chained onto it |
+| **COMP-1 + G5 chain STOP**, 2026-09-28T03:28:18Z at `cb628f59`: COMP-1 smoke COMPLETED (16 calls); shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1` COMPLETED (4,435 calls); the COMP-1 arm ABORTED after 1,913 calls on the Solver cited-answer contract refusal "intent citations must be unique non-blank ids"; G5 never started | `docs/results/2026-09-28-slurp-comp1-g5-chain-stop.md` | nothing read; recovery staged (next rows). The wave was launched fresh after the STOP, not chained onto it |
+| **COMP-1 abort root cause and fixes** (merged): the root cause is a repeated Solver intent citation id tripping the cited-answer contract ("intent citations must be unique non-blank ids"). Fixes: a repeated citation id is collapsed instead of aborting the arm; a seal-refused stop becomes a per-row abstain; the resume replay now skips the context-fit and cited-answer annotation blocks (with a COMP-1 resume byte-identity proof) | merges of `fable/comp1rec` / `fable/comp1res`; `docs/results/2026-09-28-slurp-comp1-g5-chain-stop.md` section 5 | merged. The aborted arm is closed (consumed = yes) |
+| **COMP-1 recovery**: variant 1 resume (owner decision 22) vs variant 2 `-REC` (full 1,080-row re-fly, fresh run id, shared in-chain A/A not re-flown). **Owner ruling open; default `-REC`**, chosen by the coordinator | `-REC` smoke + arm flipped ready, flight commit `472474bf`; receipt `coordination/slurp-stage3-comp1-fold-a-v1/root-admission-rec-v1.json` | `-REC` + G5 queued in `SAEA-Queue-AFTER-REVTFRL`; the resume variant stays HELD. `cli check` on the `-REC` arm: ready, `prepared_artifacts_ok: true` (cfg `67063b2c`, proto `7edf51c1`) |
+| **B3 CATCHALL offline read** (decision 171): Fold A intent -0.185 [-0.778, +0.370] vs floor 0.5097; DEV +0.320 [-0.280, +0.920] vs 0.5299 | `docs/results/2026-09-28-slurp-catchall-offline-read.md` | **INERT** (coordinator). No arm. The K5 catch-all class (3.06 pp) stays open and needs evidence from outside the vote (the B1 rank-visible / contrastive family) |
+| **B4 EMPTYENT offline read**: SLU-F1 +0.256 [+0.067, +0.445], intent 0.000; the pool's own sample-vs-sample null is 1.547 pp SLU / 0.810 intent | `docs/results/2026-09-28-slurp-empty-entity-offline-read.md` | **INERT-BY-INSTRUMENT** (coordinator): real but tiny, about 17 % of the null; no arm. **Instrument finding:** a multi-sample pool's offline null on DEV-2000-ADDED is 2.3x the 0.67 pp one-pool floor, so offline rule designs on multi-sample pools have little room. FP-only share 16.2 % by the scorer's per-row definition, not 10.8 % |
+| **A2 DEV attribution table** fixed model-free before contact (decision 138): 109 newly delivered rows on DEV-2000-ADDED vs 78 on Fold A | `docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/attribution-classes-v1.json` (merge of `fable/comp1devattr`) | merged; A2 still HELD. Its `expected_effect_pp` declaration formula is pending the COMP-1 Fold A read |
 | **E41 four-row dry run**: R1, R2, R3 PASS (Perception truncated 0 / 4), form proof, no effect claimed | `docs/results/2026-09-28-e21-e41-four-row-dry-run-read.md` (merge of `fable/e41read`) | read |
-| **E41 sub10 admitted and flipped** (owner decision 158): the draft's `dry_run_read` antecedent filled with the committed read and its blob sha256; the two sub10 exposure rows countersigned; receipt `coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json` minted; the sub10 READ row `SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-READ-V1` registered, countersigned and declared in its recipe (the pre-launch gate required it) | flip `f1485535`; flight commit `bf6db903` in `/home/chao/e41-sub10-flight-commit.txt` | `cli check` ready + `prepared_artifacts_ok: true`; `flight_registration_check.py` PASS for the cell. **Not launched**: E21 geometry, queued after REV-TFRL-1 |
+| **E41 sub10 admitted and flipped** (owner decision 158): the draft's `dry_run_read` antecedent filled with the committed read and its blob sha256; the two sub10 exposure rows countersigned; receipt `coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json` minted; the sub10 READ row `SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-READ-V1` registered, countersigned and declared in its recipe (the pre-launch gate required it) | flip `f1485535`; flight commit `bf6db903` in `/home/chao/e41-sub10-flight-commit.txt` | `cli check` ready + `prepared_artifacts_ok: true` (cfg `e5fd6a77`, proto `bcfbe518`, re-checked after today's merges). **Not launched**: queued in `SAEA-Queue-AFTER-REVTFRL` after `-REC` + G5 |
 | **ROLL-2 Fold A pool read** (DESCRIPTIVE): delivered 62.716 SLU / 80.185 intent as sealed; per-sample SLU 60.24-63.26, intent 81.76-82.78; oracle best-of-5 68.514 / any-sample-correct 83.241 as upper bounds; one intent across five samples on 93.5 % of rows | `docs/results/2026-09-28-slurp-roll-2-fold-a-pool-read.md` | read. **B3 is unblocked** (its primary pool input now exists); sampling cannot move intent, mirroring ROLL-3 |
 | **B1 read driver + gate**: the RANKVIS probe read driver, its gate verifying rendering from the sealed request records, the dry-run replay honouring `knowledge_value_rendering` | merge of `fable/consume` (`ada7a4cb`) | merged; the probe itself stays held |
 | **Same-flight supply-variant instrument, merge set A** (decision 172): design note plus the model-free read side (paired roster read, rollout score, citation credit, registration gate) | merge of `fable/svinst` (`2cef09ec`) | merged; touches no identity file (W1 `cli check` unchanged: same config and protocol hash, ready, `prepared_artifacts_ok: true`). **Set B waits for its named re-pin point** |
 | Coordinator ratification of the two model-free W4 rows `SAEA-SLURP-SLOT-CONVENTIONS-W4-PREPARE-V1` and `SAEA-SLURP-W4-FOLD-A-OFFLINE-ESTIMATE-V1`, countersigned beyond the admission list | exposure ledger | ratified |
 
-After the merge that carries the config key, `core.flight.cli check` on the ready COMP-1 arm still reads `ready` with `prepared_artifacts_ok: true`. The flying cells' prepared-artifact identity did not move.
+After today's merges (B3, B4, the A2 attribution), `core.flight.cli check` on the E41 sub10 cell and the `-REC` arm still reads `ready` with `prepared_artifacts_ok: true` and unchanged hashes.
 
 ## 3. The numbers that matter (all from sealed arms; nothing re-run)
 
@@ -151,6 +159,11 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 1. The `kb_policy` digest lock: `test_stage2a_synthesis_verification.py` pins a `FILE_DIGESTS` value for `rails/kb_policy.py`, and the live sha256 drifted from it across the W1-W3 merge wave. Re-pinning needs an owner-authorised equivalence proof.
 2. A wrong sha256 inside the committed receipt `docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json`, on its `A2T-G6-FAMILY-SWEEP-FIXED16.json` exclusion entry. The receipt was already wrong when it was authored, and the error is not a CRLF artefact. The receipt is hash-pinned evidence, so it gets a superseding receipt or an owner ruling, never an in-place edit.
 
+**Two tool gaps found while staging the `-REC` recovery (not yet fixed):**
+
+1. `scripts/flights/repin_cell.py`'s "old hash residue" check scans all of `docs/` and `configs/` and trips on a parent package's sealed pins when a derived cell inherits them; the `-REC` flip needed three flip runs.
+2. The flip scripts `e41_flip_sub10.sh` and `revtfrl_flip.sh` still hard-code the old commit trailer.
+
 **Wave state (decision 164, one change from the AGREE bytes each, one shared A/A):**
 
 | cell | state |
@@ -162,17 +175,17 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 | W4 | Slot conventions, no-harm. Its base is AGREE. |
 | W5 | Held (outcome of 170). |
 
-The wave (W1, W3a, W4 on the shared A/A) is flying now at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP; REV-TFRL-1 follows it in the same queue.
+The wave (W1, W3a, W4 on the shared A/A) is flying now at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP. The A/A is done and W1 is in flight. REV-TFRL-1 follows it in the same queue.
 
 **Same-flight supply-variant instrument (decision 172).** The design note and merge set A are on master (merge `2cef09ec`); set A touches no identity file. Set B touches identity-bound implementation files and merges only at its named re-pin point. VAR-2 as a mechanism stays closed.
 
 ## 7. My next action
 
-1. Let the running queue finish (the wave W1, W3a, W4 on its shared A/A, then REV-TFRL-1), then read each with the standard paired read. W5 stays held.
-2. Land the COMP-1 recovery from `fable/comp1rec` (one re-registration at most; a second failure stops the flight and the fix is proven on a 4-row dry run), re-fly COMP-1 + G5, and read them against the sealed shared A/A.
-3. From the COMP-1 Fold A read, declare `expected_effect_pp` for A2 (row 139), replacing the placeholder in both places the gate reads; then flip A2 (arm + A/A + smoke) and queue it.
-4. Queue the E41 sub10 re-read (flight commit `bf6db903`) on the E21 geometry after REV-TFRL-1; Earnings E-C1 is registered only after sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
-5. Offline in parallel: B3 (CATCHALL) over the ROLL-2 pool once its row is countersigned; the B4 offline null, then its rule; the RANKVIS probe (0.1 GPU-h) when the card has a gap; merge set B of the supply-variant instrument at its re-pin point.
+1. Let `SAEA-Queue-WAVE-REVTFRL` finish (the wave W1, W3a, W4 on its shared A/A, then REV-TFRL-1), then read each with the standard paired read. W5 stays held.
+2. `SAEA-Queue-AFTER-REVTFRL` then flies COMP-1 `-REC` + G5 (`472474bf`); read them against the sealed shared A/A. The owner's ruling on resume vs `-REC` stays open; `-REC` is the default, and there is no second recovery.
+3. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), replacing the placeholder in both places the gate reads; then flip A2 (arm + A/A + smoke) and queue it.
+4. The same queue flies the E41 sub10 re-read (`bf6db903`) after `-REC` + G5, then the filler once its hold is released. Earnings E-C1 is registered only after sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
+5. Offline in parallel: the catch-all class goes to the B1 rank-visible / contrastive family (the RANKVIS probe, 0.1 GPU-h, when the card has a gap). Size any offline rule on a multi-sample pool against the 1.547 pp null, not 0.67. Fix the two tool gaps. Merge set B of the supply-variant instrument at its re-pin point.
 
 ## 8. Housekeeping we share
 
