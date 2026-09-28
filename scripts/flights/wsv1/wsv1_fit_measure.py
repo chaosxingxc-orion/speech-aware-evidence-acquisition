@@ -3,8 +3,8 @@
 
 Cell W-SV-1 (owner decision 172; docs/superpowers/specs/2026-09-27-same-flight-supply-variant-
 instrument-design.md) is the AGREE arm with a Solver ``supply_variants`` group under
-``arm_visits: "first"``: A (the delivering arm, override-free) renders exactly the AGREE arm's
-first Solver request, B re-caps the train-exemplar Solver supply from k 20 to k 30, T is A's twin.
+``arm_visits: "first"``: A (the delivering arm, override-free) renders the AGREE arm's first
+Solver request up to two program-identity fields of a few characters (wsv1_arm_a_proof.py), B re-caps the train-exemplar Solver supply from k 20 to k 30, T is A's twin.
 ``rails.supply_variants`` refuses, before any contact, an arm whose
 ``base_prompt_tokens + max_supplied_items * tokens_per_supplied_item`` exceeds the live slot with
 its reserve, and the runner refuses an arm that supplies more than ``max_supplied_items`` at the

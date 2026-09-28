@@ -309,8 +309,8 @@ def main(argv: list[str] | None = None) -> int:
     }
     fit_statement = (
         "Fit numbers are MEASURED, never placeholders (the VAR-2 lesson): scripts/flights/wsv1/wsv1_fit_measure.py read the "
-        f"sealed AGREE arm (its first Solver contact on every one of the {ROWS} rows; the delivering arm A renders exactly "
-        "that request): supplied items min/mean/max "
+        f"sealed AGREE arm (its first Solver contact on every one of the {ROWS} rows; the delivering arm A renders that "
+        "request up to the two program-identity fields, a few characters): supplied items min/mean/max "
         f"{measure['first_visit']['items']['min']}/{measure['first_visit']['items']['mean']}/{measure['first_visit']['items']['max']}, "
         f"exemplar items 20 on every row, non-exemplar max {measure['first_visit']['nonexemplar_items_max']}, "
         f"{measure['chars_per_token_least_squares']} characters per token (least squares over every Solver contact), widest "
