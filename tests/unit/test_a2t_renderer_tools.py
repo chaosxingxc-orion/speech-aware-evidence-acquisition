@@ -43,7 +43,14 @@ from speech_aware_evidence_acquisition.rails.tool_wrappers import a2t_renderers
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RAILS_DIR = REPO_ROOT / "src/speech_aware_evidence_acquisition/rails"
 
-#: module stem -> catalog id, one per ``rails/a2t_*.py``.
+#: rails/a2t_*.py modules that are deliberately NOT renderer/tool-wrapper
+#: candidates: pure internal parsing/validation helpers with no ToolCard
+#: wrapper and no row in rails/tools.py, consumed directly by other rails
+#: modules rather than dispatched as a system-invoked tool.
+NON_RENDERER_A2T_MODULES = frozenset({"a2t_perception_state"})
+
+#: module stem -> catalog id, one per ``rails/a2t_*.py`` renderer (that is,
+#: every module under this glob except NON_RENDERER_A2T_MODULES).
 RENDERER_TOOLS = {
     "a2t_canonical_family_ground": "saea-tool-a2t-canonical-family-ground-v1",
     "a2t_construction_example_ground": "saea-tool-a2t-construction-example-ground-v1",
@@ -75,7 +82,7 @@ def test_every_a2t_rails_module_has_exactly_one_catalog_entry():
     on_disk = {
         os.path.basename(path)[: -len(".py")]
         for path in glob.glob(str(RAILS_DIR / "a2t_*.py"))
-    }
+    } - NON_RENDERER_A2T_MODULES
     assert on_disk == set(RENDERER_TOOLS), (
         "a rails/a2t_* module gained or lost a catalog entry; register it in "
         "rails/tools.py and add it here"

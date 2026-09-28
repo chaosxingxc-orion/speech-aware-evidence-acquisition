@@ -19,13 +19,24 @@ def test_package_resolves_from_src_not_reference():
 
 
 def test_no_source_module_touches_the_snapshot_or_sys_path():
-    forbidden = re.compile(
-        r"w1[-_]snapshot|sys\.path|^\s*(?:from|import)\s+reference\b",
+    """No production module may mention the quarantine directory, import the
+    ``reference`` package, or push a path naming the quarantine onto
+    ``sys.path``. ``sys.path`` manipulation for an unrelated, legitimate
+    purpose (e.g. resolving a pinned external source checkout named in a
+    dataset lock) is not itself forbidden -- only a ``sys.path`` call whose
+    argument names the quarantine is."""
+    literal_forbidden = re.compile(
+        r"w1[-_]snapshot|^\s*(?:from|import)\s+reference\b",
         flags=re.IGNORECASE | re.MULTILINE,
+    )
+    quarantine_sys_path = re.compile(
+        r"sys\.path\.(?:insert|append)\([^)]*\breference\b[^)]*\)",
+        flags=re.IGNORECASE,
     )
     offenders = []
     for module in sorted(SRC_ROOT.rglob("*.py")):
-        if forbidden.search(module.read_text(encoding="utf-8")):
+        text = module.read_text(encoding="utf-8")
+        if literal_forbidden.search(text) or quarantine_sys_path.search(text):
             offenders.append(str(module.relative_to(REPO_ROOT)))
     assert offenders == [], f"production source must not reach into the quarantine: {offenders}"
 
