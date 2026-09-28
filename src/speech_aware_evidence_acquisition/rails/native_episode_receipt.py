@@ -1222,24 +1222,34 @@ def validate_solver_group_receipt(
             )
 
 
-#: Item E42 (2026-09-25, Stage-3 family VAR-2).
-SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v1"
+#: Item E42 (2026-09-25, Stage-3 family VAR-2). Bumped to v2 by owner
+#: decision 172 (2026-09-27, merge set B): v2 adds ``arm_visits`` and
+#: ``visit_index`` at the block level and ``replicate_of`` on every arm row
+#: (``rails.supply_variants``). A v1 receipt -- every VAR-2 cell sealed
+#: before this decision -- still validates unchanged below: no sealed data
+#: is rewritten.
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V1 = "saea-supply-variant-arms-v1"
+SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v2"
 
-_SUPPLY_VARIANT_FIELDS = frozenset(
+_SUPPLY_VARIANT_FIELDS_V1 = frozenset(
     {"schema", "phase_id", "arm_count", "delivered_arm_id", "fit_estimate", "arms"}
 )
-_SUPPLY_VARIANT_ARM_FIELDS = frozenset(
+_SUPPLY_VARIANT_FIELDS_V2 = _SUPPLY_VARIANT_FIELDS_V1 | {"arm_visits", "visit_index"}
+_SUPPLY_VARIANT_ARM_FIELDS_V1 = frozenset(
     {
         "arm_index", "arm_id", "deliver", "contact_id", "resolved_knobs",
         "supplied_value_ids", "supplied_item_count", "max_supplied_items",
     }
 )
+_SUPPLY_VARIANT_ARM_FIELDS_V2 = _SUPPLY_VARIANT_ARM_FIELDS_V1 | {"replicate_of"}
 _SUPPLY_VARIANT_FIT_FIELDS = frozenset(
     {
         "slot_tokens", "completion_ceiling", "base_prompt_tokens",
         "tokens_per_supplied_item", "reserve_tokens", "prompt_limit_tokens",
     }
 )
+_SUPPLY_VARIANT_ARM_VISITS_VALUES = ("every", "first")
+_SUPPLY_VARIANT_ARM_VISITS_DEFAULT = "every"
 
 
 def validate_supply_variant_receipt(
@@ -1249,6 +1259,7 @@ def validate_supply_variant_receipt(
     delivered_arm_id: str,
     phase_id: str,
     retrieved_value_ids: Sequence[str] | None = None,
+    arm_visits: str | None = None,
     error_type: type[Exception] = ValueError,
 ) -> None:
     """Validate the custody a supply-variant visit keeps (item E42).
@@ -1276,6 +1287,19 @@ def validate_supply_variant_receipt(
     construction's request, and only the NON-delivering arms carry evidence the
     sealed state does not claim. Omitted (a reader with no state to compare) the
     rest of the walk is unchanged.
+
+    Accepts both schemas (owner decision 172, merge set B). A v1 receipt
+    (``schema`` ``saea-supply-variant-arms-v1``) validates exactly as before
+    this decision. A v2 receipt additionally carries ``arm_visits`` (``"every"``
+    or ``"first"``) and ``visit_index`` (always 0: only the first Solver visit
+    is ever sealed), and its arm rows carry ``replicate_of`` -- the delivering
+    arm's own id, naming that row the read's TWIN: no overrides, exempt from
+    the "at least one knob" rule, and required to resolve exactly the
+    delivering arm's own supplied ids. ``arm_visits``, when given, is the
+    CONFIGURATION's own declared value; the receipt's arm_visits (v2) or the
+    implied ``"every"`` (v1) must equal it. Omitted, no such cross-check is
+    made (``core.bundle.outputs`` reads a sealed row with no composed
+    configuration to compare against).
     """
 
     declared = list(arm_ids)
@@ -1287,13 +1311,21 @@ def validate_supply_variant_receipt(
             "supply variant receipt requires the delivering arm to be the last "
             "declared arm",
         )
-    if (
-        not isinstance(supply_variants, Mapping)
-        or set(supply_variants) != _SUPPLY_VARIANT_FIELDS
-    ):
+    if not isinstance(supply_variants, Mapping):
         _raise(error_type, "supply variant receipt has an invalid shape")
-    if supply_variants["schema"] != SUPPLY_VARIANT_RECEIPT_SCHEMA:
+    schema = supply_variants.get("schema")
+    if schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V1:
+        is_v2 = False
+        expected_fields = _SUPPLY_VARIANT_FIELDS_V1
+        arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V1
+    elif schema == SUPPLY_VARIANT_RECEIPT_SCHEMA:
+        is_v2 = True
+        expected_fields = _SUPPLY_VARIANT_FIELDS_V2
+        arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V2
+    else:
         _raise(error_type, "supply variant receipt has an unregistered schema")
+    if set(supply_variants) != expected_fields:
+        _raise(error_type, "supply variant receipt has an invalid shape")
     if supply_variants["phase_id"] != phase_id:
         _raise(error_type, "supply variant receipt names another phase")
     if supply_variants["arm_count"] != len(declared):
@@ -1303,6 +1335,25 @@ def validate_supply_variant_receipt(
         )
     if supply_variants["delivered_arm_id"] != delivered_arm_id:
         _raise(error_type, "supply variant receipt names another delivering arm")
+    if is_v2:
+        receipt_arm_visits = supply_variants["arm_visits"]
+        if receipt_arm_visits not in _SUPPLY_VARIANT_ARM_VISITS_VALUES:
+            _raise(error_type, "supply variant receipt has an invalid arm_visits")
+        visit_index = supply_variants["visit_index"]
+        if isinstance(visit_index, bool) or visit_index != 0:
+            _raise(
+                error_type,
+                "supply variant receipt visit_index must be 0: only the first "
+                "Solver visit is ever sealed",
+            )
+    else:
+        receipt_arm_visits = _SUPPLY_VARIANT_ARM_VISITS_DEFAULT
+    if arm_visits is not None and receipt_arm_visits != arm_visits:
+        _raise(
+            error_type,
+            "supply variant receipt arm_visits disagrees with the declared "
+            "configuration",
+        )
     fit = supply_variants["fit_estimate"]
     if not isinstance(fit, Mapping) or set(fit) != _SUPPLY_VARIANT_FIT_FIELDS:
         _raise(error_type, "supply variant receipt fit estimate has an invalid shape")
@@ -1310,8 +1361,10 @@ def validate_supply_variant_receipt(
     if len(rows) != len(declared):
         _raise(error_type, "supply variant receipt does not carry every declared arm")
     contact_ids: list[str] = []
+    delivering_ids: tuple[str, ...] | None = None
+    twin_checks: list[tuple[str, tuple[str, ...]]] = []
     for index, row in enumerate(rows):
-        if not isinstance(row, Mapping) or set(row) != _SUPPLY_VARIANT_ARM_FIELDS:
+        if not isinstance(row, Mapping) or set(row) != arm_fields:
             _raise(error_type, "supply variant arm record has an invalid shape")
         if row["arm_index"] != index:
             _raise(
@@ -1335,6 +1388,25 @@ def validate_supply_variant_receipt(
         if not isinstance(contact_id, str) or not contact_id:
             _raise(error_type, "supply variant arm lacks its contact identity")
         contact_ids.append(contact_id)
+        replicate_of = row.get("replicate_of") if is_v2 else None
+        if replicate_of is not None:
+            if not isinstance(replicate_of, str) or not replicate_of:
+                _raise(
+                    error_type,
+                    "supply variant arm replicate_of must be a non-empty string",
+                )
+            if replicate_of != delivered_arm_id:
+                _raise(
+                    error_type,
+                    "supply variant arm names replicate_of that is not the "
+                    "delivering arm",
+                )
+            if deliver:
+                _raise(
+                    error_type,
+                    "the delivering supply variant arm cannot also declare "
+                    "replicate_of",
+                )
         # An ORDERED LIST of {path, value}: a mapping keyed by the dotted knob
         # path cannot survive the framework's own node-result transport, which
         # unflattens dotted keys (see ``rails.supply_variants.
@@ -1366,7 +1438,13 @@ def validate_supply_variant_receipt(
                 "the delivering supply variant arm must resolve no knobs: it is "
                 "the unvaried construction",
             )
-        if not deliver and not paths:
+        if replicate_of is not None and paths:
+            _raise(
+                error_type,
+                "a supply variant twin arm (replicate_of) must resolve no "
+                "knobs: it resolves exactly the delivering arm's ids",
+            )
+        if not deliver and not paths and replicate_of is None:
             _raise(
                 error_type,
                 "a non-delivering supply variant arm must resolve at least one "
@@ -1398,18 +1476,29 @@ def validate_supply_variant_receipt(
                 "supply variant arm supplied more items than the bound its fit "
                 "refusal was computed against",
             )
-        if deliver and retrieved_value_ids is not None:
-            accumulated = list(retrieved_value_ids)
-            if list(ids) != accumulated[: len(ids)]:
-                _raise(
-                    error_type,
-                    "the delivering supply variant arm's supplied ids are not an "
-                    "ordered prefix of the row's own accumulated "
-                    "retrieved_value_ids; the delivered request would not be the "
-                    "unvaried construction's request",
-                )
+        if deliver:
+            delivering_ids = tuple(ids)
+            if retrieved_value_ids is not None:
+                accumulated = list(retrieved_value_ids)
+                if list(ids) != accumulated[: len(ids)]:
+                    _raise(
+                        error_type,
+                        "the delivering supply variant arm's supplied ids are not "
+                        "an ordered prefix of the row's own accumulated "
+                        "retrieved_value_ids; the delivered request would not be "
+                        "the unvaried construction's request",
+                    )
+        if replicate_of is not None:
+            twin_checks.append((row["arm_id"], tuple(ids)))
     if len(set(contact_ids)) != len(contact_ids):
         _raise(error_type, "supply variant arms must have distinct contact ids")
+    for twin_arm_id, twin_ids in twin_checks:
+        if delivering_ids is None or twin_ids != delivering_ids:
+            _raise(
+                error_type,
+                f"supply variant twin arm {twin_arm_id!r} does not resolve "
+                "exactly the delivering arm's ids",
+            )
 
 
 __all__ = [

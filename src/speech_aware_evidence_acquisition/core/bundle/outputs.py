@@ -725,9 +725,23 @@ def _verify_supply_variant_trace_binding(
 ) -> None:
     """Bind every Solver arm visit to its trace and the final arm to the row.
 
-    The output carries the final visit's arm selection. Earlier revision visits
-    remain in ``native_episode_receipt.role_visits``. The bundle has no raw
-    composed configuration; declaration identity was checked at flight seal.
+    Under the default ``arm_visits`` ("every", or a v1 receipt with no such
+    key at all) the output carries the FINAL visit's arm selection and every
+    Solver visit carries every declared arm -- unchanged since item E42.
+
+    Item E42b (2026-09-27, owner decision 172, merge set B): under
+    ``arm_visits: "first"`` the arm group fans out ONLY at the Solver's FIRST
+    visit (``visit_index`` 0 -- the schema's own field, always 0, since it is
+    always that visit's receipt that is sealed, section 2 of the svinst
+    design); the receipt's arm rows then describe that first visit, not
+    necessarily the final (delivered) one, and every OTHER Solver visit
+    carries exactly one ordinary contact with no arm custody of its own. The
+    row's own identity still binds to the truly final contact of the truly
+    final visit, whichever visit that is.
+
+    Earlier revision visits remain in ``native_episode_receipt.role_visits``.
+    The bundle has no raw composed configuration; declaration identity was
+    checked at flight seal.
     """
 
     label = _row_label(row)
@@ -744,6 +758,9 @@ def _verify_supply_variant_trace_binding(
     arm_ids = [arm.get("arm_id") if isinstance(arm, Mapping) else None for arm in arms]
     if any(not isinstance(arm_id, str) or not arm_id for arm_id in arm_ids):
         refuse("supply_variants contains an arm without an id")
+    arm_visits = variants.get("arm_visits", "every")
+    if arm_visits not in ("every", "first"):
+        refuse("supply_variants.arm_visits must be 'every' or 'first'")
 
     episode = row.get("native_episode_receipt")
     visits = episode.get("role_visits") if isinstance(episode, Mapping) else None
@@ -753,16 +770,22 @@ def _verify_supply_variant_trace_binding(
                      and visit.get("stage") == "solver"]
     if not solver_visits:
         refuse("supply_variants has no Solver visit")
-    final_visit = solver_visits[-1]
-    final_execution = final_visit.get("execution_receipt")
-    final_contacts = final_execution.get("contacts") if isinstance(final_execution, Mapping) else None
-    if not isinstance(final_contacts, Sequence) or isinstance(final_contacts, (str, bytes)):
-        refuse("final Solver visit has no contacts")
+    # The visit whose contacts the receipt's arm rows describe: the FIRST
+    # visit under "first" arm visits (the only one that ever fans out), the
+    # FINAL visit otherwise ("today: the final one", unchanged since E42).
+    reference_visit = solver_visits[0] if arm_visits == "first" else solver_visits[-1]
+    reference_execution = reference_visit.get("execution_receipt")
+    reference_contacts = (
+        reference_execution.get("contacts")
+        if isinstance(reference_execution, Mapping) else None
+    )
+    if not isinstance(reference_contacts, Sequence) or isinstance(reference_contacts, (str, bytes)):
+        refuse("the arm-bearing Solver visit has no contacts")
     if [arm.get("contact_id") for arm in arms] != [
         contact.get("agent_contact_id") if isinstance(contact, Mapping) else None
-        for contact in final_contacts
+        for contact in reference_contacts
     ]:
-        refuse("final arm contact ids disagree with the final Solver visit")
+        refuse("declared arm contact ids disagree with the arm-bearing Solver visit")
 
     from ...rails.native_episode_receipt import validate_supply_variant_receipt
 
@@ -777,7 +800,7 @@ def _verify_supply_variant_trace_binding(
     try:
         validate_supply_variant_receipt(
             variants, arm_ids=arm_ids, delivered_arm_id=arm_ids[-1],
-            phase_id=str(final_visit.get("role_id")),
+            phase_id=str(reference_visit.get("role_id")),
             retrieved_value_ids=retrieved_ids, error_type=BundleError,
         )
     except BundleError as error:
@@ -788,25 +811,28 @@ def _verify_supply_variant_trace_binding(
     for visit_index, visit in enumerate(solver_visits):
         execution = visit.get("execution_receipt")
         contacts = execution.get("contacts") if isinstance(execution, Mapping) else None
-        if (not isinstance(contacts, Sequence) or isinstance(contacts, (str, bytes))
-                or len(contacts) != len(arm_ids)):
-            refuse(f"Solver visit {visit_index} does not carry every arm contact")
+        if not isinstance(contacts, Sequence) or isinstance(contacts, (str, bytes)):
+            refuse(f"Solver visit {visit_index} has no contacts")
+        is_fanout_visit = arm_visits != "first" or visit_index == 0
+        expected_len = len(arm_ids) if is_fanout_visit else 1
+        if len(contacts) != expected_len:
+            refuse(f"Solver visit {visit_index} does not carry its expected contact count")
         if execution.get("final_contact") != contacts[-1]:
             refuse(f"Solver visit {visit_index} final contact is not its last arm")
-        for arm_index, contact in enumerate(contacts):
+        for position, contact in enumerate(contacts):
             if not isinstance(contact, Mapping):
-                refuse(f"Solver visit {visit_index} arm {arm_index} has no contact")
+                refuse(f"Solver visit {visit_index} contact {position} has no contact")
             contact_id = contact.get("agent_contact_id")
             request_id = contact.get("request_id")
             if (not isinstance(contact_id, str) or not contact_id
                     or contact_id in seen_contacts
                     or not isinstance(request_id, str) or not request_id):
-                refuse(f"Solver visit {visit_index} arm {arm_index} has invalid identity")
+                refuse(f"Solver visit {visit_index} contact {position} has invalid identity")
             seen_contacts.add(contact_id)
             request = trace_records.get(f"{request_id}/request")
             response = trace_records.get(f"{request_id}/response")
             if not isinstance(request, Mapping) or not isinstance(response, Mapping):
-                refuse(f"Solver visit {visit_index} arm {arm_index} has no trace pair")
+                refuse(f"Solver visit {visit_index} contact {position} has no trace pair")
             response_text = response.get("text")
             if (request.get("payload_sha256") != contact.get("request_sha256")
                     or _request_record_sample_id(request) != row.get("sample_id")
@@ -815,7 +841,7 @@ def _verify_supply_variant_trace_binding(
                     != contact.get("response_text_sha256")
                     or response.get("response_text_sha256") != contact.get("response_text_sha256")
                     or response.get("response_sha256") != contact.get("response_sha256")):
-                refuse(f"Solver visit {visit_index} arm {arm_index} differs from its trace")
+                refuse(f"Solver visit {visit_index} contact {position} differs from its trace")
             last = contact
     if (last is None or row.get("request_id") != last.get("request_id")
             or row.get("request_sha256") != last.get("request_sha256")

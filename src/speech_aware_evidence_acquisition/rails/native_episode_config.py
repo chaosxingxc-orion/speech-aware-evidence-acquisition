@@ -1817,8 +1817,31 @@ def load_native_episode_config(
     # formula above. ``samples >= 2`` and an arm group are refused together
     # (``NativeEpisodeRole.__post_init__``), so the product is never of two
     # simultaneously non-unit factors.
+    # Item E42b (2026-09-27, owner decision 172, merge set B): under
+    # ``supply_variants.arm_visits: "first"`` the arm group fans out ONLY at
+    # the Solver's first visit of the whole episode; every later revision
+    # visit contacts the delivering arm alone (``rails.runner``,
+    # ``rails.native_episode_receipt``). The per_revision term below must
+    # therefore NOT multiply every revision's Solver contribution by the arm
+    # count -- that was VAR-2's own bug (docs/results/2026-09-25-slurp-var2-
+    # closed-engineering-failure.md): the fit bound covers exactly one visit.
+    # Instead the formula counts the Solver's ordinary ONE contact per
+    # revision and adds the (K - 1) extra contacts of the one visit that
+    # fans out exactly once, matching the design's own simple form: ceiling
+    # = base_ceiling + (K - 1). Absent an arm group, or under the default
+    # "every", this reduces to exactly the pre-E42b formula.
+    solver_role_for_ceiling = next(r for r in roles if r.role_kind == "solver")
+    variant_group_for_ceiling = solver_role_for_ceiling.supply_variants
+    variant_arm_count_for_ceiling = _supply_variant_arm_count(solver_role_for_ceiling)
+    variant_fans_out_once = (
+        variant_group_for_ceiling is not None
+        and variant_group_for_ceiling.arm_visits == "first"
+    )
     per_revision = sum(
-        r.max_iterations * r.samples * _supply_variant_arm_count(r)
+        r.max_iterations * r.samples * (
+            1 if (r.role_kind == "solver" and variant_fans_out_once)
+            else _supply_variant_arm_count(r)
+        )
         if r.role_kind == "solver" else r.max_iterations
         for r in roles[1:]
     )
@@ -1828,6 +1851,8 @@ def load_native_episode_config(
     per_revision += cleaning_contacts_per_revision
     ceiling = roles[0].max_iterations + (revisions + 1) * per_revision
     ceiling += refreshes * roles[0].max_iterations
+    if variant_fans_out_once:
+        ceiling += variant_arm_count_for_ceiling - 1
     # E18 (2026-09-19, owner decisions 43-44): plus the contacts the
     # Acquisition node's own visits may spend. Zero for every model-free kind
     # and for every config that declares no acquisition at all, which reduces

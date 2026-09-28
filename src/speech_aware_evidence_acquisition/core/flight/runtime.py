@@ -9993,6 +9993,13 @@ class FlightRuntime:
                             if getattr(sources[0], "final_query_state", None) is not None
                             else None
                         ),
+                        # Item E42b (owner decision 172, merge set B): the
+                        # SAME custody check the runner made at composition,
+                        # re-made HERE against the RAW declared arm_visits --
+                        # a sealed row can never describe an arm-fan-out
+                        # policy other than the one the cell's own fragment
+                        # declares.
+                        arm_visits=raw_variants.get("arm_visits", "every"),
                         error_type=FlightRuntimeError,
                     )
                 if delivery.kind == "abstention":

@@ -1167,3 +1167,516 @@ def test_a_delivering_arm_that_resolves_a_different_supply_is_refused(tmp_path):
             harness.run()
     finally:
         harness.close()
+
+
+
+# ---------------------------------------------------------------------------
+# 7. The twin arm and arm_visits: "first" (owner decision 172, merge set B)
+# ---------------------------------------------------------------------------
+
+COMP1_FRAGMENT = "slurp-native-stage3-comp1-fold-a-baseline-v1.json"
+
+
+def _twin_block(**overrides):
+    block = {
+        "arms": [
+            {"arm_id": "aa", "replicate_of": "plan", "max_supplied_items": 48},
+            {"arm_id": "plan", "deliver": True, "max_supplied_items": 48},
+        ],
+        "fit_estimate": dict(FIT),
+    }
+    block.update(overrides)
+    return block
+
+
+def test_a_twin_arm_resolves_no_overrides_and_names_the_delivering_arm():
+    group = _parse(_twin_block())
+    assert group.arm_visits == "every"
+    twin = group.arm("aa")
+    assert twin.replicate_of == "plan"
+    assert twin.knobs == ()
+    assert twin.deliver is False
+    assert group.delivered_arm.replicate_of is None
+
+
+def test_arm_visits_first_is_accepted_and_defaults_to_every():
+    assert _parse(_twin_block(arm_visits="first")).arm_visits == "first"
+    assert _parse(_twin_block()).arm_visits == "every"
+    assert _parse().arm_visits == "every"  # the plain exk10/plan group, untouched
+
+
+@pytest.mark.parametrize(
+    "mutate,expected",
+    [
+        pytest.param(
+            lambda b: b["arms"][0].__setitem__("replicate_of", "aa"),
+            "not the delivering arm",
+            id="twin-names-itself",
+        ),
+        pytest.param(
+            lambda b: b["arms"][0].__setitem__("overrides", {f"{EX}.k": 4}),
+            "must declare no overrides",
+            id="twin-with-overrides",
+        ),
+        pytest.param(
+            lambda b: b["arms"][1].__setitem__("replicate_of", "plan"),
+            "cannot also be a twin",
+            id="delivering-arm-declares-replicate-of",
+        ),
+        pytest.param(
+            lambda b: b.__setitem__("arm_visits", "sometimes"),
+            "must be one of",
+            id="unknown-arm-visits-value",
+        ),
+        pytest.param(
+            lambda b: b.__setitem__("colour", "red"),
+            "must be an object with exactly",
+            id="unknown-top-level-key",
+        ),
+    ],
+)
+def test_twin_and_arm_visits_refusals(mutate, expected):
+    block = _twin_block()
+    mutate(block)
+    with pytest.raises(SupplyVariantError, match=expected):
+        _parse(block)
+
+
+def test_a_twin_does_not_collide_with_the_identical_override_refusal():
+    # Both the twin and the delivering arm declare NO overrides; without the
+    # replicate_of exemption this would raise "two supply_variants arms
+    # declare the same overrides".
+    group = _parse(_twin_block())
+    assert group.arm_ids == ("aa", "plan")
+
+
+def test_the_receipt_carries_replicate_of_and_the_v2_schema():
+    group = _parse(_twin_block())
+    records = [
+        supply_variant_arm_record(
+            arm=group.arm("aa"), arm_index=0, contact_id="c0",
+            supplied_value_ids=("b::1",),
+        ),
+        supply_variant_arm_record(
+            arm=group.arm("plan"), arm_index=1, contact_id="c1",
+            supplied_value_ids=("b::1",),
+        ),
+    ]
+    receipt = supply_variant_receipt(group=group, phase_id="solver", records=records)
+    assert receipt["schema"] == "saea-supply-variant-arms-v2"
+    assert receipt["arm_visits"] == "every"
+    assert receipt["visit_index"] == 0
+    assert receipt["arms"][0]["replicate_of"] == "plan"
+    assert receipt["arms"][1]["replicate_of"] is None
+    validate_supply_variant_receipt(
+        receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+    )
+
+
+def test_a_v1_receipt_still_validates_unchanged():
+    group = _parse()  # the plain exk10/plan two-arm group, no twin
+    records = [
+        supply_variant_arm_record(
+            arm=group.arm("exk10"), arm_index=0, contact_id="c0",
+            supplied_value_ids=("x::4",),
+        ),
+        supply_variant_arm_record(
+            arm=group.arm("plan"), arm_index=1, contact_id="c1",
+            supplied_value_ids=(),
+        ),
+    ]
+    v1_receipt = {
+        "schema": "saea-supply-variant-arms-v1",
+        "phase_id": "solver",
+        "arm_count": 2,
+        "delivered_arm_id": "plan",
+        "fit_estimate": group.fit_estimate.as_json(),
+        "arms": [
+            {k: v for k, v in record.items() if k != "replicate_of"}
+            for record in records
+        ],
+    }
+    validate_supply_variant_receipt(
+        v1_receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+    )
+
+
+def test_a_twin_that_does_not_resolve_the_delivering_arms_ids_is_refused():
+    group = _parse(_twin_block())
+    records = [
+        supply_variant_arm_record(
+            arm=group.arm("aa"), arm_index=0, contact_id="c0",
+            supplied_value_ids=("b::1",),
+        ),
+        supply_variant_arm_record(
+            arm=group.arm("plan"), arm_index=1, contact_id="c1",
+            supplied_value_ids=("b::2",),
+        ),
+    ]
+    receipt = supply_variant_receipt(group=group, phase_id="solver", records=records)
+    with pytest.raises(ValueError, match="does not resolve exactly the delivering arm's ids"):
+        validate_supply_variant_receipt(
+            receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+        )
+
+
+def test_arm_visits_cross_check_against_the_declared_configuration():
+    group = _parse(_twin_block(arm_visits="first"))
+    records = [
+        supply_variant_arm_record(
+            arm=group.arm("aa"), arm_index=0, contact_id="c0", supplied_value_ids=(),
+        ),
+        supply_variant_arm_record(
+            arm=group.arm("plan"), arm_index=1, contact_id="c1", supplied_value_ids=(),
+        ),
+    ]
+    receipt = supply_variant_receipt(group=group, phase_id="solver", records=records)
+    validate_supply_variant_receipt(
+        receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+        arm_visits="first",
+    )
+    with pytest.raises(ValueError, match="arm_visits disagrees"):
+        validate_supply_variant_receipt(
+            receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+            arm_visits="every",
+        )
+
+
+def _first_visit_block(arm_count):
+    arms = [
+        {"arm_id": f"extra{i}", "max_supplied_items": 38, "overrides": {f"{EX}.k": 10 + i}}
+        for i in range(arm_count - 2)
+    ]
+    arms.append({"arm_id": "aa", "replicate_of": "plan", "max_supplied_items": 48})
+    arms.append({"arm_id": "plan", "deliver": True, "max_supplied_items": 48})
+    return {"arms": arms, "fit_estimate": dict(FIT), "arm_visits": "first"}
+
+
+@pytest.mark.parametrize(
+    "program_id,arm_count,expected_ceiling",
+    [
+        ("phase-native-candidates-review-revise-cited-variants2first-v1", 2, 12),
+        ("phase-native-candidates-review-revise-cited-variants3first-v1", 3, 13),
+    ],
+)
+def test_the_variantsnfirst_fragments_compose_to_base_plus_k_minus_one(
+    program_id, arm_count, expected_ceiling,
+):
+    """K = 2 or 3 gives ceiling 12 or 13 on the 11-contact cited anchor
+    (design section 2): under ``arm_visits: "first"`` the arm count is NOT
+    multiplied into every revision -- that was VAR-2's own bug -- it is added
+    ONCE as (K - 1)."""
+
+    values = _fragment(COMP1_FRAGMENT)
+    values["policy"] = program_id
+    values["native_episode"]["roles"]["solver"]["supply_variants"] = _first_visit_block(
+        arm_count
+    )
+    program = default_phase_program(program_id)
+    assert program.max_contacts == expected_ceiling
+    config = load_native_episode_config(values, program)
+    assert config.max_contacts == expected_ceiling
+    assert config.supply_variant_group.arm_visits == "first"
+    assert config.supply_variant_group.arm_count == arm_count
+
+
+def test_a_variantsnfirst_program_under_the_default_every_ceiling_is_refused():
+    """The variants2first program's OWN ceiling (12) is only ever reached
+    under "first"; the ordinary "every" multiplication would need 1 +
+    2*(2+3+1) = 13, not 12, so composing the anchor's block without
+    ``arm_visits`` on this program id must fail the ceiling assertion."""
+
+    values = _fragment(COMP1_FRAGMENT)
+    program_id = "phase-native-candidates-review-revise-cited-variants2first-v1"
+    values["policy"] = program_id
+    block = _first_visit_block(2)
+    del block["arm_visits"]
+    values["native_episode"]["roles"]["solver"]["supply_variants"] = block
+    with pytest.raises(ValueError, match="contact ceiling"):
+        load_native_episode_config(values, default_phase_program(program_id))
+
+
+# ---------------------------------------------------------------------------
+# 8. AT2/AT3: the twin's wire identity and revision cardinality, live
+# ---------------------------------------------------------------------------
+
+
+def _twin_live_group(*, arm_visits="every"):
+    return parse_supply_variants(
+        {
+            "arms": [
+                {"arm_id": "aa", "replicate_of": "plan", "max_supplied_items": 4},
+                {"arm_id": "plan", "deliver": True, "max_supplied_items": 4},
+            ],
+            "fit_estimate": dict(FIT),
+            "arm_visits": arm_visits,
+        },
+        phase_id="solver", first_phase_id="perception",
+        declared_stores=("train-exemplars",),
+    )
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_at2_the_twins_wire_payload_equals_the_delivering_arms_byte_for_byte(tmp_path):
+    group = _twin_live_group()
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=3, planner_actions=(),
+    )
+    harness.config = _live_config(group=group, max_contacts=3)
+    harness.supply_variant_for_phase = _arm_resolver({"aa": (), "plan": ()})
+    harness._output = _arm_output
+    try:
+        harness.run()
+    finally:
+        harness.close()
+
+    requests = [
+        payload["payload"]
+        for channel, _record_id, payload in harness.trace.records
+        if channel == "MODEL_REQUEST"
+    ]
+    assert len(requests) == 3
+    twin, plan = requests[1], requests[2]
+
+    # Unlike an ordinary (overriding) arm, the twin's supplied evidence is
+    # the SAME as the delivering arm's: both empty here (the harness binds
+    # no ordinary supply_for_phase, so the delivering arm's own resolution --
+    # and the twin's, which takes the identical base_messages(ctx) path --
+    # is the row's empty bootstrap).
+    assert twin["supplied_evidence"] == plan["supplied_evidence"] == []
+    assert twin["evidence_provenance"] == plan["evidence_provenance"] == []
+
+    # Every other field a wire payload carries, compared byte for byte
+    # between the twin and the delivering arm (AT2): decoding, contract,
+    # tools, the speech packet and the carrier/session identity. The ONE
+    # thing this list deliberately excludes is the contact's own transport
+    # identifier (``request_id``) and the one history turn that names it
+    # (the "control" turn) -- those differ between ANY two contacts of any
+    # episode, arm-grouped or not, and are not part of "the wire payload" the
+    # design's variant_arm_id claim is about.
+    for field in (
+        "decoding_params", "task_instruction", "tool_schemas",
+        "speech_feature_parts", "speech_packet_sha256", "query_source",
+        "key_representation_id", "matcher_policy_id", "carrier_lock_key",
+        "media_relpath", "audio_seconds", "sample_rate_hz", "sample_id",
+        "supplied_evidence", "evidence_provenance",
+    ):
+        assert twin[field] == plan[field], field
+    assert len(twin["history"]) == len(plan["history"])
+    assert twin["history"][0] == plan["history"][0]
+    assert twin["history"][-1]["role"] == plan["history"][-1]["role"] == "control"
+
+
+def _live_config_with_review(*, group, max_contacts, max_revisions):
+    """The review-ON shape (reviewer/planner one visit per round) with an
+    arm-grouped Solver, the twin of ``_live_config`` above."""
+
+    return NativeEpisodeConfig(
+        episode_id="native-role-runner-proof-v1",
+        max_revisions=max_revisions,
+        actions=ACTIONS,
+        roles=tuple(
+            NativeEpisodeRole(
+                phase_id=phase, role_kind=phase, max_iterations=1, tool_names=(),
+                supply_variants=(group if phase == "solver" else None),
+            )
+            for phase in PHASES
+        ),
+        max_contacts=max_contacts,
+    )
+
+
+def _revision_output(key):
+    sample_id, phase, visit, turn = key
+    if phase == "planner":
+        return ("REVISE", "ACCEPT")[visit - 1]
+    if phase == "solver":
+        return f"solver-arm-{visit}-{turn}:{sample_id}"
+    return f"{phase}-analysis:{sample_id}:visit:{visit}"
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_at3_a_revision_visit_under_first_contacts_one_arm(tmp_path):
+    group = parse_supply_variants(
+        {
+            "arms": [
+                {"arm_id": "wide", "max_supplied_items": 4, "overrides": {f"{EX}.k": 30}},
+                {"arm_id": "plan", "deliver": True, "max_supplied_items": 4},
+            ],
+            "fit_estimate": dict(FIT),
+            "arm_visits": "first",
+        },
+        phase_id="solver", first_phase_id="perception",
+        declared_stores=("train-exemplars",),
+    )
+    # Perception(1) + round0[Solver 2 arms + Reviewer 1 + Planner 1]=4 +
+    # round1[Solver 1 + Reviewer 1 + Planner 1]=3 -> 8, exactly base_ceiling
+    # (7, the _config() review-on anchor at max_revisions=1) + (K - 1) = 8.
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=1, max_contacts=8,
+        planner_actions=("REVISE", "ACCEPT"),
+    )
+    harness.config = _live_config_with_review(group=group, max_contacts=8, max_revisions=1)
+    harness.supply_variant_for_phase = _arm_resolver({"wide": (ARM_VALUE,), "plan": ()})
+    harness._output = _revision_output
+    try:
+        summary = harness.run()
+    finally:
+        close_summary = harness.close()
+
+    assert close_summary["request_count"] == 8
+    result = summary.results[0]
+    episode_receipt = result.native_episode_receipt
+    solver_visits = [
+        visit for visit in episode_receipt["role_visits"] if visit["stage"] == "solver"
+    ]
+    assert len(solver_visits) == 2
+    assert len(solver_visits[0]["execution_receipt"]["contacts"]) == 2
+    assert len(solver_visits[1]["execution_receipt"]["contacts"]) == 1
+
+    receipt = result.supply_variants
+    assert receipt is not None
+    assert receipt["arm_visits"] == "first"
+    assert receipt["visit_index"] == 0
+    assert [row["arm_id"] for row in receipt["arms"]] == ["wide", "plan"]
+    assert receipt["arm_count"] == 2
+
+    validate_supply_variant_receipt(
+        receipt, arm_ids=group.arm_ids, delivered_arm_id="plan", phase_id="solver",
+        arm_visits="first",
+    )
+    # The delivered text is the REVISIT's own (single, delivering-arm) answer.
+    assert result.final_response_text == _revision_output(
+        (result.sample_id, "solver", 2, 1)
+    )
+
+
+# ---------------------------------------------------------------------------
+# 9. AT6: a fake sealed row under arm_visits "first" with a twin, I7v v2
+# ---------------------------------------------------------------------------
+
+
+def _sealed_row_first_visit_with_twin(revisions=1):
+    """A synthetic sealed row: arm_visits "first", a twin arm, N revisions.
+
+    Visit 0 (the arm-bearing visit) carries two contacts (the twin "aa" then
+    the delivering "plan"); every later visit carries exactly one contact,
+    through the ordinary path -- the v2 shape ``core.bundle.outputs.
+    _verify_supply_variant_trace_binding`` checks.
+    """
+
+    sample = "slurp:train:synthetic-svinst"
+    arm_name = "speech-feature-query-native-tools"
+
+    def sha(value):
+        return hashlib.sha256(value.encode()).hexdigest()
+
+    trace, visits = {}, []
+    arm_ids = ["aa", "plan"]
+    contacts0 = []
+    for index, arm_id in enumerate(arm_ids):
+        rid = f"v0-{arm_id}"
+        answer = f"answer-v0-{arm_id}"
+        contact = {
+            "agent_contact_id": f"solver:0:{index}", "request_id": rid,
+            "request_sha256": sha(rid), "response_sha256": sha("envelope-" + rid),
+            "response_text_sha256": sha(answer),
+        }
+        contacts0.append(contact)
+        trace[rid + "/request"] = {
+            "arm": arm_name, "payload": {"sample_id": sample},
+            "payload_sha256": contact["request_sha256"],
+        }
+        trace[rid + "/response"] = {
+            "text": answer, "response_sha256": contact["response_sha256"],
+            "response_text_sha256": contact["response_text_sha256"],
+        }
+    visits.append({
+        "role_id": "solver", "stage": "solver",
+        "execution_receipt": {"contacts": contacts0, "final_contact": contacts0[-1]},
+    })
+    last = contacts0[-1]
+    for revision in range(1, revisions + 1):
+        rid = f"v{revision}"
+        answer = f"answer-{rid}"
+        contact = {
+            "agent_contact_id": f"solver:{revision}:0", "request_id": rid,
+            "request_sha256": sha(rid), "response_sha256": sha("envelope-" + rid),
+            "response_text_sha256": sha(answer),
+        }
+        trace[rid + "/request"] = {
+            "arm": arm_name, "payload": {"sample_id": sample},
+            "payload_sha256": contact["request_sha256"],
+        }
+        trace[rid + "/response"] = {
+            "text": answer, "response_sha256": contact["response_sha256"],
+            "response_text_sha256": contact["response_text_sha256"],
+        }
+        visits.append({
+            "role_id": "solver", "stage": "solver",
+            "execution_receipt": {"contacts": [contact], "final_contact": contact},
+        })
+        last = contact
+    trace["synthetic/org"] = {"org_final_query_state": {
+        "query_sample_id": sample, "retrieved_value_ids": ["v:plan"],
+    }}
+    variant = {
+        "schema": "saea-supply-variant-arms-v2", "phase_id": "solver",
+        "arm_count": 2, "delivered_arm_id": "plan", "arm_visits": "first",
+        "visit_index": 0,
+        "fit_estimate": {
+            "slot_tokens": 24576, "completion_ceiling": 512,
+            "base_prompt_tokens": 100, "tokens_per_supplied_item": 10,
+            "reserve_tokens": 3072, "prompt_limit_tokens": 20990,
+        },
+        "arms": [
+            {"arm_index": 0, "arm_id": "aa", "deliver": False, "replicate_of": "plan",
+             "contact_id": contacts0[0]["agent_contact_id"], "resolved_knobs": [],
+             "supplied_value_ids": ["v:plan"], "supplied_item_count": 1,
+             "max_supplied_items": 5},
+            {"arm_index": 1, "arm_id": "plan", "deliver": True, "replicate_of": None,
+             "contact_id": contacts0[1]["agent_contact_id"], "resolved_knobs": [],
+             "supplied_value_ids": ["v:plan"], "supplied_item_count": 1,
+             "max_supplied_items": 5},
+        ],
+    }
+    row = {
+        "request_id": last["request_id"], "sample_id": sample,
+        "carrier_lock_key": "slurp", "arm": arm_name,
+        "text": trace[last["request_id"] + "/response"]["text"],
+        "admitted": True, "request_sha256": last["request_sha256"],
+        "response_sha256": last["response_sha256"],
+        "response_text_sha256": last["response_text_sha256"],
+        "native_episode_receipt": {"role_visits": visits},
+        "supply_variants": variant,
+    }
+    return row, trace, sample, arm_name
+
+
+def test_at6_a_sealed_row_under_arm_visits_first_with_a_twin_passes_i7v():
+    from speech_aware_evidence_acquisition.core.bundle.outputs import (
+        _verify_outputs, _verify_outputs_trace_binding,
+    )
+
+    row, trace, sample, arm_name = _sealed_row_first_visit_with_twin(revisions=1)
+    rows = _verify_outputs(
+        (json.dumps(row) + "\n").encode(), frozenset({sample}), "slurp", arm_name,
+    )
+    _verify_outputs_trace_binding(rows, trace)
+
+
+def test_at6_a_later_visit_with_more_than_one_contact_is_refused():
+    from speech_aware_evidence_acquisition.core.bundle import BundleError
+    from speech_aware_evidence_acquisition.core.bundle.outputs import (
+        _verify_outputs, _verify_outputs_trace_binding,
+    )
+
+    row, trace, sample, arm_name = _sealed_row_first_visit_with_twin(revisions=1)
+    later_contacts = row["native_episode_receipt"]["role_visits"][1]["execution_receipt"]["contacts"]
+    later_contacts.append(dict(later_contacts[0]))
+    rows = _verify_outputs(
+        (json.dumps(row) + "\n").encode(), frozenset({sample}), "slurp", arm_name,
+    )
+    with pytest.raises(Exception, match="I7v"):
+        _verify_outputs_trace_binding(rows, trace)
+    _ = BundleError  # imported for readers grepping the invariant name
