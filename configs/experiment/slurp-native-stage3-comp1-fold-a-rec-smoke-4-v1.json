@@ -15,6 +15,13 @@
         "reason": "Cell COMP-1 RECOVERY RE-REGISTRATION (-REC), HELD pending the owner's recovery ruling. The arm attempt attempt-slurp-native-stage3-comp1-fold-a-generation-v1 of run SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1 ABORTED on 2026-09-28 at contact flight-1854 at flight commit cb628f59 (1,913 contacts, trace SHA-256 029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997) on a harness defect named to a component (docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md): rails.solver_citation.parse_cited_answer refused a repeated intent citation id the per-contact grammar legally admits; fixed at a451f942 (rails/solver_citation.py only). This is COMP-1's ONE root-diagnosed recovery re-registration, taken as a FULL re-fly under a fresh run id over all 1,080 rows (precedent: the B5e recovery run SAEA-SLURP-NATIVE-B5E-EXEMPLARS-K20-SLOT-STORE-V2-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1). The aborted run's 1,913 contacts stay charged to it and its exposure row is marked consumed = yes at countersignature; nothing of it is kept or read. The bytes are the arm's except the run, attempt and FIT identities and this note; the shared in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 is FINALIZED and scored and is never re-flown. A second failure CLOSES cell COMP-1: no third registration. Registered before contact by the COMP-1 recovery registration agent (Claude Opus 5.5) on 2026-09-28; HELD. The coordinator, once the owner rules for this variant, countersigns its DRAFT rows, mints coordination/slurp-stage3-comp1-fold-a-v1/root-admission-rec-v1.json (decision id slurp-stage3-comp1-fold-a-rec-admission-v1) and flips with scripts/flights/repin_cell.py --set-ready, which rebuilds the inherited supply pin under this cell's own run id and asserts its output unchanged. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1-fold-a-rec-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-rec-v1.json",
+            "sha256": "8463eb7d8b6c5270febec3427e3f8d60341c83f1ff8453eeb0cc3e249589215b",
+            "reason": "Decision slurp-stage3-comp1-fold-a-rec-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, exactly the artifact cell AGREE registered: built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded rows, 0 rows with no vote, all 60 boundary facets reachable. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -23,11 +30,11 @@
           {
             "kind": "preparation",
             "reason": "INHERITED from SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1: that cell's own model-free first-phase Perception supply (built by core.flight.cli prepare-supply with zero model, tokenizer, encoder, scorer or server contacts). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, cell and attempt identities included, so scripts/flights/repin_cell.py rebuilds it model-free into prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-V1/phase-supply-v<N>.json, ASSERTS the new output equals this artifact's output (1d55ea73ae0ef4ef2d175e66303eaa5b500c7fc2a3ac356f3808686deba051e0) and re-pins it in the same cycle. --allow-output-change must NEVER be passed: an output that moved means the knowledge channel moved and the recovery is no longer the arm.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1/phase-supply-v3.json",
-            "sha256": "af1acd831ee9638d4227f86e9ec50f5dfa52c4022503333faeb4b585c7c34906"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "62fc6d44b03824c70e44c4efbde1bfc7db14cb24ce83fd154ccdac752690f8df"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-V1"
     }

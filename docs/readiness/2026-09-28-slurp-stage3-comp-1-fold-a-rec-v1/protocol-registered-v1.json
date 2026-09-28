@@ -59,8 +59,8 @@
       "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-smoke-4-generation-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-FIT-V1",
       "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-smoke-4-fit-v1",
-      "composed_config_hash": "8f04845975a6cc2488893fd299927d5bcadc79419bb8839a2d6c3720eb7122fb",
-      "protocol_hash": "83a3c7dd837b55f38ef9b7a31962c920753c5519b51ecc7c120d222945b72e0d"
+      "composed_config_hash": "6b8a9c2992a838fbb05cd645dafc57306c9fd3dbf92e0baa62194880a7556738",
+      "protocol_hash": "44e85c73544edfd6d2e06a2143e54e1cd2a259a6b97b49d203de3d98630e5b85"
     }
   },
   "recovery_form": "ordinary recovery re-registration under a fresh -REC run id (precedent B5e recovery)",
