@@ -238,3 +238,31 @@ is designed to touch none of them.
 5. Should the Fold A flight use shadow delivery or live delivery?
 6. Which plan hosts E4: v2.0 PLAN, or COMP-1's successor if COMP-1 is admitted first? Only one
    experiment is in flight at a time.
+
+## 8. Coordinator rulings (2026-09-28, after E1)
+
+Recorded by Claude Opus 5.5 at the coordinator's (Fable 5.1) direction, after the node information-gain ledger
+(`docs/results/2026-09-28-slurp-node-information-gain-ledger.md`, sections 2.3 and 5) landed. These rulings answer
+section 7 and supersede section 2's dependency paragraph where they differ.
+
+1. **`p` is not narrowable from the ledger, so E4 is NOT shelved (Q1).** Of the 407 delivered gold-side errors, 71 are
+   visible hearing/span origin and 229 are undetermined because the Perception note is not a transcript. The hearing
+   share therefore lies between 17 % (71 / 407) and 74 % ((71 + 229) / 407), and `4.09 x p` lies between about 0.71
+   and 3.0 pp, above the 0.4 pp shelving line at both ends.
+2. **v1 carries two shadow columns from the same contacts (Q3, Q5).**
+   - (a) **replace-only**: the section 1 acceptance rule, unchanged;
+   - (b) **replace + drop-when-both-contacts-say-unheard**: as (a), plus the entity is dropped when the blind contact
+     returns `heard = false` and the confirm contact also answers that it was not heard. It is aimed at the 253
+     SPURIOUS predictions (74 of them with the filler in the note). The confirm contact is therefore also fired on a
+     blind `heard = false`, so that both contacts vote; the cost table in section 3 is re-estimated at implementation.
+   - The delivered column stays the flight's normal answer; both columns are rendered by `bind()` from the same sealed
+     relisten records. The blind contact also records the hearing state of the undetermined items, a diagnostic
+     gain in itself.
+3. **The forced-choice contact does NOT see Perception's intent candidates (Q2).** It sees the decided intent only.
+4. **The missing-slot probe is out of v1 (Q4).** It is E3's job.
+5. **Shadow delivery, on TRAIN Fold A first (Q5).**
+6. **Host plan: the AGREE arm bytes (Q6),** that is COMP-1's successor after its read. One experiment in flight.
+7. **Expected effect and bar.** Both columns declare `expected_effect_pp` 0.0 with claim ceiling `nominated`, since
+   no measured analogue exists; the bar is the twin/shadow null.
+8. **Metrics.** Official pooled SLU-F1 (micro) is the primary metric for both columns; intent is identical between
+   columns by construction and is tested as a guard (section 4).

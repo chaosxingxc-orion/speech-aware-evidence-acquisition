@@ -92,10 +92,26 @@ class Fake:
         return {"path": str(output_path), "sha256": hashlib.sha256(raw).hexdigest(), "cache": "cold"}
 
 
-def build_package(tmp_path: Path, *, old_artifact_output: dict | None = None, consumed: str = "no"):
+def build_package(
+    tmp_path: Path,
+    *,
+    old_artifact_output: dict | None = None,
+    consumed: str = "no",
+    baseline_extra_fn=None,
+):
     """Build a synthetic repo + data root carrying one registered cell,
     committed as the clean starting tree. Returns a dict of paths and the
-    freshly composed old identity values."""
+    freshly composed old identity values.
+
+    ``baseline_extra_fn``, when given, is called with the freshly computed
+    ``old_artifact_sha`` and its return value (a dict) is merged into the
+    baseline fragment BEFORE ``compose()`` runs -- so every downstream
+    document (protocol, plan, README, preregistration, ledger) is written
+    against the resulting (extra-field-inclusive) config/protocol hash, the
+    same way :func:`compute_cell_identity` will see it. This lets a test
+    plant a stale value inside the cell's OWN baseline fragment, in a field
+    this tool never rewrites, without breaking the fixture's internal
+    consistency."""
 
     repo = tmp_path / "repo"
     data = tmp_path / "data"
@@ -118,16 +134,16 @@ def build_package(tmp_path: Path, *, old_artifact_output: dict | None = None, co
     old_artifact_path.write_bytes(json.dumps(old_document, indent=2).encode())
     old_artifact_sha = _sha(old_artifact_path)
 
-    _write(
-        repo / "configs/baseline/baseline-1.json",
-        {
-            "arm": "test-arm",
-            "prepared_phase_supply": {
-                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
-                "sha256": old_artifact_sha,
-            },
+    baseline_document = {
+        "arm": "test-arm",
+        "prepared_phase_supply": {
+            "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+            "sha256": old_artifact_sha,
         },
-    )
+    }
+    if baseline_extra_fn is not None:
+        baseline_document.update(baseline_extra_fn(old_artifact_sha))
+    _write(repo / "configs/baseline/baseline-1.json", baseline_document)
 
     declared_split = split_identity_hash(prefixed(CARRIER_LOCK_KEY, IDS))
     experiment_document = {
@@ -407,6 +423,198 @@ def test_a_stale_hash_left_in_the_cells_own_package_is_still_residue(tmp_path):
     fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
     with pytest.raises(RepinError, match="residue"):
         run(pkg, fake)
+
+
+# --------------------------------------------------------------------------
+# Same-run-id resume: sealed records of an earlier attempt, and hash-pinned
+# tables, within a package that legitimately names the current run id (the
+# 2026-09-28 COMP-1 RESUME ruling).
+# --------------------------------------------------------------------------
+
+
+def test_a_same_run_id_earlier_attempt_plan_document_is_not_residue(tmp_path):
+    """A RESUME shares its parent arm's run id, so the parent's own sealed
+    ``fit-plan-registered-v1.json`` (a different, ABORTED attempt) mentions
+    that run id and is no longer exempted by ``_is_foreign_readiness_package``
+    alone. It still carries the superseded supply pin the resume rebuilds --
+    that is history, not residue, because the document names an attempt
+    other than ``attempt-1`` (the one this fixture re-pins)."""
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+    )
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(
+        parent_dir / "fit-plan-registered-v1.json",
+        {
+            "execution_plan": {"attempt_id": "attempt-1-aborted-fit", "run_id": RUN_ID},
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+            "purpose": f"{RUN_ID}: the aborted attempt's own fit plan",
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add the aborted attempt's sealed fit plan, naming the shared run id")
+
+    parent_snapshot = (parent_dir / "fit-plan-registered-v1.json").read_bytes()
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    run(pkg, fake, allow_output_change=True)  # must not raise RepinError
+
+    assert (parent_dir / "fit-plan-registered-v1.json").read_bytes() == parent_snapshot
+    assert pkg["old_artifact_sha"] not in _all_text(pkg)
+
+
+def test_a_hash_pinned_table_naming_the_shared_run_id_is_not_residue(tmp_path):
+    """A file whose OWN bytes are pinned by sha256 from a sibling document in
+    the same package (the admission draft's ``attribution_classes`` block,
+    mirroring ``root-admission-draft-v1.json``) is a frozen derivation
+    snapshot: rewriting it would break that external pin. It is not residue
+    even though it names the shared run id and internally still carries the
+    superseded supply pin."""
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+    )
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    attribution_path = parent_dir / "attribution-classes-v1.json"
+    _write(
+        attribution_path,
+        {
+            "derivation_id": "TEST-ATTRIBUTION-CLASSES-V1",
+            "inputs": {
+                "arm_supply": {
+                    "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                    "sha256": pkg["old_artifact_sha"],
+                }
+            },
+        },
+    )
+    attribution_sha = _sha(attribution_path)
+    _write(
+        parent_dir / "root-admission-draft-v1.json",
+        {
+            "attribution_classes": {
+                "path": "docs/readiness/parent-pkg/attribution-classes-v1.json",
+                "sha256": attribution_sha,
+            }
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add a sha256-pinned attribution-classes table naming the shared run id")
+
+    parent_snapshot = attribution_path.read_bytes()
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    run(pkg, fake, allow_output_change=True)  # must not raise RepinError
+
+    assert attribution_path.read_bytes() == parent_snapshot
+    assert pkg["old_artifact_sha"] not in _all_text(pkg)
+
+
+def test_a_current_attempt_plan_document_with_a_stale_pin_is_still_residue(tmp_path):
+    """Neither exemption reaches the RE-PINNED attempt's own plan documents:
+    a foreign-directory file naming the SAME attempt id as the cell being
+    re-pinned is not a 'sealed record of an earlier attempt', so a stale pin
+    left inside it is still residue."""
+    pkg = build_package(tmp_path)
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(
+        parent_dir / "generation-plan-registered-v1.json",
+        {
+            "execution_plan": {"attempt_id": "attempt-1", "run_id": RUN_ID},
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+            "purpose": f"{RUN_ID}: same attempt id as the cell being re-pinned",
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add a foreign-directory plan document naming the CURRENT attempt")
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake)
+
+
+def test_a_foreign_package_naming_no_current_run_id_is_still_exempt_first(tmp_path):
+    """1fd88e1e's original rule is tried FIRST and still exempts a genuinely
+    foreign package (one that names none of the current run ids) without
+    ever reaching the narrower sealed-record/hash-pin fallback -- a file that
+    is neither a plan document nor pinned by any sibling is still exempt as
+    long as it stays silent about the run id being re-pinned."""
+    pkg = build_package(tmp_path)
+
+    parent_dir = pkg["repo"] / "docs/readiness/other-pkg"
+    _write(
+        parent_dir / "notes.json",
+        {"unrelated_field": "nothing to see here", "coincidental_value": pkg["old_artifact_sha"]},
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add an unrelated sealed note that happens to echo the old artifact sha")
+
+    parent_snapshot = (parent_dir / "notes.json").read_bytes()
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    run(pkg, fake)  # must not raise RepinError
+
+    assert (parent_dir / "notes.json").read_bytes() == parent_snapshot
+
+
+def test_the_cells_own_baseline_fragment_with_a_stale_value_is_still_residue(tmp_path):
+    """Rule (c): configs of the CURRENT run id are never exempt. A stray
+    field inside the cell's own baseline fragment -- a file this tool never
+    rewrites wholesale, only its ``prepared_phase_supply`` key -- that still
+    carries the superseded artifact sha256 after the rebuild is still
+    residue, even though it lives beside the very field the tool DID
+    correctly update."""
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+        baseline_extra_fn=lambda sha: {"frozen_note": sha},
+    )
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake, allow_output_change=True)
+
+
+def test_explain_residue_prints_the_rules_considered_for_each_hit(tmp_path, capsys):
+    """``--explain-residue`` (``explain=True``) prints, per hit, which
+    exemption rule(s) were considered and what each decided -- the
+    diagnostic the 2026-09-28 ruling asked for so the next refusal does not
+    require re-deriving the exemption logic by hand."""
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+    )
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(
+        parent_dir / "generation-plan-registered-v1.json",
+        {
+            "execution_plan": {"attempt_id": "attempt-1", "run_id": RUN_ID},
+            "prepared_phase_supply": {"sha256": pkg["old_artifact_sha"]},
+            "purpose": f"{RUN_ID}: same attempt id as the cell being re-pinned",
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add a foreign-directory plan document naming the CURRENT attempt")
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake, explain_residue=True, allow_output_change=True)
+
+    captured = capsys.readouterr()
+    assert "[explain-residue]" in captured.err
+    assert "foreign-readiness-package=False" in captured.err
+    assert "sealed-package-record=False" in captured.err
 
 
 # --------------------------------------------------------------------------

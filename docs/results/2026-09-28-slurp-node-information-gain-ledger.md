@@ -233,3 +233,19 @@ Limits:
 - The Perception note-state classes are a textual proxy. NEAR can fire on short tokens.
 - The Reviewer's verdict is free text, so ACCEPT and REVISE are read from the Planner route receipt.
 - Rows without a Reviewer visit (4 AGREE, 14 wave A/A) enter R with their S1 state.
+
+## 5. Coordinator reading (Fable 5.1, 2026-09-28)
+
+Recorded by Claude Opus 5.5 at the coordinator's direction. Every number below is quoted from sections 1-3 of this note, except the E3 omission count, which is quoted from the E3 spec. This reading registers no cell and authorises no flight.
+
+1. **Intent: the deciding node is Perception's shortlist and its order.**
+   - Perception gains +7.04 [+5.00, +9.07] pp over the boundary block. The Solver adds 0.00 [-1.20, +1.20]. The Reviewer/Planner node nets -1 row. The deliver normaliser adds +1.94 [+1.20, +2.78].
+   - Conversion by Perception rank is 97.6 % (rank 1), 27.0 % (rank 2) and 12.0 % (rank 3).
+   - Of the 153 wrong rows, gold is at Perception rank 2 on 42 (3.89 pp), at rank 3 on 20, and off the list on 83 (49 of them still in the boundary block, 34 outside it).
+   - Consequence: the contrast action (owner decisions 178 and 180) must reach Perception's shortlist or its ranking, or give the Solver a warranted reason to leave rank 1. The RANKVIS probe (Solver-side) stays queued as a cheap test, but its effect is expected to be bounded by the rank-2 and rank-3 conversion rates. Phase 2 of the same-flight instrument (`docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md`, the Q1 ruling: Perception-phase variants as an episode-level fork with their own A/A) is now the priority engineering item.
+2. **Slots: no error class moves after the Solver's first answer, except FORMAT through the normaliser** (+1.22 [+0.80, +1.66] pp SLU-F1).
+   - Of the 407 delivered gold-side errors, 107 are of consumption origin (103 with the gold span contiguous in the Perception note; 55 with the gold value printed in the delivered exemplars), 71 are visible hearing/span origin, and 229 are undetermined, because the note is not a transcript.
+   - Re-listen-addressable BOUNDARY + NEAR + FORMAT items: 35 of 142. SPURIOUS predictions: 253, of which 74 have the predicted filler in the note.
+   - Consequence for E4 v1 (`docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md`): it gains a second shadow column, "replace + drop-when-unheard", aimed at the 253 SPURIOUS items. The blind re-listen also yields the hearing state of the 229 undetermined items, which is a diagnostic gain in itself.
+   - E3 (type-first, `docs/superpowers/specs/2026-09-28-e3-progressive-slot-loading-design.md`) is supported by 34 of the 41 closed-type misses being omissions at the Solver (E3 spec, Q1). It flies after E4, as a cross-flight no-harm enabler.
+3. **E6: this ledger is the first instance of the information-gain gate.** Nodes with no measurable gain today are the Solver (intent) and the Reviewer/Planner (intent and slots). Under the owner's principle each is to be redesigned or supplemented.

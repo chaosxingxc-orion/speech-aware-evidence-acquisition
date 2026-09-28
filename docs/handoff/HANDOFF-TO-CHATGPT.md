@@ -1,23 +1,20 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-28T11:38:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge and records agent, Claude Opus 5.5) · HEAD at writing `06810352` on `master`, tree clean. **GPU flying:**
-REV-TFRL-1, from its own flight worktree at `5f8b4c9d`, through the batch driver under queue task
-`SAEA-Queue-WAVE-REVTFRL`: smoke passed 11:17:57Z, arm-start 11:18:08Z, in flight since 11:16Z. **The
-knowledge wave is complete:** the shared A/A, W1, W3a and W4 are sealed and read; **W1 is NEUTRAL, retained
-as an enabler**; **W3a is NOT ADMITTED (neutral by width; the card form of K1 is closed)**; **W4 is NOT
-ADMITTED (neutral by width) and is re-registered as the first cell of the same-flight supply-variant
-instrument** (section 2).
-**Queued behind it:** `SAEA-Queue-AFTER-REVTFRL` waits for REV-TFRL-1's batch-done at `5f8b4c9d`, then flies
-COMP-1 `-REC` + G5 at `472474bf` -> RANKVIS at `b0c6c608` (same slurp-np4 geometry) -> the E41 sub10 re-read
-at `bf6db903` (swap to e21-np4, fly, swap back) -> removes the filler hold (`/home/chao/saea-queue/filler.hold`)
-and hands the card to the filler. **COMP-1 + G5 STOPPED** at 03:28:18Z; recovery staged (section 2).
+Last refreshed: 2026-09-28T13:57:07Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge and records agent, Claude Opus 5.5) · HEAD at writing `88897512` on `master`, tree clean. **GPU:**
+REV-TFRL-1 is flying/sealing from its own flight worktree at `5f8b4c9d` under queue task
+`SAEA-Queue-WAVE-REVTFRL`. **The knowledge wave is complete** (W1 NEUTRAL, retained as an enabler; W3a and
+W4 NOT ADMITTED, neutral by width; W4 moves to the same-flight supply-variant instrument).
+**Owner decisions 175-180 are ruled** (section 6). 175: COMP-1 recovers by **RESUME**; `-REC` is superseded
+unflown; the resume flip is pending the repin residue-scan fix on `fable/repinresume`. **Queue:**
+`SAEA-Queue-AFTER-REVTFRL` will HALT on the missing resume flight-commit file until that flip lands; after it,
+the chain is COMP-1 resume + G5 -> RANKVIS (`b0c6c608`) -> the E41 sub10 re-read (`bf6db903`; swap to
+e21-np4, fly, swap back) -> the filler. **New since the last refresh:** the SLURP node information-gain
+ledger (E1) and the E3 / E4 designs are merged with coordinator rulings (section 2).
 **Isolation:** every chain flies from the `fable-batch-flight` worktree at its own flight commit, never from
-master. `-REC` and RANKVIS read `prepared_artifacts_ok: false` on master (set B and later merges moved
-identity-bound files) but are ready at their flight commits. Never re-flip a queued cell on master without
-updating its flight-commit file and the hard-coded `5f8b4c9d` in `queue_after_revtfrl.sh`. **Hazard:** any
-`core.flight.cli` process alive between chain steps makes the running driver STOP itself -- run no
-`cli check` while a queue is live.
+master. Never re-flip a queued cell on master without updating its flight-commit file and the queue script's
+hard-coded commits. **Hazard:** any `core.flight.cli` process alive between chain steps makes the running
+driver STOP itself -- run no `cli check` while a queue is live.
 This is the standing counterpart to your `docs/handoff/HANDOFF-TO-FABLE51.md`: one short file,
 refreshed **in place** after every landed result, no log section. Skeleton is fixed — state, what I
 did, numbers, open items, embargoes, next action, housekeeping — so you can diff it. Freshness is
@@ -101,6 +98,10 @@ retrieved because the key side is text by design.
 | Tool-gap fixes: the repin residue scan is scoped to the cell, the flip scripts carry the current trailer; config tests made flip-state agnostic | merges of `fable/repinfix2` (`da541f92`) and `fable/cfgtests` (`18f1ae2e`) | merged; both gaps from the `-REC` staging are closed |
 | **W4 slot conventions read** against the shared wave A/A (TRAIN Fold A, n = 1,080): official SLU-F1 (primary) +0.79 [-0.56, +2.12], intent guard -0.09 [-1.02, +0.83] (13 saves / 14 harms); the SLU no-harm margin (1.2485) holds but the result sits below the M4b analogue's lower end (1.3285) and far below the 2.5 pp cross-flight floor; the intent guard misses its margin (0.9943) by 0.024 pp, under one row's step (0.0926), so the cell is in the residual branch; entity classes SPURIOUS -29, BOUNDARY -12, MISSING +14, WRONG-TYPE -4 (FP 506 -> 461); cost +3,529 prompt tokens per row, +1,207.8 per Solver contact (registered +724.5), +0.1643 GPU-h per 1,080 rows | `docs/results/2026-09-28-slurp-w4-fold-a-read.md` (read `d28f098d`, verdict `06810352`) | **NOT ADMITTED (neutral by width)** (coordinator); does not enter COMP-2, not an enabler. **Re-registered as the first real cell of the same-flight supply-variant instrument's phase 1** (decision 172; spec `docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md`): Solver-local columns with an in-flight twin arm; base = the AGREE arm bytes; arm A = the AGREE Solver supply; arm B = the W4 conventions; twin = a replicate of A; `arm_visits: "first"`; claim `"nominated"` only. Its plausible effect (about 0.8 pp SLU) is the size that design reads (about 0.7 pp at n = 200) and the cross-flight design cannot |
 | Coordinator ratification of the two model-free W4 rows `SAEA-SLURP-SLOT-CONVENTIONS-W4-PREPARE-V1` and `SAEA-SLURP-W4-FOLD-A-OFFLINE-ESTIMATE-V1`, countersigned beyond the admission list | exposure ledger | ratified |
+| **Owner decisions 175-180** (~13:20Z and ~14:00Z) | `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md` rows 175-180 | 175 RESUME (decision 22 amended for post-fix resumes; byte-identity proof 481/481; `-REC` superseded unflown; resume flip pending `fable/repinresume`); 176 DONE (`kb_policy` `FILE_DIGESTS` re-pinned, `cfd34bf5`, merge `87189a82`); 177 DONE (receipt v2, `3d02f68f`, merge `03c94d72`; v1 kept immutable); 178 K1-as-cards closed, contrast only at the decision node; 179 offline rule designs on multi-sample pools discontinued, sub-floor reads go to the same-flight instrument (first cells W-SV-1 and W4-SV, both held); 180 consumption thesis adopted with measured caveats, core-native re-listen first, Whisper only after E4 reads, extension experiments E1-E6 |
+| **E1: SLURP node information-gain ledger** (model-free, TRAIN Fold A, AGREE arm + its same-bytes replicate). Intent: boundary block -> Perception +7.04 [+5.00, +9.07] pp; Perception -> Solver 0.00 [-1.20, +1.20]; Reviewer/Planner net -1 row; deliver normaliser +1.94. Conversion by Perception rank 97.6 / 27.0 / 12.0 %; of 153 wrong rows gold is at rank 2 on 42 (3.89 pp), rank 3 on 20, off the list on 83 (49 in the block, 34 outside). Slots: SLU-F1 63.89 -> 63.94 -> 65.16; only FORMAT moves after the Solver (normaliser +1.22 [+0.80, +1.66]); of 407 delivered errors 107 consumption origin, 71 visible hearing/span, 229 undetermined; 35 of 142 BOUNDARY + NEAR + FORMAT re-listen addressable; SPURIOUS 253 | `docs/results/2026-09-28-slurp-node-information-gain-ledger.md` (merge `1bf2877d`; coordinator reading section 5, `8e843055`) | **DESCRIPTIVE.** Coordinator reading: Perception's shortlist decides intent, so the contrast action must reach it (same-flight instrument **phase 2** is now the priority engineering item; RANKVIS stays queued as a cheap Solver-side test, bounded by the rank-2/3 conversion); E6's first instance: the Solver (intent) and the Reviewer/Planner (intent and slots) show no measurable gain |
+| **E3 progressive slot loading design** (type first, then the chosen type's closed vocabulary) | `docs/superpowers/specs/2026-09-28-e3-progressive-slot-loading-design.md` (merge `17361233`) | merged, model-free. Supported by 34 of 41 closed-type misses being Solver omissions; flies **after E4** as a cross-flight no-harm enabler |
+| **E4 core-native targeted re-listen design** (blind re-listen of each delivered slot keyed by intent + type, then a forced-choice confirm) | `docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md` (merge `73aae18f`; rulings section 8, `b12810a5` / `88897512`) | merged with coordinator rulings: NOT shelved (hearing share 17-74 %); two shadow columns from the same contacts, (a) replace-only and (b) replace + drop-when-both-contacts-say-unheard (aimed at the 253 SPURIOUS); the confirm contact does not see Perception's candidates; missing-slot probe left to E3; shadow on Fold A first; host = the AGREE arm bytes; expected effect 0.0 nominated, bar = the twin/shadow null; SLU-F1 primary, intent identical by construction. Not registered |
 
 ### What the wave taught
 
@@ -176,15 +177,18 @@ Yours, unchanged:
 
 Mine: make no cross-flight claim without an in-chain replicate and no benefit claim under 200 rows. Every cell registered from 2026-09-27 carries a `stage3_measurement` block, and `stage3_effect_floor_check.py` enforces it.
 
-**Waiting on the owner, not mine to take.**
+**Owner rulings received (decisions 175-180, 2026-09-28); none open.**
 
-1. Resume vs `-REC` for COMP-1 (owner decision 22 vs a full re-fly): the default is `-REC`, which is queued; the resume variant stays HELD.
-2. The `kb_policy` digest lock: `test_stage2a_synthesis_verification.py` pins a `FILE_DIGESTS` value for `rails/kb_policy.py`, and the live sha256 drifted from it across the W1-W3 merge wave. Re-pinning needs an owner-authorised equivalence proof.
-3. A wrong sha256 inside the committed receipt `docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json` (its `A2T-G6-FAMILY-SWEEP-FIXED16.json` exclusion entry). It is hash-pinned evidence, so it gets a superseding receipt or an owner ruling, never an in-place edit.
-4. Close K1-as-cards (W3a NOT ADMITTED) and keep the contrast-evidence route at the decision node only (RANKVIS, the Reviewer top-2 contrast of decision 165's second round).
-5. Discontinue offline rule designs on multi-sample pools in favour of the same-flight supply-variant instrument (decision 172).
+1. 175: COMP-1 recovers by RESUME; `-REC` superseded unflown; the resume is the flight's one recovery. The flip is pending the repin residue-scan fix on `fable/repinresume`.
+2. 176: `kb_policy` digest lock re-pinned (`cfd34bf5`).
+3. 177: successor receipt `A2T-CANONICAL-FAMILY-SECONDARY-FIXED8-v2.json` issued (`3d02f68f`); v1 untouched.
+4. 178: K1-as-cards closed; contrast evidence only at the decision node. After E1, the deciding node for intent is Perception's shortlist.
+5. 179: offline rule designs on multi-sample pools discontinued; W-SV-1 and W4-SV are registered and held on branches.
+6. 180: core-native re-listen first; Whisper waits for E4's read; E1-E6 adopted. E1 has landed; E3 and E4 are designed and merged.
 
-**Remaining test failures:** the `kb_policy` digest lock (item 2), and a test that calls a bare `python`, which is not on the WSL PATH (environment, not code).
+**Pending branches (not merged):** `fable/gateperf` (uncommitted edits to the flight-registration and effect-floor checks), `fable/wsv1` (W-SV-1 registration, HELD), `fable/w4sv2` (W4-SV registration, HELD and BLOCKED: arm b-w4 inert), `fable/repinresume` (the repin residue-scan fix the resume flip needs; staged, uncommitted).
+
+**Remaining test failures:** a test that calls a bare `python`, which is not on the WSL PATH (environment, not code).
 
 **Offline reads closed today:** B3 CATCHALL **INERT**; B4 EMPTYENT **INERT-BY-INSTRUMENT** (size any offline rule on a multi-sample pool against the 1.547 pp null, not 0.67).
 
@@ -205,11 +209,11 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 
 ## 7. My next action
 
-1. Let `SAEA-Queue-WAVE-REVTFRL` finish REV-TFRL-1 (in flight since 11:16Z at `5f8b4c9d`), then read it with the standard paired read. The wave is complete: W1 NEUTRAL (enabler), W3a NOT ADMITTED, W4 NOT ADMITTED (moving to the same-flight instrument as its first cell). W5 stays held.
-2. `SAEA-Queue-AFTER-REVTFRL` then flies COMP-1 `-REC` + G5 (`472474bf`) and RANKVIS (`b0c6c608`); read them against the sealed shared A/A. The owner's ruling on resume vs `-REC` stays open; `-REC` is the default, and there is no second recovery.
-3. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), replacing the placeholder in both places the gate reads; then flip A2 (arm + A/A + smoke) and queue it.
-4. The same queue flies the E41 sub10 re-read (`bf6db903`) after `-REC` + G5, then the filler once its hold is released. Earnings E-C1 is registered only after sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
-5. Offline in parallel: the catch-all class goes to the B1 rank-visible / contrastive family (RANKVIS is queued). Size any offline rule on a multi-sample pool against the 1.547 pp null, not 0.67.
+1. Let `SAEA-Queue-WAVE-REVTFRL` finish sealing REV-TFRL-1 at `5f8b4c9d`, then read it with the standard paired read.
+2. Land `fable/repinresume` and flip the COMP-1 resume (decision 175), so that `SAEA-Queue-AFTER-REVTFRL` stops halting on the missing resume flight-commit file. The chain then flies COMP-1 resume + G5 -> RANKVIS -> E41 sub10 -> the filler. Read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`.
+3. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), then flip and queue A2.
+4. Engineering priority after E1: phase 2 of the same-flight instrument (Perception-phase variants as an episode-level fork with their own A/A). Then register E4 v1 (two shadow columns, Fold A, AGREE host); E3 flies after E4.
+5. Earnings E-C1 is registered only after sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
 
 ## 8. Housekeeping we share
 
