@@ -72,6 +72,7 @@ ids to be declared, ordered and counted in its own receipt row.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
@@ -896,7 +897,775 @@ def supply_variant_receipt(
     }
 
 
+#: Same-flight instrument, PHASE 2 (item merge set C, design
+#: docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-
+#: variants-design.md): an episode-level fork at the Perception phase. This is
+#: NOT another arm group at the Solver's own visit -- it is a K-way fork of
+#: the FIRST phase itself, which is exactly the thing the ordinary Solver arm
+#: route (above) refuses by name (refusal 7): a first-phase selection is
+#: otherwise seeded once into the row's one initial QueryState, and a
+#: Perception branch resolves its own PRE-FLIGHT seed instead
+#: (``core.flight.runtime.FlightRuntime._supply_action_router``), never a
+#: per-row rendering over the episode's own state.
+#:
+#: The receipt schema one Perception branch group seals under
+#: ``perception_branches``.
+PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v1"
+
+#: Perception has exactly one visit per row (``max_iterations`` 1, no
+#: refresh, design section 3 "Branch visits"): the fan-out is always at that
+#: one visit, so unlike ``supply_variants.arm_visits`` there is no "every" to
+#: choose -- this is a fixed receipt constant, not a config knob.
+PERCEPTION_BRANCH_VISITS = "first"
+
+#: The two levels a Perception branch group may declare (design section 1,
+#: "Two levels"): level 1 seals the branch's NOTE only; level 2 additionally
+#: fans one Solver contact per non-A branch at the Solver's first visit.
+PERCEPTION_BRANCH_LEVEL_NOTE = 1
+PERCEPTION_BRANCH_LEVEL_SOLVER = 2
+PERCEPTION_BRANCH_LEVELS = (
+    PERCEPTION_BRANCH_LEVEL_NOTE, PERCEPTION_BRANCH_LEVEL_SOLVER,
+)
+
+#: The ONE route a Perception branch's boundary-supply knob may re-cap
+#: (design section 3, "boundary supply knob"): the program's FIRST phase's own
+#: ``phase_supply`` block. ``rank_weights.w_cos|w_prior|w_agree`` is admitted
+#: ONLY on this route -- ``SUPPLY_VARIANT_KNOB_TAILS`` (the ordinary Solver
+#: arm route) does not carry it (design section 3: "The rank_weights.* tail
+#: is admitted only on this branch route").
+PERCEPTION_BRANCH_KNOB_ROUTE = "phase_supply"
+PERCEPTION_BRANCH_KNOB_TAILS: tuple[tuple[str, ...], ...] = (
+    ("k",),
+    ("fuse_coverage", "m"),
+    ("fuse_coverage", "c"),
+    ("fuse_coverage", "top_l"),
+    ("rank_weights", "w_cos"),
+    ("rank_weights", "w_prior"),
+    ("rank_weights", "w_agree"),
+)
+
+#: Keys the ``perception_branches`` (``native_episode.roles.perception.
+#: branches``) block carries, required exactly.
+PERCEPTION_BRANCH_BLOCK_KEYS = frozenset({"branches", "fit_estimate", "level"})
+#: Keys one branch row carries. ``branch_id`` and ``max_supplied_items`` are
+#: required; every other key is one of the four closed axis categories a
+#: non-A, non-T branch declares exactly one of (design section 1, "one factor
+#: per non-A branch").
+PERCEPTION_BRANCH_REQUIRED_KEYS = frozenset({"branch_id", "max_supplied_items"})
+PERCEPTION_BRANCH_OPTIONAL_KEYS = frozenset({
+    "deliver", "overrides", "replicate_of", "release_swap",
+    "presentation_id", "min_candidates",
+})
+
+#: K counts A and T (design section 1): at least A plus its required twin T,
+#: at most A + T + :data:`MAX_PERCEPTION_B_BRANCHES` B branches. The upper
+#: bound on K equals :data:`MAX_SUPPLY_VARIANT_ARMS`, for the same "a bound a
+#: reader can hold in their head" reason.
+MIN_PERCEPTION_BRANCHES = 2
+MAX_PERCEPTION_BRANCHES = 8
+#: "B.. (at most 6)" (design section 1): the branches beside A and T.
+MAX_PERCEPTION_B_BRANCHES = 6
+
+#: The four fields one receipt row carries beside the phase-1-shaped ones
+#: (design section 3, "Receipt"): a branch's own note custody. Level 2 adds
+#: the Solver-column custody fields.
+PERCEPTION_BRANCH_RECORD_KEYS = frozenset({
+    "branch_index", "branch_id", "deliver", "replicate_of", "resolved_knobs",
+    "release_swap", "presentation_id", "min_candidates", "supplied_value_ids",
+    "supplied_count", "max_supplied_items", "contact_id", "request_sha256",
+    "response_text_sha256", "note_sha256", "note_parse_status",
+    "candidate_intent_ids",
+})
+PERCEPTION_BRANCH_LEVEL2_RECORD_KEYS = PERCEPTION_BRANCH_RECORD_KEYS | frozenset({
+    "solver_contact_id", "solver_request_sha256", "solver_response_text_sha256",
+    "candidate_supply_value_ids",
+})
+
+
+class PerceptionBranchError(SupplyVariantError):
+    """One Perception branch, its axis, its group or its receipt is invalid."""
+
+
+def _rank_weight_value(value: object, *, field: str) -> float:
+    """A rank_weights knob's value: a non-negative, finite real number.
+
+    Unlike a count knob (``k``, ``fuse_coverage.*``), a weight may legitimately
+    be 0.0 -- design section 6's optional branch C reads the agreement term by
+    setting exactly ``w_agree`` to 0.0 -- so :func:`_positive_int` does not
+    apply here.
+    """
+
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise SupplyVariantError(f"{field} must be a number")
+    number = float(value)
+    if not math.isfinite(number) or number < 0:
+        raise SupplyVariantError(f"{field} must be a non-negative, finite number")
+    return number
+
+
+def _sha256_hex(value: object, *, field: str) -> str:
+    if (
+        not isinstance(value, str)
+        or len(value) != 64
+        or any(character not in "0123456789abcdef" for character in value)
+    ):
+        raise PerceptionBranchError(f"{field} must be a lowercase 64-hex SHA-256")
+    return value
+
+
+@dataclass(frozen=True)
+class PerceptionBranchKnob:
+    """One parsed, admitted boundary-supply knob path a branch re-caps.
+
+    Structurally :class:`SupplyVariantKnob`'s twin, over the DIFFERENT
+    admitted route (:data:`PERCEPTION_BRANCH_KNOB_TAILS`, which -- unlike
+    ``SUPPLY_VARIANT_KNOB_TAILS`` -- both TARGETS the program's first phase
+    and admits ``rank_weights``), and its own type so the two knob families
+    can never be silently interchanged by a caller.
+    """
+
+    path: str
+    store_id: str
+    phase: str
+    tail: tuple[str, ...]
+    #: An int for a count knob (``k``, ``fuse_coverage.*``); a float for a
+    #: rank_weights knob, which may legitimately be 0.0 (design section 6's
+    #: optional branch C: "w_agree 0.0").
+    value: int | float
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "path": self.path,
+            "store_id": self.store_id,
+            "phase": self.phase,
+            "tail": list(self.tail),
+            "value": self.value,
+        }
+
+
+@dataclass(frozen=True)
+class PerceptionBranch:
+    """One branch of one row's Perception-phase fork (design section 1).
+
+    ``deliver`` marks branch A (last, override-free, the cell's own request,
+    continues through Solver/Reviewer/Planner exactly as today).
+    ``replicate_of`` (naming A) marks the required twin T (repeats A's
+    request byte for byte in the same batch). Every other branch is a B
+    branch: Perception ONLY, its note sealed as a column, declaring exactly
+    one of the four closed axis categories below.
+    """
+
+    branch_id: str
+    deliver: bool
+    knobs: tuple[PerceptionBranchKnob, ...]
+    max_supplied_items: int
+    replicate_of: str | None = None
+    release_swap: SupplyVariantReleaseSwap | None = None
+    presentation_id: str | None = None
+    min_candidates: int | None = None
+
+    @property
+    def is_twin(self) -> bool:
+        return self.replicate_of is not None
+
+    @property
+    def is_b(self) -> bool:
+        return not self.deliver and self.replicate_of is None
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "branch_id": self.branch_id,
+            "deliver": self.deliver,
+            "overrides": {knob.path: knob.value for knob in self.knobs},
+            "knobs": [knob.as_json() for knob in self.knobs],
+            "max_supplied_items": self.max_supplied_items,
+            "replicate_of": self.replicate_of,
+            "release_swap": (
+                None if self.release_swap is None else self.release_swap.as_json()
+            ),
+            "presentation_id": self.presentation_id,
+            "min_candidates": self.min_candidates,
+        }
+
+
+@dataclass(frozen=True)
+class PerceptionBranchGroup:
+    """One row's whole Perception branch group: branches in A-last order."""
+
+    branches: tuple[PerceptionBranch, ...]
+    fit_estimate: SupplyVariantFitEstimate
+    level: int
+
+    @property
+    def branch_count(self) -> int:
+        return len(self.branches)
+
+    @property
+    def branch_ids(self) -> tuple[str, ...]:
+        return tuple(branch.branch_id for branch in self.branches)
+
+    @property
+    def delivering_branch(self) -> PerceptionBranch:
+        return self.branches[-1]
+
+    @property
+    def twin_branch(self) -> PerceptionBranch:
+        for branch in self.branches:
+            if branch.is_twin:
+                return branch
+        raise PerceptionBranchError("perception branch group has no twin (T) branch")
+
+    def branch(self, branch_id: str) -> PerceptionBranch:
+        for branch in self.branches:
+            if branch.branch_id == branch_id:
+                return branch
+        raise PerceptionBranchError(f"unknown perception branch {branch_id!r}")
+
+    def branch_at(self, index: int) -> PerceptionBranch:
+        if isinstance(index, bool) or not isinstance(index, int) or not (
+            0 <= index < len(self.branches)
+        ):
+            raise PerceptionBranchError(
+                "perception branch index is outside the declared group"
+            )
+        return self.branches[index]
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "branches": [branch.as_json() for branch in self.branches],
+            "fit_estimate": self.fit_estimate.as_json(),
+            "level": self.level,
+        }
+
+
+def perception_branch_ceiling(*, base_ceiling: int, branch_count: int, level: int) -> int:
+    """The Perception-branch contact-ceiling term (design section 3, "Budget").
+
+    Level 1: ``base + (K - 1)`` -- the extra Perception contacts of the
+    K - 1 non-A branches. Level 2: ``base + 2 (K - 1)`` -- the same
+    Perception contacts, plus one extra Solver contact per non-A branch.
+    ``branch_count`` is K, counting A and T.
+    """
+
+    if level not in PERCEPTION_BRANCH_LEVELS:
+        raise PerceptionBranchError(
+            f"perception branch level must be one of {PERCEPTION_BRANCH_LEVELS}"
+        )
+    if (
+        isinstance(branch_count, bool)
+        or not isinstance(branch_count, int)
+        or branch_count < MIN_PERCEPTION_BRANCHES
+    ):
+        raise PerceptionBranchError(
+            "perception branch group must declare at least "
+            f"{MIN_PERCEPTION_BRANCHES} branches"
+        )
+    extra = branch_count - 1
+    if level == PERCEPTION_BRANCH_LEVEL_SOLVER:
+        extra *= 2
+    return base_ceiling + extra
+
+
+def parse_perception_branch_knob(
+    path: object,
+    value: object,
+    *,
+    first_phase_id: str,
+    declared_stores: Sequence[str] | None = None,
+) -> PerceptionBranchKnob:
+    """Parse ONE branch ``overrides`` entry, refusing everything it does not admit.
+
+    Unlike :func:`parse_supply_variant_knob`, this ADMITS -- indeed requires
+    -- the program's first phase: a Perception branch's boundary-supply knob
+    is resolved into the branch's own PRE-FLIGHT seed
+    (``core.flight.runtime.FlightRuntime._supply_action_router``), never into
+    a per-row rendering over the episode's own QueryState, so the mechanical
+    reason refusal 7 exists for the ordinary Solver arm route does not apply
+    here.
+    """
+
+    text = _nonempty_str(path, field="perception branch overrides key")
+    segments = text.split(".")
+    if len(segments) < 4 or segments[0] != SUPPLY_VARIANT_KNOB_ROOT:
+        raise PerceptionBranchError(
+            f"perception branch override {text!r} is not a knob path; a branch "
+            f"may override only {SUPPLY_VARIANT_KNOB_ROOT}.<store>."
+            f"{PERCEPTION_BRANCH_KNOB_ROUTE}.<phase>.<knob>"
+        )
+    store_id, route, phase = segments[1], segments[2], segments[3]
+    tail = tuple(segments[4:])
+    if not store_id or not phase:
+        raise PerceptionBranchError(
+            f"perception branch override {text!r} names an empty store or phase"
+        )
+    if route != PERCEPTION_BRANCH_KNOB_ROUTE:
+        raise PerceptionBranchError(
+            f"perception branch override {text!r} names route {route!r}; a "
+            f"branch may re-cap only {PERCEPTION_BRANCH_KNOB_ROUTE!r}"
+        )
+    if tail not in PERCEPTION_BRANCH_KNOB_TAILS:
+        admitted = sorted(".".join(item) for item in PERCEPTION_BRANCH_KNOB_TAILS)
+        raise PerceptionBranchError(
+            f"perception branch override {text!r} names knob {'.'.join(tail)!r}, "
+            f"which is not admitted; the admitted knobs are {admitted}"
+        )
+    if phase != first_phase_id:
+        raise PerceptionBranchError(
+            f"perception branch override {text!r} names phase {phase!r}, but a "
+            f"branch may re-cap only the program's FIRST phase {first_phase_id!r}: "
+            "Perception's own boundary supply"
+        )
+    if declared_stores is not None and store_id not in set(declared_stores):
+        raise PerceptionBranchError(
+            f"perception branch override {text!r} names store {store_id!r}, "
+            f"which this configuration does not declare; declared stores are "
+            f"{sorted(set(declared_stores))}"
+        )
+    resolved_value = (
+        _rank_weight_value(value, field=f"perception branch override {text!r}")
+        if tail[0] == "rank_weights"
+        else _positive_int(value, field=f"perception branch override {text!r}")
+    )
+    return PerceptionBranchKnob(
+        path=text, store_id=store_id, phase=phase, tail=tail, value=resolved_value,
+    )
+
+
+def parse_perception_branches(
+    block: object,
+    *,
+    first_phase_id: str,
+    declared_stores: Sequence[str] | None = None,
+    declared_alternate_relpaths: Mapping[str, Sequence[str]] | None = None,
+    registered_presentation_ids: Sequence[str] | None = None,
+    max_candidates_ceiling: int | None = None,
+) -> PerceptionBranchGroup:
+    """Parse ``native_episode.roles.perception.branches``, fail-closed.
+
+    Structurally :func:`parse_supply_variants`'s twin (design section 3,
+    "Fork point"), with the differences design section 1 names: a branch may
+    target the program's first phase (indeed must, for a boundary-supply
+    knob); a branch's release_swap, presentation or response-contract axis is
+    admitted through the same "one factor" rule a knob override is; and the
+    group additionally declares ``level`` (1 or 2, design section 1) and
+    requires exactly one twin (T) branch (design section 4, "A/A = twin").
+
+    ``registered_presentation_ids`` is ``core.base.PERCEPTION_PRESENTATIONS
+    .names()`` -- this module does not import ``core.base`` itself, so a
+    caller that omits it gets shape checking only, exactly as
+    ``declared_stores=None`` does for a knob's store. ``max_candidates_ceiling``
+    bounds ``min_candidates`` the same way; a caller that omits it gets no
+    upper check beyond "positive integer".
+
+    The refusals, in order, each raised by name BEFORE any contact:
+
+    1. a block that is not an object with exactly ``branches``,
+       ``fit_estimate`` and ``level``;
+    2. a ``level`` outside :data:`PERCEPTION_BRANCH_LEVELS`;
+    3. a branch row with unknown or missing keys;
+    4. a branch count outside :data:`MIN_PERCEPTION_BRANCHES` ..
+       :data:`MAX_PERCEPTION_BRANCHES`;
+    5. a branch id collision;
+    6. zero or several branches carrying ``deliver`` (branch A), or a
+       delivering branch that is not the LAST branch, or that carries any
+       axis at all;
+    7. zero or several branches naming ``replicate_of`` the delivering
+       branch (exactly one twin T is required), a twin naming a branch that
+       is not the delivering branch, or a twin that carries any axis;
+    8. more than :data:`MAX_PERCEPTION_B_BRANCHES` B branches (beside A
+       and T);
+    9. an override path this module does not admit
+       (:func:`parse_perception_branch_knob`);
+    10. a release_swap naming an undeclared store or an undeclared
+        alternate (:func:`parse_supply_variant_release_swap`);
+    11. a presentation_id absent from ``registered_presentation_ids``, when
+        given;
+    12. a min_candidates outside ``1 .. max_candidates_ceiling``, when given;
+    13. a non-A, non-T branch declaring zero or more than one axis category
+        -- "one factor per non-A branch" (design section 1);
+    14. two B branches whose whole axis is identical;
+    15. a branch whose estimated prompt exceeds the live slot with the
+        registered reserve.
+    """
+
+    if not isinstance(block, Mapping) or set(block) != PERCEPTION_BRANCH_BLOCK_KEYS:
+        raise PerceptionBranchError(
+            "native_episode.roles.perception.branches must be an object with "
+            f"exactly {sorted(PERCEPTION_BRANCH_BLOCK_KEYS)}"
+        )
+    level = block["level"]
+    if isinstance(level, bool) or level not in PERCEPTION_BRANCH_LEVELS:
+        raise PerceptionBranchError(
+            f"perception branches.level must be one of {PERCEPTION_BRANCH_LEVELS}"
+        )
+    rows = block["branches"]
+    if (
+        not isinstance(rows, Sequence)
+        or isinstance(rows, (str, bytes))
+        or not all(isinstance(row, Mapping) for row in rows)
+    ):
+        raise PerceptionBranchError(
+            "perception branches.branches must be an ordered list of branch objects"
+        )
+    if not MIN_PERCEPTION_BRANCHES <= len(rows) <= MAX_PERCEPTION_BRANCHES:
+        raise PerceptionBranchError(
+            "perception branches.branches must declare between "
+            f"{MIN_PERCEPTION_BRANCHES} and {MAX_PERCEPTION_BRANCHES} branches"
+        )
+    fit_estimate = parse_supply_variant_fit_estimate(block["fit_estimate"])
+    branches: list[PerceptionBranch] = []
+    for position, row in enumerate(rows):
+        keys = set(row)
+        if (
+            not PERCEPTION_BRANCH_REQUIRED_KEYS <= keys
+            or keys - PERCEPTION_BRANCH_REQUIRED_KEYS - PERCEPTION_BRANCH_OPTIONAL_KEYS
+        ):
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}] must carry exactly "
+                f"{sorted(PERCEPTION_BRANCH_REQUIRED_KEYS)} plus optional "
+                f"{sorted(PERCEPTION_BRANCH_OPTIONAL_KEYS)}"
+            )
+        branch_id = _nonempty_str(
+            row["branch_id"],
+            field=f"perception branches.branches[{position}].branch_id",
+        )
+        deliver = row.get("deliver", False)
+        if not isinstance(deliver, bool):
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}].deliver must be a bool"
+            )
+        overrides = row.get("overrides", {})
+        if not isinstance(overrides, Mapping):
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}].overrides must be an "
+                "object"
+            )
+        raw_replicate_of = row.get("replicate_of")
+        replicate_of = None if raw_replicate_of is None else _nonempty_str(
+            raw_replicate_of,
+            field=f"perception branches.branches[{position}].replicate_of",
+        )
+        if deliver and replicate_of is not None:
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}] declares both "
+                "deliver: true and replicate_of; the delivering branch (A) "
+                "cannot also be the twin (T)"
+            )
+        knobs = tuple(
+            parse_perception_branch_knob(
+                path, value, first_phase_id=first_phase_id,
+                declared_stores=declared_stores,
+            )
+            for path, value in sorted(overrides.items())
+        )
+        raw_release_swap = row.get("release_swap")
+        release_swap = (
+            None if raw_release_swap is None
+            else parse_supply_variant_release_swap(
+                raw_release_swap, declared_stores=declared_stores,
+                declared_alternate_relpaths=declared_alternate_relpaths,
+            )
+        )
+        presentation_id = row.get("presentation_id")
+        if presentation_id is not None:
+            presentation_id = _nonempty_str(
+                presentation_id,
+                field=f"perception branches.branches[{position}].presentation_id",
+            )
+            if (
+                registered_presentation_ids is not None
+                and presentation_id not in set(registered_presentation_ids)
+            ):
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}].presentation_id "
+                    f"{presentation_id!r} is not registered; registered ids are "
+                    f"{sorted(set(registered_presentation_ids))}"
+                )
+        min_candidates = row.get("min_candidates")
+        if min_candidates is not None:
+            if (
+                isinstance(min_candidates, bool)
+                or not isinstance(min_candidates, int)
+                or min_candidates < 1
+            ):
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}].min_candidates "
+                    "must be a positive integer"
+                )
+            if (
+                max_candidates_ceiling is not None
+                and min_candidates > max_candidates_ceiling
+            ):
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}].min_candidates "
+                    f"{min_candidates} exceeds the configured max_candidates "
+                    f"ceiling {max_candidates_ceiling}"
+                )
+        has_axis = bool(knobs) or release_swap is not None or presentation_id is not None or min_candidates is not None
+        if replicate_of is not None and has_axis:
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}] names replicate_of "
+                "and must declare no axis: it resolves exactly the delivering "
+                "branch's (A's) own request"
+            )
+        if deliver and has_axis:
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}] carries deliver: "
+                "true and must declare no axis: A is the cell's own request, "
+                "override-free"
+            )
+        if not deliver and replicate_of is None:
+            axis_categories = sum((
+                bool(knobs), release_swap is not None, presentation_id is not None,
+                min_candidates is not None,
+            ))
+            if axis_categories != 1:
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}] must declare "
+                    "exactly one axis category (a boundary-supply knob, a "
+                    "release_swap, a presentation_id or a min_candidates) -- "
+                    "one factor per non-A branch"
+                )
+        branches.append(PerceptionBranch(
+            branch_id=branch_id, deliver=deliver, knobs=knobs,
+            max_supplied_items=_positive_int(
+                row["max_supplied_items"],
+                field=f"perception branches.branches[{position}].max_supplied_items",
+            ),
+            replicate_of=replicate_of, release_swap=release_swap,
+            presentation_id=presentation_id, min_candidates=min_candidates,
+        ))
+    ids = [branch.branch_id for branch in branches]
+    if len(set(ids)) != len(ids):
+        raise PerceptionBranchError("perception branch ids must be distinct")
+    delivering = [branch.branch_id for branch in branches if branch.deliver]
+    if len(delivering) != 1:
+        raise PerceptionBranchError(
+            "perception branches must declare exactly one branch with "
+            f"deliver: true (A); this block declares {len(delivering)}"
+        )
+    if not branches[-1].deliver:
+        raise PerceptionBranchError(
+            f"perception branches delivering branch (A) {delivering[0]!r} must "
+            "be the LAST branch: A continues through Solver/Reviewer/Planner "
+            "exactly as today and is contacted last in the branch batch"
+        )
+    delivered_branch_id = branches[-1].branch_id
+    twins = [branch for branch in branches if branch.replicate_of is not None]
+    for branch in twins:
+        if branch.replicate_of != delivered_branch_id:
+            raise PerceptionBranchError(
+                f"perception branch {branch.branch_id!r} names replicate_of "
+                f"{branch.replicate_of!r}, which is not the delivering branch "
+                f"{delivered_branch_id!r}"
+            )
+    if len(twins) != 1:
+        raise PerceptionBranchError(
+            "perception branches must declare exactly one twin (replicate_of "
+            "the delivering branch A): the within-flight A/A null every "
+            "same-flight-perception-variant read requires (design section 4, "
+            "'A/A = twin')"
+        )
+    b_branches = [branch for branch in branches if branch.is_b]
+    if len(b_branches) > MAX_PERCEPTION_B_BRANCHES:
+        raise PerceptionBranchError(
+            "perception branches must declare at most "
+            f"{MAX_PERCEPTION_B_BRANCHES} B branches beside A and its twin T"
+        )
+    signatures = [
+        (
+            tuple((knob.path, knob.value) for knob in branch.knobs),
+            None if branch.release_swap is None else (
+                branch.release_swap.store_id, branch.release_swap.release_relpath,
+            ),
+            branch.presentation_id,
+            branch.min_candidates,
+        )
+        for branch in b_branches
+    ]
+    if len(set(signatures)) != len(signatures):
+        raise PerceptionBranchError(
+            "two perception B branches declare the same axis; two spellings "
+            "of one construction spend a contact per row and measure nothing"
+        )
+    for branch in branches:
+        estimated = fit_estimate.estimated_prompt_tokens(branch)
+        if estimated > fit_estimate.prompt_limit_tokens:
+            raise PerceptionBranchError(
+                f"perception branch {branch.branch_id!r} estimates {estimated} "
+                f"prompt tokens at {branch.max_supplied_items} supplied items, "
+                f"which exceeds the {fit_estimate.prompt_limit_tokens}-token "
+                f"limit of a {fit_estimate.slot_tokens}-token slot with its "
+                f"registered {fit_estimate.reserve_tokens}-token reserve, the "
+                f"{fit_estimate.completion_ceiling}-token completion ceiling "
+                f"and the {REGISTERED_SPECIAL_TOKEN_RESERVE}-token special "
+                "reserve"
+            )
+    return PerceptionBranchGroup(
+        branches=tuple(branches), fit_estimate=fit_estimate, level=level,
+    )
+
+
+def perception_branch_record(
+    *,
+    branch: PerceptionBranch,
+    branch_index: int,
+    contact_id: str,
+    request_sha256: str,
+    response_text_sha256: str,
+    note_sha256: str,
+    note_parse_status: str,
+    candidate_intent_ids: Sequence[str],
+    supplied_value_ids: Sequence[str],
+    resolved_knobs: Mapping[str, int] | None = None,
+    solver_contact_id: str | None = None,
+    solver_request_sha256: str | None = None,
+    solver_response_text_sha256: str | None = None,
+    candidate_supply_value_ids: Sequence[str] | None = None,
+) -> dict[str, object]:
+    """One branch's receipt row (design section 3, "Receipt").
+
+    The four ``solver_*``/``candidate_supply_value_ids`` fields are declared
+    together or not at all: level 1 never supplies them, level 2 supplies
+    them for every branch (A's naming its own ordinary first Solver visit,
+    every other branch's naming the one Solver contact its note fanned out
+    -- design section 3, "Level 2").
+    """
+
+    ids = tuple(supplied_value_ids)
+    if len(set(ids)) != len(ids):
+        raise PerceptionBranchError(
+            "a perception branch record must have unique supplied ids"
+        )
+    if len(ids) > branch.max_supplied_items:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} supplied {len(ids)} "
+            f"items, above its declared max_supplied_items "
+            f"{branch.max_supplied_items}"
+        )
+    declared = {knob.path: knob.value for knob in branch.knobs}
+    resolved = dict(declared if resolved_knobs is None else resolved_knobs)
+    if resolved != declared:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} resolved knobs "
+            f"{sorted(resolved)} differ from the knobs it declared "
+            f"{sorted(declared)}"
+        )
+    candidates = tuple(candidate_intent_ids)
+    if any(not isinstance(value, str) or not value for value in candidates):
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} candidate_intent_ids "
+            "must be non-empty strings"
+        )
+    level2_fields = (
+        solver_contact_id, solver_request_sha256, solver_response_text_sha256,
+        candidate_supply_value_ids,
+    )
+    has_level2 = any(field is not None for field in level2_fields)
+    if has_level2 and any(field is None for field in level2_fields):
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} must declare all four "
+            "level-2 fields together or none of them"
+        )
+    record: dict[str, object] = {
+        "branch_index": int(branch_index),
+        "branch_id": branch.branch_id,
+        "deliver": bool(branch.deliver),
+        "replicate_of": branch.replicate_of,
+        "resolved_knobs": [
+            {"path": path, "value": int(value)}
+            for path, value in sorted(resolved.items())
+        ],
+        "release_swap": (
+            None if branch.release_swap is None else branch.release_swap.as_json()
+        ),
+        "presentation_id": branch.presentation_id,
+        "min_candidates": branch.min_candidates,
+        "supplied_value_ids": list(ids),
+        "supplied_count": len(ids),
+        "max_supplied_items": branch.max_supplied_items,
+        "contact_id": _nonempty_str(
+            contact_id, field=f"perception branch {branch.branch_id!r} contact_id",
+        ),
+        "request_sha256": _sha256_hex(request_sha256, field="request_sha256"),
+        "response_text_sha256": _sha256_hex(
+            response_text_sha256, field="response_text_sha256",
+        ),
+        "note_sha256": _sha256_hex(note_sha256, field="note_sha256"),
+        "note_parse_status": _nonempty_str(
+            note_parse_status, field="note_parse_status",
+        ),
+        "candidate_intent_ids": list(candidates),
+    }
+    if has_level2:
+        record["solver_contact_id"] = _nonempty_str(
+            solver_contact_id,
+            field=f"perception branch {branch.branch_id!r} solver_contact_id",
+        )
+        record["solver_request_sha256"] = _sha256_hex(
+            solver_request_sha256, field="solver_request_sha256",
+        )
+        record["solver_response_text_sha256"] = _sha256_hex(
+            solver_response_text_sha256, field="solver_response_text_sha256",
+        )
+        record["candidate_supply_value_ids"] = list(candidate_supply_value_ids)
+    return record
+
+
+def perception_branch_receipt(
+    *,
+    group: PerceptionBranchGroup,
+    phase_id: str,
+    records: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """The whole Perception branch group's receipt (design section 3, "Receipt").
+
+    Sealed once per row, from the ONE Perception visit -- Perception has no
+    "every"/"first" choice (design section 3, "Branch visits"), so unlike
+    :func:`supply_variant_receipt` there is no later-visit carry-forward rule
+    to state.
+    """
+
+    return {
+        "schema": PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+        "phase_id": _nonempty_str(
+            phase_id, field="perception_branch_receipt.phase_id",
+        ),
+        "level": group.level,
+        "branch_count": group.branch_count,
+        "delivered_branch_id": group.delivering_branch.branch_id,
+        "branch_visits": PERCEPTION_BRANCH_VISITS,
+        "visit_index": 0,
+        "fit_estimate": group.fit_estimate.as_json(),
+        "branches": [dict(record) for record in records],
+    }
+
+
 __all__ = [
+    "MAX_PERCEPTION_B_BRANCHES",
+    "MAX_PERCEPTION_BRANCHES",
+    "MIN_PERCEPTION_BRANCHES",
+    "PERCEPTION_BRANCH_BLOCK_KEYS",
+    "PERCEPTION_BRANCH_KNOB_ROUTE",
+    "PERCEPTION_BRANCH_KNOB_TAILS",
+    "PERCEPTION_BRANCH_LEVEL2_RECORD_KEYS",
+    "PERCEPTION_BRANCH_LEVEL_NOTE",
+    "PERCEPTION_BRANCH_LEVEL_SOLVER",
+    "PERCEPTION_BRANCH_LEVELS",
+    "PERCEPTION_BRANCH_OPTIONAL_KEYS",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
+    "PERCEPTION_BRANCH_RECORD_KEYS",
+    "PERCEPTION_BRANCH_REQUIRED_KEYS",
+    "PERCEPTION_BRANCH_VISITS",
+    "PerceptionBranch",
+    "PerceptionBranchError",
+    "PerceptionBranchGroup",
+    "PerceptionBranchKnob",
+    "parse_perception_branch_knob",
+    "parse_perception_branches",
+    "perception_branch_ceiling",
+    "perception_branch_record",
+    "perception_branch_receipt",
     "MAX_SUPPLY_VARIANT_ARMS",
     "MIN_SUPPLY_VARIANT_ARMS",
     "SUPPLY_VARIANT_ARM_OPTIONAL_KEYS",

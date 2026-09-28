@@ -1548,6 +1548,304 @@ def validate_supply_variant_receipt(
             )
 
 
+#: Same-flight instrument, PHASE 2 (merge set C, item 2): the receipt schema
+#: one Perception branch group seals under ``perception_branches``
+#: (``rails.supply_variants.PERCEPTION_BRANCH_RECEIPT_SCHEMA``, restated here
+#: so this module keeps its "no runtime or framework imports" rule).
+PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v1"
+
+_PERCEPTION_BRANCH_FIELDS = frozenset(
+    {
+        "schema", "phase_id", "level", "branch_count", "delivered_branch_id",
+        "branch_visits", "visit_index", "fit_estimate", "branches",
+    }
+)
+_PERCEPTION_BRANCH_FIT_FIELDS = frozenset(
+    {
+        "slot_tokens", "completion_ceiling", "base_prompt_tokens",
+        "tokens_per_supplied_item", "reserve_tokens", "prompt_limit_tokens",
+    }
+)
+_PERCEPTION_BRANCH_RECORD_FIELDS = frozenset(
+    {
+        "branch_index", "branch_id", "deliver", "replicate_of", "resolved_knobs",
+        "release_swap", "presentation_id", "min_candidates", "supplied_value_ids",
+        "supplied_count", "max_supplied_items", "contact_id", "request_sha256",
+        "response_text_sha256", "note_sha256", "note_parse_status",
+        "candidate_intent_ids",
+    }
+)
+_PERCEPTION_BRANCH_LEVEL2_FIELDS = _PERCEPTION_BRANCH_RECORD_FIELDS | {
+    "solver_contact_id", "solver_request_sha256", "solver_response_text_sha256",
+    "candidate_supply_value_ids",
+}
+_PERCEPTION_BRANCH_LEVELS = (1, 2)
+_PERCEPTION_BRANCH_VISITS = "first"
+
+
+def validate_perception_branch_receipt(
+    perception_branches: Mapping[str, object],
+    *,
+    branch_ids: Sequence[str],
+    delivered_branch_id: str,
+    twin_branch_id: str,
+    phase_id: str,
+    level: int,
+    error_type: type[Exception] = ValueError,
+) -> None:
+    """Validate the custody a Perception branch visit keeps (phase 2, item
+    merge set C).
+
+    Structurally :func:`validate_supply_variant_receipt`'s twin, checked
+    against the SAME row-identity discipline: distinct branch ids, EVERY
+    declared branch present exactly once in declared order, the delivering
+    branch (A) named and last, exactly one twin (T) naming A and resolving A's
+    OWN wire bytes (AT-P2: T's ``request_sha256`` equals A's), and every
+    non-delivering branch's note custody sealed under its own row.
+
+    ``branch_ids``/``delivered_branch_id``/``twin_branch_id``/``level`` are
+    the CONFIGURATION's own -- the sealing caller reads them off the composed
+    config, a post-seal reader off the raw
+    ``native_episode.roles.perception.branches`` block -- so a receipt can
+    never describe a group other than the one the cell declared.
+
+    At level 1 no branch row carries a Solver-column field. At level 2 EVERY
+    branch row carries all four (design section 3, "Level 2"): A's own
+    naming its ordinary first Solver visit (no new contact), every other
+    branch's naming the one Solver contact its note fanned out.
+    """
+
+    declared = list(branch_ids)
+    if not declared or len(set(declared)) != len(declared):
+        _raise(error_type, "perception branch receipt requires distinct declared branch ids")
+    if not isinstance(delivered_branch_id, str) or delivered_branch_id != declared[-1]:
+        _raise(
+            error_type,
+            "perception branch receipt requires the delivering branch (A) to be "
+            "the last declared branch",
+        )
+    if not isinstance(twin_branch_id, str) or twin_branch_id not in declared:
+        _raise(error_type, "perception branch receipt names an undeclared twin branch")
+    if level not in _PERCEPTION_BRANCH_LEVELS:
+        _raise(error_type, "perception branch receipt level must be 1 or 2")
+    if not isinstance(perception_branches, Mapping) or set(perception_branches) != _PERCEPTION_BRANCH_FIELDS:
+        _raise(error_type, "perception branch receipt has an invalid shape")
+    if perception_branches["schema"] != PERCEPTION_BRANCH_RECEIPT_SCHEMA:
+        _raise(error_type, "perception branch receipt has an unregistered schema")
+    if perception_branches["phase_id"] != phase_id:
+        _raise(error_type, "perception branch receipt names another phase")
+    if perception_branches["level"] != level:
+        _raise(error_type, "perception branch receipt names another level")
+    if perception_branches["branch_count"] != len(declared):
+        _raise(error_type, "perception branch receipt does not carry every declared branch")
+    if perception_branches["delivered_branch_id"] != delivered_branch_id:
+        _raise(error_type, "perception branch receipt names another delivering branch")
+    if perception_branches["branch_visits"] != _PERCEPTION_BRANCH_VISITS:
+        _raise(
+            error_type,
+            "perception branch receipt branch_visits must be "
+            f"{_PERCEPTION_BRANCH_VISITS!r}: Perception has no 'every' fan-out",
+        )
+    visit_index = perception_branches["visit_index"]
+    if isinstance(visit_index, bool) or visit_index != 0:
+        _raise(
+            error_type,
+            "perception branch receipt visit_index must be 0: Perception has "
+            "one visit per row",
+        )
+    fit = perception_branches["fit_estimate"]
+    if not isinstance(fit, Mapping) or set(fit) != _PERCEPTION_BRANCH_FIT_FIELDS:
+        _raise(error_type, "perception branch receipt fit estimate has an invalid shape")
+    rows = _sequence(
+        perception_branches["branches"], "perception branches", error_type=error_type,
+    )
+    if len(rows) != len(declared):
+        _raise(error_type, "perception branch receipt does not carry every declared branch")
+    expected_fields = (
+        _PERCEPTION_BRANCH_LEVEL2_FIELDS if level == 2 else _PERCEPTION_BRANCH_RECORD_FIELDS
+    )
+    contact_ids: list[str] = []
+    delivering_ids: tuple[str, ...] | None = None
+    delivering_request_sha256: str | None = None
+    twin_seen = False
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping) or set(row) != expected_fields:
+            _raise(error_type, "perception branch record has an invalid shape")
+        if row["branch_index"] != index:
+            _raise(error_type, "perception branches must be ordered by ascending branch_index")
+        if row["branch_id"] != declared[index]:
+            _raise(error_type, "perception branches must appear in their declared order")
+        deliver = row["deliver"]
+        if not isinstance(deliver, bool) or deliver != (row["branch_id"] == delivered_branch_id):
+            _raise(error_type, "perception branch disagrees with the declared delivering branch")
+        contact_id = row["contact_id"]
+        if not isinstance(contact_id, str) or not contact_id:
+            _raise(error_type, "perception branch lacks its contact identity")
+        contact_ids.append(contact_id)
+        replicate_of = row.get("replicate_of")
+        is_twin = row["branch_id"] == twin_branch_id
+        if is_twin:
+            if replicate_of != delivered_branch_id:
+                _raise(
+                    error_type,
+                    "perception branch receipt names a twin that does not "
+                    "replicate the delivering branch",
+                )
+            if deliver:
+                _raise(error_type, "the delivering perception branch cannot also be the twin")
+            twin_seen = True
+        elif replicate_of is not None:
+            _raise(
+                error_type,
+                "only the declared twin branch may carry replicate_of in a "
+                "perception branch receipt",
+            )
+        for field in ("request_sha256", "response_text_sha256", "note_sha256"):
+            value = row[field]
+            if not isinstance(value, str) or len(value) != 64 or any(
+                character not in "0123456789abcdef" for character in value
+            ):
+                _raise(error_type, f"perception branch {field} must be a lowercase 64-hex SHA-256")
+        if not isinstance(row["note_parse_status"], str) or not row["note_parse_status"]:
+            _raise(error_type, "perception branch note_parse_status must be a non-empty string")
+        knobs = _sequence(
+            row["resolved_knobs"], "perception branch resolved_knobs", error_type=error_type,
+        )
+        if any(
+            not isinstance(entry, Mapping)
+            or set(entry) != {"path", "value"}
+            or not isinstance(entry["path"], str)
+            or not entry["path"]
+            or isinstance(entry["value"], bool)
+            or not isinstance(entry["value"], (int, float))
+            for entry in knobs
+        ):
+            _raise(error_type, "perception branch has malformed resolved knobs")
+        paths = [entry["path"] for entry in knobs]
+        if len(set(paths)) != len(paths) or paths != sorted(paths):
+            _raise(
+                error_type,
+                "perception branch resolved knobs must be distinct and ordered by path",
+            )
+        release_swap = row.get("release_swap")
+        if release_swap is not None and (
+            not isinstance(release_swap, Mapping)
+            or set(release_swap) != {"store_id", "release"}
+            or not isinstance(release_swap["store_id"], str)
+            or not release_swap["store_id"]
+            or not isinstance(release_swap["release"], str)
+            or not release_swap["release"]
+        ):
+            _raise(error_type, "perception branch release_swap has an invalid shape")
+        presentation_id = row.get("presentation_id")
+        if presentation_id is not None and (
+            not isinstance(presentation_id, str) or not presentation_id
+        ):
+            _raise(error_type, "perception branch presentation_id must be a non-empty string")
+        min_candidates = row.get("min_candidates")
+        if min_candidates is not None and (
+            isinstance(min_candidates, bool)
+            or not isinstance(min_candidates, int)
+            or min_candidates < 1
+        ):
+            _raise(error_type, "perception branch min_candidates must be a positive integer")
+        if deliver or is_twin:
+            if paths or release_swap is not None or presentation_id is not None or min_candidates is not None:
+                _raise(
+                    error_type,
+                    "the delivering perception branch (A) and its twin (T) must "
+                    "declare no axis",
+                )
+        elif not (paths or release_swap is not None or presentation_id is not None or min_candidates is not None):
+            _raise(
+                error_type,
+                "a B perception branch must declare exactly one axis category",
+            )
+        ids = _sequence(
+            row["supplied_value_ids"], "perception branch supplied_value_ids", error_type=error_type,
+        )
+        if any(not isinstance(value, str) or not value for value in ids):
+            _raise(error_type, "perception branch supplied ids must be nonempty strings")
+        if len(set(ids)) != len(ids):
+            _raise(error_type, "perception branch supplied ids must be unique")
+        count = _nonneg_int(
+            row["supplied_count"], "perception branch supplied_count", error_type=error_type,
+        )
+        if count != len(ids):
+            _raise(error_type, "perception branch supplied_count disagrees with its ids")
+        bound = row["max_supplied_items"]
+        if isinstance(bound, bool) or not isinstance(bound, int) or bound < 1:
+            _raise(error_type, "perception branch max_supplied_items must be positive")
+        if count > bound:
+            _raise(
+                error_type,
+                "perception branch supplied more items than the bound its fit "
+                "refusal was computed against",
+            )
+        candidates = row["candidate_intent_ids"]
+        if (
+            not isinstance(candidates, Sequence)
+            or isinstance(candidates, (str, bytes))
+            or not candidates
+            or any(not isinstance(value, str) or not value for value in candidates)
+            or len(set(candidates)) != len(candidates)
+        ):
+            _raise(
+                error_type,
+                "perception branch candidate_intent_ids must be a non-empty "
+                "ordered list of distinct non-empty strings",
+            )
+        if level == 2:
+            for field in (
+                "solver_contact_id", "solver_request_sha256", "solver_response_text_sha256",
+            ):
+                value = row[field]
+                if field == "solver_contact_id":
+                    if not isinstance(value, str) or not value:
+                        _raise(error_type, "perception branch solver_contact_id must be non-empty")
+                elif not isinstance(value, str) or len(value) != 64 or any(
+                    character not in "0123456789abcdef" for character in value
+                ):
+                    _raise(error_type, f"perception branch {field} must be a lowercase 64-hex SHA-256")
+            supply_ids = row["candidate_supply_value_ids"]
+            if (
+                not isinstance(supply_ids, Sequence)
+                or isinstance(supply_ids, (str, bytes))
+                or any(not isinstance(value, str) or not value for value in supply_ids)
+                or len(set(supply_ids)) != len(supply_ids)
+            ):
+                _raise(
+                    error_type,
+                    "perception branch candidate_supply_value_ids must be a list "
+                    "of distinct non-empty strings",
+                )
+        if deliver:
+            delivering_ids = tuple(ids)
+            delivering_request_sha256 = row["request_sha256"]
+    if len(set(contact_ids)) != len(contact_ids):
+        _raise(error_type, "perception branches must have distinct contact ids")
+    if not twin_seen:
+        _raise(error_type, "perception branch receipt does not carry the declared twin")
+    for row in rows:
+        if row["branch_id"] != twin_branch_id:
+            continue
+        if delivering_ids is None or tuple(row["supplied_value_ids"]) != delivering_ids:
+            _raise(
+                error_type,
+                "perception twin branch does not resolve exactly the delivering "
+                "branch's ids",
+            )
+        if (
+            delivering_request_sha256 is None
+            or row["request_sha256"] != delivering_request_sha256
+        ):
+            _raise(
+                error_type,
+                "perception twin branch request_sha256 does not equal the "
+                "delivering branch's (AT-P2: T's wire bytes equal A's)",
+            )
+
+
 __all__ = [
     "PLANNER_ACTION_ILLEGAL_DISPOSITION", "is_illegal_planner_route",
     "NativeEpisodeDelivery", "SUPPLY_VARIANT_RECEIPT_SCHEMA",
@@ -1555,4 +1853,6 @@ __all__ = [
     "validate_native_candidate_refresh_receipt", "validate_native_episode_terminal_policy",
     "validate_native_episode_finite_path", "validate_solver_group_receipt",
     "validate_supply_variant_receipt",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
+    "validate_perception_branch_receipt",
 ]
