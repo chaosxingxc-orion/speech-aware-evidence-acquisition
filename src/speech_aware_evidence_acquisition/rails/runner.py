@@ -1330,6 +1330,118 @@ def _supply_for_state(
     ).validate()
 
 
+# ---------------------------------------------------------------------------
+# Cell RANKVIS (owner decision 171, 2026-09-27): rank-ordered, rank-visible
+# rendering of named knowledge stores. Reachable ONLY when
+# ``native_episode.knowledge_value_rendering`` is armed; with the key absent
+# neither function below is called and every request byte is unchanged.
+#
+# Why the order is changed HERE and not in the fuser: ``rails.kb_policy.
+# _fuse_supply_filter`` returns ``tuple(sorted(set(selected_value_ids)))``, so
+# the exemplar block renders in lexicographic value-id order and its
+# retrieval rank dies there (M1 analysis section 4.2; Spearman between
+# rendered position and rank 0.007). Re-ordering the ``FusionDecision`` at the
+# runner's supply step keeps the selected SET, the rank result, the
+# supporting facets and every hash edge of the decision, changes only the
+# order of ``selected_value_ids`` inside each named store, and leaves the
+# prepared-artifact identity modules (``rails.kb_policy``,
+# ``rails.knowledge_provider``, ``rails.phase_supply``,
+# ``rails.knowledge_stores``, ``core.flight.runtime``) byte-unchanged.
+# ---------------------------------------------------------------------------
+
+#: The visible rank label, prefixed to a named store's value content. The
+#: transport renders the part as ``[evidence <id>] <text>``, so the model
+#: reads ``[evidence <id>] retrieval rank 3: <content>``.
+RANK_VISIBLE_LABEL = "retrieval rank {rank}: "
+
+
+def _value_store_id(value_id: str) -> str | None:
+    """The store prefix of a qualified value id (``<store>::<local>``), or None."""
+
+    store, separator, _local = value_id.partition("::")
+    return store if separator else None
+
+
+def order_supply_by_retrieval_rank(supply, snapshot: KnowledgeSnapshot, stores):
+    """``supply`` with each named store's selected values in retrieval-rank order.
+
+    The rank of a selected value is the score of its best supporting facet in
+    the supply's own ``RankResult`` (``rails.knowledge_index.
+    value_retrieval_ranks``, the E21w arithmetic, unchanged), ties by value id.
+    Values of a store not named in ``stores`` keep their positions and their
+    order; the named store's values are sorted among the positions that store
+    already occupies, so the interleaving of stores inside one composed supply
+    is preserved. Returns the SAME object when nothing moves.
+    """
+
+    from .knowledge_index import value_retrieval_ranks  # noqa: PLC0415
+
+    decision = supply.fusion_decision
+    selected = tuple(decision.selected_value_ids)
+    named = frozenset(stores)
+    if not selected or not any(_value_store_id(v) in named for v in selected):
+        return supply
+    ranks = value_retrieval_ranks(
+        rank_result=supply.rank_result,
+        fusion_decision=decision,
+        values=snapshot.values,
+    )
+    reordered = list(selected)
+    for store in sorted(named):
+        positions = [i for i, v in enumerate(selected) if _value_store_id(v) == store]
+        if len(positions) < 2:
+            continue
+        members = sorted(
+            (selected[i] for i in positions),
+            key=lambda v: (ranks.get(v, {}).get("rank", len(selected) + 1), v),
+        )
+        for position, value_id in zip(positions, members, strict=True):
+            reordered[position] = value_id
+    if tuple(reordered) == selected:
+        return supply
+    return replace(
+        supply,
+        fusion_decision=replace(decision, selected_value_ids=tuple(reordered)).validate(),
+    ).validate()
+
+
+def rank_visible_value_renderer(*, snapshot_sha256: str, stores):
+    """A ``knowledge_value_renderer`` that shows each named store's rank.
+
+    It renders exactly the parts ``_agent_messages`` renders when no renderer
+    is bound -- same values, same order, same ``evidence_id``, ``source_uri``
+    and ``knowledge_role`` -- except that a value of a named store carries the
+    :data:`RANK_VISIBLE_LABEL` prefix with its 1-based position among that
+    store's values in ``QueryState.retrieved_value_ids``. Under
+    ``order: retrieval-rank`` that position IS the retrieval rank: the
+    first-phase seed arrives in the associated-values fuser's rank order, and
+    every later supply step is re-ordered by
+    :func:`order_supply_by_retrieval_rank` before it is acquired.
+    """
+
+    named = frozenset(stores)
+
+    def render(snapshot, query_state, agent_states):  # noqa: ARG001
+        counters: dict[str, int] = {}
+        parts: list[Mapping[str, object]] = []
+        for value in _visible_values(snapshot, query_state):
+            store = _value_store_id(value.value_id)
+            text = value.content
+            if store in named:
+                counters[store] = counters.get(store, 0) + 1
+                text = RANK_VISIBLE_LABEL.format(rank=counters[store]) + text
+            parts.append({
+                "type": "text",
+                "text": text,
+                "evidence_id": value.value_id,
+                "source_uri": f"knowledge-snapshot://{snapshot_sha256}/{value.value_id}",
+                "knowledge_role": "value",
+            })
+        return parts
+
+    return render
+
+
 def _agent_messages(
     *,
     adapter: TaskAdapter,
@@ -1939,6 +2051,22 @@ async def _invoke_native_role_episode(
     config, program = binding.config, binding.program
     if bool(config.local_tool_workers) != (run_local is not None):
         raise RailsRunnerError("native local tool scheduling differs from its configuration")
+    # Cell RANKVIS (owner decision 171): ``None`` for every config that does
+    # not arm ``native_episode.knowledge_value_rendering`` -- which makes both
+    # branches below unreachable and every request byte identical.
+    value_rendering = getattr(config, "knowledge_value_rendering", None)
+    rank_order_stores: tuple[str, ...] = ()
+    if value_rendering is not None:
+        if knowledge_value_renderer is not None:
+            raise RailsRunnerError(
+                "knowledge_value_rendering cannot combine with another value renderer"
+            )
+        if value_rendering["order"] == "retrieval-rank":
+            rank_order_stores = tuple(value_rendering["stores"])
+        if value_rendering["rank_visible"]:
+            knowledge_value_renderer = rank_visible_value_renderer(
+                snapshot_sha256=snapshot_sha256, stores=value_rendering["stores"],
+            )
     # E2b (SLURP v2 base program M2 live wiring): the Solver role's own
     # registered grouped-sampling config, resolved once. A samples-1 Solver
     # (every config before this program, and every non-M2 config) carries
@@ -2298,6 +2426,12 @@ async def _invoke_native_role_episode(
         supply = None if tool_step is None else tool_step.supply
         if supply is None and next_phase is not None and binding.supply_for_phase is not None:
             supply = binding.supply_for_phase(next_phase, staged)
+            if supply is not None and rank_order_stores:
+                # Cell RANKVIS: re-order each named store's selection by
+                # retrieval rank BEFORE the repeat-visit restriction and the
+                # acquire transition, so the transition's ``new_value_ids`` are
+                # exactly the re-ordered decision's.
+                supply = order_supply_by_retrieval_rank(supply, snapshot, rank_order_stores)
         if supply is not None and next_phase is not None and program.phase(next_phase).knowledge != "supplied":
             raise RailsRunnerError("native knowledge supply requires a supplied destination")
         if supply is not None and next_phase is not None:

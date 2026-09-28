@@ -20,6 +20,95 @@ SOLVER_DECODING_OVERRIDE_KEYS = frozenset({"temperature", "seed_offset"})
 #: Keys a Solver ``commit`` block must carry, exactly.
 SOLVER_COMMIT_KEYS = frozenset({"policy", "min_support", "similarity_threshold"})
 
+#: Cell RANKVIS (owner decision 171, 2026-09-27): the schema of an armed
+#: ``native_episode.knowledge_value_rendering`` block, its exact key set and
+#: its two orders. ``supplied-order`` is today's behaviour (the fuser's own
+#: order: rank order for the associated-values fuser, lexicographic value-id
+#: order for the supply-filter fuser); ``retrieval-rank`` re-orders each named
+#: store's newly supplied values by the score of their best supporting facet.
+KNOWLEDGE_VALUE_RENDERING_SCHEMA = "saea-knowledge-value-rendering-v1"
+KNOWLEDGE_VALUE_RENDERING_KEYS = frozenset({"schema", "order", "rank_visible", "stores"})
+KNOWLEDGE_VALUE_ORDERS = ("supplied-order", "retrieval-rank")
+
+
+def parse_knowledge_value_rendering(
+    block: object, *, values: Mapping, knowledge_index_armed: bool = False,
+) -> str:
+    """Validate ``native_episode.knowledge_value_rendering``; return its canonical text.
+
+    Refused by name, before any contact: a non-object or a wrong key set; an
+    unknown schema or order; a non-boolean ``rank_visible``; an empty,
+    repeating or malformed ``stores`` list, or a store the composed config's
+    ``knowledge_stores`` does not bind; a block that changes nothing
+    (``supplied-order`` without ``rank_visible``), which is dead config; a
+    visible rank over the SUPPLIED order, which would print a number that is
+    not a retrieval rank on the supply-filter fuser's lexicographic block; and
+    the key armed beside ``knowledge_index``, which replaces the very value
+    rendering this key changes.
+    """
+
+    if not isinstance(block, Mapping) or set(block) != KNOWLEDGE_VALUE_RENDERING_KEYS:
+        raise ValueError(
+            "native_episode.knowledge_value_rendering must carry exactly "
+            f"{sorted(KNOWLEDGE_VALUE_RENDERING_KEYS)}"
+        )
+    if block["schema"] != KNOWLEDGE_VALUE_RENDERING_SCHEMA:
+        raise ValueError(
+            "native_episode.knowledge_value_rendering.schema must be "
+            f"{KNOWLEDGE_VALUE_RENDERING_SCHEMA!r}"
+        )
+    order = block["order"]
+    if not isinstance(order, str) or order not in KNOWLEDGE_VALUE_ORDERS:
+        raise ValueError(
+            "native_episode.knowledge_value_rendering.order must be one of "
+            f"{list(KNOWLEDGE_VALUE_ORDERS)}"
+        )
+    rank_visible = block["rank_visible"]
+    if not isinstance(rank_visible, bool):
+        raise ValueError("native_episode.knowledge_value_rendering.rank_visible must be a bool")
+    if order == "supplied-order" and not rank_visible:
+        raise ValueError(
+            "native_episode.knowledge_value_rendering changes nothing at "
+            "supplied-order without rank_visible; leave the key absent instead"
+        )
+    if rank_visible and order != "retrieval-rank":
+        raise ValueError(
+            "native_episode.knowledge_value_rendering.rank_visible requires order "
+            "'retrieval-rank': a visible position over the supplied order is not a rank"
+        )
+    stores = block["stores"]
+    if (
+        not isinstance(stores, list)
+        or not stores
+        or any(not isinstance(store, str) or not store.strip() or "::" in store for store in stores)
+        or len(set(stores)) != len(stores)
+    ):
+        raise ValueError(
+            "native_episode.knowledge_value_rendering.stores must be a non-empty list "
+            "of distinct store ids"
+        )
+    bound = values.get("knowledge_stores")
+    if not isinstance(bound, Mapping) or set(stores) - set(bound):
+        raise ValueError(
+            "native_episode.knowledge_value_rendering.stores names store(s) the "
+            f"composed config does not bind: {sorted(set(stores) - set(bound or {}))}"
+        )
+    if knowledge_index_armed:
+        raise ValueError(
+            "native_episode.knowledge_value_rendering cannot be armed beside "
+            "native_episode.knowledge_index: the index replaces the value rendering"
+        )
+    return json.dumps(
+        {
+            "schema": KNOWLEDGE_VALUE_RENDERING_SCHEMA,
+            "order": order,
+            "rank_visible": rank_visible,
+            "stores": list(stores),
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
 
 #: E18 (2026-09-19, owner decisions 43-44): the SIXTH node's role kind. It is
 #: kept out of the four-role tuple every ceiling and coverage check iterates
@@ -535,6 +624,24 @@ class NativeEpisodeConfig:
     # NO request byte on a row whose roles finish. Declared LAST, for the same
     # reason E20's, E21's and E22's fields are.
     finite_completion_scope: str = "episode"
+    # Cell RANKVIS (owner decision 171, 2026-09-27): the canonical text of an
+    # armed ``native_episode.knowledge_value_rendering``, or None when the key
+    # is absent -- which is every config written before it and every OFF arm,
+    # so the named stores' values keep their supplied order and render as
+    # their own content, byte for byte. Armed, the runner re-orders each named
+    # store's newly supplied values by retrieval rank at the supply step and
+    # (``rank_visible``) prefixes each rendered value of a named store with
+    # its 1-based rank inside that store's block. Declared LAST, for the same
+    # reason E20's, E21's, E22's and E39's fields are.
+    knowledge_value_rendering_json: str | None = None
+
+    @property
+    def knowledge_value_rendering(self) -> dict[str, object] | None:
+        """The armed ``knowledge_value_rendering`` block, or ``None``."""
+
+        if self.knowledge_value_rendering_json is None:
+            return None
+        return json.loads(self.knowledge_value_rendering_json)
 
     @property
     def role_completion_caps(self) -> dict[str, int]:
@@ -911,6 +1018,7 @@ def load_native_episode_config(
         "acquisition",
         "knowledge_index",
         "reviewer_verdict",
+        "knowledge_value_rendering",
     }
     if (
         not isinstance(raw, Mapping)
@@ -1734,6 +1842,30 @@ def load_native_episode_config(
             raise ValueError("selected native graph exceeds the shared program contact ceiling")
     elif program.max_contacts != ceiling:
         raise ValueError("program contact ceiling must equal the bounded native graph ceiling")
+    # Cell RANKVIS (owner decision 171): absent -> None, the pre-RANKVIS
+    # config byte for byte. Armed, it is refused beside the two mechanisms
+    # that own the same bytes: phase tools render the values through their
+    # own renderer, and a supply-variant arm group resolves each arm's
+    # selection independently of this row's supply step (item E42's live
+    # delivering-arm check would refuse the re-ordered selection).
+    knowledge_value_rendering_json = None
+    if "knowledge_value_rendering" in raw:
+        knowledge_value_rendering_json = parse_knowledge_value_rendering(
+            raw["knowledge_value_rendering"],
+            values=values,
+            knowledge_index_armed=knowledge_index_armed,
+        )
+        if values.get("phase_tools"):
+            raise ValueError(
+                "native_episode.knowledge_value_rendering cannot be armed beside "
+                "phase_tools: the tool dispatcher renders the values itself"
+            )
+        solver_roles = [role for role in roles if role.role_kind == "solver"]
+        if any(getattr(role, "supply_variants", None) is not None for role in solver_roles):
+            raise ValueError(
+                "native_episode.knowledge_value_rendering cannot be armed beside a "
+                "Solver supply-variant arm group"
+            )
     return NativeEpisodeConfig(
         raw["episode_id"],
         revisions,
@@ -1762,6 +1894,7 @@ def load_native_episode_config(
         acquisition_retrieval,
         reviewer_verdict_vocabulary,
         finite_completion_scope,
+        knowledge_value_rendering_json,
     )
 
 
