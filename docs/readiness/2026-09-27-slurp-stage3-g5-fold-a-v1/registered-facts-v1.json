@@ -246,7 +246,7 @@
       "baseline_fragment": "slurp-native-stage3-g5-fold-a-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-g5-fold-a-v1",
-      "composed_config_hash": "747e0f23ee0b1b3a7824f2da2a8d87e956afea28b60436ae69089b4ee64125a0",
+      "composed_config_hash": "56a5ccacb94acc87ed60d4cb7e970d54b4bc7bb5a9d163eff80d453195c5f12b",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -283,7 +283,7 @@
       "parent_baseline_fragment": "slurp-native-default-plan-lock-baseline-v1",
       "parent_composed_config_hash": "55b06b12c70a49d79e1fe8de7af76a78f581946de250cb57f129354508a1be5b",
       "parent_experiment": "slurp-native-default-plan-lock-v1",
-      "protocol_hash": "27ae01b968b634fe768b95960de0db447fc1f68376c5467bd0a1aa34a5ce4dc2",
+      "protocol_hash": "7a7d3da45288ff4d8104e3bac71091675362ae29cca804ba5b53a1b364df8503",
       "reviewer_instruction_template": "probes/slurp_native_role_reviewer_v1_g5_v1.txt",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1",
