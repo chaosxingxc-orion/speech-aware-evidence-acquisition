@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-w4-fold-a-v1",
-  "composed_config_hash": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
+  "composed_config_hash": "b5750327c95fc3f2c073e836242d2bdfd62fe52e23f6f64aa6762c6d571f1088",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-w4-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89",
+    "protocol_hash": "5e963ce2eac84be846ba70dcdced8e0b480c3a8874b725b71a102ca941d4d5de",
     "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "24be9c79c53a018347fbee21086f7e869cf00eabfc3b7f69059c73190823c357"
+    "sha256": "d52b24c834921ca74c5a47f5bc2c5f5a76840075a737f9244f1564f7eb348b56"
   },
   "purpose": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1: NO-HARM ADMITTED: against the knowledge wave's SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the official pooled SLU-F1 delta (PRIMARY -- the mechanism acts on slots, so owner decision 133's intent-primary rule, scoped to intent-acting mechanisms, does not apply and decision 115's shape holds) is not below -1.2485 pp AND the paired CI95 lower bound of the intent-accuracy delta (the guard) is not below -0.9943 pp -- each at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A SLU-F1 CI95 lower bound above zero is REPORTED as a development-fold effect beside the no-harm verdict, never as an admission of benefit (the design's benefit floor is 2.5 pp and the measured analogue sits below it). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the per-type FN/FP table on the 19 revised types, the realised prompt-token delta per Solver/Reviewer/Planner contact and per row, and the K2/K3/K4 item classes of registered-facts-v1.json read on the sealed arm.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score exist for BOTH this arm and the shared in-chain A/A; a verdict against the sealed comparator alone is refused.",

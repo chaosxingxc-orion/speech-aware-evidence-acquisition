@@ -28,7 +28,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "24be9c79c53a018347fbee21086f7e869cf00eabfc3b7f69059c73190823c357"
+      "sha256": "d52b24c834921ca74c5a47f5bc2c5f5a76840075a737f9244f1564f7eb348b56"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/README.md",
@@ -100,8 +100,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
-      "protocol": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89"
+      "composed_config": "b5750327c95fc3f2c073e836242d2bdfd62fe52e23f6f64aa6762c6d571f1088",
+      "protocol": "5e963ce2eac84be846ba70dcdced8e0b480c3a8874b725b71a102ca941d4d5de"
     },
     "smoke": {
       "composed_config": "e5ed40abe583ec703f6cea4499390bddcf641b8b517961115513ff5ef3bd8768",

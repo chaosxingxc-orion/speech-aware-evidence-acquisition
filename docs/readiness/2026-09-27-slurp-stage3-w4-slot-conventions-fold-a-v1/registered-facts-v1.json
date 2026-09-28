@@ -1724,7 +1724,7 @@
       "arm": {
         "blockers": null,
         "check_path": "/home/chao/saea-worktrees/.w4-checks/check-slurp-native-stage3-w4-fold-a-v1.json",
-        "config_hash": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
+        "config_hash": "b5750327c95fc3f2c073e836242d2bdfd62fe52e23f6f64aa6762c6d571f1088",
         "prompt_budget_per_phase": [
           {
             "completion_token_ceiling": 512,
@@ -1767,7 +1767,7 @@
             "speech_feature_tokens": 29
           }
         ],
-        "protocol_hash": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89",
+        "protocol_hash": "5e963ce2eac84be846ba70dcdced8e0b480c3a8874b725b71a102ca941d4d5de",
         "scientific_readiness": {
           "reason": "Cell W4 registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decision 58) with one pin moved (owner decision 164). Comparator: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, never re-flown, read at the knowledge wave's shared in-chain A/A replicate SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (registered by the coordinator) flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4/w4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the slot store is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
           "state": "held"
@@ -1989,7 +1989,7 @@
       "baseline_fragment": "slurp-native-stage3-w4-fold-a-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w4-fold-a-v1",
-      "composed_config_hash": "2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67",
+      "composed_config_hash": "b5750327c95fc3f2c073e836242d2bdfd62fe52e23f6f64aa6762c6d571f1088",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-w4-fold-a-v1",
@@ -2013,7 +2013,7 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
-      "protocol_hash": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89",
+      "protocol_hash": "5e963ce2eac84be846ba70dcdced8e0b480c3a8874b725b71a102ca941d4d5de",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1",
       "slot_store": {

@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "24be9c79c53a018347fbee21086f7e869cf00eabfc3b7f69059c73190823c357"
+    "sha256": "d52b24c834921ca74c5a47f5bc2c5f5a76840075a737f9244f1564f7eb348b56"
   },
   "purpose": "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score exist for BOTH this arm and the shared in-chain A/A; a verdict against the sealed comparator alone is refused.",
