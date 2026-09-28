@@ -1776,7 +1776,7 @@
       "smoke": {
         "blockers": null,
         "check_path": "/home/chao/saea-worktrees/.w4-checks/check-slurp-native-stage3-w4-fold-a-smoke-4-v1.json",
-        "config_hash": "3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992",
+        "config_hash": "e5ed40abe583ec703f6cea4499390bddcf641b8b517961115513ff5ef3bd8768",
         "prompt_budget_per_phase": [
           {
             "completion_token_ceiling": 512,
@@ -1819,7 +1819,7 @@
             "speech_feature_tokens": 29
           }
         ],
-        "protocol_hash": "3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c",
+        "protocol_hash": "435b283850789ad00a9d86354aeba2ee7f4f3ae0e6a153b1f153404cc380e489",
         "scientific_readiness": {
           "reason": "Four-row form smoke of cell W4, registered before contact on 2026-09-27 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4/w4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the slot store is not an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
           "state": "held"
@@ -2048,7 +2048,7 @@
       "baseline_fragment": "slurp-native-stage3-w4-fold-a-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w4-fold-a-smoke-4-v1",
-      "composed_config_hash": "3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992",
+      "composed_config_hash": "e5ed40abe583ec703f6cea4499390bddcf641b8b517961115513ff5ef3bd8768",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-w4-fold-a-smoke-4-v1",
@@ -2072,7 +2072,7 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
-      "protocol_hash": "3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c",
+      "protocol_hash": "435b283850789ad00a9d86354aeba2ee7f4f3ae0e6a153b1f153404cc380e489",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-V1",
       "slot_store": {

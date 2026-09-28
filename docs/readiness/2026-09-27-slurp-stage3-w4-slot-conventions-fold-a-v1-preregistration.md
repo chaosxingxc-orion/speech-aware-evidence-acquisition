@@ -13,8 +13,8 @@ arm fragments by script (decision 58) with one pin moved, under owner decision 1
 | primary / guard | official pooled SLU-F1 / intent accuracy (decision 133 scopes intent-primary to intent-acting mechanisms) |
 | admission | NO HARM: SLU lower bound >= -1.2485, intent lower bound >= -0.9943 |
 | runs | `SAEA-SLURP-STAGE3-W4-FOLD-A-V1` / `SAEA-SLURP-STAGE3-W4-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-W4-FOLD-A-PAIRED-READ-V1` |
-| composed config hashes | arm `2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67`; smoke `3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992` |
-| protocol hashes | arm `e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89`; smoke `3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c` |
+| composed config hashes | arm `2d00e318d795bf60408189ff248fae26c82098fa694c34034d95f756c9800d67`; smoke `e5ed40abe583ec703f6cea4499390bddcf641b8b517961115513ff5ef3bd8768` |
+| protocol hashes | arm `e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89`; smoke `435b283850789ad00a9d86354aeba2ee7f4f3ae0e6a153b1f153404cc380e489` |
 | split identity | arm `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 
 ## Decision rule (fixed here)

@@ -28,7 +28,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "717af5d7cc8633a5e89f285a9b2ce013cb6a4208cfaa96fab01dcacf9c0ddd49"
+      "sha256": "24be9c79c53a018347fbee21086f7e869cf00eabfc3b7f69059c73190823c357"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/README.md",
@@ -104,8 +104,8 @@
       "protocol": "e5f920d4e5823719440bfb1b51dd9598732d76da2a824a18922ad2ad8a11ce89"
     },
     "smoke": {
-      "composed_config": "3751512b758a28b94767b470086cf440f9fc92c448299a4406ab245b89b49992",
-      "protocol": "3d0c91336a2b9f74bbd837a76e4f8f6f006abfe4975e18cc1f8eae9f1c57d87c"
+      "composed_config": "e5ed40abe583ec703f6cea4499390bddcf641b8b517961115513ff5ef3bd8768",
+      "protocol": "435b283850789ad00a9d86354aeba2ee7f4f3ae0e6a153b1f153404cc380e489"
     }
   },
   "schema": "saea-campaign-decision-v1",
