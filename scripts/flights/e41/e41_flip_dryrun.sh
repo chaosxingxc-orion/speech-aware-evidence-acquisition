@@ -12,7 +12,7 @@ RD=docs/readiness/2026-09-27-e21-native-window-e41-v1
 cat > /home/chao/e41-dryrun-commit.txt <<M
 research: flip the E41 four-row dry run to ready (owner decisions 103 and 158: the Earnings21 + ConEC system form at base lock v3.1 with ONE pin moved -- the Perception instruction to the bounded note, a numbered list of at most 5 lines of at most 20 words, never repeated, not a transcript -- on the E39b four-row roster and the E21 geometry; receipts only, R3 = Perception truncation rate, target zero; form-proof, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt e21-native-window-e41-dry-run-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 E41=$(dirname "$0")
 bash $SP/repin_loop_generic.sh $E41/e41_repin_dryrun.sh $RD e21-native-window-system-four-row-e41-v1 dry-run-generation /home/chao/e41-dryrun-commit.txt || exit $?
