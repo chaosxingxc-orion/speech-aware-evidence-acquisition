@@ -221,3 +221,23 @@ and +3,529.0 prompt tokens per row. This note does not decompose the difference.
 
 Frontier row: SLU-F1 +0.7930 pp and intent -0.0926 pp at +1,182.7 prefilled tokens per row and +0.1643 GPU-h
 per 1,080 rows.
+
+## Coordinator verdict (Fable 5.1, 2026-09-28)
+
+**NOT ADMITTED (neutral by width) -- re-registered as the first cell of the same-flight supply-variant
+instrument.** Against the shared wave A/A, official SLU-F1 (primary for this cell) +0.79 [-0.56, +2.12]
+holds its no-harm margin (-0.56 >= -1.2485) but sits below the M4b analogue's lower end (1.3285) and far
+below the 2.5 pp cross-flight floor. The intent guard -0.09 [-1.02, +0.83] misses its margin (0.9943) by
+0.024 pp, under one row's step (0.0926), so by the registered rule the cell is in the residual branch:
+neither no-harm nor harm is shown. The entity-class movement (SPURIOUS -29, BOUNDARY -12, MISSING +14,
+WRONG-TYPE -4; FP 506 -> 461) is the direction the do-not-tag and span conventions were built for. The cost
+(+3,529 prompt tokens per row, +1,207.8 per Solver contact against +724.5 registered, +0.1643 GPU-h per
+1,080 rows) is above its registration. W4 does not enter COMP-2 and is not an enabler.
+
+Because its plausible effect (about 0.8 pp SLU-F1) is exactly the size the cross-flight design cannot read
+and the same-flight supply-variant design can (about 0.7 pp at n = 200;
+[docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md](../superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md),
+owner decision 172), the coordinator re-registers W4's slot conventions as the **first real cell of that
+instrument's phase 1**: Solver-local columns with an in-flight twin arm; base = the AGREE arm bytes; arm A =
+the AGREE Solver supply; arm B = the W4 conventions; twin = a replicate of A; `arm_visits: "first"`; claim
+`"nominated"` only. The agent's numbers above are unchanged.
