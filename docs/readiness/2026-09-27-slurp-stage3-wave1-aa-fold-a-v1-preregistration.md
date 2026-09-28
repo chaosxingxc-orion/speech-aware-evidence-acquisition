@@ -10,8 +10,8 @@ fragments by script (`scripts/flights/wave/derive_slurp_wave_aa_cell.py`, decisi
 | factor | none: the AGREE arm's own bytes |
 | readers | W1 SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1 (read SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-PAIRED-ANALYSIS-V1); W3 SAEA-SLURP-STAGE3-W3-FOLD-A-V1 (read SAEA-SLURP-STAGE3-W3-FOLD-A-PAIRED-ANALYSIS-V1); W4 SAEA-SLURP-STAGE3-W4-FOLD-A-V1 (read SAEA-SLURP-STAGE3-W4-FOLD-A-PAIRED-READ-V1) |
 | runs | `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1` / `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1`; READ `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-PAIRED-READ-V1` |
-| composed config hash | `6e88ca60de9f81530d261d6afe8c71d602836c5d622fcbf7e32ae15e95888b20` |
-| protocol hash | `19a9058d3d4b71e343dd4b74d54c71f862398314f160af36a7730e9a4428e387` |
+| composed config hash | `e2d3a3ebad30c52bbeac70ca696dafdfc2efa8de38187d378df70592c8b1327c` |
+| protocol hash | `41b57642c0bc196afcdc88ddc6747fd2a2b4d0fcda6ea3e53bc8542ac7f54917` |
 | split identity | `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6` |
 | expected first-phase supply output | `eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae` |
 

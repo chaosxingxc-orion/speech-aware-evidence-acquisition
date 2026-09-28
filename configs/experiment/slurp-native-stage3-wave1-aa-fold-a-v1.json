@@ -16,13 +16,26 @@
         "reason": "The knowledge wave's shared in-chain A/A, registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decisions 58, 161 and 164; the decision-160 precedent) with nothing changed but per-flight bookkeeping. It flies in the wave campaign plan configs/campaign/slurp-native-stage3-wave1-fold-a-v1.json beside the W1 arm, and W3 and W4 are read at it from the later steps of the same chain. HELD: root mints the A/A's admission receipt (scripts/flights/wave/wave_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/wave/wave_flip.sh), which mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own output digest eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-wave1-aa-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-wave1-aa-fold-a-v1/root-admission-v1.json",
+            "sha256": "7ea24bf79080d28ec86baaea3ca251787a78e87981fa36c560910c1849a1cbec",
+            "reason": "Decision slurp-stage3-wave1-aa-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
             "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1/phase-supply-v1.json",
+            "sha256": "e0edc080a3c3b5b698201bd4fab2bbb87232121d5111450460bd82f540e36ac2",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1"
     }

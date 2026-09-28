@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-wave1-aa-fold-a-v1",
-  "composed_config_hash": "6e88ca60de9f81530d261d6afe8c71d602836c5d622fcbf7e32ae15e95888b20",
+  "composed_config_hash": "e2d3a3ebad30c52bbeac70ca696dafdfc2efa8de38187d378df70592c8b1327c",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "19a9058d3d4b71e343dd4b74d54c71f862398314f160af36a7730e9a4428e387",
+    "protocol_hash": "41b57642c0bc196afcdc88ddc6747fd2a2b4d0fcda6ea3e53bc8542ac7f54917",
     "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "0119aeceae71f960989826cd62a655837933adae0f3e4d1cda5b83d6522bacdd"
+    "sha256": "39811647757f6c3d2e251679b81404b846b93163b4f30127da86e72eb4065e2c"
   },
   "purpose": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1: the knowledge wave's shared in-chain A/A. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for this A/A and for the arm being read.",
