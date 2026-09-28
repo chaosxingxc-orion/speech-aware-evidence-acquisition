@@ -23,6 +23,41 @@
       "scores_sha256": "PENDING_SEAL"
     }
   },
+  "attribution_classes": {
+    "classes": [
+      "delivered-but-wrong",
+      "newly-by-both",
+      "newly-by-agree",
+      "newly-by-centroid",
+      "catch-all"
+    ],
+    "columns_read_after_the_seal": [
+      "rows",
+      "gold boundary entry delivered under COMP-1 (flown, must equal the membership file's prediction)",
+      "intent exact under the sealed DEV plan arm (0 on every row of the table by construction)",
+      "intent exact under the in-chain A/A",
+      "intent exact under COMP-1",
+      "wrong -> gold",
+      "gold (A/A) -> wrong (COMP-1)",
+      "same wrong intent",
+      "different wrong intent",
+      "beside each class: the COMP-1 Fold A conversion rate of the same class (attribution-classes-v1.json of docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1) and the single-factor rates CONV m/70 (agreement classes) and KPROBE m/55 (centroid classes)"
+    ],
+    "counts": {
+      "catch-all": 40,
+      "delivered-but-wrong": 83,
+      "newly-by-agree": 26,
+      "newly-by-both": 68,
+      "newly-by-centroid": 15
+    },
+    "derivation": "scripts/flights/comp1dev/comp1dev_attribution_classes.py (derivation SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-ATTRIBUTION-CLASSES-V1): the five Fold A classes over the 232 DEV plan intent-wrong rows, with cell CONV's predicate for the agreement set and cell KPROBE's for the centroid set, both single-factor selections rebuilt through the production constructor (the replication recipe's arm_channels + boundary_decisions, imported byte-unchanged), which reproduces the A/A's and the arm's prepared supplies on 1,000 of 1,000 rows",
+    "gold_access": "scoring side only: the bad-case bank analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl roster dev2000-added (plan_class from the sealed DEV plan arm's official per-sample scores, gold_intent), read by the replication recipe's load_bank / load_population -- the same file and access pattern as the Fold A script",
+    "how_it_is_read": "a composed round that does not improve is resolved to the class where its elements conflict -- e.g. newly-by-both rows converting below either single-factor rate, or delivered-but-wrong rows lost under the composition -- and no further element is admitted on top of an unresolved conflict (owner decision 138)",
+    "membership_fixed_before_contact": true,
+    "membership_persistence": "counts and per-class id_list_sha256 only; the read re-runs the derivation and must reproduce every hash before a class outcome is tabulated",
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/attribution-classes-v1.json",
+    "sha256": "4f129ef4cb3578815a5c3b6965069c2c1d0b91dbf247afc09244376bb1ef9493"
+  },
   "boundary": "A development read on the DEV-2000-ADDED evaluation roster (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold label string or model output is printed or persisted: ids, counts, rates and hashes only.",
   "output": {
     "analysis_root": "analysis/SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-PAIRED-ANALYSIS-V1"
@@ -53,11 +88,12 @@
   "schema": "saea-slurp-paired-analysis-recipe-v1",
   "steps": [
     "1. Refuse unless BOTH the arm and the A/A manifests are COMPLETE at 1,000 rows with this registration's composed config hashes, sealed, each with one successful complete official slurp-slu-official score, unless the declared expected_effect_pp is a number on the record, and unless the READ row is root countersigned.",
-    "2. THE DELIVERY CHECK (gold-free): the flown first-phase boundary selections must equal each cell's own prepared supply (the A/A's must reproduce output digest d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19; the arm's ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08). A mismatch is an engineering defect and closes the read.",
+    "2. THE DELIVERY CHECK (gold-free): the flown first-phase boundary selections must equal each cell's own prepared supply (the A/A's must reproduce output digest d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19; the arm's ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08). A mismatch is an engineering defect and closes the read. Then the gold-side half: re-run scripts/flights/comp1dev/comp1dev_attribution_classes.py, which must reproduce attribution-classes-v1.json's per-class id_list_sha256 values; the rows on which the flown arm delivered the row's own gold boundary value id must equal its prediction (193 of the 232 intent-wrong rows) and the A/A's must equal the plan's (83).",
     "3. Run bash scripts/flights/read_paired_cell.sh docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1: pass vs-aa (GATING) and pass vs-comparator (context), each with the per-scenario tables in both weightings, delivery / conversion counts and the frontier row, under $SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-PAIRED-ANALYSIS-V1/<pass>/. Primary intent accuracy; guard official pooled SLU-F1; paired by utterance cluster, 10,000 draws, seed 20260927.",
     "4. Apply the decision rule fixed in the protocol at the own null h_intent 1.1520 / h_SLU 1.2525 against the declared expected_effect_pp; state the COMP-1 Fold A read beside it (AGREE's KEEP-PROVISIONAL is settled here, decision 161).",
-    "5. The citation credit table over the arm's sealed Solver states (analysis/citation_credit.py, saea-citation-credit-table-v1) and the per-contact token delta against the A/A.",
-    "6. The realized spend against the caps; every number is a DEV-2000-ADDED development number, never a test claim; never write 'no gain'."
+    "5. THE PER-CLASS ATTRIBUTION TABLE (owner decisions 138 and 152): for each of the five classes fixed in attribution-classes-v1.json, the columns above, aggregated, with the COMP-1 Fold A conversion of the same class beside it; the same transition split over the rows the DEV plan arm gets right, by bank class, so harm is visible where it lands; and the 8 rows that lose delivery under the composition and the 9 catch-all rows delivered only under it, as counts with their outcomes.",
+    "6. The citation credit table over the arm's sealed Solver states (analysis/citation_credit.py, saea-citation-credit-table-v1) and the per-contact token delta against the A/A.",
+    "7. The realized spend against the caps; every number is a DEV-2000-ADDED development number, never a test claim; never write 'no gain'."
   ],
   "title": "Cell COMP-1 on DEV-2000-ADDED -- the composed replication against its in-chain A/A"
 }

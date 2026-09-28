@@ -1,0 +1,270 @@
+{
+  "all_rows_by_bank_class": {
+    "CORRECT": {
+      "delivered_comp1": 396,
+      "delivered_plan": 376,
+      "gained_under_comp1": 21,
+      "lost_under_comp1": 1,
+      "rows": 398
+    },
+    "ENTITY-FN-ONLY": {
+      "delivered_comp1": 64,
+      "delivered_plan": 61,
+      "gained_under_comp1": 4,
+      "lost_under_comp1": 1,
+      "rows": 65
+    },
+    "ENTITY-FP-ONLY": {
+      "delivered_comp1": 108,
+      "delivered_plan": 104,
+      "gained_under_comp1": 4,
+      "lost_under_comp1": 0,
+      "rows": 108
+    },
+    "ENTITY-MIXED": {
+      "delivered_comp1": 193,
+      "delivered_plan": 189,
+      "gained_under_comp1": 4,
+      "lost_under_comp1": 0,
+      "rows": 195
+    },
+    "INTENT-COVERED": {
+      "delivered_comp1": 61,
+      "delivered_plan": 53,
+      "gained_under_comp1": 10,
+      "lost_under_comp1": 2,
+      "rows": 63
+    },
+    "INTENT-UNCOVERED": {
+      "delivered_comp1": 132,
+      "delivered_plan": 30,
+      "gained_under_comp1": 107,
+      "lost_under_comp1": 5,
+      "rows": 169
+    },
+    "MALFORMED": {
+      "delivered_comp1": 2,
+      "delivered_plan": 2,
+      "gained_under_comp1": 0,
+      "lost_under_comp1": 0,
+      "rows": 2
+    }
+  },
+  "class_order": [
+    "delivered-but-wrong",
+    "newly-by-both",
+    "newly-by-agree",
+    "newly-by-centroid",
+    "catch-all"
+  ],
+  "classes": {
+    "catch-all": {
+      "by_plan_class": {
+        "INTENT-COVERED": 2,
+        "INTENT-UNCOVERED": 38
+      },
+      "delivered_under_agree_alone": 2,
+      "delivered_under_centroid_alone": 0,
+      "delivered_under_comp1": 9,
+      "id_list_sha256": "a9aced93a4037ca7c7137aaba29d0173608099e6b904c26361e7c111e143c0d1",
+      "not_delivered_under_comp1": 31,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed DEV plan arm (official slurp-slu-official scenario_action_exact)",
+      "rows": 40
+    },
+    "delivered-but-wrong": {
+      "by_plan_class": {
+        "INTENT-COVERED": 53,
+        "INTENT-UNCOVERED": 30
+      },
+      "delivered_under_agree_alone": 78,
+      "delivered_under_centroid_alone": 71,
+      "delivered_under_comp1": 76,
+      "id_list_sha256": "3584ade9c5b40898aea12c9a5eaccda8439b9aaad162a04ec0ae55fd71b93d71",
+      "not_delivered_under_comp1": 7,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed DEV plan arm (official slurp-slu-official scenario_action_exact)",
+      "rows": 83
+    },
+    "newly-by-agree": {
+      "by_plan_class": {
+        "INTENT-UNCOVERED": 26
+      },
+      "delivered_under_agree_alone": 26,
+      "delivered_under_centroid_alone": 0,
+      "delivered_under_comp1": 26,
+      "id_list_sha256": "b60f7aca5640ff59dca2b4fac314c5683ea8c0a6a7cd1cbc588184019c60c436",
+      "not_delivered_under_comp1": 0,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed DEV plan arm (official slurp-slu-official scenario_action_exact)",
+      "rows": 26
+    },
+    "newly-by-both": {
+      "by_plan_class": {
+        "INTENT-UNCOVERED": 68
+      },
+      "delivered_under_agree_alone": 68,
+      "delivered_under_centroid_alone": 68,
+      "delivered_under_comp1": 68,
+      "id_list_sha256": "da008317d678558f2d95e9d251dfba83397b162d8ca1c6049bf1e01d7891eb4a",
+      "not_delivered_under_comp1": 0,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed DEV plan arm (official slurp-slu-official scenario_action_exact)",
+      "rows": 68
+    },
+    "newly-by-centroid": {
+      "by_plan_class": {
+        "INTENT-COVERED": 8,
+        "INTENT-UNCOVERED": 7
+      },
+      "delivered_under_agree_alone": 7,
+      "delivered_under_centroid_alone": 15,
+      "delivered_under_comp1": 14,
+      "id_list_sha256": "df9252f17319cc130f64169e67b7c198990f8fb9329bb10e14609da35fa083f8",
+      "not_delivered_under_comp1": 1,
+      "outcome_under_comp1": "READ AFTER THE SEAL: per row, intent exact under COMP-1 / under the in-chain A/A / under the sealed DEV plan arm (official slurp-slu-official scenario_action_exact)",
+      "rows": 15
+    }
+  },
+  "constructor_proofs": {
+    "composed_recomputation_equals_arm_supply_rows": 1000,
+    "decisions": {
+      "agree": {
+        "key": "written",
+        "recall": 60,
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "centroid": {
+        "key": "centroid",
+        "recall": 8,
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "composed": {
+        "key": "centroid",
+        "recall": 60,
+        "w_agree": 1.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "plan": {
+        "key": "written",
+        "recall": 8,
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      }
+    },
+    "plan_recomputation_equals_aa_supply_rows": 1000,
+    "rows": 1000
+  },
+  "contact_class": "model-free",
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "delivery_definition": "a row's gold intent's boundary value id (intent-boundary:<gold intent>) is among the value ids the selection seeds for that row -- the eight (or fewer) entries the Perception phase is shown",
+  "derivation_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-ATTRIBUTION-CLASSES-V1",
+  "fold_a_beside": {
+    "counts": {
+      "catch-all": 27,
+      "delivered-but-wrong": 86,
+      "newly-by-agree": 23,
+      "newly-by-both": 47,
+      "newly-by-centroid": 8
+    },
+    "intent_wrong_rows": 191,
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/attribution-classes-v1.json",
+    "sha256": "28e782242aae8b9e2fbf17a851ee6b1f6ee5023a6caa04129f6b76667af323c0"
+  },
+  "gold_use": "Gold is read on the SCORING side only -- the bad-case bank's plan_class (itself derived from the sealed DEV plan arm's official per-sample scenario_action_exact) and gold_intent, read from analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl by the replication recipe's load_bank exactly as the Fold A script reads the same file -- to define the read's classes before contact. Gold reaches no query, no key, no weight, no selector and no runtime.",
+  "inputs": {
+    "aa_supply": {
+      "output_sha256": "d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1/phase-supply-v1.json",
+      "sha256": "d9b396a1981567fd34a99eace25f2b79fa24d6a660320b2e8f8a107086d91e82"
+    },
+    "agreement_source": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
+      "sha256": "283bd9f58025b98a7c92f3b5f3495fce1e4b352bae52a3fc62bb8781b79e92d8"
+    },
+    "arm_supply": {
+      "output_sha256": "ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-V1/phase-supply-v1.json",
+      "sha256": "69ace076bbfe30c8e199db5e0528bc04bc16315f2644064fc99b4465adf27f96"
+    },
+    "bad_case_bank": {
+      "raw_classes": {
+        "CORRECT": 398,
+        "ENTITY-FN-ONLY": 65,
+        "ENTITY-FP-ONLY": 108,
+        "ENTITY-MIXED": 195,
+        "INTENT-COVERED": 63,
+        "INTENT-UNCOVERED": 169,
+        "MALFORMED": 2
+      },
+      "relpath": "analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl",
+      "roster": "dev2000-added",
+      "sha256": "26231b86b86f35251fed2b7d7c59bf33e8806b5ef71739b74bf9d5bc2b8a3ccf"
+    },
+    "centroid_facet_source": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+      "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532"
+    },
+    "comparator_cell": {
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+      "experiment": "slurp-native-default-plan-dev2000-added-v1",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1",
+      "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+    },
+    "registered_facts": {
+      "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/registered-facts-v1.json",
+      "sha256": "f971ba0ab2e6e27e84c5d7114a6b9b92de892bf23ad7cfe673028057c4b67e6a"
+    },
+    "replication_recipe": {
+      "functions_used": [
+        "load_bank",
+        "load_population",
+        "arm_channels",
+        "boundary_decisions"
+      ],
+      "imported_unchanged": true,
+      "relpath": "scripts/analysis/slurp_intent_agreement_production_replication.py",
+      "sha256": "62c175d5fda67ca8a3743a25a309e433941607f13be648d997f245c8901cd17d"
+    }
+  },
+  "intent_wrong_rows": 232,
+  "persistence": "Counts and per-class id-list hashes only; the read re-runs this script and must reproduce every id_list_sha256 before a class outcome is tabulated.",
+  "rows_unseeded_under_aa": 1,
+  "rows_unseeded_under_comp1": 0,
+  "schema": "saea-comp1-attribution-classes-v1",
+  "script": {
+    "relpath": "scripts/flights/comp1dev/comp1dev_attribution_classes.py"
+  },
+  "set_predicates": {
+    "agree_set": "bank plan_class INTENT-UNCOVERED and gold delivered under agree and not under plan (cell CONV's predicate)",
+    "centroid_set": "bank plan_class INTENT-UNCOVERED or INTENT-COVERED and gold delivered under centroid and not under plan (cell KPROBE's predicate)"
+  },
+  "summary": {
+    "agree_newly_delivered_intent_covered": 9,
+    "agree_newly_delivered_intent_covered_id_list_sha256": "2e52c5bd99d2d0190aa8ab0161dce78bf43a8b9a9cc8cca04e0f2d92a4a43beb",
+    "agree_set": 94,
+    "catch_all_rows_delivered_only_under_the_composition": 9,
+    "catch_all_rows_delivered_only_under_the_composition_id_list_sha256": "a3c8835084c955141dfca15990c46d635a88afc4fd05c9583424bf782a8a3290",
+    "centroid_set": 83,
+    "delivered_under_comp1": 193,
+    "delivered_under_comp1_pct_of_intent_wrong": 83.2,
+    "delivered_under_plan": 83,
+    "newly_by_both": 68,
+    "rows_delivered_by_plan_or_a_single_factor_but_not_under_comp1": 8,
+    "rows_delivered_by_plan_or_a_single_factor_but_not_under_comp1_id_list_sha256": "4d80b3c83dc1d09ff458f9de919e06e0719f1d4c1b285d5df6dc87de3c09524e",
+    "union_newly_delivered": 109
+  },
+  "what_this_is_not": "Not a verdict, not a claim and not a prediction: membership only. A delivery count is never a correctness count; every number is a DEV-2000-ADDED development number, never a test claim."
+}
