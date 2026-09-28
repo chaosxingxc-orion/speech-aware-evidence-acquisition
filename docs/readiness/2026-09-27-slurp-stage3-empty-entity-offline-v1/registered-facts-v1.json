@@ -1,0 +1,87 @@
+{
+ "authority_relpaths": [
+  "docs/results/2026-09-27-slurp-mechanism-synthesis.md (section 5 rank 4; section 4.2; FP-only 12.1 % / 10.8 %)",
+  "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md (sections 2c, 2d, 2e)",
+  "docs/results/2026-09-27-slurp-roll-3-dev2000-added-pool-read.md (within-pool half-widths only)"
+ ],
+ "contacts_at_registration": {
+  "embedder": 0,
+  "encoder": 0,
+  "gpu": 0,
+  "model": 0,
+  "network": 0,
+  "scorer": 0,
+  "server": 0,
+  "tokenizer": 0
+ },
+ "decision_rule": "CLEARS iff SLU-F1 CI95 lower bound > 0 AND SLU-F1 delta >= THE NULL AND intent CI95 lower bound >= -(intent guard); a clear licenses registering an arm with an in-chain A/A",
+ "headroom": "ENTITY-FP-ONLY 10.8 % of DEV-2000-ADDED rows (12.1 % of Fold A), bad-case bank via the synthesis; an upper bound on the rows the rule can help, never a forecast",
+ "owner_decision": "owner decision 171 (2026-09-27)",
+ "pool": {
+  "beside": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1 once its stage 1-3 read exists (--pool fold-a)",
+  "role": "primary",
+  "rows": 1000,
+  "run_id": "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1",
+  "samples": 5,
+  "scorer_id": "slurp-slu-official-projected-v3",
+  "stage_1_3_read": "analysis/SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-READ-V1 (present)"
+ },
+ "read_id": "SAEA-SLURP-STAGE3-EMPTY-ENTITY-OFFLINE-V1",
+ "registered_at": "2026-09-27",
+ "schema": "saea-registered-facts-v1",
+ "script": {
+  "relpath": "scripts/analysis/empty_entity_offline_read.py",
+  "sha256": "0051c88c726146d344850bd707056892d7b46e3423778194ede2ec50d7f94bfe"
+ },
+ "stage3_algorithm": {
+  "id": "none",
+  "note": "One fixed rule read once over a sealed pool: no rollout, no credit assignment, no update operator, no search and no evolving store. Deliberately NOT labelled sealed-credit-system-policy-v1, whose first instance every single-factor cell of this programme leaves to the composed system policy.",
+  "operators_used": []
+ },
+ "stage3_measurement": {
+  "SAEA-SLURP-STAGE3-EMPTY-ENTITY-OFFLINE-V1": {
+   "claims_benefit": true,
+   "expected_effect_pp": 0.53,
+   "measurement_design": "offline-sealed-pool",
+   "note": "0.53 is the gate's offline floor at n = 1,000 -- the smallest effect registered to be seen, not a forecast. The registered decision bar is the pool's own measured null (step 1), which may be larger.",
+   "primary_metric": "official pooled SLU-F1 (micro), RULE-mean-single minus R0-mean-single over the sealed ROLL-3 pool; intent the guard",
+   "rows": 1000
+  }
+ },
+ "status": "OFFLINE DESIGN; DRAFT exposure row, root countersignature pending; no flight registered; not yet run",
+ "step_1_null": {
+  "intent_guard_definition": "mean over the ten pairs of the intent half-width",
+  "not_the_null": "instrument note section 2e's whole-utterance cluster widths (1.19 per-row / 1.56 pooled micro, analysis.paired.resampled_statistic) are a different resampling unit; reported beside only with --with-cluster-variant",
+  "null_definition": "mean over the ten pairs of the pooled SLU-F1 half-width (max reported beside)",
+  "quantity": "paired CI95 half-width of the pooled official SLU-F1 (micro, word + char distance TP/FP/FN) between two sample indices, ten pairs; each sample vs R0-mean-single beside; per-row SLU, span-F1 and intent beside",
+  "resampling": {
+   "baseline": "R0-mean-single (the mean of the five unedited sample copies' count matrices)",
+   "draws": 10000,
+   "implementation": "scripts/analysis/slurp_sample_aggregation_offline_read.py bootstrap(), imported byte-unchanged",
+   "implementation_sha256": "e81cf5bef3196e2359b1e96378a76468cce0c04997ef00d56ff2b33a08ad7f2e",
+   "interval": "percentile 2.5 / 97.5 of (arm - baseline)",
+   "rng": "numpy.random.default_rng(20260915).integers(0, n, size=(10000, n)); per-draw weights by bincount",
+   "seed": 20260915,
+   "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md sections 2c and 2d (the one-pool offline floor, 0.67 pp at n = 625, from the aggregation read's medoid rule)",
+   "unit": "row (paired: every arm re-summed on the same draws)"
+  },
+  "scorer_contacts": 0,
+  "sealed_before_step_2": "null.json under analysis/SAEA-SLURP-STAGE3-EMPTY-ENTITY-OFFLINE-V1/dev2000-added/; step 2 reads it and never re-derives it (instrument rule 6)"
+ },
+ "step_2_rule": {
+  "contrast": "RULE-mean-single vs R0-mean-single, same bootstrap",
+  "dry_run": {
+   "empty_samples": 1039,
+   "malformed_samples": 17,
+   "rows": 1000,
+   "rows_all_samples_empty": 118,
+   "rows_fired_at_min_empty_3": 203,
+   "sample_edits_at_min_empty_3": 123
+  },
+  "forms_registered": 1,
+  "registered_min_empty": 3,
+  "rule": "vote >= 3 -> every sample of the row delivered with an empty entity list, scenario and action unchanged; malformed samples never vote and are never edited",
+  "scorer_contacts": 5,
+  "vote": "number of well-formed samples (of 5) whose answer carries no entity"
+ }
+}
