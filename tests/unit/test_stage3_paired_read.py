@@ -19,6 +19,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -438,6 +439,54 @@ def _sealed_stamps(sealed: Path) -> list[str]:
     return stamps
 
 
+# --------------------------------------------------------------------------
+# Driver provenance: recorded, never compared to a frozen fixture
+# --------------------------------------------------------------------------
+#
+# ``driver_sha256`` is the sha256 of the driver script's own bytes
+# (``scripts/analysis/slurp_paired_roster_read.py``), not read content: a legitimate driver edit
+# changes it while leaving every computed number, id and input hash untouched. ``verdict.json``'s
+# ``artifact_sha256`` map (mirrored by the README's own "Artefact hashes" table) moves in lock
+# step, since its entries are hashes of files that themselves embed ``driver_sha256``. Both are
+# recorded as provenance -- asserted present and well-formed -- and excluded from the
+# byte-for-byte comparison, which still applies to everything else.
+
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+_ARTEFACT_TABLE_ROW = re.compile(r"^\| (?P<name>[^|]+) \| (?P<digest>[0-9a-f]{64}) \|$")
+
+
+def _assert_sha256(value: object) -> str:
+    assert isinstance(value, str) and _SHA256_RE.match(value), value
+    return value
+
+
+def _canonical_modulo_driver_provenance(payload: dict, *, is_fresh: bool) -> dict:
+    cleaned = dict(payload)
+    if "driver_sha256" in cleaned:
+        digest_value = _assert_sha256(cleaned.pop("driver_sha256"))
+        if is_fresh:
+            assert digest_value == _sha(CORE_PATH)
+    if "artifact_sha256" in cleaned:
+        artifact_sha256 = cleaned.pop("artifact_sha256")
+        assert isinstance(artifact_sha256, dict) and artifact_sha256
+        for value in artifact_sha256.values():
+            _assert_sha256(value)
+        cleaned["artifact_sha256_names"] = sorted(artifact_sha256)
+    return cleaned
+
+
+def _readme_modulo_driver_provenance(text: str) -> str:
+    lines = []
+    for line in text.splitlines():
+        match = _ARTEFACT_TABLE_ROW.match(line)
+        if match:
+            _assert_sha256(match["digest"])
+            lines.append(f"| {match['name']} | <sha256> |")
+        else:
+            lines.append(line)
+    return "\n".join(lines)
+
+
 @pytest.mark.skipif(_data_root() is None, reason="SPEECHRL_DATA_DIR is not materialised on this host")
 @pytest.mark.parametrize("case", sorted(SEALED_READS))
 def test_the_sealed_reads_reproduce_byte_for_byte(case: str, tmp_path: Path) -> None:
@@ -456,4 +505,12 @@ def test_the_sealed_reads_reproduce_byte_for_byte(case: str, tmp_path: Path) -> 
         drv.CORE.datetime = real
     assert code == 0 and Clock.queue == []
     for name in FILES:
-        assert (tmp_path / "out" / name).read_bytes() == (sealed / name).read_bytes(), name
+        fresh_bytes = (tmp_path / "out" / name).read_bytes()
+        sealed_bytes = (sealed / name).read_bytes()
+        if name == "README.md":
+            assert (_readme_modulo_driver_provenance(fresh_bytes.decode("utf-8"))
+                    == _readme_modulo_driver_provenance(sealed_bytes.decode("utf-8"))), name
+            continue
+        fresh = _canonical_modulo_driver_provenance(json.loads(fresh_bytes), is_fresh=True)
+        expected = _canonical_modulo_driver_provenance(json.loads(sealed_bytes), is_fresh=False)
+        assert fresh == expected, name
