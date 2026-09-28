@@ -1142,15 +1142,140 @@ def _is_foreign_config(path: Path, *, run_ids: set[str]) -> bool:
     return bool(file_run_ids) and file_run_ids.isdisjoint(run_ids)
 
 
+def _plan_document_attempt_id(document: object) -> str | None:
+    """The attempt one registered plan document names.
+
+    Every registered fit/generation plan under ``docs/readiness/`` (e.g.
+    ``fit-plan-registered-v1.json``, ``generation-plan-registered-v1.json``,
+    their ``aa-`` and ``smoke-`` siblings) names its own attempt the same
+    way: ``execution_plan.attempt_id``. A document with no such field is not
+    a plan document this rule recognizes.
+    """
+
+    if not isinstance(document, Mapping):
+        return None
+    execution_plan = document.get("execution_plan")
+    if isinstance(execution_plan, Mapping) and isinstance(execution_plan.get("attempt_id"), str):
+        return execution_plan["attempt_id"]
+    return None
+
+
+def _is_earlier_attempt_plan_document(text: str, *, attempt_ids: set[str]) -> bool:
+    """True when ``text`` is a registered plan document naming an attempt
+    that is NOT one being re-pinned now -- a sealed record of an earlier
+    (e.g. aborted) attempt of the same run id. A document this tool cannot
+    read an attempt out of (malformed JSON, or simply not a plan document)
+    is never exempted this way: the scan stays strict on it.
+    """
+
+    try:
+        document = json.loads(text)
+    except json.JSONDecodeError:
+        return False
+    attempt = _plan_document_attempt_id(document)
+    return attempt is not None and attempt not in attempt_ids
+
+
+def _package_pins_own_digest(path: Path, *, repo_root: Path, package_dir: Path) -> bool:
+    """True when some OTHER json file inside ``package_dir`` pins ``path``'s
+    OWN current bytes by sha256 under a ``{"relpath"|"path": ..., "sha256":
+    ...}`` block -- the admission draft's ``attribution_classes`` pin, or the
+    registered facts' ``source`` pin, over an analysis file such as
+    ``attribution-classes-v1.json``. Rewriting ``path`` would silently break
+    that external pin, so a superseded value frozen inside it at derivation
+    time is not residue -- it is exactly what was sealed.
+    """
+
+    try:
+        own_relpath = str(path.resolve().relative_to(Path(repo_root).resolve())).replace("\\", "/")
+    except ValueError:
+        return False
+    try:
+        own_sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        return False
+
+    def _pins_this_file(node: object) -> bool:
+        if isinstance(node, Mapping):
+            relvalue = node.get("relpath")
+            if not isinstance(relvalue, str):
+                relvalue = node.get("path")
+            if (
+                isinstance(relvalue, str)
+                and relvalue == own_relpath
+                and node.get("sha256") == own_sha256
+            ):
+                return True
+            return any(_pins_this_file(value) for value in node.values())
+        if isinstance(node, (list, tuple)):
+            return any(_pins_this_file(item) for item in node)
+        return False
+
+    if not package_dir.is_dir():
+        return False
+    for sibling in sorted(package_dir.glob("*.json")):
+        if sibling.resolve() == path.resolve():
+            continue
+        try:
+            document = json.loads(sibling.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        if _pins_this_file(document):
+            return True
+    return False
+
+
+def _is_sealed_package_record(
+    path: Path, *, readiness_root: Path, repo_root: Path, attempt_ids: set[str], text: str
+) -> bool:
+    """True when ``path`` sits inside SOME package directory under
+    ``docs/readiness/`` (the caller has already excluded the cell's own
+    files) and is a sealed record this re-pin must never be asked to alter,
+    even though the package also names one of the current run ids (so
+    :func:`_is_foreign_readiness_package` no longer exempts it):
+
+    * a registered plan document naming an attempt other than the one being
+      re-pinned (:func:`_is_earlier_attempt_plan_document`) -- the 2026-09-28
+      COMP-1 RESUME shares its parent arm's run id, so the parent's own
+      ``fit-plan-registered-v1.json`` (attempt
+      ``attempt-slurp-native-stage3-comp1-fold-a-fit-v1``, not the resume's)
+      legitimately still carries the aborted attempt's supply pin; or
+    * a file whose own current bytes are pinned by sha256 from a sibling
+      document in the same package directory
+      (:func:`_package_pins_own_digest`) -- the parent's
+      ``attribution-classes-v1.json``, hash-pinned by its
+      ``root-admission-draft-v1.json`` and ``registered-facts-v1.json``.
+
+    Never exempts the re-pinned attempt's own plan documents or a
+    registered-facts/analysis-recipe block describing the CURRENT attempt:
+    both name an attempt in ``attempt_ids`` and so fail the first test, and
+    neither is the pin TARGET of a sibling's ``attribution_classes``-shaped
+    block, so the second test never fires for them either.
+    """
+
+    try:
+        relative = path.relative_to(readiness_root)
+    except ValueError:
+        return False
+    if len(relative.parts) < 2 or path.suffix != ".json":
+        return False
+    if _is_earlier_attempt_plan_document(text, attempt_ids=attempt_ids):
+        return True
+    package_dir = readiness_root / relative.parts[0]
+    return _package_pins_own_digest(path, repo_root=repo_root, package_dir=package_dir)
+
+
 def assert_no_residue(
     repo_root: Path,
     old_values: Iterable[str],
     *,
     exposure_ledger_path: Path | None = None,
     run_ids: set[str] | None = None,
+    attempt_ids: set[str] | None = None,
     readiness_dir: Path | None = None,
     own_files: Iterable[Path] | None = None,
     own_config_paths: Iterable[Path] | None = None,
+    explain: bool = False,
 ) -> None:
     """Refuse if any OLD hash string remains anywhere under ``docs/`` or
     ``configs/`` after rewriting.
@@ -1160,7 +1285,7 @@ def assert_no_residue(
     this package was derived from), and this re-pin neither rewrites it
     (:func:`apply_mapping_to_ledger`) nor may it demand that it disappear.
 
-    Two further exemptions follow the same principle, active only when
+    Three further exemptions follow the same principle, active only when
     ``readiness_dir`` and ``run_ids`` are given (the only production call, from
     :func:`repin_package`), and only for files that are NOT this cell's own
     (``own_files``, ``own_config_paths``, or anywhere inside ``readiness_dir``
@@ -1170,9 +1295,19 @@ def assert_no_residue(
       ``docs/readiness/`` is a different, sealed package's own record, not
       residue, unless it also names one of ``run_ids`` (see
       :func:`_is_foreign_readiness_package`);
+    * failing that (a RESUME shares its parent's run id, so the parent's own
+      package legitimately names it), a sealed record of an earlier attempt
+      or a sha256-pinned table within that same package is still not
+      residue (see :func:`_is_sealed_package_record`; ``attempt_ids`` names
+      the attempt(s) actually being re-pinned now);
     * a ``configs/`` fragment whose own declared ``run_id`` value(s) are
       disjoint from ``run_ids`` belongs to a different cell, not residue (see
       :func:`_is_foreign_config`).
+
+    ``explain=True`` prints, to stderr, one line per file that still hits an
+    old value: which of the rules above were considered for that file and
+    what each one decided, so a refusal is diagnosable without re-deriving
+    the exemption logic by hand.
     """
 
     values = sorted({value for value in old_values if value})
@@ -1181,6 +1316,7 @@ def assert_no_residue(
     ledger_resolved = Path(exposure_ledger_path).resolve() if exposure_ledger_path else None
     readiness_dir_resolved = Path(readiness_dir).resolve() if readiness_dir is not None else None
     readiness_root_resolved = Path(repo_root).resolve() / "docs" / "readiness"
+    attempt_ids = attempt_ids or set()
     own_resolved = {Path(p).resolve() for p in (own_files or ())} | {
         Path(p).resolve() for p in (own_config_paths or ())
     }
@@ -1200,29 +1336,45 @@ def assert_no_residue(
             is_own = resolved in own_resolved or (
                 readiness_dir_resolved is not None and _is_within(resolved, readiness_dir_resolved)
             )
+            scan_text = text
+            considered: list[tuple[str, bool]] = []
+            exempt = False
             if ledger_resolved is not None and run_ids is not None and resolved == ledger_resolved:
                 lines = text.splitlines(keepends=True)
                 foreign = _foreign_ledger_row_mask(text, run_ids)
-                text = "".join(line for index, line in enumerate(lines) if not foreign[index])
-            elif (
-                not is_own
-                and run_ids
-                and root_name == "docs"
-                and _is_foreign_readiness_package(
+                scan_text = "".join(line for index, line in enumerate(lines) if not foreign[index])
+                considered.append(("ledger-foreign-rows-stripped", True))
+            elif is_own:
+                considered.append(("own", True))
+            elif run_ids and root_name == "docs":
+                foreign_package = _is_foreign_readiness_package(
                     resolved, readiness_root=readiness_root_resolved, run_ids=run_ids, text=text
                 )
-            ):
-                continue
-            elif (
-                not is_own
-                and run_ids
-                and root_name == "configs"
-                and _is_foreign_config(resolved, run_ids=run_ids)
-            ):
+                considered.append(("foreign-readiness-package", foreign_package))
+                if foreign_package:
+                    exempt = True
+                else:
+                    sealed = _is_sealed_package_record(
+                        resolved,
+                        readiness_root=readiness_root_resolved,
+                        repo_root=Path(repo_root),
+                        attempt_ids=attempt_ids,
+                        text=text,
+                    )
+                    considered.append(("sealed-package-record", sealed))
+                    exempt = sealed
+            elif run_ids and root_name == "configs":
+                foreign_config = _is_foreign_config(resolved, run_ids=run_ids)
+                considered.append(("foreign-config", foreign_config))
+                exempt = foreign_config
+            if exempt:
                 continue
             for value in values:
-                if value in text:
+                if value in scan_text:
                     hits.append(f"{path}: {value}")
+                    if explain:
+                        rule_summary = ", ".join(f"{name}={result}" for name, result in considered) or "no rule applicable (scanned strictly)"
+                        print(f"[explain-residue] {path}: value {value} -- {rule_summary}", file=sys.stderr)
     if hits:
         raise RepinError("old hash residue remains after rewriting:\n" + "\n".join(hits))
 
@@ -1340,6 +1492,7 @@ def repin_package(
     python: str = sys.executable,
     package_name: str | None = None,
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+    explain_residue: bool = False,
 ) -> dict[str, object]:
     """Re-pin every cell named by ``experiments`` and rewrite its package.
 
@@ -1470,14 +1623,17 @@ def repin_package(
         run_ids=run_ids,
         mapping=mapping,
     )
+    attempt_ids = {identity.attempt_id for identity in old_identities.values()}
     assert_no_residue(
         repo_root,
         all_old_values,
         exposure_ledger_path=exposure_ledger_path,
         run_ids=run_ids,
+        attempt_ids=attempt_ids,
         readiness_dir=readiness_dir,
         own_files=package_files,
         own_config_paths=set(baseline_paths) | set(experiment_paths),
+        explain=explain_residue,
     )
 
     check_reports = []
@@ -1572,6 +1728,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--allow-output-change", action="store_true")
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--package-name", default=None)
+    parser.add_argument(
+        "--explain-residue",
+        action="store_true",
+        help=(
+            "on a residue refusal, print to stderr which exemption rule(s) were "
+            "considered for each hit file and what each one decided"
+        ),
+    )
     return parser
 
 
@@ -1596,6 +1760,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             allow_output_change=args.allow_output_change,
             python=args.python,
             package_name=args.package_name,
+            explain_residue=args.explain_residue,
         )
     except RepinError as error:
         print(json.dumps({"error": str(error)}, indent=2), file=sys.stderr)
