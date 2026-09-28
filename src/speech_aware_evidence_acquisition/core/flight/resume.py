@@ -401,8 +401,30 @@ def _scan_trace(
     return contacts, episodes, order, record_count
 
 
+#: Episode-receipt blocks whose ``contacts`` arrays are per-contact ANNOTATIONS
+#: keyed by the agent ``contact_id`` -- never wire contacts, so they carry no
+#: ``request_id`` and cannot be checked against a MODEL_REQUEST record:
+#:
+#: * ``context_fit`` -- ``rails.runner``'s compact-or-abstain context-fit
+#:   custody (one row per contact: contact id, role id, compaction);
+#: * ``solver_citations`` -- ``rails.solver_citation``'s cited-answer custody
+#:   (one record per cited contact: ids and digests only).
+#:
+#: The wire contacts they annotate are already claimed, with their request,
+#: response and response-text digests, by ``role_visits[].execution_receipt``
+#: and ``accepted_solver_receipt``, which the walk still verifies in full.
+#: Walking into these two blocks made every row of a cell carrying either one
+#: INCOMPLETE ("names contact None"), so a resume kept nothing (2026-09-28,
+#: the COMP-1 arm: 0 of 471 settled rows classified COMPLETE).
+NON_WIRE_CONTACT_BLOCKS = frozenset({"context_fit", "solver_citations"})
+
+
 def _receipt_contacts(receipt: Mapping[str, object]) -> list[Mapping[str, object]]:
-    """Every contact the episode receipt itself claims, in receipt order."""
+    """Every WIRE contact the episode receipt itself claims, in receipt order.
+
+    The :data:`NON_WIRE_CONTACT_BLOCKS` annotation blocks are skipped by key;
+    every other ``contacts`` array anywhere in the receipt is still claimed.
+    """
 
     found: list[Mapping[str, object]] = []
 
@@ -411,7 +433,9 @@ def _receipt_contacts(receipt: Mapping[str, object]) -> list[Mapping[str, object
             raw = node.get("contacts")
             if isinstance(raw, Sequence) and not isinstance(raw, (str, bytes)):
                 found.extend(item for item in raw if isinstance(item, Mapping))
-            for value in node.values():
+            for key, value in node.items():
+                if key in NON_WIRE_CONTACT_BLOCKS:
+                    continue
                 walk(value)
         elif isinstance(node, Sequence) and not isinstance(node, (str, bytes)):
             for item in node:
@@ -561,6 +585,7 @@ def read_predecessor_attempt(
 
 __all__ = [
     "NATIVE_EPISODE_RECORD_SUFFIX",
+    "NON_WIRE_CONTACT_BLOCKS",
     "RESUME_PREDECESSOR_SCHEMA",
     "PredecessorAttempt",
     "PredecessorContact",
