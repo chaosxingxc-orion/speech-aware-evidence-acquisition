@@ -139,9 +139,29 @@ SUPPLY_VARIANT_PATH = ("native_episode", "roles", "solver", "supply_variants")
 #: receipt paths, the twin arm id, the declared cost, and the claim ceiling. Only ``variant_cost``
 #: and ``claim`` are enforced by merge set A's gate findings; ``tuning_roster``, ``read_roster``
 #: and ``aa_arm_id`` are parsed and reported here (the deeper cross-checks -- read-roster-mismatch,
-#: tuning-read-overlap, roster-knowledge-overlap, aa-arm-missing -- need the roster receipts' and
-#: the snapshot's own contents and are not part of merge set A).
+#: roster-knowledge-overlap, aa-arm-missing -- need the snapshot's own contents beyond the roster
+#: receipts and are not part of merge set A).
 SUPPLY_VARIANT_CLAIM_CEILING = "nominated"
+
+# --------------------------------------------------------------------------
+# tuning/read roster split registration (item D3, docs/results/2026-09-27-verdict-
+# reclassification.md: the AGREE agreement term was tuned on TRAIN Fold A gold and read on TRAIN
+# Fold A -- a circular read; docs/readiness/2026-09-27-slurp-stage3-replan-v2.md section 3, row
+# "Circular reads": "make the tuning roster and the read roster registered fields checked by the
+# pre-launch gate"). Unlike the supply-variant fields above, these two apply to EVERY Stage-3 cell
+# that declares a ``stage3_measurement`` block, whatever its ``measurement_design``.
+# --------------------------------------------------------------------------
+
+#: The literal ``tuning_roster`` value a cell writes when no weight, threshold, cap, template or
+#: knowledge selection was tuned on any roster at all (nothing to check for overlap).
+NO_TUNING_ROSTER = "none"
+
+#: Where a roster's own disjointness receipt lives, keyed by its roster id (case-insensitive
+#: filename match against ``roster_id`` inside the file when the slug itself does not resolve).
+ROSTER_RECEIPTS_DIR = Path("docs/receipts/rosters")
+
+_NORMALIZE_KEY = re.compile(r"[^a-z0-9]+")
+_SHARED_WITH_KEY = re.compile(r"^sharedwith(.+?)(recordings|utterances)$")
 
 
 class FlightRegistrationCheckError(RuntimeError):
@@ -153,9 +173,21 @@ class Finding:
     kind: str
     message: str
     run_id: str | None = None
+    #: ``None`` (the default) inherits the cell's own :attr:`CellReport.severity` -- every finding
+    #: kind before item D3 works this way. An explicit ``"advisory"`` here means the finding is
+    #: reported but never blocks a launch on its own, even on an otherwise-blocking (ready,
+    #: unflown) cell: ``tuning-roster-missing`` and ``tuning-roster-unverified`` are the two kinds
+    #: that set it, because an unregistered or unverifiable roster split is a gap in provenance,
+    #: not proof of a circular read.
+    severity: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
-        return {"kind": self.kind, "message": self.message, "run_id": self.run_id}
+        return {
+            "kind": self.kind,
+            "message": self.message,
+            "run_id": self.run_id,
+            "severity": self.severity,
+        }
 
 
 @dataclass
@@ -179,6 +211,9 @@ class CellReport:
     #: Set only for a cell whose ``stage3_measurement.measurement_design`` is one of
     #: :data:`SUPPLY_VARIANT_INSTRUMENT_DESIGNS` -- owner decision 172, section 4.
     supply_variant: dict[str, Any] | None = None
+    #: Set for EVERY cell that declares a ``stage3_measurement`` block, whatever its design --
+    #: item D3: ``{"tuning_roster": ..., "read_roster": ...}``, the raw values as registered.
+    roster_split: dict[str, Any] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -199,6 +234,7 @@ class CellReport:
             "receipts": dict(self.receipts),
             "findings": [finding.as_dict() for finding in self.findings],
             "supply_variant": self.supply_variant,
+            "roster_split": self.roster_split,
         }
 
 
@@ -685,6 +721,220 @@ def _check_supply_variant_registration(
         ))
 
 
+# --------------------------------------------------------------------------
+# tuning/read roster split registration (item D3; every Stage-3 cell, every design)
+# --------------------------------------------------------------------------
+
+
+def _roster_ids(value: Any) -> list[str]:
+    """A ``tuning_roster`` / ``read_roster`` value as a list of roster id strings.
+
+    The field may be one id, a list of ids (a cell tuned on several sealed pools), or absent.
+    Anything else (a number, a bare object) is not a roster id and yields an empty list -- the
+    overlap check below then has nothing to compare and is a no-op, which is correct: a malformed
+    value is a different defect than an unregistered or overlapping one.
+    """
+
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, str)]
+    return []
+
+
+def _is_no_tuning(value: Any) -> bool:
+    ids = _roster_ids(value)
+    return len(ids) == 1 and ids[0].strip().lower() == NO_TUNING_ROSTER
+
+
+def _normalize_roster_key(value: str) -> str:
+    return _NORMALIZE_KEY.sub("", value.lower())
+
+
+def _load_roster_receipt(repo_root: Path, roster_id: str) -> dict[str, Any] | None:
+    """The roster receipt naming ``roster_id``, or ``None`` when none can be found.
+
+    Tries the exact-slug filename first (``docs/receipts/rosters/<roster_id lowercased>.json``,
+    the convention every real receipt in that directory follows), then falls back to scanning the
+    directory for the receipt whose own ``roster_id`` field matches (case-insensitive) -- the
+    field and the filename slug disagree in case for several real receipts (``SLURP-DEV-2000-V1``
+    in ``slurp-dev-2000-v1.json``).
+    """
+
+    directory = repo_root / ROSTER_RECEIPTS_DIR
+    if not directory.is_dir():
+        return None
+    slug = roster_id.strip().lower()
+    if not slug:
+        return None
+    candidate = directory / f"{slug}.json"
+    if candidate.is_file():
+        try:
+            document = json.loads(candidate.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            document = None
+        if isinstance(document, dict):
+            return document
+    for path in sorted(directory.glob("*.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if isinstance(document, dict) and str(document.get("roster_id", "")).strip().lower() == slug:
+            return document
+    return None
+
+
+def _extract_shared_count(value: Any) -> int | None:
+    """The overlap count out of one ``disjointness_proof`` entry, or ``None`` when it carries none.
+
+    An entry is either a bare number (the legacy ``shared_with_<slug>_recordings`` flat form) or an
+    object carrying ``shared_recordings`` / ``shared_utterances`` (the ``construction_rosters_
+    checked`` cross-reference form); the worse (larger) of the two counts when an object carries
+    both, since either alone proves the two rosters are not disjoint.
+    """
+
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, dict):
+        counts = [
+            v for k, v in value.items()
+            if k in ("shared_recordings", "shared_utterances")
+            and isinstance(v, (int, float)) and not isinstance(v, bool)
+        ]
+        if counts:
+            return int(max(counts))
+    return None
+
+
+def _disjointness_count(receipt: dict[str, Any], other_roster_id: str) -> int | None:
+    """The overlap this receipt's own ``disjointness_proof`` declares against ``other_roster_id``.
+
+    ``None`` means the proof says nothing about that roster (not that the two are disjoint) --
+    the caller treats that as unverified, never as clear.
+    """
+
+    proof = receipt.get("disjointness_proof")
+    if not isinstance(proof, dict):
+        return None
+    target = _normalize_roster_key(other_roster_id)
+    if not target:
+        return None
+    best: int | None = None
+    for key, value in proof.items():
+        key_norm = _normalize_roster_key(str(key))
+        matched = key_norm == target
+        if not matched:
+            fenced = _SHARED_WITH_KEY.match(key_norm)
+            if fenced:
+                slug = fenced.group(1)
+                matched = bool(slug) and (slug in target or target in slug)
+        if not matched:
+            continue
+        count = _extract_shared_count(value)
+        if count is not None:
+            best = count if best is None else max(best, count)
+    return best
+
+
+def _roster_overlap(repo_root: Path, tuning_id: str, read_id: str) -> int | None:
+    """The larger of what either roster's own receipt proves shared with the other.
+
+    ``None`` when neither receipt is found, or neither found receipt's disjointness proof says
+    anything about the other roster -- both cases mean the split cannot be verified from what the
+    tree carries today, not that it is safe.
+    """
+
+    counts: list[int] = []
+    for this_id, other_id in ((tuning_id, read_id), (read_id, tuning_id)):
+        receipt = _load_roster_receipt(repo_root, this_id)
+        if receipt is None:
+            continue
+        count = _disjointness_count(receipt, other_id)
+        if count is not None:
+            counts.append(count)
+    return max(counts) if counts else None
+
+
+def _check_tuning_read_overlap(
+    report: CellReport, repo_root: Path, tuning_roster: Any, read_roster: Any
+) -> None:
+    if _is_no_tuning(tuning_roster):
+        return
+    tuning_ids = _roster_ids(tuning_roster)
+    read_ids = _roster_ids(read_roster)
+    if not tuning_ids or not read_ids:
+        return
+    for tuning_id in tuning_ids:
+        for read_id in read_ids:
+            if _normalize_roster_key(tuning_id) == _normalize_roster_key(read_id):
+                report.findings.append(Finding(
+                    "tuning-read-overlap",
+                    f"{report.run_id}: tuning_roster {tuning_id!r} names the read_roster "
+                    f"{read_id!r} directly -- item D3's circular read (a weight, threshold, cap, "
+                    "template or knowledge selection chosen on the same roster it is read on)",
+                    report.run_id,
+                ))
+                continue
+            overlap = _roster_overlap(repo_root, tuning_id, read_id)
+            if overlap is None:
+                report.findings.append(Finding(
+                    "tuning-roster-unverified",
+                    f"{report.run_id}: no roster receipt under {ROSTER_RECEIPTS_DIR.as_posix()}/ "
+                    f"proves tuning_roster {tuning_id!r} disjoint from read_roster {read_id!r} "
+                    "(no receipt found for one of them, or its disjointness_proof says nothing "
+                    "about the other) -- reported, not blocked, until a receipt settles it",
+                    report.run_id,
+                    severity="advisory",
+                ))
+            elif overlap > 0:
+                report.findings.append(Finding(
+                    "tuning-read-overlap",
+                    f"{report.run_id}: tuning_roster {tuning_id!r} shares {overlap} recording(s)/"
+                    f"utterance(s) with read_roster {read_id!r} by its own disjointness_proof -- "
+                    "item D3's circular read",
+                    report.run_id,
+                ))
+
+
+def _check_roster_split_registration(
+    report: CellReport,
+    fragment: dict[str, Any],
+    floor_gate: Any,
+    repo_root: Path,
+) -> None:
+    """``tuning_roster`` / ``read_roster`` registration -- item D3, EVERY Stage-3 cell.
+
+    A no-op when the cell declares no ``stage3_measurement`` block at all (it is then not a
+    Stage-3 cell by this gate's own reading of that block). Unlike
+    :func:`_check_supply_variant_registration` this does not gate on ``measurement_design``: the
+    AGREE circular read that item D3 repairs was a plain cross-flight cell, not a supply-variant
+    instrument one, so the split must be checked everywhere the block exists.
+    """
+
+    block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
+    if not isinstance(block, dict):
+        return
+    tuning_roster = block.get("tuning_roster")
+    read_roster = block.get("read_roster")
+    report.roster_split = {"tuning_roster": tuning_roster, "read_roster": read_roster}
+    if tuning_roster is None or read_roster is None:
+        missing = "tuning_roster" if tuning_roster is None else "read_roster"
+        report.findings.append(Finding(
+            "tuning-roster-missing",
+            f"{report.run_id}: {floor_gate.MEASUREMENT_KEY} declares no {missing} (item D3: every "
+            "Stage-3 cell names the roster(s) any weight, threshold, cap, template or knowledge "
+            "selection was tuned on -- 'none' if nothing was tuned -- and the roster it is read "
+            "on)",
+            report.run_id,
+            severity="advisory",
+        ))
+        return
+    _check_tuning_read_overlap(report, repo_root, tuning_roster, read_roster)
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -695,9 +945,9 @@ def check_cell(
     index: PackageIndex,
     receipt_cache: dict[str, Any],
 ) -> None:
-    _check_supply_variant_registration(
-        report, fragment, baseline, _floor_gate_module(index.repo_root), index.repo_root
-    )
+    floor_gate = _floor_gate_module(index.repo_root)
+    _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
+    _check_roster_split_registration(report, fragment, floor_gate, index.repo_root)
 
     run_ids = {"generation": report.run_id, **fit_run_ids(fragment, baseline)}
     report.run_ids = run_ids
@@ -869,6 +1119,23 @@ def named_cells(
     return resolved
 
 
+def _cell_blocks(report_severity: str, finding_severities: Iterable[str | None]) -> bool:
+    """Whether a cell actually fails the gate.
+
+    A cell whose OWN severity is not ``"blocking"`` (historical/flown, held preview, or
+    stale-ready) never blocks, whatever its findings say -- unchanged from before item D3. A
+    ``"blocking"`` cell blocks only when at least one of its findings is itself blocking: a
+    finding with no explicit :attr:`Finding.severity` inherits the cell's own severity (every
+    finding kind before item D3, so behaviour there is bit-for-bit unchanged), and an explicit
+    ``"advisory"`` override (``tuning-roster-missing``, ``tuning-roster-unverified``) never blocks
+    on its own even on an otherwise-blocking cell.
+    """
+
+    if report_severity != "blocking":
+        return False
+    return any((severity or report_severity) == "blocking" for severity in finding_severities)
+
+
 def evaluate(
     repo_root: Path,
     data_root: Path,
@@ -953,8 +1220,13 @@ def evaluate(
                 f"before {strict_from.isoformat()}; reported only here, refused at launch"
             )
 
-    blocking = [r for r in reports if r.severity == "blocking" and r.findings]
-    advisory = [r for r in reports if r.severity == "advisory" and r.findings]
+    blocking = [
+        r for r in reports if r.findings and _cell_blocks(r.severity, (f.severity for f in r.findings))
+    ]
+    advisory = [
+        r for r in reports
+        if r.findings and not _cell_blocks(r.severity, (f.severity for f in r.findings))
+    ]
     return {
         "schema": "saea-flight-registration-check-v1",
         "mode": "launch" if launch_mode else "tree",
@@ -975,7 +1247,7 @@ def render(data: dict[str, Any], *, verbose: bool = False) -> list[str]:
     for cell in data["cells"]:
         if not cell["findings"]:
             continue
-        blocking = cell["severity"] == "blocking"
+        blocking = _cell_blocks(cell["severity"], (f.get("severity") for f in cell["findings"]))
         label = "FAIL" if blocking else "advisory"
         head = f"flight registration check: {label}: {cell['experiment']}:{cell['cell_id']} ({cell['scope_note']})"
         if blocking or verbose:

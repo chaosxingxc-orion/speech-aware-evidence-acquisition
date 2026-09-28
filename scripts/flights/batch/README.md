@@ -38,3 +38,28 @@ root `/home/chao`); they are operations scripts, not library code, and are exclu
   pending; the preparation launchers refuse otherwise (exit 10). A swap refuses (exit 8) instead of stopping the running
   geometry when the host reading proves the next start would fail its 12 GB guard, and names the sidecar holding memory.
 - A readiness wait exits 0 only on READY; a queue records every exit status (`rc=0; cmd || rc=$?`) and halts on a STOP.
+
+## Registration fields: tuning_roster / read_roster (item D3)
+
+The AGREE agreement term (docs/results/2026-09-27-verdict-reclassification.md item D3) tuned its
+weight grid on TRAIN Fold A gold and then read it on TRAIN Fold A -- a circular read. Every
+Stage-3 cell's `stage3_measurement` block now names two facts, whatever its `measurement_design`:
+
+- `tuning_roster` -- the roster id or sealed-pool id (or a list of them) that any weight,
+  threshold, cap, template or knowledge selection of this cell was chosen on; the literal string
+  `"none"` when nothing was tuned.
+- `read_roster` -- the roster the cell is read on.
+
+`scripts/checks/flight_registration_check.py` checks the split on every cell that declares the
+block (not only the same-flight supply-variant design's merge-set-A fields):
+
+- `tuning-roster-missing` (advisory) -- the block is present but one of the two fields is absent.
+- `tuning-roster-unverified` (advisory) -- both fields are present and distinct, but no roster
+  receipt under `docs/receipts/rosters/` proves them disjoint (no receipt found for one of them, or
+  its `disjointness_proof` says nothing about the other).
+- `tuning-read-overlap` (**blocking** on a live, unflown cell) -- `tuning_roster` names the
+  `read_roster` directly, or a named roster's own `disjointness_proof` proves shared recordings or
+  utterances with the other roster.
+
+A sealed / already-flown cell is never blocked by any of the three (this repository does not
+rewrite sealed bytes or their registrations); the findings are still reported against it.
