@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-      "sha256": "229de549b256272bd7daddc38a0efc89be9f3f215a77c462ac4b4229ae052f7d"
+      "sha256": "b4600ffdc12cdcd53eaf1600bfb8f7d3d8888ae4c08c1d4cd38d331119d2857a"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md",
@@ -113,8 +113,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "aa": {
-      "composed_config": "ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844",
-      "protocol": "978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368"
+      "composed_config": "c5fcb9861796cfd396d2d76c8fbbfe5b7bfc923e756e40ea6f4f5f2e772f7b45",
+      "protocol": "b804d21b0e8cb219f5c0e6eb18fd41fdd8acf8b94f2daca3bf08f2dc6749bf7f"
     },
     "arm": {
       "composed_config": "f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873",

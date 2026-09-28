@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-revtfrl-aa-fold-a-v1",
-  "composed_config_hash": "ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844",
+  "composed_config_hash": "c5fcb9861796cfd396d2d76c8fbbfe5b7bfc923e756e40ea6f4f5f2e772f7b45",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-revtfrl-aa-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368",
+    "protocol_hash": "b804d21b0e8cb219f5c0e6eb18fd41fdd8acf8b94f2daca3bf08f2dc6749bf7f",
     "run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-    "sha256": "229de549b256272bd7daddc38a0efc89be9f3f215a77c462ac4b4229ae052f7d"
+    "sha256": "b4600ffdc12cdcd53eaf1600bfb8f7d3d8888ae4c08c1d4cd38d331119d2857a"
   },
   "purpose": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1: The in-chain A/A replicate of cell REV-TFRL-1 (the base: AGREE with G5's Reviewer instruction). It supplies the within-chain null and the base Reviewer's own credit; no claim of its own.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",

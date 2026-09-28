@@ -3,11 +3,11 @@
     "aa": {
       "attempt_id": "attempt-slurp-native-stage3-revtfrl-aa-fold-a-generation-v1",
       "cell": "slurp-native-stage3-revtfrl-aa-fold-a-v1",
-      "composed_config_hash": "ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844",
+      "composed_config_hash": "c5fcb9861796cfd396d2d76c8fbbfe5b7bfc923e756e40ea6f4f5f2e772f7b45",
       "experiment": "slurp-native-stage3-revtfrl-aa-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-revtfrl-aa-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1",
-      "protocol_hash": "978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368",
+      "protocol_hash": "b804d21b0e8cb219f5c0e6eb18fd41fdd8acf8b94f2daca3bf08f2dc6749bf7f",
       "reviewer_instruction_template": "probes/slurp_native_role_reviewer_v1_g5_v1.txt",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1",

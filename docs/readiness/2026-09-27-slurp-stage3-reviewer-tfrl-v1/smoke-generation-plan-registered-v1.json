@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-    "sha256": "229de549b256272bd7daddc38a0efc89be9f3f215a77c462ac4b4229ae052f7d"
+    "sha256": "b4600ffdc12cdcd53eaf1600bfb8f7d3d8888ae4c08c1d4cd38d331119d2857a"
   },
   "purpose": "SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1: Four-row form smoke of cell REV-TFRL-1. Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",

@@ -17,8 +17,8 @@ decisions 28 and 86); never a test claim. The design, the credit table and the o
 | declared expectation | +0.80 pp intent, the measured transfer of the offline selection statistic (below the benefit bar; claims_benefit false) |
 | node credit (beside the verdict) | loop value over the trajectory's own first draft on each arm, per-class credit table |
 | runs | `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-V1` / `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1` / `SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1` |
-| composed config hashes | arm `f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873`; A/A `ffc36ddcb8a48665786d664f45358d296b8879d39ca437abfddaffa07dcc4844`; smoke `f57a564fd2c6583c968655bcb8a07e875c2ed5254610872f2dce688c7d4cda51` |
-| protocol hashes | arm `d976235252f997c258b50329f6fc256b8275325c8ef2219912cba03132a76fc1`; A/A `978db2dca95467b7c95d87fcda31a1b7b012839b5a4ec95ed21d81fce7ceb368`; smoke `cbd445b5392ad239fb6c3c343e0cf77ac55a0e78cf7c590948c218ece25a92e5` |
+| composed config hashes | arm `f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873`; A/A `c5fcb9861796cfd396d2d76c8fbbfe5b7bfc923e756e40ea6f4f5f2e772f7b45`; smoke `f57a564fd2c6583c968655bcb8a07e875c2ed5254610872f2dce688c7d4cda51` |
+| protocol hashes | arm `d976235252f997c258b50329f6fc256b8275325c8ef2219912cba03132a76fc1`; A/A `b804d21b0e8cb219f5c0e6eb18fd41fdd8acf8b94f2daca3bf08f2dc6749bf7f`; smoke `cbd445b5392ad239fb6c3c343e0cf77ac55a0e78cf7c590948c218ece25a92e5` |
 | split identity | arm and A/A `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 | stage3_algorithm | `sealed-credit-system-policy-v1` (arm and smoke, operators_used `context_application`); `none` on the A/A |
 
