@@ -1,0 +1,476 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 64800,
+      "generation_calls_cap": 16200,
+      "gpu_hours_fit_inclusive": 16.4,
+      "native_task_contract_calls_cap": 10800,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 47322
+    },
+    "note": "the AGREE arithmetic at ceiling 15 with the Fold B audio: generation rows x 15, FIT rows x 15 x 4, speech ceil(audio x 15), GPU hours 12.0 x 15 / 11 = 16.4 (smoke 1.0); native task-contract calls + 4 per row; run-cumulative",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 240,
+      "generation_calls_cap": 60,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 40,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 153
+    }
+  },
+  "composed_config_diff_against_the_agree_cell": {
+    "arm": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.contact_cap",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_the_train_exemplars_store_is",
+        "what_this_is"
+      ],
+      "branch_block": [
+        "native_episode.roles.perception.branches.branches",
+        "native_episode.roles.perception.branches.fit_estimate.base_prompt_tokens",
+        "native_episode.roles.perception.branches.fit_estimate.completion_ceiling",
+        "native_episode.roles.perception.branches.fit_estimate.slot_tokens",
+        "native_episode.roles.perception.branches.fit_estimate.tokens_per_supplied_item",
+        "native_episode.roles.perception.branches.level"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "execution_plan.planned_gpu_hours",
+        "execution_plan.planned_model_calls",
+        "execution_plan.planned_speech_audio_seconds",
+        "experiment_id",
+        "failure_policy",
+        "family_budget.fit_endpoint_calls_cap",
+        "family_budget.generation_calls_cap",
+        "family_budget.gpu_hours_fit_inclusive",
+        "family_budget.native_task_contract_calls_cap",
+        "family_budget.repeated_speech_audio_seconds_cap",
+        "fragment_kind",
+        "generation_budget.cap",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "fold_b_retarget": [
+        "audio_seconds_total",
+        "d1_manifest_sha256",
+        "d1_media_supplement",
+        "d1_media_supplement_sha256",
+        "items",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+        "population.dataset_fragment",
+        "population.decision_population",
+        "population.roster_receipt",
+        "population.split_identity_hash",
+        "populations",
+        "preparation_source_receipts",
+        "runtime_view_sha256",
+        "source_binding_sha256",
+        "split_id",
+        "split_identity_hash",
+        "split_name"
+      ],
+      "program_switch": [
+        "policy"
+      ]
+    },
+    "smoke": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.contact_cap",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_the_train_exemplars_store_is",
+        "what_this_is"
+      ],
+      "branch_block": [
+        "native_episode.roles.perception.branches.branches",
+        "native_episode.roles.perception.branches.fit_estimate.base_prompt_tokens",
+        "native_episode.roles.perception.branches.fit_estimate.completion_ceiling",
+        "native_episode.roles.perception.branches.fit_estimate.slot_tokens",
+        "native_episode.roles.perception.branches.fit_estimate.tokens_per_supplied_item",
+        "native_episode.roles.perception.branches.level"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "execution_plan.planned_model_calls",
+        "execution_plan.planned_speech_audio_seconds",
+        "experiment_id",
+        "failure_policy",
+        "family_budget.fit_endpoint_calls_cap",
+        "family_budget.generation_calls_cap",
+        "family_budget.native_task_contract_calls_cap",
+        "family_budget.repeated_speech_audio_seconds_cap",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "fold_b_retarget": [
+        "audio_seconds_total",
+        "d1_manifest_sha256",
+        "d1_media_supplement",
+        "d1_media_supplement_sha256",
+        "items",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+        "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+        "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+        "population.dataset_fragment",
+        "population.decision_population",
+        "population.roster_receipt",
+        "population.split_identity_hash",
+        "populations",
+        "preparation_source_receipts",
+        "runtime_view_sha256",
+        "source_binding_sha256",
+        "split_id",
+        "split_identity_hash",
+        "split_name"
+      ],
+      "program_switch": [
+        "policy"
+      ]
+    }
+  },
+  "contrast_pair_table": null,
+  "decision_rule": "SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-list3, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the provisional floor 0.3163 pp. (2) PRESENCE: b-list3 minus A on gold-on-list (present) in the branch note (primary, ruling O4). NOMINATED (as a presence change) iff the present CI95 lower bound is above zero AND the point delta exceeds the twin's present bar. Reported beside, never gating: official intent accuracy and SLU-F1 of the level-2 branch Solver column (B vs A vs T), list size, gold rank, and the conversion of gold at rank 3. A presence nomination opens no system claim: it only informs a later level-2 intent cell on the same pair.",
+  "fit": {
+    "status": "PENDING_CHECK"
+  },
+  "fit_measure": {
+    "relpath": "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v1.json",
+    "sha256": "f82f4a6c8e0e0b226e3ab3ae7b07732041112bc119d5a307853aff69db747118",
+    "summary": {
+      "chars_per_token_least_squares": 6.023,
+      "contrast_allowance_items": 2,
+      "estimates": {
+        "a_and_twin": 4067,
+        "min_candidates": 4067,
+        "top2_contrast": 4365
+      },
+      "first_solver_visit_prompt_tokens": {
+        "contacts": 1080,
+        "max": 14426,
+        "mean": 10201.0,
+        "min": 5003
+      },
+      "fit_estimate": {
+        "base_prompt_tokens": 2577,
+        "completion_ceiling": 512,
+        "slot_tokens": 24576,
+        "tokens_per_supplied_item": 149
+      },
+      "headroom_items": 2,
+      "max_supplied_items": {
+        "a_and_twin": 10,
+        "min_candidates": 10,
+        "top2_contrast": 12
+      },
+      "perception": {
+        "boundary_item_chars": {
+          "max": 895,
+          "mean": 701.2,
+          "min": 620
+        },
+        "items": {
+          "max": 8,
+          "mean": 7.985,
+          "min": 1
+        },
+        "items_histogram": {
+          "1": 1,
+          "3": 1,
+          "5": 1,
+          "7": 1,
+          "8": 1076
+        },
+        "prompt_tokens": {
+          "max": 3769,
+          "mean": 3598.4,
+          "min": 2642
+        }
+      },
+      "prompt_limit_tokens": 20990
+    },
+    "tool": "scripts/flights/psv/psv_fit_measure.py"
+  },
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-psv2-fold-b-baseline-v1",
+      "branches": {
+        "branches": [
+          {
+            "branch_id": "b-list3",
+            "max_supplied_items": 10,
+            "min_candidates": 3
+          },
+          {
+            "branch_id": "t-twin",
+            "max_supplied_items": 10,
+            "replicate_of": "a-agree"
+          },
+          {
+            "branch_id": "a-agree",
+            "deliver": true,
+            "max_supplied_items": 10
+          }
+        ],
+        "fit_estimate": {
+          "base_prompt_tokens": 2577,
+          "completion_ceiling": 512,
+          "slot_tokens": 24576,
+          "tokens_per_supplied_item": 149
+        },
+        "level": 2
+      },
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-psv2-fold-b-v1",
+      "composed_config_hash": "cd3fa837545aec92c61d48abfcec9b1fca764b25710d7491efc964d13d062f17",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-psv2-fold-b-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 64800,
+        "generation_calls_cap": 16200,
+        "gpu_hours_fit_inclusive": 16.4,
+        "native_task_contract_calls_cap": 10800,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 47322
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-fit-v1",
+        "contact_cap": 64800,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
+      "protocol_hash": "617892934c9f8a892d9763c8ed9c4d8a26a8baf260b6a9389b81324c72165e26",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-psv2-fold-b-smoke-4-baseline-v1",
+      "branches": {
+        "branches": [
+          {
+            "branch_id": "b-list3",
+            "max_supplied_items": 10,
+            "min_candidates": 3
+          },
+          {
+            "branch_id": "t-twin",
+            "max_supplied_items": 10,
+            "replicate_of": "a-agree"
+          },
+          {
+            "branch_id": "a-agree",
+            "deliver": true,
+            "max_supplied_items": 10
+          }
+        ],
+        "fit_estimate": {
+          "base_prompt_tokens": 2577,
+          "completion_ceiling": 512,
+          "slot_tokens": 24576,
+          "tokens_per_supplied_item": 149
+        },
+        "level": 2
+      },
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-psv2-fold-b-smoke-4-v1",
+      "composed_config_hash": "34a8184463b52958d41d5e71485f710611bd60d0edef06c77da2b26767eefbf8",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-psv2-fold-b-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 240,
+        "generation_calls_cap": 60,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 40,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 153
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-smoke-4-fit-v1",
+        "contact_cap": 240,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
+      "protocol_hash": "46a2771cb2f1f43c473a892e608d76aebc74b5c8ede1bf0a0c819823e33aee9b",
+      "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "owner_decisions": {
+    "139": "no prior: the expectation is declared from measured ledger numbers (0.0 nominated, ceiling beside)",
+    "184": "register P-SV-2 on TRAIN Fold B at level 2, claim nominated (phase 2 of the same-flight instrument)",
+    "186": "Fold B is ROLLOUT-exposed while it is the phase-2 read roster; no branch value of a cell read on Fold B is built from Fold B rollouts",
+    "188": "B5 (Reviewer top-2 contrast) deferred behind P-SV-1 / P-SV-2",
+    "28/86": "TRAIN numbers are development numbers, never a test claim"
+  },
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact or read (Fold A is the tuning roster and is not re-flown).",
+    "No re-flying of the sealed AGREE arm.",
+    "No second factor: one axis on the B branch, none on A or T.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped.",
+    "No branch score opened before the READ row is root countersigned.",
+    "No system-level claim: a branch effect may only nominate (ruling O1).",
+    "No branch value built from Fold B rollouts (owner decision 186)."
+  ],
+  "registered_at_utc": "2026-09-29T00:30:00.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four Fold B rows (the committed prefix receipt) prove FORM and nothing else: the 15-ceiling pbranch3-l2 program loads, the Perception branches fan out at the one visit and the non-A branches take one first-visit Solver contact each, every branch fits its measured bound, the perception-branch receipt and I7v seal, and the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1": {
+      "aa_arm_id": "t-twin",
+      "ceiling": {
+        "pp": 4.54,
+        "roster": "SLURP-EVO-FOLD-A-V2",
+        "rows": 49,
+        "what": "the 49 wrong rows with gold in the boundary block but off Perception's list on Fold A (4.54 pp presence ceiling); at the ledger's rank-3 conversion 12.0 % the delivered-intent ceiling is about 6 rows (about 0.5 pp), docs/results/2026-09-28-slurp-node-information-gain-ledger.md"
+      },
+      "claim": "nominated",
+      "claims_benefit": false,
+      "conversion_basis": "the presence gain of a forced three-candidate list and its conversion are UNMEASURED; spec section 6 notes only the 270 Fold A rows with lists of one (35) or two (235) can change (row 139: no prior, so the declaration is 0.0 nominated with the ceiling beside)",
+      "expected_effect_pp": 0.0,
+      "level": 2,
+      "measurement_design": "same-flight-perception-variant",
+      "note": "Phase-2 cell P-SV-2 (level 2, K = 3). Expected effect declared from the ledger's measured numbers: ceiling the 49 wrong rows with gold in the boundary block but off Perception's list on Fold A (4.54 pp presence ceiling); at the ledger's rank-3 conversion 12.0 % the delivered-intent ceiling is about 6 rows (about 0.5 pp), docs/results/2026-09-28-slurp-node-information-gain-ledger.md; conversion basis: the presence gain of a forced three-candidate list and its conversion are UNMEASURED; spec section 6 notes only the 270 Fold A rows with lists of one (35) or two (235) can change (row 139: no prior, so the declaration is 0.0 nominated with the ceiling beside). expected_effect_pp 0.0 sits below this design's provisional floor 0.3163 pp (0.735 x sqrt(200 / 1080), the ROLL-AA anchor the gate registers for same-flight-perception-variant), so claims_benefit is false; the read's bar is the twin (T) null measured in this flight, per metric |T - A offset| + its CI95 half-width. The delivered row is branch A: delivered intent and SLU are identical by construction at the request level (reported, never contrasted). Tuning roster TRAIN Fold A (the node ledger shaped the design), read roster TRAIN Fold B (ruling O2; owner decision 186: rollout-exposed only, no branch value built from Fold B rollouts).",
+      "primary_metric": "gold-on-list (present) in the branch Perception note (primary, a presence measurement; coordinator ruling O4): B (min_candidates 3) minus A; official intent accuracy of the level-2 branch Solver column reported beside, never gating; gold rank and list size beside",
+      "provisional_floor_pp": {
+        "arithmetic": "0.735 * sqrt(200 / 1080) = 0.3163 pp (ROLL-AA anchor, provisional)",
+        "intent_accuracy": 0.0,
+        "slu_f1": 0.3163
+      },
+      "read_bar": "|twin offset| + twin CI95 half-width, per metric, measured in this flight (ruling O6: one twin)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 1080,
+      "tuning_roster": "SLURP-EVO-FOLD-A-V2",
+      "variant_cost": {
+        "extra_audio_seconds": 12619.19,
+        "extra_audio_seconds_per_row_mean": 11.6844,
+        "extra_contacts_per_row": 4,
+        "extra_perception_contacts_per_row": 2,
+        "extra_solver_contacts_per_row": 2,
+        "note": "K - 1 = 2 non-A branches (B and the twin T), each one Perception contact at the one Perception visit and one Solver contact at the first Solver visit (level 2); every contact re-sends the row's speech packet, so 2 x row audio per branch, 4 x the Fold B total 3154.797375 s per flight"
+      }
+    }
+  },
+  "study_commit_at_registration": "6a2a62624",
+  "the_cell": {
+    "base": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1), re-targeted Fold A -> Fold B as the filler family re-pointed it",
+    "branch_block": {
+      "branches": [
+        {
+          "branch_id": "b-list3",
+          "max_supplied_items": 10,
+          "min_candidates": 3
+        },
+        {
+          "branch_id": "t-twin",
+          "max_supplied_items": 10,
+          "replicate_of": "a-agree"
+        },
+        {
+          "branch_id": "a-agree",
+          "deliver": true,
+          "max_supplied_items": 10
+        }
+      ],
+      "fit_estimate": {
+        "base_prompt_tokens": 2577,
+        "completion_ceiling": 512,
+        "slot_tokens": 24576,
+        "tokens_per_supplied_item": 149
+      },
+      "level": 2
+    },
+    "branches": {
+      "a-agree": "A, delivering, LAST, no axis: AGREE's Perception evidence as flown (intent-boundaries k 60, fuse 8/1/8, rank w_cos 1.0 / w_prior 0.0 / w_agree 1.0 over the Fold B agreement table); continues through Solver/Reviewer/Planner and delivers",
+      "b-list3": "B, one axis: response-contract min_candidates 3 (slurp-intent-hypotheses-v1; max_candidates 3) -- the same boundary ids as A, a forced three-candidate hypothesis list",
+      "t-twin": "T, replicate_of a-agree: no axis, A's request byte for byte in the same batch -- the read's own null (ruling O6: one twin)"
+    },
+    "estimand": "per branch, the Perception note (gold rank / present / top1, offline) and the level-2 branch Solver answer at the first Solver visit; never the delivered full-system answer",
+    "fold_b_retarget": {
+      "agreement_table": {
+        "ledger_row": "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1",
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
+        "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+      },
+      "boundary_query_and_content_query": "copied from configs/baseline/slurp-native-stage3-filler-fold-b-c01-baseline-v1.json (the filler family's Fold B pins)",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "inputs_readme": "docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md",
+      "roster": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "split_id": "SLURP-EVO-FOLD-B-V2"
+    },
+    "program_switch": "policy phase-native-candidates-review-revise-v1 (ceiling 11) -> phase-native-candidates-review-revise-pbranch3-l2-v1 (ceiling 15 = 11 + 2 (K - 1), K = 3, level 2; the fragments differ only in program_id and max_contacts)"
+  }
+}
