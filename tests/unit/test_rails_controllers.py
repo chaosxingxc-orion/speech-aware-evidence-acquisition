@@ -153,6 +153,20 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-variants3first-v1": (
         ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
     ),
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md section 5, item 8): the review-revise program (anchor 11)
+    # with the Perception visit fanned out to K = 3 declared branches, level 1
+    # (note only): the ceiling is the anchor's 11 + (K - 1) = 13.
+    "phase-native-candidates-review-revise-pbranch3-l1-v1": (
+        ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
+    ),
+    # Same-flight instrument, PHASE 2: the same shape at level 2 (note + one
+    # Solver contact per non-A branch) instead of level 1: the ceiling is the
+    # anchor's 11 + 2 (K - 1) = 15.
+    "phase-native-candidates-review-revise-pbranch3-l2-v1": (
+        ("perception", "reviewer", "planner", "solver"), 15, "native-role-episode"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the
     # review-revise program with ONE declared cleaning boundary, so the
     # ceiling is 1 + (1+1)*(1 + 3 + 1 + 1) = 13.
