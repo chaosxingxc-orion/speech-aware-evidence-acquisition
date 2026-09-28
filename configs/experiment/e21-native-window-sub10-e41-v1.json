@@ -29,9 +29,17 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
+        "state": "ready",
         "reason": "E41 sub10 re-read (2026-09-27): registered before contact; flies ONLY after the E41 four-row dry run's receipts read holds R1-R3; decision id e21-native-window-e41-sub10-admission-v1 at coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json; held until root mints and flips.",
-        "requirements": []
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "e21-native-window-e41-sub10-admission-v1",
+            "relpath": "coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json",
+            "sha256": "631e2a4406136696d8e590b5f9ffcbef9d81ab9806da514a669af28400f9e00f",
+            "reason": "Decision e21-native-window-e41-sub10-admission-v1 pinned by scripts/flights/repin_cell.py."
+          }
+        ]
       },
       "execution_plan": {
         "split_role": "discovery",
