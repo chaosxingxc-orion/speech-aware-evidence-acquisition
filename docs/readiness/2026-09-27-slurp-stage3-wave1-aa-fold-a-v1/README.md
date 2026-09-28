@@ -1,6 +1,6 @@
 # The knowledge wave's shared in-chain A/A (owner decision 164)
 
-Registered before contact 2026-09-27 at study commit `8cb78788ad74582ac769b9bb7e1631bf31148c56`; the cell is **held**.
+Registered before contact 2026-09-27 at study commit `df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186`; the cell is **held**.
 Nothing here authorises a flight, a flip or an admission entry.
 
 **What it is.** `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1`: the retained AGREE arm `SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1` (intent 85.8333 /
@@ -11,7 +11,7 @@ fragments are per-flight bookkeeping and the dropped `prepared_phase_supply` pin
 cell's own, which must carry the AGREE output digest `eab5c61e...`).
 
 **Byte identity** (`scripts/flights/wave/wave_shared_aa_proof.py`, the decision-160 proof pointed at the pair (wave A/A, AGREE arm), model-free):
-**IDENTICAL** at study commit `ed7b87c6` -- composed-config classes {"bookkeeping": 30, "supply-pin": 2}; prepared supply output digests A/A `eab5c61e` and AGREE `eab5c61e` (equal to the registered digest and to the AGREE arm's committed artifact: True); request bytes over the first 120 rows, 663 contacts: payload and POST body identical under one run id True, POST body identical under own run ids True. Receipt: [`shared-aa-proof-v1.json`](shared-aa-proof-v1.json).
+**IDENTICAL** at study commit `df8ccf9c` -- composed-config classes {"bookkeeping": 30, "supply-pin": 2}; prepared supply output digests A/A `eab5c61e` and AGREE `eab5c61e` (equal to the registered digest and to the AGREE arm's committed artifact: True); request bytes over the first 120 rows, 663 contacts: payload and POST body identical under one run id True, POST body identical under own run ids True. Receipt: [`shared-aa-proof-v1.json`](shared-aa-proof-v1.json).
 
 **Who reads at it.**
 

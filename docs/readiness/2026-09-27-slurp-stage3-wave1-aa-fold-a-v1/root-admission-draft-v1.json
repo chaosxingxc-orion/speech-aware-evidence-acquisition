@@ -20,7 +20,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "9d899f2fba641d73728835f0d2f0d6cd598e0c2b814e6172c10f29792a53fef3"
+      "sha256": "0119aeceae71f960989826cd62a655837933adae0f3e4d1cda5b83d6522bacdd"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/README.md",
@@ -28,12 +28,12 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/registered-facts-v1.json",
-      "sha256": "4bb18e1bdfa5e4c25966c612d89fd1b2422d6cb5b80a7f81c9b6b348a6976729"
+      "sha256": "a24b48631d9cab0ecf77523e4106dd8073ca13e50e365f9e389c1f0120c8c620"
     },
-    "registration_base_commit": "8cb78788ad74582ac769b9bb7e1631bf31148c56",
+    "registration_base_commit": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
     "shared_aa_proof": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/shared-aa-proof-v1.json",
-      "sha256": "d72782951ae104ba5bf587fbdfc4c5a9e10cc74cebdd9eeac52960a2764227b2"
+      "sha256": "8f6da7fc7169b4da30e790a9b9939408097846e3b71293a61df4e0e72c5b457a"
     }
   },
   "authorization_basis": "Owner decision 164 (the knowledge wave, one shared in-chain A/A of the AGREE arm's own bytes), 160 (the shared-A/A precedent), 161 (AGREE retained); standing: 25, 28, 77, 86, 101, and docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",

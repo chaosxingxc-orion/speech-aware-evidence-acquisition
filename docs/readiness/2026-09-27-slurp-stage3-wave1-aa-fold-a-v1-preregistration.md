@@ -1,6 +1,6 @@
 # The knowledge wave's shared in-chain A/A: preregistration
 
-Registered 2026-09-27 at study commit `8cb78788ad74582ac769b9bb7e1631bf31148c56`, before any contact, from the retained AGREE
+Registered 2026-09-27 at study commit `df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186`, before any contact, from the retained AGREE
 fragments by script (`scripts/flights/wave/derive_slurp_wave_aa_cell.py`, decision 58), under owner decisions 160, 161 and 164. Development numbers only
 (owner decisions 28 and 86); never a test claim.
 

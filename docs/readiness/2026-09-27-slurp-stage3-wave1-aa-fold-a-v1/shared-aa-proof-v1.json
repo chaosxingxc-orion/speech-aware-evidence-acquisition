@@ -288,7 +288,7 @@
     "server": 0,
     "tokenizer": 0
   },
-  "generated_at_utc": "2026-09-27T23:55:48.908877+00:00",
+  "generated_at_utc": "2026-09-28T00:10:52.747459+00:00",
   "hash_quoting": "64-hex identities other than the prepared-supply output digests and the study commit are quoted as sha256-prefix16:<first 16 hex> (core.flight.repin rewrites package JSON from old identity hashes to new ones at the flip and refuses any old hash left under docs/); the full values are recomputable from study_commit",
   "owner_decision": 164,
   "precedent": "owner decision 160 (scripts/flights/comp1/comp1_g5_shared_aa_proof.py)",
@@ -338,7 +338,7 @@
       "file_sha256": "sha256-prefix16:e0edc080a3c3b5b6",
       "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
       "rows_seeded": 1080,
-      "seconds": 42.7,
+      "seconds": 28.9,
       "selected_value_ids": 8624
     }
   },
@@ -355,8 +355,8 @@
         },
         "rows_dispatched": 120,
         "rows_revised_by_canned_planner": 61,
-        "seconds": 155.3,
-        "wire_check_run_id": "WIRECHECK-WAVE1-SHARED-AA-PROOF-1790553018677"
+        "seconds": 127.3,
+        "wire_check_run_id": "WIRECHECK-WAVE1-SHARED-AA-PROOF-1790553937395"
       },
       "comparison": {
         "contacts_agree_arm": 663,
@@ -382,8 +382,8 @@
         },
         "rows_dispatched": 120,
         "rows_revised_by_canned_planner": 61,
-        "seconds": 150.0,
-        "wire_check_run_id": "WIRECHECK-WAVE1-SHARED-AA-PROOF-1790553018677"
+        "seconds": 127.4,
+        "wire_check_run_id": "WIRECHECK-WAVE1-SHARED-AA-PROOF-1790553937395"
       }
     },
     "method": "the decision-160 method verbatim (P160.capture_requests): FlightRuntime._dispatch_phase_program(model_free_check=True) on each cell's own composed fragments, against the composed model fragment's REAL llama-server transport with its POST replaced by a fake server that records the body bytes and answers a canned, role-appropriate completion; a fake session receipt bound to the fragment's decoder identity; keyed by (sample_id, contact_id); dispatched serially",
@@ -398,8 +398,8 @@
         },
         "rows_dispatched": 120,
         "rows_revised_by_canned_planner": 61,
-        "seconds": 133.8,
-        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1-1790553205097"
+        "seconds": 121.3,
+        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1-1790554082960"
       },
       "comparison": {
         "contacts_agree_arm": 663,
@@ -446,8 +446,8 @@
         },
         "rows_dispatched": 120,
         "rows_revised_by_canned_planner": 61,
-        "seconds": 149.7,
-        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1-1790553033559"
+        "seconds": 120.8,
+        "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1-1790554082972"
       }
     },
     "rows": 120,
@@ -455,21 +455,21 @@
       "contacts": 66,
       "keys_equal": true,
       "payload_fields_differing": {
-        "decoding_params.id_slot": 4,
-        "evidence_provenance[].relpath": 44,
+        "decoding_params.id_slot": 34,
+        "evidence_provenance[].relpath": 49,
         "history[].source_query_state_sha256": 54,
-        "request_id": 44
+        "request_id": 49
       },
       "post_body_fields_differing": {
-        "id_slot": 4
+        "id_slot": 34
       },
       "rows": 12,
       "what": "the wave A/A dispatched twice, both at the production concurrency (np4 geometry: four slots, queue depth 16), each under its own scratch run id; the number of contacts on which each field differs between the two dispatches of the SAME cell. These fields are assigned by arrival order (request_id, the rails-message/<request_id>/ provenance relpaths, the slot id) or derived from the run id (source_query_state_sha256), which is why the A/A comparison dispatches serially and reads the run-id-derived field separately"
     }
   },
   "schema": "saea-wave1-shared-aa-proof-v1",
-  "scratch": "/home/chao/wave-aa-proof-scratch",
-  "study_commit": "ed7b87c6b4d25d74b0dece3545b3322fe74232f9",
+  "scratch": "/home/chao/wave-aa-proof-scratch2",
+  "study_commit": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
   "tool": "scripts/flights/wave/wave_shared_aa_proof.py",
   "verdict": "IDENTICAL"
 }

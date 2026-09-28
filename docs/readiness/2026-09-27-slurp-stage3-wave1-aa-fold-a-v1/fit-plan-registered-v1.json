@@ -31,7 +31,7 @@
   },
   "one_factor": "none: the retained AGREE arm's bytes, re-flown",
   "plan_kind": "fit",
-  "preparation_base_commit": "8cb78788ad74582ac769b9bb7e1631bf31148c56",
+  "preparation_base_commit": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
   "prepared_phase_supply": {
     "expected_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
     "note": "the flip mints this cell's own supply under its own run id (item E16); a different output digest means the Perception channel moved -- stop and report",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "9d899f2fba641d73728835f0d2f0d6cd598e0c2b814e6172c10f29792a53fef3"
+    "sha256": "0119aeceae71f960989826cd62a655837933adae0f3e4d1cda5b83d6522bacdd"
   },
   "purpose": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-FIT-V1: the knowledge wave's shared in-chain A/A. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for this A/A and for the arm being read.",

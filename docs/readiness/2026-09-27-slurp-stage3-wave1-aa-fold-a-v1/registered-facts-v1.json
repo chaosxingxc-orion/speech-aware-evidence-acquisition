@@ -41,7 +41,7 @@
       "relpath": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/shared-aa-proof-v1.json",
       "rows_dispatched": 120,
       "status": "PROVEN",
-      "study_commit": "ed7b87c6b4d25d74b0dece3545b3322fe74232f9",
+      "study_commit": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
       "supply_equal_registered_and_committed": true,
       "supply_output_sha256": {
         "agree_arm": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
@@ -307,7 +307,7 @@
       "rows": 1080
     }
   },
-  "study_commit_at_registration": "8cb78788ad74582ac769b9bb7e1631bf31148c56",
+  "study_commit_at_registration": "df8ccf9ceb40b8f63cf2d927e9ba0ca93bc86186",
   "the_cell": {
     "readers": {
       "W1": {
