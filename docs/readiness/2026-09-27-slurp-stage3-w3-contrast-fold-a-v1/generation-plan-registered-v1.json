@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-w3-fold-a-v1",
-  "composed_config_hash": "3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046",
+  "composed_config_hash": "55bf8f6c8b11d2134155e3e9187be679256696c23fa95fde69dc3035818b7ec2",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-w3-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88",
+    "protocol_hash": "30e287d1cdad308f1521c00fe53fdbffa5b69a9a73901809e838b41d655c4564",
     "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "6238e3c888dbf615578a80797c24e3d786d6c47c3d189b624a486a9e41d0360c"
+    "sha256": "05b19279c1918fbb4175180e3b3ffd402691d67328169fe9359e09f4fbf01760"
   },
   "purpose": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1: Cell W3. NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the intent-accuracy delta (primary, decision 133) is not below -0.9943 pp AND the paired CI95 lower bound of the official pooled SLU-F1 delta (the guard) is not below -1.2485 pp -- each metric read at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER reported as a gain whatever the point estimate: no measured conversion applies to contrast text, so no expected effect is declared (decision 139). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the delta to the rows the contrast lines newly name (membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W3 arm and the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1. A verdict computed against the sealed AGREE arm alone is refused.",

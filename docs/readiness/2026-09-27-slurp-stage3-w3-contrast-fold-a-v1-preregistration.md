@@ -12,7 +12,7 @@ With the intent cards carrying TRAIN-derived contrast lines in place of boilerpl
 
 ## The arms
 
-- **W3 arm** `SAEA-SLURP-STAGE3-W3-FOLD-A-V1` (cell `slurp-native-stage3-w3-fold-a-v1`, composed `3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046`, protocol `b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88`):
+- **W3 arm** `SAEA-SLURP-STAGE3-W3-FOLD-A-V1` (cell `slurp-native-stage3-w3-fold-a-v1`, composed `55bf8f6c8b11d2134155e3e9187be679256696c23fa95fde69dc3035818b7ec2`, protocol `30e287d1cdad308f1521c00fe53fdbffa5b69a9a73901809e838b41d655c4564`):
   the retained AGREE arm with ONE change (W3a alone): the intent-boundaries store moves to intent-boundaries-contrast-v1: header, activation boundary, authored exclusion and card-specific limitations verbatim; the shared uncertainty sentence and the shared limitation bullet removed; a contrast section against the card's nearest TRAIN-centroid rivals added. The Solver exemplar supply is
   the AGREE arm's own; the first registration's per-intent cap (W3b) is dropped.
 - **Shared in-chain A/A** `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1`: registered by the coordinator, flown in the same chain.

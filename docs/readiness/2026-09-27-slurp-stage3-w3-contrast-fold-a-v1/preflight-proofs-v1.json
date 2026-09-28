@@ -3,7 +3,7 @@
     "arm": {
       "check": {
         "blockers": null,
-        "config_hash": "3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046",
+        "config_hash": "55bf8f6c8b11d2134155e3e9187be679256696c23fa95fde69dc3035818b7ec2",
         "generation_authorized": false,
         "path_outside_git": "/home/chao/w3a-scratch/check-slurp-native-stage3-w3-fold-a-v1.json",
         "per_phase": {
@@ -45,7 +45,7 @@
           }
         },
         "prepared_artifacts_ok": true,
-        "protocol_hash": "b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88",
+        "protocol_hash": "30e287d1cdad308f1521c00fe53fdbffa5b69a9a73901809e838b41d655c4564",
         "readiness": "held",
         "sample_count": 1080,
         "serving_geometry": {

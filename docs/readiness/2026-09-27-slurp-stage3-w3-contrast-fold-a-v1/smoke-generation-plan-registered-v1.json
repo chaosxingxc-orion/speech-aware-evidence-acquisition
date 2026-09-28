@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "6238e3c888dbf615578a80797c24e3d786d6c47c3d189b624a486a9e41d0360c"
+    "sha256": "05b19279c1918fbb4175180e3b3ffd402691d67328169fe9359e09f4fbf01760"
   },
   "purpose": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1: Four-row form smoke of cell W3. Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W3 arm and the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1. A verdict computed against the sealed AGREE arm alone is refused.",

@@ -324,7 +324,7 @@
       "baseline_fragment": "slurp-native-stage3-w3-fold-a-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w3-fold-a-v1",
-      "composed_config_hash": "3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046",
+      "composed_config_hash": "55bf8f6c8b11d2134155e3e9187be679256696c23fa95fde69dc3035818b7ec2",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-w3-fold-a-v1",
@@ -371,7 +371,7 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
-      "protocol_hash": "b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88",
+      "protocol_hash": "30e287d1cdad308f1521c00fe53fdbffa5b69a9a73901809e838b41d655c4564",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
       "solver_exemplar_supply": {
