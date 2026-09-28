@@ -6,10 +6,15 @@
 # Driver: scripts/analysis/rankvis_probe_read.py. Comparator: the sealed AGREE arm
 # (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1), never re-flown; the contrast is per row and offline.
 #
-# GATE: refuses unless every one of the 119 rows verifies on both named stores (intent-boundaries,
-# train-exemplars) that the flown request carries the rank labels and the rendered order equals the
-# recomputed retrieval-rank order (module docstring of the driver). No conversion number is produced
-# on a refusal; a refusal receipt is written instead.
+# GATE (redefined 2026-09-28, coordinator ruling): refuses unless every one of the 119 rows verifies,
+# on both named stores (intent-boundaries, train-exemplars), directly from the sealed MODEL_REQUEST
+# request records the flight itself wrote (<run_id>.trace.jsonl) -- every value line of the store's
+# rendered block carries the rank label, the labelled ranks read 1..n contiguous and increasing in
+# document order, and the count equals the store's delivered count in the sealed phase receipt
+# (module docstring of the driver, rendering_gate). A stricter, OPTIONAL cross-check against a sealed
+# retrieval-rank-inputs sidecar is reported when one exists; no flight seals it today, so its absence
+# alone no longer refuses the read. No conversion number is produced on a refusal; a refusal receipt
+# is written instead.
 #
 # The 89-row synthesis subset and the no-op expectation (never zero) are reported beside the full
 # 119-row read, not separately: the driver's own rate_block/subset_rate.

@@ -97,6 +97,39 @@ EXEMPLARS_RANK_ORDER = (
 )
 
 
+def _rank_labelled_items(store: str, ids: tuple[str, ...], extra_text: str = "") -> list[dict]:
+    """One row's rendered block for ``store``: ids in document order, each
+    carrying the real ``RANK_VISIBLE_LABEL`` (never a duplicated string)."""
+
+    return [
+        {
+            "evidence_id": value_id,
+            "content": rvpr.RANK_VISIBLE_LABEL.format(rank=rank) + "fixture-value-text" + extra_text,
+        }
+        for rank, value_id in enumerate(ids, start=1)
+    ]
+
+
+def _sealed_contacts_for(
+    ids: list[str], *, boundary: tuple[str, ...] = BOUNDARY,
+    exemplars: tuple[str, ...] = EXEMPLARS_RANK_ORDER, extra_text: str = "",
+) -> dict[str, list[dict]]:
+    """One well-formed sealed MODEL_REQUEST contact per sample id: both
+    configured stores rendered with contiguous 1..n rank labels in document
+    order -- the ``sealed_requests`` shape :func:`rvpr.rendering_gate` reads."""
+
+    return {
+        sample_id: [{
+            "sample_id": sample_id,
+            "supplied_evidence": (
+                _rank_labelled_items("intent-boundaries", boundary, extra_text)
+                + _rank_labelled_items("train-exemplars", exemplars, extra_text)
+            ),
+        }]
+        for sample_id in ids
+    }
+
+
 def _rank_inputs_row() -> dict:
     return {
         "snapshot_sha256": "5" * 64,
@@ -143,64 +176,176 @@ def test_recomputed_exemplar_order_matches_the_real_reorder_function():
 
 def test_rendering_gate_verifies_every_row_when_everything_agrees():
     roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1", "s2", "s3"])
-    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs)
+    sealed = _sealed_contacts_for(["s1", "s2", "s3"])
+    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs, sealed)
     assert gate["all_rows_verified"] is True
     assert gate["stores"]["intent-boundaries"]["rows_verified"] == 3
     assert gate["stores"]["train-exemplars"]["rows_verified"] == 3
-    assert gate["stores"]["train-exemplars"]["sidecar_present"] is True
+    assert gate["stores"]["train-exemplars"]["sidecar_stricter_check"]["sidecar_present"] is True
 
 
-def test_rendering_gate_refuses_on_a_moved_boundary_seed():
-    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
-    # The probe's own sealed seed differs from the comparator's -- the
-    # treatment must never touch this store's bytes.
-    probe["phase_results"]["s1"] = _phase_result(
-        ("intent-boundaries::OTHER",), BOUNDARY + EXEMPLARS_RANK_ORDER
-    )
-    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs)
-    assert gate["all_rows_verified"] is False
-    assert gate["stores"]["intent-boundaries"]["rows_mismatched"] == 1
-    assert gate["stores"]["intent-boundaries"]["rows_verified"] == 0
-
-
-def test_rendering_gate_refuses_on_a_dropped_or_added_exemplar():
-    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
-    probe["phase_results"]["s1"] = _phase_result(
-        BOUNDARY, BOUNDARY + ("train-exemplars::e1", "train-exemplars::e2", "train-exemplars::NEW")
-    )
-    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs)
-    assert gate["all_rows_verified"] is False
-    assert gate["stores"]["train-exemplars"]["rows_set_mismatched"] == 1
-    assert gate["stores"]["train-exemplars"]["rows_verified"] == 0
-
-
-def test_rendering_gate_refuses_when_the_order_is_still_lexicographic():
-    """The set is right (nothing dropped or added) but the rendered order is
-    today's lexicographic order, not the recomputed retrieval-rank order --
-    exactly the pre-RANKVIS bug this cell exists to fix."""
-
-    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
-    probe["phase_results"]["s1"] = _phase_result(BOUNDARY, BOUNDARY + EXEMPLARS_TODAY)
-    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs)
-    assert gate["all_rows_verified"] is False
-    assert gate["stores"]["train-exemplars"]["rows_order_mismatched"] == 1
-    assert gate["stores"]["train-exemplars"]["rows_verified"] == 0
-
-
-def test_rendering_gate_refuses_when_no_sidecar_is_sealed():
-    """RANKVIS has not flown; no sealed run carries the sidecar today, so the
-    gate must refuse rather than approve on an unverifiable row -- report the
-    count of rows verified (zero) rather than silently pass."""
+def test_rendering_gate_passes_without_a_sidecar_when_the_sealed_requests_carry_the_labels():
+    """The bug RANKVIS exists to fix: no flight seals the sidecar today, but
+    the gate's own definition (2026-09-28 ruling) is the rank labels in the
+    sealed requests themselves, so the sidecar's absence alone must not
+    refuse the read."""
 
     roster, probe, comparator, _rank_inputs = _base_roster_probe_comparator(["s1", "s2"])
-    gate = rvpr.rendering_gate(roster, probe, comparator, None)
-    assert gate["all_rows_verified"] is False
-    assert gate["stores"]["train-exemplars"]["sidecar_present"] is False
-    assert gate["stores"]["train-exemplars"]["rows_unverifiable_no_sidecar_row"] == 2
-    assert gate["stores"]["train-exemplars"]["rows_verified"] == 0
-    # The unaffected store is still verified: a partial gate still reports
-    # what it could check.
+    sealed = _sealed_contacts_for(["s1", "s2"])
+    gate = rvpr.rendering_gate(roster, probe, comparator, None, sealed)
+    assert gate["all_rows_verified"] is True
+    assert gate["stores"]["train-exemplars"]["sidecar_stricter_check"]["sidecar_present"] is False
+    assert gate["stores"]["train-exemplars"]["sidecar_stricter_check"]["rows_unverifiable_no_sidecar_row"] == 2
+    assert gate["stores"]["train-exemplars"]["rows_verified"] == 2
     assert gate["stores"]["intent-boundaries"]["rows_verified"] == 2
+
+
+def test_rendering_gate_seed_and_sidecar_checks_are_informational_only():
+    """A moved seed, a dropped/added exemplar, or a lexicographic (not
+    retrieval-rank) exemplar order no longer refuse the read by themselves --
+    they are reported beside the primary rank-label check, never folded into
+    ``all_rows_verified``."""
+
+    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
+    # The probe's own sealed seed differs from the comparator's, and the
+    # sealed exemplar ids are today's lexicographic order (not what the
+    # sidecar would recompute) -- neither moves the rank-labelled request.
+    probe["phase_results"]["s1"] = _phase_result(
+        ("intent-boundaries::OTHER",), BOUNDARY + EXEMPLARS_TODAY
+    )
+    sealed = _sealed_contacts_for(["s1"], exemplars=EXEMPLARS_TODAY)
+    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs, sealed)
+    assert gate["all_rows_verified"] is True
+    assert gate["stores"]["intent-boundaries"]["seed_equality_note"]["rows_mismatched"] == 1
+    assert gate["stores"]["train-exemplars"]["sidecar_stricter_check"]["rows_order_mismatched"] == 1
+
+
+def test_rendering_gate_fails_a_row_missing_the_rank_label():
+    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
+    sealed = _sealed_contacts_for(["s1"])
+    sealed["s1"][0]["supplied_evidence"][0]["content"] = "no label here"
+    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs, sealed)
+    assert gate["all_rows_verified"] is False
+    assert gate["stores"]["intent-boundaries"]["rows_failed"] == 1
+    assert gate["stores"]["intent-boundaries"]["failed_rows"] == [
+        {"sample_id": "s1", "store": "intent-boundaries"}
+    ]
+    # The unaffected store still passes: a partial failure still reports
+    # what it could verify.
+    assert gate["stores"]["train-exemplars"]["rows_verified"] == 1
+
+
+def test_rendering_gate_fails_a_row_with_a_non_monotone_rank():
+    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
+    sealed = _sealed_contacts_for(["s1"])
+    items = sealed["s1"][0]["supplied_evidence"]
+    # Swap the two intent-boundaries ranks: document order now reads 2, 1.
+    items[0]["content"], items[1]["content"] = items[1]["content"], items[0]["content"]
+    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs, sealed)
+    assert gate["all_rows_verified"] is False
+    assert gate["stores"]["intent-boundaries"]["rows_failed"] == 1
+    assert gate["stores"]["intent-boundaries"]["failed_rows"] == [
+        {"sample_id": "s1", "store": "intent-boundaries"}
+    ]
+
+
+def test_rendering_gate_fails_a_row_with_a_count_mismatch():
+    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
+    sealed = _sealed_contacts_for(["s1"])
+    # Drop the last train-exemplars item: the rendered block now carries 2
+    # values (still labelled 1..2), not the 3 the sealed phase receipt
+    # (final_query_state) says were delivered.
+    del sealed["s1"][0]["supplied_evidence"][-1]
+    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs, sealed)
+    assert gate["all_rows_verified"] is False
+    assert gate["stores"]["train-exemplars"]["rows_failed"] == 1
+    assert gate["stores"]["train-exemplars"]["failed_rows"] == [
+        {"sample_id": "s1", "store": "train-exemplars"}
+    ]
+
+
+def test_rendering_gate_fails_a_row_with_no_sealed_request_at_all():
+    roster, probe, comparator, rank_inputs = _base_roster_probe_comparator(["s1"])
+    gate = rvpr.rendering_gate(roster, probe, comparator, rank_inputs, {})
+    assert gate["all_rows_verified"] is False
+    assert gate["stores"]["intent-boundaries"]["rows_failed"] == 1
+    assert gate["stores"]["train-exemplars"]["rows_failed"] == 1
+
+
+# ---------------------------------------------------------------------------
+# 2b. rank_label_report -- the primary check's pure function, no sealed run
+# or gate needed. Fixtures for pass, a missing label, a non-monotone rank,
+# and a count mismatch (the four cases the coordinator ruling names).
+# ---------------------------------------------------------------------------
+
+
+def test_rank_label_report_verifies_a_well_formed_block():
+    contacts = [{"supplied_evidence": _rank_labelled_items("train-exemplars", EXEMPLARS_RANK_ORDER)}]
+    report = rvpr.rank_label_report(contacts, "train-exemplars", delivered_count=3)
+    assert report == {
+        "contact_found": True, "rendered_count": 3, "unlabelled_count": 0,
+        "ranks_ok": True, "count_matches_receipt": True, "delivered_count": 3,
+        "verified": True,
+    }
+
+
+def test_rank_label_report_fails_on_a_missing_label():
+    items = _rank_labelled_items("train-exemplars", EXEMPLARS_RANK_ORDER)
+    items[1]["content"] = "no rank label at all"
+    contacts = [{"supplied_evidence": items}]
+    report = rvpr.rank_label_report(contacts, "train-exemplars", delivered_count=3)
+    assert report["verified"] is False
+    assert report["unlabelled_count"] == 1
+    assert report["ranks_ok"] is False
+
+
+def test_rank_label_report_fails_on_a_non_monotone_rank():
+    items = _rank_labelled_items("train-exemplars", EXEMPLARS_RANK_ORDER)
+    items[1]["content"], items[2]["content"] = items[2]["content"], items[1]["content"]
+    contacts = [{"supplied_evidence": items}]
+    report = rvpr.rank_label_report(contacts, "train-exemplars", delivered_count=3)
+    assert report["verified"] is False
+    assert report["unlabelled_count"] == 0
+    assert report["ranks_ok"] is False
+
+
+def test_rank_label_report_fails_on_a_count_mismatch():
+    contacts = [{"supplied_evidence": _rank_labelled_items("train-exemplars", EXEMPLARS_RANK_ORDER)}]
+    report = rvpr.rank_label_report(contacts, "train-exemplars", delivered_count=4)
+    assert report["verified"] is False
+    assert report["ranks_ok"] is True
+    assert report["count_matches_receipt"] is False
+
+
+def test_rank_label_report_uses_the_first_contact_that_carries_the_store():
+    later = {"supplied_evidence": _rank_labelled_items("train-exemplars", EXEMPLARS_RANK_ORDER)}
+    earlier_wrong = {"supplied_evidence": [{"evidence_id": "train-exemplars::v1", "content": "no label"}]}
+    contacts = [earlier_wrong, later]
+    report = rvpr.rank_label_report(contacts, "train-exemplars", delivered_count=1)
+    assert report["verified"] is False  # the FIRST carrying contact is checked, not the later well-formed one
+    assert report["rendered_count"] == 1
+
+
+def test_rank_label_report_ignores_other_stores_items():
+    items = _rank_labelled_items("train-exemplars", EXEMPLARS_RANK_ORDER) + [
+        {"evidence_id": "intent-boundaries::b1", "content": "garbage, wrong store"}
+    ]
+    contacts = [{"supplied_evidence": items}]
+    report = rvpr.rank_label_report(contacts, "train-exemplars", delivered_count=3)
+    assert report["verified"] is True
+    assert report["rendered_count"] == 3
+
+
+def test_rank_label_report_missing_store_entirely_matches_a_zero_receipt():
+    report = rvpr.rank_label_report([{"supplied_evidence": []}], "train-exemplars", delivered_count=0)
+    assert report["contact_found"] is False
+    assert report["verified"] is True
+
+
+def test_rank_label_report_missing_store_entirely_fails_a_nonzero_receipt():
+    report = rvpr.rank_label_report([{"supplied_evidence": []}], "train-exemplars", delivered_count=3)
+    assert report["contact_found"] is False
+    assert report["verified"] is False
 
 
 # ---------------------------------------------------------------------------
@@ -405,7 +550,30 @@ def _write_sidecar(data_root: Path, run_id: str, attempt_id: str) -> None:
     )
 
 
-def _build_end_to_end(tmp_path: Path) -> tuple[Path, Path]:
+def _write_sealed_trace(
+    data_root: Path, *, run_id: str, attempt_id: str, ids: list[str], extra_text: str = "",
+) -> None:
+    """The sealed run's own append-only MODEL_REQUEST trace
+    (``core.tracing.TraceSink``): one JSON line per row's sole contact,
+    carrying a well-formed rank-labelled block for both configured stores --
+    the rendering gate's primary evidence since the 2026-09-28 ruling."""
+
+    run_dir = data_root / "runs" / run_id / attempt_id
+    sealed = _sealed_contacts_for(ids, extra_text=extra_text)
+    lines = []
+    for sample_id in ids:
+        payload = sealed[sample_id][0]
+        record = {
+            "channel": "MODEL_REQUEST",
+            "record_id": f"{sample_id}/request",
+            "payload": {"arm": "synthetic-test-arm", "payload": payload, "payload_sha256": "0" * 64},
+        }
+        lines.append(json.dumps(record, sort_keys=True))
+    run_dir.mkdir(parents=True, exist_ok=True)
+    (run_dir / f"{run_id}.trace.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _build_end_to_end(tmp_path: Path, *, extra_text: str = "") -> tuple[Path, Path]:
     repo = tmp_path / "repo"
     data_root = tmp_path / "data"
     _write_registered_package(repo)
@@ -434,6 +602,10 @@ def _build_end_to_end(tmp_path: Path) -> tuple[Path, Path]:
         final_ids_by_id={sid: BOUNDARY + EXEMPLARS_RANK_ORDER for sid in ROSTER_IDS},
     )
     _write_sidecar(data_root, rvpr.PROBE_RUN_ID, attempt_id)
+    _write_sealed_trace(
+        data_root, run_id=rvpr.PROBE_RUN_ID, attempt_id=attempt_id, ids=ROSTER_IDS,
+        extra_text=extra_text,
+    )
     return repo, data_root
 
 
@@ -463,10 +635,30 @@ def test_end_to_end_happy_path_reads_m_and_verifies_the_gate(tmp_path, capsys):
     assert "written under" in printed
 
 
-def test_end_to_end_refuses_without_the_sidecar(tmp_path):
+def test_end_to_end_passes_without_the_sidecar_when_sealed_requests_carry_the_labels(tmp_path):
+    """The bug RANKVIS exists to fix: no flight seals the sidecar today, and
+    the 2026-09-28 ruling's fix is that the read no longer refuses merely
+    for that -- the gate's own definition is the rank labels in the sealed
+    requests themselves, which the fixture's sealed trace already carries."""
+
     repo, data_root = _build_end_to_end(tmp_path)
     sidecar = data_root / "runs" / rvpr.PROBE_RUN_ID / "attempt-synthetic-rankvis-generation-v1" / f"{rvpr.PROBE_RUN_ID}.retrieval-rank-inputs.json"
     sidecar.unlink()
+    output_root = tmp_path / "out"
+    status = _run_driver(repo, data_root, output_root)
+    assert status == 0
+    result = json.loads((output_root / "read-v1.json").read_text(encoding="utf-8"))
+    assert result["rendering_gate"]["all_rows_verified"] is True
+    assert result["rendering_gate"]["stores"]["train-exemplars"]["sidecar_stricter_check"]["sidecar_present"] is False
+
+
+def test_end_to_end_refuses_when_no_sealed_trace_file_exists(tmp_path):
+    repo, data_root = _build_end_to_end(tmp_path)
+    trace_path = (
+        data_root / "runs" / rvpr.PROBE_RUN_ID / "attempt-synthetic-rankvis-generation-v1"
+        / f"{rvpr.PROBE_RUN_ID}.trace.jsonl"
+    )
+    trace_path.unlink()
     output_root = tmp_path / "out"
     status = _run_driver(repo, data_root, output_root)
     assert status == 2
@@ -474,6 +666,43 @@ def test_end_to_end_refuses_without_the_sidecar(tmp_path):
     assert refusal["refused_at_step"] == 2
     assert refusal["conversion_number_written"] is False
     assert not (output_root / "read-v1.json").exists()
+
+
+def test_end_to_end_refuses_when_a_sealed_request_is_missing_a_rank_label(tmp_path):
+    repo, data_root = _build_end_to_end(tmp_path)
+    trace_path = (
+        data_root / "runs" / rvpr.PROBE_RUN_ID / "attempt-synthetic-rankvis-generation-v1"
+        / f"{rvpr.PROBE_RUN_ID}.trace.jsonl"
+    )
+    lines = trace_path.read_text(encoding="utf-8").splitlines()
+    record = json.loads(lines[0])
+    record["payload"]["payload"]["supplied_evidence"][0]["content"] = "no rank label here"
+    lines[0] = json.dumps(record, sort_keys=True)
+    trace_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    output_root = tmp_path / "out"
+    status = _run_driver(repo, data_root, output_root)
+    assert status == 2
+    refusal = json.loads((output_root / "refusal-v1.json").read_text(encoding="utf-8"))
+    assert refusal["refused_at_step"] == 2
+    assert not (output_root / "read-v1.json").exists()
+
+
+def test_end_to_end_outputs_contain_no_fixture_text(tmp_path, capsys):
+    """The gate parses sealed request text but must only ever emit ids,
+    ranks, counts and booleans -- never the fixture's own content string."""
+
+    marker = "FIXTURE-CONTENT-MUST-NEVER-LEAK-9f3c2a"
+    repo, data_root = _build_end_to_end(tmp_path, extra_text=marker)
+    output_root = tmp_path / "out"
+    status = _run_driver(repo, data_root, output_root)
+    assert status == 0
+    json_text = (output_root / "read-v1.json").read_text(encoding="utf-8")
+    markdown_text = (output_root / "read-v1.md").read_text(encoding="utf-8")
+    printed = capsys.readouterr().out
+    assert marker not in json_text
+    assert marker not in markdown_text
+    assert marker not in printed
 
 
 def test_end_to_end_refuses_when_a_comparator_row_is_not_intent_wrong(tmp_path):

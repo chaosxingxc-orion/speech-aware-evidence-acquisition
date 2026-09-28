@@ -24,7 +24,10 @@ followed step by step, refusals honoured before any number is written:
      is what names the flown attempt and the composed config hash: this
      driver refuses before that file exists, i.e. before the cell is
      flipped);
-  2. THE RENDERING GATE, two parts:
+  2. THE RENDERING GATE, redefined 2026-09-28 (coordinator ruling, Fable 5.1):
+     what PROVES a rendering claim is that the rank labels and the
+     retrieval-rank order actually appear in the flown requests -- not
+     merely that the config declares them. Two parts:
        (a) the registered baseline fragment -- the one byte the flown config
            differs from AGREE's by -- declares the expected
            ``knowledge_value_rendering`` block (order retrieval-rank,
@@ -32,25 +35,43 @@ followed step by step, refusals honoured before any number is written:
            it renders EVERY value of those stores with the
            ``retrieval rank <r>: `` label, by construction of the merged and
            unit-tested renderer (tests/unit/test_knowledge_value_rendering.py);
-       (b) PER ROW and per named store, the flown order equals the
-           recomputed retrieval-rank order:
-             - ``intent-boundaries`` never reorders under this key (the
-               associated-values fuser already delivers it in rank order,
-               proven once by the roster derivation's own Proof B), so the
-               check is that the probe's own sealed first-phase seed
-               (``initial_query_state.retrieved_value_ids``, filtered to this
-               store) equals the same row's sealed AGREE seed -- the
-               treatment changes no byte of the seed, only the label;
-             - ``train-exemplars`` DOES reorder, so its recomputation calls
-               the REAL ``rails.runner.order_supply_by_retrieval_rank`` (the
-               same function ``rails.runner._invoke_native_role_episode``
-               calls at a flight's own supply step, and the same one
-               ``analysis.native_episode_dry_run`` now calls) over a sealed
-               ``retrieval-rank-inputs`` sidecar this driver reads beside the
-               run (schema below); absent that sidecar, or on any mismatch,
-               the row is UNVERIFIED and the read refuses;
+       (b) PER ROW and per named store, read directly from the SEALED
+           REQUEST RECORDS themselves -- ``<run_id>.trace.jsonl`` (the
+           append-only ``core.tracing.TraceSink`` every sealed run already
+           writes), one JSON object per line, filtered to
+           ``channel == "MODEL_REQUEST"``; ``payload["payload"]`` is the
+           exact composed request body the client's transport sent (the
+           same sealed artifact and field names
+           scripts/slurp_knowledge_index_render_proof.py's ``read_rows`` /
+           ``derive_selection`` and scripts/flights/comp1/
+           comp1_g5_shared_aa_proof.py's ``contact_key`` read). Locate the
+           store's rendered block -- its items in ``supplied_evidence`` /
+           ``retrieved_evidence`` whose ``evidence_id`` names that store --
+           in the sealed request body of the first contact that carries it,
+           and assert (i) every value line of the block carries the
+           ``rails.runner.RANK_VISIBLE_LABEL`` rank label, (ii) the labelled
+           ranks are exactly ``1..n`` in document order (contiguous and
+           strictly increasing), (iii) ``n`` equals the store's delivered
+           count in the row's own sealed phase receipt
+           (``final_query_state.retrieved_value_ids``, filtered to the
+           store). This is the gate's own definition and PASSES on (i)-(iii)
+           alone. A stricter, OPTIONAL cross-check for ``train-exemplars``
+           recomputes the expected order through the REAL
+           ``rails.runner.order_supply_by_retrieval_rank`` (the same
+           function ``rails.runner._invoke_native_role_episode`` calls at a
+           flight's own supply step, and the same one
+           ``analysis.native_episode_dry_run`` now calls) over a sealed
+           ``retrieval-rank-inputs`` sidecar this driver reads beside the
+           run when one exists (schema below); no flight seals that sidecar
+           today, so this leg is reported beside the primary one but never
+           required -- its absence no longer refuses the read. Likewise the
+           ``intent-boundaries`` seed-equality note (the probe's own sealed
+           first-phase seed equals the same row's sealed AGREE seed -- the
+           treatment changes no byte of the seed, only the label) is kept
+           and reported, but informational only;
      the read refuses -- and writes a refusal receipt, never a conversion
-     number -- unless every one of the 119 rows is verified on both stores;
+     number -- unless every one of the 119 rows is verified on both stores
+     under (b)'s primary rank-label check;
   3. the official scorer already ran ONCE over the complete manifest at
      finalize (``core.scoring_batch``); this driver READS its sealed
      per-sample ``scenario_action_exact`` and never re-runs it;
@@ -72,7 +93,10 @@ followed step by step, refusals honoured before any number is written:
 THE RETRIEVAL-RANK-INPUTS SIDECAR (schema
 ``saea-rankvis-retrieval-rank-inputs-v1``, this driver's own contract, not
 yet sealed by any flight -- RANKVIS has not flown; see the report this
-driver's caller returns). Expected beside the sealed run at
+driver's caller returns). OPTIONAL since 2026-09-28: it feeds only the
+stricter ``train-exemplars`` cross-check (step 2(b) above), never the
+primary rank-label gate, so its absence does not refuse the read. Expected
+beside the sealed run at
 ``<run_dir>/<run_id>.retrieval-rank-inputs.json``::
 
     {"schema": "saea-rankvis-retrieval-rank-inputs-v1",
@@ -107,6 +131,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 import sys
 from collections import Counter
 from datetime import datetime, timezone
@@ -131,6 +156,7 @@ from speech_aware_evidence_acquisition.rails.knowledge import (  # noqa: E402
     RankResult,
 )
 from speech_aware_evidence_acquisition.rails.runner import (  # noqa: E402
+    RANK_VISIBLE_LABEL,
     order_supply_by_retrieval_rank,
 )
 from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (  # noqa: E402
@@ -167,6 +193,26 @@ EXPECTED_RENDERING = {
     "stores": list(RANK_VISIBLE_STORES),
 }
 RENDERING_SIDECAR_SCHEMA = "saea-rankvis-retrieval-rank-inputs-v1"
+
+#: The sealed run's own append-only request trace (core.tracing.TraceSink);
+#: every COMPLETED run writes one. The channel that carries the exact
+#: composed request body the client's transport sent.
+MODEL_REQUEST_CHANNEL = "MODEL_REQUEST"
+
+#: Derived from rails.runner.RANK_VISIBLE_LABEL ("retrieval rank {rank}: "),
+#: never duplicated: split on the one format field and re-escape the two
+#: literal halves around a digit capture group.
+_RANK_LABEL_PREFIX, _RANK_LABEL_SUFFIX = RANK_VISIBLE_LABEL.split("{rank}")
+RANK_LABEL_RE = re.compile(
+    re.escape(_RANK_LABEL_PREFIX) + r"(\d+)" + re.escape(_RANK_LABEL_SUFFIX)
+)
+
+#: The two payload fields a sealed request's knowledge value blocks travel
+#: in (core.model.transport.render_request_with_receipt's own iteration
+#: order); only ``supplied_evidence`` is populated by the native SLURP
+#: episode this cell reads, but both are checked for the same reason the
+#: transport itself checks both.
+EVIDENCE_PAYLOAD_FIELDS = ("supplied_evidence", "retrieved_evidence")
 
 #: The 2.5 pp bar is a cross-cell owner constant (decision 133); everything
 #: else this driver needs -- the per-row pp headroom, the row threshold, the
@@ -583,6 +629,118 @@ def load_retrieval_rank_inputs(run_dir: Path, run_id: str) -> dict | None:
     return document.get("rows") or {}
 
 
+def load_sealed_model_requests(run_dir: Path, run_id: str) -> dict[str, list[dict]]:
+    """Every row's sealed MODEL_REQUEST contacts, in the flown trace's own
+    order -- the rendering gate's primary evidence (module docstring step
+    2(b)).
+
+    Reads the sealed run's own append-only ``<run_id>.trace.jsonl``
+    (``core.tracing.TraceSink``), one JSON object per line, filtered to
+    ``channel == "MODEL_REQUEST"``. Each such record's shape is
+    ``{"channel": ..., "record_id": ..., "payload": {"arm": ..., "payload":
+    <the composed request body>, "payload_sha256": ...}}``
+    (``core.model.adapter``'s own emit call) -- this is the exact technique
+    scripts/slurp_knowledge_index_render_proof.py's ``read_rows`` and
+    scripts/flights/comp1/comp1_g5_shared_aa_proof.py's ``contact_key``/
+    ``role_of`` use to read a sealed run's own requests back. Grouped by
+    ``sample_id``, contacts kept in file (visit) order per row.
+
+    Every COMPLETED run writes this file; its absence is a real refusal, not
+    an optional leg. Text discipline: only ids, counts and the rank-label
+    prefix are ever read out of a payload here (:func:`rank_label_report`);
+    a value's ``content`` string is matched against a regex and discarded,
+    never returned or logged.
+    """
+
+    path = run_dir / f"{run_id}.trace.jsonl"
+    if not path.is_file():
+        raise ReadRefused(
+            2, f"no sealed trace file for {run_id}: cannot verify the rendering gate "
+            "from the flown requests"
+        )
+    by_sample: dict[str, list[dict]] = {}
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            record = json.loads(line)
+            if record.get("channel") != MODEL_REQUEST_CHANNEL:
+                continue
+            envelope = record.get("payload")
+            if not isinstance(envelope, dict):
+                continue
+            payload = envelope.get("payload")
+            if not isinstance(payload, dict):
+                continue
+            sample_id = str(payload.get("sample_id"))
+            by_sample.setdefault(sample_id, []).append(payload)
+    return by_sample
+
+
+def rank_label_report(contacts: list[dict], store_id: str, delivered_count: int) -> dict:
+    """(i)-(iii) of the rendering gate's primary check (module docstring step
+    2(b)), for one row and one store.
+
+    ``contacts`` is that row's own sealed MODEL_REQUEST payloads, in trace
+    order (:func:`load_sealed_model_requests`). The first contact carrying
+    ANY item of ``store_id`` in ``supplied_evidence``/``retrieved_evidence``
+    is where the store's block is rendered; its items, taken in the document
+    order they appear in those fields (the same field order
+    ``core.model.transport`` itself iterates), are checked: every one must
+    carry the ``rails.runner.RANK_VISIBLE_LABEL`` rank label (i), the
+    labelled ranks must read exactly ``1..n`` in that order -- contiguous
+    AND strictly increasing are both implied by an exact match against
+    ``range(1, n + 1)`` (ii), and ``n`` must equal ``delivered_count``, the
+    store's own count in the row's sealed phase receipt (iii).
+
+    Never raises. Returns counts and booleans only -- no value content is
+    read out of this function.
+    """
+
+    items: list[dict] = []
+    for contact in contacts:
+        found = [
+            item
+            for field in EVIDENCE_PAYLOAD_FIELDS
+            for item in (contact.get(field) or ())
+            if _store_of(str(item.get("evidence_id", ""))) == store_id
+        ]
+        if found:
+            items = found
+            break
+
+    if not items:
+        return {
+            "contact_found": False,
+            "rendered_count": 0,
+            "unlabelled_count": 0,
+            "ranks_ok": delivered_count == 0,
+            "count_matches_receipt": delivered_count == 0,
+            "delivered_count": delivered_count,
+            "verified": delivered_count == 0,
+        }
+
+    ranks: list[int] = []
+    unlabelled = 0
+    for item in items:
+        match = RANK_LABEL_RE.match(str(item.get("content", "")))
+        if match:
+            ranks.append(int(match.group(1)))
+        else:
+            unlabelled += 1
+    ranks_ok = unlabelled == 0 and ranks == list(range(1, len(items) + 1))
+    count_matches_receipt = len(items) == delivered_count
+    return {
+        "contact_found": True,
+        "rendered_count": len(items),
+        "unlabelled_count": unlabelled,
+        "ranks_ok": ranks_ok,
+        "count_matches_receipt": count_matches_receipt,
+        "delivered_count": delivered_count,
+        "verified": ranks_ok and count_matches_receipt,
+    }
+
+
 def _recomputed_exemplar_order(row_inputs: dict, selected_ids: tuple[str, ...]) -> tuple[str, ...]:
     """The real rails.runner.order_supply_by_retrieval_rank over one row's
     sealed retrieval-rank inputs -- reused, never re-implemented."""
@@ -628,22 +786,47 @@ def _recomputed_exemplar_order(row_inputs: dict, selected_ids: tuple[str, ...]) 
 # --------------------------------------------------------------------------- the rendering gate
 
 
-def rendering_gate(roster: dict, probe: dict, comparator: dict, rank_inputs: dict | None) -> dict:
-    """Step 2 of the recipe. Returns a report; never raises by itself -- the
-    caller (run) turns an incomplete report into a refusal, so the report
-    itself carries the count of rows verified either way."""
+def rendering_gate(
+    roster: dict, probe: dict, comparator: dict, rank_inputs: dict | None,
+    sealed_requests: dict[str, list[dict]] | None,
+) -> dict:
+    """Step 2 of the recipe, redefined 2026-09-28 (module docstring). Returns
+    a report; never raises by itself -- the caller (``run``) turns an
+    incomplete report into a refusal, so the report itself carries the count
+    of rows verified either way.
+
+    PRIMARY, required for ``all_rows_verified``: :func:`rank_label_report`
+    on both :data:`RANK_VISIBLE_STORES`, read from ``sealed_requests`` (one
+    row's own MODEL_REQUEST contacts, :func:`load_sealed_model_requests`) --
+    the rank labels and the retrieval-rank order as they actually appear in
+    the flown requests.
+
+    INFORMATIONAL ONLY, reported beside the primary check but never folded
+    into ``all_rows_verified``:
+      * ``intent-boundaries``: the pre-RANKVIS seed-equality note (the
+        probe's own sealed first-phase seed order equals the comparator's --
+        the treatment changes no byte of the seed, only the label);
+      * ``train-exemplars``: the OPTIONAL, stricter sidecar-based
+        recomputation through the real ``order_supply_by_retrieval_rank`` --
+        reported only when the sidecar is sealed beside the run; every
+        sealed run today carries none (RANKVIS has not flown one), so this
+        leg is silent by construction and no longer refuses the read.
+    """
 
     seed_verified: list[str] = []
     seed_mismatched: list[str] = []
-    exemplar_verified: list[str] = []
-    exemplar_mismatched: list[str] = []
-    exemplar_set_mismatched: list[str] = []
-    exemplar_unverifiable: list[str] = []
+    sidecar_verified: list[str] = []
+    sidecar_mismatched: list[str] = []
+    sidecar_set_mismatched: list[str] = []
+    sidecar_unverifiable: list[str] = []
+    rank_verified: dict[str, list[str]] = {store: [] for store in RANK_VISIBLE_STORES}
+    rank_failed: dict[str, list[str]] = {store: [] for store in RANK_VISIBLE_STORES}
 
     for sample_id in roster["ids"]:
         result = probe["phase_results"][sample_id]
         probe_initial = tuple(result["initial_query_state"]["retrieved_value_ids"])
         probe_final = tuple(result["final_query_state"]["retrieved_value_ids"])
+
         probe_seed = _store_slice(probe_initial, SEED_ORDER_STORE)
         if probe_seed == comparator["initial_boundary_value_ids"][sample_id]:
             seed_verified.append(sample_id)
@@ -653,46 +836,63 @@ def rendering_gate(roster: dict, probe: dict, comparator: dict, rank_inputs: dic
         probe_exemplars = _store_slice(probe_final, REORDERED_STORE)
         comparator_exemplars = comparator["exemplar_value_ids"][sample_id]
         if set(probe_exemplars) != set(comparator_exemplars):
-            exemplar_set_mismatched.append(sample_id)
-            continue
-        row_inputs = (rank_inputs or {}).get(sample_id, {}).get(REORDERED_STORE)
-        if row_inputs is None:
-            exemplar_unverifiable.append(sample_id)
-            continue
-        expected = _recomputed_exemplar_order(row_inputs, probe_exemplars)
-        if expected == probe_exemplars:
-            exemplar_verified.append(sample_id)
+            sidecar_set_mismatched.append(sample_id)
         else:
-            exemplar_mismatched.append(sample_id)
+            row_inputs = (rank_inputs or {}).get(sample_id, {}).get(REORDERED_STORE)
+            if row_inputs is None:
+                sidecar_unverifiable.append(sample_id)
+            else:
+                expected = _recomputed_exemplar_order(row_inputs, probe_exemplars)
+                if expected == probe_exemplars:
+                    sidecar_verified.append(sample_id)
+                else:
+                    sidecar_mismatched.append(sample_id)
+
+        contacts = (sealed_requests or {}).get(sample_id, [])
+        for store in RANK_VISIBLE_STORES:
+            delivered_count = len(_store_slice(probe_final, store))
+            report = rank_label_report(contacts, store, delivered_count)
+            (rank_verified if report["verified"] else rank_failed)[store].append(sample_id)
 
     n = len(roster["ids"])
-    all_verified = (
-        len(seed_verified) == n
-        and len(exemplar_verified) == n
-        and not seed_mismatched
-        and not exemplar_mismatched
-        and not exemplar_set_mismatched
-        and not exemplar_unverifiable
-    )
+    stores_block: dict[str, dict] = {}
+    for store in RANK_VISIBLE_STORES:
+        stores_block[store] = {
+            "method": (
+                "rank labels parsed from the sealed MODEL_REQUEST records themselves "
+                "(rails.runner.RANK_VISIBLE_LABEL): every value line labelled, ranks "
+                "1..n contiguous and strictly increasing in document order, count "
+                "equal to the store's delivered count in the sealed phase receipt"
+            ),
+            "rows_verified": len(rank_verified[store]),
+            "rows_failed": len(rank_failed[store]),
+            "failed_rows": [
+                {"sample_id": sample_id, "store": store} for sample_id in rank_failed[store]
+            ],
+        }
+    stores_block[SEED_ORDER_STORE]["seed_equality_note"] = {
+        "informational_only": True,
+        "method": "the probe's own sealed first-phase seed order equals the comparator's (never reorders under this key)",
+        "rows_verified": len(seed_verified),
+        "rows_mismatched": len(seed_mismatched),
+    }
+    stores_block[REORDERED_STORE]["sidecar_stricter_check"] = {
+        "informational_only": True,
+        "optional": True,
+        "method": "rails.runner.order_supply_by_retrieval_rank over the sealed retrieval-rank-inputs sidecar, when sealed",
+        "sidecar_present": rank_inputs is not None,
+        "rows_verified": len(sidecar_verified),
+        "rows_set_mismatched": len(sidecar_set_mismatched),
+        "rows_order_mismatched": len(sidecar_mismatched),
+        "rows_unverifiable_no_sidecar_row": len(sidecar_unverifiable),
+    }
+
+    all_verified = all(stores_block[store]["rows_verified"] == n for store in RANK_VISIBLE_STORES)
     return {
         "expected_rendering": EXPECTED_RENDERING,
         "labels_guaranteed_by_baseline_config": True,
         "rows_total": n,
-        "stores": {
-            SEED_ORDER_STORE: {
-                "method": "equals the comparator's own sealed first-phase seed order (already rank-ordered)",
-                "rows_verified": len(seed_verified),
-                "rows_mismatched": len(seed_mismatched),
-            },
-            REORDERED_STORE: {
-                "method": "rails.runner.order_supply_by_retrieval_rank over the sealed retrieval-rank-inputs sidecar",
-                "sidecar_present": rank_inputs is not None,
-                "rows_verified": len(exemplar_verified),
-                "rows_set_mismatched": len(exemplar_set_mismatched),
-                "rows_order_mismatched": len(exemplar_mismatched),
-                "rows_unverifiable_no_sidecar_row": len(exemplar_unverifiable),
-            },
-        },
+        "stores": stores_block,
         "all_rows_verified": all_verified,
     }
 
@@ -858,7 +1058,8 @@ def run(args: argparse.Namespace) -> int:
         probe = load_probe(data_root, facts, roster, plan)
         comparator = load_comparator(data_root, roster)
         rank_inputs = load_retrieval_rank_inputs(probe["run_dir"], probe["run_id"])
-        gate = rendering_gate(roster, probe, comparator, rank_inputs)
+        sealed_requests = load_sealed_model_requests(probe["run_dir"], probe["run_id"])
+        gate = rendering_gate(roster, probe, comparator, rank_inputs, sealed_requests)
         if not gate["all_rows_verified"]:
             raise ReadRefused(
                 2,
