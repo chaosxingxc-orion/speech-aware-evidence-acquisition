@@ -230,12 +230,201 @@ def load_rows(path: Path) -> list[CitationRow]:
     return rows
 
 
+# ---------------------------------------------------------------------------
+# Per-arm credit (owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-
+# variant-instrument-design.md section 5, item 2): one table per arm, key ``(arm_id, value_id)``.
+# A same-flight arm's contact is never the delivered answer, so its citations exist nowhere in
+# the sealed row's own ``solver_citations`` block (that block covers only the delivering
+# contact); they are read instead from the renderer's own derived rows
+# (``scripts/analysis/stage3_rollout_score.py``'s ``arm-citation-rows.jsonl``, schema
+# ``saea-supply-variant-arm-citation-rows-v1``), and correctness comes from that ARM's OWN
+# official per-row score, never the delivered row's.
+# ---------------------------------------------------------------------------
+
+CREDIT_TABLE_PER_ARM_SCHEMA = "saea-citation-credit-table-per-arm-v1"
+CREDIT_ROWS_PER_ARM_SCHEMA = "saea-citation-credit-rows-per-arm-v1"
+
+
+@dataclass(frozen=True)
+class ArmCitationRow:
+    """One arm's own sealed column contact for one row: what that arm's own request rendered,
+    what that arm's own response cited, and whether THAT ARM's official per-row score (not the
+    delivered row's) counts the row correct."""
+
+    sample_id: str
+    arm_id: str
+    supplied_value_ids: tuple[str, ...]
+    cited_value_ids: tuple[str, ...]
+    correct: bool
+
+    def validate(self) -> "ArmCitationRow":
+        if not isinstance(self.arm_id, str) or not self.arm_id:
+            raise CitationCreditError("an arm citation row needs an arm id")
+        # Reuses CitationRow's own checks (non-empty unique ids, cited subset of supplied, a
+        # bool correctness) rather than restating them: the per-arm shape adds exactly one field.
+        CitationRow(
+            self.sample_id, self.supplied_value_ids, self.cited_value_ids, self.correct
+        ).validate()
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "sample_id": self.sample_id,
+            "arm_id": self.arm_id,
+            "supplied_value_ids": list(self.supplied_value_ids),
+            "cited_value_ids": list(self.cited_value_ids),
+            "correct": self.correct,
+        }
+
+    @classmethod
+    def from_json(cls, document: Mapping[str, object]) -> "ArmCitationRow":
+        return cls(
+            sample_id=str(document["sample_id"]),
+            arm_id=str(document["arm_id"]),
+            supplied_value_ids=tuple(document["supplied_value_ids"]),
+            cited_value_ids=tuple(document["cited_value_ids"]),
+            correct=document["correct"],
+        ).validate()
+
+
+def arm_credit_table(rows: Iterable[ArmCitationRow]) -> dict[str, object]:
+    """The per-``(arm_id, value_id)`` table over ``rows``; independent of row order."""
+
+    supplied: Counter[tuple[str, str]] = Counter()
+    cited: Counter[tuple[str, str]] = Counter()
+    cited_correct: Counter[tuple[str, str]] = Counter()
+    seen: set[tuple[str, str]] = set()
+    row_count = correct_count = citation_count = supplied_count = 0
+    for row in rows:
+        row.validate()
+        key = (row.arm_id, row.sample_id)
+        if key in seen:
+            raise CitationCreditError(
+                f"arm {row.arm_id!r} sample {row.sample_id!r} appears twice"
+            )
+        seen.add(key)
+        row_count += 1
+        correct_count += int(row.correct)
+        supplied_count += len(row.supplied_value_ids)
+        citation_count += len(row.cited_value_ids)
+        for value_id in row.supplied_value_ids:
+            supplied[(row.arm_id, value_id)] += 1
+        for value_id in row.cited_value_ids:
+            cited[(row.arm_id, value_id)] += 1
+            if row.correct:
+                cited_correct[(row.arm_id, value_id)] += 1
+    entries = [
+        {
+            "arm_id": arm_id,
+            "value_id": value_id,
+            "supplied": supplied[(arm_id, value_id)],
+            "cited": cited[(arm_id, value_id)],
+            "cited_correct": cited_correct[(arm_id, value_id)],
+            "supplied_uncited": supplied[(arm_id, value_id)] - cited[(arm_id, value_id)],
+        }
+        for arm_id, value_id in sorted(supplied)
+    ]
+    return {
+        "schema": CREDIT_TABLE_PER_ARM_SCHEMA,
+        "totals": {
+            "rows": row_count,
+            "rows_correct": correct_count,
+            "entries": len(entries),
+            "supplied_slots": supplied_count,
+            "citations": citation_count,
+        },
+        "entries": entries,
+        "table_sha256": _sha256(_canonical(entries)),
+    }
+
+
+def render_arm_credit_table(table: Mapping[str, object]) -> str:
+    """The per-arm table's canonical bytes (what a receipt pins)."""
+
+    return _canonical(table)
+
+
+def arm_rows_from_citation_rows(
+    citation_rows_path: Path, correctness_by_arm: Mapping[str, Mapping[str, bool]]
+) -> tuple[list[ArmCitationRow], dict[str, int]]:
+    """Read the renderer's per-arm citation rows into :class:`ArmCitationRow`.
+
+    Source: ``scripts/analysis/stage3_rollout_score.py``'s
+    ``render_supply_variant_first_visit``, file ``arm-citation-rows.jsonl`` (schema
+    ``saea-supply-variant-arm-citation-rows-v1``) -- one row per ``(sample_id, arm_id)`` with
+    that arm's own ``supplied_value_ids`` and trace-derived ``cited_value_ids``. A row
+    contributes exactly when its own ``cited_value_ids_ok`` is true (the arm's contact actually
+    carried a parseable cited-answer envelope) AND that arm has a correctness entry for the
+    sample in ``correctness_by_arm[arm_id]`` (that ARM's own official per-row score, never the
+    delivered row's); every other row is counted under ``skipped`` or ``missing_correctness``,
+    never silently dropped.
+    """
+
+    rows: list[ArmCitationRow] = []
+    counts = {"citation_rows": 0, "rows": 0, "skipped": 0, "missing_correctness": 0}
+    with Path(citation_rows_path).open(encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            document = json.loads(line)
+            counts["citation_rows"] += 1
+            if not document.get("cited_value_ids_ok"):
+                counts["skipped"] += 1
+                continue
+            arm_id = str(document["arm_id"])
+            sample_id = str(document["sample_id"])
+            arm_correctness = correctness_by_arm.get(arm_id, {})
+            if sample_id not in arm_correctness:
+                counts["missing_correctness"] += 1
+                continue
+            rows.append(
+                ArmCitationRow(
+                    sample_id=sample_id,
+                    arm_id=arm_id,
+                    supplied_value_ids=tuple(document["supplied_value_ids"]),
+                    cited_value_ids=tuple(document["cited_value_ids"]),
+                    correct=bool(arm_correctness[sample_id]),
+                ).validate()
+            )
+            counts["rows"] += 1
+    return rows, counts
+
+
+def load_correctness_by_arm(path: Path) -> dict[str, dict[str, bool]]:
+    """``{arm_id: {sample_id: bool}}`` from a JSON object file."""
+
+    document = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(document, Mapping) or not all(
+        isinstance(arm_id, str) and isinstance(per_sample, Mapping)
+        and all(isinstance(k, str) and isinstance(v, bool) for k, v in per_sample.items())
+        for arm_id, per_sample in document.items()
+    ):
+        raise CitationCreditError(
+            "correctness-by-arm must be a JSON object of arm_id -> {sample_id: bool}"
+        )
+    return {arm_id: dict(per_sample) for arm_id, per_sample in document.items()}
+
+
+def load_arm_rows(path: Path) -> list[ArmCitationRow]:
+    """Arm citation rows from a JSONL of ``ArmCitationRow.as_json`` documents."""
+
+    rows = []
+    with Path(path).open(encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                rows.append(ArmCitationRow.from_json(json.loads(line)))
+    return rows
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """``python -m speech_aware_evidence_acquisition.analysis.citation_credit``.
 
-    Either ``--rows rows.jsonl`` (one ``CitationRow`` document per line) or
+    Either ``--rows rows.jsonl`` (one ``CitationRow`` document per line),
     ``--outputs outputs.jsonl --correctness correct.json`` (a sealed run plus
-    the official per-row verdicts). Writes the canonical table to ``--out``
+    the official per-row verdicts), or ``--arm-citation-rows rows.jsonl
+    --correctness-by-arm correct-by-arm.json`` (the renderer's per-arm rows plus
+    each arm's own official per-row verdicts, owner decision 172 section 5) for
+    the per-``(arm_id, value_id)`` table. Writes the canonical table to ``--out``
     and prints counts and the table digest; never a text.
     """
 
@@ -245,33 +434,55 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--rows", type=Path)
     parser.add_argument("--outputs", type=Path)
     parser.add_argument("--correctness", type=Path)
+    parser.add_argument("--arm-citation-rows", type=Path)
+    parser.add_argument("--correctness-by-arm", type=Path)
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args(argv)
-    if (args.rows is None) == (args.outputs is None):
-        parser.error("pass exactly one of --rows or --outputs")
+    modes = (args.rows is not None, args.outputs is not None, args.arm_citation_rows is not None)
+    if sum(modes) != 1:
+        parser.error("pass exactly one of --rows, --outputs, or --arm-citation-rows")
     if args.outputs is not None and args.correctness is None:
         parser.error("--outputs requires --correctness")
+    if args.arm_citation_rows is not None and args.correctness_by_arm is None:
+        parser.error("--arm-citation-rows requires --correctness-by-arm")
     if args.rows is not None:
         rows, counts = load_rows(args.rows), {}
-    else:
+        table = credit_table(rows)
+        rendered = render_credit_table(table)
+    elif args.outputs is not None:
         rows, counts = rows_from_outputs(args.outputs, load_correctness(args.correctness))
-    table = credit_table(rows)
+        table = credit_table(rows)
+        rendered = render_credit_table(table)
+    else:
+        arm_rows, counts = arm_rows_from_citation_rows(
+            args.arm_citation_rows, load_correctness_by_arm(args.correctness_by_arm)
+        )
+        table = arm_credit_table(arm_rows)
+        rendered = render_arm_credit_table(table)
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(render_credit_table(table) + "\n", encoding="utf-8")
+    args.out.write_text(rendered + "\n", encoding="utf-8")
     print(json.dumps({"totals": table["totals"], "table_sha256": table["table_sha256"],
                       **({"source_counts": counts} if counts else {})}, sort_keys=True))
     return 0
 
 
 __all__ = [
+    "CREDIT_ROWS_PER_ARM_SCHEMA",
     "CREDIT_ROWS_SCHEMA",
+    "CREDIT_TABLE_PER_ARM_SCHEMA",
     "CREDIT_TABLE_SCHEMA",
+    "ArmCitationRow",
     "CitationCreditError",
     "CitationRow",
+    "arm_credit_table",
+    "arm_rows_from_citation_rows",
     "credit_table",
+    "load_arm_rows",
     "load_correctness",
+    "load_correctness_by_arm",
     "load_rows",
     "main",
+    "render_arm_credit_table",
     "render_credit_table",
     "rows_from_outputs",
 ]

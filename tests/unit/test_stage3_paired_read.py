@@ -290,15 +290,19 @@ def test_no_text_is_persisted(world: World) -> None:
         assert "alarm_query" not in path.read_text(encoding="utf-8"), path
 
 
-def _package(world: World, read_notes: str | None) -> Path:
+def _package(
+    world: World, read_notes: str | None, *, resampling_unit: str = "row (paired)",
+    arm_extra: dict | None = None, replicate_extra: dict | None = None,
+) -> Path:
     package = world.repo / "docs" / "readiness" / "2026-09-27-unit-v1"
     _write(package / "analysis-recipe-v1.json", {
         "recipe_id": "unit-recipe-v1", "title": "Unit cell",
         "run_ids": {"read": "UNIT-READ-V1"},
         "output": {"analysis_root": "analysis/UNIT-READ-V1"},
-        "resampling": {"seed": 7, "bootstrap_draws": 200, "unit": "row (paired)"},
-        "arms": {"arm": {"run_id": "UNIT-RIGHT-V1", "attempt_id": "attempt-right"},
-                 "in_chain_replicate": {"run_id": "UNIT-LEFT-V1", "attempt_id": "attempt-left"},
+        "resampling": {"seed": 7, "bootstrap_draws": 200, "unit": resampling_unit},
+        "arms": {"arm": {"run_id": "UNIT-RIGHT-V1", "attempt_id": "attempt-right", **(arm_extra or {})},
+                 "in_chain_replicate": {"run_id": "UNIT-LEFT-V1", "attempt_id": "attempt-left",
+                                        **(replicate_extra or {})},
                  "comparator": {"run_id": "UNIT-LEFT-V1", "attempt_id": "attempt-left"}},
     })
     columns = ("date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split",
@@ -340,6 +344,41 @@ def test_package_mode_runs_both_passes_and_never_overwrites(world: World, capsys
         assert {"frontier.json", "delivery-conversion.json", "slurp_paired_roster_read.py",
                 "stage3_paired_read.py"} <= names
     assert drv.main(_package_argv(world, package, out)) == 1  # the pass directories already hold files
+
+
+def test_package_mode_refuses_a_column_recipe_that_does_not_resample_by_row(world: World) -> None:
+    # owner decision 172 Q4: a same-flight column read resamples by row; declaring a column
+    # (arms.arm.column) beside an utterance-clustered resampling.unit is refused before any
+    # score is opened.
+    out = world.tmp / "pkg-out"
+    package = _package(
+        world, "REGISTERED BEFORE RESULT READING (root countersigned 2026-09-27 by the coordinator)",
+        resampling_unit="utterance (paired)", arm_extra={"column": "plan"},
+    )
+    assert drv.main(_package_argv(world, package, out)) == 1
+    assert not out.exists()
+
+
+def test_package_mode_threads_column_flags_into_the_driver_argv(world: World, monkeypatch) -> None:
+    # owner decision 172 section 3: arms.arm and arms.in_chain_replicate accept "column"; package
+    # mode passes them through as --right-column / --left-column without opening any score itself.
+    out = world.tmp / "pkg-out"
+    package = _package(
+        world, "REGISTERED BEFORE RESULT READING (root countersigned 2026-09-27 by the coordinator)",
+        arm_extra={"column": "plan"}, replicate_extra={"column": "twin"},
+    )
+    seen: list = []
+
+    def _fake_run_pair(core_args, ext):
+        seen.append(core_args)
+        _write(core_args.analysis_root / "verdict.json", {"extensions": []})
+        return {"extensions": []}
+
+    monkeypatch.setattr(drv, "run_pair", _fake_run_pair)
+    assert drv.main(_package_argv(world, package, out)) == 0
+    aa_call = next(c for c in seen if c.left.run_id == "UNIT-LEFT-V1" and c.right.run_id == "UNIT-RIGHT-V1")
+    assert aa_call.left.column == "twin"
+    assert aa_call.right.column == "plan"
 
 
 def test_the_wrapper_names_the_package_mode_and_the_countersign_refusal() -> None:

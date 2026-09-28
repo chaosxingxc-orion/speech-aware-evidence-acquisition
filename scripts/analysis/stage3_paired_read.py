@@ -856,6 +856,14 @@ def run_package(argv_rest: list[str], ext_ns: argparse.Namespace) -> dict:
     resampling = recipe.get("resampling") or {}
     unit = str(resampling.get("unit") or "")
     cluster_key = "sample_id" if "row" in unit else "utterance_id"
+    # owner decision 172 section 3: any arm entry naming a "column" is a same-flight
+    # supply-variant read, and such a recipe resamples by row (Q4 ruling) -- refused here,
+    # before any score is opened, rather than left to the driver's own later check.
+    if any(entry.get("column") for entry in (arm, replicate, comparator)) and cluster_key != "sample_id":
+        raise Stage3ReadError(
+            f"{recipe_path.name}: a column recipe (owner decision 172) resamples by row; "
+            f"resampling.unit is {unit!r}, not 'row'"
+        )
     analysis_root = str((recipe.get("output") or {}).get("analysis_root") or f"analysis/{read_run_id}")
     base = Path(ext_ns.output_base) if ext_ns.output_base else data_root / analysis_root
     title = str(recipe.get("title") or recipe.get("recipe_id") or read_run_id)
@@ -899,6 +907,10 @@ def run_package(argv_rest: list[str], ext_ns: argparse.Namespace) -> dict:
             "--draws", str(int(resampling.get("bootstrap_draws", CORE.DEFAULT_DRAWS))),
             "--title", f"{title} ({name})", "--analysis-root", str(out),
         ]
+        if left.get("column"):
+            argv += ["--left-column", str(left["column"])]
+        if arm.get("column"):
+            argv += ["--right-column", str(arm["column"])]
         if recipe.get("recipe_id"):
             argv += ["--recipe-id", str(recipe["recipe_id"])]
         verdict = run_pair(CORE.parse_args(argv), ext)

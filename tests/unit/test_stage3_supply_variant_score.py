@@ -8,6 +8,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from speech_aware_evidence_acquisition.rails import controllers  # noqa: F401 - registers formats
+from speech_aware_evidence_acquisition.rails.solver_citation import DELIVER_CITED_ANSWER_V1
 from speech_aware_evidence_acquisition.rails.supply_variants import SupplyVariantFitEstimate
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -29,10 +31,11 @@ def _group():
     return SimpleNamespace(arms=tuple(arms), fit_estimate=SupplyVariantFitEstimate(**FIT))
 
 
-def _contact(sid, visit, arm, trace):
+def _contact(sid, visit, arm, trace, *, raw=None):
     request_id = f"{sid}-{visit}-{arm}"
-    raw = json.dumps({"scenario": "alarm" if visit == 0 else "audio",
-                      "action": "set", "entities": []})
+    if raw is None:
+        raw = json.dumps({"scenario": "alarm" if visit == 0 else "audio",
+                          "action": "set", "entities": []})
     digest = hashlib.sha256(raw.encode()).hexdigest()
     trace[f"{request_id}/request"] = {"payload_sha256": "a" * 64}
     trace[f"{request_id}/response"] = {
@@ -40,6 +43,20 @@ def _contact(sid, visit, arm, trace):
     }
     return {"agent_contact_id": request_id, "request_id": request_id,
             "request_sha256": "a" * 64, "response_text_sha256": digest}
+
+
+def envelope(*, answer, intent=(), entities=()):
+    """A valid ``saea-solver-cited-answer-v1`` envelope (module docstring's own shape,
+    mirroring ``tests/unit/test_solver_citation.py``'s ``envelope`` helper)."""
+
+    entity_text = ",".join(
+        '{"type":%s,"evidence_ids":%s}' % (json.dumps(kind), json.dumps(list(ids)))
+        for kind, ids in entities
+    )
+    return (
+        '{"schema":%s,"answer":%s,"citations":{"intent":%s,"entities":[%s]}}'
+        % (json.dumps("saea-solver-cited-answer-v1"), answer, json.dumps(list(intent)), entity_text)
+    )
 
 
 def _fixture(tmp_path, *, revisions=1, terminal=False):
@@ -155,3 +172,108 @@ def test_missing_solver_without_declared_terminal_fallback_refused(tmp_path):
     bundle.outputs_rows[1]["native_episode_receipt"]["kind"] = "accepted"
     with pytest.raises(mod.Stage3ScoreError, match="not a declared terminal fallback"):
         _render(bundle, group, tmp_path)
+
+
+# --------------------------------------------------------------------------
+# owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-
+# design.md section 3/7: normalised column render (AT1), per-arm cited_value_ids from the trace.
+# --------------------------------------------------------------------------
+
+
+def _cited_fixture(tmp_path, *, delivered_text, small_answer, plan_answer):
+    group = _group()
+    trace = {}
+    contacts = [
+        _contact(IDS[0], 0, "small", trace, raw=envelope(
+            answer=small_answer, intent=("value:s1",), entities=(("time", ("value:s2",)),),
+        )),
+        _contact(IDS[0], 0, "plan", trace, raw=envelope(
+            answer=plan_answer, intent=("value:p1",), entities=(),
+        )),
+    ]
+    visits = [{"stage": "solver", "role_id": "solver",
+               "execution_receipt": {"contacts": contacts, "final_contact": contacts[-1]}}]
+    records = []
+    for i, arm in enumerate(group.arms):
+        records.append({
+            "arm_index": i, "arm_id": arm.arm_id, "deliver": arm.deliver,
+            "contact_id": contacts[i]["agent_contact_id"],
+            "resolved_knobs": [{"path": k.path, "value": k.value} for k in arm.knobs],
+            "supplied_value_ids": [f"value:{arm.arm_id}-supplied"], "supplied_item_count": 1,
+            "max_supplied_items": arm.max_supplied_items,
+        })
+    variants = {"schema": "saea-supply-variant-arms-v1", "phase_id": "solver",
+                "arm_count": 2, "delivered_arm_id": "plan",
+                "fit_estimate": group.fit_estimate.as_json(), "arms": records}
+    row = {
+        "sample_id": IDS[0], "text": delivered_text,
+        "native_episode_receipt": {
+            "role_visits": visits, "kind": "accepted",
+            "deliver_normaliser": {"normaliser_id": DELIVER_CITED_ANSWER_V1},
+        },
+        "supply_variants": variants,
+    }
+    manifest_path = tmp_path / "runs" / "RUN" / "ATT" / "RUN.manifest.json"
+    manifest_path.parent.mkdir(parents=True)
+    manifest_path.write_text("{}")
+    bundle = SimpleNamespace(
+        manifest={"status": "COMPLETED", "run_id": "RUN",
+                  "config": {"config_hash": "c" * 64},
+                  "outputs": {"sha256": "d" * 64}, "raw_trace": {"sha256": "e" * 64},
+                  "scores": {"sha256": "f" * 64}},
+        attempt_state="FINALIZED", manifest_path=manifest_path,
+        split_ids=frozenset([IDS[0]]), outputs_rows=(row,), trace_records=trace,
+    )
+    return bundle, group
+
+
+def test_at1_column_reproduction_passes_under_the_cited_answer_normaliser_and_derives_citations(
+    tmp_path,
+):
+    plan_answer = '{ "action":"set" ,"scenario": "alarm","entities":[]}'
+    small_answer = '{"action":"set","scenario":"alarm","entities":[]}'
+    bundle, group = _cited_fixture(
+        tmp_path, delivered_text=plan_answer, small_answer=small_answer, plan_answer=plan_answer,
+    )
+    manifest = mod.render_supply_variant_first_visit(
+        bundle, group, {IDS[0]: "alarm"}, tmp_path / "analysis",
+        run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64,
+    )
+    assert manifest["at1_column_reproduction_checked_rows"] == 1
+    plan_rows = list(mod.iter_jsonl(Path(manifest["copies"]["plan"]["path"])))
+    assert plan_rows[0]["text"] == plan_answer
+
+    citation_rows = list(mod.iter_jsonl(Path(manifest["citation_rows"]["path"])))
+    assert manifest["citation_rows"]["rows"] == 2
+    by_arm = {row["arm_id"]: row for row in citation_rows}
+    assert by_arm["plan"]["cited_value_ids"] == ["value:p1"]
+    assert by_arm["plan"]["cited_value_ids_ok"] is True
+    assert by_arm["plan"]["supplied_value_ids"] == ["value:plan-supplied"]
+    assert by_arm["small"]["cited_value_ids_ok"] is True
+    assert sorted(by_arm["small"]["cited_value_ids"]) == ["value:s1", "value:s2"]
+    assert by_arm["small"]["response_format_id"] == "saea-solver-cited-answer-v1"
+
+
+def test_at1_column_reproduction_refuses_on_mismatch(tmp_path):
+    plan_answer = '{ "action":"set" ,"scenario": "alarm","entities":[]}'
+    bundle, group = _cited_fixture(
+        tmp_path, delivered_text='{"not": "what was delivered"}',
+        small_answer='{"x":1}', plan_answer=plan_answer,
+    )
+    with pytest.raises(mod.Stage3ScoreError, match="AT1 column reproduction failed"):
+        mod.render_supply_variant_first_visit(
+            bundle, group, {IDS[0]: "alarm"}, tmp_path / "analysis",
+            run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64,
+        )
+
+
+def test_a_row_with_no_normaliser_derives_citations_as_not_ok_and_keeps_the_old_render(tmp_path):
+    # the pre-cited-answer / VAR-2 shape: no deliver_normaliser on the row, so the render falls
+    # back to parse_slu_response exactly as before, and citations are recorded absent (not ok)
+    # rather than invented.
+    bundle, group = _fixture(tmp_path, revisions=0, terminal=True)
+    manifest = _render(bundle, group, tmp_path)
+    assert manifest["at1_column_reproduction_checked_rows"] == 0
+    citation_rows = list(mod.iter_jsonl(Path(manifest["citation_rows"]["path"])))
+    assert citation_rows and all(not row["cited_value_ids_ok"] for row in citation_rows)
+    assert all(row["cited_value_ids"] == [] for row in citation_rows)

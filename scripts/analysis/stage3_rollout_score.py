@@ -845,6 +845,12 @@ def score(
 
 SUPPLY_RENDER_SCHEMA = "saea-stage3-supply-variant-first-visit-v1"
 
+#: owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-
+#: design.md section 3: one row per (sample_id, arm_id), the arm's own supplied and cited value
+#: ids, derived here from the trace (the sealed row's own solver_citations block covers only the
+#: DELIVERED contact; a non-delivering arm's citations exist nowhere else).
+SUPPLY_VARIANT_ARM_CITATION_ROWS_SCHEMA = "saea-supply-variant-arm-citation-rows-v1"
+
 
 def _immutable_jsonl(path: Path, rows: Sequence[Mapping[str, Any]]) -> str:
     raw = ("\n".join(json.dumps(row, ensure_ascii=False, sort_keys=True) for row in rows)
@@ -891,6 +897,13 @@ def render_supply_variant_first_visit(
         validate_native_episode_delivery_receipt, validate_supply_variant_receipt,
     )
     from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response
+    from speech_aware_evidence_acquisition.core.base import DELIVERY_NORMALISERS
+    from speech_aware_evidence_acquisition.rails import (  # noqa: F401 -- registration side effect
+        delivery_normalisers as _delivery_normalisers,
+    )
+    from speech_aware_evidence_acquisition.rails.solver_citation import (
+        CITED_ANSWER_RESPONSE_FORMAT_ID, SolverCitationError, parse_cited_answer,
+    )
 
     if (bundle.manifest.get("status") != "COMPLETED"
             or bundle.attempt_state != "FINALIZED"
@@ -915,13 +928,24 @@ def render_supply_variant_first_visit(
     columns = {name: [] for name in names}
     row_meta = []
     malformed = {name: 0 for name in names}
+    citation_rows: list[dict[str, Any]] = []
     absent = 0
     revisions = 0
+    at1_checked = 0
     for sid in ids:
         row = rows[sid]
         episode = row.get("native_episode_receipt")
         if not isinstance(episode, Mapping):
             raise Stage3ScoreError(f"{sid}: no sealed native episode")
+        # section 3: every column -- twin and delivering first visit included -- goes through
+        # the DELIVERED ROW'S OWN normaliser (core.base.DELIVERY_NORMALISERS), read from this
+        # row's own sealed custody rather than a config value threaded through the caller, so a
+        # row's rendered columns always use the exact rule that row's delivery actually used.
+        deliver_normaliser_receipt = episode.get("deliver_normaliser")
+        normaliser_id = (
+            deliver_normaliser_receipt.get("normaliser_id")
+            if isinstance(deliver_normaliser_receipt, Mapping) else None
+        )
         visits = episode.get("role_visits")
         delivery = validate_native_episode_delivery_receipt(
             episode, error_type=Stage3ScoreError
@@ -977,20 +1001,65 @@ def render_supply_variant_first_visit(
                     != contact.get("response_text_sha256")
                     or response.get("response_text_sha256") != contact.get("response_text_sha256")):
                 raise Stage3ScoreError(f"{sid}: first Solver arm trace hash differs from custody")
-            scenario, action, entities, ok = parse_slu_response(raw)
-            parsed = ({"scenario": scenario or "", "action": action or "",
-                       "entities": [{"type": x.type, "filler": x.filler} for x in entities]}
-                      if ok else None)
+            if normaliser_id is not None:
+                # Section 3: the SAME registered rule the row's own delivery used, so an
+                # arm-vs-delivered contrast never partly measures the renderer. Under the
+                # cited-answer contract this rule unwraps the envelope AND applies the SLURP
+                # deliver projection as one composed call (rails.delivery_normalisers.
+                # CitedAnswerNormaliseV3DeliveryNormaliser); a bare projection-only cell resolves
+                # just the projection.
+                normalisation = DELIVERY_NORMALISERS.resolve(normaliser_id)(raw)
+                arm_text = normalisation.text
+                ok = bool(normalisation.receipt.get("applied", False))
+            else:
+                scenario, action, entities, ok = parse_slu_response(raw)
+                parsed = ({"scenario": scenario or "", "action": action or "",
+                           "entities": [{"type": x.type, "filler": x.filler} for x in entities]}
+                          if ok else None)
+                arm_text = render_answer(parsed)
             if not ok:
                 malformed[arm.arm_id] += 1
-            columns[arm.arm_id].append({"sample_id": sid, "text": render_answer(parsed)})
+            columns[arm.arm_id].append({"sample_id": sid, "text": arm_text})
+            # Section 3/5: this arm's own cited value ids, derived HERE from the trace -- the
+            # sealed solver_citations block covers only the delivered contact, so a non-
+            # delivering arm's citations exist nowhere else. Parse failure (no cited-answer
+            # contract in force, or a malformed envelope) is recorded, never raised: citing
+            # nothing is a fact about this arm's contact, not a defect in the render.
+            try:
+                cited_value_ids = list(parse_cited_answer(raw).cited_value_ids)
+                cited_ok = True
+            except SolverCitationError:
+                cited_value_ids = []
+                cited_ok = False
+            sealed_arm = final["arms"][i]
+            citation_rows.append({
+                "sample_id": sid, "arm_id": arm.arm_id,
+                "supplied_value_ids": list(sealed_arm.get("supplied_value_ids") or []),
+                "cited_value_ids": cited_value_ids, "cited_value_ids_ok": cited_ok,
+                "response_format_id": CITED_ANSWER_RESPONSE_FORMAT_ID,
+            })
             arm_meta.append({
                 "arm_id": arm.arm_id, "contact_id": contact.get("agent_contact_id"),
                 "request_sha256": contact.get("request_sha256"),
                 "response_text_sha256": contact.get("response_text_sha256"),
                 "parse_status": "ok" if ok else "malformed",
                 "fallback": None if ok else "canonical_empty",
+                "cited_value_ids_count": len(cited_value_ids), "cited_value_ids_ok": cited_ok,
             })
+            if arm.deliver and len(solver) == 1:
+                # AT1: on every row with no revision visit, the delivering arm's rendered
+                # first-visit column text equals the sealed delivered text byte for byte. A row
+                # whose bundle carries no top-level delivered text (a pre-AT1 synthetic fixture)
+                # is skipped rather than refused -- there is nothing sealed to reproduce.
+                sealed_text = row.get("text")
+                if isinstance(sealed_text, str):
+                    at1_checked += 1
+                    if arm_text != sealed_text:
+                        raise Stage3ScoreError(
+                            f"{sid}: AT1 column reproduction failed -- the delivering arm's "
+                            "rendered first-visit column text differs from the sealed "
+                            "delivered text byte for byte"
+                        )
         row_meta.append({"sample_id": sid, "availability": "first_solver_visit",
                          "later_solver_visits": len(solver) - 1, "arms": arm_meta})
     source = {
@@ -1015,12 +1084,22 @@ def render_supply_variant_first_visit(
         "later_solver_visit_count": revisions,
         "meaning": "first Solver visit local arm outputs; not full-system returns",
         "arm_order_source": "declared native Solver supply_variants order; runtime invokes arms in this order",
+        # AT1 (section 3/7): every no-revision row whose bundle carried a sealed delivered text
+        # had its delivering arm's rendered column checked against it byte for byte; this count
+        # is the self-check's own receipt, not merely its absence of failure.
+        "at1_column_reproduction_checked_rows": at1_checked,
         "copies": {},
     }
     for name in names:
         path = out_dir / f"arm-{name}-first-visit-outputs.jsonl"
         digest = _immutable_jsonl(path, columns[name])
         manifest["copies"][name] = {"path": str(path), "sha256": digest, "rows": len(ids)}
+    citation_rows_path = out_dir / "arm-citation-rows.jsonl"
+    citation_rows_digest = _immutable_jsonl(citation_rows_path, citation_rows)
+    manifest["citation_rows"] = {
+        "schema": SUPPLY_VARIANT_ARM_CITATION_ROWS_SCHEMA,
+        "path": str(citation_rows_path), "sha256": citation_rows_digest, "rows": len(citation_rows),
+    }
     _immutable_json(out_dir / "first-visit-rows.json", {
         "schema": SUPPLY_RENDER_SCHEMA, "source": source, "rows": row_meta,
         "note": "later visits are counted only, never mixed into first-visit columns",

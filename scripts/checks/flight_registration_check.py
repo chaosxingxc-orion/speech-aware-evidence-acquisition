@@ -118,6 +118,31 @@ FIT_KEYS = ("native_contact_fit", "live_phase_fit", "prompt_fit")
 GATED_STATES = ("ready",)
 PREVIEW_STATES = ("held",)
 
+#: owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-
+#: design.md section 4: the two designs whose cells must run their supply_variants arms fanned
+#: out at the FIRST Solver visit only (section 2, gate finding ``arm-visits-not-first``). The
+#: ``stage3_measurement`` key itself is read via ``stage3_effect_floor_check.MEASUREMENT_KEY``
+#: (imported lazily, see ``_floor_gate_module``) so the two gates never drift on its spelling.
+SUPPLY_VARIANT_INSTRUMENT_DESIGNS = ("same-flight-supply-variant", "offline-sealed-pool")
+
+#: ``supply_variants.arm_visits`` default the parser keeps for byte-identical old forms
+#: (``rails/supply_variants.py``, merge set B); an instrument cell must override it to "first".
+SUPPLY_VARIANT_ARM_VISITS_DEFAULT = "every"
+SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT = "first"
+
+#: The path a ``supply_variants`` block is composed under in a baseline fragment (see
+#: ``configs/baseline/*var2-supply-variants*.json``).
+SUPPLY_VARIANT_PATH = ("native_episode", "roles", "solver", "supply_variants")
+
+#: Registration fields a ``same-flight-supply-variant`` / ``offline-sealed-pool`` cell must carry
+#: BESIDE ``measurement_design`` in the same ``stage3_measurement`` block (Q2 ruling): roster
+#: receipt paths, the twin arm id, the declared cost, and the claim ceiling. Only ``variant_cost``
+#: and ``claim`` are enforced by merge set A's gate findings; ``tuning_roster``, ``read_roster``
+#: and ``aa_arm_id`` are parsed and reported here (the deeper cross-checks -- read-roster-mismatch,
+#: tuning-read-overlap, roster-knowledge-overlap, aa-arm-missing -- need the roster receipts' and
+#: the snapshot's own contents and are not part of merge set A).
+SUPPLY_VARIANT_CLAIM_CEILING = "nominated"
+
 
 class FlightRegistrationCheckError(RuntimeError):
     """The tree or the data root cannot be read; exit 2."""
@@ -151,6 +176,9 @@ class CellReport:
     read_row_countersigned: bool | None = None
     receipts: dict[str, str] = field(default_factory=dict)
     findings: list[Finding] = field(default_factory=list)
+    #: Set only for a cell whose ``stage3_measurement.measurement_design`` is one of
+    #: :data:`SUPPLY_VARIANT_INSTRUMENT_DESIGNS` -- owner decision 172, section 4.
+    supply_variant: dict[str, Any] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -170,6 +198,7 @@ class CellReport:
             "read_row_countersigned": self.read_row_countersigned,
             "receipts": dict(self.receipts),
             "findings": [finding.as_dict() for finding in self.findings],
+            "supply_variant": self.supply_variant,
         }
 
 
@@ -466,6 +495,196 @@ def _check_receipt(
     return document
 
 
+# --------------------------------------------------------------------------
+# supply-variant instrument registration (owner decision 172, docs/superpowers/specs/
+# 2026-09-27-same-flight-supply-variant-instrument-design.md section 4, merge set A)
+# --------------------------------------------------------------------------
+
+
+def _floor_gate_module(repo_root: Path):
+    """The effect-floor gate's declaration-file scanner, imported once.
+
+    Both gates read the SAME ``stage3_measurement`` block in the SAME precedence
+    (``docs/readiness/<package>/registered-facts-v*.json``, a ``*preregistration*.md`` fenced
+    JSON block, then the experiment fragment's own top level); this gate reuses that scanner
+    rather than re-implementing it, at the cost of reaching into two of its private helpers
+    (``_declaration_files``, ``_block_for``) -- intentional, documented coupling to one sibling
+    file in ``scripts/checks/``, the same pattern ``stage3_effect_floor_check.py`` itself uses to
+    reuse ``stage3_algorithm_label_check.is_stage3_fragment``.
+    """
+
+    here = Path(__file__).resolve().parent
+    if str(here) not in sys.path:
+        sys.path.insert(0, str(here))
+    try:
+        import stage3_effect_floor_check as floor_gate  # noqa: PLC0415
+    except Exception as error:  # pragma: no cover - import environment problem
+        raise FlightRegistrationCheckError(
+            f"cannot import stage3_effect_floor_check from {here}: {error}"
+        ) from error
+    return floor_gate
+
+
+def _measurement_block(
+    floor_gate: Any, repo_root: Path, run_id: str, cell_id: str, fragment: dict[str, Any]
+) -> Any:
+    """The cell's raw ``stage3_measurement`` object, unparsed, or ``None``.
+
+    Unlike ``floor_gate._find_declaration`` this returns the raw block rather than a
+    ``Declaration``, because merge set A's registration fields (``variant_cost``, ``claim``,
+    ``tuning_roster``, ``read_roster``, ``aa_arm_id``) live beside ``measurement_design`` in the
+    same object and the floor gate's ``Declaration`` dataclass does not carry them.
+    """
+
+    for entry in floor_gate._declaration_files(repo_root):
+        names_it = bool(run_id and run_id in entry.text) or bool(cell_id and cell_id in entry.text)
+        if not names_it or entry.parse_error is not None:
+            continue
+        block = floor_gate._block_for(entry.blocks, run_id, cell_id)
+        if block is not None:
+            return block
+    if floor_gate.MEASUREMENT_KEY in fragment:
+        block = floor_gate._block_for(fragment[floor_gate.MEASUREMENT_KEY], run_id, cell_id)
+        if block is not None:
+            return block
+    return None
+
+
+def _supply_variants_block(baseline: dict[str, Any] | None) -> Any:
+    """The cell's ``native_episode.roles.solver.supply_variants`` block, or ``None``."""
+
+    node: Any = baseline
+    for key in SUPPLY_VARIANT_PATH:
+        if not isinstance(node, dict):
+            return None
+        node = node.get(key)
+    return node
+
+
+def _check_supply_variant_registration(
+    report: CellReport,
+    fragment: dict[str, Any],
+    baseline: dict[str, Any] | None,
+    floor_gate: Any,
+    repo_root: Path,
+) -> None:
+    """Section 4 registration fields and gate findings for a supply-variant instrument cell.
+
+    A no-op when the declaration is absent or unreadable, when it names a design outside
+    :data:`SUPPLY_VARIANT_INSTRUMENT_DESIGNS`, or when the cell declares no ``supply_variants``
+    block at all. The second guard matters because ``offline-sealed-pool`` is NOT exclusive to
+    this instrument: it is also the pre-existing, general design for an offline read over a
+    sealed sample pool with no supply variation whatsoever (the real ROLL-1/ROLL-2/ROLL-3 and
+    filler-chunk cells all declare it with no ``supply_variants`` anywhere in their baseline). A
+    cross-flight cell may likewise still declare ``supply_variants`` in the closed VAR-2 shape
+    (``configs/baseline/*var2-supply-variants*.json``); this gate must not invent a new
+    requirement for either case.
+    """
+
+    block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
+    if not isinstance(block, dict):
+        return
+    design = block.get("measurement_design")
+    if design not in SUPPLY_VARIANT_INSTRUMENT_DESIGNS:
+        return
+    supply_variants = _supply_variants_block(baseline)
+    if not isinstance(supply_variants, dict):
+        return
+
+    arms = supply_variants.get("arms")
+    arm_count = len(arms) if isinstance(arms, list) else None
+    arm_visits = supply_variants.get("arm_visits", SUPPLY_VARIANT_ARM_VISITS_DEFAULT)
+
+    report.supply_variant = {
+        "measurement_design": design,
+        "arm_visits": arm_visits,
+        "arms": arm_count,
+        "variant_cost": block.get("variant_cost"),
+        "claim": block.get("claim"),
+        "tuning_roster": block.get("tuning_roster"),
+        "read_roster": block.get("read_roster"),
+        "aa_arm_id": block.get("aa_arm_id"),
+    }
+
+    if arm_visits != SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT:
+        where = (
+            "supply_variants.arm_visits"
+            if "arm_visits" in supply_variants
+            else "supply_variants.arm_visits (absent, so the parser default 'every' applies)"
+        )
+        report.findings.append(Finding(
+            "arm-visits-not-first",
+            f"{report.run_id}: measurement_design {design!r} is a same-flight instrument design "
+            f"(section 2 of the svinst design) but {where} is {arm_visits!r}, not 'first' -- "
+            "under 'every' the VAR-2 failure recurs: arms fan out on every revision visit while "
+            "max_supplied_items bounds only one",
+            report.run_id,
+        ))
+
+    cost = block.get("variant_cost")
+    expected_extra = arm_count - 1 if isinstance(arm_count, int) and arm_count >= 1 else None
+    if not isinstance(cost, dict):
+        report.findings.append(Finding(
+            "variant-cost-mismatch",
+            f"{report.run_id}: measurement_design {design!r} declares no variant_cost block; the "
+            "package must declare variant_cost.extra_contacts_per_row and "
+            "variant_cost.extra_audio_seconds, and the gate checks both against the arm list",
+            report.run_id,
+        ))
+    else:
+        extra_contacts = cost.get("extra_contacts_per_row")
+        if expected_extra is not None and (
+            isinstance(extra_contacts, bool)
+            or not isinstance(extra_contacts, int)
+            or extra_contacts != expected_extra
+        ):
+            report.findings.append(Finding(
+                "variant-cost-mismatch",
+                f"{report.run_id}: variant_cost.extra_contacts_per_row is {extra_contacts!r}, but "
+                f"the arm list ({arm_count} arms, twin included) makes it {expected_extra} "
+                "(K - 1, K counting the twin)",
+                report.run_id,
+            ))
+        extra_audio = cost.get("extra_audio_seconds")
+        if (
+            isinstance(extra_audio, bool)
+            or not isinstance(extra_audio, (int, float))
+            or extra_audio < 0
+        ):
+            report.findings.append(Finding(
+                "variant-cost-mismatch",
+                f"{report.run_id}: variant_cost.extra_audio_seconds is {extra_audio!r}; it must be "
+                "a non-negative number ((K - 1) * row audio, since every arm re-sends the speech "
+                "packet at the first visit)",
+                report.run_id,
+            ))
+        elif expected_extra == 0 and extra_audio != 0:
+            report.findings.append(Finding(
+                "variant-cost-mismatch",
+                f"{report.run_id}: variant_cost.extra_audio_seconds is {extra_audio!r} but the arm "
+                "list carries no arm beyond the delivering one (extra_contacts_per_row 0)",
+                report.run_id,
+            ))
+        elif expected_extra is not None and expected_extra > 0 and extra_audio == 0:
+            report.findings.append(Finding(
+                "variant-cost-mismatch",
+                f"{report.run_id}: variant_cost.extra_audio_seconds is 0 but "
+                f"extra_contacts_per_row is {expected_extra}; every extra arm re-sends the row's "
+                "speech packet, so the audio cost cannot be zero",
+                report.run_id,
+            ))
+
+    claim = block.get("claim")
+    if claim != SUPPLY_VARIANT_CLAIM_CEILING:
+        report.findings.append(Finding(
+            "variant-claim-not-nominated",
+            f"{report.run_id}: measurement_design {design!r} may claim only "
+            f"{SUPPLY_VARIANT_CLAIM_CEILING!r} (Q6 ruling: a Solver-local effect never supports a "
+            f"system-level claim), but claim is {claim!r}",
+            report.run_id,
+        ))
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -476,6 +695,10 @@ def check_cell(
     index: PackageIndex,
     receipt_cache: dict[str, Any],
 ) -> None:
+    _check_supply_variant_registration(
+        report, fragment, baseline, _floor_gate_module(index.repo_root), index.repo_root
+    )
+
     run_ids = {"generation": report.run_id, **fit_run_ids(fragment, baseline)}
     report.run_ids = run_ids
     requirement = decision_requirement(cell)

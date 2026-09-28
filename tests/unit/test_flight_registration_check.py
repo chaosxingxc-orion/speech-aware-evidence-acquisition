@@ -99,6 +99,14 @@ class World:
         self.recipe = {"schema": "synthetic", "run_ids": {"arm": RUN, "read": READ}}
         self.states = {EXPERIMENT: "ready", SMOKE: "ready"}
         self.pin_sha: str | None = None  # None -> pin the real receipt hash
+        # owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-variant-
+        # instrument-design.md: set on a cell to exercise the instrument-registration checks.
+        # ``measurement`` is written as the EXPERIMENT fragment's top-level ``stage3_measurement``
+        # (precedence 3 of stage3_effect_floor_check.py); ``supply_variants`` is written into the
+        # EXPERIMENT baseline's ``native_episode.roles.solver.supply_variants``, exactly where the
+        # real baselines carry it (see configs/baseline/*var2-supply-variants*.json).
+        self.measurement: dict | None = None
+        self.supply_variants: dict | None = None
 
     def build(self) -> "World":
         receipt = {
@@ -110,9 +118,13 @@ class World:
         _write(self.data / RECEIPT, receipt)
         receipt_sha = hashlib.sha256((self.data / RECEIPT).read_bytes()).hexdigest()
         for experiment, run_id, fit_id in ((EXPERIMENT, RUN, FIT), (SMOKE, SMOKE_RUN, SMOKE_FIT)):
-            _write(self.repo / "configs" / "baseline" / f"{experiment}-baseline.json",
-                   {"native_contact_fit": {"run_id": fit_id}})
-            _write(self.repo / "configs" / "experiment" / f"{experiment}.json", {
+            baseline: dict = {"native_contact_fit": {"run_id": fit_id}}
+            if experiment == EXPERIMENT and self.supply_variants is not None:
+                baseline["native_episode"] = {
+                    "roles": {"solver": {"supply_variants": self.supply_variants}}
+                }
+            _write(self.repo / "configs" / "baseline" / f"{experiment}-baseline.json", baseline)
+            fragment: dict = {
                 "date": "2026-09-27",
                 "cells": [{
                     "cell_id": experiment,
@@ -128,7 +140,10 @@ class World:
                         }],
                     },
                 }],
-            })
+            }
+            if experiment == EXPERIMENT and self.measurement is not None:
+                fragment["stage3_measurement"] = self.measurement
+            _write(self.repo / "configs" / "experiment" / f"{experiment}.json", fragment)
         _write(self.repo / "configs" / "campaign" / "plan.json",
                {"schema": "saea-campaign-plan-v1", "cells": [{"cell": EXPERIMENT, "experiment": EXPERIMENT}]})
         _write(self.repo / "docs" / "readiness" / PACKAGE / "generation-plan-registered-v1.json", {"run_id": RUN})
@@ -274,6 +289,167 @@ def test_main_exit_codes(world: World, capsys) -> None:
     assert gate.main(base + ["--cell", EXPERIMENT]) == 1
     assert "[receipt-missing]" in capsys.readouterr().out
     assert gate.main(["--repo-root", str(world.repo), "--data-root", str(world.data / "absent")]) == 2
+
+
+# --------------------------------------------------------------------------
+# supply-variant instrument registration (owner decision 172, merge set A of
+# docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md section 4)
+# --------------------------------------------------------------------------
+
+
+def _two_arms(*, arm_visits: str | None = None) -> dict:
+    block: dict = {
+        "arms": [
+            {"arm_id": "twin", "max_supplied_items": 10},
+            {"arm_id": "plan", "deliver": True, "max_supplied_items": 10},
+        ],
+    }
+    if arm_visits is not None:
+        block["arm_visits"] = arm_visits
+    return block
+
+
+def test_arm_visits_not_first_is_refused_for_a_same_flight_supply_variant_cell(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-supply-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "variant_cost": {"extra_contacts_per_row": 1, "extra_audio_seconds": 3.2},
+    }
+    world.supply_variants = _two_arms()  # arm_visits absent -> parser default "every"
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "arm-visits-not-first" in _kinds(data)
+
+
+def test_arm_visits_every_is_also_refused_for_offline_sealed_pool(world: World) -> None:
+    # section 2: BOTH same-flight-supply-variant and offline-sealed-pool must declare "first".
+    world.measurement = {
+        "measurement_design": "offline-sealed-pool",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "variant_cost": {"extra_contacts_per_row": 1, "extra_audio_seconds": 3.2},
+    }
+    world.supply_variants = _two_arms(arm_visits="every")
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "arm-visits-not-first" in _kinds(data)
+
+
+def test_arm_visits_first_with_correct_cost_and_claim_passes_and_records_roster_fields(
+    world: World,
+) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-supply-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "aa_arm_id": "twin",
+        "tuning_roster": "docs/readiness/2026-09-27-svinst/tuning-roster-receipt-v1.json",
+        "read_roster": "docs/readiness/2026-09-27-svinst/read-roster-receipt-v1.json",
+        "variant_cost": {"extra_contacts_per_row": 1, "extra_audio_seconds": 3.2},
+    }
+    world.supply_variants = _two_arms(arm_visits="first")
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "arm-visits-not-first" not in kinds
+    assert "variant-cost-mismatch" not in kinds
+    assert "variant-claim-not-nominated" not in kinds
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["supply_variant"]["measurement_design"] == "same-flight-supply-variant"
+    assert cell["supply_variant"]["arm_visits"] == "first"
+    assert cell["supply_variant"]["aa_arm_id"] == "twin"
+    assert cell["supply_variant"]["tuning_roster"] == (
+        "docs/readiness/2026-09-27-svinst/tuning-roster-receipt-v1.json"
+    )
+    assert cell["supply_variant"]["read_roster"] == (
+        "docs/readiness/2026-09-27-svinst/read-roster-receipt-v1.json"
+    )
+
+
+def test_variant_cost_mismatch_on_a_wrong_contact_count(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-supply-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        # two arms -> the arm list's own extra is 1, not 2
+        "variant_cost": {"extra_contacts_per_row": 2, "extra_audio_seconds": 3.2},
+    }
+    world.supply_variants = _two_arms(arm_visits="first")
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "variant-cost-mismatch" in _kinds(data)
+
+
+def test_variant_cost_mismatch_when_the_block_is_absent(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "offline-sealed-pool",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+    }
+    world.supply_variants = _two_arms(arm_visits="first")
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "variant-cost-mismatch" in _kinds(data)
+
+
+def test_variant_claim_not_nominated_when_missing_or_wrong(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-supply-variant",
+        "expected_effect_pp": 1.0,
+        "variant_cost": {"extra_contacts_per_row": 1, "extra_audio_seconds": 3.2},
+        "claim": "admitted",
+    }
+    world.supply_variants = _two_arms(arm_visits="first")
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "variant-claim-not-nominated" in _kinds(data)
+
+    del world.measurement["claim"]
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "variant-claim-not-nominated" in _kinds(data)
+
+
+def test_a_design_outside_the_instrument_skips_the_supply_variant_checks(world: World) -> None:
+    # a cross-flight cell may declare supply_variants (the VAR-2 shape) without arm_visits,
+    # variant_cost or claim -- this gate must not invent a new requirement for it.
+    world.measurement = {
+        "measurement_design": "cross-flight-with-in-chain-replicate",
+        "expected_effect_pp": 5.0,
+        "replicate_run_id": "SAEA-SLURP-STAGE3-SOME-REPLICATE-V1",
+    }
+    world.supply_variants = _two_arms()  # no arm_visits, no variant_cost, no claim
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "arm-visits-not-first" not in kinds
+    assert "variant-cost-mismatch" not in kinds
+    assert "variant-claim-not-nominated" not in kinds
+
+
+def test_offline_sealed_pool_with_no_supply_variants_at_all_is_not_checked(world: World) -> None:
+    # offline-sealed-pool is NOT exclusive to this instrument: the real ROLL-1/ROLL-2/ROLL-3 and
+    # filler-chunk cells declare it for an ordinary offline sealed-pool read with no supply
+    # variation whatsoever, and none of them carries a supply_variants block anywhere.
+    world.measurement = {
+        "measurement_design": "offline-sealed-pool",
+        "expected_effect_pp": 0.67,
+        "claims_benefit": False,
+    }
+    world.supply_variants = None
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "arm-visits-not-first" not in kinds
+    assert "variant-cost-mismatch" not in kinds
+    assert "variant-claim-not-nominated" not in kinds
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell.get("supply_variant") is None
+
+
+def test_a_cell_with_no_stage3_measurement_at_all_is_not_checked(world: World) -> None:
+    # the real, historical VAR-2 baselines (configs/baseline/*var2-supply-variants*.json)
+    # declare supply_variants with no stage3_measurement block at all.
+    world.supply_variants = _two_arms()
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "arm-visits-not-first" not in kinds
+    assert "variant-cost-mismatch" not in kinds
+    assert "variant-claim-not-nominated" not in kinds
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell.get("supply_variant") is None
 
 
 def test_the_batch_driver_runs_the_gate_in_prelaunch() -> None:
