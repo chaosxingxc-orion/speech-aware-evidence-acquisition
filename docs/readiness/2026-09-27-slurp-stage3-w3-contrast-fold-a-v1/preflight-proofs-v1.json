@@ -3,9 +3,9 @@
     "arm": {
       "check": {
         "blockers": null,
-        "config_hash": "7fb4ac8be839915f22540c8e0534fd6da39f8a1f3faee3afe43397c2888d8440",
+        "config_hash": "3440eefb7d01c31c943dad454e4b689e1e4971025d30320229455eda9a415046",
         "generation_authorized": false,
-        "path_outside_git": "/home/chao/w3-scratch/check-slurp-native-stage3-w3-fold-a-v1.json",
+        "path_outside_git": "/home/chao/w3a-scratch/check-slurp-native-stage3-w3-fold-a-v1.json",
         "per_phase": {
           "perception": {
             "agree_registered_rendered_text_tokens": 19449,
@@ -45,7 +45,7 @@
           }
         },
         "prepared_artifacts_ok": true,
-        "protocol_hash": "7ab0b5e542e430f73a62654d80e702ecdcedab37227a27bdd843af6b0dfdb71f",
+        "protocol_hash": "b51a0a435f1fb574274fe0c740210a95cd453ed17895627f1f9c9d7ad5886a88",
         "readiness": "held",
         "sample_count": 1080,
         "serving_geometry": {
@@ -53,33 +53,33 @@
           "slot_tokens": 24576,
           "slots": 4
         },
-        "sha256": "672144b3cd71c09ad9e71db3a0c979465bf49df53c3a30e6fed43ee3185c7f79",
-        "study_commit": "701bd63ac60a5528d0a9beb549d5d6650755f8da"
+        "sha256": "669e57761a6bcda634cb1e6af02df4b2fa2a9e8a284837dc00875f5e06712c7e",
+        "study_commit": "e9b4a8eee35e4c48fe7457f9186b11b0ed06147b"
       },
       "first_phase_supply_proof": {
         "agree_family_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
         "identical": true,
         "implementation": {
-          "runtime": "25c472f2a8507b3d3d2c91fa445ff52928e0a15b1af168f6f416e76dcd19980c",
-          "speech_aware_evidence_acquisition.rails.kb_policy": "19a11ca7ea18c4e5ae6411b972c99cbd91a1ad127ca04c386b3277a3ec24da20",
+          "runtime": "b87e4237306d6df6ddf8e580317a8cd521053d60723416e6d9f070ac5ab1829a",
+          "speech_aware_evidence_acquisition.rails.kb_policy": "b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b",
           "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
-          "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
-          "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+          "speech_aware_evidence_acquisition.rails.knowledge_stores": "e0a50973992a2da98481eb1fc9b0b10d5ec8c7b07bf5c082c4e6b9c3fc796b1d",
+          "speech_aware_evidence_acquisition.rails.phase_supply": "5cf42534f370b66afdeaf6423cd82b71469b77619e908ba373058d5c33fab49f"
         },
         "minted_by": "core.flight.cli prepare-supply --output <scratch path> --workers 4 (not under prepared/)",
         "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
-        "path_outside_git": "/home/chao/w3-scratch/supply-proof-slurp-native-stage3-w3-fold-a-v1.json",
+        "path_outside_git": "/home/chao/w3a-scratch/supply-proof-slurp-native-stage3-w3-fold-a-v1.json",
         "rows": 1080,
         "selected_value_ids": 8624,
-        "sha256": "bac03b49903728bb552ce457c3628a3af63c3669f041c69950c9c7ce9dc9d55c"
+        "sha256": "2bad5e6f33c53546e573d859f3797646bc6d509d5367e8c8b8af9af2b47068b6"
       }
     },
     "smoke": {
       "check": {
         "blockers": null,
-        "config_hash": "5659772a480bf05093c8ab4efb4218233907275f8f050ab4fcaf635b3c61671f",
+        "config_hash": "cb4b2b74df1214e0858db84425d0eee7ac3f1d957464429c2ecb06b2b41cacbd",
         "generation_authorized": false,
-        "path_outside_git": "/home/chao/w3-scratch/check-slurp-native-stage3-w3-fold-a-smoke-4-v1.json",
+        "path_outside_git": "/home/chao/w3a-scratch/check-slurp-native-stage3-w3-fold-a-smoke-4-v1.json",
         "per_phase": {
           "perception": {
             "agree_registered_rendered_text_tokens": 19449,
@@ -119,7 +119,7 @@
           }
         },
         "prepared_artifacts_ok": true,
-        "protocol_hash": "1427acfe320836a4067664738f66761e5e1b493698045d877670e58efdc1ead1",
+        "protocol_hash": "4ddc7b3f9fcc09ee1695520b612322910a557d0bfffd76130a0fb7090e8c5b9e",
         "readiness": "held",
         "sample_count": 4,
         "serving_geometry": {
@@ -127,25 +127,25 @@
           "slot_tokens": 24576,
           "slots": 4
         },
-        "sha256": "c214f79b8a93e5cf005081022781a7cac0f6e35193325d43000db573185d432e",
-        "study_commit": "701bd63ac60a5528d0a9beb549d5d6650755f8da"
+        "sha256": "dcf24f5af0a61b920e590161cdd218c4fd54b01ce31b421c02888071e0846023",
+        "study_commit": "e9b4a8eee35e4c48fe7457f9186b11b0ed06147b"
       },
       "first_phase_supply_proof": {
         "agree_family_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
         "identical": true,
         "implementation": {
-          "runtime": "25c472f2a8507b3d3d2c91fa445ff52928e0a15b1af168f6f416e76dcd19980c",
-          "speech_aware_evidence_acquisition.rails.kb_policy": "19a11ca7ea18c4e5ae6411b972c99cbd91a1ad127ca04c386b3277a3ec24da20",
+          "runtime": "b87e4237306d6df6ddf8e580317a8cd521053d60723416e6d9f070ac5ab1829a",
+          "speech_aware_evidence_acquisition.rails.kb_policy": "b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b",
           "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
-          "speech_aware_evidence_acquisition.rails.knowledge_stores": "2740d2e262de8c29f4309c378b4c08c51a206f2ab8ee542b46919cf32099368a",
-          "speech_aware_evidence_acquisition.rails.phase_supply": "c315c35959489cc89fd07aeaf408c32cd73123ae8f19e61b91c1f123093f10ce"
+          "speech_aware_evidence_acquisition.rails.knowledge_stores": "e0a50973992a2da98481eb1fc9b0b10d5ec8c7b07bf5c082c4e6b9c3fc796b1d",
+          "speech_aware_evidence_acquisition.rails.phase_supply": "5cf42534f370b66afdeaf6423cd82b71469b77619e908ba373058d5c33fab49f"
         },
         "minted_by": "core.flight.cli prepare-supply --output <scratch path> --workers 4 (not under prepared/)",
         "output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
-        "path_outside_git": "/home/chao/w3-scratch/supply-proof-slurp-native-stage3-w3-fold-a-smoke-4-v1.json",
+        "path_outside_git": "/home/chao/w3a-scratch/supply-proof-slurp-native-stage3-w3-fold-a-smoke-4-v1.json",
         "rows": 4,
         "selected_value_ids": 32,
-        "sha256": "6a349b004494f932a92e3bb84dee86e00dd872785fa843d566b9c5862eb1800e"
+        "sha256": "8713996de7a4ea516c49f3af7b82466f4a8d8e4a4439343f6bbc6c1f88e28e8b"
       }
     }
   },
@@ -159,7 +159,7 @@
     "scorer": 0,
     "server": 0
   },
-  "line": "The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; the offline projection moves a Solver contact by -53.886 tokens on average (max +75.528, 52 rows above zero). Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5).",
+  "line": "The held `core.flight.cli check` (runtime placeholder counter, widest representative request) reads ALLOW on all four phases of the arm: perception 19,087, reviewer 18,951, planner 18,890, Solver 20,916 rendered tokens -- -362 on every phase against the AGREE arm's registered 19,449 / 19,313 / 19,252 / 21,278 (the eight longest cards are shorter; the bound counts the twenty longest exemplars either way) -- Solver operational margin 45 and physical margin 3,117 on the 24,576-token slot, no blockers. Realised requests: the sealed AGREE arm's largest contact prompt was 14,561 tokens over 4,385 contacts against the per-contact limit 20,990; W3a moves every later contact by the card delta alone, -60.494 tokens on average (min -106, max -3: no contact grows), because the Solver exemplar block is the AGREE arm's own. Nothing must be freed for W3. The first-phase supply minted to a scratch path at this implementation carries the AGREE family's own digests (arm eab5c61e, 8,624 ids on 1,080 rows; smoke 308601c5).",
   "realised_agree_requests": {
     "cost_records": 4385,
     "max_prompt_tokens": 14561,
@@ -189,5 +189,13 @@
     },
     "note": "the cards reach all four roles; the exemplar block reaches the Solver and every later contact. An estimate for the realised request, beside the pre-flight check's placeholder counts."
   },
-  "schema": "saea-w3-preflight-proofs-v1"
+  "schema": "saea-w3-preflight-proofs-v1",
+  "w3a_request_size_projection": {
+    "cards_token_delta_per_later_contact": {
+      "max": -3,
+      "mean": -60.494,
+      "min": -106
+    },
+    "note": "W3a alone (2026-09-27 re-registration): the exemplar block is the AGREE arm's own, so only the card delta applies; the net Solver projection in request_size_projection includes the dropped cap and does not apply"
+  }
 }

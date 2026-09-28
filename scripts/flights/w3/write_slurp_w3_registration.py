@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Write the W3 registration package from the committed configs (owner decision 164, knowledge-wave
-item W3: intent contrast cards + a per-intent exemplar cap).
+item W3 as W3a ALONE: the intent contrast cards; re-registered 2026-09-27 by the coordinator ruling
+under decision 164's one-change rule, the per-intent exemplar cap W3b of the first registration
+dropped).
 
 Reads the two derived fragments, the contrast-card release receipt and the offline read, recomposes
-every cell's own hashes, PROVES the composed-config diff against the retained AGREE cells is the two
-knowledge-content pins, the contrast release's two frozen source receipts and per-flight bookkeeping,
+every cell's own hashes, PROVES the composed-config diff against the retained AGREE cells is the ONE
+knowledge-content pin (W3a; the Solver exemplar supply is the AGREE arm's, byte for byte), the
+contrast release's two frozen source receipts and per-flight bookkeeping,
 and writes the package documents, the analysis recipe (with its READ run id), a draft decision
 receipt for root and (with ``--append-ledger``) seven DRAFT exposure rows. Config alone: no adapter,
 no split load, no lock, no contact; it flips nothing and mints nothing. The Fit gate numbers and the
@@ -144,8 +147,10 @@ def identities() -> dict:
         }
         accounted = {k for group in diff.values() for k in group}
         other = [k for k in changed if k not in accounted]
-        if other or diff["w3a_contrast_store_pins"] != sorted(PINNED_W3A) or diff["w3b_exemplar_cap_pins"] != sorted(PINNED_W3B):
-            raise SystemExit(f"{key}: the composed diff is not the two W3 pins: other={other} diff={diff}")
+        if other or diff["w3a_contrast_store_pins"] != sorted(PINNED_W3A) or diff["w3b_exemplar_cap_pins"] != []:
+            raise SystemExit(f"{key}: the composed diff is not the W3a pin alone: other={other} diff={diff}")
+        if composed.values["knowledge_stores"]["train-exemplars"] != parent.values["knowledge_stores"]["train-exemplars"]:
+            raise SystemExit(f"{key}: the train-exemplars store is not the AGREE arm's (W3b must be absent)")
         diff["anything_else"] = other
         added = [entry for entry in composed.values[RECEIPTS] if entry not in parent.values[RECEIPTS]]
         split = document["population"]["split_identity_hash"]
@@ -213,6 +218,20 @@ def main(argv: list[str] | None = None) -> int:
     at_cap = tuning["table"][str(cap)]
     below = tuning["table"].get(str(cap - 1))
     newly_named = named_after - named_before
+    rereg_date = "2026-09-27"  # the coordinator ruling's date; the re-registration time is args.registered_at
+    why_dropped = (
+        f"Coordinator ruling (Fable 5.1, {rereg_date}) under owner decision 164's one-change rule: the wave's W3 cell is "
+        "re-derived as W3a ALONE -- the intent contrast cards with the Solver exemplar supply restored to exactly the AGREE "
+        "arm's (no per-intent exemplar cap). W3b is dropped as a second change with no measured upside: (1) on Fold A the "
+        f"cap removes {cap_a['wrong_rows']['wrong_plurality_removed']} wrong-intent pluralities on the "
+        f"{cap_a['wrong_rows']['rows']} intent-wrong rows ({OFFLINE} fold_a_estimates.exemplar_cap.wrong_rows."
+        "wrong_plurality_removed); (2) on Fold B the chosen cap N = "
+        f"{cap} scores GAIN {at_cap['gain_wrong_plurality_removed']} / HARM {at_cap['harm_gold_plurality_removed']} "
+        f"({OFFLINE} fold_b_tuning.table[\"{cap}\"]); (3) it changes "
+        f"{cap_a['right_rows']['block_changed']} Solver blocks on the {cap_a['right_rows']['rows']} rows the AGREE arm got "
+        f"right, lowering the gold exemplar count on {cap_a['right_rows']['gold_count_down']} ({OFFLINE} "
+        "fold_a_estimates.exemplar_cap.right_rows.block_changed / gold_count_down)."
+    )
 
     no_harm_rule = (
         "NO-HARM READ (owner decision 164 brief, row 139): against the SHARED wave-1 in-chain A/A "
@@ -221,10 +240,10 @@ def main(argv: list[str] | None = None) -> int:
         f"pooled SLU-F1 delta (the guard) is not below -{H_SLU} pp -- each metric read at its own Fold A own-null "
         f"half-width ({INSTRUMENT} section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below "
         "zero, decision 25). A CI that includes zero and clears the margin is the admission. The cell is NEVER "
-        "reported as a gain whatever the point estimate: no measured conversion applies to contrast text or to "
-        "exemplar composition, so no expected effect is declared (decision 139). Every verdict carries the "
+        "reported as a gain whatever the point estimate: no measured conversion applies to contrast text, so no "
+        "expected effect is declared (decision 139). Every verdict carries the "
         "per-scenario table in both weightings, the frontier row (decision 75), the row-level attribution of the "
-        "delta to the rows the contrast lines newly name and to the rows the cap newly gives a gold exemplar "
+        "delta to the rows the contrast lines newly name "
         "(membership fixed in offline-estimates-v1.json before contact), and the A/A's own delta against the sealed "
         "AGREE arm as the instrument's reading."
     )
@@ -236,19 +255,20 @@ def main(argv: list[str] | None = None) -> int:
             "conversions on this programme are DELIVERY conversions of the gold boundary card to Perception (CONV "
             f"{CONV['m']} of {CONV['n']} = {CONV['rate']}, KPROBE {KPROBE['m']} of {KPROBE['n']} = {KPROBE['rate']}). "
             "W3a delivers nothing new -- the delivered set is the AGREE arm's own, byte for byte -- it changes what "
-            "an already-delivered card SAYS, and no contrast text has ever been flown and read; W3b changes the "
-            "composition of a block delivered to the SOLVER, a different node and channel from the one CONV measured. "
-            "Neither analogue applies, so the cell is registered as a no-harm read and says so."
+            "an already-delivered card SAYS, and no contrast text has ever been flown and read. The analogue does not "
+            "apply, so the cell is registered as a no-harm read and says so. The 2026-09-27 re-registration as W3a "
+            "alone keeps this declaration: the package declares no separate W3a number from a measured basis."
         ),
         "scale_only_not_declared": {
             "note": (
-                "For scale only, NOT a declaration and NOT used by any gate: the rows W3 newly reaches times the CONV "
-                "delivery rate, as the knowledge audit quoted its own ceilings. 1 row = 0.0926 pp on 1,080 rows."
+                "For scale only, NOT a declaration and NOT used by any gate: the rows W3a newly reaches times the CONV "
+                "delivery rate, as the knowledge audit quoted its own ceilings. 1 row = 0.0926 pp on 1,080 rows. W3a "
+                "alone: the rows the dropped cap newly gave a gold exemplar are no longer counted."
             ),
             "contrast_rows_newly_named_on_a_delivered_card": newly_named,
-            "cap_wrong_rows_gold_exemplar_newly_present": presence,
-            "rows_times_conv_rate_pp": round((newly_named + presence) * CONV["rate"] * 100.0 / 1080.0, 3),
-            "rows_ceiling_pp": round((newly_named + presence) * 100.0 / 1080.0, 3),
+            "rows_times_conv_rate_pp": round(newly_named * CONV["rate"] * 100.0 / 1080.0, 3),
+            "rows_ceiling_pp": round(newly_named * 100.0 / 1080.0, 3),
+            "first_registration_w3a_plus_w3b_rows_times_conv_rate_pp": round((newly_named + presence) * CONV["rate"] * 100.0 / 1080.0, 3),
         },
     }
     measurement = {
@@ -278,8 +298,8 @@ def main(argv: list[str] | None = None) -> int:
             "primary_metric": "none (structural form only)",
             "rows": 4,
             "note": (
-                "Four rows prove FORM and nothing else: that the contrast release loads, that the capped Solver block "
-                "still delivers twenty exemplars, that every request fits and that the episode completes. Scored by no "
+                "Four rows prove FORM and nothing else: that the contrast release loads, "
+                "that every request fits and that the episode completes. Scored by no "
                 "one, read by no one (instrument rule 5)."
             ),
         },
@@ -287,7 +307,9 @@ def main(argv: list[str] | None = None) -> int:
     split_note = {
         "affordable": True,
         "registered": False,
-        "why_not_registered": "the brief registers the split only if the coordinator asks; nothing here registers W3a or W3b alone",
+        "registered_now": "W3a ALONE, in place of the composed W3 (re-registered in place, same run ids): the how_to_derive recipe below was followed on the coordinator's ruling; W3b alone is not registered",
+        "ruling": why_dropped,
+        "why_not_registered": "first registration: the brief registered the split only if the coordinator asked; superseded by the re-registration as W3a alone",
         "cost_each": (
             f"about {AGREE_RATE['gpu_hours_per_1080']} GPU hours and about {AGREE_RATE['calls_used']:,} contacts per "
             "1,080-row cell at the sealed AGREE arm's own rate (frontier read), read at the same shared A/A -- so the "
@@ -300,9 +322,9 @@ def main(argv: list[str] | None = None) -> int:
             "re-uses this package's recipe shape."
         ),
         "what_attribution_is_available_without_it": (
-            "the read attributes the delta row by row to the fixed membership sets of offline-estimates-v1.json (rows "
-            "whose pair the contrast lines newly name; rows the cap newly gives a gold exemplar), which is attribution "
-            "by exposure, not by ablation"
+            "W3a alone is ONE change against the AGREE arm, so the arm-minus-A/A delta is the contrast cards' by "
+            "construction; the row attribution to the fixed membership set of offline-estimates-v1.json (rows whose "
+            "pair the contrast lines newly name) remains attribution by exposure"
         ),
     }
     facts = {
@@ -315,7 +337,8 @@ def main(argv: list[str] | None = None) -> int:
         "registered_at_utc": args.registered_at,
         "study_commit_at_registration": args.study_commit,
         "owner_decisions": {
-            "164": "the knowledge wave: W3 = intent contrast cards + a per-intent exemplar cap, prepared now, flip-ready by about 01:00Z 2026-09-28, read at the shared wave-1 A/A",
+            "164": "the knowledge wave: W3 = intent contrast cards (+ a per-intent exemplar cap in the first registration), prepared now, flip-ready by about 01:00Z 2026-09-28, read at the shared wave-1 A/A",
+            "coordinator ruling (under 164's one-change rule)": why_dropped,
             "139": "an expectation is declared only from a measured conversion analogue; otherwise the read is no-harm or form-proof and says so",
             "133": "intent accuracy primary, official SLU-F1 the guard",
             "28 and 86": "TRAIN Fold A numbers are development numbers, never a test claim",
@@ -347,8 +370,10 @@ def main(argv: list[str] | None = None) -> int:
                 "receipt": {"relpath": CARDS, "sha256": sha_file(CARDS)},
                 "build_script": {"relpath": BUILD_SCRIPT, "sha256": sha_file(BUILD_SCRIPT)},
             },
-            "w3b": {
-                "what": f"the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to {FUSE_POLICY}: walk the pure-cosine ranking, take at most {cap} exemplars per intent, stop at 20; admission depth and recall k {depth}",
+            "w3b_dropped": {
+                "status": f"DROPPED {rereg_date}, never flown: the Solver's train-exemplars supply is the AGREE arm's own (saea-fuse-supplyfilter-v1, k 20, c/m/top_l 20)",
+                "why_dropped": why_dropped,
+                "what": f"(first registration only) the Solver's train-exemplars supply moves from saea-fuse-supplyfilter-v1 at k 20 to {FUSE_POLICY}: walk the pure-cosine ranking, take at most {cap} exemplars per intent, stop at 20; admission depth and recall k {depth}",
                 "fuser": {"id": FUSE_POLICY, "module": "src/speech_aware_evidence_acquisition/rails/kb_policy.py", "pure_rule": "select_target_capped", "unit_tests": FUSER_TEST},
                 "cap": cap, "depth": depth,
                 "fold_b_tuning": tuning,
@@ -381,7 +406,7 @@ def main(argv: list[str] | None = None) -> int:
                         "realised_agree_requests": fit_summary["realised_agree_requests"]}
                        if fit_summary else None),
             "headroom_before": "the AGREE arm registered Solver 21,278 of 21,504 usable tokens (np4 slot 24,576 minus the 3,072 reserve): 226 tokens of headroom on the pre-flight placeholder count",
-            "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -{} tokens); the capped block still carries 20 exemplars, whose lengths differ row by row".format(-tokens["delta_all_60"]),
+            "w3_spends": "none by construction on the cards (every card at or below its flown token count, all 60 together -{} tokens); the Solver exemplar block is the AGREE arm's own".format(-tokens["delta_all_60"]),
             "what_must_be_freed": "nothing for W3 alone; W1's saving is not needed and is not spent",
         },
         "identity": {key: {k: v for k, v in ids[key].items() if k not in ("composed_config_diff_against_the_agree_cell", "readiness")} for key in CELLS},
@@ -441,16 +466,18 @@ def main(argv: list[str] | None = None) -> int:
         "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
         "the_question": (
             "With the intent cards carrying TRAIN-derived contrast lines in place of boilerplate (no more tokens per card) "
-            f"and the Solver's exemplar block capped at {cap} per intent (still 20 exemplars), do the official intent "
+            "and nothing else changed (W3a alone; the Solver exemplar block is the AGREE arm's own), do the official intent "
             "accuracy and pooled SLU-F1 on TRAIN Fold A 1,080 stay within the design's own null, read against the shared "
             "wave-1 in-chain A/A? A no-harm question, because no measured conversion applies (row 139)."
         ),
-        "two_pins": {"w3a": facts["the_item"]["w3a"]["what"], "w3b": facts["the_item"]["w3b"]["what"]},
+        "one_pin": {"w3a": facts["the_item"]["w3a"]["what"]},
+        "dropped": {"w3b": facts["the_item"]["w3b_dropped"]["what"], "why": why_dropped},
         "unchanged": (
-            "everything but the two pins, the contrast release's two frozen source receipts and per-flight bookkeeping: "
+            "everything but the one pin, the contrast release's two frozen source receipts and per-flight bookkeeping: "
             f"the roster (TRAIN Fold A 1,080, split identity {arm['split_identity_hash']}), the model fragment and serving "
             f"geometry (np4 x 24,576), the session {SESSION}, the phase program and its 11-contact ceiling, the agreement "
-            "term (w_agree 1.0, k 60, fuse 8-1-8), the facet keys, the slot-contracts store, the role graph, the response "
+            "term (w_agree 1.0, k 60, fuse 8-1-8), the Solver exemplar supply (saea-fuse-supplyfilter-v1 at k 20), "
+            "the facet keys, the slot-contracts store, the role graph, the response "
             "formats, every template, the deliver normaliser, the scorers and every budget"
         ),
         "cells": {key: {k: ids[key][k] for k in ("cell", "experiment", "run_id", "attempt_id", "rows", "composed_config_hash", "protocol_hash", "split_identity_hash")}
@@ -459,9 +486,9 @@ def main(argv: list[str] | None = None) -> int:
         "decision_rule_fixed_here": no_harm_rule,
         "expectation": expectation,
         "what_a_harmful_read_would_mean": (
-            "That replacing boilerplate with contrast text, or diversifying the exemplar block, costs the deciding nodes more "
-            "than the content gives -- read row by row against the fixed membership sets before anything is withdrawn; W3a "
-            "and W3b are then separated by the registered-ready split (registered-facts-v1.json attribution_split)."
+            "That replacing boilerplate with contrast text costs the deciding nodes more than the content gives -- read row "
+            "by row against the fixed membership set before anything is withdrawn; W3a is the only change, so no further "
+            "split is needed."
         ),
         "model_free_proofs_landed_before_contact": {
             "contrast_release": {"receipt": CARDS, "reloaded": release["reloaded_through_load_knowledge_store_binding"], "tokens": tokens},
@@ -525,7 +552,7 @@ def main(argv: list[str] | None = None) -> int:
                     "note": facts["byte_identity_expectation"]["claim"],
                 },
                 "protocol_document": {"relpath": PACKAGE + "/protocol-registered-v1.json", "sha256": protocol_sha},
-                "two_pins": protocol["two_pins"],
+                "one_pin": protocol["one_pin"],
                 "purpose": (
                     f"{run_id}: {FLIGHT_PROSE[key]}. "
                     + ("It measures request envelopes only and reads nothing." if is_fit
@@ -544,7 +571,7 @@ def main(argv: list[str] | None = None) -> int:
     recipe = {
         "schema": "saea-slurp-paired-analysis-recipe-v1",
         "recipe_id": "slurp-stage3-w3-contrast-fold-a-paired-analysis-v1",
-        "title": "Cell W3 -- the standard paired roster read on intent + SLU at the shared wave-1 in-chain A/A, under the no-harm rule, with row attribution to the fixed contrast and cap membership sets",
+        "title": "Cell W3 -- the standard paired roster read on intent + SLU at the shared wave-1 in-chain A/A, under the no-harm rule, with row attribution to the fixed contrast membership set (W3a alone)",
         "registered_at_utc": args.registered_at,
         "read_run_id": READ_RUN,
         "run_ids": {"read": READ_RUN, "arm": arm["run_id"], "in_chain_replicate": SHARED_AA, "comparator": COMPARATOR_RUN},
@@ -566,11 +593,11 @@ def main(argv: list[str] | None = None) -> int:
         },
         "steps": [
             f"1. Refuse unless BOTH the W3 arm and the shared A/A {SHARED_AA} carry a COMPLETE sealed manifest at 1,080 rows with the committed roster's ids, each with one successful complete official TRAIN score, and their config hashes are the registered ones.",
-            "2. Structural stage: on the arm, the Perception consumption's delivered boundary ids must equal the AGREE arm's on every row (W3 moves no key); the Solver consumption must carry 20 exemplars with at most the registered cap per intent on every row the offline read fills; the delivered card bodies must hash to the contrast release. A mismatch is an engineering defect, not an effect, and closes the read.",
+            "2. Structural stage: on the arm, the Perception consumption's delivered boundary ids must equal the AGREE arm's on every row (W3 moves no key); the Solver consumption must equal the AGREE arm's 20 exemplars on every row (W3a moves no exemplar; the offline read's validation re-derived them 1080 of 1080); the delivered card bodies must hash to the contrast release. A mismatch is an engineering defect, not an effect, and closes the read.",
             "3. Score once per arm over the complete manifest with the standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded).",
             "4. Paired row bootstrap (10,000 draws, seed 20260927) of the arm minus shared A/A delta on intent accuracy and on official pooled SLU-F1; the same against the sealed AGREE arm BESIDE it, never instead of it.",
             f"5. Apply the no-harm rule: ADMITTED iff the intent lower bound >= -{H_INTENT} and the SLU lower bound >= -{H_SLU}; HARMFUL iff either upper bound < 0 (decision 25); otherwise NOT ADMITTED (width). Never write 'gain' or 'no gain'.",
-            "6. Row attribution: the intent transition table (A/A -> arm) on the rows whose chosen-vs-gold pair the contrast lines newly name, on the rows the cap newly gives a gold exemplar, on the right rows whose block the cap changed, and on the rest -- counts only.",
+            "6. Row attribution: the intent transition table (A/A -> arm) on the rows whose chosen-vs-gold pair the contrast lines newly name and on the rest -- counts only.",
             "7. Report beside every number: the per-scenario table in the natural-mixture and equal-scenario weightings; the frontier row (decision 75); the Solver prompt tokens per contact from the sealed COST records against the A/A; the A/A's own delta against the sealed AGREE arm as the instrument's reading.",
         ],
         "read_driver": READ_DRIVER,
@@ -595,8 +622,8 @@ def main(argv: list[str] | None = None) -> int:
         "eligible_run_ids": eligible,
         "cell_kind": "Stage-3 knowledge-content cell (label none), registered as a no-harm read. One arm on TRAIN Fold A 1,080 read at the shared wave-1 in-chain A/A (the coordinator's, under its own receipt), and a four-row form smoke outside the chain.",
         "decision": (
-            "Fly cell W3: the retained AGREE arm with the intent-boundaries store moved to the contrast-card release and the "
-            f"Solver exemplar block capped at {cap} per intent (still 20), against the sealed AGREE arm read at the shared "
+            "Fly cell W3 as W3a alone: the retained AGREE arm with the intent-boundaries store moved to the contrast-card "
+            "release (the Solver exemplar supply the AGREE arm's own), against the sealed AGREE arm read at the shared "
             f"wave-1 in-chain A/A {SHARED_AA}. Admission is NO HARM at the Fold A own-null half-widths (intent {H_INTENT}, "
             f"SLU {H_SLU}); the cell is never reported as a gain."
         ),
@@ -613,7 +640,7 @@ def main(argv: list[str] | None = None) -> int:
             "preflight_proofs": {"path": PROOFS, "sha256": sha_file(PROOFS) if Path(PROOFS).is_file() else None},
             "contrast_card_receipt": {"path": CARDS, "sha256": sha_file(CARDS)},
             "config_proof": {"path": CONFIG_TEST, "sha256": sha_file(CONFIG_TEST) if Path(CONFIG_TEST).is_file() else None},
-            "base_cell": f"the retained AGREE arm ({COMPARATOR_RUN}): W3 is that fragment with two knowledge-content pins",
+            "base_cell": f"the retained AGREE arm ({COMPARATOR_RUN}): W3 is that fragment with one knowledge-content pin (W3a alone; re-registered {rereg_date})",
             "registration_base_commit": args.study_commit,
         },
         "budget": {**{k: caps[k] for k in sorted(caps)}, "smoke": smoke_caps, "paid_api_calls": 0,
@@ -646,19 +673,31 @@ def main(argv: list[str] | None = None) -> int:
         for n, row in sorted(tuning["table"].items(), key=lambda item: -int(item[0])) if int(n) >= max(cap - 4, 1)
     )
     wa, ra = cap_a["wrong_rows"], cap_a["right_rows"]
-    readme = f"""# Cell W3: intent contrast cards + a per-intent exemplar cap
+    arm_phases = fit_summary["cells"]["arm"]["check"]["per_phase"] if fit_summary else None
+    after_line = (
+        "perception {:,} / reviewer {:,} / planner {:,} / Solver {:,} rendered tokens, Solver operational margin {} and "
+        "physical margin {:,}; first-phase supply digests arm {} and smoke {}".format(
+            arm_phases["perception"]["rendered_text_tokens"], arm_phases["reviewer"]["rendered_text_tokens"],
+            arm_phases["planner"]["rendered_text_tokens"], arm_phases["solver"]["rendered_text_tokens"],
+            arm_phases["solver"]["operational_margin_tokens"], arm_phases["solver"]["physical_margin_tokens"],
+            fit_summary["cells"]["arm"]["first_phase_supply_proof"]["output_sha256"][:8],
+            fit_summary["cells"]["smoke"]["first_phase_supply_proof"]["output_sha256"][:8],
+        ) if fit_summary else "not measured in this write"
+    )
+    readme = f"""# Cell W3a: intent contrast cards (W3 re-registered as W3a alone)
 
-Registered before contact {args.registered_at[:10]} at study commit `{args.study_commit}` (owner decision 164,
-knowledge-wave item W3); both cells **held**. Nothing here authorises a flight, a flip or an admission entry.
+Registered before contact {args.registered_at} at study commit `{args.study_commit}` (owner decision 164,
+knowledge-wave item W3). First registered 2026-09-27 at study commit `701bd63a` as W3a + W3b; **re-registered in place as W3a
+alone** (see [Re-registration](#re-registration) below). Both cells are **held**. Nothing here authorises a flight, a
+flip or an admission entry.
 
-**Why.** [`{AUDIT}`]({Path(AUDIT).name if False else '../../results/' + Path(AUDIT).name}) K1: every intent card carries one
+**Why.** [`{AUDIT}`](../../results/{Path(AUDIT).name}) K1: every intent card carries one
 activation sentence and one confusable exclusion, and 57.7 % of it is boilerplate; on 75 of the AGREE arm's 153
-intent-wrong rows both the right and the chosen card are delivered and neither names the other. K6: on 38 wrong rows
-none of the 20 delivered exemplars carries the gold intent, and on 93 the exemplar majority is the chosen (wrong)
-intent. The error-source read: the 20 exemplars outvote gold on 107 of 152. The mechanism synthesis: every gain so far
-was row-matched CONTENT to the deciding node -- so W3 adds content and pays for it inside the tokens it removes.
+intent-wrong rows both the right and the chosen card are delivered and neither names the other. The mechanism
+synthesis: every gain so far was row-matched CONTENT to the deciding node -- so W3a adds content and pays for it
+inside the tokens it removes.
 
-**W3a -- contrast cards** (`{BUILD_SCRIPT}`, release `{release['namespace']}`, content hash
+**W3a -- contrast cards, the one change** (`{BUILD_SCRIPT}`, release `{release['namespace']}`, content hash
 `{release['snapshot']['content_sha256']}`, receipt [`{CARDS}`](../../receipts/knowledge/{Path(CARDS).name})). Each card keeps its
 header, activation boundary, authored exclusion and card-specific limitation bullets verbatim; the uncertainty sentence
 (identical on all 60) and the shared limitation bullet are removed; a section
@@ -672,20 +711,12 @@ only while the card tokenises to no more tokens than the flown card (the G5 meas
 {tokens['max_card_delta']:+}**, rivals carried per card {json.dumps(cards['rivals_carried_distribution'])}. Facets, keys and value ids are
 unchanged, so Perception's delivered set is the AGREE arm's own.
 
-**W3b -- per-intent exemplar cap** (`{FUSE_POLICY}` in `rails/kb_policy.py`; the pure rule `select_target_capped`).
-The Solver's 20 exemplars are taken in cosine order with at most **N = {cap}** per intent, recall/admission depth
-**{depth}** so the block still fills 20. **Fold B tuning** (`{OFFLINE_SCRIPT}`, gold offline; rule fixed before reading:
-the smallest N whose GAIN -- unique wrong-intent pluralities removed -- is at least its HARM -- unique gold pluralities
-removed):
-
-| N | GAIN | HARM | net | gold presence gained | absolute gold majority broken | blocks changed | blocks filled |
-| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-{table_b}
-
-Every cap below {cap} breaks more right-intent pluralities than wrong-intent ones on Fold B; N = {cap} breaks none
-of either and still lets other intents into blocks one intent used to fill. The Fold A top 20 re-derived offline equals
-the AGREE arm's sealed Solver consumption on {offline['validation']['fold_a_top20_equals_agree_solver_consumption']} rows and the Fold B top 20
-reproduces the pinned Fold B agreement table on {offline['validation']['fold_b_top20_intent_shares_equal_pinned_agreement_table']}.
+**Against the AGREE bytes** (composed configs, `registered-facts-v1.json` `composed_config_diff_against_the_agree_cell`,
+re-proven by `tests/unit/test_w3_config.py`): only `knowledge_stores.intent-boundaries.{{release,snapshot}}.{{relpath,sha256}}`
+move (intent-boundaries-v1 -> intent-boundaries-contrast-v1), plus the contrast release's two frozen source receipts and
+per-flight bookkeeping. The Solver's `knowledge_stores.train-exemplars.phase_supply.solver` is the AGREE arm's, byte for
+byte (`saea-fuse-supplyfilter-v1`, `k` 20, `c`/`m`/`top_l` 20) -- the condition
+`scripts/flights/wave/wave_preconditions.py` checks before the wave flips or flies.
 
 **Fold A offline table** (the AGREE arm's own chosen intents and delivered sets; counts only):
 
@@ -695,20 +726,13 @@ reproduces the pinned Fold B agreement table on {offline['validation']['fold_b_t
 | pair named on a delivered card, before (authored exclusion alone) | {named_before} |
 | pair named on a delivered card, after (plus the contrast lines) | {named_after} |
 | of the {contrast_a['both_cards_delivered_neither_names_the_other_before']} rows with both cards delivered and neither naming the other, named after | {contrast_a['of_which_named_after']} |
-| wrong rows with 0 gold exemplars in the 20 | {wa['gold_zero_before']} |
-| ... of which the cap brings >= 1 gold exemplar in | {wa['gold_zero_to_present']} |
-| wrong rows whose gold exemplar count rises | {wa['gold_count_up']} |
-| wrong rows whose wrong-intent plurality the cap removes | {wa['wrong_plurality_removed']} |
-| RISK: right rows whose unique gold plurality the cap breaks | {ra['unique_gold_plurality_broken']} |
-| RISK: right rows whose absolute gold majority (> 10 of 20) the cap breaks | {ra['absolute_gold_majority_broken']} |
-| right rows whose block the cap changes / whose gold count falls | {ra['block_changed']} / {ra['gold_count_down']} |
 
 **The expectation, and its basis.** None is declared (`expected_effect_pp` 0.0, `claims_benefit` false): row 139
 allows an expectation only from a measured conversion analogue, and the two this programme has (CONV 32 of 70 = 0.457,
 KPROBE 24 of 55 = 0.436) are conversions of a NEWLY DELIVERED gold card at Perception. W3a delivers nothing new -- it
-changes what an already-delivered card says -- and W3b changes a block delivered to the Solver, another node and
-channel. So W3 is registered as a **no-harm read** and says so. For scale only (not declared, not gated): the
-{newly_named} newly named rows plus the {presence} rows given a gold exemplar, at the CONV rate, would be
+changes what an already-delivered card says. So W3a is registered as a **no-harm read** and says so; the package
+declares no separate W3a number from a measured basis, so the re-registration keeps 0.0. For scale only (not declared,
+not gated): the {newly_named} newly named rows at the CONV rate would be
 {expectation['scale_only_not_declared']['rows_times_conv_rate_pp']} pp.
 
 **Fit.** {fit_line}
@@ -719,42 +743,81 @@ SLU {H_SLU}), `claims_benefit` false, `expected_effect_pp` 0.0, `measurement_des
 registers (not this package). The READ is registered with the flight: `analysis-recipe-v1.json` declares
 `run_ids.read` **`{READ_RUN}`** and its DRAFT ledger row exists.
 
-**Split into W3a and W3b.** Affordable (about {AGREE_RATE['gpu_hours_per_1080']} GPU hours each at the AGREE rate, read at the
-same shared A/A) and NOT registered: the brief registers it only if the coordinator asks. Without it the read attributes
-by exposure (step 6 of the recipe), not by ablation.
+**Attribution.** W3a is one change against the AGREE arm, so the arm-minus-A/A delta is the contrast cards' by
+construction; the recipe's row attribution (step 6) splits it over the rows whose pair the contrast lines newly name.
 
-**Implementation identity.** `rails/kb_policy.py` gains the fuser, so every prepared supply's identity moves on the
-merge: any READY-but-unflown cell of another family must be re-pinned at its flight commit.
+**Implementation identity.** `rails/kb_policy.py` carries the registered target-capped fuser (merged with the first
+registration); W3a does not use it, and the flown default selection is unchanged. Every prepared supply's identity
+hashes that module, so any READY-but-unflown cell of another family is re-pinned at its flight commit.
 
 **Mint, flip, queue.** Root countersigns the seven DRAFT rows, mints `{DECISION_RELPATH}` (id `{DECISION_ID}`) with
-`scripts/flights/w3/w3_mint_receipt.py` (four eligible ids), flips with `scripts/flights/w3/w3_flip.sh` (smoke, then arm,
-converging at one HEAD; `--allow-output-change` never passed; the minted supplies must carry the AGREE family's own
-output digests), and queues the arm in the wave-1 chain beside `{SHARED_AA}` (decision 77).
+`scripts/flights/w3/w3_mint_receipt.py` (four eligible ids), flips inside the wave with
+`scripts/flights/wave/wave_flip.sh` (smoke, then arm, converging at one HEAD; `--allow-output-change` never passed; the
+minted supplies must carry the AGREE family's own output digests), and the wave chain flies the arm as step 2 of
+`scripts/flights/wave/batch_chain_wave.sh`, A/A -> W1 -> W3a -> W4 (decision 77).
 
 | file | what it holds |
 | --- | --- |
 | `../{Path(PREREG).name}` | the preregistration, including the `stage3_measurement` fence |
-| `registered-facts-v1.json` | every model-free fact, the composed diff, the CANONICAL `stage3_measurement` |
+| `registered-facts-v1.json` | every model-free fact, the composed diff, the CANONICAL `stage3_measurement`, the ruling |
 | `protocol-registered-v1.json` | identities, hashes, the no-harm rule, the claim boundary |
 | `generation-plan-registered-v1.json` / `fit-plan-registered-v1.json` | the arm's plans |
 | `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the smoke's plans |
 | `analysis-recipe-v1.json` | the paired read at the shared A/A, with `run_ids.read` |
-| `offline-estimates-v1.json` | the Fold B tuning table, the Fold A counts (the membership sets' counts) and the request-size projection |
+| `offline-estimates-v1.json` | the contrast membership counts, the request-size projection, and the dropped cap's Fold B tuning and Fold A counts |
 | `preflight-proofs-v1.json` | the held check per phase (Fit), the scratch-minted first-phase supply digests, the realised AGREE request sizes |
 | `root-admission-draft-v1.json` | the decision receipt root mints with `w3_mint_receipt.py` |
 
 **Not authorised by this package.** No flight before the receipt is minted and the cells are flipped; no contact by this
 registration; no re-flying of the comparator; no test-split or DEV read (Fold B was read offline, for tuning only); no
-third factor; no report of a gain; no admission entry.
+second or third factor; no report of a gain; no admission entry.
+
+## Re-registration
+
+**{rereg_date} -- coordinator ruling (Fable 5.1) under owner decision 164's one-change rule; re-registered
+{args.registered_at}.** The wave's W3 cell is
+re-derived as **W3a alone**: the intent contrast cards with the Solver exemplar supply restored to exactly the AGREE
+arm's (no per-intent exemplar cap). W3b is dropped because it is a second change with no measured upside. Each fact,
+with the file and section it comes from ("the first README" is this file as committed at `94c88036`):
+
+1. **On Fold A the cap removes no wrong-intent plurality**: {wa['wrong_plurality_removed']} of the {wa['rows']} intent-wrong
+   rows (`offline-estimates-v1.json` `fold_a_estimates.exemplar_cap.wrong_rows.wrong_plurality_removed`; the first
+   README's "Fold A offline table", row "wrong rows whose wrong-intent plurality the cap removes").
+2. **On Fold B a cap of {cap} scores GAIN {at_cap['gain_wrong_plurality_removed']} / HARM {at_cap['harm_gold_plurality_removed']}**
+   (`offline-estimates-v1.json` `fold_b_tuning.table["{cap}"]`; the first README's "W3b -- per-intent exemplar cap"
+   section, Fold B tuning table, row N = {cap}). Every smaller cap scores HARM above GAIN on Fold B (same table, N <= {cap - 1}).
+3. **It changes {ra['block_changed']} Solver blocks on the {ra['rows']} rows the AGREE arm got right**, lowering the gold
+   exemplar count on {ra['gold_count_down']} of them (`offline-estimates-v1.json`
+   `fold_a_estimates.exemplar_cap.right_rows.block_changed` and `gold_count_down`; the first README's "Fold A offline
+   table", row "right rows whose block the cap changes / whose gold count falls").
+
+**How it was derived.** Exactly `registered-facts-v1.json` `attribution_split.how_to_derive` for W3a alone ("this
+baseline with the train-exemplars Solver supply restored to AGREE's (fuse_policy saea-fuse-supplyfilter-v1, k 20,
+m/c/top_l 20)"), by `scripts/flights/w3/derive_slurp_w3_cells.py`, which now derives W3a alone. Same run ids, same
+attempt ids, same package directory: a re-registration of unflown cells. The seven DRAFT exposure rows are rewritten in
+place by run id (never duplicated), each carrying a RE-REGISTERED note.
+
+**What moved.** The four config fragments (composed and protocol hashes: arm `{arm['composed_config_hash'][:12]}` /
+`{arm['protocol_hash'][:12]}`, smoke `{smoke['composed_config_hash'][:12]}` / `{smoke['protocol_hash'][:12]}`), the plans, the
+protocol, the facts, the recipe (steps 2 and 6), the draft receipt, the preregistration, the pre-flight proofs and the
+ledger rows. The pre-flight proofs were re-run at `{args.study_commit}`: before (the first registration, `701bd63a`)
+perception 19,087 / reviewer 18,951 / planner 18,890 / Solver 20,916 rendered tokens, Solver operational margin 45 and
+physical margin 3,117; supply digests arm eab5c61e and smoke 308601c5. After: {after_line}. The numbers are identical
+because the pre-flight bound counts the twenty longest exemplars whether the cap is present or not.
+
+**What did not move.** The contrast-card release, the offline read (kept as the record of the dropped cap and as the
+source of the contrast membership set), `expected_effect_pp` 0.0 (the package declares no separate W3a number from a
+measured basis), the harm margins, the READ run id, the four eligible run ids, the caps and the shared A/A.
 """
     readme_sha = wr(PACKAGE + "/README.md", readme)
 
-    prereg = f"""# Preregistration: cell W3 -- intent contrast cards + a per-intent exemplar cap (TRAIN Fold A 1,080)
+    prereg = f"""# Preregistration: cell W3 as W3a alone -- intent contrast cards (TRAIN Fold A 1,080)
 
 Registered before contact {args.registered_at} at study commit `{args.study_commit}` by the W3 registration agent
 (worktree `{args.worktree}`, branch `{args.branch}`). Owner decision 164. The package README
 (`{PACKAGE}/README.md`) carries the evidence, the card format, the tuning table and the Fold A table; this note fixes
-the question, the arms, the rule and the fence.
+the question, the arms, the rule and the fence. RE-REGISTERED {args.registered_at} in place of the first registration
+(W3a + W3b, study commit `701bd63a`): {why_dropped}
 
 ## The question
 
@@ -763,7 +826,8 @@ the question, the arms, the rule and the fence.
 ## The arms
 
 - **W3 arm** `{arm['run_id']}` (cell `{arm['cell']}`, composed `{arm['composed_config_hash']}`, protocol `{arm['protocol_hash']}`):
-  the retained AGREE arm with (W3a) {facts['the_item']['w3a']['what']}; and (W3b) {facts['the_item']['w3b']['what']}.
+  the retained AGREE arm with ONE change (W3a alone): {facts['the_item']['w3a']['what']}. The Solver exemplar supply is
+  the AGREE arm's own; the first registration's per-intent cap (W3b) is dropped.
 - **Shared in-chain A/A** `{SHARED_AA}`: registered by the coordinator, flown in the same chain.
 - **Comparator** `{COMPARATOR_RUN}` (sealed AGREE arm, official intent {COMPARATOR_OFFICIAL['intent_accuracy']} / SLU-F1
   {COMPARATOR_OFFICIAL['slu_f1']}): context beside the A/A, never re-flown, never the bar.
@@ -786,7 +850,7 @@ the question, the arms, the rule and the fence.
 ## Boundary
 
 Development numbers only (owner decisions 28 and 86). No test-split or DEV read; TRAIN Fold B was read OFFLINE, gold
-labels and pinned vectors only, to tune the cap. No utterance text, gold string, knowledge body or model output is
+labels and pinned vectors only, to tune the cap that is no longer flown. No utterance text, gold string, knowledge body or model output is
 committed. The shared A/A, the flip and the flight are the coordinator's.
 """
     prereg_sha = wr(PREREG, prereg)
@@ -811,7 +875,7 @@ committed. The shared A/A, the flip and the flight are the coordinator's.
 MODEL_TOOL = (
     "Frozen Q4_K_M decoder-only c98304 np4 max512; promoted EVO-FOLDS-V2 speech packets; NO native tool authority on any "
     "role; prompt bytes the retained AGREE arm's except the intent-boundary card bodies (contrast release, no card longer "
-    "than flown) and the Solver exemplar block (per-intent cap, still 20)"
+    "than flown); the Solver exemplar block is the AGREE arm's own (W3a alone)"
 )
 INHERITED = (
     "TRAIN Fold A discovery rows already exposed by the sealed dual-store anchor, the released direct anchor, cells "
@@ -850,16 +914,20 @@ def append_ledger(args, *, ids, plan_shas, cap, depth, cards, offline) -> str:
             f"and this family's caps, then flips with scripts/flights/w3/w3_flip.sh, which mints each cell's OWN first-phase "
             f"supply under its own run id (item E16; expected output digest the AGREE family's own, arm "
             f"{AGREE_SUPPLY_OUTPUT_SHA['arm']}); the requirements lists are EMPTY and --allow-output-change must never be passed. "
-            f"Every hash in this row moves at the flip and the re-pin tool rewrites it. TWO PINS (owner decision 164): W3a the "
+            f"Every hash in this row moves at the flip and the re-pin tool rewrites it. ONE PIN (owner decision 164; W3a alone): the "
             f"intent-boundaries store moves to {release['namespace']} (content {release['snapshot']['content_sha256']}, release "
             f"{release['release']['sha256']}), 60 cards {tokens['all_60_cards_flown']} -> {tokens['all_60_cards_rebuilt']} tokens, "
-            f"no card above its flown count; W3b the Solver exemplar supply moves to {FUSE_POLICY} at cap {cap} per intent, "
-            f"depth {depth}, 20 delivered. Measurement declaration ({GATE}): {declaration} -- declared at the top level of "
+            f"no card above its flown count; the Solver exemplar supply is the AGREE arm's own. Measurement declaration ({GATE}): {declaration} -- declared at the top level of "
             f"{PACKAGE}/registered-facts-v1.json and repeated in the preregistration fence. THE RULE: admitted on NO HARM against "
             f"the shared wave-1 in-chain A/A at the Fold A half-widths, HARMFUL on a measured loss (decision 25), NEVER reported "
             f"as a gain (no measured conversion applies, row 139). The READ is {READ_RUN}. Caps are the AGREE arithmetic. Stop "
             f"and preserve on the first failure; AT MOST ONE root-diagnosed recovery re-registration. No paper-scale profile, no "
-            f"confirmatory split, no test-split contact, no comparator re-flight and no admission entry from this row."
+            f"confirmatory split, no test-split contact, no comparator re-flight and no admission entry from this row. "
+            f"RE-REGISTERED {args.registered_at[:10]} (coordinator ruling of 2026-09-27 under owner decision 164's one-change rule): W3 is "
+            f"W3a alone -- the per-intent exemplar cap W3b of the first registration (study commit 701bd63a) is dropped "
+            f"(Fold A: 0 wrong-intent pluralities removed; Fold B N = {cap}: GAIN 0 / HARM 0; 700 Solver blocks changed on rows "
+            f"the AGREE arm got right; {PACKAGE}/README.md, Re-registration); same run id, this row rewritten in place, not "
+            f"duplicated."
         )
 
     def row(key: str, kind: str) -> str:
@@ -868,9 +936,9 @@ def append_ledger(args, *, ids, plan_shas, cap, depth, cards, offline) -> str:
         budget = identity["family_budget"]
         run_id = identity["fit"]["run_id"] if is_fit else identity["run_id"]
         scope = FLIGHT_PROSE[key] + (" -- FIT spend identity, request envelopes only, no generation" if is_fit else "") + ": " + (
-            "the retained AGREE arm with the intent cards carrying TRAIN-derived contrast lines in place of boilerplate and the Solver exemplar block capped per intent, read on no harm against the shared wave-1 in-chain A/A"
+            "the retained AGREE arm with the intent cards carrying TRAIN-derived contrast lines in place of boilerplate (W3a alone; the Solver exemplar supply the AGREE arm's own), read on no harm against the shared wave-1 in-chain A/A"
             if key == "arm" else
-            "the same two pins on the first four rows of the unchanged roster; structural form only, never scored"
+            "the same one pin (W3a alone) on the first four rows of the unchanged roster; structural form only, never scored"
         )
         cells = [
             "", args.registered_at, run_id, "bounded-discovery-probe", scope, MODEL_TOOL,
@@ -884,9 +952,9 @@ def append_ledger(args, *, ids, plan_shas, cap, depth, cards, offline) -> str:
     read_row = " | ".join([
         "", args.registered_at, READ_RUN, "model-free-check",
         (
-            f"The cell W3 read: the contrast-card and exemplar-cap arm against the shared wave-1 in-chain A/A {SHARED_AA} "
+            f"The cell W3 read (W3a alone): the contrast-card arm against the shared wave-1 in-chain A/A {SHARED_AA} "
             f"under the no-harm rule (harm margins intent {H_INTENT} / SLU {H_SLU}), per-scenario tables in both weightings, "
-            "the frontier row and the row attribution to the fixed contrast and cap membership sets."
+            "the frontier row and the row attribution to the fixed contrast membership set."
         ),
         "No model, tokenizer, encoder or server contact: the registered read driver over the sealed per-sample official scores and sealed receipts.",
         "slurp TRAIN Fold A 1080", "discovery", ids["arm"]["split_identity_hash"], "no", "0", "0", "0.0",
@@ -895,7 +963,9 @@ def append_ledger(args, *, ids, plan_shas, cap, depth, cards, offline) -> str:
         (
             f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) {args.registered_at[:10]} at study commit "
             f"{args.study_commit} with the flight rows, as the pre-launch gate requires; runs only after both seals. No "
-            "utterance text, gold, transcript, knowledge body or model output is printed or persisted."
+            "utterance text, gold, transcript, knowledge body or model output is printed or persisted. RE-REGISTERED "
+            f"{args.registered_at[:10]} (coordinator ruling of 2026-09-27): W3 is W3a alone (the exemplar cap dropped; {PACKAGE}/README.md, Re-registration); "
+            "same run id, rewritten in place."
         ),
         "",
     ]).strip()
@@ -943,7 +1013,10 @@ def append_ledger(args, *, ids, plan_shas, cap, depth, cards, offline) -> str:
             f"REGISTERED BEFORE RESULT READING (DRAFT, root countersignature pending) {args.registered_at[:10]} at study commit "
             f"{args.study_commit}. Script {OFFLINE_SCRIPT}; output analysis/{OFFLINE_ROW}/read-v1.json and the package copy "
             f"{OFFLINE}. Chosen cap {cap}, depth {depth}; validation {offline['validation']['fold_a_top20_equals_agree_solver_consumption']} "
-            f"(Fold A) and {offline['validation']['fold_b_top20_intent_shares_equal_pinned_agreement_table']} (Fold B). Counts only. It authorises nothing."
+            f"(Fold A) and {offline['validation']['fold_b_top20_intent_shares_equal_pinned_agreement_table']} (Fold B). Counts only. It authorises nothing. "
+            f"RE-REGISTRATION {args.registered_at[:10]} (coordinator ruling of 2026-09-27): the cap this row tuned is NOT flown -- W3 is W3a alone; the row stands as "
+            f"the record of why (Fold B N = {cap}: GAIN 0 / HARM 0; Fold A: 0 wrong-intent pluralities removed, 700 right-row "
+            "blocks changed) and as the source of the contrast membership set."
         ),
         "",
     ]).strip()
@@ -973,7 +1046,7 @@ def append_ledger(args, *, ids, plan_shas, cap, depth, cards, offline) -> str:
         wr(LEDGER, "\n".join(lines))
         return f"replaced-{replaced}"
     header = (
-        "\n## Cell W3: intent contrast cards + a per-intent exemplar cap -- the arm, its four-row smoke, the READ row and "
+        "\n## Cell W3 (W3a alone since the 2026-09-27 re-registration): intent contrast cards -- the arm, its four-row smoke, the READ row and "
         "the two model-free rows (DRAFT, root countersignature pending)\n\n"
         "Four unconsumed flight rows -- the W3 arm, its four-row form smoke and their two FIT spend identities -- the READ "
         "row registered with the flight, and two model-free rows: the contrast-card build and release, and the offline cap "
