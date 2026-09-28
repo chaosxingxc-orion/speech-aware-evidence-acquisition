@@ -68,8 +68,30 @@ from .context_budget import (
 )
 from .errors import RailsError
 
-#: The receipt schema one arm group seals under.
-SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v1"
+#: The receipt schema one arm group seals under. Bumped to v2 by owner
+#: decision 172 (2026-09-27, merge set B): v2 adds ``arm_visits`` and
+#: ``visit_index`` at the block level and ``replicate_of`` on every arm row.
+#: ``rails.native_episode_receipt.validate_supply_variant_receipt`` still
+#: accepts a v1 receipt unchanged -- no sealed VAR-2 data is rewritten.
+SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v2"
+
+#: The two values ``supply_variants.arm_visits`` may declare. The PARSER
+#: default is ``"every"`` -- every fragment written before this key existed
+#: carries none at all and composes byte-identically to before -- but an
+#: instrument cell (docs/superpowers/specs/2026-09-27-same-flight-supply-
+#: variant-instrument-design.md section 2) must declare ``"first"``, checked
+#: by ``scripts/checks/flight_registration_check.py``'s ``arm-visits-not-
+#: first`` finding. Under ``"first"`` the arms fan out only at the visit
+#: whose ``visit_index`` is 0; every later visit of the same node contacts
+#: the delivering arm alone -- the VAR-2 fix, because the fit bound
+#: (``max_supplied_items``) then covers exactly one visit rather than every
+#: revision (``docs/results/2026-09-25-slurp-var2-closed-engineering-
+#: failure.md``).
+SUPPLY_VARIANT_ARM_VISITS_DEFAULT = "every"
+SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT = "first"
+SUPPLY_VARIANT_ARM_VISITS_VALUES = (
+    SUPPLY_VARIANT_ARM_VISITS_DEFAULT, SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT,
+)
 
 #: The root key every admissible knob path starts at. A path outside it cannot
 #: name a supply selection, so it is refused by name rather than applied.
@@ -92,15 +114,25 @@ SUPPLY_VARIANT_KNOB_TAILS: Mapping[str, tuple[tuple[str, ...], ...]] = {
     ),
 }
 
-#: Keys the ``supply_variants`` block carries, exactly.
+#: Keys the ``supply_variants`` block carries, required.
 SUPPLY_VARIANT_BLOCK_KEYS = frozenset({"arms", "fit_estimate"})
+#: ``arm_visits`` (owner decision 172, merge set B): optional so every
+#: fragment written before it exists parses byte-identically; see
+#: :data:`SUPPLY_VARIANT_ARM_VISITS_VALUES`.
+SUPPLY_VARIANT_BLOCK_OPTIONAL_KEYS = frozenset({"arm_visits"})
 
 #: Keys one arm row carries. ``deliver`` and ``overrides`` are optional in the
 #: JSON and defaulted here; ``arm_id`` and ``max_supplied_items`` are required,
 #: the second because the fit refusal below is fail-closed and cannot estimate
 #: an arm that declares no bound.
 SUPPLY_VARIANT_ARM_REQUIRED_KEYS = frozenset({"arm_id", "max_supplied_items"})
-SUPPLY_VARIANT_ARM_OPTIONAL_KEYS = frozenset({"deliver", "overrides"})
+#: ``replicate_of`` (owner decision 172, merge set B): the ONE way an arm may
+#: declare NO overrides beside the delivering arm -- naming the delivering
+#: arm's own id, which makes it the read's TWIN (the delivering arm's greedy
+#: repeat, Q3 ruling): no overrides, exempt from the identical-override-set
+#: refusal and from the receipt rule that a non-delivering arm must resolve
+#: at least one knob.
+SUPPLY_VARIANT_ARM_OPTIONAL_KEYS = frozenset({"deliver", "overrides", "replicate_of"})
 
 #: Keys the ``fit_estimate`` block carries, exactly. Every one is a MEASURED,
 #: pinned number the fragment author reads off an already-sealed cell, never a
@@ -164,6 +196,12 @@ class SupplyVariantArm:
     deliver: bool
     knobs: tuple[SupplyVariantKnob, ...]
     max_supplied_items: int
+    # Owner decision 172 (2026-09-27, merge set B): the delivering arm's id,
+    # naming this arm as its TWIN -- no overrides, resolving exactly the
+    # delivering arm's ids -- or ``None`` for every arm parsed before this
+    # field existed and for every ordinary (non-twin) arm. Declared LAST, so
+    # every arm parsed before this field existed composes byte-identically.
+    replicate_of: str | None = None
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -172,6 +210,7 @@ class SupplyVariantArm:
             "overrides": {knob.path: knob.value for knob in self.knobs},
             "knobs": [knob.as_json() for knob in self.knobs],
             "max_supplied_items": self.max_supplied_items,
+            "replicate_of": self.replicate_of,
         }
 
 
@@ -232,6 +271,12 @@ class SupplyVariantGroup:
 
     arms: tuple[SupplyVariantArm, ...]
     fit_estimate: SupplyVariantFitEstimate
+    # Owner decision 172 (2026-09-27, merge set B): "every" (every visit fans
+    # out -- the pre-existing and still-default behaviour) or "first" (only
+    # the visit whose visit_index is 0 fans out; every later visit contacts
+    # the delivering arm alone). Declared LAST, so every group parsed before
+    # this field existed composes to "every" byte-identically.
+    arm_visits: str = SUPPLY_VARIANT_ARM_VISITS_DEFAULT
 
     @property
     def arm_count(self) -> int:
@@ -264,6 +309,7 @@ class SupplyVariantGroup:
         return {
             "arms": [arm.as_json() for arm in self.arms],
             "fit_estimate": self.fit_estimate.as_json(),
+            "arm_visits": self.arm_visits,
         }
 
 
@@ -407,12 +453,21 @@ def parse_supply_variants(
        reserve.
     """
 
-    if not isinstance(block, Mapping) or set(block) != set(
-        SUPPLY_VARIANT_BLOCK_KEYS
+    if (
+        not isinstance(block, Mapping)
+        or not SUPPLY_VARIANT_BLOCK_KEYS <= set(block)
+        or set(block) - SUPPLY_VARIANT_BLOCK_KEYS - SUPPLY_VARIANT_BLOCK_OPTIONAL_KEYS
     ):
         raise SupplyVariantError(
             "roles.<role>.supply_variants must be an object with exactly "
-            f"{sorted(SUPPLY_VARIANT_BLOCK_KEYS)}"
+            f"{sorted(SUPPLY_VARIANT_BLOCK_KEYS)} plus optional "
+            f"{sorted(SUPPLY_VARIANT_BLOCK_OPTIONAL_KEYS)}"
+        )
+    arm_visits = block.get("arm_visits", SUPPLY_VARIANT_ARM_VISITS_DEFAULT)
+    if arm_visits not in SUPPLY_VARIANT_ARM_VISITS_VALUES:
+        raise SupplyVariantError(
+            "supply_variants.arm_visits must be one of "
+            f"{SUPPLY_VARIANT_ARM_VISITS_VALUES}, got {arm_visits!r}"
         )
     rows = block["arms"]
     if (
@@ -455,6 +510,19 @@ def parse_supply_variants(
             raise SupplyVariantError(
                 f"supply_variants.arms[{position}].overrides must be an object"
             )
+        raw_replicate_of = row.get("replicate_of")
+        if raw_replicate_of is not None:
+            replicate_of = _nonempty_str(
+                raw_replicate_of,
+                field=f"supply_variants.arms[{position}].replicate_of",
+            )
+        else:
+            replicate_of = None
+        if deliver and replicate_of is not None:
+            raise SupplyVariantError(
+                f"supply_variants.arms[{position}] declares both deliver: true "
+                "and replicate_of; the delivering arm cannot also be a twin"
+            )
         knobs = tuple(
             parse_supply_variant_knob(
                 path, value, phase_id=phase_id, first_phase_id=first_phase_id,
@@ -462,6 +530,12 @@ def parse_supply_variants(
             )
             for path, value in sorted(overrides.items())
         )
+        if replicate_of is not None and knobs:
+            raise SupplyVariantError(
+                f"supply_variants.arms[{position}] names replicate_of and must "
+                "declare no overrides: it resolves exactly the delivering "
+                "arm's ids"
+            )
         arms.append(SupplyVariantArm(
             arm_id=arm_id,
             deliver=deliver,
@@ -470,6 +544,7 @@ def parse_supply_variants(
                 row["max_supplied_items"],
                 field=f"supply_variants.arms[{position}].max_supplied_items",
             ),
+            replicate_of=replicate_of,
         ))
     ids = [arm.arm_id for arm in arms]
     if len(set(ids)) != len(ids):
@@ -493,8 +568,17 @@ def parse_supply_variants(
             "is what makes its request bytes the locked plan's by construction "
             "rather than by claim"
         )
+    delivered_arm_id = arms[-1].arm_id
+    for arm in arms:
+        if arm.replicate_of is not None and arm.replicate_of != delivered_arm_id:
+            raise SupplyVariantError(
+                f"supply_variants arm {arm.arm_id!r} names replicate_of "
+                f"{arm.replicate_of!r}, which is not the delivering arm "
+                f"{delivered_arm_id!r}"
+            )
     signatures = [
         tuple((knob.path, knob.value) for knob in arm.knobs) for arm in arms
+        if arm.replicate_of is None
     ]
     if len(set(signatures)) != len(signatures):
         raise SupplyVariantError(
@@ -513,7 +597,9 @@ def parse_supply_variants(
                 f"{fit_estimate.completion_ceiling}-token completion ceiling and "
                 f"the {REGISTERED_SPECIAL_TOKEN_RESERVE}-token special reserve"
             )
-    return SupplyVariantGroup(arms=tuple(arms), fit_estimate=fit_estimate)
+    return SupplyVariantGroup(
+        arms=tuple(arms), fit_estimate=fit_estimate, arm_visits=arm_visits,
+    )
 
 
 def accumulate_arm_selection(
@@ -622,6 +708,7 @@ def supply_variant_arm_record(
         "arm_index": int(arm_index),
         "arm_id": arm.arm_id,
         "deliver": bool(arm.deliver),
+        "replicate_of": arm.replicate_of,
         "contact_id": _nonempty_str(
             contact_id, field=f"supply-variant arm {arm.arm_id!r} contact_id"
         ),
@@ -648,7 +735,18 @@ def supply_variant_receipt(
     phase_id: str,
     records: Sequence[Mapping[str, object]],
 ) -> dict[str, object]:
-    """The whole arm group's receipt, as the delivered role result carries it."""
+    """The whole arm group's receipt, as the delivered role result carries it.
+
+    Sealed from the FIRST Solver visit only (``visit_index`` 0). Under
+    ``arm_visits: "first"`` every later visit contacts the delivering arm
+    alone and calls neither this function nor :func:`supply_variant_arm_record`
+    at all (``reproduction.ojw.native_supply_variants.SupplyVariantRoleNode``);
+    ``reproduction.ojw.native_episode._ApplyRole`` carries this visit's own
+    receipt forward so a later visit's plain result never erases it. Under the
+    default ``"every"`` every visit still calls this, and -- exactly as before
+    this key existed -- the LAST one is the one whose result survives to
+    delivery.
+    """
 
     return {
         "schema": SUPPLY_VARIANT_RECEIPT_SCHEMA,
@@ -657,6 +755,8 @@ def supply_variant_receipt(
         ),
         "arm_count": group.arm_count,
         "delivered_arm_id": group.delivered_arm.arm_id,
+        "arm_visits": group.arm_visits,
+        "visit_index": 0,
         "fit_estimate": group.fit_estimate.as_json(),
         "arms": [dict(record) for record in records],
     }
@@ -667,7 +767,11 @@ __all__ = [
     "MIN_SUPPLY_VARIANT_ARMS",
     "SUPPLY_VARIANT_ARM_OPTIONAL_KEYS",
     "SUPPLY_VARIANT_ARM_REQUIRED_KEYS",
+    "SUPPLY_VARIANT_ARM_VISITS_DEFAULT",
+    "SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT",
+    "SUPPLY_VARIANT_ARM_VISITS_VALUES",
     "SUPPLY_VARIANT_BLOCK_KEYS",
+    "SUPPLY_VARIANT_BLOCK_OPTIONAL_KEYS",
     "SUPPLY_VARIANT_FIT_KEYS",
     "SUPPLY_VARIANT_KNOB_ROOT",
     "SUPPLY_VARIANT_KNOB_TAILS",

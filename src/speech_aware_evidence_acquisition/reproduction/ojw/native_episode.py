@@ -829,7 +829,24 @@ class _ApplyRole(WorkflowComponent):
         if self._kind == "solver":
             if role.get("delivery_eligible") is not True:
                 raise NativeEpisodeError("episode has no valid Solver draft")
-            updated["latest_solver"] = dict(role)
+            new_solver = dict(role)
+            if "supply_variants" not in new_solver:
+                # Item E42b (owner decision 172, merge set B, arm_visits
+                # "first"): a revisit contacts the delivering arm alone and
+                # carries no arm custody of its own, so the visit-0 receipt --
+                # the one that actually describes every declared arm -- is
+                # carried forward rather than lost when this visit's own role
+                # result overwrites the prior one. A plain (non-arm-grouped)
+                # episode's ``latest_solver`` never carries the key either
+                # way, so this branch is unreachable and every such episode's
+                # state stays byte-identical.
+                previous_solver = state.get("latest_solver")
+                if (
+                    isinstance(previous_solver, Mapping)
+                    and "supply_variants" in previous_solver
+                ):
+                    new_solver["supply_variants"] = previous_solver["supply_variants"]
+            updated["latest_solver"] = new_solver
         elif self._kind == "planner":
             # E15: NativeEpisodeWorkflow always supplies `planner_actions` for
             # a Planner node, and that graph-derived set is the authority.

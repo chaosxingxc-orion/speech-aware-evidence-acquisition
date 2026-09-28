@@ -2299,7 +2299,13 @@ async def _invoke_native_role_episode(
                 "every arm's own supply"
             )
         selected = supply_variant_arm_selections[arm_id]
-        if arm.deliver:
+        if arm.deliver or arm.replicate_of is not None:
+            # Item E42b (owner decision 172, merge set B, Q3 ruling): the
+            # twin (``replicate_of`` set) declares no overrides and resolves
+            # exactly the delivering arm's ids, so it takes the SAME
+            # ``base_messages(ctx)`` the delivering arm does -- byte-identical
+            # wire payload (AT2), the delivering arm's own greedy repeat in
+            # the same contact batch.
             supplied = tuple(ctx.query_state.retrieved_value_ids)
             messages = base_messages(ctx)
         else:
@@ -2399,7 +2405,10 @@ async def _invoke_native_role_episode(
             response_record = tuple(item[1].text for item in solver_group_contacts)
             slot_ids = tuple(item[2] for item in solver_group_contacts)
             solver_group_contacts.clear()
-        if pending["phase_id"] == supply_variant_phase_id:
+        if (
+            pending["phase_id"] == supply_variant_phase_id
+            and pending["variant_arm_id"] is not None
+        ):
             # Item E42: the arm group. Structurally the grouped sampler's twin
             # just above, with the ONE difference that makes this form cheaper
             # to audit: the DELIVERING arm is the LAST arm and carries no
@@ -2411,6 +2420,13 @@ async def _invoke_native_role_episode(
             # 0..N-2 do. Because the group takes no step between arms, all K
             # bind the SAME QueryState and the SAME exposed history: they are
             # independent constructions of one draft, not a chain.
+            #
+            # Item E42b (owner decision 172, merge set B): this branch is
+            # reached only for a REAL arm contact -- ``variant_arm_id`` is
+            # ``None`` for every contact of every OTHER visit under
+            # ``arm_visits: "first"`` (``contact_context`` above), which then
+            # falls through to the ordinary single-contact path below,
+            # byte-identical to an unarmed Solver visit.
             arm_id = pending["variant_arm_id"]
             expected = supply_variant_group.arm_ids[len(supply_variant_contacts)] if (
                 len(supply_variant_contacts) < supply_variant_arms
@@ -2427,6 +2443,17 @@ async def _invoke_native_role_episode(
             if len(supply_variant_contacts) < supply_variant_arms:
                 pending.clear()
                 return
+            # Item E42b: a NEW, explicit assertion beside the structural
+            # guarantee above ("arms 0..K-2 register no state at all") -- the
+            # state this visit is about to register, which Reviewer and
+            # Planner read from, is bound to the DELIVERING arm's own contact
+            # and response alone.
+            if arm_id != supply_variant_group.delivered_arm.arm_id:
+                raise RailsRunnerError(
+                    "a supply-variant visit registered downstream state from a "
+                    "non-delivering arm; only the delivering arm's response "
+                    "may reach the Reviewer or the Planner"
+                )
             contact_record = AgentContactBatch(
                 batch_id=f"{supply_variant_contacts[0][0].contact_id}:variants",
                 query_state_sha256=before.query_state.content_hash(),
@@ -3753,9 +3780,25 @@ async def _invoke_native_role_episode(
                     # ``rails.native_episode_receipt.
                     # validate_supply_variant_receipt`` sees the arms in their
                     # declared order, ascending from the first, within a group.
-                    kwargs["variant_arm_id"] = role.supply_variants.arm_ids[
-                        index % role.supply_variants.arm_count
-                    ]
+                    #
+                    # Item E42b (owner decision 172, merge set B): under
+                    # ``arm_visits: "first"`` this mapping covers ONLY the
+                    # visit whose global contact indices are 0..arm_count-1;
+                    # every later contact leaves ``variant_arm_id`` at its
+                    # default ``None`` -- the ordinary, unarmed contact path
+                    # (``request.context.variant_arm_id is not None`` below,
+                    # ``speech_binding``) -- which is what makes a revisit
+                    # contact the delivering arm alone, through no arm-scoped
+                    # view of any kind. Byte-identical to before for the
+                    # default "every", which never reaches this branch.
+                    variant_group = role.supply_variants
+                    if not (
+                        variant_group.arm_visits == "first"
+                        and index >= variant_group.arm_count
+                    ):
+                        kwargs["variant_arm_id"] = variant_group.arm_ids[
+                            index % variant_group.arm_count
+                        ]
                 return NativeRoleContactContext(**kwargs)
             def role_delivery_allowed(_role: str, output: str) -> bool:
                 return isinstance(output, str) and bool(output.strip())

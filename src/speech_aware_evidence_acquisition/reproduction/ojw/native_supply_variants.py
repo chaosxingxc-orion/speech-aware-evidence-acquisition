@@ -213,6 +213,10 @@ class SupplyVariantRoleNode(WorkflowComponent):
         self._group = group
         self._arm_record = arm_record
         self._delivery_allowed = delivery_allowed
+        # Owner decision 172 (2026-09-27, merge set B): counts REAL visits of
+        # this node (not contacts). Under ``group.arm_visits == "first"`` only
+        # visit 0 fans out; see ``invoke`` below.
+        self._visit_index = 0
 
     @property
     def spec(self) -> NativeRoleNodeSpec:
@@ -225,6 +229,21 @@ class SupplyVariantRoleNode(WorkflowComponent):
         if not isinstance(query, str) or not query:
             raise SupplyVariantNodeError("native role query must be non-empty text")
         inner = self._inner
+        visit_index = self._visit_index
+        self._visit_index += 1
+        if getattr(self._group, "arm_visits", "every") == "first" and visit_index > 0:
+            # Owner decision 172 (2026-09-27, merge set B): under
+            # ``arm_visits: "first"`` only the visit whose GLOBAL visit index
+            # is 0 fans out to every declared arm; every later visit of this
+            # same node contacts the delivering arm alone, through the
+            # ordinary path -- no arm custody, no ``supply_variants`` key on
+            # this visit's own result, byte-identical to a plain (unarmed)
+            # Solver visit. This is the VAR-2 fix: the fit bound
+            # (``max_supplied_items``) then covers exactly one visit, not
+            # every revision. ``native_episode._ApplyRole`` carries the
+            # visit-0 receipt forward so it still reaches the delivered role
+            # result even when a LATER visit is the one actually delivered.
+            return await inner.invoke_direct(query)
 
         async def invoke_arm(_arm_index: int) -> dict[str, object]:
             return await inner.invoke_direct(query)

@@ -1503,6 +1503,30 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-variants4-v1": (
         "phase-native-candidates-review-revise-variants4-v1.json"
     ),
+    # Owner decision 172, 2026-09-27 (docs/superpowers/specs/2026-09-27-
+    # same-flight-supply-variant-instrument-design.md, merge set B): the SAME
+    # four phases, the SAME episode_id and the SAME role graph as
+    # "phase-native-candidates-review-revise-cited-v1" (max_contacts 11) --
+    # reviewer 3 / planner 1 / max_revisions 1 -- with the Solver visit
+    # fanned out to TWO declared supply-variant arms (the delivering arm plus
+    # its twin, Q3 ruling) under ``arm_visits: "first"``: only the Solver's
+    # first visit of the whole episode fans out, so the bounded graph
+    # ceiling is the anchor's 11 plus (K - 1) = 12, not
+    # ``rails.native_episode_config``'s ordinary per-revision product (that
+    # product is exactly VAR-2's own bug). A separate program id, never a
+    # flag on the cited program, for the reason every comment above states:
+    # two program ids must never resolve to the same object when their
+    # contact ceilings differ.
+    "phase-native-candidates-review-revise-cited-variants2first-v1": (
+        "phase-native-candidates-review-revise-cited-variants2first-v1.json"
+    ),
+    # Owner decision 172, 2026-09-27: the SAME shape as the variants2first
+    # program directly above, with a THIRD arm (one treatment arm beside the
+    # delivering arm and its twin, section 5's inner-loop use), so K = 3 and
+    # the bounded graph ceiling is 11 + (3 - 1) = 13.
+    "phase-native-candidates-review-revise-cited-variants3first-v1": (
+        "phase-native-candidates-review-revise-cited-variants3first-v1.json"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the SAME
     # four phases, the SAME episode_id and the SAME role graph as
     # "phase-native-candidates-review-revise-v1" -- reviewer 3 / planner 1 /
@@ -1787,6 +1811,24 @@ def register_phase_programs_v1() -> None:
             "phase-native-candidates-review-revise-variants4-v1",
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-variants4-v1")
+            ),
+        )
+    if "phase-native-candidates-review-revise-cited-variants2first-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-cited-variants2first-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-cited-variants2first-v1"
+                )
+            ),
+        )
+    if "phase-native-candidates-review-revise-cited-variants3first-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-cited-variants3first-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-cited-variants3first-v1"
+                )
             ),
         )
     if "phase-native-candidates-review-revise-clean1-v1" not in registered:
