@@ -1,14 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-28T09:12:12Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge and records agent, Claude Opus 5.5) · HEAD at writing `af29c70c` on `master`, tree clean. **GPU flying:**
+Last refreshed: 2026-09-28T11:08:59Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge and records agent, Claude Opus 5.5) · HEAD at writing `9d8ba00d` on `master`, tree clean. **GPU flying:**
 the knowledge wave (W1, W3a, W4 on the shared in-chain A/A) and then REV-TFRL-1, from their own flight
 worktree at `5f8b4c9d`, through the batch driver under queue task `SAEA-Queue-WAVE-REVTFRL`. Coordinator
-state: the wave's A/A and W1 are sealed and read; **W1 is NEUTRAL, retained as an enabler**; W3a is in
-flight; W4 is next, then REV-TFRL-1. Status lines from `/home/chao/batch-status.jsonl`, quoted only:
-07:26:54Z `arm-exit` step 1 rc 0; 07:26:59Z `arm-inspect` (SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1, FINALIZED),
-`step-done` `w1`; 07:27:20Z `step-start` step 2 `w3`; 07:28:37Z `smoke-inspect`
-(SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1, pass); 07:28:47Z `arm-start` step 2 (no later event at 09:10Z).
+state: the wave's A/A, W1 and W3a are sealed and read; **W1 is NEUTRAL, retained as an enabler**; **W3a is
+NOT ADMITTED (neutral by width; the card form of K1 is closed)**; W4 is in flight since 09:16Z, then
+REV-TFRL-1. Status lines from `/home/chao/batch-status.jsonl`, quoted only: 09:14:38Z `arm-inspect`
+(SAEA-SLURP-STAGE3-W3-FOLD-A-V1, FINALIZED, 4,364 calls), `step-done` `w3`; 09:14:58Z `step-start` step 3
+`w4`; 09:16:09Z `smoke-inspect` (SAEA-SLURP-STAGE3-W4-FOLD-A-SMOKE-4-V1, pass); 09:16:19Z `arm-start` step 3
+(no later event at 11:08Z).
 **Queued behind it:** `SAEA-Queue-AFTER-REVTFRL` waits for REV-TFRL-1's batch-done at `5f8b4c9d`, then flies
 COMP-1 `-REC` + G5 at `472474bf` -> RANKVIS at `b0c6c608` (same slurp-np4 geometry) -> the E41 sub10 re-read
 at `bf6db903` (swap to e21-np4, fly, swap back) -> removes the filler hold (`/home/chao/saea-queue/filler.hold`)
@@ -96,6 +97,7 @@ retrieved because the key side is text by design.
 | **B1 read driver + gate**: the RANKVIS probe read driver, its gate verifying rendering from the sealed request records, the dry-run replay honouring `knowledge_value_rendering` | merge of `fable/consume` (`ada7a4cb`) | merged; the probe itself stays held |
 | **Same-flight supply-variant instrument, merge set A** (decision 172): design note plus the model-free read side (paired roster read, rollout score, citation credit, registration gate) | merge of `fable/svinst` (`2cef09ec`) | merged; touches no identity file (W1 `cli check` unchanged: same config and protocol hash, ready, `prepared_artifacts_ok: true`). **Set B waits for its named re-pin point** |
 | **W1 card selection read** against the shared wave A/A (TRAIN Fold A, n = 1,080): intent +0.19 [-0.74, +1.11], official SLU-F1 +0.53 [-0.85, +1.93]; both no-harm clauses hold (margins 0.9943 / 1.2485); -3,379.5 prompt tokens per row, -8.0 % GPU-h, Solver -1,125 tokens per contact (registered -1,186); instrument reading (A/A vs the AGREE arm it re-flies) intent -0.19 / SLU -1.00, inside the between-flight band | `docs/results/2026-09-28-slurp-w1-fold-a-read.md` (merge `01b98eef`, verdict `af29c70c`) | **NEUTRAL (no-harm holds; retained as an enabler)** (coordinator). The saving is the room W3a and W4 need; W1 folds into COMP-2 only after AGREE replicates on DEV-2000-ADDED (decisions 138 / 161 / 169) |
+| **W3a intent contrast cards read** against the shared wave A/A (TRAIN Fold A, n = 1,080): intent -0.56 [-1.67, +0.56] (15 saves / 21 harms, p 0.405), official SLU-F1 +0.32 [-1.39, +2.02]; the intent no-harm clause does not hold (-1.67 below -0.9943) and no harm clause is met; the K1 ceiling (+6.94 pp oracle) did not convert in card form; -1,378.6 prompt tokens per row, -0.126 GPU-h per 1,080 rows (noted, not a reason to retain) | `docs/results/2026-09-28-slurp-w3a-fold-a-read.md` (merge of `fable/wavereads`, `25826028`; verdict `9d8ba00d`) | **NOT ADMITTED** (coordinator: neutral by width; the card form of K1 is closed; contrast evidence continues only at the decision node -- RANKVIS and the Reviewer top-2 contrast of decision 165's second round; does not enter COMP-2) |
 | **RANKVIS** (B1 rank-visible probe, 119 Fold A rows AGREE got wrong): registration completed, exposure rows countersigned, flipped ready | flip `b0c6c608` (flight commit in `/home/chao/rankvis-flight-commit.txt`) | queued in `SAEA-Queue-AFTER-REVTFRL` after `-REC` + G5 |
 | **Same-flight supply-variant instrument, merge set B** (decision 172) | merge of `fable/svinst` (`0f17a5e1`) | merged on master; queued flights are unaffected because they fly at their own flight commits |
 | Tool-gap fixes: the repin residue scan is scoped to the cell, the flip scripts carry the current trailer; config tests made flip-state agnostic | merges of `fable/repinfix2` (`da541f92`) and `fable/cfgtests` (`18f1ae2e`) | merged; both gaps from the `-REC` staging are closed |
@@ -170,6 +172,8 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 1. Resume vs `-REC` for COMP-1 (owner decision 22 vs a full re-fly): the default is `-REC`, which is queued; the resume variant stays HELD.
 2. The `kb_policy` digest lock: `test_stage2a_synthesis_verification.py` pins a `FILE_DIGESTS` value for `rails/kb_policy.py`, and the live sha256 drifted from it across the W1-W3 merge wave. Re-pinning needs an owner-authorised equivalence proof.
 3. A wrong sha256 inside the committed receipt `docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json` (its `A2T-G6-FAMILY-SWEEP-FIXED16.json` exclusion entry). It is hash-pinned evidence, so it gets a superseding receipt or an owner ruling, never an in-place edit.
+4. Close K1-as-cards (W3a NOT ADMITTED) and keep the contrast-evidence route at the decision node only (RANKVIS, the Reviewer top-2 contrast of decision 165's second round).
+5. Discontinue offline rule designs on multi-sample pools in favour of the same-flight supply-variant instrument (decision 172).
 
 **Remaining test failures:** the `kb_policy` digest lock (item 2), and a test that calls a bare `python`, which is not on the WSL PATH (environment, not code).
 
@@ -182,17 +186,17 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 | Shared A/A | Registered and proven IDENTICAL to AGREE. |
 | W1 | Card selection. Sealed and read: **NEUTRAL (no-harm holds; retained as an enabler).** |
 | W2 | Stopped offline. |
-| W3 | W3a alone. In flight since 07:28Z at `5f8b4c9d`. |
-| W4 | Slot conventions, no-harm. Its base is AGREE. Next in the chain. |
+| W3 | W3a alone. Sealed and read: **NOT ADMITTED (neutral by width; the card form of K1 is closed).** |
+| W4 | Slot conventions, no-harm. Its base is AGREE. In flight since 09:16Z at `5f8b4c9d`. |
 | W5 | Held (outcome of 170). |
 
-The wave (W1, W3a, W4 on the shared A/A) is flying at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP. The A/A and W1 are sealed; W3a is in flight; W4 follows, then REV-TFRL-1 in the same queue.
+The wave (W1, W3a, W4 on the shared A/A) is flying at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP. The A/A, W1 and W3a are sealed; W4 is in flight; REV-TFRL-1 follows in the same queue.
 
 **Same-flight supply-variant instrument (decision 172).** Merge set A (`2cef09ec`) and merge set B (`0f17a5e1`) are both on master. Set B touches identity-bound implementation files; the queued flights fly at their own flight commits and are not affected. VAR-2 as a mechanism stays closed.
 
 ## 7. My next action
 
-1. Let `SAEA-Queue-WAVE-REVTFRL` finish (W3a, W4 on the shared A/A, then REV-TFRL-1), then read each with the standard paired read; W1 is read (NEUTRAL, enabler). W5 stays held.
+1. Let `SAEA-Queue-WAVE-REVTFRL` finish (W4 on the shared A/A, then REV-TFRL-1), then read each with the standard paired read; W1 is read (NEUTRAL, enabler), W3a is read (NOT ADMITTED). W5 stays held.
 2. `SAEA-Queue-AFTER-REVTFRL` then flies COMP-1 `-REC` + G5 (`472474bf`) and RANKVIS (`b0c6c608`); read them against the sealed shared A/A. The owner's ruling on resume vs `-REC` stays open; `-REC` is the default, and there is no second recovery.
 3. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), replacing the placeholder in both places the gate reads; then flip A2 (arm + A/A + smoke) and queue it.
 4. The same queue flies the E41 sub10 re-read (`bf6db903`) after `-REC` + G5, then the filler once its hold is released. Earnings E-C1 is registered only after sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
