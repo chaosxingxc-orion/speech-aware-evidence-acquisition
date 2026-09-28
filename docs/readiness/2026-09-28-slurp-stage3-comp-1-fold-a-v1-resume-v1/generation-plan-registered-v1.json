@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
-  "composed_config_hash": "a7bb94fcdcae032e86c8439f1fe2b40ce658c9c67c72695fb8c111474265837c",
+  "composed_config_hash": "ce6c26d448c2db1964d13d86ba19d6c754a0e5cd145d9afcdfb92d03be60336c",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "17afe804b06cc10f17e6796d61bdb5511dd86dabce7163de9f41fce799337758",
+    "protocol_hash": "b62a8c906f50bed9ab94314f0f0edc2847013a24aeab758b4eed7ef96ced5433",
     "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -33,13 +33,13 @@
   "preparation_base_commit": "49f88ce6",
   "prepared_phase_supply": {
     "note": "INHERITED pin; the flip rebuilds it under this cell's own run id and asserts the output unchanged (never --allow-output-change).",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v4.json",
-    "sha256": "467625864a12b216a5167ff9c2c518a1a924b7a461d64a87f0df3b4d0ac7b65b",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v5.json",
+    "sha256": "6316850d83e45f3ba879e7476088bcdb8b76f7037414c3d06a18b9e59a981514",
     "output_sha256": "ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1/protocol-registered-v1.json",
-    "sha256": "fdecd4362c043372ce8921c6459b32258a60d45a69c05a4cca6ff134df70265b"
+    "sha256": "313d6bf813ba8920282d1c2687a5dc4d397da206e5b6f207162e8b2940472aad"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1: Read against the IN-CHAIN A/A, never against the sealed comparator alone (instrument rules 3 and 4). PRIMARY: intent accuracy (scenario_action exact), paired per row, 10,000 bootstrap draws. GUARD: official pooled SLU-F1 non-inferior at the plan's own null (h_SLU 1.2485). ADMITTED: the intent CI95 lower bound above zero AND the guard holds AND the declared expected_effect_pp was declared before the seal. NEUTRAL: both guards non-inferior at the own null (h_intent 0.9943 / h_SLU 1.2485) without an admitted gain -- read under owner decision 138 as a CONFLICT DIAGNOSIS over the per-class attribution table, never as 'no gain'; no further element is admitted on top of an unresolved conflict. HARMFUL: a measured loss on either guard (decision 25). The citation part (decision 152) is admitted on the composed arm's own no-harm reading and is never reported as a gain. Every verdict carries the per-class attribution table with each row's outcome, the per-stratum tables in both weightings, the frontier row, the delivery check and the token delta.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",
