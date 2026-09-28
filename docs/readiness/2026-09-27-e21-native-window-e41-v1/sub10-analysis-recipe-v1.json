@@ -86,5 +86,7 @@
   "output": {
     "verdict_document": "docs/results/2026-09-2x-e21-native-window-e41-sub10-read.md",
     "harness_admission": "NONE -- a base item admits no module"
-  }
+  },
+  "read_run_id": "SAEA-E21-NATIVE-WINDOW-SYSTEM-SUB10-E41-V1-READ-V1",
+  "read_run_id_note": "Declared by the coordinator after the sub10 flip and before contact; the READ row was registered and countersigned in docs/exposure-ledger.md at the same time (the package predates the pre-launch gate that requires it; mirrors the dry-run recipe at 10c8a996)."
 }
