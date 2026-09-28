@@ -32,7 +32,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "49ba4396cc04989be5a7ce813495e7f9c6a2df385d4ce1c2eaf92dc72500befa"
+      "sha256": "a63eb5a985198987a19ddb40fba897e9500d4867aef8b1c9b8c7ea04a9de5bb5"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/README.md",
@@ -107,8 +107,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
-      "protocol": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9"
+      "composed_config": "bcf7471661837bb63104d89bfc8bd1e4ed86a350edf0a65d4d72188ed61950b0",
+      "protocol": "c647b73d2310246cb726a25e7d340bf622decdafe88238fae5594a6a2063f53f"
     },
     "smoke": {
       "composed_config": "1daf0fed20686170b688f175674ba673d1acd0fb981c2128612cd2726f423ce1",

@@ -139,7 +139,7 @@
       "cells": {
         "arm": {
           "blockers": null,
-          "config_hash": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+          "config_hash": "bcf7471661837bb63104d89bfc8bd1e4ed86a350edf0a65d4d72188ed61950b0",
           "prompt_budget_per_phase": [
             {
               "decision": "ALLOW",
@@ -178,7 +178,7 @@
               "required_window_tokens": 19815
             }
           ],
-          "protocol_hash": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9",
+          "protocol_hash": "c647b73d2310246cb726a25e7d340bf622decdafe88238fae5594a6a2063f53f",
           "scientific_readiness": {
             "reason": "Cell W1 registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decisions 58, 161 and 164) with one key added. Comparator: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, never re-flown, read at the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the AGREE arm's own bytes) flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE preparation's output digest (the card route is not an input to the first-phase supply). Nothing here authorises a flight, a readiness flip or an admission entry.",
             "state": "held"
@@ -256,7 +256,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w1-cardsel-fold-a-v1",
-      "composed_config_hash": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+      "composed_config_hash": "bcf7471661837bb63104d89bfc8bd1e4ed86a350edf0a65d4d72188ed61950b0",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-w1-cardsel-fold-a-v1",
@@ -280,7 +280,7 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
-      "protocol_hash": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9",
+      "protocol_hash": "c647b73d2310246cb726a25e7d340bf622decdafe88238fae5594a6a2063f53f",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"

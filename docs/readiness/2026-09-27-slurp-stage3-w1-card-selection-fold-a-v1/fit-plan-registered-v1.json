@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-w1-cardsel-fold-a-v1",
-  "composed_config_hash": "8215223bc43d8603b560af872f0a083fc67d5621b720a148b0ee35464c65f6e2",
+  "composed_config_hash": "bcf7471661837bb63104d89bfc8bd1e4ed86a350edf0a65d4d72188ed61950b0",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-w1-cardsel-fold-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "f335b38ccdbc22b619c60c361d23cbcbb9516dd094c14aa62ee01b36e4e7d9e9",
+    "protocol_hash": "c647b73d2310246cb726a25e7d340bf622decdafe88238fae5594a6a2063f53f",
     "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "49ba4396cc04989be5a7ce813495e7f9c6a2df385d4ce1c2eaf92dc72500befa"
+    "sha256": "a63eb5a985198987a19ddb40fba897e9500d4867aef8b1c9b8c7ea04a9de5bb5"
   },
   "purpose": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-FIT-V1: Cell W1. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the W1 arm and the shared in-chain A/A. A verdict computed against the sealed AGREE arm alone is refused.",
