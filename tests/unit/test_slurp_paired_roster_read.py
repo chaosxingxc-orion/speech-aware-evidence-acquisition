@@ -9,6 +9,7 @@ the real data root.
 
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import importlib.util
 import json
@@ -757,3 +758,178 @@ def test_train_full_read_uses_construction_language(world):
     contrast = json.loads((args.analysis_root / "score-contrasts.json").read_text(encoding="utf-8"))
     assert contrast["sign_convention"].startswith("delta = right(")
     assert "right variant" in contrast["sign_convention"]
+
+
+# --------------------------------------------------------------------------
+# owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-
+# design.md section 3: the column source, AT4 same-parent refusal, Q4 row resampling with the
+# utterance-level number reported beside (never gating), and AT5's nominated claim ceiling.
+# --------------------------------------------------------------------------
+
+
+def _make_column_score(
+    data_root: Path,
+    run_id: str,
+    attempt_id: str,
+    *,
+    column: str,
+    scorer_id: str,
+    rows: list[dict],
+) -> Path:
+    """A derived per-arm column score plus its receipt, in the shape
+    ``core.scoring_batch.score_complete_derived_copy`` writes (result file + ``.receipt.json``),
+    under the arm's OWN sealed run directory (``load_arm.SUPPLY_VARIANT_COLUMN_DIR``).
+    ``parent_manifest_sha256`` is the ACTUAL hash of that run's own sealed manifest (exactly what
+    the real derived-score receipt binds), never an arbitrary placeholder, because ``load_arm``
+    verifies the receipt's claim against the manifest bytes actually sitting in this directory."""
+
+    run_dir = data_root / "runs" / run_id / attempt_id
+    manifest_path = run_dir / f"{run_id}.run-manifest.json"
+    scores_path = run_dir / drv.SUPPLY_VARIANT_COLUMN_DIR / f"arm-{column}-{scorer_id}-scores.json"
+    _write_json(scores_path, {scorer_id: {"aggregate": _official_aggregate(rows), "per_sample": rows}})
+    receipt_path = scores_path.with_name(scores_path.name + ".receipt.json")
+    _write_json(receipt_path, {
+        "schema": "saea-derived-complete-score-receipt-v1",
+        "parent_manifest_sha256": _sha256_file(manifest_path),
+        "parent_run_id": run_id,
+        "parent_attempt_id": attempt_id,
+        "scorer_id": scorer_id,
+        "column_binding": {"arm": column},
+    })
+    return scores_path
+
+
+def test_load_arm_reads_a_derived_column_score_and_binds_its_parent(world):
+    rows = [_per_sample_row(sid, correct=True) for sid in world["ids"]]
+    _make_column_score(
+        world["data_root"], "UNIT-PLAN-V1", "attempt-plan-v1",
+        column="twin", scorer_id="slurp-slu-official", rows=rows,
+    )
+    spec = drv.ArmSpec("twin-column", "UNIT-PLAN-V1", "attempt-plan-v1", "twin")
+    arm = drv.load_arm(world["data_root"], spec, scorer_id="slurp-slu-official")
+    expected_manifest_sha256 = _sha256_file(
+        world["data_root"] / "runs" / "UNIT-PLAN-V1" / "attempt-plan-v1" / "UNIT-PLAN-V1.run-manifest.json"
+    )
+    assert arm.parent_manifest_sha256 == expected_manifest_sha256
+    assert {row["sample_id"] for row in arm.scores["slurp-slu-official"]["per_sample"]} == set(world["ids"])
+    # the ordinary sealed artefacts are still read from the arm's OWN sealed run directory: a
+    # column is a different SCORE of the same flight, never a new run.
+    assert arm.manifest["status"] == "COMPLETED"
+    assert arm.rows == len(world["ids"])
+
+
+def test_load_arm_column_without_a_scorer_id_is_refused(world):
+    spec = drv.ArmSpec("twin-column", "UNIT-PLAN-V1", "attempt-plan-v1", "twin")
+    with pytest.raises(drv.StopStageError, match="scorer id"):
+        drv.load_arm(world["data_root"], spec)
+
+
+def test_load_arm_column_with_no_derived_score_is_refused(world):
+    spec = drv.ArmSpec("twin-column", "UNIT-PLAN-V1", "attempt-plan-v1", "never-rendered")
+    with pytest.raises(drv.StopStageError, match="missing required sealed file"):
+        drv.load_arm(world["data_root"], spec, scorer_id="slurp-slu-official")
+
+
+def test_load_arm_column_refuses_a_receipt_naming_the_wrong_parent(world, tmp_path):
+    rows = [_per_sample_row(sid, correct=True) for sid in world["ids"]]
+    scores_path = _make_column_score(
+        world["data_root"], "UNIT-PLAN-V1", "attempt-plan-v1",
+        column="twin", scorer_id="slurp-slu-official", rows=rows,
+    )
+    receipt_path = scores_path.with_name(scores_path.name + ".receipt.json")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["parent_manifest_sha256"] = "0" * 64
+    _write_json(receipt_path, receipt)
+    spec = drv.ArmSpec("twin-column", "UNIT-PLAN-V1", "attempt-plan-v1", "twin")
+    with pytest.raises(drv.StopStageError, match="parent_manifest_sha256"):
+        drv.load_arm(world["data_root"], spec, scorer_id="slurp-slu-official")
+
+
+def _load_two_columns_of_one_flight(world, *, left_run="UNIT-PLAN-V1", left_attempt="attempt-plan-v1",
+                                     right_run="UNIT-PLAN-V1", right_attempt="attempt-plan-v1"):
+    """Two column reads: a genuine same-flight pair when the run/attempt args agree (the twin and
+    the delivering arm are both derived from the SAME sealed run), a cross-flight mistake
+    otherwise (used to exercise AT4's refusal)."""
+
+    rows = [_per_sample_row(sid, correct=True) for sid in world["ids"]]
+    _make_column_score(world["data_root"], left_run, left_attempt,
+                        column="twin", scorer_id="slurp-slu-official", rows=rows)
+    _make_column_score(world["data_root"], right_run, right_attempt,
+                        column="plan", scorer_id="slurp-slu-official", rows=rows)
+    left = drv.load_arm(world["data_root"], drv.ArmSpec("twin", left_run, left_attempt, "twin"),
+                         scorer_id="slurp-slu-official")
+    right = drv.load_arm(world["data_root"], drv.ArmSpec("plan", right_run, right_attempt, "plan"),
+                          scorer_id="slurp-slu-official")
+    return left, right
+
+
+def test_at4_column_pair_with_different_parents_is_refused(world):
+    # "twin" derived from UNIT-DIRECT-V1, "plan" derived from UNIT-PLAN-V1: two DIFFERENT sealed
+    # flights, exactly the cross-flight mistake AT4 exists to catch.
+    left, right = _load_two_columns_of_one_flight(
+        world, left_run="UNIT-DIRECT-V1", left_attempt="attempt-direct-v1",
+    )
+    args = dataclasses.replace(world["args"], cluster_key="sample_id")
+    with pytest.raises(drv.StopStageError, match="AT4"):
+        drv._assert_column_pair_invariants(left, right, args)
+
+
+def test_at4_column_pair_of_the_same_flight_passes(world):
+    left, right = _load_two_columns_of_one_flight(world)
+    args = dataclasses.replace(world["args"], cluster_key="sample_id")
+    drv._assert_column_pair_invariants(left, right, args)  # does not raise
+
+
+def test_q4_column_pair_requires_the_row_cluster_key(world):
+    left, right = _load_two_columns_of_one_flight(world)
+    args = dataclasses.replace(world["args"], cluster_key="utterance_id")
+    with pytest.raises(drv.StopStageError, match="Q4"):
+        drv._assert_column_pair_invariants(left, right, args)
+
+
+def test_an_ordinary_non_column_pair_is_unaffected_by_the_invariant_check(world):
+    left = drv.load_arm(world["data_root"], world["args"].left)
+    right = drv.load_arm(world["data_root"], world["args"].right)
+    # neither arm is a column; cluster_key stays utterance_id (the world default) and no
+    # parent_manifest_sha256 exists on either side -- the check is a pure no-op.
+    drv._assert_column_pair_invariants(left, right, world["args"])
+
+
+def test_end_to_end_column_pair_writes_nominated_claim_and_the_utterance_level_number(world):
+    # a genuine same-flight read: "twin" and "plan" are both columns derived from the ONE sealed
+    # UNIT-PLAN-V1 run, exactly as owner decision 172 defines the instrument.
+    rows = [_per_sample_row(sid, correct=sid in set(world["ids"][:10])) for sid in world["ids"]]
+    _make_column_score(world["data_root"], "UNIT-PLAN-V1", "attempt-plan-v1",
+                        column="twin", scorer_id="slurp-slu-official", rows=rows)
+    right_rows = [_per_sample_row(sid, correct=True) for sid in world["ids"]]
+    _make_column_score(world["data_root"], "UNIT-PLAN-V1", "attempt-plan-v1",
+                        column="plan", scorer_id="slurp-slu-official", rows=right_rows)
+    args = dataclasses.replace(
+        world["args"],
+        left=drv.ArmSpec("twin", "UNIT-PLAN-V1", "attempt-plan-v1", "twin"),
+        right=drv.ArmSpec("plan", "UNIT-PLAN-V1", "attempt-plan-v1", "plan"),
+        cluster_key="sample_id",
+        analysis_root=world["tmp_path"] / "analysis" / "COLUMN-PAIR-V1",
+    )
+    drv.run_stages(args)
+
+    contrast = json.loads((args.analysis_root / "score-contrasts.json").read_text(encoding="utf-8"))
+    assert contrast["cluster_key"] == "sample_id"
+    reported = contrast["utterance_level_reported"]
+    assert reported["cluster_key"] == "utterance_id"
+    assert "never gates" in reported["note"]
+    assert set(reported["per_row"]) == set(drv.PER_ROW_METRICS)
+    assert reported["per_row"]["slu_f1_f1"]["n"] == len(world["ids"])
+    # the row-clustered read is the one used for gating; it stays a sibling key, not replaced.
+    assert "per_row" in contrast and contrast["per_row"] is not reported["per_row"]
+
+    verdict = json.loads((args.analysis_root / "verdict.json").read_text(encoding="utf-8"))
+    assert verdict["claim"] == "nominated"
+
+
+def test_an_ordinary_pair_never_gets_a_claim_field_or_the_utterance_level_block(world):
+    drv.run_stages(world["args"])
+    contrast = json.loads((world["args"].analysis_root / "score-contrasts.json").read_text(encoding="utf-8"))
+    verdict = json.loads((world["args"].analysis_root / "verdict.json").read_text(encoding="utf-8"))
+    assert "utterance_level_reported" not in contrast
+    assert "claim" not in verdict

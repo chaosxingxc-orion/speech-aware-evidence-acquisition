@@ -250,6 +250,12 @@ class ArmSpec:
     label: str
     run_id: str
     attempt_id: str
+    #: owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-variant-
+    #: instrument-design.md section 3: when set, this arm is a SAME-FLIGHT SUPPLY-VARIANT
+    #: COLUMN of the sealed run named by ``run_id``/``attempt_id`` -- ``load_arm`` reads the
+    #: renderer's derived per-arm score and its receipt instead of ``<run_id>.scores.json``.
+    #: ``None`` (the default) is the ordinary, byte-identical arm read.
+    column: str | None = None
 
 
 @dataclass
@@ -273,6 +279,9 @@ class Arm:
     score_jobs: list[dict]
     flight_receipts: dict | None
     flight_receipts_path: Path
+    #: Set only for a column arm (``spec.column is not None``): the derived score receipt's own
+    #: ``parent_manifest_sha256`` (owner decision 172 section 3, AT4 same-parent refusal).
+    parent_manifest_sha256: str | None = None
 
     def artifact(self, suffix: str) -> Path:
         return self.run_dir / f"{self.spec.run_id}.{suffix}"
@@ -282,16 +291,41 @@ class Arm:
         return int(self.manifest.get("split", {}).get("count") or 0)
 
 
-def load_arm(data_root: Path, spec: ArmSpec) -> Arm:
+#: owner decision 172 section 3: where a column's derived score and its receipt live, relative
+#: to the arm's own sealed run directory -- alongside every other sealed artefact ``Arm`` already
+#: reads from that SAME directory, since a column is not a new run, only a different score of the
+#: one sealed flight. ``scripts/analysis/stage3_rollout_score.py``'s ``score_supply_variant_copies``
+#: names the file itself (``arm-<arm>-<scorer>-scores.json``); a coordinator registering the first
+#: instrument cell points that script's ``--analysis-root`` here.
+SUPPLY_VARIANT_COLUMN_DIR = "supply-variants"
+
+
+def load_arm(data_root: Path, spec: ArmSpec, *, scorer_id: str | None = None) -> Arm:
     run_dir = data_root / "runs" / spec.run_id / spec.attempt_id
     manifest_path = run_dir / f"{spec.run_id}.run-manifest.json"
-    scores_path = run_dir / f"{spec.run_id}.scores.json"
     generation_manifest_path = run_dir / f"{spec.run_id}.generation-manifest.json"
     attempt_record_path = data_root / "attempts" / spec.run_id / f"{spec.attempt_id}.json"
     score_jobs_path = run_dir / "score-jobs.jsonl"
     flight_receipts_path = run_dir / "flight-receipts.json"
 
-    for required in (manifest_path, scores_path, generation_manifest_path, attempt_record_path):
+    receipt_path: Path | None = None
+    if spec.column is not None:
+        if not scorer_id:
+            raise StopStageError(
+                f"{spec.label}: a column arm ({spec.column!r}) needs its scorer id to locate "
+                "the derived score"
+            )
+        scores_path = (
+            run_dir / SUPPLY_VARIANT_COLUMN_DIR / f"arm-{spec.column}-{scorer_id}-scores.json"
+        )
+        receipt_path = scores_path.with_name(scores_path.name + ".receipt.json")
+    else:
+        scores_path = run_dir / f"{spec.run_id}.scores.json"
+
+    required_files = [manifest_path, scores_path, generation_manifest_path, attempt_record_path]
+    if receipt_path is not None:
+        required_files.append(receipt_path)
+    for required in required_files:
         if not required.exists():
             raise StopStageError(f"{spec.label}: missing required sealed file {required}")
 
@@ -305,6 +339,26 @@ def load_arm(data_root: Path, spec: ArmSpec) -> Arm:
         if line.strip()
     ]
     flight_receipts = load_json(flight_receipts_path) if flight_receipts_path.exists() else None
+
+    parent_manifest_sha256 = None
+    if receipt_path is not None:
+        receipt = load_json(receipt_path)
+        parent_manifest_sha256 = receipt.get("parent_manifest_sha256")
+        if not isinstance(parent_manifest_sha256, str) or not parent_manifest_sha256:
+            raise StopStageError(
+                f"{spec.label}: derived-column receipt {receipt_path} names no "
+                "parent_manifest_sha256"
+            )
+        # The receipt's claim is verified against the manifest actually sitting in THIS arm's
+        # own run directory, not merely trusted: a column is bound to the sealed flight it was
+        # rendered from, and AT4 (same-parent refusal) is only as strong as this check.
+        actual_manifest_sha256 = digest(manifest_path)
+        if parent_manifest_sha256 != actual_manifest_sha256:
+            raise StopStageError(
+                f"{spec.label}: derived-column receipt {receipt_path} names parent_manifest_sha256 "
+                f"{parent_manifest_sha256!r}, but {manifest_path} hashes to "
+                f"{actual_manifest_sha256!r}"
+            )
 
     return Arm(
         spec=spec,
@@ -324,6 +378,7 @@ def load_arm(data_root: Path, spec: ArmSpec) -> Arm:
         score_jobs=score_jobs,
         flight_receipts=flight_receipts,
         flight_receipts_path=flight_receipts_path,
+        parent_manifest_sha256=parent_manifest_sha256,
     )
 
 
@@ -422,9 +477,17 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
     parser.add_argument("--left-run", required=True)
     parser.add_argument("--left-attempt", required=True)
     parser.add_argument("--left-label", default="direct")
+    parser.add_argument(
+        "--left-column", default=None,
+        help="owner decision 172: read this arm as a supply-variant COLUMN of --left-run",
+    )
     parser.add_argument("--right-run", required=True)
     parser.add_argument("--right-attempt", required=True)
     parser.add_argument("--right-label", default="plan")
+    parser.add_argument(
+        "--right-column", default=None,
+        help="owner decision 172: read this arm as a supply-variant COLUMN of --right-run",
+    )
     parser.add_argument("--scorer-id", default=DEFAULT_SCORER)
     parser.add_argument("--roster", default=DEFAULT_ROSTER)
     parser.add_argument("--cluster-key", default=DEFAULT_CLUSTER_KEY)
@@ -450,8 +513,8 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
     ns = parser.parse_args(argv)
     return Args(
         stage=ns.stage,
-        left=ArmSpec(ns.left_label, ns.left_run, ns.left_attempt),
-        right=ArmSpec(ns.right_label, ns.right_run, ns.right_attempt),
+        left=ArmSpec(ns.left_label, ns.left_run, ns.left_attempt, ns.left_column),
+        right=ArmSpec(ns.right_label, ns.right_run, ns.right_attempt, ns.right_column),
         scorer_id=ns.scorer_id,
         roster_relpath=ns.roster,
         cluster_key=ns.cluster_key,
@@ -509,11 +572,17 @@ def _check_manifest(
 ) -> None:
     if arm.manifest.get("status") != "COMPLETED":
         raise StopStageError(f"{arm.spec.label}: manifest status is not COMPLETED")
-    pin = arm.manifest.get("scores") or {}
-    if pin.get("sha256") != arm.scores_sha256:
-        raise StopStageError(f"{arm.spec.label}: manifest does not pin the sealed score bytes")
-    if Path(pin.get("path", "")).name != arm.scores_path.name:
-        raise StopStageError(f"{arm.spec.label}: manifest score path does not name this file")
+    if arm.spec.column is None:
+        pin = arm.manifest.get("scores") or {}
+        if pin.get("sha256") != arm.scores_sha256:
+            raise StopStageError(f"{arm.spec.label}: manifest does not pin the sealed score bytes")
+        if Path(pin.get("path", "")).name != arm.scores_path.name:
+            raise StopStageError(f"{arm.spec.label}: manifest score path does not name this file")
+    # A column's score is a SEPARATELY sealed derived artifact, not what this manifest's own
+    # ``scores`` pin names -- its binding to this exact manifest is the derived receipt's own
+    # ``parent_manifest_sha256`` (checked at load time in ``load_arm`` and, for a pair, by
+    # ``_assert_column_pair_invariants``'s AT4 refusal), so the ordinary pin check above does not
+    # apply to it.
     split = arm.manifest.get("split") or {}
     if split.get("role") != expected_split_role:
         raise StopStageError(
@@ -946,6 +1015,30 @@ def stage_contrast(args: Args, left: Arm, right: Arm, roster: Roster) -> tuple[d
         metric: entry.get("per_stratum", {}) for metric, entry in per_channel.items()
     }
 
+    # Q4 ruling (owner decision 172): a same-flight column pair resamples by row, but the
+    # utterance-level number (the ROLL-3 whole-utterance bootstrap) is reported BESIDE it and
+    # never gates -- computed here from the SAME roster document's own utterance_id field (no
+    # second roster load), added only for a column pair so an ordinary pair's score-contrasts.json
+    # stays byte-identical to its pre-decision-172 self.
+    utterance_level_reported = None
+    if left.spec.column is not None or right.spec.column is not None:
+        utterance_of_id = {
+            item.get("sample_id") or item.get("id"): item.get("utterance_id")
+            for item in roster.document.get("items", [])
+        }
+        if all(isinstance(utterance_of_id.get(sid), str) for sid in ids):
+            utterance_level_reported = {
+                "cluster_key": "utterance_id",
+                "note": (
+                    "ROLL-3 whole-utterance bootstrap, reported beside the row-clustered read "
+                    "above; never gates (Q4 ruling)"
+                ),
+                "per_row": _per_row_block(
+                    left_rows, right_rows, ids, cluster_of=utterance_of_id.get, strata_of=None,
+                    seed=args.seed, draws=args.draws,
+                ),
+            }
+
     score_contrasts = {
         "schema": SCHEMA_CONTRAST,
         "contacts": dict(CONTACTS_ZERO),
@@ -968,6 +1061,8 @@ def stage_contrast(args: Args, left: Arm, right: Arm, roster: Roster) -> tuple[d
         "per_channel": per_channel_table,
         "driver_sha256": digest(_DRIVER_PATH),
     }
+    if utterance_level_reported is not None:
+        score_contrasts["utterance_level_reported"] = utterance_level_reported
 
     scenario_reason = (
         CONSTRUCTION_SCENARIO_REASON if args.expected_split_role == "discovery"
@@ -1278,6 +1373,11 @@ def stage_verdict(args: Args) -> dict:
     # Owner decision 101: every Stage-3 verdict table names its training-free RL.
     if args.stage3_algorithm is not None:
         verdict["stage3_algorithm"] = dict(args.stage3_algorithm)
+    # AT5 / Q6 ruling (owner decision 172): a Solver-local column effect never supports a
+    # system-level claim -- the field is added ONLY for a column pair, so an ordinary
+    # (non-column) verdict stays byte-identical to its pre-decision-172 self.
+    if args.left.column is not None or args.right.column is not None:
+        verdict["claim"] = "nominated"
     write_json(args.analysis_root / "verdict.json", verdict)
     return verdict
 
@@ -1287,13 +1387,40 @@ def stage_verdict(args: Args) -> dict:
 # --------------------------------------------------------------------------
 
 
+def _assert_column_pair_invariants(left: Arm, right: Arm, args: Args) -> None:
+    """Owner decision 172 section 3: a column pair's two invariants.
+
+    AT4 same-parent refusal: a column pair compares two arms of the SAME sealed flight, so both
+    columns must carry the same ``parent_manifest_sha256``. Q4 ruling: a column pair resamples by
+    row (``cluster_key`` ``sample_id``), never by utterance. Both are no-ops for an ordinary
+    (non-column) pair.
+    """
+
+    if left.spec.column is None and right.spec.column is None:
+        return
+    if args.cluster_key != "sample_id":
+        raise StopStageError(
+            "a same-flight supply-variant column pair resamples by row (cluster_key "
+            f"'sample_id'); {args.cluster_key!r} is refused (Q4 ruling)"
+        )
+    if left.spec.column is not None and right.spec.column is not None:
+        if left.parent_manifest_sha256 != right.parent_manifest_sha256:
+            raise StopStageError(
+                "AT4: column pair refused -- left and right columns carry different "
+                f"parent_manifest_sha256 ({left.parent_manifest_sha256!r} != "
+                f"{right.parent_manifest_sha256!r}); a column pair compares two arms of the "
+                "SAME sealed flight"
+            )
+
+
 def run_stages(args: Args) -> None:
     stages = STAGES if args.stage == "all" else (args.stage,)
     roster = None
     left = right = None
     if {"stop", "structural", "contrast", "efficiency"} & set(stages):
-        left = load_arm(args.data_root, args.left)
-        right = load_arm(args.data_root, args.right)
+        left = load_arm(args.data_root, args.left, scorer_id=args.scorer_id)
+        right = load_arm(args.data_root, args.right, scorer_id=args.scorer_id)
+        _assert_column_pair_invariants(left, right, args)
     if {"stop", "contrast"} & set(stages):
         roster = load_roster(args.repo_root, args.roster_relpath, args.cluster_key)
 

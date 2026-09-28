@@ -14,11 +14,18 @@ import pytest
 from jsonschema import Draft202012Validator, ValidationError
 
 from speech_aware_evidence_acquisition.analysis.citation_credit import (
+    CREDIT_TABLE_PER_ARM_SCHEMA,
     CREDIT_TABLE_SCHEMA,
+    ArmCitationRow,
     CitationCreditError,
     CitationRow,
+    arm_credit_table,
+    arm_rows_from_citation_rows,
     credit_table,
+    load_arm_rows,
+    load_correctness_by_arm,
     main as credit_main,
+    render_arm_credit_table,
     render_credit_table,
     rows_from_outputs,
 )
@@ -468,3 +475,137 @@ def test_rows_are_read_from_a_sealed_outputs_file_and_the_cli_writes_the_table(t
     out2 = tmp_path / "table2.json"
     assert credit_main(["--rows", str(rows_file), "--out", str(out2)]) == 0
     assert json.loads(out2.read_text(encoding="utf-8"))["table_sha256"] == credit_table(ROWS)["table_sha256"]
+
+
+# ---------------------------------------------------------------------------
+# Per-arm credit (owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-supply-
+# variant-instrument-design.md section 5, item 2): key (arm_id, value_id), correctness from
+# each arm's OWN official per-row score.
+# ---------------------------------------------------------------------------
+
+ARM_ROWS = (
+    ArmCitationRow("s1", "twin", ("e1", "e2"), ("e1",), True),
+    ArmCitationRow("s1", "plan", ("e1", "e3"), ("e1", "e3"), True),
+    ArmCitationRow("s2", "twin", ("e1", "e2"), ("e2",), False),
+    ArmCitationRow("s2", "plan", ("e1", "e3"), ("e1",), False),
+)
+
+
+def test_the_arm_credit_table_keys_by_arm_and_value_and_is_byte_reproducible():
+    table = arm_credit_table(ARM_ROWS)
+    assert table["schema"] == CREDIT_TABLE_PER_ARM_SCHEMA
+    assert table["entries"] == [
+        {"arm_id": "plan", "value_id": "e1", "supplied": 2, "cited": 2, "cited_correct": 1,
+         "supplied_uncited": 0},
+        {"arm_id": "plan", "value_id": "e3", "supplied": 2, "cited": 1, "cited_correct": 1,
+         "supplied_uncited": 1},
+        {"arm_id": "twin", "value_id": "e1", "supplied": 2, "cited": 1, "cited_correct": 1,
+         "supplied_uncited": 1},
+        {"arm_id": "twin", "value_id": "e2", "supplied": 2, "cited": 1, "cited_correct": 0,
+         "supplied_uncited": 1},
+    ]
+    assert table["totals"] == {
+        "rows": 4, "rows_correct": 2, "entries": 4, "supplied_slots": 8, "citations": 5,
+    }
+    # order independence, exactly as the per-value_id table promises.
+    shuffled = list(ARM_ROWS)
+    random.Random(3).shuffle(shuffled)
+    again = arm_credit_table(shuffled)
+    assert render_arm_credit_table(again) == render_arm_credit_table(table)
+    assert again["table_sha256"] == table["table_sha256"]
+    # a same-flight table never collapses two arms' identical value ids into one row: "e1" is
+    # supplied by both "twin" and "plan" and each keeps its own count.
+    assert {(e["arm_id"], e["value_id"]) for e in table["entries"]} == {
+        ("plan", "e1"), ("plan", "e3"), ("twin", "e1"), ("twin", "e2"),
+    }
+
+
+def test_the_arm_credit_table_refuses_a_repeated_arm_sample_pair_and_reuses_citation_rows_checks():
+    with pytest.raises(CitationCreditError, match="appears twice"):
+        arm_credit_table([ARM_ROWS[0], ARM_ROWS[0]])
+    with pytest.raises(CitationCreditError, match="never supplied"):
+        ArmCitationRow("s1", "twin", ("e1",), ("e9",), True).validate()
+    with pytest.raises(CitationCreditError, match="needs an arm id"):
+        ArmCitationRow("s1", "", ("e1",), (), True).validate()
+
+
+def _citation_row(sample_id, arm_id, *, supplied, cited, ok=True):
+    return {
+        "sample_id": sample_id, "arm_id": arm_id,
+        "supplied_value_ids": list(supplied), "cited_value_ids": list(cited),
+        "cited_value_ids_ok": ok, "response_format_id": CITED_ANSWER_RESPONSE_FORMAT_ID,
+    }
+
+
+def test_arm_rows_are_read_from_the_renderers_citation_rows_and_joined_with_per_arm_correctness(
+    tmp_path,
+):
+    path = tmp_path / "arm-citation-rows.jsonl"
+    rows = [
+        _citation_row("s1", "twin", supplied=("e1", "e2"), cited=("e1",)),
+        _citation_row("s1", "plan", supplied=("e1", "e3"), cited=("e1", "e3")),
+        # this arm's own contact never carried a parseable envelope: skipped, not invented.
+        _citation_row("s2", "twin", supplied=("e2",), cited=(), ok=False),
+        # "plan" has no correctness entry for s3: counted missing, never silently dropped.
+        _citation_row("s3", "plan", supplied=("e1",), cited=("e1",)),
+    ]
+    path.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+    correctness_by_arm = {"twin": {"s1": True}, "plan": {"s1": True}}
+    read, counts = arm_rows_from_citation_rows(path, correctness_by_arm)
+    assert [(row.sample_id, row.arm_id) for row in read] == [("s1", "twin"), ("s1", "plan")]
+    assert counts == {"citation_rows": 4, "rows": 2, "skipped": 1, "missing_correctness": 1}
+
+    correctness_path = tmp_path / "correctness-by-arm.json"
+    correctness_path.write_text(json.dumps(correctness_by_arm), encoding="utf-8")
+    assert load_correctness_by_arm(correctness_path) == correctness_by_arm
+    bad_path = tmp_path / "bad.json"
+    bad_path.write_text(json.dumps({"twin": {"s1": "yes"}}), encoding="utf-8")
+    with pytest.raises(CitationCreditError, match="correctness-by-arm"):
+        load_correctness_by_arm(bad_path)
+
+    out = tmp_path / "arm-table.json"
+    assert credit_main([
+        "--arm-citation-rows", str(path), "--correctness-by-arm", str(correctness_path),
+        "--out", str(out),
+    ]) == 0
+    table = json.loads(out.read_text(encoding="utf-8"))
+    assert table["schema"] == CREDIT_TABLE_PER_ARM_SCHEMA
+    assert table["entries"] == [
+        {"arm_id": "plan", "value_id": "e1", "supplied": 1, "cited": 1, "cited_correct": 1,
+         "supplied_uncited": 0},
+        {"arm_id": "plan", "value_id": "e3", "supplied": 1, "cited": 1, "cited_correct": 1,
+         "supplied_uncited": 0},
+        {"arm_id": "twin", "value_id": "e1", "supplied": 1, "cited": 1, "cited_correct": 1,
+         "supplied_uncited": 0},
+        # "twin" was SUPPLIED e2 but never cited it (it only cited e1): the entry still appears,
+        # with cited 0, exactly as the per-value_id table lists every supplied id.
+        {"arm_id": "twin", "value_id": "e2", "supplied": 1, "cited": 0, "cited_correct": 0,
+         "supplied_uncited": 1},
+    ]
+
+    arm_rows_file = tmp_path / "arm-rows.jsonl"
+    arm_rows_file.write_text(
+        "".join(json.dumps(row.as_json()) + "\n" for row in ARM_ROWS), encoding="utf-8"
+    )
+    assert [row.as_json() for row in load_arm_rows(arm_rows_file)] == [
+        row.as_json() for row in ARM_ROWS
+    ]
+
+
+def test_the_cli_refuses_an_ambiguous_or_incomplete_mode_selection(tmp_path):
+    out = tmp_path / "out.json"
+    with pytest.raises(SystemExit):
+        credit_main(["--out", str(out)])
+    rows_file = tmp_path / "rows.jsonl"
+    rows_file.write_text("", encoding="utf-8")
+    arm_rows_file = tmp_path / "arm-citation-rows.jsonl"
+    arm_rows_file.write_text("", encoding="utf-8")
+    correctness_by_arm = tmp_path / "correctness-by-arm.json"
+    correctness_by_arm.write_text(json.dumps({}), encoding="utf-8")
+    # two real modes named at once (--rows and --arm-citation-rows) is ambiguous.
+    with pytest.raises(SystemExit):
+        credit_main(["--rows", str(rows_file), "--arm-citation-rows", str(arm_rows_file),
+                     "--correctness-by-arm", str(correctness_by_arm), "--out", str(out)])
+    # --arm-citation-rows without --correctness-by-arm is an incomplete mode.
+    with pytest.raises(SystemExit):
+        credit_main(["--arm-citation-rows", str(arm_rows_file), "--out", str(out)])

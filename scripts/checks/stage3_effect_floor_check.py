@@ -27,8 +27,14 @@ DECLARED effect, before the GPU hours are spent rather than after.
     }
 
 * ``measurement_design`` -- one of :data:`DESIGNS`: ``offline-sealed-pool``,
-  ``same-flight-paired``, ``cross-flight-with-in-chain-replicate``,
-  ``cross-flight-no-replicate``, ``form-proof``.
+  ``same-flight-paired``, ``same-flight-supply-variant``,
+  ``cross-flight-with-in-chain-replicate``, ``cross-flight-no-replicate``,
+  ``form-proof``. ``same-flight-supply-variant`` is the supply-variant column
+  read (owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-
+  supply-variant-instrument-design.md): a Solver-local effect from
+  ``supply_variants`` arms read against their in-flight twin; it may claim
+  only ``"nominated"`` in ``flight_registration_check.py``, never
+  ``"admitted"``.
 * ``expected_effect_pp`` -- a number: the effect, in percentage points on the
   cell's primary metric, the cell is registered to LOOK FOR. Not a hope and
   not a bound; the size the mechanism is believed to produce.
@@ -85,6 +91,7 @@ design                                floor at n rows (CI95 half-width, pp)
 ===================================== ======================================
 ``offline-sealed-pool``               ``0.67 * sqrt(625 / rows)``
 ``same-flight-paired``                ``0.735 * sqrt(200 / rows)``
+``same-flight-supply-variant``        ``0.735 * sqrt(200 / rows)`` (provisional, ROLL-AA anchor)
 ``cross-flight-with-in-chain-replicate`` ``max(sampling, admission bar)``
 ``cross-flight-no-replicate``         refused outright (rule 4)
 ``form-proof``                        none; must claim no benefit (rule 5)
@@ -236,6 +243,20 @@ FLOOR_TABLE: dict[str, Floor] = {
         source=(
             f"{INSTRUMENT_NOTE} section 2a/2d row 2: cell ROLL-AA, two passes inside one "
             "flight, h_within 0.735 SLU / 0.000 intent at n = 200"
+        ),
+        sampling=((200, 0.735),),
+    ),
+    "same-flight-supply-variant": Floor(
+        source=(
+            "docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-"
+            "design.md section 4 (owner decision 172, Q2 ruling): the design's own floor "
+            "is the twin's paired-difference null on the Solver-local estimand; until an "
+            "instrument cell has flown and measured that null, the provisional floor "
+            f"anchor is {INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, h_within "
+            "0.735 SLU / 0.000 intent at n = 200) -- same number as same-flight-paired, "
+            "kept as its own design value because the estimand (Solver-local, non-"
+            "delivering arms never reach Reviewer/Planner) and the claim ceiling "
+            "(nominated only, never admitted) both differ"
         ),
         sampling=((200, 0.735),),
     ),

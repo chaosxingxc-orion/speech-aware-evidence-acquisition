@@ -19,6 +19,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -290,15 +291,19 @@ def test_no_text_is_persisted(world: World) -> None:
         assert "alarm_query" not in path.read_text(encoding="utf-8"), path
 
 
-def _package(world: World, read_notes: str | None) -> Path:
+def _package(
+    world: World, read_notes: str | None, *, resampling_unit: str = "row (paired)",
+    arm_extra: dict | None = None, replicate_extra: dict | None = None,
+) -> Path:
     package = world.repo / "docs" / "readiness" / "2026-09-27-unit-v1"
     _write(package / "analysis-recipe-v1.json", {
         "recipe_id": "unit-recipe-v1", "title": "Unit cell",
         "run_ids": {"read": "UNIT-READ-V1"},
         "output": {"analysis_root": "analysis/UNIT-READ-V1"},
-        "resampling": {"seed": 7, "bootstrap_draws": 200, "unit": "row (paired)"},
-        "arms": {"arm": {"run_id": "UNIT-RIGHT-V1", "attempt_id": "attempt-right"},
-                 "in_chain_replicate": {"run_id": "UNIT-LEFT-V1", "attempt_id": "attempt-left"},
+        "resampling": {"seed": 7, "bootstrap_draws": 200, "unit": resampling_unit},
+        "arms": {"arm": {"run_id": "UNIT-RIGHT-V1", "attempt_id": "attempt-right", **(arm_extra or {})},
+                 "in_chain_replicate": {"run_id": "UNIT-LEFT-V1", "attempt_id": "attempt-left",
+                                        **(replicate_extra or {})},
                  "comparator": {"run_id": "UNIT-LEFT-V1", "attempt_id": "attempt-left"}},
     })
     columns = ("date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split",
@@ -340,6 +345,41 @@ def test_package_mode_runs_both_passes_and_never_overwrites(world: World, capsys
         assert {"frontier.json", "delivery-conversion.json", "slurp_paired_roster_read.py",
                 "stage3_paired_read.py"} <= names
     assert drv.main(_package_argv(world, package, out)) == 1  # the pass directories already hold files
+
+
+def test_package_mode_refuses_a_column_recipe_that_does_not_resample_by_row(world: World) -> None:
+    # owner decision 172 Q4: a same-flight column read resamples by row; declaring a column
+    # (arms.arm.column) beside an utterance-clustered resampling.unit is refused before any
+    # score is opened.
+    out = world.tmp / "pkg-out"
+    package = _package(
+        world, "REGISTERED BEFORE RESULT READING (root countersigned 2026-09-27 by the coordinator)",
+        resampling_unit="utterance (paired)", arm_extra={"column": "plan"},
+    )
+    assert drv.main(_package_argv(world, package, out)) == 1
+    assert not out.exists()
+
+
+def test_package_mode_threads_column_flags_into_the_driver_argv(world: World, monkeypatch) -> None:
+    # owner decision 172 section 3: arms.arm and arms.in_chain_replicate accept "column"; package
+    # mode passes them through as --right-column / --left-column without opening any score itself.
+    out = world.tmp / "pkg-out"
+    package = _package(
+        world, "REGISTERED BEFORE RESULT READING (root countersigned 2026-09-27 by the coordinator)",
+        arm_extra={"column": "plan"}, replicate_extra={"column": "twin"},
+    )
+    seen: list = []
+
+    def _fake_run_pair(core_args, ext):
+        seen.append(core_args)
+        _write(core_args.analysis_root / "verdict.json", {"extensions": []})
+        return {"extensions": []}
+
+    monkeypatch.setattr(drv, "run_pair", _fake_run_pair)
+    assert drv.main(_package_argv(world, package, out)) == 0
+    aa_call = next(c for c in seen if c.left.run_id == "UNIT-LEFT-V1" and c.right.run_id == "UNIT-RIGHT-V1")
+    assert aa_call.left.column == "twin"
+    assert aa_call.right.column == "plan"
 
 
 def test_the_wrapper_names_the_package_mode_and_the_countersign_refusal() -> None:
@@ -399,6 +439,54 @@ def _sealed_stamps(sealed: Path) -> list[str]:
     return stamps
 
 
+# --------------------------------------------------------------------------
+# Driver provenance: recorded, never compared to a frozen fixture
+# --------------------------------------------------------------------------
+#
+# ``driver_sha256`` is the sha256 of the driver script's own bytes
+# (``scripts/analysis/slurp_paired_roster_read.py``), not read content: a legitimate driver edit
+# changes it while leaving every computed number, id and input hash untouched. ``verdict.json``'s
+# ``artifact_sha256`` map (mirrored by the README's own "Artefact hashes" table) moves in lock
+# step, since its entries are hashes of files that themselves embed ``driver_sha256``. Both are
+# recorded as provenance -- asserted present and well-formed -- and excluded from the
+# byte-for-byte comparison, which still applies to everything else.
+
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+_ARTEFACT_TABLE_ROW = re.compile(r"^\| (?P<name>[^|]+) \| (?P<digest>[0-9a-f]{64}) \|$")
+
+
+def _assert_sha256(value: object) -> str:
+    assert isinstance(value, str) and _SHA256_RE.match(value), value
+    return value
+
+
+def _canonical_modulo_driver_provenance(payload: dict, *, is_fresh: bool) -> dict:
+    cleaned = dict(payload)
+    if "driver_sha256" in cleaned:
+        digest_value = _assert_sha256(cleaned.pop("driver_sha256"))
+        if is_fresh:
+            assert digest_value == _sha(CORE_PATH)
+    if "artifact_sha256" in cleaned:
+        artifact_sha256 = cleaned.pop("artifact_sha256")
+        assert isinstance(artifact_sha256, dict) and artifact_sha256
+        for value in artifact_sha256.values():
+            _assert_sha256(value)
+        cleaned["artifact_sha256_names"] = sorted(artifact_sha256)
+    return cleaned
+
+
+def _readme_modulo_driver_provenance(text: str) -> str:
+    lines = []
+    for line in text.splitlines():
+        match = _ARTEFACT_TABLE_ROW.match(line)
+        if match:
+            _assert_sha256(match["digest"])
+            lines.append(f"| {match['name']} | <sha256> |")
+        else:
+            lines.append(line)
+    return "\n".join(lines)
+
+
 @pytest.mark.skipif(_data_root() is None, reason="SPEECHRL_DATA_DIR is not materialised on this host")
 @pytest.mark.parametrize("case", sorted(SEALED_READS))
 def test_the_sealed_reads_reproduce_byte_for_byte(case: str, tmp_path: Path) -> None:
@@ -417,4 +505,12 @@ def test_the_sealed_reads_reproduce_byte_for_byte(case: str, tmp_path: Path) -> 
         drv.CORE.datetime = real
     assert code == 0 and Clock.queue == []
     for name in FILES:
-        assert (tmp_path / "out" / name).read_bytes() == (sealed / name).read_bytes(), name
+        fresh_bytes = (tmp_path / "out" / name).read_bytes()
+        sealed_bytes = (sealed / name).read_bytes()
+        if name == "README.md":
+            assert (_readme_modulo_driver_provenance(fresh_bytes.decode("utf-8"))
+                    == _readme_modulo_driver_provenance(sealed_bytes.decode("utf-8"))), name
+            continue
+        fresh = _canonical_modulo_driver_provenance(json.loads(fresh_bytes), is_fresh=True)
+        expected = _canonical_modulo_driver_provenance(json.loads(sealed_bytes), is_fresh=False)
+        assert fresh == expected, name
