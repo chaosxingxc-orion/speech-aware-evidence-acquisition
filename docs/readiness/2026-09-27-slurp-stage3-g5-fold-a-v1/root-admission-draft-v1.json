@@ -33,7 +33,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "17f51f30ec2b352ce98a719471287c28b30128c4676e3fe0ab6a86c6c8d19adf"
+      "sha256": "f24310ca33ff77d2e753ddfd0779a300b0d689b5493f1f842d1b8560c2558f05"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/README.md",
@@ -131,8 +131,8 @@
     },
     "note": "the values of the fragments exactly as committed at 81307ac3 (readiness held, no decision requirement); repin_cell.py recomputes them at the flip.",
     "smoke": {
-      "composed_config": "3198b28fd3e7c35087f8ffc1eedc8116b0b4200902cbadfefa489a2a811ab399",
-      "protocol": "a8611b9406a9234b591c8f922946c7a3108d948235b10693f6059716722e5428"
+      "composed_config": "a962d1056448cb592ce9b7f2538bbf14a22e59cc81018b7348268b1317db368a",
+      "protocol": "0abdf5b0749b16c991807d5a04b394b51738dfdbd5873723e947377888206f59"
     }
   },
   "schema": "saea-campaign-decision-v1",
