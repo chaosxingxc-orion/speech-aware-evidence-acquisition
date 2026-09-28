@@ -13,8 +13,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Four-row form smoke of cell W3, registered before contact on 2026-09-27 from the retained AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16) and appends the preparation requirement; the requirements list is empty by design, --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's output digest eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae (the Perception supply reads keys and value ids, which W3 does not move). Nothing here authorises a flight, a readiness flip or an admission entry.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-w3-contrast-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-w3-contrast-fold-a-v1/root-admission-v1.json",
+            "sha256": "dff96f2c875ad9ec334a91be8cb7e7fbaee8751048bb9083cf574011f0d7aa0a",
+            "reason": "Decision slurp-stage3-w3-contrast-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "8713996de7a4ea516c49f3af7b82466f4a8d8e4a4439343f6bbc6c1f88e28e8b",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-SMOKE-4-V1"
     }
