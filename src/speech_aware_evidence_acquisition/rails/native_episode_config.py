@@ -1407,7 +1407,17 @@ def load_native_episode_config(
         from .candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES
         from .knowledge_stores import declared_alternate_release_relpaths
         from .supply_variants import PerceptionBranchError, parse_perception_branches
-        from ..core.base import PERCEPTION_PRESENTATIONS
+        # Importing the BARE registry object from ``core.base`` is not enough:
+        # ``core.base.PERCEPTION_PRESENTATIONS`` is populated by
+        # ``rails.perception_presentations``'s own module-level ``.register(
+        # ...)`` calls, which only run once that module has been imported --
+        # the same reason ``rails.acquisition`` must be imported to populate
+        # ``core.base.ACQUISITION_POLICIES``. Importing the REGISTERING
+        # module here (not just the registry) is what makes
+        # ``registered_presentation_ids`` below non-empty the first time this
+        # loader runs, regardless of what any other module has already
+        # imported.
+        from .perception_presentations import PERCEPTION_PRESENTATIONS  # noqa: F401
 
         declared_stores = values.get("knowledge_stores")
         if declared_stores is not None and not isinstance(declared_stores, Mapping):

@@ -14,6 +14,11 @@ their mutual refusal.
 from __future__ import annotations
 
 import copy
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
 
 import pytest
 
@@ -136,3 +141,71 @@ def test_a_config_declaring_neither_mechanism_still_composes_byte_identically():
     assert config.max_contacts == 11
     perception_role = next(role for role in config.roles if role.role_kind == "perception")
     assert perception_role.perception_branches is None
+
+
+# ---------------------------------------------------------------------------
+# P-SV registration finding (coordinator, 2026-09-28): ``rails.
+# native_episode_config`` used to import the BARE ``core.base.
+# PERCEPTION_PRESENTATIONS`` registry object, never the module
+# (``rails.perception_presentations``) whose own module-level ``.register(
+# ...)`` calls populate it -- the same "import the registering module, not
+# just the registry" rule ``rails.acquisition``/``core.base.
+# ACQUISITION_POLICIES`` already follows. Whichever process happened to
+# import ``rails.perception_presentations`` FIRST (for some unrelated
+# reason) masked the bug; a fresh process that loads a branched config
+# without ever having imported it hit "presentation_id 'top2-contrast-v1'
+# is not registered; registered ids are []" on ``cli check``. This runs the
+# load in a SEPARATE, fresh interpreter -- the only way to prove the fix
+# does not depend on import order elsewhere in the test session.
+# ---------------------------------------------------------------------------
+
+_FRESH_PROCESS_LOAD_SCRIPT = """
+import json
+import sys
+
+sys.path.insert(0, {src_dir!r})
+
+from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+from speech_aware_evidence_acquisition.rails.native_episode_config import (
+    load_native_episode_config,
+)
+
+values = json.loads(open({fragment_path!r}, encoding="utf-8").read())
+values["carrier_lock_key"] = "slurp"
+del values["native_episode"]["roles"]["solver"]["supply_variants"]
+values["native_episode"]["roles"]["perception"]["branches"] = {{
+    "level": 1,
+    "fit_estimate": {fit!r},
+    "branches": [
+        {{
+            "branch_id": "B", "max_supplied_items": 8,
+            "presentation_id": "top2-contrast-v1",
+        }},
+        {{"branch_id": "T", "replicate_of": "A", "max_supplied_items": 8}},
+        {{"branch_id": "A", "deliver": True, "max_supplied_items": 8}},
+    ],
+}}
+program = default_phase_program(values["policy"])
+config = load_native_episode_config(values, program, allow_subceiling=True)
+assert config is not None
+perception_role = next(role for role in config.roles if role.role_kind == "perception")
+assert perception_role.perception_branches.branches[0].presentation_id == "top2-contrast-v1"
+print("OK")
+"""
+
+
+def test_a_fresh_process_resolves_top2_contrast_v1_with_no_prior_import():
+    repo_root = Path(__file__).resolve().parents[2]
+    src_dir = str(repo_root / "src")
+    fragment_path = str(repo_root / "configs" / "baseline" / VAR2_FRAGMENT)
+    script = _FRESH_PROCESS_LOAD_SCRIPT.format(
+        src_dir=src_dir, fragment_path=fragment_path, fit=FIT,
+    )
+    env = dict(os.environ)
+    env.pop("PYTHONPATH", None)
+    completed = subprocess.run(
+        [sys.executable, "-c", script],
+        capture_output=True, text=True, env=env, timeout=60,
+    )
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    assert "OK" in completed.stdout

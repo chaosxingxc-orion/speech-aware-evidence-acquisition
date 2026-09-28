@@ -153,9 +153,15 @@ Perception; axes on A or T; two branches with identical axes.
   pool, contrast-pair pool): the R01/R01C lesson.
 - **A/A = twin** (Q3). The within-flight Perception null is unmeasured; the ledger's cross-flight P top-1
   difference, +0.28 [-0.56, +1.20], is context only.
-- **Registration.** `measurement_design: "same-flight-perception-branch"` with `tuning_roster`,
+- **Registration.** `measurement_design: "same-flight-perception-variant"` with `tuning_roster`,
   `read_roster`, `aa_arm_id`, `variant_cost`, `level`, `claim: "nominated"`; phase 1's gate findings plus
-  `branch-level-missing` and `branch-seed-unpinned`.
+  `branch-level-missing` and `branch-seed-unpinned`. *(Coordinator note, 2026-09-28, merge set C
+  implementation: this sentence originally spelled the design value `"same-flight-perception-branch"`.
+  `scripts/checks/stage3_effect_floor_check.py` and `scripts/checks/flight_registration_check.py` register
+  it as `"same-flight-perception-variant"`, and the P-SV-1/P-SV-2 packages already fly under that spelling
+  on branch `fable/psv`; this section is amended to match rather than the other way around, so the spec and
+  the gates name one value. Do not rename anything in the checks or their tests to match this document's
+  earlier spelling.)*
 
 ## 5. Changes and merge set C
 
