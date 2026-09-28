@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-w5-fold-a-v1",
+  "composed_config_hash": "31668ed5113b748f3db9f83778a488b01efa42bed66a96725b45813273e25e06",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-w5-fold-a-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11880,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "ab7db61205b8048f2246de1e42ef8c0eda6f59ad472ac5fa45944bf7c04097de",
+    "run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-w5-fold-a-v1.json as one step of the knowledge wave's chain, after the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 has flown in that chain.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-w5-fold-a-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "one_factor": "knowledge_stores.slot-exemplars added (release 83f175704a09e1721e4d61666979925133a25ea80fc4918fc68a56e527a122a3, snapshot content 6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63, scope table f12540f19730d713594c4f63ce7b68c66ef508b8bb2dbb897ae9541087aceb96) and its two receipts appended to preparation_source_receipts",
+  "plan_kind": "generation",
+  "preparation_base_commit": "29ec0008",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "note": "the added store serves the Solver only and is not an input to the first-phase (Perception boundary) supply, so the supply the flip mints for the arm must carry the AGREE arm's output digest and the smoke's the AGREE smoke's; a different digest means the boundary channel moved -- stop and report",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-W5-FOLD-A-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "0a8688084762386a32d85819f4ab97f38be68f5b9dc656920a1b9349ae8574a6"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-W5-FOLD-A-V1: NO-HARM ADMITTED: against the knowledge wave's SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the official pooled SLU-F1 delta (PRIMARY -- SLU-F1 is PRIMARY because W5 acts on SLOTS: it adds row-matched slot-bearing TRAIN exemplars to the node that fills slots (the M1 mechanism, whose admitted gains were slot-only: 213 of 277 B1 saves changed only slots), and owner decision 133 makes intent primary only for intent-acting mechanisms. Among the wave's cells W1 (card selection) and W3 (intent contrast) read intent primary; W4 (slot conventions) and W5 read SLU primary -- W5 is the wave's one slot-RETRIEVAL cell (row-matched content keyed by the row's own speech), W4 a card-content cell.) is not below -1.2485 pp AND the paired CI95 lower bound of the intent-accuracy delta (the guard) is not below -0.9943 pp -- each at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A SLU-F1 CI95 lower bound above zero is REPORTED as a development-fold effect beside the no-harm verdict, never as an admission of benefit (the design's benefit floor is 2.5 pp and the measured expectation sits far below it). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the entity item classes of the error-source read (MISSING, SPURIOUS, WRONG-TYPE, BOUNDARY, WRONG-VALUE, NEAR, FORMAT) arm vs A/A, the SPURIOUS count on empty-gold rows, and the realised prompt-token delta per Solver/Reviewer/Planner contact and per row.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score exist for BOTH this arm and the shared in-chain A/A; a verdict against the sealed comparator alone is refused.",
+  "registered_at_utc": "2026-09-27T20:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w5, branch fable/w5",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

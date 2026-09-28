@@ -1,0 +1,61 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-w5-fold-a-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "role": "context, sealed, never re-flown",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1",
+      "role": "the within-chain null (registered by the coordinator)",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold label or model output is printed or persisted.",
+  "decision_rule": "NO-HARM ADMITTED: against the knowledge wave's SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain, the paired CI95 lower bound of the official pooled SLU-F1 delta (PRIMARY -- SLU-F1 is PRIMARY because W5 acts on SLOTS: it adds row-matched slot-bearing TRAIN exemplars to the node that fills slots (the M1 mechanism, whose admitted gains were slot-only: 213 of 277 B1 saves changed only slots), and owner decision 133 makes intent primary only for intent-acting mechanisms. Among the wave's cells W1 (card selection) and W3 (intent contrast) read intent primary; W4 (slot conventions) and W5 read SLU primary -- W5 is the wave's one slot-RETRIEVAL cell (row-matched content keyed by the row's own speech), W4 a card-content cell.) is not below -1.2485 pp AND the paired CI95 lower bound of the intent-accuracy delta (the guard) is not below -0.9943 pp -- each at its own Fold A own-null half-width (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d). HARMFUL: a measured loss on either metric (CI95 upper bound below zero, decision 25). A SLU-F1 CI95 lower bound above zero is REPORTED as a development-fold effect beside the no-harm verdict, never as an admission of benefit (the design's benefit floor is 2.5 pp and the measured expectation sits far below it). Every verdict carries the per-scenario table in both weightings, the frontier row (decision 75), the entity item classes of the error-source read (MISSING, SPURIOUS, WRONG-TYPE, BOUNDARY, WRONG-VALUE, NEAR, FORMAT) arm vs A/A, the SPURIOUS count on empty-gold rows, and the realised prompt-token delta per Solver/Reviewer/Planner contact and per row.",
+  "margins": {
+    "h_intent": 0.9943,
+    "h_slu": 1.2485
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-W5-FOLD-A-PAIRED-READ-V1"
+  },
+  "read_driver_family": "scripts/analysis/stage3_paired_read.py or scripts/analysis/plan_cell_read.py (the wave read wrapper of branch fable/waveaa)",
+  "read_run_id": "SAEA-SLURP-STAGE3-W5-FOLD-A-PAIRED-READ-V1",
+  "recipe_id": "slurp-stage3-w5-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-27T20:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "slu_f1_f1",
+      "scenario_action_exact"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired)"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-W5-FOLD-A-V1",
+    "comparator": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+    "in_chain_replicate": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+    "read": "SAEA-SLURP-STAGE3-W5-FOLD-A-PAIRED-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless the W5 arm and the shared A/A each carry a COMPLETE sealed 1,080-row manifest with one successful complete official TRAIN score and this package's / the A/A package's config hashes.",
+    "2. Structural stage: every W5 Solver request carries nine slot-exemplars:: items and the twenty train-exemplars:: items; the delivered W5 ids equal the registered selection (selection-v1.jsonl) row by row; realised prompt tokens per Solver/Reviewer/Planner contact, arm minus A/A, against the registered token_cost; compacted contacts on each arm (expected 0).",
+    "3. Score once per arm with slurp-slu-official-train through core.scoring_batch, never sharded.",
+    "4. Paired row bootstrap (10,000 draws, seed 20260927) of arm minus shared A/A on official pooled SLU-F1 (primary) and intent accuracy (guard); the same delta against the sealed AGREE arm BESIDE it, never instead.",
+    "5. Apply the rule: ADMITTED (no harm) iff SLU lower bound >= -1.2485 and intent lower bound >= -0.9943; HARMFUL iff either upper bound < 0; otherwise NOT ADMITTED (width). A SLU lower bound above zero is reported as a development-fold effect, never as an admitted benefit.",
+    "6. Mechanism read (model-free, counts only), in the error-source read's taxonomy: MISSING / SPURIOUS / WRONG-TYPE / BOUNDARY / WRONG-VALUE / NEAR / FORMAT arm vs A/A; the registered newly-printed items (registered-facts-v1.json fold_a_offline) re-read -- converted, unchanged, broken; SPURIOUS on the empty-gold rows; intent flips on the rows whose gold intent is outside the shortlist.",
+    "7. Report the per-scenario table in both weightings and the frontier row (decision 75)."
+  ],
+  "title": "Cell W5 -- the standard paired roster read on SLU (primary) + intent (guard) against the knowledge wave's shared in-chain A/A, sealed AGREE beside it, under the no-harm rule"
+}
