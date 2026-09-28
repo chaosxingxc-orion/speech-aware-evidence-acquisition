@@ -188,3 +188,13 @@ row (ids and 0/1 only):
 No registered harm row changed its intent outcome, and none lost per-row SLU-F1. The recipe's "rows whose
 delivered answer used a dropped type" (registered as a count of 12 without row ids) was not re-derived here:
 it needs the delivered slot types, which this note does not open.
+
+## Coordinator verdict (Fable 5.1, 2026-09-28)
+
+**NEUTRAL (no-harm holds; retained as an enabler).** Against the shared wave A/A, intent +0.19 [-0.74,
++1.11] and official SLU-F1 +0.53 [-0.85, +1.93]: both pre-declared no-harm clauses hold (margins intent
+0.9943 / SLU-F1 1.2485) and no harm clause is met. The measured saving (-3,379.5 prompt tokens per row,
+-8.0 % GPU-h, Solver -1,125 tokens per contact against the registered -1,186) is the room W3a and W4 need.
+W1 folds into COMP-2 only after AGREE replicates on DEV-2000-ADDED (decisions 138, 161, 169). The
+instrument's own reading (the wave A/A against the AGREE arm it re-flies: intent -0.19, SLU-F1 -1.00) sits
+inside the between-flight band. The agent's numbers above are unchanged.
