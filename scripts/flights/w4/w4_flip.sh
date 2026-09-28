@@ -27,7 +27,7 @@ for K in smoke arm; do
   {
     echo "research: flip W4 ($K) to ready (knowledge-wave item W4, slot conventions: the retained AGREE arm with knowledge_stores.slot-contracts re-pinned to slot-contracts-w4-v1 -- TRAIN-mined value vocabulary, annotation scope and span-extent conventions appended to 19 existing slot-contract cards -- read on no harm, SLU-F1 primary and intent the guard, at the shared in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1; owner decision 164; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-w4-fold-a-admission-v1)"
     echo
-    echo "Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>"
+    echo "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
   } > /home/chao/w4-$K-commit.txt
 done
 bash "$SP/repin_loop_generic.sh" "$W4/w4_repin_smoke.sh" $RD slurp-native-stage3-w4-fold-a-smoke-4-v1 smoke-generation /home/chao/w4-smoke-commit.txt || exit $?

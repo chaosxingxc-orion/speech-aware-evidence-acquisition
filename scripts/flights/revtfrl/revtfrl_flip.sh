@@ -20,7 +20,7 @@ for K in smoke aa arm; do
 cat > /home/chao/revtfrl-$K-commit.txt <<M
 research: flip REV-TFRL-1 ($K) to ready (the first training-free RL optimisation of the Reviewer node, owner decision 165: the AGREE arm with the Reviewer instruction moved from G5's text to the contrastive review form selected offline over sealed TRAIN R01C trajectories, read on no harm at its in-chain A/A (AGREE with G5's Reviewer text) with the node's within-trajectory credit beside it; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-revtfrl-fold-a-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 done
 R=$(dirname "$0")

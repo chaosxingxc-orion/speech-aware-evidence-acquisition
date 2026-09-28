@@ -65,12 +65,12 @@ for K in smoke arm; do
 cat > /home/chao/comp1-rec-$K-commit.txt <<M
 research: flip the COMP-1 -REC recovery re-registration ($K) to ready (COMP-1's ONE recovery re-registration after the 2026-09-28 citation-contract abort of SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1: a full 1,080-row re-fly under a fresh run id, the parent's bytes except identities and the recovery note, its prepared supply rebuilt with the output unchanged; the shared in-chain A/A never re-flown; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-comp1-fold-a-rec-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 cat > /home/chao/g5-$K-commit.txt <<M
 research: re-converge G5 ($K) at the COMP-1 -REC flight commit (G5 never started in the aborted chain; its registration, receipt and replicate SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 are unchanged; owner decisions 127, 135, 138, 153 and 160; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-g5-fold-a-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 done
 
