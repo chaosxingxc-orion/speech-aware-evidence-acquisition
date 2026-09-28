@@ -138,6 +138,14 @@ D1_SUPPLEMENT_SCHEMA = "saea-d1-media-supplement-v1"
 ROSTER_RECEIPTS_RELDIR = "docs/receipts/rosters"
 EXPOSURE_UNION_POLICY_ID = "saea-a2t-exposure-union-v1"
 
+#: A per-roster companion file committed beside its ``saea-roster-receipt-v1``
+#: sibling in the same directory (e.g. ``a2t-paired-400-v1.comparator-rows.json``
+#: beside ``a2t-paired-400-v1.json``, written by ``scripts/build_a2t_paired_400_roster.py``).
+#: It carries analysis-recipe comparator rows, never sample identities, and is
+#: not an exposure source; the roster glob must recognize and skip it rather
+#: than fail closed on an unexpected schema.
+A2T_PAIRED_ROSTER_COMPARATOR_ROWS_SCHEMA = "saea-a2t-paired-roster-comparator-rows-v1"
+
 #: The two roster roles (owner decision 2026-09-05). An EVALUATION roster's
 #: identities are exposure and must never be read with their gold; a
 #: CONSTRUCTION roster's identities may be, which is exactly why the union
@@ -872,7 +880,10 @@ def _d1_supplement_source(path: Path) -> dict[str, object]:
 def _roster_receipt_source(path: Path) -> dict[str, object] | None:
     """One committed ``saea-roster-receipt-v1`` as an identity source.
 
-    Returns ``None`` only for another carrier's roster. An Audio2Tool roster
+    Returns ``None`` for another carrier's roster, and also for a
+    ``saea-a2t-paired-roster-comparator-rows-v1`` companion file committed
+    beside a roster receipt in the same directory (it carries no sample
+    identities). An Audio2Tool roster
     is returned with its own ``roster_role``; a ``"construction"`` one is not
     exposure -- those identities may be read WITH their gold (owner decision
     2026-09-05) -- and :func:`_exposure_sources` drops it from the union while
@@ -890,6 +901,10 @@ def _roster_receipt_source(path: Path) -> dict[str, object] | None:
     if not isinstance(document, Mapping):
         raise RailsError(f"roster receipt {path} must be a JSON object")
     if document.get("schema") != RECEIPT_SCHEMA:
+        if document.get("schema") == A2T_PAIRED_ROSTER_COMPARATOR_ROWS_SCHEMA:
+            # A comparator-rows companion, not a roster receipt: no sample
+            # identities to contribute to the exposure union.
+            return None
         raise RailsError(
             f"roster receipt {path} schema {document.get('schema')!r} is not "
             f"{RECEIPT_SCHEMA!r}"
@@ -2163,6 +2178,7 @@ def coverage_report_a2t(
 __all__ = [
     "A2T_CONSTRUCTION_SELECTION_SCHEMA",
     "A2T_KB_BUILD_POLICY_ID",
+    "A2T_PAIRED_ROSTER_COMPARATOR_ROWS_SCHEMA",
     "A2T_PARTITION_POLICY_ID",
     "CONSTRUCTION_ROSTER_ROLE",
     "EVALUATION_ROSTER_ROLE",
