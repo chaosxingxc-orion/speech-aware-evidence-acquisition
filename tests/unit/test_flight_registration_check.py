@@ -581,6 +581,79 @@ def test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap(world: World) -> 
     assert data["blocking_cells"] == []
 
 
+def test_roster_receipts_are_read_at_most_once_per_run(world: World, monkeypatch) -> None:
+    # 2026-09-28 performance regression: the overlap check queries a roster id once per cell that
+    # declares it, so two cells sharing the same tuning/read rosters must still open each receipt
+    # file only once for the whole run, not once per cell -- the redundant re-read this fix closes.
+    measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-TUNE-POOL-V1", read_roster="SLURP-READ-FOLD-A-V1"
+    )
+    world.measurement = measurement
+    world.build()
+    world.write_roster_receipt(
+        "SLURP-TUNE-POOL-V1",
+        disjointness_proof={"slurp-read-fold-a-v1": {"shared_recordings": 0, "shared_utterances": 0}},
+    )
+    world.write_roster_receipt("SLURP-READ-FOLD-A-V1")
+
+    smoke_path = world.repo / "configs" / "experiment" / f"{SMOKE}.json"
+    smoke_fragment = json.loads(smoke_path.read_text(encoding="utf-8"))
+    smoke_fragment["stage3_measurement"] = measurement
+    _write(smoke_path, smoke_fragment)
+
+    rosters_dir = world.repo / "docs" / "receipts" / "rosters"
+    reads: list[str] = []
+    real_read_text = Path.read_text
+
+    def counting_read_text(self: Path, *args: object, **kwargs: object) -> str:
+        if self.parent == rosters_dir:
+            reads.append(str(self))
+        return real_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", counting_read_text)
+    data = world.run()
+    assert data["mode"] == "tree"
+    assert "tuning-read-overlap" not in _kinds(data)  # zero-overlap receipts: disjoint, not blocked
+    assert len(reads) == len(set(reads)) == 2, reads
+
+
+def test_a_cell_without_roster_fields_triggers_no_receipt_read(world: World, monkeypatch) -> None:
+    world.measurement = _cross_flight_measurement()  # no tuning_roster / read_roster at all
+    world.build()
+    world.write_roster_receipt("SOME-UNRELATED-ROSTER-V1")  # present, but must never be opened
+
+    rosters_dir = world.repo / "docs" / "receipts" / "rosters"
+    reads: list[str] = []
+    real_read_text = Path.read_text
+
+    def counting_read_text(self: Path, *args: object, **kwargs: object) -> str:
+        if self.parent == rosters_dir:
+            reads.append(str(self))
+        return real_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", counting_read_text)
+    data = world.run(cells=[EXPERIMENT])
+    assert "tuning-roster-missing" in _kinds(data)
+    assert reads == []
+
+
+def test_tree_mode_skips_the_roster_check_for_an_unnamed_flown_cell(world: World) -> None:
+    # a NAMED sealed cell (a launch-mode resume step) still gets the check -- see
+    # test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap. An unnamed one, reached only by
+    # tree-mode bulk iteration, never blocks either way, so the expensive check is skipped for it.
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-STAGE3-FOLD-A-V1", read_roster="SLURP-STAGE3-FOLD-A-V1"
+    )
+    world.build()
+    (world.data / "runs" / RUN / "attempt-x").mkdir(parents=True)
+    data = world.run()
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["consumed_by"] == f"runs/{RUN}"
+    assert cell["named"] is False
+    assert "tuning-read-overlap" not in _kinds(data)
+    assert cell.get("roster_split") is None
+
+
 def test_the_batch_driver_runs_the_gate_in_prelaunch() -> None:
     text = (_REPO / "scripts" / "flights" / "batch" / "batch_driver.sh").read_text(encoding="utf-8")
     prelaunch = text.split("prelaunch() {", 1)[1].split("\n}\n", 1)[0]

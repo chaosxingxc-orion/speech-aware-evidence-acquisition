@@ -184,6 +184,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import functools
 import json
 import math
 import re
@@ -472,11 +473,22 @@ def _blocks_from_json_document(document: Any) -> Any:
     return None
 
 
+@functools.lru_cache(maxsize=None)
 def _declaration_files(repo_root: Path) -> list[DeclarationFile]:
     """Every readiness file that carries a ``stage3_measurement``, in order.
 
     ``registered-facts`` JSON first, preregistration markdown second: the
     precedence the docstring promises.
+
+    Memoised per ``repo_root`` for the life of the process: this glob-and-parse over every
+    ``docs/readiness/*/`` package (roughly a thousand directories in the real tree) is expensive,
+    and its result cannot change within one gate run (no writer touches ``docs/readiness/`` while
+    a gate reads it). Before this cache existed, ``flight_registration_check.py`` called this
+    function twice per cell (once for the supply-variant check, once for the item D3 roster-split
+    check) with zero reuse, turning a tree-mode ``--include-held`` run into hundreds of redundant
+    full-tree rescans -- the 2026-09-28 performance regression this cache fixes. A test that
+    mutates ``docs/readiness/`` and then re-evaluates the SAME ``repo_root`` within one process
+    must call ``_declaration_files.cache_clear()`` first.
     """
 
     files: list[DeclarationFile] = []
