@@ -59,7 +59,7 @@
  "read_rule": {
   "deliverable": "m of 119 wrong-to-gold conversions with a Wilson CI95 and the exact Clopper-Pearson CI95 beside it; the reverse count is 0 by construction",
   "read_against": "the no-op expectation 15.906 conversions (never zero)",
-  "read_driver": "owed by root (KPROBE shape, scripts/analysis/slurp_kprobe_read.py); not written here",
+  "read_driver": "scripts/analysis/rankvis_probe_read.py (KPROBE shape); shell wrapper scripts/flights/rankvis/rankvis_read.sh",
   "rendering_gate": "the read refuses unless every flown Solver request carries the rank labels and the rendered exemplar order equals the recomputed retrieval-rank order on every row",
   "splits": [
    "four-way transition (wrong to gold, gold to wrong, same wrong intent, different wrong intent)",
