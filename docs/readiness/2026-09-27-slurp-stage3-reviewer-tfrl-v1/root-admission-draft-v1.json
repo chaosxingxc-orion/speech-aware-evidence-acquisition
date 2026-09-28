@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-      "sha256": "b4600ffdc12cdcd53eaf1600bfb8f7d3d8888ae4c08c1d4cd38d331119d2857a"
+      "sha256": "41ceff07fda1a19f618f853f74ff6bbc962835004db0f7596b431db53745e982"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/README.md",
@@ -117,8 +117,8 @@
       "protocol": "b804d21b0e8cb219f5c0e6eb18fd41fdd8acf8b94f2daca3bf08f2dc6749bf7f"
     },
     "arm": {
-      "composed_config": "f7cc105d59c0828a37cacb7f8e6814ee864ccc5dc7b2faea31fe68970c9ea873",
-      "protocol": "d976235252f997c258b50329f6fc256b8275325c8ef2219912cba03132a76fc1"
+      "composed_config": "103bc40fdeb33748c28ab0a8c59dfc7189889ae5cfa95e7b5d37764df4beb4cb",
+      "protocol": "8f2eaee8a9ea23ed8b9d188a14be36a318fd1884babbcbefdf38cbed6ca89a36"
     },
     "smoke": {
       "composed_config": "f57a564fd2c6583c968655bcb8a07e875c2ed5254610872f2dce688c7d4cda51",

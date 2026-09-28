@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1/protocol-registered-v1.json",
-    "sha256": "b4600ffdc12cdcd53eaf1600bfb8f7d3d8888ae4c08c1d4cd38d331119d2857a"
+    "sha256": "41ceff07fda1a19f618f853f74ff6bbc962835004db0f7596b431db53745e982"
   },
   "purpose": "SAEA-SLURP-STAGE3-REVTFRL-AA-FOLD-A-V1: The in-chain A/A replicate of cell REV-TFRL-1 (the base: AGREE with G5's Reviewer instruction). It supplies the within-chain null and the base Reviewer's own credit; no claim of its own.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the ordered outputs, the native phase summary and the single successful complete official TRAIN score exist for BOTH the arm and its in-chain A/A, and before the READ row SAEA-SLURP-STAGE3-REVTFRL-FOLD-A-READ-V1 is countersigned.",
