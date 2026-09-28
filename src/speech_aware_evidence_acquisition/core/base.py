@@ -711,6 +711,73 @@ class DeliveryNormaliserRegistry(Registry):
 DELIVERY_NORMALISERS = DeliveryNormaliserRegistry("delivery normaliser")
 
 
+# ---------------------------------------------------------------------------
+# Perception-branch PRESENTATIONS (same-flight instrument phase 2, merge set
+# C, design docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-
+# perception-variants-design.md section 3, "presentation"). A closed
+# registry, mirroring :data:`DELIVERY_NORMALISERS`'s own door: an entry is
+# checked at REGISTRATION, not at every resolve, and a
+# ``native_episode.roles.perception.branches.branches[].presentation_id``
+# value resolves here exactly as ``deliver_normaliser.normaliser`` resolves
+# in :data:`DELIVERY_NORMALISERS`. Populated from
+# ``rails/perception_presentations.py``.
+
+
+@runtime_checkable
+class PerceptionPresentation(Protocol):
+    """One registered Perception-branch presentation renderer's shape."""
+
+    id: str
+    version: str
+
+    def __call__(self, *args: object, **kwargs: object) -> object: ...
+
+
+class PerceptionPresentationError(CoreError):
+    """A registered Perception presentation renderer is invalid or misused."""
+
+
+def assert_perception_presentation(entry: object, *, name: str) -> object:
+    """Refuse anything that is not a callable, identified presentation.
+
+    Checked at REGISTRATION, for the same reason
+    :func:`assert_delivery_normaliser` checks its own door.
+    """
+
+    if not callable(entry):
+        raise PerceptionPresentationError(
+            f"perception presentation {name!r} must be callable"
+        )
+    for attribute in ("id", "version"):
+        value = getattr(entry, attribute, None)
+        if not isinstance(value, str) or not value.strip():
+            raise PerceptionPresentationError(
+                f"perception presentation {name!r}.{attribute} must be "
+                f"non-empty text, got {value!r}"
+            )
+    if getattr(entry, "id") != name:
+        raise PerceptionPresentationError(
+            f"perception presentation registered as {name!r} declares id "
+            f"{getattr(entry, 'id')!r}; the registry name and the entry's own "
+            "id are one identity"
+        )
+    return entry
+
+
+class PerceptionPresentationRegistry(Registry):
+    """Checks its entries at registration (see :func:`assert_perception_presentation`)."""
+
+    def register(self, name: str, entry: object) -> object:
+        assert_perception_presentation(entry, name=name)
+        return super().register(name, entry)
+
+
+#: The Perception-branch presentation registry (phase 2, merge set C). A
+#: ``presentation_id`` value declared on a Perception branch resolves here.
+#: Populated from ``rails/perception_presentations.py``.
+PERCEPTION_PRESENTATIONS = PerceptionPresentationRegistry("Perception branch presentation")
+
+
 class RepairAlignmentError(CoreError):
     """A substitution-only delivery rule refuses.
 
