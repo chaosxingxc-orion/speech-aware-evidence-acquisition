@@ -1,0 +1,91 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-comp1-dev2000-added-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-comp1-dev2000-added-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-comp1-dev2000-added-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell COMP-1 DEV-2000-ADDED, registered before contact on 2026-09-27 from the sealed DEV plan arm fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: the coordinator declares expected_effect_pp from the COMP-1 Fold A read (owner decision 139), root countersigns the exposure rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/comp1dev/comp1dev_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with: THIS roster's own table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against the sealed DEV-2000-ADDED plan cell with the builder, vote store, vote phase and target store of the Fold A table cell AGREE registered, from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,000 rows, every row 20 votes, 0 self-excluded exemplars (the TRAIN-built pool shares no utterance with the roster), 0 rows with no vote, 59 distinct boundary facets ever voted for. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
+            "sha256": "283bd9f58025b98a7c92f3b5f3495fce1e4b352bae52a3fc62bb8781b79e92d8"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the sealed DEV-2000-ADDED speech-query segment vectors, the CENTROID key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's sealed agreement table, with zero model, tokenizer, encoder, scorer or server contacts. E16: this cell pins its own. --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "73c5ce53f9501deadab6779ebd34b57476bf8c1ee24d600f4d48a0d3a82ef8b6"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-27",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 90,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell COMP-1 DEV-2000-ADDED and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 90
+  },
+  "fragment_kind": "saea-slurp-native-stage3-comp1-dev2000-added-smoke-4-v1",
+  "generation_budget": {
+    "cap": 44,
+    "definition": "4 rows x 11, the locked phase program's own ceiling (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1 -> 1 + 2 * (3 + 1 + 1)); the citation contract adds tokens per Solver contact, never contacts. Speech: ceil(8.1276875 s x 11) = 90 s.",
+    "target": 20
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-dev2000-added",
+    "decision_population": "The first 4 rows, by roster order, of the unchanged DEV-2000-ADDED roster docs/receipts/rosters/slurp-dev-2000-added-v1.json: slurp:devel:000017:audio-1501773854-headset, slurp:devel:000024:audio-1490195864-headset, slurp:devel:000026:audio-1502216425-headset, slurp:devel:000026:audio-1502301875 (8.1276875 s of audio), split identity fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0 -- exactly the rows and split identity cell ROLL-3's four-row smoke registered (configs/experiment/slurp-native-stage3-roll-3-dev2000-added-smoke-4-v1.json), re-verified here against the roster order. Structural form proof only: no score and no read.",
+    "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "ids": [
+        "slurp:devel:000017:audio-1501773854-headset",
+        "slurp:devel:000024:audio-1490195864-headset",
+        "slurp:devel:000026:audio-1502216425-headset",
+        "slurp:devel:000026:audio-1502301875"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of cell COMP-1 DEV-2000-ADDED: that this roster's agreement table and the centroid key file load and hash-verify, that the boundary channel still delivers, that the Solver answers under the cited-answer contract and the unwrapping normaliser delivers the answer's own bytes, that every request fits and that the episode completes. Scored by no one and read by no one. COMP-1 DEV-2000-ADDED is cell COMP-1's composed plan (docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1) with only the roster moved to the fresh evaluation roster DEV-2000-ADDED 1,000, exactly as the sealed DEV-2000-ADDED plan arm (cell B6) re-pointed the locked plan. (1) The agreement term as cell AGREE carries it: the intent-boundary Perception channel ranks with w_agree 1.0 over the pre-computed exemplar-intent vote, w_cos 1.0, w_prior 0.0, recall k 60, delivered width 8 (fuse_coverage m 8 / c 1 / top_l 8); the vote table is this roster's own (SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1: the same builder, vote store, vote phase and target store as the Fold A table, over this roster's own sealed speech vectors). (2) The centroid boundary key as cell KPROBE pins it, byte for byte. (3) The citation contract as COMP-1 arms it (saea-solver-cited-answer-v1, the cited Solver instruction, saea-deliver-cited-answer-normalise-v3-v1). (4) Nothing else: the geometry, the session, the phase program's 11-contact ceiling, the three stores' snapshots and releases, the exemplar k of 20, the role graph, the Perception / Reviewer / Planner templates and the DEV scorer are the sealed DEV plan arm's, byte for byte.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "DEV-2000-ADDED",
+  "stage3_algorithm": {
+    "id": "sealed-credit-system-policy-v1",
+    "note": "The four-row structural form smoke of the COMP-1 DEV-2000-ADDED arm: the same three composed actions on the first four rows of the unchanged DEV-2000-ADDED roster, labelled as the arm is because it flies the arm's form; scored by no one and read by no one.",
+    "operators_used": [
+      "context_application"
+    ]
+  }
+}

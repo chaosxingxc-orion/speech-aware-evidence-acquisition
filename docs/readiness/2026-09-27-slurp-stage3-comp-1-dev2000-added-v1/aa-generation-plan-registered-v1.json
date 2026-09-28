@@ -1,0 +1,57 @@
+{
+  "byte_identity_obligation": {
+    "sealed_comparator_output_sha256": "d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19",
+    "this_cell_output_sha256": "d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19",
+    "verified": true
+  },
+  "cell": "slurp-native-stage3-comp1-aa-dev2000-added-v1",
+  "composed_config_hash": "71462277daeea3f0c9b08c1f099b64fd79949a3f8659177013756871ecac7dd3",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-comp1-aa-dev2000-added-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 32819,
+    "protocol_hash": "5bc29d22e2fa75481cfe3ff9158fbe1e6388657a7f57de83fac2446bee18488c",
+    "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over the committed campaign plan configs/campaign/slurp-native-stage3-comp1-dev2000-added-v1.json (the A/A, then the arm, in ONE chain) through scripts/flights/batch/batch_driver.sh (scripts/flights/comp1dev/batch_chain_comp1dev.sh); one official score per generation cell at finalize.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-comp1-aa-dev2000-added-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32819
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "09f1b31e",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, built model-free under its own run id by core.flight.cli prepare-supply (item E16). --allow-output-change must never be passed.",
+    "output_sha256": "d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1/phase-supply-v1.json",
+    "sha256": "d9b396a1981567fd34a99eace25f2b79fa24d6a660320b2e8f8a107086d91e82"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/protocol-registered-v1.json",
+    "sha256": "fd2917ef9cf1efbf8c75ab14b30fb15292dfbd6e57b1ce64157b4e315753efc8"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1: It supplies the within-chain null and makes no claim of its own.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs and the single successful complete official slurp-slu-official score exist for BOTH the arm and its in-chain A/A, before the coordinator's declared expected_effect_pp is on the record, and before the READ row SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-PAIRED-ANALYSIS-V1 is root countersigned (read_paired_cell.sh refuses otherwise).",
+  "registered_at_utc": "2026-09-27T23:55:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1dev, branch fable/comp1dev",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_EXPECTATION_AND_READINESS_FLIP",
+  "the_composition": "cell COMP-1's composed plan with only the roster moved: the locked v2.0 plan as the sealed DEV-2000-ADDED plan arm flew it + (1) the agreement term as AGREE carries it (w_agree 1.0 over the exemplar-intent vote, recall k 60, delivered 8-1-8; the vote table is this roster's own SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1) + (2) the centroid boundary key as KPROBE pins it (facet_source prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl) + (3) the citation contract (policy phase-native-candidates-review-revise-cited-v1, Solver response_format_id saea-solver-cited-answer-v1, instruction probes/slurp_native_role_solver_cited_v1.txt, deliver_normaliser saea-deliver-cited-answer-normalise-v3-v1) + (4) nothing else",
+  "unused_budget_is_not_attempt_authority": true
+}
