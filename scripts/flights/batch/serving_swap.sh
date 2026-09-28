@@ -3,8 +3,8 @@
 # hand-run pair "WSL switch script + Windows scheduled-task switch" whose halves were run separately on 2026-09-27
 # (one ran while the other refused) and it never leaves the card without a server on a refusal it could foresee.
 #
-#   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1> [--dry-run] [--min-host-free-gb 12.0] [--margin-gb 0.5]
-#                   [--wait-timeout 600] [--monitor-delay 20] [--no-restore]
+#   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1> [--dry-run] [--restart] [--min-host-free-gb 12.0]
+#                   [--margin-gb 0.5] [--wait-timeout 600] [--monitor-delay 20] [--no-restore]
 #
 # In order:
 #   1. one swap at a time (flock on $SAEA_SWAP_LOCK) and the pending marker $SAEA_SWAP_PENDING, which refuses every
@@ -13,7 +13,11 @@
 #      core.flight.lease_cli) or $DATA/locks/flight.lock refuses; a model-free core.flight.cli prepare-supply/check
 #      in a worktree does not;
 #   3. the resident session (serving_session.sh resident) mapped onto the geometry table; an unrecorded server on
-#      port 8080 or an unknown session refuses; the target already resident is a no-op after a readiness check;
+#      port 8080 or an unknown session refuses; the target already resident is a no-op after a readiness check --
+#      UNLESS --restart was given (owner decision 182, the idle watchdog's uptime/server-death recovery: a
+#      session record can say "resident" for a process that already died, e.g. a CUDA abort, or one the
+#      coordinator wants recycled past its uptime bound), in which case it falls through to the normal stop+start
+#      of that same geometry below instead of the fast no-op path;
 #   4. host-memory pre-check BEFORE anything is stopped: serving_session.sh host-memory with the start guard
 #      (--min-host-free-gb, default 12.0) plus --margin-gb headroom; a proven shortfall refuses and names the CPU
 #      sidecars holding memory (2026-09-27: 11.7 GB and 10.1 GB under a resident 8081 sidecar failed two restarts
@@ -41,6 +45,7 @@ source "$HERE/serving_lib.sh"
 
 TARGET=
 DRY=0
+RESTART=0
 MIN=$SAEA_MIN_HOST_FREE_GB
 MARGIN=0.5
 WAIT=600
@@ -49,6 +54,7 @@ RESTORE=1
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) DRY=1 ;;
+    --restart) RESTART=1 ;;
     --min-host-free-gb) MIN=${2:-}; shift ;;
     --margin-gb) MARGIN=${2:-}; shift ;;
     --wait-timeout) WAIT=${2:-}; shift ;;
@@ -158,7 +164,7 @@ FROM=$CUR
 SIDECARS=$(saea_cpu_sidecars)
 record cpu-sidecars "$([ -n "$SIDECARS" ] && echo present || echo none)" "$SIDECARS"
 
-if [ "$CUR" = "$TARGET" ]; then
+if [ "$CUR" = "$TARGET" ] && [ "$RESTART" != 1 ]; then
   # Nothing is stopped or started, so no precondition can make the no-op unsafe: only the read-only readiness
   # check runs (a queue may ask for the geometry it already has while another flight holds the card).
   record plan no-op "$TARGET is already the resident geometry; readiness check only"
@@ -168,6 +174,9 @@ if [ "$CUR" = "$TARGET" ]; then
   record ready-check "$([ "$RC" = 0 ] && echo ready || echo "not-ready-$RC")" "resident $TARGET"
   [ "$RC" = 0 ] && finish no-op 0
   finish no-op-not-ready 10
+fi
+if [ "$CUR" = "$TARGET" ] && [ "$RESTART" = 1 ]; then
+  record plan restart "--restart requested while $TARGET is already resident: falling through to a normal stop+start of the same geometry instead of the no-op path"
 fi
 
 HM=$(bash "$SS" host-memory --min-host-free-gb "$MIN" --margin-gb "$MARGIN" 2>&1)
