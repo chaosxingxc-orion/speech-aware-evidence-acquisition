@@ -510,6 +510,144 @@ def test_supply_action_router_refuses_an_undeclared_release_swap_store(tmp_path)
 
 
 # ---------------------------------------------------------------------------
+# 4b. The W4-SV render fix: core.flight.runtime.FlightRuntime.
+#     _supply_variant_binding exposes the alternate snapshot and its own
+#     flight-owned receipt, one entry per release-swap arm.
+#
+# ``_supply_action_router`` is stubbed here: the claim "an alternate release
+# actually resolves to the right binding" is already proven, model-free, by
+# section 4 above (``test_supply_action_router_release_swap_renders_the_
+# alternates_values`` and its neighbours). What is NEW here is the WIRING
+# ``_supply_variant_binding`` adds on top -- routing each arm's own
+# ``release_swap`` into ``_supply_action_router``, and splitting the result
+# into the per-arm router table, the ``release_swap_snapshots`` bolted onto
+# the returned resolver and the flight-owned receipt -- which a stub isolates
+# without needing a full ``context_supply``/``candidate_supply`` store (the
+# real router attaches ``automatic_for_phase`` only when one of those is
+# declared; ``test_knowledge_stores._config`` declares neither).
+# ---------------------------------------------------------------------------
+
+
+def test_supply_variant_binding_exposes_the_release_swap_snapshot_and_receipt():
+    """The W4-SV blocker fix (coordinator amendment, 2026-09-28): the bug the
+    W4-SV registration found is that ``rails.runner`` rendered EVERY arm's
+    request from the flight's own composite snapshot, so a release-swap
+    alternate that keeps the primary's value ids (a content-only revision)
+    silently rendered the primary's content. The fix is
+    ``FlightRuntime._supply_variant_binding`` exposing, per release-swap arm,
+    the alternate composite snapshot ``rails.runner`` must render from, plus a
+    flight-owned receipt of the alternate's own resolved hashes -- present for
+    that one arm alone."""
+
+    store_id = "intent-boundaries"
+    release_relpath = "knowledge/intent-boundaries/alternate-release.json"
+    group = parse_supply_variants(
+        {
+            "arms": [
+                {
+                    "arm_id": "swap", "max_supplied_items": 8,
+                    "release_swap": {"store_id": store_id, "release": release_relpath},
+                },
+                {"arm_id": "plan", "deliver": True, "max_supplied_items": 8},
+            ],
+            "fit_estimate": dict(FIT),
+        },
+        phase_id="solver", first_phase_id="perception",
+        declared_stores=(store_id,),
+        declared_alternate_relpaths={store_id: (release_relpath,)},
+    )
+    native_config = SimpleNamespace(supply_variant_group=group)
+
+    alt_store_receipt = {
+        "store_id": store_id, "store_role": store_id,
+        "store_snapshot_sha256": "b" * 64, "store_release_sha256": "c" * 64,
+        "store_source_sha256": "d" * 64, "composite_snapshot_sha256": "e" * 64,
+    }
+    alt_snapshot = SimpleNamespace(content_hash=lambda: "alt-composite-hash")
+    base_snapshot = SimpleNamespace(content_hash=lambda: "base-composite-hash")
+    seen_release_swaps: dict[str, object] = {}
+
+    def fake_supply_action_router(program, action_id, knobs, *, release_swap=None):
+        seen_release_swaps[action_id] = release_swap
+        if release_swap is not None:
+            return SimpleNamespace(
+                automatic_for_phase=f"route-{action_id}",
+                knowledge_store_binding=SimpleNamespace(
+                    composite_snapshot=alt_snapshot,
+                    store_receipt=lambda sid: (
+                        alt_store_receipt if sid == release_swap.store_id else None
+                    ),
+                ),
+            )
+        return SimpleNamespace(
+            automatic_for_phase=f"route-{action_id}",
+            knowledge_store_binding=SimpleNamespace(composite_snapshot=base_snapshot),
+        )
+
+    runtime = SimpleNamespace(
+        _knowledge_store_binding=SimpleNamespace(composite_snapshot=base_snapshot),
+        _knowledge_store_router_options={},
+        _phase_supply_receipt=None,
+        _supply_action_router=fake_supply_action_router,
+    )
+
+    resolve = FlightRuntime._supply_variant_binding(runtime, native_config, program=object())
+
+    # ``_supply_action_router`` is called once per arm, with exactly that
+    # arm's OWN declared ``release_swap`` (``None`` for the delivering arm).
+    assert seen_release_swaps["swap"] == SupplyVariantReleaseSwap(
+        store_id=store_id, release_relpath=release_relpath,
+    )
+    assert seen_release_swaps["plan"] is None
+
+    # ONE alternate composite snapshot, keyed by the release-swap arm's id
+    # alone -- the delivering arm never appears here.
+    assert set(resolve.release_swap_snapshots) == {"swap"}
+    assert resolve.release_swap_snapshots["swap"] is alt_snapshot
+
+    # The flight-owned receipt records the alternate's resolved hashes, on
+    # the release-swap arm alone -- never on the delivering arm.
+    receipt = runtime._phase_supply_receipt
+    assert set(receipt["supply_variant_release_swaps"]) == {"swap"}
+    assert receipt["supply_variant_release_swaps"]["swap"] == alt_store_receipt
+
+
+def test_supply_variant_binding_without_a_release_swap_arm_carries_no_extras():
+    """Byte-identical to before this fix when no arm declares a release_swap:
+    an empty ``release_swap_snapshots`` and no flight-owned receipt entry."""
+
+    group = parse_supply_variants(
+        {
+            "arms": [
+                {"arm_id": "narrow", "max_supplied_items": 4,
+                 "overrides": {f"{EX}.k": 10}},
+                {"arm_id": "plan", "deliver": True, "max_supplied_items": 4},
+            ],
+            "fit_estimate": dict(FIT),
+        },
+        phase_id="solver", first_phase_id="perception",
+        declared_stores=("train-exemplars",),
+    )
+    native_config = SimpleNamespace(supply_variant_group=group)
+
+    def fake_supply_action_router(program, action_id, knobs, *, release_swap=None):
+        assert release_swap is None
+        return SimpleNamespace(automatic_for_phase=f"route-{action_id}")
+
+    runtime = SimpleNamespace(
+        _knowledge_store_binding=SimpleNamespace(),
+        _knowledge_store_router_options={},
+        _phase_supply_receipt=None,
+        _supply_action_router=fake_supply_action_router,
+    )
+
+    resolve = FlightRuntime._supply_variant_binding(runtime, native_config, program=object())
+
+    assert dict(resolve.release_swap_snapshots) == {}
+    assert runtime._phase_supply_receipt is None
+
+
+# ---------------------------------------------------------------------------
 # 5. Identity: core.flight.runtime._knowledge_store_alternate_identity
 # ---------------------------------------------------------------------------
 

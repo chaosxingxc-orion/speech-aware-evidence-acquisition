@@ -34,6 +34,7 @@ import threading
 import time
 from dataclasses import replace
 from pathlib import Path, PurePosixPath
+from types import MappingProxyType
 from typing import Callable, Mapping, Sequence
 
 from ...contracts import (
@@ -3098,9 +3099,19 @@ class FlightRuntime:
                             "supply action release_swap changed a store beside "
                             "the one it names"
                         )
-            return build_knowledge_store_supply(
+            router = build_knowledge_store_supply(
                 binding, program=program, data_root=self._data_root, **options,
             )
+            # Coordinator amendment, 2026-09-28 (the release-swap arm route,
+            # the W4-SV blocker fix): bolted on exactly as ``route.receipt``
+            # and ``route.automatic_for_phase`` already are, so
+            # ``_supply_variant_binding`` can read the resolved binding this
+            # ONE-OFF router was actually built over -- in particular its
+            # ``composite_snapshot``, which a release-swap arm's request must
+            # render from instead of the flight's own -- without changing
+            # this function's return type or any existing caller.
+            router.knowledge_store_binding = binding
+            return router
         except (KnowledgeStoreError, ValueError) as error:
             raise FlightRuntimeError(f"supply action {action_id!r} is invalid: {error}") from error
 
@@ -3189,6 +3200,29 @@ class FlightRuntime:
         release+snapshot for that ONE named store instead, via
         :meth:`_supply_action_router`'s own ``release_swap`` parameter.
 
+        The W4-SV blocker fix (same amendment): a release-swap arm's REQUEST
+        must also RENDER from that alternate binding -- ``rails.runner``'s
+        ``base_messages`` otherwise renders every arm from the flight's own
+        composite snapshot regardless of which store an arm's router
+        selected, so an alternate release that keeps the primary's value ids
+        (a content-only revision) would render the primary's bytes and the
+        arm would be a silent second twin. ``resolve.release_swap_snapshots``
+        (``{arm_id: KnowledgeSnapshot}``, one entry per release-swap arm) is
+        the flight-owned answer ``rails.runner.supply_variant_messages`` reads
+        it from -- bolted onto the returned resolver exactly as
+        ``supply_for_phase.prefetch_recall`` is bolted onto that sibling seam
+        -- and every OTHER store of that alternate binding is guaranteed
+        (refused above, in :meth:`_supply_action_router`) to resolve to
+        exactly the base's own pins, so rendering the WHOLE arm from the
+        alternate binding's own composite snapshot is exactly equivalent to
+        rendering only the one named store from it. The same alternate
+        binding's ``store_receipt`` is also folded into
+        ``self._phase_supply_receipt['supply_variant_release_swaps']``, keyed
+        by arm id -- the flight-owned record of which release/snapshot hashes
+        a release-swap arm actually resolved, present for that arm alone
+        (the delivering arm and its twin never carry a ``release_swap`` and
+        so never appear there).
+
         The routers are built once, at assembly, before any contact. Nothing
         here touches a model, a tokenizer or the network.
         """
@@ -3210,12 +3244,20 @@ class FlightRuntime:
                 "router this flight already built; an arm router must be built "
                 "with the same options"
             )
-        routers = {
-            arm.arm_id: self._supply_action_router(
+        routers = {}
+        release_swap_snapshots: dict[str, object] = {}
+        release_swap_receipts: dict[str, object] = {}
+        for arm in group.arms:
+            action_router = self._supply_action_router(
                 program, arm.arm_id, arm.knobs, release_swap=arm.release_swap,
-            ).automatic_for_phase
-            for arm in group.arms
-        }
+            )
+            routers[arm.arm_id] = action_router.automatic_for_phase
+            if arm.release_swap is not None:
+                swap_binding = action_router.knowledge_store_binding
+                release_swap_snapshots[arm.arm_id] = swap_binding.composite_snapshot
+                release_swap_receipts[arm.arm_id] = swap_binding.store_receipt(
+                    arm.release_swap.store_id
+                )
 
         def resolve(*, arm_id, phase_id, context):
             """One arm's own supply decision for one visit of one row."""
@@ -3227,6 +3269,12 @@ class FlightRuntime:
                 )
             return route(phase_id, context)
 
+        resolve.release_swap_snapshots = MappingProxyType(release_swap_snapshots)
+        if release_swap_receipts:
+            self._phase_supply_receipt = {
+                **(self._phase_supply_receipt or {}),
+                "supply_variant_release_swaps": release_swap_receipts,
+            }
         return resolve
 
     def _acquisition_requery_binding(self, native_config, supply_for_phase, snapshot):

@@ -970,6 +970,178 @@ def test_the_two_arms_requests_differ_only_in_their_supplied_evidence(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# 5b. The W4-SV blocker fix: a release-swap arm renders from its OWN
+#     alternate composite snapshot, contact for contact, through the same
+#     ``_ActualEpisodeHarness`` fake transport the tests above use.
+# ---------------------------------------------------------------------------
+
+
+def _release_swap_live_group():
+    """Arm order matches the real W4-SV cell: a release-swap arm, a twin, then
+    the delivering arm (docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-
+    v1/README.md, arm order ``b-w4``/``t-twin``/``a-agree``)."""
+
+    return parse_supply_variants(
+        {
+            "arms": [
+                {
+                    "arm_id": "swap", "max_supplied_items": 4,
+                    "release_swap": {
+                        "store_id": "train-exemplars", "release": "alt.json",
+                    },
+                },
+                {"arm_id": "aa", "replicate_of": "plan", "max_supplied_items": 4},
+                {"arm_id": "plan", "deliver": True, "max_supplied_items": 4},
+            ],
+            "fit_estimate": dict(FIT),
+        },
+        phase_id="solver",
+        first_phase_id="perception",
+        declared_stores=("train-exemplars",),
+        declared_alternate_relpaths={"train-exemplars": ("alt.json",)},
+    )
+
+
+def _alt_knowledge_snapshot(*, value_id=None, content=None):
+    """One alternate composite snapshot for the release-swap arm to render
+    from. Default: the SAME value id ``_knowledge_snapshot()`` carries, with
+    its content prefixed -- a content-only revision, exactly the W4-SV
+    ``slot-contracts-w4-v1`` vs ``v2`` shape (same 54 ids, 19 differing in
+    content) that made arm B a silent second twin before this fix."""
+
+    from dataclasses import replace as _replace
+
+    from test_rails_runner import _knowledge_snapshot
+
+    base = _knowledge_snapshot()
+    if value_id is None and content is None:
+        values = tuple(
+            _replace(value, content=f"ALTERNATE {value.content}")
+            for value in base.values
+        )
+    else:
+        values = (
+            _replace(base.values[0], value_id=value_id or base.values[0].value_id,
+                      content=content if content is not None else base.values[0].content),
+        )
+    return _replace(base, snapshot_id="fake-train-knowledge-alternate-v1", values=values).validate()
+
+
+def _release_swap_resolver(selections, *, release_swap_snapshots):
+    """``_arm_resolver`` plus the ``release_swap_snapshots`` attribute
+    ``rails.runner.supply_variant_messages`` reads for a release-swap arm
+    (``core.flight.runtime.FlightRuntime._supply_variant_binding``'s own
+    contract with the resolver it returns)."""
+
+    resolve = _arm_resolver(selections)
+    resolve.release_swap_snapshots = release_swap_snapshots
+    return resolve
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_a_release_swap_arms_request_renders_the_alternates_content(tmp_path):
+    """The W4-SV blocker fix, proven at the byte level: a content-only
+    alternate (the SAME value id, different content) changes the release-swap
+    arm's (B's) rendered evidence text, while the twin (T) and the delivering
+    arm (A) keep rendering from the base snapshot -- byte-identical to before
+    this fix, exactly as AT2 (``test_at2_...``) already proves for a twin
+    beside an ordinary knob-recapping arm."""
+
+    group = _release_swap_live_group()
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=4, planner_actions=(),
+    )
+    harness.config = _live_config(group=group, max_contacts=4)
+    harness.supply_variant_for_phase = _release_swap_resolver(
+        {"swap": (ARM_VALUE,), "aa": (), "plan": ()},
+        release_swap_snapshots={"swap": _alt_knowledge_snapshot()},
+    )
+    harness._output = _arm_output
+    try:
+        harness.run()
+    finally:
+        harness.close()
+
+    requests = [
+        payload["payload"]
+        for channel, _record_id, payload in harness.trace.records
+        if channel == "MODEL_REQUEST"
+    ]
+    # Perception, then swap / aa (twin) / plan (delivering), in declared order.
+    assert len(requests) == 4
+    swap, twin, plan = requests[1], requests[2], requests[3]
+
+    def value_texts(request):
+        return [
+            block["content"] for block in request["supplied_evidence"]
+            if block["knowledge_role"] == "value"
+        ]
+
+    # The ONE thing a release swap may change: the CONTENT of a value id the
+    # base snapshot also carries.
+    assert value_texts(swap) == [
+        "ALTERNATE Use the dim-light operation when brightness must decrease.",
+    ]
+    # Neither the twin nor the delivering arm ever sees the alternate: the
+    # release swap is declared on "swap" alone, so their own resolution
+    # (empty, in this harness) renders from the base snapshot exactly as it
+    # did before this fix -- and the twin stays byte-for-byte the delivering
+    # arm's own payload (AT2's own comparison: every field but the per-contact
+    # ``request_id`` and its one "control" history turn, which differ between
+    # ANY two contacts of any episode).
+    assert value_texts(twin) == value_texts(plan) == []
+    for field in (
+        "decoding_params", "task_instruction", "tool_schemas",
+        "speech_feature_parts", "speech_packet_sha256", "query_source",
+        "key_representation_id", "matcher_policy_id", "carrier_lock_key",
+        "media_relpath", "audio_seconds", "sample_rate_hz", "sample_id",
+        "supplied_evidence", "evidence_provenance",
+    ):
+        assert twin[field] == plan[field], field
+    assert len(twin["history"]) == len(plan["history"])
+    assert twin["history"][0] == plan["history"][0]
+    assert twin["history"][-1]["role"] == plan["history"][-1]["role"] == "control"
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_a_release_swap_arm_with_a_different_alternate_id_still_renders(tmp_path):
+    """Regression safety: an alternate that introduces a value id the primary
+    does not carry at all -- the release-swap shape that already worked
+    before this fix, since the differing id alone made arm B's evidence_id
+    visibly differ -- still renders correctly through the alternate snapshot."""
+
+    alt_only_id = "value:alt-only"
+    group = _release_swap_live_group()
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=4, planner_actions=(),
+    )
+    harness.config = _live_config(group=group, max_contacts=4)
+    harness.supply_variant_for_phase = _release_swap_resolver(
+        {"swap": (alt_only_id,), "aa": (), "plan": ()},
+        release_swap_snapshots={
+            "swap": _alt_knowledge_snapshot(value_id=alt_only_id, content="Alt-only content."),
+        },
+    )
+    harness._output = _arm_output
+    try:
+        harness.run()
+    finally:
+        harness.close()
+
+    requests = [
+        payload["payload"]
+        for channel, _record_id, payload in harness.trace.records
+        if channel == "MODEL_REQUEST"
+    ]
+    swap = requests[1]
+    values = [
+        (block["evidence_id"], block["content"]) for block in swap["supplied_evidence"]
+        if block["knowledge_role"] == "value"
+    ]
+    assert values == [(alt_only_id, "Alt-only content.")]
+
+
+# ---------------------------------------------------------------------------
 # 6. The offline dry run, on a synthetic row
 # ---------------------------------------------------------------------------
 
@@ -1728,6 +1900,126 @@ def test_at6_a_sealed_row_under_arm_visits_first_with_a_twin_passes_i7v():
     )
 
     row, trace, sample, arm_name = _sealed_row_first_visit_with_twin(revisions=1)
+    rows = _verify_outputs(
+        (json.dumps(row) + "\n").encode(), frozenset({sample}), "slurp", arm_name,
+    )
+    _verify_outputs_trace_binding(rows, trace)
+
+
+# ---------------------------------------------------------------------------
+# 10. The W4-SV blocker fix: I7v (core.bundle.outputs) does not hash rendered
+#     content against a snapshot -- it binds receipt/contact IDENTITY to the
+#     trace -- so a release-swap arm's row (B) verifies exactly as A's and
+#     T's already do above.
+# ---------------------------------------------------------------------------
+
+
+def _sealed_row_first_visit_with_release_swap(revisions=1):
+    """The same synthetic-sealed-row shape as
+    ``_sealed_row_first_visit_with_twin``, with arm 0 a release-swap arm
+    (schema v3) instead of a twin."""
+
+    sample = "slurp:train:synthetic-svrelease"
+    arm_name = "speech-feature-query-native-tools"
+
+    def sha(value):
+        return hashlib.sha256(value.encode()).hexdigest()
+
+    trace, visits = {}, []
+    arm_ids = ["swap", "plan"]
+    contacts0 = []
+    for index, arm_id in enumerate(arm_ids):
+        rid = f"v0-{arm_id}"
+        answer = f"answer-v0-{arm_id}"
+        contact = {
+            "agent_contact_id": f"solver:0:{index}", "request_id": rid,
+            "request_sha256": sha(rid), "response_sha256": sha("envelope-" + rid),
+            "response_text_sha256": sha(answer),
+        }
+        contacts0.append(contact)
+        trace[rid + "/request"] = {
+            "arm": arm_name, "payload": {"sample_id": sample},
+            "payload_sha256": contact["request_sha256"],
+        }
+        trace[rid + "/response"] = {
+            "text": answer, "response_sha256": contact["response_sha256"],
+            "response_text_sha256": contact["response_text_sha256"],
+        }
+    visits.append({
+        "role_id": "solver", "stage": "solver",
+        "execution_receipt": {"contacts": contacts0, "final_contact": contacts0[-1]},
+    })
+    last = contacts0[-1]
+    for revision in range(1, revisions + 1):
+        rid = f"v{revision}"
+        answer = f"answer-{rid}"
+        contact = {
+            "agent_contact_id": f"solver:{revision}:0", "request_id": rid,
+            "request_sha256": sha(rid), "response_sha256": sha("envelope-" + rid),
+            "response_text_sha256": sha(answer),
+        }
+        trace[rid + "/request"] = {
+            "arm": arm_name, "payload": {"sample_id": sample},
+            "payload_sha256": contact["request_sha256"],
+        }
+        trace[rid + "/response"] = {
+            "text": answer, "response_sha256": contact["response_sha256"],
+            "response_text_sha256": contact["response_text_sha256"],
+        }
+        visits.append({
+            "role_id": "solver", "stage": "solver",
+            "execution_receipt": {"contacts": [contact], "final_contact": contact},
+        })
+        last = contact
+    trace["synthetic/org"] = {"org_final_query_state": {
+        "query_sample_id": sample, "retrieved_value_ids": ["v:plan"],
+    }}
+    variant = {
+        "schema": "saea-supply-variant-arms-v3", "phase_id": "solver",
+        "arm_count": 2, "delivered_arm_id": "plan", "arm_visits": "first",
+        "visit_index": 0,
+        "fit_estimate": {
+            "slot_tokens": 24576, "completion_ceiling": 512,
+            "base_prompt_tokens": 100, "tokens_per_supplied_item": 10,
+            "reserve_tokens": 3072, "prompt_limit_tokens": 20990,
+        },
+        "arms": [
+            {"arm_index": 0, "arm_id": "swap", "deliver": False, "replicate_of": None,
+             "contact_id": contacts0[0]["agent_contact_id"], "resolved_knobs": [],
+             "supplied_value_ids": ["v:swap"], "supplied_item_count": 1,
+             "max_supplied_items": 5,
+             "release_swap": {"store_id": "train-exemplars", "release": "alt.json"}},
+            {"arm_index": 1, "arm_id": "plan", "deliver": True, "replicate_of": None,
+             "contact_id": contacts0[1]["agent_contact_id"], "resolved_knobs": [],
+             "supplied_value_ids": ["v:plan"], "supplied_item_count": 1,
+             "max_supplied_items": 5, "release_swap": None},
+        ],
+    }
+    row = {
+        "request_id": last["request_id"], "sample_id": sample,
+        "carrier_lock_key": "slurp", "arm": arm_name,
+        "text": trace[last["request_id"] + "/response"]["text"],
+        "admitted": True, "request_sha256": last["request_sha256"],
+        "response_sha256": last["response_sha256"],
+        "response_text_sha256": last["response_text_sha256"],
+        "native_episode_receipt": {"role_visits": visits},
+        "supply_variants": variant,
+    }
+    return row, trace, sample, arm_name
+
+
+def test_a_sealed_row_with_a_release_swap_arm_passes_i7v():
+    """I7v binds receipt/contact IDENTITY to the trace -- it never hashes a
+    contact's rendered content against a knowledge snapshot -- so a
+    release-swap arm's row (B) verifies exactly as an ordinary arm's or a
+    twin's already does (``test_at6_...`` above); no change to
+    ``core.bundle.outputs`` is needed for the W4-SV blocker fix."""
+
+    from speech_aware_evidence_acquisition.core.bundle.outputs import (
+        _verify_outputs, _verify_outputs_trace_binding,
+    )
+
+    row, trace, sample, arm_name = _sealed_row_first_visit_with_release_swap(revisions=1)
     rows = _verify_outputs(
         (json.dumps(row) + "\n").encode(), frozenset({sample}), "slurp", arm_name,
     )
