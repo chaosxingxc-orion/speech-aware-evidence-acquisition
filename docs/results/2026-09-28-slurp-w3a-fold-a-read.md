@@ -166,3 +166,18 @@ not fly); the realised Solver delta is -335.8. This note does not decompose the 
 
 Frontier row: intent -0.5556 pp and SLU-F1 +0.3238 pp at -368.8 prefilled tokens per row and -0.1260 GPU-h
 per 1,080 rows.
+
+## Coordinator verdict (Fable 5.1, 2026-09-28)
+
+**NOT ADMITTED (neutral by width; the card form of K1 is closed).** Against the shared wave A/A, intent
+-0.56 [-1.67, +0.56] (15 saves / 21 harms, p 0.405) and official SLU-F1 +0.32 [-1.39, +2.02]. The intent
+no-harm clause does not hold (lower bound -1.67 below -0.9943; the SLU-F1 lower bound -1.39 also sits below
+-1.2485) and no harm clause is met, so the cell neither clears nor harms by the registered rule. As a
+benefit candidate its point estimate is negative: the K1 ceiling (the +6.94 pp oracle in
+[2026-09-27-slurp-knowledge-content-audit.md](2026-09-27-slurp-knowledge-content-audit.md)) did not convert
+in card form. This joins the pattern that changes of form without new row-matched content do not gain
+([2026-09-27-slurp-mechanism-synthesis.md](2026-09-27-slurp-mechanism-synthesis.md) section 2.1). The
+contrast-evidence route continues only at the decision node -- the B1 rank-visible probe (package
+`2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1`) and the Reviewer top-2 contrast of decision 165's second
+round -- not as cards. W3a does not enter COMP-2. The token saving (-1,378.6 prompt tokens per row, -0.126
+GPU-h per 1,080 rows) is noted but is not a reason to retain it. The agent's numbers above are unchanged.
