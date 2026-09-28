@@ -553,7 +553,7 @@
   },
   "open_items_for_the_coordinator": [
     "expected_effect_pp: the placeholder, declared from the COMP-1 Fold A read (decision 139).",
-    "Per-class attribution membership (decision 138) is NOT fixed here: the Fold A classes are defined by CONV's and KPROBE's Fold A rosters and the Fold A bad-case bank, none of which exists on DEV-2000-ADDED; fixing a DEV membership needs scoring-side gold over the sealed DEV plan arm plus single-factor supplies, and must land model-free BEFORE contact if the read is to carry it. Only the gold-free delivery change (delivery_change_arm_vs_aa_gold_free) is registered.",
+    "Per-class attribution membership (decision 138) is fixed model-free before contact in attribution-classes-v1.json by scripts/flights/comp1dev/comp1dev_attribution_classes.py: the Fold A classes' predicates (CONV's for the agreement set, KPROBE's for the centroid set) over the sealed DEV plan arm's intent-wrong rows (bad-case bank roster dev2000-added, scoring side only), single-factor selections rebuilt through the production constructor, which reproduces the A/A's and the arm's prepared supplies on 1,000 of 1,000 rows. Counts: delivered-but-wrong 83, newly-by-both 68, newly-by-agree 26, newly-by-centroid 15, catch-all 40. Its DRAFT model-free ledger row SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-ATTRIBUTION-CLASSES-V1 is part of this package.",
     "The agreement table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1 was built model-free in this registration (its DRAFT model-free ledger row is part of this package)."
   ],
   "owner_decisions": {

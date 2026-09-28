@@ -45,6 +45,16 @@ written-key entry at tau 0.0, as in the sealed arm). The arm's supply: output `e
 (1000 rows, 8000 ids); the smoke's `d5ec9b1516cb6b389d39aebec32b2b700b663ff21d15303a4789893415e3e083`. Gold-free delivery change: the
 arm's boundary selection differs from the A/A's on 991 of 1000 rows.
 
+**Per-class attribution (owner decision 138), fixed before contact.** `attribution-classes-v1.json`, derived model-free by
+`scripts/flights/comp1dev/comp1dev_attribution_classes.py`, carries the five COMP-1 Fold A classes over the 232 intent-wrong rows of the
+sealed DEV plan arm, with the Fold A predicates (cell CONV's for the agreement set, cell KPROBE's for the centroid set). Gold
+is read on the scoring side only, from the bad-case bank roster `dev2000-added` (`analysis/SLURP-PLAN-BAD-CASE-BANK-V1/bank.jsonl`,
+the file and access pattern the Fold A script uses). The single-factor selections are rebuilt through the production
+constructor, which reproduces the A/A's and the arm's prepared supplies on 1,000 of 1,000 rows. The file holds counts and per-class id-list hashes only,
+and the read re-runs the derivation and must reproduce every hash. Counts: delivered-but-wrong 83, newly-by-both 68,
+newly-by-agree 26, newly-by-centroid 15, catch-all 40 (Fold A: 86 / 47 / 23 / 8 / 27); composed delivery 193 of 232.
+Membership only: a delivery count is never a correctness count.
+
 **Measurement.** `cross-flight-with-in-chain-replicate`, roster DEV-2000-ADDED, n = 1,000, own null h_intent 1.1520 /
 h_SLU 1.2525 (`docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md` section 2d, the B6 pair), intent primary, official SLU-F1 the guard, bar about
 2.6 pp at n = 1,000 (docs/results/2026-09-27-verdict-reclassification.md).
@@ -64,10 +74,11 @@ official score; smoke 44 / 176 / 90 s / 1.0 GPU hour. Caps total
 | `aa-generation-plan-registered-v1.json` / `aa-fit-plan-registered-v1.json` | the in-chain A/A's plans |
 | `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the smoke's plans |
 | `analysis-recipe-v1.json` | the read (`scripts/flights/read_paired_cell.sh`, READ run `SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-PAIRED-ANALYSIS-V1`, analysis root `analysis/SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-PAIRED-ANALYSIS-V1`) |
+| `attribution-classes-v1.json` | the per-class attribution membership (decision 138): counts and id-list hashes, fixed before contact |
 | `root-admission-draft-v1.json` | the decision receipt root mints with `scripts/flights/comp1dev/comp1dev_mint_receipt.py` |
 
 **Declare, mint, flip, queue.** (1) The coordinator declares `expected_effect_pp` from the COMP-1 Fold A read in both
-places and commits. (2) Root countersigns the eight DRAFT exposure rows and mints `coordination/slurp-stage3-comp1-dev2000-added-v1/root-admission-v1.json` (decision id
+places and commits. (2) Root countersigns the nine DRAFT exposure rows and mints `coordination/slurp-stage3-comp1-dev2000-added-v1/root-admission-v1.json` (decision id
 `slurp-stage3-comp1-dev2000-added-admission-v1`, six eligible run ids) with `scripts/flights/comp1dev/comp1dev_mint_receipt.py`. (3)
 `scripts/flights/comp1dev/comp1dev_flip.sh` re-pins smoke, A/A and arm until the package converges at one HEAD (it
 refuses while the placeholder stands; the A/A's re-minted supply must again be `d57ee9d6...`). (4)

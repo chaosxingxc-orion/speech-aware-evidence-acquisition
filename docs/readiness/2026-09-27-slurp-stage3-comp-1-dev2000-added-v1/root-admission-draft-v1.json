@@ -3,7 +3,7 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/analysis-recipe-v1.json",
-      "sha256": "01ba48f82c1c1f379786c3e7bbfef9d686086485f724281e4a62dbd10f8cdf5a"
+      "sha256": "ece5a5b0f623341e8ee2b81fa155cb10b617652c2d926acd16bcf32329e2cd98"
     },
     "base_cell": "the sealed DEV-2000-ADDED plan arm (SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1)",
     "fold_a_registration": {
@@ -36,7 +36,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/registered-facts-v1.json",
-      "sha256": "f971ba0ab2e6e27e84c5d7114a6b9b92de892bf23ad7cfe673028057c4b67e6a"
+      "sha256": "b019b135f24d195e322059a87ddddde6f92c7be604c0f976bc1330865576dd2c"
     },
     "registration_base_commit": "09f1b31e",
     "roster_receipt": {
