@@ -39,7 +39,9 @@ from __future__ import annotations
 
 import json
 import os
+from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -53,10 +55,22 @@ from speech_aware_evidence_acquisition.analysis.native_episode_dry_run import (
     legal_intent_ids,
     store_facet_ids,
 )
+from speech_aware_evidence_acquisition.rails import AudioRef
+from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
 from speech_aware_evidence_acquisition.rails.native_episode_config import (
+    KNOWLEDGE_VALUE_RENDERING_SCHEMA,
     NativeEpisodeConfig,
     NativeEpisodeRole,
 )
+
+from test_phase_supply_repeat_visit import (
+    EXEMPLAR_FACET_IDS,
+    EXEMPLAR_VALUE_IDS,
+    _exemplar_snapshot,
+    _prepared_supply,
+    _supplied_program,
+)
+from test_rails_runner import _FakeAdapter, _FakeSample
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SMOKE_EXPERIMENT = "slurp-native-stage3-delta-cell-smoke-4-v3"
@@ -499,3 +513,159 @@ def test_a_duplicate_candidate_row_walks_instead_of_killing_the_flight():
         assert entry["node"] == entry["phase"]
         assert entry["projection_policy_id"]
         assert entry["original_text_sha256"] != entry["projected_content_sha256"]
+
+
+# ---------------------------------------------------------------------------
+# Cell RANKVIS (owner decision 171): the dry run honours
+# native_episode.knowledge_value_rendering exactly as rails.runner does.
+#
+# The dry run never renders a request's text (it only hashes the phase's
+# static instruction), so the one place a retrieval-rank reorder is visible
+# here is DryRunNode.supplied_value_ids -- the named store's selected value
+# ids in the order a flight would acquire and later render them, "retrieval
+# rank 1", "retrieval rank 2", ... in that same order. These proofs are
+# synthetic (a two-node perception -> solver walk with a stand-in supply,
+# not any registered cell) and model-free: no utterance, gold or model text.
+# ---------------------------------------------------------------------------
+
+_RANKVIS_STORE = "train-exemplars"
+
+_RANKVIS_RENDERING = {
+    "schema": KNOWLEDGE_VALUE_RENDERING_SCHEMA,
+    "order": "retrieval-rank",
+    "rank_visible": True,
+    "stores": [_RANKVIS_STORE],
+}
+
+_RANKVIS_ANSWERS = {"perception": "PERCEPTION ANSWER", "solver": "SOLVER ANSWER"}
+
+
+def _rankvis_material_for_phase(phase_name, context, _sealed_states):
+    return PhaseMaterial(
+        instruction=f"Synthetic instruction for {phase_name}.",
+        response_format=None,
+        contact_id=f"dry-run-rankvis-test:{phase_name}:{context.sample_id}",
+        purpose="assistant",
+    ).validate()
+
+
+def _rankvis_ranked_supply(snapshot):
+    # _prepared_supply with facet b ranked above facet a, so a retrieval-rank
+    # reorder visibly moves the odd-indexed exemplars in front of the even
+    # ones (mirrors test_knowledge_value_rendering.py's own _ranked_supply).
+    from speech_aware_evidence_acquisition.rails.knowledge import RankedFacet
+
+    inner = _prepared_supply(snapshot)
+
+    def supply_for_phase(phase_name, context):
+        supply = inner(phase_name, context)
+        if supply is None:
+            return None
+        rank = replace(
+            supply.rank_result,
+            candidates=(
+                RankedFacet(facet_id=EXEMPLAR_FACET_IDS[1], score=0.9),
+                RankedFacet(facet_id=EXEMPLAR_FACET_IDS[0], score=0.5),
+            ),
+        ).validate()
+        decision = replace(
+            supply.fusion_decision, rank_result_sha256=rank.content_hash()
+        ).validate()
+        return replace(supply, rank_result=rank, fusion_decision=decision).validate()
+
+    return supply_for_phase
+
+
+def _rankvis_runtime(*, rendering=None, supply_factory=_prepared_supply):
+    # A minimal, synthetic runtime for dry_run_native_episode: its own
+    # _dry_run_binding is set directly, so compose_dry_run (and the
+    # FlightRuntime machinery it needs) never runs.
+    sample = _FakeSample(
+        sample_id="s1", audio_ref=AudioRef(path="a.wav", sha256="a" * 64), audio_seconds=2.0,
+    )
+    snapshot = _exemplar_snapshot()
+    program = _supplied_program(max_contacts=5)
+    episode = NativeEpisodeConfig(
+        episode_id="dry-run-rankvis-v1",
+        max_revisions=1,
+        actions=("ACCEPT", "REVISE", "ACQUIRE"),
+        roles=(
+            NativeEpisodeRole(phase_id="perception", role_kind="perception", max_iterations=1, tool_names=()),
+            NativeEpisodeRole(phase_id="solver", role_kind="solver", max_iterations=1, tool_names=()),
+        ),
+        max_contacts=5,
+    )
+    if rendering is not None:
+        episode = replace(episode, knowledge_value_rendering_json=json.dumps(rendering))
+
+    runtime = SimpleNamespace()
+    runtime._samples = (sample,)
+    runtime._adapter = _FakeAdapter(samples=(sample,))
+    runtime._plan = SimpleNamespace(run_id="dry-run-rankvis-test", split_identity_hash="a" * 64)
+    runtime._composed = SimpleNamespace(values={})
+    runtime._phase_supply_seeds = lambda *args, **kwargs: ({}, {})
+    runtime._dry_run_binding = {
+        "values": {},
+        "policy": "dry-run-rankvis-test",
+        "program": program,
+        "episode": episode,
+        "phase_binding": {
+            "material_for_phase": _rankvis_material_for_phase,
+            "supply_for_phase": supply_factory(snapshot),
+            "knowledge_snapshot": snapshot,
+            "speech_packet_bindings": {"s1": {"packet_id": "a.wav", "sha256": "a" * 64}},
+        },
+        "store_ids": (_RANKVIS_STORE,),
+        "supply_variant_for_phase": None,
+    }
+    return runtime
+
+
+def _rankvis_walk(*, rendering, supply_factory):
+    runtime = _rankvis_runtime(rendering=rendering, supply_factory=supply_factory)
+    return dry_run_native_episode(
+        runtime, answers=_RANKVIS_ANSWERS, sample_id="s1", sample_limit=1,
+        node_order=("perception", "solver"),
+    )
+
+
+def test_dry_run_without_the_key_supplies_todays_order():
+    # OFF (no key): the solver node's supplied ids are the supply's own
+    # order, untouched -- the pre-RANKVIS behaviour, byte for byte.
+    result = _rankvis_walk(rendering=None, supply_factory=_prepared_supply)
+    solver_node = next(node for node in result.nodes if node.phase == "solver")
+    assert solver_node.supplied_value_ids == EXEMPLAR_VALUE_IDS
+
+
+def test_dry_run_armed_with_retrieval_rank_shows_the_rank_order():
+    # ON (retrieval-rank): the solver node's supplied ids are re-ordered by
+    # retrieval rank -- facet b's (odd-indexed) exemplars first, in the exact
+    # order a rank-visible render would number "retrieval rank 1",
+    # "retrieval rank 2", ... -- the same reorder rails.runner applies at a
+    # flight's own supply step, reached here through the SAME function.
+    result = _rankvis_walk(rendering=_RANKVIS_RENDERING, supply_factory=_rankvis_ranked_supply)
+    solver_node = next(node for node in result.nodes if node.phase == "solver")
+    expected_order = EXEMPLAR_VALUE_IDS[1::2] + EXEMPLAR_VALUE_IDS[0::2]
+    assert solver_node.supplied_value_ids == expected_order
+    assert set(solver_node.supplied_value_ids) == set(EXEMPLAR_VALUE_IDS)
+
+
+def test_dry_run_the_key_changes_only_the_reordered_store():
+    # Without the key the render is byte-identical to today's; with it, only
+    # the reordered store's own supplied ids (and the counts derived from
+    # them) move -- every other field of the walked receipt, including the
+    # perception node and the solver node's instruction hash, is unchanged.
+    off = _rankvis_walk(rendering=None, supply_factory=_prepared_supply).as_json()
+    on = _rankvis_walk(
+        rendering=_RANKVIS_RENDERING, supply_factory=_rankvis_ranked_supply
+    ).as_json()
+    off_nodes = {node["phase"]: node for node in off["nodes"]}
+    on_nodes = {node["phase"]: node for node in on["nodes"]}
+    assert off_nodes["perception"] == on_nodes["perception"]
+    assert off_nodes["solver"]["supplied_value_ids"] != on_nodes["solver"]["supplied_value_ids"]
+    for key in off_nodes["solver"]:
+        if key == "supplied_value_ids":
+            continue
+        assert off_nodes["solver"][key] == on_nodes["solver"][key], key
+    # Same items, different order: a reorder, never an addition or a drop.
+    assert off["supplied_value_counts"] == on["supplied_value_counts"]
