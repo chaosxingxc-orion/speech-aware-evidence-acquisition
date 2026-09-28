@@ -33,6 +33,7 @@ from ...rails.context_fit import (
     terminal_context_disposition,
 )
 from ...rails.review_primitives import REVIEW_VERDICT_ILLEGAL, parse_review_primitive
+from ...rails.runner import SEAL_REFUSAL_DISPOSITION, RailsRunnerError
 from .native_group_solver import GroupedSolverRoleNode
 from .native_roles import (
     FrozenCoreRoleContextFitError,
@@ -1267,6 +1268,141 @@ def _finite_terminal_outcome(
     return {"state": state, "delivery": delivery}
 
 
+def _seal_refusal_error_in_chain(error: BaseException) -> RailsRunnerError | None:
+    """Item E43 (2026-09-28, coordinator ruling on
+    ``docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md``): the
+    seal's refusal of an otherwise-authoritative completion, inside a
+    framework error chain, if any.
+
+    Mirrors :func:`_finite_error_in_chain`'s stop rule: an ordinary
+    :class:`RailsRunnerError` the seal raises for its OWN invariants (never
+    a per-row disposition -- a bad plan, a lost contact, a repeated
+    identity) ends the walk before it can reach a seal refusal buried
+    deeper in the chain, so a real runner defect is never rewritten into a
+    retained row. Only a :class:`RailsRunnerError` ``capture_completion``
+    (``rails.runner``) itself tagged with ``seal_refusal_completion`` --
+    the completion a structured-output contract's parser refused -- is ever
+    returned.
+    """
+
+    cause: BaseException | None = error
+    seen: set[int] = set()
+    while cause is not None and id(cause) not in seen:
+        if isinstance(cause, RailsRunnerError):
+            if getattr(cause, "seal_refusal_completion", None) is not None:
+                return cause
+            return None
+        seen.add(id(cause))
+        cause = cause.__cause__ or cause.__context__
+    return None
+
+
+def _seal_refusal_terminal_outcome(
+    error: RailsRunnerError,
+    checkpoint: _RoleCheckpoint,
+) -> dict[str, object]:
+    """Item E43: retain the row whose deciding completion the seal refused.
+
+    Built to the E13 contract (:func:`_finite_terminal_outcome`) with the
+    difference the facts force: the refused completion never reached
+    ``capture_completion``'s own custody bookkeeping (the seal refused it
+    before that ran), so there is no earlier contact of this visit to
+    cross-check it against -- the interrupted role's execution receipt
+    carries exactly the one rejected contact. The row delivers its latest
+    delivery-eligible Solver draft, or abstains, exactly as a finite
+    completion does. The refusal's exception class and message are recorded
+    verbatim under ``seal_refusal``; nothing else about the refused
+    completion -- never its answer bytes -- enters the receipt.
+    """
+
+    if (
+        checkpoint.state is None
+        or checkpoint.role_id is None
+        or checkpoint.stage is None
+    ):
+        raise NativeEpisodeError(
+            "seal refusal has no invocation-local role checkpoint"
+        )
+    completion = getattr(error, "seal_refusal_completion", None)
+    error_role_id = getattr(error, "seal_refusal_role_id", None)
+    if completion is None or error_role_id != checkpoint.role_id:
+        raise NativeEpisodeError(
+            "seal refusal role does not match its role checkpoint"
+        )
+    if getattr(completion, "finish_reason", None) != "stop":
+        raise NativeEpisodeError(
+            "seal refusal did not refuse an authoritative stop completion"
+        )
+    rejected_contact = {
+        "agent_contact_id": completion.agent_contact_id,
+        "request_id": completion.request_id,
+        "request_sha256": completion.request_sha256,
+        "response_sha256": completion.response_sha256,
+        "response_text_sha256": completion.response_text_sha256,
+    }
+    normalized_rejected = _execution_receipt(
+        {
+            "execution_receipt": {
+                "contacts": [rejected_contact],
+                "final_contact": rejected_contact,
+            }
+        }
+    )["final_contact"]
+
+    state = copy.deepcopy(checkpoint.state)
+    revision_count = state.get("revision_count")
+    if isinstance(revision_count, bool) or not isinstance(revision_count, int):
+        raise NativeEpisodeError(
+            "seal refusal checkpoint has invalid revision count"
+        )
+    state.pop("accepted_solver_receipt", None)
+    state["interrupted_role"] = {
+        "role_id": checkpoint.role_id,
+        "stage": checkpoint.stage,
+        "execution_receipt": {
+            "contacts": [dict(normalized_rejected)],
+            "final_contact": dict(normalized_rejected),
+        },
+    }
+    state["terminal_disposition"] = {
+        "reason": SEAL_REFUSAL_DISPOSITION,
+        "role_id": checkpoint.role_id,
+        "stage": checkpoint.stage,
+        "revision_count": revision_count,
+        "planner_accepted": False,
+        "rejected_contact": dict(normalized_rejected),
+        # Class name and message text only -- never the refused answer's
+        # own bytes, which never leave ``error``/``completion`` at all.
+        "seal_refusal": {
+            "error_class": type(error).__name__,
+            "message": str(error),
+        },
+    }
+
+    solver = state.get("latest_solver")
+    if isinstance(solver, Mapping) and solver.get("delivery_eligible") is True:
+        _execution_receipt(solver)
+        exact_receipt = solver.get("execution_receipt")
+        if not isinstance(exact_receipt, Mapping):
+            raise NativeEpisodeError(
+                "seal refusal latest Solver has no execution receipt"
+            )
+        state.pop("abstention_receipt", None)
+        state["terminal_solver_receipt"] = copy.deepcopy(dict(exact_receipt))
+        delivery = copy.deepcopy(dict(solver))
+    else:
+        state.pop("terminal_solver_receipt", None)
+        state["abstention_receipt"] = {
+            "source_contact": dict(normalized_rejected),
+        }
+        delivery = {
+            "actor_output": "",
+            "result_type": "abstention",
+            "delivery_eligible": False,
+        }
+    return {"state": state, "delivery": delivery}
+
+
 def _context_fit_error_in_chain(
     error: BaseException,
 ) -> FrozenCoreRoleContextFitError | None:
@@ -1800,6 +1936,21 @@ class NativeEpisodeWorkflow:
                         # ``content_filter`` stop).
                         self.spec.finite_completion_scope,
                     )
+                except NativeEpisodeError as terminal_error:
+                    raise NativeEpisodeError(str(terminal_error)) from error
+            seal_refusal_error = _seal_refusal_error_in_chain(error)
+            if (
+                seal_refusal_error is not None
+                and self.spec.finite_completion_policy
+                == "deliver-latest-or-abstain"
+            ):
+                # Item E43: a structured-output contract's own seal refused
+                # this row's deciding completion (a grammar-valid "stop"
+                # finish) -- the COMP-1/B7a/B8b-anchor abort class. Disposed
+                # of under the SAME policy switch a finite completion is,
+                # never a new configuration key.
+                try:
+                    return _seal_refusal_terminal_outcome(seal_refusal_error, checkpoint)
                 except NativeEpisodeError as terminal_error:
                     raise NativeEpisodeError(str(terminal_error)) from error
             cause: BaseException | None = error

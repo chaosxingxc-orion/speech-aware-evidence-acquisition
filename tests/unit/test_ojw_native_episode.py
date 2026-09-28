@@ -22,6 +22,7 @@ from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
     validate_native_episode_delivery_receipt,
     validate_solver_group_receipt,
 )
+from speech_aware_evidence_acquisition.rails.runner import RailsRunnerError
 from speech_aware_evidence_acquisition.reproduction.ojw.native_group_solver import (
     GroupedSolverRoleNode,
 )
@@ -121,9 +122,40 @@ class _FiniteResponse:
     finish_reason: str
 
 
+@dataclass(frozen=True)
+class _SealRefusalResponse:
+    """Item E43: the shape ``rails.runner.capture_completion`` produces when
+    a structured-output contract's own parser refuses an otherwise-
+    authoritative ("stop") completion -- a ``RailsRunnerError`` tagged with
+    the exact completion it refused, raised instead of returned. Standing in
+    for ``capture_completion`` here, exactly as an ordinary string return
+    stands in for a completion the seal accepted.
+
+    ``text`` is the completion's OWN (refused) answer bytes -- present only
+    on the quarantined ``CoreCompletion``, never sealed. ``message`` is the
+    refusal's STRUCTURAL reason, exactly as a real
+    ``rails.solver_citation.SolverCitationError`` message is: a description
+    of the contract violation, never a quote of the answer it refused.
+    """
+
+    text: str
+    message: str = (
+        "cited-answer contract refused: intent citations must be unique non-blank ids"
+    )
+
+
+@dataclass(frozen=True)
+class _InfrastructureFailure:
+    """A transport/server-shaped failure with no seal-refusal tag at all --
+    the class of error item E43 must keep aborting the arm.
+    """
+
+    message: str
+
+
 @dataclass
 class _Script:
-    values: list[str | _FiniteResponse]
+    values: list[str | _FiniteResponse | _SealRefusalResponse | _InfrastructureFailure]
     requests: list[object] = field(default_factory=list)
     completions: list[CoreCompletion] = field(default_factory=list)
 
@@ -133,6 +165,8 @@ class _Script:
             raise AssertionError("script exhausted")
         serial = sum(len(script.requests) for script in _ALL_SCRIPTS)
         value = self.values.pop(0)
+        if isinstance(value, _InfrastructureFailure):
+            raise RailsRunnerError(value.message)
         if isinstance(value, _FiniteResponse):
             completion = _completion(
                 value.text,
@@ -140,6 +174,17 @@ class _Script:
                 serial,
                 finish_reason=value.finish_reason,
             )
+        elif isinstance(value, _SealRefusalResponse):
+            completion = _completion(
+                value.text,
+                request.context.agent_contact_id,
+                serial,
+            )
+            self.completions.append(completion)
+            refusal = RailsRunnerError(value.message)
+            refusal.seal_refusal_completion = completion
+            refusal.seal_refusal_role_id = request.role_id
+            raise refusal
         else:
             completion = _completion(
                 value,
@@ -1359,6 +1404,176 @@ def test_finite_revised_solver_preserves_previous_solver_without_failed_visit():
         "rejected_contact": rejected_contact,
     }
     assert "partial revised answer" not in json.dumps(result)
+
+
+# Item E43 (2026-09-28, coordinator ruling on
+# docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md): the
+# COMP-1/B7a/B8b-anchor abort class -- a structured-output contract's seal
+# refusing an otherwise-authoritative ("stop") completion had no per-row
+# disposition and aborted the whole arm at one row. These four tests prove
+# the containment: (1) abstain with no prior Solver, (2) deliver the latest
+# Solver when one exists, (3) an untagged (infrastructure-shaped) error
+# still aborts, (4) the refused answer's own bytes never enter the receipt.
+
+
+def test_seal_refusal_policy_abstains_with_no_prior_solver():
+    solver, solver_script = _node(
+        "solver",
+        "solver",
+        [_SealRefusalResponse("draft one")],
+        valid=True,
+    )
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", ["ACCEPT"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        finite_completion_policy="deliver-latest-or-abstain",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    rejected_contact = _source_contact(solver_script.completions[-1])
+    assert [visit["stage"] for visit in state["role_visits"]] == ["perception"]
+    assert state["terminal_disposition"] == {
+        "reason": "seal_refusal",
+        "role_id": "solver",
+        "stage": "solver",
+        "revision_count": 0,
+        "planner_accepted": False,
+        "rejected_contact": rejected_contact,
+        "seal_refusal": {
+            "error_class": "RailsRunnerError",
+            "message": (
+                "cited-answer contract refused: intent citations must be "
+                "unique non-blank ids"
+            ),
+        },
+    }
+    assert state["interrupted_role"] == {
+        "role_id": "solver",
+        "stage": "solver",
+        "execution_receipt": {
+            "contacts": [rejected_contact],
+            "final_contact": rejected_contact,
+        },
+    }
+    assert "accepted_solver_receipt" not in state
+    assert "terminal_solver_receipt" not in state
+    assert result["delivery"] == {
+        "actor_output": "",
+        "result_type": "abstention",
+        "delivery_eligible": False,
+    }
+    assert state["abstention_receipt"] == {"source_contact": rejected_contact}
+    assert "draft one" not in json.dumps(result)
+
+
+def test_seal_refusal_policy_delivers_latest_solver_when_one_exists():
+    solver, solver_script = _node(
+        "solver",
+        "solver",
+        ["draft one", _SealRefusalResponse("draft two - refused")],
+        valid=True,
+    )
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", ["REVISE"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=1,
+        finite_completion_policy="deliver-latest-or-abstain",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    rejected_contact = _source_contact(solver_script.completions[-1])
+    assert [visit["stage"] for visit in state["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert state["revision_count"] == 1
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert state["terminal_disposition"] == {
+        "reason": "seal_refusal",
+        "role_id": "solver",
+        "stage": "solver",
+        "revision_count": 1,
+        "planner_accepted": False,
+        "rejected_contact": rejected_contact,
+        "seal_refusal": {
+            "error_class": "RailsRunnerError",
+            "message": (
+                "cited-answer contract refused: intent citations must be "
+                "unique non-blank ids"
+            ),
+        },
+    }
+    assert state["terminal_solver_receipt"] == result["delivery"]["execution_receipt"]
+    assert "abstention_receipt" not in state
+    assert "draft two - refused" not in json.dumps(result)
+
+
+def test_seal_refusal_untagged_infrastructure_error_still_aborts():
+    solver, _ = _node(
+        "solver",
+        "solver",
+        [_InfrastructureFailure("model service unavailable")],
+        valid=True,
+    )
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", ["ACCEPT"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        # Deliberately the SAME lenient policy the abstain/deliver-latest
+        # tests use: an infrastructure-shaped RailsRunnerError with no
+        # seal_refusal_completion tag must abort even though the policy
+        # would tolerate a TAGGED seal refusal.
+        finite_completion_policy="deliver-latest-or-abstain",
+    )
+
+    with pytest.raises(NativeEpisodeError, match="model service unavailable"):
+        asyncio.run(workflow.invoke_direct("query", ()))
+
+
+def test_seal_refusal_receipt_never_carries_the_refused_answer_text():
+    forbidden = "SECRET_ANSWER_BYTES_never_sealed"
+    solver, _ = _node(
+        "solver",
+        "solver",
+        [_SealRefusalResponse(forbidden)],
+        valid=True,
+    )
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", ["ACCEPT"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        finite_completion_policy="deliver-latest-or-abstain",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    assert forbidden not in json.dumps(result)
+    assert result["state"]["terminal_disposition"]["seal_refusal"] == {
+        "error_class": "RailsRunnerError",
+        "message": (
+            "cited-answer contract refused: intent citations must be "
+            "unique non-blank ids"
+        ),
+    }
 
 
 def test_interrupted_reviewer_keeps_completed_tool_and_finite_contacts_separate():

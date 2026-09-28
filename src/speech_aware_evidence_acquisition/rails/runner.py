@@ -79,6 +79,24 @@ class RailsRunnerError(RailsError):
     """The runner refused: a bad plan, an unknown arm, or a missing supply_builder."""
 
 
+#: Item E43 (2026-09-28, coordinator ruling on
+#: ``docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md``): the
+#: ``terminal_disposition.reason`` -- restated verbatim in
+#: ``rails.native_episode_receipt`` (which keeps no runtime import of its
+#: own, exactly as it restates :data:`.context_fit.CONTEXT_COMPACTION_DISPOSITION`) --
+#: a row takes when a structured-output contract's own parser refused an
+#: otherwise-authoritative (``finish_reason == "stop"``) completion at
+#: capture time. Distinct from every OTHER :class:`RailsRunnerError`: those
+#: name a runner-level invariant violation and must abort the flight; a
+#: ``RailsRunnerError`` tagged with ``seal_refusal_completion`` (see
+#: ``capture_completion`` below) names a parse/contract refusal of the
+#: model's OWN well-formed output -- the seal, not the wire, refused it --
+#: and ``reproduction.ojw.native_episode`` may dispose of it per row under
+#: ``finite_completion_policy == "deliver-latest-or-abstain"`` (item E13),
+#: the same programme rule the COMP-1/B7a/B8b-anchor abort class violated.
+SEAL_REFUSAL_DISPOSITION = "seal_refusal"
+
+
 @dataclass(frozen=True)
 class ArmResult:
     arm: str
@@ -2983,7 +3001,21 @@ async def _invoke_native_role_episode(
                     response_text_sha256=completion.response_text_sha256,
                 )
             except SolverCitationError as error:
-                raise RailsRunnerError(f"cited-answer contract refused: {error}") from error
+                # E43: tag the refusal with the exact completion it refused
+                # (a "stop" finish; ``bind_cited_completion`` only parses on
+                # that finish) and the role that made it, so
+                # ``reproduction.ojw.native_episode`` can bind this ROW's
+                # own disposition to it under ``finite_completion_policy``
+                # instead of aborting the arm. ``RailsRunnerError`` itself
+                # stays the one rails error type
+                # (``rails.errors.RailsError``'s own discipline): every
+                # OTHER caller of this seam sees exactly the error it always
+                # has, and only a reader that knows to look for these two
+                # attributes treats this one differently.
+                refusal = RailsRunnerError(f"cited-answer contract refused: {error}")
+                refusal.seal_refusal_completion = completion
+                refusal.seal_refusal_role_id = request.role_id
+                raise refusal from error
             state_content, cited_value_ids = capture.state_content, capture.cited_value_ids
             prior_records = [
                 row for row in citation_records if row["contact_id"] == plan.contact_id
@@ -4061,9 +4093,22 @@ async def _invoke_native_role_episode(
             isinstance(raw_disposition, Mapping)
             and raw_disposition.get("reason") == CONTEXT_COMPACTION_DISPOSITION
         )
+        # E43: the seal refused this row's deciding completion inside
+        # ``capture_completion``, before either ``pending`` or ``completed``
+        # ever recorded it -- there is no quarantined completion here to
+        # cross-check, unlike a finite completion's (whose sink runs to
+        # completion and only the LATER wire-turn projection refuses it).
+        seal_refused = (
+            isinstance(raw_disposition, Mapping)
+            and raw_disposition.get("reason") == SEAL_REFUSAL_DISPOSITION
+        )
         if context_degraded and config.context_fit_policy != "compact-or-abstain":
             raise RailsRunnerError(
                 "context-fit disposition without its declared policy"
+            )
+        if seal_refused and config.finite_completion_policy != "deliver-latest-or-abstain":
+            raise RailsRunnerError(
+                "seal-refusal disposition without its declared policy"
             )
         if finite:
             if not pending:
@@ -4081,6 +4126,12 @@ async def _invoke_native_role_episode(
                 or config.finite_completion_policy != "deliver-latest-or-abstain"
             ):
                 raise RailsRunnerError("finite episode disposition differs from its actual source")
+        elif seal_refused:
+            # E43: nothing here to settle or quarantine -- the receipt's own
+            # ``rejected_contact``/``interrupted_role`` are the only source
+            # of truth, and ``native_episode._seal_refusal_terminal_outcome``
+            # already bound them to their invocation-local role checkpoint.
+            pass
         else:
             settle()
 
@@ -4107,7 +4158,7 @@ async def _invoke_native_role_episode(
             react_exhaustion_policy=config.react_exhaustion_policy,
             max_revisions=config.max_revisions, error_type=RailsRunnerError,
         )
-        if finite or context_degraded:
+        if finite or context_degraded or seal_refused:
             validate_native_episode_finite_path(
                 receipt, max_revisions=config.max_revisions, accept_action=config.actions[0],
                 revise_action=config.actions[1], refresh_action=config.refresh_action,
@@ -4126,6 +4177,11 @@ async def _invoke_native_role_episode(
         # is nothing to bind the delivered text to, and the block below is
         # skipped rather than satisfied with a placeholder.
         context_abstention = delivery.kind == "context-abstention"
+        # E43: a seal-refusal ABSTENTION's rejected contact never reached
+        # ``completed`` either (the same reason it never reached ``pending``
+        # above), so there is nothing to look up for it -- it takes the
+        # same no-delivered-contact bypass a context-fit abstention does.
+        seal_refusal_abstention = seal_refused and delivery.kind == "abstention"
         completion = completed.get(accepted.get("agent_contact_id"))
         # E2b: a grouped Solver visit's delivered actor_output is the commit
         # policy's AGGREGATED answer, not the last raw sample's response
@@ -4136,13 +4192,13 @@ async def _invoke_native_role_episode(
             None if delivery.kind in ("abstention", "context-abstention")
             else result["delivery"].get("solver_group")
         )
-        if context_abstention:
+        if context_abstention or seal_refusal_abstention:
             if result["delivery"] != {
                 "actor_output": "", "result_type": "abstention",
                 "delivery_eligible": False,
             }:
                 raise RailsRunnerError(
-                    "context-fit abstention delivered something other than nothing"
+                    "abstention delivered something other than nothing"
                 )
         elif (
             completion is None or completion.request_sha256 != accepted["request_sha256"]
@@ -4419,7 +4475,23 @@ async def _invoke_native_role_episode(
             if final_solver_receipt is not None:
                 compact_receipt["terminal_solver_receipt"] = dict(final_solver_receipt)
             compact_receipt["terminal_disposition"] = dict(terminal_disposition)
-        if delivery.kind == "abstention":
+        if delivery.kind == "abstention" and seal_refused:
+            # E43: the same quarantined-source derivation as the finite
+            # abstention below, minus the finish_reason it never has (the
+            # seal refused a "stop" finish, not the wire a length/
+            # content_filter one) -- its own seal_refusal record stands in.
+            from ..core.delivery import native_seal_refusal_abstention_records
+
+            derived_id, derived_request, derived_response = (
+                native_seal_refusal_abstention_records(
+                    sample_id=state.prepared.sample.sample_id,
+                    source_contact=delivery.final_contact,
+                    seal_refusal=terminal_disposition["seal_refusal"],
+                )
+            )
+            trace.emit("TOOL", f"{derived_id}/request", derived_request)
+            trace.emit("TOOL", f"{derived_id}/response", derived_response)
+        elif delivery.kind == "abstention":
             from ..core.delivery import native_abstention_records
 
             derived_id, derived_request, derived_response = native_abstention_records(
