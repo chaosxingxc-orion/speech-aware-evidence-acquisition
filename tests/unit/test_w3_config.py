@@ -1,10 +1,12 @@
-"""Cell W3 -- intent contrast cards + a per-intent exemplar cap (owner decision 164) -- is the
-retained AGREE arm with TWO knowledge-content pins, read on no harm at the shared wave-1 A/A.
+"""Cell W3 -- W3a ALONE, the intent contrast cards (owner decision 164; re-registered 2026-09-27
+by the coordinator ruling under decision 164's one-change rule, the per-intent exemplar cap W3b
+dropped) -- is the retained AGREE arm with ONE knowledge-content pin, read on no harm at the
+shared wave-1 A/A.
 
 Config only: no data root, no lock, no adapter, no contact. The composed-config diff against the
-AGREE parent is re-proven here, together with the numbers the pins must carry (the released
-contrast store's pins, the Fold B-tuned cap and the admission depth) and the package's no-harm
-declaration.
+AGREE parent is re-proven here, together with the pin's numbers (the released contrast store),
+the ABSENCE of the cap (the Solver exemplar supply is the AGREE arm's, byte for byte) and the
+package's no-harm declaration.
 """
 
 from __future__ import annotations
@@ -69,17 +71,19 @@ def _changed(experiment: str) -> tuple[list[str], dict, dict]:
 
 
 @pytest.mark.parametrize("experiment", [ARM, SMOKE])
-def test_composed_diff_is_the_two_pins_the_receipts_and_bookkeeping(experiment):
+def test_composed_diff_is_the_one_pin_the_receipts_and_bookkeeping(experiment):
     changed, parent, mine = _changed(experiment)
     experiment_keys = set(_read(REPO / "configs/experiment" / f"{experiment}.json"))
     other = [
         k for k in changed
-        if k not in PINNED_W3A | PINNED_W3B | {RECEIPTS}
+        if k not in PINNED_W3A | {RECEIPTS}
         and not k.startswith(BOOKKEEPING)
         and k.split(".", 1)[0] not in experiment_keys
     ]
-    assert other == [], f"{experiment}: the composed config moves beyond the two W3 pins: {other}"
-    assert PINNED_W3A <= set(changed) and PINNED_W3B <= set(changed)
+    assert other == [], f"{experiment}: the composed config moves beyond the W3a pin: {other}"
+    assert PINNED_W3A <= set(changed)
+    assert not (PINNED_W3B & set(changed)), "the per-intent exemplar cap (W3b) must be absent"
+    assert mine["knowledge_stores"]["train-exemplars"] == parent["knowledge_stores"]["train-exemplars"]
     # the receipts only GROW, by exactly the contrast release's two receipts
     added = [entry for entry in mine[RECEIPTS] if entry not in parent[RECEIPTS]]
     assert all(entry in mine[RECEIPTS] for entry in parent[RECEIPTS])
@@ -96,8 +100,8 @@ def test_composed_diff_is_the_two_pins_the_receipts_and_bookkeeping(experiment):
 
 
 @pytest.mark.parametrize("experiment", [ARM, SMOKE])
-def test_the_pins_carry_the_released_store_and_the_tuned_cap(experiment):
-    _changed_keys, _parent, mine = _changed(experiment)
+def test_the_pin_carries_the_released_store_and_the_solver_supply_is_agree(experiment):
+    _changed_keys, parent, mine = _changed(experiment)
     cards = _read(CARDS)
     offline = _read(PACKAGE / "offline-estimates-v1.json")
     ib = mine["knowledge_stores"]["intent-boundaries"]
@@ -107,11 +111,11 @@ def test_the_pins_carry_the_released_store_and_the_tuned_cap(experiment):
     assert cards["invariants"] == {"facets_unchanged": True, "value_ids_unchanged": True, "every_card_tokens_not_above_flown": True}
     assert cards["tokens"]["max_card_delta"] <= 0
     solver = mine["knowledge_stores"]["train-exemplars"]["phase_supply"]["solver"]
-    cap, depth = offline["fold_b_tuning"]["chosen_cap"], offline["fold_b_tuning"]["chosen_depth"]
-    assert solver["fuse_policy"] == "saea-fuse-supplyfilter-target-cap-v1"
+    assert solver == parent["knowledge_stores"]["train-exemplars"]["phase_supply"]["solver"]
+    assert solver["fuse_policy"] == "saea-fuse-supplyfilter-v1"
     assert solver["fuse_policy"] in KNOWLEDGE_FUSERS.names()
-    assert solver["fuse_coverage"] == {"c": cap, "m": depth, "top_l": 20}
-    assert solver["k"] == depth
+    assert solver["fuse_coverage"] == {"c": 20, "m": 20, "top_l": 20}
+    assert solver["k"] == 20
     assert solver["rank_weights"] == {"w_agree": 0.0, "w_cos": 1.0, "w_prior": 0.0} and solver["tau"] == 0.0
     assert offline["validation"]["fold_a_top20_equals_agree_solver_consumption"] == "1080 of 1080"
     assert offline["validation"]["fold_b_top20_intent_shares_equal_pinned_agreement_table"] == "1080 of 1080"

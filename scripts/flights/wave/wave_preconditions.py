@@ -12,8 +12,8 @@ Both modes refuse unless:
 * every wave arm's CANONICAL ``stage3_measurement`` names the wave A/A as its ``replicate_run_id``;
 * W3 flies as W3a ONLY -- its arm's Solver ``train-exemplars`` supply equals the AGREE arm's, i.e. the
   per-intent exemplar cap (W3b) is absent -- unless ``--skip-w3`` drops W3 from the wave altogether.
-  The registered W3 arm (2026-09-27) carries BOTH W3a and W3b, so today this check refuses until W3 is
-  re-derived as W3a alone or the coordinator passes ``--skip-w3``.
+  The first W3 registration carried BOTH W3a and W3b; it was re-derived in place as W3a alone on
+  2026-09-27 (coordinator ruling under decision 164's one-change rule), so this check holds for W3.
 
 ``--mode flip`` additionally refuses unless every decision receipt the wave needs is minted under the
 data root, and every flight row, every model-free row the families' own flip scripts name, and the A/A's

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Cell W3 four-row form smoke flip: env for scripts/flights/batch/repin_cell_generic.sh. Model-free.
-# The same two pins (the contrast-card release, the per-intent exemplar cap) on the first four rows of
+# The same one pin (W3a alone: the contrast-card release; no exemplar cap) on the first four rows of
 # the unchanged TRAIN Fold A roster; structural form proof only, never scored, never read. No
 # ALLOW_OUTPUT_CHANGE; the minted supply must carry the AGREE smoke's own output digest.
 export RD=docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1

@@ -1,11 +1,11 @@
 #!/bin/bash
 # Cell W3 arm flip: env for scripts/flights/batch/repin_cell_generic.sh. Model-free.
 #
-# W3 is the retained AGREE arm with two knowledge-content pins (owner decision 164): the
-# intent-boundaries store moves to the contrast-card release intent-boundaries-contrast-v1, and the
-# Solver's exemplar supply moves to saea-fuse-supplyfilter-target-cap-v1 (a per-intent cap on the 20
-# delivered exemplars, tuned on TRAIN Fold B). Read on no harm at the SHARED wave-1 in-chain A/A
-# SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 flown in the same chain.
+# W3 is W3a ALONE (owner decision 164; coordinator ruling 2026-09-27, the per-intent exemplar cap W3b
+# dropped): the retained AGREE arm with one knowledge-content pin -- the intent-boundaries store moves
+# to the contrast-card release intent-boundaries-contrast-v1; the Solver's exemplar supply stays the
+# AGREE arm's. Read on no harm at the SHARED wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1
+# flown in the same chain.
 #
 # No ALLOW_OUTPUT_CHANGE: this cell carries NO committed prepared_phase_supply pin, so
 # core.flight.repin.ensure_artifact_pinned MINTS this cell's own under its own run id (item E16).

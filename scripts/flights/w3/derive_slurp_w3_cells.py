@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Derive the W3 cells -- intent contrast cards + a per-intent exemplar cap (owner decision 164,
-knowledge-wave item W3) -- from the RETAINED AGREE arm fragments (decision 58: script-derived
-registrations).
+"""Derive the W3 cells -- W3a ALONE, the intent contrast cards (owner decision 164, knowledge-wave
+item W3; coordinator ruling 2026-09-27 under decision 164's one-change rule) -- from the RETAINED
+AGREE arm fragments (decision 58: script-derived registrations).
 
-TWO PINS, both CONTENT the deciding nodes read (the 2026-09-27 mechanism synthesis: every gain
-so far was row-matched content to the deciding node, every harm a form change without content):
+ONE PIN, CONTENT the deciding nodes read (the 2026-09-27 mechanism synthesis: every gain so far
+was row-matched content to the deciding node, every harm a form change without content):
 
   W3a  ``knowledge_stores.intent-boundaries.{snapshot,release}`` move from
        ``intent-boundaries-v1`` to ``intent-boundaries-contrast-v1``
@@ -13,17 +13,18 @@ so far was row-matched content to the deciding node, every harm a form change wi
        loses the shared boilerplate, and carries contrast lines against its nearest
        TRAIN-centroid rivals, never costing more tokens than the flown card. Facets,
        keys and value ids are unchanged, so the Perception delivery is AGREE's own.
-  W3b  ``knowledge_stores.train-exemplars.phase_supply.solver`` moves from the flown
-       supply filter (``k`` 20, ``m``/``c``/``top_l`` 20) to
-       ``saea-fuse-supplyfilter-target-cap-v1`` with ``c`` = the cap N tuned on TRAIN
-       Fold B and ``k`` = ``m`` = the admission depth that lets the capped block still
-       fill 20 (``scripts/analysis/slurp_w3_contrast_cap_offline.py``). The block still
-       carries 20 exemplars; at most N share one intent.
+
+The first registration also carried W3b, a per-intent cap on the Solver's exemplar block
+(``saea-fuse-supplyfilter-target-cap-v1``). The re-registration drops it: the Solver's
+``knowledge_stores.train-exemplars.phase_supply.solver`` stays the AGREE arm's flown supply
+filter (``k`` 20, ``m``/``c``/``top_l`` 20), exactly the ``attribution_split.how_to_derive``
+recipe of the package's ``registered-facts-v1.json``. The reasons are in the package README's
+re-registration note.
 
 Everything else is the retained AGREE arm's, byte for byte: the roster, geometry, session,
-program and its 11-contact ceiling, the agreement term, the slot-contracts store, the role
-graph, every template, the deliver normaliser and the scorers. The frozen source receipts
-gain the contrast release's two receipts.
+program and its 11-contact ceiling, the agreement term, the Solver exemplar supply, the
+slot-contracts store, the role graph, every template, the deliver normaliser and the scorers.
+The frozen source receipts gain the contrast release's two receipts.
 
 Two cells: the W3 arm on TRAIN Fold A 1,080 and its four-row form smoke. The in-chain A/A is
 the SHARED wave-1 A/A ``SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1`` the coordinator registers;
@@ -36,7 +37,6 @@ supply must reproduce the AGREE arm's own output digest
 Config only: no contact, no ledger row, no receipt, no flip.
 
     python scripts/flights/w3/derive_slurp_w3_cells.py --date 2026-09-27 \\
-        --offline docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/offline-estimates-v1.json \\
         --cards docs/receipts/knowledge/slurp-intent-contrast-cards-v1.json
 """
 
@@ -62,15 +62,13 @@ CAMPAIGN = "configs/campaign/slurp-native-stage3-w3-fold-a-v1.json"
 
 OLD_IB = {"release": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
           "snapshot": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json"}
-FUSE_POLICY = "saea-fuse-supplyfilter-target-cap-v1"
 FLOWN_SOLVER = {"fuse_policy": "saea-fuse-supplyfilter-v1", "k": 20,
                 "fuse_coverage": {"c": 20, "m": 20, "top_l": 20}}
 
 STAGE3_ALGORITHM_NOTE = (
     "This cell carries NO training-free RL operator and says so explicitly: it is a knowledge "
     "CONTENT change -- a rebuilt intent-boundary store whose cards carry TRAIN-derived contrast "
-    "lines in place of boilerplate, and a per-intent cap on the delivered exemplar block tuned "
-    "offline on TRAIN Fold B -- chosen by model-free audits over sealed bytes, with no rollout, "
+    "lines in place of boilerplate -- chosen by model-free audits over sealed bytes, with no rollout, "
     "no per-sample scoring, no credit assignment, no update operator and no evolving store."
 )
 
@@ -122,8 +120,7 @@ def substitute(text: str, pairs: list[tuple[str, str]]) -> str:
     return text
 
 
-def derive_baseline(parent_path: str, out_path: str, pairs, *, cards: dict, cap: int, depth: int,
-                    what_this_is: str) -> None:
+def derive_baseline(parent_path: str, out_path: str, pairs, *, cards: dict, what_this_is: str) -> None:
     raw = rd(parent_path)
     document = json.loads(substitute(raw, pairs))
     document.pop("prepared_phase_supply", None)  # E16: the flip mints this cell's own supply
@@ -146,10 +143,7 @@ def derive_baseline(parent_path: str, out_path: str, pairs, *, cards: dict, cap:
         pin = {"relpath": entry["relpath"], "root": "data", "sha256": entry["sha256"]}
         if pin not in receipts:
             receipts.append(pin)
-    # ---- W3b: the per-intent exemplar cap ------------------------------------
-    solver["fuse_policy"] = FUSE_POLICY
-    solver["k"] = depth
-    solver["fuse_coverage"] = {"c": cap, "m": depth, "top_l": 20}
+    # ---- the Solver exemplar supply stays the AGREE arm's (W3b dropped, 2026-09-27) ----
     wr(out_path, dump_like(raw, document))
 
 
@@ -172,8 +166,8 @@ def derive_experiment(parent_path: str, out_path: str, pairs, args, *, purpose: 
                 "1,080 * 11 = 11,880 is the exact program maximum rather than a conservative safety "
                 "bound. The sealed AGREE arm's own realized cost was 4,385 contacts (4.060 per row) and "
                 "about 1.9 GPU hours per 1,080 rows at the np4 rate, so the expected spend is about that; "
-                "the contrast cards cost no more tokens than the cards they replace and the capped block "
-                "still carries 20 exemplars, so no cap is denominated in anything this cell moves. The "
+                "the contrast cards cost no more tokens than the cards they replace and the Solver "
+                "exemplar block is the AGREE arm's own, so no cap is denominated in anything this cell moves. The "
                 "budget is RUN-CUMULATIVE across every attempt of this run id, which is what makes the "
                 "resume-recovery clause safe."
             ),
@@ -189,30 +183,24 @@ def derive_experiment(parent_path: str, out_path: str, pairs, args, *, purpose: 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--date", required=True)
-    parser.add_argument("--offline", required=True, help="repo-relative offline-estimates-v1.json")
     parser.add_argument("--cards", required=True, help="repo-relative contrast-card receipt")
     args = parser.parse_args(argv)
 
-    offline = json.loads(rd(args.offline))
-    if offline.get("schema") != "saea-slurp-w3-contrast-cap-offline-v1":
-        raise SystemExit("the offline read is not the expected schema")
-    cap = int(offline["fold_b_tuning"]["chosen_cap"])
-    depth = int(offline["fold_b_tuning"]["chosen_depth"])
     cards = json.loads(rd(args.cards))
     if cards.get("schema") != "saea-slurp-intent-contrast-cards-receipt-v1" or not cards["release"]["reloaded_through_load_knowledge_store_binding"]:
         raise SystemExit("the contrast-card receipt is not a released, re-loaded store")
 
     one_factor = (
-        "TWO PINS, both knowledge CONTENT (owner decision 164): (W3a) the intent-boundaries store moves from "
+        "ONE PIN, knowledge CONTENT (owner decision 164; W3a alone by the coordinator ruling of 2026-09-27): "
+        "the intent-boundaries store moves from "
         "intent-boundaries-v1 to intent-boundaries-contrast-v1 -- each card keeps its header, activation "
         "boundary, authored exclusion and card-specific limitations verbatim, drops the shared boilerplate "
         "and carries contrast lines against its nearest TRAIN-centroid rivals (typical TRAIN words and "
         "slot types on each side), never costing more tokens than the flown card; facets, keys and value "
-        "ids are unchanged, so Perception's delivery is the AGREE arm's own; (W3b) the Solver's exemplar "
-        f"supply moves from the supply filter at k 20 to {FUSE_POLICY} with at most {cap} exemplars per "
-        f"intent among the 20 delivered, admission depth {depth} (the cap tuned on TRAIN Fold B offline). "
-        "Nothing else moves: roster, geometry, session, program and its 11-contact ceiling, the agreement "
-        "term, the slot-contracts store, the role graph, every template, the deliver normaliser and the "
+        "ids are unchanged, so Perception's delivery is the AGREE arm's own. The per-intent exemplar cap "
+        "(W3b) of the first registration is dropped. Nothing else moves: roster, geometry, session, program "
+        "and its 11-contact ceiling, the agreement term, the Solver exemplar supply (the supply filter at "
+        "k 20), the slot-contracts store, the role graph, every template, the deliver normaliser and the "
         "scorers are the retained AGREE arm's, byte for byte."
     )
     held = (
@@ -229,19 +217,19 @@ def main(argv: list[str] | None = None) -> int:
     arm_pairs = substitutions(smoke=False)
     derive_baseline(
         AGREE_ARM_BASELINE, "configs/baseline/slurp-native-stage3-w3-fold-a-baseline-v1.json", arm_pairs,
-        cards=cards, cap=cap, depth=depth,
-        what_this_is="Cell W3: the retained AGREE arm with two knowledge-content pins. " + one_factor,
+        cards=cards,
+        what_this_is="Cell W3 (W3a alone): the retained AGREE arm with one knowledge-content pin. " + one_factor,
     )
     written.append("configs/baseline/slurp-native-stage3-w3-fold-a-baseline-v1.json")
     derive_experiment(
         AGREE_ARM_EXPERIMENT, "configs/experiment/slurp-native-stage3-w3-fold-a-v1.json", arm_pairs, args,
         purpose=(
-            "Cell W3 on TRAIN Fold A 1,080: with the intent cards carrying TRAIN-derived contrast lines "
-            "instead of boilerplate and the Solver's exemplar block capped per intent, do the official "
+            "Cell W3 (W3a alone) on TRAIN Fold A 1,080: with the intent cards carrying TRAIN-derived "
+            "contrast lines instead of boilerplate, do the official "
             "intent accuracy (primary, owner decision 133) and the official pooled SLU-F1 (guard) stay "
             "within the design's own null of the retained AGREE arm, read at the SHARED wave-1 in-chain "
             f"A/A {SHARED_AA} flown in the same chain? Registered as a NO-HARM read (no measured "
-            "conversion applies to contrast text or to exemplar composition, owner decision 139): admitted "
+            "conversion applies to contrast text, owner decision 139): admitted "
             "iff each metric's CI95 lower bound against the in-chain A/A is not below the negative of its "
             "Fold A own-null half-width (intent 0.9943, SLU 1.2485), HARMFUL on a measured loss, never "
             "reported as a gain. " + one_factor + " Development numbers only (owner decisions 28 and 86); "
@@ -249,7 +237,9 @@ def main(argv: list[str] | None = None) -> int:
         ),
         readiness_reason=(
             "Cell W3 registered before contact on " + args.date + " from the retained AGREE arm "
-            "fragments by script (decision 58) with two knowledge-content pins (owner decision 164). "
+            "fragments by script (decision 58) with one knowledge-content pin (owner decision 164; W3a "
+            "alone, re-registered in place of the first W3a + W3b registration by the coordinator ruling "
+            "of 2026-09-27). "
             "Comparator: the sealed AGREE arm " + AGREE_RUN + ", never re-flown, read at the shared "
             "wave-1 in-chain A/A " + SHARED_AA + " (registered by the coordinator) flown in the same "
             "campaign chain." + held
@@ -261,9 +251,9 @@ def main(argv: list[str] | None = None) -> int:
     smoke_pairs = substitutions(smoke=True)
     derive_baseline(
         AGREE_SMOKE_BASELINE, "configs/baseline/slurp-native-stage3-w3-fold-a-smoke-4-baseline-v1.json", smoke_pairs,
-        cards=cards, cap=cap, depth=depth,
+        cards=cards,
         what_this_is=(
-            "Four-row structural form smoke of cell W3: the same two pins on the first four rows of the "
+            "Four-row structural form smoke of cell W3 (W3a alone): the same pin on the first four rows of the "
             "unchanged TRAIN Fold A roster. " + one_factor
         ),
     )
@@ -271,9 +261,8 @@ def main(argv: list[str] | None = None) -> int:
     derive_experiment(
         AGREE_SMOKE_EXPERIMENT, "configs/experiment/slurp-native-stage3-w3-fold-a-smoke-4-v1.json", smoke_pairs, args,
         purpose=(
-            "Four-row structural form smoke of cell W3: that the contrast-card release loads, that the "
-            "capped Solver block still delivers twenty exemplars, that every request fits and that the "
-            "episode completes. It is scored by no one and read by no one: four rows can never be "
+            "Four-row structural form smoke of cell W3 (W3a alone): that the contrast-card release loads, "
+            "that every request fits and that the episode completes. It is scored by no one and read by no one: four rows can never be "
             "evidence of benefit or of harm. " + one_factor
         ),
         readiness_reason=(
@@ -292,7 +281,7 @@ def main(argv: list[str] | None = None) -> int:
         "schema": "saea-campaign-plan-v1",
     }, indent=2, sort_keys=True) + "\n")
     written.append(CAMPAIGN)
-    print(json.dumps({"written": written, "cap": cap, "depth": depth,
+    print(json.dumps({"written": written, "variant": "W3a alone",
                       "contrast_snapshot": cards["release"]["snapshot"]["content_sha256"]}, indent=2))
     return 0
 
