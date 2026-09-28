@@ -1,0 +1,157 @@
+{
+ "authority_relpaths": [
+  "docs/results/2026-09-27-slurp-mechanism-synthesis.md (section 5, rank 2; section 4.2)",
+  "docs/results/2026-09-27-slurp-agree-arm-error-sources.md (sections 1.1 and 2.1)",
+  "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1 (the conversion-probe precedent)",
+  "docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1 (the conversion-probe precedent)"
+ ],
+ "budget_arithmetic": {
+  "expected_contacts": 598,
+  "expected_gpu_hours": 0.41,
+  "fit_endpoint_calls_cap": 5236,
+  "generation_calls_cap": 1309,
+  "gpu_hours_fit_inclusive": 1.5,
+  "native_task_contract_calls_cap": 714,
+  "repeated_speech_audio_seconds_cap": 3420,
+  "roster_audio_seconds": 310.89175
+ },
+ "cell": {
+  "baseline": "configs/baseline/slurp-native-stage3-rankvis-fold-a-119-baseline-v1.json",
+  "baseline_sha256": "524b92a97c23968fd23e2ada0198b50445aec5f161adc370b071d2e69d7e4909",
+  "experiment": "configs/experiment/slurp-native-stage3-rankvis-fold-a-119-v1.json",
+  "experiment_sha256": "49df4e23a22f263077c3fba975cf91958e6c985c411c30f563a8ddb6aa568b09",
+  "fit_run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-FIT-V1",
+  "parent_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (configs/experiment/slurp-native-stage3-agree-w1-fold-a-v1.json)",
+  "run_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1"
+ },
+ "comparator": "the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (intent-wrong on all 119 rows); never re-flown",
+ "contacts_at_registration": {
+  "embedder": 0,
+  "encoder": 0,
+  "gpu": 0,
+  "model": 0,
+  "network": 0,
+  "scorer": 0,
+  "server": 0,
+  "tokenizer": 0
+ },
+ "gold_selection": "SELECTED USING GOLD, OFFLINE: conditional estimate only; no pooled or roster-level claim; harm on rows AGREE answers correctly is invisible here",
+ "no_op_expectation": {
+  "definition": "expected wrong-to-correct flips on this roster under a request-identical re-flight of the AGREE bytes: sum over rows of the committed null save rate of the row's AGREE gold-position band (note section 1.1, pooled over three null pairs)",
+  "expected_null_conversions": 15.905795032829003,
+  "expected_null_conversions_synthesis_subset": 11.459320582357979,
+  "null_save_rate": {
+   "1": 0.3870967741935484,
+   "2-8": 0.08849557522123894
+  },
+  "rows_by_band": {
+   "1": 18,
+   "2-8": 101
+  }
+ },
+ "owner_decision": "owner decision 171 (2026-09-27)",
+ "re_declaration_rule": {
+  "m_needed_for_the_2p5_pp_bar": 43,
+  "pp_per_row": 0.09259259259259259,
+  "statement": "a later 1,080-row arm with an in-chain A/A declares expected_effect_pp = (m - 15.9) x 0.0926 pp intent accuracy (decision 139); stated, not applied"
+ },
+ "read_rule": {
+  "deliverable": "m of 119 wrong-to-gold conversions with a Wilson CI95 and the exact Clopper-Pearson CI95 beside it; the reverse count is 0 by construction",
+  "read_against": "the no-op expectation 15.906 conversions (never zero)",
+  "read_driver": "owed by root (KPROBE shape, scripts/analysis/slurp_kprobe_read.py); not written here",
+  "rendering_gate": "the read refuses unless every flown Solver request carries the rank labels and the rendered exemplar order equals the recomputed retrieval-rank order on every row",
+  "splits": [
+   "four-way transition (wrong to gold, gold to wrong, same wrong intent, different wrong intent)",
+   "the same read on the 89-row synthesis subset (no-op expectation 11.459)",
+   "by stage (PERCEPTION-DROP / SOLVER-CHOICE / UNPARSED)"
+  ]
+ },
+ "registered_at": "2026-09-27",
+ "roster": {
+  "by_primary": {
+   "CATCH-ALL": 24,
+   "CONSUMPTION-PERCEPTION-DROP": 36,
+   "CONSUMPTION-SOLVER-CHOICE": 58,
+   "UNPARSED": 1
+  },
+  "by_stage": {
+   "CONSUMPTION-PERCEPTION-DROP": 49,
+   "CONSUMPTION-SOLVER-CHOICE": 69,
+   "UNPARSED": 1
+  },
+  "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+  "definition": "AGREE Fold A rows whose intent is wrong and whose gold intent-boundary entry is among the eight delivered: stages ['CONSUMPTION-PERCEPTION-DROP', 'CONSUMPTION-SOLVER-CHOICE'] (catch-all rows included) plus the UNPARSED row(s) whose gold entry was delivered",
+  "id_list_sha256": "dcb885e1c51d496e1a446c231d23b183fd112f4d7e7f73dc2c13f37664711500",
+  "rows": 119,
+  "split_identity_hash": "8af458d8cfc91cb705a4891fa39245bac87c4f3b46f1931d7989bb553f78aaac"
+ },
+ "roster_derivation": {
+  "relpath": "docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1/roster-derivation-v1.json",
+  "script": "scripts/analysis/slurp_rankvis_probe_roster.py",
+  "script_sha256": "13103e51e85731640212f5477608df1da520196b574837a0eb00b650d39f01b7",
+  "sha256": "8b7aca8cd2d36a486ccee146afcdfcb0b897dec8aca12f895e7ac4dd6443d61e"
+ },
+ "schema": "saea-registered-facts-v1",
+ "stage3_algorithm": {
+  "id": "none",
+  "note": "A one-key rendering change measured on a gold-selected subset: no rollout, no per-sample scoring, no credit assignment, no update operator, no evolving store.",
+  "operators_used": []
+ },
+ "stage3_measurement": {
+  "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1": {
+   "claims_benefit": false,
+   "expected_effect_pp": 0.0,
+   "measurement_design": "form-proof",
+   "note": "The cell measures a CONDITIONAL RATE and makes NO effectiveness claim. 119 rows is under the instrument's MIN_BENEFIT_ROWS, so under rule 5 this is a form proof by size; expected_effect_pp is 0.0 because the cell registers no effect to look for. RE-DECLARATION RULE (decision 139): a later 1,080-row arm with an in-chain A/A declares (m - 15.9) x 0.0926 pp intent accuracy, never a midpoint. No admission mode is declared.",
+   "primary_metric": "per-row intent correctness (official scorer's scenario_action_exact), reported as the conditional rate m/119 against the no-op flip expectation",
+   "rows": 119
+  }
+ },
+ "status": "HELD; DRAFT exposure rows, root countersignature pending; no receipt minted",
+ "synthesis_subset": {
+  "aa_gold_delivered": 49,
+  "aa_gold_not_delivered": 40,
+  "id_list_sha256": "85ec9ace7e8d1fd63deac25f15b9aaed2c0b628470cabd3d3fbdb2ae038d1bf9",
+  "matches_synthesis": true,
+  "rows": 89
+ },
+ "the_one_change": {
+  "code": {
+   "src/speech_aware_evidence_acquisition/rails/native_episode_config.py": "parse_knowledge_value_rendering; NativeEpisodeConfig.knowledge_value_rendering_json (default None)",
+   "src/speech_aware_evidence_acquisition/rails/runner.py": "order_supply_by_retrieval_rank at the native supply step; rank_visible_value_renderer; RANK_VISIBLE_LABEL 'retrieval rank {rank}: '"
+  },
+  "config_key": "native_episode.knowledge_value_rendering",
+  "default": "absent -> None -> today's supplied order and unlabelled content, byte for byte",
+  "identity_modules_unchanged": [
+   "rails.kb_policy",
+   "rails.knowledge_provider",
+   "rails.phase_supply",
+   "rails.knowledge_stores",
+   "core.flight.runtime",
+   "core.model.transport",
+   "core.preparation_fit",
+   "core.preparation",
+   "rails.core_client"
+  ],
+  "tests": [
+   "tests/unit/test_knowledge_value_rendering.py",
+   "tests/unit/test_rankvis_config.py"
+  ],
+  "value": {
+   "order": "retrieval-rank",
+   "rank_visible": true,
+   "schema": "saea-knowledge-value-rendering-v1",
+   "stores": [
+    "intent-boundaries",
+    "train-exemplars"
+   ]
+  }
+ },
+ "todays_order": {
+  "agree_rows": 1080,
+  "boundary_block_equals_rank_ordered_replay": "1080/1080 per the committed note section 0 (agree_replay_top8_equals_sealed_block); the associated-values fuser traverses the ranked facets in rank order, so the boundary block is ALREADY rank-ordered and only its rank is invisible",
+  "rows_whose_rendered_exemplar_keys_are_in_lexicographic_order": 1080,
+  "rows_with_two_or_more_rendered_exemplars": 1080
+ }
+}

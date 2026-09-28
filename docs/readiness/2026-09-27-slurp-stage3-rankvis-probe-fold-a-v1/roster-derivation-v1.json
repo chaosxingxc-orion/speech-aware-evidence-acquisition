@@ -1,0 +1,1440 @@
+{
+ "authority": "owner decision 171 (2026-09-27)",
+ "contacts": {
+  "embedder": 0,
+  "encoder": 0,
+  "gpu": 0,
+  "model": 0,
+  "network": 0,
+  "scorer": 0,
+  "server": 0,
+  "tokenizer": 0
+ },
+ "derivation_id": "SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-ROSTER-V1",
+ "driver": {
+  "imported_unchanged": true,
+  "relpath": "scripts/analysis/slurp_agree_arm_error_sources.py",
+  "sha256": "c89a18a983143d32744fe51d74c0e7b3c153678360931ca0ded89b5526f9fc0a"
+ },
+ "gold_selection": "SELECTED USING GOLD, OFFLINE: conditional estimate only, no pooled or roster-level claim",
+ "inputs": {
+  "aa": {
+   "attempt": "attempt-slurp-native-stage3-agree-aa-fold-a-generation-v1",
+   "outputs_sha256": "453a9a49340b578d04e2c9833893a285e3b929e8a9008296081e8f54ce551b61",
+   "phases_sha256": "26e964aabc141e0a11dd0797e71b750f78652d8ae176dd392c51a3830a2e1c7b",
+   "run_id": "SAEA-SLURP-STAGE3-AGREE-AA-FOLD-A-V1",
+   "scores_sha256": "66cb7ab22bc94fa083e6c5289feb25354c26d4f125bb4acaa80431d636e4f444"
+  },
+  "agree": {
+   "attempt": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+   "outputs_sha256": "6a4256e09278722518236912701e890369f70e1808b664118a4c6a87a983d4c1",
+   "phases_sha256": "783299f156269acbf11a162e37d788e92987252e3a3a4204c8e82031046c27d1",
+   "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+   "scores_sha256": "01db05fa57787a0bc3ec679848610549c7581e76df3ea1d67a830f63f0626a1b"
+  },
+  "error_source_rows": {
+   "relpath": "analysis/SAEA-SLURP-STAGE3-AGREE-ERROR-SOURCES-V1/rows.jsonl",
+   "sha256": "17a0be507949a3c78765729eef7f72d630389848acbf4de24f778740b8b63508"
+  },
+  "plan": {
+   "attempt": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+   "outputs_sha256": "2dcaa925ab7dad77e5938002d5606189ff7f644a94ade5b7265060e94d3ae17f",
+   "phases_sha256": "7cac358a39c446c7aa13fcec70722a4669814ea0fad4fc76e9bf291d7b4b8e6f",
+   "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1",
+   "scores_sha256": "9f3047fa77a868cb6c8cd72827c0358996288b12cb976a682a960bde5eda707c"
+  },
+  "planr": {
+   "attempt": "attempt-slurp-native-default-plan-lock-replicate-train-fold-a-generation-v1",
+   "outputs_sha256": "17f0bc0278441444905c1be923d094a96793f6c42da552b7067856af7f6e752f",
+   "phases_sha256": "8a334c7607069dc6574f3b2c49201247324d596188cd146df8753de5ed72f3b7",
+   "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-REPLICATE-V1",
+   "scores_sha256": "8083795d1c5a669818c9f8ffd1b29c60f0b20433dccc29cc22817234cf78607a"
+  }
+ },
+ "no_op_expectation": {
+  "definition": "expected wrong-to-correct flips on this roster under a request-identical re-flight of the AGREE bytes: sum over rows of the committed null save rate of the row's AGREE gold-position band (note section 1.1, pooled over three null pairs)",
+  "expected_null_conversions": 15.905795032829003,
+  "expected_null_conversions_synthesis_subset": 11.459320582357979,
+  "null_save_rate": {
+   "1": 0.3870967741935484,
+   "2-8": 0.08849557522123894
+  },
+  "rows_by_band": {
+   "1": 18,
+   "2-8": 101
+  }
+ },
+ "note": {
+  "relpath": "docs/results/2026-09-27-slurp-agree-arm-error-sources.md",
+  "sha256": "9e57b9f557cfb674d0181a5e2d6b79c1951e99504bd0d7691b9cab8ef88d455c"
+ },
+ "proof_a_partition_reproduced": {
+  "differences": [],
+  "primary": {
+   "CATCH-ALL": 33,
+   "CONSUMPTION-PERCEPTION-DROP": 36,
+   "CONSUMPTION-SOLVER-CHOICE": 58,
+   "RETRIEVAL": 25,
+   "UNPARSED": 1
+  },
+  "stage": {
+   "CONSUMPTION-PERCEPTION-DROP": 49,
+   "CONSUMPTION-SOLVER-CHOICE": 69,
+   "RETRIEVAL": 34,
+   "UNPARSED": 1
+  }
+ },
+ "proof_b_todays_order": {
+  "agree_rows": 1080,
+  "boundary_block_equals_rank_ordered_replay": "1080/1080 per the committed note section 0 (agree_replay_top8_equals_sealed_block); the associated-values fuser traverses the ranked facets in rank order, so the boundary block is ALREADY rank-ordered and only its rank is invisible",
+  "rows_whose_rendered_exemplar_keys_are_in_lexicographic_order": 1080,
+  "rows_with_two_or_more_rendered_exemplars": 1080
+ },
+ "re_declaration_unit_pp_per_row": 0.09259259259259259,
+ "roster": {
+  "by_primary": {
+   "CATCH-ALL": 24,
+   "CONSUMPTION-PERCEPTION-DROP": 36,
+   "CONSUMPTION-SOLVER-CHOICE": 58,
+   "UNPARSED": 1
+  },
+  "by_stage": {
+   "CONSUMPTION-PERCEPTION-DROP": 49,
+   "CONSUMPTION-SOLVER-CHOICE": 69,
+   "UNPARSED": 1
+  },
+  "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+  "definition": "AGREE Fold A rows whose intent is wrong and whose gold intent-boundary entry is among the eight delivered: stages ['CONSUMPTION-PERCEPTION-DROP', 'CONSUMPTION-SOLVER-CHOICE'] (catch-all rows included) plus the UNPARSED row(s) whose gold entry was delivered",
+  "id_list_sha256": "dcb885e1c51d496e1a446c231d23b183fd112f4d7e7f73dc2c13f37664711500",
+  "ids": [
+   "slurp:train:000015:audio-1488524781",
+   "slurp:train:000056:audio-1499089551",
+   "slurp:train:000116:audio-1434537220",
+   "slurp:train:000154:audio-1497264179",
+   "slurp:train:000215:audio-1502200839",
+   "slurp:train:000244:audio-1497883990-headset",
+   "slurp:train:000325:audio-1490108447-headset",
+   "slurp:train:000529:audio-1500038782",
+   "slurp:train:000575:audio-1498486436",
+   "slurp:train:000820:audio--1504193163",
+   "slurp:train:000871:audio-1501767528-headset",
+   "slurp:train:001299:audio-1502218618-headset",
+   "slurp:train:001368:audio-1501752480",
+   "slurp:train:001451:audio-1489153875",
+   "slurp:train:001479:audio-1488969263",
+   "slurp:train:001629:audio-1492781058",
+   "slurp:train:001679:audio-1492783086",
+   "slurp:train:001836:audio-1490359334-headset",
+   "slurp:train:001849:audio-1502218742-headset",
+   "slurp:train:001878:audio-1434541191-headset",
+   "slurp:train:001907:audio--1504195414-headset",
+   "slurp:train:002005:audio-1502896932",
+   "slurp:train:002194:audio--1504198653",
+   "slurp:train:002233:audio-1498570714",
+   "slurp:train:002251:audio-1490198633",
+   "slurp:train:002413:audio-1490108221",
+   "slurp:train:002489:audio-1490368743-headset",
+   "slurp:train:002586:audio-1434542134",
+   "slurp:train:002631:audio-1490110028",
+   "slurp:train:002642:audio-1500418473-headset",
+   "slurp:train:002817:audio-1501777656-headset",
+   "slurp:train:002929:audio-1501693634-headset",
+   "slurp:train:003102:audio-1497884755-headset",
+   "slurp:train:003111:audio-1500980458-headset",
+   "slurp:train:003147:audio-1501758004",
+   "slurp:train:003459:audio-1488985204",
+   "slurp:train:003487:audio--1504193240-headset",
+   "slurp:train:003499:audio-1489671976",
+   "slurp:train:003579:audio--1504195196",
+   "slurp:train:003836:audio-1502197306-headset",
+   "slurp:train:004180:audio-1496264968-headset",
+   "slurp:train:004181:audio-1490263527-headset",
+   "slurp:train:004369:audio-1497861046",
+   "slurp:train:004389:audio-1502113264",
+   "slurp:train:004404:audio-1492784195",
+   "slurp:train:004528:audio-1496265890",
+   "slurp:train:004733:audio--1504194623",
+   "slurp:train:004754:audio-1490201898-headset",
+   "slurp:train:004868:audio-1502101578",
+   "slurp:train:004903:audio--1504198371",
+   "slurp:train:005513:audio-1494513310",
+   "slurp:train:005553:audio-1502197745",
+   "slurp:train:005883:audio-1495377112-headset",
+   "slurp:train:005942:audio-1501686863-headset",
+   "slurp:train:005960:audio-1502376226-headset",
+   "slurp:train:006010:audio-1490200822-headset",
+   "slurp:train:006032:audio--1504195204",
+   "slurp:train:006062:audio-1501766753",
+   "slurp:train:006234:audio-1490183390",
+   "slurp:train:006408:audio-1490193792",
+   "slurp:train:006409:audio-1499688413-headset",
+   "slurp:train:006583:audio-1502895875",
+   "slurp:train:006590:audio-1490105917",
+   "slurp:train:006591:audio-1502896632-headset",
+   "slurp:train:006626:audio-1501765723-headset",
+   "slurp:train:006637:audio-1501689200",
+   "slurp:train:006644:audio-1497887514",
+   "slurp:train:006661:audio-1499694500",
+   "slurp:train:006693:audio-1490289519",
+   "slurp:train:006903:audio-1502377447",
+   "slurp:train:006984:audio-1490704518-headset",
+   "slurp:train:007864:audio-1434536288",
+   "slurp:train:007967:audio-1490182244-headset",
+   "slurp:train:008262:audio-1490182254",
+   "slurp:train:008624:audio-1501152623",
+   "slurp:train:009292:audio-1490007448-headset",
+   "slurp:train:009449:audio-1499266000",
+   "slurp:train:010033:audio-1497024342",
+   "slurp:train:010054:audio-1501698509",
+   "slurp:train:010062:audio-1492784192",
+   "slurp:train:010064:audio-1502195836-headset",
+   "slurp:train:010065:audio-1501756518",
+   "slurp:train:010069:audio-1494512409-headset",
+   "slurp:train:010839:audio-1501689932",
+   "slurp:train:011135:audio-1502375110-headset",
+   "slurp:train:011176:audio-1490019787",
+   "slurp:train:011641:audio-1490357075-headset",
+   "slurp:train:011984:audio-1490288002-headset",
+   "slurp:train:012280:audio-1497886215-headset",
+   "slurp:train:012323:audio-1497886076",
+   "slurp:train:012353:audio-1434535713",
+   "slurp:train:012495:audio-1490367476",
+   "slurp:train:012516:audio-1498564568-headset",
+   "slurp:train:012628:audio-1495370551-headset",
+   "slurp:train:012671:audio-1494548438-headset",
+   "slurp:train:012942:audio-1494607699",
+   "slurp:train:012997:audio-1501689194-headset",
+   "slurp:train:013003:audio-1497886732-headset",
+   "slurp:train:013114:audio-1490106644-headset",
+   "slurp:train:013212:audio-1490291531-headset",
+   "slurp:train:013443:audio-1498567184",
+   "slurp:train:013543:audio-1501764794-headset",
+   "slurp:train:013593:audio-1498647415-headset",
+   "slurp:train:013668:audio-1490204487",
+   "slurp:train:013696:audio-1500978981",
+   "slurp:train:014483:audio-1497884099-headset",
+   "slurp:train:014741:audio-1497882505",
+   "slurp:train:014966:audio-1497621207",
+   "slurp:train:015085:audio-1490287489-headset",
+   "slurp:train:015150:audio-1501774093",
+   "slurp:train:015179:audio-1498569151-headset",
+   "slurp:train:015206:audio-1495733505-headset",
+   "slurp:train:015232:audio-1490109224-headset",
+   "slurp:train:015253:audio-1434541435",
+   "slurp:train:015278:audio-1497438167-headset",
+   "slurp:train:015479:audio-1501765047-headset",
+   "slurp:train:015699:audio-1490289415",
+   "slurp:train:016124:audio-1502890850",
+   "slurp:train:016243:audio-1499689044-headset"
+  ],
+  "per_row": [
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:000015:audio-1488524781",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:000056:audio-1499089551",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:000116:audio-1434537220",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:000154:audio-1497264179",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:000215:audio-1502200839",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:000244:audio-1497883990-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:000325:audio-1490108447-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:000529:audio-1500038782",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:000575:audio-1498486436",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:000820:audio--1504193163",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:000871:audio-1501767528-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:001299:audio-1502218618-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:001368:audio-1501752480",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:001451:audio-1489153875",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:001479:audio-1488969263",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:001629:audio-1492781058",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:001679:audio-1492783086",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:001836:audio-1490359334-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:001849:audio-1502218742-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:001878:audio-1434541191-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:001907:audio--1504195414-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:002005:audio-1502896932",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:002194:audio--1504198653",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:002233:audio-1498570714",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:002251:audio-1490198633",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:002413:audio-1490108221",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:002489:audio-1490368743-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:002586:audio-1434542134",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:002631:audio-1490110028",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:002642:audio-1500418473-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:002817:audio-1501777656-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "UNPARSED",
+    "sample_id": "slurp:train:002929:audio-1501693634-headset",
+    "stage": "UNPARSED"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:003102:audio-1497884755-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:003111:audio-1500980458-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:003147:audio-1501758004",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:003459:audio-1488985204",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:003487:audio--1504193240-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:003499:audio-1489671976",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:003579:audio--1504195196",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:003836:audio-1502197306-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:004180:audio-1496264968-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:004181:audio-1490263527-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:004369:audio-1497861046",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:004389:audio-1502113264",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:004404:audio-1492784195",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:004528:audio-1496265890",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:004733:audio--1504194623",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:004754:audio-1490201898-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:004868:audio-1502101578",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:004903:audio--1504198371",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:005513:audio-1494513310",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:005553:audio-1502197745",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:005883:audio-1495377112-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:005942:audio-1501686863-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:005960:audio-1502376226-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:006010:audio-1490200822-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:006032:audio--1504195204",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:006062:audio-1501766753",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006234:audio-1490183390",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006408:audio-1490193792",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": false,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006409:audio-1499688413-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006583:audio-1502895875",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006590:audio-1490105917",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006591:audio-1502896632-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006626:audio-1501765723-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:006637:audio-1501689200",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006644:audio-1497887514",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006661:audio-1499694500",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:006693:audio-1490289519",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:006903:audio-1502377447",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:006984:audio-1490704518-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:007864:audio-1434536288",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:007967:audio-1490182244-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:008262:audio-1490182254",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:008624:audio-1501152623",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:009292:audio-1490007448-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:009449:audio-1499266000",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:010033:audio-1497024342",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:010054:audio-1501698509",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:010062:audio-1492784192",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:010064:audio-1502195836-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:010065:audio-1501756518",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:010069:audio-1494512409-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:010839:audio-1501689932",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:011135:audio-1502375110-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:011176:audio-1490019787",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:011641:audio-1490357075-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:011984:audio-1490288002-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:012280:audio-1497886215-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:012323:audio-1497886076",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:012353:audio-1434535713",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:012495:audio-1490367476",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:012516:audio-1498564568-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:012628:audio-1495370551-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:012671:audio-1494548438-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:012942:audio-1494607699",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:012997:audio-1501689194-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:013003:audio-1497886732-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:013114:audio-1490106644-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:013212:audio-1490291531-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:013443:audio-1498567184",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:013543:audio-1501764794-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:013593:audio-1498647415-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:013668:audio-1490204487",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:013696:audio-1500978981",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:014483:audio-1497884099-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:014741:audio-1497882505",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:014966:audio-1497621207",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:015085:audio-1490287489-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:015150:audio-1501774093",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:015179:audio-1498569151-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:015206:audio-1495733505-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:015232:audio-1490109224-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:015253:audio-1434541435",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "1",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:015278:audio-1497438167-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": true,
+    "in_synthesis_subset": true,
+    "primary": "CATCH-ALL",
+    "sample_id": "slurp:train:015479:audio-1501765047-headset",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-PERCEPTION-DROP",
+    "sample_id": "slurp:train:015699:audio-1490289415",
+    "stage": "CONSUMPTION-PERCEPTION-DROP"
+   },
+   {
+    "aa_correct": true,
+    "aa_gold_delivered": true,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": false,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:016124:audio-1502890850",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   },
+   {
+    "aa_correct": false,
+    "aa_gold_delivered": false,
+    "agree_gold_position_band": "2-8",
+    "catch_all_flagged": false,
+    "in_synthesis_subset": true,
+    "primary": "CONSUMPTION-SOLVER-CHOICE",
+    "sample_id": "slurp:train:016243:audio-1499689044-headset",
+    "stage": "CONSUMPTION-SOLVER-CHOICE"
+   }
+  ],
+  "rows": 119,
+  "split_identity_convention": "data.splits.split_identity_hash over the LF-joined sorted carrier-prefixed ids f'slurp/{sample_id}'",
+  "split_identity_hash": "8af458d8cfc91cb705a4891fa39245bac87c4f3b46f1931d7989bb553f78aaac"
+ },
+ "schema": "saea-rankvis-conversion-roster-v1",
+ "synthesis_subset": {
+  "aa_gold_delivered": 49,
+  "aa_gold_not_delivered": 40,
+  "definition": "roster rows whose in-chain A/A (w_agree 0.0) answer was ALSO intent-wrong",
+  "id_list_sha256": "85ec9ace7e8d1fd63deac25f15b9aaed2c0b628470cabd3d3fbdb2ae038d1bf9",
+  "matches_synthesis": true,
+  "rows": 89,
+  "synthesis_expected": {
+   "aa_delivered": 49,
+   "aa_not_delivered": 40,
+   "rows": 89
+  }
+ }
+}

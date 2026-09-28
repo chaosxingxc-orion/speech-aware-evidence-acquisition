@@ -1,0 +1,118 @@
+{
+ "authority_relpaths": [
+  "docs/results/2026-09-27-slurp-agree-arm-error-sources.md (section 2.1 CATCH-ALL 33 rows / 3.06 pp; section 2.4)",
+  "docs/results/2026-09-27-slurp-knowledge-content-audit.md (K5)",
+  "docs/results/2026-09-27-slurp-boundary-key-construction-diagnostic.md (sections 4 and 7)",
+  "docs/results/2026-09-27-slurp-mechanism-synthesis.md (sections 4.2, 5 rank 5, 7 item 5)",
+  "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
+ ],
+ "contacts_at_registration": {
+  "embedder": 0,
+  "encoder": 0,
+  "gpu": 0,
+  "model": 0,
+  "network": 0,
+  "scorer": 0,
+  "server": 0,
+  "tokenizer": 0
+ },
+ "contacts_of_the_read": {
+  "gpu": 0,
+  "model": 0,
+  "scorer": "5 per pool (one complete official scoring per edited sample copy)"
+ },
+ "decision_rule": "CLEARS iff intent CI95 lower bound > 0 AND intent delta >= floor AND SLU-F1 CI95 lower bound >= -floor; an arm with an in-chain A/A is registered only if the Fold A pool clears",
+ "floor": "0.67 * sqrt(625 / n): the instrument note's section 2d offline-sealed-pool floor scaled by scripts/checks/stage3_effect_floor_check.py's own arithmetic",
+ "owner_decision": "owner decision 171 (2026-09-27)",
+ "pools": {
+  "dev2000-added": {
+   "agreement": {
+    "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
+    "sha256": "283bd9f58025b98a7c92f3b5f3495fce1e4b352bae52a3fc62bb8781b79e92d8"
+   },
+   "dry_run": {
+    "rows": 1000,
+    "rows_marked": 19,
+    "sample_status_counts": {
+     "already-catch-all": 29,
+     "edited": 66,
+     "unmarked": 4905
+    }
+   },
+   "offline_floor_pp": 0.5296815080782036,
+   "role": "fresh-roster replication",
+   "rows": 1000,
+   "run_id": "SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1",
+   "samples": 5,
+   "scorer_id": "slurp-slu-official-projected-v3",
+   "stage_1_3_read": "present: analysis/SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-READ-V1"
+  },
+  "fold-a": {
+   "agreement": {
+    "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+    "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+   },
+   "dry_run": {
+    "agreement_rows": 1080,
+    "agreement_rows_marked": 20
+   },
+   "offline_floor_pp": 0.5096862687895296,
+   "role": "primary",
+   "rows": 1080,
+   "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+   "samples": 5,
+   "scorer_id": "slurp-slu-official-projected-v3-train",
+   "stage_1_3_read": "ABSENT at registration: analysis/SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1 is produced by scripts/flights/batch/roll2_read.sh (5 scorer jobs), which has not run and whose read row is not in the exposure ledger"
+  },
+  "r01c": {
+   "reason": "no agreement table was ever built for R01C; reading it needs a new model-free preparation",
+   "role": "not read",
+   "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1"
+  }
+ },
+ "reach_ceiling": {
+  "dev_pp": 1.3199999999999998,
+  "fold_a_pp": 1.8518518518518519,
+  "note": "every marked row a gold catch-all and every edit a conversion; an upper bound, never a forecast"
+ },
+ "read_id": "SAEA-SLURP-STAGE3-CATCHALL-OFFLINE-V1",
+ "registered_at": "2026-09-27",
+ "resampling": {
+  "baseline": "R0-mean-single (the mean of the five unedited sample copies' count matrices)",
+  "draws": 10000,
+  "implementation": "scripts/analysis/slurp_sample_aggregation_offline_read.py bootstrap(), imported byte-unchanged",
+  "implementation_sha256": "e81cf5bef3196e2359b1e96378a76468cce0c04997ef00d56ff2b33a08ad7f2e",
+  "interval": "percentile 2.5 / 97.5 of (arm - baseline)",
+  "rng": "numpy.random.default_rng(20260915).integers(0, n, size=(10000, n)); per-draw weights by bincount",
+  "seed": 20260915,
+  "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md sections 2c and 2d (the one-pool offline floor, 0.67 pp at n = 625, from the aggregation read's medoid rule)",
+  "unit": "row (paired: every arm re-summed on the same draws)"
+ },
+ "rule": {
+  "decision": "on a marked row every well-formed sample whose intent is not general_quirky is delivered as scenario general, action quirky; entities byte-unchanged; malformed samples and unmarked rows never edited",
+  "forms_registered": 1,
+  "mark": "intent-boundary:general_quirky holds the strict maximum share (ties never mark)",
+  "signal": "agree-1: the row's self-excluded top-20 TRAIN-exemplar vote shares (saea-phase-agreement-v1), gold-free"
+ },
+ "schema": "saea-registered-facts-v1",
+ "script": {
+  "relpath": "scripts/analysis/catchall_offline_read.py",
+  "sha256": "bd3dd62eec1d10422a99760d2a11223b2492cf98879f14d294a8311687d058b8"
+ },
+ "stage3_algorithm": {
+  "id": "none",
+  "note": "One fixed rule read once over a sealed pool: no rollout, no credit assignment, no update operator, no search and no evolving store. Deliberately NOT labelled sealed-credit-system-policy-v1, whose first instance every single-factor cell of this programme leaves to the composed system policy.",
+  "operators_used": []
+ },
+ "stage3_measurement": {
+  "SAEA-SLURP-STAGE3-CATCHALL-OFFLINE-V1": {
+   "claims_benefit": true,
+   "expected_effect_pp": 0.51,
+   "measurement_design": "offline-sealed-pool",
+   "note": "The smallest effect the read is registered to see (its floor at n = 1,080), not a forecast; reach ceiling 1.85 pp (20 marked rows). A clear licenses an arm with an in-chain A/A, never a gain claim.",
+   "primary_metric": "intent accuracy (scenario_action_exact), RULE-mean-single minus R0-mean-single over the sealed ROLL-2 pool; official SLU-F1 the guard",
+   "rows": 1080
+  }
+ },
+ "status": "OFFLINE DESIGN; DRAFT exposure row, root countersignature pending; no flight registered; not yet run"
+}
