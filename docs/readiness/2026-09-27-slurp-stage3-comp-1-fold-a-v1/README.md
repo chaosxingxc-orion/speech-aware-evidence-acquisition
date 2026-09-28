@@ -148,6 +148,8 @@ Flip `scripts/flights/comp1/comp1_resume_flip.sh`; launch `scripts/flights/comp1
 
 ## Recovery re-registration (-REC)
 
+**(SUPERSEDED UNFLOWN 2026-09-28 by owner decision 175: the recovery flies as the RESUME attempt; never launched)**
+
 **Variant 2, the full re-fly.** `SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-V1` over all 1,080 rows plus its four-row smoke
 `SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-V1`, the parent bytes except identities and the recovery note, the
 measurement declaration identical to the arm's (3.23 pp; not re-declared), the aborted run's rows marked

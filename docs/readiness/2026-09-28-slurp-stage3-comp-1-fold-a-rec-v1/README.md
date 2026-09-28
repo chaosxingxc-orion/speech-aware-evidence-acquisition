@@ -1,4 +1,6 @@
-# Cell COMP-1 -REC recovery re-registration package (variant 2, HELD)
+# Cell COMP-1 -REC recovery re-registration package (variant 2, SUPERSEDED UNFLOWN)
+
+**(SUPERSEDED UNFLOWN 2026-09-28 by owner decision 175: the recovery flies as the RESUME attempt; never launched)**
 
 The registration note is
 [`../2026-09-28-slurp-stage3-comp-1-fold-a-rec-v1-preregistration.md`](../2026-09-28-slurp-stage3-comp-1-fold-a-rec-v1-preregistration.md).
