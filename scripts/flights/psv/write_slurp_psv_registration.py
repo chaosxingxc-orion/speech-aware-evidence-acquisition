@@ -143,6 +143,24 @@ def fold_check(key: str, check_dir: str | None, measure: dict) -> dict:
             err = Path(check_dir) / f"check-{cell_id}.err"
             tail = err.read_text(encoding="utf-8", errors="replace").strip().splitlines()[-1:] if err.is_file() else []
             out["cells"][kind] = {"status": "MISSING", "path": str(path), "error_tail": tail}
+            sibling = Path(check_dir) / f"check-{ff.names('psv2', kind)['experiment']}.json"
+            if key == "psv1" and sibling.is_file() and sibling.read_text(encoding="utf-8").strip():
+                # P-SV-2's delivering branch A is byte-for-byte P-SV-1's (the two cells differ only in the B
+                # branch row), on the same rows; its held check is the best available A-branch Perception fit.
+                rows = [r for r in (json.loads(sibling.read_text(encoding="utf-8")).get("preflight") or {}).get("prompt_budget") or ()
+                        if r.get("phase") == "perception"]
+                if rows:
+                    breakdown = rows[0].get("breakdown") if isinstance(rows[0].get("breakdown"), dict) else {}
+                    margin = rows[0].get("physical_margin_tokens", breakdown.get("physical_margin_tokens"))
+                    if isinstance(margin, int):
+                        out["cells"][kind]["top2_contrast_branch_perception_from_psv2_a_branch"] = {
+                            "source": str(sibling), "delivering_branch_physical_margin": margin,
+                            "contrast_block_allowance_tokens_at_4_bytes": contrast_tokens_4b,
+                            "contrast_branch_physical_margin_estimate": margin - contrast_tokens_4b,
+                            "note": ("P-SV-1's own check refused at config load (the presentation registry is empty "
+                                     "when the loader validates branches); this estimate uses P-SV-2's held check of the "
+                                     "identical delivering branch A minus two widest boundary items at 4 bytes per token"),
+                        }
             continue
         report = json.loads(path.read_text(encoding="utf-8"))
         preflight = report.get("preflight") or {}

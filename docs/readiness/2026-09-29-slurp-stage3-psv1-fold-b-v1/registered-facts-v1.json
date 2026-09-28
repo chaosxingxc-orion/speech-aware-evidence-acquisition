@@ -178,7 +178,37 @@
   },
   "decision_rule": "SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-top2contrast, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the provisional floor 0.3163 pp. (2) THE CONTRAST: b-top2contrast minus A on the level-2 branch Solver column's official intent accuracy (primary). NOMINATED iff the intent CI95 lower bound is above zero AND the point delta exceeds the twin's intent bar AND the SLU-F1 CI95 lower bound of the same column is not below minus the twin's SLU bar (guard). BRANCH-LOCAL HARM iff the intent CI95 upper bound is below zero and the point magnitude exceeds the twin bar. Otherwise NOT NOMINATED. Reported beside, never gating: gold-on-list and mean gold rank of the B note vs A and T, the conversion P(correct | gold rank r in the branch note) against the ledger's 97.57 / 26.98 / 12.0 %, the rows where top2-contrast-v1 rendered nothing (presentation_skip_reason, ruling O5), and the delivered row (identical by construction). A nomination sends the composed policy to a full-system cross-flight read against an in-chain A/A; it admits nothing.",
   "fit": {
-    "status": "PENDING_CHECK"
+    "cells": {
+      "arm": {
+        "error_tail": [
+          "ValueError: roles.perception.branches is invalid: perception branches.branches[0].presentation_id 'top2-contrast-v1' is not registered; registered ids are []"
+        ],
+        "path": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv1-fold-b-v1.json",
+        "status": "MISSING",
+        "top2_contrast_branch_perception_from_psv2_a_branch": {
+          "contrast_block_allowance_tokens_at_4_bytes": 448,
+          "contrast_branch_physical_margin_estimate": 4116,
+          "delivering_branch_physical_margin": 4564,
+          "note": "P-SV-1's own check refused at config load (the presentation registry is empty when the loader validates branches); this estimate uses P-SV-2's held check of the identical delivering branch A minus two widest boundary items at 4 bytes per token",
+          "source": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv2-fold-b-v1.json"
+        }
+      },
+      "smoke": {
+        "error_tail": [
+          "ValueError: roles.perception.branches is invalid: perception branches.branches[0].presentation_id 'top2-contrast-v1' is not registered; registered ids are []"
+        ],
+        "path": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv1-fold-b-smoke-4-v1.json",
+        "status": "MISSING",
+        "top2_contrast_branch_perception_from_psv2_a_branch": {
+          "contrast_block_allowance_tokens_at_4_bytes": 448,
+          "contrast_branch_physical_margin_estimate": 4140,
+          "delivering_branch_physical_margin": 4588,
+          "note": "P-SV-1's own check refused at config load (the presentation registry is empty when the loader validates branches); this estimate uses P-SV-2's held check of the identical delivering branch A minus two widest boundary items at 4 bytes per token",
+          "source": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv2-fold-b-smoke-4-v1.json"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
   },
   "fit_measure": {
     "relpath": "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v1.json",

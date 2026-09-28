@@ -41,7 +41,10 @@ SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling '
 
 ## Fit (core.flight.cli check, held)
 
-PENDING: core.flight.cli check not yet folded in.
+| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |
+| --- | --- | --- | ---: | ---: | ---: |
+| arm | check | MISSING | | | |
+| smoke | check | MISSING | | | |
 
 The first Solver visit's realised prompt on the AGREE arm was 5003-14426 tokens;
 a branch Solver contact carries a branch note of the same shape in place of A's.
