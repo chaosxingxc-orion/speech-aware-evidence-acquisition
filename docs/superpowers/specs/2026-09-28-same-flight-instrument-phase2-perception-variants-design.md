@@ -19,7 +19,7 @@ Phase 1 refuses such a variant by name (`rails/supply_variants.py::parse_supply_
 > computed before the flight and seeded into each row's one initial QueryState; it cannot differ between two
 > arms of the same row"
 
-(The phase-1 spec calls this refusal 8; the current `parse_supply_variants` docstring lists it under item 7.)
+(This is refusal 7 in the current `parse_supply_variants` docstring, which is authoritative; an earlier draft of the phase-1 spec numbered it refusal 8.)
 It exists for two reasons. **Mechanics:** phase-1 arms are resolved in `rails/runner.py::settle`
 (2489-2522) against the preceding node's staged context and rendered over a view that swaps that node's own
 acquired ids. The first phase has no preceding advance (`core/flight/runtime.py::_resolve_phase_supply`,
@@ -229,3 +229,44 @@ rank numerals.
   receipted) or fall back to the W3a card line?
 - **O6.** If twin discordance is large (about 20 rows or more), is a second twin worth one more contact per
   row?
+
+## 8. Coordinator rulings (Fable 5.1, 2026-09-28)
+
+- **O1.** A level-1 result nominates only into a level-2 read of the same candidate pair; only a
+  level-2 result (the branch Solver conversion, section 2) nominates the composed policy for the
+  full-system cross-flight read against an in-chain A/A. Section 2's claim-ceiling sentence already
+  assumed this ordering; it is now the ruling, not a default. P-SV-2 (level 1) cannot itself clear the
+  full-system gate: a level-1 `top1` or `present` gain that survives resampling reopens a level-2 cell
+  on the same pair before any nomination beyond it.
+
+- **O2.** The read roster for the first phase-2 cells is TRAIN **Fold B**; Fold A produced the node
+  ledger that shaped both first cells and stays their **tuning** roster (section 4, unchanged). Fold B
+  carries neither an agreement table nor speech-query vector files today, so section 4's open question
+  is resolved this way, not by reading Fold A twice. Both artifacts are minted **model-free** wherever
+  the underlying vectors are already released (the same embedding/index bytes AGREE consumes, re-keyed
+  to Fold B's utterance ids); only a residual that needs a fresh encode is a registered tool contact
+  (logged in `docs/exposure-ledger.md` before its result is read), and that contact runs **inside** a
+  long flight window already open for another purpose -- never as a standalone sidecar while serving
+  must restart (memory: serving session death, 2026-09-18). Minting Fold B's artifacts is a
+  precondition of `read_roster` for both first cells, not a parallel or optional task.
+
+- **O3.** Yes. `presentation_id` (`PERCEPTION_PRESENTATIONS`) and the response-contract's
+  `min_candidates` are instrument axes through the two closed registries section 1 already names,
+  exactly like a boundary-supply knob or a release swap. Section 1's axis list is confirmative, not
+  exploratory: no cell may vary rendering or response format outside those two closed registries, and
+  no cell may treat them as cross-flight-only.
+
+- **O4.** Confirmed. P-SV-2 declares `present` (gold-on-list) as its `stage3_measurement` primary
+  metric; official intent accuracy is reported beside it, never gating, per section 6's framing.
+  `claim` stays `"nominated"` at both levels (phase 1, Q6).
+
+- **O5.** No fallback. When a candidate pair's pool support is under the registered floor,
+  `top2-contrast-v1` renders nothing for that row -- the branch's note carries no contrast block, and
+  `min_candidates` still applies to whatever the boundary supply itself returns. It never falls back to
+  W3a's closed contrast-card line (which read -0.56 [-1.67, +0.56] cross-flight and is not reopened by
+  this instrument). The renderer receipts which rows rendered nothing and why
+  (`presentation_skip_reason: "insufficient-pool-support"`).
+
+- **O6.** No second twin. One A/A per row is the within-flight null at both levels; a second twin would
+  add a contact per row to re-measure discordance the first twin already measures. Phase 1's Q3 ruling
+  (one twin per same-flight read) extends here unchanged.
