@@ -581,7 +581,7 @@ def dry_run_native_episode(
     from ..rails.knowledge import QueryState
     from ..rails.material import PhaseMaterial
     from ..rails.obs import default_obs_packet
-    from ..rails.runner import AgentRuntimeContext
+    from ..rails.runner import AgentRuntimeContext, order_supply_by_retrieval_rank
 
     binding = getattr(runtime, "_dry_run_binding", None)
     if binding is None:
@@ -596,6 +596,16 @@ def dry_run_native_episode(
     supply_variant_group = binding["episode"].supply_variant_group
     supply_variant_phase = binding["episode"].supply_variant_phase_id
     supply_variant_resolver = binding.get("supply_variant_for_phase")
+    # Cell RANKVIS (owner decision 171): honour native_episode.
+    # knowledge_value_rendering exactly as rails.runner.
+    # _invoke_native_role_episode does -- the stores whose newly supplied
+    # values are re-ordered by retrieval rank before the repeat-visit
+    # restriction, or () for every cell that does not arm the key, which
+    # leaves this walk byte-identical to its pre-RANKVIS self.
+    value_rendering = getattr(binding["episode"], "knowledge_value_rendering", None)
+    rank_order_stores: tuple[str, ...] = ()
+    if value_rendering is not None and value_rendering.get("order") == "retrieval-rank":
+        rank_order_stores = tuple(value_rendering["stores"])
     snapshot = phase_binding["knowledge_snapshot"]
     packets = phase_binding["speech_packet_bindings"]
     query_source = phase_binding.get("query_source", "speech_features")
@@ -718,6 +728,12 @@ def dry_run_native_episode(
                 query_state, [*states, state], [*responses, _sha256(text)]
             )
             supply = supply_for_phase(next_phase, staged)
+            if supply is not None and rank_order_stores:
+                # Cell RANKVIS: re-order each named store's selection by
+                # retrieval rank BEFORE the repeat-visit restriction, exactly
+                # where rails.runner._invoke_native_role_episode does it, by
+                # calling that same function -- never a re-implementation.
+                supply = order_supply_by_retrieval_rank(supply, snapshot, rank_order_stores)
             if supply is not None:
                 supply.validate()
                 if program.phase(next_phase).knowledge != "supplied":
