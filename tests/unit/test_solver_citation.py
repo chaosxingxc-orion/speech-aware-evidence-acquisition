@@ -130,9 +130,9 @@ def test_the_answer_member_is_found_wherever_the_model_put_it():
         (envelope(entities=(("time", tuple(f"v:{i}" for i in range(MAX_EVIDENCE_IDS_PER_ENTITY + 1))),)), "JSON contract"),
         (envelope(entities=tuple(("t%d" % i, ("v:1",)) for i in range(MAX_ENTITY_CITATIONS + 1))), "JSON contract"),
         (envelope(entities=(("", ("v:1",)),)), "JSON contract"),
-        (envelope(intent=("v:1", "v:1")), "unique non-blank"),
-        (envelope(entities=(("time", ("v:1", "v:1")),)), "repeats an evidence id"),
-        (envelope(intent=(" ",)), "unique non-blank"),
+        (envelope(intent=(" ",)), "non-blank ids"),
+        (envelope(intent=("v:1", " ", "v:1")), "non-blank ids"),
+        (envelope(entities=(("time", ("v:1", " ")),)), "cannot be blank"),
         ('{"schema":"%s","schema":"%s","answer":{},"citations":{"intent":[],"entities":[]}}'
          % (CITED_ANSWER_RESPONSE_FORMAT_ID, CITED_ANSWER_RESPONSE_FORMAT_ID), "repeats a JSON key"),
         ('{"schema":"%s","answer":{"x":NaN},"citations":{"intent":[],"entities":[]}}'
@@ -172,6 +172,74 @@ def test_the_static_and_specialised_formats_are_valid_schemas_over_the_same_enve
         validator.validate(json.loads(envelope(intent=("value:never",))))
     with pytest.raises(SolverCitationError, match="unique non-empty"):
         cited_answer_response_format_for(("value:a", "value:a"))
+
+
+# The COMP-1 abort shape (docs/results/2026-09-28-slurp-comp1-citation-abort-
+# diagnosis.md): a grammar-valid, stop-finished envelope whose intent list is
+# ONE supplied id three times (3 items, 1 distinct) beside cited entities.
+COMP1_ABORT_SHAPE = envelope(intent=("value:a", "value:a", "value:a"))
+
+
+def test_the_specialised_grammar_admits_a_repeated_id():
+    # Root cause: the per-contact format enumerates supplied ids but cannot
+    # say "unique", so the constrained decoder may legally repeat one.
+    specialised = cited_answer_response_format_for(SUPPLIED)["json_schema"]["schema"]
+    Draft202012Validator(specialised).validate(json.loads(COMP1_ABORT_SHAPE))
+
+
+def test_a_repeated_intent_id_is_collapsed_and_counted_not_refused():
+    parsed = parse_cited_answer(COMP1_ABORT_SHAPE)
+    assert parsed.answer_text == ANSWER
+    assert parsed.intent_evidence_ids == ("value:a",)
+    assert parsed.duplicate_ids_dropped == 2
+    assert parsed.cited_value_ids == ("value:a", "key:b", "value:c")
+    # Everything but the count equals the envelope without the repeat.
+    clean = parse_cited_answer(envelope())
+    assert clean.duplicate_ids_dropped == 0
+    assert (parsed.answer_text, parsed.intent_evidence_ids, parsed.entity_citations) == (
+        clean.answer_text, clean.intent_evidence_ids, clean.entity_citations,
+    )
+
+
+def test_a_repeated_entity_id_is_collapsed_and_counted_not_refused():
+    parsed = parse_cited_answer(
+        envelope(intent=("value:a", "value:a"), entities=(("time", ("key:b", "key:b", "value:c")),))
+    )
+    assert parsed.intent_evidence_ids == ("value:a",)
+    assert parsed.entity_citations[0].evidence_ids == ("key:b", "value:c")
+    assert parsed.duplicate_ids_dropped == 2
+
+
+def test_bind_seals_the_comp1_abort_shape_and_records_the_collapse():
+    capture = bind_cited_completion(
+        COMP1_ABORT_SHAPE, finish_reason="stop", supplied_value_ids=SUPPLIED,
+        contact_id="c:solver:s1", role_id="solver",
+        response_text_sha256=_sha(COMP1_ABORT_SHAPE),
+    )
+    assert capture.state_content == ANSWER
+    assert capture.cited_value_ids == ("value:a", "key:b", "value:c")
+    assert capture.record["parse"] == "ok"
+    assert capture.record["intent_evidence_ids"] == ["value:a"]
+    assert capture.record["duplicate_citation_ids_dropped"] == 2
+    # A record without a repeat carries no new key: byte-identical to before.
+    clean = bind_cited_completion(
+        envelope(), finish_reason="stop", supplied_value_ids=SUPPLIED,
+        contact_id="c:solver:s1", role_id="solver", response_text_sha256=_sha(envelope()),
+    )
+    assert "duplicate_citation_ids_dropped" not in clean.record
+    # A repeat of an UNSUPPLIED id is still refused, never dropped.
+    with pytest.raises(SolverCitationError, match="never supplied"):
+        bind_cited_completion(
+            envelope(intent=("value:never", "value:never")), finish_reason="stop",
+            supplied_value_ids=SUPPLIED, contact_id="c", role_id="solver",
+            response_text_sha256=_sha(ANSWER),
+        )
+
+
+def test_the_unwrap_delivers_the_comp1_abort_shape_like_the_seal():
+    outcome = DELIVERY_NORMALISERS.resolve(DELIVER_CITED_ANSWER_V1)(COMP1_ABORT_SHAPE)
+    assert outcome.text == ANSWER
+    assert outcome.receipt["applied"] is True
 
 
 def test_a_citation_of_unsupplied_evidence_is_refused_not_dropped():
