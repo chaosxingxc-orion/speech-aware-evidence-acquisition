@@ -1,0 +1,17 @@
+#!/bin/bash
+# COMP-1 -REC recovery re-registration flip (arm): env for scripts/flights/batch/repin_cell_generic.sh. Model-free.
+#
+# The -REC cell carries the parent COMP-1 arm's bytes except its run, attempt and FIT identities and the recovery
+# note. It INHERITS the parent's prepared supply pin; core.preparation.artifact_inputs binds the cell and attempt
+# identities, so repin_cell.py rebuilds it into prepared/<the -REC run id>/phase-supply-v1.json and ASSERTS the
+# output equals the parent artifact's (arm ce68bebc..., smoke 1d55ea73...). No ALLOW_OUTPUT_CHANGE, ever.
+export RD=docs/readiness/2026-09-28-slurp-stage3-comp-1-fold-a-rec-v1
+export CELL=slurp-native-stage3-comp1-fold-a-rec-v1
+export EXP=slurp-native-stage3-comp1-fold-a-rec-v1
+export PKG=slurp-stage3-comp1-fold-a-v1
+export PREREG=docs/readiness/2026-09-28-slurp-stage3-comp-1-fold-a-rec-v1-preregistration.md
+export DEC_PATH=coordination/slurp-stage3-comp1-fold-a-v1/root-admission-rec-v1.json
+export DEC_ID=slurp-stage3-comp1-fold-a-rec-admission-v1
+export TAG=comp1-rec-arm ARM=1
+export MSG=/home/chao/comp1-rec-arm-commit.txt
+exec bash "$(dirname "$0")/../batch/repin_cell_generic.sh"

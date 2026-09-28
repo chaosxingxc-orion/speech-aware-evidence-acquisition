@@ -1,0 +1,89 @@
+{
+  "schema": "saea-registered-protocol-v1",
+  "protocol_id": "slurp-stage3-comp1-fold-a-resume-protocol-v1",
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_AWAITING_OWNER_RECOVERY_RULING",
+  "registered_at_utc": "2026-09-28T12:00:00.000000+00:00",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1res, branch fable/comp1res (from fable/comp1rec at a451f942)",
+  "study_commit_at_registration": "49f88ce6",
+  "parent_protocol": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "7ca1ba9a0496134a527952c38ea1b0677147f57fb6beee95d3ee191e8fd509c9",
+    "rule": "Everything the parent fixes -- the question, the composition, the comparator, the decision rule, the margins, the attribution table, the prohibitions -- stands unchanged and is not re-litigated."
+  },
+  "abort": {
+    "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
+    "flight_commit": "cb628f592934921a48102a5451ce1dd2f5c0fc98",
+    "failing_contact": "flight-1854",
+    "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997",
+    "counts": {
+      "calls": 1913,
+      "audio_seconds": 5171.3779375,
+      "complete_rows": 471,
+      "incomplete_rows": 1,
+      "unstarted_rows": 608,
+      "trace_records": 10035,
+      "trace_bytes": 132650912
+    },
+    "diagnosis": "docs/results/2026-09-28-slurp-comp1-citation-abort-diagnosis.md",
+    "root_cause": "rails.solver_citation.parse_cited_answer refused a repeated intent citation id that the per-contact grammar admits (no uniqueItems); the error had no per-row disposition, so native_episode.invoke_direct aborted the arm.",
+    "fix": {
+      "commit": "a451f942",
+      "files": [
+        "src/speech_aware_evidence_acquisition/rails/solver_citation.py"
+      ],
+      "identity_set": "outside the prepared-supply identity set (runtime.py _phase_seed_inputs)"
+    }
+  },
+  "recovery_counter": "COMP-1's ONE root-diagnosed recovery re-registration; a second failure closes the cell (no third registration).",
+  "shared_in_chain_replicate": {
+    "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+    "state": "FINALIZED, COMPLETED at cb628f59, scored",
+    "rule": "never re-flown; the recovered arm is read at it. It flew in the aborted chain on 2026-09-28; the recovered arm flies in a LATER chain, so the replicate is no longer strictly in-chain for this arm -- disclosed, not re-declared."
+  },
+  "cells": {
+    "resume": {
+      "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
+      "experiment": "slurp-native-stage3-comp1-fold-a-v1-resume",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume",
+      "composed_config_hash": "9444d41c90f1b97166b8227befa5c003b8b2e1a35943602734085db19636b24c",
+      "protocol_hash": "a76c94bfb0c8af5ddcbd9736d2c0bda2058700236db3df14621da15c1eac73d0",
+      "resume_from": {
+        "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
+        "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997"
+      }
+    }
+  },
+  "recovery_form": "resume-recovery (owner decision 22, harness item E10)",
+  "decision_22_precondition": {
+    "letter": "code and request bytes unchanged -- an infrastructure failure, never a harness defect (core/flight/resume.py module docstring)",
+    "status": "BROKEN BY THE LETTER: a harness defect, and two harness files changed (rails/solver_citation.py at a451f942; core/flight/resume.py NON_WIRE_CONTACT_BLOCKS, which lets the replay read this cell's receipts)",
+    "purpose_proof": {
+      "script": "scripts/flights/comp1/comp1_resume_byte_identity_proof.py",
+      "receipt": "coordination/slurp-stage3-comp1-fold-a-v1/resume-byte-identity-proof-v1.json",
+      "receipt_sha256_at_registration": "83b2d382aa2645526468612063f55429daf0a124abb9a11ce96e74ce57c00aa5",
+      "verdict": "PASS: 482 cited contacts; 481/481 captures identical; 481/481 kept-row sealed citation records identical under the fixed code; 1 refused-then-sealed contact (flight-1854) in the 1 INCOMPLETE row; 0 regressions; 0 grammar re-render mismatches"
+    },
+    "ruling": "the OWNER rules whether the proof admits a resume"
+  },
+  "rows": {
+    "kept": 471,
+    "flown": 609,
+    "partial": 1,
+    "unstarted": 608
+  },
+  "budget": {
+    "kept_rows": 471,
+    "flown_rows": 609,
+    "predecessor_calls": 1913,
+    "predecessor_audio_seconds": 5171.3779375,
+    "flown_worst_case_calls": 6699,
+    "run_cumulative_worst_case_calls": 8612,
+    "cap_calls": 11880,
+    "headroom_calls": 3268
+  },
+  "no_commit_equality_rule": "Neither core.flight.resume, the runtime's resume path nor core.bundle.verify_bundle compares the recovery's flight commit with the aborted attempt's; the merged manifest's study_commit is the recovery flight commit, and I7r verifies the kept rows against the predecessor trace by sample id and bytes."
+}

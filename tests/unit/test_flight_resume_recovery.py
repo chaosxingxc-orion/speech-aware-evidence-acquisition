@@ -366,6 +366,61 @@ def test_replay_refuses_a_declared_trace_hash_that_does_not_match(tmp_path, monk
         _scan(predecessor, harness, expected="0" * 64)
 
 
+def _annotate_receipts(records, mutate) -> list[dict]:
+    for record in records:
+        if record["channel"] == "USE" and record["record_id"].endswith("/native-episode"):
+            mutate(record["payload"]["use_native_episode"])
+    return records
+
+
+def test_receipt_annotation_blocks_are_not_claimed_as_wire_contacts(tmp_path, monkeypatch):
+    """2026-09-28 (the COMP-1 arm abort): a receipt carrying the context-fit
+    and the cited-answer annotation blocks -- whose ``contacts`` rows are keyed
+    by the agent contact id and carry no request id -- must still classify a
+    settled row COMPLETE. Before the fix every such row read "names contact
+    None" and a resume kept nothing."""
+
+    def annotate(receipt):
+        receipt["context_fit"] = {
+            "contacts": [{"contact_id": "c-1", "role_id": "solver", "context_compaction": None}],
+        }
+        receipt["solver_citations"] = {
+            "schema": "saea-solver-citations-v1",
+            "contacts": [{"contact_id": "c-1", "role_id": "solver", "parse": "ok"}],
+        }
+
+    harness = _harness(tmp_path, "full", ("s1", "s2"))
+    _runtime, _canonical, trace_path = _fly(harness, monkeypatch)
+    records = _annotate_receipts(_trace_lines(trace_path), annotate)
+    predecessor = _write_predecessor(
+        records, tmp_path / "aborted", harness.plan.run_id, keep={"s1", "s2"},
+    )
+    scan = _scan(predecessor, harness)
+    assert scan.complete_sample_ids == ("s1", "s2")
+    assert scan.incomplete == {}
+
+
+def test_a_claimed_wire_contact_without_a_request_record_still_refuses_the_row(
+    tmp_path, monkeypatch
+):
+    """The skip is by block name, never by shape: a wire-contact array that
+    names a request the trace does not carry still makes the row INCOMPLETE."""
+
+    def annotate(receipt):
+        receipt["solver_citations"] = {"contacts": [{"contact_id": "c-1"}]}
+        receipt["unregistered_block"] = {"contacts": [{"request_id": "no-such-request"}]}
+
+    harness = _harness(tmp_path, "full", ("s1",))
+    _runtime, _canonical, trace_path = _fly(harness, monkeypatch)
+    records = _annotate_receipts(_trace_lines(trace_path), annotate)
+    predecessor = _write_predecessor(
+        records, tmp_path / "aborted", harness.plan.run_id, keep={"s1"},
+    )
+    scan = _scan(predecessor, harness)
+    assert scan.complete_sample_ids == ()
+    assert "no-such-request" in scan.incomplete["s1"]
+
+
 def test_replay_refuses_to_select_a_subset_of_the_complete_rows(tmp_path, monkeypatch):
     """No selection is expressible: asking to replay a row that is not
     COMPLETE refuses, and the caller cannot ask for fewer than all of them

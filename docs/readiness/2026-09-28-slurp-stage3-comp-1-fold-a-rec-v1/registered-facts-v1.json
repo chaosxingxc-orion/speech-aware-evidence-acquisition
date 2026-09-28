@@ -1,0 +1,28 @@
+{
+  "schema": "saea-registered-facts-v1",
+  "registered_at_utc": "2026-09-28T12:00:00.000000+00:00",
+  "study_commit_at_registration": "49f88ce6",
+  "parent_registered_facts": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/registered-facts-v1.json",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-V1": {
+      "claims_benefit": true,
+      "expected_effect_pp": 3.23,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The FIRST COMPOSED arm (owner decisions 138 and 152): the locked plan + the agreement term + the centroid boundary key + the citation contract, read against the in-chain A/A at intent primary and official SLU-F1 as the guard. expected_effect_pp is DELIBERATELY the literal string the coordinator-declared value (placeholder until 2026-09-27; declared 3.23 pp from the measured conversions, see expected_effect_declaration): owner decision 139 forbids a prior, and decision 152 says the number is composed by the coordinator from the AGREE and KPROBE reads' measured m values (m_agree = 32 of 70 is read; m_kprobe is pending) over the class table registered here (the two newly-delivered sets overlap on 47 of their 78 rows, so they do not add) at the registered per-row headroom of 0.092615 pp intent. Until the coordinator replaces this string with a number here AND in the preregistration fence, scripts/checks/stage3_effect_floor_check.py refuses this cell as unparsable-declaration -- the intended state. A composed round that fails to improve is read as a CONFLICT DIAGNOSIS over the per-class attribution table, never as a null (decision 138). Delivery is not correctness.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+      "rows": 1080,
+      "expected_effect_declaration": "Declared 2026-09-27 by the coordinator (Claude Opus 5.5) from measured numbers only (owner decision 139): the registered attribution classes put 78 of the 191 PLAN intent-wrong Fold A rows in the newly-delivered classes of the composition (newly by AGREE alone 23, by the centroid key alone 8, by both 47); the measured conversion of a newly delivered gold entry is 32 of 70 for the agreement term (CONV) and 24 of 55 for the centroid key (KPROBE), pooled 56 of 125 = 0.448; 78 x 0.448 = 34.9 rows x 0.092615 pp = 3.23 pp intent. The two newly-delivered sets overlap on 47 rows, so the m values are NOT added. Not counted, stated beside: the agreement term's measured effect on already-delivered rows (35 saves) and its 31 harms, which its own Fold A read nets to +3.33 pp [+1.57, +5.09]; an upper reading of AGREE's realised +3.33 plus the centroid-only increment 8 x 0.4364 x 0.092615 = 0.32 gives 3.65 pp. The citation contract is a no-harm base item (decision 152) and contributes 0. Against the 2.5 pp cross-flight floor at n = 1,080 the declared 3.23 clears it.",
+      "recovery_note": "Identical to the arm SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1's declared block (expected_effect_pp 3.23, the same declared basis, the same replicate). The recovery does NOT re-declare: no number here moved."
+    },
+    "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: the agreement table and the centroid key file load and hash-verify, the boundary channel still delivers, the Solver answers under the cited-answer contract and the unwrapping normaliser delivers the answer's own bytes, every request fits and the episode completes. Scored by no one, read by no one; under the instrument's rule 5 a batch of four rows can never be evidence of benefit.",
+      "primary_metric": "intent accuracy (scenario_action exact)",
+      "rows": 4,
+      "recovery_note": "Identical to the COMP-1 smoke's declared block; form only."
+    }
+  }
+}

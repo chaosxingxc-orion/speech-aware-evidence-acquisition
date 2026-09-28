@@ -1,0 +1,94 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-rec-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1",
+      "role": "the sealed locked plan, context beside the A/A, never the bar",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the within-chain null the delta is read at",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "attribution_classes": {
+    "classes": [
+      "delivered-but-wrong",
+      "newly-by-both",
+      "newly-by-agree",
+      "newly-by-centroid",
+      "catch-all"
+    ],
+    "columns_read_after_the_seal": [
+      "rows",
+      "gold boundary entry delivered under COMP-1 (flown, must equal the membership file's prediction)",
+      "intent exact under the sealed PLAN (0 on every row of the table by construction)",
+      "intent exact under the in-chain A/A",
+      "intent exact under COMP-1",
+      "wrong -> gold",
+      "gold (A/A) -> wrong (COMP-1)",
+      "same wrong intent",
+      "different wrong intent",
+      "beside the single-factor conversion rates: CONV m/70 for the agreement classes, KPROBE m/55 for the centroid classes"
+    ],
+    "counts": {
+      "catch-all": 27,
+      "delivered-but-wrong": 86,
+      "newly-by-agree": 23,
+      "newly-by-both": 47,
+      "newly-by-centroid": 8
+    },
+    "how_it_is_read": "a composed round that does not improve is resolved to the class where its elements conflict -- e.g. newly-by-both rows converting below either single-factor rate, or delivered-but-wrong rows lost under the composition -- and no further element is admitted on top of an unresolved conflict (owner decision 138)",
+    "membership_fixed_before_contact": true,
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/attribution-classes-v1.json",
+    "sha256": "f6709ab2d02bc94b5d665f7256e188e6782388d7c28ff06dad2957f7842faaf4"
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim, and it admits nothing by itself. No utterance text, transcript, gold label string, intent name as content or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-COMP1-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "recipe_id": "slurp-stage3-comp1-fold-a-rec-paired-analysis-v1",
+  "registered_at_utc": "2026-09-28T12:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260927,
+    "unit": "row (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the arm and the A/A manifests are COMPLETE at 1,080 rows with this registration's composed config hashes, sealed, each with one successful complete official TRAIN score, and unless the coordinator's declared expected_effect_pp is on the record (a number, not the placeholder) before either seal is opened.",
+    "2. THE DELIVERY CHECK: from the flown Perception consumption, the rows on which the arm delivered the row's own gold boundary value id must equal attribution-classes-v1.json's per-row delivered_comp1 exactly (162 of the 191 intent-wrong rows; whole-roster table beside it), and the A/A's must equal the locked plan's (86). A mismatch is an engineering defect, not an effect, and closes the read.",
+    "3. Score once per arm over the complete manifest with the standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded). Primary: intent accuracy (scenario_action_exact) paired per row against the IN-CHAIN A/A, 10,000 bootstrap draws, seed 20260927. Guard: official pooled SLU-F1, the same pairing. Report the sealed PLAN arm beside both as context, never as the bar.",
+    "4. Apply the decision rule fixed in the protocol (ADMITTED / NEUTRAL-as-conflict-diagnosis / HARMFUL) at the own-null margins h_intent 0.9943 and h_SLU 1.2485, against the declared expected_effect_pp.",
+    "5. THE PER-CLASS ATTRIBUTION TABLE (owner decisions 138 and 152): for each of the five classes fixed in attribution-classes-v1.json, the columns above, per row and aggregated, with the single-factor conversion rates beside the agreement and centroid classes; and the same transition split over the 889 rows the comparator gets right, by bank class, so harm is visible where it lands.",
+    "6. The unseeded row and the seven rows that lose delivery under the composition are reported by id with their outcomes.",
+    "7. THE CITATION CREDIT TABLE (decision 152): the per-entry table over the arm's sealed Solver states (analysis/citation_credit.py, saea-citation-credit-table-v1): supplied / cited / cited_correct / supplied_uncited per value id with its digest; the cited-envelope parse rate on every Solver stop and the count of non-authoritative finishes; and the per-contact token delta of the Solver request against the A/A (expected +134 instruction tokens) and completion (expected +26 skeleton +12.71 per cited id).",
+    "8. The per-scenario tables in the natural-mixture and equal-stratum weightings, the frontier row (effect x prefilled tokens per row x GPU hours per 1,080 rows), and the realized spend against the caps.",
+    "9. Write the read under its own later-registered read id; state that every number is a TRAIN Fold A development number, never a test claim; never write 'no gain'."
+  ],
+  "title": "Cell COMP-1 -- the composed read against the in-chain A/A, with the per-class attribution table owner decision 138 requires",
+  "read_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-PAIRED-ANALYSIS-V1",
+  "read_run_id_note": "The READ run id and its exposure-ledger row are the parent's, UNCHANGED: the COMP-1 read is one read whichever recovery form carries the arm.",
+  "parent_recipe": {
+    "relpath": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/analysis-recipe-v1.json",
+    "sha256": "351bdb0243e331e7d908eac16e3b1ac36720fca99d7f4ce771c29a7cffb3ff2a",
+    "rule": "unchanged except the arm's identities and the recovery reading rule below"
+  },
+  "recovery_reading_rule": "The arm is the -REC run SAEA-SLURP-STAGE3-COMP1-FOLD-A-REC-V1, a full 1,080-row re-fly; the aborted run SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1 is never opened, scored or read, and no row of it enters the read."
+}
