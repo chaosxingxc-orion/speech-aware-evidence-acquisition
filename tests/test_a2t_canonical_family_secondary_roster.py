@@ -1,5 +1,6 @@
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -122,9 +123,55 @@ def test_real_receipts_are_96_eligible_and_eight_selected() -> None:
     )
     assert all("audio_sha256" in row for row in receipt["selected"])
     assert all("packet_id" in row for row in receipt["selected"])
+    # v1 (A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json) recorded a wrong sha256
+    # for the A2T-G6-FAMILY-SWEEP-FIXED16.json exclusion at authoring time
+    # (owner decision 177). v1 is an immutable record and is never edited in
+    # place -- see test_v1_receipt_is_immutable_and_matches_its_committed_blob
+    # below. v2 carries the corrected digest plus supersession metadata and
+    # is what every live code path now loads.
     materialized = json.loads(
         (
-            root / "docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json"
+            root / "docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8-v2.json"
         ).read_text(encoding="utf-8")
     )
-    assert materialized == receipt
+    supersession_fields = {
+        "supersedes": "A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json",
+        "superseded_reason": materialized.get("superseded_reason"),
+        "issued": materialized.get("issued"),
+        "authorised_by": "owner decision 177",
+    }
+    assert materialized == {**receipt, **supersession_fields}
+
+
+def test_v1_receipt_is_immutable_and_matches_its_committed_blob() -> None:
+    """v1 is a superseded record (owner decision 177): it is never rewritten
+    in place, only ever superseded by an English successor (v2)."""
+    root = Path(__file__).resolve().parents[1]
+    v1_relpath = "docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8.json"
+    v1_path = root / v1_relpath
+    assert v1_path.exists()
+    completed = subprocess.run(
+        ["git", "-C", str(root), "show", f"HEAD:{v1_relpath}"],
+        capture_output=True,
+        check=True,
+    )
+    assert completed.stdout == v1_path.read_bytes()
+
+
+def test_v2_receipt_records_the_corrected_exclusion_digest() -> None:
+    root = Path(__file__).resolve().parents[1]
+    v2 = json.loads(
+        (
+            root / "docs/receipts/a2t/A2T-CANONICAL-FAMILY-SECONDARY-FIXED8-v2.json"
+        ).read_text(encoding="utf-8")
+    )
+    exclusion_name = "A2T-G6-FAMILY-SWEEP-FIXED16.json"
+    actual = hashlib.sha256(
+        (root / "docs/receipts/a2t" / exclusion_name).read_bytes()
+    ).hexdigest()
+    recorded = next(
+        entry["sha256"]
+        for entry in v2["exclusions"]
+        if entry["path"].endswith(exclusion_name)
+    )
+    assert recorded == actual
