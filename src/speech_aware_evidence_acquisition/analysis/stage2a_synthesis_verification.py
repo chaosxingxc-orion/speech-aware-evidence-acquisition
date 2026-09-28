@@ -1065,6 +1065,30 @@ FILE_DIGESTS_AT_SYNTHESIS: tuple[tuple[str, str], ...] = (
 #: ``06368d7ad109cd3c22de126cd5cece5619a0fc73c48bb62b1e953644032a96e6`` to
 #: ``336c5b951dd7e98abd63bcebc987bbad6676973a5ccc3e80d2d3db4fb3d88063``; the
 #: config fragment is untouched.
+#:
+#: 2026-09-28 RE-PIN (owner decision 176, ``docs/readiness/2026-09-16-
+#: slurp-next-stage-owner-decisions-v1.md`` row 176): two further merges
+#: changed ``kb_policy.py``'s bytes. The fastrecall vectorisation (merge
+#: ``75a3cab2f``, branch ``fable/fastrecall``) is proven delivery-identical
+#: by ``docs/checks/speech-aware-evidence-acquisition/2026-09-27-fast-
+#: recall-ranking-identity-v1/README.md``: 25,280 records (3,160 rows x 8)
+#: compared between a pristine export of the old tree and this one, 0
+#: mismatches, both dumps hashing to
+#: ``538444aef3b458a9a337851b70cd04c590fe8d7c3103defba6f94fb9a169b47c``.
+#: The W3 fuser (merge ``1b29a8b8b``, branch ``fable/w3``, owner decision
+#: 164) adds a NEW ``KNOWLEDGE_FUSERS`` entry,
+#: ``saea-fuse-supplyfilter-target-cap-v1``
+#: (:data:`TARGET_CAP_FUSE_POLICY_ID`); it is used only by the Stage-3 W3
+#: contrast-fold cells (``scripts/flights/w3/``,
+#: ``docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/``) --
+#: no ``configs/`` fragment and no Stage-2A plan names it. So the
+#: synthesis's numbers are unchanged by either merge: the recall the
+#: synthesis's cells depend on is bit-identical, and the new fuser is
+#: dead code from the synthesis's point of view. ``kb_policy.py`` moved
+#: from
+#: ``336c5b951dd7e98abd63bcebc987bbad6676973a5ccc3e80d2d3db4fb3d88063`` to
+#: ``b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b``; the
+#: config fragment is untouched.
 FILE_DIGESTS: tuple[tuple[str, str], ...] = (
     (
         "configs/policy/kb-policy-v1-dev100.json",
@@ -1072,7 +1096,7 @@ FILE_DIGESTS: tuple[tuple[str, str], ...] = (
     ),
     (
         "src/speech_aware_evidence_acquisition/rails/kb_policy.py",
-        "336c5b951dd7e98abd63bcebc987bbad6676973a5ccc3e80d2d3db4fb3d88063",
+        "b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b",
     ),
 )
 
