@@ -729,6 +729,28 @@ class NativeEpisodeConfig:
         return None if role.supply_variants is None else role.phase_id
 
     @property
+    def perception_branch_group(self):
+        """Same-flight instrument, PHASE 2 (merge set C): the Perception
+        role's declared branch group, or ``None``.
+
+        ``None`` for every config written before phase 2, which is what
+        makes every Perception-branch branch of the runner, the request
+        path and the seal unreachable and their bytes identical --
+        :attr:`supply_variant_group`'s own twin.
+        """
+
+        return self.role("perception").perception_branches
+
+    @property
+    def perception_branch_phase_id(self) -> str | None:
+        """Same-flight instrument, PHASE 2: the phase whose one visit fans
+        out into branches, or ``None`` -- :attr:`supply_variant_phase_id`'s
+        own twin."""
+
+        role = self.role("perception")
+        return None if role.perception_branches is None else role.phase_id
+
+    @property
     def acquisition_enabled(self) -> bool:
         """Whether this episode builds the sixth node (E18)."""
 
@@ -874,6 +896,17 @@ class NativeEpisodeRunBinding:
     # request, state, output or trace byte depends on it. None, the value of
     # every committed configuration, leaves the dispatch exactly as it was.
     slot_fill: object = None
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md section 3, "Branch seeds"): every declared Perception
+    # branch's own PRE-FLIGHT, whole-roster first-phase seed --
+    # ``{branch_id: {sample_id: (value_id, ...)}}`` -- flight-owned exactly
+    # as ``supply_variant_for_phase`` is, and computed the same way
+    # (:meth:`core.flight.runtime.FlightRuntime._perception_branch_seeds`).
+    # ``None`` -- and therefore byte-identical to the pre-phase-2 tree --
+    # unless ``roles.perception.branches`` is declared. Declared LAST, for
+    # the same reason ``supply_variant_for_phase``'s field is.
+    perception_branch_seeds: Mapping[str, Mapping[str, tuple]] | None = None
 
 
 @dataclass(frozen=True)
