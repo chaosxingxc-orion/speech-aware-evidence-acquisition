@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-g5-fold-a-smoke-4-v1",
-  "composed_config_hash": "a962d1056448cb592ce9b7f2538bbf14a22e59cc81018b7348268b1317db368a",
+  "composed_config_hash": "37687e5d248037b261f6307e0fbfb7a02d0e01dff16bfd97dd5ee9e996567253",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-smoke-4-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 176,
     "planned_speech_audio_seconds": 117,
-    "protocol_hash": "0abdf5b0749b16c991807d5a04b394b51738dfdbd5873723e947377888206f59",
+    "protocol_hash": "c36a0c668a4ce3dd688fad39b5c841e899b693b8605e804ac6ca26899fe8191d",
     "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -35,12 +35,12 @@
   "prepared_phase_supply": {
     "expected_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
     "note": "NONE COMMITTED, by design: the flip mints each cell's own under its own run id (item E16), the readiness requirements list is empty, and --allow-output-change must never be passed. the Reviewer instruction is not an input to the first-phase supply, so every supply the flip mints for this family must carry this output digest on all 1,080 rows (the smoke on its four); a different digest means the knowledge channel moved -- stop and report",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1/phase-supply-v3.json",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-V1/phase-supply-v4.json",
     "sha256": "MINTED_AT_THE_FLIP"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "601192aab5043471bbf292da1297e595ae508181116c46166cd4ff66c7f9a9ce"
+    "sha256": "dde374581c274e78ebd7734bce0b756b24512021daccbb15f5a8b6f797e01af4"
   },
   "purpose": "SAEA-SLURP-STAGE3-G5-FOLD-A-SMOKE-4-FIT-V1: Four-row form smoke of cell G5. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
