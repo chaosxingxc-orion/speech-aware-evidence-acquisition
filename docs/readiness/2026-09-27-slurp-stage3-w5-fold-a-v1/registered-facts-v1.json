@@ -241,7 +241,113 @@
     }
   },
   "fit": {
-    "status": "PENDING_CHECK"
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w5-checks/check-slurp-native-stage3-w5-fold-a-v1.json",
+        "config_hash": "31668ed5113b748f3db9f83778a488b01efa42bed66a96725b45813273e25e06",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1512,
+            "phase": "perception",
+            "physical_margin_tokens": 4584,
+            "rendered_text_tokens": 19449,
+            "required_window_tokens": 19992,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1648,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4720,
+            "rendered_text_tokens": 19313,
+            "required_window_tokens": 19856,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1709,
+            "phase": "planner",
+            "physical_margin_tokens": 4781,
+            "rendered_text_tokens": 19252,
+            "required_window_tokens": 19795,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -1076,
+            "phase": "solver",
+            "physical_margin_tokens": 1996,
+            "rendered_text_tokens": 22037,
+            "required_window_tokens": 22580,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "ab7db61205b8048f2246de1e42ef8c0eda6f59ad472ac5fa45944bf7c04097de",
+        "scientific_readiness": {
+          "reason": "Cell W5 registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decision 58) with one store added (owner decision 170). Comparator: the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1, never re-flown, read at the knowledge wave's shared in-chain A/A replicate SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (registered by the coordinator) flown in the same campaign chain. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w5/w5_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the added store serves the Solver only). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      },
+      "smoke": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.w5-checks/check-slurp-native-stage3-w5-fold-a-smoke-4-v1.json",
+        "config_hash": "8c6740d1b20405d6730bdebc8b255a099c938e5d631f07ca7e4cd016f2614daf",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1512,
+            "phase": "perception",
+            "physical_margin_tokens": 4584,
+            "rendered_text_tokens": 19449,
+            "required_window_tokens": 19992,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1649,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4721,
+            "rendered_text_tokens": 19312,
+            "required_window_tokens": 19855,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1710,
+            "phase": "planner",
+            "physical_margin_tokens": 4782,
+            "rendered_text_tokens": 19251,
+            "required_window_tokens": 19794,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -1075,
+            "phase": "solver",
+            "physical_margin_tokens": 1997,
+            "rendered_text_tokens": 22036,
+            "required_window_tokens": 22579,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "protocol_hash": "f410dfdcf48fb09f7f6f101610f252250eda68454b9addf96be742c51fd300d2",
+        "scientific_readiness": {
+          "reason": "Four-row form smoke of cell W5, registered before contact on 2026-09-27 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w5/w5_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the added store serves the Solver only). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
   },
   "fit_statement": "W5 is registered to fly ALONE on the AGREE form, like W4; it composes with W1 and W4 later without change (it adds a store, it edits none). The binding facts are (a) the physical margin the runtime's own pre-flight (core.flight.cli check, placeholder 4 bytes per token on the widest representative request) reports after W5 -- a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin proceeds under the armed compact-or-abstain policy (the AGREE, COMP-1 and W4 cells already read COMPACT_REQUIRED on the Solver), a negative one refuses -- and (b) the realised requests projected from the sealed AGREE trace (token_cost.compaction_projection).",
   "fold_a_offline": {

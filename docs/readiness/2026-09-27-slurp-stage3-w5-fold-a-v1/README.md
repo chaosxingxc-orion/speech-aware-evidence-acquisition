@@ -82,7 +82,16 @@ characters per token (measured on the flown M1 exemplar block; same line form); 
 
 W5 is registered to fly ALONE on the AGREE form, like W4; it composes with W1 and W4 later without change (it adds a store, it edits none). The binding facts are (a) the physical margin the runtime's own pre-flight (core.flight.cli check, placeholder 4 bytes per token on the widest representative request) reports after W5 -- a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin proceeds under the armed compact-or-abstain policy (the AGREE, COMP-1 and W4 cells already read COMPACT_REQUIRED on the Solver), a negative one refuses -- and (b) the realised requests projected from the sealed AGREE trace (token_cost.compaction_projection).
 
-PENDING: core.flight.cli check not yet folded in.
+| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |
+| --- | --- | --- | ---: | ---: | ---: |
+| arm | perception | ALLOW | 19449 | 1512 | 4584 |
+| arm | reviewer | ALLOW | 19313 | 1648 | 4720 |
+| arm | planner | ALLOW | 19252 | 1709 | 4781 |
+| arm | solver | COMPACT_REQUIRED | 22037 | -1076 | 1996 |
+| smoke | perception | ALLOW | 19449 | 1512 | 4584 |
+| smoke | reviewer | ALLOW | 19312 | 1649 | 4721 |
+| smoke | planner | ALLOW | 19251 | 1710 | 4782 |
+| smoke | solver | COMPACT_REQUIRED | 22036 | -1075 | 1997 |
 
 ## Files
 

@@ -40,7 +40,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/registered-facts-v1.json",
-      "sha256": "b8f37835a48de24e52daef0b13afaa82017b6bc5252cd1f809ef8ce8039ab59b"
+      "sha256": "77bb19c10eb9ecb1181a7e515bbb64e90b890d4d151ecb45e8cdcdd87800deea"
     },
     "registration_base_commit": "29ec0008"
   },
