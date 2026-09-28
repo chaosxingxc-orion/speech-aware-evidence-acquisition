@@ -18,6 +18,14 @@
       "rows": 120
     },
     "b_exk30_vs_arm_a": {
+      "post_body_bytes_delta_b_minus_a": {
+        "at_4_bytes_per_token_max": 488,
+        "max": 1949,
+        "mean": 1491.9,
+        "min": 1169,
+        "note": "the check's placeholder counter is 4 bytes per token; the k-30 column's Solver physical margin is the check's Solver margin minus these tokens"
+      },
+      "post_body_bytes_delta_on_the_check_representative_row": 1542,
       "post_body_identical_to_a": 0,
       "rows": 120
     },
@@ -77,9 +85,9 @@
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/arm-a-proof-v1.json",
     "request_affecting_leaves": [],
     "rows_dispatched": 120,
-    "sha256": "b8a0d128e021a73a399fb88259f1e71cc0017fd73408b0b779abbf419e7092f4",
+    "sha256": "2cd8c94fa8f4e2524c95f465005549abd73d66990785510f61f2eb355c1cc9f8",
     "status": "RUN",
-    "study_commit": "6cb6086de3dc24d958f1e095302c5567451acc43",
+    "study_commit": "69cc6eaf2cb0eea6a30ba27f4662bf9bf1be9b19",
     "tool": "scripts/flights/wsv1/wsv1_arm_a_proof.py",
     "twin_vs_arm_a_AT2": {
       "post_body_identical_to_a": 120,
@@ -230,7 +238,109 @@
     "var1_exk30_vs_planr_slu_pp": "+0.09 [-1.47, +1.60]"
   },
   "fit": {
-    "status": "PENDING_CHECK"
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.wsv1-checks/check-slurp-native-stage3-wsv1-fold-a-v1.json",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1508,
+            "phase": "perception",
+            "physical_margin_tokens": 4580,
+            "rendered_text_tokens": 19453,
+            "required_window_tokens": 19996,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1645,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4717,
+            "rendered_text_tokens": 19316,
+            "required_window_tokens": 19859,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1705,
+            "phase": "planner",
+            "physical_margin_tokens": 4777,
+            "rendered_text_tokens": 19256,
+            "required_window_tokens": 19799,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -320,
+            "phase": "solver",
+            "physical_margin_tokens": 2752,
+            "rendered_text_tokens": 21281,
+            "required_window_tokens": 21824,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "scientific_readiness": {
+          "reason": "Cell W-SV-1 registered before contact on 2026-09-28 from the retained AGREE arm fragments by script (decision 58) with the program switched to its 13-ceiling uncited 'first' twin and a Solver supply_variants block (owner decision 172). No cross-flight comparator: the paired read is within this flight (B and T columns against the delivering A column); the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 is context only. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/wsv1/wsv1_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the Perception supply is upstream of the Solver arm group and of the program id). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      },
+      "smoke": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.wsv1-checks/check-slurp-native-stage3-wsv1-fold-a-smoke-4-v1.json",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1509,
+            "phase": "perception",
+            "physical_margin_tokens": 4581,
+            "rendered_text_tokens": 19452,
+            "required_window_tokens": 19995,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1645,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4717,
+            "rendered_text_tokens": 19316,
+            "required_window_tokens": 19859,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1706,
+            "phase": "planner",
+            "physical_margin_tokens": 4778,
+            "rendered_text_tokens": 19255,
+            "required_window_tokens": 19798,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -320,
+            "phase": "solver",
+            "physical_margin_tokens": 2752,
+            "rendered_text_tokens": 21281,
+            "required_window_tokens": 21824,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "scientific_readiness": {
+          "reason": "Four-row form smoke of cell W-SV-1, registered before contact on 2026-09-28 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/wsv1/wsv1_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the Perception supply is upstream of the Solver arm group and of the program id). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
   },
   "fit_measure": {
     "relpath": "analysis/SAEA-SLURP-STAGE3-WSV1-FOLD-A-FIT-MEASURE-V1/fit-measure-v1.json",
@@ -414,6 +524,24 @@
         }
       }
     }
+  },
+  "k30_column_fit": {
+    "arm": {
+      "delivering_column_solver_decision": "COMPACT_REQUIRED",
+      "delivering_column_solver_physical_margin": 2752,
+      "k30_added_placeholder_tokens_on_the_representative_row": 386,
+      "k30_column_solver_physical_margin_at_the_widest_delta": 2264,
+      "k30_column_solver_physical_margin_on_the_representative_row": 2366
+    },
+    "slot_tokens": 24576,
+    "smoke": {
+      "delivering_column_solver_decision": "COMPACT_REQUIRED",
+      "delivering_column_solver_physical_margin": 2752,
+      "k30_added_placeholder_tokens_on_the_representative_row": 386,
+      "k30_column_solver_physical_margin_at_the_widest_delta": 2264,
+      "k30_column_solver_physical_margin_on_the_representative_row": 2366
+    },
+    "status": "COMPUTED"
   },
   "owner_decisions": {
     "115": "SLU-F1 primary, intent the guard (the knob acts on the exemplar supply, not on an intent-only channel)",

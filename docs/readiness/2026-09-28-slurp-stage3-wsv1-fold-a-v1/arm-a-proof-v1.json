@@ -513,7 +513,7 @@
     "server": 0,
     "tokenizer": 0
   },
-  "generated_at_utc": "2026-09-28T13:52:28.490178+00:00",
+  "generated_at_utc": "2026-09-28T14:05:48.355415+00:00",
   "hash_quoting": "64-hex identities other than the prepared-supply output digests and the study commit are quoted as sha256-prefix16:<first 16 hex> (core.flight.repin rewrites package JSON from old identity hashes to new ones at the flip and refuses any old hash left under docs/)",
   "owner_decision": 172,
   "precedent": "scripts/flights/wave/wave_shared_aa_proof.py (owner decision 164), itself the decision-160 method",
@@ -532,7 +532,7 @@
       "command": "core.flight.cli prepare-supply --experiment slurp-native-stage3-wsv1-fold-a-v1 --cell slurp-native-stage3-wsv1-fold-a-v1 --output <scratch>/wsv1/phase-supply-v1.json",
       "file_sha256": "sha256-prefix16:077ed54528434939",
       "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
-      "seconds": 27.3
+      "seconds": 39.8
     }
   },
   "program_identity_fields": "the two model-visible fields the program switch moves (normalise_program_identity): (1) the program id and the node's global invocation index inside every quoted prior contact id (arm A is the Solver's invocation 2, AGREE's first Solver 0; a revisit 3 against 1); (2) remaining_model_contacts in the task-state block (ceiling 13 minus spent, against 11 minus spent: +2 on every contact). IDENTICAL_MODULO_PROGRAM_IDENTITY means every arm-A first Solver POST body equals the AGREE arm's once exactly these two fields are mapped / masked, and differs from it in exactly these",
@@ -555,6 +555,14 @@
       "rows": 120
     },
     "b_exk30_vs_arm_a": {
+      "post_body_bytes_delta_b_minus_a": {
+        "at_4_bytes_per_token_max": 488,
+        "max": 1949,
+        "mean": 1491.9,
+        "min": 1169,
+        "note": "the check's placeholder counter is 4 bytes per token; the k-30 column's Solver physical margin is the check's Solver margin minus these tokens"
+      },
+      "post_body_bytes_delta_on_the_check_representative_row": 1542,
       "post_body_identical_to_a": 0,
       "rows": 120
     },
@@ -615,8 +623,8 @@
         },
         "rows_dispatched": 120,
         "rows_revised_by_canned_planner": 61,
-        "seconds": 162.8,
-        "wire_check_run_id": "WIRECHECK-WSV1-ARM-A-PROOF-1790603124954"
+        "seconds": 156.8,
+        "wire_check_run_id": "WIRECHECK-WSV1-ARM-A-PROOF-1790603938109"
       },
       "wsv1": {
         "contacts": 903,
@@ -628,8 +636,8 @@
         },
         "rows_dispatched": 120,
         "rows_revised_by_canned_planner": 61,
-        "seconds": 398.7,
-        "wire_check_run_id": "WIRECHECK-WSV1-ARM-A-PROOF-1790603124954"
+        "seconds": 386.2,
+        "wire_check_run_id": "WIRECHECK-WSV1-ARM-A-PROOF-1790603938109"
       }
     },
     "rows": 120,
@@ -639,8 +647,8 @@
     }
   },
   "schema": "saea-wsv1-arm-a-proof-v1",
-  "scratch": "/tmp/wsv1-arm-a-proof-3",
-  "study_commit": "6cb6086de3dc24d958f1e095302c5567451acc43",
+  "scratch": "/tmp/wsv1-arm-a-proof-4",
+  "study_commit": "69cc6eaf2cb0eea6a30ba27f4662bf9bf1be9b19",
   "tool": "scripts/flights/wsv1/wsv1_arm_a_proof.py",
   "verdict": "IDENTICAL_MODULO_PROGRAM_IDENTITY"
 }

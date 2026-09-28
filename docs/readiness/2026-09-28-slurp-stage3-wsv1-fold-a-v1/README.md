@@ -90,7 +90,25 @@ Verdict **IDENTICAL_MODULO_PROGRAM_IDENTITY** (`docs/readiness/2026-09-28-slurp-
 
 Fit numbers are MEASURED, never placeholders (the VAR-2 lesson): scripts/flights/wsv1/wsv1_fit_measure.py read the sealed AGREE arm (its first Solver contact on every one of the 1080 rows; the delivering arm A renders exactly that request): supplied items min/mean/max 29/40.889/52, exemplar items 20 on every row, non-exemplar max 32, 5.0067 characters per token (least squares over every Solver contact), widest exemplar item 396 characters -> tokens_per_supplied_item 80, base_prompt_tokens 10266 (max over rows of prompt minus items x per-item, so base + items x per-item bounds every realised first Solver prompt; realised max 14426). Bounds: A and T 58 (measured max + 6 headroom -- the candidate-keyed stores follow Perception's output), B 68 (non-exemplar max + headroom + 30). Parser estimates: A/T 14906, B 15706 tokens, against a prompt limit of about 20,9xx at the 24,576 slot; the realistic widest B request (widest realised + 10 mean exemplars) is 14614 tokens. The preflight (core.flight.cli check, placeholder 4-bytes-per-token counter) is folded in 'fit'; under the armed compact-or-abstain policy a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin proceeds, and only a negative physical margin refuses.
 
-PENDING: core.flight.cli check not yet folded in.
+| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |
+| --- | --- | --- | ---: | ---: | ---: |
+| arm | perception | ALLOW | 19453 | 1508 | 4580 |
+| arm | reviewer | ALLOW | 19316 | 1645 | 4717 |
+| arm | planner | ALLOW | 19256 | 1705 | 4777 |
+| arm | solver | COMPACT_REQUIRED | 21281 | -320 | 2752 |
+| arm | blockers | null | | | |
+| smoke | perception | ALLOW | 19452 | 1509 | 4581 |
+| smoke | reviewer | ALLOW | 19316 | 1645 | 4717 |
+| smoke | planner | ALLOW | 19255 | 1706 | 4778 |
+| smoke | solver | COMPACT_REQUIRED | 21281 | -320 | 2752 |
+| smoke | blockers | null | | | |
+
+The preflight renders one representative request per phase, the delivering arm's (it knows no arms), at the slot of 24,576 tokens; the k-30 column's Solver request is that request plus what the re-cap adds on the wire (B's POST body minus A's, measured by the arm-A proof):
+
+| cell | Solver decision (delivering column, check) | physical margin, delivering column | k-30 adds (4 B/token, representative row) | **k-30 column physical margin** (representative row / widest delta) |
+| --- | --- | ---: | ---: | ---: |
+| arm | COMPACT_REQUIRED | 2752 | 386 | **2366** / 2264 |
+| smoke | COMPACT_REQUIRED | 2752 | 386 | **2366** / 2264 |
 
 ## Files
 

@@ -271,8 +271,23 @@ def map_contacts(wsv1: Mapping[str, Any], agree: Mapping[str, Any]) -> dict[str,
             twin["rows"] += 1
             twin["post_body_identical_to_a"] += int(arms[ARM_INDEX["t-twin"]]["body_sha256"] == a["body_sha256"])
         if a is not None and ARM_INDEX["b-exk30"] in arms:
+            b = arms[ARM_INDEX["b-exk30"]]
             b_arm["rows"] += 1
-            b_arm["post_body_identical_to_a"] += int(arms[ARM_INDEX["b-exk30"]]["body_sha256"] == a["body_sha256"])
+            b_arm["post_body_identical_to_a"] += int(b["body_sha256"] == a["body_sha256"])
+            if a.get("body") is not None and b.get("body") is not None:
+                # utf-8 bytes of the whole POST body, B minus A: what the k-30 re-cap adds to the wire
+                delta = len(b["body"].encode("utf-8")) - len(a["body"].encode("utf-8"))
+                b_arm.setdefault("_deltas", []).append(delta)
+                if sample == "slurp:train:000007:audio--1504197557":
+                    b_arm["post_body_bytes_delta_on_the_check_representative_row"] = delta
+    deltas = b_arm.pop("_deltas", [])
+    if deltas:
+        b_arm["post_body_bytes_delta_b_minus_a"] = {
+            "min": min(deltas), "mean": round(sum(deltas) / len(deltas), 1), "max": max(deltas),
+            "at_4_bytes_per_token_max": -(-max(deltas) // 4),
+            "note": ("the check's placeholder counter is 4 bytes per token; the k-30 column's Solver physical margin "
+                     "is the check's Solver margin minus these tokens"),
+        }
     agree_first_solver = sum(1 for (s, role, index, rest) in agree_by if role == "solver" and index == 0)
     arm_a["agree_first_solver_contacts"] = agree_first_solver
     arm_a["all_identical"] = arm_a["rows"] == agree_first_solver and arm_a["post_body_identical"] == arm_a["rows"] > 0

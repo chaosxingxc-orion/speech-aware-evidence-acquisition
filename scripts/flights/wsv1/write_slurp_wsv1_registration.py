@@ -180,6 +180,35 @@ def fold_check(check_dir: str | None) -> dict:
     return out
 
 
+def k30_column_margin(fit: dict, proof: dict) -> dict:
+    """The Solver physical margin of the k-30 column at the 24,576 slot.
+
+    ``core.flight.cli check`` renders ONE representative request per phase -- the delivering arm's (the
+    ordinary path; the preflight knows no arms) -- at a placeholder 4 bytes per token. The k-30 column's
+    request is that request plus what the re-cap adds, which the arm-A proof measured on the wire:
+    B's POST body minus A's, per row. Margin = the check's Solver physical margin minus that delta at
+    4 bytes per token (on the check's representative row, and at the widest delta of the proof's rows).
+    """
+    if fit.get("status") != "MEASURED_BY_CHECK" or proof.get("status") != "RUN":
+        return {"status": "PENDING"}
+    out = {"status": "COMPUTED", "slot_tokens": 24576}
+    delta = proof["b_exk30_vs_arm_a"].get("post_body_bytes_delta_b_minus_a") or {}
+    rep = proof["b_exk30_vs_arm_a"].get("post_body_bytes_delta_on_the_check_representative_row")
+    for key, cell in fit["cells"].items():
+        solver = [p for p in cell.get("prompt_budget_per_phase", []) if p.get("phase") == "solver"]
+        if not solver or rep is None or not delta:
+            continue
+        margin = solver[0]["physical_margin_tokens"]
+        out[key] = {
+            "delivering_column_solver_physical_margin": margin,
+            "delivering_column_solver_decision": solver[0]["decision"],
+            "k30_added_placeholder_tokens_on_the_representative_row": -(-rep // 4),
+            "k30_column_solver_physical_margin_on_the_representative_row": margin - (-(-rep // 4)),
+            "k30_column_solver_physical_margin_at_the_widest_delta": margin - delta["at_4_bytes_per_token_max"],
+        }
+    return out
+
+
 def proof_summary() -> dict:
     if not Path(PROOF).is_file():
         return {"status": "PENDING_PROOF"}
@@ -220,6 +249,7 @@ def main(argv: list[str] | None = None) -> int:
     group = arm["supply_variants"]
     fit = fold_check(args.check_dir)
     proof = proof_summary()
+    k30 = k30_column_margin(fit, proof)
     extra_audio = round(2 * AUDIO_TOTAL, 3)
 
     rule = (
@@ -331,6 +361,7 @@ def main(argv: list[str] | None = None) -> int:
                                                             "b_realistic_projection_max_prompt_tokens")}},
         "fit_statement": fit_statement,
         "fit": fit,
+        "k30_column_fit": k30,
         "arm_a_proof": proof,
         "identity": {key: {k2: v for k2, v in ids[key].items() if k2 != "composed_config_diff_against_the_agree_cell"} for key in CELLS},
         "composed_config_diff_against_the_agree_cell": {key: ids[key]["composed_config_diff_against_the_agree_cell"] for key in CELLS},
@@ -480,7 +511,7 @@ def main(argv: list[str] | None = None) -> int:
     draft_sha = wjson(PACKAGE + "/root-admission-draft-v1.json", draft)
 
     fence = json.dumps({"stage3_measurement": measurement}, indent=2, ensure_ascii=False, sort_keys=True)
-    readme, prereg = render_docs(args, ids, group, measure, fit, proof, rule, fence, caps, smoke_caps, fit_statement)
+    readme, prereg = render_docs(args, ids, group, measure, fit, proof, rule, fence, caps, smoke_caps, fit_statement, k30)
     readme_sha = wr(PACKAGE + "/README.md", readme)
     prereg_sha = wr(PREREG, prereg)
 
@@ -531,7 +562,23 @@ def _proof_lines(proof: dict) -> str:
     )
 
 
-def render_docs(args, ids, group, measure, fit, proof, rule, fence, caps, smoke_caps, fit_statement):
+def _k30_lines(k30: dict) -> str:
+    if k30.get("status") != "COMPUTED":
+        return "k-30 column margin: PENDING (needs the folded check and the arm-A proof)."
+    lines = ["| cell | Solver decision (delivering column, check) | physical margin, delivering column | k-30 adds (4 B/token, representative row) | **k-30 column physical margin** (representative row / widest delta) |",
+             "| --- | --- | ---: | ---: | ---: |"]
+    for key in ("arm", "smoke"):
+        if key in k30:
+            r = k30[key]
+            lines.append(f"| {key} | {r['delivering_column_solver_decision']} | {r['delivering_column_solver_physical_margin']} | "
+                         f"{r['k30_added_placeholder_tokens_on_the_representative_row']} | "
+                         f"**{r['k30_column_solver_physical_margin_on_the_representative_row']}** / {r['k30_column_solver_physical_margin_at_the_widest_delta']} |")
+    return ("The preflight renders one representative request per phase, the delivering arm's (it knows no arms), at the "
+            f"slot of {k30['slot_tokens']:,} tokens; the k-30 column's Solver request is that request plus what the re-cap adds on "
+            "the wire (B's POST body minus A's, measured by the arm-A proof):\n\n" + "\n".join(lines))
+
+
+def render_docs(args, ids, group, measure, fit, proof, rule, fence, caps, smoke_caps, fit_statement, k30):
     arm, smoke = ids["arm"], ids["smoke"]
     arms_lines = ["| arm | order | role | overrides | max_supplied_items |", "| --- | ---: | --- | --- | ---: |"]
     for index, row in enumerate(group["arms"]):
@@ -617,6 +664,8 @@ measurement of that null. `tuning_roster` `none`, `read_roster` `{READ_ROSTER}`;
 {fit_statement}
 
 {_fit_lines(fit)}
+
+{_k30_lines(k30)}
 
 ## Files
 
