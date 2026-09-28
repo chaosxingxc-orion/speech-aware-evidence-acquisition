@@ -36,7 +36,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/registered-facts-v1.json",
-      "sha256": "6d53e15d8171a9ba6ce5f88636bc816388728081156604bf519477ce8ac55591"
+      "sha256": "f971ba0ab2e6e27e84c5d7114a6b9b92de892bf23ad7cfe673028057c4b67e6a"
     },
     "registration_base_commit": "09f1b31e",
     "roster_receipt": {

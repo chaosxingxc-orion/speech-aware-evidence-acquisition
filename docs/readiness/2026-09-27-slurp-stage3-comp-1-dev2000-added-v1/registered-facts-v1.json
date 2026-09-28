@@ -367,8 +367,165 @@
   },
   "fit": {
     "measured": {
-      "note": "run core.flight.cli check on the three cells after the exposure rows exist and re-run this writer with --check-dir",
-      "status": "PENDING_CHECK"
+      "cells": {
+        "aa": {
+          "blockers": null,
+          "check_path": "/home/chao/comp1dev-check/check-slurp-native-stage3-comp1-aa-dev2000-added-v1.json",
+          "config_hash": "71462277daeea3f0c9b08c1f099b64fd79949a3f8659177013756871ecac7dd3",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1513,
+              "phase": "perception",
+              "physical_margin_tokens": 4585,
+              "rendered_text_tokens": 19449,
+              "required_window_tokens": 19991,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1649,
+              "phase": "reviewer",
+              "physical_margin_tokens": 4721,
+              "rendered_text_tokens": 19313,
+              "required_window_tokens": 19855,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1710,
+              "phase": "planner",
+              "physical_margin_tokens": 4782,
+              "rendered_text_tokens": 19252,
+              "required_window_tokens": 19794,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -316,
+              "phase": "solver",
+              "physical_margin_tokens": 2756,
+              "rendered_text_tokens": 21278,
+              "required_window_tokens": 21820,
+              "speech_feature_tokens": 28
+            }
+          ],
+          "protocol_hash": "5bc29d22e2fa75481cfe3ff9158fbe1e6388657a7f57de83fac2446bee18488c",
+          "scientific_readiness": {
+            "reason": "The in-chain A/A replicate of cell COMP-1 DEV-2000-ADDED, registered before contact on 2026-09-27 from the sealed DEV plan arm fragments by script (decision 58): the same baseline bytes at k 60, w_agree 0.0, the written key, the un-armed citation default, its own run, attempt and fit ids. Its prepared supply must reproduce the sealed DEV plan output digest d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19. HELD: the coordinator declares expected_effect_pp from the COMP-1 Fold A read (owner decision 139), root countersigns the exposure rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/comp1dev/comp1dev_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+            "state": "held"
+          }
+        },
+        "arm": {
+          "blockers": null,
+          "check_path": "/home/chao/comp1dev-check/check-slurp-native-stage3-comp1-dev2000-added-v1.json",
+          "config_hash": "4f544523febc8b01e788bd246b3c23dd270fac21f98e230db0bb5dcc71634ba2",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1511,
+              "phase": "perception",
+              "physical_margin_tokens": 4583,
+              "rendered_text_tokens": 19451,
+              "required_window_tokens": 19993,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1648,
+              "phase": "reviewer",
+              "physical_margin_tokens": 4720,
+              "rendered_text_tokens": 19314,
+              "required_window_tokens": 19856,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1709,
+              "phase": "planner",
+              "physical_margin_tokens": 4781,
+              "rendered_text_tokens": 19253,
+              "required_window_tokens": 19795,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -473,
+              "phase": "solver",
+              "physical_margin_tokens": 2599,
+              "rendered_text_tokens": 21435,
+              "required_window_tokens": 21977,
+              "speech_feature_tokens": 28
+            }
+          ],
+          "protocol_hash": "79c6da8e291152b27ef8ad1426a7428c5fd17dc60480970faca73549268d7a62",
+          "scientific_readiness": {
+            "reason": "Cell COMP-1 DEV-2000-ADDED registered before contact on 2026-09-27 from the sealed DEV-2000-ADDED plan arm fragments by script (decision 58) with COMP-1's three composed factors. Comparator: the sealed DEV plan arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1, never re-flown, read at the in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1 flown in the same campaign chain. HELD: the coordinator declares expected_effect_pp from the COMP-1 Fold A read (owner decision 139), root countersigns the exposure rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/comp1dev/comp1dev_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+            "state": "held"
+          }
+        },
+        "smoke": {
+          "blockers": null,
+          "check_path": "/home/chao/comp1dev-check/check-slurp-native-stage3-comp1-dev2000-added-smoke-4-v1.json",
+          "config_hash": "eda8affdb54e1c61e552af4e6f7b3457fcfa6382d190fe3f146f809dc97e805a",
+          "prompt_budget_per_phase": [
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1512,
+              "phase": "perception",
+              "physical_margin_tokens": 4584,
+              "rendered_text_tokens": 19450,
+              "required_window_tokens": 19992,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1648,
+              "phase": "reviewer",
+              "physical_margin_tokens": 4720,
+              "rendered_text_tokens": 19314,
+              "required_window_tokens": 19856,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "ALLOW",
+              "operational_margin_tokens": 1709,
+              "phase": "planner",
+              "physical_margin_tokens": 4781,
+              "rendered_text_tokens": 19253,
+              "required_window_tokens": 19795,
+              "speech_feature_tokens": 28
+            },
+            {
+              "completion_token_ceiling": 512,
+              "decision": "COMPACT_REQUIRED",
+              "operational_margin_tokens": -473,
+              "phase": "solver",
+              "physical_margin_tokens": 2599,
+              "rendered_text_tokens": 21435,
+              "required_window_tokens": 21977,
+              "speech_feature_tokens": 28
+            }
+          ],
+          "protocol_hash": "1d91efb82053c665c022f3cb365e2d587ce02d45415bbcb7a324aec5d4f5ef40",
+          "scientific_readiness": {
+            "reason": "Four-row form smoke of cell COMP-1 DEV-2000-ADDED, registered before contact on 2026-09-27 from the sealed DEV plan arm fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: the coordinator declares expected_effect_pp from the COMP-1 Fold A read (owner decision 139), root countersigns the exposure rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/comp1dev/comp1dev_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+            "state": "held"
+          }
+        }
+      },
+      "status": "MEASURED_BY_CHECK"
     },
     "rule": "the pre-flight prompt budget binds to the LIVE slot (24,576 tokens on the SLURP np4 session) with a one-eighth reserve; the Solver phase proceeds under compact-or-abstain"
   },
