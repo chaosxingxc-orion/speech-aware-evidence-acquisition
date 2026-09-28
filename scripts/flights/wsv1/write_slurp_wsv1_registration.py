@@ -1,0 +1,774 @@
+#!/usr/bin/env python3
+"""Write cell W-SV-1's readiness package (owner decision 172: the FIRST real same-flight
+supply-variant cell) from the derived fragments, the measured fit numbers and the arm-A proof --
+config and receipt-pinned bytes only: no adapter contact, no server, no lock, no model, tokenizer,
+encoder, embedder or scorer contact. It flips nothing and mints nothing.
+
+Package ``docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/`` and the preregistration beside it.
+``--append-ledger`` writes the DRAFT exposure rows (the arm and its FIT identity, the four-row smoke
+and its FIT identity, and the READ row that covers both column contrasts), replacing in place on
+re-run. ``--check-dir`` folds the per-phase prompt-budget receipts of an already-run
+``core.flight.cli check`` (it attaches to nothing) into the facts.
+
+    python scripts/flights/wsv1/write_slurp_wsv1_registration.py --data-root "$SPEECHRL_DATA_DIR" \\
+        --study-commit <sha> --registered-at 2026-09-28T13:00:00.000000+00:00 \\
+        [--check-dir /home/chao/saea-worktrees/.wsv1-checks] [--append-ledger]
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import io
+import json
+import math
+import os
+import sys
+from pathlib import Path
+
+sys.stdout.reconfigure(encoding="utf-8")
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from speech_aware_evidence_acquisition.core.config import compose, protocol_hash  # noqa: E402
+
+PACKAGE = "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1"
+PREREG = PACKAGE + "-preregistration.md"
+LEDGER = "docs/exposure-ledger.md"
+CELLS = {"arm": "slurp-native-stage3-wsv1-fold-a-v1", "smoke": "slurp-native-stage3-wsv1-fold-a-smoke-4-v1"}
+PARENTS = {"arm": "slurp-native-stage3-agree-w1-fold-a-v1", "smoke": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1"}
+PREFIX = {"arm": "", "smoke": "smoke-"}
+AGREE_RUN = "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+AGREE_ATTEMPT = "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1"
+AGREE_OFFICIAL = {"slu_f1": 65.1575, "intent_accuracy": 85.8333}
+READ_RUN = "SAEA-SLURP-STAGE3-WSV1-FOLD-A-COLUMN-READ-V1"
+SESSION = "serving-slurp-native-candidate-five-train-a-np4-v1"
+DECISION_ID = "slurp-stage3-wsv1-fold-a-admission-v1"
+DECISION_RELPATH = "coordination/slurp-stage3-wsv1-fold-a-v1/root-admission-v1.json"
+AGREE_SUPPLY_OUTPUT = {"arm": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+                       "smoke": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9"}
+ARM_A, ARM_B, ARM_T = "a-base", "b-exk30", "t-twin"
+ROWS = 1080
+READ_ROSTER = "SLURP-EVO-FOLD-A-V2"
+ROSTER_RELPATH = "docs/receipts/rosters/slurp-evo-fold-a-v2.json"
+SCORER = "slurp-slu-official-train"
+AUDIO_TOTAL = 3084.5284375
+SMOKE_AUDIO_TOTAL = 10.5955625
+
+# The provisional floor (scripts/checks/stage3_effect_floor_check.py FLOOR_TABLE, design
+# same-flight-supply-variant): ROLL-AA anchor 0.735 SLU / 0.000 intent at n = 200, scaled sqrt(200 / n).
+ANCHOR_N, ANCHOR_SLU, ANCHOR_INTENT = 200, 0.735, 0.0
+FLOOR_SLU = ANCHOR_SLU * math.sqrt(ANCHOR_N / ROWS)
+EXPECTED_EFFECT = 0.09
+VAR1_RESULT = ("docs/results/2026-09-27-slurp-mechanism-synthesis/mechanism-table.json (row C7: 'vs PLANR: ... K30 +0.09 "
+               "[-1.47, +1.60]') from docs/results/2026-09-25-slurp-var1-complete-evidence.md (exk30 vs plan +1.95 "
+               "[0.48, 3.45]; planr vs plan +1.87 [0.41, 3.36]; so exk30 vs the in-chain replicate PLANR is +0.09)")
+VAR1_PACKAGE = "docs/readiness/2026-09-24-slurp-stage3-var1-v1"
+SPEC = "docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md"
+INSTRUMENT = "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
+OWNER_DECISIONS = "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+GATE = "scripts/checks/stage3_effect_floor_check.py"
+FIT_MEASURE = "analysis/SAEA-SLURP-STAGE3-WSV1-FOLD-A-FIT-MEASURE-V1/fit-measure-v1.json"
+FIT_MEASURE_SCRIPT = "scripts/flights/wsv1/wsv1_fit_measure.py"
+DERIVE_SCRIPT = "scripts/flights/wsv1/derive_slurp_wsv1_cells.py"
+PROOF = PACKAGE + "/arm-a-proof-v1.json"
+PROOF_SCRIPT = "scripts/flights/wsv1/wsv1_arm_a_proof.py"
+READ_SCRIPT = "scripts/flights/wsv1/wsv1_read.sh"
+PROGRAM = "phase-native-candidates-review-revise-variants3first-v1"
+ALLOWED_PREFIXES = ("native_contact_fit.", "prepared_phase_supply", "what_this_is")
+
+
+def rd(path: str) -> str:
+    return io.open(path, encoding="utf-8", newline="").read()
+
+
+def wr(path: str, text: str) -> str:
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+    io.open(path, "w", encoding="utf-8", newline="").write(text)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def wjson(path: str, obj: object) -> str:
+    return wr(path, json.dumps(obj, indent=2, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def sha_file(path: str | Path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def flatten(node, prefix: str = "") -> dict:
+    out = {}
+    if isinstance(node, dict):
+        for key, value in node.items():
+            out.update(flatten(value, f"{prefix}{key}."))
+    else:
+        out[prefix[:-1]] = node
+    return out
+
+
+def identities() -> dict:
+    out = {}
+    for key, experiment in CELLS.items():
+        document = json.loads(rd(f"configs/experiment/{experiment}.json"))
+        cell = document["cells"][0]
+        composed = compose(REPO_ROOT, cell["model_fragment"], cell["dataset_fragment"], cell["baseline_fragment"], experiment)
+        parent_doc = json.loads(rd(f"configs/experiment/{PARENTS[key]}.json"))
+        parent_cell = parent_doc["cells"][0]
+        parent = compose(REPO_ROOT, parent_cell["model_fragment"], parent_cell["dataset_fragment"],
+                         parent_cell["baseline_fragment"], PARENTS[key])
+        experiment_keys = set(document) | set(parent_doc)
+        a, b = flatten(parent.values), flatten(composed.values)
+        changed = sorted(k for k in set(a) | set(b) if a.get(k, "<absent>") != b.get(k, "<absent>"))
+        program = [k for k in changed if k == "policy"]
+        variants = [k for k in changed if k.startswith("native_episode.roles.solver.supply_variants")]
+        bookkeeping = [k for k in changed if k.startswith(ALLOWED_PREFIXES)]
+        block = [k for k in changed if k.split(".", 1)[0] in experiment_keys and k not in bookkeeping]
+        other = [k for k in changed if k not in program + variants + bookkeeping + block]
+        if other:
+            raise SystemExit(f"{key}: composed config differs from its AGREE parent beyond the registered change: {other}")
+        if program != ["policy"] or composed.values["policy"] != PROGRAM:
+            raise SystemExit(f"{key}: the program switch is not the registered one")
+        split = document["population"]["split_identity_hash"]
+        out[key] = {
+            "experiment": experiment, "cell": cell["cell_id"], "run_id": cell["run_id"], "attempt_id": cell["attempt_id"],
+            "baseline_fragment": cell["baseline_fragment"], "parent_experiment": PARENTS[key],
+            "dataset_fragment": cell["dataset_fragment"], "model_fragment": cell["model_fragment"],
+            "arm": composed.values["arm"], "rows": document["population"]["count"], "split_identity_hash": split,
+            "composed_config_hash": composed.config_hash, "parent_composed_config_hash": parent.config_hash,
+            "protocol_hash": protocol_hash(composed.config_hash, composed.values["arm"], split),
+            "fit": dict(composed.values["native_contact_fit"]), "family_budget": document["family_budget"],
+            "execution_profile": document["execution_profile"], "carrier_lock_key": composed.values["carrier_lock_key"],
+            "program": composed.values["policy"],
+            "supply_variants": composed.values["native_episode"]["roles"]["solver"]["supply_variants"],
+            "composed_config_diff_against_the_agree_cell": {
+                "program_switch": program, "variants_block": variants, "bookkeeping": bookkeeping,
+                "experiment_fragment_own_block": block, "anything_else": other},
+        }
+    return out
+
+
+def fold_check(check_dir: str | None) -> dict:
+    if not check_dir:
+        return {"status": "PENDING_CHECK"}
+    out = {"status": "MEASURED_BY_CHECK", "cells": {}}
+    for key, cell_id in CELLS.items():
+        path = Path(check_dir) / f"check-{cell_id}.json"
+        if not path.is_file() or not path.read_text(encoding="utf-8").strip():
+            out["cells"][key] = {"status": "MISSING", "path": str(path)}
+            continue
+        report = json.loads(path.read_text(encoding="utf-8"))
+        preflight = report.get("preflight") or {}
+        phases = []
+        for receipt in preflight.get("prompt_budget") or ():
+            entry = {"phase": receipt.get("phase"), "decision": receipt.get("decision")}
+            breakdown = receipt.get("breakdown") if isinstance(receipt.get("breakdown"), dict) else {}
+            for name in ("arm_id", "variant_arm_id", "physical_margin_tokens", "operational_margin_tokens",
+                         "rendered_text_tokens", "required_window_tokens", "completion_token_ceiling",
+                         "speech_feature_tokens"):
+                if name in receipt:
+                    entry[name] = receipt[name]
+                elif name in breakdown:
+                    entry[name] = breakdown[name]
+            phases.append(entry)
+        out["cells"][key] = {"check_path": str(path), "blockers": report.get("blockers"),
+                             "scientific_readiness": report.get("scientific_readiness"),
+                             "prompt_budget_per_phase": phases}
+    return out
+
+
+def proof_summary() -> dict:
+    if not Path(PROOF).is_file():
+        return {"status": "PENDING_PROOF"}
+    proof = json.loads(rd(PROOF))
+    rb = proof["request_bytes"]
+    return {
+        "status": "RUN", "relpath": PROOF, "sha256": sha_file(PROOF), "tool": PROOF_SCRIPT, "verdict": proof["verdict"],
+        "study_commit": proof["study_commit"], "rows_dispatched": rb["rows"],
+        "config_classes": proof["composed_config_diff"]["by_class"],
+        "request_affecting_leaves": proof["composed_config_diff"]["request_affecting_leaves"],
+        "prepared_supply_equal_registered_and_committed": proof["prepared_supply"]["equal_registered_and_committed"],
+        "prepared_supply_output_sha256": proof["prepared_supply"]["wsv1"]["output_sha256"],
+        "arm_a_first_solver_vs_agree_first_solver": rb["arm_a_first_solver_vs_agree_first_solver"],
+        "twin_vs_arm_a_AT2": rb["twin_vs_arm_a_AT2"],
+        "b_exk30_vs_arm_a": rb["b_exk30_vs_arm_a"],
+        "every_other_contact_mapped_across_programs": rb["every_other_contact_mapped_across_programs"],
+        "payload_custody_leaf_classes_first_rows": rb["payload_custody_leaf_classes_first_rows"],
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
+    parser.add_argument("--data-root", required=True)
+    parser.add_argument("--study-commit", required=True)
+    parser.add_argument("--registered-at", required=True)
+    parser.add_argument("--branch", default="fable/wsv1")
+    parser.add_argument("--worktree", default="/home/chao/saea-worktrees/fable-w4sv")
+    parser.add_argument("--check-dir", default=None)
+    parser.add_argument("--append-ledger", action="store_true")
+    args = parser.parse_args(argv)
+    os.chdir(REPO_ROOT)
+    data = Path(args.data_root)
+    measure = json.loads((data / FIT_MEASURE).read_text(encoding="utf-8"))
+
+    ids = identities()
+    arm, smoke = ids["arm"], ids["smoke"]
+    caps, smoke_caps = arm["family_budget"], smoke["family_budget"]
+    group = arm["supply_variants"]
+    fit = fold_check(args.check_dir)
+    proof = proof_summary()
+    extra_audio = round(2 * AUDIO_TOTAL, 3)
+
+    rule = (
+        "SAME-FLIGHT COLUMN READ (owner decision 172; claim ceiling 'nominated', Q6 ruling). Every column -- "
+        f"{ARM_A} (the delivering arm's first-visit column), {ARM_B} and {ARM_T} -- is rendered from the sealed first "
+        "Solver visit through the delivered row's normaliser and projection (the render refuses on any acceptance-test "
+        f"AT1 failure) and scored ONCE with {SCORER} through core.scoring_batch.score_complete_derived_copy; each "
+        f"contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260928). (1) THE TWIN NULL: "
+        f"{ARM_T} minus {ARM_A} on official pooled SLU-F1 (primary) and intent accuracy (guard); the bar on each metric "
+        "is |twin offset| + the twin's CI95 half-width (the same law as the cross-flight in-chain A/A), reported beside "
+        f"the provisional floor {FLOOR_SLU:.4f} pp SLU / 0.0000 pp intent ({GATE}, design same-flight-supply-variant: "
+        f"{ANCHOR_SLU} x sqrt({ANCHOR_N} / {ROWS})). (2) THE KNOB: {ARM_B} minus {ARM_A}. NOMINATED iff the SLU-F1 CI95 "
+        "lower bound is above zero AND the SLU-F1 point delta exceeds the twin bar AND the intent CI95 lower bound is not "
+        "below minus the twin's intent bar. SOLVER-LOCAL HARM iff the SLU-F1 (or intent) CI95 upper bound is below zero "
+        "and the point delta's magnitude exceeds that metric's twin bar. Otherwise NOT NOMINATED (within the twin null). "
+        "A nomination claims nothing at system level: it only sends the exk30 construction to a full-system read against "
+        "an in-chain A/A. The utterance-level number is reported beside the row-level one and never gates (Q4). Every "
+        "verdict carries the per-scenario table in both weightings."
+    )
+    note = (
+        f"The FIRST real same-flight supply-variant cell. The expectation is declared from the measured analogue only "
+        f"(row 139): VAR-1's exk30 arm read against the in-chain request-identical replicate PLANR on the R01C "
+        f"construction roster moved official pooled SLU-F1 by +0.09 pp CI95 [-1.47, +1.60] ({VAR1_RESULT}), so "
+        f"expected_effect_pp is {EXPECTED_EFFECT}. That is BELOW this design's provisional floor {FLOOR_SLU:.4f} pp at "
+        f"n = {ROWS} ({ANCHOR_SLU} x sqrt({ANCHOR_N} / {ROWS}); the ROLL-AA anchor, provisional until this very cell "
+        "measures the twin null), so a benefit declaration would be refused (effect-below-floor, blocking) and the cell "
+        "declares claims_benefit false: its first deliverable is the instrument's own twin null on the Solver-local "
+        "estimand, its second the exk30 column read at that null, whose most likely outcome is NOT NOMINATED. The read's "
+        "bar is the twin null, not the provisional floor. SLU-F1 primary (the knob changes the exemplar supply, which "
+        "carries slot annotations; decision 115's shape), intent the guard."
+    )
+    measurement = {
+        arm["run_id"]: {
+            "measurement_design": "same-flight-supply-variant", "rows": ROWS,
+            "expected_effect_pp": EXPECTED_EFFECT, "claims_benefit": False,
+            "primary_metric": "official pooled SLU-F1 of the Solver-local first-visit column (primary), intent accuracy the guard",
+            "claim": "nominated", "aa_arm_id": ARM_T,
+            "tuning_roster": "none", "read_roster": READ_ROSTER,
+            "variant_cost": {"extra_contacts_per_row": 2, "extra_audio_seconds": extra_audio,
+                             "extra_audio_seconds_per_row_mean": round(2 * AUDIO_TOTAL / ROWS, 4),
+                             "note": "K - 1 = 2 extra first-visit Solver contacts per row (B and the twin T); each "
+                                     "re-sends the row's speech packet, so the flight's extra audio is 2 x the Fold A "
+                                     f"total {AUDIO_TOTAL} s"},
+            "provisional_floor_pp": {"slu_f1": round(FLOOR_SLU, 4), "intent_accuracy": 0.0,
+                                     "arithmetic": f"{ANCHOR_SLU} * sqrt({ANCHOR_N} / {ROWS}) = {FLOOR_SLU:.4f} pp (ROLL-AA anchor, provisional)"},
+            "read_bar": "|twin offset| + twin CI95 half-width, per metric, measured in this flight (Q3 ruling)",
+            "note": note,
+        },
+        smoke["run_id"]: {
+            "measurement_design": "form-proof", "rows": 4, "expected_effect_pp": 0.0, "claims_benefit": False,
+            "primary_metric": "none (structural form only)", "tuning_roster": "none", "read_roster": READ_ROSTER,
+            "note": ("Four rows (the first four of the Fold A roster) prove FORM and nothing else: the 13-ceiling uncited "
+                     "program loads, the three Solver arms fan out at the first visit only, every arm fits its measured "
+                     "bound, the v3 supply-variant receipt and I7v seal, and the episode completes. Scored by no one, "
+                     "read by no one."),
+        },
+    }
+    fit_statement = (
+        "Fit numbers are MEASURED, never placeholders (the VAR-2 lesson): scripts/flights/wsv1/wsv1_fit_measure.py read the "
+        f"sealed AGREE arm (its first Solver contact on every one of the {ROWS} rows; the delivering arm A renders exactly "
+        "that request): supplied items min/mean/max "
+        f"{measure['first_visit']['items']['min']}/{measure['first_visit']['items']['mean']}/{measure['first_visit']['items']['max']}, "
+        f"exemplar items 20 on every row, non-exemplar max {measure['first_visit']['nonexemplar_items_max']}, "
+        f"{measure['chars_per_token_least_squares']} characters per token (least squares over every Solver contact), widest "
+        f"exemplar item {measure['first_visit']['exemplar_item_chars']['max']} characters -> tokens_per_supplied_item "
+        f"{group['fit_estimate']['tokens_per_supplied_item']}, base_prompt_tokens {group['fit_estimate']['base_prompt_tokens']} "
+        "(max over rows of prompt minus items x per-item, so base + items x per-item bounds every realised first Solver "
+        f"prompt; realised max {measure['first_visit']['prompt_tokens']['max']}). Bounds: A and T "
+        f"{measure['max_supplied_items']['a_and_twin']} (measured max + {measure['headroom_items']} headroom -- the "
+        "candidate-keyed stores follow Perception's output), B "
+        f"{measure['max_supplied_items']['b_exk30']} (non-exemplar max + headroom + 30). Parser estimates: A/T "
+        f"{measure['estimates']['a_and_twin']}, B {measure['estimates']['b_exk30']} tokens, against a prompt limit of about "
+        "20,9xx at the 24,576 slot; the realistic widest B request (widest realised + 10 mean exemplars) is "
+        f"{measure['b_realistic_projection_max_prompt_tokens']} tokens. The preflight (core.flight.cli check, placeholder "
+        "4-bytes-per-token counter) is folded in 'fit'; under the armed compact-or-abstain policy a COMPACT_REQUIRED "
+        "preflight with a non-negative PHYSICAL margin proceeds, and only a negative physical margin refuses."
+    )
+    facts = {
+        "schema": "saea-registered-facts-v1",
+        "_note": f"Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block {GATE} and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+        "registered_at_utc": args.registered_at, "study_commit_at_registration": args.study_commit,
+        "owner_decisions": {
+            "172": "same-flight supply variants re-authorised as an engineering-base INSTRUMENT; W-SV-1 is its first real cell (coordinator ruling: base = the AGREE arm bytes, program switched to the uncited 13-ceiling 'first' fragment, arms A k-20 delivering / B k-30 / T twin)",
+            "139": "no prior: the expectation is declared from a measured analogue only (VAR-1 exk30 vs PLANR)",
+            "115": "SLU-F1 primary, intent the guard (the knob acts on the exemplar supply, not on an intent-only channel)",
+            "28/86": "TRAIN Fold A numbers are development numbers, never a test claim",
+        },
+        "rows": ROWS, "stage3_measurement": measurement,
+        "the_cell": {
+            "base": f"the retained AGREE arm {AGREE_RUN} (configs/baseline/slurp-native-stage3-agree-w1-fold-a-baseline-v1.json)",
+            "program_switch": f"policy phase-native-candidates-review-revise-v1 (ceiling 11) -> {PROGRAM} (ceiling 13 = 11 + (K - 1), K = 3 counting the twin; UNCITED, the Solver keeps response_format_id null; the two fragments differ only in program_id and max_contacts) -- the ONLY base change besides the variants block",
+            "variants_block": group,
+            "arms": {
+                ARM_A: "A, delivering, LAST, no overrides: the AGREE arm's own train-exemplar Solver supply at k 20 (fuse_coverage 20/20/20); its request bytes equal the AGREE arm's EXCEPT the two program-identity fields the program switch moves (the program id and global invocation index inside quoted prior contact ids; remaining_model_contacts, +2) -- arm_a_proof",
+                ARM_B: f"B, the VAR-1 exk30 construction: knowledge_stores.train-exemplars.phase_supply.solver.k 20 -> 30 and fuse_coverage m/c/top_l 20 -> 30 (the knob path and values of {VAR1_PACKAGE}, configs/baseline/slurp-native-stage3-var1-ex-k30-r01c-baseline-v1.json, scripts/flights/batch/var1_repin_exk30.sh)",
+                ARM_T: f"T, replicate_of {ARM_A}: no overrides, the delivering arm's greedy repeat in the same contact batch -- the read's own null (Q3 ruling)",
+            },
+            "arm_visits": "first: arms fan out only at the first Solver visit; a revisit contacts A alone; B and T never reach the Reviewer, the Planner or the delivered text",
+            "estimand": "the Solver-local answer under each supply at the FIRST Solver visit (spec section 1), never the delivered full-system answer",
+        },
+        "columns": {
+            "render_and_score": f"scripts/analysis/stage3_rollout_score.py --mode supply-variants --scorer-id {SCORER} --analysis-root <data root>/runs/<run>/<attempt>/supply-variants (one complete official scoring per column, serial, never sharded)",
+            "identities": {c: f"<data root>/runs/{arm['run_id']}/{arm['attempt_id']}/supply-variants/arm-{c}-{SCORER}-scores.json (+ .receipt.json)" for c in (ARM_A, ARM_B, ARM_T)},
+            "contrasts": {"knob": f"right {ARM_B} vs left {ARM_A}", "twin_null": f"right {ARM_T} vs left {ARM_A}"},
+        },
+        "fit_measure": {"relpath": FIT_MEASURE, "sha256": sha_file(data / FIT_MEASURE), "tool": FIT_MEASURE_SCRIPT,
+                        "summary": {k: measure[k] for k in ("chars_per_token_least_squares", "first_visit", "fit_estimate",
+                                                            "headroom_items", "max_supplied_items", "estimates",
+                                                            "b_realistic_projection_max_prompt_tokens")}},
+        "fit_statement": fit_statement,
+        "fit": fit,
+        "arm_a_proof": proof,
+        "identity": {key: {k2: v for k2, v in ids[key].items() if k2 != "composed_config_diff_against_the_agree_cell"} for key in CELLS},
+        "composed_config_diff_against_the_agree_cell": {key: ids[key]["composed_config_diff_against_the_agree_cell"] for key in CELLS},
+        "context_comparator": {"run_id": AGREE_RUN, "attempt_id": AGREE_ATTEMPT, "official": AGREE_OFFICIAL, "never_reflown": True,
+                               "role": "context only: the delivering arm A is the AGREE form; no cross-flight contrast gates this cell"},
+        "decision_rule": rule,
+        "expectation_basis": {"var1_exk30_vs_planr_slu_pp": "+0.09 [-1.47, +1.60]", "source": VAR1_RESULT,
+                              "provisional_floor_pp": round(FLOOR_SLU, 4), "declared": "claims_benefit false (0.09 < floor)"},
+        "byte_identity_expectation": {
+            "agree_first_phase_supply_output_sha256": AGREE_SUPPLY_OUTPUT,
+            "claim": "the first-phase (Perception boundary) supply is upstream of the Solver arm group and of the program id, so the supply the flip mints must carry the AGREE arm's / smoke's output digest; a different digest means the boundary channel moved -- stop and report",
+        },
+        "budget_arithmetic": {"arm_family_budget": caps, "smoke_family_budget": smoke_caps,
+                              "note": "the AGREE arithmetic at ceiling 13: generation rows x 13, FIT rows x 13 x 4, speech ceil(audio x 13), GPU hours 12.0 x 13 / 11 = 14.2 (smoke 1.0); native task-contract calls + 2 per row; run-cumulative"},
+        "prohibitions": [
+            "No test-split, Fold B or DEV contact or read.", "No re-flying of the sealed AGREE arm.",
+            "No second factor: no other template, knob, store, roster, geometry or session change.",
+            "No paper-scale profile.", "No flight before root mints the decision receipt and the cells are flipped.",
+            "No column score opened before the READ row is root countersigned.",
+            "No system-level claim: a column effect may only nominate (Q6 ruling).",
+        ],
+    }
+    facts_sha = wjson(PACKAGE + "/registered-facts-v1.json", facts)
+
+    protocol = {
+        "schema": "saea-registered-protocol-v1", "protocol_id": "slurp-stage3-wsv1-fold-a-protocol-v1",
+        "registered_at_utc": args.registered_at, "study_commit_at_registration": args.study_commit,
+        "source_tree": f"studies/speech-aware-evidence-acquisition, worktree {args.worktree}, branch {args.branch}",
+        "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+        "the_question": "At the first Solver visit of every TRAIN Fold A row, does re-capping the train-exemplar Solver supply from k 20 to k 30 (the VAR-1 exk30 construction) move the Solver-local official pooled SLU-F1 of that column beyond the in-flight twin's null, read against the delivering arm's own column in the same flight?",
+        "one_factor": f"arm {ARM_B}: knowledge_stores.train-exemplars.phase_supply.solver.{{k, fuse_coverage.m, fuse_coverage.c, fuse_coverage.top_l}} 20 -> 30, at the first Solver visit only; the program switch to {PROGRAM} is the instrument's carrier, not a factor, shared by every arm (arm A's request bytes are the AGREE arm's modulo the program id in quoted contact ids and remaining_model_contacts; arm_a_proof)",
+        "cells": {key: {k2: ids[key][k2] for k2 in ("cell", "experiment", "run_id", "attempt_id", "rows", "composed_config_hash", "protocol_hash", "split_identity_hash")}
+                  | {"fit_run_id": ids[key]["fit"]["run_id"], "fit_attempt_id": ids[key]["fit"]["attempt_id"]} for key in CELLS},
+        "columns": facts["columns"], "decision_rule_fixed_here": rule,
+        "development_numbers_only": "Every number is a TRAIN Fold A development number (owner decisions 28 and 86), never a test claim.",
+        "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+        "prohibitions": facts["prohibitions"],
+    }
+    protocol_sha = wjson(PACKAGE + "/protocol-registered-v1.json", protocol)
+
+    plan_shas: dict[str, str] = {}
+    for key in CELLS:
+        identity = ids[key]
+        budget = identity["family_budget"]
+        for kind in ("generation", "fit"):
+            is_fit = kind == "fit"
+            run_id = identity["fit"]["run_id"] if is_fit else identity["run_id"]
+            plan_doc = {
+                "schema": f"saea-registered-{kind}-plan-v1", "plan_kind": kind, "cell": identity["cell"],
+                "experiment": identity["experiment"], "composed_config_hash": identity["composed_config_hash"],
+                "registered_at_utc": args.registered_at, "status": protocol["status"], "source_tree": protocol["source_tree"],
+                "preparation_base_commit": args.study_commit, "expected_session_id": SESSION,
+                "unused_budget_is_not_attempt_authority": True,
+                "execution_plan": {
+                    "schema": "saea-execution-plan-v1", "study": "speech-aware-evidence-acquisition",
+                    "carrier_lock_key": identity["carrier_lock_key"], "run_id": run_id,
+                    "attempt_id": identity["fit"]["attempt_id"] if is_fit else identity["attempt_id"],
+                    "execution_profile": identity["execution_profile"], "split_role": "discovery",
+                    "split_identity_hash": identity["split_identity_hash"], "protocol_hash": identity["protocol_hash"],
+                    "planned_model_calls": budget["fit_endpoint_calls_cap"] if is_fit else budget["generation_calls_cap"],
+                    "planned_speech_audio_seconds": budget["repeated_speech_audio_seconds_cap"],
+                    "planned_gpu_hours": budget["gpu_hours_fit_inclusive"],
+                },
+                "family_budget": budget,
+                "execution_route": (
+                    "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation." if is_fit else
+                    "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-wsv1-fold-a-v1.json (this arm alone; no A/A cell -- the twin arm T flies inside every row) through scripts/flights/wsv1/batch_chain_wsv1.sh and the batch driver." if key == "arm" else
+                    "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); the smoke is outside any campaign plan and never scored."
+                ),
+                "prepared_phase_supply": {"relpath": f"prepared/{identity['run_id']}/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP",
+                                          "expected_output_sha256": AGREE_SUPPLY_OUTPUT[key],
+                                          "note": facts["byte_identity_expectation"]["claim"]},
+                "protocol_document": {"relpath": PACKAGE + "/protocol-registered-v1.json", "sha256": protocol_sha},
+                "one_factor": protocol["one_factor"],
+                "purpose": f"{run_id}: " + ("request envelopes only; reads nothing." if is_fit else rule if key == "arm" else "structural form proof only: no score and no read."),
+                "quality_read_gate": f"No column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row {READ_RUN} is root countersigned; each column is then scored once, never sharded.",
+            }
+            plan_shas[run_id] = wjson(f"{PACKAGE}/{PREFIX[key]}{kind}-plan-registered-v1.json", plan_doc)
+
+    recipe = {
+        "schema": "saea-slurp-paired-analysis-recipe-v1", "recipe_id": "slurp-stage3-wsv1-fold-a-column-analysis-v1",
+        "title": "Cell W-SV-1 -- the same-flight supply-variant column read: B (exk30) and the twin T, each against the delivering column A, SLU-F1 primary, intent guard",
+        "registered_at_utc": args.registered_at,
+        "read_run_id": READ_RUN,
+        "run_ids": {"read": READ_RUN, "arm": arm["run_id"], "context_comparator": AGREE_RUN},
+        "arms": {
+            "arm": {"run_id": arm["run_id"], "attempt_id": arm["attempt_id"], "column": ARM_B,
+                    "role": "the treatment column (knob-tail arm B, exk30)"},
+            "in_chain_replicate": {"run_id": arm["run_id"], "attempt_id": arm["attempt_id"], "column": ARM_A,
+                                   "role": "the delivering arm's own first-visit column: the LEFT side of both contrasts"},
+            "twin": {"run_id": arm["run_id"], "attempt_id": arm["attempt_id"], "column": ARM_T,
+                     "role": "the in-flight twin (replicate_of a-base): the right side of the null contrast"},
+            "comparator": {"run_id": AGREE_RUN, "attempt_id": AGREE_ATTEMPT, "role": "context only, sealed, never re-flown; not read by the column passes"},
+        },
+        "passes": {
+            "knob": {"left": {"column": ARM_A}, "right": {"column": ARM_B}, "gating": True},
+            "twin-null": {"left": {"column": ARM_A}, "right": {"column": ARM_T}, "gating": "sets the bar"},
+        },
+        "resampling": {"bootstrap_draws": 10000, "metrics": ["slu_f1_f1", "scenario_action_exact"], "seed": 20260928, "unit": "row (paired)",
+                       "cluster_key": "sample_id", "utterance_level": "reported beside, never gating (Q4 ruling)"},
+        "decision_rule": rule,
+        "provisional_floor_pp": {"slu_f1": round(FLOOR_SLU, 4), "intent_accuracy": 0.0},
+        "steps": [
+            f"0. Refuse unless the READ row {READ_RUN} is root countersigned (checked by {READ_SCRIPT} before anything is opened).",
+            "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one successful complete official TRAIN score, the v3 supply-variant receipt on every row and I7v verified by the bundle.",
+            f"2. Render the three first-visit columns ({ARM_A}, {ARM_B}, {ARM_T}) through the delivered row's normaliser and projection (AT1 self-check) and score each ONCE with {SCORER} (scripts/analysis/stage3_rollout_score.py --mode supply-variants).",
+            f"3. Twin null: paired row bootstrap of {ARM_T} minus {ARM_A} (SLU-F1 primary, intent guard) -> the bar per metric = |offset| + CI95 half-width; report it beside the provisional floor.",
+            f"4. Knob: paired row bootstrap of {ARM_B} minus {ARM_A}; apply the rule (NOMINATED / NOT NOMINATED / SOLVER-LOCAL HARM).",
+            "5. Report the per-scenario table in both weightings, the utterance-level number beside the row-level one, the realised per-arm supplied item counts against the declared bounds, and the realised prompt tokens per arm.",
+        ],
+        "read_driver": f"{READ_SCRIPT} -> scripts/analysis/stage3_paired_read.py --left-column/--right-column (direct mode, --per-scenario)",
+        "output": {"analysis_root": f"analysis/{READ_RUN}"},
+        "boundary": "A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; Solver-local, never a system-level claim. No utterance text, transcript, gold label or model output is printed or persisted.",
+    }
+    recipe_sha = wjson(PACKAGE + "/analysis-recipe-v1.json", recipe)
+
+    eligible = [arm["run_id"], arm["fit"]["run_id"], smoke["run_id"], smoke["fit"]["run_id"]]
+    draft = {
+        "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/wsv1/wsv1_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+        "schema": "saea-campaign-decision-v1", "decision_id": DECISION_ID, "status": "DRAFT-NOT-MINTED",
+        "recorded_at_utc": None, "owner": "root", "coordinator": "Fable5.1", "eligible_run_ids": eligible,
+        "cell_kind": "Stage-3 same-flight supply-variant instrument cell (label none), claim ceiling 'nominated'. One arm on TRAIN Fold A 1,080 with three Solver arms at the first visit (B exk30, T twin, A delivering), and a four-row form smoke.",
+        "decision": f"Fly cell W-SV-1: the retained AGREE arm under {PROGRAM} with a Solver supply_variants group ({ARM_B}, {ARM_T}, {ARM_A}, arm_visits first); read the {ARM_B} and {ARM_T} columns against the {ARM_A} column in the same flight; SLU-F1 primary, intent guard; nominate or not at the twin bar.",
+        "authorization_basis": f"Owner decision 172 (the instrument and its first cell); 139 (expectation from a measured analogue), 115, 28/86; the spec {SPEC}; the instrument note {INSTRUMENT}.",
+        "antecedents": {
+            "owner_decisions": {"path": OWNER_DECISIONS, "sha256": sha_file(OWNER_DECISIONS)},
+            "instrument_note": {"path": INSTRUMENT, "sha256": sha_file(INSTRUMENT)},
+            "spec": {"path": SPEC, "sha256": sha_file(SPEC)},
+            "preregistration": {"path": PREREG, "sha256": None},
+            "readiness_readme": {"path": PACKAGE + "/README.md", "sha256": None},
+            "protocol": {"path": PACKAGE + "/protocol-registered-v1.json", "sha256": protocol_sha},
+            "registered_facts": {"path": PACKAGE + "/registered-facts-v1.json", "sha256": facts_sha},
+            "analysis_recipe": {"path": PACKAGE + "/analysis-recipe-v1.json", "sha256": recipe_sha},
+            "arm_a_proof": {"path": PROOF, "sha256": sha_file(PROOF) if Path(PROOF).is_file() else None},
+            "derive_script": {"path": DERIVE_SCRIPT, "sha256": sha_file(DERIVE_SCRIPT)},
+            "base_cell": f"the retained AGREE arm {AGREE_RUN} (owner decision 161)",
+            "registration_base_commit": args.study_commit,
+        },
+        "budget": {**{k2: caps[k2] for k2 in sorted(caps)}, "smoke": smoke_caps, "paid_api_calls": 0, "plan_budget_is_run_cumulative": True},
+        "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a Solver-local column read on a development fold whose ceiling is 'nominated'.",
+        "failure_policy": protocol["failure_policy"],
+        "not_authorized": ["any flight before the cells are flipped and the receipt is minted", "touching the resident np4 session by anyone but the coordinator", "any ASR, transcript, encoder or paid-API contact", "re-flying or re-scoring any sealed cell", "--allow-output-change on the re-pin tool", "any change beyond the registered program switch and variants block", "opening a column score before the READ row is countersigned"],
+        "population": {"count": ROWS, "split_identity_hash": arm["split_identity_hash"], "split_role": "discovery", "fold_b_contact_authorized": False, "test_contact_authorized": False},
+        "registered_hashes": {key: {"composed_config": ids[key]["composed_config_hash"], "protocol": ids[key]["protocol_hash"]} for key in CELLS},
+        "service": {"expected_session_id": SESSION, "model_fragment": arm["model_fragment"], "slots": 4, "slot_tokens": 24576, "no_child_start_stop": True},
+    }
+    draft_sha = wjson(PACKAGE + "/root-admission-draft-v1.json", draft)
+
+    fence = json.dumps({"stage3_measurement": measurement}, indent=2, ensure_ascii=False, sort_keys=True)
+    readme, prereg = render_docs(args, ids, group, measure, fit, proof, rule, fence, caps, smoke_caps, fit_statement)
+    readme_sha = wr(PACKAGE + "/README.md", readme)
+    prereg_sha = wr(PREREG, prereg)
+
+    ledger = "not-requested"
+    if args.append_ledger:
+        ledger = append_ledger(args, ids, plan_shas, group, proof)
+    print(json.dumps({"package": PACKAGE, "ledger": ledger,
+                      "written": {"README.md": readme_sha, "registered-facts-v1.json": facts_sha, "protocol": protocol_sha,
+                                  "analysis-recipe": recipe_sha, "root-admission-draft": draft_sha, "prereg": prereg_sha, **plan_shas},
+                      "identity": {key: {"run_id": ids[key]["run_id"], "composed": ids[key]["composed_config_hash"],
+                                         "protocol": ids[key]["protocol_hash"]} for key in CELLS},
+                      "fit": fit.get("status"), "proof": proof.get("verdict", proof.get("status")),
+                      "floor_slu": round(FLOOR_SLU, 4)}, indent=2))
+    return 0
+
+
+def _fit_lines(fit: dict) -> str:
+    if fit.get("status") != "MEASURED_BY_CHECK":
+        return "PENDING: core.flight.cli check not yet folded in."
+    lines = ["| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |", "| --- | --- | --- | ---: | ---: | ---: |"]
+    for key, cell in fit["cells"].items():
+        for p in cell.get("prompt_budget_per_phase", []):
+            lines.append(f"| {key} | {p.get('phase')} | {p.get('decision')} | {p.get('rendered_text_tokens')} | {p.get('operational_margin_tokens')} | {p.get('physical_margin_tokens')} |")
+        lines.append(f"| {key} | blockers | {json.dumps(cell.get('blockers'))} | | | |")
+    return "\n".join(lines)
+
+
+def _proof_lines(proof: dict) -> str:
+    if proof.get("status") != "RUN":
+        return "PENDING: scripts/flights/wsv1/wsv1_arm_a_proof.py not yet run."
+    a = proof["arm_a_first_solver_vs_agree_first_solver"]
+    t = proof["twin_vs_arm_a_AT2"]
+    b = proof["b_exk30_vs_arm_a"]
+    o = proof["every_other_contact_mapped_across_programs"]
+    leaves = proof["payload_custody_leaf_classes_first_rows"]
+    return (
+        f"Verdict **{proof['verdict']}** (`{PROOF}`, tool `{PROOF_SCRIPT}`, {proof['rows_dispatched']} rows dispatched "
+        f"serially against a fake POST under one common scratch run id, zero model/server/tokenizer/encoder/scorer contacts).\n\n"
+        f"| proof | result |\n| --- | --- |\n"
+        f"| composed config: differing leaves by class | {json.dumps(proof['config_classes'])}; request-affecting {proof['request_affecting_leaves']} |\n"
+        f"| prepared first-phase supply output = AGREE registered and committed | {proof['prepared_supply_equal_registered_and_committed']} (`{proof['prepared_supply_output_sha256']}`) |\n"
+        f"| arm A first Solver POST body = AGREE first Solver POST body, exactly | {a['post_body_identical']} / {a['rows']} rows (AGREE first Solver contacts {a['agree_first_solver_contacts']}) |\n"
+        f"| the same, after mapping the program id / invocation index in quoted contact ids and masking remaining_model_contacts | {a['post_body_identical_after_program_identity_normalisation']} / {a['rows']} rows |\n"
+        f"| twin T POST body = arm A (AT2) | {t['post_body_identical_to_a']} / {t['rows']} |\n"
+        f"| arm B POST body = arm A (expected to differ: the k-30 supply) | {b['post_body_identical_to_a']} / {b['rows']} |\n"
+        f"| every other contact mapped across programs (Perception, Reviewer, Planner, revisit Solver) | {o['post_body_identical']} / {o['contacts']} identical exactly, {o['post_body_identical_after_program_identity_normalisation']} / {o['contacts']} after the same normalisation, {o['unpaired']} unpaired; by role {json.dumps(o['by_role'])} |\n"
+        f"| arm A vs AGREE first Solver: payload (custody) leaf classes differing, first {leaves['rows']} rows | {json.dumps(leaves['payload_leaf_classes_differing'])}; POST body leaf classes {json.dumps(leaves['post_body_leaf_classes_differing'])} |"
+    )
+
+
+def render_docs(args, ids, group, measure, fit, proof, rule, fence, caps, smoke_caps, fit_statement):
+    arm, smoke = ids["arm"], ids["smoke"]
+    arms_lines = ["| arm | order | role | overrides | max_supplied_items |", "| --- | ---: | --- | --- | ---: |"]
+    for index, row in enumerate(group["arms"]):
+        role = "delivering (A)" if row.get("deliver") else (f"twin of `{row['replicate_of']}` (T)" if row.get("replicate_of") else "knob-tail (B)")
+        overrides = ", ".join(f"`{k.rsplit('solver.', 1)[-1]}` {v}" for k, v in sorted((row.get("overrides") or {}).items())) or "none"
+        arms_lines.append(f"| `{row['arm_id']}` | {index} | {role} | {overrides} | {row['max_supplied_items']} |")
+    fe = group["fit_estimate"]
+    readme = f"""# Cell W-SV-1: the first same-flight supply-variant cell (owner decision 172)
+
+Registered before contact {args.registered_at[:10]} at study commit `{args.study_commit}`; both cells **held**.
+Nothing here authorises a flight, a flip or an admission entry. Development numbers only (owner decisions 28 and 86).
+This README replaces the 2026-09-28 finding note (registration BLOCKED on an uncited 13-ceiling "first" program);
+the fragment `configs/policy/{PROGRAM}.json` has since landed on master and is registered in
+`src/speech_aware_evidence_acquisition/rails/controllers.py`.
+
+**What W-SV-1 is.** The retained AGREE arm (`{AGREE_RUN}`, official SLU-F1 65.16 / intent 85.83 on TRAIN Fold A)
+with exactly two registered changes:
+
+1. **The program switch -- the ONLY base change besides the variants block.** `policy`
+   `phase-native-candidates-review-revise-v1` (ceiling 11) -> `{PROGRAM}` (ceiling 13 = 11 + (K - 1),
+   K = 3 counting the twin). The two fragments differ only in `program_id` and `max_contacts`; the Solver stays
+   UNCITED (`response_format_id` null). The ruling states that the delivering arm A's request bytes must equal the
+   AGREE arm's; proven below the way the knowledge wave's shared A/A was proven, they do so **only modulo two
+   program-identity fields** the model-visible request text carries: the program id (with the node's global
+   invocation index) inside every quoted prior contact id, and `remaining_model_contacts` in the task-state block
+   (13 minus spent against 11 minus spent, so +2 on every contact of the episode, Perception included). No
+   configuration of this program can remove them; an exact AGREE-byte A needs an engineering change (not rendering
+   the program id / the ceiling into the prompt), which is the coordinator's call. The within-flight read is
+   unaffected: A, B and T share the same program and the same state, and T's wire bytes equal A's (AT2).
+2. **The variants block** `native_episode.roles.solver.supply_variants`, `arm_visits: "first"` (arms fan out only
+   at the first Solver visit; a revisit contacts A alone; B and T never reach the Reviewer, the Planner or the
+   delivered text):
+
+{chr(10).join(arms_lines)}
+
+`fit_estimate`: slot {fe['slot_tokens']}, completion ceiling {fe['completion_ceiling']}, base prompt {fe['base_prompt_tokens']},
+{fe['tokens_per_supplied_item']} tokens per supplied item -- all MEASURED on the sealed AGREE arm (below).
+B is the VAR-1 `exk30` construction: the knob path `knowledge_stores.train-exemplars.phase_supply.solver.{{k, fuse_coverage.m, fuse_coverage.c, fuse_coverage.top_l}}`
+20 -> 30, exactly the leaves `configs/baseline/slurp-native-stage3-var1-ex-k30-r01c-baseline-v1.json` moved
+(`scripts/flights/batch/var1_repin_exk30.sh`, `{VAR1_PACKAGE}`).
+
+**Estimand and claim.** The Solver-local answer under each supply at the FIRST Solver visit, never the delivered
+full-system answer. `measurement_design` `same-flight-supply-variant`; claim ceiling **`nominated`** (Q6 ruling:
+a nomination only sends the construction to a full-system read against an in-chain A/A).
+
+**Primary metric.** Official pooled SLU-F1 of the column, intent accuracy the guard (decision 115's shape: the
+exemplar supply carries slot annotations, so the knob is not an intent-only mechanism).
+
+**Declared expectation and the bar.** From the measured analogue only (row 139): VAR-1's exk30 arm against the
+in-chain request-identical replicate PLANR moved SLU-F1 by **+0.09 pp CI95 [-1.47, +1.60]**
+({VAR1_RESULT}). `expected_effect_pp` {EXPECTED_EFFECT}. The design's provisional floor
+(`{GATE}`, design `same-flight-supply-variant`, ROLL-AA anchor) is
+**{ANCHOR_SLU} x sqrt({ANCHOR_N} / {ROWS}) = {FLOOR_SLU:.4f} pp SLU** (0.0000 pp intent) at n = {ROWS}. The expectation sits
+BELOW it, so `claims_benefit` is **false** (a benefit declaration would be refused, `effect-below-floor`,
+blocking). The read's bar is the **twin null** measured in this flight -- |T minus A offset| + its CI95
+half-width, per metric -- reported beside the provisional floor; this cell is also the instrument's first
+measurement of that null. `tuning_roster` `none`, `read_roster` `{READ_ROSTER}`; `aa_arm_id` `{ARM_T}`;
+`variant_cost` +2 Solver contacts per row, +{round(2 * AUDIO_TOTAL, 3)} speech seconds per flight
+(2 x the Fold A total {AUDIO_TOTAL} s).
+
+## The decision rule (fixed here)
+
+{rule}
+
+## Columns
+
+| column | what | file under `<data root>/runs/{arm['run_id']}/{arm['attempt_id']}/supply-variants/` |
+| --- | --- | --- |
+| `{ARM_A}` | the delivering arm's first-visit column (LEFT of both contrasts) | `arm-{ARM_A}-{SCORER}-scores.json` |
+| `{ARM_B}` | the exk30 column (RIGHT of the knob contrast) | `arm-{ARM_B}-{SCORER}-scores.json` |
+| `{ARM_T}` | the twin column (RIGHT of the null contrast) | `arm-{ARM_T}-{SCORER}-scores.json` |
+
+`{READ_SCRIPT}` refuses unless the READ row `{READ_RUN}` is root countersigned, renders and scores the three columns once
+(`scripts/analysis/stage3_rollout_score.py --mode supply-variants`), then runs
+`scripts/analysis/stage3_paired_read.py --left-column {ARM_A} --right-column {ARM_B}` and `--right-column {ARM_T}`.
+
+## Arm A's byte identity (the wave shared-A/A method)
+
+{_proof_lines(proof)}
+
+## Fit
+
+{fit_statement}
+
+{_fit_lines(fit)}
+
+## Files
+
+| file | what it holds |
+| --- | --- |
+| `../{Path(PREREG).name}` | the preregistration, with the `stage3_measurement` fence |
+| `registered-facts-v1.json` | every model-free fact; the CANONICAL `stage3_measurement` |
+| `arm-a-proof-v1.json` | the arm-A byte-identity proof |
+| `protocol-registered-v1.json` | identities, hashes, the rule |
+| `generation-plan-registered-v1.json` / `fit-plan-registered-v1.json` | the arm's plans |
+| `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the smoke's plans |
+| `analysis-recipe-v1.json` | the column read; `run_ids.read` = `{READ_RUN}` |
+| `root-admission-draft-v1.json` | the receipt root mints with `scripts/flights/wsv1/wsv1_mint_receipt.py` |
+
+**Sequence.** (1) Root countersigns the four DRAFT flight rows (the READ row stays draft until the seal and is
+countersigned before any column score is opened) and mints `{DECISION_RELPATH}` with
+`scripts/flights/wsv1/wsv1_mint_receipt.py`. (2) Flip with `scripts/flights/wsv1/wsv1_flip.sh` (smoke, then arm,
+one converging loop; minted supplies must reproduce the AGREE digests). (3) `scripts/flights/wsv1/batch_chain_wsv1.sh`
+on the slurp-np4 session through the batch driver (smoke, then the one-arm campaign; decision 77). (4) `{READ_SCRIPT}`.
+
+**Budgets.** Arm {caps['generation_calls_cap']:,} generation contacts (1,080 x 13), {caps['fit_endpoint_calls_cap']:,} FIT endpoints,
+{caps['repeated_speech_audio_seconds_cap']:,} speech seconds, {caps['gpu_hours_fit_inclusive']} GPU hours; smoke
+{smoke_caps['generation_calls_cap']} / {smoke_caps['fit_endpoint_calls_cap']} / {smoke_caps['repeated_speech_audio_seconds_cap']} / {smoke_caps['gpu_hours_fit_inclusive']} --
+the AGREE arithmetic at ceiling 13. Expected spend about 6.06 contacts per row (AGREE's 4.06 + 2).
+"""
+    prereg = f"""# Cell W-SV-1 (same-flight supply-variant, exk30): preregistration
+
+Registered {args.registered_at[:10]} at study commit `{args.study_commit}`, before any contact, from the retained AGREE
+arm fragments by script (decision 58) under owner decision 172. Development numbers only.
+
+## The cell
+
+| item | value |
+| --- | --- |
+| base | the retained AGREE arm `{AGREE_RUN}` (65.1575 / 85.8333) |
+| program | `{PROGRAM}` (ceiling 13, uncited) -- the only base change besides the variants block |
+| arms (first Solver visit) | `{ARM_B}` (k 30, fuse 30/30/30), `{ARM_T}` (twin of `{ARM_A}`), `{ARM_A}` (delivering, k 20) |
+| design / claim | `same-flight-supply-variant` / `nominated` |
+| primary / guard | official pooled SLU-F1 of the column / intent accuracy |
+| expected effect | {EXPECTED_EFFECT} pp (VAR-1 exk30 vs PLANR +0.09 [-1.47, +1.60]); `claims_benefit` false |
+| provisional floor | {FLOOR_SLU:.4f} pp SLU ({ANCHOR_SLU} x sqrt({ANCHOR_N} / {ROWS})); the bar is the twin null |
+| rosters | tuning `none`; read `{READ_ROSTER}` |
+| runs | `{arm['run_id']}` / `{arm['fit']['run_id']}`; `{smoke['run_id']}` / `{smoke['fit']['run_id']}`; read `{READ_RUN}` |
+| composed config hashes | arm `{arm['composed_config_hash']}`; smoke `{smoke['composed_config_hash']}` |
+| protocol hashes | arm `{arm['protocol_hash']}`; smoke `{smoke['protocol_hash']}` |
+| split identity | arm `{arm['split_identity_hash']}`; smoke `{smoke['split_identity_hash']}` |
+
+## Decision rule (fixed here)
+
+{rule}
+
+## The measurement declaration
+
+```json
+{fence}
+```
+
+## Prohibitions
+
+No test-split, Fold B or DEV contact; no re-flying of the AGREE arm; no second factor; no paper-scale profile; no
+flight before the receipt is minted and the cells flipped; no column score before the READ row is countersigned;
+no system-level claim; `--allow-output-change` never passed.
+"""
+    return readme, prereg
+
+
+MODEL_TOOL = ("Frozen Q4_K_M decoder-only c98304 np4 max512; promoted EVO-FOLDS-V2 speech packets; NO native tool authority on any role; "
+              "prompt bytes the retained AGREE arm's; three Solver arms at the first visit (b-exk30 train-exemplars k 30, t-twin, a-base delivering k 20)")
+INHERITED = ("TRAIN Fold A discovery rows already exposed by the sealed anchors and every Stage-2/3 Fold A cell (B-series, PLAN, PLANr, ROLL-2, CONV, "
+             "the AGREE family, KPROBE, COMP-1, G5, the knowledge wave, REV-TFRL-1, flown or in flight at registration); this cell adds no new row to the fold and opens no split. Prior exposure is inherited in full.")
+
+
+def append_ledger(args, ids, plan_shas, group, proof) -> str:
+    text = rd(LEDGER)
+    eligible = [ids["arm"]["run_id"], ids["arm"]["fit"]["run_id"], ids["smoke"]["run_id"], ids["smoke"]["fit"]["run_id"]]
+    arms = "; ".join(f"{r['arm_id']} max_supplied_items {r['max_supplied_items']}" for r in group["arms"])
+
+    def flight_notes(key: str, kind: str) -> str:
+        identity = ids[key]
+        run_id = identity["fit"]["run_id"] if kind == "fit" else identity["run_id"]
+        attempt = identity["fit"]["attempt_id"] if kind == "fit" else identity["attempt_id"]
+        declaration = (f"measurement_design same-flight-supply-variant, claim nominated, claims_benefit false, expected_effect_pp {EXPECTED_EFFECT} "
+                       f"(VAR-1 exk30 vs PLANR), provisional floor {FLOOR_SLU:.4f} pp SLU, bar = the twin null, aa_arm_id {ARM_T}, tuning_roster none, "
+                       f"read_roster {READ_ROSTER}, variant_cost +2 Solver contacts per row, rows 1080"
+                       if key == "arm" else f"measurement_design form-proof, claims_benefit false, expected_effect_pp 0.0, rows 4, tuning_roster none, read_roster {READ_ROSTER}")
+        return (
+            f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) {args.registered_at[:10]} at study commit {args.study_commit} by the W-SV-1 "
+            f"registration agent (worktree {args.worktree}, branch {args.branch}). This registration performs no contact and authorises none. Plan SHA256 "
+            f"{plan_shas[run_id]}; attempt {attempt}. Protocol hash {identity['protocol_hash']}; composed config {identity['composed_config_hash']}; expected "
+            f"session {SESSION} (attach only). READINESS HELD: root mints {DECISION_RELPATH} (decision id {DECISION_ID}) with the four eligible run ids "
+            f"{', '.join(eligible)}, then scripts/flights/wsv1/wsv1_flip.sh re-pins with scripts/flights/repin_cell.py --set-ready, minting each cell's own "
+            f"first-phase supply (item E16; expected output digest {AGREE_SUPPLY_OUTPUT[key]}, the AGREE {key}'s); --allow-output-change must never be "
+            f"passed. Every hash in this row moves at the flip. OWNER DECISION 172, the first real same-flight supply-variant cell: program {PROGRAM} "
+            f"(ceiling 13, uncited; the only base change besides the variants block) and Solver supply_variants arm_visits first, arms in order {arms} "
+            f"(K = 3; calls counts every arm contact; ceiling 13 per row). Columns {ARM_A} / {ARM_B} / {ARM_T}; contrasts {ARM_B} vs {ARM_A} and "
+            f"{ARM_T} vs {ARM_A}. Arm-A byte-identity proof {proof.get('verdict', proof.get('status'))}. Measurement declaration ({GATE}): {declaration} "
+            f"-- canonical in {PACKAGE}/registered-facts-v1.json. Stop and preserve on the first failure; AT MOST ONE root-diagnosed recovery "
+            "re-registration. No test-split, Fold B or DEV contact, no AGREE re-flight."
+        )
+
+    def flight_row(key: str, kind: str) -> str:
+        identity = ids[key]
+        budget = identity["family_budget"]
+        run_id = identity["fit"]["run_id"] if kind == "fit" else identity["run_id"]
+        scope = (("Cell W-SV-1 (same-flight supply variants, exk30)" if key == "arm" else "Four-row form smoke of cell W-SV-1")
+                 + (" -- FIT spend identity, request envelopes only, no generation" if kind == "fit" else "")
+                 + ": the retained AGREE arm under the 13-ceiling uncited first program with three Solver arms at the first visit (B train-exemplars k 30, T twin, A delivering)"
+                 + (", B and T read as Solver-local columns against A in the same flight" if key == "arm" else ", structural form only, never scored"))
+        cells = ["", args.registered_at, run_id, "bounded-discovery-probe", scope, MODEL_TOOL, f"slurp TRAIN Fold A {identity['rows']}", "discovery",
+                 identity["split_identity_hash"], "no", str(budget["fit_endpoint_calls_cap"] if kind == "fit" else budget["generation_calls_cap"]),
+                 str(budget["repeated_speech_audio_seconds_cap"]), str(budget["gpu_hours_fit_inclusive"]), INHERITED,
+                 f"{PACKAGE}/{PREFIX[key]}{kind}-plan-registered-v1.json", flight_notes(key, kind), ""]
+        return " | ".join(cells).strip()
+
+    read_row = " | ".join(["", args.registered_at[:10], READ_RUN, "model-free-check",
+        f"The same-flight column read of cell W-SV-1: render the first-visit columns {ARM_A}, {ARM_B} and {ARM_T} through the delivered row's normaliser and projection, score each ONCE with {SCORER} (three derived-copy scorings, never sharded), then the paired row bootstrap of {ARM_B} vs {ARM_A} (the knob) and {ARM_T} vs {ARM_A} (the twin null, the bar), SLU-F1 primary and intent guard, by the recipe {PACKAGE}/analysis-recipe-v1.json through {READ_SCRIPT}. Zero model, server, encoder, embedder, tokenizer and GPU contacts.",
+        "no model or tool contact; read of sealed bytes and three official column scorings", "slurp TRAIN Fold A 1080, the sealed W-SV-1 flight's three first-visit columns (after the seal)", "discovery",
+        ids["arm"]["split_identity_hash"], "no", "0", "0", "0", "No new speech exposure; reads sealed outputs and scores derived copies only. Prior exposure inherited in full.",
+        f"{PACKAGE}/analysis-recipe-v1.json",
+        f"REGISTERED WITH THE FLIGHT (DRAFT, root countersignature pending; countersigned after the seal and before any column score is opened) {args.registered_at[:10]} at study commit {args.study_commit}. Recipe slurp-stage3-wsv1-fold-a-column-analysis-v1; output analysis/{READ_RUN}; columns {ARM_A}, {ARM_B}, {ARM_T}. One READ row covers both column contrasts (spec section 2). Its ceiling is a nomination; it admits nothing.",
+        ""]).strip()
+
+    fresh = {}
+    for key in CELLS:
+        for kind in ("generation", "fit"):
+            run_id = ids[key]["fit"]["run_id"] if kind == "fit" else ids[key]["run_id"]
+            fresh[run_id] = flight_row(key, kind)
+    fresh[READ_RUN] = read_row
+    for run_id, line in fresh.items():
+        if len(line.split("|")) != 17:
+            raise SystemExit(f"ledger row {run_id} does not have exactly fifteen cells; a literal '|' slipped into a cell")
+    order = list(fresh)
+    lines = text.split("\n")
+    replaced = 0
+    for index, line in enumerate(lines):
+        if line.startswith("|") and len(line.split("|")) > 3 and line.split("|")[2].strip() in fresh:
+            lines[index] = fresh.pop(line.split("|")[2].strip())
+            replaced += 1
+    if replaced and fresh:
+        raise SystemExit("the ledger carries some but not all W-SV-1 rows; refusing to guess")
+    if replaced:
+        wr(LEDGER, "\n".join(lines))
+        return f"replaced-{replaced}"
+    header = ("\n## Cell W-SV-1: the first same-flight supply-variant cell (owner decision 172) -- the arm, its four-row smoke and the READ row "
+              "(DRAFT, root countersignature pending)\n\nFour unconsumed flight rows and one READ row registered with the flight, covering both "
+              "column contrasts. No A/A cell: the twin arm flies inside every row. None of these rows is countersigned and none authorises a contact.\n\n"
+              "| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |\n"
+              "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n")
+    suffix = "" if text.endswith("\n") else "\n"
+    wr(LEDGER, text + suffix + header + "\n".join(fresh[r] for r in order) + "\n")
+    return "appended"
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

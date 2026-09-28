@@ -1,0 +1,121 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/wsv1/wsv1_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "36bb7ab20b7e611a9283bf888300562431ffb0980f0ce88e10e5772ac6296ea2"
+    },
+    "arm_a_proof": {
+      "path": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/arm-a-proof-v1.json",
+      "sha256": "b8a0d128e021a73a399fb88259f1e71cc0017fd73408b0b779abbf419e7092f4"
+    },
+    "base_cell": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (owner decision 161)",
+    "derive_script": {
+      "path": "scripts/flights/wsv1/derive_slurp_wsv1_cells.py",
+      "sha256": "737866467d5d2a90050d382652009063a84fe1bdd23b4bf113bf7d60e7fa93b7"
+    },
+    "instrument_note": {
+      "path": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+      "sha256": "8e569ea765fdbbfa7b2a16dc57238d68582f8d2847922ee9e5831ec451d5f124"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "15098058c9c7692d91032b25792610f673fb755bb74a6fbbf8b1447025a2644e"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "6f1ec2d24eb7441a1ed479efe214e99753d8fc64584da80272fa9202fde469dc"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/registered-facts-v1.json",
+      "sha256": "a708ac2106391304d230cecda11c296bd839a4300e6d4ee89b345c58df1d4e6a"
+    },
+    "registration_base_commit": "6cb6086de",
+    "spec": {
+      "path": "docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md",
+      "sha256": "58b1358000e6c81eb473c190e9293b45fe74eb74b6ce90b4e5eedc9b7a312ea7"
+    }
+  },
+  "authorization_basis": "Owner decision 172 (the instrument and its first cell); 139 (expectation from a measured analogue), 115, 28/86; the spec docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md; the instrument note docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 56160,
+    "generation_calls_cap": 14040,
+    "gpu_hours_fit_inclusive": 14.2,
+    "native_task_contract_calls_cap": 8640,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 40099,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 208,
+      "generation_calls_cap": 52,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 32,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 138
+    }
+  },
+  "cell_kind": "Stage-3 same-flight supply-variant instrument cell (label none), claim ceiling 'nominated'. One arm on TRAIN Fold A 1,080 with three Solver arms at the first visit (B exk30, T twin, A delivering), and a four-row form smoke.",
+  "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a Solver-local column read on a development fold whose ceiling is 'nominated'.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell W-SV-1: the retained AGREE arm under phase-native-candidates-review-revise-variants3first-v1 with a Solver supply_variants group (b-exk30, t-twin, a-base, arm_visits first); read the b-exk30 and t-twin columns against the a-base column in the same flight; SLU-F1 primary, intent guard; nominate or not at the twin bar.",
+  "decision_id": "slurp-stage3-wsv1-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-WSV1-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered program switch and variants block",
+    "opening a column score before the READ row is countersigned"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "9057e7db5a70d1ab5f0d72eea70a1d83035246a0e0a2b60d3981649de518a53a",
+      "protocol": "61ef29944bb46f91f072225d023480c738883db7a689477108808a2ed5d02380"
+    },
+    "smoke": {
+      "composed_config": "e3f60f86c288d4b5c2b7fe55f34310c75af8f3eed1d14c181dac11f4c16e7c2d",
+      "protocol": "078a364abef4893cf218a46a6320686a8fba9961185ffad60fb4d84e931b359b"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
