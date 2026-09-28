@@ -36,7 +36,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/registered-facts-v1.json",
-      "sha256": "bee964053338af31f212b85e06033af6c5a46ac7ba3c4400a37c1361cd8ded8c"
+      "sha256": "857be31fb8f978d377e76828140c3e0fee04e82b54e47878b597e3cbebffa722"
     },
     "registration_base_commit": "190e178db",
     "store_registration": {

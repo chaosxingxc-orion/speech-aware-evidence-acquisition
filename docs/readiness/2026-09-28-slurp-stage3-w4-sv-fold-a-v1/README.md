@@ -55,7 +55,16 @@ Solver requests (`analysis/SAEA-SLURP-STAGE3-W4SV-FIT-MEASURE-V1/fit-measure-v1.
 (headroom 2,789). Realised Solver prompt maxima: AGREE bytes
 14,851, W4 16,696.
 
-PENDING: core.flight.cli check not yet folded in.
+| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |
+| --- | --- | --- | ---: | ---: | ---: |
+| arm | perception | ALLOW | 19453 | 1508 | 4580 |
+| arm | reviewer | ALLOW | 19316 | 1645 | 4717 |
+| arm | planner | ALLOW | 19256 | 1705 | 4777 |
+| arm | solver | COMPACT_REQUIRED | 21281 | -320 | 2752 |
+| smoke | perception | ALLOW | 19452 | 1509 | 4581 |
+| smoke | reviewer | ALLOW | 19316 | 1645 | 4717 |
+| smoke | planner | ALLOW | 19255 | 1706 | 4778 |
+| smoke | solver | COMPACT_REQUIRED | 21281 | -320 | 2752 |
 
 The check composes the delivering path; arm b-w4's widest request is cell W4's first Solver request, whose preflight
 physical margin at 24,576 was 826 tokens (`docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1/registered-facts-v1.json`, `fit`), COMPACT_REQUIRED under the
