@@ -64,6 +64,18 @@ DECLARED effect, before the GPU hours are spent rather than after.
 * ``replicate_run_id`` -- required by
   ``cross-flight-with-in-chain-replicate``: the run id of the
   request-identical replicate that flies in the SAME chain (rule 3).
+* ``tuning_roster``, ``read_roster`` -- item D3 (docs/results/2026-09-27-
+  verdict-reclassification.md: the AGREE agreement term was tuned and read on
+  the SAME TRAIN Fold A roster, a circular read). ``tuning_roster`` is the
+  roster id or sealed-pool id -- or a list of them -- that any weight,
+  threshold, cap, template or knowledge selection of this cell was chosen on;
+  the literal string ``"none"`` when nothing was tuned. ``read_roster`` is the
+  roster the cell is read on. Every Stage-3 cell declares both, whatever its
+  ``measurement_design``. This script does not itself enforce them; the
+  registration and the tuning/read overlap check live in
+  ``flight_registration_check.py`` (findings ``tuning-roster-missing``,
+  ``tuning-roster-unverified``, ``tuning-read-overlap``), which reads the same
+  block through this file's ``_declaration_files`` / ``_block_for``.
 
 **Where the block may live**, in this precedence:
 
