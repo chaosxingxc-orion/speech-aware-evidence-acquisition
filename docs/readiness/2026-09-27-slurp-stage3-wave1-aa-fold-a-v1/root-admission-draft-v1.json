@@ -28,7 +28,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/registered-facts-v1.json",
-      "sha256": "dc35cc20aad1b51252fa57ddf7a66c89e83df6b3d8d16e194c5c52eb5beb31dc"
+      "sha256": "4bb18e1bdfa5e4c25966c612d89fd1b2422d6cb5b80a7f81c9b6b348a6976729"
     },
     "registration_base_commit": "8cb78788ad74582ac769b9bb7e1631bf31148c56",
     "shared_aa_proof": {

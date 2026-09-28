@@ -26,7 +26,7 @@ campaign plan `configs/campaign/slurp-native-stage3-wave1-fold-a-v1.json` = [thi
 the same resident session `serving-slurp-native-candidate-five-train-a-np4-v1` -- the COMP-1 + G5 shape of decision 160. No smoke of its own (the AGREE and
 COMP-1 A/As carried none).
 
-**Fit.** PENDING (run core.flight.cli check, then re-run this writer with --check-dir).
+**Fit.** perception ALLOW rendered 19,449 physical margin 4,584; reviewer ALLOW rendered 19,313 physical margin 4,720; planner ALLOW rendered 19,252 physical margin 4,781; solver COMPACT_REQUIRED rendered 21,278 physical margin 2,755 (readiness held, blockers None).
 
 **`stage3_measurement`.** `cross-flight-with-in-chain-replicate`, `expected_effect_pp` 0.0, `claims_benefit` false,
 `replicate_run_id` `SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1` (the sealed request-identical source of its bytes). It is the instrument.

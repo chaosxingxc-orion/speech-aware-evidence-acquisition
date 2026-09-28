@@ -201,7 +201,46 @@
   },
   "fit": {
     "measured": {
-      "status": "PENDING_CHECK"
+      "blockers": null,
+      "prompt_budget_per_phase": [
+        {
+          "decision": "ALLOW",
+          "operational_margin_tokens": 1512,
+          "phase": "perception",
+          "physical_margin_tokens": 4584,
+          "rendered_text_tokens": 19449,
+          "required_window_tokens": 19992
+        },
+        {
+          "decision": "ALLOW",
+          "operational_margin_tokens": 1648,
+          "phase": "reviewer",
+          "physical_margin_tokens": 4720,
+          "rendered_text_tokens": 19313,
+          "required_window_tokens": 19856
+        },
+        {
+          "decision": "ALLOW",
+          "operational_margin_tokens": 1709,
+          "phase": "planner",
+          "physical_margin_tokens": 4781,
+          "rendered_text_tokens": 19252,
+          "required_window_tokens": 19795
+        },
+        {
+          "decision": "COMPACT_REQUIRED",
+          "operational_margin_tokens": -317,
+          "phase": "solver",
+          "physical_margin_tokens": 2755,
+          "rendered_text_tokens": 21278,
+          "required_window_tokens": 21821
+        }
+      ],
+      "scientific_readiness": {
+        "reason": "The knowledge wave's shared in-chain A/A, registered before contact on 2026-09-27 from the retained AGREE arm fragments by script (decisions 58, 161 and 164; the decision-160 precedent) with nothing changed but per-flight bookkeeping. It flies in the wave campaign plan configs/campaign/slurp-native-stage3-wave1-fold-a-v1.json beside the W1 arm, and W3 and W4 are read at it from the later steps of the same chain. HELD: root mints the A/A's admission receipt (scripts/flights/wave/wave_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/wave/wave_flip.sh), which mints this cell's own first-phase supply under its own run id (item E16) and inserts the decision requirement; --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own output digest eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "state": "held"
+      },
+      "status": "MEASURED_BY_CHECK"
     },
     "rule": "the pre-flight prompt budget binds to the LIVE slot (24,576 tokens, np4) with a reserve of one eighth; the A/A is the AGREE arm's form, whose Solver phase reads COMPACT_REQUIRED with a positive physical margin and proceeds under context_fit_policy compact-or-abstain"
   },
