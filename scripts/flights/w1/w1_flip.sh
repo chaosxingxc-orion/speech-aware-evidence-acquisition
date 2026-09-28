@@ -25,7 +25,7 @@ for K in smoke arm; do
 cat > /home/chao/w1-$K-commit.txt <<M
 research: flip W1 ($K) to ready (knowledge wave item W1, slot-card selection -- the retained AGREE arm with the slot-contract card route narrowed by the pinned intent -> slot-type legality table, 286 of the 402 authored bindings, those the released exemplar store carries in at least two utterances -- read on no harm at the SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1; owner decisions 127, 161 and 164; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-w1-cardsel-fold-a-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 done
 CYCLES=(

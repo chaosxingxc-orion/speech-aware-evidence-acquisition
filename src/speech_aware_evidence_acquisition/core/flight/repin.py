@@ -1062,12 +1062,95 @@ def rewrite_dependent_hashes(
     return rewritten
 
 
+def _is_within(path: Path, base: Path) -> bool:
+    try:
+        path.resolve().relative_to(base.resolve())
+        return True
+    except ValueError:
+        return False
+
+
+def _collect_run_id_values(document: object) -> set[str]:
+    """Every string found under a JSON key literally named ``run_id``, at any
+    nesting depth -- the identifier every registered cell's own fragments and
+    packages record for themselves (``cells[].run_id``, ``execution_plan.
+    run_id``, ``cell.run_id``, ``abort.run_id`` and so on; item: the REC
+    protocol document's own ``parent_protocol`` block and the experiment
+    fragment's ``cells`` array both carry a sibling's or a parent's run id
+    beside the current cell's own)."""
+
+    found: set[str] = set()
+
+    def _walk(node: object) -> None:
+        if isinstance(node, Mapping):
+            for key, value in node.items():
+                if key == "run_id" and isinstance(value, str):
+                    found.add(value)
+                _walk(value)
+        elif isinstance(node, (list, tuple)):
+            for item in node:
+                _walk(item)
+
+    _walk(document)
+    return found
+
+
+def _is_foreign_readiness_package(path: Path, *, readiness_root: Path, run_ids: set[str], text: str) -> bool:
+    """True when ``path`` sits inside SOME package directory directly under
+    ``docs/readiness/`` (at least one directory level below it) that is not
+    the cell's own -- the caller has already excluded the cell's own package
+    and own config fragments before calling this -- and the file does not
+    itself name one of ``run_ids`` (which would make it suspect rather than a
+    plain sealed record of a different run).
+
+    Item: the 2026-09-28 COMP-1 -REC recovery cell, derived from the sealed
+    COMP-1 arm, inherited that parent's own hash-pinned prepared-supply pin
+    and quoted the parent's protocol document under its own ``parent_protocol``
+    field; the parent's OWN ``docs/readiness/2026-09-27-...-comp-1-fold-a-v1/``
+    package must never be rewritten, and a residue scan that does not know
+    this is a different, sealed package's own directory falsely refuses on
+    it.
+    """
+
+    try:
+        relative = path.relative_to(readiness_root)
+    except ValueError:
+        return False
+    if len(relative.parts) < 2:
+        # A loose file directly under docs/readiness/, not inside any
+        # package directory -- treated the same as any other stray doc.
+        return False
+    if any(run_id in text for run_id in run_ids):
+        return False
+    return True
+
+
+def _is_foreign_config(path: Path, *, run_ids: set[str]) -> bool:
+    """True when ``path`` is a ``configs/`` fragment -- the caller has already
+    excluded this re-pin's OWN fragments -- whose own declared ``run_id``
+    value(s) are read from the JSON and found disjoint from ``run_ids``: a
+    baseline or experiment fragment that names some OTHER cell(s) only. A
+    fragment with no ``run_id`` field anywhere (for example a model or
+    dataset fragment) is never exempted this way; the scan stays strict on it.
+    """
+
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return False
+    file_run_ids = _collect_run_id_values(document)
+    return bool(file_run_ids) and file_run_ids.isdisjoint(run_ids)
+
+
 def assert_no_residue(
     repo_root: Path,
     old_values: Iterable[str],
     *,
     exposure_ledger_path: Path | None = None,
     run_ids: set[str] | None = None,
+    readiness_dir: Path | None = None,
+    own_files: Iterable[Path] | None = None,
+    own_config_paths: Iterable[Path] | None = None,
 ) -> None:
     """Refuse if any OLD hash string remains anywhere under ``docs/`` or
     ``configs/`` after rewriting.
@@ -1076,12 +1159,31 @@ def assert_no_residue(
     not residue: it is another package's own registration (the sealed parent
     this package was derived from), and this re-pin neither rewrites it
     (:func:`apply_mapping_to_ledger`) nor may it demand that it disappear.
+
+    Two further exemptions follow the same principle, active only when
+    ``readiness_dir`` and ``run_ids`` are given (the only production call, from
+    :func:`repin_package`), and only for files that are NOT this cell's own
+    (``own_files``, ``own_config_paths``, or anywhere inside ``readiness_dir``
+    itself -- those stay exactly as strict as before):
+
+    * a file inside some OTHER package directory directly under
+      ``docs/readiness/`` is a different, sealed package's own record, not
+      residue, unless it also names one of ``run_ids`` (see
+      :func:`_is_foreign_readiness_package`);
+    * a ``configs/`` fragment whose own declared ``run_id`` value(s) are
+      disjoint from ``run_ids`` belongs to a different cell, not residue (see
+      :func:`_is_foreign_config`).
     """
 
     values = sorted({value for value in old_values if value})
     if not values:
         return
     ledger_resolved = Path(exposure_ledger_path).resolve() if exposure_ledger_path else None
+    readiness_dir_resolved = Path(readiness_dir).resolve() if readiness_dir is not None else None
+    readiness_root_resolved = Path(repo_root).resolve() / "docs" / "readiness"
+    own_resolved = {Path(p).resolve() for p in (own_files or ())} | {
+        Path(p).resolve() for p in (own_config_paths or ())
+    }
     hits: list[str] = []
     for root_name in ("docs", "configs"):
         base = Path(repo_root) / root_name
@@ -1094,10 +1196,30 @@ def assert_no_residue(
                 text = path.read_text(encoding="utf-8")
             except (OSError, UnicodeDecodeError):
                 continue
-            if ledger_resolved is not None and run_ids is not None and path.resolve() == ledger_resolved:
+            resolved = path.resolve()
+            is_own = resolved in own_resolved or (
+                readiness_dir_resolved is not None and _is_within(resolved, readiness_dir_resolved)
+            )
+            if ledger_resolved is not None and run_ids is not None and resolved == ledger_resolved:
                 lines = text.splitlines(keepends=True)
                 foreign = _foreign_ledger_row_mask(text, run_ids)
                 text = "".join(line for index, line in enumerate(lines) if not foreign[index])
+            elif (
+                not is_own
+                and run_ids
+                and root_name == "docs"
+                and _is_foreign_readiness_package(
+                    resolved, readiness_root=readiness_root_resolved, run_ids=run_ids, text=text
+                )
+            ):
+                continue
+            elif (
+                not is_own
+                and run_ids
+                and root_name == "configs"
+                and _is_foreign_config(resolved, run_ids=run_ids)
+            ):
+                continue
             for value in values:
                 if value in text:
                     hits.append(f"{path}: {value}")
@@ -1353,6 +1475,9 @@ def repin_package(
         all_old_values,
         exposure_ledger_path=exposure_ledger_path,
         run_ids=run_ids,
+        readiness_dir=readiness_dir,
+        own_files=package_files,
+        own_config_paths=set(baseline_paths) | set(experiment_paths),
     )
 
     check_reports = []

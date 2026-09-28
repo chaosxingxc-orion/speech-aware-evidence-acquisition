@@ -29,7 +29,7 @@ for K in smoke aa arm; do
 cat > /home/chao/slotfill-$K-commit.txt <<M
 research: flip SLOTFILL ($K) to ready (the dispatcher slot-fill key -- recall prefetch, role input off the shared event loop, frozen static heap; scheduling only, proven byte-identical -- with its in-chain A/A without the key and its four-row smoke; owner decisions 127 (no-harm admission), 140 (throughput first-class) and 159 (priority engineering-base item); re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-slotfill-fold-a-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 done
 bash $SP/repin_loop_generic.sh $SF/slotfill_repin_smoke.sh $RD slurp-native-stage3-slotfill-fold-a-smoke-4-v1 smoke-generation /home/chao/slotfill-smoke-commit.txt || exit $?

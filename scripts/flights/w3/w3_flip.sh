@@ -27,7 +27,7 @@ for K in smoke arm; do
 cat > /home/chao/w3-$K-commit.txt <<M
 research: flip W3a ($K) to ready (knowledge-wave item W3 as W3a alone, owner decision 164 and the coordinator ruling of 2026-09-27: the retained AGREE arm with the intent-boundaries store moved to the contrast-card release intent-boundaries-contrast-v1, the Solver exemplar supply the AGREE arm's own; read on no harm at the shared wave-1 in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-w3-contrast-fold-a-admission-v1)
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 M
 done
 bash $SP/repin_loop_generic.sh $W3/w3_repin_smoke.sh $RD slurp-native-stage3-w3-fold-a-smoke-4-v1 smoke-generation /home/chao/w3-smoke-commit.txt || exit $?

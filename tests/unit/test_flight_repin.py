@@ -349,6 +349,66 @@ def test_refuses_on_residue_left_outside_the_package(tmp_path):
         run(pkg, fake)
 
 
+def test_a_foreign_sealed_readiness_package_is_neither_rewritten_nor_residue(tmp_path):
+    """Item: the 2026-09-28 COMP-1 -REC recovery cell, derived from the
+    sealed COMP-1 arm, inherited that parent's own hash-pinned pins and
+    quoted the parent's protocol document verbatim under its own
+    ``parent_protocol`` field. The parent's OWN package directory -- a real
+    ``docs/readiness/<other>/`` directory this tool never touches, not just a
+    ledger row -- keeps those hashes forever; the derived cell's own re-pin
+    must succeed and must never rewrite the parent's bytes."""
+    pkg = build_package(tmp_path)
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(
+        parent_dir / "protocol-registered-v1.json",
+        {
+            "schema": "test-protocol-v1",
+            "cell": {"run_id": "PARENT-RUN"},
+            "composed_config_hash": pkg["old_config_hash"],
+            "execution_plan_protocol_hash": pkg["old_protocol_hash"],
+        },
+    )
+    _write(
+        parent_dir / "README.md",
+        f"sealed parent: composed config `{pkg['old_config_hash']}`, protocol `{pkg['old_protocol_hash']}`\n",
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add a sealed parent readiness package carrying the inherited hashes")
+
+    parent_snapshot = {path: path.read_bytes() for path in parent_dir.iterdir() if path.is_file()}
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    summary = run(pkg, fake)  # must not raise RepinError
+
+    assert summary["cells"][0]["new"]["config_hash"] != pkg["old_config_hash"]
+    for path, content in parent_snapshot.items():
+        assert path.read_bytes() == content, f"{path} was rewritten by a re-pin that does not own it"
+
+    text = _all_text(pkg)
+    assert pkg["old_config_hash"] not in text
+    assert pkg["old_protocol_hash"] not in text
+
+
+def test_a_stale_hash_left_in_the_cells_own_package_is_still_residue(tmp_path):
+    """The foreign-package exemption must stop exactly at the cell's own
+    ``readiness_dir``: a file sitting INSIDE it that this tool does not
+    itself rewrite (only ``*.json`` and ``README.md`` are rewritten) is still
+    the cell's own, and a stale hash left there is still residue -- even with
+    an unrelated, disjoint-run-id sealed package present elsewhere."""
+    pkg = build_package(tmp_path)
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(parent_dir / "protocol-registered-v1.json", {"cell": {"run_id": "PARENT-RUN"}})
+    _write(pkg["readiness_dir"] / "stray-notes.txt", f"leftover mention of {pkg['old_config_hash']}\n")
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add a stray untouched file inside the cell's own package")
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake)
+
+
 # --------------------------------------------------------------------------
 # Refusal on consumed rows.
 # --------------------------------------------------------------------------
