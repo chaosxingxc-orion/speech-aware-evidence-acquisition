@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
-  "composed_config_hash": "ba4fb50c35f6e9d38b358150490abdde862f48ff1c6a6cb8ae6e4881aad04300",
+  "composed_config_hash": "940f54274345442b7d4c7f4b3b9ac3a9721106e4c9183240a67a6ee5906b200e",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 52,
     "planned_speech_audio_seconds": 138,
-    "protocol_hash": "f38cf4a55cf406876f4d2c4efaa3e93641ba09b75ae18a832c7a9ba4c7ba2c3b",
+    "protocol_hash": "8b017901ecb15d4e4ea22c2746d41b8be335cc267ef7db0ccbf689a56d2c21a3",
     "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "ccf1ecca46ee66e1bf89e223bb6b9ce36c6ea0e18d450009bf0ababd24f21fad"
+    "sha256": "f3a9427ae9506059c472ae10408fc72f4b75957032c689e9554013b248741d4a"
   },
   "purpose": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1: structural form proof only: no score and no read.",
   "quality_read_gate": "No column read before the complete sealed manifest, the ordered outputs, the phase summary, the single complete official TRAIN score of the delivered rows and the three rendered-and-scored first-visit columns exist; the READ row must be countersigned first.",
