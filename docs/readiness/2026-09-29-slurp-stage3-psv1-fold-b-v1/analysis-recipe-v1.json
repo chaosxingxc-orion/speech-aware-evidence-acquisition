@@ -39,7 +39,7 @@
   "read_driver": "scripts/flights/psv/psv_read.sh psv1 -> scripts/analysis/slurp_perception_branch_read.py (not yet landed at registration; merge set C item 1)",
   "read_run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-BRANCH-READ-V1",
   "recipe_id": "slurp-stage3-psv1-fold-b-branch-analysis-v1",
-  "registered_at_utc": "2026-09-29T00:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T05:15:03.000000+00:00",
   "resampling": {
     "bootstrap_draws": 10000,
     "cluster_key": "sample_id",

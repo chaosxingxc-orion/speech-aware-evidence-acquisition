@@ -1,6 +1,6 @@
 # Cell P-SV-2: phase-2 same-flight Perception branches on TRAIN Fold B (owner decisions 184, 186, 188)
 
-Registered before contact 2026-09-29 at study commit `6a2a62624` (branch `fable/psv`);
+Registered before contact 2026-09-29 at study commit `f33e8a0f2` (branch `fable/branchseeds`);
 both cells **held**. Nothing here authorises a flight, a flip or an admission entry. Development numbers only.
 
 **The question.** At the one Perception visit of every TRAIN Fold B row, does forcing a three-candidate hypothesis list (response-contract min_candidates 3) raise the share of rows whose gold intent is on Perception's list beyond the in-flight twin's null, read against the delivering branch A in the same flight, and what does the level-2 branch Solver make of the widened list?
@@ -46,11 +46,7 @@ SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling '
 | arm | planner | ALLOW | 19255 | 1689 | 4761 |
 | arm | solver | COMPACT_REQUIRED | 21281 | -337 | 2735 |
 | arm | blockers | null | | | |
-| smoke | perception | ALLOW | 19448 | 1516 | 4588 |
-| smoke | reviewer | ALLOW | 19311 | 1653 | 4725 |
-| smoke | planner | ALLOW | 19250 | 1714 | 4786 |
-| smoke | solver | COMPACT_REQUIRED | 21276 | -312 | 2760 |
-| smoke | blockers | null | | | |
+| smoke | check | MISSING | | | |
 
 The first Solver visit's realised prompt on the AGREE arm was 5003-14426 tokens;
 a branch Solver contact carries a branch note of the same shape in place of A's.

@@ -3,11 +3,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
       "cell": "slurp-native-stage3-psv1-fold-b-v1",
-      "composed_config_hash": "02414b820425b2546db8d8133deca847b72feb2f34125568c06b4ac17ae2ca5b",
+      "composed_config_hash": "535bb34e6e1628cef7e6d3f4494fe9a3a1b106a74ecde0a560e49798878f5224",
       "experiment": "slurp-native-stage3-psv1-fold-b-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-FIT-V1",
-      "protocol_hash": "0a00f9eed506ee159bd8fe6e0e78e5abcbc10172efbe54ec1fe6ba2c7aea7786",
+      "protocol_hash": "b0451b8ea7ac4cbe2e82252585dbd6588dd80f12b5aa0c391331f8c68e8389a9",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
@@ -15,11 +15,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-psv1-fold-b-smoke-4-v1",
-      "composed_config_hash": "7b49c707c06eefaf433a623120b5d1d111b97c287556d7e45772276b3297ed7f",
+      "composed_config_hash": "7ff13206535866e48788fce8abd82524393e650ada1aa26a7962eb81f405db97",
       "experiment": "slurp-native-stage3-psv1-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "63b31e62a0845b6bb3f35290a8d5fdfccace491b652ee1bf4f5c467237e7b903",
+      "protocol_hash": "a4d2b1b237c7a0bf69558c7bbf383418919e37cf2036e621184aa08c2dc632db",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
@@ -40,10 +40,10 @@
     "No branch value built from Fold B rollouts (owner decision 186)."
   ],
   "protocol_id": "slurp-stage3-psv1-fold-b-protocol-v1",
-  "registered_at_utc": "2026-09-29T00:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T05:15:03.000000+00:00",
   "schema": "saea-registered-protocol-v1",
-  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-psv, branch fable/psv",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-branchseeds, branch fable/branchseeds",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "6a2a62624",
+  "study_commit_at_registration": "f33e8a0f2",
   "the_question": "At the one Perception visit of every TRAIN Fold B row, does rendering the branch's rank-1/rank-2 candidate pair as a top-2 contrast block (top2-contrast-v1) move the level-2 branch Solver column's official intent accuracy beyond the in-flight twin's null, read against the delivering branch A (AGREE's Perception evidence as flown) in the same flight?"
 }

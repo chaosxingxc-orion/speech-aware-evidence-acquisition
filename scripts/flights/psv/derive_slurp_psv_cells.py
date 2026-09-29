@@ -99,6 +99,29 @@ def check_program_fragments() -> None:
         raise SystemExit("unexpected program ceilings")
 
 
+def pin_branch_seed(block: dict, key: str, kind: str, data_root: str) -> dict:
+    """Copy ``block`` and, if this (key, kind) cell's own prepared Perception
+    branch-seed artifact already exists on disk (written by
+    ``core.flight.cli prepare-branch-seeds``, design section 5 item 4; the
+    item-4 GAP), pin it as the B branch's ``prepared_seed {relpath, sha256}``.
+
+    A no-op (returns an unpinned copy) until that artifact exists, so this
+    script stays re-runnable before the offline prepare step has run, exactly
+    like every other pin this module writes only once its bytes exist.
+    """
+
+    block = copy.deepcopy(block)
+    relpath = ff.branch_seed_relpath(key, kind)
+    absolute = Path(data_root) / relpath
+    if not absolute.is_file():
+        return block
+    b_branch_id = ff.CELLS[key]["b_branch"]
+    for row in block["branches"]:
+        if row["branch_id"] == b_branch_id:
+            row["prepared_seed"] = {"relpath": relpath, "sha256": sha_file(str(absolute))}
+    return block
+
+
 def branches_block(key: str, measure: dict) -> dict:
     bounds = measure["max_supplied_items"]
     cell = ff.CELLS[key]
@@ -335,7 +358,9 @@ def derive_experiment(key: str, kind: str, spec: dict, date: str) -> str:
            f"({ff.CONTRAST_PAIR_BUILDER}; pin {ff.CONTRAST_PAIR_PLACEHOLDER})." if key == "psv1" else "")
         + " Nothing here authorises a flight, a readiness flip or an admission entry."
     )
-    cell["allowed_execution_stages"] = ["check", "prepare-supply", "worker"] + (["campaign"] if kind == "arm" else [])
+    cell["allowed_execution_stages"] = ["check", "prepare-supply", "prepare-branch-seeds", "worker"] + (
+        ["campaign"] if kind == "arm" else []
+    )
     cell["readiness"] = {
         "reason": (
             f"Cell {c['label']}{' four-row form smoke' if kind == 'smoke' else ''} registered before contact on {date} "
@@ -394,7 +419,8 @@ def main(argv: list[str] | None = None) -> int:
         blocks[key] = block
         for kind in ("arm", "smoke"):
             spec = roster(kind)
-            written.append(derive_baseline(key, kind, block, spec, filler))
+            pinned_block = pin_branch_seed(block, key, kind, args.data_root)
+            written.append(derive_baseline(key, kind, pinned_block, spec, filler))
             written.append(derive_experiment(key, kind, spec, args.date))
         n = ff.names(key, "arm")
         campaign = {"cells": [{"cell": n["experiment"], "experiment": n["experiment"]}], "schema": "saea-campaign-plan-v1"}
