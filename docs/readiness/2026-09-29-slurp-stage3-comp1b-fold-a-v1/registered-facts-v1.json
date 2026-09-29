@@ -62,7 +62,7 @@
       },
       "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
       "cell": "slurp-native-stage3-comp1b-fold-a-v1",
-      "composed_config_hash": "8c4517a3809f77b3973f683d488dcd2f4ea72eec05103408a2a20e1802c7d6f1",
+      "composed_config_hash": "4b8a8c58b451dde3ba13e78ac951ef1cadb019f8c62e48025b39cfd9436b100f",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "declares_agreement_source": true,
       "deliver_normaliser": {
@@ -74,7 +74,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "8976fa08d63b4cc6511253862c7c6b5f33ab380343cc55dad78d783f099828c5",
+      "protocol_hash": "e3f7a70a1e1c1dab01f8e18c31429e23665db42c842c97226101c3f47dfe938d",
       "readiness_state": "held",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1",

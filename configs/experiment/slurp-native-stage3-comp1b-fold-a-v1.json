@@ -16,6 +16,13 @@
         "reason": "Cell COMP-1b registered before contact on 2026-09-29 from cell COMP-1's OWN committed, flown and sealed fragments (decision 58: script-derived registrations) by reverting the citation contract's four keys to the locked plan's own non-cited program; the agreement term and the centroid key are COMP-1's own committed bytes, untouched. Comparator: the EXISTING SEALED in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1, cross-flight, never re-flown (owner decision 160's shared-A/A pattern, as cell G5 reused it). HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1b-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1b-fold-a-v1/root-admission-v1.json",
+            "sha256": "93cef7c9a475aeed15ead752a275112650ca995e202ef64b6b29f0a8a9d0053b",
+            "reason": "Decision slurp-stage3-comp1b-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, exactly the artifact cells AGREE and COMP-1 registered and flew: built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cells KPROBE and COMP-1 registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -25,10 +32,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed Fold A speech-query segment vectors, the CENTROID key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the sealed agreement table -- the SAME two sources cell COMP-1's own first-phase supply was built from -- with zero model, tokenizer, encoder, scorer or server contacts. Because the citation contract acts only on the Solver phase and never on Perception's first-phase supply, this cell's output digest is expected to equal COMP-1's own arm supply digest ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a exactly; the flip's re-derivation checks this. E16: a prepared artifact is evidence only for the implementation that produced it, so this cell pins its own rather than inheriting COMP-1's. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "9522cc06a930070e0bad3fc40bfa7ae85de7d14ff0e7e12eeb2ff6862edef239"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1"
     }

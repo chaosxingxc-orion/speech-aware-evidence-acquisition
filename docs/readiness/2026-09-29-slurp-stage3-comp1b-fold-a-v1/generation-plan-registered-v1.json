@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1b-fold-a-v1",
-  "composed_config_hash": "8c4517a3809f77b3973f683d488dcd2f4ea72eec05103408a2a20e1802c7d6f1",
+  "composed_config_hash": "4b8a8c58b451dde3ba13e78ac951ef1cadb019f8c62e48025b39cfd9436b100f",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11880,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "8976fa08d63b4cc6511253862c7c6b5f33ab380343cc55dad78d783f099828c5",
+    "protocol_hash": "e3f7a70a1e1c1dab01f8e18c31429e23665db42c842c97226101c3f47dfe938d",
     "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -38,7 +38,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "17f199c3fef6f914841ced7026b0e6400e0e4db691702f401d64f7af57be9823"
+    "sha256": "90868667789ccda6bf044988afad75fd13a50506dccfd096d886277818a16374"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1: Read against the SAME sealed in-chain A/A cell COMP-1 used, reused cross-flight and never re-flown (owner decision 160's shared-A/A pattern). PRIMARY: intent accuracy (scenario_action exact), paired per row, 10,000 bootstrap draws. GUARD: official pooled SLU-F1 non-inferior at the plan's own null (h_SLU 1.2485). ADMITTED: the intent CI95 lower bound above zero, the point at or above the declared 4.26 pp and the 2.5 pp cross-flight bar, AND the guard holds. NEUTRAL: both guards non-inferior at the own null (h_intent 0.9943 / h_SLU 1.2485) without an admitted gain. HARMFUL: a measured loss on either guard (decision 25). Every verdict carries the per-channel table the attribution note (a) / (b) / (c) split uses, the per-stratum tables in both weightings, and the same-shortlist intent-choice check.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for the COMP-1b arm. A verdict computed against the sealed comparator alone, without re-verifying the shared A/A's byte identity, is refused.",
