@@ -1,7 +1,34 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T16:04:34Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records and read agent) · HEAD at writing `c0067e0e` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T18:52:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+ops agent) · HEAD at writing `c6e98e6b` on `master` (plus this refresh commit), tree clean.
+**Since 16:04Z (ops agent):** **Merged** `fable/repinresume2` (`4b2946f3`; resume-parent residue exemption, 219 worktree
+tests passed), `fable/comp1slu` (`1ab14dfc`; the COMP-1 SLU-harm attribution, 7 passed), `fable/psv3` (`776e3f84`;
+P-SV-3 registration, 23 passed), `fable/comp1b` (`c5cb5399`; exposure-ledger conflict kept both sides, 95 passed).
+Gates on master: engineering base, harness admission, tool catalog, finite completion, results ledger and Stage-3
+label PASS; the effect floor check FAILs only on the known comp1dev placeholder (new advisory by design:
+`primary-metric-key-present` on P-SV-3). **Registry row 197** recorded (`98291b6e`; "决策197：同意" -- "Decision 197:
+agreed"). **COMP-1 coordinator verdict: NOT ADMITTED** (HARMFUL on the SLU-F1 guard -2.24 [-3.97, -0.47]; intent
+composition +4.26 [+2.41, +6.11] confirmed; cause = the Solver cited-answer contract, +102 of +114 false positives;
+next COMP-1b under decision 198) in the read note and the results ledger. **COMP-1b and P-SV-3 countersigned and
+minted** (`038ae2ab`, 16:34:28Z): COMP-1b under decision 198 (receipt `coordination/slurp-stage3-comp1b-fold-a-v1/
+root-admission-v1.json`, sha256 `93cef7c9...`, new `scripts/flights/comp1/comp1b_mint_receipt.py`); P-SV-3 under
+decision 184's instrument authority and the owner's GPU-must-not-idle instruction, a coordinator-registered column,
+**owner confirmation requested as decision 200** (receipt sha256 `5ee2506c...`). **Flips**: P-SV-1 seal-only satisfied
+with no new commit (the residue exemption held); P-SV-2 re-pinned and P-SV-3 first-pinned (`d1a49ebc`..`39a939fe`,
+branch seed prepared); COMP-1b (`a4d0d85f`, `d14f0611`); one final convergence round re-pinned the COMP-1b smoke
+(`c6e98e6b`) and all three scripts then satisfied at **flight commit `c6e98e6b`** (`comp1b-`, `psv1seal-` and
+`psv-flight-commit.txt` all equal it). Launch-mode `flight_registration_check` PASS on all three arms and the three
+smokes (advisory `tuning-roster-unverified`); the seal-only cell shows the same `receipt-disagrees-with-readiness`
+advisory the E4-1 seal-only precedent flew with. **G5 FINALIZED** (16:26Z), **E4-1 seal-only DONE** (16:36Z at
+`0b50d47e`), filler chunks c03-c06 flew 16:42Z-18:33Z (no eligible chunk left). **GPU queue now:**
+`SAEA-Queue-NEXT` (`/home/chao/saea-queue/queue_next.sh`, log `/home/chao/queue-next.out`): filler hold at once ->
+**COMP-1b** (smoke -> arm, flying since 18:50:28Z) -> **P-SV-1 seal-only** (0 GPU) -> **P-SV-2** (smoke -> arm) ->
+**P-SV-3** (smoke -> arm) -> filler inline. **Serving restart rule (owner 2026-09-29):** before each chain, with no
+flight alive, a resident llama-server at >= 12 h uptime is restarted on the same geometry (`serving_swap.sh slurp-np4
+--restart`; a host-memory refusal waits for CPU sidecars, never kills them) and logged `SERVING RESTART <uptime> ->
+READY`; observed 18h58m (68,326 s, started about 2026-09-28T23:49Z) -> restarted and READY at 18:50:26Z before COMP-1b.
+Pending branches: `fable/readsealonly`, `fable/emptysupply`. Decision 200 (P-SV-3 column) awaits the owner.
 **Since 15:04Z (records agent):** **Owner decisions 198/199 recorded** (registry rows at `f26e3cdb`). **198: COMP-1
 NOT ADMITTED** (intent +4.26 [+2.41, +6.11], SLU-F1 -2.24 [-3.97, -0.47], HARMFUL branch). Cause named by the
 attribution `docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md` (branch `fable/comp1slu`, not yet merged):
