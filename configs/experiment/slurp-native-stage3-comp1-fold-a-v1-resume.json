@@ -15,6 +15,13 @@
         "reason": "Cell COMP-1 SEAL-ONLY COMPLETION (owner decision 189 option A, PENDING; the one recovery of row 175; decision 181 outcome and addendum), HELD. Resume attempt 3 (attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3) flew all 609 remaining rows (2,476 calls) and ABORTED at the seal on a replay defect in core.flight.resume._classify (the raw recorded response instead of the deliver normaliser's output for kept rows), fixed at d619e1c5; its 609 rows are complete in its trace (sha256 87be5cefcaa395ad58a010b6d79986c5c79981c8cebe0279029bd22f7343df26). This attempt (attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only, FIT identity attempt-slurp-native-stage3-comp1-fold-a-fit-v1-seal-only) declares a resume_from LIST: (1) the original aborted attempt attempt-slurp-native-stage3-comp1-fold-a-generation-v1 (trace 029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997, 471 complete rows) and (2) resume attempt 3 (609 complete rows). Their union covers all 1,080 roster rows, so core.flight.runtime sets is_seal_only: zero new model contacts, no server, no slot, no lease; core.flight.cli seal-only seals the merged manifest (I7r per-sample binding to each row's own predecessor trace) and runs the one official finalize job. The offline replay (scripts/analysis/replay_seal_consistency.py with both predecessors pinned) is recorded as resume_replay_proof in the package's generation plan. Registered before contact by the COMP-1 seal-only registration agent (Claude Opus 5.5) on 2026-09-29; HELD pending owner decision 189. The coordinator, once the owner rules for option A, countersigns the DRAFT clauses on the arm's generation and FIT rows and the proof row, mints coordination/slurp-stage3-comp1-fold-a-v1/root-admission-sealonly-v1.json (decision id slurp-stage3-comp1-fold-a-sealonly-admission-v1) with scripts/flights/comp1/comp1_sealonly_mint_receipt.py and flips with scripts/flights/comp1/comp1_sealonly_flip.sh. Nothing here authorises a seal, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1-fold-a-sealonly-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-sealonly-v1.json",
+            "sha256": "8a203ffd78afc53a9acf38e48566df0da9671b408b65af87dc4688ce082f23e5",
+            "reason": "Decision slurp-stage3-comp1-fold-a-sealonly-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, exactly the artifact cell AGREE registered: built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded rows, 0 rows with no vote, all 60 boundary facets reachable. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -23,11 +30,11 @@
           {
             "kind": "preparation",
             "reason": "INHERITED from SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1: that cell's own model-free first-phase Perception supply (built by core.flight.cli prepare-supply with zero model, tokenizer, encoder, scorer or server contacts). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, cell and attempt identities included, so scripts/flights/repin_cell.py rebuilds it model-free into prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v<N>.json, ASSERTS the new output equals this artifact's output (ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a) and re-pins it in the same cycle. --allow-output-change must NEVER be passed: an output that moved means the knowledge channel moved and the recovery is no longer the arm.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v6.json",
-            "sha256": "03b7ffa2e80bf5b2db7a1b4347a579f9eee5e1c18fa4b37593bc46d589d41d5a"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v7.json",
+            "sha256": "d7a2b7047c18987544110e7664cae448f381969eda5dcbe08be58e78da8676b5"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "resume_from": [
         {

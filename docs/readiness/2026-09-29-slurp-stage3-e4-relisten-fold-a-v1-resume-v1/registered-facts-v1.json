@@ -1,0 +1,115 @@
+{
+  "schema": "saea-registered-facts-v1",
+  "registered_at_utc": "2026-09-29T12:30:00.000000+00:00",
+  "study_commit_at_registration": "109538e87",
+  "parent_registered_facts": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/registered-facts-v1.json",
+  "_note": "The E4-1 arm's stage3_measurement block, copied verbatim (same run id); the seal-only completion changes no measurement fact. Claim ceiling nominated.",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1": {
+      "ceilings": {
+        "hearing_share": "17 % (71 / 407 visible hearing/span origin) to 74 % ((71 + 229 undetermined) / 407) of the delivered gold-side errors (spec section 8 ruling 1); 4.09 x p spans about 0.71-3.0 pp",
+        "relisten_addressable_boundary_near_format": "35 of 142 BOUNDARY + NEAR + FORMAT items (node-gain ledger section 5.2)",
+        "spurious": "253 SPURIOUS predictions, 74 of them with the predicted filler in the Perception note (ledger section 5.2); column (b) targets these",
+        "upper_bound_pp_slu": "4.09 pp SLU-F1 (NEAR + WRONG-VALUE hearing class, 97 items, isolated; spec section 2), 0 pp intent by construction"
+      },
+      "claim": "nominated",
+      "claims_benefit": false,
+      "columns": [
+        "relisten-replace-only",
+        "relisten-replace-drop-unheard"
+      ],
+      "expected_effect_pp": 0.0,
+      "measurement_design": "same-flight-shadow-relisten",
+      "note": "Ruling 7: both columns declare expected_effect_pp 0.0 with claim ceiling 'nominated', since no measured analogue exists (E-C3 is unflown; VERIFY-1's +1.40 is a precision filter, not a re-listen). claims_benefit is false for both. The ceilings are stated beside, never as the expectation: the upper bound is 4.09 pp SLU-F1 (NEAR + WRONG-VALUE, 97 items, isolated) and 0 pp intent by construction; re-listen-addressable BOUNDARY + NEAR + FORMAT 35 of 142 items; SPURIOUS 253 predictions, 74 of them with the filler in the Perception note (column b's target); hearing share 17-74 % of the 407 delivered gold-side errors, so 4.09 x p spans about 0.71-3.0 pp. The bar is the design's own null, provisionally 0.3163 pp SLU-F1 at n = 1080 (0.735 x sqrt(200 / 1080), the ROLL-AA anchor the gate registers for same-flight-shadow-relisten). Nothing was tuned on any roster: tuning_roster none; the read roster is TRAIN Fold A.",
+      "per_column_expected_effect_pp": {
+        "relisten-replace-drop-unheard": 0.0,
+        "relisten-replace-only": 0.0
+      },
+      "primary_metric": "official pooled SLU-F1 (micro), each shadow column minus the delivered column; intent identical between columns by construction, tested per row as a guard",
+      "provisional_floor_pp": {
+        "arithmetic": "0.735 * sqrt(200 / 1080) = 0.3163 pp (ROLL-AA anchor, provisional)",
+        "intent_accuracy": 0.0,
+        "slu_f1": 0.3163
+      },
+      "read_bar": "the design's own twin/shadow null (ruling 7); provisionally the floor above, per column",
+      "read_roster": "SLURP-EVO-FOLD-A-V2",
+      "rows": 1080,
+      "shadow_delivery": true,
+      "tuning_roster": "none",
+      "variant_cost": {
+        "extra_audio_seconds_blind_on_the_sealed_agree_answers": 3290.3193,
+        "extra_audio_seconds_if_every_confirm_fires": 6580.6385,
+        "extra_audio_seconds_max": 18507.1706,
+        "extra_audio_seconds_per_row_mean_max": 17.1363,
+        "extra_contacts_blind_on_the_sealed_agree_answers": 1018,
+        "extra_contacts_blind_per_row_mean": 0.9426,
+        "extra_contacts_confirm": "one per blind contact that disagrees, is unheard or is unparsed; at most 1018 (all fire -> 2036 extra contacts)",
+        "extra_contacts_per_row_max": 6,
+        "note": "up to 6 extra contacts per row (3 blind + 3 confirm), each re-sending the row's full speech packet, so the flight's extra audio is at most 6 x the Fold A total 3084.5284375 s = 18507.1706 s; on the sealed AGREE answers the blind contacts would number 1018 (0.9426 per row) re-sending 3290.3193 s, and at most as many confirm contacts"
+      }
+    }
+  },
+  "seal_only": {
+    "cell": "slurp-native-stage3-relisten-fold-a-v1-resume",
+    "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only",
+    "fit_attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-fit-v1-seal-only",
+    "resume_from": {
+      "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",
+      "trace_sha256": "966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6"
+    },
+    "abort": {
+      "calls": 6304,
+      "audio_seconds": 18730.52300000018,
+      "samples_started": 1080,
+      "complete_rows": 1080,
+      "incomplete_rows": 0,
+      "finite_completion_rows": 10,
+      "finite_rows_with_relisten_after_source": 8,
+      "run_phases": "complete 2026-09-29T09:47:07Z - 11:40:06Z",
+      "failing_stage": "FlightRuntime.seal -> _merged_canonical_rows -> _canonical_output_rows"
+    },
+    "rehearsal": {
+      "where": "scratch copy of the attempt (/home/chao/scratch-e4-seal; receipt rehearsal.json), fable/e4sealfix code",
+      "rows_sealed": 1080,
+      "rows_abstained": 0,
+      "rows_with_relisten_receipt": 1080,
+      "relisten_contacts_used": 1889,
+      "result_contact_count_total": 6304,
+      "trace_contacts_total": 6304,
+      "delivered_text_vs_live_runtime_use_mismatch": 0,
+      "delivered_column_sha256_sealed": "81e977169486cd157e24280a7a65cd338c01217fb8ec9658a4eac0aa25277263",
+      "delivered_column_sha256_live_trace": "81e977169486cd157e24280a7a65cd338c01217fb8ec9658a4eac0aa25277263",
+      "note": "the delivered column rendered by the fixed seal stage is byte-identical to the live runtime-use custody of the flight"
+    },
+    "resume_replay_proof": {
+      "schema": "saea-resume-replay-proof-v1",
+      "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-relisten-fold-a-v1 --run-id SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1 --predecessor attempt-slurp-native-stage3-relisten-fold-a-generation-v1:966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6",
+      "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell: re-run at registration, see the package README",
+      "run_at_utc": "2026-09-29T12:25:14Z",
+      "predecessor_attempts": [
+        {
+          "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",
+          "trace_sha256": "966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6",
+          "samples_started": 1080,
+          "complete": 1080,
+          "incomplete": 0,
+          "rows_checked": 1080,
+          "rows_failing": 0,
+          "rows_with_relisten_receipt": 1080,
+          "rows_with_deliver_normaliser": 1080
+        }
+      ],
+      "rows_checked": 1080,
+      "rows_failing": 0,
+      "sealed_twice": 0,
+      "union_complete_rows": 1080,
+      "checker_sha256": "075b93f17359dd93494861532dd17755607721a53d9e92aca454e987e4d3312e",
+      "resume_py_sha256": "40770c1e9e3b6dacdab6a35d8bcb6a330667dd43598b5032bdf848ec088766c6",
+      "code_commit": "109538e874897a6782c32be60f54ffb660be6751",
+      "model_contacts": 0,
+      "note": "Model-free and read-only over the REAL attempt trace: every complete row rendered through the real FlightRuntime._canonical_output_rows seal stage (the fixed finite-source rule) and re-checked against I7 / I7n / I7g / I7l one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
+    },
+    "composed_config_hash": "1e96fa6271ad9eed130ba5593989a751482c6b29f609944cbf46c0ef5e87cf89",
+    "protocol_hash": "390949be103b3b9af74ee2eebaf7f8a5e278671aa5bf5d37471d3190d59256be"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
-  "composed_config_hash": "dfa6528a4ebb1388bde8a6c60a5dc6fd2b449fa9460f0830a6a80aabb62c36f1",
+  "composed_config_hash": "900637fdabac1ed1ef687adfbd261a53e4ed74736e5a8cb33f577caf77eb0083",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-seal-only",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "4acaf442f37b5d6a8e12c85de6486e31a440866b9a4362f3a0bb7ab928457d22",
+    "protocol_hash": "3b2f2e002ca3cab777fb5295a0252d36b0362e896ecf24dd0f790fde82a51579",
     "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -33,13 +33,13 @@
   "preparation_base_commit": "49f88ce6",
   "prepared_phase_supply": {
     "note": "INHERITED pin; the flip rebuilds it under this cell's own run id and asserts the output unchanged (never --allow-output-change).",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v6.json",
-    "sha256": "03b7ffa2e80bf5b2db7a1b4347a579f9eee5e1c18fa4b37593bc46d589d41d5a",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v7.json",
+    "sha256": "d7a2b7047c18987544110e7664cae448f381969eda5dcbe08be58e78da8676b5",
     "output_sha256": "ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1/protocol-registered-v1.json",
-    "sha256": "3481bdb391dc999eb866f6672d5bd1d1487d1b2f0be415c827f3002d66db4fb6"
+    "sha256": "e3f2f162005d3ca535212605c58b56f171ad8c01e13123a570da20eec890f9bd"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",
