@@ -24,6 +24,8 @@ from speech_aware_evidence_acquisition.core.flight.repin import (
     NO_CONSTRUCTION_SUPPLY_MESSAGE,
     NO_SUPPLIED_PHASE_MESSAGE,
     RepinError,
+    _is_resume_parent_readiness_record,
+    _resume_parent_package_dirs,
     apply_decision_and_readiness,
     repin_package,
     rewrite_ledger_notes,
@@ -727,6 +729,227 @@ def test_an_unrelated_config_outside_the_resume_chain_still_refuses(tmp_path):
     fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
     with pytest.raises(RepinError, match="residue"):
         run(pkg, fake, allow_output_change=True)
+
+
+# --------------------------------------------------------------------------
+# resume_from parent READINESS PACKAGE exemption (item E4-2, 2026-09-29): the
+# 2026-09-29 P-SV-1 seal-only flip's second instance of the same defect. A
+# resume/seal-only cell shares its parent's run id, so one exposure-ledger row
+# serves both; that row's own 'artifacts' column is set once, at the run id's
+# FIRST registration, and is never rewritten to point at a new package
+# afterward -- so it still names the PARENT's own docs/readiness/<package>/
+# directory even once the resume's own re-pin targets a brand new package.
+# The parent's own README and registered-facts legitimately quote the
+# parent's own frozen pins forever (rule E26); neither
+# ``_is_foreign_readiness_package`` (the package still names the shared run
+# id) nor ``_is_sealed_package_record`` (a non-JSON README, and a JSON file
+# naming no attempt and pinned by no sibling) reaches them.
+# --------------------------------------------------------------------------
+
+
+def _point_ledger_artifacts_at_parent_pkg(pkg: dict) -> None:
+    """Rewrite the fixture's one ledger row for ``RUN_ID`` so its 'artifacts'
+    column names ``docs/readiness/parent-pkg/...`` instead of the resume
+    cell's own ``test-pkg`` -- the real-world shape once a resume/seal-only
+    flip retargets ``readiness_dir`` to a brand new package while the shared
+    run id's ledger row keeps pointing at wherever it was first registered.
+    Also strips the fixture's 'Plan SHA256 ...' note so round 3 of
+    :func:`rewrite_dependent_hashes` (an orthogonal mechanism: it resolves the
+    NEW plan file's own sha256 from that same 'artifacts' column) finds
+    nothing to compare against a plan file this test never populates to
+    match; that round is not what this test exercises.
+    """
+
+    text = pkg["ledger_path"].read_text(encoding="utf-8")
+    text = text.replace(f"Plan SHA256 {pkg['old_plan_sha']}.", "no plan hash recorded in this fixture.")
+    text = text.replace(
+        "docs/readiness/test-pkg/generation-plan-registered-v1.json",
+        "docs/readiness/parent-pkg/generation-plan-registered-v1.json",
+    )
+    pkg["ledger_path"].write_text(text, encoding="utf-8", newline="\n")
+
+
+def test_a_resume_parents_own_readiness_package_quoting_the_old_pin_converges(tmp_path):
+    """The parent's own ``docs/readiness/parent-pkg/`` -- resolved from the
+    shared ledger row's 'artifacts' column, never a hand-rolled cell-id-to-
+    directory guess -- keeps the superseded phase-supply pin forever in its
+    README and ``registered-facts-v1.json`` (standing in for the real
+    defect's branch-seed pin: the exemption treats every superseded old
+    value the same way, whatever kind of pin it is). The resume cell's own
+    re-pin must still succeed and must never touch the parent's bytes."""
+    resume_trace_sha256 = hashlib.sha256(b"attempt-0-trace").hexdigest()
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+        own_resume_from={"attempt_id": "attempt-0", "trace_sha256": resume_trace_sha256},
+    )
+    _point_ledger_artifacts_at_parent_pkg(pkg)
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(
+        parent_dir / "README.md",
+        f"{RUN_ID}: the parent's own pinned prepared supply "
+        f"(`prepared/{RUN_ID}/phase-supply-v1.json`, sha256 `{pkg['old_artifact_sha']}`).\n",
+    )
+    _write(
+        parent_dir / "registered-facts-v1.json",
+        {
+            "run_id": RUN_ID,
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+        },
+    )
+    _write(
+        parent_dir / "generation-plan-registered-v1.json",
+        {"purpose": f"{RUN_ID}: the parent's own plan, never rewritten by the resume's re-pin"},
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(
+        pkg["repo"], "commit", "-q", "-m",
+        "point the ledger row at the parent package and add the parent's own sealed records",
+    )
+
+    parent_snapshot = {path: path.read_bytes() for path in parent_dir.iterdir() if path.is_file()}
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    summary = run(pkg, fake, allow_output_change=True)  # must not raise RepinError
+
+    assert summary["cells"][0]["artifact"]["rebuilt"] is True
+    for path, content in parent_snapshot.items():
+        assert path.read_bytes() == content, f"{path} was rewritten by a re-pin that does not own it"
+    assert pkg["old_artifact_sha"] not in _all_text(pkg)
+
+
+def test_a_foreign_readiness_package_naming_the_run_id_still_refuses_alongside_a_resume(tmp_path):
+    """The parent-package exemption names only the ONE package the shared
+    ledger row's 'artifacts' column resolves to. A DIFFERENT package that
+    also names the shared run id (so ``_is_foreign_readiness_package`` does
+    not exempt it either) and quotes the same superseded pin is not the
+    resolved parent -- it is a foreign package (or a defect) -- and the scan
+    must still refuse on it, even though a resume_from chain is active and
+    its actual parent package converges cleanly."""
+    resume_trace_sha256 = hashlib.sha256(b"attempt-0-trace").hexdigest()
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+        own_resume_from={"attempt_id": "attempt-0", "trace_sha256": resume_trace_sha256},
+    )
+    _point_ledger_artifacts_at_parent_pkg(pkg)
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(parent_dir / "generation-plan-registered-v1.json", {"purpose": f"{RUN_ID}: the resolved parent's plan"})
+
+    other_dir = pkg["repo"] / "docs/readiness/genuinely-foreign-pkg"
+    _write(
+        other_dir / "README.md",
+        f"{RUN_ID}: an unrelated package that happens to quote the same superseded pin "
+        f"sha256 `{pkg['old_artifact_sha']}`.\n",
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(
+        pkg["repo"], "commit", "-q", "-m",
+        "add the resolved parent package plus a genuinely foreign one quoting the same pin",
+    )
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake, allow_output_change=True)
+
+
+def test_a_resume_cells_own_package_with_stale_residue_still_refuses(tmp_path):
+    """The parent-package exemption never widens to the resume cell's OWN
+    package: a stray file left inside its own ``readiness_dir`` (one this
+    tool does not itself rewrite) that still carries the superseded pin is
+    still residue, even with the parent-package exemption active for a
+    genuine resume_from chain."""
+    resume_trace_sha256 = hashlib.sha256(b"attempt-0-trace").hexdigest()
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+        own_resume_from={"attempt_id": "attempt-0", "trace_sha256": resume_trace_sha256},
+    )
+    _point_ledger_artifacts_at_parent_pkg(pkg)
+
+    parent_dir = pkg["repo"] / "docs/readiness/parent-pkg"
+    _write(parent_dir / "generation-plan-registered-v1.json", {"purpose": f"{RUN_ID}: the resolved parent's plan"})
+    _write(pkg["readiness_dir"] / "stray-notes.txt", f"leftover mention of {pkg['old_artifact_sha']}\n")
+    _git(pkg["repo"], "add", "-A")
+    _git(
+        pkg["repo"], "commit", "-q", "-m",
+        "add the resolved parent package plus a stray leftover file inside the resume's own package",
+    )
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake, allow_output_change=True)
+
+
+def test_resume_parent_package_dirs_reads_the_ledger_artifacts_column(tmp_path):
+    """:func:`_resume_parent_package_dirs` resolves a run id's package the
+    same way the registration gate's own fallback does: the
+    ``docs/readiness/<package>/`` directory named in that run id's ledger row
+    'artifacts' column (``PACKAGE_REF`` in ``flight_registration_check.py``,
+    reused verbatim as ``_READINESS_PACKAGE_REF``). A run id with no such
+    entry, an unknown run id, empty ``run_ids``, or a missing ledger file all
+    resolve to nothing rather than raising -- this is a best-effort residue
+    exemption, not a hard requirement."""
+    ledger_path = tmp_path / "exposure-ledger.md"
+    ledger_path.write_text(
+        "# Exposure ledger\n\n"
+        "| date | run/experiment id | consumed | artifacts | notes |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| 2026-01-01 | RUN-A | no | docs/readiness/pkg-a/plan-registered-v1.json | notes |\n"
+        "| 2026-01-01 | RUN-B | no | some/other/plan.json | notes |\n",
+        encoding="utf-8",
+    )
+
+    assert _resume_parent_package_dirs(tmp_path, ledger_path, {"RUN-A"}) == {
+        (tmp_path / "docs" / "readiness" / "pkg-a").resolve()
+    }
+    assert _resume_parent_package_dirs(tmp_path, ledger_path, {"RUN-B"}) == set()
+    assert _resume_parent_package_dirs(tmp_path, ledger_path, {"RUN-C"}) == set()
+    assert _resume_parent_package_dirs(tmp_path, ledger_path, set()) == set()
+    assert _resume_parent_package_dirs(tmp_path, tmp_path / "missing.md", {"RUN-A"}) == set()
+
+
+def test_is_resume_parent_readiness_record_matches_package_and_preregistration_sibling(tmp_path):
+    """:func:`_is_resume_parent_readiness_record` exempts every file inside a
+    named parent package directory and its sibling preregistration note
+    (``docs/readiness/<package>-preregistration*.md``), but nothing else --
+    not an unrelated sibling file, not another package's own directory, and
+    nothing at all once ``resume_parent_package_dirs`` is empty."""
+    readiness_root = (tmp_path / "docs" / "readiness").resolve()
+    package_dir = (readiness_root / "parent-pkg").resolve()
+
+    inside_file = readiness_root / "parent-pkg" / "README.md"
+    inside_file.parent.mkdir(parents=True)
+    inside_file.write_text("x", encoding="utf-8")
+    sibling_preregistration = readiness_root / "parent-pkg-preregistration.md"
+    sibling_preregistration.write_text("x", encoding="utf-8")
+    unrelated_sibling = readiness_root / "parent-pkg-other-notes.md"
+    unrelated_sibling.write_text("x", encoding="utf-8")
+    other_dir_file = readiness_root / "other-pkg" / "README.md"
+    other_dir_file.parent.mkdir(parents=True)
+    other_dir_file.write_text("x", encoding="utf-8")
+
+    dirs = {package_dir}
+    assert _is_resume_parent_readiness_record(
+        inside_file, readiness_root=readiness_root, resume_parent_package_dirs=dirs
+    ) is True
+    assert _is_resume_parent_readiness_record(
+        sibling_preregistration, readiness_root=readiness_root, resume_parent_package_dirs=dirs
+    ) is True
+    assert _is_resume_parent_readiness_record(
+        unrelated_sibling, readiness_root=readiness_root, resume_parent_package_dirs=dirs
+    ) is False
+    assert _is_resume_parent_readiness_record(
+        other_dir_file, readiness_root=readiness_root, resume_parent_package_dirs=dirs
+    ) is False
+    assert _is_resume_parent_readiness_record(
+        inside_file, readiness_root=readiness_root, resume_parent_package_dirs=set()
+    ) is False
 
 
 def test_explain_residue_prints_the_rules_considered_for_each_hit(tmp_path, capsys):
