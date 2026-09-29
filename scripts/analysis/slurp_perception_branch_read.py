@@ -199,6 +199,128 @@ def utterance_level_top1_read(
             **_paired_bootstrap_over(per_utterance_mean)}
 
 
+def render_branch_column(row: Mapping[str, object], branch_id: str) -> dict[str, object]:
+    """One branch's own LEVEL-1 column (design section 2): the row it belongs to, its own note
+    and response digests, and its ordered candidate list -- never an ``admitted`` field. A column
+    is custody kept for the READ, not a delivered, scored output row; only a delivered row is
+    ever admitted (AT-P8: :func:`assert_column_package_never_admits`).
+    """
+
+    episode = row.get("native_episode_receipt")
+    branches = episode.get("perception_branches") if isinstance(episode, Mapping) else None
+    rows = branches.get("branches") if isinstance(branches, Mapping) else None
+    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)):
+        raise PerceptionBranchReadError(
+            f"row {row.get('sample_id')!r} carries no perception_branches receipt"
+        )
+    for item in rows:
+        if isinstance(item, Mapping) and item.get("branch_id") == branch_id:
+            return {
+                "sample_id": row.get("sample_id"),
+                "branch_id": branch_id,
+                "response_text_sha256": item.get("response_text_sha256"),
+                "note_sha256": item.get("note_sha256"),
+                "candidate_intent_ids": list(item.get("candidate_intent_ids") or ()),
+            }
+    raise PerceptionBranchReadError(f"branch {branch_id!r} is not in this row's receipt")
+
+
+def stub_score_column(column: Mapping[str, object], gold_intent_id: str) -> dict[str, object]:
+    """A minimal stand-in scorer for the column-paired-read contract (AT-P5): correct iff the
+    column's own TOP candidate equals gold. A real cell's own OFFICIAL scorer (SLURP's
+    ``evaluate.py``) replaces this at read time -- this function exists only to prove the
+    render -> score -> paired-read pipeline end to end on a fake sealed run, never as a
+    substitute for the official number.
+    """
+
+    candidates = column.get("candidate_intent_ids") or ()
+    top = candidates[0] if candidates else None
+    return {
+        "sample_id": column.get("sample_id"), "branch_id": column.get("branch_id"),
+        "correct": top == gold_intent_id,
+    }
+
+
+def column_paired_read(
+    rows: Sequence[Mapping[str, object]], gold_by_sample: Mapping[str, str], *,
+    branch_id: str, against: str = "A",
+    scorer: Callable[[Mapping[str, object], str], Mapping[str, object]] = stub_score_column,
+) -> dict[str, object]:
+    """Render both branches' columns, score each with ``scorer``, and bootstrap the paired
+    ``correct`` difference by row (AT-P5's own "column render, stub scoring and the column
+    paired read")."""
+
+    diffs: dict[str, float] = {}
+    for row in rows:
+        sample_id = row.get("sample_id")
+        if not isinstance(sample_id, str):
+            continue
+        gold = gold_by_sample.get(sample_id)
+        if gold is None:
+            continue
+        left = scorer(render_branch_column(row, branch_id), gold)
+        right = scorer(render_branch_column(row, against), gold)
+        diffs[sample_id] = float(bool(left["correct"])) - float(bool(right["correct"]))
+    return {"branch_id": branch_id, "against": against, "metric": "column_correct",
+            **_paired_bootstrap_over(diffs)}
+
+
+def assert_column_package_never_admits(column: Mapping[str, object]) -> None:
+    """AT-P8: a column package never emits ``admitted`` -- that verdict belongs to a delivered,
+    scored OUTPUT ROW (``core.bundle.outputs``), never to a branch's own custody column."""
+
+    if "admitted" in column:
+        raise PerceptionBranchReadError(
+            "a column package must never carry its own 'admitted' verdict"
+        )
+
+
+def level2_answer_column(row: Mapping[str, object], branch_id: str) -> dict[str, object]:
+    """One branch's LEVEL-2 answer column (design section 3, "Level 2"): the branch's own Solver
+    contact identity and response digest, and the candidate-supply ids that contact's slot
+    contract was re-resolved from. Refuses a branch that carries no level-2 fields at all.
+    """
+
+    episode = row.get("native_episode_receipt")
+    branches = episode.get("perception_branches") if isinstance(episode, Mapping) else None
+    rows = branches.get("branches") if isinstance(branches, Mapping) else None
+    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)):
+        raise PerceptionBranchReadError(
+            f"row {row.get('sample_id')!r} carries no perception_branches receipt"
+        )
+    for item in rows:
+        if isinstance(item, Mapping) and item.get("branch_id") == branch_id:
+            if "solver_response_text_sha256" not in item:
+                raise PerceptionBranchReadError(
+                    f"branch {branch_id!r} carries no level-2 Solver column"
+                )
+            return {
+                "sample_id": row.get("sample_id"), "branch_id": branch_id,
+                "solver_contact_id": item.get("solver_contact_id"),
+                "solver_response_text_sha256": item.get("solver_response_text_sha256"),
+                "candidate_supply_value_ids": list(item.get("candidate_supply_value_ids") or ()),
+            }
+    raise PerceptionBranchReadError(f"branch {branch_id!r} is not in this row's receipt")
+
+
+def assert_a_level2_column_equals_delivery(row: Mapping[str, object]) -> None:
+    """AT-P7: A's level-2 column equals the sealed first Solver visit after the normaliser.
+
+    A spends no NEW Solver contact at level 2 (design section 3, "Level 2": "A's column is A's
+    own first Solver answer"), so branch A's own ``solver_response_text_sha256`` must equal the
+    delivered row's own (post-normaliser) ``response_text_sha256`` -- the SAME field a delivered
+    row's own delivery-time normalisation (E11) already produced.
+    """
+
+    a_column = level2_answer_column(row, "A")
+    delivered = row.get("response_text_sha256")
+    if a_column["solver_response_text_sha256"] != delivered:
+        raise PerceptionBranchReadError(
+            "branch A's level-2 column does not equal the sealed row's own delivered response "
+            f"({a_column['solver_response_text_sha256']!r} != {delivered!r})"
+        )
+
+
 def assert_a_reproduces_ledger_counts(
     rows: Sequence[Mapping[str, object]], gold_by_sample: Mapping[str, str], *,
     expected_rank1_pct: float, expected_rank2_pct: float, expected_rank3_pct: float,
