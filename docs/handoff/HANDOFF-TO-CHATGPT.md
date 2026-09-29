@@ -1,11 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T04:39:40Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge and records agent, Claude Opus 5.5) · HEAD at writing `6473df27` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T05:34:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge and records agent, Claude Opus 5.5) · HEAD at writing `e5146944` on `master` (plus this refresh commit), tree clean.
 **GPU: W-SV-1 flying.** W-SV-1 (the first same-flight supply-variant cell) has flown since 03:29Z at flight commit
-`1c1e19ce` under queue `SAEA-Queue-WSV1` (queue started 03:26:47Z; about 6,545 contacts planned). W4-SV is flipped ready
-(`4f203ea9`) and flies next, then the filler. P-SV-1 / P-SV-2 stay **HELD** pending the branch-seed preparation step
-(`fable/branchseeds`).
+`1c1e19ce` under queue `SAEA-Queue-WSV1` (queue started 03:26:47Z; about 6,545 contacts planned; seal expected about
+07:30Z). W4-SV is flipped ready (`4f203ea9`) and flies next, then the filler c03-c06. P-SV-1 / P-SV-2 stay **HELD**
+pending the branch-seed preparation step (`fable/branchseeds`).
+**The seal-only completion capability is on master** (`fable/sealonly`, merge `e5146944`): multi-predecessor
+`resume_from`, the `core.flight.cli seal-only` mode, and I7r per-sample binding; the offline seal-consistency checker
+pins the predecessors and, over the real COMP-1 pair (the original attempt plus attempt 3), checks **1,080 rows, 0
+failing, 0 sealed twice**. The COMP-1 seal-only completion itself is being registered **HELD** on `fable/comp1seal`
+pending owner decision 189. E4-1 is registered held on `fable/e4cell`; its three engineering gaps are closing on
+`fable/e4v1`. `core/flight/runtime.py` changed with this merge, so HELD cells re-pin at their flip; flipped cells fly
+from their own flight commits.
 **COMP-1 aborted a third time.** Resume attempt 3 flew all 609 remaining rows (2,476 calls) and then failed at the SEAL
 on the 471 replayed rows (the deliver normaliser's output hash did not match the replayed `final_response_text`). Nothing
 is read. **The fix is now merged** (`fable/sealcheck`, merge `3ca7bfca`): `core/flight/resume.py` replays a normalised
@@ -16,8 +23,8 @@ gate is merged** (`fable/resumegate`, merge `6473df27`): every resume cell must 
 it opens (`scripts/checks/resume_prelaunch_gate_check.py`, wired into `batch_driver.sh` and the COMP-1 resume chain), and
 `flight_registration_check.py` reports `resume-replay-unproven` for a `resume_from` cell without a passing
 `resume_replay_proof` (blocking at launch). **Owner decision 189 is pending:** A, a seal-only completion of attempt 3
-(recommended; in progress on `fable/sealonly`), or B, a resume from attempt 3. E4 v1 wiring is in progress on
-`fable/e4v1`. RANKVIS stays **INERT** and REV-TFRL-1 **NOT ADMITTED**. SLURP only on the GPU (decision 187).
+(recommended; the capability is merged, the completion cell is being registered held on `fable/comp1seal`), or B, a
+resume from attempt 3. RANKVIS stays **INERT** and REV-TFRL-1 **NOT ADMITTED**. SLURP only on the GPU (decision 187).
 **Isolation:** every chain flies from the `fable-batch-flight` worktree at its own flight commit, never from
 master. Never re-flip a queued cell on master without updating its flight-commit file and the queue script's
 hard-coded commits. **Hazard:** any `core.flight.cli` process alive between chain steps makes the running
@@ -120,7 +127,8 @@ retrieved because the key side is text by design.
 | **Set C: same-flight instrument phase 2** (Perception branches; decision 184) | merge of `fable/svphase2` (`57d464ad`; conflict in `scripts/checks/flight_registration_check.py` resolved by the coordinator's ruling: the new perception-branch registration check is added, and the roster-split check keeps master's condition `report.named or report.consumed_by is None`) | merged. The perception-branch check reports `branch-seed-unpinned` on the held P-SV cells (advisory while held); the blocking set of `flight_registration_check.py --include-held` is unchanged (9 cells) |
 | **P-SV-1 / P-SV-2** (phase-2 Perception variants, TRAIN Fold B, decision 184) | merge of `fable/psv` (`4e5a9a7e`); `docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/`, `...-psv2-fold-b-v1/` | registered, **HELD** pending the branch-seed preparation step (`fable/branchseeds`, in progress). P-SV-1's contrast-pair table is pinned (`3ee765f3`): `prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json` sha256 `19bf2487...`, receipt `docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json` sha256 `4af9e874...`, 48 pairs written / 2 skipped of 50. No flip before the branch seeds are prepared and pinned |
 | **Filler c01 / c02 sealed-pool read** (TRAIN Fold B, 180 rows each, five Solver samples at T 0.7) | `docs/results/2026-09-29-slurp-filler-fold-b-c01-c02-pool-read.md` (merge `62d4a2f3`) | **DESCRIPTIVE.** Mean-sample intent / SLU-F1 80.56 / 65.87 (c01) and 82.89 / 62.36 (c02); oracle any-sample intent / best-of-5 SLU-F1 81.11 / 71.93 and 84.44 / 69.71; one intent across all five samples on 96.1 % / 94.4 % of rows; median micro SLU half-width 3.32 / 3.36 at n = 180. Sampling headroom sits in slot content (+6.1 to +7.3 SLU over the mean sample), not intent (at most +1.56) |
-| **E4 v1** (core-native targeted re-listen, decision 185) | `fable/e4v1` (unmerged) | logic landed on the branch; the wiring is in progress; a 4-row dry run precedes any flight |
+| **Seal-only completion capability** (option A of decision 189) | merge of `fable/sealonly` (`e5146944`; worktree merge of master `7f1951fa`, clean) | merged. Multi-predecessor `resume_from`, `core.flight.cli seal-only`, I7r per-sample binding; `replay_seal_consistency.py` pins the predecessors and checks the real COMP-1 pair at 1,080 rows / 0 failing / 0 sealed twice; 246 targeted tests pass. `runtime.py` changed, so HELD cells re-pin at their flip. The `--include-held` blocking set is unchanged (9 cells). The COMP-1 seal-only completion cell is being registered **HELD** on `fable/comp1seal` pending decision 189 |
+| **E4 v1** (core-native targeted re-listen, decision 185) | `fable/e4cell` (E4-1 registration), `fable/e4v1` (unmerged) | E4-1 registered **HELD** on `fable/e4cell`; three engineering gaps are closing on `fable/e4v1`; a 4-row dry run precedes any flight |
 | **Idle watchdog** (decision 182): one tick every 5 min; never launches onto a STOP (except a proven server-death STOP), respects hold files, ready-chain list `scripts/flights/batch/ready_chains.json` (`allowed_carriers: [slurp]`), server-death and 12 h uptime restart | merge `bdaa66b4`; `saea_task.ps1` repetition fix `8d36213f` (PS 5.1 refused `-RepetitionDuration MaxValue`) | Windows task `SAEA-Watchdog` registered and **PAUSED** by `/home/chao/saea-queue/watchdog.hold` (the coordinator removes it). First ticks 00:20:58Z / 00:21:59Z: "busy, exiting quietly" (stale flight lock + parked queue script); nothing launched |
 
 ### What the wave taught
@@ -197,7 +205,7 @@ Yours, unchanged:
 
 Mine: make no cross-flight claim without an in-chain replicate and no benefit claim under 200 rows. Every cell registered from 2026-09-27 carries a `stage3_measurement` block, and `stage3_effect_floor_check.py` enforces it.
 
-**Owner rulings received (decisions 175-188, 2026-09-28 / 29).** Open: **decision 189**, the COMP-1 disposition after resume attempt 3's seal failure (header): A, a seal-only completion of attempt 3 under the merged fix (recommended; `fable/sealonly` in progress), or B, a resume from attempt 3.
+**Owner rulings received (decisions 175-188, 2026-09-28 / 29).** Open: **decision 189**, the COMP-1 disposition after resume attempt 3's seal failure (header): A, a seal-only completion of attempt 3 under the merged fix (recommended; the capability is merged, the completion cell is being registered held on `fable/comp1seal`), or B, a resume from attempt 3.
 
 1. 175: COMP-1 recovers by RESUME; `-REC` superseded unflown; the resume is the flight's one recovery.
 2. 176: `kb_policy` digest lock re-pinned (`cfd34bf5`).
@@ -214,7 +222,7 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 13. 187: SLURP only on the GPU; E41 sub10 deferred (ready at `bf6db903`, disabled in the watchdog list).
 14. 188: REV-TFRL-1 NOT ADMITTED; B5 deferred behind P-SV-1 / P-SV-2; row 165's route open.
 
-**Pending branches (not merged):** `fable/sealonly` (seal-only completion of COMP-1 attempt 3, option A of decision 189), `fable/branchseeds` (the P-SV branch-seed preparation step), `fable/e4v1` (E4 v1; wiring in progress). `fable/sealcheck` and `fable/resumegate` are merged.
+**Pending branches (not merged):** `fable/comp1seal` (the COMP-1 seal-only completion cell, registered held pending decision 189), `fable/branchseeds` (the P-SV branch-seed preparation step), `fable/e4cell` (E4-1, registered held), `fable/e4v1` (E4 v1; three engineering gaps closing). `fable/sealcheck`, `fable/resumegate` and `fable/sealonly` are merged.
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code); none else after decisions 176 / 177.
 
@@ -237,9 +245,9 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 
 ## 7. My next action
 
-1. Take owner decision 189 (A, seal-only completion, recommended; B, resume from attempt 3), land `fable/sealonly` for A, pass the resume prelaunch replay gate where it applies, then read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`.
-2. Seal and read W-SV-1 (flying at `1c1e19ce`); fly W4-SV (ready at `4f203ea9`) next, then the filler; SLURP only (187).
-3. Land the branch-seed preparation step (`fable/branchseeds`), re-pin P-SV-1 / P-SV-2, then flip them; finish E4 v1's wiring and its 4-row dry run.
+1. Take owner decision 189 (A, seal-only completion, recommended; B, resume from attempt 3); for A, land `fable/comp1seal` (the seal-only capability is already on master), pass the resume prelaunch replay gate, flip, then read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`.
+2. Seal and read W-SV-1 (flying at `1c1e19ce`, seal about 07:30Z); fly W4-SV (ready at `4f203ea9`) next, then the filler c03-c06; SLURP only (187).
+3. Land the branch-seed preparation step (`fable/branchseeds`), re-pin P-SV-1 / P-SV-2, then flip them; close E4 v1's three engineering gaps (`fable/e4v1`), land E4-1 (`fable/e4cell`) and run its 4-row dry run.
 4. Remove `/home/chao/saea-queue/watchdog.hold` once the STOP is resolved and `ready_chains.json` names the next ready chain.
 5. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), then flip and queue A2.
 

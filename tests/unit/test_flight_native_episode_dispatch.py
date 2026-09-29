@@ -31,6 +31,14 @@ from speech_aware_evidence_acquisition.rails.phase_runner import run_continuous_
 from speech_aware_evidence_acquisition.reproduction import slurp_official_eval as soe
 from speech_aware_evidence_acquisition.reproduction.slurp_scoring import SlotEntity
 
+from speech_aware_evidence_acquisition.rails import relisten as rl
+
+from test_e4_relisten_live import (
+    REPO_ROOT as RELISTEN_REPO_ROOT,
+    _armed_config,
+    _arm_relisten_request_gate,
+    _two_entity_output,
+)
 from test_native_episode_runner import _ActualEpisodeHarness
 from test_slurp_legal_label_projection_v2 import (
     _PAIRING,
@@ -772,3 +780,265 @@ def test_an_illegal_planner_token_seals_its_row_and_the_campaign_continues(
     assert set(per_sample) == {E8C_ACCEPT_ID, E8C_ILLEGAL_ID}
     assert per_sample[E8C_ILLEGAL_ID]["scenario_action_exact"] == 1.0
     assert per_sample[E8C_ILLEGAL_ID]["projected"] is False
+
+
+# ---------------------------------------------------------------------------
+# E4 (owner decision 185): the identity-bound last mile -- the row's sealed
+# ``saea-relisten-v1`` receipt (``AgentLoopResult.relisten``) survives BOTH
+# outputs-row writers into the persisted outputs row, and the bundle
+# verifier's I7l invariant accepts it against this run's own real trace.
+# ---------------------------------------------------------------------------
+
+
+def test_relisten_reaches_the_sealed_row_and_the_bundle_verifier_accepts(
+    tmp_path, monkeypatch
+):
+    """Structurally ``test_grouped_solver_seals_a_row_the_bundle_verifier_
+    accepts``'s own twin, for E4 instead of E2d: driven through the REAL
+    ``FlightRuntime._dispatch_phase_program`` dispatch (never a hand-built
+    row), so both outputs-row writers
+    (``_rows_from_phase_summaries`` then ``_canonical_output_rows``) and the
+    I7l bundle invariant are proved on one real sealed row, not three
+    separate synthetic ones.
+    """
+
+    max_slots_per_row = 2
+    max_contacts = 2 + rl.relisten_extra_ceiling(max_slots_per_row)
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0,
+        max_contacts=max_contacts, planner_actions=(),
+    )
+    harness.config = _armed_config(max_slots_per_row=max_slots_per_row)
+    harness.repo_root = RELISTEN_REPO_ROOT
+    sample_id = harness.samples[0].sample_id
+    harness._output = _two_entity_output(sample_id)
+    _arm_relisten_request_gate(harness)
+
+    values = {
+        "native_episode": {
+            "schema": "saea-native-episode-config-v1",
+            "episode_id": harness.config.episode_id,
+            "max_revisions": 0,
+            "actions": dict(zip(("accept", "revise", "acquire"), harness.config.actions)),
+            "roles": {
+                role.role_kind: {
+                    "phase_id": role.phase_id,
+                    "max_iterations": role.max_iterations,
+                }
+                for role in harness.config.roles
+            },
+            "relisten": json.loads(harness.config.relisten_json),
+        },
+        "native_contact_fit": {
+            "run_id": "SAEA-NATIVE-RELISTEN-SEAL-FIT",
+            "attempt_id": "attempt-native-relisten-seal-fit",
+            "contact_cap": max_contacts,
+        },
+    }
+    runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values=values)
+    runtime._model = runtime._dataset = runtime._baseline = {}
+    runtime._adapter = harness.adapter
+    runtime._data_root = harness.world.data_root
+    runtime._repo_root = RELISTEN_REPO_ROOT
+    runtime._split_id = "all"
+    runtime._transport = harness.transport
+    runtime._arm = lambda: harness.client.arm
+    runtime._plan = harness.plan
+    runtime._phase_program_material = {
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": harness.speech_bindings,
+        "material_for_phase": harness.material_for_phase,
+        "trace_sink": harness.trace,
+        "review_for_phase": None,
+    }
+    runtime._continuous_phase_runner = run_continuous_program
+    runtime._phase_planner_specs = lambda _policy: {}
+    runtime._phase_decoding_params = lambda: {"temperature": 0, "max_tokens": 64}
+    runtime._fit_base_plan = lambda plan: plan
+    runtime._build_phase_tool_dispatcher = lambda *args, **kwargs: None
+    monkeypatch.setattr(
+        flight_module, "default_phase_program", lambda _policy: harness.program
+    )
+
+    def capacity_identity_only(request):
+        harness.request_gate(request)
+        capacity_identity_only.receipts.append({"capacity_verified": False})
+
+    capacity_identity_only.receipts = []
+    monkeypatch.setattr(
+        preparation_fit,
+        "build_native_contact_fit_gate",
+        lambda *_args: capacity_identity_only,
+    )
+    try:
+        rows, contacts, _kind, dispatch, _phases = runtime._dispatch_phase_program(
+            harness.client, harness.plan, harness.program.program_id,
+        )
+    finally:
+        harness.close()
+
+    # E4-1 registration fix: a relisten contact is dispatched OUTSIDE the
+    # ACCEPT/REVISE/ACQUIRE graph (design section 6) and is never added to
+    # ``result.contacts`` / ``native_episode_receipt.role_visits`` -- that is
+    # unchanged. What IS fixed is every DERIVED count that used to read
+    # ``result.contacts`` alone as "every contact this row spent": the
+    # aggregate ``contacts`` this call returns, the row's own
+    # ``contact_count`` field (checked below) and the flight's own
+    # ``contacts_per_sample_observed`` budget accounting (also checked below)
+    # now all include the row's own relisten spend (``FlightRuntime.
+    # _result_contact_count``), so none of them undercounts a relisten-armed
+    # row against its own ``contacts_per_sample_ceiling`` any more.
+    assert contacts == max_contacts
+    # Writer #1 (_rows_from_phase_summaries): the receipt is already on the
+    # row this call returns.
+    assert len(rows) == 1
+    receipt = rows[0].get("relisten")
+    assert receipt is not None
+    assert receipt["schema"] == rl.RELISTEN_RECEIPT_SCHEMA
+    assert receipt["triggered_count"] == 2
+    assert receipt["contacts_used"] == 4
+    # The row's own contact_count now counts the relisten spend too (E4-1
+    # registration finding: 0/120 rows counted it before this fix).
+    assert rows[0]["contact_count"] == max_contacts
+
+    # The flight's own budget-accounting receipt: the per-sample "observed"
+    # count the dispatch reports now matches this row's own real spend.
+    observed = {row["sample_id"]: row["contacts"] for row in dispatch["contacts_per_sample_observed"]}
+    assert observed == {sample_id: max_contacts}
+
+    # Writer #2 (_canonical_output_rows): the SAME receipt survives, byte for
+    # byte, into the row that actually gets sealed as outputs.jsonl.
+    runtime._output_rows = rows
+    canonical = runtime._canonical_output_rows(harness.client)
+    assert len(canonical) == 1
+    row = canonical[0]
+    assert row["relisten"] == receipt
+    # Shadow delivery: the delivered answer is never mutated by this stage.
+    assert row["text"] == rows[0]["final_response_text"]
+
+    # I7l: the bundle verifier's own trace-binding invariant accepts the
+    # sealed row against this run's own real trace.
+    trace_records = {}
+    for line in (
+        (harness.world.run_dir / f"{harness.plan.run_id}.trace.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ):
+        document = json.loads(line)
+        trace_records[document["record_id"]] = document["payload"]
+    # The row's own relisten spend actually happened, as real, traced
+    # contacts: 2 base (Perception, Solver) + 4 relisten (2 blind + 2
+    # confirm) -- exactly ``max_contacts``, no slack, no overflow.
+    assert sum(1 for record_id in trace_records if record_id.endswith("/request")) == max_contacts
+    raw = (json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    verified = _verify_outputs(
+        raw, frozenset({row["sample_id"]}), row["carrier_lock_key"], row["arm"],
+    )
+    _verify_outputs_trace_binding(verified, trace_records)
+
+    # ...and refuses the same row once an accepted entity's blind value hash
+    # is forged, with I7 alone (the row's own text/hash agreement) untouched.
+    forged = copy.deepcopy(row)
+    forged["relisten"]["entities"][0]["blind"]["value_sha256"] = "0" * 64
+    forged_raw = (json.dumps(forged, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    verified_forged = _verify_outputs(
+        forged_raw, frozenset({row["sample_id"]}), row["carrier_lock_key"], row["arm"],
+    )
+    with pytest.raises(BundleError, match="I7l"):
+        _verify_outputs_trace_binding(verified_forged, trace_records)
+
+
+def test_config_without_relisten_leaves_the_canonical_row_byte_identical(
+    tmp_path, monkeypatch
+):
+    """Item 1's own regression guard on BOTH writers: an unarmed config's
+    dispatch never adds a ``relisten`` key anywhere along the row's path --
+    exactly what a config written before E4 already produced."""
+
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=2, planner_actions=(),
+    )
+    from test_native_episode_runner import _review_off_config
+
+    harness.config = _review_off_config(max_contacts=2)
+    sample_id = harness.samples[0].sample_id
+
+    def output(key):
+        _sample_id, phase, visit, _turn = key
+        return (
+            _two_entity_output(sample_id)(key)
+            if phase == "solver"
+            else f"{phase}-analysis:{_sample_id}:visit:{visit}"
+        )
+
+    harness._output = output
+
+    values = {
+        "native_episode": {
+            "schema": "saea-native-episode-config-v1",
+            "episode_id": harness.config.episode_id,
+            "max_revisions": 0,
+            "actions": dict(zip(("accept", "revise", "acquire"), harness.config.actions)),
+            "roles": {
+                role.role_kind: {
+                    "phase_id": role.phase_id,
+                    "max_iterations": role.max_iterations,
+                }
+                for role in harness.config.roles
+            },
+        },
+        "native_contact_fit": {
+            "run_id": "SAEA-NATIVE-NO-RELISTEN-FIT",
+            "attempt_id": "attempt-native-no-relisten-fit",
+            "contact_cap": 2,
+        },
+    }
+    runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values=values)
+    runtime._model = runtime._dataset = runtime._baseline = {}
+    runtime._adapter = harness.adapter
+    runtime._data_root = harness.world.data_root
+    runtime._repo_root = RELISTEN_REPO_ROOT
+    runtime._split_id = "all"
+    runtime._transport = harness.transport
+    runtime._arm = lambda: harness.client.arm
+    runtime._plan = harness.plan
+    runtime._phase_program_material = {
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": harness.speech_bindings,
+        "material_for_phase": harness.material_for_phase,
+        "trace_sink": harness.trace,
+        "review_for_phase": None,
+    }
+    runtime._continuous_phase_runner = run_continuous_program
+    runtime._phase_planner_specs = lambda _policy: {}
+    runtime._phase_decoding_params = lambda: {"temperature": 0, "max_tokens": 64}
+    runtime._fit_base_plan = lambda plan: plan
+    runtime._build_phase_tool_dispatcher = lambda *args, **kwargs: None
+    monkeypatch.setattr(
+        flight_module, "default_phase_program", lambda _policy: harness.program
+    )
+
+    def capacity_identity_only(request):
+        harness.request_gate(request)
+        capacity_identity_only.receipts.append({"capacity_verified": False})
+
+    capacity_identity_only.receipts = []
+    monkeypatch.setattr(
+        preparation_fit,
+        "build_native_contact_fit_gate",
+        lambda *_args: capacity_identity_only,
+    )
+    try:
+        rows, contacts, _kind, _dispatch, _phases = runtime._dispatch_phase_program(
+            harness.client, harness.plan, harness.program.program_id,
+        )
+    finally:
+        harness.close()
+
+    assert contacts == 2
+    assert "relisten" not in rows[0]
+    runtime._output_rows = rows
+    canonical = runtime._canonical_output_rows(harness.client)
+    assert "relisten" not in canonical[0]
