@@ -167,6 +167,17 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-pbranch3-l2-v1": (
         ("perception", "reviewer", "planner", "solver"), 15, "native-role-episode"
     ),
+    # Item E4 (2026-09-28, owner decision 185, "core-native targeted re-
+    # listen"; design docs/superpowers/specs/2026-09-28-e4-core-native-
+    # targeted-relisten-design.md section 6, section 8 rulings): the
+    # review-revise program (anchor 11) with a post-accept
+    # native_episode.relisten block armed (max_slots_per_row 3, two
+    # contacts per triggered entity): the ceiling is the anchor's
+    # 11 + 2 * 3 = 17. Uncited: no baseline or experiment fragment names it
+    # yet.
+    "phase-native-candidates-review-revise-relisten-v1": (
+        ("perception", "reviewer", "planner", "solver"), 17, "native-role-episode"
+    ),
     # Cell B7b on the sealed anchor, 2026-09-17 (M5 / NCP level L2): the
     # review-revise program with ONE declared cleaning boundary, so the
     # ceiling is 1 + (1+1)*(1 + 3 + 1 + 1) = 13.
