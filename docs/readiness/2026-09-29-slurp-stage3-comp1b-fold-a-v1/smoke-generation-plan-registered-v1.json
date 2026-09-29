@@ -1,0 +1,50 @@
+{
+  "cell": "slurp-native-stage3-comp1b-fold-a-smoke-4-v1",
+  "composed_config_hash": "3d9b7226067f67a34207c57183b33b71193ac014c2cfd78ed0bc6e235c944243",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "cd334d9326503db9563c63101ae76ff607301ef54884e8cf911bba928349615e",
+    "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli worker on this cell alone; the smoke is deliberately outside the campaign plan and is never scored.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-comp1b-fold-a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "e42e87f3e",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip by core.flight.cli prepare-supply (item E16); expected to reproduce COMP-1's own arm supply digest ce68bebc... exactly, since the citation contract never touches the first-phase supply. --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "ab36435801e906fd6cb85776f77194e5e818e7fcacd942fc959062b726a17ff7"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-V1: Structural form proof only: no score and no read.",
+  "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for the COMP-1b arm. A verdict computed against the sealed comparator alone, without re-verifying the shared A/A's byte identity, is refused.",
+  "registered_at_utc": "2026-09-29T16:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1b, branch fable/comp1b",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_ROOT_ADMISSION_AND_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

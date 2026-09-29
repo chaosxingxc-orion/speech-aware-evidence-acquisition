@@ -1,0 +1,49 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
+      "role": "context only: cell COMP-1's own cited arm, the one this cell removes the citation contract from",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
+      "role": "the SAME sealed in-chain A/A cell COMP-1 used; reused cross-flight, never re-flown",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1"
+    }
+  },
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim, never a generalisation claim. No utterance text, transcript, gold label string, intent name as content or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-COMP1B-FOLD-A-PAIRED-ANALYSIS-V1"
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-PAIRED-ANALYSIS-V1",
+  "recipe_id": "slurp-stage3-comp1b-fold-a-paired-analysis-v1",
+  "registered_at_utc": "2026-09-29T16:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260929,
+    "unit": "row (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless the arm manifest is COMPLETE at 1,080 rows with this registration's composed config hash, sealed, with one successful complete official TRAIN score; the comparator is already sealed and consumed and is read, never re-flown.",
+    "2. Re-verify the shared-A/A byte identity is still what cell COMP-1's own shared-aa-proof-v1.json established (prepared output digest ba5e1faa... on all 1,080 rows) before reading any delta against it.",
+    "3. Score once over the complete manifest with the standard scorer (slurp-slu-official-train through core.scoring_batch, never sharded). Primary: intent accuracy (scenario_action_exact) paired per row against the in-chain A/A, 10,000 bootstrap draws, seed 20260929. Guard: official pooled SLU-F1, the same pairing.",
+    "4. Apply the decision rule fixed in the protocol (ADMITTED / NEUTRAL / HARMFUL) at the own-null margins h_intent 0.9943 and h_SLU 1.2485, against the declared expected_effect_pp 4.26 and the 2.5 pp cross-flight bar.",
+    "5. THE ATTRIBUTION PREDICTION CHECK (this cell exists to test it): (a) the zero-gold false-positive delta against the A/A should sit inside the same-bytes null band (about [-27, +29], the attribution note's channel (c) null); (b) official SLU-F1 should be no worse than -h_SLU (-1.2485); (c) the intent gain on identical Perception shortlists should reproduce the 3-to-gold / 1-from-gold pattern the note measured on COMP-1's own 170 identical-shortlist rows.",
+    "6. Report the per-scenario tables in both weightings (natural-mixture and equal-stratum), the recording-channel split (far-field / headset), and the same channel (a)/(b)/(c) accounting the attribution note used, so a reader can see directly whether removing the contract closed the gap the note predicted.",
+    "7. Write the read under its own later-registered read id; state that every number is a TRAIN Fold A development number, never a test claim."
+  ],
+  "title": "Cell COMP-1b -- the composed (agreement + centroid) read against the SAME in-chain A/A cell COMP-1 used, with the same-shortlist intent-choice check and the channel (a)/(b)/(c) split the attribution note used"
+}
