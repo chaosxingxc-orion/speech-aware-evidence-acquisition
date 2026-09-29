@@ -8,7 +8,8 @@ session restart wiped it mid-campaign; from now on they live here and every sche
 | --- | --- |
 | `saea_task.ps1` | register / start / stop / query one scheduled task (`-Name`, `-Script <wsl path>`, `-Status`, `-Stop`, `-Start`, `-RepeatMinutes N` for a recurring trigger); battery and idle conditions off, no time limit |
 | `idle_watchdog.sh`, `idle_watchdog_select.py`, `idle_watchdog_recovery.py`, `ready_chains.json` | the idle watchdog (owner decision 182), including its server-death-STOP and uptime-restart recovery rules: see "Idle watchdog" below |
-| `batch_driver.sh` | the unattended queue driver: `/home/chao/batch-queue.json` steps, `batch-status.jsonl` events, `batch-STOP` on first failure, `batch-done` at the end; `BATCH_SESSION` selects the resident session; `prelaunch` refuses a step unless `scripts/checks/flight_registration_check.py` passes on its arm, smoke and campaign-plan cells (owner decision 163: rows root countersigned, decision receipt present with the run ids eligible, READ run id declared and registered) |
+| `batch_driver.sh` | the unattended queue driver: `/home/chao/batch-queue.json` steps, `batch-status.jsonl` events, `batch-STOP` on first failure, `batch-done` at the end; `BATCH_SESSION` selects the resident session; `prelaunch` refuses a step unless `scripts/checks/flight_registration_check.py` passes on its arm, smoke and campaign-plan cells (owner decision 163: rows root countersigned, decision receipt present with the run ids eligible, READ run id declared and registered), and, scoped to a step whose experiment config declares `resume_from` on its cell (`resume_gate_lib.sh`'s `resume_gate_run`, a no-op for every other step), also refuses unless `resume_prelaunch_gate.sh` passes (see "Registration field: resume_replay_proof" below) |
+| `resume_prelaunch_gate.sh`, `resume_gate_lib.sh` | the resume prelaunch gate (coordinator, after the COMP-1 resume attempt 3 seal abort): `resume_prelaunch_gate.sh` wraps `scripts/checks/resume_prelaunch_gate_check.py`, which reads a named cell's `resume_from`, verifies every predecessor trace hashes to its declared identity, and runs `scripts/analysis/replay_seal_consistency.py` over every predecessor under the CURRENT code, refusing (non-zero, naming the failing row count and check names) if any row fails or is sealed twice; `resume_gate_lib.sh` is the scoping library `batch_driver.sh` sources (`resume_gate_declared`, `resume_gate_run`) so the driver and `scripts/flights/comp1/batch_chain_comp1_resume.sh` (which also calls the gate directly, right before the driver) share one rule |
 | `batch_inspect.py` | structural acceptance of a sealed smoke or arm (attempt FINALIZED, manifest COMPLETED at the flight commit, rows, ceilings, tool surface, one score job) |
 | `gpu_ramp_test.sh` | the non-model GPU preflight (fp16 matmul burst; refuse below 30 TFLOP/s) |
 | `batch_driver_task.sh`, `batch_chain_*.sh` | scheduled-task entry points: pin the batch flight worktree at a flight commit, write the queue, run the driver |
@@ -64,6 +65,42 @@ block (not only the same-flight supply-variant design's merge-set-A fields):
 
 A sealed / already-flown cell is never blocked by any of the three (this repository does not
 rewrite sealed bytes or their registrations); the findings are still reported against it.
+
+## Registration field: resume_replay_proof
+
+Coordinator ruling after the COMP-1 resume attempt 3 seal abort: a four-row dry-run smoke cannot
+see the seal-time consistency checks a resume-recovery's KEPT rows must still pass under the
+CURRENT code -- the abort itself was exactly this (a harness change the smoke never exercised).
+So a cell that declares `resume_from` must carry, in its own readiness package's
+`*plan-registered*.json`, a `resume_replay_proof` block naming every one of:
+
+- `rows_checked` -- total rows the checker replayed across every declared predecessor;
+- `rows_failing` -- rows that failed a seal-time consistency check (must be `0`);
+- `sealed_twice` -- rows sealed by more than one declared predecessor (must be `0`);
+- `checker_sha256` -- the SHA-256 of the exact `scripts/analysis/replay_seal_consistency.py` that
+  ran;
+- `code_commit` -- the study commit the replay ran under.
+
+Mint this block by running `scripts/flights/batch/resume_prelaunch_gate.sh --repo-root REPO
+--data-root DATA --experiment EXP --cell CELL` (or the checker it wraps,
+`scripts/checks/resume_prelaunch_gate_check.py`) before registering the cell: on success it
+prints exactly this block (schema `saea-resume-replay-proof-v1`) as JSON, ready to paste into the
+package's registered-plan facts beside `resume_from` and `resume_budget`.
+
+`scripts/checks/flight_registration_check.py` checks for this block on every cell that declares
+`resume_from`:
+
+- `resume-replay-unproven` -- the block is missing, missing a field, or reports a failing or
+  sealed-twice row. Advisory in tree mode (reported, never fails the whole-tree scan over
+  paperwork not yet done); **BLOCKING** at launch (`--cell` / `--campaign-plan`, what
+  `batch_driver.sh` runs) for a live, unflown resume cell.
+
+This is the PAPERWORK half of the rule; `resume_prelaunch_gate.sh` is the LIVE half, run
+automatically by `batch_driver.sh`'s `prelaunch` (scoped to a step whose experiment config
+declares `resume_from`, via `resume_gate_lib.sh`) and directly by
+`scripts/flights/comp1/batch_chain_comp1_resume.sh` right before the driver starts. Both must
+pass; neither substitutes for the other -- the registration check proves the replay was already
+run and recorded, the live gate re-runs it under whatever code is actually about to fly.
 
 ## Idle watchdog (owner decision 182)
 

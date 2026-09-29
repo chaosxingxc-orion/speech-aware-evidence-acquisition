@@ -1697,6 +1697,28 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # so the phase index decides which phase runs and the retired controller's
     # hard-coded ``QueryState.loop_step`` branch is gone.
     "phase-hard-validity-repair-v1": "phase-hard-validity-repair-v1.json",
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md section 5, item 8): the SAME four phases, the SAME episode_id
+    # and the SAME role graph as "phase-native-candidates-review-revise-v1"
+    # (max_contacts 11) -- reviewer 3 / planner 1 / max_revisions 1 -- with the
+    # Perception visit fanned out to K = 3 declared branches (design section 6,
+    # cells P-SV-1 and P-SV-2), level 1 (note only): the bounded graph ceiling
+    # is the anchor's 11 plus (K - 1) = 13
+    # (rails.supply_variants.perception_branch_ceiling). A separate program id,
+    # never a flag on the base program, for the reason every comment above
+    # states: two program ids must never resolve to the same object when their
+    # contact ceilings differ.
+    "phase-native-candidates-review-revise-pbranch3-l1-v1": (
+        "phase-native-candidates-review-revise-pbranch3-l1-v1.json"
+    ),
+    # Same-flight instrument, PHASE 2: the SAME shape as the pbranch3-l1
+    # program directly above, at level 2 (note + one Solver contact per
+    # non-A branch) instead of level 1: the bounded graph ceiling is the
+    # anchor's 11 plus 2 (K - 1) = 15.
+    "phase-native-candidates-review-revise-pbranch3-l2-v1": (
+        "phase-native-candidates-review-revise-pbranch3-l2-v1.json"
+    ),
 }
 
 _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
@@ -1870,6 +1892,24 @@ def register_phase_programs_v1() -> None:
             default_controller_factory(
                 default_phase_program(
                     "phase-native-candidates-review-revise-variants3first-v1"
+                )
+            ),
+        )
+    if "phase-native-candidates-review-revise-pbranch3-l1-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-pbranch3-l1-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-pbranch3-l1-v1"
+                )
+            ),
+        )
+    if "phase-native-candidates-review-revise-pbranch3-l2-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-pbranch3-l2-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-pbranch3-l2-v1"
                 )
             ),
         )
