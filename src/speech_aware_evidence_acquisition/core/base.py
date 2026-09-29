@@ -794,6 +794,72 @@ class PerceptionPresentationRegistry(Registry):
 PERCEPTION_PRESENTATIONS = PerceptionPresentationRegistry("Perception branch presentation")
 
 
+# ---------------------------------------------------------------------------
+# Evidence-CONSUMPTION MODULES (owner decisions 195 and 196, design
+# docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md
+# section 2.1). A closed registry with the same door as
+# :data:`PERCEPTION_PRESENTATIONS`: an entry is checked at REGISTRATION, and
+# a ``native_episode.consumption_module.module_id`` value resolves here
+# exactly as a ``presentation_id`` resolves in
+# :data:`PERCEPTION_PRESENTATIONS`. Populated from
+# ``rails/consumption_module.py``. An entry is a policy COMPILER, never a
+# controller and never a model client: it turns a declared component list
+# into the config blocks the one harness already reads.
+
+
+@runtime_checkable
+class ConsumptionModule(Protocol):
+    """One registered evidence-consumption module's shape."""
+
+    id: str
+    version: str
+
+    def __call__(self, *args: object, **kwargs: object) -> object: ...
+
+
+class ConsumptionModuleError(CoreError):
+    """A registered consumption module is invalid or misused."""
+
+
+def assert_consumption_module(entry: object, *, name: str) -> object:
+    """Refuse anything that is not a callable, identified module.
+
+    Checked at REGISTRATION, for the same reason
+    :func:`assert_perception_presentation` checks its own door.
+    """
+
+    if not callable(entry):
+        raise ConsumptionModuleError(f"consumption module {name!r} must be callable")
+    for attribute in ("id", "version"):
+        value = getattr(entry, attribute, None)
+        if not isinstance(value, str) or not value.strip():
+            raise ConsumptionModuleError(
+                f"consumption module {name!r}.{attribute} must be non-empty "
+                f"text, got {value!r}"
+            )
+    if getattr(entry, "id") != name:
+        raise ConsumptionModuleError(
+            f"consumption module registered as {name!r} declares id "
+            f"{getattr(entry, 'id')!r}; the registry name and the entry's own "
+            "id are one identity"
+        )
+    return entry
+
+
+class ConsumptionModuleRegistry(Registry):
+    """Checks its entries at registration (see :func:`assert_consumption_module`)."""
+
+    def register(self, name: str, entry: object) -> object:
+        assert_consumption_module(entry, name=name)
+        return super().register(name, entry)
+
+
+#: The evidence-consumption module registry (owner decisions 195/196). A
+#: ``native_episode.consumption_module.module_id`` value resolves here.
+#: Populated from ``rails/consumption_module.py``.
+CONSUMPTION_MODULES = ConsumptionModuleRegistry("evidence consumption module")
+
+
 class RepairAlignmentError(CoreError):
     """A substitution-only delivery rule refuses.
 
