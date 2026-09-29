@@ -40,6 +40,22 @@ word-gap method finds no distinguishing cue word or slot type on one side (``cue
 both empty) -- the caller that BUILDS the table is the one that knows the pool-support count
 (``rails.perception_presentations``'s own docstring), and this is that count and that decision.
 
+PAIR SCOPE, ``--pair-scope`` (O7 ruling, docs/superpowers/specs/2026-09-28-same-flight-instrument-
+phase2-perception-variants-design.md). ``nearest-rival`` (default) is the ORIGINAL selection above
+and is byte-reproducible: it writes the same artifact id, relpaths and bytes it always has, proven
+by ``--check``. ``all-pairs`` instead writes EVERY unordered pair of distinct SLURP intents (O5's
+floor still applies per pair, unchanged), roster-agnostic -- pairs are never selected from a
+roster's seeds, only from the full released intent set -- because the P-SV-1 B branch only renders
+a block when a row's own rank-1/rank-2 pair is in the table, and the nearest-rival table covers
+just 415 of 1,078 P-SV-1 rows (38.5 %; scripts/analysis/slurp_contrast_pair_coverage.py). It writes
+a SEPARATE artifact (``SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2``, its own table relpath, receipt and
+exposure-ledger row) under the SAME method, pool, pins and forbidden-roster disjointness check --
+never a mutation of the ``nearest-rival`` output. The table's own ``schema`` field never changes
+between scopes: ``core.flight.runtime`` and the tests hard-validate it as
+``saea-slurp-perception-contrast-pairs-v1``, and the per-pair row shape
+(``activation_sentence``/``exclusion_sentence`` keyed by the two intent ids) is identical either
+way, so the runtime loader and ``rails.perception_presentations`` read either table unchanged.
+
 BOUNDARY. Model-free: zero model, server, encoder, embedder, ASR, scorer, network, GPU and
 paid-API contact. TRAIN only, same pins and same forbidden-roster disjointness check as W3a. No
 gold label of any evaluated row is read (this reads only the label a TRAIN exemplar itself
@@ -49,6 +65,9 @@ carries pair ids, counts and hashes only -- never a cue word, a sentence or any 
 same "counts only" discipline W3a's own receipt keeps).
 
     python scripts/build_slurp_intent_contrast_pairs.py --data-root "$SPEECHRL_DATA_DIR" [--dry]
+    python scripts/build_slurp_intent_contrast_pairs.py --data-root "$SPEECHRL_DATA_DIR" \\
+        --pair-scope all-pairs
+    python scripts/build_slurp_intent_contrast_pairs.py --data-root "$SPEECHRL_DATA_DIR" --check
 """
 
 from __future__ import annotations
@@ -56,6 +75,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import importlib.util
+import itertools
 import json
 import os
 import sys
@@ -70,12 +90,53 @@ import numpy as np  # noqa: E402
 from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot  # noqa: E402
 from speech_aware_evidence_acquisition.rails.phase_supply import load_sealed_vectors  # noqa: E402
 
-ARTIFACT_ID = "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1"
-LEDGER_ROW = "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V1"
+#: The table document's OWN ``schema`` field -- fixed across every ``--pair-scope``, never bumped.
+#: ``core.flight.runtime.FlightRuntime`` and ``tests/unit/test_perception_branch_contrast_and_
+#: contract.py`` hard-validate this exact string; an ``all-pairs`` table is a different artifact
+#: with a different id, relpath and receipt, but the SAME row shape and the SAME table schema, so
+#: the runtime loader and ``rails.perception_presentations`` read it unchanged (O7 ruling).
+TABLE_SCHEMA = "saea-slurp-perception-contrast-pairs-v1"
+
+#: One entry per ``--pair-scope`` choice: everything that differs between the ORIGINAL
+#: nearest-rival table (byte-reproducible v1, unchanged default) and the O7 all-pairs table (a
+#: separate artifact, never a mutation of v1's bytes).
+PAIR_SCOPE_CONFIG: dict[str, dict[str, str]] = {
+    "nearest-rival": {
+        "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1",
+        "ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V1",
+        "builder_id": "saea-slurp-perception-contrast-pairs-v1",
+        "receipt_schema": "saea-slurp-perception-contrast-pairs-receipt-v1",
+        "receipt_relpath": "docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json",
+        "pair_selection": (
+            "one pair per intent: its single nearest rival by centroid cosine, deduplicated by "
+            "unordered pair"
+        ),
+    },
+    "all-pairs": {
+        "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2",
+        "ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V2",
+        "builder_id": "saea-slurp-perception-contrast-pairs-v2",
+        "receipt_schema": "saea-slurp-perception-contrast-pairs-receipt-v2",
+        "receipt_relpath": "docs/receipts/knowledge/slurp-perception-contrast-pairs-v2.json",
+        "pair_selection": (
+            "every unordered pair of distinct SLURP intents whose pool support meets the "
+            "registered floor (min_pair_pool_support), roster-agnostic: pairs are never selected "
+            "from any roster's seeds, only from the full released intent set (O7 ruling, "
+            "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-"
+            "design.md)"
+        ),
+    },
+}
+
+#: Back-compat module-level defaults -- the ``nearest-rival`` scope's own constants, unchanged
+#: from before ``--pair-scope`` existed, so a caller importing these names (the unit tests) keeps
+#: seeing exactly what it always has.
+ARTIFACT_ID = PAIR_SCOPE_CONFIG["nearest-rival"]["artifact_id"]
+LEDGER_ROW = PAIR_SCOPE_CONFIG["nearest-rival"]["ledger_row"]
 OUT_NAMESPACE = f"prepared/{ARTIFACT_ID}"
 TABLE_RELPATH = f"{OUT_NAMESPACE}/table-v1.json"
-RECEIPT_RELPATH = "docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json"
-BUILDER_ID = "saea-slurp-perception-contrast-pairs-v1"
+RECEIPT_RELPATH = PAIR_SCOPE_CONFIG["nearest-rival"]["receipt_relpath"]
+BUILDER_ID = PAIR_SCOPE_CONFIG["nearest-rival"]["builder_id"]
 DIMENSION = "intent-boundary"
 
 #: A pair is minable at all only when EACH intent's own R01-excluded pool support is at least
@@ -156,6 +217,26 @@ def select_top2_pairs(order: list[str], cosine: np.ndarray) -> list[tuple[str, s
     return sorted(pairs)
 
 
+def select_all_pairs(order: list[str]) -> list[tuple[str, str]]:
+    """Every unordered pair of distinct intents in ``order`` (O7 ruling): the roster-agnostic
+    all-pairs selection, never a per-intent nearest-rival subset. Needs no cosine matrix -- the
+    pair SPACE is the whole released intent set, not a similarity-ranked shortlist of it. Sorted
+    for the same deterministic, order-independent contract :func:`select_top2_pairs` keeps.
+    """
+
+    return sorted(tuple(sorted(pair)) for pair in itertools.combinations(order, 2))
+
+
+def select_pairs(order: list[str], cosine: np.ndarray, pair_scope: str) -> list[tuple[str, str]]:
+    """Dispatch on ``--pair-scope``: ``nearest-rival`` (default) or ``all-pairs`` (O7)."""
+
+    if pair_scope == "nearest-rival":
+        return select_top2_pairs(order, cosine)
+    if pair_scope == "all-pairs":
+        return select_all_pairs(order)
+    raise BuildError(f"unknown --pair-scope {pair_scope!r}")
+
+
 def _word_list(words: list[str]) -> str:
     return ", ".join(words) if words else ""
 
@@ -202,12 +283,19 @@ def contrast_sentences(
     return activation_sentence, exclusion_sentence
 
 
-def build_table(order: list[str], cosine: np.ndarray, stats: dict[str, dict]) -> dict:
-    """The whole table: minted rows plus a receipted list of skipped pairs and why."""
+def build_table(
+    order: list[str], cosine: np.ndarray, stats: dict[str, dict], *, pair_scope: str = "nearest-rival",
+) -> dict:
+    """The whole table: minted rows plus a receipted list of skipped pairs and why.
+
+    ``pair_scope`` selects the pair SPACE (:func:`select_pairs`); the default ``"nearest-rival"``
+    is byte-identical to this function's behaviour before ``--pair-scope`` existed. O5's own floor
+    (:func:`contrast_sentences`) applies per pair, unchanged, under either scope.
+    """
 
     rows: dict[str, dict] = {}
     skipped: list[dict] = []
-    for x_id, y_id in select_top2_pairs(order, cosine):
+    for x_id, y_id in select_pairs(order, cosine, pair_scope):
         sentences = contrast_sentences(x_id, y_id, stats.get(x_id), stats.get(y_id))
         pair_key = f"{x_id}|{y_id}"
         if sentences is None:
@@ -278,36 +366,71 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--data-root", type=Path, default=Path(os.environ.get("SPEECHRL_DATA_DIR", "")))
     parser.add_argument("--dry", action="store_true", help="build and measure, write nothing")
+    parser.add_argument(
+        "--pair-scope", choices=sorted(PAIR_SCOPE_CONFIG), default="nearest-rival",
+        help="'nearest-rival' (default): one pair per intent, its single nearest rival by "
+             "centroid cosine -- byte-reproducible, proven by --check. 'all-pairs' (O7): every "
+             "unordered pair of distinct intents above the pool-support floor, roster-agnostic; "
+             "writes a separate V2 artifact, never a mutation of the nearest-rival table.",
+    )
+    parser.add_argument(
+        "--check", action="store_true",
+        help="re-derive the table for the selected --pair-scope and diff it against the bytes "
+             "already written at that scope's table relpath; writes nothing (implies --dry); "
+             "exits 1 on any mismatch or a missing file.",
+    )
     args = parser.parse_args(argv)
     root: Path = args.data_root
     if not str(root) or not root.is_dir():
         raise SystemExit("--data-root (or SPEECHRL_DATA_DIR) is required")
 
+    scope = PAIR_SCOPE_CONFIG[args.pair_scope]
+    artifact_id = scope["artifact_id"]
+    out_namespace = f"prepared/{artifact_id}"
+    table_relpath = f"{out_namespace}/table-v1.json"
+    receipt_relpath = scope["receipt_relpath"]
+
     order, cosine, stats, inputs = load_stats(root)
-    table = build_table(order, cosine, stats)
+    table = build_table(order, cosine, stats, pair_scope=args.pair_scope)
     builder_sha = sha_file(Path(__file__))
 
     table_doc = {
-        "schema": "saea-slurp-perception-contrast-pairs-v1",
-        "artifact_id": ARTIFACT_ID,
-        "builder_id": BUILDER_ID,
+        "schema": TABLE_SCHEMA,
+        "artifact_id": artifact_id,
+        "builder_id": scope["builder_id"],
         "builder": {"relpath": "scripts/build_slurp_intent_contrast_pairs.py", "sha256": builder_sha},
         "min_pair_pool_support": MIN_PAIR_POOL_SUPPORT,
         "rows": table["rows"],
     }
     table_bytes = canonical(table_doc)
     table_sha = sha_bytes(table_bytes)
-    written = {"table": write_once(root / TABLE_RELPATH, table_bytes, dry=args.dry)}
+
+    if args.check:
+        target = root / table_relpath
+        if not target.exists():
+            print(json.dumps({
+                "check": "FAIL", "pair_scope": args.pair_scope, "relpath": table_relpath,
+                "reason": "table not found",
+            }, indent=2))
+            return 1
+        existing_sha = sha_file(target)
+        match = existing_sha == table_sha
+        print(json.dumps({
+            "check": "PASS" if match else "FAIL", "pair_scope": args.pair_scope,
+            "relpath": table_relpath, "written_sha256": existing_sha, "derived_sha256": table_sha,
+        }, indent=2))
+        return 0 if match else 1
+
+    written = {"table": write_once(root / table_relpath, table_bytes, dry=args.dry)}
 
     pairs_considered = len(table["rows"]) + len(table["skipped"])
     receipt = {
-        "schema": "saea-slurp-perception-contrast-pairs-receipt-v1",
-        "artifact_id": ARTIFACT_ID,
-        "exposure_ledger_row": LEDGER_ROW,
+        "schema": scope["receipt_schema"],
+        "artifact_id": artifact_id,
+        "exposure_ledger_row": scope["ledger_row"],
         "builder": {"relpath": "scripts/build_slurp_intent_contrast_pairs.py", "sha256": builder_sha},
         "method": {
-            "pair_selection": "one pair per intent: its single nearest rival by centroid cosine, "
-                               "deduplicated by unordered pair",
+            "pair_selection": scope["pair_selection"],
             "word_gap_method": {
                 "reused_from": "scripts/build_slurp_intent_contrast_cards.py",
                 "functions": ["load_pool", "intent_stats", "cues", "typed"],
@@ -322,7 +445,7 @@ def main(argv: list[str] | None = None) -> int:
         "pairs_written": len(table["rows"]),
         "pairs_skipped": len(table["skipped"]),
         "skipped": [{"intents": row["intents"], "reason": row["reason"]} for row in table["skipped"]],
-        "output": {"relpath": TABLE_RELPATH, "sha256": written["table"], "content_sha256": table_sha},
+        "output": {"relpath": table_relpath, "sha256": written["table"], "content_sha256": table_sha},
         "contacts": {
             "model": 0, "server": 0, "encoder": 0, "embedder": 0, "asr": 0, "scorer": 0,
             "network": 0, "gpu": 0, "paid_api": 0, "tokenizer_process_vocab_only": 0,
@@ -334,11 +457,11 @@ def main(argv: list[str] | None = None) -> int:
     }
     receipt_bytes = canonical(receipt)
     if not args.dry:
-        (REPO_ROOT / RECEIPT_RELPATH).parent.mkdir(parents=True, exist_ok=True)
-        (REPO_ROOT / RECEIPT_RELPATH).write_bytes(receipt_bytes)
+        (REPO_ROOT / receipt_relpath).parent.mkdir(parents=True, exist_ok=True)
+        (REPO_ROOT / receipt_relpath).write_bytes(receipt_bytes)
 
     print(json.dumps({
-        "dry": args.dry, "written": written, "receipt": RECEIPT_RELPATH,
+        "dry": args.dry, "pair_scope": args.pair_scope, "written": written, "receipt": receipt_relpath,
         "receipt_sha256": sha_bytes(receipt_bytes), "pairs_considered": pairs_considered,
         "pairs_written": len(table["rows"]), "pairs_skipped": len(table["skipped"]),
     }, indent=2))
