@@ -1,0 +1,144 @@
+{
+  "schema": "saea-registered-protocol-v1",
+  "protocol_id": "slurp-stage3-psv1-fold-b-sealonly-protocol-v1",
+  "status": "REGISTERED_BEFORE_CONTACT_SEAL_ONLY_OWNER_DECISION_197",
+  "registered_at_utc": "2026-09-29T15:30:00.000000+00:00",
+  "source_tree": "studies/speech-aware-evidence-acquisition, master (single master writer, after the fable/psvsealfix merge)",
+  "study_commit_at_registration": "0177f83fc",
+  "parent_protocol": {
+    "relpath": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "e77e367de757d9389a169d83767d8071dd4806e76d2bf3c7a7e17010765085c8",
+    "rule": "Everything the parent fixes -- the question, the branches, the level, the read, the bar (the twin null), the prohibitions -- stands unchanged and is not re-litigated."
+  },
+  "abort": {
+    "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
+    "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+    "flight_commit": "b9af3e58cbd9d4113d1bd92c3fff9e1bb88448f2",
+    "error": "BundleError: outputs row <row id> (request flight-0183): perception-branch receipt is invalid: perception branch candidate_intent_ids must be a non-empty ordered list of distinct non-empty strings (I7v)",
+    "trace_sha256": "0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a",
+    "counts": {
+      "calls": 8709,
+      "audio_seconds": 25428.697624999728,
+      "samples_started": 1080,
+      "complete_rows": 1080,
+      "incomplete_rows": 0,
+      "abort_at_utc": "2026-09-29T14:19:36Z",
+      "notes_with_a_repeated_intent": 61,
+      "rows_with_a_repeated_intent": 49,
+      "notes_with_a_repeated_intent_by_branch": {
+        "a-agree": 21,
+        "b-top2contrast": 17,
+        "t-twin": 23
+      },
+      "failing_stage": "FlightRuntime.seal -> bundle outputs validation (I7v, perception-branch receipt)",
+      "lease_reconciliation": "coordination/slurp-stage3-psv1-fold-b-v1/flight-lock-reconciliation-20260929T143300Z.json"
+    },
+    "root_cause": "the runner sealed each Perception branch note's candidate intent list verbatim; 61 notes over 49 rows listed one intent twice, and I7v requires a list of distinct intents, so the seal refused rows whose branch notes were legal measured outcomes",
+    "fix": {
+      "commit": "6fb31f8d3",
+      "merge": "fable/psvsealfix merged to master at 0177f83fc",
+      "files": [
+        "src/speech_aware_evidence_acquisition/rails/native_episode_receipt.py",
+        "src/speech_aware_evidence_acquisition/rails/runner.py",
+        "src/speech_aware_evidence_acquisition/rails/supply_variants.py",
+        "src/speech_aware_evidence_acquisition/core/bundle/outputs.py",
+        "src/speech_aware_evidence_acquisition/core/flight/resume.py",
+        "scripts/analysis/replay_seal_consistency.py",
+        "scripts/analysis/slurp_perception_branch_read.py"
+      ],
+      "rule": "receipt schema saea-perception-branch-arms-v2: candidate_intent_ids collapses duplicates (first occurrence kept), candidate_intent_ids_raw_count records the raw length, note_parse_status is ok / duplicates-collapsed / empty / malformed; one shared parser for runner, resume replay and bundle; the level-2 fold carries presentation_skip_reason, contrast_block_sha256 and min_candidates_met; the read treats empty / malformed as gold-absent"
+    }
+  },
+  "rehearsal": {
+    "where": "scratch copy of the attempt (/home/chao/scratch-psv-seal; replay-report.json), fable/psvsealfix code",
+    "rows_complete": 1080,
+    "rows_incomplete": 0,
+    "rows_failing": 0,
+    "delivered_column_sha256_prefix": "1f05aee5",
+    "delivered_columns_identical_to_live_outputs": true,
+    "b_top2contrast_presentation_outcome": {
+      "rendered": 1035,
+      "insufficient-pool-support": 42,
+      "fewer-than-two-candidates": 3
+    },
+    "note": "the delivered columns rendered by the fixed seal stage are identical to the live outputs of the flight (delivered-column hash 1f05aee5..., identical on both sides); the presentation outcome of the b-top2contrast branch is a measured outcome, carried through the level-2 fold by the fix"
+  },
+  "seal_only_completion": {
+    "mechanism": "resume_from the aborted attempt; every row complete in its trace, so is_seal_only; core.flight.cli seal-only seals the 1,080-row manifest under I7r and runs the one official finalize job; zero model contacts, no server, no slot, no lease",
+    "resume_replay_proof": {
+      "schema": "saea-resume-replay-proof-v1",
+      "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-psv1-fold-b-v1 --run-id SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 --predecessor attempt-slurp-native-stage3-psv1-fold-b-generation-v1:0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a",
+      "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell, re-run by the chain and by the driver's prelaunch on the flight commit",
+      "run_at_utc": "2026-09-29T15:20:32Z",
+      "predecessor_attempts": [
+        {
+          "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+          "trace_sha256": "0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a",
+          "samples_started": 1080,
+          "complete": 1080,
+          "incomplete": 0,
+          "rows_checked": 1080,
+          "rows_failing": 0,
+          "rows_with_perception_branches": 1080,
+          "rows_with_deliver_normaliser": 1080,
+          "perception_branch_note_parse_status": {
+            "a-agree:duplicates-collapsed": 21,
+            "a-agree:ok": 1059,
+            "b-top2contrast:duplicates-collapsed": 17,
+            "b-top2contrast:ok": 1063,
+            "t-twin:duplicates-collapsed": 23,
+            "t-twin:ok": 1057
+          }
+        }
+      ],
+      "rows_checked": 1080,
+      "rows_failing": 0,
+      "sealed_twice": 0,
+      "union_complete_rows": 1080,
+      "checker_sha256": "64db58cb4b0d38b9af8bf947713cbaf6c87870c3ce2b86c39ef1c4f9e29d11cc",
+      "resume_py_sha256": "7815f567f7d3bbde345d4833a9461fc35fc36edef0c98c0bc3c56b6770c339c5",
+      "code_commit": "0177f83fc",
+      "model_contacts": 0,
+      "note": "Model-free and read-only over the REAL attempt trace: every complete row rendered through the real seal stage under the merged I7v fix (receipt schema saea-perception-branch-arms-v2) and re-checked against I7 / I7n / I7g / I7v one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
+    }
+  },
+  "recovery_counter": "P-SV-1's ONE root-diagnosed recovery re-registration; a second failure closes the cell.",
+  "cells": {
+    "seal-only": {
+      "cell": "slurp-native-stage3-psv1-fold-b-v1-resume",
+      "experiment": "slurp-native-stage3-psv1-fold-b-v1-resume",
+      "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
+      "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only",
+      "fit_run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-fit-v1-seal-only",
+      "composed_config_hash": "680a39c154e98e6cfabd3c5ea1a060cdad69b7c2b9a9a42c239b885bb850520d",
+      "protocol_hash": "88d3ce2c219375604ebd71b414a0e0d86bf85c4d32773237681706ee29bd5499",
+      "resume_from": {
+        "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+        "trace_sha256": "0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a"
+      }
+    }
+  },
+  "claim_ceiling": "nominated (unchanged)",
+  "rows": {
+    "kept": 1080,
+    "flown": 0
+  },
+  "budget": {
+    "kept_rows": 1080,
+    "flown_rows": 0,
+    "kept_from": {
+      "attempt-slurp-native-stage3-psv1-fold-b-generation-v1": 1080
+    },
+    "seal_only": true,
+    "flown_worst_case_calls": 0,
+    "run_cumulative_actual_calls": 8709,
+    "run_cumulative_actual_audio_seconds": 25428.7,
+    "run_cumulative_actual_breakdown_calls": {
+      "attempt-slurp-native-stage3-psv1-fold-b-generation-v1": 8709
+    },
+    "run_cumulative_worst_case_calls": 8709,
+    "cap_calls": 16200,
+    "headroom_calls": 7491
+  }
+}

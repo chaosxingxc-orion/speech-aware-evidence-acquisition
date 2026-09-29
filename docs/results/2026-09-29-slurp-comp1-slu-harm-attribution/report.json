@@ -1,0 +1,2719 @@
+{
+ "audio": {
+  "changed_rows": [
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "change_amount"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:000187:audio-1502895034",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:000735:audio-1501763563",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:000736:audio-1498567564",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 0,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:000752:audio--1506079487-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "house_place"
+     ],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 2,
+     "fp": 2,
+     "fp_types": [
+      "change_amount",
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 0,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:000820:audio--1504193163",
+    "shortlist_identical": true
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:000953:audio--1504194385-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:000979:audio--1505406935-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:001082:audio--1505405894-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "change_amount"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:001299:audio-1502218618-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 2,
+     "fp": 2,
+     "fp_types": [
+      "change_amount",
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:001323:audio-1501752064-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:001353:audio--1504191623-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "change_amount"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:001375:audio-1501776076-headset",
+    "shortlist_identical": true
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:001432:audio--1505406663",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 2,
+     "fp": 2,
+     "fp_types": [
+      "device_type",
+      "house_place"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 0,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:001642:audio--1504198588",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 2,
+     "fp": 2,
+     "fp_types": [
+      "change_amount",
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 0,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:001907:audio--1504195414-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "change_amount"
+     ],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "gold_entities": 1,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:002020:audio-1490292731",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:002070:audio--1504191474-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 2,
+     "fp": 2,
+     "fp_types": [
+      "change_amount",
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:002488:audio--1505406702",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:003459:audio-1488985204",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "change_amount"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:003592:audio-1497554791-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:004242:audio--1504191309-headset",
+    "shortlist_identical": true
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:004499:audio--1504194378-headset",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:004701:audio--1504198249",
+    "shortlist_identical": true
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:004903:audio--1504198371",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 2,
+     "fp": 2,
+     "fp_types": [
+      "change_amount",
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:004978:audio--1504198607",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 0,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:005284:audio--1504195212",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 1,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 1
+    },
+    "comp1": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "gold_entities": 1,
+    "intent_ok_aa": 1,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:005718:audio-1495377326",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 2,
+     "fp": 2,
+     "fp_types": [
+      "change_amount",
+      "device_type"
+     ],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 0,
+    "intent_ok_comp1": 0,
+    "sample_id": "slurp:train:006032:audio--1504195204",
+    "shortlist_identical": false
+   },
+   {
+    "aa": {
+     "emitted": 1,
+     "fp": 1,
+     "fp_types": [
+      "joke_type"
+     ],
+     "tp": 0
+    },
+    "comp1": {
+     "emitted": 0,
+     "fp": 0,
+     "fp_types": [],
+     "tp": 0
+    },
+    "gold_entities": 0,
+    "intent_ok_aa": 0,
+    "intent_ok_comp1": 1,
+    "sample_id": "slurp:train:006066:audio-1495733787-headset",
+    "shortlist_identical": false
+   }
+  ],
+  "fp_types": {
+   "aa": {
+    "change_amount": 3,
+    "device_type": 2,
+    "house_place": 1,
+    "joke_type": 1,
+    "time": 2
+   },
+   "agree": {
+    "change_amount": 5,
+    "device_type": 5,
+    "house_place": 1,
+    "time": 2
+   },
+   "agree_aa": {
+    "change_amount": 4,
+    "device_type": 3,
+    "house_place": 1,
+    "joke_type": 1,
+    "time": 3
+   },
+   "comp1": {
+    "change_amount": 12,
+    "device_type": 24,
+    "house_place": 1,
+    "time": 2
+   }
+  },
+  "rows": 60,
+  "transitions": {
+   "gold_entities=no aa_emitted=0 comp1_emitted=0": 20,
+   "gold_entities=no aa_emitted=0 comp1_emitted=1": 19,
+   "gold_entities=no aa_emitted=0 comp1_emitted=2": 6,
+   "gold_entities=no aa_emitted=1 comp1_emitted=0": 1,
+   "gold_entities=no aa_emitted=1 comp1_emitted=1": 3,
+   "gold_entities=no aa_emitted=1 comp1_emitted=2": 1,
+   "gold_entities=yes aa_emitted=0 comp1_emitted=0": 1,
+   "gold_entities=yes aa_emitted=1 comp1_emitted=0": 2,
+   "gold_entities=yes aa_emitted=1 comp1_emitted=1": 7
+  },
+  "zero_gold_rows": 50
+ },
+ "boundary": "TRAIN Fold A development numbers (owner decisions 28 and 86); DESCRIPTIVE; ids, counts, slot type names, scenario names, rates and hashes only",
+ "by_scenario": {
+  "alarm": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 3,
+    "d_fn": 0,
+    "d_fp": 3,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 1,
+    "rows_more_entities": 4
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 8,
+    "d_fn": 0,
+    "d_fp": 8,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 9
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.2604,
+   "rows": 60,
+   "slu_f1_aa": 75.64,
+   "slu_f1_comp1": 69.88,
+   "zero_gold_rows": 24
+  },
+  "audio": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 1,
+    "d_fn": 0,
+    "d_fp": 1,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 3
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 29,
+    "d_fn": 1,
+    "d_fp": 30,
+    "d_tp": -1,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 26
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.8919,
+   "rows": 60,
+   "slu_f1_aa": 66.52,
+   "slu_f1_comp1": 25.48,
+   "zero_gold_rows": 50
+  },
+  "calendar": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -6,
+    "d_fn": 2,
+    "d_fp": -4,
+    "d_tp": -2,
+    "rows": 60,
+    "rows_fewer_entities": 8,
+    "rows_more_entities": 3
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 5,
+    "d_fn": 2,
+    "d_fp": 7,
+    "d_tp": -2,
+    "rows": 60,
+    "rows_fewer_entities": 9,
+    "rows_more_entities": 11
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.2235,
+   "rows": 60,
+   "slu_f1_aa": 67.61,
+   "slu_f1_comp1": 64.27,
+   "zero_gold_rows": 16
+  },
+  "cooking": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 0,
+    "d_fn": -1,
+    "d_fp": -1,
+    "d_tp": 1,
+    "rows": 60,
+    "rows_fewer_entities": 1,
+    "rows_more_entities": 2
+   },
+   "comp1_minus_aa": {
+    "d_emitted": -9,
+    "d_fn": -2,
+    "d_fp": -11,
+    "d_tp": 2,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 2
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.62,
+   "rows": 60,
+   "slu_f1_aa": 57.42,
+   "slu_f1_comp1": 63.11,
+   "zero_gold_rows": 14
+  },
+  "datetime": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 6,
+    "d_fn": -2,
+    "d_fp": 4,
+    "d_tp": 2,
+    "rows": 60,
+    "rows_fewer_entities": 1,
+    "rows_more_entities": 5
+   },
+   "comp1_minus_aa": {
+    "d_emitted": -4,
+    "d_fn": -2,
+    "d_fp": -6,
+    "d_tp": 2,
+    "rows": 60,
+    "rows_fewer_entities": 4,
+    "rows_more_entities": 4
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.7741,
+   "rows": 60,
+   "slu_f1_aa": 71.34,
+   "slu_f1_comp1": 74.93,
+   "zero_gold_rows": 13
+  },
+  "email": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 7,
+    "d_fn": -2,
+    "d_fp": 5,
+    "d_tp": 2,
+    "rows": 60,
+    "rows_fewer_entities": 2,
+    "rows_more_entities": 9
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 5,
+    "d_fn": -1,
+    "d_fp": 4,
+    "d_tp": 1,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 8
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.9445,
+   "rows": 60,
+   "slu_f1_aa": 62.49,
+   "slu_f1_comp1": 62.93,
+   "zero_gold_rows": 23
+  },
+  "general": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -5,
+    "d_fn": 0,
+    "d_fp": -5,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 9,
+    "rows_more_entities": 4
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 10,
+    "d_fn": 3,
+    "d_fp": 13,
+    "d_tp": -3,
+    "rows": 60,
+    "rows_fewer_entities": 1,
+    "rows_more_entities": 11
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.4943,
+   "rows": 60,
+   "slu_f1_aa": 32.56,
+   "slu_f1_comp1": 15.09,
+   "zero_gold_rows": 50
+  },
+  "iot": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -4,
+    "d_fn": 0,
+    "d_fp": -4,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 6,
+    "rows_more_entities": 2
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 12,
+    "d_fn": -3,
+    "d_fp": 9,
+    "d_tp": 3,
+    "rows": 60,
+    "rows_fewer_entities": 2,
+    "rows_more_entities": 13
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.0698,
+   "rows": 60,
+   "slu_f1_aa": 67.06,
+   "slu_f1_comp1": 64.37,
+   "zero_gold_rows": 29
+  },
+  "lists": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -1,
+    "d_fn": -2,
+    "d_fp": -3,
+    "d_tp": 2,
+    "rows": 60,
+    "rows_fewer_entities": 4,
+    "rows_more_entities": 3
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 13,
+    "d_fn": 1,
+    "d_fp": 14,
+    "d_tp": -1,
+    "rows": 60,
+    "rows_fewer_entities": 1,
+    "rows_more_entities": 13
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.3693,
+   "rows": 60,
+   "slu_f1_aa": 58.6,
+   "slu_f1_comp1": 49.77,
+   "zero_gold_rows": 34
+  },
+  "music": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 2,
+    "d_fn": 0,
+    "d_fp": 2,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 4,
+    "rows_more_entities": 6
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 14,
+    "d_fn": 1,
+    "d_fp": 15,
+    "d_tp": -1,
+    "rows": 60,
+    "rows_fewer_entities": 2,
+    "rows_more_entities": 13
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.3138,
+   "rows": 60,
+   "slu_f1_aa": 47.85,
+   "slu_f1_comp1": 39.75,
+   "zero_gold_rows": 44
+  },
+  "news": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -2,
+    "d_fn": 0,
+    "d_fp": -2,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 4,
+    "rows_more_entities": 2
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 1,
+    "d_fn": -1,
+    "d_fp": 0,
+    "d_tp": 1,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 4
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.8189,
+   "rows": 60,
+   "slu_f1_aa": 64.27,
+   "slu_f1_comp1": 67.4,
+   "zero_gold_rows": 20
+  },
+  "play": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 5,
+    "d_fn": -2,
+    "d_fp": 3,
+    "d_tp": 2,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 7
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 7,
+    "d_fn": 1,
+    "d_fp": 8,
+    "d_tp": -1,
+    "rows": 60,
+    "rows_fewer_entities": 1,
+    "rows_more_entities": 8
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.1516,
+   "rows": 60,
+   "slu_f1_aa": 54.5,
+   "slu_f1_comp1": 51.89,
+   "zero_gold_rows": 14
+  },
+  "qa": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -5,
+    "d_fn": -2,
+    "d_fp": -7,
+    "d_tp": 2,
+    "rows": 60,
+    "rows_fewer_entities": 6,
+    "rows_more_entities": 2
+   },
+   "comp1_minus_aa": {
+    "d_emitted": -1,
+    "d_fn": -3,
+    "d_fp": -4,
+    "d_tp": 3,
+    "rows": 60,
+    "rows_fewer_entities": 7,
+    "rows_more_entities": 7
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.6663,
+   "rows": 60,
+   "slu_f1_aa": 59.98,
+   "slu_f1_comp1": 65.58,
+   "zero_gold_rows": 22
+  },
+  "recommendation": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -2,
+    "d_fn": 2,
+    "d_fp": 0,
+    "d_tp": -2,
+    "rows": 60,
+    "rows_fewer_entities": 5,
+    "rows_more_entities": 3
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 14,
+    "d_fn": 1,
+    "d_fp": 15,
+    "d_tp": -1,
+    "rows": 60,
+    "rows_fewer_entities": 2,
+    "rows_more_entities": 14
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.9902,
+   "rows": 60,
+   "slu_f1_aa": 71.2,
+   "slu_f1_comp1": 69.65,
+   "zero_gold_rows": 19
+  },
+  "social": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 5,
+    "d_fn": -4,
+    "d_fp": 1,
+    "d_tp": 4,
+    "rows": 60,
+    "rows_fewer_entities": 7,
+    "rows_more_entities": 9
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 6,
+    "d_fn": 1,
+    "d_fp": 7,
+    "d_tp": -1,
+    "rows": 60,
+    "rows_fewer_entities": 1,
+    "rows_more_entities": 9
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.1752,
+   "rows": 60,
+   "slu_f1_aa": 59.32,
+   "slu_f1_comp1": 56.72,
+   "zero_gold_rows": 15
+  },
+  "takeaway": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 6,
+    "d_fn": -5,
+    "d_fp": 1,
+    "d_tp": 5,
+    "rows": 60,
+    "rows_fewer_entities": 3,
+    "rows_more_entities": 6
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 3,
+    "d_fn": -1,
+    "d_fp": 2,
+    "d_tp": 1,
+    "rows": 60,
+    "rows_fewer_entities": 7,
+    "rows_more_entities": 9
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.9213,
+   "rows": 60,
+   "slu_f1_aa": 61.55,
+   "slu_f1_comp1": 62.21,
+   "zero_gold_rows": 8
+  },
+  "transport": {
+   "agree_minus_agree_aa": {
+    "d_emitted": 1,
+    "d_fn": 0,
+    "d_fp": 1,
+    "d_tp": 0,
+    "rows": 60,
+    "rows_fewer_entities": 6,
+    "rows_more_entities": 6
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 5,
+    "d_fn": -1,
+    "d_fp": 4,
+    "d_tp": 1,
+    "rows": 60,
+    "rows_fewer_entities": 8,
+    "rows_more_entities": 13
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 62.246,
+   "rows": 60,
+   "slu_f1_aa": 69.13,
+   "slu_f1_comp1": 65.58,
+   "zero_gold_rows": 11
+  },
+  "weather": {
+   "agree_minus_agree_aa": {
+    "d_emitted": -1,
+    "d_fn": 1,
+    "d_fp": 0,
+    "d_tp": -1,
+    "rows": 60,
+    "rows_fewer_entities": 5,
+    "rows_more_entities": 4
+   },
+   "comp1_minus_aa": {
+    "d_emitted": 4,
+    "d_fn": -5,
+    "d_fp": -1,
+    "d_tp": 5,
+    "rows": 60,
+    "rows_fewer_entities": 2,
+    "rows_more_entities": 6
+   },
+   "pooled_slu_f1_if_scenario_rows_swapped_to_aa": 61.667,
+   "rows": 60,
+   "slu_f1_aa": 75.82,
+   "slu_f1_comp1": 79.95,
+   "zero_gold_rows": 8
+  }
+ },
+ "channel_a_unwrap": {
+  "citation_entity_entries": 1150,
+  "count_equal": 1080,
+  "delivered_entities": 1149,
+  "delivered_types_not_in_raw": 0,
+  "entity_multiset_equal": 1005,
+  "normaliser_changed_rows": 1080,
+  "projection_v3_filler_changes": 82,
+  "projection_v3_label_changes": 21,
+  "raw_entities": 1149,
+  "raw_parse_envelope": 1080,
+  "rows": 1080,
+  "rows_citation_types_equal_answer_types": 1061,
+  "type_multiset_equal": 1080
+ },
+ "channel_b_raw_emission": {
+  "aa": {
+   "count_equal": 1079,
+   "delivered_entities": 1027,
+   "delivered_types_not_in_raw": 0,
+   "entity_multiset_equal": 1004,
+   "normaliser_changed_rows": 90,
+   "raw_entities": 1027,
+   "raw_entities_on_zero_gold_rows": 186,
+   "raw_missing": 1,
+   "rows": 1079,
+   "type_multiset_equal": 1079,
+   "zero_gold_rows_raw_emitting": 162
+  },
+  "agree": {
+   "count_equal": 1079,
+   "delivered_entities": 1021,
+   "delivered_types_not_in_raw": 0,
+   "entity_multiset_equal": 1002,
+   "normaliser_changed_rows": 108,
+   "raw_entities": 1021,
+   "raw_entities_on_zero_gold_rows": 178,
+   "raw_missing": 1,
+   "rows": 1079,
+   "type_multiset_equal": 1079,
+   "zero_gold_rows_raw_emitting": 159
+  },
+  "agree_aa": {
+   "count_equal": 1079,
+   "delivered_entities": 1011,
+   "delivered_types_not_in_raw": 0,
+   "entity_multiset_equal": 1012,
+   "normaliser_changed_rows": 94,
+   "raw_entities": 1011,
+   "raw_entities_on_zero_gold_rows": 187,
+   "raw_missing": 1,
+   "rows": 1079,
+   "type_multiset_equal": 1079,
+   "zero_gold_rows_raw_emitting": 167
+  },
+  "comp1": {
+   "count_equal": 1080,
+   "delivered_entities": 1149,
+   "delivered_types_not_in_raw": 0,
+   "entity_multiset_equal": 1005,
+   "normaliser_changed_rows": 1080,
+   "raw_entities": 1149,
+   "raw_entities_on_zero_gold_rows": 288,
+   "rows": 1080,
+   "type_multiset_equal": 1080,
+   "zero_gold_rows_raw_emitting": 252
+  }
+ },
+ "channel_c_splits": {
+  "aa-agree_aa": {
+   "delivered_intent_same": {
+    "false": {
+     "d_emitted": -7,
+     "d_fp": -10,
+     "d_fp_zero_gold": -7,
+     "d_tp": 3,
+     "rows": 58,
+     "zero_gold_rows": 27
+    },
+    "true": {
+     "d_emitted": 23,
+     "d_fp": 15,
+     "d_fp_zero_gold": 6,
+     "d_tp": 8,
+     "rows": 1022,
+     "zero_gold_rows": 387
+    }
+   },
+   "exemplars_identical": {
+    "true": {
+     "d_emitted": 16,
+     "d_fp": 5,
+     "d_fp_zero_gold": -1,
+     "d_tp": 11,
+     "rows": 1080,
+     "zero_gold_rows": 414
+    }
+   },
+   "shortlist_identical": {
+    "false": {
+     "d_emitted": 9,
+     "d_fp": 6,
+     "d_fp_zero_gold": 9,
+     "d_tp": 3,
+     "rows": 341,
+     "zero_gold_rows": 130
+    },
+    "true": {
+     "d_emitted": 7,
+     "d_fp": -1,
+     "d_fp_zero_gold": -10,
+     "d_tp": 8,
+     "rows": 739,
+     "zero_gold_rows": 284
+    }
+   },
+   "slot_contracts_identical": {
+    "false": {
+     "d_emitted": 6,
+     "d_fp": 7,
+     "d_fp_zero_gold": 10,
+     "d_tp": -1,
+     "rows": 279,
+     "zero_gold_rows": 106
+    },
+    "true": {
+     "d_emitted": 10,
+     "d_fp": -2,
+     "d_fp_zero_gold": -11,
+     "d_tp": 12,
+     "rows": 801,
+     "zero_gold_rows": 308
+    }
+   },
+   "solver_supply_identical": {
+    "false": {
+     "d_emitted": 6,
+     "d_fp": 7,
+     "d_fp_zero_gold": 10,
+     "d_tp": -1,
+     "rows": 279,
+     "zero_gold_rows": 106
+    },
+    "true": {
+     "d_emitted": 10,
+     "d_fp": -2,
+     "d_fp_zero_gold": -11,
+     "d_tp": 12,
+     "rows": 801,
+     "zero_gold_rows": 308
+    }
+   }
+  },
+  "agree-aa": {
+   "delivered_intent_same": {
+    "false": {
+     "d_emitted": 6,
+     "d_fp": -3,
+     "d_fp_zero_gold": 7,
+     "d_tp": 9,
+     "rows": 155,
+     "zero_gold_rows": 67
+    },
+    "true": {
+     "d_emitted": -12,
+     "d_fp": -7,
+     "d_fp_zero_gold": -15,
+     "d_tp": -5,
+     "rows": 925,
+     "zero_gold_rows": 347
+    }
+   },
+   "exemplars_identical": {
+    "true": {
+     "d_emitted": -6,
+     "d_fp": -10,
+     "d_fp_zero_gold": -8,
+     "d_tp": 4,
+     "rows": 1080,
+     "zero_gold_rows": 414
+    }
+   },
+   "shortlist_identical": {
+    "false": {
+     "d_emitted": -5,
+     "d_fp": -9,
+     "d_fp_zero_gold": -5,
+     "d_tp": 4,
+     "rows": 736,
+     "zero_gold_rows": 301
+    },
+    "true": {
+     "d_emitted": -1,
+     "d_fp": -1,
+     "d_fp_zero_gold": -3,
+     "d_tp": 0,
+     "rows": 344,
+     "zero_gold_rows": 113
+    }
+   },
+   "slot_contracts_identical": {
+    "false": {
+     "d_emitted": -7,
+     "d_fp": -13,
+     "d_fp_zero_gold": -5,
+     "d_tp": 6,
+     "rows": 619,
+     "zero_gold_rows": 252
+    },
+    "true": {
+     "d_emitted": 1,
+     "d_fp": 3,
+     "d_fp_zero_gold": -3,
+     "d_tp": -2,
+     "rows": 461,
+     "zero_gold_rows": 162
+    }
+   },
+   "solver_supply_identical": {
+    "false": {
+     "d_emitted": -5,
+     "d_fp": -12,
+     "d_fp_zero_gold": -6,
+     "d_tp": 7,
+     "rows": 747,
+     "zero_gold_rows": 315
+    },
+    "true": {
+     "d_emitted": -1,
+     "d_fp": 2,
+     "d_fp_zero_gold": -2,
+     "d_tp": -3,
+     "rows": 333,
+     "zero_gold_rows": 99
+    }
+   }
+  },
+  "agree-agree_aa": {
+   "delivered_intent_same": {
+    "false": {
+     "d_emitted": 11,
+     "d_fp": -1,
+     "d_fp_zero_gold": 1,
+     "d_tp": 12,
+     "rows": 147,
+     "zero_gold_rows": 66
+    },
+    "true": {
+     "d_emitted": -1,
+     "d_fp": -4,
+     "d_fp_zero_gold": -10,
+     "d_tp": 3,
+     "rows": 933,
+     "zero_gold_rows": 348
+    }
+   },
+   "exemplars_identical": {
+    "true": {
+     "d_emitted": 10,
+     "d_fp": -5,
+     "d_fp_zero_gold": -9,
+     "d_tp": 15,
+     "rows": 1080,
+     "zero_gold_rows": 414
+    }
+   },
+   "shortlist_identical": {
+    "false": {
+     "d_emitted": 9,
+     "d_fp": -2,
+     "d_fp_zero_gold": -2,
+     "d_tp": 11,
+     "rows": 734,
+     "zero_gold_rows": 298
+    },
+    "true": {
+     "d_emitted": 1,
+     "d_fp": -3,
+     "d_fp_zero_gold": -7,
+     "d_tp": 4,
+     "rows": 346,
+     "zero_gold_rows": 116
+    }
+   },
+   "slot_contracts_identical": {
+    "false": {
+     "d_emitted": 8,
+     "d_fp": -2,
+     "d_fp_zero_gold": 1,
+     "d_tp": 10,
+     "rows": 625,
+     "zero_gold_rows": 249
+    },
+    "true": {
+     "d_emitted": 2,
+     "d_fp": -3,
+     "d_fp_zero_gold": -10,
+     "d_tp": 5,
+     "rows": 455,
+     "zero_gold_rows": 165
+    }
+   },
+   "solver_supply_identical": {
+    "false": {
+     "d_emitted": 7,
+     "d_fp": -6,
+     "d_fp_zero_gold": -4,
+     "d_tp": 13,
+     "rows": 750,
+     "zero_gold_rows": 311
+    },
+    "true": {
+     "d_emitted": 3,
+     "d_fp": 1,
+     "d_fp_zero_gold": -5,
+     "d_tp": 2,
+     "rows": 330,
+     "zero_gold_rows": 103
+    }
+   }
+  },
+  "comp1-aa": {
+   "delivered_intent_same": {
+    "false": {
+     "d_emitted": 44,
+     "d_fp": 39,
+     "d_fp_zero_gold": 32,
+     "d_tp": 5,
+     "rows": 166,
+     "zero_gold_rows": 77
+    },
+    "true": {
+     "d_emitted": 78,
+     "d_fp": 75,
+     "d_fp_zero_gold": 70,
+     "d_tp": 3,
+     "rows": 914,
+     "zero_gold_rows": 337
+    }
+   },
+   "exemplars_identical": {
+    "true": {
+     "d_emitted": 122,
+     "d_fp": 114,
+     "d_fp_zero_gold": 102,
+     "d_tp": 8,
+     "rows": 1080,
+     "zero_gold_rows": 414
+    }
+   },
+   "shortlist_identical": {
+    "false": {
+     "d_emitted": 105,
+     "d_fp": 101,
+     "d_fp_zero_gold": 87,
+     "d_tp": 4,
+     "rows": 910,
+     "zero_gold_rows": 351
+    },
+    "true": {
+     "d_emitted": 17,
+     "d_fp": 13,
+     "d_fp_zero_gold": 15,
+     "d_tp": 4,
+     "rows": 170,
+     "zero_gold_rows": 63
+    }
+   },
+   "slot_contracts_identical": {
+    "false": {
+     "d_emitted": 94,
+     "d_fp": 89,
+     "d_fp_zero_gold": 74,
+     "d_tp": 5,
+     "rows": 805,
+     "zero_gold_rows": 315
+    },
+    "true": {
+     "d_emitted": 28,
+     "d_fp": 25,
+     "d_fp_zero_gold": 28,
+     "d_tp": 3,
+     "rows": 275,
+     "zero_gold_rows": 99
+    }
+   },
+   "solver_supply_identical": {
+    "false": {
+     "d_emitted": 118,
+     "d_fp": 109,
+     "d_fp_zero_gold": 98,
+     "d_tp": 9,
+     "rows": 1076,
+     "zero_gold_rows": 413
+    },
+    "true": {
+     "d_emitted": 4,
+     "d_fp": 5,
+     "d_fp_zero_gold": 4,
+     "d_tp": -1,
+     "rows": 4,
+     "zero_gold_rows": 1
+    }
+   }
+  },
+  "comp1-agree": {
+   "delivered_intent_same": {
+    "false": {
+     "d_emitted": 20,
+     "d_fp": 22,
+     "d_fp_zero_gold": 16,
+     "d_tp": -2,
+     "rows": 69,
+     "zero_gold_rows": 36
+    },
+    "true": {
+     "d_emitted": 108,
+     "d_fp": 102,
+     "d_fp_zero_gold": 94,
+     "d_tp": 6,
+     "rows": 1011,
+     "zero_gold_rows": 378
+    }
+   },
+   "exemplars_identical": {
+    "true": {
+     "d_emitted": 128,
+     "d_fp": 124,
+     "d_fp_zero_gold": 110,
+     "d_tp": 4,
+     "rows": 1080,
+     "zero_gold_rows": 414
+    }
+   },
+   "shortlist_identical": {
+    "false": {
+     "d_emitted": 81,
+     "d_fp": 75,
+     "d_fp_zero_gold": 66,
+     "d_tp": 6,
+     "rows": 695,
+     "zero_gold_rows": 267
+    },
+    "true": {
+     "d_emitted": 47,
+     "d_fp": 49,
+     "d_fp_zero_gold": 44,
+     "d_tp": -2,
+     "rows": 385,
+     "zero_gold_rows": 147
+    }
+   },
+   "slot_contracts_identical": {
+    "false": {
+     "d_emitted": 62,
+     "d_fp": 62,
+     "d_fp_zero_gold": 53,
+     "d_tp": 0,
+     "rows": 604,
+     "zero_gold_rows": 235
+    },
+    "true": {
+     "d_emitted": 66,
+     "d_fp": 62,
+     "d_fp_zero_gold": 57,
+     "d_tp": 4,
+     "rows": 476,
+     "zero_gold_rows": 179
+    }
+   },
+   "solver_supply_identical": {
+    "false": {
+     "d_emitted": 120,
+     "d_fp": 116,
+     "d_fp_zero_gold": 103,
+     "d_tp": 4,
+     "rows": 1061,
+     "zero_gold_rows": 407
+    },
+    "true": {
+     "d_emitted": 8,
+     "d_fp": 8,
+     "d_fp_zero_gold": 7,
+     "d_tp": 0,
+     "rows": 19,
+     "zero_gold_rows": 7
+    }
+   }
+  }
+ },
+ "contacts": {
+  "embedder": 0,
+  "encoder": 0,
+  "gpu": 0,
+  "model": 0,
+  "network": 0,
+  "scorer_subprocess": 0,
+  "server": 0,
+  "tokenizer": 0
+ },
+ "contrasts": {
+  "aa-agree_aa": {
+   "all": {
+    "d_emitted": 16,
+    "d_fn": -11,
+    "d_fp": 5,
+    "d_tp": 11,
+    "rows": 1080,
+    "rows_fewer_entities": 65,
+    "rows_more_entities": 61
+   },
+   "d_fp_ci95_row_bootstrap": [
+    -24,
+    38
+   ],
+   "d_fp_zero_gold_ci95_row_bootstrap": [
+    -18,
+    17
+   ],
+   "d_official_slu_f1_pp": 0.9028,
+   "gold_entity_rows": {
+    "d_emitted": 17,
+    "d_fn": -11,
+    "d_fp": 6,
+    "d_tp": 11,
+    "rows": 666,
+    "rows_fewer_entities": 34,
+    "rows_more_entities": 37
+   },
+   "role": "null: A/A vs A/A (same locked bytes, two chains)",
+   "zero_gold_rows": {
+    "d_emitted": -1,
+    "d_fn": 0,
+    "d_fp": -1,
+    "d_tp": 0,
+    "rows": 414,
+    "rows_fewer_entities": 31,
+    "rows_more_entities": 24
+   }
+  },
+  "aa-plan": {
+   "all": {
+    "d_emitted": 8,
+    "d_fn": -3,
+    "d_fp": 5,
+    "d_tp": 3,
+    "rows": 1080,
+    "rows_fewer_entities": 68,
+    "rows_more_entities": 63
+   },
+   "d_fp_ci95_row_bootstrap": [
+    -26,
+    39
+   ],
+   "d_fp_zero_gold_ci95_row_bootstrap": [
+    -27,
+    11
+   ],
+   "d_official_slu_f1_pp": 0.5839,
+   "gold_entity_rows": {
+    "d_emitted": 17,
+    "d_fn": -3,
+    "d_fp": 14,
+    "d_tp": 3,
+    "rows": 666,
+    "rows_fewer_entities": 34,
+    "rows_more_entities": 41
+   },
+   "role": "null: COMP-1 A/A vs PLAN (same locked bytes)",
+   "zero_gold_rows": {
+    "d_emitted": -9,
+    "d_fn": 0,
+    "d_fp": -9,
+    "d_tp": 0,
+    "rows": 414,
+    "rows_fewer_entities": 34,
+    "rows_more_entities": 22
+   }
+  },
+  "agree-aa": {
+   "all": {
+    "d_emitted": -6,
+    "d_fn": -4,
+    "d_fp": -10,
+    "d_tp": 4,
+    "rows": 1080,
+    "rows_fewer_entities": 77,
+    "rows_more_entities": 83
+   },
+   "d_fp_ci95_row_bootstrap": [
+    -46,
+    23
+   ],
+   "d_fp_zero_gold_ci95_row_bootstrap": [
+    -29,
+    12
+   ],
+   "d_official_slu_f1_pp": 0.9432,
+   "gold_entity_rows": {
+    "d_emitted": 2,
+    "d_fn": -4,
+    "d_fp": -2,
+    "d_tp": 4,
+    "rows": 666,
+    "rows_fewer_entities": 40,
+    "rows_more_entities": 51
+   },
+   "role": "channel c: AGREE supply vs the COMP-1 A/A (cross-chain)",
+   "zero_gold_rows": {
+    "d_emitted": -8,
+    "d_fn": 0,
+    "d_fp": -8,
+    "d_tp": 0,
+    "rows": 414,
+    "rows_fewer_entities": 37,
+    "rows_more_entities": 32
+   }
+  },
+  "agree-agree_aa": {
+   "all": {
+    "d_emitted": 10,
+    "d_fn": -15,
+    "d_fp": -5,
+    "d_tp": 15,
+    "rows": 1080,
+    "rows_fewer_entities": 78,
+    "rows_more_entities": 80
+   },
+   "d_fp_ci95_row_bootstrap": [
+    -32,
+    22
+   ],
+   "d_fp_zero_gold_ci95_row_bootstrap": [
+    -27,
+    9
+   ],
+   "d_official_slu_f1_pp": 1.846,
+   "gold_entity_rows": {
+    "d_emitted": 19,
+    "d_fn": -15,
+    "d_fp": 4,
+    "d_tp": 15,
+    "rows": 666,
+    "rows_fewer_entities": 39,
+    "rows_more_entities": 52
+   },
+   "role": "channel c: AGREE supply vs its own in-chain A/A",
+   "zero_gold_rows": {
+    "d_emitted": -9,
+    "d_fn": 0,
+    "d_fp": -9,
+    "d_tp": 0,
+    "rows": 414,
+    "rows_fewer_entities": 39,
+    "rows_more_entities": 28
+   }
+  },
+  "comp1-aa": {
+   "all": {
+    "d_emitted": 122,
+    "d_fn": -8,
+    "d_fp": 114,
+    "d_tp": 8,
+    "rows": 1080,
+    "rows_fewer_entities": 62,
+    "rows_more_entities": 180
+   },
+   "d_fp_ci95_row_bootstrap": [
+    72,
+    154
+   ],
+   "d_fp_zero_gold_ci95_row_bootstrap": [
+    75,
+    129
+   ],
+   "d_official_slu_f1_pp": -2.2442,
+   "gold_entity_rows": {
+    "d_emitted": 20,
+    "d_fn": -8,
+    "d_fp": 12,
+    "d_tp": 8,
+    "rows": 666,
+    "rows_fewer_entities": 44,
+    "rows_more_entities": 72
+   },
+   "role": "the finding: COMP-1 vs its in-chain A/A",
+   "zero_gold_rows": {
+    "d_emitted": 102,
+    "d_fn": 0,
+    "d_fp": 102,
+    "d_tp": 0,
+    "rows": 414,
+    "rows_fewer_entities": 18,
+    "rows_more_entities": 108
+   }
+  },
+  "comp1-agree": {
+   "all": {
+    "d_emitted": 128,
+    "d_fn": -4,
+    "d_fp": 124,
+    "d_tp": 4,
+    "rows": 1080,
+    "rows_fewer_entities": 46,
+    "rows_more_entities": 159
+   },
+   "d_fp_ci95_row_bootstrap": [
+    93,
+    156
+   ],
+   "d_fp_zero_gold_ci95_row_bootstrap": [
+    88,
+    133
+   ],
+   "d_official_slu_f1_pp": -3.1874,
+   "gold_entity_rows": {
+    "d_emitted": 18,
+    "d_fn": -4,
+    "d_fp": 14,
+    "d_tp": 4,
+    "rows": 666,
+    "rows_fewer_entities": 33,
+    "rows_more_entities": 49
+   },
+   "role": "COMP-1 vs AGREE (centroid key + citation contract)",
+   "zero_gold_rows": {
+    "d_emitted": 110,
+    "d_fn": 0,
+    "d_fp": 110,
+    "d_tp": 0,
+    "rows": 414,
+    "rows_fewer_entities": 13,
+    "rows_more_entities": 110
+   }
+  },
+  "plan-planr": {
+   "all": {
+    "d_emitted": 32,
+    "d_fn": -15,
+    "d_fp": 17,
+    "d_tp": 15,
+    "rows": 1080,
+    "rows_fewer_entities": 49,
+    "rows_more_entities": 73
+   },
+   "d_fp_ci95_row_bootstrap": [
+    -8,
+    42
+   ],
+   "d_fp_zero_gold_ci95_row_bootstrap": [
+    0,
+    29
+   ],
+   "d_official_slu_f1_pp": -0.1744,
+   "gold_entity_rows": {
+    "d_emitted": 18,
+    "d_fn": -15,
+    "d_fp": 3,
+    "d_tp": 15,
+    "rows": 666,
+    "rows_fewer_entities": 32,
+    "rows_more_entities": 44
+   },
+   "role": "null: PLAN vs PLANr (same locked bytes)",
+   "zero_gold_rows": {
+    "d_emitted": 14,
+    "d_fn": 0,
+    "d_fp": 14,
+    "d_tp": 0,
+    "rows": 414,
+    "rows_fewer_entities": 17,
+    "rows_more_entities": 29
+   }
+  }
+ },
+ "counterfactual_swaps_official_slu_f1": {
+  "aa_as_flown": 64.2143,
+  "comp1_as_flown": 61.9701,
+  "comp1_gold_entity_rows_swapped_to_aa": 61.3676,
+  "comp1_rows_emitting_more_than_aa_swapped_to_aa": 63.9808,
+  "comp1_zero_gold_rows_swapped_to_aa": 64.7987,
+  "rows_emitting_more_than_aa": 180
+ },
+ "fp_by_slot_type": [
+  {
+   "aa": 18,
+   "agree": 18,
+   "agree_aa": 19,
+   "comp1": 40,
+   "d_agree_agree_aa": -1,
+   "d_comp1_aa": 22,
+   "type": "device_type"
+  },
+  {
+   "aa": 13,
+   "agree": 17,
+   "agree_aa": 17,
+   "comp1": 27,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 14,
+   "type": "list_name"
+  },
+  {
+   "aa": 5,
+   "agree": 7,
+   "agree_aa": 8,
+   "comp1": 15,
+   "d_agree_agree_aa": -1,
+   "d_comp1_aa": 10,
+   "type": "change_amount"
+  },
+  {
+   "aa": 19,
+   "agree": 27,
+   "agree_aa": 25,
+   "comp1": 28,
+   "d_agree_agree_aa": 2,
+   "d_comp1_aa": 9,
+   "type": "event_name"
+  },
+  {
+   "aa": 11,
+   "agree": 14,
+   "agree_aa": 11,
+   "comp1": 20,
+   "d_agree_agree_aa": 3,
+   "d_comp1_aa": 9,
+   "type": "news_topic"
+  },
+  {
+   "aa": 13,
+   "agree": 15,
+   "agree_aa": 12,
+   "comp1": 20,
+   "d_agree_agree_aa": 3,
+   "d_comp1_aa": 7,
+   "type": "business_type"
+  },
+  {
+   "aa": 29,
+   "agree": 27,
+   "agree_aa": 31,
+   "comp1": 35,
+   "d_agree_agree_aa": -4,
+   "d_comp1_aa": 6,
+   "type": "date"
+  },
+  {
+   "aa": 1,
+   "agree": 1,
+   "agree_aa": 1,
+   "comp1": 6,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 5,
+   "type": "none"
+  },
+  {
+   "aa": 29,
+   "agree": 31,
+   "agree_aa": 30,
+   "comp1": 34,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 5,
+   "type": "time"
+  },
+  {
+   "aa": 2,
+   "agree": 3,
+   "agree_aa": 2,
+   "comp1": 6,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 4,
+   "type": "alarm_type"
+  },
+  {
+   "aa": 5,
+   "agree": 5,
+   "agree_aa": 5,
+   "comp1": 9,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 4,
+   "type": "podcast_descriptor"
+  },
+  {
+   "aa": 11,
+   "agree": 13,
+   "agree_aa": 11,
+   "comp1": 15,
+   "d_agree_agree_aa": 2,
+   "d_comp1_aa": 4,
+   "type": "song_name"
+  },
+  {
+   "aa": 8,
+   "agree": 8,
+   "agree_aa": 8,
+   "comp1": 11,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 3,
+   "type": "artist_name"
+  },
+  {
+   "aa": 0,
+   "agree": 0,
+   "agree_aa": 0,
+   "comp1": 3,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 3,
+   "type": "coffee_type"
+  },
+  {
+   "aa": 5,
+   "agree": 4,
+   "agree_aa": 3,
+   "comp1": 8,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 3,
+   "type": "email_address"
+  },
+  {
+   "aa": 4,
+   "agree": 5,
+   "agree_aa": 2,
+   "comp1": 7,
+   "d_agree_agree_aa": 3,
+   "d_comp1_aa": 3,
+   "type": "email_folder"
+  },
+  {
+   "aa": 32,
+   "agree": 29,
+   "agree_aa": 28,
+   "comp1": 35,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 3,
+   "type": "person"
+  },
+  {
+   "aa": 1,
+   "agree": 2,
+   "agree_aa": 1,
+   "comp1": 4,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 3,
+   "type": "personal_info"
+  },
+  {
+   "aa": 42,
+   "agree": 42,
+   "agree_aa": 41,
+   "comp1": 44,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 2,
+   "type": "business_name"
+  },
+  {
+   "aa": 4,
+   "agree": 3,
+   "agree_aa": 3,
+   "comp1": 6,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 2,
+   "type": "drink_type"
+  },
+  {
+   "aa": 9,
+   "agree": 10,
+   "agree_aa": 14,
+   "comp1": 11,
+   "d_agree_agree_aa": -4,
+   "d_comp1_aa": 2,
+   "type": "house_place"
+  },
+  {
+   "aa": 1,
+   "agree": 3,
+   "agree_aa": 1,
+   "comp1": 3,
+   "d_agree_agree_aa": 2,
+   "d_comp1_aa": 2,
+   "type": "movie_name"
+  },
+  {
+   "aa": 0,
+   "agree": 0,
+   "agree_aa": 0,
+   "comp1": 2,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 2,
+   "type": "movie_type"
+  },
+  {
+   "aa": 5,
+   "agree": 5,
+   "agree_aa": 4,
+   "comp1": 7,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 2,
+   "type": "music_descriptor"
+  },
+  {
+   "aa": 4,
+   "agree": 6,
+   "agree_aa": 4,
+   "comp1": 6,
+   "d_agree_agree_aa": 2,
+   "d_comp1_aa": 2,
+   "type": "order_type"
+  },
+  {
+   "aa": 39,
+   "agree": 37,
+   "agree_aa": 40,
+   "comp1": 41,
+   "d_agree_agree_aa": -3,
+   "d_comp1_aa": 2,
+   "type": "place_name"
+  },
+  {
+   "aa": 1,
+   "agree": 2,
+   "agree_aa": 1,
+   "comp1": 3,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 2,
+   "type": "playlist_name"
+  },
+  {
+   "aa": 7,
+   "agree": 8,
+   "agree_aa": 8,
+   "comp1": 9,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 2,
+   "type": "radio_name"
+  },
+  {
+   "aa": 0,
+   "agree": 2,
+   "agree_aa": 1,
+   "comp1": 1,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 1,
+   "type": "app_name"
+  },
+  {
+   "aa": 2,
+   "agree": 2,
+   "agree_aa": 1,
+   "comp1": 3,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 1,
+   "type": "audiobook_name"
+  },
+  {
+   "aa": 2,
+   "agree": 3,
+   "agree_aa": 2,
+   "comp1": 3,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 1,
+   "type": "music_genre"
+  },
+  {
+   "aa": 1,
+   "agree": 0,
+   "agree_aa": 1,
+   "comp1": 2,
+   "d_agree_agree_aa": -1,
+   "d_comp1_aa": 1,
+   "type": "podcast_name"
+  },
+  {
+   "aa": 5,
+   "agree": 7,
+   "agree_aa": 6,
+   "comp1": 6,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 1,
+   "type": "relation"
+  },
+  {
+   "aa": 0,
+   "agree": 1,
+   "agree_aa": 0,
+   "comp1": 1,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 1,
+   "type": "sport_type"
+  },
+  {
+   "aa": 0,
+   "agree": 1,
+   "agree_aa": 0,
+   "comp1": 1,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 1,
+   "type": "transport_agency"
+  },
+  {
+   "aa": 0,
+   "agree": 1,
+   "agree_aa": 0,
+   "comp1": 0,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 0,
+   "type": "audiobook_author"
+  },
+  {
+   "aa": 2,
+   "agree": 2,
+   "agree_aa": 2,
+   "comp1": 2,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 0,
+   "type": "color_type"
+  },
+  {
+   "aa": 3,
+   "agree": 3,
+   "agree_aa": 3,
+   "comp1": 3,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 0,
+   "type": "cooking_type"
+  },
+  {
+   "aa": 5,
+   "agree": 5,
+   "agree_aa": 4,
+   "comp1": 5,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 0,
+   "type": "game_name"
+  },
+  {
+   "aa": 0,
+   "agree": 0,
+   "agree_aa": 1,
+   "comp1": 0,
+   "d_agree_agree_aa": -1,
+   "d_comp1_aa": 0,
+   "type": "general_quirky"
+  },
+  {
+   "aa": 4,
+   "agree": 4,
+   "agree_aa": 3,
+   "comp1": 4,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": 0,
+   "type": "ingredient"
+  },
+  {
+   "aa": 7,
+   "agree": 5,
+   "agree_aa": 8,
+   "comp1": 7,
+   "d_agree_agree_aa": -3,
+   "d_comp1_aa": 0,
+   "type": "joke_type"
+  },
+  {
+   "aa": 24,
+   "agree": 15,
+   "agree_aa": 22,
+   "comp1": 24,
+   "d_agree_agree_aa": -7,
+   "d_comp1_aa": 0,
+   "type": "media_type"
+  },
+  {
+   "aa": 5,
+   "agree": 5,
+   "agree_aa": 7,
+   "comp1": 5,
+   "d_agree_agree_aa": -2,
+   "d_comp1_aa": 0,
+   "type": "player_setting"
+  },
+  {
+   "aa": 1,
+   "agree": 1,
+   "agree_aa": 1,
+   "comp1": 1,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 0,
+   "type": "transport_descriptor"
+  },
+  {
+   "aa": 6,
+   "agree": 6,
+   "agree_aa": 6,
+   "comp1": 6,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": 0,
+   "type": "weather_descriptor"
+  },
+  {
+   "aa": 2,
+   "agree": 1,
+   "agree_aa": 1,
+   "comp1": 1,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": -1,
+   "type": "transport_name"
+  },
+  {
+   "aa": 1,
+   "agree": 0,
+   "agree_aa": 0,
+   "comp1": 0,
+   "d_agree_agree_aa": 0,
+   "d_comp1_aa": -1,
+   "type": "transport_traffic"
+  },
+  {
+   "aa": 6,
+   "agree": 2,
+   "agree_aa": 5,
+   "comp1": 5,
+   "d_agree_agree_aa": -3,
+   "d_comp1_aa": -1,
+   "type": "transport_type"
+  },
+  {
+   "aa": 13,
+   "agree": 12,
+   "agree_aa": 10,
+   "comp1": 11,
+   "d_agree_agree_aa": 2,
+   "d_comp1_aa": -2,
+   "type": "definition_word"
+  },
+  {
+   "aa": 4,
+   "agree": 3,
+   "agree_aa": 4,
+   "comp1": 2,
+   "d_agree_agree_aa": -1,
+   "d_comp1_aa": -2,
+   "type": "meal_type"
+  },
+  {
+   "aa": 4,
+   "agree": 3,
+   "agree_aa": 2,
+   "comp1": 2,
+   "d_agree_agree_aa": 1,
+   "d_comp1_aa": -2,
+   "type": "time_zone"
+  },
+  {
+   "aa": 12,
+   "agree": 10,
+   "agree_aa": 12,
+   "comp1": 9,
+   "d_agree_agree_aa": -2,
+   "d_comp1_aa": -3,
+   "type": "general_frequency"
+  },
+  {
+   "aa": 9,
+   "agree": 5,
+   "agree_aa": 3,
+   "comp1": 6,
+   "d_agree_agree_aa": 2,
+   "d_comp1_aa": -3,
+   "type": "timeofday"
+  },
+  {
+   "aa": 13,
+   "agree": 9,
+   "agree_aa": 18,
+   "comp1": 8,
+   "d_agree_agree_aa": -9,
+   "d_comp1_aa": -5,
+   "type": "currency_name"
+  },
+  {
+   "aa": 48,
+   "agree": 37,
+   "agree_aa": 39,
+   "comp1": 38,
+   "d_agree_agree_aa": -2,
+   "d_comp1_aa": -10,
+   "type": "food_type"
+  }
+ ],
+ "generated_at": "2026-09-29T15:31:06Z",
+ "inputs_sha256": {
+  "aa_outputs": "e76353c68b5b588e377d4db24f3fc76ccc7e0222524ff302c961a7cfd997c976",
+  "aa_scores": "59c32626492862073c82ff60bacb25494229910a9cf5e85aee2fd49583f2dd15",
+  "agree_aa_outputs": "453a9a49340b578d04e2c9833893a285e3b929e8a9008296081e8f54ce551b61",
+  "agree_aa_scores": "66cb7ab22bc94fa083e6c5289feb25354c26d4f125bb4acaa80431d636e4f444",
+  "agree_outputs": "6a4256e09278722518236912701e890369f70e1808b664118a4c6a87a983d4c1",
+  "agree_scores": "01db05fa57787a0bc3ec679848610549c7581e76df3ea1d67a830f63f0626a1b",
+  "comp1_outputs": "98b9494e0d93dc92545dca747f39d6cfa682439f24e228d1d7e3dad6cf37b119",
+  "comp1_scores": "af567f9abfafef77b19307c091171db6de4b2e9b0bb081d24dbfc2ef89f7ac40",
+  "plan_scores": "9f3047fa77a868cb6c8cd72827c0358996288b12cb976a682a960bde5eda707c",
+  "planr_scores": "8083795d1c5a669818c9f8ffd1b29c60f0b20433dccc29cc22817234cf78607a"
+ },
+ "intent_flips_on_identical_shortlists": {
+  "aa-agree_aa": {
+   "delivered_intent_differs": 21,
+   "from_gold": 7,
+   "left_picks_rank1": 703,
+   "right_picks_rank1": 703,
+   "rows_shortlist_identical": 739,
+   "to_gold": 8
+  },
+  "agree-aa": {
+   "delivered_intent_differs": 5,
+   "from_gold": 2,
+   "left_picks_rank1": 333,
+   "right_picks_rank1": 336,
+   "rows_shortlist_identical": 344,
+   "to_gold": 2
+  },
+  "comp1-aa": {
+   "delivered_intent_differs": 6,
+   "from_gold": 1,
+   "left_picks_rank1": 166,
+   "right_picks_rank1": 166,
+   "rows_shortlist_identical": 170,
+   "to_gold": 3
+  },
+  "comp1-agree": {
+   "delivered_intent_differs": 19,
+   "from_gold": 2,
+   "left_picks_rank1": 368,
+   "right_picks_rank1": 368,
+   "rows_shortlist_identical": 385,
+   "to_gold": 8
+  }
+ },
+ "intent_harms_on_plan_correct_rows": {
+  "agree": {
+   "by_arm": {
+    "aa": {
+     "delivered_in_own_shortlist": 19,
+     "delivered_is_own_rank1": 15,
+     "gold_in_own_shortlist": 11,
+     "shortlist_identical_arm_vs_aa": 1,
+     "wrong": 21
+    },
+    "agree": {
+     "delivered_in_own_shortlist": 32,
+     "delivered_is_own_rank1": 27,
+     "gold_in_own_shortlist": 25,
+     "shortlist_identical_arm_vs_aa": 3,
+     "wrong": 33
+    }
+   },
+   "plan_correct_rows": 888,
+   "wrong_in_both": 8,
+   "wrong_only_in_aa": {
+    "rows": 13,
+    "shortlist_identical": 0,
+    "shortlist_identical_rows": []
+   },
+   "wrong_only_in_arm": {
+    "rows": 25,
+    "shortlist_identical": 2,
+    "shortlist_identical_rows": [
+     "slurp:train:001878:audio-1434541191-headset",
+     "slurp:train:014966:audio-1497621207"
+    ]
+   }
+  },
+  "comp1": {
+   "by_arm": {
+    "aa": {
+     "delivered_in_own_shortlist": 19,
+     "delivered_is_own_rank1": 15,
+     "gold_in_own_shortlist": 11,
+     "shortlist_identical_arm_vs_aa": 2,
+     "wrong": 21
+    },
+    "comp1": {
+     "delivered_in_own_shortlist": 28,
+     "delivered_is_own_rank1": 23,
+     "gold_in_own_shortlist": 22,
+     "shortlist_identical_arm_vs_aa": 3,
+     "wrong": 30
+    }
+   },
+   "plan_correct_rows": 888,
+   "wrong_in_both": 8,
+   "wrong_only_in_aa": {
+    "rows": 13,
+    "shortlist_identical": 0,
+    "shortlist_identical_rows": []
+   },
+   "wrong_only_in_arm": {
+    "rows": 22,
+    "shortlist_identical": 1,
+    "shortlist_identical_rows": [
+     "slurp:train:001878:audio-1434541191-headset"
+    ]
+   }
+  }
+ },
+ "mechanism_probe": {
+  "aa": {
+   "fp_gold_entity_row": 311,
+   "fp_gold_entity_row_type_is_supplied_slot_contract": 305,
+   "fp_zero_gold_row": 186,
+   "fp_zero_gold_row_type_is_supplied_slot_contract": 181,
+   "rows": 1080,
+   "supplied_slot_contract_types": 12965
+  },
+  "agree": {
+   "fp_gold_entity_row": 309,
+   "fp_gold_entity_row_type_is_supplied_slot_contract": 307,
+   "fp_zero_gold_row": 178,
+   "fp_zero_gold_row_type_is_supplied_slot_contract": 175,
+   "rows": 1080,
+   "supplied_slot_contract_types": 13936
+  },
+  "agree_aa": {
+   "fp_gold_entity_row": 305,
+   "fp_gold_entity_row_type_is_supplied_slot_contract": 303,
+   "fp_zero_gold_row": 187,
+   "fp_zero_gold_row_type_is_supplied_slot_contract": 182,
+   "rows": 1080,
+   "supplied_slot_contract_types": 12905
+  },
+  "comp1": {
+   "fp_gold_entity_row": 323,
+   "fp_gold_entity_row_type_is_supplied_slot_contract": 321,
+   "fp_zero_gold_row": 288,
+   "fp_zero_gold_row_type_is_supplied_slot_contract": 280,
+   "rows": 1080,
+   "supplied_slot_contract_types": 14700
+  },
+  "comp1_entity_citation_sources": {
+   "fp:empty": 3,
+   "fp:intent-boundaries": 1,
+   "fp:no-entry": 8,
+   "fp:slot-contracts": 7,
+   "fp:train-exemplars": 592,
+   "tp:intent-boundaries": 1,
+   "tp:no-entry": 7,
+   "tp:slot-contracts": 1,
+   "tp:train-exemplars": 529
+  }
+ },
+ "pooled": {
+  "aa": {
+   "emitted": 1027,
+   "emitted_on_zero_gold_rows": 186,
+   "fn": 411,
+   "fp": 497,
+   "fp_gold_type": 187,
+   "fp_new_type": 310,
+   "fp_on_zero_gold_rows": 186,
+   "intent_ok": 884,
+   "marginal_pp_per_new_type_fp": -0.0292,
+   "official_slu_f1": 64.2143,
+   "span_f1_exact": 53.8618,
+   "tp": 530,
+   "zero_gold_rows_emitting": 162
+  },
+  "agree": {
+   "emitted": 1021,
+   "emitted_on_zero_gold_rows": 178,
+   "fn": 407,
+   "fp": 487,
+   "fp_gold_type": 185,
+   "fp_new_type": 302,
+   "fp_on_zero_gold_rows": 178,
+   "intent_ok": 927,
+   "marginal_pp_per_new_type_fp": -0.02961,
+   "official_slu_f1": 65.1575,
+   "span_f1_exact": 54.4343,
+   "tp": 534,
+   "zero_gold_rows_emitting": 159
+  },
+  "agree_aa": {
+   "emitted": 1011,
+   "emitted_on_zero_gold_rows": 187,
+   "fn": 422,
+   "fp": 492,
+   "fp_gold_type": 174,
+   "fp_new_type": 318,
+   "fp_on_zero_gold_rows": 187,
+   "intent_ok": 891,
+   "marginal_pp_per_new_type_fp": -0.029,
+   "official_slu_f1": 63.3115,
+   "span_f1_exact": 53.1762,
+   "tp": 519,
+   "zero_gold_rows_emitting": 167
+  },
+  "comp1": {
+   "emitted": 1149,
+   "emitted_on_zero_gold_rows": 288,
+   "fn": 403,
+   "fp": 611,
+   "fp_gold_type": 190,
+   "fp_new_type": 421,
+   "fp_on_zero_gold_rows": 288,
+   "intent_ok": 930,
+   "marginal_pp_per_new_type_fp": -0.02652,
+   "official_slu_f1": 61.9701,
+   "span_f1_exact": 51.4833,
+   "tp": 538,
+   "zero_gold_rows_emitting": 252
+  },
+  "plan": {
+   "emitted": 1019,
+   "emitted_on_zero_gold_rows": 195,
+   "fn": 414,
+   "fp": 492,
+   "fp_gold_type": 170,
+   "fp_new_type": 322,
+   "fp_on_zero_gold_rows": 195,
+   "intent_ok": 888,
+   "marginal_pp_per_new_type_fp": -0.02913,
+   "official_slu_f1": 63.6304,
+   "span_f1_exact": 53.7755,
+   "tp": 527,
+   "zero_gold_rows_emitting": 172
+  },
+  "planr": {
+   "emitted": 987,
+   "emitted_on_zero_gold_rows": 181,
+   "fn": 429,
+   "fp": 475,
+   "fp_gold_type": 180,
+   "fp_new_type": 295,
+   "fp_on_zero_gold_rows": 181,
+   "intent_ok": 891,
+   "marginal_pp_per_new_type_fp": -0.02954,
+   "official_slu_f1": 63.8048,
+   "span_f1_exact": 53.112,
+   "tp": 512,
+   "zero_gold_rows_emitting": 159
+  }
+ },
+ "pp_conversion": {
+  "marginal_pp_per_new_type_fp_at_aa_totals": -0.0292,
+  "marginal_pp_per_new_type_fp_at_comp1_totals": -0.02652,
+  "note": "one exact FP whose type is absent from the row's gold adds 1.0 to both the word and char FP sums"
+ },
+ "read_id": "SAEA-SLURP-STAGE3-COMP1-SLU-HARM-ATTRIBUTION-V1",
+ "roster": {
+  "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+  "rows": 1080,
+  "zero_gold_rows": 414
+ },
+ "schema": "saea-comp1-slu-harm-attribution-v1",
+ "solver_template": {
+  "a_a_sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd",
+  "a_a_solver_template": "configs/probes/slurp_native_role_solver_v2.txt",
+  "comp1_sha256": "70cd3820e5f783bf4f7382de956c2488d70314391be4665b298fc41ec0c2cf4c",
+  "comp1_solver_template": "configs/probes/slurp_native_role_solver_cited_v1.txt",
+  "comp1_template_mentions_candidate_count": false
+ },
+ "structural": {
+  "aa": {
+   "exact_or_intent_mismatch_vs_sealed": 0,
+   "perception_parsed": 1080,
+   "raw_found": 1080,
+   "rows": 1080,
+   "solver_request_matched": 1080,
+   "supply_known": 1080
+  },
+  "agree": {
+   "exact_or_intent_mismatch_vs_sealed": 0,
+   "perception_parsed": 1080,
+   "raw_found": 1080,
+   "rows": 1080,
+   "solver_request_matched": 1080,
+   "supply_known": 1080
+  },
+  "agree_aa": {
+   "exact_or_intent_mismatch_vs_sealed": 0,
+   "perception_parsed": 1080,
+   "raw_found": 1080,
+   "rows": 1080,
+   "solver_request_matched": 1080,
+   "supply_known": 1080
+  },
+  "comp1": {
+   "answer_bytes_equal_unwrap_output": 1080,
+   "cited_supply_equals_request_supply": 950,
+   "exact_or_intent_mismatch_vs_sealed": 0,
+   "perception_parsed": 1080,
+   "raw_found": 1080,
+   "rows": 1080,
+   "solver_request_matched": 950,
+   "supply_known": 1080
+  },
+  "plan": {
+   "exact_or_intent_mismatch_vs_sealed": 0,
+   "rows": 1080
+  },
+  "planr": {
+   "exact_or_intent_mismatch_vs_sealed": 0,
+   "rows": 1080
+  }
+ }
+}

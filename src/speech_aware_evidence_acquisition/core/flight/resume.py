@@ -188,6 +188,11 @@ class PredecessorContact:
     #: response-format schema name. ``None`` when the trace records neither.
     role_id: str | None = None
     relisten_kind: str | None = None
+    #: P-SV-1 seal fix (2026-09-29): ``(evidence_id, sha256(content))`` of each
+    #: ``perception-branch-presentation:<branch_id>`` item the recorded REQUEST
+    #: carried -- digests only, the custody a Perception-branch replay needs to
+    #: re-derive a branch's presentation outcome. Empty for every other contact.
+    presentation_blocks: tuple[tuple[str, str], ...] = ()
 
     @property
     def answered(self) -> bool:
@@ -508,6 +513,131 @@ def _native_tool_calls(payload: Mapping[str, object]) -> int | None:
     return len(calls) if isinstance(calls, list) else None
 
 
+def _presentation_blocks(request_payload: Mapping[str, object]) -> tuple[tuple[str, str], ...]:
+    """``(evidence_id, sha256(content))`` of every Perception-branch
+    presentation item a recorded request's ``supplied_evidence`` carries.
+
+    The live runner seals ``contrast_block_sha256`` as the sha256 of the
+    block's text, and the wire keeps that text as the item's ``content``.
+    Only the digest leaves this function; the text is never held.
+    """
+
+    from ...rails.supply_variants import (  # noqa: PLC0415 (cycle guard)
+        PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_PREFIX,
+    )
+
+    items = request_payload.get("supplied_evidence")
+    if not isinstance(items, Sequence) or isinstance(items, (str, bytes)):
+        return ()
+    found: list[tuple[str, str]] = []
+    for item in items:
+        if not isinstance(item, Mapping):
+            continue
+        evidence_id = item.get("evidence_id")
+        content = item.get("content")
+        if (
+            isinstance(evidence_id, str)
+            and evidence_id.startswith(PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_PREFIX)
+            and isinstance(content, str)
+        ):
+            found.append(
+                (evidence_id, hashlib.sha256(content.encode("utf-8")).hexdigest())
+            )
+    return tuple(found)
+
+
+def _is_perception_branch_solver_fanout(
+    receipt: Mapping[str, object], solver_receipt: Mapping[str, object],
+) -> bool:
+    """True when a multi-contact delivered Solver visit is a LEVEL-2
+    Perception-branch fan-out, not a grouped (M2) Solver commit.
+
+    At level 2 the Solver's first visit spends one contact per declared
+    branch, delivering branch A last (``rails.runner``'s level-2 fan-out,
+    design section 3 "Level 2"): the delivered text is A's own recorded
+    response, exactly one contact, with no vote or aggregate to re-derive. It
+    is recognised only by its exact custody: the visit's contacts are the
+    branches' own ``solver_contact_id`` values in declared order and the final
+    (delivered) contact is A's. Anything else keeps the grouped refusal.
+    Before 2026-09-29 every such row was INCOMPLETE, so a seal-only replay of
+    P-SV-1 would have kept none of its 1,045 first-visit-accepted rows.
+    """
+
+    block = receipt.get("perception_branches")
+    if not isinstance(block, Mapping) or block.get("level") != 2:
+        return False
+    branches = block.get("branches")
+    if not isinstance(branches, Sequence) or isinstance(branches, (str, bytes)) or not branches:
+        return False
+    declared = [
+        row.get("solver_contact_id") if isinstance(row, Mapping) else None for row in branches
+    ]
+    contacts = solver_receipt.get("contacts")
+    final = solver_receipt.get("final_contact")
+    visit = [
+        contact.get("agent_contact_id") if isinstance(contact, Mapping) else None
+        for contact in contacts
+    ] if isinstance(contacts, Sequence) else []
+    return (
+        all(isinstance(value, str) and value for value in declared)
+        and visit == declared
+        and isinstance(final, Mapping)
+        and final.get("agent_contact_id") == declared[-1]
+    )
+
+
+def _replay_perception_branches(
+    receipt: Mapping[str, object], contacts: Sequence[PredecessorContact],
+) -> tuple[Mapping[str, object] | None, str | None]:
+    """Re-derive a row's ``perception_branches`` block from its recorded
+    contacts (P-SV-1 seal fix, 2026-09-29).
+
+    The block IS persisted in the trace (inside the compact episode receipt,
+    unlike E4-1's in-memory relisten receipt), but a block sealed before the
+    fix carries the old verbatim candidate lists (a repeated intent refused at
+    seal, I7v) and, at level 2, a dropped presentation outcome. The replay
+    rebuilds it under receipt schema v2 from the trace itself
+    (``rails.supply_variants.replay_perception_branch_block``): the agent
+    contact ids the receipt names resolve, through the receipt's own
+    ``role_visits`` custody, to recorded request ids, whose recorded response
+    text and request presentation digests re-derive every note and
+    presentation field. Any contact that cannot be accounted for returns a
+    reason and the row is INCOMPLETE (re-flown), never approximated.
+    """
+
+    from ...rails.supply_variants import (  # noqa: PLC0415 (cycle guard)
+        PerceptionBranchError,
+        PerceptionBranchReplayContact,
+        replay_perception_branch_block,
+    )
+
+    by_request = {contact.request_id: contact for contact in contacts}
+    by_agent: dict[str, PerceptionBranchReplayContact] = {}
+    for claimed in _receipt_contacts(receipt):
+        agent_id = claimed.get("agent_contact_id")
+        request_id = claimed.get("request_id")
+        recorded = by_request.get(request_id) if isinstance(request_id, str) else None
+        if not isinstance(agent_id, str) or recorded is None:
+            continue
+        replay_contact = PerceptionBranchReplayContact(
+            request_sha256=recorded.request_sha256,
+            response_text_sha256=recorded.response_text_sha256,
+            text=recorded.text,
+            presentation_block_sha256=dict(recorded.presentation_blocks),
+        )
+        if by_agent.setdefault(agent_id, replay_contact) != replay_contact:
+            return None, (
+                f"agent contact {agent_id!r} names two different recorded contacts"
+            )
+    try:
+        block = replay_perception_branch_block(
+            receipt["perception_branches"], contacts=by_agent,
+        )
+    except PerceptionBranchError as error:
+        return None, f"the perception-branch receipt cannot be re-derived: {error}"
+    return block, None
+
+
 def _scan_trace(
     trace_path: Path, *, program_id: str | None,
 ) -> tuple[
@@ -584,6 +714,7 @@ def _scan_trace(
                     "schema_name": (
                         schema.get("name") if isinstance(schema, Mapping) else None
                     ),
+                    "presentation_blocks": _presentation_blocks(inner),
                 }
                 if sample_id not in per_sample:
                     per_sample[sample_id] = []
@@ -641,6 +772,7 @@ def _scan_trace(
                         _relisten_kind(meta.get("schema_name"))
                         if roles.get(request_id) == RELISTEN_ROLE_ID else None
                     ),
+                    presentation_blocks=meta.get("presentation_blocks", ()),
                 )
             )
         contacts[sample_id] = items
@@ -740,7 +872,10 @@ def _classify(
     solver_receipt = delivery.solver_receipt
     if isinstance(solver_receipt, Mapping):
         raw = solver_receipt.get("contacts")
-        if isinstance(raw, Sequence) and not isinstance(raw, (str, bytes)) and len(raw) > 1:
+        if (
+            isinstance(raw, Sequence) and not isinstance(raw, (str, bytes)) and len(raw) > 1
+            and not _is_perception_branch_solver_fanout(receipt, solver_receipt)
+        ):
             # A grouped Solver visit (module M2) delivers a COMMIT policy's
             # aggregate, and its per-sample vote custody (``solver_group``)
             # is NOT in the trace -- only the compact episode receipt is. The
@@ -777,6 +912,13 @@ def _classify(
             final_text, reason = _replay_delivery_normalisation(normalisation, final_text)
             if final_text is None:
                 return None, reason
+    # P-SV-1 (2026-09-29): a branched Perception row's ``perception_branches``
+    # block is re-derived from the recorded contacts under receipt schema v2.
+    if "perception_branches" in receipt:
+        branches_block, reason = _replay_perception_branches(receipt, contacts)
+        if branches_block is None:
+            return None, reason
+        receipt = {**receipt, "perception_branches": branches_block}
     # E4-1 (2026-09-29): the post-accept relisten stage's SHADOW contacts. The
     # live row carries its ``saea-relisten-v1`` receipt only in memory until
     # the seal writes it, so a replay that dropped it would seal the row
