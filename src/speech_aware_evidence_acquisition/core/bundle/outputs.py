@@ -1065,7 +1065,11 @@ def _verify_perception_branch_trace_binding(
     ]:
         refuse("declared branch contact ids disagree with the Perception visit")
 
-    from ...rails.native_episode_receipt import validate_perception_branch_receipt
+    from ...rails.native_episode_receipt import (
+        PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+        parse_perception_branch_note,
+        validate_perception_branch_receipt,
+    )
 
     delivered_branch_id = branch_ids[-1]
     twin_branch_id = None
@@ -1120,6 +1124,24 @@ def _verify_perception_branch_trace_binding(
             refuse(
                 f"Perception branch {position} record disagrees with its own contact"
             )
+        # Schema v2 (2026-09-29): the note-parse fields must RE-DERIVE from the
+        # trace's own recorded response text (as I7l re-derives a relisten
+        # disposition), never merely from the receipt's own say-so. Checked
+        # whenever the note IS the response (every live branch so far).
+        if (
+            branches.get("schema") == PERCEPTION_BRANCH_RECEIPT_SCHEMA
+            and branch_row.get("note_sha256") == branch_row.get("response_text_sha256")
+        ):
+            status, candidates, raw_count = parse_perception_branch_note(response_text)
+            if (
+                branch_row.get("note_parse_status") != status
+                or list(branch_row.get("candidate_intent_ids") or ()) != list(candidates)
+                or branch_row.get("candidate_intent_ids_raw_count") != raw_count
+            ):
+                refuse(
+                    f"Perception branch {position} note-parse fields do not re-derive "
+                    "from its recorded response"
+                )
 
     a_row = branch_rows[-1]
     if (

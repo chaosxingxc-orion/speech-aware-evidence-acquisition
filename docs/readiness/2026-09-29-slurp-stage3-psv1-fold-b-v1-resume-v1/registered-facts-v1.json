@@ -1,0 +1,122 @@
+{
+  "schema": "saea-registered-facts-v1",
+  "registered_at_utc": "2026-09-29T15:30:00.000000+00:00",
+  "study_commit_at_registration": "0177f83fc",
+  "parent_registered_facts": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/registered-facts-v1.json",
+  "_note": "The P-SV-1 arm's stage3_measurement block, copied from the parent package (same run id) with primary_metric_key 'intent' added (owner decision 190); the seal-only completion changes no other measurement fact. Claim ceiling nominated.",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1": {
+      "aa_arm_id": "t-twin",
+      "ceiling": {
+        "pp": 3.89,
+        "roster": "SLURP-EVO-FOLD-A-V2",
+        "rows": 42,
+        "what": "the 42 wrong delivered rows with gold at Perception rank 2 on Fold A (3.89 pp of 1,080; 63 rank-2 rows overall, 5.83 pp level-1 top1 ceiling), docs/results/2026-09-28-slurp-node-information-gain-ledger.md"
+      },
+      "claim": "nominated",
+      "claims_benefit": false,
+      "conversion_basis": "rank-2 -> rank-1 promotion rate under a top-2 contrast is UNMEASURED; the node ledger's conversion of gold at Perception rank 2 is 26.98 % and at rank 1 97.57 % (row 139: no prior, so the declaration is 0.0 nominated with the ceiling beside)",
+      "expected_effect_pp": 0.0,
+      "level": 2,
+      "measurement_design": "same-flight-perception-variant",
+      "note": "Phase-2 cell P-SV-1 (level 2, K = 3). Expected effect declared from the ledger's measured numbers: ceiling the 42 wrong delivered rows with gold at Perception rank 2 on Fold A (3.89 pp of 1,080; 63 rank-2 rows overall, 5.83 pp level-1 top1 ceiling), docs/results/2026-09-28-slurp-node-information-gain-ledger.md; conversion basis: rank-2 -> rank-1 promotion rate under a top-2 contrast is UNMEASURED; the node ledger's conversion of gold at Perception rank 2 is 26.98 % and at rank 1 97.57 % (row 139: no prior, so the declaration is 0.0 nominated with the ceiling beside). expected_effect_pp 0.0 sits below this design's provisional floor 0.3163 pp (0.735 x sqrt(200 / 1080), the ROLL-AA anchor the gate registers for same-flight-perception-variant), so claims_benefit is false; the read's bar is the twin (T) null measured in this flight, per metric |T - A offset| + its CI95 half-width. The delivered row is branch A: delivered intent and SLU are identical by construction at the request level (reported, never contrasted). Tuning roster TRAIN Fold A (the node ledger shaped the design), read roster TRAIN Fold B (ruling O2; owner decision 186: rollout-exposed only, no branch value built from Fold B rollouts).",
+      "primary_metric": "official intent accuracy of the level-2 branch Solver column (primary): B (top2-contrast-v1) minus A, with gold-on-list and gold rank in the branch note beside; guard SLU-F1 of the same column; the delivered row is A and identical by construction at the request level (reported, never contrasted)",
+      "provisional_floor_pp": {
+        "arithmetic": "0.735 * sqrt(200 / 1080) = 0.3163 pp (ROLL-AA anchor, provisional)",
+        "intent_accuracy": 0.0,
+        "slu_f1": 0.3163
+      },
+      "read_bar": "|twin offset| + twin CI95 half-width, per metric, measured in this flight (ruling O6: one twin)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 1080,
+      "tuning_roster": "SLURP-EVO-FOLD-A-V2",
+      "variant_cost": {
+        "extra_audio_seconds": 12619.19,
+        "extra_audio_seconds_per_row_mean": 11.6844,
+        "extra_contacts_per_row": 4,
+        "extra_perception_contacts_per_row": 2,
+        "extra_solver_contacts_per_row": 2,
+        "note": "K - 1 = 2 non-A branches (B and the twin T), each one Perception contact at the one Perception visit and one Solver contact at the first Solver visit (level 2); every contact re-sends the row's speech packet, so 2 x row audio per branch, 4 x the Fold B total 3154.797375 s per flight"
+      },
+      "primary_metric_key": "intent"
+    }
+  },
+  "seal_only": {
+    "cell": "slurp-native-stage3-psv1-fold-b-v1-resume",
+    "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only",
+    "fit_attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-fit-v1-seal-only",
+    "resume_from": {
+      "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+      "trace_sha256": "0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a"
+    },
+    "abort": {
+      "calls": 8709,
+      "audio_seconds": 25428.697624999728,
+      "samples_started": 1080,
+      "complete_rows": 1080,
+      "incomplete_rows": 0,
+      "abort_at_utc": "2026-09-29T14:19:36Z",
+      "notes_with_a_repeated_intent": 61,
+      "rows_with_a_repeated_intent": 49,
+      "notes_with_a_repeated_intent_by_branch": {
+        "a-agree": 21,
+        "b-top2contrast": 17,
+        "t-twin": 23
+      },
+      "failing_stage": "FlightRuntime.seal -> bundle outputs validation (I7v, perception-branch receipt)",
+      "lease_reconciliation": "coordination/slurp-stage3-psv1-fold-b-v1/flight-lock-reconciliation-20260929T143300Z.json"
+    },
+    "rehearsal": {
+      "where": "scratch copy of the attempt (/home/chao/scratch-psv-seal; replay-report.json), fable/psvsealfix code",
+      "rows_complete": 1080,
+      "rows_incomplete": 0,
+      "rows_failing": 0,
+      "delivered_column_sha256_prefix": "1f05aee5",
+      "delivered_columns_identical_to_live_outputs": true,
+      "b_top2contrast_presentation_outcome": {
+        "rendered": 1035,
+        "insufficient-pool-support": 42,
+        "fewer-than-two-candidates": 3
+      },
+      "note": "the delivered columns rendered by the fixed seal stage are identical to the live outputs of the flight (delivered-column hash 1f05aee5..., identical on both sides); the presentation outcome of the b-top2contrast branch is a measured outcome, carried through the level-2 fold by the fix"
+    },
+    "resume_replay_proof": {
+      "schema": "saea-resume-replay-proof-v1",
+      "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-psv1-fold-b-v1 --run-id SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 --predecessor attempt-slurp-native-stage3-psv1-fold-b-generation-v1:0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a",
+      "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell, re-run by the chain and by the driver's prelaunch on the flight commit",
+      "run_at_utc": "2026-09-29T15:20:32Z",
+      "predecessor_attempts": [
+        {
+          "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+          "trace_sha256": "0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a",
+          "samples_started": 1080,
+          "complete": 1080,
+          "incomplete": 0,
+          "rows_checked": 1080,
+          "rows_failing": 0,
+          "rows_with_perception_branches": 1080,
+          "rows_with_deliver_normaliser": 1080,
+          "perception_branch_note_parse_status": {
+            "a-agree:duplicates-collapsed": 21,
+            "a-agree:ok": 1059,
+            "b-top2contrast:duplicates-collapsed": 17,
+            "b-top2contrast:ok": 1063,
+            "t-twin:duplicates-collapsed": 23,
+            "t-twin:ok": 1057
+          }
+        }
+      ],
+      "rows_checked": 1080,
+      "rows_failing": 0,
+      "sealed_twice": 0,
+      "union_complete_rows": 1080,
+      "checker_sha256": "64db58cb4b0d38b9af8bf947713cbaf6c87870c3ce2b86c39ef1c4f9e29d11cc",
+      "resume_py_sha256": "7815f567f7d3bbde345d4833a9461fc35fc36edef0c98c0bc3c56b6770c339c5",
+      "code_commit": "0177f83fc",
+      "model_contacts": 0,
+      "note": "Model-free and read-only over the REAL attempt trace: every complete row rendered through the real seal stage under the merged I7v fix (receipt schema saea-perception-branch-arms-v2) and re-checked against I7 / I7n / I7g / I7v one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
+    },
+    "composed_config_hash": "680a39c154e98e6cfabd3c5ea1a060cdad69b7c2b9a9a42c239b885bb850520d",
+    "protocol_hash": "88d3ce2c219375604ebd71b414a0e0d86bf85c4d32773237681706ee29bd5499"
+  }
+}

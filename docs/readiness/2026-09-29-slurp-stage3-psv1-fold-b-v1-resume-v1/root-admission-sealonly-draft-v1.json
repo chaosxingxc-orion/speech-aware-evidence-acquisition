@@ -1,0 +1,202 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/psv/psv1_sealonly_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites) under owner decision 197.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/analysis-recipe-v1.json",
+      "sha256": "e99efa42daa6a4d344f9329ee34522edb7e229eb02dd4ec5f1f93846c7569210"
+    },
+    "derive_script": {
+      "path": "scripts/flights/psv/derive_slurp_psv1_sealonly_cell.py",
+      "sha256": "2793cafd3b72519fbb5e5f284520c7ddbe6e679cdcee82a109487bd2a8c1bbd3"
+    },
+    "fold_b_inputs": {
+      "path": "docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md",
+      "sha256": "9e7513ceeb5abfba0f4cdc5f67b64b8d8e2724849c0e9d4b9ca9e3c7c126818e"
+    },
+    "node_ledger": {
+      "path": "docs/results/2026-09-28-slurp-node-information-gain-ledger.md",
+      "sha256": "5910c781c5bc841a28e19fbc876314913bd3ffb92cbd824aebb556816de3bd40"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "4d9fecafe612c36b62960228aa8e3972c28315693893bd730a9e1657f3d0dfa8"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/protocol-registered-v1.json",
+      "sha256": "e77e367de757d9389a169d83767d8071dd4806e76d2bf3c7a7e17010765085c8"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/registered-facts-v1.json",
+      "sha256": "7c36744dbc94a91748ae32e1bcc2a0041e1187abd82277ec3f9c3a89f497bc79"
+    },
+    "registration_base_commit": "0177f83fc",
+    "spec": {
+      "path": "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md",
+      "sha256": "0c92a111b947aef03d9e3cf6198f52992af7b6ec1b0635841dfa9b2a14300e37"
+    },
+    "parent_registration_draft": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/root-admission-draft-v1.json",
+      "sha256": "b26e6638fc710d3026abc134acd6bccae862d3ff84883c68f2dfb9b9dfe1f2e9"
+    },
+    "parent_decision_receipt": {
+      "relpath": "coordination/slurp-stage3-psv1-fold-b-v1/root-admission-v1.json",
+      "decision_id": "slurp-stage3-psv1-fold-b-admission-v1",
+      "status": "stands; it admitted the original attempt, which aborted at the seal"
+    },
+    "sealonly_protocol": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1/protocol-registered-v1.json",
+      "sha256": "7ff850caabdbde1cacb728cf1170f3c3c1e81815788e16945e6f4586b4301975"
+    },
+    "sealonly_analysis_recipe": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1/analysis-recipe-v1.json",
+      "sha256": "cc3555137bcd61eb4b95548aa3c82c86dec616ed33193d21dd471cb4226afeda"
+    },
+    "sealonly_registered_facts": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1/registered-facts-v1.json",
+      "sha256": "8480dc6f2b7c67f3698df2c74c739494da2a88819e199e31ba45853b145ddf48"
+    },
+    "sealonly_preregistration": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1-preregistration.md",
+      "sha256": null
+    },
+    "sealonly_readme": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1/README.md",
+      "sha256": null
+    }
+  },
+  "authorization_basis": "Owner decision 197 (2026-09-29, verbatim: agreed): seal-only completion of the aborted P-SV-1 arm after the I7v fix (6fb31f8d3, merged at 0177f83fc), on the offline replay proof recorded as resume_replay_proof (1,080 rows checked, 0 failing, 0 sealed twice), the same shape as owner decision 194 (E4-1). Owner decision 22 (resume-recovery) stands; the parent authorization basis stands: Owner decisions 184, 186, 188 (and 172 for the instrument), 139, 28/86; the spec docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md with rulings O1-O6.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 64800,
+    "generation_calls_cap": 16200,
+    "gpu_hours_fit_inclusive": 16.4,
+    "native_task_contract_calls_cap": 10800,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 47322,
+    "resume": {
+      "kept_rows": 1080,
+      "flown_rows": 0,
+      "kept_from": {
+        "attempt-slurp-native-stage3-psv1-fold-b-generation-v1": 1080
+      },
+      "seal_only": true,
+      "flown_worst_case_calls": 0,
+      "run_cumulative_actual_calls": 8709,
+      "run_cumulative_actual_audio_seconds": 25428.7,
+      "run_cumulative_actual_breakdown_calls": {
+        "attempt-slurp-native-stage3-psv1-fold-b-generation-v1": 8709
+      },
+      "run_cumulative_worst_case_calls": 8709,
+      "cap_calls": 16200,
+      "headroom_calls": 7491,
+      "note": "plan budgets are run-cumulative; the seal-only completion adds none"
+    }
+  },
+  "cell_kind": "P-SV-1 SEAL-ONLY COMPLETION: a new attempt attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only (FIT attempt attempt-slurp-native-stage3-psv1-fold-b-fit-v1-seal-only, records no contact) under the SAME run id SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1, resume_from [attempt-slurp-native-stage3-psv1-fold-b-generation-v1]; the union covers the 1,080-row roster, so nothing is flown. Claim ceiling 'nominated', unchanged.",
+  "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a branch read on a development fold whose ceiling is 'nominated'.",
+  "coordinator": "Fable5.1",
+  "decision": "Seal the P-SV-1 arm SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 as the SEAL-ONLY completion of its one recovery: attempt attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only keeps all 1,080 rows of the aborted attempt attempt-slurp-native-stage3-psv1-fold-b-generation-v1 (trace 0c1edb20...) with ZERO new model contacts through core.flight.cli seal-only, finalizes it with the one official score job, and reads it by the unchanged READ row SAEA-SLURP-STAGE3-PSV1-FOLD-B-BRANCH-READ-V1.",
+  "decision_id": "slurp-stage3-psv1-fold-b-sealonly-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
+    "SAEA-SLURP-STAGE3-PSV1-FOLD-B-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered re-target, program switch and branch block",
+    "opening a branch column before the READ row is countersigned",
+    "flipping P-SV-1 with a b-top2contrast contrast_pairs pin other than the registered V2 table (prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2/table-v1.json, sha256 0d74fdb6aae70bff82abbd52355fe34b58cf646fe36a80016220ba1e714a7e34; O7 ruling)",
+    "flying any row of SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 again (the seal-only completion makes zero model contacts)",
+    "any core.flight.cli worker or campaign run of the resume cell (it allows check, prepare-supply and seal-only only)",
+    "writing, moving or compressing anything under the aborted attempt's directory attempt-slurp-native-stage3-psv1-fold-b-generation-v1"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false,
+    "partition": "TRAIN Fold B 1,080, unchanged; 1,080 kept from the aborted attempt, 0 flown"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "seal-only": {
+      "composed_config": "680a39c154e98e6cfabd3c5ea1a060cdad69b7c2b9a9a42c239b885bb850520d",
+      "protocol": "88d3ce2c219375604ebd71b414a0e0d86bf85c4d32773237681706ee29bd5499"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED",
+  "eligible_attempt_ids": [
+    "attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only"
+  ],
+  "fit_attempt_ids": {
+    "SAEA-SLURP-STAGE3-PSV1-FOLD-B-FIT-V1": "attempt-slurp-native-stage3-psv1-fold-b-fit-v1-seal-only"
+  },
+  "resume_from": {
+    "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+    "trace_sha256": "0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a"
+  },
+  "resume_replay_proof": {
+    "schema": "saea-resume-replay-proof-v1",
+    "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-psv1-fold-b-v1 --run-id SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 --predecessor attempt-slurp-native-stage3-psv1-fold-b-generation-v1:0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a",
+    "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell, re-run by the chain and by the driver's prelaunch on the flight commit",
+    "run_at_utc": "2026-09-29T15:20:32Z",
+    "predecessor_attempts": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+        "trace_sha256": "0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a",
+        "samples_started": 1080,
+        "complete": 1080,
+        "incomplete": 0,
+        "rows_checked": 1080,
+        "rows_failing": 0,
+        "rows_with_perception_branches": 1080,
+        "rows_with_deliver_normaliser": 1080,
+        "perception_branch_note_parse_status": {
+          "a-agree:duplicates-collapsed": 21,
+          "a-agree:ok": 1059,
+          "b-top2contrast:duplicates-collapsed": 17,
+          "b-top2contrast:ok": 1063,
+          "t-twin:duplicates-collapsed": 23,
+          "t-twin:ok": 1057
+        }
+      }
+    ],
+    "rows_checked": 1080,
+    "rows_failing": 0,
+    "sealed_twice": 0,
+    "union_complete_rows": 1080,
+    "checker_sha256": "64db58cb4b0d38b9af8bf947713cbaf6c87870c3ce2b86c39ef1c4f9e29d11cc",
+    "resume_py_sha256": "7815f567f7d3bbde345d4833a9461fc35fc36edef0c98c0bc3c56b6770c339c5",
+    "code_commit": "0177f83fc",
+    "model_contacts": 0,
+    "note": "Model-free and read-only over the REAL attempt trace: every complete row rendered through the real seal stage under the merged I7v fix (receipt schema saea-perception-branch-arms-v2) and re-checked against I7 / I7n / I7g / I7v one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
+  },
+  "retry_basis": "The P-SV-1 arm flew all 1,080 rows (8,709 calls, 25,428.7 s audio) and ABORTED at the seal on I7v; root cause named to a component (the runner sealed branch-note intent lists verbatim; 61 notes over 49 rows repeated an intent) and fixed at 6fb31f8d3. Its 1,080 rows are complete in its trace; the seal-only completion keeps them and flies nothing. The aborted attempt stays charged run-cumulatively (8,709 calls of 16,200)."
+}

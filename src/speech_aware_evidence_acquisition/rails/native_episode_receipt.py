@@ -1552,7 +1552,140 @@ def validate_supply_variant_receipt(
 #: one Perception branch group seals under ``perception_branches``
 #: (``rails.supply_variants.PERCEPTION_BRANCH_RECEIPT_SCHEMA``, restated here
 #: so this module keeps its "no runtime or framework imports" rule).
-PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v1"
+#:
+#: v2 (2026-09-29, P-SV-1 seal abort): a branch's degenerate candidate list is
+#: a MEASURED OUTCOME, never a seal failure. ``candidate_intent_ids`` is the
+#: note's parsed order with duplicates collapsed (first occurrence kept), may
+#: be empty, and is explained by two fields: ``candidate_intent_ids_raw_count``
+#: (the number of intent ids the note listed before the collapse) and a closed
+#: ``note_parse_status`` (:data:`PERCEPTION_BRANCH_NOTE_PARSE_STATUSES`). v1
+#: receipts (sealed before the fix: the P-SV-1 4-row smoke) stay verifiable
+#: under their own original rule, unchanged.
+PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v2"
+PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1 = "saea-perception-branch-arms-v1"
+PERCEPTION_BRANCH_RECEIPT_SCHEMAS = (
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+)
+
+#: The closed ``note_parse_status`` vocabulary of a v2 branch row:
+#:
+#: * ``ok`` -- a well-shaped note listing at least one intent, none repeated;
+#: * ``duplicates-collapsed`` -- a well-shaped note that listed at least one
+#:   intent id more than once; ``candidate_intent_ids`` keeps the first
+#:   occurrence of each, and ``candidate_intent_ids_raw_count`` the listed
+#:   count (strictly larger);
+#: * ``empty`` -- a well-shaped note whose ``candidates`` list is empty;
+#: * ``malformed`` -- not a ``slurp-intent-hypotheses-v1``-shaped document (not
+#:   JSON, no ``candidates`` list, or a candidate row without a non-empty
+#:   string ``intent_id``). Nothing is extracted from it.
+#:
+#: ``empty`` and ``malformed`` both carry an empty ``candidate_intent_ids`` and
+#: a zero raw count; every read treats either as gold-absent.
+PERCEPTION_BRANCH_NOTE_OK = "ok"
+PERCEPTION_BRANCH_NOTE_DUPLICATES_COLLAPSED = "duplicates-collapsed"
+PERCEPTION_BRANCH_NOTE_EMPTY = "empty"
+PERCEPTION_BRANCH_NOTE_MALFORMED = "malformed"
+PERCEPTION_BRANCH_NOTE_PARSE_STATUSES = (
+    PERCEPTION_BRANCH_NOTE_OK,
+    PERCEPTION_BRANCH_NOTE_DUPLICATES_COLLAPSED,
+    PERCEPTION_BRANCH_NOTE_EMPTY,
+    PERCEPTION_BRANCH_NOTE_MALFORMED,
+)
+
+
+def parse_perception_branch_note(text: object) -> tuple[str, tuple[str, ...], int]:
+    """One Perception branch note's ``(note_parse_status, candidate_intent_ids,
+    candidate_intent_ids_raw_count)`` (receipt schema v2).
+
+    The ONE parse the live runner (``rails.runner.read_perception_branch_record``),
+    the resume replay (``rails.supply_variants.replay_perception_branch_block``)
+    and the bundle's I7v re-derivation all apply, so a sealed row can always be
+    re-derived from the trace's own recorded response text.
+
+    Deliberately LIGHTER than ``rails.slurp_intent_hypotheses.
+    parse_slurp_intent_hypothesis_content``: it extracts the ordered
+    ``candidates[].intent_id`` list the ``slurp-intent-hypotheses-v1`` schema
+    declares, without validating against the closed legal-intent inventory or a
+    ``max_candidates`` bound -- that is the official scorer's job at read time.
+    Duplicates collapse to their first occurrence (the same ordering rule the
+    bounded projection policy ``bounded-first-occurrence-distinct-slurp-intent-
+    hypotheses-v1`` and ``scripts/analysis/stage3_rollout_score.py`` apply).
+    """
+
+    if not isinstance(text, str):
+        return PERCEPTION_BRANCH_NOTE_MALFORMED, (), 0
+    try:
+        document = json.loads(text)
+    except (ValueError, TypeError):
+        return PERCEPTION_BRANCH_NOTE_MALFORMED, (), 0
+    candidates = document.get("candidates") if isinstance(document, Mapping) else None
+    if not isinstance(candidates, list):
+        return PERCEPTION_BRANCH_NOTE_MALFORMED, (), 0
+    raw: list[str] = []
+    for row in candidates:
+        intent_id = row.get("intent_id") if isinstance(row, Mapping) else None
+        if not isinstance(intent_id, str) or not intent_id:
+            return PERCEPTION_BRANCH_NOTE_MALFORMED, (), 0
+        raw.append(intent_id)
+    if not raw:
+        return PERCEPTION_BRANCH_NOTE_EMPTY, (), 0
+    distinct = tuple(dict.fromkeys(raw))
+    status = (
+        PERCEPTION_BRANCH_NOTE_OK if len(distinct) == len(raw)
+        else PERCEPTION_BRANCH_NOTE_DUPLICATES_COLLAPSED
+    )
+    return status, distinct, len(raw)
+
+
+def perception_branch_note_fields_error(
+    note_parse_status: object, candidate_intent_ids: object, raw_count: object,
+) -> str | None:
+    """Why a v2 branch row's three note-parse fields are inconsistent, or
+    ``None`` when they agree. Shared by the record constructor
+    (``rails.supply_variants.perception_branch_record``) and
+    :func:`validate_perception_branch_receipt`, so the two rails state one rule.
+    """
+
+    if note_parse_status not in PERCEPTION_BRANCH_NOTE_PARSE_STATUSES:
+        return (
+            "perception branch note_parse_status must be one of "
+            f"{list(PERCEPTION_BRANCH_NOTE_PARSE_STATUSES)}"
+        )
+    if (
+        not isinstance(candidate_intent_ids, Sequence)
+        or isinstance(candidate_intent_ids, (str, bytes))
+        or any(not isinstance(value, str) or not value for value in candidate_intent_ids)
+        or len(set(candidate_intent_ids)) != len(candidate_intent_ids)
+    ):
+        return (
+            "perception branch candidate_intent_ids must be an ordered list of "
+            "distinct non-empty strings"
+        )
+    if isinstance(raw_count, bool) or not isinstance(raw_count, int) or raw_count < 0:
+        return "perception branch candidate_intent_ids_raw_count must be a non-negative integer"
+    count = len(candidate_intent_ids)
+    if note_parse_status in (PERCEPTION_BRANCH_NOTE_EMPTY, PERCEPTION_BRANCH_NOTE_MALFORMED):
+        if count or raw_count:
+            return (
+                f"a perception branch note parsed as {note_parse_status!r} carries "
+                "no candidate intent ids"
+            )
+    elif not count:
+        return (
+            f"a perception branch note parsed as {note_parse_status!r} carries at "
+            "least one candidate intent id"
+        )
+    elif note_parse_status == PERCEPTION_BRANCH_NOTE_OK and raw_count != count:
+        return (
+            "a perception branch note parsed as 'ok' lists each candidate once "
+            "(raw count equals the list length)"
+        )
+    elif note_parse_status == PERCEPTION_BRANCH_NOTE_DUPLICATES_COLLAPSED and raw_count <= count:
+        return (
+            "a perception branch note parsed as 'duplicates-collapsed' listed more "
+            "intent ids than it keeps"
+        )
+    return None
 
 _PERCEPTION_BRANCH_FIELDS = frozenset(
     {
@@ -1581,6 +1714,8 @@ _PERCEPTION_BRANCH_LEVEL2_FIELDS = _PERCEPTION_BRANCH_RECORD_FIELDS | {
     "solver_contact_id", "solver_request_sha256", "solver_response_text_sha256",
     "candidate_supply_value_ids",
 }
+#: Schema v2 adds exactly one field per branch row (the pre-collapse count).
+_PERCEPTION_BRANCH_V2_EXTRA_FIELDS = frozenset({"candidate_intent_ids_raw_count"})
 _PERCEPTION_BRANCH_LEVELS = (1, 2)
 _PERCEPTION_BRANCH_VISITS = "first"
 
@@ -1631,6 +1766,15 @@ def validate_perception_branch_receipt(
     branch row carries all four (design section 3, "Level 2"): A's own
     naming its ordinary first Solver visit (no new contact), every other
     branch's naming the one Solver contact its note fanned out.
+
+    Schema v2 (2026-09-29, the P-SV-1 seal abort): every branch row also
+    carries ``candidate_intent_ids_raw_count``; ``candidate_intent_ids`` must
+    be distinct (duplicates were collapsed at parse time) and may be empty
+    exactly when ``note_parse_status`` is ``empty`` or ``malformed``
+    (:func:`perception_branch_note_fields_error`); ``min_candidates_met`` must
+    equal ``len(candidate_intent_ids) >= min_candidates``. A v1 row keeps its
+    original rule (a non-empty list of distinct strings) so an already-sealed
+    v1 bundle verifies unchanged.
     """
 
     declared = list(branch_ids)
@@ -1648,8 +1792,10 @@ def validate_perception_branch_receipt(
         _raise(error_type, "perception branch receipt level must be 1 or 2")
     if not isinstance(perception_branches, Mapping) or set(perception_branches) != _PERCEPTION_BRANCH_FIELDS:
         _raise(error_type, "perception branch receipt has an invalid shape")
-    if perception_branches["schema"] != PERCEPTION_BRANCH_RECEIPT_SCHEMA:
+    schema = perception_branches["schema"]
+    if schema not in PERCEPTION_BRANCH_RECEIPT_SCHEMAS:
         _raise(error_type, "perception branch receipt has an unregistered schema")
+    is_v2 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA
     if perception_branches["phase_id"] != phase_id:
         _raise(error_type, "perception branch receipt names another phase")
     if perception_branches["level"] != level:
@@ -1682,6 +1828,8 @@ def validate_perception_branch_receipt(
     expected_fields = (
         _PERCEPTION_BRANCH_LEVEL2_FIELDS if level == 2 else _PERCEPTION_BRANCH_RECORD_FIELDS
     )
+    if is_v2:
+        expected_fields = expected_fields | _PERCEPTION_BRANCH_V2_EXTRA_FIELDS
     contact_ids: list[str] = []
     delivering_ids: tuple[str, ...] | None = None
     delivering_request_sha256: str | None = None
@@ -1854,7 +2002,24 @@ def validate_perception_branch_receipt(
                 "refusal was computed against",
             )
         candidates = row["candidate_intent_ids"]
-        if (
+        if is_v2:
+            # v2: a degenerate list is a measured outcome (empty, or collapsed
+            # duplicates), explained by its own status and raw count; only an
+            # INCONSISTENT triple is refused.
+            reason = perception_branch_note_fields_error(
+                row["note_parse_status"], candidates, row["candidate_intent_ids_raw_count"],
+            )
+            if reason is not None:
+                _raise(error_type, reason)
+            if min_candidates is not None and min_candidates_met != (
+                len(candidates) >= min_candidates
+            ):
+                _raise(
+                    error_type,
+                    "perception branch min_candidates_met disagrees with its own "
+                    "collapsed candidate list",
+                )
+        elif (
             not isinstance(candidates, Sequence)
             or isinstance(candidates, (str, bytes))
             or not candidates
@@ -1915,5 +2080,14 @@ __all__ = [
     "validate_native_episode_finite_path", "validate_solver_group_receipt",
     "validate_supply_variant_receipt",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMAS",
+    "PERCEPTION_BRANCH_NOTE_OK",
+    "PERCEPTION_BRANCH_NOTE_DUPLICATES_COLLAPSED",
+    "PERCEPTION_BRANCH_NOTE_EMPTY",
+    "PERCEPTION_BRANCH_NOTE_MALFORMED",
+    "PERCEPTION_BRANCH_NOTE_PARSE_STATUSES",
+    "parse_perception_branch_note",
+    "perception_branch_note_fields_error",
     "validate_perception_branch_receipt",
 ]

@@ -1549,6 +1549,104 @@ def _resume_parent_config_paths(repo_root: Path, attempt_ids: set[str]) -> set[P
     return paths
 
 
+#: The exact pattern ``scripts/checks/flight_registration_check.py`` uses for its
+#: own ``PACKAGE_REF``: a ``docs/readiness/<package>/`` directory reference
+#: inside a flight row's ``artifacts`` column. Reused here verbatim (item E4-2)
+#: rather than inventing a second mapping from run id to package directory.
+_READINESS_PACKAGE_REF = re.compile(r"docs/readiness/([A-Za-z0-9._\-]+)/")
+
+
+def _resume_parent_package_dirs(
+    repo_root: Path, exposure_ledger_path: Path, run_ids: set[str]
+) -> set[Path]:
+    """The ``docs/readiness/<package>/`` directory the CURRENT exposure-ledger
+    row(s) for ``run_ids`` name in their ``artifacts`` column -- resolved the
+    same way the registration gate's own fallback resolves a cell's package
+    (``scripts/checks/flight_registration_check.py::resolve_package``'s FIRST
+    strategy, "the flight row's ``artifacts`` column"; :data:`_READINESS_PACKAGE_REF`
+    is that same ``PACKAGE_REF`` pattern), never a hand-rolled cell-id-to-
+    directory guess.
+
+    Item E4-2 (2026-09-29, the P-SV-1 seal-only flip): a resume/seal-only cell
+    shares its parent's run id (the resume-recovery clause: "the same run id,
+    a fresh attempt id"), and one run id has exactly one exposure-ledger row.
+    That row's ``artifacts`` column is set once, at the run id's FIRST
+    registration, and is never rewritten to a new package afterward --
+    :func:`apply_mapping_to_ledger` only ever substitutes specific pinned
+    hash/relpath VALUES the current re-pin's ``mapping`` names, never the
+    column's own relpath -- so for a resume this reads back the PARENT's own
+    package directory even though the resume's own re-pin targets a brand
+    new ``docs/readiness/<...>-resume-v1/`` directory (a DIFFERENT directory
+    from the one this returns; the caller's own ``readiness_dir`` is exempted
+    separately, by :func:`assert_no_residue`'s ``own_files``/``readiness_dir``
+    handling, not by this).
+
+    Read fresh from disk (never the ``ledger_text`` a caller may have read
+    earlier in the same :func:`repin_package` call): by the time this is
+    called, :func:`rewrite_dependent_hashes` has already rewritten the ledger
+    on disk, and a stale in-memory copy would not reflect that.
+
+    Caller-gated: only meaningful, and only ever called, when the current
+    re-pin's own ``resume_from`` chain is non-empty. For an ordinary cell
+    (no resume) this would simply resolve back to the cell's own package --
+    already exempt by other means -- so callers skip it entirely rather than
+    rely on that coincidence.
+    """
+
+    if not run_ids or not exposure_ledger_path.is_file():
+        return set()
+    from ...contracts.ledger import _parse_ledger_tables  # noqa: PLC0415
+
+    ledger_text = exposure_ledger_path.read_text(encoding="utf-8")
+    rows = _parse_ledger_tables(ledger_text)
+    dirs: set[Path] = set()
+    for row in rows:
+        run_id = row.get(_LEDGER_HEADER_RUN)
+        if run_id not in run_ids:
+            continue
+        artifacts = row.get(_LEDGER_HEADER_ARTIFACTS)
+        if not artifacts:
+            continue
+        match = _READINESS_PACKAGE_REF.search(artifacts)
+        if match:
+            dirs.add((Path(repo_root) / "docs" / "readiness" / match.group(1)).resolve())
+    return dirs
+
+
+def _is_resume_parent_readiness_record(
+    path: Path, *, readiness_root: Path, resume_parent_package_dirs: set[Path]
+) -> bool:
+    """True when ``path`` sits inside one of the current re-pin's own
+    ``resume_from`` chain's PARENT readiness packages
+    (:func:`_resume_parent_package_dirs`), or is that same package's sibling
+    preregistration note (``docs/readiness/<package-name>-preregistration*.md``,
+    a file adjacent to -- never inside -- the package directory).
+
+    Every file under the parent's own package directory is exempted, not only
+    ``*.json``/``README.md``: the parent's readiness package (README, every
+    registered plan, the protocol document, ``registered-facts-v1.json``, the
+    root-admission draft) legitimately quotes the parent's own frozen pins
+    (a branch-seed relpath and sha256, a phase-supply pin) and must stay
+    byte-identical (rule E26) -- the exact old value a resume/seal-only cell's
+    first re-pin supersedes is, legitimately, still the frozen parent's own
+    current pin.
+    """
+
+    if not resume_parent_package_dirs:
+        return False
+    resolved = path.resolve()
+    for package_dir in resume_parent_package_dirs:
+        if _is_within(resolved, package_dir):
+            return True
+        if (
+            resolved.parent == readiness_root
+            and resolved.suffix == ".md"
+            and resolved.name.startswith(f"{package_dir.name}-preregistration")
+        ):
+            return True
+    return False
+
+
 def _plan_document_attempt_id(document: object) -> str | None:
     """The attempt one registered plan document names.
 
@@ -1683,6 +1781,7 @@ def assert_no_residue(
     own_files: Iterable[Path] | None = None,
     own_config_paths: Iterable[Path] | None = None,
     resume_parent_config_paths: Iterable[Path] | None = None,
+    resume_parent_package_dirs: Iterable[Path] | None = None,
     explain: bool = False,
 ) -> None:
     """Refuse if any OLD hash string remains anywhere under ``docs/`` or
@@ -1693,7 +1792,7 @@ def assert_no_residue(
     this package was derived from), and this re-pin neither rewrites it
     (:func:`apply_mapping_to_ledger`) nor may it demand that it disappear.
 
-    Four further exemptions follow the same principle, active only when
+    Five further exemptions follow the same principle, active only when
     ``readiness_dir`` and ``run_ids`` are given (the only production call, from
     :func:`repin_package`), and only for files that are NOT this cell's own
     (``own_files``, ``own_config_paths``, or anywhere inside ``readiness_dir``
@@ -1708,6 +1807,21 @@ def assert_no_residue(
       or a sha256-pinned table within that same package is still not
       residue (see :func:`_is_sealed_package_record`; ``attempt_ids`` names
       the attempt(s) actually being re-pinned now);
+    * failing BOTH of those too (the parent's package can carry a live,
+      non-JSON file such as its own ``README.md``, which neither rule above
+      reaches -- ``_is_foreign_readiness_package`` declines because the
+      package names the shared run id, and ``_is_sealed_package_record``
+      never considers a non-``.json`` file at all), every file inside a
+      package named in ``resume_parent_package_dirs`` -- the ``docs/
+      readiness/<package>/`` directory the CURRENT re-pin's own exposure-
+      ledger row(s) name in their ``artifacts`` column (see
+      :func:`_resume_parent_package_dirs`) -- is the parent's own sealed
+      record, not residue (item E4-2, 2026-09-29: the P-SV-1 seal-only flip's
+      parent package legitimately quotes the parent's own frozen branch-seed
+      and phase-supply pins in its README and ``registered-facts-v1.json``).
+      The package's sibling preregistration note (``docs/readiness/
+      <package>-preregistration*.md``) is exempted the same way (see
+      :func:`_is_resume_parent_readiness_record`);
     * a ``configs/`` fragment whose own declared ``run_id`` value(s) are
       disjoint from ``run_ids`` belongs to a different cell, not residue (see
       :func:`_is_foreign_config`);
@@ -1724,6 +1838,13 @@ def assert_no_residue(
       shared run id (a genuinely foreign cell that happens to quote the old
       hash must still refuse); it names only the specific parent chain's own
       files.
+
+    Both parent-chain exemptions (``resume_parent_config_paths`` and
+    ``resume_parent_package_dirs``) name only the specific parent(s) the
+    current re-pin's own ``resume_from`` points at; a genuinely foreign
+    package or config that happens to quote the same old value, or the
+    resume cell's OWN package (``readiness_dir``/``own_files``, scanned as
+    strictly as ever), must still refuse.
 
     ``explain=True`` prints, to stderr, one line per file that still hits an
     old value: which of the rules above were considered for that file and
@@ -1742,6 +1863,9 @@ def assert_no_residue(
         Path(p).resolve() for p in (own_config_paths or ())
     }
     resume_parent_resolved = {Path(p).resolve() for p in (resume_parent_config_paths or ())}
+    resume_parent_package_resolved = {
+        Path(p).resolve() for p in (resume_parent_package_dirs or ())
+    }
     hits: list[str] = []
     for root_name in ("docs", "configs"):
         base = Path(repo_root) / root_name
@@ -1784,7 +1908,16 @@ def assert_no_residue(
                         text=text,
                     )
                     considered.append(("sealed-package-record", sealed))
-                    exempt = sealed
+                    if sealed:
+                        exempt = True
+                    else:
+                        resume_parent_package = _is_resume_parent_readiness_record(
+                            resolved,
+                            readiness_root=readiness_root_resolved,
+                            resume_parent_package_dirs=resume_parent_package_resolved,
+                        )
+                        considered.append(("resume-parent-readiness-package", resume_parent_package))
+                        exempt = resume_parent_package
             elif run_ids and root_name == "configs":
                 foreign_config = _is_foreign_config(resolved, run_ids=run_ids)
                 considered.append(("foreign-config", foreign_config))
@@ -2079,8 +2212,15 @@ def repin_package(
         mapping=mapping,
     )
     attempt_ids = {identity.attempt_id for identity in old_identities.values()}
-    resume_parent_config_paths = _resume_parent_config_paths(
-        repo_root, _resume_parent_attempt_ids(resolved)
+    resume_parent_attempt_ids = _resume_parent_attempt_ids(resolved)
+    resume_parent_config_paths = _resume_parent_config_paths(repo_root, resume_parent_attempt_ids)
+    # Item E4-2: only meaningful for a resume/seal-only cell -- for an
+    # ordinary cell this would just resolve back to its own package, which is
+    # already exempt by other means, so it is never resolved otherwise.
+    resume_parent_package_dirs = (
+        _resume_parent_package_dirs(repo_root, exposure_ledger_path, run_ids)
+        if resume_parent_attempt_ids
+        else set()
     )
     assert_no_residue(
         repo_root,
@@ -2092,6 +2232,7 @@ def repin_package(
         own_files=package_files,
         own_config_paths=set(baseline_paths) | set(experiment_paths),
         resume_parent_config_paths=resume_parent_config_paths,
+        resume_parent_package_dirs=resume_parent_package_dirs,
         explain=explain_residue,
     )
 

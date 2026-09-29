@@ -2082,43 +2082,27 @@ def _solver_fragment_seed(program_id: str) -> int:
     return int(digest[:8], 16)
 
 
-def _parse_perception_branch_note(text: str) -> tuple[str, tuple[str, ...]]:
-    """One Perception branch's own ordered candidate-intent list, read
-    directly off its RAW response text -- never a sealed state, since a
-    non-delivering branch (design section 3) registers none.
+def _parse_perception_branch_note(text: str) -> tuple[str, tuple[str, ...], int]:
+    """One Perception branch's own ``(note_parse_status,
+    candidate_intent_ids, candidate_intent_ids_raw_count)``, read directly
+    off its RAW response text -- never a sealed state, since a non-delivering
+    branch (design section 3) registers none.
 
-    Deliberately LIGHTER than ``rails.slurp_intent_hypotheses.
-    parse_slurp_intent_hypothesis_content``: it extracts the ordered
-    ``candidates[].intent_id`` list the SAME ``slurp-intent-hypotheses-v1``
-    schema declares, without validating against the closed legal-intent
-    inventory or a configured ``max_candidates`` bound. That full
-    validation is the OFFICIAL scorer's job at read time -- this study's own
-    convention throughout (the paper-facing number comes from the dataset's
-    standard scorer, run once per complete manifest, never inline per
-    contact) -- not a live gate on every branch's own runtime receipt.
-
-    Returns ``("ok", (intent_id, ...))`` on a well-shaped document,
-    ``("malformed", ("unparsed",))`` otherwise -- the receipt's own
-    ``candidate_intent_ids`` field requires at least one non-empty string,
-    so a parse failure still yields one, clearly flagged rather than
-    fabricating a plausible-looking intent id.
+    Delegates to ``rails.native_episode_receipt.parse_perception_branch_note``
+    (receipt schema v2), the one parse the resume replay and the bundle's I7v
+    re-derivation also apply. Until 2026-09-29 this returned the parsed list
+    VERBATIM, so a note that listed one intent twice sealed a list the
+    receipt validator refused at seal time (the P-SV-1 abort, 61 branch notes
+    over 49 of 1,080 rows); an empty ``candidates`` list and a malformed
+    document both returned the ``("unparsed",)`` sentinel. Now duplicates
+    collapse to their first occurrence (``duplicates-collapsed``), an empty
+    list stays empty (``empty``), and a malformed note extracts nothing
+    (``malformed``): every one a measured outcome, never a seal failure.
     """
 
-    try:
-        document = json.loads(text)
-        candidates = document.get("candidates") if isinstance(document, Mapping) else None
-        if not isinstance(candidates, list) or not candidates:
-            raise ValueError("no candidates")
-        ids = tuple(
-            row["intent_id"] for row in candidates
-            if isinstance(row, Mapping)
-            and isinstance(row.get("intent_id"), str) and row["intent_id"]
-        )
-        if len(ids) != len(candidates) or not ids:
-            raise ValueError("a candidate row has no intent_id")
-        return "ok", ids
-    except (ValueError, TypeError, KeyError, json.JSONDecodeError):
-        return "malformed", ("unparsed",)
+    from .native_episode_receipt import parse_perception_branch_note
+
+    return parse_perception_branch_note(text)
 
 
 #: The synthetic evidence-id scheme a Perception branch's own presentation or
@@ -3965,7 +3949,9 @@ async def _invoke_native_role_episode(
             )
         note_text = result.get("actor_output", "")
         note_sha256 = hashlib.sha256(note_text.encode("utf-8")).hexdigest()
-        note_parse_status, candidate_intent_ids = _parse_perception_branch_note(note_text)
+        note_parse_status, candidate_intent_ids, raw_count = _parse_perception_branch_note(
+            note_text,
+        )
         branch = perception_branch_group.branch_at(branch_index)
         # LEVEL 2 (merge set C item 1): keep this branch's own RAW note text
         # for the whole row -- the Solver's later first visit
@@ -3974,9 +3960,9 @@ async def _invoke_native_role_episode(
         # Harmless at level 1 too (simply never read).
         perception_branch_notes[branch.branch_id] = note_text
         # "What to build" item 3: a short list is a measured outcome, never
-        # a refusal -- ``candidate_intent_ids`` carries ``("unparsed",)`` on
-        # a malformed note, which is honestly reported as NOT meeting the
-        # bound rather than raising.
+        # a refusal. Counted on the COLLAPSED list (a padded [x, x, y] meets
+        # a bound of 2, not 3); an empty or malformed note carries no ids and
+        # is honestly reported as NOT meeting the bound rather than raising.
         min_candidates_met = (
             None if branch.min_candidates is None
             else len(candidate_intent_ids) >= branch.min_candidates
@@ -3986,6 +3972,7 @@ async def _invoke_native_role_episode(
             request_sha256=request_sha256, response_text_sha256=response_text_sha256,
             note_sha256=note_sha256, note_parse_status=note_parse_status,
             candidate_intent_ids=candidate_intent_ids,
+            candidate_intent_ids_raw_count=raw_count,
             supplied_value_ids=pending_row["supplied_value_ids"],
             presentation_skip_reason=pending_row.get("presentation_skip_reason"),
             contrast_block_sha256=pending_row.get("contrast_block_sha256"),
@@ -5730,7 +5717,17 @@ async def _invoke_native_role_episode(
                         note_sha256=row["note_sha256"],
                         note_parse_status=row["note_parse_status"],
                         candidate_intent_ids=row["candidate_intent_ids"],
+                        candidate_intent_ids_raw_count=row["candidate_intent_ids_raw_count"],
                         supplied_value_ids=row["supplied_value_ids"],
+                        # 2026-09-29: carried through the fold. Before, this
+                        # re-seal dropped the level-1 presentation outcome
+                        # (every P-SV-1 ``b-top2contrast`` row sealed
+                        # None/None) and would have refused every row of a
+                        # level-2 ``min_candidates`` branch (P-SV-2
+                        # ``b-list3``: "must carry a min_candidates_met bool").
+                        presentation_skip_reason=row["presentation_skip_reason"],
+                        contrast_block_sha256=row["contrast_block_sha256"],
+                        min_candidates_met=row["min_candidates_met"],
                         solver_contact_id=solver_row["solver_contact_id"],
                         solver_request_sha256=solver_row["solver_request_sha256"],
                         solver_response_text_sha256=(
