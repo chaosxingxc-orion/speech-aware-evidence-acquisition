@@ -1,0 +1,93 @@
+{
+  "arms": {
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "role": "context only, sealed, never re-flown; not read by the column passes",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "delivered": {
+      "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only",
+      "column": null,
+      "role": "the flight's own delivered column (the LEFT side of both contrasts)",
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1"
+    },
+    "shadow_a": {
+      "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only",
+      "column": "relisten-replace-only",
+      "role": "shadow column (a), replace-only",
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1"
+    },
+    "shadow_b": {
+      "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only",
+      "column": "relisten-replace-drop-unheard",
+      "role": "shadow column (b), replace plus drop-when-both-unheard",
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1"
+    }
+  },
+  "boundary": "A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; a shadow effect, never a system-level claim. No utterance text, transcript, gold label, relisten value or model output is printed or persisted.",
+  "decision_rule": "SAME-FLIGHT SHADOW-COLUMN READ (owner decision 185; design section 4 with the section 8 rulings; claim ceiling 'nominated'). The DELIVERED column is the flight's own sealed answer, scored once by the flight with slurp-slu-official-train. Each shadow column -- relisten-replace-only (a: the section 1 acceptance rule) and relisten-replace-drop-unheard (b: a, plus dropping an entity when both contacts vote unheard) -- is rendered by the pure bind() from the same flight's sealed saea-relisten-v1 receipts and trace (AT1: a row with no accepted replacement and no drop renders byte-identical to the delivered text) and scored ONCE with slurp-slu-official-train through core.scoring_batch.score_complete_derived_copy; each contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260915). PRIMARY: official pooled SLU-F1 (micro), shadow column minus delivered column. GUARD: intent is identical between each shadow column and the delivered column BY CONSTRUCTION (bind() never re-opens the decided intent); it is tested per row and the read REFUSES on any difference. THE BAR: the design's own null (ruling 7: 'the bar is the twin/shadow null'), provisional until this cell measures it: scripts/checks/stage3_effect_floor_check.py design same-flight-shadow-relisten, 0.735 x sqrt(200 / n) = 0.3163 pp SLU-F1 at n = 1080. Per column: NOMINATED iff the SLU-F1 CI95 lower bound is above zero AND the point delta exceeds 0.3163 pp AND the intent guard holds; SHADOW HARM iff the SLU-F1 CI95 upper bound is below zero AND the point delta's magnitude exceeds 0.3163 pp; otherwise NOT NOMINATED (within the null). The two columns are two pre-declared rules read from one contact stream; no rule search (decision 179). A nomination claims nothing at system level: promotion means binding in delivery and a full-system read against an in-chain A/A (design section 4). Descriptive, never gating: saves and harms by error kind (gold read on the scoring side only), the per-type table, the blind-disposition and confirm-vote tallies, and equal-scenario weighting; every verdict carries the per-scenario table.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1"
+  },
+  "passes": {
+    "replace-drop-unheard": {
+      "gating": true,
+      "left": {
+        "column": null
+      },
+      "right": {
+        "column": "relisten-replace-drop-unheard"
+      }
+    },
+    "replace-only": {
+      "gating": true,
+      "left": {
+        "column": null
+      },
+      "right": {
+        "column": "relisten-replace-only"
+      }
+    }
+  },
+  "provisional_floor_pp": {
+    "intent_accuracy": 0.0,
+    "slu_f1": 0.3163
+  },
+  "read_driver": "scripts/flights/e4/e4_read.sh -> scripts/analysis/stage3_paired_read.py --right-column (direct mode, --per-scenario; the left side is the flight's own delivered score)",
+  "read_run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1",
+  "recipe_id": "slurp-stage3-relisten-fold-a-sealonly-column-analysis-v1",
+  "registered_at_utc": "2026-09-29T12:30:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "cluster_key": "sample_id",
+    "metrics": [
+      "slu_f1_f1",
+      "scenario_action_exact"
+    ],
+    "seed": 20260915,
+    "unit": "row (paired)",
+    "utterance_level": "reported beside, never gating"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
+    "context_comparator": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+    "read": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "0. Refuse unless the READ row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1 is root countersigned (checked by scripts/flights/e4/e4_read.sh before anything is opened).",
+    "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one successful complete official TRAIN score and a saea-relisten-v1 receipt on every non-abstention row verified by the bundle's I7l check.",
+    "2. Render both shadow columns (relisten-replace-only, relisten-replace-drop-unheard) from the sealed receipts and trace (AT1 self-check) and score each ONCE with slurp-slu-official-train (scripts/analysis/stage3_rollout_score.py --mode relisten).",
+    "3. Intent guard: per row, the (scenario, action) of each shadow column must equal the delivered column's; any difference refuses the read.",
+    "4. Per column: paired row bootstrap of the column minus the delivered column (SLU-F1 primary); apply the rule at the provisional null 0.3163 pp.",
+    "5. Report the per-scenario table in both weightings, the per-type table, saves/harms by error kind (gold on the scoring side only), the blind-disposition and confirm-vote tallies, and the realised relisten contacts and audio against the declared cost."
+  ],
+  "title": "Cell E4-1 -- the same-flight shadow-column read: relisten-replace-only and relisten-replace-drop-unheard, each against the delivered column, SLU-F1 primary, intent identical by construction",
+  "parent_recipe": {
+    "relpath": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/analysis-recipe-v1.json",
+    "sha256": "60aa87588d32fc201ad98ff2b47448962031430c3f9a839077faf437087ffc93",
+    "rule": "unchanged except the sealed attempt id and the reading rule below"
+  },
+  "recovery_reading_rule": "The delivered column and both shadow columns are read from the seal-only attempt attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only's sealed manifest: all 1,080 rows kept from attempt-slurp-native-stage3-relisten-fold-a-generation-v1 under I7r custody, 0 flown. The manifest's predecessor_attempt block must name trace 966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6; refuse otherwise. The relisten receipts are the ones the fixed resume replay re-derives from that trace; the read is paired over all 1,080 rows exactly as the parent recipe fixes it.",
+  "read_run_id_note": "The READ run id SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1 and its exposure-ledger row are the parent's, UNCHANGED: the E4-1 column read is one read whichever attempt seals the arm."
+}
