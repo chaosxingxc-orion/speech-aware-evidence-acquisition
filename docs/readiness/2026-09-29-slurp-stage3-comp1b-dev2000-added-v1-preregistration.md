@@ -13,8 +13,8 @@ Development numbers only (owner decisions 28 and 86); never a test claim.
 | margins | this roster's own null: h_intent 1.152, h_SLU 1.2525 |
 | smoke | four rows, structural acceptance, never scored |
 | runs | `SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1` / `SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-FIT-V1`; `SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1` / `SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-FIT-V1`; `SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-SMOKE-4-FIT-V1` |
-| composed config hashes | arm `7390b142c52f46c2146618088ea17ce3f9fb89af11c96668fcdcece8a1b42354`; A/A `71462277daeea3f0c9b08c1f099b64fd79949a3f8659177013756871ecac7dd3`; smoke `86129b67e9ca5a206ef5cb5e21feed9737bc96dededed1ac6fbf85a7454bc1b4` |
-| protocol hashes | arm `16541c9afe2fe43f6a1fd9092d48b0035bbe8e5c9a599bc6964dcdb70172f294`; A/A `5bc29d22e2fa75481cfe3ff9158fbe1e6388657a7f57de83fac2446bee18488c`; smoke `351a6048f2c6f480bee824a3b4d95d59377c2ec95c474ebfe84c44b3a569a081` |
+| composed config hashes | arm `7390b142c52f46c2146618088ea17ce3f9fb89af11c96668fcdcece8a1b42354`; A/A `67b190ea7c5fa2c9f405905155c23cc60be25421fa4913682d119a76fa97b0ba`; smoke `86129b67e9ca5a206ef5cb5e21feed9737bc96dededed1ac6fbf85a7454bc1b4` |
+| protocol hashes | arm `16541c9afe2fe43f6a1fd9092d48b0035bbe8e5c9a599bc6964dcdb70172f294`; A/A `afc78710f009a1b973ab97aac30a39287f1ff949962abf882f6777957bdc83a7`; smoke `351a6048f2c6f480bee824a3b4d95d59377c2ec95c474ebfe84c44b3a569a081` |
 | supersedes | `docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1` (arm and smoke) |
 
 ## Decision rule (fixed here)

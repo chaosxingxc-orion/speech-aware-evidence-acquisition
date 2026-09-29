@@ -16,13 +16,20 @@
         "reason": "The in-chain A/A replicate of cell COMP-1 DEV-2000-ADDED, registered before contact on 2026-09-27 from the sealed DEV plan arm fragments by script (decision 58): the same baseline bytes at k 60, w_agree 0.0, the written key, the un-armed citation default, its own run, attempt and fit ids. Its prepared supply must reproduce the sealed DEV plan output digest d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19. HELD: the coordinator declares expected_effect_pp from the COMP-1 Fold A read (owner decision 139), root countersigns the exposure rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/comp1dev/comp1dev_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1b-dev2000-added-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1b-dev2000-added-v1/root-admission-v1.json",
+            "sha256": "135ad690b368ef4967e4c74bbae6d0281e56537d868dfe46fed8c168c62d20c7",
+            "reason": "Decision slurp-stage3-comp1b-dev2000-added-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply from the same sealed DEV-2000-ADDED speech-query segment vectors and the same sealed written-key facet vectors the sealed DEV plan arm used, with zero model, tokenizer, encoder, scorer or server contacts. Its output digest must equal the sealed DEV plan preparation's d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19 (the byte-identity proof that the A/A flies the locked plan's own bytes on this roster). E16: this cell pins its own. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1/phase-supply-v1.json",
-            "sha256": "d9b396a1981567fd34a99eace25f2b79fa24d6a660320b2e8f8a107086d91e82"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1/phase-supply-v2.json",
+            "sha256": "02aab5ee89e9a3df48ef8463aa76ef095d98d12cfc81fc469dab2d9f64bad46e"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1"
     }
