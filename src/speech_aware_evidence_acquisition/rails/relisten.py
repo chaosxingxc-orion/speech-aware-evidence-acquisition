@@ -795,6 +795,123 @@ def seal_relisten_receipt(
     }
 
 
+def relisten_contact_request_ids(receipt: object) -> tuple[str, ...]:
+    """The request ids of a sealed ``saea-relisten-v1`` receipt's own SHADOW
+    contacts: every entity's blind contact and, when fired, its confirm
+    contact, in receipt order (the order the runner spent them).
+
+    The runner records each contact's ``completion.request_id`` as the
+    receipt's ``contact_id`` (``rails.runner.run_relisten_stage``), so these
+    are the same identities the client's per-request timings carry. The seal
+    uses them to tell the post-delivery shadow contacts apart from the actual
+    sample contacts that could move delivery (E4-1 seal abort, 2026-09-29).
+    ``None`` -- a row whose config never armed ``native_episode.relisten``,
+    or an abstention -- names no contact. Structure only: I7l
+    (``core.bundle.outputs._verify_relisten_trace_binding``) remains the
+    authority on each contact's trace pair, sample and parsed content.
+    """
+
+    if receipt is None:
+        return ()
+    if not isinstance(receipt, Mapping):
+        raise RelistenError("relisten receipt must be an object")
+    entities = receipt.get("entities")
+    if not isinstance(entities, Sequence) or isinstance(entities, (str, bytes)):
+        raise RelistenError("relisten receipt carries no entities list")
+    request_ids: list[str] = []
+    for entity in entities:
+        if not isinstance(entity, Mapping):
+            raise RelistenError("relisten entity is not an object")
+        blocks = [entity.get("blind")]
+        if entity.get("confirm") is not None:
+            blocks.append(entity["confirm"])
+        for block in blocks:
+            contact_id = block.get("contact_id") if isinstance(block, Mapping) else None
+            if not isinstance(contact_id, str) or not contact_id:
+                raise RelistenError("relisten contact has invalid identity")
+            if contact_id in request_ids:
+                raise RelistenError("relisten receipt repeats a contact identity")
+            request_ids.append(contact_id)
+    return tuple(request_ids)
+
+
+#: The pinned response-format schema names that tell a recorded relisten
+#: contact's kind apart in a trace (the request payload's
+#: ``decoding_params.response_format.json_schema.name``).
+BLIND_SCHEMA_NAME = "slurp_relisten_value_v1"
+CONFIRM_SCHEMA_NAME = "slurp_relisten_confirm_v1"
+CONTACT_KIND_BY_SCHEMA_NAME = {
+    BLIND_SCHEMA_NAME: "blind",
+    CONFIRM_SCHEMA_NAME: "confirm",
+}
+
+
+def replay_relisten_receipt(
+    *,
+    sample_id: str,
+    delivered_text: str,
+    contacts: Sequence[tuple[str, str, str]],
+    config: RelistenConfig,
+) -> dict[str, object]:
+    """Re-derive a row's sealed ``saea-relisten-v1`` receipt from its trace.
+
+    Model-free: ``contacts`` is the row's own recorded relisten contacts in
+    dispatch order, each ``(request_id, kind, response_text)`` with ``kind``
+    ``"blind"`` or ``"confirm"``. The walk is the runner's own
+    (``rails.runner.run_relisten_stage``): parse the DELIVERED answer (after
+    the deliver normaliser), target up to ``max_slots_per_row`` entities in
+    delivery order, consume one blind contact per target and one confirm
+    contact exactly when :func:`should_fire_confirm` says the live stage
+    spent one, and seal through the SAME :func:`decide_entity` /
+    :func:`seal_relisten_receipt`. A contact of the wrong kind, a missing
+    contact, or a left-over contact is refused, never approximated -- a
+    resume-recovery then re-flies the row (``core.flight.resume``).
+    """
+
+    from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
+
+    if not isinstance(config, RelistenConfig):
+        raise RelistenError("relisten replay requires the cell's RelistenConfig")
+    pending = list(contacts)
+
+    def take(kind: str) -> tuple[str, str]:
+        if not pending:
+            raise RelistenError(f"relisten replay expected a {kind} contact the trace lacks")
+        request_id, recorded_kind, text = pending.pop(0)
+        if recorded_kind != kind:
+            raise RelistenError(
+                f"relisten replay expected a {kind} contact, the trace records a "
+                f"{recorded_kind!r} contact ({request_id!r})"
+            )
+        if not isinstance(text, str):
+            raise RelistenError(f"relisten contact {request_id!r} has no recorded response")
+        return request_id, text
+
+    _scenario, _action, entities, parsed = parse_slu_response(delivered_text)
+    records: list[RelistenEntityRecord] = []
+    if parsed:
+        for index in select_relisten_targets(entities, config.max_slots_per_row):
+            entity = entities[index]
+            blind_id, blind_text = take("blind")
+            blind = parse_blind_response(blind_text, max_words=config.value_max_words)
+            confirm_letter = confirm_id = order = None
+            if should_fire_confirm(blind, entity.filler):
+                order = confirm_order(sample_id, entity.type)
+                confirm_id, confirm_text = take("confirm")
+                confirm_letter = parse_confirm_letter(confirm_text)
+            records.append(decide_entity(
+                index=index, slot_type=entity.type, delivered_value=entity.filler,
+                blind=blind, blind_contact_id=blind_id,
+                confirm_letter=confirm_letter, order=order,
+                confirm_contact_id=confirm_id,
+            ))
+    if pending:
+        raise RelistenError(
+            f"relisten replay leaves {len(pending)} recorded relisten contact(s) unexplained"
+        )
+    return seal_relisten_receipt(records, max_slots_per_row=config.max_slots_per_row)
+
+
 # ---------------------------------------------------------------------------
 # shadow columns (ruling 2; rendered offline by
 # ``scripts/analysis/stage3_rollout_score.py``'s

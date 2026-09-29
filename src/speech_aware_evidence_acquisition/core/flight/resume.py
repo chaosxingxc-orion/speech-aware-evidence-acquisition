@@ -60,6 +60,19 @@ RESUME_PREDECESSOR_SCHEMA = "saea-resume-predecessor-attempt-v1"
 #: The trace record-id suffix a settled native episode's receipt carries.
 NATIVE_EPISODE_RECORD_SUFFIX = "/native-episode"
 
+#: E4-1 (2026-09-29): the per-contact USE record ``<request_id>/native-role-
+#: contact`` whose ``use_role_id`` names the role that made the contact, and
+#: the role id the post-accept relisten stage's shadow contacts carry
+#: (``rails.runner._dispatch_relisten_contact``).
+NATIVE_ROLE_CONTACT_RECORD_SUFFIX = "/native-role-contact"
+RELISTEN_ROLE_ID = "relisten"
+
+
+def _relisten_kind(schema_name: object) -> str | None:
+    from ...rails.relisten import CONTACT_KIND_BY_SCHEMA_NAME  # noqa: PLC0415
+
+    return CONTACT_KIND_BY_SCHEMA_NAME.get(schema_name) if isinstance(schema_name, str) else None
+
 
 class ResumeRecoveryError(RuntimeError):
     """A resume-recovery cannot proceed: bad declaration, or unreadable custody."""
@@ -169,6 +182,12 @@ class PredecessorContact:
     text: str | None = None
     latency_seconds: float = 0.0
     native_tool_calls: int | None = None
+    #: E4-1 (2026-09-29): the role the contact's ``USE <request_id>/native-
+    #: role-contact`` record names, and -- for a relisten contact only -- its
+    #: kind (``"blind"``/``"confirm"``) read off the request's pinned
+    #: response-format schema name. ``None`` when the trace records neither.
+    role_id: str | None = None
+    relisten_kind: str | None = None
 
     @property
     def answered(self) -> bool:
@@ -189,6 +208,14 @@ class ReplayedEpisodeResult:
     ``final_response_text`` is the DELIVERED text: the delivered contact's
     recorded response, or -- when the receipt carries a ``deliver_normaliser``
     block -- that rule's reproduced output over it.
+
+    ``relisten`` (E4-1, 2026-09-29) is the row's ``saea-relisten-v1`` receipt
+    re-derived from its recorded relisten contacts
+    (``rails.relisten.replay_relisten_receipt``) when the cell arms
+    ``native_episode.relisten``; ``contacts`` then excludes those shadow
+    contacts, exactly as a live result's ``contacts`` does (the live runner
+    never adds a relisten contact there), so
+    ``FlightRuntime._result_contact_count`` counts each contact once.
     """
 
     sample_id: str
@@ -196,6 +223,7 @@ class ReplayedEpisodeResult:
     contacts: tuple[PredecessorContact, ...]
     native_episode_receipt: Mapping[str, object]
     solver_group: Mapping[str, object] | None = None
+    relisten: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -494,6 +522,7 @@ def _scan_trace(
     responses: dict[str, tuple[str, str, str]] = {}
     latency: dict[str, float] = {}
     tool_calls: dict[str, int | None] = {}
+    roles: dict[str, str] = {}
     episodes: dict[str, Mapping[str, object]] = {}
     order: list[str] = []
     per_sample: dict[str, list[str]] = {}
@@ -541,9 +570,20 @@ def _scan_trace(
                     raise ResumeRecoveryError(
                         f"predecessor trace repeats request id {request_id!r}"
                     )
+                decoding = inner.get("decoding_params")
+                response_format = (
+                    decoding.get("response_format") if isinstance(decoding, Mapping) else None
+                )
+                schema = (
+                    response_format.get("json_schema")
+                    if isinstance(response_format, Mapping) else None
+                )
                 requests[request_id] = {
                     "sample_id": sample_id,
                     "request_sha256": payload.get("payload_sha256"),
+                    "schema_name": (
+                        schema.get("name") if isinstance(schema, Mapping) else None
+                    ),
                 }
                 if sample_id not in per_sample:
                     per_sample[sample_id] = []
@@ -565,6 +605,10 @@ def _scan_trace(
                 seconds = payload.get("latency_seconds")
                 if isinstance(seconds, (int, float)) and not isinstance(seconds, bool):
                     latency[record_id[: -len("/cost")]] = float(seconds)
+            elif channel == "USE" and record_id.endswith(NATIVE_ROLE_CONTACT_RECORD_SUFFIX):
+                role_id = payload.get("use_role_id")
+                if isinstance(role_id, str) and role_id:
+                    roles[record_id[: -len(NATIVE_ROLE_CONTACT_RECORD_SUFFIX)]] = role_id
             elif channel == "USE" and record_id.endswith(suffix):
                 receipt = payload.get("use_native_episode")
                 sample_id = record_id[: -len(suffix)]
@@ -592,6 +636,11 @@ def _scan_trace(
                     text=None if answer is None else answer[2],
                     latency_seconds=latency.get(request_id, 0.0),
                     native_tool_calls=tool_calls.get(request_id),
+                    role_id=roles.get(request_id),
+                    relisten_kind=(
+                        _relisten_kind(meta.get("schema_name"))
+                        if roles.get(request_id) == RELISTEN_ROLE_ID else None
+                    ),
                 )
             )
         contacts[sample_id] = items
@@ -646,8 +695,14 @@ def _classify(
     sample_id: str,
     receipt: Mapping[str, object] | None,
     contacts: Sequence[PredecessorContact],
+    relisten_config: object = None,
 ) -> tuple[ReplayedEpisodeResult | None, str | None]:
-    """COMPLETE (a replayed result) or INCOMPLETE (the reason), never both."""
+    """COMPLETE (a replayed result) or INCOMPLETE (the reason), never both.
+
+    ``relisten_config`` is the cell's parsed ``rails.relisten.RelistenConfig``
+    when it arms ``native_episode.relisten`` (E4-1, 2026-09-29), else
+    ``None``; see :class:`ReplayedEpisodeResult`'s ``relisten``.
+    """
 
     from ...rails.native_episode_receipt import (  # noqa: PLC0415 (cycle guard)
         validate_native_episode_delivery_receipt,
@@ -722,12 +777,48 @@ def _classify(
             final_text, reason = _replay_delivery_normalisation(normalisation, final_text)
             if final_text is None:
                 return None, reason
+    # E4-1 (2026-09-29): the post-accept relisten stage's SHADOW contacts. The
+    # live row carries its ``saea-relisten-v1`` receipt only in memory until
+    # the seal writes it, so a replay that dropped it would seal the row
+    # without its shadow columns and leave its trailing relisten contacts
+    # unexplained. Re-derive it from the recorded contacts with the runner's
+    # own walk, or re-fly the row -- never approximate.
+    relisten_contacts = [
+        contact for contact in contacts if contact.role_id == RELISTEN_ROLE_ID
+    ]
+    relisten_receipt = None
+    if relisten_config is None:
+        if relisten_contacts:
+            return None, (
+                f"{len(relisten_contacts)} relisten contact(s) are recorded but the cell "
+                "declares no native_episode.relisten"
+            )
+    elif delivery.kind in {"abstention", "context-abstention"}:
+        if relisten_contacts:
+            return None, "an abstention row records relisten contacts"
+    else:
+        from ...rails.relisten import RelistenError, replay_relisten_receipt  # noqa: PLC0415
+
+        try:
+            relisten_receipt = replay_relisten_receipt(
+                sample_id=sample_id, delivered_text=final_text,
+                contacts=[
+                    (contact.request_id, contact.relisten_kind, contact.text)
+                    for contact in relisten_contacts
+                ],
+                config=relisten_config,
+            )
+        except RelistenError as error:
+            return None, f"the relisten receipt cannot be re-derived: {error}"
     return (
         ReplayedEpisodeResult(
             sample_id=sample_id,
             final_response_text=final_text,
-            contacts=tuple(contacts),
+            contacts=tuple(
+                contact for contact in contacts if contact.role_id != RELISTEN_ROLE_ID
+            ),
             native_episode_receipt=dict(receipt),
+            relisten=relisten_receipt,
         ),
         None,
     )
@@ -791,6 +882,7 @@ def read_predecessor_attempt(
     attempt_dir: Path,
     expected_trace_sha256: str | None = None,
     program_id: str | None = None,
+    relisten: object = None,
 ) -> PredecessorAttempt:
     """Scan one aborted attempt's trace; zero model contact, read-only.
 
@@ -798,8 +890,32 @@ def read_predecessor_attempt(
     hash to it, or the resume refuses. ``None`` measures without comparing,
     which is what a read-only audit of an attempt whose hash is not yet
     pinned needs.
+
+    ``relisten`` (E4-1, 2026-09-29) is the cell's composed
+    ``native_episode.relisten`` block (raw mapping or parsed
+    ``rails.relisten.RelistenConfig``), or ``None`` when the cell does not
+    arm it. Armed, every complete row carries its re-derived
+    ``saea-relisten-v1`` receipt; unarmed, a row that nevertheless records
+    relisten contacts is INCOMPLETE.
     """
 
+    relisten_config = None
+    if relisten is not None:
+        from ...rails.relisten import (  # noqa: PLC0415
+            RelistenConfig,
+            RelistenError,
+            parse_relisten,
+        )
+
+        if isinstance(relisten, RelistenConfig):
+            relisten_config = relisten
+        else:
+            try:
+                relisten_config = parse_relisten(relisten)
+            except RelistenError as error:
+                raise ResumeRecoveryError(
+                    f"native_episode.relisten is invalid for a resume replay: {error}"
+                ) from error
     attempt_dir = Path(attempt_dir)
     trace_path = predecessor_trace_path(attempt_dir, run_id)
     if not trace_path.is_file():
@@ -827,7 +943,10 @@ def read_predecessor_attempt(
     complete: dict[str, ReplayedEpisodeResult] = {}
     incomplete: dict[str, str] = {}
     for sample_id in order:
-        result, reason = _classify(sample_id, episodes.get(sample_id), contacts[sample_id])
+        result, reason = _classify(
+            sample_id, episodes.get(sample_id), contacts[sample_id],
+            relisten_config=relisten_config,
+        )
         if result is None:
             incomplete[sample_id] = str(reason)
         else:
@@ -847,7 +966,9 @@ def read_predecessor_attempt(
 
 __all__ = [
     "NATIVE_EPISODE_RECORD_SUFFIX",
+    "NATIVE_ROLE_CONTACT_RECORD_SUFFIX",
     "NON_WIRE_CONTACT_BLOCKS",
+    "RELISTEN_ROLE_ID",
     "RESUME_PREDECESSOR_SCHEMA",
     "MergedPredecessors",
     "PredecessorAttempt",

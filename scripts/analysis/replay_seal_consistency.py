@@ -20,8 +20,9 @@ attempt named on the command line -- unpinned via ``--attempt``, or PINNED via
    (the delivered text hashes to the row's ``response_text_sha256``; carrier
    and arm bind to the composed cell), I7n
    (``core.bundle.outputs._verify_delivery_normalisation`` against the
-   delivered contact's recorded response bytes) and I7g
-   (``_verify_grouped_commit``) where applicable; and
+   delivered contact's recorded response bytes), I7g
+   (``_verify_grouped_commit``) and I7l (``_verify_relisten_trace_binding``,
+   over a relisten-armed row's re-derived receipt) where applicable; and
 4. checks the union across attempts: no sample is sealed twice.
 
 It prints one JSON document: per attempt, samples started / complete /
@@ -131,6 +132,9 @@ def _check_attempt(
     scan = read_predecessor_attempt(
         run_id=run_id, attempt_id=attempt_id, attempt_dir=run_dir / attempt_id,
         program_id=policy, expected_trace_sha256=expected_trace_sha256,
+        # E4-1 (2026-09-29): a relisten-armed cell's rows carry their
+        # re-derived saea-relisten-v1 receipts, exactly as a resume keeps them.
+        relisten=runtime._declared_relisten_block(),
     )
     values = runtime._composed.values
     carrier = values.get("carrier_lock_key")
@@ -138,6 +142,7 @@ def _check_attempt(
     failures: list[dict[str, str]] = []
     checked = 0
     normalised = 0
+    relistened = 0
     for sample_id in scan.complete_sample_ids:
         label = _id_hash(sample_id)
         summaries, timings = scan.replay([sample_id], controller_policy_id=policy)
@@ -189,6 +194,24 @@ def _check_attempt(
                     "sample_id_sha256_12": label, "check": "I7g",
                     "error": f"{type(error).__name__}: {_reason_class(error)}",
                 })
+        if "relisten" in row:
+            # E4-1 (2026-09-29): I7l over the row's own recorded contacts --
+            # each relisten contact's sample id and response text straight
+            # from this attempt's trace, as the bundle verifier reads them.
+            relistened += 1
+            records: dict[str, dict[str, object]] = {}
+            for contact in scan.contacts[sample_id]:
+                records[f"{contact.request_id}/request"] = {
+                    "payload": {"sample_id": contact.sample_id},
+                }
+                records[f"{contact.request_id}/response"] = {"text": contact.text}
+            try:
+                bundle._verify_relisten_trace_binding(row, records)
+            except Exception as error:  # noqa: BLE001
+                failures.append({
+                    "sample_id_sha256_12": label, "check": "I7l",
+                    "error": f"{type(error).__name__}: {_reason_class(error)}",
+                })
     return scan, {
         "attempt_id": attempt_id,
         "trace_sha256": scan.trace_sha256,
@@ -200,6 +223,7 @@ def _check_attempt(
         )),
         "rows_checked": checked,
         "rows_with_deliver_normaliser": normalised,
+        "rows_with_relisten_receipt": relistened,
         "rows_failing": len({item["sample_id_sha256_12"] for item in failures}),
         "failures_by_check": dict(collections.Counter(item["check"] for item in failures)),
         "failures_by_error_class": dict(collections.Counter(item["error"] for item in failures)),

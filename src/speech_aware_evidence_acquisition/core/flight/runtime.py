@@ -1792,6 +1792,9 @@ class FlightRuntime:
                     attempt_dir=attempt_dir,
                     expected_trace_sha256=declaration.trace_sha256,
                     program_id=program.program_id,
+                    # E4-1 (2026-09-29): a relisten-armed cell's kept rows
+                    # carry their re-derived saea-relisten-v1 receipts.
+                    relisten=self._declared_relisten_block(),
                 )
             except ResumeRecoveryError as error:
                 raise FlightRuntimeError(str(error)) from error
@@ -6315,6 +6318,17 @@ class FlightRuntime:
             )
         return rows
 
+    def _declared_relisten_block(self) -> object:
+        """The composed ``native_episode.relisten`` block, or ``None``.
+
+        E4-1 (2026-09-29): what a resume replay needs to re-derive each kept
+        row's ``saea-relisten-v1`` receipt (``core.flight.resume``)."""
+
+        raw_native = self._composed.values.get("native_episode")
+        if not isinstance(raw_native, Mapping):
+            return None
+        return raw_native.get("relisten")
+
     @staticmethod
     def _result_contact_count(result: object) -> int:
         """How many model contacts ONE result accounts for, INCLUDING a
@@ -10645,9 +10659,16 @@ class FlightRuntime:
             timings = getattr(client, "timings", ()) or ()
         timing_by_sample: dict[str, object] = {}
         timing_by_request: dict[str, object] = {}
+        # E4-1 seal fix (2026-09-29): every sample's own contacts in recorded
+        # order, so the finite-source check below can admit the row's own
+        # post-delivery relisten SHADOW contacts after the source.
+        timing_sequence_by_sample: dict[str, list[str]] = {}
         for timing in timings:
             timing_by_sample[timing.sample_id] = timing
             timing_by_request[timing.request_id] = timing
+            timing_sequence_by_sample.setdefault(timing.sample_id, []).append(
+                timing.request_id
+            )
         arm = self._arm()
         # E4 (SLURP v2 base program, module M3): the ONE flat run-level
         # switch that turns the USE projection v3 delivery transform on.
@@ -10860,11 +10881,41 @@ class FlightRuntime:
                                 ))
                             ):
                                 raise FlightRuntimeError("finite interrupted contact differs from actual timing")
-                        if (
-                            timing_by_sample[sample_id].request_id
-                            != interrupted["final_contact"]["request_id"]
-                        ):
+                        # E4-1 seal fix (2026-09-29): the finite source must
+                        # be the last ACTUAL sample contact -- the last one
+                        # that could move delivery. The post-accept relisten
+                        # stage (owner decision 185) runs after the delivery
+                        # is fixed, over the delivered answer, in SHADOW
+                        # (design section 8, ruling 2: "The delivered column
+                        # stays the flight's normal answer"), so its blind/
+                        # forced-choice contacts legitimately follow a finite
+                        # source. Exactly the row's own relisten receipt
+                        # contacts, and nothing else, may follow it; every
+                        # one of them must follow it. With no relisten
+                        # receipt this is the pre-fix check unchanged: the
+                        # source is the sample's last recorded contact.
+                        from ...rails.relisten import (  # noqa: PLC0415
+                            RelistenError,
+                            relisten_contact_request_ids,
+                        )
+
+                        try:
+                            shadow_ids = relisten_contact_request_ids(relisten)
+                        except RelistenError as error:
+                            raise FlightRuntimeError(
+                                f"finite delivery carries a malformed relisten receipt: {error}"
+                            ) from error
+                        sequence = timing_sequence_by_sample.get(sample_id, [])
+                        source_id = interrupted["final_contact"]["request_id"]
+                        if sequence.count(source_id) != 1:
                             raise FlightRuntimeError("finite source is not the last actual sample contact")
+                        after_source = sequence[sequence.index(source_id) + 1:]
+                        if any(request_id not in shadow_ids for request_id in after_source):
+                            raise FlightRuntimeError("finite source is not the last actual sample contact")
+                        if sorted(after_source) != sorted(shadow_ids):
+                            raise FlightRuntimeError(
+                                "finite delivery relisten contacts do not all follow the finite source"
+                            )
                 if delivery.kind == "context-abstention":
                     # E20: no contact was answered at all, so there is
                     # nothing to bind the delivered text to. The row keeps
