@@ -308,6 +308,76 @@ def test_render_relisten_shadow_columns_no_receipt_row_is_at1_by_construction(tm
         assert rows[0]["text"] == text
 
 
+def test_render_relisten_shadow_columns_keeps_a_non_canonical_sealed_text_when_nothing_binds(tmp_path):
+    """AT1 on a natively committed answer: the sealed text is the core's own
+    compact JSON (key order scenario/action/entities), not the sorted-key
+    canonical render. A row whose receipt accepted nothing keeps that text
+    byte for byte in both columns (E4-1 read, 2026-09-29)."""
+    text = json.dumps(
+        {"scenario": "alarm", "action": "set", "entities": [{"type": "time", "filler": "7 pm"}]},
+        separators=(",", ":"),
+    )
+    assert text != score_mod.render_answer(json.loads(text))
+    order = rl.confirm_order("s1", "time")
+    heard_same = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.BlindResult(rl.BLIND_UNHEARD, None, 0), blind_contact_id="blind-0",
+        confirm_letter=("B" if order[0] == rl.CONFIRM_CANDIDATE else "A"),
+        order=order, confirm_contact_id="confirm-0",
+    )
+    assert heard_same.accept is False
+    receipt = rl.seal_relisten_receipt([heard_same], max_slots_per_row=3)
+    row = {"sample_id": "s1", "text": text, "native_episode_receipt": {"kind": "accepted"},
+           "relisten": receipt}
+    bundle = _bundle(tmp_path, [row], {})
+    manifest = score_mod.render_relisten_shadow_columns(
+        bundle, {"s1": "alarm"}, tmp_path / "analysis",
+        run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64,
+    )
+    a_rows = list(score_mod.iter_jsonl(Path(manifest["copies"][rl.COLUMN_REPLACE_ONLY]["path"])))
+    assert a_rows[0]["text"] == text
+    assert manifest["at1_column_reproduction_checked_rows"] >= 1
+    b_rows = list(score_mod.iter_jsonl(Path(manifest["copies"][rl.COLUMN_REPLACE_DROP_UNHEARD]["path"])))
+    if heard_same.dropped_when_unheard:
+        assert json.loads(b_rows[0]["text"])["entities"] == []
+    else:
+        assert b_rows[0]["text"] == text
+
+
+def test_render_relisten_shadow_columns_reads_a_kept_row_contact_from_its_predecessor(tmp_path):
+    """A seal-only completion's own trace is empty; the kept row's blind
+    contact is read from that row's own verified predecessor trace."""
+    pred_trace = {}
+    _trace_contact(pred_trace, "blind-0", json.dumps({"heard": True, "value": "eight pm"}))
+    text = json.dumps({"scenario": "alarm", "action": "set",
+                       "entities": [{"type": "time", "filler": "7 pm"}]})
+    order = rl.confirm_order("s1", "time")
+    accepted = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.parse_blind_response(pred_trace["blind-0/response"]["text"]),
+        blind_contact_id="blind-0",
+        confirm_letter=("A" if order[0] == rl.CONFIRM_CANDIDATE else "B"),
+        order=order, confirm_contact_id="confirm-0",
+    )
+    receipt = rl.seal_relisten_receipt([accepted], max_slots_per_row=3)
+    row = {"sample_id": "s1", "text": text, "native_episode_receipt": {"kind": "accepted"},
+           "relisten": receipt}
+    kwargs = dict(run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64)
+    with pytest.raises(score_mod.Stage3ScoreError, match="no sealed blind trace"):
+        score_mod.render_relisten_shadow_columns(
+            _bundle(tmp_path / "a", [row], {}), {"s1": "alarm"}, tmp_path / "a" / "out", **kwargs)
+    manifest = score_mod.render_relisten_shadow_columns(
+        _bundle(tmp_path / "b", [row], {}), {"s1": "alarm"}, tmp_path / "b" / "out",
+        predecessor_records={"s1": pred_trace}, **kwargs)
+    a_rows = list(score_mod.iter_jsonl(Path(manifest["copies"][rl.COLUMN_REPLACE_ONLY]["path"])))
+    assert json.loads(a_rows[0]["text"])["entities"] == [{"type": "time", "filler": "eight pm"}]
+    # another row's predecessor records never serve this row
+    with pytest.raises(score_mod.Stage3ScoreError, match="no sealed blind trace"):
+        score_mod.render_relisten_shadow_columns(
+            _bundle(tmp_path / "c", [row], {}), {"s1": "alarm"}, tmp_path / "c" / "out",
+            predecessor_records={"s2": pred_trace}, **kwargs)
+
+
 def test_render_relisten_shadow_columns_replaces_and_drops(tmp_path):
     trace = {}
     _trace_contact(trace, "blind-0", json.dumps({"heard": True, "value": "eight pm"}))
