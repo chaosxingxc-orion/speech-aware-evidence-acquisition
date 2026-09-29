@@ -339,6 +339,7 @@ def test_a_crashed_attempt_resumes_with_identical_semantics_under_the_key(
 ):
     from speech_aware_evidence_acquisition.core.flight.resume import (
         RESUME_PREDECESSOR_SCHEMA,
+        MergedPredecessors,
     )
     from test_flight_resume_recovery import (
         _harness,
@@ -372,7 +373,7 @@ def test_a_crashed_attempt_resumes_with_identical_semantics_under_the_key(
     runtime = _skeleton(recovery, monkeypatch)
     runtime._composed = SimpleNamespace(values={**runtime._composed.values, "dispatch": ALL_ON})
     runtime._samples = tuple(SimpleNamespace(sample_id=s) for s in ("s1", "s2"))
-    runtime._resume = scan
+    runtime._resume = MergedPredecessors((scan,))
     runtime._resume_flown_sample_ids = ("s2",)
     try:
         rows, *_ = runtime._dispatch_phase_program(

@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Sequence
 
 from ...contracts import STUDY_SLUG, ExecutionPlan
 from ...e0.artifacts import sha256_file, write_json_artifact
@@ -55,6 +55,7 @@ def _manifest_document(
     result: RunResult | None,
     now: Callable[[], datetime],
     predecessor_attempt: Mapping[str, object] | None = None,
+    predecessor_attempts: Sequence[Mapping[str, object]] | None = None,
 ) -> dict[str, object]:
     if status not in _VALID_STATUSES:
         raise BundleError(
@@ -80,6 +81,11 @@ def _manifest_document(
     # here so a malformed block never reaches disk; the CONTENT (the trace
     # bytes, the kept-row hash, each kept row's custody) is re-derived from
     # disk by core.bundle.verify_bundle, which trusts none of it.
+    if predecessor_attempt is not None and predecessor_attempts is not None:
+        raise BundleError(
+            "a run manifest declares predecessor_attempt or predecessor_attempts, "
+            "never both"
+        )
     if predecessor_attempt is not None:
         from .outputs import RESUME_PREDECESSOR_SCHEMA, _validate_predecessor_block
 
@@ -92,6 +98,25 @@ def _manifest_document(
         )
         if predecessor_attempt["schema"] != RESUME_PREDECESSOR_SCHEMA:
             raise BundleError("predecessor attempt block has the wrong schema")
+    # E10d (2026-09-29): the multi-predecessor form -- one block per pinned
+    # predecessor attempt whose COMPLETE rows this manifest keeps, validated
+    # exactly as a single block is plus cross-block disjointness (defence in
+    # depth; ``core.flight.resume.MergedPredecessors`` already refused an
+    # overlap before this manifest was ever built).
+    if predecessor_attempts is not None:
+        from .outputs import _validate_predecessor_blocks_list
+
+        if not predecessor_attempts:
+            raise BundleError(
+                "predecessor_attempts must be a non-empty list when given"
+            )
+        if status != STATUS_COMPLETED:
+            raise BundleError(
+                f"only a {STATUS_COMPLETED} manifest declares predecessor attempts"
+            )
+        predecessor_attempts = _validate_predecessor_blocks_list(
+            list(predecessor_attempts), run_id=plan.run_id, attempt_id=attempt_id,
+        )
     run_id = plan.run_id
     run_dir = Path(run_dir).resolve()
 
@@ -255,6 +280,11 @@ def _manifest_document(
             if predecessor_attempt is not None
             else {}
         ),
+        **(
+            {"predecessor_attempts": [dict(block) for block in predecessor_attempts]}
+            if predecessor_attempts is not None
+            else {}
+        ),
         "session_receipt": session_meta,
         "outputs": outputs_meta,
         "raw_trace": raw_trace_meta,
@@ -297,12 +327,16 @@ def build_manifest(
     result: RunResult | None = None,
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
     predecessor_attempt: Mapping[str, object] | None = None,
+    predecessor_attempts: Sequence[Mapping[str, object]] | None = None,
 ) -> Path:
     """Build and durably write one attempt's run manifest; return its path.
 
     ``predecessor_attempt`` is passed only by a resume-recovery (E10, owner
     decision 22): the aborted attempt of this same run id whose COMPLETE rows
     this manifest keeps, with its trace sha256 and the sorted kept-row list.
+    ``predecessor_attempts`` (E10d, 2026-09-29) is the plural form for a
+    resume-recovery pinned to MULTIPLE predecessor attempts; exactly one of
+    the two may be given, never both.
     """
 
     # Repo confinement FIRST (IMPORTANT fix, T6 fix round): the cheapest,
@@ -325,6 +359,7 @@ def build_manifest(
         result=result,
         now=now,
         predecessor_attempt=predecessor_attempt,
+        predecessor_attempts=predecessor_attempts,
     )
     manifest_path = _confine_child_path(
         run_dir, f"{plan.run_id}.run-manifest.json", "run manifest path"
