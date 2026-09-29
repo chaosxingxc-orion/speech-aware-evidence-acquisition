@@ -16,8 +16,8 @@ arm fragments by script (decision 58) under owner decision 172. Development numb
 | provisional floor | 0.3163 pp SLU (0.735 x sqrt(200 / 1080)); the bar is the twin null |
 | rosters | tuning `none`; read `SLURP-EVO-FOLD-A-V2` |
 | runs | `SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1` / `SAEA-SLURP-STAGE3-WSV1-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-WSV1-FOLD-A-COLUMN-READ-V1` |
-| composed config hashes | arm `9057e7db5a70d1ab5f0d72eea70a1d83035246a0e0a2b60d3981649de518a53a`; smoke `e3f60f86c288d4b5c2b7fe55f34310c75af8f3eed1d14c181dac11f4c16e7c2d` |
-| protocol hashes | arm `61ef29944bb46f91f072225d023480c738883db7a689477108808a2ed5d02380`; smoke `078a364abef4893cf218a46a6320686a8fba9961185ffad60fb4d84e931b359b` |
+| composed config hashes | arm `9057e7db5a70d1ab5f0d72eea70a1d83035246a0e0a2b60d3981649de518a53a`; smoke `f51360fa518198d0811cd84d2249d05e8edec0ff5e47d9c92cfea8403725077a` |
+| protocol hashes | arm `61ef29944bb46f91f072225d023480c738883db7a689477108808a2ed5d02380`; smoke `d32892dade05b17e01daf1965d8d262e4bc5c55ec18cc879119813daee1f7856` |
 | split identity | arm `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 
 ## Decision rule (fixed here)

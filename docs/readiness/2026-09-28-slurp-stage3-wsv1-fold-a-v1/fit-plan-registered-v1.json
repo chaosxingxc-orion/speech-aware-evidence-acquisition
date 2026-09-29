@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "6f1ec2d24eb7441a1ed479efe214e99753d8fc64584da80272fa9202fde469dc"
+    "sha256": "460b07ab70fbb3e5280d5a660ed2d719e42f5bf482964822768dcb201bdc158f"
   },
   "purpose": "SAEA-SLURP-STAGE3-WSV1-FOLD-A-FIT-V1: request envelopes only; reads nothing.",
   "quality_read_gate": "No column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-WSV1-FOLD-A-COLUMN-READ-V1 is root countersigned; each column is then scored once, never sharded.",
