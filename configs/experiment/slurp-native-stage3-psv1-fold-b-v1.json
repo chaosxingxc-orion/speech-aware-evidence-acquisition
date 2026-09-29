@@ -4,6 +4,7 @@
       "allowed_execution_stages": [
         "check",
         "prepare-supply",
+        "prepare-branch-seeds",
         "worker",
         "campaign"
       ],

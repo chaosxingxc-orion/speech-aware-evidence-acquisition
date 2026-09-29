@@ -4,6 +4,7 @@
       "allowed_execution_stages": [
         "check",
         "prepare-supply",
+        "prepare-branch-seeds",
         "worker"
       ],
       "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-smoke-4-generation-v1",
