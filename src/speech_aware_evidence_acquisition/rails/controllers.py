@@ -1743,6 +1743,79 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
 _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
 
 
+# --- The consumption module's PROGRAM FAMILY (coordinator ruling R1, design
+# docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md) ------
+#
+# The module (``rails.consumption_module``) computes its contact ceiling from
+# the components it arms, and the rule every comment above states -- two
+# program ids must never resolve to the same object when their contact
+# ceilings differ -- forces one program id per ceiling. R1: one registered id
+# per computed ceiling, ``phase-native-module-v1-c<ceiling>``, all registered
+# through ONE family registration below and none written by hand as a
+# ``configs/policy`` fragment. Every family program is the v2.0 lock program
+# (:data:`MODULE_PROGRAM_FAMILY_BASE`) with exactly two fields replaced: its
+# ``program_id`` and its ``max_contacts``, which equals the ceiling its own id
+# names. The ceilings are the closed range the module's contact table (design
+# section 2.4) can reach over the lock's 11: + 1 (the E3 slot-types node),
+# + 2..6 (one or two same-flight Perception columns at level 1 or 2), + 6
+# (re-listen, 3 entities x 2 contacts) -- every value from 11 to 24.
+#
+# The ids are written out as literals in one tuple so the engineering-base
+# gate reads them from source without importing the package
+# (scripts/checks/engineering_base_check.py, "family registration" rule).
+MODULE_PROGRAM_FAMILY_PREFIX = "phase-native-module-v1-c"
+MODULE_PROGRAM_FAMILY_BASE = "phase-native-candidates-review-revise-v1"
+MODULE_PROGRAM_FAMILY_IDS: tuple[str, ...] = (
+    "phase-native-module-v1-c11",
+    "phase-native-module-v1-c12",
+    "phase-native-module-v1-c13",
+    "phase-native-module-v1-c14",
+    "phase-native-module-v1-c15",
+    "phase-native-module-v1-c16",
+    "phase-native-module-v1-c17",
+    "phase-native-module-v1-c18",
+    "phase-native-module-v1-c19",
+    "phase-native-module-v1-c20",
+    "phase-native-module-v1-c21",
+    "phase-native-module-v1-c22",
+    "phase-native-module-v1-c23",
+    "phase-native-module-v1-c24",
+)
+
+
+def module_program_family_ceiling(program_id: str) -> int:
+    """The contact ceiling a family id names (``...-c<ceiling>``); refuses an
+    id that is not a registered family member."""
+
+    if program_id not in MODULE_PROGRAM_FAMILY_IDS:
+        raise RailsControllersError(
+            f"{program_id!r} is not a registered consumption-module program id; "
+            f"registered: {list(MODULE_PROGRAM_FAMILY_IDS)}"
+        )
+    return int(program_id[len(MODULE_PROGRAM_FAMILY_PREFIX):])
+
+
+def module_program_family_id(ceiling: int) -> str:
+    """The family id for ``ceiling``; refuses a ceiling outside the family."""
+
+    program_id = f"{MODULE_PROGRAM_FAMILY_PREFIX}{ceiling}"
+    module_program_family_ceiling(program_id)
+    return program_id
+
+
+def _module_family_program(program_id: str) -> PhaseProgram:
+    import dataclasses  # noqa: PLC0415
+
+    base = default_phase_program(MODULE_PROGRAM_FAMILY_BASE)
+    program = dataclasses.replace(
+        base,
+        program_id=program_id,
+        max_contacts=module_program_family_ceiling(program_id),
+    )
+    program.validate()
+    return program
+
+
 def registered_program_ids() -> tuple[str, ...]:
     """The program ids this module registers into
     ``core.base.AGENT_CONTROLLERS`` (declaration order, not registry order)."""
@@ -1755,6 +1828,10 @@ def default_phase_program(program_id: str) -> PhaseProgram:
     from its ``configs/policy/phase-*.json`` fragment (cached after first
     load; the file is never re-read once registration has run)."""
 
+    if program_id in MODULE_PROGRAM_FAMILY_IDS:
+        if program_id not in _LOADED_PROGRAMS:
+            _LOADED_PROGRAMS[program_id] = _module_family_program(program_id)
+        return _LOADED_PROGRAMS[program_id]
     try:
         filename = _PROGRAM_CONFIG_FILENAMES[program_id]
     except KeyError:
@@ -2122,6 +2199,24 @@ def register_phase_programs_v1() -> None:
 
 
 register_phase_programs_v1()
+
+
+def register_module_program_family_v1() -> None:
+    """The ONE family registration of coordinator ruling R1: every id in
+    :data:`MODULE_PROGRAM_FAMILY_IDS` registers into
+    ``core.base.AGENT_CONTROLLERS`` with the default controller factory over
+    its own family program. Idempotent, like
+    :func:`register_phase_programs_v1`."""
+
+    registered = AGENT_CONTROLLERS.names()
+    for program_id in MODULE_PROGRAM_FAMILY_IDS:
+        if program_id not in registered:
+            AGENT_CONTROLLERS.register(
+                program_id, default_controller_factory(default_phase_program(program_id))
+            )
+
+
+register_module_program_family_v1()
 
 
 # --- WAVE R7: the two frozen-historical controller_policy_id values ---------
