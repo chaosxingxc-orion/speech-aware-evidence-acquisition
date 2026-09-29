@@ -7,7 +7,7 @@
     },
     "derive_script": {
       "path": "scripts/flights/psv/derive_slurp_psv_cells.py",
-      "sha256": "3040af931e22ceb6e4481d3b34c6f9c07732abc4fa1da592d052fd9a0714f0e6"
+      "sha256": "7044f8cb2ad6e9ebd681292b6265db0b13c079da9fe5a05fd3dd637fe51a3548"
     },
     "fold_b_inputs": {
       "path": "docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md",
@@ -27,7 +27,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "6066005515f4616abd25d964bc6b9844db88a5c932eb20061fec19eb8a9d6605"
+      "sha256": "e159acf56035232f28ffc6dba5e191dd0aa58e2c85f6258e33dc827bb520a45b"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/README.md",
@@ -35,12 +35,12 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/registered-facts-v1.json",
-      "sha256": "7a2dfdf97ef49cff3dfa4d84498e8d7b47ac6f82de8ac50acff048a8ed869c93"
+      "sha256": "7c36744dbc94a91748ae32e1bcc2a0041e1187abd82277ec3f9c3a89f497bc79"
     },
     "registration_base_commit": "f33e8a0f2",
     "spec": {
       "path": "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md",
-      "sha256": "e269bface828e4e43d70be7d220c6e5d306d7e1db5e9412c0c4b1bfc4ce7633a"
+      "sha256": "0c92a111b947aef03d9e3cf6198f52992af7b6ec1b0635841dfa9b2a14300e37"
     }
   },
   "authorization_basis": "Owner decisions 184, 186, 188 (and 172 for the instrument), 139, 28/86; the spec docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md with rulings O1-O6.",
@@ -88,7 +88,7 @@
     "--allow-output-change on the re-pin tool",
     "any change beyond the registered re-target, program switch and branch block",
     "opening a branch column before the READ row is countersigned",
-    "flipping P-SV-1 before root's own re-pin -- update 2026-09-29: the contrast-pair table pin now sits on the b-top2contrast branch (contrast_pairs: prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json, sha256 19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059) and the runtime verifies it before any contact, but the branch's prepared_seed pin still needs re-deriving and re-pinning against the widened branch-axis identity"
+    "flipping P-SV-1 with a b-top2contrast contrast_pairs pin other than the registered V2 table (prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2/table-v1.json, sha256 0d74fdb6aae70bff82abbd52355fe34b58cf646fe36a80016220ba1e714a7e34; O7 ruling)"
   ],
   "owner": "root",
   "population": {
@@ -101,12 +101,12 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "535bb34e6e1628cef7e6d3f4494fe9a3a1b106a74ecde0a560e49798878f5224",
-      "protocol": "b0451b8ea7ac4cbe2e82252585dbd6588dd80f12b5aa0c391331f8c68e8389a9"
+      "composed_config": "c00da6f6b5ab502276087b58740389a975fce13faed5b701adf640b59680d222",
+      "protocol": "7e7a2dfba063322d741f87e2d1ca52ce4e85d9678398b38447e959e5b39ace69"
     },
     "smoke": {
-      "composed_config": "7ff13206535866e48788fce8abd82524393e650ada1aa26a7962eb81f405db97",
-      "protocol": "a4d2b1b237c7a0bf69558c7bbf383418919e37cf2036e621184aa08c2dc632db"
+      "composed_config": "956ce7f08282e446b109df92094aca78c4f754450b94f22bfc9410f6ef92fd48",
+      "protocol": "2f6ac62b01859f884b3bd8179d0d155cefe93ee59278bd7c909b9fa3cd79bb22"
     }
   },
   "schema": "saea-campaign-decision-v1",

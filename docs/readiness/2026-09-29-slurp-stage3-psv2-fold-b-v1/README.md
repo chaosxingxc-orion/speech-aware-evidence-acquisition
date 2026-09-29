@@ -48,7 +48,11 @@ SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling '
 | arm | planner | ALLOW | 19255 | 1689 | 4761 |
 | arm | solver | COMPACT_REQUIRED | 21281 | -337 | 2735 |
 | arm | blockers | null | | | |
-| smoke | check | MISSING | | | |
+| smoke | perception | ALLOW | 19448 | 1516 | 4588 |
+| smoke | reviewer | ALLOW | 19311 | 1653 | 4725 |
+| smoke | planner | ALLOW | 19250 | 1714 | 4786 |
+| smoke | solver | COMPACT_REQUIRED | 21276 | -312 | 2760 |
+| smoke | blockers | null | | | |
 
 The first Solver visit's realised prompt on the AGREE arm was 5003-14426 tokens;
 a branch Solver contact carries a branch note of the same shape in place of A's.

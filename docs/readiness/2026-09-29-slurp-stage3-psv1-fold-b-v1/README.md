@@ -25,7 +25,7 @@ tokens, 8 boundary items max, widest item 895 characters,
 6.023 characters per token); branch estimates {"a_and_twin": 4067, "min_candidates": 4067, "top2_contrast": 4365} against the
 20990-token prompt limit.
 
-**Contrast-pair table pinned (2026-09-28).** The `top2-contrast-v1` renderer reads the model-free contrast-pair table built by `scripts/build_slurp_intent_contrast_pairs.py`: `prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json` (data root), sha256 `19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059`, receipt `docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json` (sha256 `4af9e874dea15f5846034ceaff9fbc15b6ba555b81fa959e7a96bf5f6f59a368`; 48 pairs written / 2 skipped of 50, insufficient pool support; the build excluded the Fold A, Fold B and R01 rosters). The pin is registered in `registered-facts-v1.json` (`contrast_pair_table`). The branch schema carries no table field yet, so the pin enters where the runtime reads it once that wiring lands; then this cell is re-derived and re-pinned. The cell must not be flipped before that re-derivation.
+**Contrast-pair table pinned (V2, 2026-09-29, ruling O7).** The `top2-contrast-v1` renderer reads the model-free contrast-pair table built by `scripts/build_slurp_intent_contrast_pairs.py --pair-scope all-pairs`: `prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2/table-v1.json` (data root), sha256 `0d74fdb6aae70bff82abbd52355fe34b58cf646fe36a80016220ba1e714a7e34`, receipt `docs/receipts/knowledge/slurp-perception-contrast-pairs-v2.json` (sha256 `c6fd04260b00ec6fdfaebd0e5ecc1a5f1edcb76ac30f06dbeaf08c1c0b437ac8`; 1,710 pairs written / 60 skipped of 1,770, insufficient pool support; every unordered pair of distinct intents above the floor, roster-agnostic, from the R01/Fold-A/Fold-B-excluded TRAIN pool). The pin sits on the branch (`b-top2contrast.contrast_pairs`) and the runtime verifies the file's bytes against it before any contact. It replaces the nearest-rival V1 pin (`19bf2487`, 48 pairs), which covered 415/1078 (38.5%) of this seed's rows against V2's 1035/1078 (96.0%) (`scripts/analysis/slurp_contrast_pair_coverage.py`). Registered in `registered-facts-v1.json` (`contrast_pair_table`).
 
 **Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` (`prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than of the branch.
 
@@ -51,7 +51,12 @@ SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling '
 | arm | solver | COMPACT_REQUIRED | 21281 | -337 | 2735 |
 | arm | blockers | null | | | |
 | arm | perception, top2-contrast branch (estimate) | margin 4564 - 448 | | | 4116 |
-| smoke | check | MISSING | | | |
+| smoke | perception | ALLOW | 19448 | 1516 | 4588 |
+| smoke | reviewer | ALLOW | 19311 | 1653 | 4725 |
+| smoke | planner | ALLOW | 19250 | 1714 | 4786 |
+| smoke | solver | COMPACT_REQUIRED | 21276 | -312 | 2760 |
+| smoke | blockers | null | | | |
+| smoke | perception, top2-contrast branch (estimate) | margin 4588 - 448 | | | 4140 |
 
 The first Solver visit's realised prompt on the AGREE arm was 5003-14426 tokens;
 a branch Solver contact carries a branch note of the same shape in place of A's.

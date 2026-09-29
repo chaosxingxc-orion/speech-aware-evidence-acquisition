@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-psv1-fold-b-v1",
-  "composed_config_hash": "535bb34e6e1628cef7e6d3f4494fe9a3a1b106a74ecde0a560e49798878f5224",
+  "composed_config_hash": "c00da6f6b5ab502276087b58740389a975fce13faed5b701adf640b59680d222",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 16.4,
     "planned_model_calls": 16200,
     "planned_speech_audio_seconds": 47322,
-    "protocol_hash": "b0451b8ea7ac4cbe2e82252585dbd6588dd80f12b5aa0c391331f8c68e8389a9",
+    "protocol_hash": "7e7a2dfba063322d741f87e2d1ca52ce4e85d9678398b38447e959e5b39ace69",
     "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "6066005515f4616abd25d964bc6b9844db88a5c932eb20061fec19eb8a9d6605"
+    "sha256": "e159acf56035232f28ffc6dba5e191dd0aa58e2c85f6258e33dc827bb520a45b"
   },
   "purpose": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1: SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-top2contrast, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the provisional floor 0.3163 pp. (2) THE CONTRAST: b-top2contrast minus A on the level-2 branch Solver column's official intent accuracy (primary). NOMINATED iff the intent CI95 lower bound is above zero AND the point delta exceeds the twin's intent bar AND the SLU-F1 CI95 lower bound of the same column is not below minus the twin's SLU bar (guard). BRANCH-LOCAL HARM iff the intent CI95 upper bound is below zero and the point magnitude exceeds the twin bar. Otherwise NOT NOMINATED. Reported beside, never gating: gold-on-list and mean gold rank of the B note vs A and T, the conversion P(correct | gold rank r in the branch note) against the ledger's 97.57 / 26.98 / 12.0 %, the rows where top2-contrast-v1 rendered nothing (presentation_skip_reason, ruling O5), and the delivered row (identical by construction). A nomination sends the composed policy to a full-system cross-flight read against an in-chain A/A; it admits nothing.",
   "quality_read_gate": "No branch column is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-PSV1-FOLD-B-BRANCH-READ-V1 is root countersigned.",

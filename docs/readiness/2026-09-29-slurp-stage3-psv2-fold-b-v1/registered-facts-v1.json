@@ -174,7 +174,7 @@
     "cells": {
       "arm": {
         "blockers": null,
-        "check_path": "/home/chao/saea-worktrees/fable-branchseeds-check-dir/check-slurp-native-stage3-psv2-fold-b-v1.json",
+        "check_path": "/home/chao/saea-worktrees/verify-psv-check-dir/check-slurp-native-stage3-psv2-fold-b-v1.json",
         "config_hash": null,
         "prompt_budget_per_phase": [
           {
@@ -226,9 +226,57 @@
         }
       },
       "smoke": {
-        "error_tail": [],
-        "path": "/home/chao/saea-worktrees/fable-branchseeds-check-dir/check-slurp-native-stage3-psv2-fold-b-smoke-4-v1.json",
-        "status": "MISSING"
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/verify-psv-check-dir/check-slurp-native-stage3-psv2-fold-b-smoke-4-v1.json",
+        "config_hash": null,
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1516,
+            "phase": "perception",
+            "physical_margin_tokens": 4588,
+            "rendered_text_tokens": 19448,
+            "required_window_tokens": 19988,
+            "speech_feature_tokens": 26
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1653,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4725,
+            "rendered_text_tokens": 19311,
+            "required_window_tokens": 19851,
+            "speech_feature_tokens": 26
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1714,
+            "phase": "planner",
+            "physical_margin_tokens": 4786,
+            "rendered_text_tokens": 19250,
+            "required_window_tokens": 19790,
+            "speech_feature_tokens": 26
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -312,
+            "phase": "solver",
+            "physical_margin_tokens": 2760,
+            "rendered_text_tokens": 21276,
+            "required_window_tokens": 21816,
+            "speech_feature_tokens": 26
+          }
+        ],
+        "protocol_hash": null,
+        "sample_count": null,
+        "scientific_readiness": {
+          "reason": "Cell P-SV-2 four-row form smoke registered before contact on 2026-09-29 from the retained AGREE arm fragments by script (decision 58): Fold A -> Fold B re-target, program switched to phase-native-candidates-review-revise-pbranch3-l2-v1, a level-2 K = 3 Perception branch block (owner decisions 184, 186, 188). No cross-flight comparator: the read is within this flight (B and T branch columns against the delivering A column). HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/psv/psv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 over the whole roster, so there is no earlier digest to reproduce); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
       }
     },
     "status": "MEASURED_BY_CHECK"

@@ -7,7 +7,7 @@
     },
     "derive_script": {
       "path": "scripts/flights/psv/derive_slurp_psv_cells.py",
-      "sha256": "3040af931e22ceb6e4481d3b34c6f9c07732abc4fa1da592d052fd9a0714f0e6"
+      "sha256": "7044f8cb2ad6e9ebd681292b6265db0b13c079da9fe5a05fd3dd637fe51a3548"
     },
     "fold_b_inputs": {
       "path": "docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md",
@@ -35,12 +35,12 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv2-fold-b-v1/registered-facts-v1.json",
-      "sha256": "7b2a56403b626cd774d42c68bfdb3310e3537a3dc98ea4daa398b0a160a85349"
+      "sha256": "ddd53f5165ad21850eb0fa415125f775570e105c80ee5721cc8a61e2cca24161"
     },
     "registration_base_commit": "f33e8a0f2",
     "spec": {
       "path": "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md",
-      "sha256": "e269bface828e4e43d70be7d220c6e5d306d7e1db5e9412c0c4b1bfc4ce7633a"
+      "sha256": "0c92a111b947aef03d9e3cf6198f52992af7b6ec1b0635841dfa9b2a14300e37"
     }
   },
   "authorization_basis": "Owner decisions 184, 186, 188 (and 172 for the instrument), 139, 28/86; the spec docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md with rulings O1-O6.",
