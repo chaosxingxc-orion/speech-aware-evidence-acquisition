@@ -305,3 +305,10 @@ about 2,700-3,800 rows needed), and the twin bar alone (1.04) exceeds it. This r
 of absence of a Solver-local W4-card effect. The recipe's step-5 per-type TP/FP/FN table is outstanding.
 Development number (decisions 28 and 86); claim ceiling nominated (Q6); nothing is admitted or closed for
 the composed policy.
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+- **b-w4 (slot-convention cards as a release swap): NOT NOMINATED (width).** SLU-F1 -0.15 [-1.40, +1.11], intent +0.19 [-0.46, +0.83]; the point sits inside the twin bar (1.04 SLU) and neither bound clears zero. The declared 0.79 pp was below what this design can resolve at n = 1,080 (contrast half-width 1.25 here, 1.49 in W-SV-1), so this is "not resolvable at this n", not evidence of absence.
+- **Line status.** Conventions delivered as rule cards (W4, W4-SV) have now read below the floor twice (cross-flight -0.4 region, same-flight -0.15). The line is closed for same-flight reads at n = 1,080; it reopens only as a cross-flight read on DEV-2000-ADDED or larger, and only behind a mechanism that reads above floor on TRAIN first. The SLU main line stays retrieved row-matched slot exemplars (W5, decision 170, held).
+- **Instrument note.** Second same-flight measurement: twin intent null +0.09 (3 discordant rows) against 0.00 in W-SV-1; contrast intent half-width 0.65 against 0.51. The per-metric anchors proposed for decision 190 should therefore be the larger of the two measurements: intent 0.65 / SLU 1.49 at n = 1,080.
+- Outstanding from the recipe: the per-type TP/FP/FN table over the 19 changed cards (model-free helper), descriptive only. Nothing is admitted or closed for the composed policy by this read (claim ceiling nominated; development number, decisions 28/86).
