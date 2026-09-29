@@ -739,8 +739,11 @@ def run_pair(core_args, ext: Extensions) -> dict | None:
         return None
     if core_args.stage != "all":
         raise Stage3ReadError("an extension stage needs --stage all")
-    left = CORE.load_arm(core_args.data_root, core_args.left)
-    right = CORE.load_arm(core_args.data_root, core_args.right)
+    # A column arm (owner decision 172) locates its derived score by the scorer id, and a column
+    # pair must pass the same-parent refusal -- exactly as the core's own run_stages does.
+    left = CORE.load_arm(core_args.data_root, core_args.left, scorer_id=core_args.scorer_id)
+    right = CORE.load_arm(core_args.data_root, core_args.right, scorer_id=core_args.scorer_id)
+    CORE._assert_column_pair_invariants(left, right, core_args)
     roster = CORE.load_roster(core_args.repo_root, core_args.roster_relpath, core_args.cluster_key)
     CORE.stage_stop(core_args, left, right, roster)
     CORE.stage_structural(core_args, left, right)

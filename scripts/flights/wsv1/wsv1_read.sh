@@ -42,6 +42,7 @@ from pathlib import Path
 repo, read_run = Path(sys.argv[1]), sys.argv[2]
 spec = importlib.util.spec_from_file_location("frc", repo / "scripts/checks/flight_registration_check.py")
 gate = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = gate  # dataclasses resolve the module through sys.modules
 spec.loader.exec_module(gate)
 rows = gate.parse_ledger(repo, Path("docs/exposure-ledger.md")).get(read_run, [])
 if not rows:
