@@ -1,7 +1,36 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T18:52:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-ops agent) · HEAD at writing `c6e98e6b` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T19:55:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records and read agent) · HEAD at writing `558f4690` on `master` (plus this refresh commit), tree clean.
+**Since 18:52Z (records and read agent):** **Merged** `fable/readsealonly` (`f517e237`; seal-only arms now persist a
+minimal generation manifest + `phases.json` at seal, `stage3_paired_read.py` reads them, new
+`scripts/analysis/backfill_sealonly_read_inputs.py`; one union conflict in `core/flight/resume.py` resolved, 916 tests
+passed on the merged tree) and `fable/emptysupply` (`70b67bbf`; `docs/results/2026-09-29-slurp-supply-abstention-headroom-offline.md`,
+decision 199, DESCRIPTIVE). **`runtime.py` changed:** every HELD cell's prepared artifacts are stale until its own flip
+re-pins it; the flying/queued cells at `c6e98e6b` (COMP-1b, P-SV-1 seal-only, P-SV-2, P-SV-3) fly from
+`fable-batch-flight` and are unaffected. Gates on master PASS (engineering base, harness admission, tool catalog,
+results ledger, Stage-3 label); `flight_registration_check` FAILs with the same 9 blockers it had at `d3e42bbb`.
+**Backfills** (model-free, two derived files each): COMP-1 seal-only (predecessors original + resume-3: 4,389 calls,
+12,564.262 speech s, 38,876,164 / 347,522 tokens, 26,882.2 s summed latency) and E4-1 seal-only (predecessor
+`966613e4...`: 6,304 calls, 18,730.523 s, 42,480,069 / 290,668 tokens, 23,839.8 s). **Countersigned** (`dfb5c012`,
+19:07:33Z, root act delegated, after the seals and before any score): the E4-1 READ row and its seal-only clause
+(decision 194; gate sentence verbatim); the G5 READ row was already countersigned pre-launch, so it gained a post-seal
+confirmation clause (decisions 153/160/189; comparator the shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`).
+**E4-1 read landed** (`a1a927d1`, `docs/results/2026-09-29-slurp-e4-relisten-fold-a-column-read.md`, DESCRIPTIVE):
+intent identical (guard 0 / 1,080); official SLU-F1 vs the delivered column: replace-only **-4.11 pp [-5.41, -2.88]**,
+replace + drop-when-unheard **-3.59 pp [-5.08, -2.14]**; cause the blind contact's span (63 EXACT -> BOUNDARY among
+122 accepted replacements, mostly date/time/timeofday); pre-declared gate: replace-only net conversion 3 / 106 =
+**2.83 %** (needs 29 %), drop column **40** net false positives removed (needs 49.5); relisten 1,015 triggered, 1,889
+contacts (29.96 % of the flight, 1.75 per row), 122 accepted, 68 drops. Read agent's line: **SHADOW HARM on both
+columns; gate NOT NOMINATED on both** -- coordinator clause pending. Two read-path fixes landed with it in
+`stage3_rollout_score.py` (an unchanged column keeps the sealed text: 976 rows are compact-JSON; kept rows' relisten
+contacts come from the verified predecessor trace). **G5 read landed** (`558f4690`,
+`docs/results/2026-09-29-slurp-g5-fold-a-read.md`): vs the shared A/A intent **+0.09 pp [-1.02, +1.20]**, SLU-F1
+**-0.38 pp [-1.78, +1.04]**; Reviewer tool narration 1,088 -> 0, REVISE 44 -> 36, net intent repairs +17 -> +24, GPU-h
+1.6786 -> 1.6013. Read agent's line: **NOT ADMITTED (width)** -- intent lower bound misses -0.9943 by 0.024 pp, SLU by
+0.531 pp, not HARMFUL -- coordinator clause pending (step 7 withdraws an unadmitted pin from COMP-2). **GPU:**
+`SAEA-Queue-NEXT` is flying **COMP-1b** (smoke -> arm since 18:50:28Z at `c6e98e6b`), then P-SV-1 seal-only -> P-SV-2 ->
+P-SV-3 -> filler; serving was restarted 18:50:26Z at 18h58m uptime under the 12-h rule in `queue_next.sh`.
 **Since 16:04Z (ops agent):** **Merged** `fable/repinresume2` (`4b2946f3`; resume-parent residue exemption, 219 worktree
 tests passed), `fable/comp1slu` (`1ab14dfc`; the COMP-1 SLU-harm attribution, 7 passed), `fable/psv3` (`776e3f84`;
 P-SV-3 registration, 23 passed), `fable/comp1b` (`c5cb5399`; exposure-ledger conflict kept both sides, 95 passed).
