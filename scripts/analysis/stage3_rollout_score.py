@@ -1195,6 +1195,7 @@ RELISTEN_RENDER_SCHEMA = "saea-stage3-relisten-shadow-v1"
 def render_relisten_shadow_columns(
     bundle, roster: Mapping[str, str], out_dir: Path,
     *, run_id: str, attempt_id: str, roster_sha256: str, config_hash: str,
+    predecessor_records: Mapping[str, Mapping[str, Mapping[str, Any]]] | None = None,
 ) -> dict[str, Any]:
     """Render both E4 shadow columns, (a) replace-only and (b)
     replace-plus-drop-when-unheard, from each row's own sealed relisten
@@ -1207,6 +1208,13 @@ def render_relisten_shadow_columns(
     entities, e.g. an abstention with no delivered entity) renders both
     columns as the row's own sealed delivered text, unchanged -- the design's
     own base case, and AT1's easiest instance.
+
+    ``predecessor_records`` (sample id -> that row's verified predecessor
+    trace records, ``core.bundle.outputs.verify_predecessor_attempts``) serves
+    a seal-only or resume completion: a KEPT row's relisten contacts live in
+    the predecessor attempt's trace, not in the completion's own (a seal-only
+    completion's own trace is empty). A contact is looked up in the bundle's
+    own trace first, then in that row's own predecessor trace only.
     """
     from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
         validate_native_episode_delivery_receipt,
@@ -1271,6 +1279,8 @@ def render_relisten_shadow_columns(
             blind = entity.get("blind") or {}
             contact_id = blind.get("contact_id")
             response = bundle.trace_records.get(f"{contact_id}/response")
+            if response is None and predecessor_records:
+                response = (predecessor_records.get(sid) or {}).get(f"{contact_id}/response")
             if not isinstance(response, Mapping) or not isinstance(response.get("text"), str):
                 raise Stage3ScoreError(
                     f"{sid}: accepted relisten entity {entity.get('index')} has no sealed "
@@ -1344,6 +1354,10 @@ def render_relisten_shadow_columns(
         "sealed_scores_sha256": bundle.manifest["scores"]["sha256"],
         "config_hash": config_hash, "roster_sha256": roster_sha256,
     }
+    predecessor_block = bundle.manifest.get("predecessor_attempt")
+    if predecessor_records and isinstance(predecessor_block, Mapping):
+        source["predecessor_attempt_id"] = predecessor_block.get("attempt_id")
+        source["predecessor_trace_sha256"] = predecessor_block.get("trace_sha256")
     manifest = {
         "schema": RELISTEN_RENDER_SCHEMA, "stage": "render", "source": source,
         "rows": len(ids), "column_order": list(SHADOW_COLUMNS),
@@ -1835,12 +1849,23 @@ def relisten_main(args, repo_root: Path, root: Path, lock) -> int:
     """
 
     from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+    from speech_aware_evidence_acquisition.core.bundle.outputs import verify_predecessor_attempts
     from speech_aware_evidence_acquisition.core.config import compose
 
     if args.stage == "pairs" or args.samples is not None:
         raise Stage3ScoreError("relisten mode supports render/score/all, not pairs or samples")
     directory = run_dir(root, args.run, args.attempt)
     bundle = verify_bundle(directory / f"{args.run}.run-manifest.json")
+    # A seal-only / resume completion's kept rows carry their relisten
+    # contacts in the predecessor trace, re-hashed here exactly as
+    # verify_bundle's own I7r binding re-derives it.
+    render_extra: dict[str, Any] = {}
+    if (bundle.manifest.get("predecessor_attempt") is not None
+            or bundle.manifest.get("predecessor_attempts") is not None):
+        predecessor_records, _kept = verify_predecessor_attempts(
+            bundle.manifest, split_ids=bundle.split_ids, attempt_id=args.attempt,
+        )
+        render_extra["predecessor_records"] = predecessor_records
     fragments = bundle.manifest.get("config", {}).get("fragments")
     if not isinstance(fragments, Mapping):
         raise Stage3ScoreError("sealed manifest has no composed fragments")
@@ -1853,6 +1878,7 @@ def relisten_main(args, repo_root: Path, root: Path, lock) -> int:
         manifest = render_relisten_shadow_columns(
             bundle, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
             roster_sha256=roster_sha256, config_hash=composed.config_hash,
+            **render_extra,
         )
     else:
         path = out_dir / "relisten-render-manifest.json"
@@ -1866,6 +1892,7 @@ def relisten_main(args, repo_root: Path, root: Path, lock) -> int:
         checked = render_relisten_shadow_columns(
             bundle, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
             roster_sha256=roster_sha256, config_hash=composed.config_hash,
+            **render_extra,
         )
         if manifest != checked:
             raise Stage3ScoreError("render manifest differs from verified source")

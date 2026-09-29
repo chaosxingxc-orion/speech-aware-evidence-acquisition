@@ -344,6 +344,40 @@ def test_render_relisten_shadow_columns_keeps_a_non_canonical_sealed_text_when_n
         assert b_rows[0]["text"] == text
 
 
+def test_render_relisten_shadow_columns_reads_a_kept_row_contact_from_its_predecessor(tmp_path):
+    """A seal-only completion's own trace is empty; the kept row's blind
+    contact is read from that row's own verified predecessor trace."""
+    pred_trace = {}
+    _trace_contact(pred_trace, "blind-0", json.dumps({"heard": True, "value": "eight pm"}))
+    text = json.dumps({"scenario": "alarm", "action": "set",
+                       "entities": [{"type": "time", "filler": "7 pm"}]})
+    order = rl.confirm_order("s1", "time")
+    accepted = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.parse_blind_response(pred_trace["blind-0/response"]["text"]),
+        blind_contact_id="blind-0",
+        confirm_letter=("A" if order[0] == rl.CONFIRM_CANDIDATE else "B"),
+        order=order, confirm_contact_id="confirm-0",
+    )
+    receipt = rl.seal_relisten_receipt([accepted], max_slots_per_row=3)
+    row = {"sample_id": "s1", "text": text, "native_episode_receipt": {"kind": "accepted"},
+           "relisten": receipt}
+    kwargs = dict(run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64)
+    with pytest.raises(score_mod.Stage3ScoreError, match="no sealed blind trace"):
+        score_mod.render_relisten_shadow_columns(
+            _bundle(tmp_path / "a", [row], {}), {"s1": "alarm"}, tmp_path / "a" / "out", **kwargs)
+    manifest = score_mod.render_relisten_shadow_columns(
+        _bundle(tmp_path / "b", [row], {}), {"s1": "alarm"}, tmp_path / "b" / "out",
+        predecessor_records={"s1": pred_trace}, **kwargs)
+    a_rows = list(score_mod.iter_jsonl(Path(manifest["copies"][rl.COLUMN_REPLACE_ONLY]["path"])))
+    assert json.loads(a_rows[0]["text"])["entities"] == [{"type": "time", "filler": "eight pm"}]
+    # another row's predecessor records never serve this row
+    with pytest.raises(score_mod.Stage3ScoreError, match="no sealed blind trace"):
+        score_mod.render_relisten_shadow_columns(
+            _bundle(tmp_path / "c", [row], {}), {"s1": "alarm"}, tmp_path / "c" / "out",
+            predecessor_records={"s2": pred_trace}, **kwargs)
+
+
 def test_render_relisten_shadow_columns_replaces_and_drops(tmp_path):
     trace = {}
     _trace_contact(trace, "blind-0", json.dumps({"heard": True, "value": "eight pm"}))
