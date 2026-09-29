@@ -1471,6 +1471,7 @@ PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA = "saea-stage3-perception-branch-solver-f
 def render_perception_branch_columns(
     bundle, group, roster: Mapping[str, str], out_dir: Path,
     *, run_id: str, attempt_id: str, roster_sha256: str, config_hash: str,
+    predecessor_records: Mapping[str, Mapping[str, Mapping[str, Any]]] | None = None,
 ) -> dict[str, Any]:
     """Render every declared Perception branch's own LEVEL-2 Solver column.
 
@@ -1482,6 +1483,17 @@ def render_perception_branch_columns(
     no Solver visit is an explicit canonical-empty fallback in every column,
     exactly as the supply-variant arm route's own render does. A partial
     branch group (fewer contacts than declared branches) is invalid.
+
+    ``predecessor_records`` (sample id -> that row's verified predecessor
+    trace records, ``core.bundle.outputs.verify_predecessor_attempts``)
+    serves a seal-only or resume completion exactly as
+    :func:`render_relisten_shadow_columns` does (the E4 read's fix): a KEPT
+    row's Solver contacts live in the predecessor attempt's trace, so each
+    contact is looked up in the bundle's own trace first, then in that row's
+    own predecessor trace only. Every contact's response digest must also
+    equal the sealed branch record's own ``solver_response_text_sha256`` for
+    the branch at the same index, so a column can never be filled from
+    another branch's answer.
     """
     from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
         validate_native_episode_delivery_receipt, validate_perception_branch_receipt,
@@ -1561,13 +1573,26 @@ def render_perception_branch_columns(
         if not isinstance(contacts, list) or len(contacts) != len(names):
             raise Stage3ScoreError(f"{sid}: first Solver visit lacks a complete branch group")
         branch_meta = []
+        branch_records = branches_receipt.get("branches")
         for i, name in enumerate(names):
             contact = contacts[i]
             if not isinstance(contact, Mapping):
                 raise Stage3ScoreError(f"{sid}: first Solver branch contact is malformed")
+            record = branch_records[i] if isinstance(branch_records, Sequence) else None
+            if (not isinstance(record, Mapping) or record.get("branch_id") != name
+                    or record.get("solver_response_text_sha256")
+                    != contact.get("response_text_sha256")):
+                raise Stage3ScoreError(
+                    f"{sid}: first Solver contact {i} does not answer the sealed branch "
+                    f"record {name!r} (solver_response_text_sha256 differs)"
+                )
             request_id = contact.get("request_id")
             response = bundle.trace_records.get(f"{request_id}/response")
             request = bundle.trace_records.get(f"{request_id}/request")
+            if (response is None or request is None) and predecessor_records:
+                kept = predecessor_records.get(sid) or {}
+                response = response if response is not None else kept.get(f"{request_id}/response")
+                request = request if request is not None else kept.get(f"{request_id}/request")
             if not isinstance(response, Mapping) or not isinstance(request, Mapping):
                 raise Stage3ScoreError(f"{sid}: first Solver branch trace pair is absent")
             raw = response.get("text")
@@ -1622,6 +1647,12 @@ def render_perception_branch_columns(
         "sealed_scores_sha256": bundle.manifest["scores"]["sha256"],
         "config_hash": config_hash, "roster_sha256": roster_sha256,
     }
+    # A seal-only / resume completion names the predecessor trace its kept rows were read from
+    # (render_relisten_shadow_columns's own convention); a plain flight's source is unchanged.
+    predecessor_block = bundle.manifest.get("predecessor_attempt")
+    if predecessor_records and isinstance(predecessor_block, Mapping):
+        source["predecessor_attempt_id"] = predecessor_block.get("attempt_id")
+        source["predecessor_trace_sha256"] = predecessor_block.get("trace_sha256")
     manifest = {
         "schema": PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA, "stage": "render", "source": source,
         "rows": len(ids), "branch_order": list(names),
@@ -1754,23 +1785,52 @@ def perception_branch_main(args, repo_root: Path, root: Path, lock) -> int:
         perception.get("branches"), first_phase_id=perception.get("phase_id"),
         declared_stores=tuple(stores),
     )
+    # A seal-only / resume completion's kept rows carry their Solver branch contacts in the
+    # predecessor trace, re-hashed here exactly as verify_bundle's own I7r binding re-derives it
+    # (relisten_main's own pattern, the E4 seal-only read's fix).
+    render_extra: dict[str, Any] = {}
+    if (bundle.manifest.get("predecessor_attempt") is not None
+            or bundle.manifest.get("predecessor_attempts") is not None):
+        from speech_aware_evidence_acquisition.core.bundle.outputs import (
+            verify_predecessor_attempts,
+        )
+
+        predecessor_records, _kept = verify_predecessor_attempts(
+            bundle.manifest, split_ids=bundle.split_ids, attempt_id=args.attempt,
+        )
+        render_extra["predecessor_records"] = predecessor_records
     roster, roster_sha256, _ = load_roster(repo_root, args.roster)
     out_dir = Path(args.analysis_root)
     if args.stage in ("render", "all"):
         manifest = render_perception_branch_columns(
             bundle, group, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
-            roster_sha256=roster_sha256, config_hash=composed.config_hash,
+            roster_sha256=roster_sha256, config_hash=composed.config_hash, **render_extra,
         )
     else:
         path = out_dir / "render-manifest.json"
         if not path.is_file():
             raise Stage3ScoreError("perception-branch score requires a prior render")
         manifest = json.loads(path.read_text(encoding="utf-8"))
+        if any(not Path(entry["path"]).is_file()
+               for entry in manifest.get("copies", {}).values()):
+            raise Stage3ScoreError("perception-branch score requires every prior rendered copy")
+        # Rebuild from the verified source before trusting cached copies.
+        checked = render_perception_branch_columns(
+            bundle, group, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
+            roster_sha256=roster_sha256, config_hash=composed.config_hash, **render_extra,
+        )
+        if manifest != checked:
+            raise Stage3ScoreError("render manifest differs from verified source")
     if args.stage in ("score", "all"):
         sealed = {row.get("sample_id"): row for row in bundle.outputs_rows}
-        score_perception_branch_copies(
+        summary = score_perception_branch_copies(
             args.scorer_id, manifest, out_dir, lock, root, sealed,
         )
+        print(json.dumps({"stage": "score", "branches": list(summary["branch_order"]),
+                          "rows": summary["sealed_delivered_rows"]}))
+    else:
+        print(json.dumps({"stage": "render", "branches": manifest["branch_order"],
+                          "rows": manifest["rows"]}))
     return 0
 
 

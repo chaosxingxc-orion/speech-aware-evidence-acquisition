@@ -206,3 +206,38 @@ def test_render_requires_a_level_2_group(tmp_path):
             bundle, level1_group, {SAMPLE_ID: "alarm"}, tmp_path / "analysis",
             run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64,
         )
+
+
+def test_seal_only_render_reads_kept_rows_from_the_predecessor_trace(tmp_path):
+    """A seal-only completion's own trace is empty: every kept row's Solver branch contacts live
+    in the verified predecessor trace (the E4 read's fix pattern), and the render names it."""
+
+    a_answer = _answer("alarm")
+    bundle, group = _fixture(
+        tmp_path, answers={"B": _answer("audio"), "T": a_answer, "A": a_answer},
+    )
+    predecessor_records = {SAMPLE_ID: dict(bundle.trace_records)}
+    bundle.trace_records.clear()
+    bundle.manifest["predecessor_attempt"] = {"attempt_id": "ATT-PRED", "trace_sha256": "9" * 64}
+    with pytest.raises(mod.Stage3ScoreError, match="trace pair is absent"):
+        _render(bundle, group, tmp_path)
+    manifest = mod.render_perception_branch_columns(
+        bundle, group, {SAMPLE_ID: "alarm"}, tmp_path / "analysis-sealonly",
+        run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64,
+        predecessor_records=predecessor_records,
+    )
+    assert manifest["source"]["predecessor_attempt_id"] == "ATT-PRED"
+    assert manifest["source"]["predecessor_trace_sha256"] == "9" * 64
+    b_rows = list(mod.iter_jsonl(Path(manifest["copies"]["B"]["path"])))
+    assert b_rows[0]["text"] == _answer("audio")
+
+
+def test_render_refuses_a_contact_that_answers_another_branch_record(tmp_path):
+    a_answer = _answer("alarm")
+    bundle, group = _fixture(
+        tmp_path, answers={"B": _answer("audio"), "T": a_answer, "A": a_answer},
+    )
+    records = bundle.outputs_rows[0]["native_episode_receipt"]["perception_branches"]["branches"]
+    records[0]["solver_response_text_sha256"] = "0" * 64
+    with pytest.raises(mod.Stage3ScoreError, match="does not answer the sealed branch record"):
+        _render(bundle, group, tmp_path)
