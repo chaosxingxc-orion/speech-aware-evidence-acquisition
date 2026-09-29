@@ -75,6 +75,20 @@ from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (  # no
     parse_slu_response,
     score_slu,
 )
+from speech_aware_evidence_acquisition.analysis.sealed_credit.entity_states import (  # noqa: E402
+    ENTITY_KINDS,
+    NEAR_THRESHOLD,
+    canonical,
+    contiguous_in,
+    entity_items,
+    fold,
+    norm_distance,
+    pair_kind,
+)
+# ``entity_items``/``canonical``/``norm_distance``/``contiguous_in``/``pair_kind``/``fold``/
+# ``ENTITY_KINDS``/``NEAR_THRESHOLD`` are the lifted primitives (design spec 2026-09-29, sealed-credit
+# inner loop, task 2): this module keeps importing them under their original names so every call site
+# below is unchanged, and ``--check`` reproduces the sealed report byte-for-byte.
 
 READ_ID = "SAEA-SLURP-STAGE3-AGREE-ERROR-SOURCES-V1"
 RECIPE = "slurp-agree-arm-error-sources-v1"
@@ -98,7 +112,7 @@ CATCH_ALL = ("general_quirky",)
 # Measured conversions of a newly delivered gold entry (sealed probe reads, cited, not recomputed):
 KPROBE_CONVERSION = (24, 55)   # analysis/SAEA-SLURP-STAGE3-KPROBE-FOLD-A-55-CONDITIONAL-RATE-V1
 CONV_CONVERSION = (32, 70)     # analysis/SAEA-SLURP-STAGE3-CONV-FOLD-A-70-CONDITIONAL-RATE-V1
-NEAR_THRESHOLD = 0.4
+# NEAR_THRESHOLD is imported from analysis.sealed_credit.entity_states (0.4, unchanged).
 NEAR_SENSITIVITY = (0.2, 0.3, 0.4, 0.5)
 
 ARMS = (
@@ -117,20 +131,8 @@ ARMS = (
 )
 NULL_PAIRS = (("aa", "plan"), ("aa", "planr"), ("plan", "planr"))
 POS_STRATA = ("1", "2-8", "none")
-ENTITY_KINDS = ("FORMAT", "BOUNDARY", "NEAR", "WRONG-VALUE", "WRONG-TYPE", "MISSING", "SPURIOUS")
+# ENTITY_KINDS is imported from analysis.sealed_credit.entity_states (unchanged 7-tuple).
 PRIMARY_CLASSES = ("UNPARSED", "CATCH-ALL", "RETRIEVAL", "CONSUMPTION-PERCEPTION-DROP", "CONSUMPTION-SOLVER-CHOICE")
-
-_NUM_UNITS = {w: i for i, w in enumerate(
-    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
-    "fifteen sixteen seventeen eighteen nineteen".split())}
-_NUM_TENS = {w: 10 * (i + 2) for i, w in enumerate("twenty thirty forty fifty sixty seventy eighty ninety".split())}
-_ORD_UNITS = {w: i + 1 for i, w in enumerate(
-    "first second third fourth fifth sixth seventh eighth ninth tenth eleventh twelfth thirteenth "
-    "fourteenth fifteenth sixteenth seventeenth eighteenth nineteenth".split())}
-_ORD_TENS = {w: 10 * (i + 2) for i, w in enumerate(
-    "twentieth thirtieth fortieth fiftieth sixtieth seventieth eightieth ninetieth".split())}
-_ORD_SUFFIX = re.compile(r"^(\d+)(st|nd|rd|th)$")
-_DROP_TOKENS = {"oclock"}
 
 
 class ReadError(RuntimeError):
@@ -146,7 +148,7 @@ def import_path(path: Path, name: str):
 
 GP = import_path(GOLD_POSITION, "slurp_gold_position_and_solver_freedom_read")
 RD = import_path(RANK_DIAGNOSTIC, "slurp_intent_retrieval_rank_diagnostic")
-fold, edit_distance, digest = GP.fold, GP.edit_distance, GP.digest
+digest = GP.digest
 
 
 def pct(num: float, den: float) -> float:
@@ -175,132 +177,10 @@ def poisson_interval(mean: float) -> list:
 
 
 # ---------------------------------------------------------------------------
-# canonical filler form (for the entity error kinds only)
-
-
-def _words_to_number(tokens: list) -> list:
-    out, value, active = [], 0, False
-    for token in tokens + ["<end>"]:
-        if token in _NUM_UNITS:
-            value, active = value + _NUM_UNITS[token], True
-            continue
-        if token in _NUM_TENS:
-            value, active = value + _NUM_TENS[token], True
-            continue
-        if token == "hundred" and active:
-            value *= 100
-            continue
-        if token in _ORD_UNITS or token in _ORD_TENS:
-            out.append(str(value + _ORD_UNITS.get(token, 0) + _ORD_TENS.get(token, 0)))
-            value, active = 0, False
-            continue
-        if token == "and" and active:
-            continue
-        if active:
-            out.append(str(value))
-            value, active = 0, False
-        if token != "<end>":
-            out.append(token)
-    return out
-
-
-def canonical(text: str) -> str:
-    """fold() (the bank's P2r1 rung), then apostrophes and hyphens dropped,
-    'a m'/'p m' joined, 'o'clock' dropped, number and ordinal words to digits,
-    ordinal suffixes stripped.  Applied identically to gold and prediction."""
-
-    base = fold(text).replace("'", "").replace("-", " ")
-    base = re.sub(r"\b([ap]) m\b", r"\1m", base)
-    tokens = [t for t in base.split() if t and t not in _DROP_TOKENS]
-    tokens = [(_ORD_SUFFIX.match(t).group(1) if _ORD_SUFFIX.match(t) else t) for t in tokens]
-    return " ".join(_words_to_number(tokens))
-
-
-def norm_distance(left: str, right: str) -> float:
-    return edit_distance(left, right) / max(len(left), len(right), 1)
-
-
-def contiguous_in(short: list, long: list) -> bool:
-    if not short or len(short) > len(long):
-        return False
-    return any(long[i:i + len(short)] == short for i in range(len(long) - len(short) + 1))
-
-
-def pair_kind(gold_filler: str, pred_filler: str) -> tuple:
-    """(kind, subkind, canonical normalised char distance) of one gold/prediction pair."""
-
-    g, p = canonical(gold_filler), canonical(pred_filler)
-    dist = norm_distance(g, p)
-    if g == p:
-        return "FORMAT", ("case-punct" if fold(gold_filler) == fold(pred_filler) else "number-time-token"), 0.0
-    gt, ptk = g.split(), p.split()
-    if contiguous_in(gt, ptk):
-        return "BOUNDARY", "prediction-longer", dist
-    if contiguous_in(ptk, gt):
-        return "BOUNDARY", "prediction-shorter", dist
-    if dist <= NEAR_THRESHOLD:
-        return "NEAR", "near-value", dist
-    return "WRONG-VALUE", "different-value", dist
-
-
-def entity_items(gold: tuple, pred: tuple) -> list:
-    """Every entity error item of one row.  Exact {type, filler} matches (the
-    official exact matcher) are removed first; same-type leftovers are paired
-    greedily by canonical distance; cross-type leftovers that carry the same, a
-    span-related or a near value become WRONG-TYPE; the rest are MISSING /
-    SPURIOUS."""
-
-    unmatched_pred, taken = [], set()
-    for pindex, entity in enumerate(pred):
-        hit = next((gi for gi, g in enumerate(gold) if gi not in taken and g == entity), None)
-        if hit is None:
-            unmatched_pred.append((pindex, entity))
-        else:
-            taken.add(hit)
-    free_gold = [(gi, g) for gi, g in enumerate(gold) if gi not in taken]
-    candidates = []
-    for gi, g in free_gold:
-        for pi, p in unmatched_pred:
-            if p.type == g.type:
-                candidates.append((norm_distance(canonical(g.filler), canonical(p.filler)), gi, pi))
-    used_g, used_p, items = set(), set(), []
-    for _, gi, pi in sorted(candidates):
-        if gi in used_g or pi in used_p:
-            continue
-        used_g.add(gi)
-        used_p.add(pi)
-        kind, sub, dist = pair_kind(gold[gi].filler, pred[pi].filler)
-        items.append({"kind": kind, "sub": sub, "type": gold[gi].type, "gold_index": gi, "pred_index": pi,
-                      "distance": round(dist, 4)})
-    cross = []
-    for gi, g in free_gold:
-        if gi in used_g:
-            continue
-        for pi, p in unmatched_pred:
-            if pi in used_p or p.type == g.type:
-                continue
-            kind, _, dist = pair_kind(g.filler, p.filler)
-            if kind in ("FORMAT", "BOUNDARY", "NEAR"):
-                cross.append((dist, gi, pi, kind))
-    for dist, gi, pi, kind in sorted(cross):
-        if gi in used_g or pi in used_p:
-            continue
-        used_g.add(gi)
-        used_p.add(pi)
-        items.append({"kind": "WRONG-TYPE", "sub": "same-value" if kind == "FORMAT" else "related-value",
-                      "type": gold[gi].type, "pred_type": pred[pi].type, "gold_index": gi, "pred_index": pi,
-                      "distance": round(dist, 4)})
-    for gi, g in free_gold:
-        if gi not in used_g:
-            items.append({"kind": "MISSING", "sub": "missing", "type": g.type, "gold_index": gi, "pred_index": None,
-                          "distance": None})
-    for pi, p in unmatched_pred:
-        if pi not in used_p:
-            items.append({"kind": "SPURIOUS", "sub": "spurious", "type": p.type, "gold_index": None,
-                          "pred_index": pi, "distance": None})
-    return sorted(items, key=lambda i: (ENTITY_KINDS.index(i["kind"]), i["type"],
-                                        -1 if i["gold_index"] is None else i["gold_index"],
-                                        -1 if i["pred_index"] is None else i["pred_index"]))
+# canonical filler form and entity error classes: imported from
+# analysis.sealed_credit.entity_states (design spec 2026-09-29, sealed-credit
+# inner loop, task 2) -- fold, canonical, norm_distance, contiguous_in,
+# pair_kind, entity_items, ENTITY_KINDS, NEAR_THRESHOLD.
 
 
 _REL_DAY = {"today", "tomorrow", "tonight", "yesterday"}

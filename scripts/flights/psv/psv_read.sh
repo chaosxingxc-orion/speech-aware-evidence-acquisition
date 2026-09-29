@@ -20,6 +20,7 @@ PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+source "$MAIN/scripts/flights/batch/read_lib.sh"
 K=$1
 case "$K" in psv1|psv2) ;; *) echo "usage: psv_read.sh psv1|psv2"; exit 2;; esac
 SLUG=$K-fold-b
@@ -37,22 +38,7 @@ cd "$MAIN" || exit 1
 [ -f "$ANALYSIS" ] || { echo "REFUSED: $ANALYSIS has not landed (merge set C item 1)"; exit 8; }
 "$PY" -B -c "import speech_aware_evidence_acquisition as m, sys; sys.exit(0 if m.__file__.startswith('$MAIN') else 9)" \
   || { echo "REFUSED: the package under test is not $MAIN (shared-venv hijack)"; exit 9; }
-"$PY" -B - "$MAIN" "$READ_RUN" <<'PY' || exit 3
-import importlib.util
-import sys
-from pathlib import Path
-
-repo, read_run = Path(sys.argv[1]), sys.argv[2]
-spec = importlib.util.spec_from_file_location("frc", repo / "scripts/checks/flight_registration_check.py")
-gate = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(gate)
-rows = gate.parse_ledger(repo, Path("docs/exposure-ledger.md")).get(read_run, [])
-if not rows:
-    sys.exit(f"REFUSED: the READ row {read_run} is not in the exposure ledger")
-if not any(gate.is_countersigned(row) for row in rows):
-    sys.exit(f"REFUSED: the READ row {read_run} is not root countersigned")
-print(f"READ row {read_run} countersigned")
-PY
+read_require_countersigned docs/exposure-ledger.md "$READ_RUN" || exit 3
 [ -f "$RUNDIR/$RUN.run-manifest.json" ] || { echo "REFUSED: no sealed run manifest under $RUNDIR"; exit 3; }
 if [ -d "$OUT" ] && [ -n "$(ls -A "$OUT")" ]; then echo "REFUSED: $OUT already holds files"; exit 5; fi
 mkdir -p "$OUT"
