@@ -62,7 +62,24 @@ INSTRUMENT = "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.m
 OWNER_DECISIONS = "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
 FIT_MEASURE = "analysis/SAEA-SLURP-STAGE3-W4SV-FIT-MEASURE-V1/fit-measure-v1.json"
 PROOF = PACKAGE + "/arm-a-byte-identity-proof-v1.json"
-GATE = "scripts/checks/stage3_effect_floor_check.py"
+#: The release-swap renderer fix (merge of fable/svrender): a release-swap arm renders from its own alternate snapshot.
+RENDERER_FIX = "3f6688de729f99880258e0dba4993ecf1cd88817"
+#: The proof the cell was registered on (arm b-w4 INERT), kept as history once a re-run reports ARM-B-VARIES.
+PRIOR_PROOF = {
+    "proof_sha256": "913c5487d5c7cb37e6c323433dc55976e614f7d86676efd370ee9f669e3ea55d",
+    "generated_at_utc": "2026-09-28T13:50:56.314815+00:00",
+    "study_commit": "b5392755b847b43501bedeeccce78e2fd93103ad",
+    "verdict": "IDENTICAL-MODULO-PROGRAM-FIELDS", "arm_b_verdict": "ARM-B-INERT", "rows": 120,
+    "arm_b_bodies_equal_to_arm_a": 120, "arm_b_bodies_different_from_arm_a": 0,
+    "finding": ("every arm b-w4 first-visit POST body equalled its arm a-agree body: the release swap re-selected value ids "
+                "through the alternate's router, but rails.runner rendered every arm's request from the FLIGHT's composite "
+                "snapshot (base_messages over the row's snapshot, with only retrieved_value_ids replaced), and "
+                "slot-contracts-w4-v1 carries the SAME 54 value ids as slot-contracts-v2 with new content on 19 of them -- so "
+                "arm b-w4 rendered the v2 cards and read as a second twin"),
+    "where": ("rails/runner.py (the supply-variant binding rendered a non-delivering arm over the row's own composite "
+              "snapshot) and core/flight/runtime.py::_supply_action_router (rebuilt only the arm's ROUTER over the alternate)"),
+}
+GATE ="scripts/checks/stage3_effect_floor_check.py"
 SCRIPTS = {name: f"scripts/flights/w4sv/{name}" for name in (
     "derive_slurp_w4sv_cells.py", "measure_w4sv_fit.py", "w4sv_arm_a_proof.py", "write_slurp_w4sv_registration.py")}
 VARIANT_PREFIXES = ("policy", "knowledge_stores.slot-contracts.alternates", "native_episode.roles.solver.supply_variants",
@@ -279,10 +296,26 @@ def main(argv: list[str] | None = None) -> int:
                                "identity-bound), so it lands at a coordinator-named re-pin point"),
         "consequence": ("flown as registered, arm b-w4 is a second twin and B minus A reads nothing; w4sv_flip.sh refuses "
                         "until a re-run of w4sv_arm_a_proof.py reports ARM-B-VARIES"),
-    } if arm_b_inert else {"status": "none"}
+    } if arm_b_inert else {
+        "status": "none",
+        "resolved": {
+            "by": f"the release-swap renderer fix {RENDERER_FIX} (merge of fable/svrender: a release-swap arm renders from "
+                  "its own alternate snapshot)",
+            "proof_rerun": {"proof": PROOF, "study_commit": proof.get("study_commit"),
+                            "generated_at_utc": proof.get("generated_at_utc"), "rows": rb.get("rows"),
+                            "arm_b_verdict": proof.get("arm_b_verdict"),
+                            "arm_b_bodies_equal_to_arm_a": rb["comparison"]["arm_b_bodies_equal_to_arm_a"],
+                            "arm_b_bodies_different_from_arm_a": rb["comparison"]["arm_b_bodies_different_from_arm_a"]},
+            "history": {"status_at_registration": "ARM-B-INERT", "prior_proof": PRIOR_PROOF},
+        },
+    }
     arm_a = {
         "tool": SCRIPTS["w4sv_arm_a_proof.py"], "proof": PROOF, "proof_sha256": sha_file(PROOF),
+        "proof_study_commit": proof.get("study_commit"), "proof_generated_at_utc": proof.get("generated_at_utc"),
         "verdict": proof["verdict"], "rows": rb.get("rows"),
+        "arm_b_verdict": proof.get("arm_b_verdict"),
+        "arm_b": {"bodies_equal_to_arm_a": rb["comparison"]["arm_b_bodies_equal_to_arm_a"],
+                  "bodies_different_from_arm_a": rb["comparison"]["arm_b_bodies_different_from_arm_a"]},
         "strict": {k: rb["comparison"][k] for k in ("paired_contacts", "arm_a_first_solver_contacts", "post_body_mismatches",
                                                     "twin_body_mismatches", "unpaired_counts")},
         "normalised": {k: rb["comparison_normalised"][k] for k in ("paired_contacts", "arm_a_first_solver_contacts",
@@ -503,6 +536,17 @@ def _fit_lines(fit: dict) -> str:
     return "\n".join(lines)
 
 
+def _prereg_proof_note(blocker: dict, a: dict) -> str:
+    if not blocker.get("resolved"):
+        return ""
+    rerun, prior = blocker["resolved"]["proof_rerun"], blocker["resolved"]["history"]["prior_proof"]
+    return (f"\n\nArm-B proof: registered on {prior['arm_b_verdict']} (proof sha256 `{prior['proof_sha256']}`); re-run "
+            f"{str(rerun['generated_at_utc'])[:10]} after the renderer fix `{RENDERER_FIX[:8]}` at study commit "
+            f"`{str(rerun['study_commit'])[:9]}` over {rerun['rows']} rows: {rerun['arm_b_verdict']} (arm b-w4 differs from "
+            f"a-agree on {rerun['arm_b_bodies_different_from_arm_a']}, equals it on {rerun['arm_b_bodies_equal_to_arm_a']}); "
+            f"arm A {a['verdict']}, twin mismatches {a['normalised']['twin_body_mismatches']}; proof sha256 `{a['proof_sha256']}`.")
+
+
 def render_docs(args, ids, facts, rule, fence, status):
     arm, smoke = ids["arm"], ids["smoke"]
     a = facts["arm_a_byte_identity"]
@@ -521,6 +565,23 @@ Evidence: `{blocker['evidence']['proof']}` over the first {blocker['evidence']['
 POST body equals arm a-agree's on {blocker['evidence']['arm_b_bodies_equal_to_arm_a']} rows and differs on
 {blocker['evidence']['arm_b_bodies_different_from_arm_a']}. Where: {blocker['where']} Needed: {blocker['engineering_needed']}.
 Consequence: {blocker['consequence']}.
+"""
+    elif blocker.get("resolved"):
+        rerun, prior = blocker["resolved"]["proof_rerun"], blocker["resolved"]["history"]["prior_proof"]
+        blocked = f"""
+## Proof re-run after the renderer fix ({RENDERER_FIX[:8]}), {str(rerun['generated_at_utc'])[:10]}
+
+`w4sv_arm_a_proof.py` re-run at study commit `{str(rerun['study_commit'])[:9]}` (which carries the release-swap renderer
+fix `{RENDERER_FIX[:8]}`: a release-swap arm now renders from its own alternate snapshot) over the first {rerun['rows']} rows
+reports **{rerun['arm_b_verdict']}**: arm b-w4's first-visit POST body differs from arm a-agree's on
+{rerun['arm_b_bodies_different_from_arm_a']} rows and equals it on {rerun['arm_b_bodies_equal_to_arm_a']}. Arm A's verdict and
+the twin are unchanged (below). The arm-B blocker is lifted; the cells stay held until root countersigns and mints.
+
+**History (the registration's finding, superseded).** At registration the proof (study commit
+`{prior['study_commit'][:9]}`, sha256 `{prior['proof_sha256']}`) read {prior['arm_b_verdict']} over the first
+{prior['rows']} rows -- arm b-w4's body equal to arm a-agree's on {prior['arm_b_bodies_equal_to_arm_a']} rows, different on
+{prior['arm_b_bodies_different_from_arm_a']}: {prior['finding']}. Where: {prior['where']}. The cell was registered held
+with status `BLOCKED_ARM_B_INERT_REGISTERED_HELD` until the fix landed.
 """
     readme = f"""# Cell W4-SV: the W4 slot conventions as a same-flight supply-variant column read (owner decision 172)
 
@@ -594,7 +655,7 @@ armed compact-or-abstain policy with a non-negative physical margin.
 | `root-admission-draft-v1.json` | the receipt root mints with `scripts/flights/w4sv/w4sv_mint_receipt.py` |
 
 **Sequence.** (1) The arm-B blocker is fixed and `w4sv_arm_a_proof.py` re-run reports ARM-B-VARIES (the flip refuses
-otherwise). (2) Root countersigns the DRAFT rows (four flight rows and the two model-free rows; the READ row stays
+otherwise){' -- DONE: ' + blocker['resolved']['proof_rerun']['arm_b_verdict'] + ' at ' + str(blocker['resolved']['proof_rerun']['study_commit'])[:9] if blocker.get('resolved') else ''}. (2) Root countersigns the DRAFT rows (four flight rows and the two model-free rows; the READ row stays
 draft until the seal) and mints `{DECISION_RELPATH}`. (3) `scripts/flights/w4sv/w4sv_flip.sh` (smoke, then arm; minted
 supplies must reproduce the AGREE digests). (4) `scripts/flights/w4sv/batch_chain_w4sv.sh` on slurp-np4 through the
 batch driver. (5) `scripts/flights/w4sv/w4sv_read.sh`.
@@ -607,7 +668,7 @@ batch driver. (5) `scripts/flights/w4sv/w4sv_read.sh`.
 
 Registered {args.registered_at[:10]} at study commit `{args.study_commit}`, before any contact, from the retained AGREE
 arm fragments by script (decision 58) under owner decision 172 and the coordinator's W4 verdict. Status `{status}`.
-Development numbers only.
+Development numbers only.{_prereg_proof_note(blocker, a)}
 
 ## The cell
 
@@ -711,12 +772,20 @@ def append_ledger(args, ids, plan_shas, facts, data, status) -> str:
         f"MODEL-FREE READ OF SEALED BYTES, RUN BEFORE THIS ROW WAS WRITTEN (disclosed; DRAFT, root countersignature pending) {args.registered_at[:10]}; script scripts/flights/w4sv/measure_w4sv_fit.py; output sha256 {measure_sha}. It authorises nothing.",
         ""]).strip()
     a = facts["arm_a_byte_identity"]
-    proof_row = " | ".join(["", args.registered_at[:10], PROOF_ROW, "model-free-check",
+    rerun_note = ""
+    if facts["blocker"].get("resolved"):
+        rerun, prior = facts["blocker"]["resolved"]["proof_rerun"], facts["blocker"]["resolved"]["history"]["prior_proof"]
+        rerun_note = (f" RE-RUN {str(rerun['generated_at_utc'])[:10]} after the renderer fix {RENDERER_FIX[:8]} at study commit "
+                      f"{str(rerun['study_commit'])[:9]}, {rerun['rows']} rows: arm b-w4 differs from a-agree on "
+                      f"{rerun['arm_b_bodies_different_from_arm_a']}, equals it on {rerun['arm_b_bodies_equal_to_arm_a']}; the "
+                      f"registration proof (sha256 {prior['proof_sha256']}) read {prior['arm_b_verdict']} "
+                      f"({prior['arm_b_bodies_equal_to_arm_a']} of {prior['rows']} equal) and is superseded.")
+    proof_row =" | ".join(["", args.registered_at[:10], PROOF_ROW, "model-free-check",
         f"The arm-A byte-identity proof of cell W4-SV (the wave shared-A/A proof shape): composed-config diff against the AGREE arm, a scratch prepare-supply of the W4-SV arm's first-phase supply, and each cell's real dispatch against the real transport with a fake POST (canned completions, serial, one slot) over the first {a['rows']} rows, pairing contacts by (sample, role, AGREE index). Zero model, server, tokenizer, encoder, scorer and GPU contacts.",
         "no model or tool contact; fake POST, canned completions; model-free prepare-supply into a scratch directory", f"slurp TRAIN Fold A first {a['rows']} rows (request composition only)", "discovery",
         ids["arm"]["split_identity_hash"], "no", "0", "0", "0", "No speech exposure: requests are composed and hashed, never sent to a model. Prior exposure inherited in full.",
         PROOF,
-        f"MODEL-FREE PROOF, RUN BEFORE THIS ROW WAS WRITTEN (disclosed; DRAFT, root countersignature pending) {args.registered_at[:10]}; script scripts/flights/w4sv/w4sv_arm_a_proof.py; verdict {a['verdict']}; arm B {facts['blocker']['status'] if facts['blocker']['status'] != 'none' else 'ARM-B-VARIES'}; proof sha256 {a['proof_sha256']}. It authorises nothing.",
+        f"MODEL-FREE PROOF, RUN BEFORE THIS ROW WAS WRITTEN (disclosed; DRAFT, root countersignature pending) {args.registered_at[:10]}; script scripts/flights/w4sv/w4sv_arm_a_proof.py; verdict {a['verdict']}; arm B {facts['blocker']['status'] if facts['blocker']['status'] != 'none' else 'ARM-B-VARIES'}; proof sha256 {a['proof_sha256']}.{rerun_note} It authorises nothing.",
         ""]).strip()
 
     fresh = {}

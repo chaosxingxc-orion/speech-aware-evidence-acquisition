@@ -7,7 +7,7 @@
     },
     "arm_a_proof": {
       "path": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/arm-a-byte-identity-proof-v1.json",
-      "sha256": "913c5487d5c7cb37e6c323433dc55976e614f7d86676efd370ee9f669e3ea55d"
+      "sha256": "5f2ce2400e65ee4004869af6a1aa1ad4c76c02accd0327abffc2dcc8e389eee5"
     },
     "base_cell": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (owner decision 161)",
     "instrument_note": {
@@ -20,7 +20,7 @@
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "15098058c9c7692d91032b25792610f673fb755bb74a6fbbf8b1447025a2644e"
+      "sha256": "409d30590c68d646176a6b544659c0b6ce398cc0ccf0fb061d341ac57dcef186"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1-preregistration.md",
@@ -28,7 +28,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "08f5d1d971147db55d7376faf340a49505a19afec5ccfef4db4f92266ab8625c"
+      "sha256": "ccf1ecca46ee66e1bf89e223bb6b9ce36c6ea0e18d450009bf0ababd24f21fad"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/README.md",
@@ -36,7 +36,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/registered-facts-v1.json",
-      "sha256": "857be31fb8f978d377e76828140c3e0fee04e82b54e47878b597e3cbebffa722"
+      "sha256": "5f633799618b752b63c79443f0a537b3abfdc44e4f3aca94317d0e04ccab56fb"
     },
     "registration_base_commit": "190e178db",
     "store_registration": {
@@ -49,7 +49,7 @@
     }
   },
   "authorization_basis": "Owner decision 172; the coordinator verdict on W4 (docs/results/2026-09-28-slurp-w4-fold-a-read.md); the release-swap amendment (docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md); 133, 28/86.",
-  "blocker": "ARM-B-INERT",
+  "blocker": "none",
   "budget": {
     "asr_calls": 0,
     "ceilings_are_not_targets": true,

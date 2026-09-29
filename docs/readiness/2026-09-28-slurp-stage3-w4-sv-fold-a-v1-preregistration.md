@@ -1,8 +1,10 @@
 # Cell W4-SV (same-flight supply-variant read of the W4 slot conventions): preregistration
 
 Registered 2026-09-28 at study commit `190e178db`, before any contact, from the retained AGREE
-arm fragments by script (decision 58) under owner decision 172 and the coordinator's W4 verdict. Status `BLOCKED_ARM_B_INERT_REGISTERED_HELD`.
+arm fragments by script (decision 58) under owner decision 172 and the coordinator's W4 verdict. Status `REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP`.
 Development numbers only.
+
+Arm-B proof: registered on ARM-B-INERT (proof sha256 `913c5487d5c7cb37e6c323433dc55976e614f7d86676efd370ee9f669e3ea55d`); re-run 2026-09-29 after the renderer fix `3f6688de` at study commit `c24824a46` over 120 rows: ARM-B-VARIES (arm b-w4 differs from a-agree on 120, equals it on 0); arm A IDENTICAL-MODULO-PROGRAM-FIELDS, twin mismatches 0; proof sha256 `5f2ce2400e65ee4004869af6a1aa1ad4c76c02accd0327abffc2dcc8e389eee5`.
 
 ## The cell
 

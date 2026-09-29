@@ -39,14 +39,14 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "08f5d1d971147db55d7376faf340a49505a19afec5ccfef4db4f92266ab8625c"
+    "sha256": "ccf1ecca46ee66e1bf89e223bb6b9ce36c6ea0e18d450009bf0ababd24f21fad"
   },
   "purpose": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "quality_read_gate": "No column read before the complete sealed manifest, the ordered outputs, the phase summary, the single complete official TRAIN score of the delivered rows and the three rendered-and-scored first-visit columns exist; the READ row must be countersigned first.",
   "registered_at_utc": "2026-09-28T13:30:00.000000+00:00",
   "schema": "saea-registered-fit-plan-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w4sv2, branch fable/w4sv2",
-  "status": "BLOCKED_ARM_B_INERT_REGISTERED_HELD",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
   "supply_variants": {
     "arm_visits": "first",
     "arms": [

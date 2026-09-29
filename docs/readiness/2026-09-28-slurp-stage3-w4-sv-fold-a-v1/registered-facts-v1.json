@@ -65,6 +65,11 @@
     "value_ids": "slot-contracts-w4-v1 carries the SAME 54 value ids as slot-contracts-v2; 19 differ in content, provenance_refs and source_sample_ids"
   },
   "arm_a_byte_identity": {
+    "arm_b": {
+      "bodies_different_from_arm_a": 120,
+      "bodies_equal_to_arm_a": 0
+    },
+    "arm_b_verdict": "ARM-B-VARIES",
     "normalisation": "the program id phase-native-candidates-review-revise-variants3first-v1 replaced by phase-native-candidates-review-revise-v1, the Solver's global contact index in agent-state labels shifted back by 2 (the arm group's K - 1), and every remaining_model_contacts value masked -- the three prompt fields the arm group necessarily moves",
     "normalised": {
       "arm_a_first_solver_contacts": 120,
@@ -79,7 +84,9 @@
     "prepared_supply_equal_registered_and_committed": true,
     "prepared_supply_output": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
     "proof": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/arm-a-byte-identity-proof-v1.json",
-    "proof_sha256": "913c5487d5c7cb37e6c323433dc55976e614f7d86676efd370ee9f669e3ea55d",
+    "proof_generated_at_utc": "2026-09-29T00:20:33.903064+00:00",
+    "proof_sha256": "5f2ce2400e65ee4004869af6a1aa1ad4c76c02accd0327abffc2dcc8e389eee5",
+    "proof_study_commit": "c24824a462b254328f7df3d28fceb25dbad9679e",
     "reading": "Arm A is NOT byte-identical to the AGREE arm: every contact's POST body differs, and only in three program-derived prompt fields the arm group necessarily moves -- the program id inside agent-state labels, the Solver's global contact index in those labels (shifted by K - 1 = 2), and remaining_model_contacts in the role context (13 vs 11 before the Solver visit, equal after it). Unifying exactly those three, every paired contact is byte-identical (arm A's first Solver request included) and every twin body equals its arm A body. A, T and B share these fields, so the column contrasts are unaffected; the claim 'A = the AGREE arm's bytes' holds only modulo these fields.",
     "rows": 120,
     "strict": {
@@ -96,17 +103,34 @@
     "verdict": "IDENTICAL-MODULO-PROGRAM-FIELDS"
   },
   "blocker": {
-    "consequence": "flown as registered, arm b-w4 is a second twin and B minus A reads nothing; w4sv_flip.sh refuses until a re-run of w4sv_arm_a_proof.py reports ARM-B-VARIES",
-    "engineering_needed": "render a release-swap arm's request from its own alternate binding's composite snapshot (and bind the arm's evidence pins / snapshot hash to it in the arm receipt), with an acceptance test that an alternate differing only in content changes the arm's wire bytes; it touches rails/runner.py and core/flight/runtime.py (merge set B files, identity-bound), so it lands at a coordinator-named re-pin point",
-    "evidence": {
-      "arm_b_bodies_different_from_arm_a": 0,
-      "arm_b_bodies_equal_to_arm_a": 120,
-      "proof": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/arm-a-byte-identity-proof-v1.json",
-      "rows": 120
+    "resolved": {
+      "by": "the release-swap renderer fix 3f6688de729f99880258e0dba4993ecf1cd88817 (merge of fable/svrender: a release-swap arm renders from its own alternate snapshot)",
+      "history": {
+        "prior_proof": {
+          "arm_b_bodies_different_from_arm_a": 0,
+          "arm_b_bodies_equal_to_arm_a": 120,
+          "arm_b_verdict": "ARM-B-INERT",
+          "finding": "every arm b-w4 first-visit POST body equalled its arm a-agree body: the release swap re-selected value ids through the alternate's router, but rails.runner rendered every arm's request from the FLIGHT's composite snapshot (base_messages over the row's snapshot, with only retrieved_value_ids replaced), and slot-contracts-w4-v1 carries the SAME 54 value ids as slot-contracts-v2 with new content on 19 of them -- so arm b-w4 rendered the v2 cards and read as a second twin",
+          "generated_at_utc": "2026-09-28T13:50:56.314815+00:00",
+          "proof_sha256": "913c5487d5c7cb37e6c323433dc55976e614f7d86676efd370ee9f669e3ea55d",
+          "rows": 120,
+          "study_commit": "b5392755b847b43501bedeeccce78e2fd93103ad",
+          "verdict": "IDENTICAL-MODULO-PROGRAM-FIELDS",
+          "where": "rails/runner.py (the supply-variant binding rendered a non-delivering arm over the row's own composite snapshot) and core/flight/runtime.py::_supply_action_router (rebuilt only the arm's ROUTER over the alternate)"
+        },
+        "status_at_registration": "ARM-B-INERT"
+      },
+      "proof_rerun": {
+        "arm_b_bodies_different_from_arm_a": 120,
+        "arm_b_bodies_equal_to_arm_a": 0,
+        "arm_b_verdict": "ARM-B-VARIES",
+        "generated_at_utc": "2026-09-29T00:20:33.903064+00:00",
+        "proof": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/arm-a-byte-identity-proof-v1.json",
+        "rows": 120,
+        "study_commit": "c24824a462b254328f7df3d28fceb25dbad9679e"
+      }
     },
-    "finding": "every arm b-w4 first-visit POST body equals its arm a-agree body: the release swap re-selects value ids through the alternate's router, but rails.runner renders every arm's request from the FLIGHT's composite snapshot (base_messages over the row's snapshot, with only retrieved_value_ids replaced), and slot-contracts-w4-v1 carries the SAME 54 value ids as slot-contracts-v2 with new content on 19 of them -- so arm b-w4 renders the v2 cards and reads as a second twin. The cell cannot fly until the runner renders a release-swap arm from its own alternate snapshot",
-    "status": "ARM-B-INERT",
-    "where": "rails/runner.py, the supply-variant binding: a non-delivering arm is rendered by base_messages(ctx) over the row's own composite snapshot with ONLY query_state.retrieved_value_ids replaced by the arm's selection; core/flight/runtime.py::_supply_action_router rebuilds the arm's ROUTER over the alternate (selection), never the snapshot the request renders from. A release swap whose alternate keeps the primary's value ids therefore re-selects the same ids and renders the primary's content."
+    "status": "none"
   },
   "budget_arithmetic": {
     "arm_family_budget": {
@@ -226,8 +250,8 @@
     "cells": {
       "arm": {
         "blockers": null,
-        "check_path": "/home/chao/saea-worktrees/.w4sv-checks/check-slurp-native-stage3-w4sv-fold-a-v1.json",
-        "check_sha256": "18a83c2d6fef62fef9c386640300ae8d5a78ef22d843df3325fedcd67f8f0eda",
+        "check_path": "/home/chao/saea-worktrees/.w4svproof-checks/check-slurp-native-stage3-w4sv-fold-a-v1.json",
+        "check_sha256": "e8e585c9b1fab2a9de904b8815d6672727afa1f9d3bd60908235b3dbcd8a68ca",
         "config_hash": "ba34275543f0da154584d33884a957aceb9d0e87ab7f719f8cda34d440f9e890",
         "prompt_budget_per_phase": [
           {
@@ -279,8 +303,8 @@
       },
       "smoke": {
         "blockers": null,
-        "check_path": "/home/chao/saea-worktrees/.w4sv-checks/check-slurp-native-stage3-w4sv-fold-a-smoke-4-v1.json",
-        "check_sha256": "54423e88af972e960c8170ec0620a0e0432decd7c37d1a6169662b13d74acc07",
+        "check_path": "/home/chao/saea-worktrees/.w4svproof-checks/check-slurp-native-stage3-w4sv-fold-a-smoke-4-v1.json",
+        "check_sha256": "dbaf11ac1425428254e7d273fd3480dfbb90187126e69072b085148845d90665",
         "config_hash": "ba4fb50c35f6e9d38b358150490abdde862f48ff1c6a6cb8ae6e4881aad04300",
         "prompt_budget_per_phase": [
           {
@@ -638,7 +662,7 @@
       }
     }
   },
-  "status": "BLOCKED_ARM_B_INERT_REGISTERED_HELD",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
   "study_commit_at_registration": "190e178db",
   "the_cell": {
     "arm_visits": "first",

@@ -1,6 +1,6 @@
 {
-  "arm_b_reading": "every arm b-w4 first-visit POST body equals its arm a-agree body: the release swap re-selects value ids through the alternate's router, but rails.runner renders every arm's request from the FLIGHT's composite snapshot (base_messages over the row's snapshot, with only retrieved_value_ids replaced), and slot-contracts-w4-v1 carries the SAME 54 value ids as slot-contracts-v2 with new content on 19 of them -- so arm b-w4 renders the v2 cards and reads as a second twin. The cell cannot fly until the runner renders a release-swap arm from its own alternate snapshot",
-  "arm_b_verdict": "ARM-B-INERT",
+  "arm_b_reading": "arm b-w4's first-visit bodies differ from arm a-agree's on the counted rows",
+  "arm_b_verdict": "ARM-B-VARIES",
   "cells": {
     "agree_arm": {
       "baseline_fragment": "slurp-native-stage3-agree-w1-fold-a-baseline-v1",
@@ -554,7 +554,7 @@
     "server": 0,
     "tokenizer": 0
   },
-  "generated_at_utc": "2026-09-28T13:50:56.314815+00:00",
+  "generated_at_utc": "2026-09-29T00:20:33.903064+00:00",
   "hash_quoting": "64-hex identities other than the prepared-supply output digests and the study commit are quoted as sha256-prefix16:<first 16 hex> (core.flight.repin rewrites package JSON from old identity hashes to new ones at the flip and refuses any old hash left under docs/); the full values are recomputable from study_commit",
   "owner_decision": 172,
   "precedent": "the wave shared-A/A proof (scripts/flights/wave/wave_shared_aa_proof.py; decision 160's method)",
@@ -570,7 +570,7 @@
     "output_digests_equal": true,
     "w4sv": {
       "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
-      "seconds": 37.4
+      "seconds": 25.9
     }
   },
   "question": "Is W4-SV's delivering arm a-agree the retained AGREE arm's own bytes (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1) -- byte-identical prepared first-phase supply output and byte-identical POST bodies for every contact, arm A's first Solver contact included -- and is the twin t-twin's body arm A's, contact for contact?",
@@ -585,13 +585,13 @@
       },
       "rows_dispatched": 120,
       "rows_revised_by_canned_planner": 61,
-      "seconds": 148.4,
-      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1-1790603043854"
+      "seconds": 120.1,
+      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1-1790640874015"
     },
     "comparison": {
       "arm_a_first_solver_contacts": 120,
-      "arm_b_bodies_different_from_arm_a": 0,
-      "arm_b_bodies_equal_to_arm_a": 120,
+      "arm_b_bodies_different_from_arm_a": 120,
+      "arm_b_bodies_equal_to_arm_a": 0,
       "contacts_agree_arm": 663,
       "contacts_w4sv": 903,
       "first_mismatches": [
@@ -630,8 +630,8 @@
     },
     "comparison_normalised": {
       "arm_a_first_solver_contacts": 120,
-      "arm_b_bodies_different_from_arm_a": 0,
-      "arm_b_bodies_equal_to_arm_a": 120,
+      "arm_b_bodies_different_from_arm_a": 120,
+      "arm_b_bodies_equal_to_arm_a": 0,
       "contacts_agree_arm": 663,
       "contacts_w4sv": 903,
       "first_mismatches": [],
@@ -660,13 +660,13 @@
       },
       "rows_dispatched": 120,
       "rows_revised_by_canned_planner": 61,
-      "seconds": 402.7,
-      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1-1790603043852"
+      "seconds": 353.0,
+      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1-1790640874015"
     }
   },
   "schema": "saea-w4sv-arm-a-byte-identity-proof-v1",
-  "scratch": "/tmp/w4sv-proof-120-1790602997",
-  "study_commit": "b5392755b847b43501bedeeccce78e2fd93103ad",
+  "scratch": "/tmp/w4sv-proof-120-rerun-1790640843",
+  "study_commit": "c24824a462b254328f7df3d28fceb25dbad9679e",
   "tool": "scripts/flights/w4sv/w4sv_arm_a_proof.py",
   "verdict": "IDENTICAL-MODULO-PROGRAM-FIELDS"
 }
