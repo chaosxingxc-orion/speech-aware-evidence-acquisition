@@ -1,0 +1,67 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1b-dev2000-added-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-default-plan-dev2000-added-generation-v1",
+      "role": "the sealed DEV plan arm, context beside the A/A, never the bar",
+      "run_id": "SAEA-SLURP-NATIVE-DEFAULT-PLAN-DEV2000-ADDED-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-dev2000-added-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the within-chain null the delta is read at",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "attribution_classes": {
+    "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/attribution-classes-v1.json",
+    "note": "membership is a function of the first-phase supply (identical by the digest check above), so the placeholder's classes apply unchanged; the read re-derives and must reproduce every hash",
+    "sha256": "4f129ef4cb3578815a5c3b6965069c2c1d0b91dbf247afc09244376bb1ef9493"
+  },
+  "boundary": "A development read on the DEV-2000-ADDED evaluation roster (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold label string or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver": {
+    "command": "bash scripts/flights/read_paired_cell.sh docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1",
+    "passes": [
+      "vs-aa (gating)",
+      "vs-comparator (context only)"
+    ],
+    "refusal": "the driver refuses before any score is opened unless this READ row is root countersigned",
+    "scorer": "slurp-slu-official"
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-PAIRED-ANALYSIS-V1",
+  "recipe_id": "slurp-stage3-comp1b-dev2000-added-paired-analysis-v1",
+  "registered_at_utc": "2026-09-29T21:00:30.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260929,
+    "unit": "utterance cluster (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the arm and the A/A manifests are COMPLETE at 1,000 rows with this registration's composed config hashes, sealed, each with one successful complete official slurp-slu-official score, and unless the READ row is root countersigned.",
+    "2. THE DELIVERY CHECK (gold-free): each cell's flown first-phase boundary selections must equal its own prepared supply (A/A output d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19; arm ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08). A mismatch is an engineering defect and closes the read.",
+    "3. Primary: intent accuracy paired per utterance against the in-chain A/A, 10,000 draws, seed 20260929. Guard: official pooled SLU-F1. Apply the protocol's rule at h_intent 1.152 / h_SLU 1.2525 against the declared expected_effect_pp 3.8 and the 2.6 pp bar.",
+    "4. Entity FP / TP / FN against the A/A, with the zero-gold-row emission count (the COMP-1 harm mechanism).",
+    "5. The attribution classes (placeholder file, reproduced hashes) with the COMP-1b Fold A conversion rates beside each class.",
+    "6. Per-scenario tables in both weightings (natural-mixture and equal-stratum) and the recording-channel split.",
+    "7. Write the read under its own id; every number is a DEV-2000-ADDED development number, never a test claim."
+  ],
+  "title": "Cell A2 -- COMP-1b on DEV-2000-ADDED against its in-chain A/A"
+}

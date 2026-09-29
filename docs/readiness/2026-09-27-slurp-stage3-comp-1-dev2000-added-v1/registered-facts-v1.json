@@ -643,13 +643,16 @@
   "schema": "saea-registered-facts-v1",
   "stage3_measurement": {
     "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1": {
+      "carried_into": "cell A2 (docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1, owner decision 198), 2026-09-29: this in-chain A/A is flown unchanged beside the A2 arm, so replicate_run_id names the A2 arm; tuning_roster 'none' (the A/A is the sealed DEV plan arm's bytes at recall k 60; nothing was tuned) and read_roster declared under item D3 (owner decision 190). The arm and smoke entries of this file are SUPERSEDED with their fragments.",
       "claims_benefit": false,
       "expected_effect_pp": 0.0,
       "measurement_design": "cross-flight-with-in-chain-replicate",
       "note": "The A/A replicate is the INSTRUMENT, not a claim: the sealed DEV plan arm's own bytes (w_agree 0.0, the written key, the un-armed citation default, recall k 60, a proven no-op: its prepared output digest is the sealed comparator's d57ee9d6...) re-flown in the same chain. Its expected effect is zero by construction.",
       "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the guard",
-      "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-V1",
-      "rows": 1000
+      "read_roster": "SLURP-DEV-2000-ADDED-V1",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1",
+      "rows": 1000,
+      "tuning_roster": "none"
     },
     "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-V1": {
       "claims_benefit": false,
@@ -677,6 +680,16 @@
     }
   },
   "study_commit_at_registration": "09f1b31e",
+  "superseded_by": {
+    "cells": [
+      "slurp-native-stage3-comp1-dev2000-added-v1",
+      "slurp-native-stage3-comp1-dev2000-added-smoke-4-v1"
+    ],
+    "date": "2026-09-29",
+    "note": "the arm and the smoke never flew and are superseded by cell A2 (COMP-1b on DEV-2000-ADDED); the in-chain A/A is carried into A2 unchanged",
+    "owner_decision": 198,
+    "package": "docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1"
+  },
   "the_composition": {
     "factor_1_agreement_term": {
       "agreement_source": {
