@@ -70,6 +70,28 @@ def branch_gold_rank(candidate_intent_ids: Sequence[str], gold_intent_id: str) -
     return None
 
 
+#: The receipt's own ``note_parse_status`` values that carry no candidate (receipt schema v2,
+#: 2026-09-29). Either one is gold-ABSENT for every read: ``present`` False, ``rank`` None.
+NO_CANDIDATE_STATUSES = frozenset({"empty", "malformed"})
+
+
+def branch_candidates(item: Mapping[str, object]) -> tuple[str, ...]:
+    """ONE branch record's candidate list as every read consumes it.
+
+    Schema v2 already seals the collapsed list (first occurrence kept) and an empty list for an
+    ``empty``/``malformed`` note. A v1 record (sealed before 2026-09-29) is normalised the same
+    way: its ``malformed`` ``("unparsed",)`` sentinel reads as no candidate -- never as an
+    intent id -- and a repeated intent keeps its first rank.
+    """
+
+    if item.get("note_parse_status") in NO_CANDIDATE_STATUSES:
+        return ()
+    candidates = item.get("candidate_intent_ids")
+    if not isinstance(candidates, Sequence) or isinstance(candidates, (str, bytes)):
+        return ()
+    return tuple(dict.fromkeys(value for value in candidates if isinstance(value, str) and value))
+
+
 def branch_row_outcome(candidate_intent_ids: Sequence[str], gold_intent_id: str) -> dict[str, object]:
     """``{rank, present, top1}`` for one branch's own note on one row."""
 
@@ -96,10 +118,9 @@ def level1_row_outcomes(row: Mapping[str, object], gold_intent_id: str) -> dict[
         if not isinstance(item, Mapping):
             continue
         branch_id = item.get("branch_id")
-        candidates = item.get("candidate_intent_ids")
-        if not isinstance(branch_id, str) or not isinstance(candidates, Sequence):
+        if not isinstance(branch_id, str) or not isinstance(item.get("candidate_intent_ids"), Sequence):
             continue
-        outcomes[branch_id] = branch_row_outcome(candidates, gold_intent_id)
+        outcomes[branch_id] = branch_row_outcome(branch_candidates(item), gold_intent_id)
     return outcomes
 
 
@@ -220,7 +241,9 @@ def render_branch_column(row: Mapping[str, object], branch_id: str) -> dict[str,
                 "branch_id": branch_id,
                 "response_text_sha256": item.get("response_text_sha256"),
                 "note_sha256": item.get("note_sha256"),
-                "candidate_intent_ids": list(item.get("candidate_intent_ids") or ()),
+                "candidate_intent_ids": list(branch_candidates(item)),
+                "note_parse_status": item.get("note_parse_status"),
+                "candidate_intent_ids_raw_count": item.get("candidate_intent_ids_raw_count"),
             }
     raise PerceptionBranchReadError(f"branch {branch_id!r} is not in this row's receipt")
 
