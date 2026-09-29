@@ -26,6 +26,7 @@ from speech_aware_evidence_acquisition.core import preparation_fit
 from speech_aware_evidence_acquisition.core.flight import runtime as flight_module
 from speech_aware_evidence_acquisition.core.flight.resume import (
     RESUME_PREDECESSOR_SCHEMA,
+    MergedPredecessors,
     ResumeDeclaration,
     ResumeRecoveryError,
     kept_sample_ids_sha256,
@@ -323,7 +324,7 @@ def test_a_row_the_predecessor_did_not_finish_is_re_flown_in_full(
     recovery_runtime._samples = tuple(
         SimpleNamespace(sample_id=sample_id) for sample_id in ("s1", "s2")
     )
-    recovery_runtime._resume = scan
+    recovery_runtime._resume = MergedPredecessors((scan,))
     recovery_runtime._resume_flown_sample_ids = ("s2",)
     try:
         rows, *_ = recovery_runtime._dispatch_phase_program(
@@ -547,7 +548,7 @@ def test_merged_rows_refuse_a_sample_that_was_kept_and_also_flown(tmp_path, monk
     recovery_runtime._samples = tuple(
         SimpleNamespace(sample_id=sample_id) for sample_id in ("s1", "s2")
     )
-    recovery_runtime._resume = scan
+    recovery_runtime._resume = MergedPredecessors((scan,))
     # The defect this refuses: a recovery that re-flew a row its predecessor
     # had already completed.
     recovery_runtime._resume_flown_sample_ids = ("s1",)
@@ -845,7 +846,7 @@ def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
     recovery_runtime._samples = tuple(
         SimpleNamespace(sample_id=sample_id) for sample_id in roster
     )
-    recovery_runtime._resume = scan
+    recovery_runtime._resume = MergedPredecessors((scan,))
     recovery_runtime._resume_flown_sample_ids = ("s2",)
     # E10c: the adapter stays WHOLE. The flown roster reaches the runner as an
     # explicit restriction instead, so the split it loads, the packet map it

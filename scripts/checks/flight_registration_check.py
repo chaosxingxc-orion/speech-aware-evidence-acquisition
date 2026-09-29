@@ -243,6 +243,10 @@ class CellReport:
     #: design docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-
     #: variants-design.md section 4).
     perception_branch: dict[str, Any] | None = None
+    #: Set only for a cell whose ``stage3_measurement.measurement_design`` is
+    #: ``same-flight-shadow-relisten`` -- owner decision 185, design docs/superpowers/specs/
+    #: 2026-09-28-e4-core-native-targeted-relisten-design.md section 8 rulings 2 and 7.
+    relisten: dict[str, Any] | None = None
     #: Set for EVERY cell that declares a ``stage3_measurement`` block, whatever its design --
     #: item D3: ``{"tuning_roster": ..., "read_roster": ...}``, the raw values as registered.
     roster_split: dict[str, Any] | None = None
@@ -270,6 +274,7 @@ class CellReport:
             "findings": [finding.as_dict() for finding in self.findings],
             "supply_variant": self.supply_variant,
             "perception_branch": self.perception_branch,
+            "relisten": self.relisten,
             "roster_split": self.roster_split,
             "resume_replay_proof": self.resume_replay_proof,
         }
@@ -1155,34 +1160,160 @@ def _check_roster_split_registration(
     _check_tuning_read_overlap(report, repo_root, tuning_roster, read_roster)
 
 
-def _resume_replay_proof_block(
-    index: PackageIndex, package: str, run_id: str
-) -> dict[str, Any] | None:
-    """The ``resume_replay_proof`` block from the package's own registered-plan facts.
+# --------------------------------------------------------------------------
+# E4 targeted-relisten registration (owner decision 185, design docs/
+# superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md
+# section 8 coordinator rulings 2 and 7)
+# --------------------------------------------------------------------------
 
-    ``None`` when no ``*plan-registered*.json`` under the package names this run id at all (the
-    package resolved but never registered this generation plan's facts); ``{}`` when it names the
-    run id but carries no block. Never raises: an unreadable or malformed registered-plan file is
-    skipped, exactly like :meth:`PackageIndex.packages_registering`.
+#: The one design whose cells must carry this section's three fields beside
+#: ``measurement_design`` (ruling 7: "the bar is the twin/shadow null").
+RELISTEN_INSTRUMENT_DESIGNS = ("same-flight-shadow-relisten",)
+
+#: The path a ``relisten`` block is composed under in a baseline fragment
+#: (``rails.native_episode_config``'s ``native_episode.relisten``).
+RELISTEN_PATH = ("native_episode", "relisten")
+
+#: Ruling 7 / the same-flight-supply-variant precedent (Q6 ruling this
+#: design copies): a post-accept shadow effect never supports a
+#: system-level claim.
+RELISTEN_CLAIM_CEILING = "nominated"
+
+#: The exact two shadow-column ids ruling 2 registers
+#: (``rails.relisten.SHADOW_COLUMNS``, restated here as a literal so this
+#: gate reads its own name set from source, the same discipline
+#: ``register_phase_programs_v1`` uses).
+RELISTEN_SHADOW_COLUMNS = ("relisten-replace-only", "relisten-replace-drop-unheard")
+
+
+def _relisten_block(baseline: dict[str, Any] | None) -> Any:
+    """The cell's ``native_episode.relisten`` block, or ``None``."""
+
+    node: Any = baseline
+    for key in RELISTEN_PATH:
+        if not isinstance(node, dict):
+            return None
+        node = node.get(key)
+    return node
+
+
+def _check_relisten_registration(
+    report: CellReport,
+    fragment: dict[str, Any],
+    baseline: dict[str, Any] | None,
+    floor_gate: Any,
+    repo_root: Path,
+) -> None:
+    """Ruling 2/7 registration fields and gate findings for an E4 cell.
+
+    A no-op when the declaration is absent or unreadable, when it names a
+    design outside :data:`RELISTEN_INSTRUMENT_DESIGNS`, or when the cell
+    declares no ``relisten`` block at all -- the same three-guard shape
+    :func:`_check_supply_variant_registration` uses, for the same reason.
+
+    Three findings: ``relisten-claim-not-nominated`` (the claim ceiling,
+    ruling 7), ``relisten-not-shadow-delivery`` (ruling 5: the delivered
+    answer is never changed in flight -- v1 admits no other mode), and
+    ``relisten-columns-missing`` (ruling 2: both shadow columns, and only
+    those two, must be declared by id).
     """
 
-    directory = index.repo_root / READINESS / package
-    for path in sorted(directory.glob("*plan-registered*.json")):
-        try:
-            document = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError):
-            continue
-        if not isinstance(document, dict):
-            continue
-        execution_plan = document.get("execution_plan")
-        named_run_id = document.get("run_id") or (
-            execution_plan.get("run_id") if isinstance(execution_plan, dict) else None
-        )
-        if named_run_id != run_id:
-            continue
-        block = document.get("resume_replay_proof")
-        return block if isinstance(block, dict) else {}
-    return None
+    block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
+    if not isinstance(block, dict):
+        return
+    design = block.get("measurement_design")
+    if design not in RELISTEN_INSTRUMENT_DESIGNS:
+        return
+    relisten_block = _relisten_block(baseline)
+    if not isinstance(relisten_block, dict):
+        return
+
+    columns = block.get("columns")
+    report.relisten = {
+        "measurement_design": design,
+        "max_slots_per_row": relisten_block.get("max_slots_per_row"),
+        "shadow_delivery": block.get("shadow_delivery"),
+        "columns": columns,
+        "claim": block.get("claim"),
+        "tuning_roster": block.get("tuning_roster"),
+        "read_roster": block.get("read_roster"),
+    }
+
+    claim = block.get("claim")
+    if claim != RELISTEN_CLAIM_CEILING:
+        report.findings.append(Finding(
+            "relisten-claim-not-nominated",
+            f"{report.run_id}: measurement_design {design!r} may claim only "
+            f"{RELISTEN_CLAIM_CEILING!r} (ruling 7: a post-accept shadow effect never "
+            f"supports a system-level claim), but claim is {claim!r}",
+            report.run_id,
+        ))
+
+    if block.get("shadow_delivery") is not True:
+        report.findings.append(Finding(
+            "relisten-not-shadow-delivery",
+            f"{report.run_id}: measurement_design {design!r} requires "
+            "stage3_measurement.shadow_delivery true (ruling 5: 'Shadow delivery, on "
+            "TRAIN Fold A first' -- the delivered answer is never changed in flight in "
+            f"v1), but shadow_delivery is {block.get('shadow_delivery')!r}",
+            report.run_id,
+        ))
+
+    if (
+        not isinstance(columns, list)
+        or sorted(columns) != sorted(RELISTEN_SHADOW_COLUMNS)
+    ):
+        report.findings.append(Finding(
+            "relisten-columns-missing",
+            f"{report.run_id}: measurement_design {design!r} requires "
+            f"stage3_measurement.columns to name exactly the two shadow columns "
+            f"{sorted(RELISTEN_SHADOW_COLUMNS)} (ruling 2), but columns is {columns!r}",
+            report.run_id,
+        ))
+
+
+def _resume_replay_proof_block(
+    index: PackageIndex, package: str, run_id: str, cell_id: str | None = None
+) -> dict[str, Any] | None:
+    """The ``resume_replay_proof`` block from the cell's own registered-plan facts.
+
+    A resume-recovery flies under the ARM's run id, so the package :func:`resolve_package` finds
+    from the arm's ledger row is the arm's ORIGINAL package, while the resume cell's own registered
+    plan (the one that carries this block) lives in the recovery package (COMP-1: the ``-resume-v1``
+    package beside the parent ``2026-09-27`` one, which is never edited). So a registered plan that
+    names BOTH this run id and this ``cell_id`` is preferred, in the resolved package first and then
+    in every package whose registered plan names the run id; failing that, the resolved package's
+    first plan naming the run id is used, exactly as before.
+
+    ``None`` when no candidate names this run id at all; ``{}`` when the chosen plan carries no
+    block. Never raises: an unreadable or malformed registered-plan file is skipped, exactly like
+    :meth:`PackageIndex.packages_registering`.
+    """
+
+    candidates = [package] + [name for name in index.packages_registering(run_id) if name != package]
+    fallback: dict[str, Any] | None = None
+    for name in candidates:
+        directory = index.repo_root / READINESS / name
+        for path in sorted(directory.glob("*plan-registered*.json")):
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                continue
+            if not isinstance(document, dict):
+                continue
+            execution_plan = document.get("execution_plan")
+            named_run_id = document.get("run_id") or (
+                execution_plan.get("run_id") if isinstance(execution_plan, dict) else None
+            )
+            if named_run_id != run_id:
+                continue
+            block = document.get("resume_replay_proof")
+            block = block if isinstance(block, dict) else {}
+            if cell_id is not None and document.get("cell") == cell_id:
+                return block
+            if name == package and fallback is None:
+                fallback = block
+    return fallback
 
 
 def _check_resume_replay_proof(
@@ -1207,7 +1338,7 @@ def _check_resume_replay_proof(
     if not (report.named or report.consumed_by is None):
         return
     severity = None if report.named else "advisory"
-    block = _resume_replay_proof_block(index, package, report.run_id)
+    block = _resume_replay_proof_block(index, package, report.run_id, cell.get("cell_id"))
     report.resume_replay_proof = block
     fields = RESUME_REPLAY_PROOF_FIELDS
     if block is None:
@@ -1252,6 +1383,7 @@ def check_cell(
     floor_gate = _floor_gate_module(index.repo_root)
     _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_perception_branch_registration(report, fragment, baseline, floor_gate, index.repo_root)
+    _check_relisten_registration(report, fragment, baseline, floor_gate, index.repo_root)
     # Item D3's roster-split check still runs for a NAMED sealed/flown cell (a resume step
     # re-launching an already-consumed run id, gated the same as any other launch-mode cell --
     # see test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap: the finding is reported,

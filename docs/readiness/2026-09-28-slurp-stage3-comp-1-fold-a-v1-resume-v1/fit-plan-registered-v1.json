@@ -2,7 +2,7 @@
   "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
   "composed_config_hash": "dfa6528a4ebb1388bde8a6c60a5dc6fd2b449fa9460f0830a6a80aabb62c36f1",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3",
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-seal-only",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 12.0,
@@ -15,7 +15,7 @@
     "split_role": "discovery",
     "study": "speech-aware-evidence-acquisition"
   },
-  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids (the SAME FIT run id, a new attempt); it measures request envelopes and produces no generation.",
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids (the SAME FIT run id, a new attempt); it measures request envelopes and produces no generation. SEAL-ONLY (2026-09-29): the seal-only attempt never builds the native contact FIT gate (run_phases is a zero-work receipt), so this FIT identity records no contact; it is fresh (attempt-slurp-native-stage3-comp1-fold-a-fit-v1-seal-only, unused on the data root at registration) because validate_native_contact_fit_config requires the block and no FIT attempt id that already holds evidence is ever reused.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-stage3-comp1-fold-a-v1-resume",
   "family_budget": {
@@ -46,7 +46,11 @@
   "registered_at_utc": "2026-09-28T12:00:00.000000+00:00",
   "schema": "saea-registered-fit-plan-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1res, branch fable/comp1res (from fable/comp1rec at a451f942)",
-  "status": "REGISTERED_BEFORE_CONTACT_HELD_AWAITING_OWNER_RECOVERY_RULING",
+  "status": "REGISTERED_BEFORE_CONTACT_SEAL_ONLY_HELD_AWAITING_OWNER_DECISION_189",
   "the_composition": "the locked v2.0 plan + (1) the agreement term as AGREE carries it (w_agree 1.0 over the self-excluded exemplar-intent vote, recall k 60, delivered 8-1-8) + (2) the centroid boundary key as KPROBE pins it (facet_source prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl) + (3) the citation contract (policy phase-native-candidates-review-revise-cited-v1, Solver response_format_id saea-solver-cited-answer-v1, instruction probes/slurp_native_role_solver_cited_v1.txt, deliver_normaliser saea-deliver-cited-answer-normalise-v3-v1) + (4) nothing else",
-  "unused_budget_is_not_attempt_authority": true
+  "unused_budget_is_not_attempt_authority": true,
+  "seal_only_registration": {
+    "registered_at_utc": "2026-09-29T05:45:00.000000+00:00",
+    "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1seal, branch fable/comp1seal (from fable/sealonly 40161cbb, master merged at 3d6c960e)"
+  }
 }

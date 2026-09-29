@@ -1719,6 +1719,25 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-native-candidates-review-revise-pbranch3-l2-v1": (
         "phase-native-candidates-review-revise-pbranch3-l2-v1.json"
     ),
+    # Item E4 (2026-09-28, owner decision 185, "core-native targeted re-
+    # listen"; design docs/superpowers/specs/2026-09-28-e4-core-native-
+    # targeted-relisten-design.md, section 6's implementation-plan table and
+    # the section 8 coordinator rulings): the SAME four phases, the SAME
+    # episode_id shape and the SAME role graph as
+    # "phase-native-candidates-review-revise-v1" (max_contacts 11), with a
+    # post-accept ``native_episode.relisten`` block armed
+    # (max_slots_per_row 3, two contacts per triggered entity --
+    # ``rails.relisten.RelistenConfig.extra_contacts_ceiling``): the bounded
+    # graph ceiling is the anchor's 11 plus 2 * 3 = 17
+    # (``rails.native_episode_config``'s own relisten ceiling term). A
+    # separate program id, never a flag on the base program, for the reason
+    # every comment above states: two program ids must never resolve to the
+    # same object when their contact ceilings differ. Uncited: no baseline
+    # or experiment fragment names it yet, and v1 registers no cell -- this
+    # entry only makes the program available to compose against.
+    "phase-native-candidates-review-revise-relisten-v1": (
+        "phase-native-candidates-review-revise-relisten-v1.json"
+    ),
 }
 
 _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
@@ -1910,6 +1929,15 @@ def register_phase_programs_v1() -> None:
             default_controller_factory(
                 default_phase_program(
                     "phase-native-candidates-review-revise-pbranch3-l2-v1"
+                )
+            ),
+        )
+    if "phase-native-candidates-review-revise-relisten-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-candidates-review-revise-relisten-v1",
+            default_controller_factory(
+                default_phase_program(
+                    "phase-native-candidates-review-revise-relisten-v1"
                 )
             ),
         )
@@ -2396,6 +2424,26 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "slurp-verifier-choice-v1",
             slurp_verifier_choice_response_format,
+        )
+    # Item E4 (2026-09-28, owner decision 185): the post-accept targeted
+    # re-listen's two contacts, blind and forced-choice. Registering the ids
+    # changes no phase (design section 6: the stage is wired beside
+    # ``rails.runner``'s node-context-cleaning contact, never through a
+    # ``PhaseProgram`` phase entry); ``native_episode.relisten`` names them
+    # directly.
+    if "slurp-relisten-value-v1" not in registered:
+        from .relisten import relisten_blind_response_format
+
+        RESPONSE_FORMATS.register(
+            "slurp-relisten-value-v1",
+            relisten_blind_response_format,
+        )
+    if "slurp-relisten-confirm-v1" not in registered:
+        from .relisten import relisten_confirm_response_format
+
+        RESPONSE_FORMATS.register(
+            "slurp-relisten-confirm-v1",
+            relisten_confirm_response_format,
         )
 
 

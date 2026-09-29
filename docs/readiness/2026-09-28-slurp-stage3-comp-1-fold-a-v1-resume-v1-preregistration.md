@@ -122,3 +122,19 @@ in the aborted chain; the resumed rows and G5 fly in a later chain, so "in-chain
 Flip: `bash scripts/flights/comp1/comp1_resume_flip.sh` (loop form; refuses until the proof passes, the
 receipt is minted, the A/A is FINALIZED, G5 is unstarted and both arm rows read `consumed = no`).
 Launch: `bash scripts/flights/comp1/batch_chain_comp1_resume.sh`.
+
+## 7. Seal-only completion (2026-09-29; owner decision 189 option A, PENDING)
+
+Resume attempt 3 flew all 609 remaining rows and aborted at the seal on a replay defect in
+`core.flight.resume._classify`, fixed at `d619e1c5`. Under option A of decision 189 the recovery completes WITHOUT any
+new model contact: attempt `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only` declares `resume_from` as the ordered list
+[`attempt-slurp-native-stage3-comp1-fold-a-generation-v1` (trace `029a2dbb...`, 471 complete rows), `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3` (trace `87be5cef...`,
+609 complete rows)], whose union is the whole 1,080-row roster, so the runtime seals the merged manifest and nothing is
+flown. The FIT identity is fresh (`attempt-slurp-native-stage3-comp1-fold-a-fit-v1-seal-only`) and records no contact.
+
+The replay proof is registered before the seal: `scripts/analysis/replay_seal_consistency.py`, both predecessors pinned,
+1,080 rows checked, 0 failing, 0 sealed twice (checker sha256 `5a90d298...`, code commit `e4f4f588`). The comparator,
+the READ row `SAEA-SLURP-STAGE3-COMP1-FOLD-A-PAIRED-ANALYSIS-V1`, the declared 3.23 pp and every rule above are unchanged.
+This is still the one recovery of row 175: if the seal-only completion fails, cell COMP-1 closes.
+
+Flip: `bash scripts/flights/comp1/comp1_sealonly_flip.sh`. Launch: `bash scripts/flights/comp1/batch_chain_comp1_sealonly.sh`.

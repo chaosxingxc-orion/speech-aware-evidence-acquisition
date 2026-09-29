@@ -55,3 +55,45 @@ Resume attempt 2 `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-
 Attempt 3 uses fresh generation and FIT attempt ids: `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3` and `attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3`. `resume_from` is unchanged (the ORIGINAL aborted attempt, trace `029a2dbb...61997`; 471 kept, 609 flown). The one recovery of row 175 is unchanged. Run-cumulative spend on the arm before attempt 3 is 1,965 calls (1,913 + 4 + 48); worst case 1,965 + 609 x 11 = 8,664 within 11,880. The decision receipt is re-minted as `coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json` (same decision id; eligible attempts attempt 3 and its dry run).
 
 **The fix is proven on a 4-row dry run per row 181.** `core.flight.cli` has no bounded-resume mode (no row cap or dry-run flag for a resume), so the dry run is `SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1` (FIT `SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-FIT-V1`; attempts `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3-smoke` / `attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3-smoke`): the parent COMP-1 smoke's bytes on its four rows under fresh ids, derived by `derive_slurp_comp1_recovery_cells.py --variant resume3-smoke`, re-pinned by `scripts/flights/comp1/comp1_repin_resume3_smoke.sh`. It flies through the same worker path and per-contact native FIT identity gate as the smoke of the resume step in `batch_chain_comp1_resume.sh`; the batch driver stops before attempt 3 opens unless the dry run passes its structural check. Form only.
+
+## Seal-only completion (2026-09-29, owner decision 189 option A, PENDING)
+
+Resume attempt 3 `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3` flew all 609 remaining rows (2,476 calls, 7,392.9 s audio) and ABORTED at the seal:
+`core.flight.resume._classify` replayed the raw recorded response for the 471 kept rows instead of the deliver
+normaliser's output ("native delivery normalisation output differs from the delivered text"). Fixed at `d619e1c5`
+(`fable/sealcheck`, merged); diagnosis and offline proof in the decision 181 addendum.
+
+The seal-only completion is a new attempt `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only` (FIT identity `attempt-slurp-native-stage3-comp1-fold-a-fit-v1-seal-only`, fresh) under the
+same run id whose `resume_from` is a LIST:
+
+| predecessor | trace sha256 | complete rows |
+| --- | --- | --- |
+| `attempt-slurp-native-stage3-comp1-fold-a-generation-v1` | `029a2dbb...` | 471 |
+| `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3` | `87be5cef...` | 609 |
+
+The union covers the 1,080-row roster, so the runtime sets `is_seal_only`: zero new model contacts, no server, no slot,
+no lease. `core.flight.cli seal-only` seals the merged manifest (I7r binds each kept row to its own predecessor trace)
+and runs the one official finalize job. The cell allows `check`, `prepare-supply` and `seal-only` only; the old
+single-cell campaign plan no longer loads for it.
+
+**Replay proof** (`resume_replay_proof` in `generation-plan-registered-v1.json`, model-free, read-only):
+`scripts/analysis/replay_seal_consistency.py` with both predecessors pinned, at `e4f4f588`: 1,080 rows checked
+(471 + 609), 0 failing, 0 sealed twice; checker sha256 `5a90d298...`. The resume prelaunch gate gives the same counts.
+Run-cumulative spend on the arm stays 4,441 calls (1,913 + 4 + 48 + 2,476) of 11,880; the completion adds none.
+
+Sequence, only after the owner rules for option A:
+
+1. Merge `fable/comp1seal` (it carries `fable/sealonly` and a master merge).
+2. Root countersigns the DRAFT seal-only clauses on the arm's generation and FIT rows and the DRAFT row
+   `SAEA-SLURP-STAGE3-COMP1-FOLD-A-SEALONLY-REPLAY-PROOF-V1`.
+3. Root mints the receipt: `python scripts/flights/comp1/comp1_sealonly_mint_receipt.py` (writes
+   `coordination/slurp-stage3-comp1-fold-a-v1/root-admission-sealonly-v1.json`, decision id `slurp-stage3-comp1-fold-a-sealonly-admission-v1`, eligible attempt `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only`,
+   declared 3.23 pp unchanged, superseding `root-admission-resume-v3.json`).
+4. `bash scripts/flights/comp1/comp1_sealonly_flip.sh` -- loop form; converges the seal-only cell and G5's smoke and
+   arm at one HEAD (runtime.py changed on `fable/sealonly`, so every prepared supply re-pins; never
+   `--allow-output-change`) and writes `/home/chao/comp1seal-flight-commit.txt`.
+5. `bash scripts/flights/comp1/batch_chain_comp1_sealonly.sh` when the np4 session is free: step 1 is the kind=seal-only
+   step (no smoke), step 2 the G5 smoke and arm as before.
+
+Never write, move or compress anything under either predecessor's attempt directory: the seal-only attempt refuses
+before sealing if either trace no longer hashes to its pin.

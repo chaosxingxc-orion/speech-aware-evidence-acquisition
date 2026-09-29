@@ -393,6 +393,40 @@ def _protected_knowledge_material(snapshot: KnowledgeSnapshot) -> tuple[str, ...
     )
 
 
+#: Item E4 (2026-09-28): a process-lifetime cache of the two committed
+#: relisten templates, keyed by (resolved repo root, template id) exactly as
+#: ``rails.node_context_policy._TEMPLATE_CACHE`` caches its own committed
+#: templates. ``rails.relisten.RelistenConfig`` already refuses any
+#: ``blind_template_id`` / ``confirm_template_id`` other than the two v1
+#: constants before this ever runs, so a config never selects an arbitrary
+#: path -- the git-committed file bytes are the only pin v1 needs.
+_RELISTEN_TEMPLATE_CACHE: dict[tuple[str, str], str] = {}
+
+
+def _load_relisten_template(repo_root: object, template_id: str) -> str:
+    """Read one committed ``configs/probes/<template_id>.txt`` file.
+
+    Plain UTF-8 text with ``.format()`` placeholders (section 1's templates
+    are one paragraph each, not the sectioned ``# node-context-template-v1``
+    shape ``rails.node_context_policy.load_node_context_template`` parses),
+    so this loader is deliberately simpler than that one.
+    """
+
+    key = (str(Path(repo_root).resolve()), template_id)
+    cached = _RELISTEN_TEMPLATE_CACHE.get(key)
+    if cached is not None:
+        return cached
+    path = Path(repo_root).resolve() / "configs" / "probes" / f"{template_id}.txt"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as error:
+        raise RailsRunnerError(
+            f"cannot read relisten template {path}: {error}"
+        ) from error
+    _RELISTEN_TEMPLATE_CACHE[key] = text
+    return text
+
+
 def node_context_cleaning_messages(
     base_messages: Sequence[Mapping[str, object]],
 ) -> tuple[Mapping[str, object], Mapping[str, object]]:
@@ -859,6 +893,18 @@ class AgentLoopResult:
     # LAST and defaulted, so every construction written before E42 composes
     # exactly the result it always did.
     supply_variants: Mapping[str, object] | None = None
+    # Item E4 (2026-09-28, owner decision 185): the same kind of top-level
+    # sibling, present exactly when ``native_episode.relisten`` is armed and
+    # the row was not an abstention -- the row's own ``saea-relisten-v1``
+    # receipt (``rails.relisten.seal_relisten_receipt``). The delivered
+    # ``final_response_text``/``text`` is NEVER mutated by this stage
+    # (shadow delivery); the two shadow columns are rendered OFFLINE from
+    # this receipt plus the sealed trace
+    # (``scripts/analysis/stage3_rollout_score.py``'s
+    # ``render_relisten_shadow_columns``). Declared LAST and defaulted, so
+    # every construction written before E4 composes exactly the result it
+    # always did.
+    relisten: Mapping[str, object] | None = None
 
     def as_json(self) -> dict[str, object]:
         result = {
@@ -884,6 +930,8 @@ class AgentLoopResult:
             result["solver_group"] = dict(self.solver_group)
         if self.supply_variants is not None:
             result["supply_variants"] = dict(self.supply_variants)
+        if self.relisten is not None:
+            result["relisten"] = dict(self.relisten)
         if self.result_kind != TASK_ANSWER_RESULT_KIND:
             result["result_kind"] = self.result_kind
         if self.execution_unit_id is not None:
@@ -957,6 +1005,12 @@ class _AgentRuntimeOutcome:
     # supply_variants), or None for every other outcome -- byte-identical to
     # before this field existed.
     supply_variants: Mapping[str, object] | None = None
+    # Item E4 (2026-09-28, owner decision 185): the row's own sealed
+    # post-accept relisten receipt (``rails.relisten.seal_relisten_receipt``),
+    # or None for every outcome without an armed ``native_episode.relisten``
+    # -- byte-identical to before this field existed. See
+    # ``AgentLoopResult.relisten``.
+    relisten: Mapping[str, object] | None = None
 
 
 @dataclass
@@ -2106,6 +2160,27 @@ async def _invoke_native_role_episode(
 
     from .execution_units import scoped_execution_contact_id
     config, program = binding.config, binding.program
+    # Item E4 (2026-09-28, owner decision 185): the post-accept targeted
+    # re-listen's own config, resolved once. ``None`` for every config
+    # written before E4 and every unarmed fragment, which leaves the
+    # templates unread and every branch below (``run_relisten_stage`` and its
+    # own dispatch helpers, defined further down beside their E8b
+    # node-context-cleaning analogue) unreachable -- byte-identical to
+    # before this feature existed.
+    relisten_config = config.relisten
+    relisten_blind_template = relisten_confirm_template = None
+    if relisten_config is not None:
+        if binding.repo_root is None:
+            raise RailsRunnerError(
+                "the relisten stage requires the repository root its "
+                "committed blind/confirm templates are read from"
+            )
+        relisten_blind_template = _load_relisten_template(
+            binding.repo_root, relisten_config.blind_template_id,
+        )
+        relisten_confirm_template = _load_relisten_template(
+            binding.repo_root, relisten_config.confirm_template_id,
+        )
     if bool(config.local_tool_workers) != (run_local is not None):
         raise RailsRunnerError("native local tool scheduling differs from its configuration")
     # Cell RANKVIS (owner decision 171): ``None`` for every config that does
@@ -3954,6 +4029,221 @@ async def _invoke_native_role_episode(
         completion_sink=capture_cleaning_completion,
     )
 
+    def _relisten_binding_provider(_request):
+        raise RailsRunnerError(
+            "a relisten contact must be dispatched with its own composed "
+            "binding (binding_override), never resolved through this "
+            "placeholder provider"
+        )
+
+    def _capture_relisten_completion(_request, _completion):
+        """Item E4: like a cleaning contact, a relisten contact registers NO
+        phase state and settles NO episode step -- it runs strictly after the
+        Planner's ACCEPT and the deliver normaliser, over an episode that has
+        already finished routing -- so this sink deliberately does nothing.
+        """
+
+    # Item E4 (2026-09-28, owner decision 185): the SAME request composer, a
+    # third instance beside ``adapter_request`` and ``cleaning_request``: every
+    # byte of a relisten contact is built by ``MeteredNativeSpeechRequest.
+    # prepare`` exactly as a role contact's is, and dispatched through the
+    # same ``FrozenCoreClient``. Constructed unconditionally and used only
+    # when ``native_episode.relisten`` is armed (``relisten_config is not
+    # None``); ``_dispatch_relisten_contact`` below always passes its own
+    # composed ``binding_override``, so ``_relisten_binding_provider`` is
+    # never actually called.
+    relisten_request = MeteredNativeSpeechRequest(
+        client=core_client, binding_provider=_relisten_binding_provider,
+        render_request=binding.render_request,
+        completion_sink=_capture_relisten_completion,
+    )
+
+    def _dispatch_relisten_contact(*, slot_id, contact_kind, index, instruction, response_format_id):
+        """Item E4: make ONE metered relisten contact (blind or confirm).
+
+        Structurally ``run_cleaning_contact``'s sibling: the same ceiling
+        check, the same unique bound contact identity, its own trace buffer
+        and USE record, the flight's request/fit gate, and the shared
+        ``FrozenCoreClient`` budget and cost path. What differs: the
+        instruction and response format are named EXPLICITLY per call (never
+        resolved from a fixed ``PhaseProgram`` phase, which the blind and
+        forced-choice contacts could not share -- section 6's implementation
+        table keys this stage on no such phase), and the messages are the
+        packet ALONE (``node_context_cleaning_messages`` strips every
+        evidence block, exactly as section 1 requires: "the packet ... but
+        not c" -- no knowledge key/value block is evidence a relisten
+        contact needs or may carry).
+        """
+
+        from ..core.base import RESPONSE_FORMATS  # noqa: PLC0415
+        from ..core.tracing import get_current_trace_buffer  # noqa: PLC0415
+
+        if state.scheduled_contacts >= config.max_contacts:
+            raise RailsRunnerError(
+                "native graph exceeds its registered contact ceiling"
+            )
+        contact_id = scoped_execution_contact_id(
+            f"{program.program_id}:relisten:{contact_kind}:{index}:"
+            f"{state.prepared.sample.sample_id}",
+            state.prepared.execution_unit_id,
+        )
+        if contact_id in state.seen_contact_ids:
+            raise RailsRunnerError("native graph repeated a contact identity")
+        ctx = context()
+        system, user = node_context_cleaning_messages(base_messages(ctx))
+        decoding = dict(base_decoding_params or {})
+        response_format = RESPONSE_FORMATS.resolve(response_format_id)()
+        if not isinstance(response_format, Mapping) or not response_format:
+            raise RailsRunnerError("relisten response format rendered nothing")
+        decoding["response_format"] = dict(response_format)
+        decoding.update(tool_choice="none", parallel_tool_calls=False)
+        relisten_plan = AgentContactPlan(
+            contact_id=contact_id,
+            query_state_sha256=ctx.query_state.content_hash(),
+            purpose=f"relisten:{contact_kind}",
+            instruction=instruction,
+            key_representation_id=f"{program.program_id}:relisten",
+            matcher_policy_id=program.program_id,
+            decoding_params=decoding,
+        ).validate()
+        _assert_agent_control_excludes_knowledge_payloads(relisten_plan, protected_material)
+        relisten_binding = NativeRoleSpeechBinding(
+            role_id="relisten", sample_id=ctx.sample_id,
+            role_query=instruction, base_messages=(system, user),
+            tool_names=(), query_source=ctx.query_state.query_source,
+            core_kwargs={
+                # E20/id_slot: the runner owns slot affinity, so it is added
+                # here, as a COPY of the plan's own decoding params, exactly
+                # as ``speech_binding`` adds it -- never into ``decoding``
+                # itself, which ``relisten_plan.validate()`` (above) refuses
+                # to see carry ``id_slot`` at all.
+                "decoding_params": {**decoding, "id_slot": slot_id},
+                **({
+                    "key_representation_id": relisten_plan.key_representation_id,
+                    "matcher_policy_id": relisten_plan.matcher_policy_id,
+                } if ctx.query_state.query_source == "speech_features" else {}),
+                # A relisten contact reads its instruction and the packet
+                # alone: the targeted slot type and the decided intent are IN
+                # that instruction, so it needs no agent-state history of its
+                # own -- the same reason a cleaning contact needs none.
+                "agent_state": [],
+            },
+        )
+        role_request = NativeRoleModelRequest(
+            role_id="relisten",
+            context=NativeRoleContactContext(
+                sample_id=ctx.sample_id, agent_contact_id=contact_id,
+                evidence_pins={"knowledge_snapshot": snapshot_sha256}, budget_id=run_id,
+            ),
+            messages=(system, {"role": "user", "content": instruction}),
+            tool_schemas=(), visible_tool_names=(), decoding_controls={},
+        )
+        trace = TraceBuffer(run_id)
+        state.trace_buffers[(state.scheduled_contacts, 0)] = trace
+        state.scheduled_contacts += 1
+        state.seen_contact_ids.add(contact_id)
+        prior_trace = get_current_trace_buffer()
+        set_current_trace_buffer(trace)
+        try:
+            prepared = relisten_request.prepare(role_request, binding_override=relisten_binding)
+            binding.request_gate(prepared.request)
+            completion = relisten_request.dispatch(prepared)
+            trace.emit("USE", f"{completion.request_id}/native-role-contact", {
+                "use_role_id": "relisten",
+                "use_request_sha256": completion.request_sha256,
+                "use_response_sha256": completion.response_sha256,
+                "use_response_text_sha256": completion.response_text_sha256,
+                "use_agent_contact_id": completion.agent_contact_id,
+            })
+        finally:
+            set_current_trace_buffer(prior_trace)
+        if completion.agent_contact_id != contact_id:
+            raise RailsRunnerError("relisten contact lost its actual contact")
+        return completion.request_id, completion.text
+
+    async def send_relisten_contact(*, contact_kind, index, instruction, response_format_id):
+        """Item E4: schedule one relisten contact on an assigned GPU slot,
+        through the SAME ``run_contact`` scheduler every role contact uses,
+        so a relisten contact participates in the flight's own fair,
+        ready-first slot scheduling rather than running unscheduled."""
+
+        def contact(slot_id):
+            return _dispatch_relisten_contact(
+                slot_id=slot_id, contact_kind=contact_kind, index=index,
+                instruction=instruction, response_format_id=response_format_id,
+            )
+        return await run_contact(contact)
+
+    async def run_relisten_stage(delivered_text):
+        """Item E4 (owner decision 185, section 1, extended by the section 8
+        coordinator rulings): the post-accept targeted re-listen.
+
+        Runs exactly once per row, over the NORMALISED delivered answer --
+        the caller (below) calls this AFTER the deliver normaliser and BEFORE
+        the seal, the same text the official scorer will read. Model-free
+        targeting, canonical comparison, ordering and acceptance all live in
+        ``rails.relisten``; this function only spends and traces the metered
+        blind/forced-choice contacts and hands their parsed results to that
+        module's pure decision functions. The returned receipt is sealed onto
+        the row unconditionally (even when the delivered answer carries no
+        entities to target), so a relisten-armed row is always visibly
+        "relisten ran" rather than silently indistinguishable from an
+        unarmed one.
+        """
+
+        from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
+        from . import relisten as rl  # noqa: PLC0415
+
+        scenario, action, entities, parsed = parse_slu_response(delivered_text)
+        if not parsed:
+            return rl.seal_relisten_receipt(
+                (), max_slots_per_row=relisten_config.max_slots_per_row,
+            )
+        intent = f"{scenario}_{action}"
+        sample_id = state.prepared.sample.sample_id
+        records = []
+        for index in rl.select_relisten_targets(entities, relisten_config.max_slots_per_row):
+            entity = entities[index]
+            _blind_request_id, blind_text = await send_relisten_contact(
+                contact_kind="blind", index=index,
+                instruction=relisten_blind_template.format(
+                    slot_type=entity.type, intent=intent,
+                ),
+                response_format_id=rl.BLIND_RESPONSE_FORMAT_ID,
+            )
+            blind = rl.parse_blind_response(
+                blind_text, max_words=relisten_config.value_max_words,
+            )
+            confirm_letter = confirm_contact_id = order = None
+            if rl.should_fire_confirm(blind, entity.filler):
+                order = rl.confirm_order(sample_id, entity.type)
+                candidate_text = (
+                    blind.value if blind.disposition == rl.BLIND_VALUE
+                    else rl.UNHEARD_SENTINEL
+                )
+                option_text = {
+                    rl.CONFIRM_DELIVERED: entity.filler,
+                    rl.CONFIRM_CANDIDATE: candidate_text,
+                }
+                confirm_contact_id, confirm_text = await send_relisten_contact(
+                    contact_kind="confirm", index=index,
+                    instruction=relisten_confirm_template.format(
+                        slot_type=entity.type, intent=intent,
+                        option_a=option_text[order[0]], option_b=option_text[order[1]],
+                    ),
+                    response_format_id=rl.CONFIRM_RESPONSE_FORMAT_ID,
+                )
+                confirm_letter = rl.parse_confirm_letter(confirm_text)
+            records.append(rl.decide_entity(
+                index=index, slot_type=entity.type, delivered_value=entity.filler,
+                blind=blind, blind_contact_id=_blind_request_id,
+                confirm_letter=confirm_letter, order=order,
+                confirm_contact_id=confirm_contact_id,
+            ))
+        return rl.seal_relisten_receipt(
+            records, max_slots_per_row=relisten_config.max_slots_per_row,
+        )
+
     # E20 (2026-09-19, owner decision 45): the dispatch-time context-fit
     # seam. ``None`` under ``context_fit_policy == "raise"`` -- every cell
     # written before E20 -- and then every line below is skipped and the
@@ -4984,6 +5274,23 @@ async def _invoke_native_role_episode(
                 )
             deliver_normaliser_receipt = dict(normalisation.receipt)
             final_text = normalisation.text
+        # Item E4 (2026-09-28, owner decision 185): the post-accept targeted
+        # re-listen. Runs exactly HERE -- after every guard above has bound
+        # the delivered answer to its actual source response and after the
+        # deliver normaliser, over the text the official scorer will read,
+        # and before the seal below. It makes its own metered blind/
+        # forced-choice contacts (never zero-contact like the normaliser),
+        # so it runs before the trace merge a few lines down picks up every
+        # contact's own trace buffer. An ABSTENTION is never relistened to,
+        # for the same reason it is never normalised: there is no answer to
+        # ask about. ``None`` for every config that does not arm
+        # ``native_episode.relisten``, which leaves this row's contact count,
+        # trace and receipt exactly what they were before E4.
+        relisten_receipt = None
+        if relisten_config is not None and delivery.kind not in (
+            "abstention", "context-abstention",
+        ):
+            relisten_receipt = await run_relisten_stage(final_text)
         stop_transition = AgentStepTransition(
             snapshot_sha256=snapshot_sha256,
             prior_query_state_sha256=state.query_state.content_hash(),
@@ -5323,6 +5630,7 @@ async def _invoke_native_role_episode(
             trace_buffer=trace, native_episode_receipt=compact_receipt,
             solver_group=solver_group,
             supply_variants=supply_variants,
+            relisten=relisten_receipt,
         )
     finally:
         # Public framework resources are episode-owned, not role-visit-owned.
@@ -6732,6 +7040,7 @@ def run_speech_native_agent_loop(
                 execution_unit_binding=outcome.prepared.execution_unit_binding,
                 solver_group=getattr(outcome, "solver_group", None),
                 supply_variants=getattr(outcome, "supply_variants", None),
+                relisten=getattr(outcome, "relisten", None),
             )
         )
         if result_kind == TASK_ANSWER_RESULT_KIND and execution_units is None:

@@ -27,7 +27,7 @@ from .outputs import (
     _verify_outputs,
     _verify_outputs_trace_binding,
     _verify_raw_trace,
-    verify_predecessor_attempt,
+    verify_predecessor_attempts,
 )
 from .verify_header import _verify_manifest_header
 
@@ -201,7 +201,7 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     # number in this function is re-derived rather than believed; a manifest
     # that declares none keeps byte-identical behaviour.
     attempt_binding = manifest.get("attempt")
-    predecessor_records, kept_sample_ids = verify_predecessor_attempt(
+    predecessor_records, kept_sample_ids = verify_predecessor_attempts(
         manifest,
         split_ids=split_ids,
         attempt_id=(

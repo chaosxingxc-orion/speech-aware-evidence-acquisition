@@ -1,7 +1,7 @@
 {
   "arms": {
     "arm": {
-      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
       "outputs_sha256": "PENDING_SEAL",
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
@@ -90,5 +90,5 @@
     "sha256": "351bdb0243e331e7d908eac16e3b1ac36720fca99d7f4ce771c29a7cffb3ff2a",
     "rule": "unchanged except the arm's identities and the recovery reading rule below"
   },
-  "recovery_reading_rule": "The arm's manifest is the MERGED resume manifest under the resume attempt: 471 rows kept from attempt-slurp-native-stage3-comp1-fold-a-generation-v1 under I7r custody plus 609 flown. Kept and flown rows are never separated, compared or reported as strata; the read is paired over all 1,080 rows exactly as the parent recipe fixes it. The manifest's predecessor_attempt block must name trace 029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997; refuse otherwise."
+  "recovery_reading_rule": "The arm's manifest is the MERGED resume manifest under the resume attempt: 471 rows kept from attempt-slurp-native-stage3-comp1-fold-a-generation-v1 under I7r custody plus 609 flown. Kept and flown rows are never separated, compared or reported as strata; the read is paired over all 1,080 rows exactly as the parent recipe fixes it. The manifest's predecessor_attempt block must name trace 029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997; refuse otherwise. SEAL-ONLY (2026-09-29, owner decision 189 option A, pending): the arm's manifest is the merged manifest of attempt attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only, 471 rows kept from attempt-slurp-native-stage3-comp1-fold-a-generation-v1 and 609 kept from attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3, zero rows flown by the attempt itself; the same no-strata rule applies to all three sources."
 }

@@ -2,10 +2,14 @@
 
 Model-free and read-only: no model, server, tokenizer, GPU, queue or socket
 contact, and nothing under the attempt directories is ever written. For every
-attempt named on the command line this script
+attempt named on the command line -- unpinned via ``--attempt``, or PINNED via
+``--predecessor ATTEMPT_ID:SHA256`` (E10d, 2026-09-29: the same
+``(attempt_id, trace_sha256)`` shape one entry of a multi-predecessor
+``resume_from`` list declares) -- this script
 
 1. scans the attempt's trace with ``core.flight.resume.read_predecessor_attempt``
-   (the exact reader a resume-recovery seals kept rows from);
+   (the exact reader a resume-recovery seals kept rows from; a ``--predecessor``
+   pin is checked here, refusing a trace that does not hash to it);
 2. renders EVERY complete row, one row at a time, through the real
    ``FlightRuntime._canonical_output_rows`` seal stage (a skeleton runtime over
    the cell's own composed fragments), so every seal-time consistency check the
@@ -33,6 +37,14 @@ Usage (WSL, PYTHONPATH=<tree>/src, SPEECHRL_DATA_DIR set)::
         --run-id SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1 \\
         --attempt attempt-slurp-native-stage3-comp1-fold-a-generation-v1 \\
         --attempt attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3
+
+Or pinned, exactly as a multi-predecessor ``resume_from`` would declare them::
+
+    python scripts/analysis/replay_seal_consistency.py \\
+        --experiment slurp-native-stage3-comp1-fold-a-v1-resume \\
+        --run-id SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1 \\
+        --predecessor attempt-slurp-native-stage3-comp1-fold-a-generation-v1:<sha256> \\
+        --predecessor attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3:<sha256>
 """
 
 from __future__ import annotations
@@ -93,7 +105,10 @@ def _skeleton(composed):
     return runtime
 
 
-def _check_attempt(runtime, run_dir: Path, run_id: str, attempt_id: str, policy: str):
+def _check_attempt(
+    runtime, run_dir: Path, run_id: str, attempt_id: str, policy: str,
+    *, expected_trace_sha256: str | None = None,
+):
     from speech_aware_evidence_acquisition.core.bundle import outputs as bundle  # noqa: PLC0415
     from speech_aware_evidence_acquisition.core.flight.resume import (  # noqa: PLC0415
         read_predecessor_attempt,
@@ -105,9 +120,17 @@ def _check_attempt(runtime, run_dir: Path, run_id: str, attempt_id: str, policy:
         validate_native_episode_delivery_receipt,
     )
 
+    # E10d (2026-09-29): when the caller pins a predecessor's trace sha256
+    # (``--predecessor ATTEMPT_ID:SHA256``, the same declaration shape a
+    # multi-predecessor ``resume_from`` list carries), the scan refuses a
+    # trace that does not hash to it -- exactly what a real resume's
+    # ``read_predecessor_attempt(..., expected_trace_sha256=...)`` call
+    # enforces before any row is ever replayed. An unpinned ``--attempt``
+    # measures without comparing, which is what a read-only audit of an
+    # attempt whose hash is not yet pinned needs.
     scan = read_predecessor_attempt(
         run_id=run_id, attempt_id=attempt_id, attempt_dir=run_dir / attempt_id,
-        program_id=policy,
+        program_id=policy, expected_trace_sha256=expected_trace_sha256,
     )
     values = runtime._composed.values
     carrier = values.get("carrier_lock_key")
@@ -184,16 +207,61 @@ def _check_attempt(runtime, run_dir: Path, run_id: str, attempt_id: str, policy:
     }
 
 
+def _parse_predecessor_pin(value: str) -> tuple[str, str]:
+    """Parse ``ATTEMPT_ID:SHA256`` -- the same (attempt_id, trace_sha256)
+    pair a ``resume_from`` predecessor declaration carries."""
+
+    attempt_id, _, digest = value.rpartition(":")
+    if not attempt_id or not re.fullmatch("[0-9a-f]{64}", digest):
+        raise SystemExit(
+            f"--predecessor must be ATTEMPT_ID:SHA256 (64-hex), got {value!r}"
+        )
+    return attempt_id, digest
+
+
+def _union_report(owners: dict) -> dict:
+    """The union/conflict report for the declared attempts' COMPLETE sets --
+    a pure function of ``{sample_id: [attempt_id, ...]}`` so it is testable
+    without a repo, a composed config or a trace file. This is the checker's
+    own offline witness for exactly what
+    ``core.flight.resume.MergedPredecessors`` would accept (every sample
+    claimed by exactly one attempt) or refuse (any claimed by more than one)
+    over the same declared attempts."""
+
+    twice = [sample for sample, where in owners.items() if len(where) > 1]
+    return {
+        "complete_rows": len(owners),
+        "sealed_twice": len(twice),
+        "sealed_twice_first_10": [_id_hash(sample) for sample in twice[:10]],
+    }
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Offline seal-consistency replay.")
     parser.add_argument("--experiment", required=True)
     parser.add_argument("--run-id", required=True)
-    parser.add_argument("--attempt", action="append", required=True)
+    parser.add_argument(
+        "--attempt", action="append", default=[],
+        help="an attempt id to scan unpinned (measures without comparing a hash)",
+    )
+    parser.add_argument(
+        "--predecessor", action="append", default=[],
+        help=(
+            "ATTEMPT_ID:SHA256 -- a pinned predecessor declaration, exactly the "
+            "shape one entry of a multi-predecessor resume_from list carries "
+            "(E10d, 2026-09-29). The scan refuses a trace that does not hash "
+            "to the declared value."
+        ),
+    )
     parser.add_argument(
         "--repo-root", type=Path, default=Path(__file__).resolve().parents[2],
     )
     parser.add_argument("--data-root", type=Path, default=None)
     args = parser.parse_args(argv)
+    if not args.attempt and not args.predecessor:
+        parser.error("at least one --attempt or --predecessor is required")
+    if len(set(args.attempt) & {attempt_id for attempt_id, _ in map(_parse_predecessor_pin, args.predecessor)}):
+        parser.error("an attempt id must not appear in both --attempt and --predecessor")
 
     from speech_aware_evidence_acquisition.core.config import compose  # noqa: PLC0415
     from speech_aware_evidence_acquisition.core.flight import (  # noqa: PLC0415
@@ -220,23 +288,33 @@ def main(argv=None) -> int:
         "model_contacts": 0,
         "attempts": [],
     }
+    # Ordered, declared-order list of (attempt_id, expected_trace_sha256 or
+    # None) -- the SAME shape and order a multi-predecessor resume_from
+    # declares, so the union/conflict report below is the offline witness for
+    # exactly what core.flight.resume.MergedPredecessors would accept or
+    # refuse over these same attempts.
+    declared: list[tuple[str, str | None]] = [
+        (attempt_id, None) for attempt_id in args.attempt
+    ] + [_parse_predecessor_pin(value) for value in args.predecessor]
     owners: dict[str, list[str]] = collections.defaultdict(list)
-    for attempt_id in args.attempt:
-        scan, block = _check_attempt(runtime, run_dir, args.run_id, attempt_id, policy)
+    for attempt_id, expected_trace_sha256 in declared:
+        scan, block = _check_attempt(
+            runtime, run_dir, args.run_id, attempt_id, policy,
+            expected_trace_sha256=expected_trace_sha256,
+        )
         report["attempts"].append(block)
         for sample_id in scan.complete_sample_ids:
             owners[sample_id].append(attempt_id)
-    twice = [sample for sample, where in owners.items() if len(where) > 1]
-    report["union"] = {
-        "complete_rows": len(owners),
-        "sealed_twice": len(twice),
-        "sealed_twice_first_10": [_id_hash(sample) for sample in twice[:10]],
-    }
+    report["union"] = _union_report(owners)
     report["rows_checked_total"] = sum(item["rows_checked"] for item in report["attempts"])
     report["rows_failing_total"] = sum(item["rows_failing"] for item in report["attempts"])
     json.dump(report, sys.stdout, indent=2, sort_keys=True)
     sys.stdout.write("\n")
-    return 0 if report["rows_failing_total"] == 0 and not twice else 1
+    return (
+        0
+        if report["rows_failing_total"] == 0 and report["union"]["sealed_twice"] == 0
+        else 1
+    )
 
 
 if __name__ == "__main__":
