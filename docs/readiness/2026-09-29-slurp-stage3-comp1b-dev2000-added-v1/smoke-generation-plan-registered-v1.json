@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1b-dev2000-added-smoke-4-v1",
-  "composed_config_hash": "bb806b31d7669eff129777d7cedd245f2c63cfba24f36b062c831486f3c9427d",
+  "composed_config_hash": "86129b67e9ca5a206ef5cb5e21feed9737bc96dededed1ac6fbf85a7454bc1b4",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1b-dev2000-added-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 44,
     "planned_speech_audio_seconds": 90,
-    "protocol_hash": "f6fbf3ab0ef72a7c2a1ee14236c06f274577091e87d75faef780d1cfc4012261",
+    "protocol_hash": "351a6048f2c6f480bee824a3b4d95d59377c2ec95c474ebfe84c44b3a569a081",
     "run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "0e294306422e595843c7506f45468f9ca5472295aa1cedbd48ede96aa5cf3a0f"
+    "sha256": "34a404ae5895172fac361cd14c8c52cbd78535be7ccd7e137b2508b47cfbaa58"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-SMOKE-4-V1: Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before BOTH the arm and the A/A manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",

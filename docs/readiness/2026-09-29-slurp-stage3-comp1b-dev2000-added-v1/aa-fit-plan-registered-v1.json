@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "0e294306422e595843c7506f45468f9ca5472295aa1cedbd48ede96aa5cf3a0f"
+    "sha256": "34a404ae5895172fac361cd14c8c52cbd78535be7ccd7e137b2508b47cfbaa58"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before BOTH the arm and the A/A manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",

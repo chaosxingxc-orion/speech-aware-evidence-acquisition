@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "0e294306422e595843c7506f45468f9ca5472295aa1cedbd48ede96aa5cf3a0f"
+    "sha256": "34a404ae5895172fac361cd14c8c52cbd78535be7ccd7e137b2508b47cfbaa58"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1: Read against the in-chain A/A flown in the same campaign. PRIMARY: intent accuracy (scenario_action exact), paired per utterance, 10,000 bootstrap draws. GUARD: official pooled SLU-F1 (slurp-slu-official) non-inferior at this roster's own null (h_SLU 1.2525). REPLICATED: the intent CI95 lower bound above zero, the point at or above the 2.6 pp cross-flight bar at n = 1,000, AND the guard holds. NEUTRAL: both guards non-inferior at the own null (h_intent 1.152 / h_SLU 1.2525) without a replicated gain. HARMFUL: a measured loss on either guard (decision 25). Every verdict carries the per-stratum tables in both weightings and the attribution classes.",
   "quality_read_gate": "No task-quality read before BOTH the arm and the A/A manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",

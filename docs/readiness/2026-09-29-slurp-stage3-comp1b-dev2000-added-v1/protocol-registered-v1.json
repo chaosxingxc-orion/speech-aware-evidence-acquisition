@@ -30,12 +30,12 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-comp1b-dev2000-added-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-comp1b-dev2000-added-smoke-4-v1",
-      "composed_config_hash": "bb806b31d7669eff129777d7cedd245f2c63cfba24f36b062c831486f3c9427d",
+      "composed_config_hash": "86129b67e9ca5a206ef5cb5e21feed9737bc96dededed1ac6fbf85a7454bc1b4",
       "experiment": "slurp-native-stage3-comp1b-dev2000-added-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-comp1b-dev2000-added-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-SMOKE-4-FIT-V1",
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "f6fbf3ab0ef72a7c2a1ee14236c06f274577091e87d75faef780d1cfc4012261",
+      "protocol_hash": "351a6048f2c6f480bee824a3b4d95d59377c2ec95c474ebfe84c44b3a569a081",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-SMOKE-4-V1",
       "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0"
