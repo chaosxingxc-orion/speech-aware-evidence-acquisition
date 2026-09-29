@@ -269,3 +269,7 @@ own-null margins are h_intent 0.9943 and h_SLU 1.2485.
 declared on intent (newly-by-both converts 30 / 47, above either single factor). The conflict sits on the slot side
 and is not located by this read.** Under owner decision 138, no further element is admitted on top of this
 unresolved conflict. The verdict word and its disposition are the coordinator's (decision 139).
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+- **COMP-1: NOT ADMITTED** (HARMFUL on the official SLU-F1 guard, -2.24 [-3.97, -0.47]); the intent composition (+4.26 [+2.41, +6.11]) is confirmed. Cause named by `2026-09-29-slurp-comp1-slu-harm-attribution.md`: the Solver cited-answer contract adds entities on zero-gold rows (+102 of the +114 false positives); the I7n unwrap and the AGREE/centroid supply are cleared. Next cell COMP-1b (AGREE + centroid, no citation contract) on the same roster vs the same A/A (owner decision 198); the citation contract leaves the COMP-2 component list. Development number (decisions 28/86).
