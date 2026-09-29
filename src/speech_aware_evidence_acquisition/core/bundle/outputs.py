@@ -314,6 +314,133 @@ def verify_predecessor_attempt(
     return _verify_raw_trace(raw, None), kept
 
 
+#: E10d (2026-09-29): the field set a ``predecessor_attempts`` LIST entry
+#: takes -- byte-identical to a single ``predecessor_attempt`` block
+#: (:data:`_PREDECESSOR_FIELDS`); every entry is independently validated by
+#: :func:`_validate_predecessor_block`, so this module needs no second shape.
+def _validate_predecessor_blocks_list(
+    blocks: object, *, run_id: object, attempt_id: object,
+) -> tuple[Mapping[str, object], ...]:
+    """Shape and CROSS-block self-consistency of a ``predecessor_attempts`` list.
+
+    E10d (2026-09-29, multi-predecessor seal-only completion): each entry is
+    checked exactly as a single-predecessor ``predecessor_attempt`` block is
+    (:func:`_validate_predecessor_block`); this additionally refuses two
+    entries naming the same predecessor ``attempt_id`` or claiming the same
+    ``kept_sample_ids`` entry -- defence in depth, independent of whatever
+    built the manifest, mirroring ``core.flight.resume.MergedPredecessors``'s
+    own disjointness check on the writing side.
+    """
+
+    if not isinstance(blocks, list) or not blocks:
+        raise BundleError(
+            "run manifest predecessor_attempts must be a non-empty list of "
+            f"predecessor_attempt objects ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    validated = tuple(
+        _validate_predecessor_block(block, run_id=run_id, attempt_id=attempt_id)
+        for block in blocks
+    )
+    attempt_ids = [str(block["attempt_id"]) for block in validated]
+    if len(set(attempt_ids)) != len(attempt_ids):
+        raise BundleError(
+            "run manifest predecessor_attempts names the same predecessor "
+            f"attempt twice ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    owner: dict[str, str] = {}
+    for block in validated:
+        for sample_id in block["kept_sample_ids"]:
+            held_by = owner.get(sample_id)
+            if held_by is not None:
+                raise BundleError(
+                    f"run manifest predecessor_attempts keeps sample {sample_id!r} "
+                    f"in two predecessor attempts, {held_by!r} and "
+                    f"{block['attempt_id']!r} ({RESUME_PREDECESSOR_INVARIANT})"
+                )
+            owner[sample_id] = str(block["attempt_id"])
+    return validated
+
+
+def verify_predecessor_attempts(
+    manifest: Mapping[str, object],
+    *,
+    split_ids: frozenset,
+    attempt_id: object,
+) -> tuple[Mapping[str, Mapping[str, Mapping[str, object]]], frozenset]:
+    """Re-derive every declared predecessor attempt from the bytes on disk.
+
+    E10d (2026-09-29): generalizes :func:`verify_predecessor_attempt` to a
+    manifest declaring MULTIPLE pinned predecessors under
+    ``predecessor_attempts`` (a resume-recovery whose union of predecessors'
+    COMPLETE rows may or may not have covered the whole roster). Returns
+    ``(trace_records_by_sample, kept_sample_ids)`` where
+    ``trace_records_by_sample`` maps each KEPT sample id to the trace-records
+    dict of the ONE predecessor attempt that kept it -- never a flat,
+    cross-predecessor-merged dict. Request ids are attempt-scoped
+    (``rails.core_client`` mints them per-client) and CAN repeat across
+    different predecessor attempts for entirely different samples, so a
+    merged flat dict could let a row's request id resolve against the wrong
+    predecessor's contact; binding per SAMPLE keeps each row checked against
+    exactly the one trace :func:`core.flight.resume.MergedPredecessors`
+    itself bound it to.
+
+    A manifest declaring neither ``predecessor_attempt`` nor
+    ``predecessor_attempts`` returns ``({}, frozenset())`` -- every manifest
+    sealed before E10 and every ordinary flight since. Declaring both is
+    refused as ambiguous.
+    """
+
+    single = manifest.get("predecessor_attempt")
+    multiple = manifest.get("predecessor_attempts")
+    if single is not None and multiple is not None:
+        raise BundleError(
+            "run manifest declares both predecessor_attempt and "
+            f"predecessor_attempts ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if single is not None:
+        trace_records, kept = verify_predecessor_attempt(
+            manifest, split_ids=split_ids, attempt_id=attempt_id,
+        )
+        return {sample_id: trace_records for sample_id in kept}, kept
+    if multiple is None:
+        return {}, frozenset()
+    blocks = _validate_predecessor_blocks_list(
+        multiple, run_id=manifest.get("run_id"), attempt_id=attempt_id,
+    )
+    per_sample: dict[str, Mapping[str, Mapping[str, object]]] = {}
+    kept_all: set[str] = set()
+    for block in blocks:
+        kept = frozenset(str(sample_id) for sample_id in block["kept_sample_ids"])
+        outside = sorted(kept - split_ids)
+        if outside:
+            raise BundleError(
+                f"predecessor_attempts[{block['attempt_id']!r}] keeps "
+                f"{len(outside)} sample(s) outside the frozen split, e.g. "
+                f"{outside[:5]} ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        trace_path = Path(str(block["trace_path"]))
+        if not trace_path.is_file():
+            raise BundleError(
+                f"predecessor_attempts[{block['attempt_id']!r}] trace {trace_path} "
+                f"does not exist; a kept row's custody cannot be verified without "
+                f"it ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        raw = trace_path.read_bytes()
+        actual = hashlib.sha256(raw).hexdigest()
+        if actual != block["trace_sha256"]:
+            raise BundleError(
+                f"predecessor_attempts[{block['attempt_id']!r}] trace {trace_path} "
+                f"hashes to {actual}, but the manifest declares "
+                f"{block['trace_sha256']} -- the predecessor trace changed after "
+                f"it was declared ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        trace_records = _verify_raw_trace(raw, None)
+        for sample_id in kept:
+            per_sample[sample_id] = trace_records
+        kept_all |= kept
+    return per_sample, frozenset(kept_all)
+
+
 def _row_label(row: Mapping[str, object]) -> str:
     return f"outputs row {row.get('sample_id')!r} (request {row.get('request_id')!r})"
 
@@ -1053,21 +1180,28 @@ def _request_record_sample_id(payload: Mapping[str, object]) -> object:
 def _verify_resume_custody(
     outputs_rows: tuple[Mapping[str, object], ...],
     trace_records: Mapping[str, Mapping[str, object]],
-    predecessor_records: Mapping[str, Mapping[str, object]],
+    predecessor_records: Mapping[str, Mapping[str, Mapping[str, object]]],
     kept_sample_ids: frozenset,
 ) -> None:
     """I7r: each row of a resumed bundle binds to EXACTLY one trace.
 
     Request ids are attempt-scoped (``rails.core_client`` mints them from a
-    per-client counter), so the recovery attempt's own ``flight-0007`` and the
+    per-client counter), so the recovery attempt's own ``flight-0007`` and a
     predecessor's ``flight-0007`` are different contacts of, in general,
-    different samples. Custody is therefore decided by SAMPLE id, and this
+    different samples -- and, since E10d, of possibly DIFFERENT predecessor
+    attempts too. Custody is therefore decided by SAMPLE id, and this
     function is what makes that decision safe:
 
     * every kept sample must be absent from the recovery attempt's own
       requests -- a kept row that was ALSO re-flown would have two candidate
       custodies and the merge would be a selection;
     * every flown sample must be present in them;
+    * every kept sample must have at least one request in the ONE predecessor
+      trace ``predecessor_records`` binds it to (``predecessor_records`` maps
+      each kept sample id to that predecessor's own trace-records dict --
+      never a flat, cross-predecessor-merged one, so a row can never be
+      checked against a DIFFERENT predecessor's trace than the one that kept
+      it: see :func:`verify_predecessor_attempts`);
     * the request record a row names must itself carry that row's sample id,
       in the trace the row is held against, so a row can never be verified by
       another sample's contact that happens to share a request id.
@@ -1075,12 +1209,6 @@ def _verify_resume_custody(
 
     if not outputs_rows:
         return
-    predecessor_samples: dict[str, object] = {}
-    for record_id, payload in predecessor_records.items():
-        if record_id.endswith("/request"):
-            sample_id = _request_record_sample_id(payload)
-            if isinstance(sample_id, str):
-                predecessor_samples[sample_id] = record_id
     recovery_samples: dict[str, object] = {}
     for record_id, payload in trace_records.items():
         if record_id.endswith("/request"):
@@ -1094,10 +1222,18 @@ def _verify_resume_custody(
             f"e.g. {re_flown[:5]} -- a resume keeps a complete row OR re-flies it, "
             f"never both ({RESUME_PREDECESSOR_INVARIANT})"
         )
+    predecessor_presence: dict[str, bool] = {}
+    for sample_id in kept_sample_ids:
+        records = predecessor_records.get(sample_id) or {}
+        predecessor_presence[sample_id] = any(
+            record_id.endswith("/request")
+            and _request_record_sample_id(payload) == sample_id
+            for record_id, payload in records.items()
+        )
     for row in outputs_rows:
         sample_id = str(row.get("sample_id"))
         kept = sample_id in kept_sample_ids
-        source = predecessor_records if kept else trace_records
+        source = predecessor_records.get(sample_id, {}) if kept else trace_records
         label = "predecessor" if kept else "recovery"
         if not kept and sample_id not in recovery_samples:
             raise BundleError(
@@ -1105,7 +1241,7 @@ def _verify_resume_custody(
                 "and has no request of its own in this attempt's trace "
                 f"({RESUME_PREDECESSOR_INVARIANT})"
             )
-        if kept and sample_id not in predecessor_samples:
+        if kept and not predecessor_presence.get(sample_id, False):
             raise BundleError(
                 f"outputs row {sample_id!r} is declared kept but has no request in "
                 f"the predecessor trace ({RESUME_PREDECESSOR_INVARIANT})"
@@ -1130,7 +1266,7 @@ def _verify_resume_custody(
 def _verify_outputs_trace_binding(
     outputs_rows: tuple[Mapping[str, object], ...],
     trace_records: Mapping[str, Mapping[str, object]],
-    predecessor_records: Mapping[str, Mapping[str, object]] | None = None,
+    predecessor_records: Mapping[str, Mapping[str, Mapping[str, object]]] | None = None,
     kept_sample_ids: frozenset = frozenset(),
 ) -> None:
     # CRITICAL fix (T6 fix round): the ORIGINAL code also returned early when
@@ -1149,18 +1285,22 @@ def _verify_outputs_trace_binding(
     if not outputs_rows:
         return
     # E10 (I7r): a resumed bundle holds each row against exactly one trace --
-    # a kept row against the declared PREDECESSOR attempt's trace, every other
-    # row against this attempt's own. The rules below are byte for byte the
-    # same either way; only the record source differs.
+    # a kept row against the ONE declared PREDECESSOR attempt's trace that
+    # kept it, every other row against this attempt's own. The rules below
+    # are byte for byte the same either way; only the record source differs.
+    # E10d (2026-09-29): ``predecessor_records`` is keyed by SAMPLE id (each
+    # kept sample maps to its OWN predecessor's trace-records dict), never a
+    # single flat dict shared by every kept row -- a multi-predecessor resume
+    # keeps different rows against different trace files.
     if predecessor_records is not None:
         _verify_resume_custody(
             outputs_rows, trace_records, predecessor_records, kept_sample_ids
         )
     for row in outputs_rows:
+        sample_id = str(row.get("sample_id"))
         records = (
-            predecessor_records
-            if predecessor_records is not None
-            and str(row.get("sample_id")) in kept_sample_ids
+            predecessor_records.get(sample_id, {})
+            if predecessor_records is not None and sample_id in kept_sample_ids
             else trace_records
         )
         request_id = row["request_id"]
