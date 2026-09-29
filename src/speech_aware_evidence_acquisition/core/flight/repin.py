@@ -1262,6 +1262,53 @@ def _foreign_ledger_row_mask(text: str, run_ids: set[str]) -> list[bool]:
     return mask
 
 
+#: The exact marker ``docs/exposure-ledger.md`` carries on a donor package's
+#: own row(s) once a cell registered under it is carried forward into a new
+#: package (commit 1099a19c, the COMP-1 DEV-2000-ADDED placeholder -> cell
+#: A2/COMP-1b): ``SUPERSEDED 2026-09-29 by cell A2
+#: (docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1, owner
+#: decision 198: ...)``. Group 1 is the superseding package's own directory
+#: name -- compared against the CURRENT re-pin's own ``readiness_dir.name``,
+#: never matched loosely, so a package superseded in favor of some OTHER
+#: package is never exempted here.
+_SUPERSEDED_BY_PACKAGE = re.compile(r"SUPERSEDED\s+\d{4}-\d{2}-\d{2}\s+by\s+cell\s+\S+\s+\(docs/readiness/([A-Za-z0-9._-]+)")
+
+
+def _superseded_donor_ledger_row_mask(text: str, *, own_package_name: str) -> list[bool]:
+    """One flag per line of ``text``: True when the line is a contract-table
+    ROW whose ``notes`` column carries :data:`_SUPERSEDED_BY_PACKAGE` naming
+    ``own_package_name`` -- a donor cell's own sealed record (E26), frozen
+    even on the rare row whose run id might otherwise fall inside the
+    current re-pin's own ``run_ids`` (in the ordinary case such a row is
+    already masked by :func:`_foreign_ledger_row_mask`, since a truly
+    superseded donor cell keeps its own, different run id; this is the
+    narrower defensive twin for the case where it does not). Every entry is
+    False when ``own_package_name`` is empty (no ``readiness_dir`` given)."""
+
+    if not own_package_name:
+        return []
+    lines = text.splitlines(keepends=True)
+    mask = [False] * len(lines)
+    header: list[str] | None = None
+    i = 0
+    while i < len(lines):
+        cells = _split_row_cells(lines[i])
+        if cells is not None:
+            next_cells = _split_row_cells(lines[i + 1]) if i + 1 < len(lines) else None
+            if next_cells is not None and _is_separator_row(next_cells):
+                lowered = [cell.lower() for cell in cells]
+                header = lowered if _LEDGER_HEADER_RUN in lowered else None
+                i += 2
+                continue
+            if header is not None and len(cells) == len(header) and _LEDGER_HEADER_NOTES in header:
+                notes = cells[header.index(_LEDGER_HEADER_NOTES)]
+                match = _SUPERSEDED_BY_PACKAGE.search(notes)
+                if match and match.group(1) == own_package_name:
+                    mask[i] = True
+        i += 1
+    return mask
+
+
 def apply_mapping_to_ledger(ledger_path: Path, run_ids: set[str], mapping: Mapping[str, str]) -> int:
     """Rewrite the package's registration hashes in the ledger -- in its OWN
     rows and in the prose that introduces them, never in another row.
@@ -1613,6 +1660,58 @@ def _resume_parent_package_dirs(
     return dirs
 
 
+def _superseded_donor_package_dirs(
+    repo_root: Path, exposure_ledger_path: Path, readiness_dir: Path
+) -> set[Path]:
+    """The ``docs/readiness/<package>/`` directory of every OTHER package the
+    exposure ledger explicitly records as superseded BY the current re-pin's
+    own package (``readiness_dir``): scans EVERY row in the ledger (not only
+    rows naming the current run ids -- a donor's own superseded rows
+    ordinarily carry a DIFFERENT run id, so :func:`_resume_parent_package_dirs`'s
+    current-run-id-only scan would never find them) for a ``notes`` column
+    matching :data:`_SUPERSEDED_BY_PACKAGE` whose captured package name is
+    this cell's own ``readiness_dir.name``; that row's OWN ``artifacts``
+    column then names the donor package to exempt.
+
+    Item (2026-09-29, cell A2/COMP-1b on DEV-2000-ADDED, owner decision 198):
+    the in-chain A/A cell was carried forward from the COMP-1 DEV-2000-ADDED
+    placeholder package into this one; commit 1099a19c marked the
+    placeholder's own rows (the arm, its FIT identity, the four-row smoke,
+    its FIT identity, and the paired-analysis row) SUPERSEDED with this exact
+    marker and left the placeholder's bytes untouched (E26: never rewrite
+    another cell's own record) -- so the placeholder package's own copies of
+    the carried-over A/A cell's registered plan and facts documents
+    (``aa-generation-plan-registered-v1.json``, ``registered-facts-v1.json``,
+    ``root-admission-draft-v1.json``) are the donor's own sealed record, not
+    residue, but ONLY because the ledger itself says so, by name, for THIS
+    package; a package superseded in favor of some OTHER package, or merely
+    described as superseded in prose without the exact marker, is not found
+    here and stays exempt by no rule at all -- ``assert_no_residue`` refuses
+    on it exactly as before this item.
+    """
+
+    if not exposure_ledger_path.is_file():
+        return set()
+    from ...contracts.ledger import _parse_ledger_tables  # noqa: PLC0415
+
+    own_package_name = Path(readiness_dir).name
+    ledger_text = exposure_ledger_path.read_text(encoding="utf-8")
+    rows = _parse_ledger_tables(ledger_text)
+    dirs: set[Path] = set()
+    for row in rows:
+        notes = row.get(_LEDGER_HEADER_NOTES, "")
+        match = _SUPERSEDED_BY_PACKAGE.search(notes)
+        if not match or match.group(1) != own_package_name:
+            continue
+        artifacts = row.get(_LEDGER_HEADER_ARTIFACTS)
+        if not artifacts:
+            continue
+        ref = _READINESS_PACKAGE_REF.search(artifacts)
+        if ref:
+            dirs.add((Path(repo_root) / "docs" / "readiness" / ref.group(1)).resolve())
+    return dirs
+
+
 def _is_resume_parent_readiness_record(
     path: Path, *, readiness_root: Path, resume_parent_package_dirs: set[Path]
 ) -> bool:
@@ -1636,6 +1735,43 @@ def _is_resume_parent_readiness_record(
         return False
     resolved = path.resolve()
     for package_dir in resume_parent_package_dirs:
+        if _is_within(resolved, package_dir):
+            return True
+        if (
+            resolved.parent == readiness_root
+            and resolved.suffix == ".md"
+            and resolved.name.startswith(f"{package_dir.name}-preregistration")
+        ):
+            return True
+    return False
+
+
+def _is_superseded_donor_readiness_record(
+    path: Path, *, readiness_root: Path, superseded_donor_package_dirs: set[Path]
+) -> bool:
+    """True when ``path`` sits inside one of the packages the exposure ledger
+    marks SUPERSEDED by the current re-pin's own package
+    (:func:`_superseded_donor_package_dirs`), or is that donor package's
+    sibling preregistration note -- the same shape as
+    :func:`_is_resume_parent_readiness_record`, for a package related by
+    supersession (a cell carried FORWARD into the current package) rather
+    than by ``resume_from`` (a cell built on top of a still-live sealed
+    parent).
+
+    The caller only ever reaches this check for a file that has already
+    failed :func:`_is_foreign_readiness_package` -- i.e., the file already
+    names one of the current run ids -- so this can never widen a residue
+    exemption beyond a cell the current package itself now declares: the
+    donor package's own record of some OTHER, still-superseded cell (one the
+    current package does not carry) never reaches here, because it never
+    names one of ``run_ids`` in the first place and so is already exempted,
+    correctly, by :func:`_is_foreign_readiness_package`.
+    """
+
+    if not superseded_donor_package_dirs:
+        return False
+    resolved = path.resolve()
+    for package_dir in superseded_donor_package_dirs:
         if _is_within(resolved, package_dir):
             return True
         if (
@@ -1782,6 +1918,7 @@ def assert_no_residue(
     own_config_paths: Iterable[Path] | None = None,
     resume_parent_config_paths: Iterable[Path] | None = None,
     resume_parent_package_dirs: Iterable[Path] | None = None,
+    superseded_donor_package_dirs: Iterable[Path] | None = None,
     explain: bool = False,
 ) -> None:
     """Refuse if any OLD hash string remains anywhere under ``docs/`` or
@@ -1792,7 +1929,7 @@ def assert_no_residue(
     this package was derived from), and this re-pin neither rewrites it
     (:func:`apply_mapping_to_ledger`) nor may it demand that it disappear.
 
-    Five further exemptions follow the same principle, active only when
+    Six further exemptions follow the same principle, active only when
     ``readiness_dir`` and ``run_ids`` are given (the only production call, from
     :func:`repin_package`), and only for files that are NOT this cell's own
     (``own_files``, ``own_config_paths``, or anywhere inside ``readiness_dir``
@@ -1822,6 +1959,24 @@ def assert_no_residue(
       The package's sibling preregistration note (``docs/readiness/
       <package>-preregistration*.md``) is exempted the same way (see
       :func:`_is_resume_parent_readiness_record`);
+    * failing all three of those (a cell CARRIED FORWARD into this package
+      from a now-superseded donor package -- the mirror image of a resume:
+      the donor did not build this cell on a still-live parent, it GAVE this
+      cell up), every file inside a package named in
+      ``superseded_donor_package_dirs`` -- a package whose exposure-ledger
+      row(s) carry the exact marker ``SUPERSEDED <date> by cell <id>
+      (docs/readiness/<this-package>, ...)`` naming THIS package by name
+      (see :func:`_superseded_donor_package_dirs`) -- is the donor's own
+      sealed record, not residue (item 2026-09-29, cell A2/COMP-1b on
+      DEV-2000-ADDED: the in-chain A/A cell was carried forward from the
+      COMP-1 DEV-2000-ADDED placeholder package, whose own
+      ``aa-generation-plan-registered-v1.json``, ``registered-facts-v1.json``
+      and ``root-admission-draft-v1.json`` legitimately still carry the A/A's
+      pre-repin pin). The donor package's sibling preregistration note is
+      exempted the same way (see :func:`_is_superseded_donor_readiness_record`).
+      This is explicit-marker-gated, not name-symmetric with a resume: a
+      package merely described as superseded in prose, or superseded in
+      favor of some OTHER package, is not exempted;
     * a ``configs/`` fragment whose own declared ``run_id`` value(s) are
       disjoint from ``run_ids`` belongs to a different cell, not residue (see
       :func:`_is_foreign_config`);
@@ -1841,10 +1996,12 @@ def assert_no_residue(
 
     Both parent-chain exemptions (``resume_parent_config_paths`` and
     ``resume_parent_package_dirs``) name only the specific parent(s) the
-    current re-pin's own ``resume_from`` points at; a genuinely foreign
-    package or config that happens to quote the same old value, or the
-    resume cell's OWN package (``readiness_dir``/``own_files``, scanned as
-    strictly as ever), must still refuse.
+    current re-pin's own ``resume_from`` points at; ``superseded_donor_package_dirs``
+    names only the specific donor(s) the exposure ledger itself says were
+    superseded BY this cell's own package. A genuinely foreign package or
+    config that happens to quote the same old value, or the resume cell's
+    OWN package (``readiness_dir``/``own_files``, scanned as strictly as
+    ever), must still refuse.
 
     ``explain=True`` prints, to stderr, one line per file that still hits an
     old value: which of the rules above were considered for that file and
@@ -1866,6 +2023,10 @@ def assert_no_residue(
     resume_parent_package_resolved = {
         Path(p).resolve() for p in (resume_parent_package_dirs or ())
     }
+    superseded_donor_package_resolved = {
+        Path(p).resolve() for p in (superseded_donor_package_dirs or ())
+    }
+    own_package_name = readiness_dir_resolved.name if readiness_dir_resolved is not None else ""
     hits: list[str] = []
     for root_name in ("docs", "configs"):
         base = Path(repo_root) / root_name
@@ -1888,7 +2049,12 @@ def assert_no_residue(
             if ledger_resolved is not None and run_ids is not None and resolved == ledger_resolved:
                 lines = text.splitlines(keepends=True)
                 foreign = _foreign_ledger_row_mask(text, run_ids)
-                scan_text = "".join(line for index, line in enumerate(lines) if not foreign[index])
+                superseded_rows = _superseded_donor_ledger_row_mask(text, own_package_name=own_package_name)
+                stripped = [
+                    foreign[index] or (index < len(superseded_rows) and superseded_rows[index])
+                    for index in range(len(lines))
+                ]
+                scan_text = "".join(line for index, line in enumerate(lines) if not stripped[index])
                 considered.append(("ledger-foreign-rows-stripped", True))
             elif is_own:
                 considered.append(("own", True))
@@ -1917,7 +2083,16 @@ def assert_no_residue(
                             resume_parent_package_dirs=resume_parent_package_resolved,
                         )
                         considered.append(("resume-parent-readiness-package", resume_parent_package))
-                        exempt = resume_parent_package
+                        if resume_parent_package:
+                            exempt = True
+                        else:
+                            superseded_donor = _is_superseded_donor_readiness_record(
+                                resolved,
+                                readiness_root=readiness_root_resolved,
+                                superseded_donor_package_dirs=superseded_donor_package_resolved,
+                            )
+                            considered.append(("superseded-donor-readiness-package", superseded_donor))
+                            exempt = superseded_donor
             elif run_ids and root_name == "configs":
                 foreign_config = _is_foreign_config(resolved, run_ids=run_ids)
                 considered.append(("foreign-config", foreign_config))
@@ -2222,6 +2397,16 @@ def repin_package(
         if resume_parent_attempt_ids
         else set()
     )
+    # Unconditional (unlike the resume-chain lookups above, which are only
+    # meaningful for a resume/seal-only cell): a cell carried forward from a
+    # superseded donor package is not signalled by anything this cell's own
+    # config declares (unlike resume_from) -- only by the ledger marker on
+    # the DONOR's own rows -- so this always scans the ledger for a marker
+    # naming this cell's own package. Cheap (one ledger read, already parsed
+    # elsewhere in this function) and a no-op whenever no such marker exists.
+    superseded_donor_package_dirs = _superseded_donor_package_dirs(
+        repo_root, exposure_ledger_path, readiness_dir
+    )
     assert_no_residue(
         repo_root,
         all_old_values,
@@ -2233,6 +2418,7 @@ def repin_package(
         own_config_paths=set(baseline_paths) | set(experiment_paths),
         resume_parent_config_paths=resume_parent_config_paths,
         resume_parent_package_dirs=resume_parent_package_dirs,
+        superseded_donor_package_dirs=superseded_donor_package_dirs,
         explain=explain_residue,
     )
 
