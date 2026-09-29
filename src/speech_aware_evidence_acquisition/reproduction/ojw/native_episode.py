@@ -862,7 +862,20 @@ class _ApplyRole(WorkflowComponent):
             # an unbranched Perception visit carries no such key, so this
             # branch is a byte-identical no-op for every episode written
             # before phase 2.
+            #
+            # ``updated[self._kind] = output`` is the SAME assignment the
+            # generic ``else`` branch below makes for every stage that is
+            # not solver/perception/planner (e.g. "review") -- restated here,
+            # not skipped, because this ``elif`` intercepts "perception"
+            # before that branch is ever reached, and downstream prompts
+            # read ``state["perception"]`` as plain text (found live: this
+            # was dropped in an earlier revision of this change, which
+            # left ``state["perception"]`` at its initial ``None`` and broke
+            # test_ojw_native_episode.py::
+            # test_refresh_revisits_perception_then_solver_and_preserves_
+            # both_receipts).
             updated["latest_perception"] = dict(role)
+            updated[self._kind] = output
         elif self._kind == "planner":
             # E15: NativeEpisodeWorkflow always supplies `planner_actions` for
             # a Planner node, and that graph-derived set is the authority.
