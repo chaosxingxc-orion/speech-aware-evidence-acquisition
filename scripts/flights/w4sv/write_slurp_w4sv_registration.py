@@ -30,8 +30,11 @@ sys.stdout.reconfigure(encoding="utf-8")
 REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
+if str(REPO_ROOT / "scripts" / "checks") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "checks"))
 
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash  # noqa: E402
+import stage3_effect_floor_check as _floor_gate  # noqa: E402
 
 PACKAGE = "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1"
 PREREG = PACKAGE + "-preregistration.md"
@@ -51,7 +54,16 @@ AGREE_SUPPLY_OUTPUT = {"arm": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d
                        "smoke": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9"}
 ARMS = {"b": "b-w4", "t": "t-twin", "a": "a-agree"}
 EXPECTED_EFFECT_PP = 0.79
-ROLL_AA_ANCHOR = (200, 0.735)
+# HISTORICAL NOTE: this cell was registered under the pre-decision-190 ROLL-AA anchor
+# (200, 0.735) = 0.3163 pp at n = 1,080. Owner decision 190 (2026-09-29) re-anchored the design
+# (docs/results/2026-09-29-slurp-same-flight-floor-recalibration.md and this cell's OWN read,
+# docs/results/2026-09-29-slurp-w4sv-fold-a-column-read.md) to the larger of the two measured
+# same-flight CONTRAST half-widths -- SLU 1.49 pp at n = 1,080 (intent 0.65, not read by ``floor_at``
+# below: this cell's declaration is SLU-primary with an intent guard). ``floor_at`` now reads the
+# anchor from the gate, never copied, so a future table change flows through automatically. NOT
+# RE-RUN against the already-registered W4-SV package (docs/readiness/2026-09-28-slurp-stage3-w4-sv-
+# fold-a-v1/): its registered-facts-v1.json keeps its original 0.3163 pp provisional floor.
+ROLL_AA_ANCHOR = _floor_gate.FLOOR_TABLE["same-flight-supply-variant"].sampling_by_metric["slu"][0]
 READ_ROSTER = "SLURP-EVO-FOLD-A-V2"
 TUNING_ROSTERS = ["size-pool-annotated-exemplars-minus-r01", "slurp-slot-conventions-w4-support-v1"]
 W4_PACKAGE = "docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1"
@@ -186,8 +198,8 @@ def fold_check(check_dir: str | None) -> dict:
 
 
 def floor_at(rows: int) -> float:
-    n0, h0 = ROLL_AA_ANCHOR
-    return round(h0 * math.sqrt(n0 / rows), 4)
+    floor_pp, _arithmetic = _floor_gate.floor_for("same-flight-supply-variant", rows, metric="slu")
+    return round(floor_pp, 4)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -239,8 +251,9 @@ def main(argv: list[str] | None = None) -> int:
         "ONCE as a complete column with slurp-slu-official-train (stage3_rollout_score.py --mode supply-variants), "
         "paired by row (sample_id), 10,000 draws, seed 20260928. THE NULL: T minus A on official pooled SLU-F1 and "
         "intent accuracy; its bar is |T - A delta| + the T - A CI95 half-width (the same law as the cross-flight in-chain "
-        f"A/A), never below the provisional floor {floor} pp SLU-F1 (the ROLL-AA anchor 0.735 pp at n = 200 scaled to "
-        f"n = {arm['rows']:,}, {GATE}). INSTRUMENT FAULT (no verdict): the T - A CI95 excludes zero on either metric. "
+        f"A/A), never below the provisional floor {floor} pp SLU-F1 (the owner decision 190 anchor, {ROLL_AA_ANCHOR[1]} "
+        f"pp at n = {ROLL_AA_ANCHOR[0]:,} scaled to n = {arm['rows']:,}, {GATE}). INSTRUMENT FAULT (no verdict): the "
+        "T - A CI95 excludes zero on either metric. "
         "NOMINATED (the claim ceiling; Q6 ruling): the B - A official pooled SLU-F1 delta exceeds the bar AND its CI95 "
         "lower bound is above zero AND the B - A intent CI95 upper bound is not below zero (the guard: no measured "
         "intent loss). HARMFUL: the B - A CI95 upper bound below zero on either metric. Otherwise NOT NOMINATED "
@@ -356,7 +369,8 @@ def main(argv: list[str] | None = None) -> int:
         "arm_a_byte_identity": arm_a,
         "estimand": estimand,
         "expectation": {"expected_effect_pp": EXPECTED_EFFECT_PP, "source": W4_READ,
-                        "provisional_floor_pp": floor, "floor_formula": "0.735 * sqrt(200 / rows) (same-flight-supply-variant, ROLL-AA anchor, provisional)",
+                        "provisional_floor_pp": floor,
+                        "floor_formula": f"{ROLL_AA_ANCHOR[1]} * sqrt({ROLL_AA_ANCHOR[0]} / rows) (same-flight-supply-variant, owner decision 190 anchor, provisional)",
                         "bar": "the twin null |T - A| + its CI95 half-width, never below the provisional floor"},
         "fit_estimate": {"measurement": {"relpath": FIT_MEASURE, "sha256": sha_file(data / FIT_MEASURE),
                                           "script": {"relpath": SCRIPTS["measure_w4sv_fit.py"], "sha256": sha_file(SCRIPTS["measure_w4sv_fit.py"])}},
@@ -604,7 +618,7 @@ Only the delivering arm's answer reaches the Reviewer, the Planner and the deliv
 
 **Measurement.** `same-flight-supply-variant`; primary official pooled SLU-F1 of the first-visit column b-w4 minus
 a-agree, intent accuracy the guard; expected effect {EXPECTED_EFFECT_PP} pp (cell W4's cross-flight read); provisional
-floor {facts['expectation']['provisional_floor_pp']} pp at n = 1,080 (0.735 x sqrt(200 / 1,080)); bar = the twin null;
+floor {facts['expectation']['provisional_floor_pp']} pp at n = 1,080 ({ROLL_AA_ANCHOR[1]} x sqrt({ROLL_AA_ANCHOR[0]} / 1,080), owner decision 190 anchor); bar = the twin null;
 claim `nominated`; `aa_arm_id` `t-twin`; variant cost +{vc['extra_contacts_per_row']} Solver contacts per row
 (+{vc['extra_contacts_per_flight']:,} per flight, +{vc['extra_audio_seconds']:,} speech seconds); tuning roster
 {', '.join('`' + r + '`' for r in TUNING_ROSTERS)}; read roster `{READ_ROSTER}`.

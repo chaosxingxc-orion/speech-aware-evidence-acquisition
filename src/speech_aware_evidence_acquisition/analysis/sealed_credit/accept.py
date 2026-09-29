@@ -10,16 +10,21 @@
 
 Both the guard and the floor are read from ``scripts/checks/stage3_effect_floor_
 check.py``'s own ``FLOOR_TABLE`` / ``floor_for`` (imported, never copied -- design
-spec task 6): the GUARD is ``floor_for(design, rows, purpose="harm")`` (the
-design's sampling half-width alone -- owner decision 127's no-harm floor, which
-for ``same-flight-supply-variant`` and ``same-flight-shadow-relisten`` IS the
+spec task 6): the GUARD is ``floor_for(design, rows, purpose="harm", metric="slu")``
+(the design's SLU sampling half-width alone -- owner decision 127's no-harm floor,
+which for ``same-flight-supply-variant`` and ``same-flight-shadow-relisten`` IS the
 twin/shadow null the ruling names, and for ``cross-flight-with-in-chain-
 replicate`` IS the in-chain replicate's own sampling half-width); the FLOOR a
 nominated candidate's predicted effect must exceed is ``floor_for(design, rows,
-purpose="benefit")`` (the larger of the sampling half-width and the rule-3
-admission bar). A candidate whose predicted SLU delta is not modelled (``None``)
-is never guard-discarded (the guard cannot be evaluated against nothing) but
-carries the caveat.
+purpose="benefit", metric="intent")`` (the larger of the intent sampling
+half-width and the rule-3 admission bar). Owner decision 190 (2026-09-29) put a
+DIFFERENT number on each metric for the same-flight design family (intent 0.65,
+SLU 1.49 pp at n = 1,080), so the guard and the floor read different anchors from
+the same call site; a design with no per-metric floor ignores ``metric`` and
+returns its one metric-blind number for both, as before decision 190. A
+candidate whose predicted SLU delta is not modelled (``None``) is never
+guard-discarded (the guard cannot be evaluated against nothing) but carries the
+caveat.
 
 Ranking: every candidate not guard-discarded, ordered by ``predicted_intent_pp``
 descending (ties broken by knob id then value, for determinism). Nomination: the
@@ -59,11 +64,23 @@ def _floor_gate(repo_root: Path):
 
 
 def design_guard_and_floor(design: str, rows: int, repo_root: Path) -> dict[str, Any]:
+    """The SLU guard and the intent floor for one read design, at ``rows``.
+
+    Owner decision 190 (2026-09-29) put a per-metric floor on the same-flight
+    design family: the intent floor and the SLU guard are no longer the same
+    metric-blind number. Per the coordinator's Q2 ruling (module docstring),
+    ranking is by predicted intent gain and the guard bounds predicted SLU
+    loss, so the floor is read with ``metric="intent"`` and the guard with
+    ``metric="slu"``. A design with no per-metric floor (``sampling_by_metric``
+    empty) ignores ``metric`` entirely and returns the same number for both,
+    as before decision 190.
+    """
+
     gate = _floor_gate(repo_root)
     if design not in gate.FLOOR_TABLE:
         raise AcceptError(f"read design {design!r} is not in stage3_effect_floor_check.FLOOR_TABLE")
-    guard_pp, guard_lines = gate.floor_for(design, rows, purpose="harm")
-    floor_pp, floor_lines = gate.floor_for(design, rows, purpose="benefit")
+    guard_pp, guard_lines = gate.floor_for(design, rows, purpose="harm", metric="slu")
+    floor_pp, floor_lines = gate.floor_for(design, rows, purpose="benefit", metric="intent")
     return {
         "design": design, "rows": rows,
         "guard_pp": guard_pp, "guard_arithmetic": guard_lines,

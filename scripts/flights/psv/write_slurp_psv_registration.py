@@ -29,17 +29,33 @@ sys.stdout.reconfigure(encoding="utf-8")
 REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
+if str(REPO_ROOT / "scripts" / "checks") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "checks"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash  # noqa: E402
+import stage3_effect_floor_check as _floor_gate  # noqa: E402
 
 import psv_family as ff  # noqa: E402
 
 LEDGER = "docs/exposure-ledger.md"
 KINDS = ("arm", "smoke")
 PREFIX = {"arm": "", "smoke": "smoke-"}
-ANCHOR_N, ANCHOR_SLU = 200, 0.735
-FLOOR_SLU = ANCHOR_SLU * math.sqrt(ANCHOR_N / ff.LEDGER_ROWS)
+# Owner decision 190 (2026-09-29) put a per-metric floor on ff.MEASUREMENT_DESIGN
+# (same-flight-perception-variant): P-SV-1's primary is intent (FLOOR_INTENT), P-SV-2's is
+# gold-on-list presence, which carries no numeric floor at all (FLOOR_SLU is reported beside,
+# never as P-SV-2's own floor). Read from the gate, never copied, so a future table change
+# flows through automatically.
+#
+# HISTORICAL NOTE: these cells were registered under the pre-decision-190 ROLL-AA anchor
+# (200, 0.735) = 0.3163 pp at n = 1,080, metric-blind. NOT RE-RUN against the already-
+# registered P-SV-1 / P-SV-2 packages (docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/,
+# .../psv2-fold-b-v1/): their registered-facts-v1.json keep their original 0.3163 pp floor.
+# Both declare claims_benefit false, so no effect-below-floor comparison is live either way.
+ANCHOR_N, ANCHOR_SLU = _floor_gate.FLOOR_TABLE[ff.MEASUREMENT_DESIGN].sampling_by_metric["slu"][0]
+_ANCHOR_N_INTENT, ANCHOR_INTENT = _floor_gate.FLOOR_TABLE[ff.MEASUREMENT_DESIGN].sampling_by_metric["intent"][0]
+FLOOR_SLU, _ = _floor_gate.floor_for(ff.MEASUREMENT_DESIGN, ff.LEDGER_ROWS, metric="slu")
+FLOOR_INTENT, _ = _floor_gate.floor_for(ff.MEASUREMENT_DESIGN, ff.LEDGER_ROWS, metric="intent")
 ALLOWED_PREFIXES = ("native_contact_fit.", "prepared_phase_supply", "what_this_is", "what_the_train_exemplars_store_is")
 RETARGET_PREFIXES = (
     "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.",
@@ -223,21 +239,42 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
         basis = ("the presence gain of a forced three-candidate list and its conversion are UNMEASURED; spec section 6 "
                  "notes only the 270 Fold A rows with lists of one (35) or two (235) can change (row 139: no prior, so "
                  "the declaration is 0.0 nominated with the ceiling beside)")
+    if key == "psv1":
+        floor_note = (
+            f"provisional intent floor {FLOOR_INTENT:.4f} pp ({ANCHOR_INTENT:g} x sqrt({_ANCHOR_N_INTENT} / "
+            f"{ff.LEDGER_ROWS}), owner decision 190 anchor for {ff.MEASUREMENT_DESIGN})"
+        )
+    else:
+        floor_note = (
+            "primary_metric_key 'present': gold-on-list carries no numeric floor under owner decision 190 (or the "
+            "table it superseded); reported, never checked against a bound"
+        )
     note = (
         f"Phase-2 cell {c['label']} (level 2, K = 3). Expected effect declared from the ledger's measured numbers: "
         f"ceiling {ceiling['what']}; conversion basis: {basis}. expected_effect_pp 0.0 sits below this design's "
-        f"provisional floor {FLOOR_SLU:.4f} pp (0.735 x sqrt(200 / 1080), the ROLL-AA anchor the gate registers for "
-        f"{ff.MEASUREMENT_DESIGN}), so claims_benefit is false; the read's bar is the twin (T) null measured in this "
+        f"{floor_note}, so claims_benefit is false; the read's bar is the twin (T) null measured in this "
         "flight, per metric |T - A offset| + its CI95 half-width. The delivered row is branch A: delivered intent and "
         "SLU are identical by construction at the request level (reported, never contrasted). Tuning roster TRAIN "
         "Fold A (the node ledger shaped the design), read roster TRAIN Fold B (ruling O2; owner decision 186: "
         "rollout-exposed only, no branch value built from Fold B rollouts)."
     )
+    provisional_floor_pp = (
+        {"intent_accuracy": round(FLOOR_INTENT, 4), "slu_f1": round(FLOOR_SLU, 4),
+         "arithmetic": f"intent {ANCHOR_INTENT:g} * sqrt({_ANCHOR_N_INTENT} / 1080) = {FLOOR_INTENT:.4f} pp "
+                       f"(primary; owner decision 190 anchor), SLU {ANCHOR_SLU:g} * sqrt({ANCHOR_N} / 1080) = "
+                       f"{FLOOR_SLU:.4f} pp (guard reference)"}
+        if key == "psv1" else
+        {"present": None, "intent_accuracy": round(FLOOR_INTENT, 4), "slu_f1": round(FLOOR_SLU, 4),
+         "arithmetic": "primary_metric_key 'present' (gold-on-list) carries no numeric floor under owner "
+                       "decision 190; intent and SLU are reported beside, never gating this cell"}
+    )
     return {
         arm["run_id"]: {
             "measurement_design": ff.MEASUREMENT_DESIGN, "rows": arm["rows"], "level": ff.LEVEL,
             "expected_effect_pp": 0.0, "claims_benefit": False, "claim": "nominated",
-            "primary_metric": c["primary_metric"], "aa_arm_id": ff.ARM_T,
+            "primary_metric": c["primary_metric"],
+            "primary_metric_key": "intent" if key == "psv1" else "present",
+            "aa_arm_id": ff.ARM_T,
             "tuning_roster": ff.TUNING_ROSTER, "read_roster": ff.READ_ROSTER,
             "ceiling": ceiling, "conversion_basis": basis,
             "variant_cost": {
@@ -247,8 +284,7 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
                          "visit and one Solver contact at the first Solver visit (level 2); every contact re-sends the "
                          f"row's speech packet, so 2 x row audio per branch, 4 x the Fold B total {audio} s per flight"),
             },
-            "provisional_floor_pp": {"slu_f1": round(FLOOR_SLU, 4), "intent_accuracy": 0.0,
-                                     "arithmetic": f"{ANCHOR_SLU} * sqrt({ANCHOR_N} / 1080) = {FLOOR_SLU:.4f} pp (ROLL-AA anchor, provisional)"},
+            "provisional_floor_pp": provisional_floor_pp,
             "read_bar": "|twin offset| + twin CI95 half-width, per metric, measured in this flight (ruling O6: one twin)",
             "note": note,
         },
@@ -274,7 +310,8 @@ def decision_rule(key: str) -> str:
         f"{ff.SCORER} (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a "
         "paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is "
         "reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 "
-        f"half-width, reported beside the provisional floor {FLOOR_SLU:.4f} pp. "
+        "half-width, reported beside the design's own provisional floor per metric (owner decision 190; "
+        "stage3_measurement.provisional_floor_pp -- intent {:.4f} pp, SLU {:.4f} pp). ".format(FLOOR_INTENT, FLOOR_SLU)
     )
     if key == "psv1":
         return common + (
@@ -619,7 +656,7 @@ tokens, {measure['perception']['items']['max']} boundary items max, widest item 
 and the gate comment flags the reconciliation), level {ff.LEVEL}, claim **`nominated`**, `aa_arm_id` `{ff.ARM_T}`,
 `tuning_roster` `{ff.TUNING_ROSTER}`, `read_roster` `{ff.READ_ROSTER}`. Primary: {c['primary_metric']}.
 Expected effect **0.0** (nominated); ceiling {m['ceiling']['what']}. Conversion basis: {m['conversion_basis']}.
-Provisional floor {FLOOR_SLU:.4f} pp; the bar is the twin null. `variant_cost`: +2 Perception and +2 Solver contacts per
+Provisional floor {(FLOOR_INTENT if key == "psv1" else FLOOR_SLU):.4f} pp ({"intent, primary" if key == "psv1" else "SLU, reference only -- primary_metric_key 'present' has no floor"}, owner decision 190); the bar is the twin null. `variant_cost`: +2 Perception and +2 Solver contacts per
 row, +{m['variant_cost']['extra_audio_seconds']} speech seconds per flight (2 x row audio per non-A branch).
 
 ## Decision rule (fixed here)
@@ -698,7 +735,8 @@ def append_ledger(key, args, ids, plan_shas, group, measurement) -> str:
         run_id = identity["fit"]["run_id"] if plan == "fit" else identity["run_id"]
         attempt = identity["fit"]["attempt_id"] if plan == "fit" else identity["attempt_id"]
         declaration = (f"measurement_design {ff.MEASUREMENT_DESIGN}, level 2, claim nominated, claims_benefit false, expected_effect_pp 0.0 "
-                       f"(ceiling {m['ceiling']['rows']} rows = {m['ceiling']['pp']} pp on Fold A), provisional floor {FLOOR_SLU:.4f} pp, bar = the twin null, "
+                       f"(ceiling {m['ceiling']['rows']} rows = {m['ceiling']['pp']} pp on Fold A), primary_metric_key {'intent' if key == 'psv1' else 'present'}, "
+                       f"provisional floor {(FLOOR_INTENT if key == 'psv1' else FLOOR_SLU):.4f} pp ({'intent, primary' if key == 'psv1' else 'SLU, reference only -- present has no floor'}, owner decision 190), bar = the twin null, "
                        f"aa_arm_id {ff.ARM_T}, tuning_roster {ff.TUNING_ROSTER}, read_roster {ff.READ_ROSTER}, variant_cost +2 Perception and +2 Solver contacts per row, rows 1080"
                        if kind == "arm" else f"measurement_design form-proof, claims_benefit false, expected_effect_pp 0.0, rows 4, tuning_roster none, read_roster {ff.READ_ROSTER}")
         placeholder = (

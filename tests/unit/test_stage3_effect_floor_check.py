@@ -187,39 +187,57 @@ def test_the_nearest_anchor_in_log_n_is_used() -> None:
     ) == (1000, 1.2525)
 
 
-def test_same_flight_supply_variant_is_a_design_sharing_the_roll_aa_anchor() -> None:
-    # owner decision 172 / the instrument design section 4: the design's floor is the
-    # twin null on the same estimand, provisionally the ROLL-AA anchor (0.735 at n = 200)
-    # until the instrument itself has flown and measured its own twin null.
+def test_same_flight_supply_variant_is_a_per_metric_design() -> None:
+    # owner decision 190 (2026-09-29): the design's floor is per metric, the larger of
+    # the two measured same-flight CONTRAST half-widths (W-SV-1 intent 0.5093 / SLU
+    # 1.4866; W4-SV intent 0.65 / SLU 1.25) -- intent 0.65, SLU 1.49 at n = 1,080.
     assert "same-flight-supply-variant" in gate.DESIGNS
-    assert gate.floor_for("same-flight-supply-variant", 200)[0] == pytest.approx(0.735)
-    assert gate.floor_for("same-flight-supply-variant", 800)[0] == pytest.approx(0.735 / 2)
+    assert gate.floor_for("same-flight-supply-variant", 1080, metric="intent")[0] == pytest.approx(0.65)
+    assert gate.floor_for("same-flight-supply-variant", 1080, metric="slu")[0] == pytest.approx(1.49)
+    assert gate.floor_for(
+        "same-flight-supply-variant", 270, metric="intent"
+    )[0] == pytest.approx(0.65 * math.sqrt(1080 / 270))
 
 
-def test_same_flight_supply_variant_effect_below_floor_is_refused(tmp_path: Path) -> None:
+def test_same_flight_per_metric_designs_refuse_a_metric_blind_call() -> None:
+    # owner decision 190: never silently fall back to the old metric-blind SLU anchor.
+    for design in ("same-flight-supply-variant", "same-flight-perception-variant"):
+        with pytest.raises(ValueError):
+            gate.floor_for(design, 1080)
+    with pytest.raises(ValueError):
+        gate.floor_for("same-flight-shadow-relisten", 1080)
+    with pytest.raises(ValueError):
+        # intent is identical by construction on this design: it carries no floor at all,
+        # so asking for it is refused exactly like a metric-blind call.
+        gate.floor_for("same-flight-shadow-relisten", 1080, metric="intent")
+
+
+def test_same_flight_supply_variant_effect_below_intent_floor_is_refused(tmp_path: Path) -> None:
     _build(
         tmp_path,
         declaration=_declaration(
             measurement_design="same-flight-supply-variant",
             expected_effect_pp=0.3,
-            rows=200,
+            rows=1080,
+            primary_metric_key="intent",
         ),
         registered_date="2026-09-28",
     )
     data = gate.evaluate(tmp_path)
     assert _kinds(data) == ["effect-below-floor"]
     message = data["findings"][0]["message"]
-    assert "0.7350 pp" in message and "n = 200" in message
+    assert "0.6500 pp" in message and "n = 1080" in message
     assert data["passed"] is False
 
 
-def test_same_flight_supply_variant_effect_above_floor_passes(tmp_path: Path) -> None:
+def test_same_flight_supply_variant_effect_above_intent_floor_passes(tmp_path: Path) -> None:
     _build(
         tmp_path,
         declaration=_declaration(
             measurement_design="same-flight-supply-variant",
             expected_effect_pp=1.0,
-            rows=200,
+            rows=1080,
+            primary_metric_key="intent",
         ),
         registered_date="2026-09-28",
     )
@@ -228,12 +246,90 @@ def test_same_flight_supply_variant_effect_above_floor_passes(tmp_path: Path) ->
     assert data["passed"] is True
 
 
-def test_same_flight_perception_variant_is_a_design_sharing_the_roll_aa_anchor() -> None:
-    # phase-2 design section 4 ("A/A = twin"): provisionally the same ROLL-AA
-    # anchor (0.735 at n = 200) until a phase-2 cell has flown its own twin.
+def test_same_flight_supply_variant_effect_below_slu_floor_is_refused(tmp_path: Path) -> None:
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-supply-variant",
+            expected_effect_pp=0.79,
+            rows=1080,
+            primary_metric_key="slu",
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["effect-below-floor"]
+    message = data["findings"][0]["message"]
+    assert "1.4900 pp" in message and "n = 1080" in message
+    assert data["passed"] is False
+
+
+def test_same_flight_supply_variant_without_primary_metric_key_is_a_finding(
+    tmp_path: Path,
+) -> None:
+    # owner decision 190: a same-flight cell of a per-metric design that claims a
+    # benefit but omits primary_metric_key cannot be checked against a floor at all.
+    # Registered before the decision's grandfather cutoff (2026-09-30), so the finding
+    # is advisory: the cell could not have declared a field the gate did not yet require.
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-supply-variant",
+            expected_effect_pp=5.0,
+            rows=1080,
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["primary-metric-key-missing"]
+    assert "primary_metric_key" in data["findings"][0]["message"]
+    assert data["findings"][0]["severity"] == "advisory"
+    assert data["passed"] is True
+
+
+def test_same_flight_supply_variant_without_primary_metric_key_blocks_after_the_grandfather(
+    tmp_path: Path,
+) -> None:
+    # A cell registered from 2026-09-30 onward has no excuse: decision 190 was already in force.
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-supply-variant",
+            expected_effect_pp=5.0,
+            rows=1080,
+        ),
+        registered_date="2026-09-30",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["primary-metric-key-missing"]
+    assert data["findings"][0]["severity"] == "blocking"
+    assert data["passed"] is False
+
+
+def test_same_flight_perception_variant_present_primary_metric_has_no_floor(
+    tmp_path: Path,
+) -> None:
+    # P-SV-2's own shape: gold-on-list presence never gates, whatever the declared size.
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-perception-variant",
+            expected_effect_pp=1000.0,
+            rows=1080,
+            primary_metric_key="present",
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["primary-metric-key-present"]
+    assert data["findings"][0]["severity"] == "advisory"
+    assert data["passed"] is True
+
+
+def test_same_flight_perception_variant_is_a_per_metric_design() -> None:
     assert "same-flight-perception-variant" in gate.DESIGNS
-    assert gate.floor_for("same-flight-perception-variant", 200)[0] == pytest.approx(0.735)
-    assert gate.floor_for("same-flight-perception-variant", 800)[0] == pytest.approx(0.735 / 2)
+    assert gate.floor_for("same-flight-perception-variant", 1080, metric="intent")[0] == pytest.approx(0.65)
+    assert gate.floor_for("same-flight-perception-variant", 1080, metric="slu")[0] == pytest.approx(1.49)
 
 
 def test_same_flight_perception_variant_effect_below_floor_is_refused(tmp_path: Path) -> None:
@@ -242,14 +338,15 @@ def test_same_flight_perception_variant_effect_below_floor_is_refused(tmp_path: 
         declaration=_declaration(
             measurement_design="same-flight-perception-variant",
             expected_effect_pp=0.3,
-            rows=200,
+            rows=1080,
+            primary_metric_key="intent",
         ),
         registered_date="2026-09-28",
     )
     data = gate.evaluate(tmp_path)
     assert _kinds(data) == ["effect-below-floor"]
     message = data["findings"][0]["message"]
-    assert "0.7350 pp" in message and "n = 200" in message
+    assert "0.6500 pp" in message and "n = 1080" in message
     assert data["passed"] is False
 
 
@@ -259,13 +356,49 @@ def test_same_flight_perception_variant_effect_above_floor_passes(tmp_path: Path
         declaration=_declaration(
             measurement_design="same-flight-perception-variant",
             expected_effect_pp=1.0,
-            rows=200,
+            rows=1080,
+            primary_metric_key="intent",
         ),
         registered_date="2026-09-28",
     )
     data = gate.evaluate(tmp_path)
     assert data["findings"] == []
     assert data["passed"] is True
+
+
+def test_same_flight_shadow_relisten_is_slu_only(tmp_path: Path) -> None:
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-shadow-relisten",
+            expected_effect_pp=0.5,
+            rows=1080,
+            primary_metric_key="slu",
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["effect-below-floor"]
+    message = data["findings"][0]["message"]
+    assert "1.4900 pp" in message
+    assert data["passed"] is False
+
+
+def test_same_flight_shadow_relisten_declaring_intent_is_unparsable(tmp_path: Path) -> None:
+    # intent is identical by construction on this design: it has no floor to declare against.
+    _build(
+        tmp_path,
+        declaration=_declaration(
+            measurement_design="same-flight-shadow-relisten",
+            expected_effect_pp=0.5,
+            rows=1080,
+            primary_metric_key="intent",
+        ),
+        registered_date="2026-09-28",
+    )
+    data = gate.evaluate(tmp_path)
+    assert _kinds(data) == ["unparsable-declaration"]
+    assert data["passed"] is False
 
 
 # --------------------------------------------------------------------------
@@ -481,6 +614,7 @@ def test_a_form_proof_that_claims_nothing_passes(tmp_path: Path) -> None:
         {"rows": "six hundred"},
         {"claims_benefit": "yes"},
         {"replicate_run_id": 17},
+        {"primary_metric_key": "throughput"},
     ],
 )
 def test_an_unreadable_declaration_is_refused(tmp_path: Path, overrides: dict) -> None:
