@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-filler-fold-b-c01-smoke-4-v1",
-  "composed_config_hash": "ce5f93020fafb38cc42549f12552c2534cf608b30c261ddbb12163af3d0fc368",
+  "composed_config_hash": "a682f675bb0221ce20129a5af392dec962d108db2ebc2ac0689df77e03771c37",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-filler-fold-b-c01-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 76,
     "planned_speech_audio_seconds": 194,
-    "protocol_hash": "e107acc10f5a1ceafd3a447d33f137181bd0fad45b32f05751e9b375a37065ee",
+    "protocol_hash": "845907979b56540ac214643946cb6def4e9fa1bf97987879b1e503e1aa7bc018",
     "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -34,7 +34,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/protocol-registered-v1.json",
-    "sha256": "0c198ebb9346a4e87a4a90e17bbd96df5f0b68996afbc4373e255dad01aefea0"
+    "sha256": "c8e804709e16b98fc03aeed6520c8e3d4f003206c20338caea4a331793db8ec2"
   },
   "purpose": "Four-row structural form smoke of the filler family's composed form (ROLL-2's grouped Solver plus AGREE's agreement pins), flown before chunk c01's arm: five custodied Solver samples per row, the plurality-commit replay, the agreement table loading and the boundary channel still delivering eight entries, zero native task-contract calls, every request fitting. Scored by no one and read by no one. Filler chunk c01 (owner decision 162): seal a 4-row x 5-sample rollout pool of the current best SLURP system on TRAIN Fold B rows, flown ONLY when the GPU would otherwise idle (the idle-filler queue: no flight running, no main-line chain ready, the np4 session resident and healthy). The pool is the rollout substrate of the training-free RL inner loop (sealed-credit-system-policy-v1), read OFFLINE at zero further GPU cost. DESCRIPTIVE by construction: no comparator, no gate, no admission claim, no superiority, transfer, generalisation or confirmatory statement. Development numbers only (owner decisions 28 and 86); never a test claim.",
   "quality_read_gate": "No read before the complete sealed manifest with exactly five custodied solver_group samples per row exists; a partial manifest is never read; a failed smoke stops the arm.",
