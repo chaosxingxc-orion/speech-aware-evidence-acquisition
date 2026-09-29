@@ -40,6 +40,15 @@ DECLARED effect, before the GPU hours are spent rather than after.
   not a bound; the size the mechanism is believed to produce.
 * ``rows`` -- the population count. Optional: it falls back to the experiment
   fragment's ``population.count``, which is where the harness reads it.
+* ``primary_metric_key`` -- closed set ``intent`` | ``slu`` | ``present``: WHICH
+  of the cell's metrics ``expected_effect_pp`` is about. Owner decision 190
+  (2026-09-29) put a DIFFERENT floor on each metric for ``same-flight-supply-
+  variant``, ``same-flight-perception-variant`` and ``same-flight-shadow-
+  relisten`` (:data:`FLOOR_TABLE` row ``sampling_by_metric``), so a cell of one
+  of those designs that claims a benefit must say which metric it means;
+  omitting it is finding ``primary-metric-key-missing``. ``present`` (gold-on-
+  list, e.g. P-SV-2's level-1 read) carries no numeric floor at all -- finding
+  ``primary-metric-key-present``, always advisory, never blocking.
 * ``primary_metric``, ``note`` -- free text, reported, never enforced.
 * ``claims_benefit`` -- optional, default ``true``. ``false`` says the cell
   proves FORM, not benefit, and is the only legal value for ``form-proof``
@@ -102,8 +111,15 @@ one line that follows):
 design                                floor at n rows (CI95 half-width, pp)
 ===================================== ======================================
 ``offline-sealed-pool``               ``0.67 * sqrt(625 / rows)``
-``same-flight-paired``                ``0.735 * sqrt(200 / rows)``
-``same-flight-supply-variant``        ``0.735 * sqrt(200 / rows)`` (provisional, ROLL-AA anchor)
+``same-flight-paired``                ``0.735 * sqrt(200 / rows)`` (unchanged)
+``same-flight-supply-variant``        per metric (owner decision 190): intent
+                                       ``0.65 * sqrt(1080 / rows)``, slu
+                                       ``1.49 * sqrt(1080 / rows)``
+``same-flight-perception-variant``    per metric (owner decision 190): same
+                                       two anchors as same-flight-supply-variant
+``same-flight-shadow-relisten``       slu only (owner decision 190):
+                                       ``1.49 * sqrt(1080 / rows)``; intent is
+                                       identical by construction, no floor
 ``cross-flight-with-in-chain-replicate`` ``max(sampling, admission bar)``
 ``cross-flight-no-replicate``         refused outright (rule 4)
 ``form-proof``                        none; must claim no benefit (rule 5)
@@ -115,6 +131,23 @@ anchored at the n the note measured them at (sampling 1.474 at 625, 1.2525 at
 to the cell's own n by ``anchor * sqrt(anchor_n / rows)`` from the anchor
 NEAREST in log n, so an anchored n reproduces the note's own number exactly
 instead of being re-derived from a neighbour.
+
+**Owner decision 190 (2026-09-29, "好" = approved).** The three per-metric rows
+above replace the single provisional SLU anchor (0.735 at n = 200, scaling to
+0.3163 at n = 1,080) that every same-flight design but ``same-flight-paired``
+carried until this decision. The new anchors are the LARGER of the two
+measured same-flight CONTRAST half-widths at n = 1,080: cell W-SV-1 (intent
+0.5093, SLU 1.4866 --
+``docs/results/2026-09-29-slurp-wsv1-fold-a-column-read.md``) and cell W4-SV
+(intent 0.65, SLU 1.25 --
+``docs/results/2026-09-29-slurp-w4sv-fold-a-column-read.md``), so intent 0.65
+and SLU 1.49 (see
+``docs/results/2026-09-29-slurp-same-flight-floor-recalibration.md`` for the
+full derivation). ``same-flight-paired`` and every other design are
+unchanged. A design carrying a per-metric floor refuses a metric-blind
+``floor_for`` call (:func:`floor_for`) rather than guessing, and a same-flight
+cell that claims a benefit under such a design must declare
+``primary_metric_key``.
 
 **Scope.** A cell is in scope when all three hold: its experiment fragment is
 a Stage-3 fragment by exactly the test
@@ -167,6 +200,19 @@ what the law would refuse.
 ``effect-below-floor``
     ``expected_effect_pp`` below the design's floor at the cell's own n. The
     printed line carries the arithmetic.
+``primary-metric-key-missing``
+    Owner decision 190: a cell of a design that carries a per-metric floor
+    (``sampling_by_metric`` non-empty) claims a benefit but declares no
+    ``primary_metric_key``, so the gate cannot resolve which floor applies;
+    the effect-vs-floor comparison is skipped, never guessed. Grandfathered
+    like the note's own law date (:data:`DECISION_190_DATE`): a cell
+    registered on or before 2026-09-29 could not have declared a field this
+    gate did not yet require, so it is always advisory; a cell registered
+    from 2026-09-30 (:data:`STRICT_FROM_190_DEFAULT`) blocks as usual.
+``primary-metric-key-present``
+    Always advisory, never blocking: ``primary_metric_key`` is ``present``
+    (gold-on-list), which carries no numeric floor by design; the declared
+    effect is reported, not checked against a bound.
 
 Exit 0 when no blocking finding remains (advisory lines are still printed);
 exit 1 on a blocking finding or an unreadable tree. ``--explain CELL`` prints
@@ -212,6 +258,15 @@ MIN_BENEFIT_ROWS = 200
 LAW_DATE = dt.date(2026, 9, 26)
 STRICT_FROM_DEFAULT = LAW_DATE + dt.timedelta(days=1)
 
+#: Owner decision 190 landed 2026-09-29 and added ``primary_metric_key`` to the declaration
+#: block. A cell registered on or before that day could not have declared a field the gate did
+#: not yet require, so its ``primary-metric-key-missing`` finding is grandfathered advisory
+#: exactly like :data:`LAW_DATE` above; a cell registered from the next day blocks as usual.
+#: This threshold is fixed (not a CLI flag, unlike ``--strict-from``): it dates one specific
+#: field, not the whole declaration.
+DECISION_190_DATE = dt.date(2026, 9, 29)
+STRICT_FROM_190_DEFAULT = DECISION_190_DATE + dt.timedelta(days=1)
+
 #: The readiness states of a cell that is still on the queue -- the same two
 #: words ``finite_completion_policy_check.py`` enforces against.
 LIVE_READINESS_STATES = ("ready", "held")
@@ -233,10 +288,21 @@ class Floor:
     ``sampling`` and ``bar`` are ``(n, half-width in pp)`` anchors measured at
     that n; the floor at another n scales each by ``sqrt(anchor_n / rows)``
     from the anchor nearest in log n and takes the larger of the two families.
+
+    ``sampling_by_metric`` (owner decision 190, 2026-09-29) is the per-metric
+    form of ``sampling``: a mapping of metric name (``"intent"`` or ``"slu"``)
+    to its own anchors. When it is non-empty it REPLACES ``sampling`` for this
+    design entirely -- :func:`floor_for` refuses a metric-blind call for such
+    a design rather than silently falling back to one metric's anchor for
+    another's declaration. A design may omit a metric from the mapping (e.g.
+    ``same-flight-shadow-relisten`` carries no ``"intent"`` entry because
+    intent is identical by construction there); asking for that metric is
+    also refused, never treated as "no floor".
     """
 
     source: str
     sampling: tuple[tuple[int, float], ...] = ()
+    sampling_by_metric: dict[str, tuple[tuple[int, float], ...]] = field(default_factory=dict)
     bar: tuple[tuple[int, float], ...] = ()
     refused: str | None = None
     requires_replicate: bool = False
@@ -261,17 +327,23 @@ FLOOR_TABLE: dict[str, Floor] = {
     ),
     "same-flight-supply-variant": Floor(
         source=(
-            "docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-"
-            "design.md section 4 (owner decision 172, Q2 ruling): the design's own floor "
-            "is the twin's paired-difference null on the Solver-local estimand; until an "
-            "instrument cell has flown and measured that null, the provisional floor "
-            f"anchor is {INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, h_within "
-            "0.735 SLU / 0.000 intent at n = 200) -- same number as same-flight-paired, "
-            "kept as its own design value because the estimand (Solver-local, non-"
-            "delivering arms never reach Reviewer/Planner) and the claim ceiling "
-            "(nominated only, never admitted) both differ"
+            "owner decision 190 (2026-09-29, \"好\" = approved): per-metric anchors, the "
+            "LARGER of the two measured same-flight CONTRAST half-widths at n = 1,080 -- "
+            "cell W-SV-1 (intent 0.5093, SLU 1.4866; "
+            "docs/results/2026-09-29-slurp-wsv1-fold-a-column-read.md) and cell W4-SV "
+            "(intent 0.65, SLU 1.25; "
+            "docs/results/2026-09-29-slurp-w4sv-fold-a-column-read.md, section "
+            "'Instrument note'), so intent 0.65 and SLU 1.49 -- full derivation in "
+            "docs/results/2026-09-29-slurp-same-flight-floor-recalibration.md. "
+            "Supersedes the provisional ROLL-AA anchor (0.735 SLU / 0.000 intent at "
+            "n = 200, scaling to 0.3163 at n = 1,080; docs/superpowers/specs/2026-09-27-"
+            "same-flight-supply-variant-instrument-design.md section 4, owner decision "
+            "172 Q2), which sat below BOTH measured contrast half-widths (1.61x short "
+            "on intent, 4.70x short on SLU). The estimand (Solver-local, non-delivering "
+            "arms never reach Reviewer/Planner) and the claim ceiling (nominated only, "
+            "never admitted) are unchanged by this recalibration"
         ),
-        sampling=((200, 0.735),),
+        sampling_by_metric={"intent": ((1080, 0.65),), "slu": ((1080, 1.49),)},
     ),
     # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
     # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
@@ -284,20 +356,24 @@ FLOOR_TABLE: dict[str, Floor] = {
     # spelling yet).
     "same-flight-perception-variant": Floor(
         source=(
-            "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-"
-            "perception-variants-design.md section 4 ('A/A = twin', extending phase "
-            "1's Q3 ruling): the design's own floor is the twin's (T's) paired-"
-            "difference null on the Perception-branch estimand (level 1: per-row "
-            "top1 or present difference; level 2: the branch Solver column); until a "
-            "phase-2 cell has flown and measured that null, the provisional floor "
-            f"anchor is {INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, "
-            "h_within 0.735 SLU / 0.000 intent at n = 200) -- the same anchor "
-            "'same-flight-supply-variant' uses, kept as its own design value because "
-            "the estimand (an episode-level Perception fork with its own twin, not a "
-            "Solver-local arm sharing the row's own QueryState) and the claim ceiling "
-            "(level 1 nominates only into level 2, design section 8 O1) both differ"
+            "owner decision 190 (2026-09-29): the same per-metric anchors as "
+            "same-flight-supply-variant -- intent 0.65, SLU 1.49 at n = 1,080, the "
+            "larger of the two measured same-flight CONTRAST half-widths (cell W-SV-1 "
+            "and cell W4-SV; docs/results/2026-09-29-slurp-same-flight-floor-"
+            "recalibration.md and docs/results/2026-09-29-slurp-w4sv-fold-a-column-"
+            "read.md) -- borrowed until a phase-2 cell (P-SV-1, level 2 intent, or "
+            "P-SV-2, level 1 presence) has flown and measured its own twin/contrast "
+            "null on the Perception-branch estimand (design section 4, 'A/A = twin'). "
+            "Supersedes the provisional ROLL-AA anchor (0.735 SLU / 0.000 intent at "
+            "n = 200; design docs/superpowers/specs/2026-09-28-same-flight-instrument-"
+            "phase2-perception-variants-design.md section 4, extending phase 1's Q3 "
+            "ruling). The estimand (an episode-level Perception fork with its own "
+            "twin, not a Solver-local arm sharing the row's own QueryState) and the "
+            "claim ceiling (level 1 nominates only into level 2, design section 8 O1) "
+            "are unchanged by this recalibration. ``primary_metric_key`` 'present' "
+            "(P-SV-2's level-1 gold-on-list read) carries no floor in either table"
         ),
-        sampling=((200, 0.735),),
+        sampling_by_metric={"intent": ((1080, 0.65),), "slu": ((1080, 1.49),)},
     ),
     # Item E4 (2026-09-28, owner decision 185, "core-native targeted re-
     # listen"; design docs/superpowers/specs/2026-09-28-e4-core-native-
@@ -307,24 +383,31 @@ FLOOR_TABLE: dict[str, Floor] = {
     # already-sealed bytes -- structurally ``same-flight-paired``'s own
     # shape. The design's own floor is the shadow column's twin/shadow null
     # (the paired-difference null on the UNCHANGED rows of the pair); until
-    # an E4 cell has flown and measured that null, the provisional floor
-    # anchor is the same one ``same-flight-supply-variant`` uses --
-    # {INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, h_within 0.735
-    # SLU / 0.000 intent at n = 200) -- kept as its own design value because
-    # the estimand (two POST-HOC derived columns from one flight's sealed
-    # relisten receipts, never a second contact stream) and the claim
+    # an E4 cell has flown and measured that null, the provisional floor is
+    # owner decision 190's SLU anchor (below) -- kept as its own design value
+    # because the estimand (two POST-HOC derived columns from one flight's
+    # sealed relisten receipts, never a second contact stream) and the claim
     # ceiling (nominated only, never admitted -- ``flight_registration_
     # check.py``) both differ from the Solver-arm estimand
-    # ``same-flight-supply-variant`` reads.
+    # ``same-flight-supply-variant`` reads. Intent is identical by
+    # construction on this design's two derived columns (ruling 7), so it
+    # carries NO floor at all -- not zero, not borrowed, absent from
+    # ``sampling_by_metric``, and ``floor_for(..., metric="intent")`` refuses.
     "same-flight-shadow-relisten": Floor(
         source=(
-            f"{INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, h_within 0.735 "
-            "SLU / 0.000 intent at n = 200); design docs/superpowers/specs/2026-09-28-"
-            "e4-core-native-targeted-relisten-design.md section 4 ('same-flight-paired, "
-            "shadow delivery') and section 8 ruling 7 ('the bar is the twin/shadow "
-            "null')"
+            "owner decision 190 (2026-09-29): the SLU anchor only, intent carries no "
+            "floor. SLU 1.49 at n = 1,080, the larger of the two measured same-flight "
+            "CONTRAST half-widths (cell W-SV-1 and cell W4-SV; "
+            "docs/results/2026-09-29-slurp-same-flight-floor-recalibration.md and "
+            "docs/results/2026-09-29-slurp-w4sv-fold-a-column-read.md), borrowed until "
+            "an E4 cell has flown and measured its own shadow contrast. Supersedes the "
+            "provisional ROLL-AA anchor (0.735 SLU at n = 200); design "
+            "docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-"
+            "design.md section 4 ('same-flight-paired, shadow delivery') and section 8 "
+            "ruling 7 ('the bar is the twin/shadow null'; intent identical by "
+            "construction)"
         ),
-        sampling=((200, 0.735),),
+        sampling_by_metric={"slu": ((1080, 1.49),)},
     ),
     "cross-flight-with-in-chain-replicate": Floor(
         source=(
@@ -383,7 +466,7 @@ def _scaled(
 
 
 def floor_for(
-    design: str, rows: int, *, purpose: str = "benefit"
+    design: str, rows: int, *, purpose: str = "benefit", metric: str | None = None
 ) -> tuple[float | None, list[str]]:
     """``(floor in pp, the arithmetic as lines)``.
 
@@ -393,6 +476,16 @@ def floor_for(
     larger of the sampling half-width and the rule-3 admission bar) or
     ``"harm"`` (owner decision 127: the sampling half-width alone -- the rule-3
     bar is what a gain must exceed, and a no-harm cell claims no gain).
+
+    ``metric`` (owner decision 190, 2026-09-29) selects one of a design's
+    ``sampling_by_metric`` anchors (``"intent"`` or ``"slu"``). A design that
+    declares ``sampling_by_metric`` carries NO metric-blind floor: calling
+    this function for such a design without ``metric``, or with a ``metric``
+    it does not anchor (e.g. ``"intent"`` on ``same-flight-shadow-relisten``,
+    which has none by construction), is a caller error and raises -- this
+    never silently falls back to another metric's anchor. A design with no
+    ``sampling_by_metric`` ignores ``metric`` entirely: it has one floor for
+    every metric, as before decision 190.
     """
 
     if purpose not in ("benefit", "harm"):
@@ -402,7 +495,22 @@ def floor_for(
         return math.inf, [f"refused outright -- {rule.refused}"]
     lines: list[str] = []
     parts: list[float] = []
-    if rule.sampling:
+    if rule.sampling_by_metric:
+        if metric is None:
+            raise ValueError(
+                f"design {design!r} declares per-metric floors "
+                f"({sorted(rule.sampling_by_metric)}, owner decision 190); floor_for(...) "
+                "requires metric='intent' or metric='slu' and refuses to guess"
+            )
+        if metric not in rule.sampling_by_metric:
+            raise ValueError(
+                f"design {design!r} declares a floor only for "
+                f"{sorted(rule.sampling_by_metric)}, not metric {metric!r}"
+            )
+        value, shown = _scaled(rule.sampling_by_metric[metric], rows)
+        lines.append(f"sampling half-width ({metric}): {shown}")
+        parts.append(value)
+    elif rule.sampling:
         value, shown = _scaled(rule.sampling, rows)
         lines.append(f"sampling half-width: {shown}")
         parts.append(value)
@@ -623,6 +731,11 @@ def _block_for(blocks: Any, run_id: str | None, cell_id: str | None) -> Any:
 #: reported as one, and its margin may not be tighter than what its design can actually see.
 _ADMISSIONS: frozenset[str] = frozenset({"benefit", "no-harm"})
 
+#: Owner decision 190 (2026-09-29): the closed set ``primary_metric_key`` may name. ``intent``
+#: and ``slu`` each resolve a design's own ``sampling_by_metric`` anchor (:data:`FLOOR_TABLE`);
+#: ``present`` (gold-on-list, e.g. P-SV-2's level-1 read) carries no numeric floor at all.
+_PRIMARY_METRIC_KEYS: frozenset[str] = frozenset({"intent", "slu", "present"})
+
 
 @dataclass
 class Declaration:
@@ -638,6 +751,7 @@ class Declaration:
     harm_margin_pp: float | None = None
     replicate_run_id: str | None = None
     primary_metric: str | None = None
+    primary_metric_key: str | None = None
     note: str | None = None
     problems: list[str] = field(default_factory=list)
 
@@ -713,6 +827,16 @@ def _parse_declaration(
     elif isinstance(replicate, str) and replicate.strip():
         parsed.replicate_run_id = replicate.strip()
 
+    primary_metric_key = block.get("primary_metric_key")
+    if primary_metric_key is not None:
+        if not isinstance(primary_metric_key, str) or primary_metric_key not in _PRIMARY_METRIC_KEYS:
+            parsed.problems.append(
+                f"primary_metric_key is {primary_metric_key!r}; it must be one of "
+                f"{sorted(_PRIMARY_METRIC_KEYS)}"
+            )
+        else:
+            parsed.primary_metric_key = primary_metric_key
+
     for key in ("primary_metric", "note"):
         value = block.get(key)
         if isinstance(value, str) and value.strip():
@@ -754,6 +878,91 @@ def _find_declaration(
         if block is not None:
             return _parse_declaration(block, fragment_relpath, fragment_rows)
     return None
+
+
+def _resolve_floor(
+    design: str,
+    rule: Floor,
+    rows: int,
+    parsed: Declaration,
+    *,
+    purpose: str = "benefit",
+    emit_findings: bool = True,
+) -> tuple[float | None, list[str], list[dict[str, Any]]]:
+    """The numeric floor for one declaration, honouring ``primary_metric_key``.
+
+    Owner decision 190 (2026-09-29): a design that carries ``sampling_by_metric``
+    has no metric-blind floor any more, so this wraps :func:`floor_for` with the
+    declaration's own ``primary_metric_key`` and turns the three new outcomes
+    (missing, ``"present"``, or a metric the design does not anchor) into
+    findings instead of a crash. Returns ``(floor, arithmetic, extra_findings)``;
+    ``extra_findings`` carry no ``cell``/``severity``/``run_id`` -- the caller
+    merges those in, as it does for every other finding in ``_findings_for``.
+
+    ``emit_findings=False`` is for the no-harm harm-floor call in
+    ``_findings_for``, which reuses this resolution but must not double-report
+    a declaration defect the benefit-floor call already reported for the same
+    cell.
+    """
+
+    extra: list[dict[str, Any]] = []
+    metric = parsed.primary_metric_key
+
+    if metric == "present":
+        if emit_findings:
+            extra.append(
+                {
+                    "kind": "primary-metric-key-present",
+                    "severity": "advisory",
+                    "message": (
+                        "primary_metric_key 'present' (gold-on-list) carries no numeric "
+                        "floor by design; the expected effect is reported, not checked "
+                        "against a bound"
+                    ),
+                }
+            )
+        return None, ["primary_metric_key 'present' has no numeric floor by design"], extra
+
+    if rule.sampling_by_metric:
+        if metric is None:
+            if emit_findings and parsed.claims_benefit:
+                extra.append(
+                    {
+                        "kind": "primary-metric-key-missing",
+                        "message": (
+                            f"measurement_design {design!r} claims a benefit but declares no "
+                            "primary_metric_key ('intent', 'slu' or 'present'); owner "
+                            "decision 190 (2026-09-29) put a different floor on each metric "
+                            "of this design and the gate cannot check the effect without "
+                            "knowing which one the cell means"
+                        ),
+                    }
+                )
+            return (
+                None,
+                [
+                    "floor not computed: design declares per-metric floors and no "
+                    "primary_metric_key was given"
+                ],
+                extra,
+            )
+        if metric not in rule.sampling_by_metric:
+            if emit_findings:
+                extra.append(
+                    {
+                        "kind": "unparsable-declaration",
+                        "message": (
+                            f"primary_metric_key {metric!r} has no floor in {design!r} (it "
+                            f"declares a floor only for {sorted(rule.sampling_by_metric)})"
+                        ),
+                    }
+                )
+            return None, [], extra
+        floor, arithmetic = floor_for(design, rows, purpose=purpose, metric=metric)
+        return floor, arithmetic, extra
+
+    floor, arithmetic = floor_for(design, rows, purpose=purpose)
+    return floor, arithmetic, extra
 
 
 def _findings_for(record: dict[str, Any], parsed: Declaration | None) -> list[dict[str, Any]]:
@@ -850,14 +1059,31 @@ def _findings_for(record: dict[str, Any], parsed: Declaration | None) -> list[di
             }
         )
 
-    floor, arithmetic = floor_for(str(design), int(rows))
+    floor, arithmetic, metric_findings = _resolve_floor(str(design), rule, int(rows), parsed)
+    registered = _date_in(record.get("registered_date"))
+    for extra in metric_findings:
+        finding = {
+            "kind": extra["kind"],
+            "message": f"{cell}: {extra['message']}",
+        }
+        if "severity" in extra:
+            finding["severity"] = extra["severity"]
+        elif extra["kind"] == "primary-metric-key-missing" and (
+            registered is None or registered < STRICT_FROM_190_DEFAULT
+        ):
+            # Grandfathered: this cell was registered before owner decision 190 required
+            # primary_metric_key, so it could not have declared it.
+            finding["severity"] = "advisory"
+        findings.append(finding)
 
     # Owner decision 127: an engineering-base item is admitted on sound logic, a stated ceiling and
     # a NO-HARM reading, and never has to demonstrate a gain. Two consequences are enforced here.
     # The margin is measured against the design's SAMPLING half-width (decision 127's own numbers:
     # 1.2485 cross-flight at Fold A 1,080), not against the rule-3 benefit bar a gain must exceed.
     if parsed.admission == "no-harm":
-        harm_floor, harm_arithmetic = floor_for(str(design), int(rows), purpose="harm")
+        harm_floor, harm_arithmetic, _harm_metric_findings = _resolve_floor(
+            str(design), rule, int(rows), parsed, purpose="harm", emit_findings=False
+        )
         if parsed.claims_benefit:
             findings.append(
                 {
@@ -1027,6 +1253,7 @@ def evaluate(
                     "claims_benefit": parsed.claims_benefit,
                     "replicate_run_id": parsed.replicate_run_id,
                     "primary_metric": parsed.primary_metric,
+                    "primary_metric_key": parsed.primary_metric_key,
                     "note": parsed.note,
                     "problems": list(parsed.problems),
                 }
@@ -1035,11 +1262,14 @@ def evaluate(
             if parsed is None and not cell_findings:
                 form_proof_by_size.append(cell_id)
             for finding in cell_findings:
+                # A finding may pre-set its own "severity" (e.g. "primary-metric-key-present",
+                # owner decision 190: advisory always, whatever the cell's own registration
+                # date says) -- setdefault keeps that instead of the usual date-derived one.
+                finding.setdefault("severity", severity)
                 finding.update(
                     {
                         "cell": cell_id,
                         "run_id": run_id,
-                        "severity": severity,
                         "registered_date": record["registered_date"],
                     }
                 )
@@ -1092,6 +1322,16 @@ def render_floor_table(rows: int | None = None) -> list[str]:
                 "      sampling anchors (n, half-width pp): "
                 + ", ".join(f"({n}, {h:g})" for n, h in rule.sampling)
             )
+        if rule.sampling_by_metric:
+            for metric in sorted(rule.sampling_by_metric):
+                lines.append(
+                    f"      sampling anchors {metric!r} (n, half-width pp): "
+                    + ", ".join(f"({n}, {h:g})" for n, h in rule.sampling_by_metric[metric])
+                )
+            lines.append(
+                "      per-metric floor (owner decision 190): metric= is required, a "
+                "metric-blind call is refused"
+            )
         if rule.bar:
             lines.append(
                 "      rule-3 admission bar anchors: "
@@ -1102,12 +1342,17 @@ def render_floor_table(rows: int | None = None) -> list[str]:
         if rule.requires_replicate:
             lines.append("      must name replicate_run_id (rule 3)")
         if rows is not None and rule.refused is None:
-            floor, arithmetic = floor_for(design, rows)
-            lines.append(
-                f"      at n = {rows}: " + "; ".join(arithmetic)
-                if floor is not None
-                else f"      at n = {rows}: no numeric floor"
-            )
+            if rule.sampling_by_metric:
+                for metric in sorted(rule.sampling_by_metric):
+                    floor, arithmetic = floor_for(design, rows, metric=metric)
+                    lines.append(f"      at n = {rows}, metric {metric!r}: " + "; ".join(arithmetic))
+            else:
+                floor, arithmetic = floor_for(design, rows)
+                lines.append(
+                    f"      at n = {rows}: " + "; ".join(arithmetic)
+                    if floor is not None
+                    else f"      at n = {rows}: no numeric floor"
+                )
         lines.append(f"      source: {rule.source}")
     return lines
 
@@ -1147,7 +1392,8 @@ def explain(data: dict[str, Any], cell: str | None) -> list[str]:
                 f"{declaration['measurement_design']!r}, expected_effect_pp "
                 f"{declaration['expected_effect_pp']}, rows {declaration['rows']} "
                 f"(from {declaration['rows_source']}), claims_benefit "
-                f"{declaration['claims_benefit']}, replicate_run_id "
+                f"{declaration['claims_benefit']}, primary_metric_key "
+                f"{declaration['primary_metric_key']!r}, replicate_run_id "
                 f"{declaration['replicate_run_id']}"
             )
             if declaration["problems"]:
@@ -1155,9 +1401,15 @@ def explain(data: dict[str, Any], cell: str | None) -> list[str]:
             design = declaration["measurement_design"]
             n = declaration["rows"] or rows_n
             if design in FLOOR_TABLE and isinstance(n, int) and n > 0:
-                floor, arithmetic = floor_for(design, n)
-                for step in arithmetic:
-                    lines.append(f"      {step}")
+                metric = declaration["primary_metric_key"]
+                try:
+                    floor, arithmetic = floor_for(design, n, metric=metric)
+                except ValueError as error:
+                    lines.append(f"      floor not resolved: {error}")
+                    floor = None
+                else:
+                    for step in arithmetic:
+                        lines.append(f"      {step}")
                 effect = declaration["expected_effect_pp"]
                 if floor is not None and isinstance(effect, (int, float)):
                     verdict = "BELOW the floor" if effect < floor else "clears the floor"
