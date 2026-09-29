@@ -21,8 +21,11 @@ attempt named on the command line -- unpinned via ``--attempt``, or PINNED via
    and arm bind to the composed cell), I7n
    (``core.bundle.outputs._verify_delivery_normalisation`` against the
    delivered contact's recorded response bytes), I7g
-   (``_verify_grouped_commit``) and I7l (``_verify_relisten_trace_binding``,
-   over a relisten-armed row's re-derived receipt) where applicable; and
+   (``_verify_grouped_commit``), I7l (``_verify_relisten_trace_binding``,
+   over a relisten-armed row's re-derived receipt) and I7v's Perception path
+   (``_verify_perception_branch_trace_binding``, over a branched row's
+   re-derived schema-v2 ``perception_branches`` block, P-SV-1 2026-09-29)
+   where applicable; and
 4. checks the union across attempts: no sample is sealed twice.
 
 It prints one JSON document: per attempt, samples started / complete /
@@ -143,6 +146,8 @@ def _check_attempt(
     checked = 0
     normalised = 0
     relistened = 0
+    branched = 0
+    note_parse_status: collections.Counter = collections.Counter()
     for sample_id in scan.complete_sample_ids:
         label = _id_hash(sample_id)
         summaries, timings = scan.replay([sample_id], controller_policy_id=policy)
@@ -212,6 +217,34 @@ def _check_attempt(
                     "sample_id_sha256_12": label, "check": "I7l",
                     "error": f"{type(error).__name__}: {_reason_class(error)}",
                 })
+        episode = row.get("native_episode_receipt")
+        if hasattr(episode, "get") and "perception_branches" in episode:
+            # P-SV-1 (2026-09-29): I7v's Perception path over the row's own
+            # recorded contacts -- request digests, sample ids and response
+            # text straight from this attempt's trace.
+            branched += 1
+            records = {}
+            for contact in scan.contacts[sample_id]:
+                records[f"{contact.request_id}/request"] = {
+                    "payload_sha256": contact.request_sha256,
+                    "payload": {"sample_id": contact.sample_id},
+                }
+                records[f"{contact.request_id}/response"] = {
+                    "text": contact.text,
+                    "response_sha256": contact.response_sha256,
+                    "response_text_sha256": contact.response_text_sha256,
+                }
+            try:
+                bundle._verify_perception_branch_trace_binding(row, records)
+            except Exception as error:  # noqa: BLE001
+                failures.append({
+                    "sample_id_sha256_12": label, "check": "I7v",
+                    "error": f"{type(error).__name__}: {_reason_class(error)}",
+                })
+            for item in episode["perception_branches"].get("branches", ()):
+                note_parse_status[
+                    f"{item.get('branch_id')}:{item.get('note_parse_status')}"
+                ] += 1
     return scan, {
         "attempt_id": attempt_id,
         "trace_sha256": scan.trace_sha256,
@@ -224,6 +257,8 @@ def _check_attempt(
         "rows_checked": checked,
         "rows_with_deliver_normaliser": normalised,
         "rows_with_relisten_receipt": relistened,
+        "rows_with_perception_branches": branched,
+        "perception_branch_note_parse_status": dict(sorted(note_parse_status.items())),
         "rows_failing": len({item["sample_id_sha256_12"] for item in failures}),
         "failures_by_check": dict(collections.Counter(item["check"] for item in failures)),
         "failures_by_error_class": dict(collections.Counter(item["error"] for item in failures)),

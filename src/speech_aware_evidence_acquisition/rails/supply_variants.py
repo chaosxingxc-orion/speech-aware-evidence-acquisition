@@ -72,6 +72,7 @@ ids to be declared, ordered and counted in its own receipt row.
 
 from __future__ import annotations
 
+import hashlib
 import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -81,6 +82,13 @@ from .context_budget import (
     serving_bound_reserve_tokens,
 )
 from .errors import RailsError
+from .native_episode_receipt import (
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA as _RECEIPT_PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1,
+    parse_perception_branch_note,
+    perception_branch_note_fields_error,
+    validate_perception_branch_receipt,
+)
 
 #: The receipt schema one arm group seals under. Bumped to v2 by owner
 #: decision 172 (2026-09-27, merge set B): v2 adds ``arm_visits`` and
@@ -909,8 +917,10 @@ def supply_variant_receipt(
 #: per-row rendering over the episode's own state.
 #:
 #: The receipt schema one Perception branch group seals under
-#: ``perception_branches``.
-PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v1"
+#: ``perception_branches``: v2 since 2026-09-29 (a degenerate candidate list
+#: is a measured outcome; see ``rails.native_episode_receipt``), the SAME
+#: constant the validator owns.
+PERCEPTION_BRANCH_RECEIPT_SCHEMA = _RECEIPT_PERCEPTION_BRANCH_RECEIPT_SCHEMA
 
 #: Perception has exactly one visit per row (``max_iterations`` 1, no
 #: refresh, design section 3 "Branch visits"): the fan-out is always at that
@@ -979,6 +989,9 @@ PERCEPTION_BRANCH_RECORD_KEYS = frozenset({
     "supplied_count", "max_supplied_items", "contact_id", "request_sha256",
     "response_text_sha256", "note_sha256", "note_parse_status",
     "candidate_intent_ids",
+    # Schema v2 (2026-09-29): how many intent ids the note listed before the
+    # first-occurrence collapse (0 for an empty or malformed note).
+    "candidate_intent_ids_raw_count",
     # "What to build" items 2 and 3: a branch's own presentation outcome
     # (None/None when the branch has no presentation_id, or when it does but
     # the renderer added no block -- "no extra content item" and "skipped
@@ -1656,8 +1669,17 @@ def perception_branch_record(
     presentation_skip_reason: str | None = None,
     contrast_block_sha256: str | None = None,
     min_candidates_met: bool | None = None,
+    candidate_intent_ids_raw_count: int | None = None,
 ) -> dict[str, object]:
     """One branch's receipt row (design section 3, "Receipt").
+
+    ``note_parse_status``/``candidate_intent_ids``/
+    ``candidate_intent_ids_raw_count`` (schema v2) are exactly what
+    ``rails.native_episode_receipt.parse_perception_branch_note`` returned for
+    the branch's note: the collapsed, possibly empty list plus the listed count
+    (``None`` defaults it to the list length -- a note with no duplicates).
+    Any consistent triple is a measured outcome; only an inconsistent one is
+    refused.
 
     The four ``solver_*``/``candidate_supply_value_ids`` fields are declared
     together or not at all: level 1 never supplies them, level 2 supplies
@@ -1701,6 +1723,20 @@ def perception_branch_record(
         raise PerceptionBranchError(
             f"perception branch {branch.branch_id!r} candidate_intent_ids "
             "must be non-empty strings"
+        )
+    raw_count = (
+        len(candidates) if candidate_intent_ids_raw_count is None
+        else candidate_intent_ids_raw_count
+    )
+    reason = perception_branch_note_fields_error(note_parse_status, candidates, raw_count)
+    if reason is not None:
+        raise PerceptionBranchError(f"perception branch {branch.branch_id!r}: {reason}")
+    if branch.min_candidates is not None and isinstance(min_candidates_met, bool) and (
+        min_candidates_met != (len(candidates) >= branch.min_candidates)
+    ):
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} min_candidates_met disagrees "
+            "with its own collapsed candidate list"
         )
     level2_fields = (
         solver_contact_id, solver_request_sha256, solver_response_text_sha256,
@@ -1778,6 +1814,7 @@ def perception_branch_record(
             note_parse_status, field="note_parse_status",
         ),
         "candidate_intent_ids": list(candidates),
+        "candidate_intent_ids_raw_count": int(raw_count),
         "presentation_skip_reason": presentation_skip_reason,
         "contrast_block_sha256": contrast_block_sha256,
         "min_candidates_met": min_candidates_met,
@@ -1826,6 +1863,173 @@ def perception_branch_receipt(
     }
 
 
+#: The evidence-id prefix a branch's own ``top2-contrast-v1`` block carries on
+#: the wire (``rails.runner.PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_SCHEME``,
+#: restated so this module never imports the runner).
+PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_PREFIX = "perception-branch-presentation:"
+
+
+@dataclass(frozen=True)
+class PerceptionBranchReplayContact:
+    """One recorded model contact, as a Perception-branch replay needs it.
+
+    ``presentation_block_sha256`` maps each ``perception-branch-presentation:
+    <branch_id>`` evidence item the recorded REQUEST carried to the sha256 of
+    its content -- the digest the live runner seals as
+    ``contrast_block_sha256``. Only digests, never text, beside ``text`` (the
+    recorded response, which is the branch note).
+    """
+
+    request_sha256: str | None
+    response_text_sha256: str | None
+    text: str | None
+    presentation_block_sha256: Mapping[str, str] | None = None
+
+
+def replay_perception_branch_block(
+    block: Mapping[str, object],
+    *,
+    contacts: Mapping[str, PerceptionBranchReplayContact],
+) -> dict[str, object]:
+    """Re-derive one row's ``perception_branches`` receipt from its RECORDED
+    contacts (seal-only resume-recovery, 2026-09-29, the P-SV-1 seal abort).
+
+    ``contacts`` maps each agent contact id the row's receipt names to its
+    recorded request/response (``core.flight.resume`` builds it from the
+    trace). Every branch row is rebuilt under schema v2:
+
+    * identity fields (branch id/index, deliver, replicate_of, knobs, swap,
+      presentation id, min_candidates, supplied ids, contact id and digests,
+      and the level-2 Solver custody) are KEPT from the recorded receipt, and
+      each named contact must exist with the recorded request/response digests;
+    * the note fields are RE-DERIVED from the recorded response text with
+      :func:`parse_perception_branch_note` (the note must hash to the recorded
+      ``note_sha256``);
+    * the presentation outcome is RE-DERIVED from the recorded request: a
+      ``top2-contrast-v1`` branch whose request carried its block seals that
+      block's digest; one whose request carried none seals the renderer's own
+      skip reason (fewer than two distinct supplied intents, else insufficient
+      pool support -- the only two reasons the renderer has). This restores
+      the custody the level-2 fold dropped before 2026-09-29;
+    * ``min_candidates_met`` is recomputed on the collapsed list.
+
+    A recorded non-``None`` field that disagrees with its re-derivation, or any
+    contact that cannot be accounted for, raises :class:`PerceptionBranchError`
+    -- the caller marks the row INCOMPLETE (re-flown), never approximated. The
+    rebuilt block is validated with ``validate_perception_branch_receipt``.
+    """
+
+    from .perception_presentations import (  # noqa: PLC0415 (lazy: core.base import)
+        TOP2_CONTRAST_PRESENTATION_ID,
+        TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES,
+        TOP2_CONTRAST_SKIP_REASON_INSUFFICIENT_POOL_SUPPORT,
+        branch_supplied_intent_ids,
+    )
+
+    if not isinstance(block, Mapping):
+        raise PerceptionBranchError("perception_branches is not a receipt object")
+    schema = block.get("schema")
+    if schema not in (PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA):
+        raise PerceptionBranchError("perception_branches carries an unregistered schema")
+    rows = block.get("branches")
+    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)) or not rows:
+        raise PerceptionBranchError("perception_branches has no ordered branches")
+    level = block.get("level")
+
+    def contact(contact_id: object, *, what: str) -> PerceptionBranchReplayContact:
+        found = contacts.get(contact_id) if isinstance(contact_id, str) else None
+        if found is None:
+            raise PerceptionBranchError(f"{what} names a contact this row did not record")
+        return found
+
+    rebuilt: list[dict[str, object]] = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            raise PerceptionBranchError("a perception branch record is not an object")
+        branch_id = row.get("branch_id")
+        what = f"perception branch {branch_id!r}"
+        recorded = contact(row.get("contact_id"), what=what)
+        if (
+            recorded.request_sha256 != row.get("request_sha256")
+            or recorded.response_text_sha256 != row.get("response_text_sha256")
+        ):
+            raise PerceptionBranchError(f"{what} digests differ from its recorded contact")
+        if not isinstance(recorded.text, str) or hashlib.sha256(
+            recorded.text.encode("utf-8")
+        ).hexdigest() != row.get("note_sha256"):
+            raise PerceptionBranchError(f"{what} note does not hash to its recorded response")
+        status, candidates, raw_count = parse_perception_branch_note(recorded.text)
+        if schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA and (
+            row.get("note_parse_status") != status
+            or list(row.get("candidate_intent_ids") or ()) != list(candidates)
+            or row.get("candidate_intent_ids_raw_count") != raw_count
+        ):
+            raise PerceptionBranchError(f"{what} note fields differ from their re-derivation")
+
+        blocks = recorded.presentation_block_sha256 or {}
+        own_block = blocks.get(f"{PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_PREFIX}{branch_id}")
+        foreign = [key for key in blocks if key != f"{PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_PREFIX}{branch_id}"]
+        if foreign:
+            raise PerceptionBranchError(f"{what} request carried another branch's presentation")
+        presentation_id = row.get("presentation_id")
+        if presentation_id == TOP2_CONTRAST_PRESENTATION_ID:
+            if own_block is not None:
+                contrast_block_sha256, skip_reason = own_block, None
+            else:
+                contrast_block_sha256 = None
+                skip_reason = (
+                    TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES
+                    if len(branch_supplied_intent_ids(tuple(row.get("supplied_value_ids") or ()))) < 2
+                    else TOP2_CONTRAST_SKIP_REASON_INSUFFICIENT_POOL_SUPPORT
+                )
+        else:
+            if own_block is not None:
+                raise PerceptionBranchError(
+                    f"{what} request carried a presentation block its branch does not declare"
+                )
+            contrast_block_sha256, skip_reason = None, None
+        for field, value in (
+            ("contrast_block_sha256", contrast_block_sha256),
+            ("presentation_skip_reason", skip_reason),
+        ):
+            if row.get(field) is not None and row.get(field) != value:
+                raise PerceptionBranchError(f"{what} {field} differs from its re-derivation")
+        min_candidates = row.get("min_candidates")
+        min_candidates_met = (
+            None if min_candidates is None else len(candidates) >= int(min_candidates)
+        )
+        if level == 2:
+            solver = contact(row.get("solver_contact_id"), what=f"{what} Solver column")
+            if (
+                solver.request_sha256 != row.get("solver_request_sha256")
+                or solver.response_text_sha256 != row.get("solver_response_text_sha256")
+            ):
+                raise PerceptionBranchError(
+                    f"{what} Solver column digests differ from its recorded contact"
+                )
+        new_row = dict(row)
+        new_row.update({
+            "note_parse_status": status,
+            "candidate_intent_ids": list(candidates),
+            "candidate_intent_ids_raw_count": raw_count,
+            "contrast_block_sha256": contrast_block_sha256,
+            "presentation_skip_reason": skip_reason,
+            "min_candidates_met": min_candidates_met,
+        })
+        rebuilt.append(new_row)
+    result = dict(block)
+    result["schema"] = PERCEPTION_BRANCH_RECEIPT_SCHEMA
+    result["branches"] = rebuilt
+    branch_ids = [row.get("branch_id") for row in rebuilt]
+    twin = next((row.get("branch_id") for row in rebuilt if row.get("replicate_of") is not None), None)
+    validate_perception_branch_receipt(
+        result, branch_ids=branch_ids, delivered_branch_id=branch_ids[-1],
+        twin_branch_id=twin, phase_id=str(block.get("phase_id")), level=level,
+        error_type=PerceptionBranchError,
+    )
+    return result
+
+
 __all__ = [
     "MAX_PERCEPTION_B_BRANCHES",
     "MAX_PERCEPTION_BRANCHES",
@@ -1838,7 +2042,9 @@ __all__ = [
     "PERCEPTION_BRANCH_LEVEL_SOLVER",
     "PERCEPTION_BRANCH_LEVELS",
     "PERCEPTION_BRANCH_OPTIONAL_KEYS",
+    "PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_PREFIX",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
     "PERCEPTION_BRANCH_RECORD_KEYS",
     "PERCEPTION_BRANCH_REQUIRED_KEYS",
     "PERCEPTION_BRANCH_VISITS",
@@ -1846,11 +2052,14 @@ __all__ = [
     "PerceptionBranchError",
     "PerceptionBranchGroup",
     "PerceptionBranchKnob",
+    "PerceptionBranchReplayContact",
     "parse_perception_branch_knob",
     "parse_perception_branches",
     "perception_branch_ceiling",
     "perception_branch_record",
     "perception_branch_receipt",
+    "parse_perception_branch_note",
+    "replay_perception_branch_block",
     "MAX_SUPPLY_VARIANT_ARMS",
     "MIN_SUPPLY_VARIANT_ARMS",
     "SUPPLY_VARIANT_ARM_OPTIONAL_KEYS",

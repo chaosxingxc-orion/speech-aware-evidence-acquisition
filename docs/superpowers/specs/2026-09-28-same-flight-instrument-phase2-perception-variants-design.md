@@ -290,3 +290,40 @@ rank numerals.
   rows (96.0%); the residual 42 rows land on the 2 pairs the floor still skips
   (`cooking_query`/`cooking_recipe`, `iot_hue_lightoff`/`iot_hue_lighton`) -- the identical 2 of 60
   pairs the nearest-rival table also skipped for insufficient pool support.
+
+## 9. Seal-time validation lesson (coordinator, 2026-09-29)
+
+**What happened.** P-SV-1 flew all 1,080 rows (8,709 calls) and aborted at seal (I7v): the runner sealed each
+branch note's intent list verbatim, and 61 notes over 49 rows listed one intent twice (a-agree 21,
+b-top2contrast 17, t-twin 23; no empty or malformed note). The validator required distinct ids. Receipt schema
+`saea-perception-branch-arms-v2` now records a degenerate list as a measured outcome: `candidate_intent_ids`
+keeps the parsed order with duplicates collapsed (first occurrence), `candidate_intent_ids_raw_count` records
+the listed count, and `note_parse_status` is one of `ok` / `duplicates-collapsed` / `empty` / `malformed` (the
+last two carry an empty list; the `("unparsed",)` sentinel is retired). `min_candidates_met` is computed on the
+collapsed list, so a padded `[x, x, y]` does not meet a bound of 3. Section 2's `present` metric (ruling O4)
+reads `empty` and `malformed` as gold-absent. v1 receipts keep their original rule. The same investigation
+found that the level-2 fold dropped each branch's presentation outcome (every P-SV-1 `b-top2contrast` row sealed
+None/None, which contradicts ruling O5's per-row `presentation_skip_reason`). It would also have refused every
+row of a level-2 `min_candidates` branch (P-SV-2 `b-list3`). Both are fixed, and a seal-only replay rebuilds
+the whole block from the trace.
+
+**The pattern.** This is the third whole-run abort at seal in one day caused by a rare row class hitting a
+validator that only the seal ran: COMP-1 (citation ids), E4-1 (a finite delivery followed by relisten
+contacts), and P-SV-1 (a repeated intent). Each time, every row had flown and the delivered answers were sound,
+but one row class discarded the whole run until a seal-only recovery.
+
+**Proposal (not implemented here).**
+
+1. *Per-row receipt validation at row completion.* Run the row-level receipt validators (I7, I7n, I7v, I7l,
+   I7g and the delivery receipt) as soon as each row seals its episode receipt, not only in `verify_bundle`.
+2. *Per-row quarantine instead of a whole-run abort.* A row that fails gets `row_status: "receipt-invalid"`
+   and a reason class. Its delivered answer and custody are kept, and it is excluded from every column read.
+   Each read reports the quarantined count per class beside its n. The seal still fails closed on
+   run-level invariants (roster, manifest, trace hash, duplicate rows) and when quarantined rows exceed a
+   registered ceiling (proposed: 1% of the roster), so a systematic defect still stops the flight.
+3. *Smoke rosters by class, not by count.* A four-row smoke proves only the classes it happens to draw.
+   Before a smoke is accepted, its roster must include at least one row of each delivery kind (accepted
+   first visit, revisit, finite-completion, abstention) and each branch outcome class the receipt can
+   record (`ok`, `duplicates-collapsed`, `empty`, `malformed`, a rendered presentation block, and each skip
+   reason). Classes the model does not produce on real rows are covered by a fake-transport live test
+   instead (as `tests/unit/test_perception_branch_degenerate_lists.py` now does).
