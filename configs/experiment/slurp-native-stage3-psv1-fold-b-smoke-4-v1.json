@@ -20,12 +20,6 @@
             "reason": "The Fold B exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py (DEV parameters, the DEV/Fold A builder) from the committed FILLER BASE cell's pins -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 60 facets reachable; bytes identical to the filler table (docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md; ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1).",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
             "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
-          },
-          {
-            "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "9109afb5e91403ced4fa656edcca72b4112d1a697584374f37c82245dbf70689",
-            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
         "state": "held"
