@@ -337,8 +337,17 @@ def stage_per_scenario(core_args, left, right, roster, contrast: dict) -> dict:
 # --------------------------------------------------------------------------
 
 
-def _phase_boundaries(arm) -> tuple[dict[str, dict], dict]:
-    """Per row: the set of delivered intent-boundary items and each one's consumption outcome."""
+def _phase_boundaries(arm) -> tuple[dict[str, dict] | None, dict]:
+    """Per row: the set of delivered intent-boundary items and each one's consumption outcome.
+
+    Returns ``(None, source)`` -- never an all-empty boundary map -- when the sealed phase
+    artefact is a seal-only replay (``seal_only_replay: true``, E10e 2026-09-29):
+    ``core.flight.resume``'s model-free replay cannot reconstruct ``consumption`` custody from
+    a predecessor's trace (it is knowledge-provider bookkeeping the live runner never re-emits
+    to the trace), so this arm's own boundary set is UNKNOWN, not empty. Treating "unknown" as
+    "delivered nothing" would fabricate a false negative delivery signal; the caller must refuse
+    or mark itself NOT_AVAILABLE instead of computing over an empty boundary map.
+    """
 
     path = arm.artifact("phases.json")
     if not path.exists():
@@ -352,6 +361,11 @@ def _phase_boundaries(arm) -> tuple[dict[str, dict], dict]:
     phases = document.get("phases") or []
     if document.get("schema") != "saea-flight-phase-summaries-v1" or len(phases) != 1:
         raise Stage3ReadError(f"{arm.spec.label}: unexpected phase artefact shape")
+    source = {"relpath": f"runs/{arm.spec.run_id}/{arm.spec.attempt_id}/{path.name}", "sha256": sha,
+              "seal_pin_checked": bool(pinned)}
+    if document.get("seal_only_replay"):
+        return None, {**source, "seal_only_replay": True,
+                       "omitted_fields": document.get("omitted_fields") or []}
     out: dict[str, dict] = {}
     for result in phases[0].get("results") or ():
         boundary: dict[str, str] = {}
@@ -360,8 +374,7 @@ def _phase_boundaries(arm) -> tuple[dict[str, dict], dict]:
             if item.startswith(BOUNDARY_PREFIX):
                 boundary[item] = str(record.get("outcome"))
         out[str(result["sample_id"])] = boundary
-    return out, {"relpath": f"runs/{arm.spec.run_id}/{arm.spec.attempt_id}/{path.name}", "sha256": sha,
-                 "seal_pin_checked": bool(pinned)}
+    return out, source
 
 
 def _load_bank(data_root: Path, ext: Extensions, bank_roster: str, ids: Sequence[str]) -> tuple[dict, dict]:
@@ -413,6 +426,16 @@ def stage_delivery(core_args, ext: Extensions, left, right, roster) -> dict:
                 "reason": f"no gold-bank roster block is known for roster {roster_id!r}; pass --gold-bank-roster"}
     left_boundary, left_src = _phase_boundaries(left)
     right_boundary, right_src = _phase_boundaries(right)
+    if left_boundary is None or right_boundary is None:
+        # E10e (2026-09-29): a seal-only arm's phases.json cannot carry
+        # consumption custody (see ``_phase_boundaries``). This is UNKNOWN,
+        # not "no boundary item was ever supplied" -- NOT_AVAILABLE, not
+        # NOT_APPLICABLE, and no delivery/conversion count is computed.
+        return {**base, "status": "NOT_AVAILABLE",
+                "reason": "a seal-only arm's phases.json is a trace replay and carries no "
+                          "consumption custody (core.flight.resume cannot reconstruct it "
+                          "from the predecessor trace)",
+                "phases": {"left": left_src, "right": right_src}}
     for label, boundary in ((left.spec.label, left_boundary), (right.spec.label, right_boundary)):
         if sorted(boundary) != sorted(ids):
             raise Stage3ReadError(f"{label}: the phase artefact's rows are not the roster")

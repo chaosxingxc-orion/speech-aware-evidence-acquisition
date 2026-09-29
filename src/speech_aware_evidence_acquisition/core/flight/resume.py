@@ -188,6 +188,16 @@ class PredecessorContact:
     #: response-format schema name. ``None`` when the trace records neither.
     role_id: str | None = None
     relisten_kind: str | None = None
+    #: E10e (2026-09-29, seal-only read gap): this ONE contact's own recorded
+    #: ``COST`` payload fields -- ``audio_seconds``/``prompt_tokens``/
+    #: ``completion_tokens`` -- the same per-request accounting
+    #: ``core.model.adapter.FrozenCoreAdapter`` sums into
+    #: ``cost_summary()``. ``None`` when the trace carries no ``COST`` record
+    #: for this request (never assumed zero, so a summation over these stays
+    #: honest about what it actually added).
+    audio_seconds: float | None = None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
 
     @property
     def answered(self) -> bool:
@@ -262,6 +272,43 @@ class PredecessorAttempt:
 
     def contact_count(self) -> int:
         return sum(len(items) for items in self.contacts.values())
+
+    def cost_totals(self) -> dict[str, object]:
+        """This attempt's OWN real spend, summed over EVERY contact of EVERY
+        started sample -- kept, incomplete and (for a partial resume)
+        subsequently re-flown alike, exactly the total
+        ``core.model.adapter.FrozenCoreAdapter.cost_summary()`` would have
+        reported had this attempt itself reached ``seal()`` (E10e,
+        2026-09-29, seal-only read gap: an ABORTED predecessor -- the
+        ordinary case a resume-recovery exists for -- never reaches seal(),
+        so it never writes a ``<run_id>.generation-manifest.json`` or
+        ``<run_id>.run-manifest.json`` of its own; this attempt's TRACE,
+        already scanned into :attr:`contacts`, is the one place its real
+        cost survives).
+
+        Every field sums only the contacts that actually carry it (a
+        ``COST`` record this module could not read is skipped, not counted
+        as zero), so this is a lower bound when the trace is incomplete,
+        never a silently wrong total.
+        """
+
+        totals = {
+            "calls_used": 0,
+            "audio_seconds_used": 0.0,
+            "latency_seconds_total": 0.0,
+            "prompt_tokens_total": 0,
+            "completion_tokens_total": 0,
+            "tool_calls": 0,
+        }
+        for contacts in self.contacts.values():
+            for contact in contacts:
+                totals["calls_used"] += 1
+                totals["audio_seconds_used"] += contact.audio_seconds or 0.0
+                totals["latency_seconds_total"] += contact.latency_seconds
+                totals["prompt_tokens_total"] += contact.prompt_tokens or 0
+                totals["completion_tokens_total"] += contact.completion_tokens or 0
+                totals["tool_calls"] += contact.native_tool_calls or 0
+        return totals
 
     def replay(
         self, sample_ids: Sequence[str], *, controller_policy_id: str | None = None,
@@ -412,6 +459,25 @@ class MergedPredecessors:
             f"sample {sample_id!r} is not COMPLETE in any declared predecessor"
         )
 
+    def cost_totals(self) -> dict[str, object]:
+        """The sum, field by field, of every declared predecessor's OWN
+        :meth:`PredecessorAttempt.cost_totals` (E10e, 2026-09-29) -- the real
+        spend a seal-only completion's ``<run_id>.generation-manifest.json``
+        reports in place of this attempt's own (honestly zero) cost."""
+
+        totals = {
+            "calls_used": 0,
+            "audio_seconds_used": 0.0,
+            "latency_seconds_total": 0.0,
+            "prompt_tokens_total": 0,
+            "completion_tokens_total": 0,
+            "tool_calls": 0,
+        }
+        for predecessor in self.predecessors:
+            for key, value in predecessor.cost_totals().items():
+                totals[key] += value
+        return totals
+
     def replay(
         self, sample_ids: Sequence[str], *, controller_policy_id: str | None = None,
     ) -> tuple[tuple[ReplayedPhaseSummary, ...], tuple[object, ...]]:
@@ -521,6 +587,11 @@ def _scan_trace(
     requests: dict[str, dict[str, object]] = {}
     responses: dict[str, tuple[str, str, str]] = {}
     latency: dict[str, float] = {}
+    #: E10e (2026-09-29): the same ``COST`` payload's other accounting
+    #: fields, keyed by request id exactly as ``latency`` already is.
+    audio_seconds: dict[str, float] = {}
+    prompt_tokens: dict[str, int] = {}
+    completion_tokens: dict[str, int] = {}
     tool_calls: dict[str, int | None] = {}
     roles: dict[str, str] = {}
     episodes: dict[str, Mapping[str, object]] = {}
@@ -602,9 +673,19 @@ def _scan_trace(
             elif channel == "MODEL_WIRE_RESPONSE" and record_id.endswith("/wire-response"):
                 tool_calls[record_id[: -len("/wire-response")]] = _native_tool_calls(payload)
             elif channel == "COST" and record_id.endswith("/cost"):
+                request_id = record_id[: -len("/cost")]
                 seconds = payload.get("latency_seconds")
                 if isinstance(seconds, (int, float)) and not isinstance(seconds, bool):
-                    latency[record_id[: -len("/cost")]] = float(seconds)
+                    latency[request_id] = float(seconds)
+                audio = payload.get("audio_seconds")
+                if isinstance(audio, (int, float)) and not isinstance(audio, bool):
+                    audio_seconds[request_id] = float(audio)
+                prompt = payload.get("prompt_tokens")
+                if isinstance(prompt, int) and not isinstance(prompt, bool):
+                    prompt_tokens[request_id] = prompt
+                completion = payload.get("completion_tokens")
+                if isinstance(completion, int) and not isinstance(completion, bool):
+                    completion_tokens[request_id] = completion
             elif channel == "USE" and record_id.endswith(NATIVE_ROLE_CONTACT_RECORD_SUFFIX):
                 role_id = payload.get("use_role_id")
                 if isinstance(role_id, str) and role_id:
@@ -636,6 +717,9 @@ def _scan_trace(
                     text=None if answer is None else answer[2],
                     latency_seconds=latency.get(request_id, 0.0),
                     native_tool_calls=tool_calls.get(request_id),
+                    audio_seconds=audio_seconds.get(request_id),
+                    prompt_tokens=prompt_tokens.get(request_id),
+                    completion_tokens=completion_tokens.get(request_id),
                     role_id=roles.get(request_id),
                     relisten_kind=(
                         _relisten_kind(meta.get("schema_name"))
