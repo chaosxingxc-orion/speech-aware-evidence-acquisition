@@ -2425,6 +2425,26 @@ def register_response_formats_v1() -> None:
             "slurp-verifier-choice-v1",
             slurp_verifier_choice_response_format,
         )
+    # Item E4 (2026-09-28, owner decision 185): the post-accept targeted
+    # re-listen's two contacts, blind and forced-choice. Registering the ids
+    # changes no phase (design section 6: the stage is wired beside
+    # ``rails.runner``'s node-context-cleaning contact, never through a
+    # ``PhaseProgram`` phase entry); ``native_episode.relisten`` names them
+    # directly.
+    if "slurp-relisten-value-v1" not in registered:
+        from .relisten import relisten_blind_response_format
+
+        RESPONSE_FORMATS.register(
+            "slurp-relisten-value-v1",
+            relisten_blind_response_format,
+        )
+    if "slurp-relisten-confirm-v1" not in registered:
+        from .relisten import relisten_confirm_response_format
+
+        RESPONSE_FORMATS.register(
+            "slurp-relisten-confirm-v1",
+            relisten_confirm_response_format,
+        )
 
 
 register_response_formats_v1()

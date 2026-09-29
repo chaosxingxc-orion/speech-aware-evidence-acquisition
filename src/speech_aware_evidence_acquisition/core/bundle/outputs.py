@@ -29,6 +29,15 @@ again strictly stronger custody: the recorded model response for the row's
 own request id must be exactly the rule's recorded INPUT, the named rule must
 be registered and deterministic, and re-running it over those response bytes
 must reproduce the delivered bytes byte for byte.
+
+Item E4 (2026-09-28, owner decision 185): the post-accept targeted relisten
+stage is a SHADOW mechanism -- it never mutates the delivered ``text`` --
+so I7 is unaffected by its presence. A row whose episode ran it carries a
+top-level ``relisten`` receipt (``rails.relisten.seal_relisten_receipt``),
+and is additionally held to I7l: every entity's blind (and, when fired,
+forced-choice) contact named in that receipt must be a real, traced contact
+of the row, and its disposition/vote must re-derive from the trace's own
+recorded response text rather than from the receipt's claim alone.
 """
 
 from __future__ import annotations
@@ -996,6 +1005,136 @@ def _verify_perception_branch_trace_binding(
         )
 
 
+#: Item E4 (owner decision 185, 2026-09-28): the invariant code a post-accept
+#: targeted-relisten custody refusal names. I7 is unchanged and still binds
+#: the row's delivered TEXT to its own response (the relisten stage's shadow
+#: delivery never mutates it); a row that also carries a ``relisten`` receipt
+#: is additionally held to I7l -- every entity's blind (and, when fired,
+#: forced-choice) contact must be a real, traced contact of THIS row, and its
+#: disposition/vote must re-derive from that trace's own recorded response
+#: text, never merely from the receipt's own say-so.
+RELISTEN_INVARIANT = "I7l"
+
+
+def _verify_relisten_trace_binding(
+    row: Mapping[str, object], trace_records: Mapping[str, Mapping[str, object]],
+) -> None:
+    """I7l: bind every relisten entity's contact(s) to the row's own trace.
+
+    Design ``docs/superpowers/specs/2026-09-28-e4-core-native-targeted-
+    relisten-design.md`` section 1's receipt paragraph: the ``saea-
+    relisten-v1`` receipt seals contact ids, hashes and flags, never the
+    value's own bytes. This re-derives each entity's disposition (and, when
+    fired, its forced-choice vote) from the TRACE's own recorded response
+    text via ``rails.relisten``'s own parsers -- the same re-derivation
+    ``rails.relisten.bind_shadow_entities``'s caller
+    (``scripts/analysis/stage3_rollout_score.py``'s
+    ``render_relisten_shadow_columns``) performs to bind an ACCEPTED value --
+    rather than trusting the receipt's claim alone, and confirms
+    ``contacts_used`` is exactly the row's own relisten spend: one blind
+    contact per triggered entity plus one forced-choice contact per entity
+    whose ``confirm`` block is present.
+
+    Unlike :func:`_verify_supply_variant_trace_binding` and
+    :func:`_verify_perception_branch_trace_binding`, a relisten contact is
+    never named inside ``native_episode_receipt.role_visits`` (design section
+    6: the stage is wired beside ``rails.runner``'s node-context-cleaning
+    contact, not as a phase of the program), so this check reads the
+    ``relisten`` receipt's own contact ids directly rather than cross
+    checking against a role visit's ``execution_receipt``.
+    """
+
+    from ...rails.relisten import (
+        RELISTEN_RECEIPT_SCHEMA, canonical_value, parse_blind_response,
+        parse_confirm_letter, resolve_confirm_vote,
+    )
+
+    label = _row_label(row)
+
+    def refuse(reason: str) -> None:
+        raise BundleError(f"{label}: {reason} ({RELISTEN_INVARIANT})")
+
+    receipt = row.get("relisten")
+    if not isinstance(receipt, Mapping) or receipt.get("schema") != RELISTEN_RECEIPT_SCHEMA:
+        refuse("relisten must be a saea-relisten-v1 receipt object")
+    entities = receipt.get("entities")
+    if not isinstance(entities, Sequence) or isinstance(entities, (str, bytes)):
+        refuse("relisten receipt carries no entities list")
+
+    contacts_used = 0
+    seen_contacts: set[str] = set()
+    for entity in entities:
+        if not isinstance(entity, Mapping):
+            refuse("relisten entity is not an object")
+        blind = entity.get("blind")
+        if not isinstance(blind, Mapping):
+            refuse("relisten entity carries no blind block")
+        contact_id = blind.get("contact_id")
+        if not isinstance(contact_id, str) or not contact_id or contact_id in seen_contacts:
+            refuse("relisten blind contact has invalid identity")
+        seen_contacts.add(contact_id)
+        request = trace_records.get(f"{contact_id}/request")
+        response = trace_records.get(f"{contact_id}/response")
+        if not isinstance(request, Mapping) or not isinstance(response, Mapping):
+            refuse(f"relisten blind contact {contact_id!r} has no trace pair")
+        if _request_record_sample_id(request) != row.get("sample_id"):
+            refuse(f"relisten blind contact {contact_id!r} belongs to another sample")
+        text = response.get("text")
+        if not isinstance(text, str):
+            refuse(f"relisten blind contact {contact_id!r} has no recorded response text")
+        parsed = parse_blind_response(text)
+        if parsed.disposition != blind.get("disposition"):
+            refuse(f"relisten blind contact {contact_id!r} disposition disagrees with its trace")
+        expected_value_sha = (
+            None if parsed.value is None
+            else hashlib.sha256(parsed.value.encode("utf-8")).hexdigest()
+        )
+        expected_canonical_sha = (
+            None if parsed.value is None
+            else hashlib.sha256(canonical_value(parsed.value).encode("utf-8")).hexdigest()
+        )
+        if (
+            blind.get("value_sha256") != expected_value_sha
+            or blind.get("canonical_sha256") != expected_canonical_sha
+        ):
+            refuse(f"relisten blind contact {contact_id!r} value hash disagrees with its trace")
+        contacts_used += 1
+
+        confirm = entity.get("confirm")
+        if confirm is None:
+            continue
+        if not isinstance(confirm, Mapping):
+            refuse("relisten entity confirm block is malformed")
+        confirm_contact_id = confirm.get("contact_id")
+        if (
+            not isinstance(confirm_contact_id, str) or not confirm_contact_id
+            or confirm_contact_id in seen_contacts
+        ):
+            refuse("relisten confirm contact has invalid identity")
+        seen_contacts.add(confirm_contact_id)
+        confirm_request = trace_records.get(f"{confirm_contact_id}/request")
+        confirm_response = trace_records.get(f"{confirm_contact_id}/response")
+        if not isinstance(confirm_request, Mapping) or not isinstance(confirm_response, Mapping):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} has no trace pair")
+        if _request_record_sample_id(confirm_request) != row.get("sample_id"):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} belongs to another sample")
+        confirm_text = confirm_response.get("text")
+        order = confirm.get("order")
+        if (
+            not isinstance(confirm_text, str)
+            or not isinstance(order, Sequence) or isinstance(order, (str, bytes))
+            or len(order) != 2
+        ):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} has no recorded response")
+        vote = resolve_confirm_vote(parse_confirm_letter(confirm_text), tuple(order))
+        if vote != confirm.get("vote"):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} vote disagrees with its trace")
+        contacts_used += 1
+
+    if receipt.get("contacts_used") != contacts_used:
+        refuse("relisten contacts_used disagrees with its own entity contacts")
+
+
 def _split_jsonl(text: str) -> list[str]:
     """Split on the literal record separator only (matches ``core.tracing``'s
     and ``core.scorers``' own discipline): ``json.dumps(ensure_ascii=False)``
@@ -1388,3 +1527,5 @@ def _verify_outputs_trace_binding(
             and "perception_branches" in episode_for_branches
         ):
             _verify_perception_branch_trace_binding(row, records)
+        if "relisten" in row:
+            _verify_relisten_trace_binding(row, records)

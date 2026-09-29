@@ -53,18 +53,31 @@ the design's own twin/shadow null, registered in
 ``same-flight-supply-variant`` uses, 0.735 * sqrt(200 / rows), until an
 instrument cell has flown and measured its own paired-difference null).
 
-NOT IN THIS MODULE. The post-accept ``NativeRoleNode`` insertion into
-``reproduction.ojw.native_episode``'s workflow graph and its
-``MeteredNativeSpeechRequest`` wiring in ``rails.runner`` (the E18
-``speech-reobserve`` acquisition node, ``rails/acquisition.py``, is the
-closest existing analogue for both) are NOT implemented in this change; see
-this module's own commit message and the implementation report for the exact
-boundary. Every function here is pure and model-free, so it is fully
-testable without any model, server or GPU contact -- the config surface
-(``rails.native_episode_config``), the registered program id
-(``rails.controllers``), the two gates, and the offline shadow-column
-render/score (``scripts/analysis/stage3_rollout_score.py``) all depend only
-on this module's pure functions and the receipt shape they define.
+THE NODE. The post-accept stage is wired into ``rails.runner``'s own
+per-row dispatch (not into ``reproduction.ojw.native_episode``'s
+ACCEPT/REVISE/ACQUIRE workflow graph, which has already finished by the time
+this stage runs): a dedicated ``MeteredNativeSpeechRequest`` instance, built
+unconditionally beside its E8b node-context-cleaning sibling and spent only
+when ``native_episode.relisten`` is armed, sends each blind/forced-choice
+contact through the SAME ``FrozenCoreClient`` every role contact uses, over
+the packet-only messages ``rails.runner.node_context_cleaning_messages``
+already composes (audio, no evidence -- exactly section 1's "the packet ...
+but not c"). The E18 ``speech-reobserve`` acquisition node
+(``rails/acquisition.py``) and the E8b cleaning contact
+(``rails.node_context_policy`` / ``rails.runner.run_cleaning_contact``) are
+the closest existing analogues: like acquisition's kind (b), it is a
+Perception-kind role making a real metered contact outside the ACCEPT/REVISE
+FSM; like a cleaning contact, its response format and instruction are named
+explicitly per call rather than resolved from a fixed ``PhaseProgram`` phase
+entry, because the blind and forced-choice contacts need two different
+response formats under the one post-accept stage. Every function in THIS
+module stays pure and model-free, so it is fully testable without any model,
+server or GPU contact -- the config surface (``rails.native_episode_config``),
+the registered program id (``rails.controllers``), the two gates, the
+``rails.runner`` wiring, the ``I7l`` bundle custody check
+(``core.bundle.outputs``), and the offline shadow-column render/score
+(``scripts/analysis/stage3_rollout_score.py``) all depend only on this
+module's pure functions and the receipt shape they define.
 
 Research-boundary discipline (repository ``CLAUDE.md``): no gold, no
 reference transcript and no future turn ever reaches this module -- it reads
@@ -109,6 +122,84 @@ CONFIRM_RESPONSE_FORMAT_ID = "slurp-relisten-confirm-v1"
 #: ``configs/probes/slurp_relisten_{blind,confirm}_v1.txt``.
 BLIND_TEMPLATE_ID = "slurp_relisten_blind_v1"
 CONFIRM_TEMPLATE_ID = "slurp_relisten_confirm_v1"
+
+#: The forced-choice CANDIDATE option's text on a blind ``heard = false`` (or
+#: unparsed) fire (ruling 2b): neither contact names a real value there, so
+#: this fixed, bracketed sentinel stands in for it. It is never a legal SLURP
+#: filler and no template asks the model to reproduce it, so it can never be
+#: mistaken for a real heard value if it ever appears in a hash comparison or
+#: a rendered confirm option.
+UNHEARD_SENTINEL = "[no value heard]"
+
+
+def relisten_blind_response_format(
+    _lock: object = None, _root: object = None, **params: object
+) -> dict[str, object]:
+    """``core.base.RESPONSE_FORMATS`` entry :data:`BLIND_RESPONSE_FORMAT_ID`
+    (``slurp-relisten-value-v1``, section 1): ``{"heard": bool, "value":
+    string}``. :func:`parse_blind_response` is the schema's own reader, so a
+    response generated under this format satisfies the shape half of that
+    parser by construction; the parser alone still enforces the word-count
+    bound (a JSON Schema cannot count words) and every malformed-input
+    fallback.
+
+    Registered from ``rails.controllers.register_response_formats_v1`` --
+    the ONE canonical ``RESPONSE_FORMATS`` registration site
+    (``scripts/checks/engineering_base_check.py``'s own rule) -- not from
+    this module, exactly as every other bespoke response format (cited-
+    answer, NCP cleaning, Stage-3 advantage/GEPA, SLURP verifier choice) is:
+    the function lives beside its schema and parser, the ``.register(...)``
+    call lives at the one canonical site.
+    """
+
+    if params:
+        raise RelistenError("the relisten blind response format takes no parameters")
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "slurp_relisten_value_v1",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["heard", "value"],
+                "properties": {
+                    "heard": {"type": "boolean"},
+                    "value": {"type": "string"},
+                },
+            },
+        },
+    }
+
+
+def relisten_confirm_response_format(
+    _lock: object = None, _root: object = None, **params: object
+) -> dict[str, object]:
+    """``core.base.RESPONSE_FORMATS`` entry :data:`CONFIRM_RESPONSE_FORMAT_ID`
+    (``slurp-relisten-confirm-v1``, section 1): ``{"choice": "A"|"B"|
+    "neither"}``. :func:`parse_confirm_letter` is the schema's own reader.
+    Registered from ``rails.controllers.register_response_formats_v1``; see
+    :func:`relisten_blind_response_format`.
+    """
+
+    if params:
+        raise RelistenError("the relisten confirm response format takes no parameters")
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "slurp_relisten_confirm_v1",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["choice"],
+                "properties": {
+                    "choice": {"type": "string", "enum": ["A", "B", "neither"]},
+                },
+            },
+        },
+    }
+
 
 #: Section 1: "the stage re-listens to at most 3 entities per row" -- the
 #: hard v1 ceiling; ``native_episode.relisten.max_slots_per_row`` may declare

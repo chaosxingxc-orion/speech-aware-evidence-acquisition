@@ -21,6 +21,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from speech_aware_evidence_acquisition.core.bundle import outputs as bundle_outputs
 from speech_aware_evidence_acquisition.rails import relisten as rl
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 from speech_aware_evidence_acquisition.rails.native_episode_config import (
@@ -568,3 +569,138 @@ def test_flight_registration_gate_is_a_no_op_for_a_non_relisten_design():
     reg_mod._check_relisten_registration(report, fragment, None, floor_mod, REPO_ROOT)
     assert report.findings == []
     assert report.relisten is None
+
+
+# ---------------------------------------------------------------------------
+# 10. I7l bundle custody (core.bundle.outputs) -- the online node's own
+# receipt, re-derived from the row's own sealed trace rather than trusted.
+# ---------------------------------------------------------------------------
+
+
+def _relisten_trace_pair(contact_id, text, *, sample_id="s1"):
+    return {
+        f"{contact_id}/request": {"payload": {"sample_id": sample_id}},
+        f"{contact_id}/response": {"text": text},
+    }
+
+
+def test_i7l_verifies_a_genuine_accepted_relisten_row():
+    order = rl.confirm_order("s1", "time")
+    blind_text = json.dumps({"heard": True, "value": "eight pm"})
+    confirm_letter = "A" if order[0] == rl.CONFIRM_CANDIDATE else "B"
+    confirm_text = json.dumps({"choice": confirm_letter})
+    accepted = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.parse_blind_response(blind_text), blind_contact_id="req-blind-0",
+        confirm_letter=rl.parse_confirm_letter(confirm_text), order=order,
+        confirm_contact_id="req-confirm-0",
+    )
+    assert accepted.accept is True
+    receipt = rl.seal_relisten_receipt([accepted], max_slots_per_row=3)
+    row = {"sample_id": "s1", "relisten": receipt}
+    trace = {
+        **_relisten_trace_pair("req-blind-0", blind_text),
+        **_relisten_trace_pair("req-confirm-0", confirm_text),
+    }
+    bundle_outputs._verify_relisten_trace_binding(row, trace)  # must not raise
+
+
+def test_i7l_verifies_a_skipped_entity_with_no_confirm_contact():
+    blind_text = json.dumps({"heard": True, "value": "paris"})
+    skipped = rl.decide_entity(
+        index=0, slot_type="place_name", delivered_value="paris",
+        blind=rl.parse_blind_response(blind_text), blind_contact_id="req-blind-0",
+        confirm_letter=None, order=None,
+    )
+    receipt = rl.seal_relisten_receipt([skipped], max_slots_per_row=3)
+    row = {"sample_id": "s1", "relisten": receipt}
+    bundle_outputs._verify_relisten_trace_binding(
+        row, _relisten_trace_pair("req-blind-0", blind_text),
+    )
+
+
+def test_i7l_refuses_a_disposition_that_disagrees_with_the_trace():
+    blind_text = json.dumps({"heard": True, "value": "eight pm"})
+    skipped = rl.decide_entity(
+        index=0, slot_type="place_name", delivered_value="paris",
+        blind=rl.parse_blind_response(json.dumps({"heard": False, "value": ""})),
+        blind_contact_id="req-blind-0", confirm_letter=None, order=None,
+    )
+    receipt = json.loads(json.dumps(rl.seal_relisten_receipt([skipped], max_slots_per_row=3)))
+    # The sealed receipt honestly says "unheard"; the trace's own recorded
+    # response text says otherwise -- a forged/corrupted receipt.
+    row = {"sample_id": "s1", "relisten": receipt}
+    with pytest.raises(bundle_outputs.BundleError, match="I7l"):
+        bundle_outputs._verify_relisten_trace_binding(
+            row, _relisten_trace_pair("req-blind-0", blind_text),
+        )
+
+
+def test_i7l_refuses_a_missing_trace_pair():
+    record = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.BlindResult(rl.BLIND_VALUE, "eight pm", 2),
+        blind_contact_id="req-blind-missing", confirm_letter=None, order=None,
+    )
+    receipt = rl.seal_relisten_receipt([record], max_slots_per_row=3)
+    row = {"sample_id": "s1", "relisten": receipt}
+    with pytest.raises(bundle_outputs.BundleError, match="I7l"):
+        bundle_outputs._verify_relisten_trace_binding(row, {})
+
+
+def test_i7l_refuses_a_forged_vote():
+    order = rl.confirm_order("s1", "time")
+    blind_text = json.dumps({"heard": True, "value": "eight pm"})
+    letter = "A" if order[0] == rl.CONFIRM_CANDIDATE else "B"
+    confirm_text = json.dumps({"choice": letter})
+    accepted = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.parse_blind_response(blind_text), blind_contact_id="req-blind-0",
+        confirm_letter=rl.parse_confirm_letter(confirm_text), order=order,
+        confirm_contact_id="req-confirm-0",
+    )
+    receipt = json.loads(json.dumps(rl.seal_relisten_receipt([accepted], max_slots_per_row=3)))
+    # Forge the sealed vote to disagree with what the trace's own confirm
+    # response text actually says.
+    forged_vote = (
+        rl.CONFIRM_DELIVERED
+        if receipt["entities"][0]["confirm"]["vote"] != rl.CONFIRM_DELIVERED
+        else rl.CONFIRM_CANDIDATE
+    )
+    receipt["entities"][0]["confirm"]["vote"] = forged_vote
+    row = {"sample_id": "s1", "relisten": receipt}
+    trace = {
+        **_relisten_trace_pair("req-blind-0", blind_text),
+        **_relisten_trace_pair("req-confirm-0", confirm_text),
+    }
+    with pytest.raises(bundle_outputs.BundleError, match="I7l"):
+        bundle_outputs._verify_relisten_trace_binding(row, trace)
+
+
+def test_i7l_refuses_a_contacts_used_mismatch():
+    blind_text = json.dumps({"heard": True, "value": "paris"})
+    record = rl.decide_entity(
+        index=0, slot_type="place_name", delivered_value="paris",
+        blind=rl.parse_blind_response(blind_text), blind_contact_id="req-blind-0",
+        confirm_letter=None, order=None,
+    )
+    receipt = json.loads(json.dumps(rl.seal_relisten_receipt([record], max_slots_per_row=3)))
+    receipt["contacts_used"] = 99
+    row = {"sample_id": "s1", "relisten": receipt}
+    with pytest.raises(bundle_outputs.BundleError, match="I7l"):
+        bundle_outputs._verify_relisten_trace_binding(
+            row, _relisten_trace_pair("req-blind-0", blind_text),
+        )
+
+
+def test_i7l_is_wired_by_key_presence_alone():
+    """``_verify_outputs_trace_binding`` dispatches on the row's own
+    ``"relisten"`` key (mirroring ``"supply_variants"``/
+    ``"perception_branches"``), never on a declared config -- so a row that
+    carries the key is checked regardless of how it got there."""
+
+    import inspect
+
+    source = inspect.getsource(bundle_outputs._verify_outputs_trace_binding)
+    assert '"relisten" in row' in source
+    assert "_verify_relisten_trace_binding(row, records)" in source
