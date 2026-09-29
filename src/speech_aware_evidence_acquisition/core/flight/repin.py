@@ -1481,6 +1481,74 @@ def _is_foreign_config(path: Path, *, run_ids: set[str]) -> bool:
     return bool(file_run_ids) and file_run_ids.isdisjoint(run_ids)
 
 
+def _resume_parent_attempt_ids(resolved: Sequence[tuple[str, CampaignCell]]) -> set[str]:
+    """Every predecessor attempt id named by a resolved cell's own
+    ``resume_from`` declaration(s) (:mod:`core.flight.resume`) -- the sealed
+    or aborted arm(s) a resume/seal-only completion is built on. Empty for an
+    ordinary cell that declares no ``resume_from`` at all.
+    """
+
+    from .resume import resume_declarations_from_document  # noqa: PLC0415
+
+    attempt_ids: set[str] = set()
+    for _experiment, cell in resolved:
+        resume = cell.resume_from
+        if resume is None:
+            continue
+        for declaration in resume_declarations_from_document(resume):
+            attempt_ids.add(declaration.attempt_id)
+    return attempt_ids
+
+
+def _resume_parent_config_paths(repo_root: Path, attempt_ids: set[str]) -> set[Path]:
+    """The parent cell's own experiment fragment and baseline fragment paths,
+    for every cell declared anywhere under ``configs/experiment/`` whose OWN
+    ``attempt_id`` is named by ``attempt_ids`` -- a resume/seal-only cell's
+    own ``resume_from`` chain.
+
+    Item E4-1 (2026-09-29): unlike a ``docs/readiness/`` package (identified
+    by directory and exempted by :func:`_is_foreign_readiness_package` /
+    :func:`_is_sealed_package_record`), a parent cell's ``configs/`` fragments
+    carry no directory boundary of their own, and ``resume_from`` names only
+    an attempt id and a trace sha256 -- no experiment or cell id -- so the
+    parent's own fragment paths must be found by searching every experiment
+    fragment for the matching attempt id, the same way a plan document's own
+    ``execution_plan.attempt_id`` identifies it in
+    :func:`_is_earlier_attempt_plan_document`.
+
+    A resume/seal-only cell's own ``attempt_id`` is never named by its own
+    ``resume_from`` (:meth:`CampaignCell.from_document` refuses that), so
+    calling this with the current re-pin's ``attempt_ids`` would safely find
+    nothing; the caller only ever passes the PARENT chain's attempt ids.
+    """
+
+    if not attempt_ids:
+        return set()
+    experiment_dir = Path(repo_root) / "configs" / "experiment"
+    if not experiment_dir.is_dir():
+        return set()
+    paths: set[Path] = set()
+    for path in sorted(experiment_dir.glob("*.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        cells = document.get("cells") if isinstance(document, Mapping) else None
+        if not isinstance(cells, list):
+            continue
+        for cell in cells:
+            if not isinstance(cell, Mapping):
+                continue
+            attempt_id = cell.get("attempt_id")
+            if not (isinstance(attempt_id, str) and attempt_id in attempt_ids):
+                continue
+            paths.add(path.resolve())
+            baseline_fragment = cell.get("baseline_fragment")
+            if isinstance(baseline_fragment, str) and baseline_fragment:
+                paths.add(baseline_fragment_path(repo_root, baseline_fragment).resolve())
+    return paths
+
+
 def _plan_document_attempt_id(document: object) -> str | None:
     """The attempt one registered plan document names.
 
@@ -1614,6 +1682,7 @@ def assert_no_residue(
     readiness_dir: Path | None = None,
     own_files: Iterable[Path] | None = None,
     own_config_paths: Iterable[Path] | None = None,
+    resume_parent_config_paths: Iterable[Path] | None = None,
     explain: bool = False,
 ) -> None:
     """Refuse if any OLD hash string remains anywhere under ``docs/`` or
@@ -1624,7 +1693,7 @@ def assert_no_residue(
     this package was derived from), and this re-pin neither rewrites it
     (:func:`apply_mapping_to_ledger`) nor may it demand that it disappear.
 
-    Three further exemptions follow the same principle, active only when
+    Four further exemptions follow the same principle, active only when
     ``readiness_dir`` and ``run_ids`` are given (the only production call, from
     :func:`repin_package`), and only for files that are NOT this cell's own
     (``own_files``, ``own_config_paths``, or anywhere inside ``readiness_dir``
@@ -1641,7 +1710,20 @@ def assert_no_residue(
       the attempt(s) actually being re-pinned now);
     * a ``configs/`` fragment whose own declared ``run_id`` value(s) are
       disjoint from ``run_ids`` belongs to a different cell, not residue (see
-      :func:`_is_foreign_config`).
+      :func:`_is_foreign_config`);
+    * failing THAT too (a resume/seal-only cell shares its parent's run id,
+      so the parent's own ``configs/`` fragments are never disjoint either),
+      a ``configs/`` fragment named in ``resume_parent_config_paths`` -- the
+      specific experiment and baseline fragment(s) of the cell(s) the current
+      re-pin's own ``resume_from`` chain names (see
+      :func:`_resume_parent_config_paths`) -- is the parent's own sealed
+      record, not residue (item E4-1, 2026-09-29): a resume/seal-only cell's
+      FIRST re-pin inherits its parent's supply pin byte for byte, so the
+      exact old value being superseded is still, legitimately, the frozen
+      parent's own current pin. This never widens to every config quoting a
+      shared run id (a genuinely foreign cell that happens to quote the old
+      hash must still refuse); it names only the specific parent chain's own
+      files.
 
     ``explain=True`` prints, to stderr, one line per file that still hits an
     old value: which of the rules above were considered for that file and
@@ -1659,6 +1741,7 @@ def assert_no_residue(
     own_resolved = {Path(p).resolve() for p in (own_files or ())} | {
         Path(p).resolve() for p in (own_config_paths or ())
     }
+    resume_parent_resolved = {Path(p).resolve() for p in (resume_parent_config_paths or ())}
     hits: list[str] = []
     for root_name in ("docs", "configs"):
         base = Path(repo_root) / root_name
@@ -1705,7 +1788,12 @@ def assert_no_residue(
             elif run_ids and root_name == "configs":
                 foreign_config = _is_foreign_config(resolved, run_ids=run_ids)
                 considered.append(("foreign-config", foreign_config))
-                exempt = foreign_config
+                if foreign_config:
+                    exempt = True
+                else:
+                    resume_parent_config = resolved in resume_parent_resolved
+                    considered.append(("resume-parent-config", resume_parent_config))
+                    exempt = resume_parent_config
             if exempt:
                 continue
             for value in values:
@@ -1991,6 +2079,9 @@ def repin_package(
         mapping=mapping,
     )
     attempt_ids = {identity.attempt_id for identity in old_identities.values()}
+    resume_parent_config_paths = _resume_parent_config_paths(
+        repo_root, _resume_parent_attempt_ids(resolved)
+    )
     assert_no_residue(
         repo_root,
         all_old_values,
@@ -2000,6 +2091,7 @@ def repin_package(
         readiness_dir=readiness_dir,
         own_files=package_files,
         own_config_paths=set(baseline_paths) | set(experiment_paths),
+        resume_parent_config_paths=resume_parent_config_paths,
         explain=explain_residue,
     )
 
