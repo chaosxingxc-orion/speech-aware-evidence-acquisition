@@ -3377,6 +3377,7 @@ class FlightRuntime:
             for module in (kb_policy, knowledge_provider, phase_supply, knowledge_stores)
         }
         lease_metadata_present = (self._data_root / "locks" / "flight.lock").exists()
+        first_phase = program.phase_names()[0]
 
         def branch_seed(branch):
             route = self._supply_action_router(
@@ -3389,13 +3390,41 @@ class FlightRuntime:
                     "first-phase route; a branch may only re-cap a store that "
                     "already seeds the program's first phase"
                 )
-            _facets, values = store_bootstrap(
+            facets, values = store_bootstrap(
                 speech_packet_bindings=binding["speech_packet_bindings"],
                 split_identity_hash=plan.split_identity_hash,
                 workers=max_workers,
                 lease_metadata_present=lease_metadata_present,
             )
-            return {sample_id: tuple(ids) for sample_id, ids in values.items()}
+            # Item-4 GAP fix (2026-09-29): a branch's own ``bootstrap_first_
+            # phase`` call above is structurally identical to
+            # :meth:`_phase_supply_seeds`'s PATH 2 (the named-store branch),
+            # which never re-merges because that route already composes any
+            # ``store_role: "stage3-deltas"`` unconditional coverage itself.
+            # But the flight's OWN seed (``value_seed_for_first_phase``,
+            # ``expected`` below) can ALSO come from PATH 1 (a pinned
+            # ``prepared_phase_supply`` artifact) or PATH 3
+            # (``supply_for_phase`` factories), both of which run this SAME
+            # merge against ``binding["supply_for_store"]`` -- so a row this
+            # branch's own router recalls no candidate for (a genuine empty
+            # selection, not a missing query vector) was silently absent
+            # from a B branch's live-computed seed even when the flight's
+            # own seed still carried it via that merge. Applying the SAME
+            # merge here, over the SAME outer ``binding`` every other path
+            # reads it from, closes that gap for EVERY branch kind (knob
+            # override, release swap, or presentation-only): a store with no
+            # ``unconditional_first_phase`` seam (every cell today) makes
+            # this call a byte-identical no-op, exactly as PATH 2's own
+            # comment already relies on elsewhere.
+            _merged_facets, merged_values = _merge_unconditional_first_phase(
+                ({first_phase: facets} if facets else {}),
+                ({first_phase: values} if values else {}),
+                binding, first_phase, seeded_from_artifact=True,
+            )
+            return {
+                sample_id: tuple(ids)
+                for sample_id, ids in merged_values.get(first_phase, {}).items()
+            }
 
         expected = {
             sample_id: tuple(ids)
