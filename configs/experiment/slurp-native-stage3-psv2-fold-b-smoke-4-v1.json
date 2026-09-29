@@ -16,13 +16,26 @@
         "reason": "Cell P-SV-2 four-row form smoke registered before contact on 2026-09-29 from the retained AGREE arm fragments by script (decision 58): Fold A -> Fold B re-target, program switched to phase-native-candidates-review-revise-pbranch3-l2-v1, a level-2 K = 3 Perception branch block (owner decisions 184, 186, 188). No cross-flight comparator: the read is within this flight (B and T branch columns against the delivering A column). HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/psv/psv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 over the whole roster, so there is no earlier digest to reproduce); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-psv2-fold-b-admission-v1",
+            "relpath": "coordination/slurp-stage3-psv2-fold-b-v1/root-admission-v1.json",
+            "sha256": "a1faa12ecff22cc0c5de115c5e8546dad53597406cca183aef93ed05b6637c7a",
+            "reason": "Decision slurp-stage3-psv2-fold-b-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The Fold B exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py (DEV parameters, the DEV/Fold A builder) from the committed FILLER BASE cell's pins -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 60 facets reachable; bytes identical to the filler table (docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md; ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1).",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
             "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "cb8e1537830836550f02fe0b200811211988676b5b69177be6e42c32ac9d3228",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1"
     }
