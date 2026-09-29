@@ -3223,7 +3223,14 @@ class FlightRuntime:
             # ``composite_snapshot``, which a release-swap arm's request must
             # render from instead of the flight's own -- without changing
             # this function's return type or any existing caller.
-            router.knowledge_store_binding = binding
+            # A router that refuses attributes (a slotted or bare test double)
+            # is tolerated only when no release swap needs the binding back;
+            # the real router accepts the attribute, so its path is unchanged.
+            try:
+                router.knowledge_store_binding = binding
+            except (AttributeError, TypeError):
+                if release_swap is not None:
+                    raise
             return router
         except (KnowledgeStoreError, ValueError) as error:
             raise FlightRuntimeError(f"supply action {action_id!r} is invalid: {error}") from error
