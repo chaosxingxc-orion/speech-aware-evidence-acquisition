@@ -393,7 +393,18 @@ def _perception_branches_identity(raw_native_episode: object) -> Mapping[str, ob
     ``native_episode``. ``{}`` -- and therefore no change to any existing
     identity -- for every cell written before phase 2 and every cell that
     declares no ``roles.perception.branches``.
+
+    Each branch row's ``prepared_seed`` pin is EXCLUDED
+    (:func:`~..preparation.without_branch_seed_receipts`): it is the receipt
+    of an artifact prepared FROM this identity, not an input to it, exactly
+    as :meth:`FlightRuntime._perception_branch_seeds`' own receipt axes
+    exclude it. Binding it made the identity circular -- a branch-seed
+    re-pin (which drops the pin, produces, then writes a new pin) could never
+    load the cell's own prepared first-phase supply, and a pinned branch seed
+    could never verify at flight time (2026-09-29, P-SV-1 smoke re-pin).
     """
+
+    from ..preparation import without_branch_seed_receipts
 
     if not isinstance(raw_native_episode, Mapping):
         return {}
@@ -404,7 +415,7 @@ def _perception_branches_identity(raw_native_episode: object) -> Mapping[str, ob
     if not isinstance(perception, Mapping):
         return {}
     branches = perception.get("branches")
-    return dict(branches) if isinstance(branches, Mapping) else {}
+    return dict(without_branch_seed_receipts(branches)) if isinstance(branches, Mapping) else {}
 
 
 def _default_token_counter(payload_bytes: bytes) -> int:
