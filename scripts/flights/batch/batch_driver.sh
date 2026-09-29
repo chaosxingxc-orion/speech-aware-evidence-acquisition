@@ -4,9 +4,17 @@
 # pinned batch flight worktree, checks structure between steps, and STOPS on the first failure (no automatic
 # recovery: the one-recovery rule needs a named root cause). Runs as a Windows Scheduled Task (SAEA-Batch-Driver).
 #
-# Queue step fields: order, short, kind (cell|resume), experiment, cell, smoke_experiment (or null), smoke_cell,
+# Queue step fields: order, short, kind (cell|resume|seal-only), experiment, cell, smoke_experiment (or null), smoke_cell,
 #   campaign_plan (repo-relative), run_id, fit_run_id, gen_attempt_id, smoke_run_id, smoke_attempt_id,
 #   expected_rows, contacts_per_row, ceiling_per_row, notool (true|false), owner.
+#   kind seal-only (2026-09-29, COMP-1 seal-only completion): a resume cell whose declared resume_from
+#   predecessors already cover the whole roster. The step runs `core.flight.cli seal-only --experiment
+#   --cell` (zero model contacts; no lease, no slot, no session attach; it seals the merged manifest and
+#   runs the one official finalize job) instead of `cli campaign`. It must declare no smoke (a smoke would
+#   fly contacts the completion does not need) and no campaign_plan (the registration gate then runs on
+#   --cell alone), and its cell must declare resume_from, so the resume replay gate always runs first.
+#   prelaunch is unchanged: it still requires the resident session idle and healthy (the resident SLURP
+#   np4 satisfies it; the seal-only step itself never touches the session).
 #   Optional smoke_notool overrides notool for a smoke with different tool authority.
 #   result_kind defaults to task-answer; artifact requires zero scoring jobs and
 #   verified finalized artifact bytes. smoke_result_kind defaults to result_kind.
@@ -135,6 +143,11 @@ for ((i=0; i<N; i++)); do
   case "$smoke_result_kind" in task-answer|artifact) ;; *) stop "invalid smoke_result_kind on step $order" ;; esac
   if grep -q "\"step-done\".*\"short\":\"$short\"" "$STATUS" 2>/dev/null; then log "step-skip-done" "{\"step\":$order,\"short\":\"$short\"}"; continue; fi
   log "step-start" "{\"step\":$order,\"short\":\"$short\",\"kind\":\"$kind\",\"cell\":\"$cell\"}"
+  if [ "$kind" = "seal-only" ]; then
+    { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "seal-only step $order declares a smoke; a seal-only completion flies nothing"
+    { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "seal-only step $order declares a campaign_plan; it runs core.flight.cli seal-only on --cell"
+    [ "$(resume_gate_declared "$REPO" "$exp" "$cell")" = "yes" ] || stop "seal-only step $order: $exp:$cell declares no resume_from"
+  fi
   prelaunch $order
   if [ -n "$sexp" ] && [ "$sexp" != "None" ]; then
     smoke_notool=$(field $i smoke_notool)
@@ -148,9 +161,15 @@ for ((i=0; i<N; i++)); do
   fi
   LOGF=/home/chao/batch-campaign-$order-$short-$(date -u +%Y%m%dT%H%M%SZ).log
   log "arm-start" "{\"step\":$order,\"log\":\"$LOGF\"}"
-  $PY -B -m speech_aware_evidence_acquisition.core.flight.cli campaign \
-    --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
-    --campaign-plan "$REPO/$plan" --owner "$owner" --expected-session-id "$SESSION" > "$LOGF" 2>&1
+  if [ "$kind" = "seal-only" ]; then
+    $PY -B -m speech_aware_evidence_acquisition.core.flight.cli seal-only \
+      --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
+      --experiment "$exp" --cell "$cell" > "$LOGF" 2>&1
+  else
+    $PY -B -m speech_aware_evidence_acquisition.core.flight.cli campaign \
+      --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
+      --campaign-plan "$REPO/$plan" --owner "$owner" --expected-session-id "$SESSION" > "$LOGF" 2>&1
+  fi
   rc=$?
   log "arm-exit" "{\"step\":$order,\"rc\":$rc}"
   out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind"); irc=$?

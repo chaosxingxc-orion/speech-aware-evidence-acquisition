@@ -106,8 +106,10 @@ def main(argv=None) -> int:
         # already cover the whole roster -- seals with zero contacts, no
         # server, no slot, no lease. The batch driver runs this as an
         # ordinary chain step; preflight()'s own gates (clean tree, exposure
-        # row, prepared-artifact identity, attempt registration) stay in
-        # force exactly as for "worker".
+        # row, prepared-artifact identity, attempt registration) and the
+        # cell's declared readiness stay in force exactly as for "worker".
+        # After the seal it runs the one official finalize job itself
+        # (runtime.score, CPU scorer only), since no queue follows it.
         "seal-only",
     ])
     for name in ("repo-root", "data-root", "runtime-root", "lock-path"):
@@ -202,11 +204,15 @@ def main(argv=None) -> int:
         )
     else:
         runtime = flights[0]
-        if args.mode in {"worker", "check"}:
+        if args.mode in {"worker", "check", "seal-only"}:
+            # seal-only (2026-09-29, COMP-1 seal-only registration): a seal-only
+            # completion seals and finalizes a real run, so it honours the
+            # cell's declared readiness exactly like "worker" -- a HELD cell
+            # never seals, whatever its predecessors cover.
             state = declared_readiness(cells[0], root)
-            if args.mode == "worker" and state.state != "ready":
+            if args.mode in {"worker", "seal-only"} and state.state != "ready":
                 raise CampaignError(state.reason)
-            if args.mode == "worker" and cells[0].dependencies():
+            if args.mode in {"worker", "seal-only"} and cells[0].dependencies():
                 raise CampaignError("dependent workers require coordinator queue admission")
         if args.mode == "coordinate-fit":
             from .coordinator import coordinate_fit
@@ -268,6 +274,15 @@ def main(argv=None) -> int:
                 # Root releases custody after this seal and schedules official scoring
                 # independently. A standalone worker never owns the service or lease.
                 seal_result = runtime.seal()
+                score_result = None
+                if args.mode == "seal-only":
+                    # A seal-only completion has no custody to release and no
+                    # coordinator queue behind it, so it runs the queue's own
+                    # post-seal step here: the ONE official score job over the
+                    # complete merged manifest, which finalizes the attempt
+                    # (core.flight.queue.FlightQueue submits exactly this call).
+                    # CPU scorer only -- no model, server, slot or lease.
+                    score_result = runtime.score(include_per_sample=True)
             except BaseException as error:
                 try:
                     persist_flight_receipts(
@@ -289,6 +304,8 @@ def main(argv=None) -> int:
                 receipts=runtime.receipts,
             )
             result = dict(seal_result)
+            if score_result is not None:
+                result["score"] = score_result
             if receipt_reference is not None:
                 result["flight_receipts"] = {runtime.run_id: receipt_reference}
     print(json.dumps(result, sort_keys=True, default=str))
