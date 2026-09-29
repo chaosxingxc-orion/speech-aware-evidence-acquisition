@@ -147,7 +147,7 @@ def test_params_must_carry_exactly_the_components_keys():
 @pytest.mark.parametrize(
     ("component_id", "state", "message"),
     [
-        ("scope-rule", "on", "migration step 3"),
+        ("e3-progressive-slots", "on", "E3 build go"),
         ("top2-contrast", "column", "migration step 4"),
         ("supply-abstain", "on", "migration step 6a"),
         (cm.RELISTEN, "on", "compiled states are"),

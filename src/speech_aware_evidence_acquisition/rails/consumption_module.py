@@ -120,6 +120,7 @@ CENTROID_BOUNDARY_KEY = "centroid-boundary-key"
 SOLVER_CITATION_CONTRACT = "solver-citation-contract"
 REVIEWER_G5_REPAIR = "reviewer-g5-repair"
 RELISTEN = "relisten"
+SCOPE_RULE = "scope-rule"
 
 COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
     ComponentSpec(
@@ -155,9 +156,11 @@ COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
         "forced-candidate-list", "Perception response contract", frozenset(), frozenset(),
         pending="migration step 4 (delivered-path Perception policy)",
     ),
+    # Migration step 3 (owner decision 195 = B): a deterministic deliver
+    # stage composed after the carrier's deliver normaliser; zero contacts.
     ComponentSpec(
-        "scope-rule", "USE, deliver node", frozenset(), frozenset(),
-        pending="migration step 3 (deterministic USE stage)",
+        SCOPE_RULE, "USE, deliver node", frozenset({STATE_ON}),
+        frozenset({"min_pool_occurrences", "untagged_share", "table"}),
     ),
     ComponentSpec(
         "e3-progressive-slots", "ORG/USE slot-types node", frozenset(), frozenset(),
@@ -192,6 +195,10 @@ class CarrierHooks:
     * ``decision_candidates`` / ``max_decision_candidates`` /
       ``delivered_units`` / ``default_deliver_normaliser`` -- the four design
       hooks of section 2b.1, consumed from migration step 4 on.
+    * ``deliver_stages`` -- ``{component id: {"compositions": {base deliver
+      normaliser id: that normaliser composed with the stage}, "params": the
+      stage's registered pins}}`` for the deterministic deliver stages the
+      carrier registers (migration step 3).
     """
 
     profile: str | None = None
@@ -202,6 +209,7 @@ class CarrierHooks:
     max_decision_candidates: Callable[[], int] | None = None
     delivered_units: Callable[..., tuple[str, ...]] | None = None
     default_deliver_normaliser: Callable[[], str] | None = None
+    deliver_stages: Mapping[str, Mapping[str, object]] | None = None
 
 
 def resolve_carrier_hooks(profile: str, *, repo_root: Path | None = None) -> CarrierHooks:
@@ -494,6 +502,25 @@ class _Writer:
         parent[path[-1]] = copy.deepcopy(value)
         self.written[dotted] = component_id
 
+    def chain(self, path: Sequence[str], compositions: Mapping[str, str], *, component_id: str) -> None:
+        """Replace an existing leaf by its registered composition with a
+        stage (a deliver stage runs AFTER whatever normaliser the layer, or an
+        earlier component, put there). The one sanctioned second write of a
+        leaf: it never discards the earlier writer's choice, it composes it."""
+
+        dotted = ".".join(path)
+        parent = _node(self.layer, path[:-1], field=component_id)
+        current = parent.get(path[-1])
+        composed = compositions.get(current) if isinstance(current, str) else None
+        if composed is None:
+            raise ConsumptionModuleConfigError(
+                f"{component_id}: no registered composition of {dotted} = {current!r} with "
+                f"this stage; composable: {sorted(compositions)}"
+            )
+        parent[path[-1]] = composed
+        prior = self.written.get(dotted)
+        self.written[dotted] = component_id if prior is None else f"{prior}+{component_id}"
+
 
 def _require_hook(hooks: CarrierHooks, name: str, component_id: str) -> object:
     value = getattr(hooks, name)
@@ -560,6 +587,19 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 raise ConsumptionModuleConfigError(f"relisten params are invalid: {error}") from error
             writer.set(("native_episode", "relisten"), params, component_id=cid, replace_only=False)
             ceiling += relisten.extra_contacts_ceiling
+        elif cid == SCOPE_RULE:
+            stage = _require_hook(hooks, "deliver_stages", cid).get(cid)
+            if not isinstance(stage, Mapping):
+                raise ConsumptionModuleConfigError(
+                    f"profile {hooks.profile!r} registers no {cid!r} deliver stage"
+                )
+            if _canonical(dict(params)) != _canonical(dict(stage["params"])):
+                raise ConsumptionModuleConfigError(
+                    f"{cid} params must equal the registered stage's pins "
+                    "(thresholds and the table's relpath and sha256)"
+                )
+            writer.chain(("native_episode", "deliver_normaliser", "normaliser"),
+                         stage["compositions"], component_id=cid)
         else:  # pragma: no cover - the parse refuses every other armed id
             raise ConsumptionModuleConfigError(f"component {cid!r} does not compile in v1")
     solver_material = layer["phase_material"].get("solver")
@@ -773,6 +813,7 @@ __all__ = [
     "POLICY_OWNED_KEYS",
     "RELISTEN",
     "REVIEWER_G5_REPAIR",
+    "SCOPE_RULE",
     "SOLVER_CITATION_CONTRACT",
     "compile_module",
     "differing_paths",

@@ -65,12 +65,20 @@ CITED_ANSWER_SCHEMA = CITED_ANSWER_RESPONSE_FORMAT_ID
 #: The per-row receipt block the runner seals beside E17's
 #: ``tool_schema_rendering`` block. Absent on every un-armed row.
 SOLVER_CITATIONS_RECEIPT_SCHEMA = "saea-solver-citations-v1"
-#: The two delivery normalisers that can re-derive the delivered answer from
-#: a cited-answer envelope (registered in ``rails.delivery_normalisers``).
+#: The delivery normalisers that can re-derive the delivered answer from a
+#: cited-answer envelope (registered in ``rails.delivery_normalisers``); the
+#: third is the second composed with the do-not-tag scope stage.
 DELIVER_CITED_ANSWER_V1 = "saea-deliver-cited-answer-v1"
 DELIVER_CITED_ANSWER_NORMALISE_V3_V1 = "saea-deliver-cited-answer-normalise-v3-v1"
+DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1 = (
+    "saea-deliver-cited-answer-normalise-v3-scope-rule-v1"
+)
 CITED_ANSWER_NORMALISER_IDS = frozenset(
-    {DELIVER_CITED_ANSWER_V1, DELIVER_CITED_ANSWER_NORMALISE_V3_V1}
+    {
+        DELIVER_CITED_ANSWER_V1,
+        DELIVER_CITED_ANSWER_NORMALISE_V3_V1,
+        DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1,
+    }
 )
 
 #: Contract bounds. They cap the OUTPUT side of the citation (the ids the

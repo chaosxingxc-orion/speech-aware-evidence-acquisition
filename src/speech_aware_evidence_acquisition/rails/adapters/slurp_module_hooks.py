@@ -67,6 +67,20 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
 
         return branch_supplied_intent_ids(supplied_value_ids)
 
+    def deliver_stages() -> Mapping[str, Mapping[str, object]]:
+        from .. import delivery_normalisers as dn  # noqa: PLC0415
+
+        return {
+            "scope-rule": {
+                "compositions": dict(dn.SCOPE_RULE_COMPOSITIONS),
+                "params": {
+                    "min_pool_occurrences": dn.SCOPE_RULE_MIN_POOL_OCCURRENCES,
+                    "untagged_share": dn.SCOPE_RULE_UNTAGGED_SHARE,
+                    "table": {"relpath": dn.SCOPE_RULE_TABLE_RELPATH, "sha256": dn.SCOPE_RULE_TABLE_SHA256},
+                },
+            },
+        }
+
     def max_decision_candidates() -> int:
         from ..candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES  # noqa: PLC0415
 
@@ -81,4 +95,5 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         max_decision_candidates=max_decision_candidates,
         delivered_units=None,
         default_deliver_normaliser=lambda: DEFAULT_DELIVER_NORMALISER,
+        deliver_stages=deliver_stages(),
     )

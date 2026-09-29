@@ -44,6 +44,7 @@ Cases:
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import subprocess
@@ -65,6 +66,8 @@ AGREE_BASELINE = "configs/baseline/slurp-native-stage3-agree-w1-fold-a-baseline-
 COMP1_BASELINE = "configs/baseline/slurp-native-stage3-comp1-fold-a-baseline-v1.json"
 RELISTEN_BASELINE = "configs/baseline/slurp-native-stage3-relisten-fold-a-baseline-v1.json"
 G5_BASELINE = "configs/baseline/slurp-native-stage3-g5-fold-a-baseline-v1.json"
+#: The scope rule's admitting read (owner decision 195 = B).
+SCOPE_RULE_RECORD = "docs/results/2026-09-29-slurp-slu-consumption-headroom-offline.md"
 
 #: COMP-1b's registration commit and the composed hashes its exposure-ledger
 #: rows pinned at registration (arm, smoke).
@@ -128,6 +131,13 @@ def component_entries(repo_root: Path = REPO_ROOT) -> dict[str, dict]:
             "component_id": cm.RELISTEN, "state": "shadow",
             "admitted_by": "registry row 185", "record": RELISTEN_BASELINE,
             "params": relisten,
+        },
+        cm.SCOPE_RULE: {
+            "component_id": cm.SCOPE_RULE, "state": "on",
+            "admitted_by": "registry row 195", "record": SCOPE_RULE_RECORD,
+            "params": copy.deepcopy(dict(
+                carrier_module_hooks(repo_root=repo_root).deliver_stages[cm.SCOPE_RULE]["params"]
+            )),
         },
         cm.REVIEWER_G5_REPAIR: {
             "component_id": cm.REVIEWER_G5_REPAIR, "state": "on",
