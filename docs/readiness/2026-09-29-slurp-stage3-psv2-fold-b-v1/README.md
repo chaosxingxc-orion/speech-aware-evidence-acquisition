@@ -25,7 +25,7 @@ tokens, 8 boundary items max, widest item 895 characters,
 6.023 characters per token); branch estimates {"a_and_twin": 4067, "min_candidates": 4067, "top2_contrast": 4365} against the
 20990-token prompt limit.
 
-**Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` (`prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1/perception-branch-seeds-v1.json`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than of the branch.
+**Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` (`prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1/perception-branch-seeds-v2.json`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than of the branch.
 
 **Measurement.** `measurement_design` `same-flight-perception-variant` (the spelling `scripts/checks/stage3_effect_floor_check.py` and
 `scripts/checks/flight_registration_check.py` register; the spec's section 4 says `same-flight-perception-branch`,
