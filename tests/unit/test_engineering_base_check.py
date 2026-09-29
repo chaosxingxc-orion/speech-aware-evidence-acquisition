@@ -320,6 +320,11 @@ def test_regex_extraction_agrees_with_package_import():
         # docstring says why), so it is read from there below.
         from speech_aware_evidence_acquisition.rails import tools as _tools
         from speech_aware_evidence_acquisition.rails import phase_planner as _planner  # noqa: F401
+        # Owner decisions 195/196 (2026-09-29): rails/consumption_module.py is
+        # the canonical registration site of core.base.CONSUMPTION_MODULES.
+        from speech_aware_evidence_acquisition.rails import (
+            consumption_module as _consumption_module,  # noqa: F401
+        )
         from speech_aware_evidence_acquisition.core.model import (
             native_evidence_projection as _native_evidence_projection,  # noqa: F401
             native_slot_binding_view as _native_slot_binding_view,  # noqa: F401
@@ -363,6 +368,9 @@ def test_regex_extraction_agrees_with_package_import():
         # WAVE W3 (2026-09-08): the pinned, system-invoked tool catalog a
         # ``tools`` list in configs/ resolves against.
         "TOOL_CATALOG": set(_tools.TOOL_CATALOG.names()),
+        # Owner decisions 195/196 (2026-09-29): the evidence-consumption
+        # module a native_episode.consumption_module.module_id resolves in.
+        "CONSUMPTION_MODULES": set(core_base.CONSUMPTION_MODULES.names()),
     }
 
     assert regex_registered == import_registered

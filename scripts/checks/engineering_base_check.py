@@ -103,7 +103,24 @@ CANONICAL_REGISTRY_FILES = (
     # provider classes. See the "WAVE W3" block below for the config rule.
     TOOLS_MODULE,
     f"{PACKAGE_ROOT}/rails/phase_planner.py",
+    # Owner decisions 195/196 (2026-09-29, design docs/superpowers/specs/
+    # 2026-09-29-slurp-consumption-module-design.md section 2.1): the
+    # evidence-consumption module registers into core.base.
+    # CONSUMPTION_MODULES beside its own compiler.
+    f"{PACKAGE_ROOT}/rails/consumption_module.py",
 )
+
+# FAMILY registrations (coordinator ruling R1 on the consumption-module
+# design, 2026-09-29): a canonical file may register a closed family of ids
+# through ONE loop over a module-level tuple of string literals, instead of
+# one literal ``register`` call per id. The tuple is read from source (AST,
+# literals only -- anything else refuses), every member is a registered name
+# of the named registry, and the loop variable is the only bare identifier
+# such a loop may pass to ``<REGISTRY_VAR>.register(...)``.
+# tuple constant name -> (canonical file, registry variable)
+FAMILY_ID_TUPLES = {
+    "MODULE_PROGRAM_FAMILY_IDS": (CONTROLLERS_MODULE, "AGENT_CONTROLLERS"),
+}
 
 # config key -> core.base registry variable, top-level only (the flat
 # "arm program" fragment shape used throughout configs/baseline/*.json and
@@ -170,6 +187,9 @@ NESTED_ID_KEYS = {
     "knowledge_provider_id": "KNOWLEDGE_PROVIDERS",
     "rank_policy": "KNOWLEDGE_RANKERS",
     "fuse_policy": "KNOWLEDGE_FUSERS",
+    # Owner decisions 195/196 (2026-09-29): a native_episode.consumption_module
+    # block names its module; the id resolves in core.base.CONSUMPTION_MODULES.
+    "module_id": "CONSUMPTION_MODULES",
 }
 
 # E22 cell (b) (2026-09-06): a config fragment may declare
@@ -392,6 +412,60 @@ TreeReader = LiveTreeReader | CommittedTreeReader
 # ---------------------------------------------------------------------------
 
 
+def _read_family_registrations(
+    text: str, relpath: str, registered: dict[str, set[str]]
+) -> set[tuple[str, str]]:
+    """Apply :data:`FAMILY_ID_TUPLES` to one canonical file: add every
+    literal member of each declared family tuple to its registry's name set,
+    and return the ``(loop variable, registry variable)`` pairs of the loops
+    ``for <var> in <TUPLE>:`` that iterate such a tuple -- the only bare
+    identifiers a family registration may hand to ``register``."""
+
+    families = {
+        name: var for name, (source, var) in FAMILY_ID_TUPLES.items() if source == relpath
+    }
+    if not families:
+        return set()
+    try:
+        tree = ast.parse(text, filename=relpath)
+    except SyntaxError as exc:
+        raise EngineeringBaseError(f"cannot parse {relpath}: {exc}") from exc
+    found: set[str] = set()
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            target, value = node.targets[0], node.value
+        elif isinstance(node, ast.AnnAssign) and node.value is not None:
+            target, value = node.target, node.value
+        else:
+            continue
+        if not isinstance(target, ast.Name) or target.id not in families:
+            continue
+        if not isinstance(value, ast.Tuple) or not all(
+            isinstance(element, ast.Constant) and isinstance(element.value, str)
+            for element in value.elts
+        ):
+            raise EngineeringBaseError(
+                f"family tuple {target.id} in {relpath} must be a tuple of string literals"
+            )
+        registered[families[target.id]].update(element.value for element in value.elts)
+        found.add(target.id)
+    missing = sorted(set(families) - found)
+    if missing:
+        raise EngineeringBaseError(
+            f"declared family tuple(s) {missing} not found at module level in {relpath}"
+        )
+    loop_vars: set[tuple[str, str]] = set()
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.For)
+            and isinstance(node.iter, ast.Name)
+            and node.iter.id in families
+            and isinstance(node.target, ast.Name)
+        ):
+            loop_vars.add((node.target.id, families[node.iter.id]))
+    return loop_vars
+
+
 def build_registered_names(reader: TreeReader) -> dict[str, set[str]]:
     """Registered name sets for the ``core.base`` registries this check
     cares about, resolved via regex over the canonical population
@@ -417,6 +491,7 @@ def build_registered_names(reader: TreeReader) -> dict[str, set[str]]:
             # resolve from it (e.g. a synthetic test repo).
             continue
         text = reader.read_text(relpath)
+        family_loop_vars = _read_family_registrations(text, relpath, registered)
         for match in _REGISTER_CALL_RE.finditer(text):
             var = match.group("var")
             if var not in ALL_REGISTRY_VARS:
@@ -424,6 +499,8 @@ def build_registered_names(reader: TreeReader) -> dict[str, set[str]]:
             arg = match.group("arg")
             if arg[0] in "\"'":
                 registered[var].add(ast.literal_eval(arg))
+            elif (arg, var) in family_loop_vars:
+                continue
             else:
                 needed.setdefault(arg, []).append((var, relpath))
 

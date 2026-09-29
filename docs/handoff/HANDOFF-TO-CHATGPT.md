@@ -1,7 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T19:55:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records and read agent) · HEAD at writing `558f4690` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T20:11:33Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records agent) · HEAD at writing `fe08c9fc` on `master` (plus this refresh commit), tree clean.
+**Since 19:55Z (records agent):** **Coordinator verdicts** (`f85e1085`) in both read notes and in two new rows of
+`docs/results/stage2-results-ledger.md`: **E4-1 core-native targeted re-listen v1: NOT NOMINATED, SHADOW HARM on both
+columns** (replace-only SLU-F1 -4.11 [-5.41, -2.88], replace + drop -3.59 [-5.08, -2.14]; gates not met; the core
+cannot verify its own hearing by blind + forced-choice re-listen; the drop half alone is worth about +0.8 pp offline,
+under the 1.49 pp same-flight SLU floor); **core-native replacement re-listen CLOSED**; a drop-only shadow column may
+ride descriptively beside a later cell. **G5 Reviewer instruction repair: NOT ADMITTED (width), no harm** (intent
++0.09 [-1.02, +1.20], SLU-F1 -0.38 [-1.78, +1.04]; the form fix works, reach and repairs move inside the null); the
+Reviewer/Planner node shows no information gain for the third time; G5 is a no-harm efficiency item that enters the
+module's lock layer only at a lock revision (v2.x). **Registry rows** (`f85e1085`, "Rows 115-201"): **200** P-SV-3
+boundary-depth column (coordinator-registered under 184, flipped at `c6e98e6b`, queued after P-SV-2; ruling `pending`
+owner confirmation) and **201 (PROPOSED)** open the frozen tool-level ASR (Whisper) route for slot-value verification
+(E5), as decision 180 sequenced -- A = register E5 offline-first (a pinned Whisper transcript pass over the Fold A
+audio as a logged tool contact, then an offline oracle on the 106 addressable items before any core contact), B =
+close the re-listen route; coordinator recommends A; ruling `pending`. **Merged `fable/module1`** (`fe08c9fc`;
+consumption module steps 1-2: `rails/consumption_module.py` compiler + block parse, `rails/adapters/slurp_module_hooks.py`,
+`scripts/analysis/module_equivalence_proof.py`); master merged into the branch cleanly first (`a48912c3`); the COMP-1b
+config test that assumed the held state now asserts the post-flip invariant (`a98e5133`: each cell pins its OWN
+prepared phase supply under its own run id, no cell pins another's); worktree tests 497 passed. **AT-M0/M1/M2
+byte-identical** (model-free, from master): m0 v2.0 lock arm + smoke, m1 AGREE arm + smoke plus the sealed-pool
+binding (module-compiled hash = the sealed AGREE run manifest's `9a21f53e...`), m2 COMP-1 arm + smoke and COMP-1b arm +
+smoke at HEAD and at registration commit `6291c23d` (registered hashes `8c4517a3...` / `3d9b7226...` matched); every
+case composed-identical with zero differing policy paths, `ok: true`. Gates on master PASS: engineering base, harness
+admission, tool catalog, finite completion, Stage-3 label, results ledger. **GPU queue:** `SAEA-Queue-NEXT` flying
+**COMP-1b** (since 18:50:28Z at `c6e98e6b`) -> **P-SV-1 seal-only** -> **P-SV-2** -> **P-SV-3** -> filler. **Next:**
+COMP-1b read -> A2 registration (COMP-1b on DEV-2000-ADDED, decision 198) with the entity-free-share none-hint
+descriptive column (decision 199); inner-loop run 2 after P-SV-1 seals; module steps 3-5; owner rulings on 200/201.
 **Since 18:52Z (records and read agent):** **Merged** `fable/readsealonly` (`f517e237`; seal-only arms now persist a
 minimal generation manifest + `phases.json` at seal, `stage3_paired_read.py` reads them, new
 `scripts/analysis/backfill_sealonly_read_inputs.py`; one union conflict in `core/flight/resume.py` resolved, 916 tests
@@ -57,7 +83,7 @@ advisory the E4-1 seal-only precedent flew with. **G5 FINALIZED** (16:26Z), **E4
 flight alive, a resident llama-server at >= 12 h uptime is restarted on the same geometry (`serving_swap.sh slurp-np4
 --restart`; a host-memory refusal waits for CPU sidecars, never kills them) and logged `SERVING RESTART <uptime> ->
 READY`; observed 18h58m (68,326 s, started about 2026-09-28T23:49Z) -> restarted and READY at 18:50:26Z before COMP-1b.
-Pending branches: `fable/readsealonly`, `fable/emptysupply`. Decision 200 (P-SV-3 column) awaits the owner.
+Pending branches: none of this refresh's (`fable/readsealonly`, `fable/emptysupply` and `fable/module1` are merged). Decisions 200 (P-SV-3 column) and 201 (Whisper route) await the owner.
 **Since 15:04Z (records agent):** **Owner decisions 198/199 recorded** (registry rows at `f26e3cdb`). **198: COMP-1
 NOT ADMITTED** (intent +4.26 [+2.41, +6.11], SLU-F1 -2.24 [-3.97, -0.47], HARMFUL branch). Cause named by the
 attribution `docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md` (branch `fable/comp1slu`, not yet merged):

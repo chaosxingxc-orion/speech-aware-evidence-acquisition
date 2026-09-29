@@ -164,3 +164,8 @@ SAEA_REPO_ROOT=$PWD bash scripts/flights/read_paired_cell.sh docs/readiness/2026
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD/src python -B scripts/analysis/slurp_g5_reviewer_reach_read.py \
     --data-root "$SPEECHRL_DATA_DIR" --lock /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 ```
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+- **G5 Reviewer instruction repair: NOT ADMITTED (width), no harm.** Intent +0.09 [-1.02, +1.20], SLU-F1 -0.38 [-1.78, +1.04] vs the shared in-chain A/A; the form fix works (tool narration 1,088 -> 0 responses; Reviewer prompt tokens -46.8 per contact against the declared 51; GPU-h 1.68 -> 1.60) but reach and repairs move inside the null (REVISE 44 -> 36; intent repairs/breaks 20/3 -> 25/1).
+- **Line status.** The Reviewer/Planner node shows no information gain for the third time (decision 188, B5 deferred; node-gain ledger). G5 is classed as a no-harm efficiency item: it enters the consumption module's lock layer only at a lock revision (v2.x), never as a gain component. Development number (decisions 28/86).
