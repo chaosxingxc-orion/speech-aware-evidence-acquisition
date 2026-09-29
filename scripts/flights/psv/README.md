@@ -16,4 +16,4 @@ no flip, no receipt, no countersign.
 | `psv_flip.sh [psv1 psv2 psv3]` | loop-form flip of the named cells (smoke, then arm), converging at ONE HEAD (default: psv1 psv2, unchanged) | root |
 | `psv_repin_cell.sh` | per-cell environment for `scripts/flights/batch/repin_cell_generic.sh` (`PSV_CELL` psv1\|psv2\|psv3) | called by the flip |
 | `batch_chain_psv.sh [psv1 psv2 psv3]` | flies the named cells on slurp-np4 through the batch driver, A/A-free (the twin is the null); default: psv1 then psv2, unchanged | root / queue |
-| `psv_read.sh psv1\|psv2\|psv3` | the branch read through `scripts/analysis/slurp_perception_branch_read.py` (refuses until it lands) | coordinator, after the seal and the READ row |
+| `psv_read.sh psv1\|psv2\|psv3 [--rescore] [--dry-run]` | the recipe-driven branch read through `scripts/analysis/slurp_perception_branch_read.py` (attempt from the recipe: seal-only for P-SV-1; `--dry-run` counts only, no gold, no scorer) | coordinator, after the seal and the READ row |
