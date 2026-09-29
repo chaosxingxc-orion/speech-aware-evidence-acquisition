@@ -11,7 +11,7 @@
 #   3. merge set C (runtime, runner, bundle, presentations) has landed on master and both cells pass
 #      core.flight.cli check there.
 # --allow-output-change must never be passed.
-#   bash scripts/flights/psv/psv_flip.sh [psv1 psv2]   (default both, P-SV-1 first)
+#   bash scripts/flights/psv/psv_flip.sh [psv1 psv2 psv3]   (default psv1 psv2 unchanged; name psv3 to include it)
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch

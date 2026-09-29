@@ -1,8 +1,8 @@
 #!/bin/bash
-# The same-flight Perception-branch read of P-SV-1 or P-SV-2 (owner decision 184; recipe
+# The same-flight Perception-branch read of P-SV-1, P-SV-2 or P-SV-3 (owner decision 184; recipe
 # docs/readiness/2026-09-29-slurp-stage3-psvK-fold-b-v1/analysis-recipe-v1.json).
 #
-#   bash scripts/flights/psv/psv_read.sh psv1|psv2
+#   bash scripts/flights/psv/psv_read.sh psv1|psv2|psv3
 #
 # 0. REFUSES before anything is opened unless scripts/analysis/slurp_perception_branch_read.py exists (merge set C
 #    item 1; it had not landed when these cells were registered), the READ row
@@ -22,7 +22,7 @@ export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 source "$MAIN/scripts/flights/batch/read_lib.sh"
 K=$1
-case "$K" in psv1|psv2) ;; *) echo "usage: psv_read.sh psv1|psv2"; exit 2;; esac
+case "$K" in psv1|psv2|psv3) ;; *) echo "usage: psv_read.sh psv1|psv2|psv3"; exit 2;; esac
 SLUG=$K-fold-b
 UPPER=${SLUG^^}
 RUN=SAEA-SLURP-STAGE3-$UPPER-V1

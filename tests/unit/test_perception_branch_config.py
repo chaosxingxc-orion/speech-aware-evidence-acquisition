@@ -82,6 +82,32 @@ def test_perception_branches_extend_the_ceiling_level2():
     assert config.max_contacts == 15
 
 
+def test_perception_branch_two_knobs_under_one_route_is_one_axis():
+    """P-SV-3 (scripts/flights/psv/psv_family.py CELLS['psv3']): a branch's
+    ``overrides`` may name BOTH ``fuse_coverage.m`` and ``fuse_coverage.top_l``
+    (raised together, since the fuser scans only the top ``m`` ranked facets
+    and stops once ``len(selected) == top_l`` -- moving only one of the two
+    leaves the delivered boundary-item count unchanged). This is still exactly
+    ONE axis category (``parse_perception_branches``'s ``axis_categories =
+    sum((bool(knobs), ...))`` counts the whole ``knobs`` tuple once), so it
+    must load, not refuse, and must carry both knobs on the same branch.
+    """
+
+    values = _values_with_branches(level=2)
+    branches = values["native_episode"]["roles"]["perception"]["branches"]["branches"]
+    branches[0]["overrides"] = {
+        f"knowledge_stores.{STORE}.phase_supply.perception.fuse_coverage.m": 12,
+        f"knowledge_stores.{STORE}.phase_supply.perception.fuse_coverage.top_l": 12,
+    }
+    program = default_phase_program(values["policy"])
+    config = load_native_episode_config(values, program, allow_subceiling=True)
+    perception_role = next(role for role in config.roles if role.role_kind == "perception")
+    b_branch = perception_role.perception_branches.branch("B")
+    assert len(b_branch.knobs) == 2
+    assert {knob.tail for knob in b_branch.knobs} == {("fuse_coverage", "m"), ("fuse_coverage", "top_l")}
+    assert {knob.value for knob in b_branch.knobs} == {12}
+
+
 def test_perception_branches_refuse_beside_solver_supply_variants():
     values = _fragment(VAR2_FRAGMENT)  # keeps its own roles.solver.supply_variants
     values["native_episode"]["roles"]["perception"]["branches"] = _branches_block(1)

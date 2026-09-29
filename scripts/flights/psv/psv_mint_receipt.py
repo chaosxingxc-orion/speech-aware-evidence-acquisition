@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Mint the root-admission decision receipt of P-SV-1 or P-SV-2 (owner decisions 184, 186, 188) on the data root
-from the package's draft.
+"""Mint the root-admission decision receipt of P-SV-1, P-SV-2 or P-SV-3 (owner decisions 184, 186, 188) on the
+data root from the package's draft. ``cell`` is any key in ``psv_family.CELLS`` (today psv1, psv2, psv3).
 
 Root's act, never an agent's. Copies
 ``docs/readiness/2026-09-29-slurp-stage3-psvK-fold-b-v1/root-admission-draft-v1.json`` to
@@ -13,7 +13,7 @@ flies inside every row.
 P-SV-1 is REFUSED while its registered facts still carry the contrast-pair placeholder pin
 (``TO-BE-PINNED-AFTER-CONTRAST-PAIR-BUILD``): the top2-contrast-v1 branch has nothing to render from.
 
-    python scripts/flights/psv/psv_mint_receipt.py psv1|psv2 [--coordinator "Fable5.1"] [--dry]
+    python scripts/flights/psv/psv_mint_receipt.py psv1|psv2|psv3 [--coordinator "Fable5.1"] [--dry]
 """
 
 from __future__ import annotations

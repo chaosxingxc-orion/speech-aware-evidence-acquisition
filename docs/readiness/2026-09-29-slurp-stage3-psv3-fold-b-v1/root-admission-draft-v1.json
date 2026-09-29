@@ -1,0 +1,120 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/psv/psv_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv3-fold-b-v1/analysis-recipe-v1.json",
+      "sha256": "319f4e755fbef7935012e26f9aabf1cae1b07021f00d269f8b56b2c448528602"
+    },
+    "derive_script": {
+      "path": "scripts/flights/psv/derive_slurp_psv_cells.py",
+      "sha256": "cc8ffaaebbbadf66a088b13dabca76a72e6befa4c18dcfa4c5a4ac9e2cf82564"
+    },
+    "fold_b_inputs": {
+      "path": "docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md",
+      "sha256": "9e7513ceeb5abfba0f4cdc5f67b64b8d8e2724849c0e9d4b9ca9e3c7c126818e"
+    },
+    "node_ledger": {
+      "path": "docs/results/2026-09-28-slurp-node-information-gain-ledger.md",
+      "sha256": "5910c781c5bc841a28e19fbc876314913bd3ffb92cbd824aebb556816de3bd40"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "756ce60755180544af391894c0a369cafca8b3fc65c85c85f49f4b893fbe463f"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv3-fold-b-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv3-fold-b-v1/protocol-registered-v1.json",
+      "sha256": "69925b9f8c9ff220965a596ce1ea5b8ff7b4af23914a231fb5db007f617f32a5"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv3-fold-b-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-psv3-fold-b-v1/registered-facts-v1.json",
+      "sha256": "99ef9d626d86e9bb46c70a62b4aa0e529ff636f3e963fbf52e030f5adc70f8d0"
+    },
+    "registration_base_commit": "0b50d47e51abecc41ca92f197c1324642d719a6d",
+    "spec": {
+      "path": "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md",
+      "sha256": "0c92a111b947aef03d9e3cf6198f52992af7b6ec1b0635841dfa9b2a14300e37"
+    }
+  },
+  "authorization_basis": "Owner decisions 184, 186, 188 (and 172 for the instrument), 139, 28/86; the spec docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md with rulings O1-O6.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 64800,
+    "generation_calls_cap": 16200,
+    "gpu_hours_fit_inclusive": 16.4,
+    "native_task_contract_calls_cap": 10800,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 47322,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 240,
+      "generation_calls_cap": 60,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 40,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 153
+    }
+  },
+  "cell_kind": "Stage-3 same-flight Perception-branch instrument cell (phase 2, level 2, label none), claim ceiling 'nominated'. One arm on TRAIN Fold B 1,080 with three Perception branches (b-depth, t-twin, a-agree delivering), and a four-row form smoke.",
+  "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a branch read on a development fold whose ceiling is 'nominated'.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell P-SV-3: the Fold B AGREE arm under phase-native-candidates-review-revise-pbranch3-l2-v1 with a level-2 Perception branch block; read b-depth and t-twin against a-agree in the same flight; nominate or not at the twin bar.",
+  "decision_id": "slurp-stage3-psv3-fold-b-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1",
+    "SAEA-SLURP-STAGE3-PSV3-FOLD-B-FIT-V1",
+    "SAEA-SLURP-STAGE3-PSV3-FOLD-B-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-PSV3-FOLD-B-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered re-target, program switch and branch block",
+    "opening a branch column before the READ row is countersigned"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "ebd53991010fc6a1e8e0db125938b79bf809c79766916f92a3a4bdc7d887913d",
+      "protocol": "910ce4bdc72e08d659c57a9628f92f7d1225794e1cef194693da3e898ec51d41"
+    },
+    "smoke": {
+      "composed_config": "69297e45547af53beb7fc3c7e878ca9207d1fdd01788154d97f43ccdbc7f3638",
+      "protocol": "f7a115785730bdb85d0fdf1362ba4d0d45cac3ee2aaf2540b6ee7921c94c1990"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
-"""Write the readiness packages of the phase-2 Perception-branch cells P-SV-1 and P-SV-2 (owner decisions 184, 186,
-188) from the derived fragments and the measured fit numbers -- config and receipt-pinned bytes only: no adapter
-contact, no server, no lock, no model, tokenizer, encoder, embedder or scorer contact. Flips nothing, mints nothing.
+"""Write the readiness packages of the phase-2 Perception-branch cells P-SV-1, P-SV-2 and P-SV-3 (owner decisions
+184, 186, 188, 190) from the derived fragments and the measured fit numbers -- config and receipt-pinned bytes
+only: no adapter contact, no server, no lock, no model, tokenizer, encoder, embedder or scorer contact. Flips
+nothing, mints nothing.
 
 Per cell: ``docs/readiness/2026-09-29-slurp-stage3-psvK-fold-b-v1/`` (registered facts with the CANONICAL
 ``stage3_measurement`` block, protocol, generation/FIT plans for the arm and its four-row smoke, the analysis recipe
 naming the READ run id, the root-admission DRAFT, README) and the preregistration beside it. ``--append-ledger``
 writes the DRAFT exposure rows (arm, arm FIT, smoke, smoke FIT, READ), replacing in place on re-run.
-``--check-dir`` folds the per-phase prompt-budget receipts of an already-run ``core.flight.cli check``.
+``--check-dir`` folds the per-phase prompt-budget receipts of an already-run ``core.flight.cli check``. ``--cells``
+(default ``psv1,psv2``) scopes which cells this run touches; P-SV-3 is written with ``--cells psv3`` so an
+already-registered cell's package is never re-rendered under a fresh timestamp/commit by the same invocation.
 
     python scripts/flights/psv/write_slurp_psv_registration.py --data-root "$SPEECHRL_DATA_DIR" \\
-        --study-commit <sha> --registered-at 2026-09-29T00:30:00.000000+00:00 [--check-dir DIR] [--append-ledger]
+        --study-commit <sha> --registered-at 2026-09-29T00:30:00.000000+00:00 [--check-dir DIR] [--append-ledger] \\
+        [--cells psv1,psv2,psv3]
 """
 
 from __future__ import annotations
@@ -228,7 +232,7 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
         basis = ("rank-2 -> rank-1 promotion rate under a top-2 contrast is UNMEASURED; the node ledger's conversion "
                  f"of gold at Perception rank 2 is {ff.CONVERSION['rank2']} % and at rank 1 {ff.CONVERSION['rank1']} % "
                  "(row 139: no prior, so the declaration is 0.0 nominated with the ceiling beside)")
-    else:
+    elif key == "psv2":
         ceiling = {
             "rows": ceiling_rows, "pp": ff.pp(ceiling_rows), "roster": ff.TUNING_ROSTER,
             "what": (f"the {ceiling_rows} wrong rows with gold in the boundary block but off Perception's list on Fold A "
@@ -239,6 +243,26 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
         basis = ("the presence gain of a forced three-candidate list and its conversion are UNMEASURED; spec section 6 "
                  "notes only the 270 Fold A rows with lists of one (35) or two (235) can change (row 139: no prior, so "
                  "the declaration is 0.0 nominated with the ceiling beside)")
+    else:
+        # psv3: 83 = 49 (in block) + 34 (out of block) wrong rows with gold off Perception's list entirely on Fold A
+        # (docs/results/2026-09-28-slurp-node-information-gain-ledger.md section 1.4 and section 5 item 1). This
+        # ceiling covers BOTH sub-populations because raising the boundary-supply depth can, in principle, reach
+        # either: the 34 by literally retrieving gold into the (now wider) block, the 49 as a side effect of the
+        # wider note. No conversion is claimed for either: this axis changes only what Perception is SHOWN
+        # (fuse_coverage.m/top_l), never the response contract or the presentation it renders from that supply.
+        assert ceiling_rows == ff.IN_BLOCK_DROPPED_ROWS + ff.OUT_OF_BLOCK_DROPPED_ROWS
+        ceiling = {
+            "rows": ceiling_rows, "pp": ff.pp(ceiling_rows), "roster": ff.TUNING_ROSTER,
+            "what": (f"the {ceiling_rows} wrong rows with gold off Perception's list on Fold A entirely "
+                     f"({ff.pp(ceiling_rows)} pp presence ceiling): {ff.IN_BLOCK_DROPPED_ROWS} of them still inside "
+                     f"the retrieved boundary block but off the rendered list, {ff.OUT_OF_BLOCK_DROPPED_ROWS} "
+                     f"outside the block entirely, {ff.NODE_LEDGER}"),
+        }
+        basis = ("no conversion is claimed: raising the boundary-supply depth (fuse_coverage.m and fuse_coverage.top_l "
+                 "together, 8 -> 12, c unchanged) only changes what Perception is SHOWN, never the response contract "
+                 "or the presentation it renders from that supply; whether a newly shown item reaches top-1, appears "
+                 "on the note's candidate list, or changes the level-2 Solver's answer is UNMEASURED (row 139: no "
+                 "prior, so the declaration is 0.0 nominated with the ceiling beside)")
     if key == "psv1":
         floor_note = (
             f"provisional intent floor {FLOOR_INTENT:.4f} pp ({ANCHOR_INTENT:g} x sqrt({_ANCHOR_N_INTENT} / "
@@ -622,17 +646,39 @@ def render_docs(key, args, ids, group, measure, fit, rule, fence, caps, smoke_ca
         f"{cov['v2_all_pairs']['coverage_fraction']} (`{cov['coverage_script']}`). Registered in `registered-facts-v1.json` "
         "(`contrast_pair_table`).\n"
         if key == "psv1" else "")
-    placeholder += (
-        "\n**Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` "
-        f"(`{ff.branch_seed_relpath(key, 'arm')}`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining "
-        "Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than "
-        "of the branch.\n"
+    b_branch_row = next(row for row in group["branches"] if row["branch_id"] == c["b_branch"])
+    if "prepared_seed" in b_branch_row:
+        # This coverage count was measured once the seed existed (P-SV-1 / P-SV-2, disclosed 2026-09-29) and is
+        # never recomputed here; a cell whose B branch has NOT been through prepare-branch-seeds yet (no
+        # `prepared_seed` key at all -- e.g. P-SV-3 at first registration) carries no seed to disclose coverage of.
+        placeholder += (
+            "\n**Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` "
+            f"(`{ff.branch_seed_relpath(key, 'arm')}`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining "
+            "Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than "
+            "of the branch.\n"
+        )
+    else:
+        placeholder += (
+            "\n**Branch-seed not yet prepared.** The B branch carries no `prepared_seed` pin: `core.flight.cli "
+            "prepare-branch-seeds` has not run for this cell (left to root at the flip, per the readiness gate's "
+            "`branch-seed-unpinned` finding).\n"
+        )
+    purpose_180 = (
+        "\n**Purpose (coordinator, decision 180 consumption thesis; node-gain ledger).** Intent is decided at "
+        "Perception's shortlist. Of the 153 wrong rows on Fold A, gold was off Perception's list on 83 (49 still "
+        "inside the retrieved boundary block, 34 outside it). P-SV-2 (forced three candidates) tests whether the "
+        "note can carry more of the in-block gold; P-SV-3 measures the boundary-supply DEPTH itself (how many "
+        "boundary items Perception is shown) as a same-flight Perception-branch column: B is the same AGREE "
+        "Perception supply with the boundary-supply depth raised one step (fuse_coverage.m and fuse_coverage.top_l, "
+        "8 -> 12, c unchanged), read primarily on `present` (gold on the branch's list), with official intent "
+        f"beside ({ff.NODE_LEDGER}, section 1.4 and section 5 item 1).\n"
+        if key == "psv3" else ""
     )
     readme = f"""# Cell {c['label']}: phase-2 same-flight Perception branches on TRAIN Fold B (owner decisions 184, 186, 188)
 
 Registered before contact {args.registered_at[:10]} at study commit `{args.study_commit}` (branch `{args.branch}`);
-both cells **held**. Nothing here authorises a flight, a flip or an admission entry. Development numbers only.
-
+this cell **held**. Nothing here authorises a flight, a flip or an admission entry. Development numbers only.
+{purpose_180}
 **The question.** {c['question']}
 
 **The base and the three registered changes.** The retained AGREE arm (`{ff.AGREE_RUN}`) with:
@@ -673,9 +719,10 @@ a branch Solver contact carries a branch note of the same shape in place of A's.
 ## Sequence
 
 (1) Root countersigns the four DRAFT flight rows (the READ row `{n['read_run']}` stays draft until the seal) and mints
-`{n['decision_relpath']}` with `scripts/flights/psv/psv_mint_receipt.py {key}`. (2) `bash scripts/flights/psv/psv_flip.sh`
-(loop form, both P-SV cells, one HEAD). (3) `bash scripts/flights/psv/batch_chain_psv.sh` on slurp-np4 through the batch
-driver (P-SV-1 then P-SV-2, each smoke first). (4) `bash scripts/flights/psv/psv_read.sh {key}`.
+`{n['decision_relpath']}` with `scripts/flights/psv/psv_mint_receipt.py {key}`. (2) `bash scripts/flights/psv/psv_flip.sh {key}`
+(loop form, converges at one HEAD; naming {key} explicitly leaves any sibling P-SV cell's own flip untouched). (3)
+`bash scripts/flights/psv/batch_chain_psv.sh {key}` on slurp-np4 through the batch driver (smoke first, then the
+one-cell arm campaign). (4) `bash scripts/flights/psv/psv_read.sh {key}`.
 
 **Budgets.** Arm {caps['generation_calls_cap']:,} generation contacts (1,080 x 15), {caps['fit_endpoint_calls_cap']:,} FIT
 endpoints, {caps['repeated_speech_audio_seconds_cap']:,} speech seconds, {caps['gpu_hours_fit_inclusive']} GPU hours; smoke

@@ -21,9 +21,12 @@ bytes already flew in the sealed AGREE arm on TRAIN Fold A -- the TUNING roster 
 Branch bounds: A and T = the measured maximum item count plus a registered headroom of 2; the top2-contrast
 branch = A's bound plus 2 item-widths for the contrast block's two sentences (activation + exclusion,
 ``rails.perception_presentations``), a DECLARED allowance until the contrast-pair table exists; the
-min_candidates branch = A's bound (the response contract changes one bound in the instruction, not the supply).
-The first Solver visit's realised prompt is reported beside (the level-2 branch Solver contact carries a branch
-note of the same shape in place of A's).
+min_candidates branch = A's bound (the response contract changes one bound in the instruction, not the supply);
+the boundary_depth branch (P-SV-3) = the DECLARED new fuse_coverage.top_l (``psv_family.
+BOUNDARY_DEPTH_NEW_TOP_L``, 12) plus the same registered headroom of 2 -- the boundary supply itself is raised, so
+the bound is built from the new declared depth the same way A's bound is built from the measured one, never
+measured (P-SV-3 has never flown). The first Solver visit's realised prompt is reported beside (the level-2
+branch Solver contact carries a branch note of the same shape in place of A's).
 
 MODEL-FREE: zero model, server, tokenizer, encoder or scorer contacts; the sealed trace is opened read-only.
 Only counts, token numbers and hashes are printed and written -- never supplied text, utterance text, gold or
@@ -107,7 +110,12 @@ def measure(data_root: Path) -> dict:
     base = math.ceil(max(r["prompt_tokens"] - r["items"] * tokens_per_item for r in perception))
     items_max = max(r["items"] for r in perception)
     a_bound = items_max + HEADROOM_ITEMS
-    bounds = {"a_and_twin": a_bound, "top2_contrast": a_bound + CONTRAST_ALLOWANCE_ITEMS, "min_candidates": a_bound}
+    bounds = {
+        "a_and_twin": a_bound, "top2_contrast": a_bound + CONTRAST_ALLOWANCE_ITEMS, "min_candidates": a_bound,
+        # P-SV-3: the branch's own fuse_coverage.m/top_l are raised to ff.BOUNDARY_DEPTH_NEW_TOP_L (a DECLARED
+        # target, not a measured one -- this axis has never flown), plus the same registered headroom A/T use.
+        "boundary_depth": ff.BOUNDARY_DEPTH_NEW_TOP_L + HEADROOM_ITEMS,
+    }
     reserve = SLOT_TOKENS // 8
     limit = SLOT_TOKENS - reserve - COMPLETION_CEILING - 2
     fit_estimate = {"slot_tokens": SLOT_TOKENS, "completion_ceiling": COMPLETION_CEILING,

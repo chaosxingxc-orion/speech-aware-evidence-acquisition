@@ -1,0 +1,51 @@
+{
+  "cell": "slurp-native-stage3-psv3-fold-b-v1",
+  "composed_config_hash": "ebd53991010fc6a1e8e0db125938b79bf809c79766916f92a3a4bdc7d887913d",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-psv3-fold-b-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 16.4,
+    "planned_model_calls": 16200,
+    "planned_speech_audio_seconds": 47322,
+    "protocol_hash": "910ce4bdc72e08d659c57a9628f92f7d1225794e1cef194693da3e898ec51d41",
+    "run_id": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-psv3-fold-b-v1.json (this arm alone; no A/A cell -- the twin branch T flies inside every row) through scripts/flights/psv/batch_chain_psv.sh and the batch driver.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-psv3-fold-b-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 64800,
+    "generation_calls_cap": 16200,
+    "gpu_hours_fit_inclusive": 16.4,
+    "native_task_contract_calls_cap": 10800,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 47322
+  },
+  "one_factor": "branch b-depth: fuse_coverage {'m': 12, 'top_l': 12}; the Fold B re-target and the program switch to phase-native-candidates-review-revise-pbranch3-l2-v1 are the instrument's carrier, shared by every branch",
+  "plan_kind": "generation",
+  "preparation_base_commit": "0b50d47e51abecc41ca92f197c1324642d719a6d",
+  "prepared_phase_supply": {
+    "note": "the first Fold B first-phase supply at w_agree 1.0 on this roster; branch A's router must reproduce it on every row (spec section 3, AT-P6)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1/phase-supply-v2.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-29-slurp-stage3-psv3-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "69925b9f8c9ff220965a596ce1ea5b8ff7b4af23914a231fb5db007f617f32a5"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1: SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-depth, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the design's own provisional floor per metric (owner decision 190; stage3_measurement.provisional_floor_pp -- intent 0.6500 pp, SLU 1.4900 pp). (2) PRESENCE: b-depth minus A on gold-on-list (present) in the branch note (primary, ruling O4). NOMINATED (as a presence change) iff the present CI95 lower bound is above zero AND the point delta exceeds the twin's present bar. Reported beside, never gating: official intent accuracy and SLU-F1 of the level-2 branch Solver column (B vs A vs T), list size, gold rank, and the conversion of gold at rank 3. A presence nomination opens no system claim: it only informs a later level-2 intent cell on the same pair.",
+  "quality_read_gate": "No branch column is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-PSV3-FOLD-B-BRANCH-READ-V1 is root countersigned.",
+  "registered_at_utc": "2026-09-29T00:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-psv3, branch fable/psv3",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
