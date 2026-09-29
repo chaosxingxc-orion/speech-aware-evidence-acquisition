@@ -49,8 +49,8 @@
       "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
       "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3",
-      "composed_config_hash": "cfc058e7843369d98c594cabdb72d2ab2ab92704a387abff2a5a102480f15d9b",
-      "protocol_hash": "44cd16ae0ddb6abee901e51df773bcd4c47427879a0e83e72b42962e0e94d086",
+      "composed_config_hash": "dfa6528a4ebb1388bde8a6c60a5dc6fd2b449fa9460f0830a6a80aabb62c36f1",
+      "protocol_hash": "4acaf442f37b5d6a8e12c85de6486e31a440866b9a4362f3a0bb7ab928457d22",
       "resume_from": {
         "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
         "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997"
