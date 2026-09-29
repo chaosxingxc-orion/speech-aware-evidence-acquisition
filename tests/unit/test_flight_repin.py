@@ -25,7 +25,9 @@ from speech_aware_evidence_acquisition.core.flight.repin import (
     NO_SUPPLIED_PHASE_MESSAGE,
     RepinError,
     _is_resume_parent_readiness_record,
+    _is_superseded_donor_readiness_record,
     _resume_parent_package_dirs,
+    _superseded_donor_package_dirs,
     apply_decision_and_readiness,
     repin_package,
     rewrite_ledger_notes,
@@ -949,6 +951,227 @@ def test_is_resume_parent_readiness_record_matches_package_and_preregistration_s
     ) is False
     assert _is_resume_parent_readiness_record(
         inside_file, readiness_root=readiness_root, resume_parent_package_dirs=set()
+    ) is False
+
+
+# --------------------------------------------------------------------------
+# Superseded-donor-package exemption (2026-09-29, cell A2/COMP-1b on
+# DEV-2000-ADDED, owner decision 198): a cell CARRIED FORWARD into the
+# current package from a now-superseded donor package -- the mirror image of
+# a resume (a resume BUILDS on a still-live sealed parent; here the donor
+# GIVES UP a cell it once owned). The donor's own row(s) (a DIFFERENT run id
+# from the carried-over cell's own -- the donor's own arm/FIT/smoke rows, not
+# the carried-over cell's row, which is simply re-pointed) carry the exact
+# marker "SUPERSEDED <date> by cell <id> (docs/readiness/<this package>,
+# ...)"; the donor package's own registered documents legitimately still
+# quote the carried-over cell's pre-carry-over pin, frozen forever (E26).
+# --------------------------------------------------------------------------
+
+
+def _add_donor_ledger_row(
+    pkg: dict, *, donor_run_id: str, donor_package: str, marker_package: str | None
+) -> None:
+    """Append a second ledger row for ``donor_run_id``, pointing its
+    'artifacts' column at ``donor_package``. When ``marker_package`` is
+    given, the row's notes carry the exact SUPERSEDED marker naming it as
+    the superseding package; when it is ``None``, the notes describe
+    supersession only in prose, without the exact marker."""
+
+    if marker_package is not None:
+        notes = (
+            "this cell never flew and never will in this form. "
+            f"SUPERSEDED 2026-09-29 by cell A2 (docs/readiness/{marker_package}, "
+            "owner decision 198: carried into a new package); no file deleted."
+        )
+    else:
+        notes = "this cell is retired and its work was superseded by later cells; no file deleted."
+    text = pkg["ledger_path"].read_text(encoding="utf-8")
+    text += (
+        f"| 2026-01-01 | {donor_run_id} | no | "
+        f"docs/readiness/{donor_package}/generation-plan-registered-v1.json | {notes} |\n"
+    )
+    pkg["ledger_path"].write_text(text, encoding="utf-8", newline="\n")
+
+
+def test_a_superseded_donors_own_readiness_package_quoting_the_old_pin_converges(tmp_path):
+    """The donor package -- resolved from a DIFFERENT row's 'artifacts'
+    column, found by the ledger's own SUPERSEDED marker naming this cell's
+    own package by name -- keeps the carried-over cell's pre-carry-over pin
+    forever in its own registered documents. The re-pin must still succeed
+    and must never touch the donor's bytes."""
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+    )
+    _add_donor_ledger_row(pkg, donor_run_id="DONOR-RUN-1", donor_package="donor-pkg", marker_package="test-pkg")
+
+    donor_dir = pkg["repo"] / "docs/readiness/donor-pkg"
+    _write(
+        donor_dir / "aa-generation-plan-registered-v1.json",
+        {
+            "purpose": f"{RUN_ID}: the cell's own plan document, as registered under the donor",
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+        },
+    )
+    _write(
+        donor_dir / "registered-facts-v1.json",
+        {
+            "run_id": RUN_ID,
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(
+        pkg["repo"], "commit", "-q", "-m",
+        "mark a donor row superseded by this package and add the donor's own frozen records",
+    )
+
+    donor_snapshot = {path: path.read_bytes() for path in donor_dir.iterdir() if path.is_file()}
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    summary = run(pkg, fake, allow_output_change=True)  # must not raise RepinError
+
+    assert summary["cells"][0]["artifact"]["rebuilt"] is True
+    for path, content in donor_snapshot.items():
+        assert path.read_bytes() == content, f"{path} was rewritten by a re-pin that does not own it"
+    assert pkg["old_artifact_sha"] not in _all_text(pkg)
+
+
+def test_a_live_foreign_package_quoting_the_hash_still_refuses(tmp_path):
+    """A package with NO supersession marker at all -- an ordinary foreign
+    package that happens to name the current run id and quote the old pin --
+    is not exempted by this item: ``_superseded_donor_package_dirs`` finds no
+    marker naming this cell's own package, so the donor-package set stays
+    empty and the scan refuses exactly as it always did."""
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+    )
+    _add_donor_ledger_row(pkg, donor_run_id="DONOR-RUN-1", donor_package="live-foreign-pkg", marker_package=None)
+
+    live_dir = pkg["repo"] / "docs/readiness/live-foreign-pkg"
+    _write(
+        live_dir / "README.md",
+        f"{RUN_ID}: still live, quotes sha256 `{pkg['old_artifact_sha']}` for its own reasons.\n",
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add a live foreign package with no supersession marker at all")
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake, allow_output_change=True)
+
+
+def test_a_superseded_marker_naming_a_different_package_still_refuses(tmp_path):
+    """Supersession must be explicit AND must name THIS cell's own package by
+    name: a marker that names some OTHER package is not this cell's own
+    donor, and the scan must still refuse -- the exemption is not
+    name-symmetric with 'superseded' appearing anywhere in the ledger."""
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+    )
+    _add_donor_ledger_row(
+        pkg, donor_run_id="DONOR-RUN-1", donor_package="donor-pkg", marker_package="some-other-pkg"
+    )
+
+    donor_dir = pkg["repo"] / "docs/readiness/donor-pkg"
+    _write(
+        donor_dir / "aa-generation-plan-registered-v1.json",
+        {
+            "purpose": f"{RUN_ID}: the cell's own plan document, as registered under the donor",
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(
+        pkg["repo"], "commit", "-q", "-m",
+        "mark a donor row superseded by a DIFFERENT package, not this cell's own",
+    )
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake, allow_output_change=True)
+
+
+def test_superseded_donor_package_dirs_reads_the_ledger_marker(tmp_path):
+    """:func:`_superseded_donor_package_dirs` finds a donor package by its
+    own row's SUPERSEDED marker naming ``readiness_dir.name`` -- never by run
+    id (the donor's own row ordinarily carries a DIFFERENT run id than any
+    cell being re-pinned) -- and reads the donor's package directory from
+    THAT SAME row's 'artifacts' column. A marker naming some other package,
+    no marker at all, or a missing ledger file all resolve to nothing."""
+    ledger_path = tmp_path / "exposure-ledger.md"
+    ledger_path.write_text(
+        "# Exposure ledger\n\n"
+        "| date | run/experiment id | consumed | artifacts | notes |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        "| 2026-01-01 | DONOR-RUN-A | no | docs/readiness/donor-pkg-a/plan.json | "
+        "SUPERSEDED 2026-09-29 by cell A2 (docs/readiness/current-pkg, owner decision 198: notes) |\n"
+        "| 2026-01-01 | DONOR-RUN-B | no | docs/readiness/donor-pkg-b/plan.json | "
+        "SUPERSEDED 2026-09-29 by cell A2 (docs/readiness/some-other-pkg, owner decision 198: notes) |\n"
+        "| 2026-01-01 | DONOR-RUN-C | no | docs/readiness/donor-pkg-c/plan.json | no marker at all |\n",
+        encoding="utf-8",
+    )
+
+    assert _superseded_donor_package_dirs(tmp_path, ledger_path, tmp_path / "docs/readiness/current-pkg") == {
+        (tmp_path / "docs" / "readiness" / "donor-pkg-a").resolve()
+    }
+    assert _superseded_donor_package_dirs(tmp_path, ledger_path, tmp_path / "docs/readiness/some-other-pkg") == {
+        (tmp_path / "docs" / "readiness" / "donor-pkg-b").resolve()
+    }
+    assert _superseded_donor_package_dirs(tmp_path, ledger_path, tmp_path / "docs/readiness/no-such-pkg") == set()
+    assert (
+        _superseded_donor_package_dirs(tmp_path, tmp_path / "missing.md", tmp_path / "docs/readiness/current-pkg")
+        == set()
+    )
+
+
+def test_is_superseded_donor_readiness_record_matches_package_and_preregistration_sibling(tmp_path):
+    """:func:`_is_superseded_donor_readiness_record` exempts every file
+    inside a named donor package directory and its sibling preregistration
+    note (``docs/readiness/<package>-preregistration*.md``), but nothing
+    else -- not an unrelated sibling file, not another package's own
+    directory, and nothing at all once ``superseded_donor_package_dirs`` is
+    empty."""
+    readiness_root = (tmp_path / "docs" / "readiness").resolve()
+    package_dir = (readiness_root / "donor-pkg").resolve()
+
+    inside_file = readiness_root / "donor-pkg" / "README.md"
+    inside_file.parent.mkdir(parents=True)
+    inside_file.write_text("x", encoding="utf-8")
+    sibling_preregistration = readiness_root / "donor-pkg-preregistration.md"
+    sibling_preregistration.write_text("x", encoding="utf-8")
+    unrelated_sibling = readiness_root / "donor-pkg-other-notes.md"
+    unrelated_sibling.write_text("x", encoding="utf-8")
+    other_dir_file = readiness_root / "other-pkg" / "README.md"
+    other_dir_file.parent.mkdir(parents=True)
+    other_dir_file.write_text("x", encoding="utf-8")
+
+    dirs = {package_dir}
+    assert _is_superseded_donor_readiness_record(
+        inside_file, readiness_root=readiness_root, superseded_donor_package_dirs=dirs
+    ) is True
+    assert _is_superseded_donor_readiness_record(
+        sibling_preregistration, readiness_root=readiness_root, superseded_donor_package_dirs=dirs
+    ) is True
+    assert _is_superseded_donor_readiness_record(
+        unrelated_sibling, readiness_root=readiness_root, superseded_donor_package_dirs=dirs
+    ) is False
+    assert _is_superseded_donor_readiness_record(
+        other_dir_file, readiness_root=readiness_root, superseded_donor_package_dirs=dirs
+    ) is False
+    assert _is_superseded_donor_readiness_record(
+        inside_file, readiness_root=readiness_root, superseded_donor_package_dirs=set()
     ) is False
 
 
