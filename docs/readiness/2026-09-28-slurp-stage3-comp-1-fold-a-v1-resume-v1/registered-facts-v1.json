@@ -1,0 +1,17 @@
+{
+  "schema": "saea-registered-facts-v1",
+  "registered_at_utc": "2026-09-29T00:45:00.000000+00:00",
+  "study_commit_at_registration": "6744500a",
+  "parent_registered_facts": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/registered-facts-v1.json",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: the agreement table and the centroid key file load and hash-verify, the boundary channel still delivers, the Solver answers under the cited-answer contract and the unwrapping normaliser delivers the answer's own bytes, every request fits and the episode completes. Scored by no one, read by no one; under the instrument's rule 5 a batch of four rows can never be evidence of benefit.",
+      "primary_metric": "intent accuracy (scenario_action exact)",
+      "rows": 4,
+      "recovery_note": "Identical to the COMP-1 smoke declared block; the dry run of resume attempt 3; form only."
+    }
+  }
+}

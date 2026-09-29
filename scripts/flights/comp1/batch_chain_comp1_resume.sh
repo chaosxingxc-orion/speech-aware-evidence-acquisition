@@ -1,7 +1,9 @@
 #!/bin/bash
 # VARIANT 1 of the COMP-1 recovery: fly the RESUME-RECOVERY of the aborted COMP-1 arm, then G5, on the SLURP np4
 # geometry through the batch driver (owner decisions 22, 77, 160). ONE queue of two steps:
-#   step 1 (comp1res, kind resume): NO smoke; the single-cell campaign plan
+#   step 1 (comp1res, kind resume): 2026-09-29, resume attempt 3: the FOUR-ROW DRY RUN of owner decision 181 is the
+#          step's smoke (SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1, fresh run / attempt / FIT ids; the driver
+#          stops before the resume opens unless it passes its structural check), then the single-cell campaign plan
 #          configs/campaign/slurp-native-stage3-comp1-fold-a-v1-resume.json -- the resume cell only. The shared A/A
 #          SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 is FINALIZED and scored in the aborted chain and is NEVER re-flown.
 #          The attempt keeps 471 COMPLETE rows under I7r custody and flies 609; the merged manifest is 1,080 rows.
@@ -46,7 +48,14 @@ with trace.open("rb") as handle:
     for block in iter(lambda: handle.read(1 << 20), b""):
         digest.update(block)
 assert digest.hexdigest() == TRACE, "the predecessor trace moved"
-assert not (data / f"runs/{RUN}/attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2").exists(), "resume attempt 2 already exists"
+assert not (data / f"runs/{RUN}/attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3").exists(), "resume attempt 3 already exists"
+assert not (data / f"prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1/attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3").exists(), "the attempt-3 FIT identity root already exists"
+for dry in ("runs/SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1", "attempts/SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1",
+            "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-FIT-V1"):
+    assert not (data / dry).exists(), f"the dry run already started: {dry}"
+dcell = load(repo / "configs/experiment/slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1.json")["cells"][0]
+assert dcell["readiness"]["state"] == "ready", dcell["readiness"]["state"]
+assert cell["attempt_id"] == "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3", cell["attempt_id"]
 assert load(data / "coordination/slurp-stage3-comp1-fold-a-v1/resume-byte-identity-proof-v1.json")["verdict"] == "PASS"
 assert load(data / "attempts/SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1/attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1.json")["state"] == "FINALIZED"
 facts = load(repo / "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/registered-facts-v1.json")
@@ -64,12 +73,14 @@ steps = [
     {"order": 1, "short": "comp1res", "kind": "resume",
      "experiment": "slurp-native-stage3-comp1-fold-a-v1-resume",
      "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
-     "smoke_experiment": None, "smoke_cell": None,
+     "smoke_experiment": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
+     "smoke_cell": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
      "campaign_plan": "configs/campaign/slurp-native-stage3-comp1-fold-a-v1-resume.json",
      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
-     "gen_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2",
-     "smoke_run_id": None, "smoke_attempt_id": None,
+     "gen_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
+     "smoke_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1",
+     "smoke_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3-smoke",
      "expected_rows": 1080, "contacts_per_row": 5, "ceiling_per_row": 11, "notool": True,
      "owner": "root-slurp-native-stage3-comp1-fold-a-v1-resume"},
     {"order": 2, "short": "g5", "kind": "cell",
@@ -88,6 +99,6 @@ steps = [
 ]
 json.dump(steps, open(os.environ["QUEUE"], "w"), indent=1)
 PY
-echo "queue [comp1res: the resume cell (no smoke, the A/A never re-flown); g5: smoke, then the G5 arm] written; starting driver $(date -u +%FT%TZ)" >> $LOG
+echo "queue [comp1res: the four-row dry run (owner decision 181) as the smoke, then resume attempt 3 (the A/A never re-flown); g5: smoke, then the G5 arm] written; starting driver $(date -u +%FT%TZ)" >> $LOG
 bash $SP/batch_driver.sh >> /home/chao/batch-driver.out 2>&1
 echo "driver exit $? $(date -u +%FT%TZ)" >> $LOG

@@ -2,7 +2,7 @@
   "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
   "composed_config_hash": "ce6c26d448c2db1964d13d86ba19d6c754a0e5cd145d9afcdfb92d03be60336c",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume",
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 12.0,
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1/protocol-registered-v1.json",
-    "sha256": "313d6bf813ba8920282d1c2687a5dc4d397da206e5b6f207162e8b2940472aad"
+    "sha256": "bc64a041de954aeb3d3b4a9fbad807d9d4f8d97cb8c90bb3f1ea4d587d235a3d"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the COMP-1 arm and its in-chain A/A replicate, and before the coordinator's declared expected_effect_pp is on the record. A verdict computed against the sealed comparator alone is refused.",
