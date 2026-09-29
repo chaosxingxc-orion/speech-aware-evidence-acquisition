@@ -1,0 +1,559 @@
+{
+  "cells": {
+    "agree_arm": {
+      "baseline_fragment": "slurp-native-stage3-agree-w1-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:9a21f53e5319ab6f",
+      "experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:d33252e173b23f74",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "e4": {
+      "baseline_fragment": "slurp-native-stage3-relisten-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:3681a6f5636ddab5",
+      "experiment": "slurp-native-stage3-relisten-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:119db55d73e942fb",
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1"
+    }
+  },
+  "composed_config_diff": {
+    "by_class": {
+      "bookkeeping": 40,
+      "program-switch": 1,
+      "relisten-block": 6,
+      "supply-pin": 2
+    },
+    "differing_leaves": [
+      {
+        "agree_arm": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+        "class": "bookkeeping",
+        "e4": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",
+        "leaf": "cells[0].attempt_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "slurp-native-stage3-agree-w1-fold-a-baseline-v1",
+        "class": "bookkeeping",
+        "e4": "slurp-native-stage3-relisten-fold-a-baseline-v1",
+        "leaf": "cells[0].baseline_fragment",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "slurp-native-stage3-agree-w1-fold-a-v1",
+        "class": "bookkeeping",
+        "e4": "slurp-native-stage3-relisten-fold-a-v1",
+        "leaf": "cells[0].cell_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<long>",
+        "leaf": "cells[0].readiness.reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "slurp-stage3-agree-w1-fold-a-admission-v1",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[0].expected_decision_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "decision",
+        "class": "bookkeeping",
+        "e4": "preparation",
+        "leaf": "cells[0].readiness.requirements[0].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "Decision slurp-stage3-agree-w1-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py.",
+        "class": "bookkeeping",
+        "e4": "<long>",
+        "leaf": "cells[0].readiness.requirements[0].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "coordination/slurp-stage3-agree-w1-fold-a-v1/root-admission-v1.json",
+        "class": "bookkeeping",
+        "e4": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+        "leaf": "cells[0].readiness.requirements[0].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "sha256-prefix16:ebdf2f439bf2254c",
+        "class": "bookkeeping",
+        "e4": "sha256-prefix16:018ca6ef0d10bbf8",
+        "leaf": "cells[0].readiness.requirements[0].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "preparation",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[1].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[1].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[1].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "sha256-prefix16:018ca6ef0d10bbf8",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[1].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "preparation",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[2].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[2].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[2].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "sha256-prefix16:be70d4d0fa990a1b",
+        "class": "bookkeeping",
+        "e4": "<absent>",
+        "leaf": "cells[0].readiness.requirements[2].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "ready",
+        "class": "bookkeeping",
+        "e4": "held",
+        "leaf": "cells[0].readiness.state",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "class": "bookkeeping",
+        "e4": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
+        "leaf": "cells[0].run_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "2026-09-26",
+        "class": "bookkeeping",
+        "e4": "2026-09-29",
+        "leaf": "date",
+        "reason": "the registration date",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 12.0,
+        "class": "bookkeeping",
+        "e4": 18.5,
+        "leaf": "execution_plan.planned_gpu_hours",
+        "reason": "the declared execution plan's budget numbers (planned_model_calls = rows x 17 at the new ceiling); never request bytes",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 11880,
+        "class": "bookkeeping",
+        "e4": 18360,
+        "leaf": "execution_plan.planned_model_calls",
+        "reason": "the declared execution plan's budget numbers (planned_model_calls = rows x 17 at the new ceiling); never request bytes",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 33930,
+        "class": "bookkeeping",
+        "e4": 52437,
+        "leaf": "execution_plan.planned_speech_audio_seconds",
+        "reason": "the declared execution plan's budget numbers (planned_model_calls = rows x 17 at the new ceiling); never request bytes",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "class": "bookkeeping",
+        "e4": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
+        "leaf": "experiment_id",
+        "reason": "the experiment's registered id (ledger and receipts)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<long>",
+        "leaf": "failure_policy",
+        "reason": "prose",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 47520,
+        "class": "bookkeeping",
+        "e4": 73440,
+        "leaf": "family_budget.fit_endpoint_calls_cap",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 11880,
+        "class": "bookkeeping",
+        "e4": 18360,
+        "leaf": "family_budget.generation_calls_cap",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 12.0,
+        "class": "bookkeeping",
+        "e4": 18.5,
+        "leaf": "family_budget.gpu_hours_fit_inclusive",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 6480,
+        "class": "bookkeeping",
+        "e4": 12960,
+        "leaf": "family_budget.native_task_contract_calls_cap",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 33930,
+        "class": "bookkeeping",
+        "e4": 52437,
+        "leaf": "family_budget.repeated_speech_audio_seconds_cap",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "saea-slurp-native-stage3-agree-w1-fold-a-v1",
+        "class": "bookkeeping",
+        "e4": "saea-slurp-native-stage3-relisten-fold-a-v1",
+        "leaf": "fragment_kind",
+        "reason": "the fragment's self-description tag",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 11880,
+        "class": "bookkeeping",
+        "e4": 18360,
+        "leaf": "generation_budget.cap",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<long>",
+        "leaf": "generation_budget.definition",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 5425,
+        "class": "bookkeeping",
+        "e4": 6421,
+        "leaf": "generation_budget.target",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "attempt-slurp-native-stage3-agree-w1-fold-a-fit-v1",
+        "class": "bookkeeping",
+        "e4": "attempt-slurp-native-stage3-relisten-fold-a-fit-v1",
+        "leaf": "native_contact_fit.attempt_id",
+        "reason": "the cell's own FIT spend identity (an attempt id)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": 47520,
+        "class": "bookkeeping",
+        "e4": 73440,
+        "leaf": "native_contact_fit.contact_cap",
+        "reason": "the FIT endpoint cap (rows x 17 x 4 at the new ceiling); never request bytes",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1",
+        "class": "bookkeeping",
+        "e4": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1",
+        "leaf": "native_contact_fit.run_id",
+        "reason": "the cell's own FIT spend identity (a run id)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "relisten-block",
+        "e4": "slurp_relisten_blind_v1",
+        "leaf": "native_episode.relisten.blind_template_id",
+        "reason": "the registered post-accept native_episode.relisten block (shadow delivery); it never reaches a role contact's request (proof 3)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "relisten-block",
+        "e4": "slurp_relisten_confirm_v1",
+        "leaf": "native_episode.relisten.confirm_template_id",
+        "reason": "the registered post-accept native_episode.relisten block (shadow delivery); it never reaches a role contact's request (proof 3)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "relisten-block",
+        "e4": "shadow",
+        "leaf": "native_episode.relisten.delivery",
+        "reason": "the registered post-accept native_episode.relisten block (shadow delivery); it never reaches a role contact's request (proof 3)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "relisten-block",
+        "e4": 3,
+        "leaf": "native_episode.relisten.max_slots_per_row",
+        "reason": "the registered post-accept native_episode.relisten block (shadow delivery); it never reaches a role contact's request (proof 3)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "relisten-block",
+        "e4": "saea-obs-targeted-relisten-v1",
+        "leaf": "native_episode.relisten.policy",
+        "reason": "the registered post-accept native_episode.relisten block (shadow delivery); it never reaches a role contact's request (proof 3)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "relisten-block",
+        "e4": 8,
+        "leaf": "native_episode.relisten.value_max_words",
+        "reason": "the registered post-accept native_episode.relisten block (shadow delivery); it never reaches a role contact's request (proof 3)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "phase-native-candidates-review-revise-v1",
+        "class": "program-switch",
+        "e4": "phase-native-candidates-review-revise-relisten-v1",
+        "leaf": "policy",
+        "reason": "the registered program switch phase-native-candidates-review-revise-v1 -> -relisten-v1 (the two fragments differ only in program_id and max_contacts)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+        "class": "supply-pin",
+        "e4": "<absent>",
+        "leaf": "prepared_phase_supply.relpath",
+        "reason": "the AGREE arm's committed prepared first-phase supply pin (relpath + file sha256); the A/A drops it so the flip mints its own under its own run id (item E16). It reaches a request only through the supply's OUTPUT, so it is output-neutral exactly when the two prepared supply output digests are equal",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "sha256-prefix16:be70d4d0fa990a1b",
+        "class": "supply-pin",
+        "e4": "<absent>",
+        "leaf": "prepared_phase_supply.sha256",
+        "reason": "the AGREE arm's committed prepared first-phase supply pin (relpath + file sha256); the A/A drops it so the flip mints its own under its own run id (item E16). It reaches a request only through the supply's OUTPUT, so it is output-neutral exactly when the two prepared supply output digests are equal",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<long>",
+        "leaf": "purpose",
+        "reason": "prose",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<long>",
+        "leaf": "stage3_algorithm.note",
+        "reason": "the Stage-3 algorithm label and its prose (the label gate reads it)",
+        "request_affecting": false
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "e4": "<long>",
+        "leaf": "what_this_is",
+        "reason": "prose",
+        "request_affecting": false
+      }
+    ],
+    "request_affecting_leaves": []
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "delivered_text": {
+    "accepted_replacements_per_receipts": 0,
+    "agree_rows_with_relisten_receipt": 0,
+    "all_contact_count_deltas_match": false,
+    "all_delivered_text_identical": true,
+    "all_receipt_counts_match": true,
+    "blind_dispositions": {},
+    "confirm_contacts_fired_per_receipts": 0,
+    "contact_count_e4_minus_agree_equals_captured_relisten_contacts": 0,
+    "delivered_text_identical": 120,
+    "e4_rows_with_relisten_receipt": 0,
+    "receipt_contacts_used_equals_captured_relisten_contacts": 0,
+    "receipt_note": "the dispatch rows carry no 'relisten' receipt on this branch (the outputs.jsonl persistence is a concurrent engineering item); the per-row relisten spend is proven instead as the E4-1 minus AGREE contact_count, which must equal the captured relisten contacts of the row",
+    "relisten_contacts_per_row_histogram": {
+      "0": 120
+    },
+    "rows": 120
+  },
+  "findings": [
+    {
+      "detail": "the dispatch row's contact_count(E4-1) - contact_count(AGREE) equals the row's captured relisten contacts on 0 of 120 rows (histogram of the delta {'0': 120}) while 240 relisten contacts reached the (fake) transport: the per-row contact_count the runner reports does not count the post-accept relisten contacts. The flight's plan budget is enforced on the shared client, which does see them; the per-row contact accounting (and any smoke inspection that compares it with the trace or with the receipt's contacts_used) is an engineering item for the relisten wiring, not for this registration.",
+      "gating": false,
+      "id": "row-contact-count-excludes-relisten"
+    }
+  ],
+  "generated_at_utc": "2026-09-29T05:03:31.226068+00:00",
+  "hash_quoting": "64-hex identities other than the prepared-supply output digests and the study commit are quoted as sha256-prefix16:<first 16 hex> (core.flight.repin rewrites package JSON from old identity hashes to new ones at the flip and refuses any old hash left under docs/)",
+  "owner_decision": 185,
+  "precedent": "scripts/flights/wsv1/wsv1_arm_a_proof.py (owner decision 172), the decision-160 method",
+  "prepared_supply": {
+    "agree_arm": {
+      "file_sha256_matches_pin": true,
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "output_sha256_recomputed": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+      "source": "the AGREE arm's committed artifact (the one that flew), read raw -- not re-minted"
+    },
+    "agree_arm_registered_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "e4": {
+      "command": "core.flight.cli prepare-supply --experiment slurp-native-stage3-relisten-fold-a-v1 --cell slurp-native-stage3-relisten-fold-a-v1 --output <scratch>/e4/phase-supply-v1.json",
+      "file_sha256": "sha256-prefix16:74ca1acfc4d8f78c",
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "seconds": 38.1
+    },
+    "equal_registered_and_committed": true,
+    "output_digests_equal": true
+  },
+  "program_identity_fields": "the two model-visible fields the program switch moves (normalise_program_identity): (1) the program id inside every quoted prior contact id (no invocation index moves: E4-1 adds no role invocation before ACCEPT); (2) remaining_model_contacts in the task-state block (17 minus spent against 11 minus spent: +6 on every contact)",
+  "question": "Is E4-1's delivered path (every Perception, Solver, Reviewer and Planner contact, and the delivered text) the retained AGREE arm's own under the 17-ceiling relisten program, with the relisten contacts strictly extra, post-accept, blind to the delivered value and never altering the delivered text?",
+  "request_bytes": {
+    "delivered_path_vs_agree": {
+      "agree_contacts": 663,
+      "agree_contacts_unpaired": 0,
+      "all_identical": false,
+      "all_identical_after_program_identity_normalisation": true,
+      "by_role": {
+        "perception": {
+          "contacts": 120,
+          "normalised_identical": 120,
+          "post_body_identical": 0
+        },
+        "planner": {
+          "contacts": 181,
+          "normalised_identical": 181,
+          "post_body_identical": 0
+        },
+        "reviewer": {
+          "contacts": 181,
+          "normalised_identical": 181,
+          "post_body_identical": 0
+        },
+        "solver": {
+          "contacts": 181,
+          "normalised_identical": 181,
+          "post_body_identical": 0
+        }
+      },
+      "contacts": 663,
+      "normalised_mismatch_contacts": [],
+      "post_body_identical": 0,
+      "post_body_identical_after_program_identity_normalisation": 663,
+      "unpaired": 0
+    },
+    "method": "the decision-160 method (P160.capture_requests): FlightRuntime._dispatch_phase_program(model_free_check=True) on each cell's own composed fragments, against the composed model fragment's REAL llama-server transport with its POST replaced by a fake server that records the body bytes and answers a canned completion identical for both cells (the Solver answer carries one fixed 'date' entity so the relisten stage fires; the blind answer alternates heard=false / a different heard value by sha256(sample_id); the confirm answers 'A'); dispatched serially under ONE common scratch run id; the AGREE side with its unloadable committed supply pin lifted (proof 2 shows the live supply equals the committed output)",
+    "receipts": {
+      "agree_arm": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 164.7,
+        "wire_check_run_id": "WIRECHECK-E4-SHADOW-PROOF-1790658006539"
+      },
+      "e4": {
+        "contacts": 663,
+        "contacts_by_role": {
+          "perception": 120,
+          "planner": 181,
+          "relisten-blind": 120,
+          "relisten-confirm": 120,
+          "reviewer": 181,
+          "solver": 181
+        },
+        "rows_dispatched": 120,
+        "rows_revised_by_canned_planner": 61,
+        "seconds": 181.7,
+        "wire_check_run_id": "WIRECHECK-E4-SHADOW-PROOF-1790658006539"
+      }
+    },
+    "relisten_contacts": {
+      "blind_bodies_carrying_the_delivered_value": 0,
+      "by_kind": {
+        "blind": 120,
+        "confirm": 120
+      },
+      "confirm_bodies_carrying_the_delivered_value": 120,
+      "contacts": 240
+    },
+    "rows": 120
+  },
+  "schema": "saea-e4-shadow-proof-v1",
+  "scratch": "/tmp/e4-shadow-proof-1790657967",
+  "shadow_checks_pass": true,
+  "study_commit": "6287181f1553d55ec67448134e1384546c7aa180",
+  "tool": "scripts/flights/e4/e4_shadow_proof.py",
+  "verdict": "IDENTICAL_MODULO_PROGRAM_IDENTITY"
+}
