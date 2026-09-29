@@ -1051,6 +1051,18 @@ def _supply_variant_arm_count(role: NativeEpisodeRole) -> int:
     return 1 if group is None else int(group.arm_count)
 
 
+def _module_delivering_axes(raw: Mapping[str, object]) -> tuple[str, ...]:
+    """The delivering-branch axes a declared consumption-module block admits
+    (``rails.consumption_module.delivered_perception_axes``); ``()`` when the
+    config declares no module block -- every hand-written config."""
+
+    if "consumption_module" not in raw:
+        return ()
+    from .consumption_module import delivered_perception_axes  # noqa: PLC0415
+
+    return delivered_perception_axes(raw["consumption_module"])
+
+
 def load_native_episode_config(
     values: Mapping, program, *, allow_subceiling: bool = False,
 ) -> NativeEpisodeConfig | None:
@@ -1482,6 +1494,12 @@ def load_native_episode_config(
                 # "What to build" item 1: a branch declaring top2-contrast-v1
                 # must carry a contrast_pairs pin, and no other branch may.
                 top2_contrast_presentation_id=TOP2_CONTRAST_PRESENTATION_ID,
+                # Ruling R3 (evidence-consumption module, migration step 4):
+                # only a declared module block's ADMITTED delivered policy may
+                # set A's axes; the block itself is verified against these
+                # very blocks (``verify_declared_module``), so a hand-written
+                # A axis stays refused (refusal 6).
+                delivering_axes_admitted=_module_delivering_axes(raw),
             )
         except PerceptionBranchError as error:
             raise ValueError(

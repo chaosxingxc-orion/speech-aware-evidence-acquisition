@@ -100,7 +100,7 @@ def test_an_all_off_block_parses_without_records():
         (lambda b: b.update(extra=1), "keys must be"),
         (lambda b: b.update(module_id="not-a-module"), "not registered"),
         (lambda b: b.update(profile="Slurp!"), "profile must match"),
-        (lambda b: b.update(columns=[{"column_id": "c"}]), "migration step 4"),
+        (lambda b: b.update(columns=[{"column_id": "c"}]), "keys must be"),
         (lambda b: b["components"].append({"component_id": "made-up", "state": "off"}), "unknown"),
         (lambda b: b["components"].append({"component_id": "relisten", "state": "off"}), "repeated"),
         (lambda b: b["components"][0].update(state="maybe"), "state 'maybe' is unknown"),
@@ -148,7 +148,7 @@ def test_params_must_carry_exactly_the_components_keys():
     ("component_id", "state", "message"),
     [
         ("e3-progressive-slots", "on", "E3 build go"),
-        ("top2-contrast", "column", "migration step 4"),
+        ("top2-contrast", "shadow", "compiled states are"),
         ("supply-abstain", "on", "migration step 6a"),
         (cm.RELISTEN, "on", "compiled states are"),
         (cm.AGREE_VOTE_SEED, "shadow", "compiled states are"),

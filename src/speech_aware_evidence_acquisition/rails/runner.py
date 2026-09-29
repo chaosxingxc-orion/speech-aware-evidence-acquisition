@@ -2779,6 +2779,23 @@ async def _invoke_native_role_episode(
             # twin (replicate_of A) resolves exactly A's ids and takes the
             # SAME base_messages(ctx) A does -- byte-identical wire payload,
             # A's own greedy repeat in the same branch batch.
+            # Evidence-consumption module, ruling R3: the config loader admits
+            # an axis on A only for a module's ADMITTED delivered policy
+            # (``parse_perception_branches(..., delivering_axes_admitted=)``),
+            # and no component is admitted yet. The wire rendering of A's
+            # axes and their seal custody (``validate_perception_branch_
+            # receipt``: "A and T must declare no axis") land together with
+            # the first admission; until then an axis on A is refused here,
+            # never silently dropped.
+            delivering_branch = perception_branch_group.delivering_branch
+            if (
+                delivering_branch.presentation_id is not None
+                or delivering_branch.min_candidates is not None
+            ):
+                raise RailsRunnerError(
+                    "the delivering perception branch (A) carries a module-admitted "
+                    "axis, whose wire rendering and seal custody are not built yet"
+                )
             supplied = tuple(ctx.query_state.retrieved_value_ids)
             messages = base_messages(ctx)
         else:

@@ -45,6 +45,34 @@ FLOWN_PROGRAMS: Mapping[tuple[int, str | None], str] = {
     (17, None): "phase-native-candidates-review-revise-relisten-v1",
 }
 
+#: ``(branch level, contact ceiling, Solver response_format_id) -> program
+#: id`` for the branched programs SLURP cells already flew (the P-SV cells:
+#: three Perception branches, level 2 -> ceiling 15; level 1 -> 13).
+FLOWN_BRANCH_PROGRAMS: Mapping[tuple[int, int, str | None], str] = {
+    (1, 13, None): "phase-native-candidates-review-revise-pbranch3-l1-v1",
+    (2, 15, None): "phase-native-candidates-review-revise-pbranch3-l2-v1",
+}
+
+#: Where and how Perception columns compile (migration step 4): the frame
+#: every flown P-SV branch block shares -- the delivering branch A and its
+#: twin T at the lock's 10 supplied items, and the registered fit estimate.
+PERCEPTION_BRANCH_FRAME: Mapping[str, object] = {
+    "block_path": ("native_episode", "roles", "perception", "branches"),
+    "delivering_branch_id": "a-agree",
+    "twin_branch_id": "t-twin",
+    "max_supplied_items": 10,
+    "fit_estimate": {
+        "base_prompt_tokens": 2577, "completion_ceiling": 512,
+        "slot_tokens": 24576, "tokens_per_supplied_item": 149,
+    },
+}
+
+#: Ruling R3: ``{component id: admitting record}`` of the Perception
+#: components admitted to the delivered path. EMPTY: no column read has
+#: nominated one yet, so ``top2-contrast`` / ``forced-candidate-list`` may be
+#: ``column`` but never ``on``.
+DELIVERED_PATH_ADMISSIONS: Mapping[str, str] = {}
+
 #: SLURP's delivered-row normaliser (``rails/delivery_normalisers.py``).
 DEFAULT_DELIVER_NORMALISER = "saea-deliver-normalise-v3"
 
@@ -96,4 +124,7 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         delivered_units=None,
         default_deliver_normaliser=lambda: DEFAULT_DELIVER_NORMALISER,
         deliver_stages=deliver_stages(),
+        perception_branch_frame=PERCEPTION_BRANCH_FRAME,
+        flown_branch_programs=FLOWN_BRANCH_PROGRAMS,
+        delivered_path_admissions=DELIVERED_PATH_ADMISSIONS,
     )
