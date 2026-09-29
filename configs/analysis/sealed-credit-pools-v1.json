@@ -1,0 +1,118 @@
+{
+  "schema": "saea-sealed-credit-pools-v1",
+  "note": "Design spec docs/superpowers/specs/2026-09-29-sealed-credit-inner-loop-run-1-design.md section 2a/3. Split: tune on R01C + TRAIN Fold A, read on Fold B (same-flight) then DEV-2000-ADDED (cross-flight). Filler pools and ROLL-3 are never tuning (decision 186; design spec section 3).",
+  "tuning_roster": ["SLURP-STAGE3-CONSTRUCTION-R01C", "SLURP-EVO-FOLD-A-V2"],
+  "read_rosters": {
+    "same-flight-supply-variant": "SLURP-EVO-FOLD-B-V2",
+    "cross-flight": "SLURP-DEV-2000-ADDED-V1"
+  },
+  "pools": [
+    {
+      "label": "roll-1",
+      "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "R01C, grouped 5, locked PLAN"
+    },
+    {
+      "label": "roll-2",
+      "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "Fold A, grouped 5, PLAN + agreement term"
+    },
+    {
+      "label": "var1-plan",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "label": "var1-planr",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "PLANr -- the flown comparator for the VAR-1 family's own knob values"
+    },
+    {
+      "label": "var1-ex-k10",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K10-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "phase_supply.k = 10 variant"
+    },
+    {
+      "label": "var1-ex-k30",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "phase_supply.k = 30 variant"
+    },
+    {
+      "label": "var1-ex-div",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-DIV-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "diversity supply variant; loaded for the credit surface, not a named run-1 knob source"
+    },
+    {
+      "label": "agree",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "the primary Fold A arm; the node-gain ledger's own reference pool"
+    },
+    {
+      "label": "wave-aa",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "wave A/A (same bytes re-flown); the shared comparator W1/W3a/W4 are read against"
+    },
+    {
+      "label": "w1",
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "label": "w3a",
+      "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "label": "w4",
+      "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "release-swap (slot-contracts-w4-v1) source, read against wave-aa"
+    }
+  ]
+}

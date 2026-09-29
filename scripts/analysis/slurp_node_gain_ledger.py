@@ -78,6 +78,15 @@ for _p in (str(REPO_ROOT / "src"), str(REPO_ROOT / "scripts" / "analysis")):
 from speech_aware_evidence_acquisition.analysis.bootstrap import paired_cluster_bootstrap  # noqa: E402
 from speech_aware_evidence_acquisition.data.lock import load_lock  # noqa: E402
 from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response  # noqa: E402
+from speech_aware_evidence_acquisition.analysis.sealed_credit.entity_states import (  # noqa: E402
+    NEAR_THRESHOLD,
+    PARTIAL_STOP,
+    gold_item_states,
+    note_state,
+)
+# note_state/gold_item_states/NEAR_THRESHOLD/PARTIAL_STOP are the lifted primitives (design spec
+# 2026-09-29, sealed-credit inner loop, task 2): imported under their original names so every call
+# site below is unchanged and ``--check`` reproduces the sealed report byte-for-byte.
 
 READ_ID = "SLURP-NODE-GAIN-LEDGER-FOLD-A-V1"
 RECIPE = "slurp-node-information-gain-ledger-v1"
@@ -89,9 +98,7 @@ ROWS = 1080
 BOOT_SEED = 20260807
 BOOT_N = 10_000
 BOOT_LEVEL = 0.95
-NEAR_THRESHOLD = 0.4
-PARTIAL_STOP = frozenset("a an the of to in on at for and or my me i is it this that with from by be what please "
-                         "can could you your".split())
+# NEAR_THRESHOLD / PARTIAL_STOP are imported from analysis.sealed_credit.entity_states (unchanged).
 
 ARMS = (
     {"label": "agree", "title": "AGREE (primary)", "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
@@ -227,37 +234,11 @@ def trace_pass(directory: Path, arm: dict, phases: dict) -> dict:
 
 # ---------------------------------------------------------------------------
 # per-row / per-item derivation
-
-
-def note_state(gold_filler: str, tokens: list) -> str:
-    g = ES.canonical(gold_filler)
-    gt = g.split()
-    if not gt or not tokens:
-        return "ABSENT"
-    if ES.contiguous_in(gt, tokens):
-        return "CONTIGUOUS"
-    for width in (len(gt) - 1, len(gt), len(gt) + 1):
-        if width <= 0 or width > len(tokens):
-            continue
-        for i in range(len(tokens) - width + 1):
-            if ES.norm_distance(g, " ".join(tokens[i:i + width])) <= NEAR_THRESHOLD:
-                return "NEAR"
-    if any(t in tokens for t in gt if t not in PARTIAL_STOP):
-        return "PARTIAL"
-    return "ABSENT"
-
-
-def gold_item_states(gold: tuple, pred: tuple) -> tuple:
-    """(state per gold index, spurious prediction indices) under ES.entity_items."""
-
-    states = ["EXACT"] * len(gold)
-    spurious = []
-    for item in ES.entity_items(gold, pred):
-        if item["gold_index"] is None:
-            spurious.append(item["pred_index"])
-        else:
-            states[item["gold_index"]] = item["kind"]
-    return states, spurious
+#
+# note_state / gold_item_states are imported from analysis.sealed_credit.entity_states (design spec
+# 2026-09-29, sealed-credit inner loop, task 2); both are byte-identical to the versions this module
+# used to define locally (they called ES.canonical / ES.contiguous_in / ES.norm_distance / ES.entity_items,
+# which are the exact functions entity_states now re-exports under the same names).
 
 
 def vote_rank(votes: Counter, intent: str):
