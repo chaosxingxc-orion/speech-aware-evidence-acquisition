@@ -1,6 +1,6 @@
 # Cell P-SV-2 (phase-2 Perception branches, level 2): preregistration
 
-Registered 2026-09-29 at study commit `6a2a62624`, before any contact, from the retained AGREE
+Registered 2026-09-29 at study commit `f33e8a0f2`, before any contact, from the retained AGREE
 arm fragments by script (decision 58) under owner decisions 184, 186 and 188. Development numbers only.
 
 | item | value |
@@ -13,8 +13,8 @@ arm fragments by script (decision 58) under owner decisions 184, 186 and 188. De
 | expected effect | 0.0 pp, `claims_benefit` false; ceiling 49 rows = 4.54 pp on Fold A |
 | rosters | tuning `SLURP-EVO-FOLD-A-V2`; read `SLURP-EVO-FOLD-B-V2` |
 | runs | `SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1` / `SAEA-SLURP-STAGE3-PSV2-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-PSV2-FOLD-B-BRANCH-READ-V1` |
-| composed config hashes | arm `cd3fa837545aec92c61d48abfcec9b1fca764b25710d7491efc964d13d062f17`; smoke `34a8184463b52958d41d5e71485f710611bd60d0edef06c77da2b26767eefbf8` |
-| protocol hashes | arm `617892934c9f8a892d9763c8ed9c4d8a26a8baf260b6a9389b81324c72165e26`; smoke `46a2771cb2f1f43c473a892e608d76aebc74b5c8ede1bf0a0c819823e33aee9b` |
+| composed config hashes | arm `4d1b490a62147126fa702a660b848432ee1b297700d4f30e83b544b00a94d8a6`; smoke `8a684ee9d3d475636f0c9b109ac0b7a122a5324a64542d9de2d3a8e039afb390` |
+| protocol hashes | arm `1864b0087e655fa7152240d78310f8f5f6eb547dc51fbdb7443813b9f5c4d428`; smoke `777583e24dde6174cb5b4ab9512272fa102a235c0c28e549667908ba0c2a2199` |
 | split identity | arm `4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a`; smoke `bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32` |
 
 ## Decision rule (fixed here)

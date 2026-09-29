@@ -3,11 +3,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-generation-v1",
       "cell": "slurp-native-stage3-psv2-fold-b-v1",
-      "composed_config_hash": "cd3fa837545aec92c61d48abfcec9b1fca764b25710d7491efc964d13d062f17",
+      "composed_config_hash": "4d1b490a62147126fa702a660b848432ee1b297700d4f30e83b544b00a94d8a6",
       "experiment": "slurp-native-stage3-psv2-fold-b-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-FIT-V1",
-      "protocol_hash": "617892934c9f8a892d9763c8ed9c4d8a26a8baf260b6a9389b81324c72165e26",
+      "protocol_hash": "1864b0087e655fa7152240d78310f8f5f6eb547dc51fbdb7443813b9f5c4d428",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
@@ -15,11 +15,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-psv2-fold-b-smoke-4-v1",
-      "composed_config_hash": "34a8184463b52958d41d5e71485f710611bd60d0edef06c77da2b26767eefbf8",
+      "composed_config_hash": "8a684ee9d3d475636f0c9b109ac0b7a122a5324a64542d9de2d3a8e039afb390",
       "experiment": "slurp-native-stage3-psv2-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "46a2771cb2f1f43c473a892e608d76aebc74b5c8ede1bf0a0c819823e33aee9b",
+      "protocol_hash": "777583e24dde6174cb5b4ab9512272fa102a235c0c28e549667908ba0c2a2199",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
@@ -40,10 +40,10 @@
     "No branch value built from Fold B rollouts (owner decision 186)."
   ],
   "protocol_id": "slurp-stage3-psv2-fold-b-protocol-v1",
-  "registered_at_utc": "2026-09-29T00:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T05:15:03.000000+00:00",
   "schema": "saea-registered-protocol-v1",
-  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-psv, branch fable/psv",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-branchseeds, branch fable/branchseeds",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "6a2a62624",
+  "study_commit_at_registration": "f33e8a0f2",
   "the_question": "At the one Perception visit of every TRAIN Fold B row, does forcing a three-candidate hypothesis list (response-contract min_candidates 3) raise the share of rows whose gold intent is on Perception's list beyond the in-flight twin's null, read against the delivering branch A in the same flight, and what does the level-2 branch Solver make of the widened list?"
 }
