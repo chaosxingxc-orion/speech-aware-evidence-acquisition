@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-psv1-fold-b-v1-resume",
-  "composed_config_hash": "85618cdc4ef1c2dd38dcb34c1f5eb313588b723ede98a154c3e4593402d29487",
+  "composed_config_hash": "680a39c154e98e6cfabd3c5ea1a060cdad69b7c2b9a9a42c239b885bb850520d",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-fit-v1-seal-only",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 16.4,
     "planned_model_calls": 64800,
     "planned_speech_audio_seconds": 47322,
-    "protocol_hash": "05ebef58ca333787c18f705cdaf038ddfa58060b97b772bbb6030abb95b3788c",
+    "protocol_hash": "88d3ce2c219375604ebd71b414a0e0d86bf85c4d32773237681706ee29bd5499",
     "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -34,13 +34,13 @@
   "preparation_base_commit": "0177f83fc",
   "prepared_phase_supply": {
     "note": "INHERITED pin; the flip rebuilds it under the same run id and asserts the output unchanged (never --allow-output-change). The seal-only path never reads it.",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/phase-supply-v1.json",
-    "sha256": "7b872416131a5a665fcd66651b3be30a5c016aa2b776d312fc5428ec9af7b769",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/phase-supply-v2.json",
+    "sha256": "a558bb2d85e0163d64b12b051f1e2f91ecaaa1acaaf43220f9f478148aac7fa6",
     "output_sha256": "81d6a712110882b70859778080d8d094483c67344da12f5aa69c97f961631dca"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1/protocol-registered-v1.json",
-    "sha256": "d87fa711b122785beb326e3848d56f7eef08ee4168fb423b02b6094a2911046d"
+    "sha256": "7ff850caabdbde1cacb728cf1170f3c3c1e81815788e16945e6f4586b4301975"
   },
   "purpose": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "quality_read_gate": "No branch column is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-PSV1-FOLD-B-BRANCH-READ-V1 is root countersigned.",

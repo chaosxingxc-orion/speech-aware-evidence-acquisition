@@ -116,7 +116,7 @@
       "model_contacts": 0,
       "note": "Model-free and read-only over the REAL attempt trace: every complete row rendered through the real seal stage under the merged I7v fix (receipt schema saea-perception-branch-arms-v2) and re-checked against I7 / I7n / I7g / I7v one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
     },
-    "composed_config_hash": "85618cdc4ef1c2dd38dcb34c1f5eb313588b723ede98a154c3e4593402d29487",
-    "protocol_hash": "05ebef58ca333787c18f705cdaf038ddfa58060b97b772bbb6030abb95b3788c"
+    "composed_config_hash": "680a39c154e98e6cfabd3c5ea1a060cdad69b7c2b9a9a42c239b885bb850520d",
+    "protocol_hash": "88d3ce2c219375604ebd71b414a0e0d86bf85c4d32773237681706ee29bd5499"
   }
 }

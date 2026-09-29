@@ -15,6 +15,13 @@
         "reason": "Cell P-SV-1 SEAL-ONLY COMPLETION (owner decision 197; the E4-1 seal-only shape of owner decision 194). The arm attempt attempt-slurp-native-stage3-psv1-fold-b-generation-v1 of run SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 (flight commit b9af3e58) flew all 1,080 rows of TRAIN Fold B (8,709 contacts, 25,428.7 s repeated speech; run_phases complete) and ABORTED AT THE SEAL at 14:19:36Z on the seal invariant I7v (perception-branch receipt: candidate_intent_ids must be a non-empty ordered list of distinct non-empty strings); no run manifest, nothing read. Root cause (fable/psvsealfix, 6fb31f8d3, merged at 0177f83fc): the runner sealed each branch note's intent list verbatim, and 61 notes over 49 rows listed one intent twice (a-agree 21, b-top2contrast 17, t-twin 23); receipt schema saea-perception-branch-arms-v2 collapses duplicates (first occurrence kept) and records the raw count and a note_parse_status, and the resume replay re-derives the branch block from the trace. Every row is COMPLETE in the aborted attempt's trace (sha256 0c1edb20c37756ec8567fbba8edc56d8ff24ce3ea32b94bccad8c3667285d20a), so this attempt (attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only, FIT identity attempt-slurp-native-stage3-psv1-fold-b-fit-v1-seal-only) declares resume_from that attempt and its trace; the union covers the 1,080-row roster, so core.flight.runtime sets is_seal_only: zero new model contacts, no server, no slot, no lease; core.flight.cli seal-only seals the manifest (I7r binds every kept row to the predecessor trace) and runs the one official finalize job. THIS IS P-SV-1's ONE root-diagnosed recovery re-registration; a second failure closes the cell. Registered before contact by the ops agent (Claude Opus 5.5, single master writer) on 2026-09-29 under owner decision 197; root (act delegated by decision 197) countersigns the seal-only clauses on the arm's generation and FIT rows and the row SAEA-SLURP-STAGE3-PSV1-FOLD-B-SEALONLY-REPLAY-PROOF-V1, mints coordination/slurp-stage3-psv1-fold-b-v1/root-admission-sealonly-v1.json (decision id slurp-stage3-psv1-fold-b-sealonly-admission-v1) with scripts/flights/psv/psv1_sealonly_mint_receipt.py and flips with scripts/flights/psv/psv1_sealonly_flip.sh.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-psv1-fold-b-sealonly-admission-v1",
+            "relpath": "coordination/slurp-stage3-psv1-fold-b-v1/root-admission-sealonly-v1.json",
+            "sha256": "860529b0b2a69022cbe04b43a04d1e700f6d9ca7192b1f9d58a106572a470f4b",
+            "reason": "Decision slurp-stage3-psv1-fold-b-sealonly-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The Fold B exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py (DEV parameters, the DEV/Fold A builder) from the committed FILLER BASE cell's pins -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 60 facets reachable; bytes identical to the filler table (docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md; ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1).",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
@@ -22,12 +29,12 @@
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/phase-supply-v1.json",
-            "sha256": "7b872416131a5a665fcd66651b3be30a5c016aa2b776d312fc5428ec9af7b769",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/phase-supply-v2.json",
+            "sha256": "a558bb2d85e0163d64b12b051f1e2f91ecaaa1acaaf43220f9f478148aac7fa6",
             "reason": "INHERITED from the P-SV-1 arm SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 (its own model-free first-phase Perception supply, minted at the P-SV-1 flip with zero model, tokenizer, encoder, scorer or server contacts; output digest 81d6a712110882b70859778080d8d094483c67344da12f5aa69c97f961631dca). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, the cell and attempt identities and the rails implementation hashes (changed by the I7v fix), so scripts/flights/repin_cell.py rebuilds it model-free into the next phase-supply-v<N>.json under the same run id, ASSERTS the output unchanged and re-pins it in the same cycle; the branch-seed pin is verified or rebuilt the same way. --allow-output-change must NEVER be passed. The seal-only path never reads the supply (no contact is made); the pins are kept so the cell's identity stays the arm's."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "resume_from": {
         "attempt_id": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
