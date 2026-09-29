@@ -41,9 +41,15 @@ both empty) -- the caller that BUILDS the table is the one that knows the pool-s
 (``rails.perception_presentations``'s own docstring), and this is that count and that decision.
 
 PAIR SCOPE, ``--pair-scope`` (O7 ruling, docs/superpowers/specs/2026-09-28-same-flight-instrument-
-phase2-perception-variants-design.md). ``nearest-rival`` (default) is the ORIGINAL selection above
-and is byte-reproducible: it writes the same artifact id, relpaths and bytes it always has, proven
-by ``--check``. ``all-pairs`` instead writes EVERY unordered pair of distinct SLURP intents (O5's
+phase2-perception-variants-design.md). ``nearest-rival`` (default) is the ORIGINAL selection above:
+its CONTENT (the mined ``rows``, and every other field except ``builder.sha256``) is unchanged and
+reproducible, proven by ``--check``. ``builder.sha256`` is this script file's own hash at build
+time, so it drifts the moment the script is edited for any reason -- even to add ``--pair-scope``
+itself -- regardless of whether the mined rows changed; ``--check`` reports it but never gates on
+it, and this is also why a real (non-``--dry``, non-``--check``) re-run of ``nearest-rival`` after
+an edit to this file will refuse to overwrite the pinned v1 table (``write_once``'s own guard) --
+which is correct: the pinned file must never be touched, and ``--check`` is how it is verified
+instead. ``all-pairs`` writes EVERY unordered pair of distinct SLURP intents (O5's
 floor still applies per pair, unchanged), roster-agnostic -- pairs are never selected from a
 roster's seeds, only from the full released intent set -- because the P-SV-1 B branch only renders
 a block when a row's own rank-1/rank-2 pair is in the table, and the nearest-rival table covers
@@ -375,9 +381,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--check", action="store_true",
-        help="re-derive the table for the selected --pair-scope and diff it against the bytes "
-             "already written at that scope's table relpath; writes nothing (implies --dry); "
-             "exits 1 on any mismatch or a missing file.",
+        help="re-derive the table for the selected --pair-scope and diff its CONTENT (schema, "
+             "artifact_id, builder_id, min_pair_pool_support, rows) against the file already "
+             "written at that scope's table relpath; writes nothing. builder.sha256 (this script "
+             "file's own hash) is reported but never gates the verdict, since it drifts on any "
+             "script edit even when the mined rows do not; exits 1 on a content mismatch or a "
+             "missing file.",
     )
     args = parser.parse_args(argv)
     root: Path = args.data_root
@@ -413,11 +422,44 @@ def main(argv: list[str] | None = None) -> int:
                 "reason": "table not found",
             }, indent=2))
             return 1
-        existing_sha = sha_file(target)
-        match = existing_sha == table_sha
+        existing_bytes = target.read_bytes()
+        existing_sha = sha_bytes(existing_bytes)
+        try:
+            existing_doc = json.loads(existing_bytes.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            print(json.dumps({
+                "check": "FAIL", "pair_scope": args.pair_scope, "relpath": table_relpath,
+                "reason": f"existing table is not valid JSON: {error}",
+            }, indent=2))
+            return 1
+        # The CONTENT fields this check proves unchanged. ``builder.sha256`` is excluded on
+        # purpose: it is the hash of THIS SCRIPT FILE at build time, so it necessarily drifts the
+        # moment the script itself is edited for any reason at all (a new --pair-scope/--check
+        # flag, a docstring fix, ...) -- even when the mined pairs and sentences are byte-for-byte
+        # unchanged. A raw whole-file byte comparison would report a false FAIL after every such
+        # edit; comparing the substantive fields below is what "v1 is unchanged" actually means.
+        content_fields = ("schema", "artifact_id", "builder_id", "min_pair_pool_support", "rows")
+        mismatches = [field for field in content_fields if existing_doc.get(field) != table_doc[field]]
+        if existing_doc.get("builder", {}).get("relpath") != table_doc["builder"]["relpath"]:
+            mismatches.append("builder.relpath")
+        match = not mismatches
+        existing_builder_sha = existing_doc.get("builder", {}).get("sha256")
         print(json.dumps({
-            "check": "PASS" if match else "FAIL", "pair_scope": args.pair_scope,
-            "relpath": table_relpath, "written_sha256": existing_sha, "derived_sha256": table_sha,
+            "check": "PASS" if match else "FAIL",
+            "pair_scope": args.pair_scope,
+            "relpath": table_relpath,
+            "content_matches": match,
+            "mismatched_fields": mismatches,
+            "existing_file_sha256": existing_sha,
+            "existing_builder_sha256": existing_builder_sha,
+            "derived_builder_sha256": builder_sha,
+            "builder_sha256_unchanged": existing_builder_sha == builder_sha,
+            "note": (
+                "builder.sha256 is this script file's own hash at build time and is expected to "
+                "differ once the script is edited, even when the mined rows are unchanged; the "
+                "content fields (schema, artifact_id, builder_id, min_pair_pool_support, rows) "
+                "are the real proof that this pair-scope's output is unchanged."
+            ),
         }, indent=2))
         return 0 if match else 1
 
