@@ -1,0 +1,132 @@
+{
+  "_draft_note": "A DRAFT written by the registration agent, in the repository, for root to mint on the data root with scripts/flights/comp1/comp1b_mint_receipt.py (pattern of comp1_mint_receipt.py), which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "31eaf2e4053c95e89c6cf597f10f276626b58e6ebda046423fe3961878113dd2"
+    },
+    "attribution_note": {
+      "branch": "fable/comp1slu",
+      "commit": "e30aa1b61",
+      "path": "docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md"
+    },
+    "base_cell": "cell COMP-1's own committed, flown and sealed fragments (SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1)",
+    "comp1_read": {
+      "path": "docs/results/2026-09-29-slurp-comp1-fold-a-read.md",
+      "sha256": "2d35fb76e6c8d7b68cdb1d452e2e51f5085d877f993a11ed9c0dc12c38a23063"
+    },
+    "comp1_registration": {
+      "path": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1/registered-facts-v1.json",
+      "sha256": "90dcfd73c1117cd129b41c0557aeca206e477a93e5105fee29ff5d2b51d7dd6f"
+    },
+    "comparator_cell": "cell COMP-1's own committed, flown and sealed in-chain A/A (SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1), reused",
+    "config_proof": {
+      "path": "tests/unit/test_comp1b_config.py",
+      "sha256": "0c9eeed0441ed75e0edd5eec285638db975e39c7074f390bf55d00dacea0fe32"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "756ce60755180544af391894c0a369cafca8b3fc65c85c85f49f4b893fbe463f"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "ab36435801e906fd6cb85776f77194e5e818e7fcacd942fc959062b726a17ff7"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1/registered-facts-v1.json",
+      "sha256": "55ca75772c5ccf1d547cd25248d47d2cec2a7f3202db5eaba2c2b8ada11e1723"
+    },
+    "registration_base_commit": "e42e87f3e"
+  },
+  "authorization_basis": "The 2026-09-29 SLU-harm attribution note (docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md, branch fable/comp1slu) names the Solver cited-answer contract as the cause of COMP-1's official SLU-F1 guard loss and recommends this exact smallest-next-cell. Owner decisions 138/152 (the composed-round discipline), 160 (the shared-A/A pattern), 25 (harm), 133 (intent primary), 139 (no prior), 190 (item D3 tuning/read declaration).",
+  "budget": {
+    "asr_calls": 0,
+    "ceiling_note": "11 contacts per row = 1 + 2 x (1 + 3 + 1) at max_revisions 1; removing the citation contract removes tokens, never contacts",
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 33930,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 117
+    }
+  },
+  "cell_kind": "Stage-3 composed system-policy arm (label sealed-credit-system-policy-v1, operator context_application), COMP-1 minus its citation contract, with its four-row smoke; the comparator is the SAME sealed in-chain A/A cell COMP-1 used, reused cross-flight and never re-flown.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim. Development numbers only. claim: nominated.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell COMP-1b: cell COMP-1's own committed agreement term and centroid boundary key, with the citation contract reverted to the locked plan's own non-cited program, on TRAIN Fold A 1,080, read against the existing sealed in-chain A/A after its four-row smoke; read at intent primary against the declared 4.26 pp with official SLU-F1 the non-inferiority guard.",
+  "decision_id": "slurp-stage3-comp1b-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. Budgets are run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the receipt is minted and both cells are flipped",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell, including the reused in-chain A/A",
+    "--allow-output-change on the re-pin tool",
+    "any factor other than removing the citation contract; no k, tau, fuse-policy, w_prior, store, release, snapshot, roster or geometry change",
+    "re-pinning the 213 committed configs"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "partition": "TRAIN Fold A 1,080, unchanged; the smoke flies its first four rows",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "each cell's own, minted at the flip (item E16); not pinned by this receipt"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "8c4517a3809f77b3973f683d488dcd2f4ea72eec05103408a2a20e1802c7d6f1",
+      "protocol": "8976fa08d63b4cc6511253862c7c6b5f33ab380343cc55dad78d783f099828c5"
+    },
+    "note": "the values of the fragments exactly as committed at e42e87f3e (readiness held, no decision requirement); repin_cell.py recomputes them at the flip",
+    "smoke": {
+      "composed_config": "3d9b7226067f67a34207c57183b33b71193ac014c2cfd78ed0bc6e235c944243",
+      "protocol": "cd334d9326503db9563c63101ae76ff607301ef54884e8cf911bba928349615e"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "mmproj": "absent",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "note": "the resident SLURP np4 session; the flight attaches only, never spawns or stops",
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

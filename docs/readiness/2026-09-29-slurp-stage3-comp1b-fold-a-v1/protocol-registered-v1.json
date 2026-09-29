@@ -1,0 +1,181 @@
+{
+  "authority": "the 2026-09-29 SLU-harm attribution note (branch fable/comp1slu commit e30aa1b61, docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md) and the COMP-1 read it explains (docs/results/2026-09-29-slurp-comp1-fold-a-read.md); owner decisions 138 and 152 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); the AGREE registration docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1; the KPROBE registration docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1; the instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; decisions 25 (harm), 127, 133, 139, 160, 190 (item D3)",
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-generation-v1",
+      "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "cell": "slurp-native-stage3-comp1b-fold-a-v1",
+      "composed_config_hash": "8c4517a3809f77b3973f683d488dcd2f4ea72eec05103408a2a20e1802c7d6f1",
+      "declares_agreement_source": true,
+      "experiment": "slurp-native-stage3-comp1b-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-FIT-V1",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "8976fa08d63b4cc6511253862c7c6b5f33ab380343cc55dad78d783f099828c5",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-smoke-4-generation-v1",
+      "boundary_facet_source_sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+      "cell": "slurp-native-stage3-comp1b-fold-a-smoke-4-v1",
+      "composed_config_hash": "3d9b7226067f67a34207c57183b33b71193ac014c2cfd78ed0bc6e235c944243",
+      "declares_agreement_source": true,
+      "experiment": "slurp-native-stage3-comp1b-fold-a-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-FIT-V1",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "cd334d9326503db9563c63101ae76ff607301ef54884e8cf911bba928349615e",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-comp1-aa-fold-a-generation-v1",
+    "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-FIT-V1",
+    "margins": {
+      "h_intent": 0.9943,
+      "h_slu": 1.2485,
+      "n": 1080,
+      "source": "the plan's own null on this roster, cell PLANr, the same margins COMP-1's own rule used"
+    },
+    "official": {
+      "intent_accuracy": 81.85,
+      "slu_f1": 64.21
+    },
+    "registered_by": "docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1",
+    "reused_not_reflown": true,
+    "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+    "sealed": true,
+    "shared_aa_pattern": "owner decision 160: one shared, already-sealed in-chain A/A may serve more than one composed family in the same chain; cell G5 reused this exact A/A the same way. COMP-1b goes one step further: it reuses the A/A as a pure CROSS-FLIGHT comparator with no re-flight of any kind in this family's own chain -- the A/A's bytes were already flown and sealed by cell COMP-1's own campaign."
+  },
+  "decision_rule_fixed_here": "Read against the SAME sealed in-chain A/A cell COMP-1 used, reused cross-flight and never re-flown (owner decision 160's shared-A/A pattern). PRIMARY: intent accuracy (scenario_action exact), paired per row, 10,000 bootstrap draws. GUARD: official pooled SLU-F1 non-inferior at the plan's own null (h_SLU 1.2485). ADMITTED: the intent CI95 lower bound above zero, the point at or above the declared 4.26 pp and the 2.5 pp cross-flight bar, AND the guard holds. NEUTRAL: both guards non-inferior at the own null (h_intent 0.9943 / h_SLU 1.2485) without an admitted gain. HARMFUL: a measured loss on either guard (decision 25). Every verdict carries the per-channel table the attribution note (a) / (b) / (c) split uses, the per-stratum tables in both weightings, and the same-shortlist intent-choice check.",
+  "development_numbers_only": "Every number this cell will produce is a TRAIN Fold A construction-fold development number (owner decisions 28 and 86) and is never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. Budgets are run-cumulative across attempts.",
+  "model_free_proofs_landed_before_contact": {
+    "composed_config_diffs": {
+      "arm_vs_comp1": {
+        "anything_else": [],
+        "bookkeeping": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "fragment_kind",
+          "purpose",
+          "stage3_algorithm.note"
+        ],
+        "factor_paths": [
+          "native_episode.deliver_normaliser.normaliser",
+          "phase_material.solver.instruction_template",
+          "phase_material.solver.response_format_id",
+          "policy"
+        ]
+      },
+      "note": "Each entry flattens two composed configs (core.config.compose) and lists every path whose value differs, comparing cell COMP-1b against cell COMP-1's own committed, already-flown config (NOT the locked plan). Both entries: the citation-contract factor's four leaf paths ALONE, plus per-flight bookkeeping (this cell's FIT identities, the dropped prepared_phase_supply, what_this_is) and the experiment fragment's own block (cells, date, experiment_id, fragment_kind, purpose, stage3_algorithm.note). anything_else is empty in every entry or this writer refuses.",
+      "smoke_vs_comp1_smoke": {
+        "anything_else": [],
+        "bookkeeping": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "fragment_kind",
+          "purpose",
+          "stage3_algorithm.note"
+        ],
+        "factor_paths": [
+          "native_episode.deliver_normaliser.normaliser",
+          "phase_material.solver.instruction_template",
+          "phase_material.solver.response_format_id",
+          "policy"
+        ]
+      }
+    }
+  },
+  "prohibitions": [
+    "No flight before root mints the decision receipt and both cells are flipped.",
+    "No re-flying of the sealed comparator (the in-chain A/A) or the sealed PLAN arm; no test-split, Fold B or DEV contact or read.",
+    "No re-introducing the citation contract; no k, tau, fuse_coverage, w_prior, store, release, snapshot or roster change; no re-pin of the 213 committed configs.",
+    "No paper-scale profile. --allow-output-change is never passed."
+  ],
+  "protocol_id": "slurp-stage3-comp1b-fold-a-protocol-v1",
+  "registered_at_utc": "2026-09-29T16:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1b, branch fable/comp1b",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-V1": {
+      "claim": "nominated",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows prove FORM and nothing else: the agreement table and the centroid key file load and hash-verify, the boundary channel still delivers eight entries, the Solver answers under the locked plan's own non-cited program and every request fits and the episode completes. Scored by no one, read by no one; under the instrument's rule 5 a batch of four rows can never be evidence of benefit.",
+      "primary_metric": "intent accuracy (scenario_action exact)",
+      "primary_metric_key": "intent",
+      "read_roster": "SLURP-EVO-FOLD-A-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1": {
+      "claim": "nominated",
+      "claims_benefit": true,
+      "expected_effect_pp": 4.26,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "COMP-1 minus the citation contract (2026-09-29 SLU-harm attribution, branch fable/comp1slu commit e30aa1b61): the agreement term and the centroid boundary key alone, COMP-1's own committed bytes, read against the SAME sealed in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 COMP-1 used (reused cross-flight, never re-flown -- decision 160's shared-A/A pattern, as cell G5 reused it). expected_effect_pp 4.26 is the measured COMP-1-vs-A/A intent delta from docs/results/2026-09-29-slurp-comp1-fold-a-read.md (CI95 [+2.41, +6.11]); the attribution note shows the citation contract does not move the Solver's intent choice on identical shortlists (COMP-1 vs A/A: 170 identical shortlists, 166 vs 166 rank-1 picks) and adds 0 entities on the unwrap side, so removing it is not expected to move the intent gain. The SLU-F1 guard is the SAME Fold A own null h_SLU 1.2485 COMP-1's own rule used; the attribution note's whole point is that this guard should now HOLD (COMP-1's own loss, -2.24 [-3.97, -0.47], is attributed entirely to the removed citation contract's zero-gold over-emission, +102 FP of the +114 total). tuning_roster and read_roster are declared under item D3 (owner decision 190, 2026-09-29): the agreement table and the centroid key were each built from a TRAIN construction pool disjoint from Fold A recordings by construction (the agreement table self-excludes the row's own utterance identity; the centroid key is the R01-excluded construction-pool mean), and their conversion probes (CONV, KPROBE) were read on Fold A subsets; this cell reads the composed effect on the whole Fold A roster, the same circularity COMP-1's own read already carries and discloses. No disjointness receipt for the construction pool is committed yet, so the tuning/read overlap check is expected to report tuning-roster-unverified, advisory.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the non-inferiority guard (owner decision 133)",
+      "primary_metric_key": "intent",
+      "read_roster": "SLURP-EVO-FOLD-A-V2",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+      "rows": 1080,
+      "tuning_roster": "slurp-train-construction-pool-agree-kprobe-r01-excluded"
+    }
+  },
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_ROOT_ADMISSION_AND_READINESS_FLIP",
+  "study_commit_at_registration": "e42e87f3e",
+  "the_one_change": {
+    "derive_script": {
+      "relpath": "scripts/flights/comp1/derive_slurp_comp1b_cell.py",
+      "sha256": "d1cb773e71e0a588f3bea79fd5efc7d85797d9289575a5e4346af4a8214b319e"
+    },
+    "keys": {
+      "native_episode.deliver_normaliser.normaliser": {
+        "new": "saea-deliver-normalise-v3",
+        "old": "saea-deliver-cited-answer-normalise-v3-v1"
+      },
+      "phase_material.solver.instruction_template": {
+        "new": "probes/slurp_native_role_solver_v2.txt",
+        "old": "probes/slurp_native_role_solver_cited_v1.txt"
+      },
+      "phase_material.solver.response_format_id": {
+        "new": null,
+        "old": "saea-solver-cited-answer-v1"
+      },
+      "policy": {
+        "new": "phase-native-candidates-review-revise-v1",
+        "old": "phase-native-candidates-review-revise-cited-v1"
+      }
+    },
+    "proof_script": {
+      "relpath": "scripts/analysis/slurp_comp1b_diff_proof.py",
+      "sha256": "3569ddb82ec5ba4b6febdd3f3ae118691889f7bc151686250887f8fffa46c716"
+    },
+    "reverted_factor": "the citation contract (COMP-1's factor 3), four leaf JSON paths, one arming",
+    "unchanged": "the agreement term (rank_weights.w_agree 1.0, w_cos 1.0, w_prior 0.0, agreement_source the sealed exemplar-intent vote, recall k 60, fuse_coverage m 8 / c 1 / top_l 8, tau 0.0), the centroid boundary key (facet_source the released centroid vectors), the whole preparation_source_receipts list, the roster, geometry, session, phase-program 11-contact ceiling, the three stores' snapshot and release pins, the exemplar k of 20, the role graph, the Perception / Reviewer / Planner templates and the scorers -- proven byte-identical to COMP-1's own committed values by this writer and by tests/unit/test_comp1b_config.py"
+  },
+  "the_question": "With the Solver cited-answer contract removed (the 2026-09-29 attribution note's named cause of COMP-1's official SLU-F1 guard loss), does the two-factor composition of the agreement term and the centroid boundary key alone raise intent-recognition accuracy on TRAIN Fold A 1,080, read at the SAME sealed in-chain A/A cell COMP-1 used, with official SLU-F1 non-inferior?",
+  "unchanged": "the roster (TRAIN Fold A 1,080), the serving geometry (np4 x 24,576), the session serving-slurp-native-candidate-five-train-a-np4-v1, the phase program's 11-contact ceiling, all three stores' snapshot and release pins, the exemplar k of 20, the role graph, the Perception / Reviewer / Planner templates and response formats, the scorers, every budget, and the whole boundary channel (agreement term + centroid key) -- all COMP-1's own committed bytes"
+}
