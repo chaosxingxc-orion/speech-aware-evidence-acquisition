@@ -49,9 +49,11 @@ Both columns declare ``expected_effect_pp`` 0.0 and claim ceiling
 ``"nominated"`` (ruling 7): no measured analogue exists yet, so the bar is
 the design's own twin/shadow null, registered in
 ``scripts/checks/stage3_effect_floor_check.py`` as the
-``same-flight-shadow-relisten`` design (the same provisional anchor
-``same-flight-supply-variant`` uses, 0.735 * sqrt(200 / rows), until an
-instrument cell has flown and measured its own paired-difference null).
+``same-flight-shadow-relisten`` design -- SLU only, ``1.49 * sqrt(1080 /
+rows)`` (owner decision 190, 2026-09-29: the larger of the two measured
+same-flight CONTRAST half-widths, cell W-SV-1 and cell W4-SV; intent carries
+no floor at all on this design, identical by construction) -- until an
+instrument cell has flown and measured its own paired-difference null.
 
 THE NODE. The post-accept stage is wired into ``rails.runner``'s own
 per-row dispatch (not into ``reproduction.ojw.native_episode``'s

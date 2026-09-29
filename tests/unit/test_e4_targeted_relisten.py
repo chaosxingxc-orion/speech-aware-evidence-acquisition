@@ -566,11 +566,19 @@ def test_confirm_order_is_deterministic_and_covers_both_orders():
 
 
 def test_stage3_effect_floor_gate_registers_the_relisten_design():
-    floor, arithmetic = floor_mod.floor_for("same-flight-shadow-relisten", 1080)
-    assert floor == pytest.approx(0.3163, abs=1e-3)
-    floor_1000, _ = floor_mod.floor_for("same-flight-shadow-relisten", 1000)
-    assert floor_1000 == pytest.approx(0.3287, abs=1e-3)
+    # owner decision 190 (2026-09-29): the design's SLU floor is now the larger of the two
+    # measured same-flight CONTRAST half-widths (1.49 pp at n = 1,080), not the provisional
+    # ROLL-AA anchor (0.3163 pp); intent carries no floor at all on this design (identical by
+    # construction on its two derived columns) and a metric-blind call is refused.
+    floor, arithmetic = floor_mod.floor_for("same-flight-shadow-relisten", 1080, metric="slu")
+    assert floor == pytest.approx(1.49, abs=1e-3)
+    floor_1000, _ = floor_mod.floor_for("same-flight-shadow-relisten", 1000, metric="slu")
+    assert floor_1000 == pytest.approx(1.49 * (1080 / 1000) ** 0.5, abs=1e-3)
     assert any("sampling half-width" in line for line in arithmetic)
+    with pytest.raises(ValueError):
+        floor_mod.floor_for("same-flight-shadow-relisten", 1080)
+    with pytest.raises(ValueError):
+        floor_mod.floor_for("same-flight-shadow-relisten", 1080, metric="intent")
 
 
 def test_flight_registration_gate_requires_nominated_shadow_and_columns():
