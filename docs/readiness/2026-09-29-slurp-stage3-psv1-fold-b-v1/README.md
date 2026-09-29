@@ -27,6 +27,8 @@ tokens, 8 boundary items max, widest item 895 characters,
 
 **Contrast-pair table pinned (2026-09-28).** The `top2-contrast-v1` renderer reads the model-free contrast-pair table built by `scripts/build_slurp_intent_contrast_pairs.py`: `prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json` (data root), sha256 `19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059`, receipt `docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json` (sha256 `4af9e874dea15f5846034ceaff9fbc15b6ba555b81fa959e7a96bf5f6f59a368`; 48 pairs written / 2 skipped of 50, insufficient pool support; the build excluded the Fold A, Fold B and R01 rosters). The pin is registered in `registered-facts-v1.json` (`contrast_pair_table`). The branch schema carries no table field yet, so the pin enters where the runtime reads it once that wiring lands; then this cell is re-derived and re-pinned. The cell must not be flipped before that re-derivation.
 
+**Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` (`prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than of the branch.
+
 **Measurement.** `measurement_design` `same-flight-perception-variant` (the spelling `scripts/checks/stage3_effect_floor_check.py` and
 `scripts/checks/flight_registration_check.py` register; the spec's section 4 says `same-flight-perception-branch`,
 and the gate comment flags the reconciliation), level 2, claim **`nominated`**, `aa_arm_id` `t-twin`,
