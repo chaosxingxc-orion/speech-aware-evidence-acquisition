@@ -397,3 +397,57 @@ def test_receipt_validator_refuses_missing_branch_visits():
             receipt, branch_ids=group.branch_ids, delivered_branch_id="A",
             twin_branch_id="T", phase_id="perception", level=1,
         )
+
+
+# ---------------------------------------------------------------------------
+# prepared_seed (design section 5; the branch-seed-unpinned gate finding,
+# scripts/checks/flight_registration_check.py).
+# ---------------------------------------------------------------------------
+
+PREPARED_SEED = {
+    "relpath": "prepared/SAEA-SLURP-PERCEPTION-BRANCH-B-SEED-V1/seed.json",
+    "sha256": "b" * 64,
+}
+
+
+def _b_knob_with_seed(prepared_seed=None):
+    row = _b_knob()
+    row["prepared_seed"] = prepared_seed if prepared_seed is not None else dict(PREPARED_SEED)
+    return row
+
+
+def test_a_b_branch_parses_its_own_pinned_prepared_seed():
+    group = _parse([_b_knob_with_seed(), _t(), _a()])
+    branch = group.branch("B")
+    assert branch.prepared_seed == PREPARED_SEED
+    assert branch.as_json()["prepared_seed"] == PREPARED_SEED
+
+
+def test_a_and_t_may_not_carry_a_prepared_seed():
+    a_row = _a()
+    a_row["prepared_seed"] = dict(PREPARED_SEED)
+    with pytest.raises(PerceptionBranchError, match="A or its twin"):
+        _parse([_b_knob(), _t(), a_row])
+    t_row = _t()
+    t_row["prepared_seed"] = dict(PREPARED_SEED)
+    with pytest.raises(PerceptionBranchError, match="A or its twin"):
+        _parse([_b_knob(), t_row, _a()])
+
+
+@pytest.mark.parametrize("mutate", [
+    lambda seed: {**seed, "sha256": "not-hex"},
+    lambda seed: {**seed, "sha256": "b" * 63},
+    lambda seed: {**seed, "relpath": ""},
+    lambda seed: {"relpath": seed["relpath"]},
+    lambda seed: {**seed, "extra": "field"},
+])
+def test_a_malformed_prepared_seed_is_refused(mutate):
+    with pytest.raises(PerceptionBranchError, match="prepared_seed"):
+        _parse([_b_knob_with_seed(mutate(PREPARED_SEED)), _t(), _a()])
+
+
+def test_prepared_seed_defaults_to_none_when_absent():
+    group = _parse([_b_knob(), _t(), _a()])
+    assert group.branch("B").prepared_seed is None
+    assert group.branch("A").prepared_seed is None
+    assert group.branch("T").prepared_seed is None

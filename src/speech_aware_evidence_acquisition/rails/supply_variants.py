@@ -952,9 +952,13 @@ PERCEPTION_BRANCH_BLOCK_KEYS = frozenset({"branches", "fit_estimate", "level"})
 #: non-A, non-T branch declares exactly one of (design section 1, "one factor
 #: per non-A branch").
 PERCEPTION_BRANCH_REQUIRED_KEYS = frozenset({"branch_id", "max_supplied_items"})
+#: ``prepared_seed`` is NOT one of the four axis categories (it names no
+#: knob, swap, presentation or contract bound): it is a B branch's own
+#: offline-pinned seed artifact, optional at parse time and required only by
+#: the ``branch-seed-unpinned`` registration gate.
 PERCEPTION_BRANCH_OPTIONAL_KEYS = frozenset({
     "deliver", "overrides", "replicate_of", "release_swap",
-    "presentation_id", "min_candidates",
+    "presentation_id", "min_candidates", "prepared_seed",
 })
 
 #: K counts A and T (design section 1): at least A plus its required twin T,
@@ -1063,6 +1067,18 @@ class PerceptionBranch:
     release_swap: SupplyVariantReleaseSwap | None = None
     presentation_id: str | None = None
     min_candidates: int | None = None
+    # Design section 5 ("Changes and merge set C"): a B branch's own
+    # PRE-FLIGHT seed (``core.flight.runtime.FlightRuntime.
+    # _perception_branch_seeds``), pinned as ``{relpath, sha256}`` by this
+    # program's own offline preparation step -- the same shape
+    # ``prepared_phase_supply`` pins the cell's own first-phase seed with.
+    # ``None`` for A and T (whose seed is the cell's own prepared_phase_
+    # supply, or A's, never a branch-owned artifact) and for every B branch
+    # this preparation step has not yet pinned; the ``branch-seed-unpinned``
+    # gate finding (``scripts/checks/flight_registration_check.py``) is what
+    # refuses a REGISTERED same-flight-perception-variant cell with a B
+    # branch that still carries ``None`` here.
+    prepared_seed: Mapping[str, str] | None = None
 
     @property
     def is_twin(self) -> bool:
@@ -1085,6 +1101,9 @@ class PerceptionBranch:
             ),
             "presentation_id": self.presentation_id,
             "min_candidates": self.min_candidates,
+            "prepared_seed": (
+                None if self.prepared_seed is None else dict(self.prepared_seed)
+            ),
         }
 
 
@@ -1401,6 +1420,30 @@ def parse_perception_branches(
                     f"{min_candidates} exceeds the configured max_candidates "
                     f"ceiling {max_candidates_ceiling}"
                 )
+        raw_prepared_seed = row.get("prepared_seed")
+        prepared_seed = None
+        if raw_prepared_seed is not None:
+            if (
+                not isinstance(raw_prepared_seed, Mapping)
+                or set(raw_prepared_seed) != {"relpath", "sha256"}
+                or not isinstance(raw_prepared_seed.get("relpath"), str)
+                or not raw_prepared_seed["relpath"]
+                or not isinstance(raw_prepared_seed.get("sha256"), str)
+                or len(raw_prepared_seed["sha256"]) != 64
+                or any(
+                    character not in "0123456789abcdef"
+                    for character in raw_prepared_seed["sha256"]
+                )
+            ):
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}].prepared_seed "
+                    "must be exactly {relpath, sha256}, with sha256 a "
+                    "lowercase 64-hex SHA-256"
+                )
+            prepared_seed = {
+                "relpath": raw_prepared_seed["relpath"],
+                "sha256": raw_prepared_seed["sha256"],
+            }
         has_axis = bool(knobs) or release_swap is not None or presentation_id is not None or min_candidates is not None
         if replicate_of is not None and has_axis:
             raise PerceptionBranchError(
@@ -1413,6 +1456,12 @@ def parse_perception_branches(
                 f"perception branches.branches[{position}] carries deliver: "
                 "true and must declare no axis: A is the cell's own request, "
                 "override-free"
+            )
+        if (deliver or replicate_of is not None) and prepared_seed is not None:
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}] carries a "
+                "prepared_seed but is A or its twin (T): A's seed is the "
+                "cell's own prepared_phase_supply, and T takes A's seed"
             )
         if not deliver and replicate_of is None:
             axis_categories = sum((
@@ -1434,6 +1483,7 @@ def parse_perception_branches(
             ),
             replicate_of=replicate_of, release_swap=release_swap,
             presentation_id=presentation_id, min_candidates=min_candidates,
+            prepared_seed=prepared_seed,
         ))
     ids = [branch.branch_id for branch in branches]
     if len(set(ids)) != len(ids):

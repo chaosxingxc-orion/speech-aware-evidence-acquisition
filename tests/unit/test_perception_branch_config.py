@@ -209,3 +209,49 @@ def test_a_fresh_process_resolves_top2_contrast_v1_with_no_prior_import():
     )
     assert completed.returncode == 0, completed.stdout + completed.stderr
     assert "OK" in completed.stdout
+
+
+# ---------------------------------------------------------------------------
+# Refusals: finite_supply_policy and an acquisition policy that re-enters
+# Perception, beside a declared branch group (design section 3, "Refused").
+# ---------------------------------------------------------------------------
+
+
+def test_perception_branches_refuse_beside_finite_supply_policy():
+    values = _values_with_branches(level=1)
+    values["finite_supply_policy"] = {}
+    program = default_phase_program(values["policy"])
+    with pytest.raises(ValueError, match="finite_supply_policy"):
+        load_native_episode_config(values, program, allow_subceiling=True)
+
+
+def test_perception_branches_refuse_beside_an_acquisition_policy_that_reenters_perception():
+    from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
+
+    phases = ("perception", "solver", "reviewer", "planner", "acquisition")
+    program = PhaseProgram(
+        program_id="phase-native-role-perception-branch-acquisition-test",
+        phases=tuple(PhaseSpec(name, name, "none", None, False) for name in phases),
+        max_contacts=20,
+        stop_rule="native-role-episode",
+    ).validate()
+    values = {"native_episode": {
+        "schema": "saea-native-episode-config-v1",
+        "episode_id": "native-role-perception-branch-acquisition-test",
+        "max_revisions": 1,
+        "actions": {"accept": "ACCEPT", "revise": "REVISE", "acquire": "ACQUIRE"},
+        "roles": {
+            name: {"phase_id": name, "max_iterations": 1}
+            for name in ("perception", "solver", "reviewer", "planner")
+        },
+        "acquisition": {
+            "policy": "saea-acquire-speech-reobserve-v1",
+            "budget": {"max_acquisitions_per_row": 1, "contact_budget": 1},
+        },
+    }}
+    values["native_episode"]["roles"]["acquisition"] = {
+        "phase_id": "acquisition", "max_iterations": 1, "kinds": ["speech-reobserve"],
+    }
+    values["native_episode"]["roles"]["perception"]["branches"] = _branches_block(level=1)
+    with pytest.raises(ValueError, match="re-enters Perception"):
+        load_native_episode_config(values, program, allow_subceiling=True)

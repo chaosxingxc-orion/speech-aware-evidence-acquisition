@@ -775,13 +775,16 @@ def _check_perception_branch_registration(
     ``roles.perception.branches`` block at all -- the same three-guard shape
     :func:`_check_supply_variant_registration` uses, for the same reason.
 
-    Three findings, matching the coordinator's stated scope for this gate (level-declared, twin
-    present, claim nominated): ``branch-level-missing``, ``aa-arm-missing`` (reused from phase 1:
-    the required twin, T, is absent or its id disagrees with the registered ``aa_arm_id``), and
-    ``variant-claim-not-nominated`` (reused from phase 1 verbatim). NOT implemented here:
-    ``branch-seed-unpinned`` (design section 4 also names it) -- checking that every non-A,
-    non-T branch's PRE-FLIGHT seed is pinned as its own prepared artifact needs the runtime's
-    prepared-artifact registration, which this static-config gate does not read.
+    Four findings: ``branch-level-missing``, ``aa-arm-missing`` (reused from phase 1: the
+    required twin, T, is absent or its id disagrees with the registered ``aa_arm_id``),
+    ``variant-claim-not-nominated`` (reused from phase 1 verbatim), and ``branch-seed-unpinned``
+    (design section 4/5): every non-A, non-T (B) branch must declare a well-formed
+    ``prepared_seed {relpath, sha256}`` (``rails.supply_variants.PerceptionBranch.prepared_seed``)
+    before this cell may register -- read straight off the raw config a B branch's own
+    ``prepared_seed`` key carries, which is as far as a static-config gate can check without the
+    runtime's own prepared-artifact identity computation
+    (``core.flight.runtime.FlightRuntime._perception_branch_seeds``); it does not re-verify that
+    the pinned bytes actually reproduce that identity.
     """
 
     block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
@@ -851,6 +854,33 @@ def _check_perception_branch_registration(
             f"but claim is {claim!r}",
             report.run_id,
         ))
+
+    if isinstance(branches, list):
+        for row in branches:
+            if (
+                not isinstance(row, dict)
+                or row.get("deliver") is True
+                or row.get("replicate_of") is not None
+            ):
+                continue
+            seed = row.get("prepared_seed")
+            if (
+                not isinstance(seed, dict)
+                or set(seed) != {"relpath", "sha256"}
+                or not isinstance(seed.get("relpath"), str) or not seed["relpath"]
+                or not isinstance(seed.get("sha256"), str) or len(seed["sha256"]) != 64
+                or any(
+                    character not in "0123456789abcdef" for character in seed["sha256"]
+                )
+            ):
+                report.findings.append(Finding(
+                    "branch-seed-unpinned",
+                    f"{report.run_id}: perception branch {row.get('branch_id')!r} (a B branch) "
+                    "declares no well-formed pinned prepared_seed {relpath, sha256} -- design "
+                    "section 5 requires every non-A, non-T branch's pre-flight seed to be pinned "
+                    "as its own prepared artifact before this cell may register",
+                    report.run_id,
+                ))
 
 
 # --------------------------------------------------------------------------

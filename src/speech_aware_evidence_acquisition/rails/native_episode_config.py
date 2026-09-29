@@ -2075,6 +2075,39 @@ def load_native_episode_config(
                 "native_episode.knowledge_value_rendering cannot be armed beside "
                 "a Perception branch group"
             )
+    # Same-flight instrument, PHASE 2 (merge set C, design section 3,
+    # "Refused"): a declared branch group is refused beside a frozen
+    # finite_supply_policy (a frozen policy resolves this row's supply
+    # independently of a branch's own pre-flight seed -- the same custody
+    # reason knowledge_value_rendering is refused above) and beside an
+    # acquisition policy that RE-ENTERS Perception (kind
+    # ``speech-reobserve``): that policy's own re-observation node would
+    # contact Perception a SECOND time, outside the branch fork entirely,
+    # for a phase whose branch group already claims sole ownership of its
+    # one seed.
+    if roles[0].perception_branches is not None:
+        if values.get("finite_supply_policy") is not None:
+            raise ValueError(
+                "native_episode.roles.perception.branches cannot be armed "
+                "beside finite_supply_policy"
+            )
+        if acquisition_policy_id is not None:
+            # Function-local: the same registration discipline every other
+            # rails.acquisition import in this module follows.
+            from .acquisition import (  # noqa: PLC0415
+                KIND_SPEECH_REOBSERVE, AcquisitionError, resolve_acquisition_policy,
+            )
+
+            try:
+                acquisition_policy = resolve_acquisition_policy(acquisition_policy_id)
+            except AcquisitionError as error:
+                raise ValueError(f"acquisition.policy is invalid: {error}") from error
+            if acquisition_policy.kind == KIND_SPEECH_REOBSERVE:
+                raise ValueError(
+                    "native_episode.roles.perception.branches cannot be armed "
+                    "beside an acquisition policy that re-enters Perception "
+                    f"({KIND_SPEECH_REOBSERVE!r})"
+                )
     return NativeEpisodeConfig(
         raw["episode_id"],
         revisions,
