@@ -107,6 +107,13 @@ class World:
         # real baselines carry it (see configs/baseline/*var2-supply-variants*.json).
         self.measurement: dict | None = None
         self.supply_variants: dict | None = None
+        # resume-replay proof (coordinator, after the COMP-1 resume attempt 3 seal abort):
+        # ``resume_from`` is written onto the EXPERIMENT cell exactly like a real resume cell
+        # declares it; ``resume_replay_proof`` is written into the package's own
+        # generation-plan-registered-v1.json when set, else that file keeps its plain {"run_id"}
+        # shape (no block at all -- the "missing" case every other test already exercises).
+        self.resume_from: dict | None = None
+        self.resume_replay_proof: dict | None = None
         # Same-flight instrument, PHASE 2 (merge set C): written into the EXPERIMENT
         # baseline's native_episode.roles.perception.branches, exactly where the real
         # baselines will carry it once a phase-2 fragment is minted.
@@ -165,10 +172,16 @@ class World:
             }
             if experiment == EXPERIMENT and self.measurement is not None:
                 fragment["stage3_measurement"] = self.measurement
+            if experiment == EXPERIMENT and self.resume_from is not None:
+                fragment["cells"][0]["resume_from"] = self.resume_from
             _write(self.repo / "configs" / "experiment" / f"{experiment}.json", fragment)
         _write(self.repo / "configs" / "campaign" / "plan.json",
                {"schema": "saea-campaign-plan-v1", "cells": [{"cell": EXPERIMENT, "experiment": EXPERIMENT}]})
-        _write(self.repo / "docs" / "readiness" / PACKAGE / "generation-plan-registered-v1.json", {"run_id": RUN})
+        registered_plan: dict = {"run_id": RUN}
+        if self.resume_replay_proof is not None:
+            registered_plan["resume_replay_proof"] = self.resume_replay_proof
+        _write(self.repo / "docs" / "readiness" / PACKAGE / "generation-plan-registered-v1.json",
+               registered_plan)
         _write(self.repo / "docs" / "readiness" / PACKAGE / "analysis-recipe-v1.json", self.recipe)
         _write(self.repo / "docs" / "exposure-ledger.md", _ledger_text(list(self.rows.values())))
         return self
@@ -264,6 +277,95 @@ def test_a_consumed_cell_is_reported_and_never_blocks(world: World) -> None:
     assert data["passed"] and cell["severity"] == "advisory"
     assert cell["consumed_by"] == f"runs/{RUN}"
     assert "row-not-countersigned" in _kinds(data)
+
+
+# --------------------------------------------------------------------------
+# resume-replay proof (coordinator, after the COMP-1 resume attempt 3 seal abort)
+# --------------------------------------------------------------------------
+
+RESUME_FROM = {"attempt_id": "attempt-proof-fold-a-generation-v1", "trace_sha256": "a" * 64}
+CLEAN_PROOF = {
+    "rows_checked": 1080, "rows_failing": 0, "sealed_twice": 0,
+    "checker_sha256": "b" * 64, "code_commit": "deadbeef",
+}
+
+
+def test_resume_cell_without_replay_proof_is_advisory_in_tree_and_blocking_at_launch(
+    world: World,
+) -> None:
+    world.resume_from = RESUME_FROM
+    world.build()
+    tree = world.run()
+    assert tree["passed"]  # advisory: reported, never fails the whole-tree scan
+    assert "resume-replay-unproven" in _kinds(tree)
+    launch = world.run(cells=[EXPERIMENT])
+    assert not launch["passed"]  # BLOCKING: a live, unflown resume cell named at launch
+    assert "resume-replay-unproven" in _kinds(launch)
+
+
+def test_resume_cell_with_a_clean_replay_proof_passes_both_modes(world: World) -> None:
+    world.resume_from = RESUME_FROM
+    world.resume_replay_proof = CLEAN_PROOF
+    world.build()
+    assert world.run()["passed"]
+    launch = world.run(cells=[EXPERIMENT])
+    assert launch["passed"]
+    cell = next(c for c in launch["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["resume_replay_proof"] == CLEAN_PROOF
+    assert "resume-replay-unproven" not in _kinds(launch)
+
+
+def test_resume_cell_with_an_incomplete_replay_proof_is_unproven(world: World) -> None:
+    world.resume_from = RESUME_FROM
+    world.resume_replay_proof = {k: v for k, v in CLEAN_PROOF.items() if k != "checker_sha256"}
+    data = world.build().run(cells=[EXPERIMENT])
+    assert not data["passed"]
+    assert "resume-replay-unproven" in _kinds(data)
+
+
+def test_resume_cell_with_a_failing_replay_proof_is_still_unproven(world: World) -> None:
+    world.resume_from = RESUME_FROM
+    world.resume_replay_proof = {**CLEAN_PROOF, "rows_failing": 2}
+    data = world.build().run(cells=[EXPERIMENT])
+    assert not data["passed"]
+    assert "resume-replay-unproven" in _kinds(data)
+
+
+def test_resume_cell_with_a_sealed_twice_replay_proof_is_still_unproven(world: World) -> None:
+    world.resume_from = RESUME_FROM
+    world.resume_replay_proof = {**CLEAN_PROOF, "sealed_twice": 1}
+    data = world.build().run(cells=[EXPERIMENT])
+    assert not data["passed"]
+    assert "resume-replay-unproven" in _kinds(data)
+
+
+def test_a_consumed_resume_cell_is_never_blocked_by_missing_replay_proof(world: World) -> None:
+    world.resume_from = RESUME_FROM
+    world.rows[RUN] = _row(RUN, DRAFT)
+    world.build()
+    (world.data / "runs" / RUN / "attempt-x").mkdir(parents=True)
+    data = world.run(cells=[EXPERIMENT])
+    cell = data["cells"][0]
+    assert data["passed"] and cell["severity"] == "advisory"
+    assert "resume-replay-unproven" in _kinds(data)  # still reported, never blocking
+
+
+def test_tree_mode_skips_the_resume_replay_check_for_an_unnamed_flown_cell(world: World) -> None:
+    world.resume_from = RESUME_FROM
+    world.build()
+    (world.data / "runs" / RUN / "attempt-x").mkdir(parents=True)
+    data = world.run()
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["named"] is False and cell["consumed_by"] == f"runs/{RUN}"
+    assert "resume-replay-unproven" not in _kinds(data)
+    assert cell.get("resume_replay_proof") is None
+
+
+def test_a_cell_without_resume_from_is_unaffected_by_the_resume_replay_check(world: World) -> None:
+    world.build()  # world.resume_from is None by default
+    data = world.run(cells=[EXPERIMENT])
+    assert "resume-replay-unproven" not in _kinds(data)
+    assert data["cells"][0]["resume_replay_proof"] is None
 
 
 def test_tree_mode_blocks_a_new_cell_and_advises_a_stale_one(world: World) -> None:
@@ -776,6 +878,79 @@ def test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap(world: World) -> 
     assert "tuning-read-overlap" in _kinds(data)
     assert data["passed"]
     assert data["blocking_cells"] == []
+
+
+def test_roster_receipts_are_read_at_most_once_per_run(world: World, monkeypatch) -> None:
+    # 2026-09-28 performance regression: the overlap check queries a roster id once per cell that
+    # declares it, so two cells sharing the same tuning/read rosters must still open each receipt
+    # file only once for the whole run, not once per cell -- the redundant re-read this fix closes.
+    measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-TUNE-POOL-V1", read_roster="SLURP-READ-FOLD-A-V1"
+    )
+    world.measurement = measurement
+    world.build()
+    world.write_roster_receipt(
+        "SLURP-TUNE-POOL-V1",
+        disjointness_proof={"slurp-read-fold-a-v1": {"shared_recordings": 0, "shared_utterances": 0}},
+    )
+    world.write_roster_receipt("SLURP-READ-FOLD-A-V1")
+
+    smoke_path = world.repo / "configs" / "experiment" / f"{SMOKE}.json"
+    smoke_fragment = json.loads(smoke_path.read_text(encoding="utf-8"))
+    smoke_fragment["stage3_measurement"] = measurement
+    _write(smoke_path, smoke_fragment)
+
+    rosters_dir = world.repo / "docs" / "receipts" / "rosters"
+    reads: list[str] = []
+    real_read_text = Path.read_text
+
+    def counting_read_text(self: Path, *args: object, **kwargs: object) -> str:
+        if self.parent == rosters_dir:
+            reads.append(str(self))
+        return real_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", counting_read_text)
+    data = world.run()
+    assert data["mode"] == "tree"
+    assert "tuning-read-overlap" not in _kinds(data)  # zero-overlap receipts: disjoint, not blocked
+    assert len(reads) == len(set(reads)) == 2, reads
+
+
+def test_a_cell_without_roster_fields_triggers_no_receipt_read(world: World, monkeypatch) -> None:
+    world.measurement = _cross_flight_measurement()  # no tuning_roster / read_roster at all
+    world.build()
+    world.write_roster_receipt("SOME-UNRELATED-ROSTER-V1")  # present, but must never be opened
+
+    rosters_dir = world.repo / "docs" / "receipts" / "rosters"
+    reads: list[str] = []
+    real_read_text = Path.read_text
+
+    def counting_read_text(self: Path, *args: object, **kwargs: object) -> str:
+        if self.parent == rosters_dir:
+            reads.append(str(self))
+        return real_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", counting_read_text)
+    data = world.run(cells=[EXPERIMENT])
+    assert "tuning-roster-missing" in _kinds(data)
+    assert reads == []
+
+
+def test_tree_mode_skips_the_roster_check_for_an_unnamed_flown_cell(world: World) -> None:
+    # a NAMED sealed cell (a launch-mode resume step) still gets the check -- see
+    # test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap. An unnamed one, reached only by
+    # tree-mode bulk iteration, never blocks either way, so the expensive check is skipped for it.
+    world.measurement = _cross_flight_measurement(
+        tuning_roster="SLURP-STAGE3-FOLD-A-V1", read_roster="SLURP-STAGE3-FOLD-A-V1"
+    )
+    world.build()
+    (world.data / "runs" / RUN / "attempt-x").mkdir(parents=True)
+    data = world.run()
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["consumed_by"] == f"runs/{RUN}"
+    assert cell["named"] is False
+    assert "tuning-read-overlap" not in _kinds(data)
+    assert cell.get("roster_split") is None
 
 
 def test_the_batch_driver_runs_the_gate_in_prelaunch() -> None:

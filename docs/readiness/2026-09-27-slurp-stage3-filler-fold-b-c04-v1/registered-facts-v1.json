@@ -54,7 +54,7 @@
         "what_the_train_exemplars_store_is",
         "what_this_is"
       ],
-      "composed_config_hash": "9f65defaa55d3613fadcfeb2e2fdcde2b043be4d04f459f71122a6ab67d0ce49",
+      "composed_config_hash": "2b97d62577151ef48b85460e11eead74fc6d81f11ee495a615e7b368b59d1e16",
       "dataset_fragment_keys_moved_with_the_roster": [
         "audio_seconds_total",
         "d1_manifest_sha256",

@@ -16,13 +16,26 @@
         "reason": "Filler chunk c01 (owner decision 162), registered before contact on 2026-09-27 by scripts/flights/filler/derive_filler_cells.py from cell ROLL-2's fragments plus cell AGREE's agreement pins. HELD: root mints the chunk's admission receipt (scripts/flights/filler/filler_mint.py) and flips with scripts/flights/filler/filler_flip.sh, whose re-pin (scripts/flights/repin_cell.py --set-ready) appends the decision requirement and mints this cell's OWN first-phase supply under its own run id (item E16); the agreement-table requirement below is kept beside it (fixed 2026-09-27, relpath identity). --allow-output-change must never be passed. DESCRIPTIVE: an asset, never an admission cell.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-filler-fold-b-c01-admission-v1",
+            "relpath": "coordination/slurp-stage3-filler-fold-b-c01-v1/root-admission-v1.json",
+            "sha256": "0e3cffa2a832c4ce1f5ded6ad3b98e1a9feb29cb1f9740cb595951fc7af9676b",
+            "reason": "Decision slurp-stage3-filler-fold-b-c01-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The filler roster's OWN pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the committed FILLER BASE cell slurp-native-stage3-filler-fold-b-base-v1 -- the pinned exemplar snapshot, the pinned pool key vectors and the sealed TRAIN Fold B speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver. Zero model, server, encoder, embedder, scorer, network and GPU contacts (ledger row SAEA-SLURP-STAGE3-FILLER-FOLD-B-PREPARE-V1).",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FILLER-FOLD-B-V1/agreement.jsonl",
             "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1/phase-supply-v1.json",
+            "sha256": "831841d340204ba5a2dc65cd79eb6b1d28da0e183b81e272babc5b132703d3ae",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1"
     }

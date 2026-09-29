@@ -9,16 +9,26 @@
 # 0x80070005 for a task registered from an elevated session (queue log of 2026-09-27), while Start-ScheduledTask
 # is not. It registers only a missing task or one whose action differs, and fails with a non-zero exit (3 register
 # refused, 4 start refused, 5 not running afterwards) instead of printing an error and carrying on.
+# -RepeatMinutes N (owner decision 182, added for the idle watchdog: every task this script registered before
+# used a one-shot "-Once -At +1 year" trigger and was started by hand or by -Start -- there was no repetition at
+# all). N > 0 registers a real recurring trigger instead (fires every N minutes, indefinitely); N = 0 (the
+# default) keeps the old one-shot-until-started trigger, so every existing caller is unaffected.
+#   powershell -File saea_task.ps1 -Name SAEA-Watchdog -Script /mnt/d/.../idle_watchdog.sh -RepeatMinutes 5
 param(
   [Parameter(Mandatory=$true)][string]$Name,
   [string]$Script = '',
   [switch]$Status,
   [switch]$Stop,
-  [switch]$Start
+  [switch]$Start,
+  [int]$RepeatMinutes = 0
 )
-function Register-SaeaTask([string]$TaskName, [string]$TaskScript, [bool]$Strict) {
+function Register-SaeaTask([string]$TaskName, [string]$TaskScript, [bool]$Strict, [int]$Repeat) {
   $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -StartWhenAvailable
-  $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddYears(1)
+  if ($Repeat -gt 0) {
+    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes $Repeat)
+  } else {
+    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddYears(1)
+  }
   $action = New-ScheduledTaskAction -Execute 'wsl.exe' -Argument ("-d Ubuntu-24.04 bash " + $TaskScript)
   if ($Strict) {
     Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Force -ErrorAction Stop | Out-Null
@@ -43,7 +53,7 @@ if ($Start) {
   if ($null -eq $t -or ($null -ne $wanted -and $current -ne $wanted)) {
     if ($null -eq $wanted) { "$Name : not registered and no -Script given"; exit 3 }
     try {
-      Register-SaeaTask $Name $Script $true
+      Register-SaeaTask $Name $Script $true $RepeatMinutes
       "$Name : registered action '$wanted' (was '$current')"
     } catch {
       "$Name : register refused: $($_.Exception.Message)"
@@ -60,7 +70,7 @@ if ($Start) {
   exit 0
 }
 if ($Script -eq '') { throw 'Script is required to register' }
-Register-SaeaTask $Name $Script $false
+Register-SaeaTask $Name $Script $false $RepeatMinutes
 Start-ScheduledTask -TaskName $Name
 Start-Sleep -Seconds 3
 $t = Get-ScheduledTask -TaskName $Name

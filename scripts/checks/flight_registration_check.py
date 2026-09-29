@@ -48,6 +48,18 @@ artifacts column points at; else the decision receipt's antecedents; else the pa
     (the read row is countersigned after the seal and before any number is read), but it must
     exist.
 
+For a cell that declares ``resume_from`` (owner ruling after the COMP-1 resume attempt 3 seal
+abort -- a four-row smoke cannot see seal-time checks on kept rows):
+
+``resume-replay-unproven``
+    the package's own ``*plan-registered*.json`` carries no ``resume_replay_proof`` block naming
+    every field of :data:`RESUME_REPLAY_PROOF_FIELDS` (rows checked / failing / sealed-twice /
+    checker sha256 / code commit), or the block it carries reports a failing or sealed-twice row.
+    Advisory in tree mode; BLOCKING at launch for a live, unflown resume cell -- see
+    ``scripts/checks/resume_prelaunch_gate_check.py``, the live form of the same check, which
+    ``scripts/flights/batch/batch_driver.sh`` runs automatically right before any resume cell
+    flies.
+
 **Scope and severity.**
 
 * Whole-tree mode (no ``--cell``): every cell of ``configs/experiment/*.json`` whose
@@ -163,6 +175,21 @@ ROSTER_RECEIPTS_DIR = Path("docs/receipts/rosters")
 _NORMALIZE_KEY = re.compile(r"[^a-z0-9]+")
 _SHARED_WITH_KEY = re.compile(r"^sharedwith(.+?)(recordings|utterances)$")
 
+# --------------------------------------------------------------------------
+# resume-replay proof (coordinator, after the COMP-1 resume attempt 3 seal abort): a four-row
+# smoke cannot see seal-time checks on kept rows, so a cell that declares resume_from must carry
+# proof, in its OWN readiness package, that scripts/analysis/replay_seal_consistency.py already
+# replayed every predecessor attempt under the current code with zero failing rows and nothing
+# sealed twice -- see scripts/checks/resume_prelaunch_gate_check.py (the checker's live, at-launch
+# form) and scripts/flights/batch/README.md.
+# --------------------------------------------------------------------------
+
+#: The fields a ``resume_replay_proof`` block must name (kept as one tuple shared with
+#: ``resume_prelaunch_gate_check.py`` so the two can never drift apart on the spelling).
+RESUME_REPLAY_PROOF_FIELDS = (
+    "rows_checked", "rows_failing", "sealed_twice", "checker_sha256", "code_commit",
+)
+
 
 class FlightRegistrationCheckError(RuntimeError):
     """The tree or the data root cannot be read; exit 2."""
@@ -223,6 +250,9 @@ class CellReport:
     #: Set for EVERY cell that declares a ``stage3_measurement`` block, whatever its design --
     #: item D3: ``{"tuning_roster": ..., "read_roster": ...}``, the raw values as registered.
     roster_split: dict[str, Any] | None = None
+    #: Set only for a cell that declares ``resume_from``: the ``resume_replay_proof`` block found
+    #: in its readiness package's ``*plan-registered*.json``, or ``None`` when none was found.
+    resume_replay_proof: dict[str, Any] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -246,6 +276,7 @@ class CellReport:
             "perception_branch": self.perception_branch,
             "relisten": self.relisten,
             "roster_split": self.roster_split,
+            "resume_replay_proof": self.resume_replay_proof,
         }
 
 
@@ -918,38 +949,65 @@ def _normalize_roster_key(value: str) -> str:
     return _NORMALIZE_KEY.sub("", value.lower())
 
 
+#: ``str(repo_root) -> {lookup key -> receipt document}``, built once per run by
+#: :func:`_roster_receipt_index` and reused by every :func:`_load_roster_receipt` call. Every real
+#: receipt file under ``ROSTER_RECEIPTS_DIR`` is read and parsed at most once per process, however
+#: many cells or directions query it (2026-09-28 fix: a cell's tuning/read overlap check used to
+#: reopen the same files on every call, and doubling the callers per cell -- item D3 -- made the
+#: previously-latent cost visible as a full-minutes regression).
+_ROSTER_RECEIPT_INDEX_CACHE: dict[str, dict[str, dict[str, Any]]] = {}
+
+
+def _roster_receipt_index(repo_root: Path) -> dict[str, dict[str, Any]]:
+    """Every roster receipt under ``ROSTER_RECEIPTS_DIR``, read once, keyed for lookup.
+
+    Two keys point at the same document: its own filename slug (the convention every real receipt
+    follows) and its internal ``roster_id`` field, lowercased -- the two disagree in case for
+    several real receipts (``SLURP-DEV-2000-V1`` in ``slurp-dev-2000-v1.json``). Filename-slug keys
+    are populated first and never overwritten, so a slug that matches one file's name always
+    resolves to THAT file even if some other file's ``roster_id`` field also happens to match it --
+    bit-for-bit the old function's "try the exact filename first" precedence. Among files whose own
+    ``roster_id`` field ties on the fallback key, the first in sorted (filename) order wins, same as
+    the old function's fallback scan.
+    """
+
+    key = str(repo_root)
+    cached = _ROSTER_RECEIPT_INDEX_CACHE.get(key)
+    if cached is not None:
+        return cached
+    directory = repo_root / ROSTER_RECEIPTS_DIR
+    by_filename: dict[str, dict[str, Any]] = {}
+    if directory.is_dir():
+        for path in sorted(directory.glob("*.json")):
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                continue
+            if isinstance(document, dict):
+                by_filename[path.stem.strip().lower()] = document
+    index: dict[str, dict[str, Any]] = dict(by_filename)
+    for document in by_filename.values():
+        roster_id_field = str(document.get("roster_id", "")).strip().lower()
+        if roster_id_field:
+            index.setdefault(roster_id_field, document)
+    _ROSTER_RECEIPT_INDEX_CACHE[key] = index
+    return index
+
+
 def _load_roster_receipt(repo_root: Path, roster_id: str) -> dict[str, Any] | None:
     """The roster receipt naming ``roster_id``, or ``None`` when none can be found.
 
-    Tries the exact-slug filename first (``docs/receipts/rosters/<roster_id lowercased>.json``,
-    the convention every real receipt in that directory follows), then falls back to scanning the
-    directory for the receipt whose own ``roster_id`` field matches (case-insensitive) -- the
-    field and the filename slug disagree in case for several real receipts (``SLURP-DEV-2000-V1``
-    in ``slurp-dev-2000-v1.json``).
+    Looks up the exact-slug filename first (``docs/receipts/rosters/<roster_id lowercased>.json``,
+    the convention every real receipt in that directory follows), then falls back to the receipt
+    whose own ``roster_id`` field matches (case-insensitive) -- see :func:`_roster_receipt_index`.
+    Every receipt file is read from disk at most once per run, however many roster ids are looked
+    up.
     """
 
-    directory = repo_root / ROSTER_RECEIPTS_DIR
-    if not directory.is_dir():
-        return None
     slug = roster_id.strip().lower()
     if not slug:
         return None
-    candidate = directory / f"{slug}.json"
-    if candidate.is_file():
-        try:
-            document = json.loads(candidate.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError):
-            document = None
-        if isinstance(document, dict):
-            return document
-    for path in sorted(directory.glob("*.json")):
-        try:
-            document = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError):
-            continue
-        if isinstance(document, dict) and str(document.get("roster_id", "")).strip().lower() == slug:
-            return document
-    return None
+    return _roster_receipt_index(repo_root).get(slug)
 
 
 def _extract_shared_count(value: Any) -> int | None:
@@ -1214,6 +1272,90 @@ def _check_relisten_registration(
         ))
 
 
+def _resume_replay_proof_block(
+    index: PackageIndex, package: str, run_id: str
+) -> dict[str, Any] | None:
+    """The ``resume_replay_proof`` block from the package's own registered-plan facts.
+
+    ``None`` when no ``*plan-registered*.json`` under the package names this run id at all (the
+    package resolved but never registered this generation plan's facts); ``{}`` when it names the
+    run id but carries no block. Never raises: an unreadable or malformed registered-plan file is
+    skipped, exactly like :meth:`PackageIndex.packages_registering`.
+    """
+
+    directory = index.repo_root / READINESS / package
+    for path in sorted(directory.glob("*plan-registered*.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if not isinstance(document, dict):
+            continue
+        execution_plan = document.get("execution_plan")
+        named_run_id = document.get("run_id") or (
+            execution_plan.get("run_id") if isinstance(execution_plan, dict) else None
+        )
+        if named_run_id != run_id:
+            continue
+        block = document.get("resume_replay_proof")
+        return block if isinstance(block, dict) else {}
+    return None
+
+
+def _check_resume_replay_proof(
+    report: CellReport, cell: dict[str, Any], index: PackageIndex, package: str
+) -> None:
+    """``resume-replay-unproven`` -- a cell declaring ``resume_from`` must carry proof, in its own
+    package, that the offline replay already ran clean under the current code (owner ruling after
+    the COMP-1 resume attempt 3 seal abort: a four-row smoke cannot see seal-time checks on kept
+    rows).
+
+    Advisory in tree mode (a whole-tree scan reports the gap without failing the tree over
+    paperwork not yet done); BLOCKING at launch (``--cell`` / ``--campaign-plan``, what
+    ``batch_driver.sh`` runs) for a live, unflown resume cell -- inherits the cell's own severity,
+    which is only ``"blocking"`` there. A no-op for a cell that declares no ``resume_from`` at
+    all, and skipped for a cell reached only through tree-mode bulk iteration of an already-flown
+    run id (never blocking either way, so checking it would only add noise -- the same scope
+    :func:`check_cell` already applies to the roster-split check).
+    """
+
+    if cell.get("resume_from") is None:
+        return
+    if not (report.named or report.consumed_by is None):
+        return
+    severity = None if report.named else "advisory"
+    block = _resume_replay_proof_block(index, package, report.run_id)
+    report.resume_replay_proof = block
+    fields = RESUME_REPLAY_PROOF_FIELDS
+    if block is None:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: no *plan-registered*.json under {report.package} names this run id "
+            "with a resume_replay_proof block (scripts/analysis/replay_seal_consistency.py, run "
+            "offline over every resume_from predecessor under the current code, before this "
+            "resume launches)",
+            report.run_id, severity=severity,
+        ))
+        return
+    missing = [name for name in fields if name not in block]
+    if missing:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: {report.package}'s resume_replay_proof is missing {missing} (must "
+            f"name all of {list(fields)})",
+            report.run_id, severity=severity,
+        ))
+        return
+    if int(block.get("rows_failing") or 0) != 0 or int(block.get("sealed_twice") or 0) != 0:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: {report.package}'s resume_replay_proof reports "
+            f"{block.get('rows_failing')} row(s) failing and {block.get('sealed_twice')} sealed "
+            "twice -- the replay did not prove this resume safe to launch",
+            report.run_id, severity=severity,
+        ))
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -1228,7 +1370,14 @@ def check_cell(
     _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_perception_branch_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_relisten_registration(report, fragment, baseline, floor_gate, index.repo_root)
-    _check_roster_split_registration(report, fragment, floor_gate, index.repo_root)
+    # Item D3's roster-split check still runs for a NAMED sealed/flown cell (a resume step
+    # re-launching an already-consumed run id, gated the same as any other launch-mode cell --
+    # see test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap: the finding is reported,
+    # never blocking, exactly as today). It is skipped for a cell reached only through tree-mode
+    # bulk iteration (not named) that is already flown: that cell can never block regardless of
+    # what this check would find, so this skips it without changing any pass/fail outcome.
+    if report.named or report.consumed_by is None:
+        _check_roster_split_registration(report, fragment, floor_gate, index.repo_root)
 
     run_ids = {"generation": report.run_id, **fit_run_ids(fragment, baseline)}
     report.run_ids = run_ids
@@ -1270,6 +1419,7 @@ def check_cell(
         ))
         return
     report.package = f"{READINESS.as_posix()}/{package}"
+    _check_resume_replay_proof(report, cell, index, package)
     recipes = index.recipes(package)
     if not recipes:
         report.findings.append(Finding(

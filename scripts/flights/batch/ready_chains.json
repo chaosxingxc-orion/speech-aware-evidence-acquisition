@@ -1,0 +1,58 @@
+{
+  "schema": "saea-ready-chains-v1",
+  "doc": "scripts/flights/batch/README.md#idle-watchdog-owner-decision-182",
+  "updated": "2026-09-28",
+  "allowed_carriers": ["slurp"],
+  "chains": [
+    {
+      "name": "rankvis",
+      "carrier": "slurp",
+      "geometry": "slurp-np4",
+      "chain_script": "scripts/flights/rankvis/batch_chain_rankvis.sh",
+      "flight_commit_file": "/home/chao/rankvis-flight-commit.txt",
+      "hold_file": null,
+      "enabled": true
+    },
+    {
+      "name": "wsv1",
+      "carrier": "slurp",
+      "geometry": "slurp-np4",
+      "chain_script": "scripts/flights/wsv1/batch_chain_wsv1.sh",
+      "flight_commit_file": "/home/chao/wsv1-flight-commit.txt",
+      "hold_file": "/home/chao/saea-queue/pre-wsv.hold",
+      "enabled": true,
+      "note": "card order item W-SV-1 (owner decisions 181-188); chain not yet admitted -- skipped by the missing flight-commit file until the coordinator flips it"
+    },
+    {
+      "name": "w4sv",
+      "carrier": "slurp",
+      "geometry": "slurp-np4",
+      "chain_script": "scripts/flights/w4sv/batch_chain_w4sv.sh",
+      "flight_commit_file": "/home/chao/w4sv-flight-commit.txt",
+      "hold_file": null,
+      "enabled": true,
+      "note": "card order item W4-SV (owner decisions 181-188); chain not yet admitted -- skipped by the missing flight-commit file until the coordinator flips it"
+    },
+    {
+      "name": "e41-sub10",
+      "carrier": "earnings",
+      "geometry": "e21-np4",
+      "chain_script": "scripts/flights/e41/batch_chain_e41_sub10.sh",
+      "flight_commit_file": "/home/chao/e41-sub10-flight-commit.txt",
+      "hold_file": "/home/chao/saea-queue/pre-sub10.hold",
+      "enabled": false,
+      "note": "deferred by owner directive 2026-09-28: SLURP only (row 187); the flipped cell stays ready at bf6db903 for a later re-enable"
+    },
+    {
+      "name": "filler",
+      "carrier": "slurp",
+      "geometry": "slurp-np4",
+      "chain_script": "scripts/flights/filler/filler_queue.sh",
+      "flight_commit_file": null,
+      "ext4_copy_target": "/home/chao/saea-queue/filler_queue.sh",
+      "hold_file": "/home/chao/saea-queue/filler.hold",
+      "enabled": true,
+      "note": "the idle card; filler_queue.sh loops forever and manages its own chunk selection and flight commits (owner decision 162)"
+    }
+  ]
+}

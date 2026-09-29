@@ -20,7 +20,7 @@ from ..session.serving import assert_identity_matches, find_resident_session
 from .lease import GenerationLease, WorkerExecutionPolicy
 from .queue import FlightDependency, FlightQueue, FlightReadiness
 from .receipts import persist_flight_receipts
-from .resume import ResumeDeclaration, ResumeRecoveryError
+from .resume import ResumeRecoveryError, resume_declarations_from_document
 from .runtime import FlightRuntime
 
 
@@ -35,6 +35,10 @@ EXECUTION_STAGES = frozenset({
     "prompt-fit",
     "worker",
     "campaign",
+    # E10d (2026-09-29): a cell whose declared predecessor(s) already cover
+    # its whole roster seals with zero contacts -- no serving requirement, no
+    # lease. See core.flight.cli's "seal-only" mode.
+    "seal-only",
 })
 
 
@@ -68,18 +72,26 @@ class CampaignCell:
             raise CampaignError("allowed execution stages must be unique known modes")
         # E10 (owner decision 22, 2026-09-18): a recovery cell may declare the
         # aborted attempt of its OWN run id whose complete rows it resumes.
-        # Validated here so a malformed declaration refuses at cell load --
-        # before a runtime, a lease or a session exists.
+        # E10d (2026-09-29): or a LIST of several pinned predecessor attempts
+        # (core.flight.resume.MergedPredecessors) whose union it resumes,
+        # possibly covering the whole roster (a seal-only cell). Validated
+        # here so a malformed declaration refuses at cell load -- before a
+        # runtime, a lease or a session exists.
         resume = document.get("resume_from")
         if resume is not None:
             try:
-                declaration = ResumeDeclaration.from_document(resume)
+                declarations = resume_declarations_from_document(resume)
             except ResumeRecoveryError as error:
                 raise CampaignError(f"cell resume_from is invalid: {error}") from error
-            if declaration.attempt_id == document["attempt_id"]:
+            self_named = [
+                declaration.attempt_id for declaration in declarations
+                if declaration.attempt_id == document["attempt_id"]
+            ]
+            if self_named:
                 raise CampaignError(
-                    "cell resume_from.attempt_id must be the ABORTED attempt, not "
-                    "this recovery attempt"
+                    "cell resume_from names this recovery's own attempt_id as one "
+                    "of its predecessors; every predecessor must be an ABORTED "
+                    "attempt, never this recovery attempt"
                 )
         return cls(dict(document))
 
@@ -105,11 +117,22 @@ class CampaignCell:
         return str(self.document["attempt_id"])
 
     @property
-    def resume_from(self) -> Mapping[str, object] | None:
-        """The aborted attempt this recovery cell resumes, or ``None``."""
+    def resume_from(self) -> Mapping[str, object] | list[Mapping[str, object]] | None:
+        """The aborted attempt(s) this recovery cell resumes, or ``None``.
+
+        A single mapping for the original one-predecessor shape; a LIST of
+        mappings for E10d's multi-predecessor form -- returned as a genuine
+        ``list`` (never coerced through ``dict()``, which would refuse a
+        list of more than two mappings with a confusing "too many values to
+        unpack" instead of this module's own validation).
+        """
 
         resume = self.document.get("resume_from")
-        return None if resume is None else dict(resume)
+        if resume is None:
+            return None
+        if isinstance(resume, list):
+            return [dict(item) for item in resume]
+        return dict(resume)
 
     def dependencies(self) -> tuple[FlightDependency, ...]:
         return tuple(

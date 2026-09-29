@@ -354,6 +354,56 @@ def test_render_relisten_shadow_columns_replaces_and_drops(tmp_path):
     assert manifest["at1_column_reproduction_checked_rows"] == 0  # a replacement happened
 
 
+def test_render_relisten_shadow_columns_reads_a_real_outputs_jsonl_round_trip(tmp_path):
+    """Coordinator ruling item 2: the shadow-column reconstruction reads the
+    PERSISTED block, not in-memory state. Every other render test in this
+    file hands the renderer an already-Python-shaped ``row`` dict; this one
+    instead writes the row through an actual ``outputs.jsonl`` file on disk
+    (``json.dumps`` then a fresh ``json.loads`` per line, the same encode/
+    decode a real sealed flight's row survives) and only THEN builds the
+    bundle from the reloaded dicts, so no Python object identity or tuple/
+    list distinction from the writer side survives into the read."""
+
+    trace = {}
+    _trace_contact(trace, "blind-0", json.dumps({"heard": True, "value": "eight pm"}))
+    text = json.dumps({
+        "scenario": "alarm", "action": "set",
+        "entities": [{"type": "time", "filler": "7 pm"}, {"type": "place_name", "filler": "paris"}],
+    })
+    order = rl.confirm_order("s1", "time")
+    accepted = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.parse_blind_response(trace["blind-0/response"]["text"]),
+        blind_contact_id="blind-0",
+        confirm_letter=("A" if order[0] == rl.CONFIRM_CANDIDATE else "B"),
+        order=order, confirm_contact_id="confirm-0",
+    )
+    receipt = rl.seal_relisten_receipt([accepted], max_slots_per_row=3)
+    written_row = {
+        "sample_id": "s1", "text": text, "native_episode_receipt": {"kind": "accepted"},
+        "relisten": receipt,
+    }
+    outputs_path = tmp_path / "RUN.outputs.jsonl"
+    outputs_path.write_text(
+        json.dumps(written_row, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8",
+    )
+    reloaded_rows = [
+        json.loads(line) for line in outputs_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    bundle = _bundle(tmp_path, reloaded_rows, trace)
+    manifest = score_mod.render_relisten_shadow_columns(
+        bundle, {"s1": "alarm"}, tmp_path / "analysis",
+        run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64,
+    )
+    a_rows = list(score_mod.iter_jsonl(Path(manifest["copies"][rl.COLUMN_REPLACE_ONLY]["path"])))
+    a_payload = json.loads(a_rows[0]["text"])
+    assert a_payload["entities"] == [
+        {"type": "time", "filler": "eight pm"}, {"type": "place_name", "filler": "paris"},
+    ]
+    assert manifest["at1_column_reproduction_checked_rows"] == 0  # a replacement happened
+
+
 def test_render_relisten_shadow_columns_refuses_a_value_hash_mismatch(tmp_path):
     trace = {}
     _trace_contact(trace, "blind-0", json.dumps({"heard": True, "value": "eight pm"}))
@@ -704,3 +754,114 @@ def test_i7l_is_wired_by_key_presence_alone():
     source = inspect.getsource(bundle_outputs._verify_outputs_trace_binding)
     assert '"relisten" in row' in source
     assert "_verify_relisten_trace_binding(row, records)" in source
+
+
+# ---------------------------------------------------------------------------
+# 8. CLI wiring (--mode relisten; scripts/flights/e4/e4_read.sh's own gate)
+# ---------------------------------------------------------------------------
+
+
+def test_cli_offers_mode_relisten(capsys):
+    """``scripts/flights/e4/e4_read.sh`` refuses to run unless ``--help``
+    lists a ``relisten`` mode (its own item-0 gate: ``stage3_rollout_score.py
+    --help | grep -q relisten``); this is exactly that check, in-process."""
+
+    with pytest.raises(SystemExit) as excinfo:
+        score_mod.main(["--help"])
+    assert excinfo.value.code == 0
+    assert "relisten" in capsys.readouterr().out
+
+
+def test_relisten_main_refuses_pairs_and_a_samples_override():
+    args = SimpleNamespace(stage="pairs", samples=None)
+    with pytest.raises(score_mod.Stage3ScoreError, match="render/score/all"):
+        score_mod.relisten_main(args, Path("."), Path("."), {})
+    args = SimpleNamespace(stage="all", samples=4)
+    with pytest.raises(score_mod.Stage3ScoreError, match="render/score/all"):
+        score_mod.relisten_main(args, Path("."), Path("."), {})
+
+
+def test_relisten_main_renders_then_scores_through_the_shared_functions(tmp_path, monkeypatch):
+    """``relisten_main`` (the ``--mode relisten`` CLI entry) is
+    ``supply_variant_main``'s own structural twin: verify the sealed
+    bundle's composed config hash, then drive
+    ``render_relisten_shadow_columns`` / ``score_relisten_shadow_copies``
+    (already proven correct above) with the file names
+    ``scripts/flights/e4/e4_read.sh`` expects. Every dependency is a stub
+    here -- this proves the WIRING, not the render/score logic itself."""
+
+    import speech_aware_evidence_acquisition.core.bundle as bundle_mod
+    import speech_aware_evidence_acquisition.core.config as config_mod
+
+    bundle = SimpleNamespace(manifest={
+        "config": {
+            "config_hash": "c" * 64,
+            "fragments": {"model": "m", "dataset": "d", "baseline": "b", "experiment": "e"},
+        },
+    })
+    monkeypatch.setattr(bundle_mod, "verify_bundle", lambda path: bundle)
+    monkeypatch.setattr(
+        config_mod, "compose",
+        lambda repo_root, *fragments: SimpleNamespace(config_hash="c" * 64),
+    )
+    monkeypatch.setattr(score_mod, "run_dir", lambda root, run, attempt: tmp_path)
+    monkeypatch.setattr(
+        score_mod, "load_roster",
+        lambda repo_root, roster: ({"s1": "alarm"}, "r" * 64, "h" * 64),
+    )
+    render_calls = []
+    score_calls = []
+    fake_manifest = {"column_order": ["a", "b"], "rows": 1, "copies": {}}
+    fake_summary = {"columns": {"a": {}, "b": {}}, "sealed_delivered_rows": 1}
+
+    def fake_render(bundle_arg, roster, out_dir, *, run_id, attempt_id, roster_sha256, config_hash):
+        render_calls.append((bundle_arg, roster, out_dir, run_id, attempt_id, roster_sha256, config_hash))
+        return fake_manifest
+
+    def fake_score(scorer_id, manifest, out_dir, *, lock, data_root, delivered):
+        score_calls.append((scorer_id, manifest, out_dir, lock, data_root, delivered))
+        return fake_summary
+
+    monkeypatch.setattr(score_mod, "render_relisten_shadow_columns", fake_render)
+    monkeypatch.setattr(score_mod, "score_relisten_shadow_copies", fake_score)
+    monkeypatch.setattr(score_mod, "sealed_per_sample", lambda directory, run, scorer: {"s1": {}})
+
+    args = SimpleNamespace(
+        stage="all", samples=None, run="RUN", attempt="ATT", roster="roster.json",
+        analysis_root=str(tmp_path / "out"), scorer_id="slurp-slu-official-train",
+    )
+    code = score_mod.relisten_main(args, Path("/repo"), tmp_path, {"lock": True})
+    assert code == 0
+    assert len(render_calls) == 1
+    assert render_calls[0][3:] == ("RUN", "ATT", "r" * 64, "c" * 64)
+    assert len(score_calls) == 1
+    assert score_calls[0][0] == "slurp-slu-official-train"
+    assert score_calls[0][1] is fake_manifest
+
+
+def test_relisten_main_refuses_a_config_hash_drift(tmp_path, monkeypatch):
+    """The same defence-in-depth ``supply_variant_main`` applies: a sealed
+    manifest's claimed config_hash must match a live recompute of its own
+    named fragments, or the read is refused rather than trusted blind."""
+
+    import speech_aware_evidence_acquisition.core.bundle as bundle_mod
+    import speech_aware_evidence_acquisition.core.config as config_mod
+
+    bundle = SimpleNamespace(manifest={
+        "config": {
+            "config_hash": "c" * 64,
+            "fragments": {"model": "m", "dataset": "d", "baseline": "b", "experiment": "e"},
+        },
+    })
+    monkeypatch.setattr(bundle_mod, "verify_bundle", lambda path: bundle)
+    monkeypatch.setattr(
+        config_mod, "compose",
+        lambda repo_root, *fragments: SimpleNamespace(config_hash="drifted"),
+    )
+    monkeypatch.setattr(score_mod, "run_dir", lambda root, run, attempt: tmp_path)
+    args = SimpleNamespace(
+        stage="all", samples=None, run="RUN", attempt="ATT", roster="roster.json",
+        analysis_root=str(tmp_path / "out"), scorer_id="slurp-slu-official-train",
+    )
+    with pytest.raises(score_mod.Stage3ScoreError, match="current fragments differ from sealed composed config"):
+        score_mod.relisten_main(args, Path("/repo"), tmp_path, {})

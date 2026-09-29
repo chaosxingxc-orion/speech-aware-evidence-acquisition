@@ -1,0 +1,91 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-w4sv-fold-a-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell W4-SV, registered before contact on 2026-09-28 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4sv/w4sv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (neither the alternate nor the arm group is an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-w4sv-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-w4sv-fold-a-v1/root-admission-v1.json",
+            "sha256": "aeca648727dc747e9a7ca96a9cdfa24041dfce3fa30c33db73224e7482981816",
+            "reason": "Decision slurp-stage3-w4sv-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+            "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "ba86214000770f706838048e4abca2af937509b0dd3725e9116184efba839b9d",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-28",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 138,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell W4-SV and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 208,
+    "generation_calls_cap": 52,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 138
+  },
+  "fragment_kind": "saea-slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of cell W4-SV: that the slot-contracts-w4-v1 alternate loads by its pins when arm b-w4 selects it, that the three arms fan out at the first Solver visit only, that the twin's wire bytes equal the delivering arm's, that every request fits under the 13-contact ceiling and that the episode completes and seals (I7, I7n, I7v). It is scored by no one and read by no one: four rows can never be evidence of benefit or of harm. The base is the retained AGREE arm's bytes; the ONLY variation is arm b-w4's FIRST Solver request, which renders the slot-contract cards from the slot-contracts-w4-v1 release (TRAIN-mined value vocabulary, annotation scope and span-extent conventions appended to 19 of the v2 cards; release sha256 c7bdeee6e0859fbba6bce79cd3d42347a5b74770f7564094e3d3a0edfe003fb0, snapshot content 51d634cfcb398038377feca89d2783f59a705546390839e7cf4dd7d15ad3b9d6) through the release-swap route, declared as the ONE alternate of knowledge_stores.slot-contracts. Arm a-agree (delivering, last, no overrides) and its twin t-twin (replicate_of a-agree) render the AGREE arm's v2 cards; arms fan out at the first Solver visit only (arm_visits first), every revisit contacts the delivering arm alone, and no arm output reaches the Reviewer, the Planner or the delivered answer. The program moves to its uncited 13-contact copy (phase-native-candidates-review-revise-variants3first-v1); roster, geometry, session, Perception, the agreement term (w_agree 1.0, k 60, fuse 8-1-8) and its sealed table, the boundary and exemplar stores, every template, the deliver normaliser and the scorers are the AGREE arm's, byte for byte.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is the first real read of the same-flight supply-variant INSTRUMENT (owner decision 172) -- one knowledge-content alternative (the W4 slot conventions, mined model-free from TRAIN annotations outside Fold A) offered to the Solver as a sealed, never-delivered arm beside the delivering arm and its twin -- with no rollout-driven selection, no per-sample credit, no update operator and no evolving store. It is not a VAR-2 mechanism: the delivered answer and every downstream node depend on the delivering arm alone.",
+    "operators_used": []
+  }
+}

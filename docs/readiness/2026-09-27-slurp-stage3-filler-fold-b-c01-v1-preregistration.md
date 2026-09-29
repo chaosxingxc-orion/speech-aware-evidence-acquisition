@@ -12,8 +12,8 @@ Run ids: SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1, SAEA-SLURP-STAGE3-FILLER-FOLD-B
 
 ## Composed identity
 
-- `slurp-native-stage3-filler-fold-b-c01-smoke-4-v1`: composed config `ce5f93020fafb38cc42549f12552c2534cf608b30c261ddbb12163af3d0fc368`, protocol hash `e107acc10f5a1ceafd3a447d33f137181bd0fad45b32f05751e9b375a37065ee`
-- `slurp-native-stage3-filler-fold-b-c01-v1`: composed config `d4555edd3ce6251f41f2e12b95438929ba338ee3c04437c75f7a49cafbb8ea90`, protocol hash `0361018c0bb0e9500200e447c30a7dc18f54414eea9419c09e3421fecdbb629a`
+- `slurp-native-stage3-filler-fold-b-c01-smoke-4-v1`: composed config `a682f675bb0221ce20129a5af392dec962d108db2ebc2ac0689df77e03771c37`, protocol hash `845907979b56540ac214643946cb6def4e9fa1bf97987879b1e503e1aa7bc018`
+- `slurp-native-stage3-filler-fold-b-c01-v1`: composed config `ef93a2754db38b4464364e8dcf46b2ad68d1e2ab1f924ebd0d889452b11141f7`, protocol hash `33bdecfe2011049f432ed1c5977d16b5ab9ea7f8904ad68f8de9a11f46bd7988`
 
 Every composed path that differs from cell ROLL-2 is an agreement pin, a roster pin or run-id / budget / prose
 bookkeeping (`registered-facts-v1.json`, `composed_diff_against_roll2`; re-proved by `tests/unit/test_filler_family.py`).

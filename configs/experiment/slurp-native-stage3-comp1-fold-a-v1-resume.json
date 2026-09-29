@@ -7,7 +7,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
       "baseline_fragment": "slurp-native-stage3-comp1-fold-a-baseline-v1-resume",
       "cell_id": "slurp-native-stage3-comp1-fold-a-v1-resume",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
@@ -18,8 +18,8 @@
           {
             "kind": "decision",
             "expected_decision_id": "slurp-stage3-comp1-fold-a-resume-admission-v1",
-            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v1.json",
-            "sha256": "e12e21751bed0b4208414412c077ca6671f2e66d2d92222dd5f277eb490f47b3",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json",
+            "sha256": "af9401aec9129edc304d466efc328f9953ad555fd7ee97c7d0d8f25caab7d5d3",
             "reason": "Decision slurp-stage3-comp1-fold-a-resume-admission-v1 pinned by scripts/flights/repin_cell.py."
           },
           {
@@ -31,8 +31,8 @@
           {
             "kind": "preparation",
             "reason": "INHERITED from SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1: that cell's own model-free first-phase Perception supply (built by core.flight.cli prepare-supply with zero model, tokenizer, encoder, scorer or server contacts). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, cell and attempt identities included, so scripts/flights/repin_cell.py rebuilds it model-free into prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v<N>.json, ASSERTS the new output equals this artifact's output (ce68bebcf2bbf5502b081221a92c3fde1095da3979106bcdddb6eeeca9e9c41a) and re-pins it in the same cycle. --allow-output-change must NEVER be passed: an output that moved means the knowledge channel moved and the recovery is no longer the arm.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v4.json",
-            "sha256": "467625864a12b216a5167ff9c2c518a1a924b7a461d64a87f0df3b4d0ac7b65b"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1/phase-supply-v6.json",
+            "sha256": "03b7ffa2e80bf5b2db7a1b4347a579f9eee5e1c18fa4b37593bc46d589d41d5a"
           }
         ],
         "state": "ready"

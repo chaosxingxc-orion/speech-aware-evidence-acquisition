@@ -26,6 +26,7 @@ from speech_aware_evidence_acquisition.core import preparation_fit
 from speech_aware_evidence_acquisition.core.flight import runtime as flight_module
 from speech_aware_evidence_acquisition.core.flight.resume import (
     RESUME_PREDECESSOR_SCHEMA,
+    MergedPredecessors,
     ResumeDeclaration,
     ResumeRecoveryError,
     kept_sample_ids_sha256,
@@ -323,7 +324,7 @@ def test_a_row_the_predecessor_did_not_finish_is_re_flown_in_full(
     recovery_runtime._samples = tuple(
         SimpleNamespace(sample_id=sample_id) for sample_id in ("s1", "s2")
     )
-    recovery_runtime._resume = scan
+    recovery_runtime._resume = MergedPredecessors((scan,))
     recovery_runtime._resume_flown_sample_ids = ("s2",)
     try:
         rows, *_ = recovery_runtime._dispatch_phase_program(
@@ -421,6 +422,102 @@ def test_a_claimed_wire_contact_without_a_request_record_still_refuses_the_row(
     assert "no-such-request" in scan.incomplete["s1"]
 
 
+_TEST_NORMALISER_ID = "test-resume-deliver-upper-v1"
+
+
+def _upper_normaliser(text):
+    return SimpleNamespace(text=text.upper(), changed=text.upper() != text)
+
+
+def _normalised_predecessor(tmp_path, monkeypatch, *, corrupt_output=False):
+    """Fly the actual episode, then give every settled receipt the E11
+    ``deliver_normaliser`` block a live normalised row carries: the rule's
+    input is the delivered contact's recorded response and its output is
+    what the row delivered. Exactly the COMP-1 shape (every kept row
+    normalised by saea-deliver-cited-answer-normalise-v3-v1)."""
+
+    import hashlib  # noqa: PLC0415
+
+    from speech_aware_evidence_acquisition.core.base import (  # noqa: PLC0415
+        DELIVERY_NORMALISERS,
+    )
+
+    monkeypatch.setitem(
+        DELIVERY_NORMALISERS._entries, _TEST_NORMALISER_ID, _upper_normaliser
+    )
+    digest = lambda text: hashlib.sha256(text.encode("utf-8")).hexdigest()  # noqa: E731
+    harness = _harness(tmp_path, "full", ("s1", "s2"))
+    runtime, _canonical, trace_path = _fly(harness, monkeypatch)
+    records = _trace_lines(trace_path)
+    texts = {
+        record["record_id"][: -len("/response")]: record["payload"]["text"]
+        for record in records
+        if record["channel"] == "MODEL_RESPONSE" and record["record_id"].endswith("/response")
+    }
+
+    def annotate(receipt):
+        request_id = receipt["accepted_solver_receipt"]["final_contact"]["request_id"]
+        raw = texts[request_id]
+        receipt["deliver_normaliser"] = {
+            "normaliser_id": _TEST_NORMALISER_ID,
+            "input_sha256": digest(raw),
+            "output_sha256": digest("corrupt" if corrupt_output else raw.upper()),
+        }
+
+    predecessor = _write_predecessor(
+        _annotate_receipts(records, annotate), tmp_path / "aborted",
+        harness.plan.run_id, keep={"s1", "s2"},
+    )
+    return harness, runtime, predecessor
+
+
+def test_a_normalised_row_replays_the_normaliser_output_not_the_raw_response(
+    tmp_path, monkeypatch
+):
+    """2026-09-29 (COMP-1 resume attempt 3 seal abort): every kept row carried
+    a ``deliver_normaliser`` block, and the replay handed the seal the RAW
+    accepted response as the delivered text, so ``_canonical_output_rows``
+    refused the first kept row with "native delivery normalisation output
+    differs from the delivered text" after all 609 flown rows had settled.
+    The replay must deliver the rule's reproduced output, and the canonical
+    seal stage must accept the replayed rows."""
+
+    harness, runtime, predecessor = _normalised_predecessor(tmp_path, monkeypatch)
+    scan = _scan(predecessor, harness)
+    assert scan.complete_sample_ids == ("s1", "s2")
+    for sample_id in ("s1", "s2"):
+        delivered = scan.complete[sample_id].final_response_text
+        assert delivered == delivered.upper()
+        assert delivered.startswith("SOLVER-ANSWER:")
+
+    summaries, timings = scan.replay(scan.complete_sample_ids, controller_policy_id="p")
+    replayed_rows = FlightRuntime._rows_from_phase_summaries(
+        summaries, policy=harness.program.program_id
+    )
+    sealed = runtime._canonical_output_rows(
+        harness.client, output_rows=replayed_rows, timings=timings,
+        phase_summaries=summaries,
+    )
+    assert [row["text"] for row in sealed] == [
+        f"solver-answer:{sample}:visit:1".upper() for sample in ("s1", "s2")
+    ]
+
+
+def test_a_normalised_row_whose_rule_does_not_reproduce_is_re_flown(
+    tmp_path, monkeypatch
+):
+    """The replay never approximates: when the named rule, re-run over the
+    recorded response, does not reproduce the recorded output digest, the row
+    is INCOMPLETE (re-flown), never kept with the raw text."""
+
+    harness, _runtime, predecessor = _normalised_predecessor(
+        tmp_path, monkeypatch, corrupt_output=True,
+    )
+    scan = _scan(predecessor, harness)
+    assert scan.complete_sample_ids == ()
+    assert "does not reproduce its recorded output" in scan.incomplete["s1"]
+
+
 def test_replay_refuses_to_select_a_subset_of_the_complete_rows(tmp_path, monkeypatch):
     """No selection is expressible: asking to replay a row that is not
     COMPLETE refuses, and the caller cannot ask for fewer than all of them
@@ -451,7 +548,7 @@ def test_merged_rows_refuse_a_sample_that_was_kept_and_also_flown(tmp_path, monk
     recovery_runtime._samples = tuple(
         SimpleNamespace(sample_id=sample_id) for sample_id in ("s1", "s2")
     )
-    recovery_runtime._resume = scan
+    recovery_runtime._resume = MergedPredecessors((scan,))
     # The defect this refuses: a recovery that re-flew a row its predecessor
     # had already completed.
     recovery_runtime._resume_flown_sample_ids = ("s1",)
@@ -749,7 +846,7 @@ def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
     recovery_runtime._samples = tuple(
         SimpleNamespace(sample_id=sample_id) for sample_id in roster
     )
-    recovery_runtime._resume = scan
+    recovery_runtime._resume = MergedPredecessors((scan,))
     recovery_runtime._resume_flown_sample_ids = ("s2",)
     # E10c: the adapter stays WHOLE. The flown roster reaches the runner as an
     # explicit restriction instead, so the split it loads, the packet map it

@@ -109,6 +109,49 @@ class ResumeDeclaration:
         return cls(attempt_id=attempt_id, trace_sha256=trace_sha256)
 
 
+def resume_declarations_from_document(
+    document: object,
+) -> tuple[ResumeDeclaration, ...]:
+    """Normalize a ``resume_from`` config value into an ordered declaration list.
+
+    E10d (2026-09-29, multi-predecessor seal-only completion): ``resume_from``
+    now accepts either the original single mapping (``{"attempt_id",
+    "trace_sha256"}``) or a non-empty, ordered list of such mappings -- one per
+    pinned predecessor attempt of THIS run id. The order is significant: it is
+    the declared order a conflict is reported against (see
+    :class:`MergedPredecessors`), never a priority a row is silently resolved
+    by.
+
+    Refuses a document that is neither shape, an empty list, or a list naming
+    the same predecessor ``attempt_id`` twice -- a predecessor is named once
+    or not at all.
+    """
+
+    if isinstance(document, Mapping):
+        return (ResumeDeclaration.from_document(document),)
+    if isinstance(document, Sequence) and not isinstance(document, (str, bytes)):
+        if not document:
+            raise ResumeRecoveryError(
+                "resume_from must declare at least one predecessor attempt"
+            )
+        declarations = tuple(
+            ResumeDeclaration.from_document(item) for item in document
+        )
+        attempt_ids = [declaration.attempt_id for declaration in declarations]
+        if len(set(attempt_ids)) != len(attempt_ids):
+            duplicate = sorted(
+                {attempt_id for attempt_id in attempt_ids if attempt_ids.count(attempt_id) > 1}
+            )
+            raise ResumeRecoveryError(
+                f"resume_from names the same predecessor attempt twice: {duplicate}"
+            )
+        return declarations
+    raise ResumeRecoveryError(
+        "resume_from must be a mapping {'attempt_id', 'trace_sha256'} or a "
+        "non-empty list of such mappings"
+    )
+
+
 @dataclass(frozen=True)
 class PredecessorContact:
     """One recorded model contact of the aborted attempt.
@@ -142,6 +185,10 @@ class ReplayedEpisodeResult:
     ``native_episode_receipt``, ``solver_group``). A replayed row that needed
     anything else would be a row this module must refuse rather than
     approximate.
+
+    ``final_response_text`` is the DELIVERED text: the delivered contact's
+    recorded response, or -- when the receipt carries a ``deliver_normaliser``
+    block -- that rule's reproduced output over it.
     """
 
     sample_id: str
@@ -253,6 +300,156 @@ class PredecessorAttempt:
             "kept_sample_ids_sha256": kept_sample_ids_sha256(kept),
             "counts": {"kept": len(kept), "flown": int(flown), "partial": int(partial)},
         }
+
+
+@dataclass(frozen=True)
+class MergedPredecessors:
+    """The union of N pinned predecessor attempts' COMPLETE rows (E10d).
+
+    Every predecessor's :attr:`PredecessorAttempt.complete_sample_ids` set
+    must be pairwise disjoint from every other predecessor's -- checked once,
+    here, at construction, over every pair. A sample COMPLETE in two
+    predecessors is a conflict and the merge refuses outright (naming both
+    attempts) rather than keeping either one: silently preferring the first
+    declared occurrence would be a selection, exactly what a resume-recovery
+    must never make (module docstring).
+
+    Once a merge exists, classification is total and stable: a kept sample's
+    single occurrence (the only one the disjointness check above allows) IS
+    its "first complete occurrence in the declared order" -- the predecessor
+    at the smallest index in :attr:`predecessors` whose own
+    ``complete_sample_ids`` contains it. :meth:`origin` and
+    :meth:`manifest_blocks` both read the declared predecessor order, never
+    an incidental dict/set order.
+
+    Exposes the same read surface :class:`PredecessorAttempt` gives a
+    single-predecessor resume (:attr:`complete_sample_ids`, :attr:`incomplete`,
+    :meth:`replay`) so ``core.flight.runtime.FlightRuntime`` can treat one
+    predecessor and N predecessors identically everywhere except where the
+    manifest block itself must name every predecessor (:meth:`manifest_blocks`).
+    """
+
+    predecessors: tuple[PredecessorAttempt, ...]
+
+    def __post_init__(self) -> None:
+        if not self.predecessors:
+            raise ResumeRecoveryError(
+                "a merge requires at least one predecessor attempt"
+            )
+        owner: dict[str, str] = {}
+        for predecessor in self.predecessors:
+            for sample_id in predecessor.complete_sample_ids:
+                held_by = owner.get(sample_id)
+                if held_by is not None:
+                    raise ResumeRecoveryError(
+                        f"sample {sample_id!r} is COMPLETE in two predecessor "
+                        f"attempts, {held_by!r} and {predecessor.attempt_id!r}; a "
+                        "multi-predecessor resume requires pairwise non-overlapping "
+                        "complete rows -- refusing rather than choosing one"
+                    )
+                owner[sample_id] = predecessor.attempt_id
+
+    @property
+    def complete_sample_ids(self) -> tuple[str, ...]:
+        return tuple(sorted(
+            sample_id
+            for predecessor in self.predecessors
+            for sample_id in predecessor.complete_sample_ids
+        ))
+
+    @property
+    def incomplete(self) -> Mapping[str, str]:
+        """Every predecessor's own INCOMPLETE reasons, merged.
+
+        A sample started-but-not-COMPLETE in more than one predecessor keeps
+        the first (declared-order) reason -- an arbitrary but stable tie
+        break over report text only; it decides nothing about custody (a row
+        is only ever KEPT through :attr:`complete_sample_ids`, which the
+        disjointness check above already guarantees is unambiguous).
+        """
+
+        merged: dict[str, str] = {}
+        for predecessor in self.predecessors:
+            for sample_id, reason in predecessor.incomplete.items():
+                merged.setdefault(sample_id, reason)
+        return merged
+
+    def origin(self, sample_id: str) -> PredecessorAttempt:
+        """The one predecessor whose COMPLETE set kept ``sample_id``."""
+
+        for predecessor in self.predecessors:
+            if sample_id in predecessor.complete:
+                return predecessor
+        raise ResumeRecoveryError(
+            f"sample {sample_id!r} is not COMPLETE in any declared predecessor"
+        )
+
+    def replay(
+        self, sample_ids: Sequence[str], *, controller_policy_id: str | None = None,
+    ) -> tuple[tuple[ReplayedPhaseSummary, ...], tuple[object, ...]]:
+        """Return ``(phase_summaries, timings)`` for ``sample_ids``, merged.
+
+        ``FlightRuntime._rows_from_phase_summaries`` requires every phase
+        summary it is handed to describe the SAME sample roster (it fails
+        closed otherwise -- "every phase of a program must run the same
+        whole roster"), so this never hands back one ``ReplayedPhaseSummary``
+        per predecessor. Instead it replays each predecessor's own subset
+        through that predecessor's own (already-verified)
+        :meth:`PredecessorAttempt.replay`, and concatenates the resulting
+        single-summary results into ONE merged summary -- exactly the shape
+        a one-predecessor resume already returns, so the seal stage sees no
+        difference between one predecessor and many.
+        """
+
+        requested = list(dict.fromkeys(str(sample_id) for sample_id in sample_ids))
+        available = set(self.complete_sample_ids)
+        missing = [sample_id for sample_id in requested if sample_id not in available]
+        if missing:
+            raise ResumeRecoveryError(
+                f"{len(missing)} requested sample(s) are not COMPLETE in any "
+                f"declared predecessor, e.g. {missing[:5]}"
+            )
+        results: list[object] = []
+        timings: list[object] = []
+        for predecessor in self.predecessors:
+            own = [
+                sample_id for sample_id in requested
+                if sample_id in predecessor.complete
+            ]
+            if not own:
+                continue
+            (summary,), part_timings = predecessor.replay(
+                own, controller_policy_id=controller_policy_id,
+            )
+            results.extend(summary.results)
+            timings.extend(part_timings)
+        return (ReplayedPhaseSummary(tuple(results), controller_policy_id),), tuple(timings)
+
+    def manifest_blocks(
+        self, kept_sample_ids: Sequence[str], *, flown: int, partial: int,
+    ) -> tuple[dict[str, object], ...]:
+        """One ``predecessor_attempt``-shaped block PER predecessor that kept
+        at least one of ``kept_sample_ids`` -- the list a multi-predecessor
+        manifest declares under ``predecessor_attempts``. ``flown``/``partial``
+        describe this resuming attempt as a whole (there is only one flown
+        roster, shared across every predecessor's block) exactly as they do
+        for a single-predecessor :meth:`PredecessorAttempt.manifest_block`.
+        """
+
+        kept = set(str(sample_id) for sample_id in kept_sample_ids)
+        blocks = []
+        for predecessor in self.predecessors:
+            own_kept = sorted(
+                sample_id
+                for sample_id in predecessor.complete_sample_ids
+                if sample_id in kept
+            )
+            if not own_kept:
+                continue
+            blocks.append(
+                predecessor.manifest_block(own_kept, flown=flown, partial=partial)
+            )
+        return tuple(blocks)
 
 
 def predecessor_trace_path(attempt_dir: Path, run_id: str) -> Path:
@@ -511,6 +708,20 @@ def _classify(
         ):
             return None, "the delivered response text does not match its recorded hash"
         final_text = recorded.text
+        normalisation = receipt.get("deliver_normaliser")
+        if normalisation is not None:
+            # 2026-09-29 (COMP-1 resume attempt 3 seal abort): a row whose
+            # episode ran the delivery-time normaliser node (E11) delivered
+            # the node's OUTPUT, not the accepted contact's raw response. The
+            # live runner (``rails.runner``) replaces ``final_text`` with the
+            # normaliser output before it becomes ``final_response_text``, and
+            # the seal binds that text to the receipt's ``output_sha256``. The
+            # replay therefore re-applies the SAME registered rule to the
+            # recorded response -- never a copy of it -- and keeps the row
+            # only when the rule reproduces the recorded output digest.
+            final_text, reason = _replay_delivery_normalisation(normalisation, final_text)
+            if final_text is None:
+                return None, reason
     return (
         ReplayedEpisodeResult(
             sample_id=sample_id,
@@ -520,6 +731,57 @@ def _classify(
         ),
         None,
     )
+
+
+def _replay_delivery_normalisation(
+    block: object, source_text: str,
+) -> tuple[str | None, str | None]:
+    """Re-derive a normalised row's delivered bytes from its recorded response.
+
+    Returns ``(delivered_text, None)`` when the registered rule named by the
+    receipt, run over ``source_text`` (the delivered contact's recorded
+    response), reproduces the receipt's ``output_sha256``; otherwise
+    ``(None, reason)`` and the row is re-flown rather than approximated. The
+    same four facts the bundle's I7n re-checks: the block is structured, its
+    input is the recorded response, the rule resolves, and its output is the
+    recorded output. Reasons carry ids and digest prefixes only, never text.
+    """
+
+    if not isinstance(block, Mapping):
+        return None, "the delivery normalisation receipt is not a structured block"
+    missing = sorted({"normaliser_id", "input_sha256", "output_sha256"} - set(block))
+    if missing:
+        return None, f"the delivery normalisation receipt is missing {missing}"
+    source_sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
+    if block["input_sha256"] != source_sha256:
+        return None, (
+            "the delivery normaliser did not run on the delivered contact's recorded "
+            f"response (input {str(block['input_sha256'])[:12]}..., recorded "
+            f"{source_sha256[:12]}...)"
+        )
+    from ...rails import delivery_normalisers as _normalisers  # noqa: PLC0415, F401
+    from ..base import DELIVERY_NORMALISERS, CoreError  # noqa: PLC0415
+
+    normaliser_id = str(block["normaliser_id"])
+    try:
+        normaliser = DELIVERY_NORMALISERS.resolve(normaliser_id)
+    except CoreError:
+        return None, f"delivery normaliser {normaliser_id!r} is not registered"
+    try:
+        outcome = normaliser(source_text)
+    except Exception as error:  # noqa: BLE001 - any rule failure re-flies the row
+        return None, (
+            f"delivery normaliser {normaliser_id!r} failed over the recorded "
+            f"response: {type(error).__name__}"
+        )
+    output_sha256 = hashlib.sha256(outcome.text.encode("utf-8")).hexdigest()
+    if output_sha256 != block["output_sha256"]:
+        return None, (
+            f"delivery normaliser {normaliser_id!r} does not reproduce its recorded "
+            f"output under this code (recomputed {output_sha256[:12]}..., recorded "
+            f"{str(block['output_sha256'])[:12]}...)"
+        )
+    return outcome.text, None
 
 
 def read_predecessor_attempt(
@@ -587,6 +849,7 @@ __all__ = [
     "NATIVE_EPISODE_RECORD_SUFFIX",
     "NON_WIRE_CONTACT_BLOCKS",
     "RESUME_PREDECESSOR_SCHEMA",
+    "MergedPredecessors",
     "PredecessorAttempt",
     "PredecessorContact",
     "ReplayedEpisodeResult",
@@ -596,4 +859,5 @@ __all__ = [
     "kept_sample_ids_sha256",
     "predecessor_trace_path",
     "read_predecessor_attempt",
+    "resume_declarations_from_document",
 ]
