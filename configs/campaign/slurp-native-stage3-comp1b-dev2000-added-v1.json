@@ -1,0 +1,13 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-native-stage3-comp1-aa-dev2000-added-v1",
+      "experiment": "slurp-native-stage3-comp1-aa-dev2000-added-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-comp1b-dev2000-added-v1",
+      "experiment": "slurp-native-stage3-comp1b-dev2000-added-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

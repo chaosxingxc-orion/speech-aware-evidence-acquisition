@@ -12,7 +12,7 @@
       "dataset_fragment": "slurp-speech-native-dev2000-added",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Four-row form smoke of cell COMP-1 DEV-2000-ADDED, registered before contact on 2026-09-27 from the sealed DEV plan arm fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: the coordinator declares expected_effect_pp from the COMP-1 Fold A read (owner decision 139), root countersigns the exposure rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/comp1dev/comp1dev_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "reason": "Four-row form smoke of cell COMP-1 DEV-2000-ADDED, registered before contact on 2026-09-27 from the sealed DEV plan arm fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: the coordinator declares expected_effect_pp from the COMP-1 Fold A read (owner decision 139), root countersigns the exposure rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/comp1dev/comp1dev_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry. SUPERSEDED 2026-09-29 by cell A2 (docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1, owner decision 198: A2 = COMP-1b on DEV-2000-ADDED, i.e. this smoke with the citation contract reverted, derived by scripts/flights/comp1/derive_slurp_comp1bdev_cells.py). This cell never flew and never will in this form; its expected_effect_pp placeholder is retired with it; no file is deleted.",
         "requirements": [
           {
             "kind": "preparation",
@@ -27,7 +27,7 @@
             "sha256": "73c5ce53f9501deadab6779ebd34b57476bf8c1ee24d600f4d48a0d3a82ef8b6"
           }
         ],
-        "state": "held"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1-DEV2000-ADDED-SMOKE-4-V1"
     }
