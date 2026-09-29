@@ -2141,7 +2141,27 @@ def _perception_branch_value_renderer(*, branch, snapshot_sha256, supplied_value
     return presentation(snapshot_sha256=snapshot_sha256, stores=stores)
 
 
-def _render_perception_branch_presentation(*, branch, supplied_value_ids, contrast_pairs):
+def _carrier_hooks(profile):
+    """The run's ``CarrierHooks`` (migration step 5), or ``None``. ``None``
+    profile -- a config whose carrier declares no hooks, or a test double --
+    keeps the SLURP defaults below, the only carrier these nodes run on."""
+
+    if profile is None:
+        return None
+    from .consumption_module import resolve_carrier_hooks  # noqa: PLC0415
+
+    return resolve_carrier_hooks(profile)
+
+
+def _slurp_default_hooks():
+    from .adapters.slurp_module_hooks import carrier_module_hooks  # noqa: PLC0415
+
+    return carrier_module_hooks()
+
+
+def _render_perception_branch_presentation(
+    *, branch, supplied_value_ids, contrast_pairs, decision_candidates=None,
+):
     """A non-A, non-T branch's own ``top2-contrast-v1`` content item, or a
     reason it renders none (design section 3, "What to build" item 2).
 
@@ -2161,14 +2181,17 @@ def _render_perception_branch_presentation(*, branch, supplied_value_ids, contra
 
     from .perception_presentations import (
         TOP2_CONTRAST_PRESENTATION_ID, TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES,
-        branch_supplied_intent_ids,
     )
 
     if branch.presentation_id != TOP2_CONTRAST_PRESENTATION_ID:
         return None, None
     from ..core.base import PERCEPTION_PRESENTATIONS
 
-    intents = branch_supplied_intent_ids(supplied_value_ids)
+    # Migration step 5: the decision-unit ids come from the carrier's
+    # ``decision_candidates`` hook (SLURP's intent-boundary id shape).
+    if decision_candidates is None:
+        decision_candidates = _slurp_default_hooks().decision_candidates
+    intents = decision_candidates(supplied_value_ids)
     if len(intents) < 2:
         return None, TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES
     presentation = PERCEPTION_PRESENTATIONS.resolve(TOP2_CONTRAST_PRESENTATION_ID)
@@ -2205,7 +2228,7 @@ def _render_perception_branch_presentation(*, branch, supplied_value_ids, contra
     return item, None
 
 
-def _perception_branch_min_candidates_sentence(branch):
+def _perception_branch_min_candidates_sentence(branch, max_candidates=None):
     """A non-A, non-T branch's own response-contract sentence (design
     section 3, "What to build" item 3), or ``None`` when the branch declares
     no ``min_candidates``.
@@ -2226,11 +2249,14 @@ def _perception_branch_min_candidates_sentence(branch):
 
     if branch.min_candidates is None:
         return None
-    from .candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES
+    # Migration step 5: the ceiling is the carrier's ``max_decision_
+    # candidates`` hook (SLURP: ``DEFAULT_MAX_SLURP_CANDIDATES``, 3).
+    if max_candidates is None:
+        max_candidates = _slurp_default_hooks().max_decision_candidates()
 
     sentence = (
         "This candidate list must carry at least "
-        f"{branch.min_candidates} and at most {DEFAULT_MAX_SLURP_CANDIDATES} "
+        f"{branch.min_candidates} and at most {max_candidates} "
         "candidates."
     )
     return {
@@ -2294,6 +2320,9 @@ async def _invoke_native_role_episode(
     # node-context-cleaning analogue) unreachable -- byte-identical to
     # before this feature existed.
     relisten_config = config.relisten
+    # Migration step 5: carrier facts (decision candidates, the candidate-list
+    # ceiling, delivered units) come from the run's carrier hooks.
+    carrier_hooks = _carrier_hooks(getattr(config, "carrier_profile", None))
     relisten_blind_template = relisten_confirm_template = None
     if relisten_config is not None:
         if binding.repo_root is None:
@@ -2822,8 +2851,17 @@ async def _invoke_native_role_episode(
             extra_item, presentation_skip_reason = _render_perception_branch_presentation(
                 branch=branch, supplied_value_ids=supplied,
                 contrast_pairs=branch_contrast_pairs,
+                decision_candidates=(
+                    None if carrier_hooks is None else carrier_hooks.decision_candidates
+                ),
             )
-            contract_item = _perception_branch_min_candidates_sentence(branch)
+            contract_item = _perception_branch_min_candidates_sentence(
+                branch,
+                max_candidates=(
+                    None if carrier_hooks is None or carrier_hooks.max_decision_candidates is None
+                    else carrier_hooks.max_decision_candidates()
+                ),
+            )
             extra_items = [item for item in (extra_item, contract_item) if item is not None]
             if extra_items:
                 user_message = messages[1]
@@ -4419,15 +4457,20 @@ async def _invoke_native_role_episode(
         unarmed one.
         """
 
-        from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
         from . import relisten as rl  # noqa: PLC0415
 
-        scenario, action, entities, parsed = parse_slu_response(delivered_text)
+        # Migration step 5: the delivered units re-listen targets come from
+        # the carrier's ``delivered_units`` hook (SLURP: parse_slu_response).
+        units_hook = (
+            carrier_hooks.delivered_units
+            if carrier_hooks is not None and carrier_hooks.delivered_units is not None
+            else _slurp_default_hooks().delivered_units
+        )
+        intent, entities, parsed = units_hook(delivered_text)
         if not parsed:
             return rl.seal_relisten_receipt(
                 (), max_slots_per_row=relisten_config.max_slots_per_row,
             )
-        intent = f"{scenario}_{action}"
         sample_id = state.prepared.sample.sample_id
         records = []
         for index in rl.select_relisten_targets(entities, relisten_config.max_slots_per_row):

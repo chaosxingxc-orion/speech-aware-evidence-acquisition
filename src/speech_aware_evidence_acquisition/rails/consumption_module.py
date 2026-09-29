@@ -267,6 +267,20 @@ def resolve_carrier_hooks(profile: str, *, repo_root: Path | None = None) -> Car
     return hooks
 
 
+def carrier_hooks_for_lock_key(carrier_lock_key: object) -> CarrierHooks | None:
+    """The hooks of the carrier a config declares (``carrier_lock_key``), or
+    ``None`` when that carrier has no hooks file -- the carrier-agnostic
+    rails (the config loader, the runner, re-listen's replay) reach carrier
+    facts through this, never by naming a carrier (migration step 5)."""
+
+    if not isinstance(carrier_lock_key, str) or _PROFILE.fullmatch(carrier_lock_key) is None:
+        return None
+    try:
+        return resolve_carrier_hooks(carrier_lock_key)
+    except ConsumptionModuleConfigError:
+        return None
+
+
 # ---------------------------------------------------------------------------
 # Parse (migration step 1).
 # ---------------------------------------------------------------------------
@@ -671,6 +685,13 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
     layer = json.loads(_canonical(dict(lock_layer)))
     if CONSUMPTION_MODULE_CONFIG_KEY in layer["native_episode"]:
         raise ConsumptionModuleConfigError("the lock layer must not itself declare a module")
+    if hooks.default_deliver_normaliser is not None:
+        deliver = layer["native_episode"].get("deliver_normaliser")
+        if not isinstance(deliver, Mapping) or deliver.get("normaliser") != hooks.default_deliver_normaliser():
+            raise ConsumptionModuleConfigError(
+                "the lock layer's deliver node is not the carrier's default deliver "
+                f"normaliser {hooks.default_deliver_normaliser()!r}"
+            )
     lock_program = default_phase_program(str(layer["policy"]))
     ceiling = lock_program.max_contacts
     writer = _Writer(layer)
@@ -1031,6 +1052,7 @@ __all__ = [
     "REVIEWER_G5_REPAIR",
     "SCOPE_RULE",
     "SOLVER_CITATION_CONTRACT",
+    "carrier_hooks_for_lock_key",
     "compile_module",
     "delivered_perception_axes",
     "differing_paths",

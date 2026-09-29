@@ -698,6 +698,12 @@ class NativeEpisodeConfig:
     # verified DECLARATION and adds no runtime path. Declared LAST, for the
     # same reason every field above it is.
     consumption_module_json: str | None = None
+    # Migration step 5 (design 2b.4): the profile whose ``CarrierHooks`` the
+    # carrier-agnostic runner reaches carrier facts through (the decision
+    # candidates a presentation contrasts, the candidate-list ceiling, the
+    # delivered units re-listen targets), or ``None`` when the declared
+    # ``carrier_lock_key`` has no hooks file. It renders no request byte.
+    carrier_profile: str | None = None
 
     @property
     def knowledge_value_rendering(self) -> dict[str, object] | None:
@@ -1049,6 +1055,26 @@ def _supply_variant_arm_count(role: NativeEpisodeRole) -> int:
 
     group = role.supply_variants
     return 1 if group is None else int(group.arm_count)
+
+
+def _carrier_profile(values: Mapping[str, object]) -> str | None:
+    """The declared carrier's hooks profile, or ``None`` (no hooks file)."""
+
+    from .consumption_module import carrier_hooks_for_lock_key  # noqa: PLC0415
+
+    hooks = carrier_hooks_for_lock_key(values.get("carrier_lock_key"))
+    return None if hooks is None else hooks.profile
+
+
+def _carrier_max_decision_candidates(values: Mapping[str, object]) -> int:
+    """The declared carrier's ``max_decision_candidates`` hook, or 0."""
+
+    from .consumption_module import carrier_hooks_for_lock_key  # noqa: PLC0415
+
+    hooks = carrier_hooks_for_lock_key(values.get("carrier_lock_key"))
+    if hooks is None or hooks.max_decision_candidates is None:
+        return 0
+    return int(hooks.max_decision_candidates())
 
 
 def _module_delivering_axes(raw: Mapping[str, object]) -> tuple[str, ...]:
@@ -1459,7 +1485,6 @@ def load_native_episode_config(
     # were.
     perception_branch_group = None
     if "branches" in raw_roles["perception"]:
-        from .candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES
         from .knowledge_stores import declared_alternate_release_relpaths
         from .supply_variants import PerceptionBranchError, parse_perception_branches
         # Importing the BARE registry object from ``core.base`` is not enough:
@@ -1490,7 +1515,10 @@ def load_native_episode_config(
                     declared_stores
                 ),
                 registered_presentation_ids=tuple(PERCEPTION_PRESENTATIONS.names()),
-                max_candidates_ceiling=DEFAULT_MAX_SLURP_CANDIDATES,
+                # Migration step 5: the carrier's ``max_decision_candidates``
+                # hook (SLURP: 3); a carrier without it admits no
+                # ``min_candidates`` at all (ceiling 0 refuses every value).
+                max_candidates_ceiling=_carrier_max_decision_candidates(values),
                 # "What to build" item 1: a branch declaring top2-contrast-v1
                 # must carry a contrast_pairs pin, and no other branch may.
                 top2_contrast_presentation_id=TOP2_CONTRAST_PRESENTATION_ID,
@@ -2262,6 +2290,7 @@ def load_native_episode_config(
         knowledge_value_rendering_json,
         relisten_json,
         consumption_module_json,
+        carrier_profile=_carrier_profile(values),
     )
 
 
