@@ -185,6 +185,22 @@ ACQUISITION_POLICIES = Registry("acquisition policy")
 
 
 # ---------------------------------------------------------------------------
+# E4, the core-native targeted re-listen (2026-09-28, owner decision 185).
+#
+# A post-accept, model-free-to-declare stage: one registered policy record
+# carrying its own ``policy_id`` and the contact cost of ONE triggered slot
+# (``rails.relisten.CONTACTS_PER_ENTITY``, both the blind and the forced-
+# choice contact). Distinct from ``ACQUISITION_POLICIES`` above -- E4 is not
+# one of E18's three acquisition kinds, it never routes through a Planner
+# ACQUIRE, and it runs exactly once per row, after the answer is already
+# accepted -- so its own registry is the one seam ``native_episode.relisten.
+# policy`` resolves against, the same one-Registry discipline as every other
+# seam here. Populated from ``rails/relisten.py``, the canonical
+# registration site, exactly as the acquisition policies above are.
+RELISTEN_POLICIES = Registry("relisten policy")
+
+
+# ---------------------------------------------------------------------------
 # The knowledge INDEX (item E21 -- the knowledge index, not the Earnings-21
 # carrier -- 2026-09-19, owner decisions 48 and 50).
 #

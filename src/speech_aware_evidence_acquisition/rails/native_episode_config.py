@@ -679,6 +679,15 @@ class NativeEpisodeConfig:
     # its 1-based rank inside that store's block. Declared LAST, for the same
     # reason E20's, E21's, E22's and E39's fields are.
     knowledge_value_rendering_json: str | None = None
+    # Item E4 (2026-09-28, owner decision 185, "core-native targeted re-
+    # listen"): the canonical text of an armed ``native_episode.relisten``
+    # block (``rails.relisten.RelistenConfig.as_json``), or ``None`` when the
+    # key is absent -- which is every config written before E4 and every OFF
+    # arm, so the post-accept stage is then unreachable, the deliver
+    # normaliser's own output is exactly the delivered text, and the ceiling
+    # formula's relisten term is 0. Declared LAST, for the same reason
+    # E20's, E21's, E22's, E39's and RANKVIS's fields are.
+    relisten_json: str | None = None
 
     @property
     def knowledge_value_rendering(self) -> dict[str, object] | None:
@@ -687,6 +696,17 @@ class NativeEpisodeConfig:
         if self.knowledge_value_rendering_json is None:
             return None
         return json.loads(self.knowledge_value_rendering_json)
+
+    @property
+    def relisten(self):
+        """Item E4: the armed, parsed ``rails.relisten.RelistenConfig``, or
+        ``None`` when ``native_episode.relisten`` is absent."""
+
+        if self.relisten_json is None:
+            return None
+        from .relisten import parse_relisten  # noqa: PLC0415
+
+        return parse_relisten(json.loads(self.relisten_json))
 
     @property
     def role_completion_caps(self) -> dict[str, int]:
@@ -1097,6 +1117,7 @@ def load_native_episode_config(
         "knowledge_index",
         "reviewer_verdict",
         "knowledge_value_rendering",
+        "relisten",
     }
     if (
         not isinstance(raw, Mapping)
@@ -1453,6 +1474,38 @@ def load_native_episode_config(
                 "native_episode.knowledge_index: the index replaces the very "
                 "value blocks a branch varies"
             )
+    # Item E4 (2026-09-28, owner decision 185, "core-native targeted re-
+    # listen"; design docs/superpowers/specs/2026-09-28-e4-core-native-
+    # targeted-relisten-design.md section 6): the post-accept relisten
+    # block, parsed HERE -- before any contact -- so a fragment can never
+    # name an unregistered policy or a cap outside its declared bounds.
+    # ``None`` for every config written before E4 and every OFF arm, which
+    # leaves the ceiling below and every role exactly as they were.
+    relisten_json = None
+    if "relisten" in raw:
+        from .relisten import RelistenError, parse_relisten  # noqa: PLC0415
+
+        try:
+            relisten_config = parse_relisten(raw["relisten"])
+        except RelistenError as error:
+            raise ValueError(f"native_episode.relisten is invalid: {error}") from error
+        # v1 refuses beside a Solver supply-variant arm group and beside a
+        # grouped Solver visit (design section 6's implementation-plan
+        # table): both fan the Solver's OWN visit out into several
+        # contacts, and the relisten stage's own entity-index addressing
+        # ("up to 3 delivered entities, in delivery order") assumes exactly
+        # one delivered Solver answer per row to re-listen against.
+        if supply_variant_group is not None:
+            raise ValueError(
+                "native_episode.relisten cannot combine with "
+                "roles.solver.supply_variants in v1"
+            )
+        if raw_roles["solver"].get("samples", 1) != 1:
+            raise ValueError(
+                "native_episode.relisten cannot combine with a grouped Solver "
+                "visit (roles.solver.samples > 1) in v1"
+            )
+        relisten_json = relisten_config.as_json()
     roles = []
     for kind in kinds:
         row = raw_roles[kind]
@@ -2038,6 +2091,16 @@ def load_native_episode_config(
             acquisition_budget["max_acquisitions_per_row"]
             * acquisition_role.max_iterations
         )
+    # Item E4 (2026-09-28, owner decision 185): plus the relisten stage's own
+    # contacts -- up to 2 per triggered entity (blind + forced choice),
+    # bounded by ``relisten.max_slots_per_row`` and added ONCE (the stage
+    # runs once per row, after the last accepted answer, never once per
+    # revision). Zero for every config that declares no relisten block,
+    # which reduces this to exactly the pre-E4 formula.
+    if relisten_json is not None:
+        from .relisten import relisten_extra_ceiling  # noqa: PLC0415
+
+        ceiling += relisten_extra_ceiling(json.loads(relisten_json)["max_slots_per_row"])
     if allow_subceiling:
         if ceiling > program.max_contacts:
             raise ValueError("selected native graph exceeds the shared program contact ceiling")
@@ -2137,6 +2200,7 @@ def load_native_episode_config(
         reviewer_verdict_vocabulary,
         finite_completion_scope,
         knowledge_value_rendering_json,
+        relisten_json,
     )
 
 
