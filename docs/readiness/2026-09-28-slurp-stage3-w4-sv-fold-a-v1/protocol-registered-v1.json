@@ -46,7 +46,7 @@
   "registered_at_utc": "2026-09-28T13:30:00.000000+00:00",
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w4sv2, branch fable/w4sv2",
-  "status": "BLOCKED_ARM_B_INERT_REGISTERED_HELD",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
   "study_commit_at_registration": "190e178db",
   "the_question": "At the FIRST Solver visit of the AGREE episode on TRAIN Fold A 1,080, does the Solver's official pooled SLU-F1 move when its slot-contract cards come from the W4 conventions release (arm b-w4) instead of the AGREE v2 cards (arm a-agree), beyond the in-flight twin's null?"
 }

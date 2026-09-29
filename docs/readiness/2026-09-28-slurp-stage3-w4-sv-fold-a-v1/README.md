@@ -1,17 +1,22 @@
 # Cell W4-SV: the W4 slot conventions as a same-flight supply-variant column read (owner decision 172)
 
 Registered before contact 2026-09-28 at study commit `190e178db`; both cells **held**; status
-`BLOCKED_ARM_B_INERT_REGISTERED_HELD`. Nothing here authorises a flight, a flip or an admission entry. Development numbers only (owner decisions
+`REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP`. Nothing here authorises a flight, a flip or an admission entry. Development numbers only (owner decisions
 28 and 86).
 
-## BLOCKED: arm b-w4 is inert
+## Proof re-run after the renderer fix (3f6688de), 2026-09-29
 
-every arm b-w4 first-visit POST body equals its arm a-agree body: the release swap re-selects value ids through the alternate's router, but rails.runner renders every arm's request from the FLIGHT's composite snapshot (base_messages over the row's snapshot, with only retrieved_value_ids replaced), and slot-contracts-w4-v1 carries the SAME 54 value ids as slot-contracts-v2 with new content on 19 of them -- so arm b-w4 renders the v2 cards and reads as a second twin. The cell cannot fly until the runner renders a release-swap arm from its own alternate snapshot
+`w4sv_arm_a_proof.py` re-run at study commit `c24824a46` (which carries the release-swap renderer
+fix `3f6688de`: a release-swap arm now renders from its own alternate snapshot) over the first 120 rows
+reports **ARM-B-VARIES**: arm b-w4's first-visit POST body differs from arm a-agree's on
+120 rows and equals it on 0. Arm A's verdict and
+the twin are unchanged (below). The arm-B blocker is lifted; the cells stay held until root countersigns and mints.
 
-Evidence: `docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/arm-a-byte-identity-proof-v1.json` over the first 120 rows -- arm b-w4's first-visit
-POST body equals arm a-agree's on 120 rows and differs on
-0. Where: rails/runner.py, the supply-variant binding: a non-delivering arm is rendered by base_messages(ctx) over the row's own composite snapshot with ONLY query_state.retrieved_value_ids replaced by the arm's selection; core/flight/runtime.py::_supply_action_router rebuilds the arm's ROUTER over the alternate (selection), never the snapshot the request renders from. A release swap whose alternate keeps the primary's value ids therefore re-selects the same ids and renders the primary's content. Needed: render a release-swap arm's request from its own alternate binding's composite snapshot (and bind the arm's evidence pins / snapshot hash to it in the arm receipt), with an acceptance test that an alternate differing only in content changes the arm's wire bytes; it touches rails/runner.py and core/flight/runtime.py (merge set B files, identity-bound), so it lands at a coordinator-named re-pin point.
-Consequence: flown as registered, arm b-w4 is a second twin and B minus A reads nothing; w4sv_flip.sh refuses until a re-run of w4sv_arm_a_proof.py reports ARM-B-VARIES.
+**History (the registration's finding, superseded).** At registration the proof (study commit
+`b5392755b`, sha256 `913c5487d5c7cb37e6c323433dc55976e614f7d86676efd370ee9f669e3ea55d`) read ARM-B-INERT over the first
+120 rows -- arm b-w4's body equal to arm a-agree's on 120 rows, different on
+0: every arm b-w4 first-visit POST body equalled its arm a-agree body: the release swap re-selected value ids through the alternate's router, but rails.runner rendered every arm's request from the FLIGHT's composite snapshot (base_messages over the row's snapshot, with only retrieved_value_ids replaced), and slot-contracts-w4-v1 carries the SAME 54 value ids as slot-contracts-v2 with new content on 19 of them -- so arm b-w4 rendered the v2 cards and read as a second twin. Where: rails/runner.py (the supply-variant binding rendered a non-delivering arm over the row's own composite snapshot) and core/flight/runtime.py::_supply_action_router (rebuilt only the arm's ROUTER over the alternate). The cell was registered held
+with status `BLOCKED_ARM_B_INERT_REGISTERED_HELD` until the fix landed.
 
 **What W4-SV is.** The retained AGREE arm (`SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1`) with a three-arm Solver supply-variant group fanned out at
 the FIRST Solver visit only (`arm_visits: "first"`, program `phase-native-candidates-review-revise-variants3first-v1`, ceiling 13 = 11 + 2):
@@ -88,7 +93,7 @@ Columns: the first-visit Solver answers of arm b-w4 (B), the twin t-twin (T) and
 | `root-admission-draft-v1.json` | the receipt root mints with `scripts/flights/w4sv/w4sv_mint_receipt.py` |
 
 **Sequence.** (1) The arm-B blocker is fixed and `w4sv_arm_a_proof.py` re-run reports ARM-B-VARIES (the flip refuses
-otherwise). (2) Root countersigns the DRAFT rows (four flight rows and the two model-free rows; the READ row stays
+otherwise) -- DONE: ARM-B-VARIES at c24824a46. (2) Root countersigns the DRAFT rows (four flight rows and the two model-free rows; the READ row stays
 draft until the seal) and mints `coordination/slurp-stage3-w4sv-fold-a-v1/root-admission-v1.json`. (3) `scripts/flights/w4sv/w4sv_flip.sh` (smoke, then arm; minted
 supplies must reproduce the AGREE digests). (4) `scripts/flights/w4sv/batch_chain_w4sv.sh` on slurp-np4 through the
 batch driver. (5) `scripts/flights/w4sv/w4sv_read.sh`.
