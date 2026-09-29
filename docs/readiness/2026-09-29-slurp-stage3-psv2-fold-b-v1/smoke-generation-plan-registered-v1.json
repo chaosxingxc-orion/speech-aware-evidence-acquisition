@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-psv2-fold-b-smoke-4-v1",
-  "composed_config_hash": "5954e40c67f54a98098787056504b180cc242cd059993b427461a00c8844b7fa",
+  "composed_config_hash": "e2653674a2107ff579560bcbfac445991ef485a6d909e9e98f01d1d27eafdd13",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-psv2-fold-b-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 60,
     "planned_speech_audio_seconds": 153,
-    "protocol_hash": "c6de4965360cbc4d027da2e0c4e212247490ae98466fc23bd11bd34946dbe412",
+    "protocol_hash": "9ca9909a6b208fa278efcbb744b5bbc91f9f00ae07dc73463e4c25d738032bea",
     "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-psv2-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "e397eb7f1cd0d0ee57763962cbec6e95150af5b66ce42ab9e8adc23adb7f5ac7"
+    "sha256": "5c0a49168f340c4096cec9d0c8fbed1d3038ccbe017204eae28659bd556f55d3"
   },
   "purpose": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1: structural form proof only: no score and no read.",
   "quality_read_gate": "No branch column is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-PSV2-FOLD-B-BRANCH-READ-V1 is root countersigned.",

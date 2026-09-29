@@ -30,8 +30,8 @@
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "cb8e1537830836550f02fe0b200811211988676b5b69177be6e42c32ac9d3228",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1/phase-supply-v2.json",
+            "sha256": "cae654abc3945132ee0b531d992c2a36ec1ffd4e46e8d0c20dddf62bc8188503",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],

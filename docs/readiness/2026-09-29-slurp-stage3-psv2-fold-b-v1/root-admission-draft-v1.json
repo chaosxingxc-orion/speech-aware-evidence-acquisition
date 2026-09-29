@@ -27,7 +27,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv2-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "e397eb7f1cd0d0ee57763962cbec6e95150af5b66ce42ab9e8adc23adb7f5ac7"
+      "sha256": "5c0a49168f340c4096cec9d0c8fbed1d3038ccbe017204eae28659bd556f55d3"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv2-fold-b-v1/README.md",
@@ -104,8 +104,8 @@
       "protocol": "c3d3d8f6d15b31b212f61d89c4a7d16ba73dcf694d39d5d80e24f4775f91f53c"
     },
     "smoke": {
-      "composed_config": "5954e40c67f54a98098787056504b180cc242cd059993b427461a00c8844b7fa",
-      "protocol": "c6de4965360cbc4d027da2e0c4e212247490ae98466fc23bd11bd34946dbe412"
+      "composed_config": "e2653674a2107ff579560bcbfac445991ef485a6d909e9e98f01d1d27eafdd13",
+      "protocol": "9ca9909a6b208fa278efcbb744b5bbc91f9f00ae07dc73463e4c25d738032bea"
     }
   },
   "schema": "saea-campaign-decision-v1",
