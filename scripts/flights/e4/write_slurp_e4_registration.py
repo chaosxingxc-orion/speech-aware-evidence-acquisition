@@ -1,0 +1,809 @@
+#!/usr/bin/env python3
+"""Write cell E4-1's readiness package (owner decision 185: the core-native targeted re-listen as a
+shadow post-accept stage on TRAIN Fold A) from the derived fragments, the cost measure and the
+shadow proof -- config and receipt-pinned bytes only: no adapter contact, no server, no lock, no
+model, tokenizer, encoder, embedder or scorer contact. It flips nothing and mints nothing.
+
+Package ``docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/`` and the preregistration
+beside it. ``--append-ledger`` writes the DRAFT exposure rows (the arm and its FIT identity, the
+four-row smoke and its FIT identity, and the READ row that covers both shadow-column contrasts),
+replacing in place on re-run. ``--check-dir`` folds the per-phase prompt-budget receipts of an
+already-run ``core.flight.cli check`` (it attaches to nothing) into the facts.
+
+    python scripts/flights/e4/write_slurp_e4_registration.py --data-root "$SPEECHRL_DATA_DIR" \\
+        --study-commit <sha> --registered-at 2026-09-29T05:00:00.000000+00:00 \\
+        [--check-dir /home/chao/saea-worktrees/.e4-checks] [--append-ledger]
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import io
+import json
+import math
+import os
+import sys
+from pathlib import Path
+
+sys.stdout.reconfigure(encoding="utf-8")
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from speech_aware_evidence_acquisition.core.config import compose, protocol_hash  # noqa: E402
+
+PACKAGE = "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1"
+PREREG = PACKAGE + "-preregistration.md"
+LEDGER = "docs/exposure-ledger.md"
+CELLS = {"arm": "slurp-native-stage3-relisten-fold-a-v1", "smoke": "slurp-native-stage3-relisten-fold-a-smoke-4-v1"}
+PARENTS = {"arm": "slurp-native-stage3-agree-w1-fold-a-v1", "smoke": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1"}
+PREFIX = {"arm": "", "smoke": "smoke-"}
+AGREE_RUN = "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+AGREE_ATTEMPT = "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1"
+AGREE_OFFICIAL = {"slu_f1": 65.1575, "intent_accuracy": 85.8333}
+READ_RUN = "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1"
+SESSION = "serving-slurp-native-candidate-five-train-a-np4-v1"
+DECISION_ID = "slurp-stage3-relisten-fold-a-admission-v1"
+DECISION_RELPATH = "coordination/slurp-stage3-relisten-fold-a-v1/root-admission-v1.json"
+AGREE_SUPPLY_OUTPUT = "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae"
+COL_A, COL_B = "relisten-replace-only", "relisten-replace-drop-unheard"
+COLUMNS = [COL_A, COL_B]
+ROWS = 1080
+READ_ROSTER = "SLURP-EVO-FOLD-A-V2"
+SCORER = "slurp-slu-official-train"
+AUDIO_TOTAL = 3084.5284375
+PROGRAM = "phase-native-candidates-review-revise-relisten-v1"
+RELISTEN_PATH = "native_episode.relisten"
+
+# The design's floor (scripts/checks/stage3_effect_floor_check.py FLOOR_TABLE, design
+# same-flight-shadow-relisten): the ROLL-AA anchor 0.735 SLU / 0.000 intent at n = 200, scaled sqrt(200 / n).
+ANCHOR_N, ANCHOR_SLU = 200, 0.735
+FLOOR_SLU = ANCHOR_SLU * math.sqrt(ANCHOR_N / ROWS)
+EXPECTED_EFFECT = 0.0
+SEED, DRAWS = 20260915, 10000
+
+SPEC = "docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md"
+LEDGER_NOTE = "docs/results/2026-09-28-slurp-node-information-gain-ledger.md"
+ERROR_SOURCES = "docs/results/2026-09-27-slurp-agree-arm-error-sources.md"
+OWNER_DECISIONS = "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
+GATE = "scripts/checks/stage3_effect_floor_check.py"
+COST_MEASURE = "analysis/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COST-MEASURE-V1/cost-measure-v1.json"
+COST_SCRIPT = "scripts/flights/e4/e4_cost_measure.py"
+DERIVE_SCRIPT = "scripts/flights/e4/derive_slurp_e4_cells.py"
+PROOF = PACKAGE + "/shadow-proof-v1.json"
+PROOF_SCRIPT = "scripts/flights/e4/e4_shadow_proof.py"
+READ_SCRIPT = "scripts/flights/e4/e4_read.sh"
+ALLOWED_PREFIXES = ("native_contact_fit.", "prepared_phase_supply", "what_this_is")
+SMOKE_ROSTER_PREFIXES = ("population.", "populations")
+
+CEILINGS = {
+    "upper_bound_pp_slu": "4.09 pp SLU-F1 (NEAR + WRONG-VALUE hearing class, 97 items, isolated; spec section 2), 0 pp intent by construction",
+    "relisten_addressable_boundary_near_format": "35 of 142 BOUNDARY + NEAR + FORMAT items (node-gain ledger section 5.2)",
+    "spurious": "253 SPURIOUS predictions, 74 of them with the predicted filler in the Perception note (ledger section 5.2); column (b) targets these",
+    "hearing_share": "17 % (71 / 407 visible hearing/span origin) to 74 % ((71 + 229 undetermined) / 407) of the delivered gold-side errors (spec section 8 ruling 1); 4.09 x p spans about 0.71-3.0 pp",
+}
+
+
+def rd(path: str) -> str:
+    return io.open(path, encoding="utf-8", newline="").read()
+
+
+def wr(path: str, text: str) -> str:
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+    io.open(path, "w", encoding="utf-8", newline="").write(text)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def wjson(path: str, obj: object) -> str:
+    return wr(path, json.dumps(obj, indent=2, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def sha_file(path: str | Path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def flatten(node, prefix: str = "") -> dict:
+    out = {}
+    if isinstance(node, dict):
+        for key, value in node.items():
+            out.update(flatten(value, f"{prefix}{key}."))
+    else:
+        out[prefix[:-1]] = node
+    return out
+
+
+def identities() -> dict:
+    out = {}
+    for key, experiment in CELLS.items():
+        document = json.loads(rd(f"configs/experiment/{experiment}.json"))
+        cell = document["cells"][0]
+        composed = compose(REPO_ROOT, cell["model_fragment"], cell["dataset_fragment"], cell["baseline_fragment"], experiment)
+        parent_doc = json.loads(rd(f"configs/experiment/{PARENTS[key]}.json"))
+        parent_cell = parent_doc["cells"][0]
+        parent = compose(REPO_ROOT, parent_cell["model_fragment"], parent_cell["dataset_fragment"],
+                         parent_cell["baseline_fragment"], PARENTS[key])
+        experiment_keys = set(document) | set(parent_doc)
+        a, b = flatten(parent.values), flatten(composed.values)
+        changed = sorted(k for k in set(a) | set(b) if a.get(k, "<absent>") != b.get(k, "<absent>"))
+        program = [k for k in changed if k == "policy"]
+        relisten = [k for k in changed if k == RELISTEN_PATH or k.startswith(RELISTEN_PATH + ".")]
+        bookkeeping = [k for k in changed if k.startswith(ALLOWED_PREFIXES)]
+        block = [k for k in changed if k.split(".", 1)[0] in experiment_keys and k not in bookkeeping]
+        other = [k for k in changed if k not in program + relisten + bookkeeping + block]
+        if other:
+            raise SystemExit(f"{key}: composed config differs from its AGREE parent beyond the registered change: {other}")
+        if program != ["policy"] or composed.values["policy"] != PROGRAM:
+            raise SystemExit(f"{key}: the program switch is not the registered one")
+        if key == "arm" and any(k.startswith(SMOKE_ROSTER_PREFIXES) for k in block):
+            raise SystemExit("arm: the roster moved")
+        split = document["population"]["split_identity_hash"]
+        out[key] = {
+            "experiment": experiment, "cell": cell["cell_id"], "run_id": cell["run_id"], "attempt_id": cell["attempt_id"],
+            "baseline_fragment": cell["baseline_fragment"], "parent_experiment": PARENTS[key],
+            "dataset_fragment": cell["dataset_fragment"], "model_fragment": cell["model_fragment"],
+            "arm": composed.values["arm"], "rows": document["population"]["count"], "split_identity_hash": split,
+            "composed_config_hash": composed.config_hash, "parent_composed_config_hash": parent.config_hash,
+            "protocol_hash": protocol_hash(composed.config_hash, composed.values["arm"], split),
+            "fit": dict(composed.values["native_contact_fit"]), "family_budget": document["family_budget"],
+            "execution_profile": document["execution_profile"], "carrier_lock_key": composed.values["carrier_lock_key"],
+            "program": composed.values["policy"], "relisten": composed.values["native_episode"]["relisten"],
+            "sample_ids": (document.get("populations") or [{}])[0].get("ids") if key == "smoke" else None,
+            "composed_config_diff_against_the_agree_cell": {
+                "program_switch": program, "relisten_block": relisten, "bookkeeping": bookkeeping,
+                "experiment_fragment_own_block": block, "anything_else": other},
+        }
+    return out
+
+
+def _walk_relisten(node, path: str = "") -> list:
+    found = []
+    if isinstance(node, dict):
+        for key, value in node.items():
+            here = f"{path}.{key}" if path else str(key)
+            if "relisten" in str(key).lower() and not isinstance(value, (dict, list)):
+                found.append({"path": here, "value": value})
+            elif "relisten" in str(key).lower():
+                found.append({"path": here, "value": value if len(json.dumps(value, default=str)) < 600 else "<long>"})
+            else:
+                found.extend(_walk_relisten(value, here))
+    elif isinstance(node, list):
+        for index, value in enumerate(node):
+            found.extend(_walk_relisten(value, f"{path}[{index}]"))
+    return found
+
+
+def fold_check(check_dir: str | None) -> dict:
+    if not check_dir:
+        return {"status": "PENDING_CHECK"}
+    out = {"status": "MEASURED_BY_CHECK", "cells": {}}
+    for key, cell_id in CELLS.items():
+        path = Path(check_dir) / f"check-{cell_id}.json"
+        if not path.is_file() or not path.read_text(encoding="utf-8").strip():
+            out["cells"][key] = {"status": "MISSING", "path": str(path)}
+            continue
+        report = json.loads(path.read_text(encoding="utf-8"))
+        preflight = report.get("preflight") or {}
+        phases = []
+        for receipt in preflight.get("prompt_budget") or ():
+            entry = {"phase": receipt.get("phase"), "decision": receipt.get("decision")}
+            breakdown = receipt.get("breakdown") if isinstance(receipt.get("breakdown"), dict) else {}
+            for name in ("physical_margin_tokens", "operational_margin_tokens", "rendered_text_tokens",
+                         "required_window_tokens", "completion_token_ceiling", "speech_feature_tokens"):
+                if name in receipt:
+                    entry[name] = receipt[name]
+                elif name in breakdown:
+                    entry[name] = breakdown[name]
+            phases.append(entry)
+        out["cells"][key] = {"check_path": str(path), "check_sha256": sha_file(path), "blockers": report.get("blockers"),
+                             "scientific_readiness": report.get("scientific_readiness"),
+                             "prompt_budget_per_phase": phases,
+                             "relisten_lines": _walk_relisten(report)}
+    return out
+
+
+def proof_summary() -> dict:
+    if not Path(PROOF).is_file():
+        return {"status": "PENDING_PROOF"}
+    proof = json.loads(rd(PROOF))
+    rb = proof["request_bytes"]
+    return {
+        "status": "RUN", "relpath": PROOF, "sha256": sha_file(PROOF), "tool": PROOF_SCRIPT, "verdict": proof["verdict"],
+        "study_commit": proof["study_commit"], "rows_dispatched": rb["rows"],
+        "config_classes": proof["composed_config_diff"]["by_class"],
+        "request_affecting_leaves": proof["composed_config_diff"]["request_affecting_leaves"],
+        "prepared_supply_equal_registered_and_committed": proof["prepared_supply"]["equal_registered_and_committed"],
+        "prepared_supply_output_sha256": (proof["prepared_supply"].get("e4") or {}).get("output_sha256"),
+        "delivered_path_vs_agree": rb["delivered_path_vs_agree"],
+        "relisten_contacts": rb["relisten_contacts"],
+        "delivered_text": proof["delivered_text"],
+        "shadow_checks_pass": proof["shadow_checks_pass"],
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
+    parser.add_argument("--data-root", required=True)
+    parser.add_argument("--study-commit", required=True)
+    parser.add_argument("--registered-at", required=True)
+    parser.add_argument("--branch", default="fable/e4cell")
+    parser.add_argument("--worktree", default="/home/chao/saea-worktrees/fable-e4cell")
+    parser.add_argument("--check-dir", default=None)
+    parser.add_argument("--append-ledger", action="store_true")
+    args = parser.parse_args(argv)
+    os.chdir(REPO_ROOT)
+    data = Path(args.data_root)
+    cost = json.loads((data / COST_MEASURE).read_text(encoding="utf-8"))
+
+    ids = identities()
+    arm, smoke = ids["arm"], ids["smoke"]
+    if smoke["sample_ids"] != cost["smoke_selection"]["sample_ids"]:
+        raise SystemExit("the smoke roster differs from the cost measure's selection")
+    caps, smoke_caps = arm["family_budget"], smoke["family_budget"]
+    relisten = arm["relisten"]
+    fit = fold_check(args.check_dir)
+    proof = proof_summary()
+    ceiling = cost["ceiling"]
+    blind = cost["blind_contacts_on_the_sealed_agree_answers"]
+    blind_audio = cost["blind_audio_seconds_on_the_sealed_agree_answers"]
+
+    rule = (
+        "SAME-FLIGHT SHADOW-COLUMN READ (owner decision 185; design section 4 with the section 8 rulings; claim ceiling "
+        f"'nominated'). The DELIVERED column is the flight's own sealed answer, scored once by the flight with {SCORER}. "
+        f"Each shadow column -- {COL_A} (a: the section 1 acceptance rule) and {COL_B} (b: a, plus dropping an entity when "
+        "both contacts vote unheard) -- is rendered by the pure bind() from the same flight's sealed saea-relisten-v1 "
+        "receipts and trace (AT1: a row with no accepted replacement and no drop renders byte-identical to the delivered "
+        f"text) and scored ONCE with {SCORER} through core.scoring_batch.score_complete_derived_copy; each contrast is a "
+        f"paired ROW bootstrap (cluster key sample_id, {DRAWS:,} draws, seed {SEED}). PRIMARY: official pooled SLU-F1 "
+        "(micro), shadow column minus delivered column. GUARD: intent is identical between each shadow column and the "
+        "delivered column BY CONSTRUCTION (bind() never re-opens the decided intent); it is tested per row and the read "
+        "REFUSES on any difference. THE BAR: the design's own null (ruling 7: 'the bar is the twin/shadow null'), "
+        f"provisional until this cell measures it: {GATE} design same-flight-shadow-relisten, {ANCHOR_SLU} x "
+        f"sqrt({ANCHOR_N} / n) = {FLOOR_SLU:.4f} pp SLU-F1 at n = {ROWS}. Per column: NOMINATED iff the SLU-F1 CI95 lower "
+        f"bound is above zero AND the point delta exceeds {FLOOR_SLU:.4f} pp AND the intent guard holds; SHADOW HARM iff "
+        f"the SLU-F1 CI95 upper bound is below zero AND the point delta's magnitude exceeds {FLOOR_SLU:.4f} pp; otherwise "
+        "NOT NOMINATED (within the null). The two columns are two pre-declared rules read from one contact stream; no "
+        "rule search (decision 179). A nomination claims nothing at system level: promotion means binding in delivery and "
+        "a full-system read against an in-chain A/A (design section 4). Descriptive, never gating: saves and harms by "
+        "error kind (gold read on the scoring side only), the per-type table, the blind-disposition and confirm-vote "
+        "tallies, and equal-scenario weighting; every verdict carries the per-scenario table."
+    )
+    expectation_note = (
+        "Ruling 7: both columns declare expected_effect_pp 0.0 with claim ceiling 'nominated', since no measured analogue "
+        "exists (E-C3 is unflown; VERIFY-1's +1.40 is a precision filter, not a re-listen). claims_benefit is false for "
+        "both. The ceilings are stated beside, never as the expectation: the upper bound is 4.09 pp SLU-F1 (NEAR + "
+        "WRONG-VALUE, 97 items, isolated) and 0 pp intent by construction; re-listen-addressable BOUNDARY + NEAR + FORMAT "
+        "35 of 142 items; SPURIOUS 253 predictions, 74 of them with the filler in the Perception note (column b's target); "
+        "hearing share 17-74 % of the 407 delivered gold-side errors, so 4.09 x p spans about 0.71-3.0 pp. The bar is "
+        f"the design's own null, provisionally {FLOOR_SLU:.4f} pp SLU-F1 at n = {ROWS} ({ANCHOR_SLU} x sqrt({ANCHOR_N} / "
+        f"{ROWS}), the ROLL-AA anchor the gate registers for same-flight-shadow-relisten). Nothing was tuned on any roster: "
+        "tuning_roster none; the read roster is TRAIN Fold A."
+    )
+    variant_cost = {
+        "extra_contacts_per_row_max": ceiling["extra_contacts_per_row"],
+        "extra_contacts_blind_on_the_sealed_agree_answers": blind,
+        "extra_contacts_blind_per_row_mean": cost["blind_contacts_per_row_mean"],
+        "extra_contacts_confirm": f"one per blind contact that disagrees, is unheard or is unparsed; at most {blind} (all fire -> {ceiling['extra_contacts_if_every_triggered_entity_fires_its_confirm']} extra contacts)",
+        "extra_audio_seconds_max": ceiling["extra_audio_seconds"],
+        "extra_audio_seconds_per_row_mean_max": ceiling["extra_audio_seconds_per_row_mean"],
+        "extra_audio_seconds_blind_on_the_sealed_agree_answers": blind_audio,
+        "extra_audio_seconds_if_every_confirm_fires": ceiling["extra_audio_seconds_if_every_triggered_entity_fires_its_confirm"],
+        "note": (f"up to 6 extra contacts per row (3 blind + 3 confirm), each re-sending the row's full speech packet, so "
+                 f"the flight's extra audio is at most 6 x the Fold A total {AUDIO_TOTAL} s = {ceiling['extra_audio_seconds']} s; "
+                 f"on the sealed AGREE answers the blind contacts would number {blind} ({cost['blind_contacts_per_row_mean']} "
+                 f"per row) re-sending {blind_audio} s, and at most as many confirm contacts"),
+    }
+    common = {"claim": "nominated", "claims_benefit": False, "expected_effect_pp": EXPECTED_EFFECT,
+              "measurement_design": "same-flight-shadow-relisten", "rows": ROWS, "shadow_delivery": True,
+              "columns": list(COLUMNS), "tuning_roster": "none", "read_roster": READ_ROSTER}
+    measurement = {
+        arm["run_id"]: {
+            **common,
+            "primary_metric": ("official pooled SLU-F1 (micro), each shadow column minus the delivered column; intent "
+                               "identical between columns by construction, tested per row as a guard"),
+            "per_column_expected_effect_pp": {COL_A: EXPECTED_EFFECT, COL_B: EXPECTED_EFFECT},
+            "provisional_floor_pp": {"slu_f1": round(FLOOR_SLU, 4), "intent_accuracy": 0.0,
+                                     "arithmetic": f"{ANCHOR_SLU} * sqrt({ANCHOR_N} / {ROWS}) = {FLOOR_SLU:.4f} pp (ROLL-AA anchor, provisional)"},
+            "read_bar": "the design's own twin/shadow null (ruling 7); provisionally the floor above, per column",
+            "ceilings": CEILINGS,
+            "variant_cost": variant_cost,
+            "note": expectation_note,
+        },
+        smoke["run_id"]: {
+            "measurement_design": "form-proof", "rows": 4, "expected_effect_pp": 0.0, "claims_benefit": False,
+            "primary_metric": "none (structural form only)", "tuning_roster": "none", "read_roster": READ_ROSTER,
+            "note": ("The required 4-row charged dry run (design section 6 step 2). Four Fold A rows chosen to exercise both "
+                     "relisten contacts (>= 3 delivered AGREE entities and an unstable entity set; 12 blind contacts on the "
+                     "sealed AGREE answers). It passes iff every row with a delivered entity seals saea-relisten-v1, at least "
+                     "one forced-choice contact fires, the realised contact count equals the AGREE-form contacts plus the "
+                     "receipts' contacts_used, nothing truncates, the delivered text is untouched, both shadow columns render "
+                     "and there are 0 intent differences. Never scored for benefit, never read."),
+        },
+    }
+    facts = {
+        "schema": "saea-registered-facts-v1",
+        "_note": f"Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block {GATE} and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+        "registered_at_utc": args.registered_at, "study_commit_at_registration": args.study_commit,
+        "owner_decisions": {
+            "185": "implement E4 v1, the core-native targeted re-listen: blind re-listen + forced choice; two shadow columns (replace-only, replace-plus-drop-when-unheard); shadow delivery on Fold A; expected 0.0 nominated; bar = the twin/shadow null; a 4-row dry run before its flight",
+            "180": "core-native re-listen first; Whisper waits until E4 has a read; the 2026-09-06 direction (no transcript state, no ASR tool) is not revised",
+            "187": "SLURP only on the GPU card",
+            "28/86": "TRAIN Fold A numbers are development numbers, never a test claim",
+        },
+        "rows": ROWS, "stage3_measurement": measurement,
+        "the_cell": {
+            "base": f"the retained AGREE arm {AGREE_RUN} (configs/baseline/slurp-native-stage3-agree-w1-fold-a-baseline-v1.json)",
+            "program_switch": f"policy phase-native-candidates-review-revise-v1 (ceiling 11) -> {PROGRAM} (ceiling 17 = 11 + 2 x max_slots_per_row 3; the two fragments differ only in program_id and max_contacts)",
+            "relisten_block": relisten,
+            "delivered_answer": "the AGREE form's own answer (shadow delivery, ruling 5): the relisten stage runs after the deliver normaliser and never mutates the delivered text -- shadow_proof",
+            "estimand": "SLU-F1(shadow column) - SLU-F1(delivered column) on the same flight's rows; the columns differ only by accepted replacements (a) and, for (b), drops, so the delta belongs to the relisten contacts alone (design section 1)",
+            "intent": "identical between the columns by construction: bind() never re-opens the decided intent; tested per row, the read refuses on any difference",
+        },
+        "columns": {
+            "delivered": f"<data root>/runs/{arm['run_id']}/{arm['attempt_id']}/ (the flight's own sealed score)",
+            "render_and_score": f"scripts/analysis/stage3_rollout_score.py --mode relisten --scorer-id {SCORER} --analysis-root <data root>/runs/<run>/<attempt>/supply-variants (render_relisten_shadow_columns + score_relisten_shadow_copies; one complete official scoring per column, serial, never sharded)",
+            "identities": {c: f"<data root>/runs/{arm['run_id']}/{arm['attempt_id']}/supply-variants/arm-{c}-{SCORER}-scores.json (+ .receipt.json)" for c in COLUMNS},
+            "contrasts": {c: f"right {c} vs left the delivered column" for c in COLUMNS},
+        },
+        "cost_measure": {"relpath": COST_MEASURE, "sha256": sha_file(data / COST_MEASURE), "tool": COST_SCRIPT,
+                         "summary": {k: cost[k] for k in ("agree_rows_by_delivered_entity_count", "agree_delivered_entities_total",
+                                                          "blind_contacts_on_the_sealed_agree_answers", "blind_contacts_per_row_mean",
+                                                          "blind_audio_seconds_on_the_sealed_agree_answers", "ceiling",
+                                                          "entity_set_instability_agree_vs_wave_aa", "smoke_selection")}},
+        "fit": fit,
+        "shadow_proof": proof,
+        "identity": {key: {k2: v for k2, v in ids[key].items() if k2 != "composed_config_diff_against_the_agree_cell"} for key in CELLS},
+        "composed_config_diff_against_the_agree_cell": {key: ids[key]["composed_config_diff_against_the_agree_cell"] for key in CELLS},
+        "context_comparator": {"run_id": AGREE_RUN, "attempt_id": AGREE_ATTEMPT, "official": AGREE_OFFICIAL, "never_reflown": True,
+                               "role": "context only: the delivered column is the AGREE form re-flown; no cross-flight contrast gates this cell"},
+        "decision_rule": rule,
+        "expectation_basis": {"declared": "expected_effect_pp 0.0 for both columns, claims_benefit false, claim nominated (ruling 7)",
+                              "ceilings": CEILINGS, "provisional_floor_pp": round(FLOOR_SLU, 4)},
+        "byte_identity_expectation": {
+            "agree_first_phase_supply_output_sha256": AGREE_SUPPLY_OUTPUT,
+            "claim": "the arm's first-phase (Perception boundary) supply is upstream of the program id and of the post-accept stage, so the supply the flip mints must carry the AGREE arm's output digest; the smoke's roster is new and has no AGREE counterpart",
+        },
+        "budget_arithmetic": {"arm_family_budget": caps, "smoke_family_budget": smoke_caps,
+                              "note": "the AGREE arithmetic at ceiling 17: generation rows x 17, FIT rows x 17 x 4, speech ceil(audio x 17), GPU hours 12.0 x 17 / 11 = 18.5 (smoke 1.0); native task-contract calls + 6 per row; run-cumulative"},
+        "prohibitions": [
+            "No test-split, Fold B or DEV contact or read.", "No re-flying of the sealed AGREE arm.",
+            "No second factor: no other template, knob, store, roster, geometry or session change.",
+            "No live delivery of a relisten value: shadow only (ruling 5).",
+            "No transcript state: the relisten value never enters any role's context; only hashes are sealed in the receipt.",
+            "No Whisper or ASR tool contact (owner decision 180).",
+            "No paper-scale profile.", "No flight before root mints the decision receipt and the cells are flipped.",
+            "No column score opened before the READ row is root countersigned.",
+            "No system-level claim: a shadow-column effect may only nominate (ruling 7).",
+        ],
+    }
+    facts_sha = wjson(PACKAGE + "/registered-facts-v1.json", facts)
+
+    protocol = {
+        "schema": "saea-registered-protocol-v1", "protocol_id": "slurp-stage3-relisten-fold-a-protocol-v1",
+        "registered_at_utc": args.registered_at, "study_commit_at_registration": args.study_commit,
+        "source_tree": f"studies/speech-aware-evidence-acquisition, worktree {args.worktree}, branch {args.branch}",
+        "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+        "the_question": "On TRAIN Fold A, with the AGREE form delivering its own answer, does a core-native targeted re-listen of up to three delivered entities per row (blind value, then a forced choice), bound offline into shadow column (a) replace-only or (b) replace-plus-drop-when-both-unheard, move official pooled SLU-F1 beyond the design's own null against the same flight's delivered column?",
+        "one_factor": f"the post-accept native_episode.relisten stage {json.dumps(relisten, sort_keys=True)}; the program switch to {PROGRAM} is its carrier (ceiling +6), not a factor; the delivered path is the AGREE arm's modulo the program id in quoted contact ids and remaining_model_contacts (shadow_proof)",
+        "cells": {key: {k2: ids[key][k2] for k2 in ("cell", "experiment", "run_id", "attempt_id", "rows", "composed_config_hash", "protocol_hash", "split_identity_hash")}
+                  | {"fit_run_id": ids[key]["fit"]["run_id"], "fit_attempt_id": ids[key]["fit"]["attempt_id"]} for key in CELLS},
+        "columns": facts["columns"], "decision_rule_fixed_here": rule,
+        "development_numbers_only": "Every number is a TRAIN Fold A development number (owner decisions 28 and 86), never a test claim.",
+        "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+        "prohibitions": facts["prohibitions"],
+    }
+    protocol_sha = wjson(PACKAGE + "/protocol-registered-v1.json", protocol)
+
+    plan_shas: dict[str, str] = {}
+    for key in CELLS:
+        identity = ids[key]
+        budget = identity["family_budget"]
+        for kind in ("generation", "fit"):
+            is_fit = kind == "fit"
+            run_id = identity["fit"]["run_id"] if is_fit else identity["run_id"]
+            plan_doc = {
+                "schema": f"saea-registered-{kind}-plan-v1", "plan_kind": kind, "cell": identity["cell"],
+                "experiment": identity["experiment"], "composed_config_hash": identity["composed_config_hash"],
+                "registered_at_utc": args.registered_at, "status": protocol["status"], "source_tree": protocol["source_tree"],
+                "preparation_base_commit": args.study_commit, "expected_session_id": SESSION,
+                "unused_budget_is_not_attempt_authority": True,
+                "execution_plan": {
+                    "schema": "saea-execution-plan-v1", "study": "speech-aware-evidence-acquisition",
+                    "carrier_lock_key": identity["carrier_lock_key"], "run_id": run_id,
+                    "attempt_id": identity["fit"]["attempt_id"] if is_fit else identity["attempt_id"],
+                    "execution_profile": identity["execution_profile"], "split_role": "discovery",
+                    "split_identity_hash": identity["split_identity_hash"], "protocol_hash": identity["protocol_hash"],
+                    "planned_model_calls": budget["fit_endpoint_calls_cap"] if is_fit else budget["generation_calls_cap"],
+                    "planned_speech_audio_seconds": budget["repeated_speech_audio_seconds_cap"],
+                    "planned_gpu_hours": budget["gpu_hours_fit_inclusive"],
+                },
+                "family_budget": budget,
+                "execution_route": (
+                    "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation." if is_fit else
+                    "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-relisten-fold-a-v1.json (this arm alone; no A/A cell -- the shadow columns are read against the same flight's delivered column) through scripts/flights/e4/batch_chain_e4.sh and the batch driver." if key == "arm" else
+                    "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); the dry run is outside any campaign plan and never scored for benefit."
+                ),
+                "prepared_phase_supply": {"relpath": f"prepared/{identity['run_id']}/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP",
+                                          "expected_output_sha256": AGREE_SUPPLY_OUTPUT if key == "arm" else "none (new roster)",
+                                          "note": facts["byte_identity_expectation"]["claim"]},
+                "protocol_document": {"relpath": PACKAGE + "/protocol-registered-v1.json", "sha256": protocol_sha},
+                "one_factor": protocol["one_factor"],
+                "purpose": f"{run_id}: " + ("request envelopes only; reads nothing." if is_fit else rule if key == "arm" else "charged 4-row dry run: structural form proof only, no benefit score and no read."),
+                "quality_read_gate": f"No shadow-column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row {READ_RUN} is root countersigned; each column is then scored once, never sharded.",
+            }
+            plan_shas[run_id] = wjson(f"{PACKAGE}/{PREFIX[key]}{kind}-plan-registered-v1.json", plan_doc)
+
+    recipe = {
+        "schema": "saea-slurp-paired-analysis-recipe-v1", "recipe_id": "slurp-stage3-relisten-fold-a-column-analysis-v1",
+        "title": "Cell E4-1 -- the same-flight shadow-column read: relisten-replace-only and relisten-replace-drop-unheard, each against the delivered column, SLU-F1 primary, intent identical by construction",
+        "registered_at_utc": args.registered_at,
+        "read_run_id": READ_RUN,
+        "run_ids": {"read": READ_RUN, "arm": arm["run_id"], "context_comparator": AGREE_RUN},
+        "arms": {
+            "delivered": {"run_id": arm["run_id"], "attempt_id": arm["attempt_id"], "column": None,
+                          "role": "the flight's own delivered column (the LEFT side of both contrasts)"},
+            "shadow_a": {"run_id": arm["run_id"], "attempt_id": arm["attempt_id"], "column": COL_A,
+                         "role": "shadow column (a), replace-only"},
+            "shadow_b": {"run_id": arm["run_id"], "attempt_id": arm["attempt_id"], "column": COL_B,
+                         "role": "shadow column (b), replace plus drop-when-both-unheard"},
+            "comparator": {"run_id": AGREE_RUN, "attempt_id": AGREE_ATTEMPT, "role": "context only, sealed, never re-flown; not read by the column passes"},
+        },
+        "passes": {
+            "replace-only": {"left": {"column": None}, "right": {"column": COL_A}, "gating": True},
+            "replace-drop-unheard": {"left": {"column": None}, "right": {"column": COL_B}, "gating": True},
+        },
+        "resampling": {"bootstrap_draws": DRAWS, "metrics": ["slu_f1_f1", "scenario_action_exact"], "seed": SEED, "unit": "row (paired)",
+                       "cluster_key": "sample_id", "utterance_level": "reported beside, never gating"},
+        "decision_rule": rule,
+        "provisional_floor_pp": {"slu_f1": round(FLOOR_SLU, 4), "intent_accuracy": 0.0},
+        "steps": [
+            f"0. Refuse unless the READ row {READ_RUN} is root countersigned (checked by {READ_SCRIPT} before anything is opened).",
+            "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one successful complete official TRAIN score and a saea-relisten-v1 receipt on every non-abstention row verified by the bundle's I7l check.",
+            f"2. Render both shadow columns ({COL_A}, {COL_B}) from the sealed receipts and trace (AT1 self-check) and score each ONCE with {SCORER} (scripts/analysis/stage3_rollout_score.py --mode relisten).",
+            "3. Intent guard: per row, the (scenario, action) of each shadow column must equal the delivered column's; any difference refuses the read.",
+            f"4. Per column: paired row bootstrap of the column minus the delivered column (SLU-F1 primary); apply the rule at the provisional null {FLOOR_SLU:.4f} pp.",
+            "5. Report the per-scenario table in both weightings, the per-type table, saves/harms by error kind (gold on the scoring side only), the blind-disposition and confirm-vote tallies, and the realised relisten contacts and audio against the declared cost.",
+        ],
+        "read_driver": f"{READ_SCRIPT} -> scripts/analysis/stage3_paired_read.py --right-column (direct mode, --per-scenario; the left side is the flight's own delivered score)",
+        "output": {"analysis_root": f"analysis/{READ_RUN}"},
+        "boundary": "A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; a shadow effect, never a system-level claim. No utterance text, transcript, gold label, relisten value or model output is printed or persisted.",
+    }
+    recipe_sha = wjson(PACKAGE + "/analysis-recipe-v1.json", recipe)
+
+    eligible = [arm["run_id"], arm["fit"]["run_id"], smoke["run_id"], smoke["fit"]["run_id"]]
+    draft = {
+        "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/e4/e4_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+        "schema": "saea-campaign-decision-v1", "decision_id": DECISION_ID, "status": "DRAFT-NOT-MINTED",
+        "recorded_at_utc": None, "owner": "root", "coordinator": "Fable5.1", "eligible_run_ids": eligible,
+        "cell_kind": "Stage-3 same-flight shadow-relisten cell (label none), claim ceiling 'nominated'. One arm on TRAIN Fold A 1,080 (the AGREE form delivering, a post-accept relisten stage in shadow) and a four-row charged dry run.",
+        "decision": f"Fly cell E4-1: the retained AGREE arm under {PROGRAM} with native_episode.relisten {json.dumps(relisten, sort_keys=True)}; read shadow columns {COL_A} and {COL_B} against the delivered column in the same flight; SLU-F1 primary, intent identical by construction; nominate or not at the design's null.",
+        "authorization_basis": f"Owner decision 185 (E4 v1, its dry run and its flight after merge set C), 180, 187, 28/86; the spec {SPEC} with its section 8 coordinator rulings; the node information-gain ledger {LEDGER_NOTE}.",
+        "antecedents": {
+            "owner_decisions": {"path": OWNER_DECISIONS, "sha256": sha_file(OWNER_DECISIONS) if Path(OWNER_DECISIONS).is_file() else None},
+            "spec": {"path": SPEC, "sha256": sha_file(SPEC)},
+            "node_gain_ledger": {"path": LEDGER_NOTE, "sha256": sha_file(LEDGER_NOTE)},
+            "preregistration": {"path": PREREG, "sha256": None},
+            "readiness_readme": {"path": PACKAGE + "/README.md", "sha256": None},
+            "protocol": {"path": PACKAGE + "/protocol-registered-v1.json", "sha256": protocol_sha},
+            "registered_facts": {"path": PACKAGE + "/registered-facts-v1.json", "sha256": facts_sha},
+            "analysis_recipe": {"path": PACKAGE + "/analysis-recipe-v1.json", "sha256": recipe_sha},
+            "shadow_proof": {"path": PROOF, "sha256": sha_file(PROOF) if Path(PROOF).is_file() else None},
+            "derive_script": {"path": DERIVE_SCRIPT, "sha256": sha_file(DERIVE_SCRIPT)},
+            "base_cell": f"the retained AGREE arm {AGREE_RUN} (owner decision 161)",
+            "registration_base_commit": args.study_commit,
+        },
+        "budget": {**{k2: caps[k2] for k2 in sorted(caps)}, "smoke": smoke_caps, "paid_api_calls": 0, "plan_budget_is_run_cumulative": True},
+        "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a shadow-column read on a development fold whose ceiling is 'nominated'.",
+        "failure_policy": protocol["failure_policy"],
+        "not_authorized": ["any flight before the cells are flipped and the receipt is minted", "touching the resident np4 session by anyone but the coordinator", "any ASR, Whisper, transcript, encoder or paid-API contact", "live delivery of a relisten value", "re-flying or re-scoring any sealed cell", "--allow-output-change on the re-pin tool", "any change beyond the registered program switch and relisten block", "opening a column score before the READ row is countersigned"],
+        "population": {"count": ROWS, "split_identity_hash": arm["split_identity_hash"], "split_role": "discovery", "fold_b_contact_authorized": False, "test_contact_authorized": False},
+        "registered_hashes": {key: {"composed_config": ids[key]["composed_config_hash"], "protocol": ids[key]["protocol_hash"]} for key in CELLS},
+        "service": {"expected_session_id": SESSION, "model_fragment": arm["model_fragment"], "slots": 4, "slot_tokens": 24576, "no_child_start_stop": True},
+    }
+    draft_sha = wjson(PACKAGE + "/root-admission-draft-v1.json", draft)
+
+    fence = json.dumps({"stage3_measurement": measurement}, indent=2, ensure_ascii=False, sort_keys=True)
+    readme, prereg = render_docs(args, ids, relisten, cost, fit, proof, rule, fence, caps, smoke_caps, variant_cost)
+    readme_sha = wr(PACKAGE + "/README.md", readme)
+    prereg_sha = wr(PREREG, prereg)
+
+    ledger = "not-requested"
+    if args.append_ledger:
+        ledger = append_ledger(args, ids, plan_shas, relisten, proof)
+    print(json.dumps({"package": PACKAGE, "ledger": ledger,
+                      "written": {"README.md": readme_sha, "registered-facts-v1.json": facts_sha, "protocol": protocol_sha,
+                                  "analysis-recipe": recipe_sha, "root-admission-draft": draft_sha, "prereg": prereg_sha, **plan_shas},
+                      "identity": {key: {"run_id": ids[key]["run_id"], "composed": ids[key]["composed_config_hash"],
+                                         "protocol": ids[key]["protocol_hash"]} for key in CELLS},
+                      "fit": fit.get("status"), "proof": proof.get("verdict", proof.get("status")),
+                      "floor_slu": round(FLOOR_SLU, 4)}, indent=2))
+    return 0
+
+
+def _fit_lines(fit: dict) -> str:
+    if fit.get("status") != "MEASURED_BY_CHECK":
+        return "PENDING: core.flight.cli check not yet folded in."
+    lines = ["| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |", "| --- | --- | --- | ---: | ---: | ---: |"]
+    for key, cell in fit["cells"].items():
+        for p in cell.get("prompt_budget_per_phase", []):
+            lines.append(f"| {key} | {p.get('phase')} | {p.get('decision')} | {p.get('rendered_text_tokens')} | {p.get('operational_margin_tokens')} | {p.get('physical_margin_tokens')} |")
+        lines.append(f"| {key} | blockers | {json.dumps(cell.get('blockers'))} | | | |")
+    rel = []
+    for key, cell in fit["cells"].items():
+        for item in cell.get("relisten_lines", []):
+            rel.append(f"- {key}: `{item['path']}` = `{json.dumps(item['value'], sort_keys=True)[:300]}`")
+    return "\n".join(lines) + ("\n\nRelisten lines in the check report:\n\n" + "\n".join(rel) if rel else
+                               "\n\nThe check report carries no relisten-specific line; the relisten budget is the ceiling term (+6 per row) inside every plan cap.")
+
+
+def _proof_lines(proof: dict) -> str:
+    if proof.get("status") != "RUN":
+        return f"PENDING: {PROOF_SCRIPT} not yet run."
+    p = proof["delivered_path_vs_agree"]
+    r = proof["relisten_contacts"]
+    d = proof["delivered_text"]
+    return (
+        f"Verdict **{proof['verdict']}** (`{PROOF}`, tool `{PROOF_SCRIPT}`, {proof['rows_dispatched']} rows dispatched serially "
+        "against a fake POST under one common scratch run id, zero model/server/tokenizer/encoder/scorer contacts; the canned "
+        "Solver answer carries one entity so the relisten stage fires, the canned blind answer alternates heard=false / a "
+        "different heard value, the canned confirm answers A).\n\n"
+        "| proof | result |\n| --- | --- |\n"
+        f"| composed config: differing leaves by class | {json.dumps(proof['config_classes'])}; request-affecting {proof['request_affecting_leaves']} |\n"
+        f"| prepared first-phase supply output = AGREE registered and committed | {proof['prepared_supply_equal_registered_and_committed']} (`{proof['prepared_supply_output_sha256']}`) |\n"
+        f"| delivered-path contacts POST-body identical to AGREE, exactly | {p['post_body_identical']} / {p['contacts']} |\n"
+        f"| the same after mapping the program id and masking remaining_model_contacts | {p['post_body_identical_after_program_identity_normalisation']} / {p['contacts']} (unpaired E4-1 {p['unpaired']}, unpaired AGREE {p['agree_contacts_unpaired']}); by role {json.dumps(p['by_role'])} |\n"
+        f"| relisten contacts (all extra, post-accept) | {r['contacts']} by kind {json.dumps(r['by_kind'])}; blind bodies carrying the delivered value {r['blind_bodies_carrying_the_delivered_value']} (must be 0); confirm bodies carrying it {r['confirm_bodies_carrying_the_delivered_value']} (by design) |\n"
+        f"| delivered text identical to AGREE (sha256 per row) | {d['delivered_text_identical']} / {d['rows']} |\n"
+        f"| per-row contact_count(E4-1) - contact_count(AGREE) = captured relisten contacts | {d['contact_count_e4_minus_agree_equals_captured_relisten_contacts']} / {d['rows']}; histogram {json.dumps(d['relisten_contacts_per_row_histogram'])} |\n"
+        f"| shadow checks | {proof['shadow_checks_pass']} |"
+    )
+
+
+def render_docs(args, ids, relisten, cost, fit, proof, rule, fence, caps, smoke_caps, variant_cost):
+    arm, smoke = ids["arm"], ids["smoke"]
+    sel = cost["smoke_selection"]
+    readme = f"""# Cell E4-1: the core-native targeted re-listen, shadow delivery on TRAIN Fold A (owner decision 185)
+
+Registered before contact {args.registered_at[:10]} at study commit `{args.study_commit}`; both cells **held**.
+Nothing here authorises a flight, a flip or an admission entry. Development numbers only (owner decisions 28 and 86).
+Design: `{SPEC}` (sections 1, 4 and the section 8 coordinator rulings); motivation: `{LEDGER_NOTE}` sections 4-5.
+
+**What E4-1 is.** The retained AGREE arm (`{AGREE_RUN}`, official SLU-F1 65.16 / intent 85.83 on TRAIN Fold A)
+with exactly two registered changes:
+
+1. **The program switch -- the ONLY base change besides the relisten block.** `policy`
+   `phase-native-candidates-review-revise-v1` (ceiling 11) -> `{PROGRAM}` (ceiling 17 = 11 + 2 x
+   `max_slots_per_row` 3). The two fragments differ only in `program_id` and `max_contacts`. As in W-SV-1, the
+   model-visible request text carries two program-identity fields the switch moves (the program id inside quoted
+   prior contact ids; `remaining_model_contacts`, +6), so the delivered path equals AGREE's modulo those two fields.
+2. **The relisten block** `native_episode.relisten` (field names from `rails.relisten.RELISTEN_CONFIG_KEYS`):
+
+```json
+{json.dumps(relisten, indent=2, sort_keys=True)}
+```
+
+Post-accept, after the deliver normaliser, for up to 3 delivered entities per row in delivery order: a BLIND contact
+(packet + decided intent + slot type, never the delivered value `c`; `slurp-relisten-value-v1`) and, when its value is
+canonically different, unheard or unparsed, a FORCED-CHOICE contact (`c` against the blind value or the unheard
+sentinel, order fixed by `sha256(sample_id, slot type)`; the decided intent only; `slurp-relisten-confirm-v1`).
+**Shadow delivery (ruling 5):** the DELIVERED answer is the AGREE form's own and is never mutated; each row seals a
+`saea-relisten-v1` receipt (contact ids, hashes, dispositions, votes -- never the value's bytes).
+
+**Estimand and claim.** Per shadow column, SLU-F1(column) - SLU-F1(delivered) on the same flight's rows; the columns
+differ only by accepted replacements (a) and, for (b), drops. `measurement_design` `same-flight-shadow-relisten`,
+`shadow_delivery` true, `columns` [`{COL_A}`, `{COL_B}`]; claim ceiling **`nominated`**.
+
+**Primary metric.** Official pooled SLU-F1 (micro), each shadow column against the delivered column. **Intent is
+identical between the columns by construction** (bind() never re-opens the decided intent); it is tested per row and
+the read refuses on any difference.
+
+**Declared expectation, ceilings and the bar.** `expected_effect_pp` **0.0** for both columns, `claims_benefit` false
+(ruling 7: no measured analogue exists). Ceilings stated beside, never as the expectation: upper bound 4.09 pp SLU-F1
+(NEAR + WRONG-VALUE, 97 items) and 0 pp intent; re-listen-addressable BOUNDARY + NEAR + FORMAT **35** of 142 items;
+SPURIOUS **253** predictions, **74** with the filler in the Perception note (column b's target); hearing share
+**17-74 %** of the 407 delivered gold-side errors (4.09 x p about 0.71-3.0 pp). The bar is the design's own null,
+provisionally **{ANCHOR_SLU} x sqrt({ANCHOR_N} / n) = {FLOOR_SLU:.4f} pp SLU-F1 at n = {ROWS}** (`{GATE}`, design
+`same-flight-shadow-relisten`, ROLL-AA anchor). `tuning_roster` `none` (nothing was tuned), `read_roster` `{READ_ROSTER}`.
+
+**Variant cost.** Up to +6 contacts per row (3 blind + 3 confirm), each re-sending the row's packet: at most
+{variant_cost['extra_audio_seconds_max']} s extra audio per flight (6 x the Fold A total {AUDIO_TOTAL} s; {variant_cost['extra_audio_seconds_per_row_mean_max']} s per row).
+On the sealed AGREE answers the blind contacts number **{variant_cost['extra_contacts_blind_on_the_sealed_agree_answers']}** ({variant_cost['extra_contacts_blind_per_row_mean']} per row;
+rows by delivered entity count {json.dumps(cost['agree_rows_by_delivered_entity_count'])}) re-sending {variant_cost['extra_audio_seconds_blind_on_the_sealed_agree_answers']} s, plus at most as many
+confirm contacts ({variant_cost['extra_audio_seconds_if_every_confirm_fires']} s if every one fires). Measured by `{COST_SCRIPT}`.
+
+## The decision rule (fixed here)
+
+{rule}
+
+## Columns
+
+| column | what | file under `<data root>/runs/{arm['run_id']}/{arm['attempt_id']}/supply-variants/` |
+| --- | --- | --- |
+| delivered | the flight's own sealed answer and score (LEFT of both contrasts) | (the flight's own `.scores.json`) |
+| `{COL_A}` | shadow column (a), replace-only | `arm-{COL_A}-{SCORER}-scores.json` |
+| `{COL_B}` | shadow column (b), replace + drop-when-both-unheard | `arm-{COL_B}-{SCORER}-scores.json` |
+
+`{READ_SCRIPT}` refuses unless the READ row `{READ_RUN}` is root countersigned, renders and scores both columns once
+(`scripts/analysis/stage3_rollout_score.py --mode relisten`), tests the intent guard, then runs
+`scripts/analysis/stage3_paired_read.py --right-column {COL_A}` and `--right-column {COL_B}` against the delivered column.
+
+## Shadow delivery proof (the W-SV-1 arm-A method)
+
+{_proof_lines(proof)}
+
+## The four-row dry run
+
+Rows {', '.join('`' + s + '`' for s in sel['sample_ids'])} (roster positions {sel['roster_positions']}): the first four
+Fold A rows whose sealed AGREE answer delivered >= 3 entities AND whose delivered entity set differed between the AGREE
+arm and its wave A/A re-fly ({sel['candidates_total']} such rows) -- a model-free, gold-free rule chosen so that the dry
+run exercises the blind path ({sel['blind_contacts']} blind contacts on the sealed AGREE answers) and, through entity
+instability, the forced-choice path. Pass conditions (design section 6 step 2): every row with a delivered entity seals
+`saea-relisten-v1`; **at least one forced-choice contact fires**; the realised contact count equals the AGREE-form
+contacts plus the receipts' `contacts_used`; zero truncations; the delivered text untouched; both shadow columns render;
+0 intent differences. Budget {smoke_caps['generation_calls_cap']} / {smoke_caps['fit_endpoint_calls_cap']} / {smoke_caps['repeated_speech_audio_seconds_cap']} s / {smoke_caps['gpu_hours_fit_inclusive']} GPU-h.
+
+## Fit
+
+{_fit_lines(fit)}
+
+## Files
+
+| file | what it holds |
+| --- | --- |
+| `../{Path(PREREG).name}` | the preregistration, with the `stage3_measurement` fence |
+| `registered-facts-v1.json` | every model-free fact; the CANONICAL `stage3_measurement` |
+| `shadow-proof-v1.json` | the shadow-delivery proof |
+| `protocol-registered-v1.json` | identities, hashes, the rule |
+| `generation-plan-registered-v1.json` / `fit-plan-registered-v1.json` | the arm's plans |
+| `smoke-generation-plan-registered-v1.json` / `smoke-fit-plan-registered-v1.json` | the dry run's plans |
+| `analysis-recipe-v1.json` | the column read; `run_ids.read` = `{READ_RUN}` |
+| `root-admission-draft-v1.json` | the receipt root mints with `scripts/flights/e4/e4_mint_receipt.py` |
+
+**Sequence.** (1) Root countersigns the four DRAFT flight rows (the READ row stays draft until the seal and is
+countersigned before any column score is opened) and mints `{DECISION_RELPATH}` with
+`scripts/flights/e4/e4_mint_receipt.py`. (2) Flip with `scripts/flights/e4/e4_flip.sh` (smoke, then arm, one converging
+loop; the arm's minted supply must reproduce the AGREE digest). (3) `scripts/flights/e4/batch_chain_e4.sh` on the
+slurp-np4 session through the batch driver (dry run, then the one-arm campaign; decision 77). (4) `{READ_SCRIPT}`.
+
+**Budgets.** Arm {caps['generation_calls_cap']:,} generation contacts (1,080 x 17), {caps['fit_endpoint_calls_cap']:,} FIT endpoints,
+{caps['repeated_speech_audio_seconds_cap']:,} speech seconds, {caps['gpu_hours_fit_inclusive']} GPU hours; dry run
+{smoke_caps['generation_calls_cap']} / {smoke_caps['fit_endpoint_calls_cap']} / {smoke_caps['repeated_speech_audio_seconds_cap']} / {smoke_caps['gpu_hours_fit_inclusive']} --
+the AGREE arithmetic at ceiling 17. Expected spend about 4.06 + {variant_cost['extra_contacts_blind_per_row_mean']} blind + at most as many confirm contacts per row.
+"""
+    prereg = f"""# Cell E4-1 (same-flight shadow relisten, TRAIN Fold A): preregistration
+
+Registered {args.registered_at[:10]} at study commit `{args.study_commit}`, before any contact, from the retained AGREE
+arm fragments by script (decision 58) under owner decision 185. Development numbers only.
+
+## The cell
+
+| item | value |
+| --- | --- |
+| base | the retained AGREE arm `{AGREE_RUN}` (65.1575 / 85.8333) |
+| program | `{PROGRAM}` (ceiling 17) -- the only base change besides the relisten block |
+| relisten block | `{json.dumps(relisten, sort_keys=True)}` |
+| delivery | shadow: the delivered answer is the AGREE form's own |
+| design / claim | `same-flight-shadow-relisten` / `nominated`; `shadow_delivery` true |
+| columns | `{COL_A}`, `{COL_B}`, each against the delivered column |
+| primary / guard | official pooled SLU-F1 (micro) / intent identical by construction, tested per row |
+| expected effect | 0.0 pp for both columns; `claims_benefit` false |
+| ceilings | 4.09 pp SLU upper bound; 35 re-listen-addressable items; 253 SPURIOUS (74 with the filler in the note); hearing share 17-74 % |
+| provisional null | {FLOOR_SLU:.4f} pp SLU ({ANCHOR_SLU} x sqrt({ANCHOR_N} / {ROWS})) |
+| rosters | tuning `none`; read `{READ_ROSTER}` |
+| runs | `{arm['run_id']}` / `{arm['fit']['run_id']}`; `{smoke['run_id']}` / `{smoke['fit']['run_id']}`; read `{READ_RUN}` |
+| composed config hashes | arm `{arm['composed_config_hash']}`; smoke `{smoke['composed_config_hash']}` |
+| protocol hashes | arm `{arm['protocol_hash']}`; smoke `{smoke['protocol_hash']}` |
+| split identity | arm `{arm['split_identity_hash']}`; smoke `{smoke['split_identity_hash']}` |
+
+## Decision rule (fixed here)
+
+{rule}
+
+## The measurement declaration
+
+```json
+{fence}
+```
+
+## Prohibitions
+
+No test-split, Fold B or DEV contact; no re-flying of the AGREE arm; no second factor; no live delivery of a relisten
+value; no transcript state; no Whisper or ASR contact; no paper-scale profile; no flight before the receipt is minted
+and the cells flipped; no column score before the READ row is countersigned; no system-level claim;
+`--allow-output-change` never passed.
+"""
+    return readme, prereg
+
+
+MODEL_TOOL = ("Frozen Q4_K_M decoder-only c98304 np4 max512; promoted EVO-FOLDS-V2 speech packets; NO native tool authority on any role; "
+              "prompt bytes the retained AGREE arm's; post-accept relisten stage (blind + forced choice, up to 3 entities per row, shadow delivery)")
+INHERITED = ("TRAIN Fold A discovery rows already exposed by the sealed anchors and every Stage-2/3 Fold A cell (B-series, PLAN, PLANr, ROLL-2, CONV, "
+             "the AGREE family, KPROBE, COMP-1, G5, the knowledge wave, REV-TFRL-1, RANKVIS, W-SV-1, W4-SV, flown or in flight at registration); this cell adds no new row to the fold and opens no split. Prior exposure is inherited in full.")
+
+
+def append_ledger(args, ids, plan_shas, relisten, proof) -> str:
+    text = rd(LEDGER)
+    eligible = [ids["arm"]["run_id"], ids["arm"]["fit"]["run_id"], ids["smoke"]["run_id"], ids["smoke"]["fit"]["run_id"]]
+
+    def flight_notes(key: str, kind: str) -> str:
+        identity = ids[key]
+        attempt = identity["fit"]["attempt_id"] if kind == "fit" else identity["attempt_id"]
+        run_id = identity["fit"]["run_id"] if kind == "fit" else identity["run_id"]
+        declaration = (f"measurement_design same-flight-shadow-relisten, claim nominated, shadow_delivery true, columns {COL_A} and {COL_B}, "
+                       f"claims_benefit false, expected_effect_pp 0.0 per column, provisional null {FLOOR_SLU:.4f} pp SLU, tuning_roster none, "
+                       f"read_roster {READ_ROSTER}, variant cost up to +6 contacts per row, rows 1080"
+                       if key == "arm" else f"measurement_design form-proof (charged 4-row dry run), claims_benefit false, expected_effect_pp 0.0, rows 4, tuning_roster none, read_roster {READ_ROSTER}")
+        supply = (f"expected output digest {AGREE_SUPPLY_OUTPUT}, the AGREE arm's" if key == "arm" else "a new roster, no AGREE counterpart digest")
+        return (
+            f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) {args.registered_at[:10]} at study commit {args.study_commit} by the E4-1 "
+            f"registration agent (worktree {args.worktree}, branch {args.branch}). This registration performs no contact and authorises none. Plan SHA256 "
+            f"{plan_shas[run_id]}; attempt {attempt}. Protocol hash {identity['protocol_hash']}; composed config {identity['composed_config_hash']}; expected "
+            f"session {SESSION} (attach only). READINESS HELD: root mints {DECISION_RELPATH} (decision id {DECISION_ID}) with the four eligible run ids "
+            f"{', '.join(eligible)}, then scripts/flights/e4/e4_flip.sh re-pins with scripts/flights/repin_cell.py --set-ready, minting each cell's own "
+            f"first-phase supply (item E16; {supply}); --allow-output-change must never be passed. Every hash in this row moves at the flip. OWNER DECISION "
+            f"185, E4 v1: program {PROGRAM} (ceiling 17; the only base change besides the relisten block) and native_episode.relisten "
+            f"{json.dumps(relisten, sort_keys=True).replace('|', '/')} (post-accept blind + forced-choice contacts on up to 3 delivered entities per row, shadow "
+            f"delivery). Shadow proof {proof.get('verdict', proof.get('status'))}. Measurement declaration ({GATE}): {declaration} -- canonical in "
+            f"{PACKAGE}/registered-facts-v1.json. Stop and preserve on the first failure; AT MOST ONE root-diagnosed recovery re-registration. No test-split, "
+            "Fold B or DEV contact, no AGREE re-flight, no Whisper or ASR contact."
+        )
+
+    def flight_row(key: str, kind: str) -> str:
+        identity = ids[key]
+        budget = identity["family_budget"]
+        run_id = identity["fit"]["run_id"] if kind == "fit" else identity["run_id"]
+        scope = (("Cell E4-1 (core-native targeted re-listen, shadow)" if key == "arm" else "Charged four-row dry run of cell E4-1")
+                 + (" -- FIT spend identity, request envelopes only, no generation" if kind == "fit" else "")
+                 + ": the retained AGREE arm under the 17-ceiling relisten program with a post-accept blind + forced-choice relisten stage in shadow"
+                 + (", two shadow columns read against the same flight's delivered column" if key == "arm" else ", structural form only, never scored for benefit"))
+        cells = ["", args.registered_at, run_id, "bounded-discovery-probe", scope, MODEL_TOOL, f"slurp TRAIN Fold A {identity['rows']}", "discovery",
+                 identity["split_identity_hash"], "no", str(budget["fit_endpoint_calls_cap"] if kind == "fit" else budget["generation_calls_cap"]),
+                 str(budget["repeated_speech_audio_seconds_cap"]), str(budget["gpu_hours_fit_inclusive"]), INHERITED,
+                 f"{PACKAGE}/{PREFIX[key]}{kind}-plan-registered-v1.json", flight_notes(key, kind), ""]
+        return " | ".join(cells).strip()
+
+    read_row = " | ".join(["", args.registered_at[:10], READ_RUN, "model-free-check",
+        f"The same-flight shadow-column read of cell E4-1: render shadow columns {COL_A} and {COL_B} from the sealed saea-relisten-v1 receipts and trace, score each ONCE with {SCORER} (two derived-copy scorings, never sharded), test the per-row intent guard, then the paired row bootstrap of each column vs the flight's delivered column, SLU-F1 primary, by the recipe {PACKAGE}/analysis-recipe-v1.json through {READ_SCRIPT}. Zero model, server, encoder, embedder, tokenizer and GPU contacts.",
+        "no model or tool contact; read of sealed bytes and two official column scorings", "slurp TRAIN Fold A 1080, the sealed E4-1 flight's two shadow columns and its delivered column (after the seal)", "discovery",
+        ids["arm"]["split_identity_hash"], "no", "0", "0", "0", "No new speech exposure; reads sealed outputs and scores derived copies only. Prior exposure inherited in full.",
+        f"{PACKAGE}/analysis-recipe-v1.json",
+        f"REGISTERED WITH THE FLIGHT (DRAFT, root countersignature pending; countersigned after the seal and before any column score is opened) {args.registered_at[:10]} at study commit {args.study_commit}. Recipe slurp-stage3-relisten-fold-a-column-analysis-v1; output analysis/{READ_RUN}; columns {COL_A}, {COL_B} vs delivered. One READ row covers both column contrasts. Its ceiling is a nomination; it admits nothing.",
+        ""]).strip()
+
+    fresh = {}
+    for key in CELLS:
+        for kind in ("generation", "fit"):
+            run_id = ids[key]["fit"]["run_id"] if kind == "fit" else ids[key]["run_id"]
+            fresh[run_id] = flight_row(key, kind)
+    fresh[READ_RUN] = read_row
+    for run_id, line in fresh.items():
+        if len(line.split("|")) != 17:
+            raise SystemExit(f"ledger row {run_id} does not have exactly fifteen cells; a literal '|' slipped into a cell")
+    order = list(fresh)
+    lines = text.split("\n")
+    replaced = 0
+    for index, line in enumerate(lines):
+        if line.startswith("|") and len(line.split("|")) > 3 and line.split("|")[2].strip() in fresh:
+            lines[index] = fresh.pop(line.split("|")[2].strip())
+            replaced += 1
+    if replaced and fresh:
+        raise SystemExit("the ledger carries some but not all E4-1 rows; refusing to guess")
+    if replaced:
+        wr(LEDGER, "\n".join(lines))
+        return f"replaced-{replaced}"
+    header = ("\n## Cell E4-1: the core-native targeted re-listen, shadow delivery on TRAIN Fold A (owner decision 185) -- the arm, its "
+              "four-row dry run and the READ row (DRAFT, root countersignature pending)\n\nFour unconsumed flight rows and one READ row registered "
+              "with the flight, covering both shadow-column contrasts. No A/A cell: the shadow columns are read against the same flight's delivered "
+              "column. None of these rows is countersigned and none authorises a contact.\n\n"
+              "| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |\n"
+              "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n")
+    suffix = "" if text.endswith("\n") else "\n"
+    wr(LEDGER, text + suffix + header + "\n".join(fresh[r] for r in order) + "\n")
+    return "appended"
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -971,3 +971,33 @@ def _data_root() -> Path | None:
 def test_the_real_tree_terminates_with_a_documented_exit_code() -> None:
     code = gate.main(["--repo-root", str(_REPO), "--data-root", str(_data_root()), "--json"])
     assert code in (0, 1)
+
+
+def test_resume_replay_proof_is_read_from_the_recovery_package_that_registers_the_cell(
+    world: World,
+) -> None:
+    """A resume flies under the ARM's run id, so the arm's ledger row resolves the arm's ORIGINAL
+    package; the resume cell's own registered plan (carrying the proof) lives in a separate recovery
+    package (COMP-1: the -resume-v1 package beside the never-edited parent). The block is found
+    there by run id AND cell id."""
+
+    world.resume_from = RESUME_FROM
+    world.build()
+    _write(world.repo / "docs" / "readiness" / f"{PACKAGE}-resume-v1" / "generation-plan-registered-v1.json",
+           {"run_id": RUN, "cell": EXPERIMENT, "resume_replay_proof": CLEAN_PROOF})
+    launch = world.run(cells=[EXPERIMENT])
+    assert launch["passed"]
+    cell = next(c for c in launch["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["package"] == f"docs/readiness/{PACKAGE}"
+    assert cell["resume_replay_proof"] == CLEAN_PROOF
+    assert "resume-replay-unproven" not in _kinds(launch)
+
+
+def test_a_recovery_package_for_another_cell_does_not_prove_this_resume(world: World) -> None:
+    world.resume_from = RESUME_FROM
+    world.build()
+    _write(world.repo / "docs" / "readiness" / f"{PACKAGE}-resume-v1" / "generation-plan-registered-v1.json",
+           {"run_id": RUN, "cell": "some-other-cell", "resume_replay_proof": CLEAN_PROOF})
+    launch = world.run(cells=[EXPERIMENT])
+    assert not launch["passed"]
+    assert "resume-replay-unproven" in _kinds(launch)

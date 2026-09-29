@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-relisten-fold-a-smoke-4-v1",
+  "composed_config_hash": "c6be9b29ad5947066a4d69455da0becf7b2a1859158e8688c6e5079a362da077",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 272,
+    "planned_speech_audio_seconds": 196,
+    "protocol_hash": "e07d5bb93eb7025ca83fec88f29dcacf7e78834f9616f41891b3bd58ba428ae5",
+    "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "a5a7b7dee90dc1ff4a29fe05593fd8980d1e01aa74b8c2a15c2e5184c2e5fb0a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-relisten-fold-a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 272,
+    "generation_calls_cap": 68,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 48,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 196
+  },
+  "one_factor": "the post-accept native_episode.relisten stage {\"blind_template_id\": \"slurp_relisten_blind_v1\", \"confirm_template_id\": \"slurp_relisten_confirm_v1\", \"delivery\": \"shadow\", \"max_slots_per_row\": 3, \"policy\": \"saea-obs-targeted-relisten-v1\", \"value_max_words\": 8}; the program switch to phase-native-candidates-review-revise-relisten-v1 is its carrier (ceiling +6), not a factor; the delivered path is the AGREE arm's modulo the program id in quoted contact ids and remaining_model_contacts (shadow_proof)",
+  "plan_kind": "fit",
+  "preparation_base_commit": "b54dfb4de",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "none (new roster)",
+    "note": "the arm's first-phase (Perception boundary) supply is upstream of the program id and of the post-accept stage, so the supply the flip mints must carry the AGREE arm's output digest; the smoke's roster is new and has no AGREE counterpart",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "eaeee54f3deaac601fedafc531342467744b10af4fe18203c60fab7ec33d5082"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
+  "quality_read_gate": "No shadow-column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1 is root countersigned; each column is then scored once, never sharded.",
+  "registered_at_utc": "2026-09-29T05:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e4cell, branch fable/e4cell",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

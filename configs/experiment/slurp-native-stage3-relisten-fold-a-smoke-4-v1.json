@@ -1,0 +1,91 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-relisten-fold-a-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-relisten-fold-a-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row charged dry run of cell E4-1, registered before contact on 2026-09-29 from the AGREE smoke fragments by script (decision 58), on four Fold A rows chosen to exercise both relisten contacts. Form proof only: no benefit score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/e4/e4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the smoke's minted supply has no AGREE counterpart (its roster is new) (the Perception supply is upstream of the program id and of the post-accept stage). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-relisten-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-relisten-fold-a-v1/root-admission-v1.json",
+            "sha256": "55265e5ca5d9892c86e9038805cc7cdd865990f4cbe42e4a90337e4f7e306a75",
+            "reason": "Decision slurp-stage3-relisten-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+            "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "92ff0ea02e5c30e6922666ba08584e1167a1bddf3bac1a288f7a1324f2f6d21e",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-29",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 68,
+    "planned_speech_audio_seconds": 196,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell E4-1 and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row dry run, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 272,
+    "generation_calls_cap": 68,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 48,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 196
+  },
+  "fragment_kind": "saea-slurp-native-stage3-relisten-fold-a-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "Four rows of the unchanged TRAIN Fold A roster chosen to exercise the blind and forced-choice relisten contacts: the first four rows in roster order whose sealed AGREE answer delivered >= 3 entities and whose delivered entity set differed between the sealed AGREE arm and its wave A/A re-fly (a model-free, gold-free rule over sealed outputs; scripts/flights/e4/e4_cost_measure.py).",
+    "split_identity_hash": "a5a7b7dee90dc1ff4a29fe05593fd8980d1e01aa74b8c2a15c2e5184c2e5fb0a"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000215:audio-1502200839",
+        "slurp:train:001461:audio-1489672182",
+        "slurp:train:002697:audio-1501756377",
+        "slurp:train:003384:audio--1505406264"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row charged dry run of cell E4-1 (the design's section 6 step 2; a form proof, claims_benefit false): that the 17-ceiling relisten program loads, that every row with a delivered entity seals a saea-relisten-v1 receipt whose blind and forced-choice contacts verify under I7l, that at least one forced-choice contact fires, that the realised contact count equals the sealed receipts' contacts_used plus the AGREE-form contacts, that nothing truncates, that the delivered text is untouched and that both shadow columns render with zero intent differences. Never scored for benefit and never read: four rows can never be evidence of benefit or of harm. THE BASE CHANGE (the only one besides the relisten block): policy phase-native-candidates-review-revise-v1 (ceiling 11) -> phase-native-candidates-review-revise-relisten-v1 (ceiling 17 = 11 + 2 x max_slots_per_row 3; the two program fragments differ only in program_id and max_contacts; the Solver stays uncited). THE RELISTEN BLOCK: native_episode.relisten {\"blind_template_id\": \"slurp_relisten_blind_v1\", \"confirm_template_id\": \"slurp_relisten_confirm_v1\", \"delivery\": \"shadow\", \"max_slots_per_row\": 3, \"policy\": \"saea-obs-targeted-relisten-v1\", \"value_max_words\": 8} -- a post-accept stage after the deliver normaliser: for up to 3 delivered entities per row, in delivery order, a BLIND contact (packet + decided intent + slot type, never the delivered value) and, when the blind value is canonically different, unheard or unparsed, a FORCED-CHOICE contact (delivered value vs the blind value or the unheard sentinel, order fixed by sha256(sample_id, slot type); the decided intent only, never Perception's candidates). SHADOW DELIVERY: the delivered answer is the AGREE form's own and is never mutated; the saea-relisten-v1 receipt is sealed per row and two shadow columns (relisten-replace-only, relisten-replace-drop-unheard) are rendered offline. The delivered path's request bytes are the AGREE arm's EXCEPT the two program-identity fields the switch moves (the program id inside quoted prior contact ids; remaining_model_contacts, +6) -- proven by scripts/flights/e4/e4_shadow_proof.py. Nothing else moves: roster (arm), geometry, session, role graph, max_revisions 1, the agreement term and its sealed table, every knowledge store and pin, every template, the deliver normaliser and the scorers are the AGREE arm's, byte for byte.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: E4-1 is a post-accept OBSERVATION node (owner decisions 180 and 185) -- one pre-declared, model-free trigger and acceptance rule over two core-native re-listen contacts per targeted entity, read as two offline shadow columns against the same flight's delivered column -- with no rollout pool, no per-sample credit, no update operator, no evolving store and no selection among sampled answers (so not inference-time-verification-v1, whose selection operator commits one of several sampled answers). The design's section 6 names a dedicated STAGE3_ALGORITHMS label; none is registered on this branch, so the cell is labelled 'none' with this note.",
+    "operators_used": []
+  }
+}

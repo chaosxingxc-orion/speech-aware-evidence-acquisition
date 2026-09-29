@@ -29,6 +29,15 @@ again strictly stronger custody: the recorded model response for the row's
 own request id must be exactly the rule's recorded INPUT, the named rule must
 be registered and deterministic, and re-running it over those response bytes
 must reproduce the delivered bytes byte for byte.
+
+Item E4 (2026-09-28, owner decision 185): the post-accept targeted relisten
+stage is a SHADOW mechanism -- it never mutates the delivered ``text`` --
+so I7 is unaffected by its presence. A row whose episode ran it carries a
+top-level ``relisten`` receipt (``rails.relisten.seal_relisten_receipt``),
+and is additionally held to I7l: every entity's blind (and, when fired,
+forced-choice) contact named in that receipt must be a real, traced contact
+of the row, and its disposition/vote must re-derive from the trace's own
+recorded response text rather than from the receipt's claim alone.
 """
 
 from __future__ import annotations
@@ -312,6 +321,133 @@ def verify_predecessor_attempt(
             f"changed after it was declared ({RESUME_PREDECESSOR_INVARIANT})"
         )
     return _verify_raw_trace(raw, None), kept
+
+
+#: E10d (2026-09-29): the field set a ``predecessor_attempts`` LIST entry
+#: takes -- byte-identical to a single ``predecessor_attempt`` block
+#: (:data:`_PREDECESSOR_FIELDS`); every entry is independently validated by
+#: :func:`_validate_predecessor_block`, so this module needs no second shape.
+def _validate_predecessor_blocks_list(
+    blocks: object, *, run_id: object, attempt_id: object,
+) -> tuple[Mapping[str, object], ...]:
+    """Shape and CROSS-block self-consistency of a ``predecessor_attempts`` list.
+
+    E10d (2026-09-29, multi-predecessor seal-only completion): each entry is
+    checked exactly as a single-predecessor ``predecessor_attempt`` block is
+    (:func:`_validate_predecessor_block`); this additionally refuses two
+    entries naming the same predecessor ``attempt_id`` or claiming the same
+    ``kept_sample_ids`` entry -- defence in depth, independent of whatever
+    built the manifest, mirroring ``core.flight.resume.MergedPredecessors``'s
+    own disjointness check on the writing side.
+    """
+
+    if not isinstance(blocks, list) or not blocks:
+        raise BundleError(
+            "run manifest predecessor_attempts must be a non-empty list of "
+            f"predecessor_attempt objects ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    validated = tuple(
+        _validate_predecessor_block(block, run_id=run_id, attempt_id=attempt_id)
+        for block in blocks
+    )
+    attempt_ids = [str(block["attempt_id"]) for block in validated]
+    if len(set(attempt_ids)) != len(attempt_ids):
+        raise BundleError(
+            "run manifest predecessor_attempts names the same predecessor "
+            f"attempt twice ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    owner: dict[str, str] = {}
+    for block in validated:
+        for sample_id in block["kept_sample_ids"]:
+            held_by = owner.get(sample_id)
+            if held_by is not None:
+                raise BundleError(
+                    f"run manifest predecessor_attempts keeps sample {sample_id!r} "
+                    f"in two predecessor attempts, {held_by!r} and "
+                    f"{block['attempt_id']!r} ({RESUME_PREDECESSOR_INVARIANT})"
+                )
+            owner[sample_id] = str(block["attempt_id"])
+    return validated
+
+
+def verify_predecessor_attempts(
+    manifest: Mapping[str, object],
+    *,
+    split_ids: frozenset,
+    attempt_id: object,
+) -> tuple[Mapping[str, Mapping[str, Mapping[str, object]]], frozenset]:
+    """Re-derive every declared predecessor attempt from the bytes on disk.
+
+    E10d (2026-09-29): generalizes :func:`verify_predecessor_attempt` to a
+    manifest declaring MULTIPLE pinned predecessors under
+    ``predecessor_attempts`` (a resume-recovery whose union of predecessors'
+    COMPLETE rows may or may not have covered the whole roster). Returns
+    ``(trace_records_by_sample, kept_sample_ids)`` where
+    ``trace_records_by_sample`` maps each KEPT sample id to the trace-records
+    dict of the ONE predecessor attempt that kept it -- never a flat,
+    cross-predecessor-merged dict. Request ids are attempt-scoped
+    (``rails.core_client`` mints them per-client) and CAN repeat across
+    different predecessor attempts for entirely different samples, so a
+    merged flat dict could let a row's request id resolve against the wrong
+    predecessor's contact; binding per SAMPLE keeps each row checked against
+    exactly the one trace :func:`core.flight.resume.MergedPredecessors`
+    itself bound it to.
+
+    A manifest declaring neither ``predecessor_attempt`` nor
+    ``predecessor_attempts`` returns ``({}, frozenset())`` -- every manifest
+    sealed before E10 and every ordinary flight since. Declaring both is
+    refused as ambiguous.
+    """
+
+    single = manifest.get("predecessor_attempt")
+    multiple = manifest.get("predecessor_attempts")
+    if single is not None and multiple is not None:
+        raise BundleError(
+            "run manifest declares both predecessor_attempt and "
+            f"predecessor_attempts ({RESUME_PREDECESSOR_INVARIANT})"
+        )
+    if single is not None:
+        trace_records, kept = verify_predecessor_attempt(
+            manifest, split_ids=split_ids, attempt_id=attempt_id,
+        )
+        return {sample_id: trace_records for sample_id in kept}, kept
+    if multiple is None:
+        return {}, frozenset()
+    blocks = _validate_predecessor_blocks_list(
+        multiple, run_id=manifest.get("run_id"), attempt_id=attempt_id,
+    )
+    per_sample: dict[str, Mapping[str, Mapping[str, object]]] = {}
+    kept_all: set[str] = set()
+    for block in blocks:
+        kept = frozenset(str(sample_id) for sample_id in block["kept_sample_ids"])
+        outside = sorted(kept - split_ids)
+        if outside:
+            raise BundleError(
+                f"predecessor_attempts[{block['attempt_id']!r}] keeps "
+                f"{len(outside)} sample(s) outside the frozen split, e.g. "
+                f"{outside[:5]} ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        trace_path = Path(str(block["trace_path"]))
+        if not trace_path.is_file():
+            raise BundleError(
+                f"predecessor_attempts[{block['attempt_id']!r}] trace {trace_path} "
+                f"does not exist; a kept row's custody cannot be verified without "
+                f"it ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        raw = trace_path.read_bytes()
+        actual = hashlib.sha256(raw).hexdigest()
+        if actual != block["trace_sha256"]:
+            raise BundleError(
+                f"predecessor_attempts[{block['attempt_id']!r}] trace {trace_path} "
+                f"hashes to {actual}, but the manifest declares "
+                f"{block['trace_sha256']} -- the predecessor trace changed after "
+                f"it was declared ({RESUME_PREDECESSOR_INVARIANT})"
+            )
+        trace_records = _verify_raw_trace(raw, None)
+        for sample_id in kept:
+            per_sample[sample_id] = trace_records
+        kept_all |= kept
+    return per_sample, frozenset(kept_all)
 
 
 def _row_label(row: Mapping[str, object]) -> str:
@@ -996,6 +1132,136 @@ def _verify_perception_branch_trace_binding(
         )
 
 
+#: Item E4 (owner decision 185, 2026-09-28): the invariant code a post-accept
+#: targeted-relisten custody refusal names. I7 is unchanged and still binds
+#: the row's delivered TEXT to its own response (the relisten stage's shadow
+#: delivery never mutates it); a row that also carries a ``relisten`` receipt
+#: is additionally held to I7l -- every entity's blind (and, when fired,
+#: forced-choice) contact must be a real, traced contact of THIS row, and its
+#: disposition/vote must re-derive from that trace's own recorded response
+#: text, never merely from the receipt's own say-so.
+RELISTEN_INVARIANT = "I7l"
+
+
+def _verify_relisten_trace_binding(
+    row: Mapping[str, object], trace_records: Mapping[str, Mapping[str, object]],
+) -> None:
+    """I7l: bind every relisten entity's contact(s) to the row's own trace.
+
+    Design ``docs/superpowers/specs/2026-09-28-e4-core-native-targeted-
+    relisten-design.md`` section 1's receipt paragraph: the ``saea-
+    relisten-v1`` receipt seals contact ids, hashes and flags, never the
+    value's own bytes. This re-derives each entity's disposition (and, when
+    fired, its forced-choice vote) from the TRACE's own recorded response
+    text via ``rails.relisten``'s own parsers -- the same re-derivation
+    ``rails.relisten.bind_shadow_entities``'s caller
+    (``scripts/analysis/stage3_rollout_score.py``'s
+    ``render_relisten_shadow_columns``) performs to bind an ACCEPTED value --
+    rather than trusting the receipt's claim alone, and confirms
+    ``contacts_used`` is exactly the row's own relisten spend: one blind
+    contact per triggered entity plus one forced-choice contact per entity
+    whose ``confirm`` block is present.
+
+    Unlike :func:`_verify_supply_variant_trace_binding` and
+    :func:`_verify_perception_branch_trace_binding`, a relisten contact is
+    never named inside ``native_episode_receipt.role_visits`` (design section
+    6: the stage is wired beside ``rails.runner``'s node-context-cleaning
+    contact, not as a phase of the program), so this check reads the
+    ``relisten`` receipt's own contact ids directly rather than cross
+    checking against a role visit's ``execution_receipt``.
+    """
+
+    from ...rails.relisten import (
+        RELISTEN_RECEIPT_SCHEMA, canonical_value, parse_blind_response,
+        parse_confirm_letter, resolve_confirm_vote,
+    )
+
+    label = _row_label(row)
+
+    def refuse(reason: str) -> None:
+        raise BundleError(f"{label}: {reason} ({RELISTEN_INVARIANT})")
+
+    receipt = row.get("relisten")
+    if not isinstance(receipt, Mapping) or receipt.get("schema") != RELISTEN_RECEIPT_SCHEMA:
+        refuse("relisten must be a saea-relisten-v1 receipt object")
+    entities = receipt.get("entities")
+    if not isinstance(entities, Sequence) or isinstance(entities, (str, bytes)):
+        refuse("relisten receipt carries no entities list")
+
+    contacts_used = 0
+    seen_contacts: set[str] = set()
+    for entity in entities:
+        if not isinstance(entity, Mapping):
+            refuse("relisten entity is not an object")
+        blind = entity.get("blind")
+        if not isinstance(blind, Mapping):
+            refuse("relisten entity carries no blind block")
+        contact_id = blind.get("contact_id")
+        if not isinstance(contact_id, str) or not contact_id or contact_id in seen_contacts:
+            refuse("relisten blind contact has invalid identity")
+        seen_contacts.add(contact_id)
+        request = trace_records.get(f"{contact_id}/request")
+        response = trace_records.get(f"{contact_id}/response")
+        if not isinstance(request, Mapping) or not isinstance(response, Mapping):
+            refuse(f"relisten blind contact {contact_id!r} has no trace pair")
+        if _request_record_sample_id(request) != row.get("sample_id"):
+            refuse(f"relisten blind contact {contact_id!r} belongs to another sample")
+        text = response.get("text")
+        if not isinstance(text, str):
+            refuse(f"relisten blind contact {contact_id!r} has no recorded response text")
+        parsed = parse_blind_response(text)
+        if parsed.disposition != blind.get("disposition"):
+            refuse(f"relisten blind contact {contact_id!r} disposition disagrees with its trace")
+        expected_value_sha = (
+            None if parsed.value is None
+            else hashlib.sha256(parsed.value.encode("utf-8")).hexdigest()
+        )
+        expected_canonical_sha = (
+            None if parsed.value is None
+            else hashlib.sha256(canonical_value(parsed.value).encode("utf-8")).hexdigest()
+        )
+        if (
+            blind.get("value_sha256") != expected_value_sha
+            or blind.get("canonical_sha256") != expected_canonical_sha
+        ):
+            refuse(f"relisten blind contact {contact_id!r} value hash disagrees with its trace")
+        contacts_used += 1
+
+        confirm = entity.get("confirm")
+        if confirm is None:
+            continue
+        if not isinstance(confirm, Mapping):
+            refuse("relisten entity confirm block is malformed")
+        confirm_contact_id = confirm.get("contact_id")
+        if (
+            not isinstance(confirm_contact_id, str) or not confirm_contact_id
+            or confirm_contact_id in seen_contacts
+        ):
+            refuse("relisten confirm contact has invalid identity")
+        seen_contacts.add(confirm_contact_id)
+        confirm_request = trace_records.get(f"{confirm_contact_id}/request")
+        confirm_response = trace_records.get(f"{confirm_contact_id}/response")
+        if not isinstance(confirm_request, Mapping) or not isinstance(confirm_response, Mapping):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} has no trace pair")
+        if _request_record_sample_id(confirm_request) != row.get("sample_id"):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} belongs to another sample")
+        confirm_text = confirm_response.get("text")
+        order = confirm.get("order")
+        if (
+            not isinstance(confirm_text, str)
+            or not isinstance(order, Sequence) or isinstance(order, (str, bytes))
+            or len(order) != 2
+        ):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} has no recorded response")
+        vote = resolve_confirm_vote(parse_confirm_letter(confirm_text), tuple(order))
+        if vote != confirm.get("vote"):
+            refuse(f"relisten confirm contact {confirm_contact_id!r} vote disagrees with its trace")
+        contacts_used += 1
+
+    if receipt.get("contacts_used") != contacts_used:
+        refuse("relisten contacts_used disagrees with its own entity contacts")
+
+
 def _split_jsonl(text: str) -> list[str]:
     """Split on the literal record separator only (matches ``core.tracing``'s
     and ``core.scorers``' own discipline): ``json.dumps(ensure_ascii=False)``
@@ -1200,21 +1466,28 @@ def _request_record_sample_id(payload: Mapping[str, object]) -> object:
 def _verify_resume_custody(
     outputs_rows: tuple[Mapping[str, object], ...],
     trace_records: Mapping[str, Mapping[str, object]],
-    predecessor_records: Mapping[str, Mapping[str, object]],
+    predecessor_records: Mapping[str, Mapping[str, Mapping[str, object]]],
     kept_sample_ids: frozenset,
 ) -> None:
     """I7r: each row of a resumed bundle binds to EXACTLY one trace.
 
     Request ids are attempt-scoped (``rails.core_client`` mints them from a
-    per-client counter), so the recovery attempt's own ``flight-0007`` and the
+    per-client counter), so the recovery attempt's own ``flight-0007`` and a
     predecessor's ``flight-0007`` are different contacts of, in general,
-    different samples. Custody is therefore decided by SAMPLE id, and this
+    different samples -- and, since E10d, of possibly DIFFERENT predecessor
+    attempts too. Custody is therefore decided by SAMPLE id, and this
     function is what makes that decision safe:
 
     * every kept sample must be absent from the recovery attempt's own
       requests -- a kept row that was ALSO re-flown would have two candidate
       custodies and the merge would be a selection;
     * every flown sample must be present in them;
+    * every kept sample must have at least one request in the ONE predecessor
+      trace ``predecessor_records`` binds it to (``predecessor_records`` maps
+      each kept sample id to that predecessor's own trace-records dict --
+      never a flat, cross-predecessor-merged one, so a row can never be
+      checked against a DIFFERENT predecessor's trace than the one that kept
+      it: see :func:`verify_predecessor_attempts`);
     * the request record a row names must itself carry that row's sample id,
       in the trace the row is held against, so a row can never be verified by
       another sample's contact that happens to share a request id.
@@ -1222,12 +1495,6 @@ def _verify_resume_custody(
 
     if not outputs_rows:
         return
-    predecessor_samples: dict[str, object] = {}
-    for record_id, payload in predecessor_records.items():
-        if record_id.endswith("/request"):
-            sample_id = _request_record_sample_id(payload)
-            if isinstance(sample_id, str):
-                predecessor_samples[sample_id] = record_id
     recovery_samples: dict[str, object] = {}
     for record_id, payload in trace_records.items():
         if record_id.endswith("/request"):
@@ -1241,10 +1508,18 @@ def _verify_resume_custody(
             f"e.g. {re_flown[:5]} -- a resume keeps a complete row OR re-flies it, "
             f"never both ({RESUME_PREDECESSOR_INVARIANT})"
         )
+    predecessor_presence: dict[str, bool] = {}
+    for sample_id in kept_sample_ids:
+        records = predecessor_records.get(sample_id) or {}
+        predecessor_presence[sample_id] = any(
+            record_id.endswith("/request")
+            and _request_record_sample_id(payload) == sample_id
+            for record_id, payload in records.items()
+        )
     for row in outputs_rows:
         sample_id = str(row.get("sample_id"))
         kept = sample_id in kept_sample_ids
-        source = predecessor_records if kept else trace_records
+        source = predecessor_records.get(sample_id, {}) if kept else trace_records
         label = "predecessor" if kept else "recovery"
         if not kept and sample_id not in recovery_samples:
             raise BundleError(
@@ -1252,7 +1527,7 @@ def _verify_resume_custody(
                 "and has no request of its own in this attempt's trace "
                 f"({RESUME_PREDECESSOR_INVARIANT})"
             )
-        if kept and sample_id not in predecessor_samples:
+        if kept and not predecessor_presence.get(sample_id, False):
             raise BundleError(
                 f"outputs row {sample_id!r} is declared kept but has no request in "
                 f"the predecessor trace ({RESUME_PREDECESSOR_INVARIANT})"
@@ -1277,7 +1552,7 @@ def _verify_resume_custody(
 def _verify_outputs_trace_binding(
     outputs_rows: tuple[Mapping[str, object], ...],
     trace_records: Mapping[str, Mapping[str, object]],
-    predecessor_records: Mapping[str, Mapping[str, object]] | None = None,
+    predecessor_records: Mapping[str, Mapping[str, Mapping[str, object]]] | None = None,
     kept_sample_ids: frozenset = frozenset(),
 ) -> None:
     # CRITICAL fix (T6 fix round): the ORIGINAL code also returned early when
@@ -1296,18 +1571,22 @@ def _verify_outputs_trace_binding(
     if not outputs_rows:
         return
     # E10 (I7r): a resumed bundle holds each row against exactly one trace --
-    # a kept row against the declared PREDECESSOR attempt's trace, every other
-    # row against this attempt's own. The rules below are byte for byte the
-    # same either way; only the record source differs.
+    # a kept row against the ONE declared PREDECESSOR attempt's trace that
+    # kept it, every other row against this attempt's own. The rules below
+    # are byte for byte the same either way; only the record source differs.
+    # E10d (2026-09-29): ``predecessor_records`` is keyed by SAMPLE id (each
+    # kept sample maps to its OWN predecessor's trace-records dict), never a
+    # single flat dict shared by every kept row -- a multi-predecessor resume
+    # keeps different rows against different trace files.
     if predecessor_records is not None:
         _verify_resume_custody(
             outputs_rows, trace_records, predecessor_records, kept_sample_ids
         )
     for row in outputs_rows:
+        sample_id = str(row.get("sample_id"))
         records = (
-            predecessor_records
-            if predecessor_records is not None
-            and str(row.get("sample_id")) in kept_sample_ids
+            predecessor_records.get(sample_id, {})
+            if predecessor_records is not None and sample_id in kept_sample_ids
             else trace_records
         )
         request_id = row["request_id"]
@@ -1388,3 +1667,5 @@ def _verify_outputs_trace_binding(
             and "perception_branches" in episode_for_branches
         ):
             _verify_perception_branch_trace_binding(row, records)
+        if "relisten" in row:
+            _verify_relisten_trace_binding(row, records)

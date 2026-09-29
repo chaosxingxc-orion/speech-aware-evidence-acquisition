@@ -1,0 +1,63 @@
+{
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",
+      "cell": "slurp-native-stage3-relisten-fold-a-v1",
+      "composed_config_hash": "76d777523e93b1eac72a2d5174b1484e600231269f415e10545a3fce7c35a083",
+      "experiment": "slurp-native-stage3-relisten-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1",
+      "protocol_hash": "e6210a6ad008f669078af191feea236b1f3fd07d4288a789dd7fa58f3c102122",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-relisten-fold-a-smoke-4-v1",
+      "composed_config_hash": "c6be9b29ad5947066a4d69455da0becf7b2a1859158e8688c6e5079a362da077",
+      "experiment": "slurp-native-stage3-relisten-fold-a-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-FIT-V1",
+      "protocol_hash": "e07d5bb93eb7025ca83fec88f29dcacf7e78834f9616f41891b3bd58ba428ae5",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "a5a7b7dee90dc1ff4a29fe05593fd8980d1e01aa74b8c2a15c2e5184c2e5fb0a"
+    }
+  },
+  "columns": {
+    "contrasts": {
+      "relisten-replace-drop-unheard": "right relisten-replace-drop-unheard vs left the delivered column",
+      "relisten-replace-only": "right relisten-replace-only vs left the delivered column"
+    },
+    "delivered": "<data root>/runs/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/attempt-slurp-native-stage3-relisten-fold-a-generation-v1/ (the flight's own sealed score)",
+    "identities": {
+      "relisten-replace-drop-unheard": "<data root>/runs/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/attempt-slurp-native-stage3-relisten-fold-a-generation-v1/supply-variants/arm-relisten-replace-drop-unheard-slurp-slu-official-train-scores.json (+ .receipt.json)",
+      "relisten-replace-only": "<data root>/runs/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/attempt-slurp-native-stage3-relisten-fold-a-generation-v1/supply-variants/arm-relisten-replace-only-slurp-slu-official-train-scores.json (+ .receipt.json)"
+    },
+    "render_and_score": "scripts/analysis/stage3_rollout_score.py --mode relisten --scorer-id slurp-slu-official-train --analysis-root <data root>/runs/<run>/<attempt>/supply-variants (render_relisten_shadow_columns + score_relisten_shadow_copies; one complete official scoring per column, serial, never sharded)"
+  },
+  "decision_rule_fixed_here": "SAME-FLIGHT SHADOW-COLUMN READ (owner decision 185; design section 4 with the section 8 rulings; claim ceiling 'nominated'). The DELIVERED column is the flight's own sealed answer, scored once by the flight with slurp-slu-official-train. Each shadow column -- relisten-replace-only (a: the section 1 acceptance rule) and relisten-replace-drop-unheard (b: a, plus dropping an entity when both contacts vote unheard) -- is rendered by the pure bind() from the same flight's sealed saea-relisten-v1 receipts and trace (AT1: a row with no accepted replacement and no drop renders byte-identical to the delivered text) and scored ONCE with slurp-slu-official-train through core.scoring_batch.score_complete_derived_copy; each contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260915). PRIMARY: official pooled SLU-F1 (micro), shadow column minus delivered column. GUARD: intent is identical between each shadow column and the delivered column BY CONSTRUCTION (bind() never re-opens the decided intent); it is tested per row and the read REFUSES on any difference. THE BAR: the design's own null (ruling 7: 'the bar is the twin/shadow null'), provisional until this cell measures it: scripts/checks/stage3_effect_floor_check.py design same-flight-shadow-relisten, 0.735 x sqrt(200 / n) = 0.3163 pp SLU-F1 at n = 1080. Per column: NOMINATED iff the SLU-F1 CI95 lower bound is above zero AND the point delta exceeds 0.3163 pp AND the intent guard holds; SHADOW HARM iff the SLU-F1 CI95 upper bound is below zero AND the point delta's magnitude exceeds 0.3163 pp; otherwise NOT NOMINATED (within the null). The two columns are two pre-declared rules read from one contact stream; no rule search (decision 179). A nomination claims nothing at system level: promotion means binding in delivery and a full-system read against an in-chain A/A (design section 4). Descriptive, never gating: saves and harms by error kind (gold read on the scoring side only), the per-type table, the blind-disposition and confirm-vote tallies, and equal-scenario weighting; every verdict carries the per-scenario table.",
+  "development_numbers_only": "Every number is a TRAIN Fold A development number (owner decisions 28 and 86), never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "one_factor": "the post-accept native_episode.relisten stage {\"blind_template_id\": \"slurp_relisten_blind_v1\", \"confirm_template_id\": \"slurp_relisten_confirm_v1\", \"delivery\": \"shadow\", \"max_slots_per_row\": 3, \"policy\": \"saea-obs-targeted-relisten-v1\", \"value_max_words\": 8}; the program switch to phase-native-candidates-review-revise-relisten-v1 is its carrier (ceiling +6), not a factor; the delivered path is the AGREE arm's modulo the program id in quoted contact ids and remaining_model_contacts (shadow_proof)",
+  "prohibitions": [
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE arm.",
+    "No second factor: no other template, knob, store, roster, geometry or session change.",
+    "No live delivery of a relisten value: shadow only (ruling 5).",
+    "No transcript state: the relisten value never enters any role's context; only hashes are sealed in the receipt.",
+    "No Whisper or ASR tool contact (owner decision 180).",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped.",
+    "No column score opened before the READ row is root countersigned.",
+    "No system-level claim: a shadow-column effect may only nominate (ruling 7)."
+  ],
+  "protocol_id": "slurp-stage3-relisten-fold-a-protocol-v1",
+  "registered_at_utc": "2026-09-29T05:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e4cell, branch fable/e4cell",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "b54dfb4de",
+  "the_question": "On TRAIN Fold A, with the AGREE form delivering its own answer, does a core-native targeted re-listen of up to three delivered entities per row (blind value, then a forced choice), bound offline into shadow column (a) replace-only or (b) replace-plus-drop-when-both-unheard, move official pooled SLU-F1 beyond the design's own null against the same flight's delivered column?"
+}
