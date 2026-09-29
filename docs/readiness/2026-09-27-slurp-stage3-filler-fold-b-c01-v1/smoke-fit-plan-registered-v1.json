@@ -34,7 +34,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/protocol-registered-v1.json",
-    "sha256": "c8e804709e16b98fc03aeed6520c8e3d4f003206c20338caea4a331793db8ec2"
+    "sha256": "b872fe9c2fe5823589d8bbce67e038d7d9f8ea20ed1633d10c4d98ce35ab0666"
   },
   "purpose": "Four-row structural form smoke of the filler family's composed form (ROLL-2's grouped Solver plus AGREE's agreement pins), flown before chunk c01's arm: five custodied Solver samples per row, the plurality-commit replay, the agreement table loading and the boundary channel still delivering eight entries, zero native task-contract calls, every request fitting. Scored by no one and read by no one. Filler chunk c01 (owner decision 162): seal a 4-row x 5-sample rollout pool of the current best SLURP system on TRAIN Fold B rows, flown ONLY when the GPU would otherwise idle (the idle-filler queue: no flight running, no main-line chain ready, the np4 session resident and healthy). The pool is the rollout substrate of the training-free RL inner loop (sealed-credit-system-policy-v1), read OFFLINE at zero further GPU cost. DESCRIPTIVE by construction: no comparator, no gate, no admission claim, no superiority, transfer, generalisation or confirmatory statement. Development numbers only (owner decisions 28 and 86); never a test claim.",
   "quality_read_gate": "No read before the complete sealed manifest with exactly five custodied solver_group samples per row exists; a partial manifest is never read; a failed smoke stops the arm.",
