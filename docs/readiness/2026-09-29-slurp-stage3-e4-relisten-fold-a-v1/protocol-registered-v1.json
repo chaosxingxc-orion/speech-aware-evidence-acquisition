@@ -58,6 +58,6 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-e4cell, branch fable/e4cell",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "6287181f1",
+  "study_commit_at_registration": "b54dfb4de",
   "the_question": "On TRAIN Fold A, with the AGREE form delivering its own answer, does a core-native targeted re-listen of up to three delivered entities per row (blind value, then a forced choice), bound offline into shadow column (a) replace-only or (b) replace-plus-drop-when-both-unheard, move official pooled SLU-F1 beyond the design's own null against the same flight's delivered column?"
 }

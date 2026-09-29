@@ -24,7 +24,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "091a45a4c1370967b7d8b58daa958a5275b1ebda6ec4f359f67d839b07b36a25"
+      "sha256": "043e13a7fb224261c7e207e56045aa700e9ccbdf18a4160d2dab562c6af6b243"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/README.md",
@@ -32,9 +32,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/registered-facts-v1.json",
-      "sha256": "e71914423cf7a52eacd933c59a4eb268181d83663c32c1cdd3971ff194e2c5c8"
+      "sha256": "2a19a10d6000731dc11c96af066f6a912bacdb7447891ce068cc4e44460cb3a3"
     },
-    "registration_base_commit": "6287181f1",
+    "registration_base_commit": "b54dfb4de",
     "shadow_proof": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/shadow-proof-v1.json",
       "sha256": "221439e1449b27abe14c46368b6b4605d196d882e5734661c760529ab84b3e28"

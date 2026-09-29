@@ -31,7 +31,7 @@
   },
   "one_factor": "the post-accept native_episode.relisten stage {\"blind_template_id\": \"slurp_relisten_blind_v1\", \"confirm_template_id\": \"slurp_relisten_confirm_v1\", \"delivery\": \"shadow\", \"max_slots_per_row\": 3, \"policy\": \"saea-obs-targeted-relisten-v1\", \"value_max_words\": 8}; the program switch to phase-native-candidates-review-revise-relisten-v1 is its carrier (ceiling +6), not a factor; the delivered path is the AGREE arm's modulo the program id in quoted contact ids and remaining_model_contacts (shadow_proof)",
   "plan_kind": "generation",
-  "preparation_base_commit": "6287181f1",
+  "preparation_base_commit": "b54dfb4de",
   "prepared_phase_supply": {
     "expected_output_sha256": "none (new roster)",
     "note": "the arm's first-phase (Perception boundary) supply is upstream of the program id and of the post-accept stage, so the supply the flip mints must carry the AGREE arm's output digest; the smoke's roster is new and has no AGREE counterpart",
@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "091a45a4c1370967b7d8b58daa958a5275b1ebda6ec4f359f67d839b07b36a25"
+    "sha256": "043e13a7fb224261c7e207e56045aa700e9ccbdf18a4160d2dab562c6af6b243"
   },
   "purpose": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1: charged 4-row dry run: structural form proof only, no benefit score and no read.",
   "quality_read_gate": "No shadow-column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1 is root countersigned; each column is then scored once, never sharded.",

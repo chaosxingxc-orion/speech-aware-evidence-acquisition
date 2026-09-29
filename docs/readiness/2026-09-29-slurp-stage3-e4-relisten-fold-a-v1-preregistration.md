@@ -1,6 +1,6 @@
 # Cell E4-1 (same-flight shadow relisten, TRAIN Fold A): preregistration
 
-Registered 2026-09-29 at study commit `6287181f1`, before any contact, from the retained AGREE
+Registered 2026-09-29 at study commit `b54dfb4de`, before any contact, from the retained AGREE
 arm fragments by script (decision 58) under owner decision 185. Development numbers only.
 
 ## The cell

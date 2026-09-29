@@ -200,7 +200,113 @@
     "provisional_floor_pp": 0.3163
   },
   "fit": {
-    "status": "PENDING_CHECK"
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.e4-checks/check-slurp-native-stage3-relisten-fold-a-v1.json",
+        "check_sha256": "453b7e848754e3ad8ea37a035d667d643e7cd4467b80b25df231b85dfc0ea927",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1510,
+            "phase": "perception",
+            "physical_margin_tokens": 4582,
+            "rendered_text_tokens": 19451,
+            "required_window_tokens": 19994,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1646,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4718,
+            "rendered_text_tokens": 19315,
+            "required_window_tokens": 19858,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1707,
+            "phase": "planner",
+            "physical_margin_tokens": 4779,
+            "rendered_text_tokens": 19254,
+            "required_window_tokens": 19797,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -319,
+            "phase": "solver",
+            "physical_margin_tokens": 2753,
+            "rendered_text_tokens": 21280,
+            "required_window_tokens": 21823,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "relisten_lines": [],
+        "scientific_readiness": {
+          "reason": "Cell E4-1 registered before contact on 2026-09-29 from the retained AGREE arm fragments by script (decision 58) with the program switched to its 17-ceiling relisten twin and a native_episode.relisten block (owner decision 185). No cross-flight comparator: the paired read is within this flight (two shadow columns against the delivered column); the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 is context only. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/e4/e4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the arm's minted supply must reproduce the AGREE arm's own first-phase output digest (the Perception supply is upstream of the program id and of the post-accept stage). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      },
+      "smoke": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.e4-checks/check-slurp-native-stage3-relisten-fold-a-smoke-4-v1.json",
+        "check_sha256": "35a74338851a8df0c97cf2b15b3a71d1462b026a2e340f5a2cedbc58f04907ca",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1532,
+            "phase": "perception",
+            "physical_margin_tokens": 4604,
+            "rendered_text_tokens": 19447,
+            "required_window_tokens": 19972,
+            "speech_feature_tokens": 11
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1668,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4740,
+            "rendered_text_tokens": 19311,
+            "required_window_tokens": 19836,
+            "speech_feature_tokens": 11
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1729,
+            "phase": "planner",
+            "physical_margin_tokens": 4801,
+            "rendered_text_tokens": 19250,
+            "required_window_tokens": 19775,
+            "speech_feature_tokens": 11
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -297,
+            "phase": "solver",
+            "physical_margin_tokens": 2775,
+            "rendered_text_tokens": 21276,
+            "required_window_tokens": 21801,
+            "speech_feature_tokens": 11
+          }
+        ],
+        "relisten_lines": [],
+        "scientific_readiness": {
+          "reason": "Four-row charged dry run of cell E4-1, registered before contact on 2026-09-29 from the AGREE smoke fragments by script (decision 58), on four Fold A rows chosen to exercise both relisten contacts. Form proof only: no benefit score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/e4/e4_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the smoke's minted supply has no AGREE counterpart (its roster is new) (the Perception supply is upstream of the program id and of the post-accept stage). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
   },
   "identity": {
     "arm": {
@@ -454,7 +560,7 @@
       }
     }
   },
-  "study_commit_at_registration": "6287181f1",
+  "study_commit_at_registration": "b54dfb4de",
   "the_cell": {
     "base": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (configs/baseline/slurp-native-stage3-agree-w1-fold-a-baseline-v1.json)",
     "delivered_answer": "the AGREE form's own answer (shadow delivery, ruling 5): the relisten stage runs after the deliver normaliser and never mutates the delivered text -- shadow_proof",

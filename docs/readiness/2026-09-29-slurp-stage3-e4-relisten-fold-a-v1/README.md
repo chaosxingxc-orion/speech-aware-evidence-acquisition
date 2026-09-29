@@ -1,6 +1,6 @@
 # Cell E4-1: the core-native targeted re-listen, shadow delivery on TRAIN Fold A (owner decision 185)
 
-Registered before contact 2026-09-29 at study commit `6287181f1`; both cells **held**.
+Registered before contact 2026-09-29 at study commit `b54dfb4de`; both cells **held**.
 Nothing here authorises a flight, a flip or an admission entry. Development numbers only (owner decisions 28 and 86).
 Design: `docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md` (sections 1, 4 and the section 8 coordinator rulings); motivation: `docs/results/2026-09-28-slurp-node-information-gain-ledger.md` sections 4-5.
 
@@ -98,7 +98,20 @@ contacts plus the receipts' `contacts_used`; zero truncations; the delivered tex
 
 ## Fit
 
-PENDING: core.flight.cli check not yet folded in.
+| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |
+| --- | --- | --- | ---: | ---: | ---: |
+| arm | perception | ALLOW | 19451 | 1510 | 4582 |
+| arm | reviewer | ALLOW | 19315 | 1646 | 4718 |
+| arm | planner | ALLOW | 19254 | 1707 | 4779 |
+| arm | solver | COMPACT_REQUIRED | 21280 | -319 | 2753 |
+| arm | blockers | null | | | |
+| smoke | perception | ALLOW | 19447 | 1532 | 4604 |
+| smoke | reviewer | ALLOW | 19311 | 1668 | 4740 |
+| smoke | planner | ALLOW | 19250 | 1729 | 4801 |
+| smoke | solver | COMPACT_REQUIRED | 21276 | -297 | 2775 |
+| smoke | blockers | null | | | |
+
+The check report carries no relisten-specific line; the relisten budget is the ceiling term (+6 per row) inside every plan cap.
 
 ## Files
 
