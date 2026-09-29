@@ -1,7 +1,41 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T20:11:33Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent) · HEAD at writing `fe08c9fc` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T21:05:39Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records and read agent) · HEAD at writing `1099a19c` on `master` (plus this refresh commit), tree clean.
+**Since 20:11Z (records and read agent):** **E5 design merged with the coordinator rulings** (`c2ae4404`;
+`docs/superpowers/specs/2026-09-29-e5-asr-tool-slot-value-verification-design.md`, section "Coordinator rulings (Fable
+5.1, 2026-09-29)"): Q1 decision 201 goes to the owner as a LIMITED exception to the 2026-09-06 no-transcript ruling
+(ASR transcripts only for post-delivery ENTITY-VALUE checks -- E5-1 offline, E5-2a deterministic, E5-2b one forced-choice
+contact after delivery; never in the intent decision, the Perception or Solver prompts or any retrieval key); Q2 a
+single-pool edit needs its own paired CI95 excluding zero AND a point above the 1.49 pp same-flight SLU floor, with
+the A/A showing the same sign at >= 1.0 pp (the 1.547 pool null is for multi-sample pools only; applies to E5-2a and
+the scope rule); Q3 the study-pinned `.pt` plus an umbrella lock entry before E5-0; Q4 E5-0 as a queue chain step at
+the 12-h restart under the driver lease; Q5 E5-1 reads AGREE / A/A / E4-1 first, COMP-1b appended. **COMP-1b sealed**
+at `c6e98e6b` (FINALIZED, COMPLETED, clean tree, 4,360 contacts, 1,080 rows; chain exit 0 20:41:56Z); READ row
+countersigned `c17e92e0` (20:45:34Z, before any score). **COMP-1b read landed** (`64ab71d1`,
+`docs/results/2026-09-29-slurp-comp1b-fold-a-read.md`, DESCRIPTIVE) vs the in-chain A/A: intent 81.85 -> 85.65,
+**+3.80 pp [+1.94, +5.65]**; official SLU-F1 64.21 -> 63.61, **-0.60 pp [-2.29, +1.07]**; zero-gold entity emission back
+to the A/A level (161 vs 162 rows; FP delta -1 [-23, +20]; COMP-1 had 252); vs COMP-1 (context) SLU-F1 +1.64 [+0.38,
++2.92] at intent -0.46 [-1.30, +0.37]; newly delivered class rows convert 35 / 78 (COMP-1 38 / 78); GPU-h 1.6786 ->
+1.7479. Read agent's line: **NOMINATED (intent), not ADMITTED** -- the point is 0.46 pp under the declared 4.26, the
+SLU guard holds on the point with no measured loss but its lower bound misses -1.2485 by 1.04 pp (width); the
+attribution prediction held -- coordinator clause pending. The recipe's context comparator named COMP-1's unsealed
+original attempt, so the context pass was re-run on the sealed seal-only attempt (`vs-comparator-sealonly/`).
+**A2 registered HELD** (`1099a19c`, `docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/`): cells
+`slurp-native-stage3-comp1b-dev2000-added-v1` (+ smoke-4) and the placeholder chain's own in-chain A/A
+`slurp-native-stage3-comp1-aa-dev2000-added-v1` (carried unchanged; its two rows re-pointed); `expected_effect_pp` 3.8
+(the COMP-1b read's intent point), guard h_SLU 1.2525 (h_intent 1.1520), `cross-flight-with-in-chain-replicate`,
+n = 1,000; commuting-square diff proof (A2 vs placeholder = the four citation leaves; A2 vs flown COMP-1b = the
+placeholder's roster re-target exactly). The COMP-1 DEV placeholder arm + smoke are **superseded** (no file deleted);
+`stage3_effect_floor_check` PASS, 0 blocking (the placeholder blocker is gone; A2 no finding); `flight_registration_check`
+on the three A2 cells reports only the held-state blockers (not-ready, DRAFT rows, receipt not minted). The
+decision-199 **none-hint column is NOT included**: the supply-variant machinery admits only selection-knob re-caps or a
+pinned release swap, and an extra Solver arm raises the contact ceiling -- N1 needs its own rails variant kind first.
+**GPU queue:** `SAEA-Queue-NEXT`: COMP-1b DONE 20:41:56Z -> **P-SV-1 seal-only DONE** 20:49:26Z -> **P-SV-2 flying**
+(arm since 20:52:16Z at `c6e98e6b`) -> P-SV-3 -> filler. **Pending owner:** decisions 200 (P-SV-3 column) and 201
+(Whisper route, now with the Q1 limited-exception wording). **Next:** coordinator clause on the COMP-1b read; root
+countersigns the seven A2 rows, mints `slurp-stage3-comp1b-dev2000-added-admission-v1` and runs `comp1bdev_flip.sh`,
+then queues `batch_chain_comp1bdev.sh`; P-SV-1 / P-SV-2 / P-SV-3 reads; inner-loop run 2.
 **Since 19:55Z (records agent):** **Coordinator verdicts** (`f85e1085`) in both read notes and in two new rows of
 `docs/results/stage2-results-ledger.md`: **E4-1 core-native targeted re-listen v1: NOT NOMINATED, SHADOW HARM on both
 columns** (replace-only SLU-F1 -4.11 [-5.41, -2.88], replace + drop -3.59 [-5.08, -2.14]; gates not met; the core
@@ -221,7 +255,7 @@ retrieved because the key side is text by design.
 | --- | --- | --- |
 | A2T-ORG-1 re-read against h_A2T 1.625 (decisions 166, 167, 173): official tool accuracy -3.225 [-4.30, -2.13] at n = 4,000, 2.0x h_A2T | `docs/results/2026-09-27-a2t-org-1-reread-against-h-a2t.md`, ledger annotated in both halves | **KEEP** (secondary-loss claim KEEP-PROVISIONAL) |
 | Test fixes: the A2T comparator-rows companion is recognised, the sys.path quarantine scan is narrowed, and the Perception-state parser is excluded from renderer catalogue coverage | merge of `fable/testfix` | merged |
-| COMP-1 on DEV-2000-ADDED (A2): arm, in-chain A/A of the PLAN lock's bytes, four-row smoke; own null h 1.1520 intent / 1.2525 SLU | `docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/` | registered, **HELD**. `expected_effect_pp` is the placeholder `TO-BE-DECLARED-BY-COORDINATOR-FROM-THE-COMP-1-FOLD-A-READ` until the Fold A arm is read (row 139), so `stage3_effect_floor_check.py` refuses this one cell by design |
+| A2 = COMP-1b on DEV-2000-ADDED (decision 198): arm + four-row smoke, with the in-chain A/A of the PLAN lock's bytes carried from the COMP-1 DEV placeholder; own null h 1.1520 intent / 1.2525 SLU | `docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/` (supersedes `docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/`, whose arm and smoke are superseded) | registered, **HELD** (`1099a19c`). `expected_effect_pp` 3.8 from the COMP-1b Fold A read; `stage3_effect_floor_check.py` PASS; flip after countersign + mint |
 | The knowledge wave's shared in-chain A/A `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1` | `docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/` | registered; proven **IDENTICAL** to the AGREE arm's bytes |
 | W3 re-derived and re-registered as **W3a alone** (intent contrast cards; the per-intent exemplar cap dropped under decision 164's one-change rule) | `docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/` (same run ids, rewritten in place) | registered, held |
 | W5 slot-side retrieval, with its offline estimate | `docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/`, `docs/results/2026-09-28-slurp-w5-slot-exemplar-offline-estimate.md` | registered, **HELD** (outcome of 170) |
@@ -401,7 +435,7 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 2. E4-1 seal-only runs next (`SAEA-Queue-E4SEAL`, `0b50d47e`); read the columns against the pre-declared gate; then the filler runs inline. SLURP only (187).
 3. P-SV-1: land the parent-package residue fix (`fable/repinresume2`), converge the decision-197 seal-only flip (no re-fly); then re-pin P-SV-2 and flip P-SV-3 (`fable/psv3`); read under the decision-190 floors.
 4. Build the one consumption module from the merged design (195/196, `d51063b4`; section 2c for decision 199, supply abstention, pending the `fable/emptysupply` analysis); remove `/home/chao/saea-queue/watchdog.hold` once `ready_chains.json` names the next ready chain.
-5. Declare A2's `expected_effect_pp` from the COMP-1b read (A2 = COMP-1b on DEV-2000-ADDED, decision 198) by its formula (row 139), then flip and queue A2.
+5. A2 is registered HELD with `expected_effect_pp` 3.8 from the COMP-1b read (`1099a19c`): countersign its seven rows, mint `slurp-stage3-comp1b-dev2000-added-admission-v1` (`comp1bdev_mint_receipt.py`), flip (`comp1bdev_flip.sh`), then queue `batch_chain_comp1bdev.sh`.
 
 ## 8. Housekeeping we share
 
