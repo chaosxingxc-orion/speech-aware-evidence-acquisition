@@ -1599,9 +1599,25 @@ def validate_perception_branch_receipt(
     Structurally :func:`validate_supply_variant_receipt`'s twin, checked
     against the SAME row-identity discipline: distinct branch ids, EVERY
     declared branch present exactly once in declared order, the delivering
-    branch (A) named and last, exactly one twin (T) naming A and resolving A's
-    OWN wire bytes (AT-P2: T's ``request_sha256`` equals A's), and every
-    non-delivering branch's note custody sealed under its own row.
+    branch (A) named and last, exactly one twin (T) naming A and resolving
+    exactly A's OWN supplied ids, and every non-delivering branch's note
+    custody sealed under its own row.
+
+    AT-P2 ("T's wire bytes equal A's") is a structural guarantee of
+    ``rails.runner.perception_branch_messages`` (the twin takes
+    ``base_messages(ctx)`` UNCHANGED, the identical call A's own branch
+    makes), not something this receipt-level check can re-verify through a
+    raw ``request_sha256`` comparison: that per-contact digest necessarily
+    differs between T and A, because it hashes the WHOLE realised request,
+    including the one history turn that names each contact's OWN identity
+    (``request_id``) -- the same reason phase 1's own AT2 test compares
+    specific wire-payload FIELDS rather than a full-request digest between
+    an arm and its twin. This function checks the supply-level proxy
+    instead: T's ``supplied_value_ids`` must equal A's exactly. (An earlier
+    revision of this function additionally required T's and A's
+    ``request_sha256`` to be equal; that check could never pass for a real
+    contact and was removed once a live episode proved it -- see
+    ``tests/unit/test_perception_branch_live.py``.)
 
     ``branch_ids``/``delivered_branch_id``/``twin_branch_id``/``level`` are
     the CONFIGURATION's own -- the sealing caller reads them off the composed
@@ -1821,7 +1837,6 @@ def validate_perception_branch_receipt(
                 )
         if deliver:
             delivering_ids = tuple(ids)
-            delivering_request_sha256 = row["request_sha256"]
     if len(set(contact_ids)) != len(contact_ids):
         _raise(error_type, "perception branches must have distinct contact ids")
     if not twin_seen:
@@ -1834,15 +1849,6 @@ def validate_perception_branch_receipt(
                 error_type,
                 "perception twin branch does not resolve exactly the delivering "
                 "branch's ids",
-            )
-        if (
-            delivering_request_sha256 is None
-            or row["request_sha256"] != delivering_request_sha256
-        ):
-            _raise(
-                error_type,
-                "perception twin branch request_sha256 does not equal the "
-                "delivering branch's (AT-P2: T's wire bytes equal A's)",
             )
 
 

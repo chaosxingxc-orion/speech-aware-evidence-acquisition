@@ -322,7 +322,21 @@ def test_receipt_validator_refuses_wrong_level():
         )
 
 
-def test_receipt_validator_refuses_twin_wire_mismatch():
+def test_receipt_validator_accepts_a_twin_whose_request_sha256_differs_from_as():
+    """A twin's ``request_sha256`` legitimately differs from the delivering
+    branch's: both hash the WHOLE realised request, including the one
+    history turn that names each contact's OWN identity (``request_id``),
+    so two REAL, distinct contacts can never share one -- the same reason
+    phase 1's own AT2 test compares specific wire-payload fields rather
+    than a full-request digest between an arm and its twin. AT-P2 ("T's
+    wire bytes equal A's") is a structural guarantee of
+    ``rails.runner.perception_branch_messages`` itself (the twin takes
+    ``base_messages(ctx)`` unchanged), not something re-checked here
+    through digest equality -- ``tests/unit/test_perception_branch_live.py``
+    proves it live. This receipt-level check is the supply-level proxy:
+    the twin's ``supplied_value_ids`` must equal the delivering branch's
+    exactly (checked below)."""
+
     group = _parse([_b_knob(), _t(), _a()])
     records = []
     for index, branch in enumerate(group.branches):
@@ -334,7 +348,28 @@ def test_receipt_validator_refuses_twin_wire_mismatch():
             candidate_intent_ids=("intent_a",), supplied_value_ids=("v1",),
         ))
     receipt = perception_branch_receipt(group=group, phase_id="perception", records=records)
-    with pytest.raises(ValueError, match="wire bytes"):
+    validate_perception_branch_receipt(
+        receipt, branch_ids=group.branch_ids, delivered_branch_id="A",
+        twin_branch_id="T", phase_id="perception", level=1,
+    )
+
+
+def test_receipt_validator_refuses_twin_supplied_ids_mismatch():
+    """The invariant AT-P2 actually reduces to at the receipt level: the
+    twin must resolve EXACTLY the delivering branch's own supplied ids."""
+
+    group = _parse([_b_knob(), _t(), _a()])
+    records = []
+    for index, branch in enumerate(group.branches):
+        supplied = ("v1",) if branch.branch_id != "T" else ("v2",)
+        records.append(perception_branch_record(
+            branch=branch, branch_index=index, contact_id=f"c{index}",
+            request_sha256=SHA, response_text_sha256="c" * 64,
+            note_sha256="d" * 64, note_parse_status="ok",
+            candidate_intent_ids=("intent_a",), supplied_value_ids=supplied,
+        ))
+    receipt = perception_branch_receipt(group=group, phase_id="perception", records=records)
+    with pytest.raises(ValueError, match="does not resolve exactly the delivering"):
         validate_perception_branch_receipt(
             receipt, branch_ids=group.branch_ids, delivered_branch_id="A",
             twin_branch_id="T", phase_id="perception", level=1,

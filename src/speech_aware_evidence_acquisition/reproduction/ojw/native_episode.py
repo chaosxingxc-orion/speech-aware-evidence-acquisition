@@ -847,6 +847,22 @@ class _ApplyRole(WorkflowComponent):
                 ):
                     new_solver["supply_variants"] = previous_solver["supply_variants"]
             updated["latest_solver"] = new_solver
+        elif self._kind == "perception":
+            # Same-flight instrument, PHASE 2 (merge set C, design docs/
+            # superpowers/specs/2026-09-28-same-flight-instrument-phase2-
+            # perception-variants-design.md): ``latest_solver``'s own twin.
+            # Perception has exactly one visit per row (max_iterations 1, no
+            # refresh -- design section 3, "Branch visits"), so there is no
+            # revisit-carry-forward rule to state: this always runs exactly
+            # once, and ``role`` already carries the WHOLE role result,
+            # including ``perception_branches`` when
+            # ``PerceptionBranchRoleNode`` produced it. ``rails.runner``
+            # reads this off the graph's final state to seal the branch
+            # receipt under ``native_episode_receipt.perception_branches``;
+            # an unbranched Perception visit carries no such key, so this
+            # branch is a byte-identical no-op for every episode written
+            # before phase 2.
+            updated["latest_perception"] = dict(role)
         elif self._kind == "planner":
             # E15: NativeEpisodeWorkflow always supplies `planner_actions` for
             # a Planner node, and that graph-derived set is the authority.
@@ -2038,6 +2054,26 @@ def build_native_episode(
                 raise ValueError(
                     f"{field} must be a {kind} NativeRoleNode, "
                     "GroupedSolverRoleNode or SupplyVariantRoleNode"
+                )
+            continue
+        if field == "perception":
+            # Same-flight instrument, PHASE 2 (merge set C): a BRANCHED
+            # Perception visit is a PerceptionBranchRoleNode --
+            # SupplyVariantRoleNode's own twin -- which exposes the same
+            # spec.role_id/spec.role_kind contract this validation and
+            # _RoleQuery/_add_role actually need. Imported function-locally,
+            # for the same reason.
+            from .native_supply_variants import (  # noqa: PLC0415
+                PerceptionBranchRoleNode,
+            )
+
+            if (
+                not isinstance(node, (NativeRoleNode, PerceptionBranchRoleNode))
+                or node.spec.role_kind != kind
+            ):
+                raise ValueError(
+                    f"{field} must be a {kind} NativeRoleNode or "
+                    "PerceptionBranchRoleNode"
                 )
             continue
         if not isinstance(node, NativeRoleNode) or node.spec.role_kind != kind:

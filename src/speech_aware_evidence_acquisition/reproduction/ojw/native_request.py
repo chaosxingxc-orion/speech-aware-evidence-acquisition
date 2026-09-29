@@ -489,6 +489,16 @@ class MeteredNativeSpeechRequest:
         variant_arm_id = getattr(request.context, "variant_arm_id", None)
         if variant_arm_id is not None:
             arm_context["variant_arm_id"] = variant_arm_id
+        # Same-flight instrument, PHASE 2 (merge set C): the declared
+        # Perception branch this contact was composed for -- variant_arm_id's
+        # own twin, and recorded in the role custody document the SAME
+        # conditional way, for the same reason: every contact of every
+        # episode form written before phase 2 carries no branch, so its
+        # ``role_request_bytes`` stay byte-identical to the pre-phase-2
+        # tree's.
+        perception_branch_id = getattr(request.context, "perception_branch_id", None)
+        if perception_branch_id is not None:
+            arm_context["perception_branch_id"] = perception_branch_id
         role_bytes = _bytes({
             "role_id": request.role_id,
             "context": arm_context,
