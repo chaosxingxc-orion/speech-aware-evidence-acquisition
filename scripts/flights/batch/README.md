@@ -102,6 +102,19 @@ declares `resume_from`, via `resume_gate_lib.sh`) and directly by
 pass; neither substitutes for the other -- the registration check proves the replay was already
 run and recorded, the live gate re-runs it under whatever code is actually about to fly.
 
+## Queue kind: seal-only (E10d; COMP-1 seal-only completion, 2026-09-29)
+
+A resume cell whose `resume_from` LIST of predecessors already covers the whole roster flies nothing:
+the runtime sets `is_seal_only`. Queue it as `"kind": "seal-only"` with `smoke_experiment`,
+`smoke_cell` and `campaign_plan` all `null`. `batch_driver.sh` then refuses a seal-only step that
+declares a smoke, a campaign plan, or a cell without `resume_from`; runs the ordinary `prelaunch`
+(the serving-idle/healthy check still applies -- the resident session satisfies it and is never
+touched -- then the registration gate on `--cell` and the resume replay gate over every declared
+predecessor); runs `core.flight.cli seal-only --experiment EXP --cell CELL` (no session, lease or
+slot; it seals the merged manifest and runs the one official finalize job); and inspects the
+attempt as an arm (FINALIZED, every roster row, one score job, `study_commit` = the flight commit).
+First user: `scripts/flights/comp1/batch_chain_comp1_sealonly.sh`.
+
 ## Idle watchdog (owner decision 182)
 
 Row 182 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md): "Authorise an IDLE

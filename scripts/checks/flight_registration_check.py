@@ -1156,33 +1156,47 @@ def _check_roster_split_registration(
 
 
 def _resume_replay_proof_block(
-    index: PackageIndex, package: str, run_id: str
+    index: PackageIndex, package: str, run_id: str, cell_id: str | None = None
 ) -> dict[str, Any] | None:
-    """The ``resume_replay_proof`` block from the package's own registered-plan facts.
+    """The ``resume_replay_proof`` block from the cell's own registered-plan facts.
 
-    ``None`` when no ``*plan-registered*.json`` under the package names this run id at all (the
-    package resolved but never registered this generation plan's facts); ``{}`` when it names the
-    run id but carries no block. Never raises: an unreadable or malformed registered-plan file is
-    skipped, exactly like :meth:`PackageIndex.packages_registering`.
+    A resume-recovery flies under the ARM's run id, so the package :func:`resolve_package` finds
+    from the arm's ledger row is the arm's ORIGINAL package, while the resume cell's own registered
+    plan (the one that carries this block) lives in the recovery package (COMP-1: the ``-resume-v1``
+    package beside the parent ``2026-09-27`` one, which is never edited). So a registered plan that
+    names BOTH this run id and this ``cell_id`` is preferred, in the resolved package first and then
+    in every package whose registered plan names the run id; failing that, the resolved package's
+    first plan naming the run id is used, exactly as before.
+
+    ``None`` when no candidate names this run id at all; ``{}`` when the chosen plan carries no
+    block. Never raises: an unreadable or malformed registered-plan file is skipped, exactly like
+    :meth:`PackageIndex.packages_registering`.
     """
 
-    directory = index.repo_root / READINESS / package
-    for path in sorted(directory.glob("*plan-registered*.json")):
-        try:
-            document = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError):
-            continue
-        if not isinstance(document, dict):
-            continue
-        execution_plan = document.get("execution_plan")
-        named_run_id = document.get("run_id") or (
-            execution_plan.get("run_id") if isinstance(execution_plan, dict) else None
-        )
-        if named_run_id != run_id:
-            continue
-        block = document.get("resume_replay_proof")
-        return block if isinstance(block, dict) else {}
-    return None
+    candidates = [package] + [name for name in index.packages_registering(run_id) if name != package]
+    fallback: dict[str, Any] | None = None
+    for name in candidates:
+        directory = index.repo_root / READINESS / name
+        for path in sorted(directory.glob("*plan-registered*.json")):
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                continue
+            if not isinstance(document, dict):
+                continue
+            execution_plan = document.get("execution_plan")
+            named_run_id = document.get("run_id") or (
+                execution_plan.get("run_id") if isinstance(execution_plan, dict) else None
+            )
+            if named_run_id != run_id:
+                continue
+            block = document.get("resume_replay_proof")
+            block = block if isinstance(block, dict) else {}
+            if cell_id is not None and document.get("cell") == cell_id:
+                return block
+            if name == package and fallback is None:
+                fallback = block
+    return fallback
 
 
 def _check_resume_replay_proof(
@@ -1207,7 +1221,7 @@ def _check_resume_replay_proof(
     if not (report.named or report.consumed_by is None):
         return
     severity = None if report.named else "advisory"
-    block = _resume_replay_proof_block(index, package, report.run_id)
+    block = _resume_replay_proof_block(index, package, report.run_id, cell.get("cell_id"))
     report.resume_replay_proof = block
     fields = RESUME_REPLAY_PROOF_FIELDS
     if block is None:
