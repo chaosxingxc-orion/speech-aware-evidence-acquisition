@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "97d9e4200d4c20a87238c956eb2ef5fb45f2d4f1b52a54434790b57a79260640"
+    "sha256": "eaeee54f3deaac601fedafc531342467744b10af4fe18203c60fab7ec33d5082"
   },
   "purpose": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1: charged 4-row dry run: structural form proof only, no benefit score and no read.",
   "quality_read_gate": "No shadow-column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1 is root countersigned; each column is then scored once, never sharded.",
