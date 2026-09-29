@@ -1179,6 +1179,258 @@ def score_supply_variant_copies(
 
 
 # ---------------------------------------------------------------------------
+# E4 targeted-relisten shadow columns (owner decision 185, design docs/
+# superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md,
+# section 8 coordinator rulings 2 and 7). Structurally
+# render_supply_variant_first_visit's / score_supply_variant_copies's own
+# twins, at a smaller surface: ONE delivered answer per row (no Solver arm
+# fan-out), rendered POST-ACCEPT from the row's own sealed
+# ``saea-relisten-v1`` receipt (``rails.relisten.seal_relisten_receipt``)
+# rather than from a second Solver visit.
+# ---------------------------------------------------------------------------
+
+RELISTEN_RENDER_SCHEMA = "saea-stage3-relisten-shadow-v1"
+
+
+def render_relisten_shadow_columns(
+    bundle, roster: Mapping[str, str], out_dir: Path,
+    *, run_id: str, attempt_id: str, roster_sha256: str, config_hash: str,
+) -> dict[str, Any]:
+    """Render both E4 shadow columns, (a) replace-only and (b)
+    replace-plus-drop-when-unheard, from each row's own sealed relisten
+    receipt plus its own sealed trace (``rails.relisten.bind_shadow_
+    entities``). Pure post-processing over already-sealed bytes: no model
+    contact, no new randomness -- the design's own "same-flight-paired,
+    shadow delivery" shape (section 4).
+
+    A row with no ``relisten`` receipt at all (the stage triggered on zero
+    entities, e.g. an abstention with no delivered entity) renders both
+    columns as the row's own sealed delivered text, unchanged -- the design's
+    own base case, and AT1's easiest instance.
+    """
+    from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+        validate_native_episode_delivery_receipt,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response
+    from speech_aware_evidence_acquisition.rails.relisten import (
+        RELISTEN_RECEIPT_SCHEMA, SHADOW_COLUMNS, COLUMN_REPLACE_DROP_UNHEARD,
+        COLUMN_REPLACE_ONLY, bind_shadow_entities, parse_blind_response,
+    )
+
+    if (bundle.manifest.get("status") != "COMPLETED"
+            or bundle.attempt_state != "FINALIZED"
+            or bundle.manifest.get("run_id") != run_id
+            or bundle.manifest_path.parent.name != attempt_id):
+        raise Stage3ScoreError("source bundle is not the requested finalized complete attempt")
+    ids = sorted(roster)
+    if set(ids) != set(bundle.split_ids) or len(ids) != len(bundle.outputs_rows):
+        raise Stage3ScoreError("roster differs from complete bundle split")
+    rows = {row.get("sample_id"): row for row in bundle.outputs_rows}
+    if set(rows) != set(ids):
+        raise Stage3ScoreError("bundle outputs have missing, extra, or duplicate roster rows")
+    if bundle.manifest.get("config", {}).get("config_hash") != config_hash:
+        raise Stage3ScoreError("composed config hash differs from sealed manifest")
+
+    columns: dict[str, list[dict[str, Any]]] = {name: [] for name in SHADOW_COLUMNS}
+    row_meta: list[dict[str, Any]] = []
+    at1_checked = 0
+    triggered_total = 0
+    contacts_total = 0
+    for sid in ids:
+        row = rows[sid]
+        episode = row.get("native_episode_receipt")
+        if not isinstance(episode, Mapping):
+            raise Stage3ScoreError(f"{sid}: no sealed native episode")
+        # Read for its own validation side effect (an unreadable delivery
+        # receipt refuses here, exactly as the supply-variant render does);
+        # the delivered TEXT itself is this row's own ``text`` field below.
+        validate_native_episode_delivery_receipt(episode, error_type=Stage3ScoreError)
+        sealed_text = row.get("text")
+        if not isinstance(sealed_text, str):
+            raise Stage3ScoreError(f"{sid}: no sealed delivered text to shadow-bind against")
+        scenario, action, entities, ok = parse_slu_response(sealed_text)
+        delivered_entities = (
+            [{"type": entity.type, "filler": entity.filler} for entity in entities] if ok else []
+        )
+        receipt = row.get("relisten")
+        if receipt is None:
+            for name in SHADOW_COLUMNS:
+                columns[name].append({"sample_id": sid, "text": sealed_text})
+            row_meta.append({"sample_id": sid, "triggered_count": 0, "contacts_used": 0})
+            at1_checked += len(SHADOW_COLUMNS)
+            continue
+        if not isinstance(receipt, Mapping) or receipt.get("schema") != RELISTEN_RECEIPT_SCHEMA:
+            raise Stage3ScoreError(f"{sid}: malformed saea-relisten-v1 receipt")
+        receipt_entities = receipt.get("entities")
+        if not isinstance(receipt_entities, list):
+            raise Stage3ScoreError(f"{sid}: saea-relisten-v1 receipt carries no entities list")
+        bound_values: dict[int, str] = {}
+        for entity in receipt_entities:
+            if not entity.get("accept"):
+                continue
+            blind = entity.get("blind") or {}
+            contact_id = blind.get("contact_id")
+            response = bundle.trace_records.get(f"{contact_id}/response")
+            if not isinstance(response, Mapping) or not isinstance(response.get("text"), str):
+                raise Stage3ScoreError(
+                    f"{sid}: accepted relisten entity {entity.get('index')} has no sealed "
+                    "blind trace"
+                )
+            parsed_blind = parse_blind_response(response["text"])
+            if (
+                parsed_blind.disposition != "value"
+                or parsed_blind.value is None
+                or hashlib.sha256(parsed_blind.value.encode("utf-8")).hexdigest()
+                != blind.get("value_sha256")
+            ):
+                raise Stage3ScoreError(
+                    f"{sid}: accepted relisten value at index {entity.get('index')} differs "
+                    "from its sealed hash"
+                )
+            bound_values[int(entity["index"])] = parsed_blind.value
+        column_a_entities, column_b_entities = bind_shadow_entities(
+            delivered_entities, receipt, bound_values=bound_values,
+        )
+        if ok:
+            text_a = render_answer({"scenario": scenario, "action": action, "entities": column_a_entities})
+            text_b = render_answer({"scenario": scenario, "action": action, "entities": column_b_entities})
+        else:
+            # A malformed delivered answer carries no entities to re-bind at
+            # all; both shadow columns fall back to the sealed text
+            # unchanged, exactly as the "no relisten receipt" row above.
+            text_a = text_b = sealed_text
+        columns[COLUMN_REPLACE_ONLY].append({"sample_id": sid, "text": text_a})
+        columns[COLUMN_REPLACE_DROP_UNHEARD].append({"sample_id": sid, "text": text_b})
+        # AT1: a row with no ACCEPTED replacement renders column (a) exactly
+        # as the sealed delivered text; a row where column (b) additionally
+        # drops nothing renders column (b) the same way. Skipped (never
+        # refused) on a malformed delivered answer -- there is no entity
+        # array to reproduce.
+        if ok and not any(entity.get("accept") for entity in receipt_entities):
+            if text_a != sealed_text:
+                raise Stage3ScoreError(f"{sid}: AT1 column (a) reproduction failed")
+            at1_checked += 1
+            if column_b_entities == column_a_entities:
+                if text_b != sealed_text:
+                    raise Stage3ScoreError(f"{sid}: AT1 column (b) reproduction failed")
+                at1_checked += 1
+        triggered_total += int(receipt.get("triggered_count") or 0)
+        contacts_total += int(receipt.get("contacts_used") or 0)
+        row_meta.append({
+            "sample_id": sid,
+            "triggered_count": receipt.get("triggered_count"),
+            "contacts_used": receipt.get("contacts_used"),
+        })
+    source = {
+        "run_id": run_id, "attempt_id": attempt_id,
+        "manifest_path": str(bundle.manifest_path),
+        "manifest_sha256": sha256_file(bundle.manifest_path),
+        "outputs_sha256": bundle.manifest["outputs"]["sha256"],
+        "raw_trace_sha256": bundle.manifest["raw_trace"]["sha256"],
+        "sealed_scores_sha256": bundle.manifest["scores"]["sha256"],
+        "config_hash": config_hash, "roster_sha256": roster_sha256,
+    }
+    manifest = {
+        "schema": RELISTEN_RENDER_SCHEMA, "stage": "render", "source": source,
+        "rows": len(ids), "column_order": list(SHADOW_COLUMNS),
+        "triggered_count_total": triggered_total, "contacts_used_total": contacts_total,
+        "meaning": "post-accept shadow columns bound from sealed relisten receipts; not a "
+                   "second Solver visit and not the delivered column",
+        # AT1 (section 4, "same-flight-paired, shadow delivery"): every row whose sealed
+        # relisten receipt accepted no replacement had its shadow column(s) checked against
+        # the sealed delivered text byte for byte; this count is the self-check's own
+        # receipt, not merely its absence of failure.
+        "at1_column_reproduction_checked_rows": at1_checked,
+        "copies": {},
+    }
+    for name in SHADOW_COLUMNS:
+        path = out_dir / f"arm-{name}-shadow-outputs.jsonl"
+        digest = _immutable_jsonl(path, columns[name])
+        manifest["copies"][name] = {"path": str(path), "sha256": digest, "rows": len(ids)}
+    _immutable_json(out_dir / "relisten-rows.json", {
+        "schema": RELISTEN_RENDER_SCHEMA, "source": source, "rows": row_meta,
+    })
+    _immutable_json(out_dir / "relisten-render-manifest.json", manifest)
+    return manifest
+
+
+def score_relisten_shadow_copies(
+    scorer_id: str, manifest: Mapping[str, Any], out_dir: Path,
+    *, lock: Mapping[str, object], data_root: Path, delivered: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Use ``score_complete_derived_copy`` once per shadow column, exactly as
+    :func:`score_supply_variant_copies` does per arm -- so
+    ``arm-<column>-<scorer_id>-scores.json`` is the SAME file name shape,
+    which is what lets ``stage3_paired_read.py --left-column/--right-column``
+    read either shadow column against the delivered column with no new
+    machinery.
+    """
+    from speech_aware_evidence_acquisition.core.scoring_batch import (
+        score_complete_derived_copy,
+    )
+    from speech_aware_evidence_acquisition.rails.relisten import SHADOW_COLUMNS
+
+    if manifest.get("schema") != RELISTEN_RENDER_SCHEMA:
+        raise Stage3ScoreError("relisten shadow score requires a relisten shadow render manifest")
+    ids = None
+    sides = {}
+    for name in SHADOW_COLUMNS:
+        entry = manifest["copies"].get(name)
+        if not isinstance(entry, Mapping):
+            raise Stage3ScoreError(f"missing rendered copy for column {name}")
+        path = Path(entry["path"])
+        if sha256_file(path) != entry["sha256"]:
+            raise Stage3ScoreError(f"rendered copy hash mismatch for column {name}")
+        copy_rows = list(iter_jsonl(path))
+        current = {row.get("sample_id") for row in copy_rows}
+        if len(copy_rows) != manifest["rows"] or len(current) != len(copy_rows):
+            raise Stage3ScoreError(f"rendered copy has partial identities for column {name}")
+        if ids is None:
+            ids = current
+        elif ids != current:
+            raise Stage3ScoreError("shadow copies do not share one complete roster")
+        score_path = out_dir / f"arm-{name}-{scorer_id}-scores.json"
+        result = score_complete_derived_copy(
+            parent_manifest=Path(manifest["source"]["manifest_path"]),
+            outputs_copy=path, expected_copy_sha256=entry["sha256"],
+            scorer_id=scorer_id, result_path=score_path, lock=lock,
+            data_root=data_root,
+            column_binding={
+                "column": name,
+                "render_manifest_sha256": sha256_file(out_dir / "relisten-render-manifest.json"),
+                "roster_sha256": manifest["source"]["roster_sha256"],
+                "visit": "post-accept-shadow",
+            },
+        )
+        aggregate = result.get("aggregate", {})
+        scores = result.get("per_sample")
+        if (not isinstance(scores, list) or len(scores) != len(current)
+                or {row.get("sample_id") for row in scores} != current
+                or not aggregate.get("identity_check", {}).get("passed")):
+            raise Stage3ScoreError(f"official scorer returned incomplete column {name}")
+        sides[name] = {
+            "copy_sha256": entry["sha256"], "scores_sha256": sha256_file(score_path),
+            "official": aggregate["official"], "rows": len(scores),
+        }
+    if set(delivered) != ids:
+        raise Stage3ScoreError("sealed delivered scores differ from complete roster")
+    summary = {
+        "schema": RELISTEN_RENDER_SCHEMA, "stage": "score",
+        "source": manifest["source"], "scorer_id": scorer_id,
+        "column_order": manifest["column_order"], "columns": sides,
+        "sealed_delivered_scores_sha256": manifest["source"]["sealed_scores_sha256"],
+        "sealed_delivered_rows": len(delivered),
+        "meaning": "post-accept shadow columns, read against the delivered column by "
+                   "stage3_paired_read.py; never a system-level claim on their own "
+                   "(claim ceiling 'nominated')",
+        "contacts": {"model": 0, "tokenizer": 0, "encoder": 0, "asr": 0,
+                     "server": 0, "network": 0, "scorer": len(sides)},
+    }
+    _immutable_json(out_dir / "relisten-score-summary.json", summary)
+    return summary
+
+
+# ---------------------------------------------------------------------------
 # Perception-branch LEVEL-2 first Solver visit (same-flight instrument phase
 # 2, merge set C, item 1). Structurally render_supply_variant_first_visit's
 # and score_supply_variant_copies's own twins, over the Perception role's
