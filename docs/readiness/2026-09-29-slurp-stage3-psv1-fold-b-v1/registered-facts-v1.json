@@ -187,7 +187,73 @@
   },
   "decision_rule": "SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-top2contrast, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the provisional floor 0.3163 pp. (2) THE CONTRAST: b-top2contrast minus A on the level-2 branch Solver column's official intent accuracy (primary). NOMINATED iff the intent CI95 lower bound is above zero AND the point delta exceeds the twin's intent bar AND the SLU-F1 CI95 lower bound of the same column is not below minus the twin's SLU bar (guard). BRANCH-LOCAL HARM iff the intent CI95 upper bound is below zero and the point magnitude exceeds the twin bar. Otherwise NOT NOMINATED. Reported beside, never gating: gold-on-list and mean gold rank of the B note vs A and T, the conversion P(correct | gold rank r in the branch note) against the ledger's 97.57 / 26.98 / 12.0 %, the rows where top2-contrast-v1 rendered nothing (presentation_skip_reason, ruling O5), and the delivered row (identical by construction). A nomination sends the composed policy to a full-system cross-flight read against an in-chain A/A; it admits nothing.",
   "fit": {
-    "status": "PENDING_CHECK"
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/fable-branchseeds-check-dir/check-slurp-native-stage3-psv1-fold-b-v1.json",
+        "config_hash": null,
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1492,
+            "phase": "perception",
+            "physical_margin_tokens": 4564,
+            "rendered_text_tokens": 19452,
+            "required_window_tokens": 20012,
+            "speech_feature_tokens": 46
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1628,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4700,
+            "rendered_text_tokens": 19316,
+            "required_window_tokens": 19876,
+            "speech_feature_tokens": 46
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1689,
+            "phase": "planner",
+            "physical_margin_tokens": 4761,
+            "rendered_text_tokens": 19255,
+            "required_window_tokens": 19815,
+            "speech_feature_tokens": 46
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -337,
+            "phase": "solver",
+            "physical_margin_tokens": 2735,
+            "rendered_text_tokens": 21281,
+            "required_window_tokens": 21841,
+            "speech_feature_tokens": 46
+          }
+        ],
+        "protocol_hash": null,
+        "sample_count": null,
+        "scientific_readiness": {
+          "reason": "Cell P-SV-1 registered before contact on 2026-09-29 from the retained AGREE arm fragments by script (decision 58): Fold A -> Fold B re-target, program switched to phase-native-candidates-review-revise-pbranch3-l2-v1, a level-2 K = 3 Perception branch block (owner decisions 184, 186, 188). No cross-flight comparator: the read is within this flight (B and T branch columns against the delivering A column). HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/psv/psv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 over the whole roster, so there is no earlier digest to reproduce); --allow-output-change must never be passed. The top2-contrast-v1 branch additionally waits for the contrast-pair table (scripts/build_slurp_intent_contrast_pairs.py; pin TO-BE-PINNED-AFTER-CONTRAST-PAIR-BUILD). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        },
+        "top2_contrast_branch_perception": {
+          "contrast_block_allowance_tokens_at_4_bytes": 448,
+          "contrast_branch_physical_margin_estimate": 4116,
+          "delivering_branch_physical_margin": 4564,
+          "note": "the preflight renders the delivering branch's request only (it knows no branches, and the top2-contrast renderer has no table yet); the contrast branch adds at most two sentences, bounded here by two widest boundary items at the check's 4-bytes-per-token counter"
+        }
+      },
+      "smoke": {
+        "error_tail": [],
+        "path": "/home/chao/saea-worktrees/fable-branchseeds-check-dir/check-slurp-native-stage3-psv1-fold-b-smoke-4-v1.json",
+        "status": "MISSING"
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
   },
   "fit_measure": {
     "relpath": "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v1.json",
