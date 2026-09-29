@@ -101,27 +101,67 @@ READ_ANALYSIS = "scripts/analysis/slurp_perception_branch_read.py"
 FIT_MEASURE = "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v1.json"
 
 # The contrast-pair table top2-contrast-v1 renders from (spec section 5 item 6). Built model-free by
-# scripts/build_slurp_intent_contrast_pairs.py. Registered as a placeholder at first registration
-# (2026-09-28); commit 3ee765f34 hand-patched registered-facts-v1.json/README.md with the real pin once
-# the builder landed (docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json). CONTRAST_PAIR_TABLE
-# below is that same real pin, so a re-run of write_slurp_psv_registration.py reproduces it instead of
-# regressing to the placeholder; CONTRAST_PAIR_PLACEHOLDER stays defined for the one residual safety line
-# (root-admission-draft-v1.json's not_authorized entry) 3ee765f34 deliberately left unchanged -- the
-# BRANCH SCHEMA still carries no table field until the runtime wiring in a later merge set lands.
+# scripts/build_slurp_intent_contrast_pairs.py. History: registered as a placeholder at first registration
+# (2026-09-28); pinned to the nearest-rival V1 table (3ee765f34, 48 pairs); hand-pinned on the b-top2contrast branch
+# (d09dded8e) and re-pinned to the all-pairs V2 table under ruling O7 (11ed00ea9). CONTRAST_PAIR_TABLE below is the
+# V2 pin, so a re-run of derive_slurp_psv_cells.py / write_slurp_psv_registration.py reproduces the branch's
+# ``contrast_pairs {relpath, sha256}`` and the registered facts instead of regressing to V1 or the placeholder.
+# CONTRAST_PAIR_PLACEHOLDER stays defined only for the refusal guards (psv_mint_receipt.py, psv_flip.sh).
 CONTRAST_PAIR_PLACEHOLDER = "TO-BE-PINNED-AFTER-CONTRAST-PAIR-BUILD"
 CONTRAST_PAIR_BUILDER = "scripts/build_slurp_intent_contrast_pairs.py"
+CONTRAST_PAIR_BUILDER_ARGS = "--pair-scope all-pairs"
+CONTRAST_PAIR_RULING = "O7"
 CONTRAST_PAIR_TABLE = {
+    "table_relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2/table-v1.json",
+    "sha256": "0d74fdb6aae70bff82abbd52355fe34b58cf646fe36a80016220ba1e714a7e34",
+    "receipt_relpath": "docs/receipts/knowledge/slurp-perception-contrast-pairs-v2.json",
+    "receipt_sha256": "c6fd04260b00ec6fdfaebd0e5ecc1a5f1edcb76ac30f06dbeaf08c1c0b437ac8",
+    "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2",
+    "exposure_ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V2",
+    "pinned_date": "2026-09-29",
+    "pairs_considered": 1770,
+    "pairs_written": 1710,
+    "pairs_skipped": 60,
+}
+# The superseded nearest-rival V1 pin (unchanged on disk; content-verified by the builder's --check).
+CONTRAST_PAIR_TABLE_V1 = {
     "table_relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json",
     "sha256": "19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059",
     "receipt_relpath": "docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json",
     "receipt_sha256": "4af9e874dea15f5846034ceaff9fbc15b6ba555b81fa959e7a96bf5f6f59a368",
     "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1",
-    "exposure_ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V1",
     "pinned_date": "2026-09-28",
     "pairs_considered": 50,
     "pairs_written": 48,
     "pairs_skipped": 2,
 }
+# scripts/analysis/slurp_contrast_pair_coverage.py against the P-SV-1 b-top2contrast seed (1,078 rows with a seed).
+CONTRAST_PAIR_COVERAGE = {
+    "coverage_script": "scripts/analysis/slurp_contrast_pair_coverage.py",
+    "seed": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json",
+    "branch": "b-top2contrast",
+    "rows_total": 1078,
+    "v1_nearest_rival": {
+        "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1",
+        "rows_hit": 415, "rows_no_table_row": 662, "rows_fewer_than_two_intents": 1,
+        "coverage_fraction": "415/1078 (38.5%)",
+    },
+    "v2_all_pairs": {
+        "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2",
+        "rows_hit": 1035, "rows_no_table_row": 42, "rows_fewer_than_two_intents": 1,
+        "coverage_fraction": "1035/1078 (96.0%)",
+        "note": ("the 42 residual no-table-row rows all land on the same 2 pairs O5's own pool-support floor still skips "
+                 "in V2 (cooking_query/cooking_recipe, iot_hue_lightoff/iot_hue_lighton) -- the identical 2 of 60 that "
+                 "were pool-support-skipped nearest-rival pairs too"),
+    },
+}
+
+
+def contrast_pairs_pin() -> dict:
+    """The ``contrast_pairs {relpath, sha256}`` pin the b-top2contrast branch carries (data-root relpath)."""
+
+    return {"relpath": CONTRAST_PAIR_TABLE["table_relpath"], "sha256": CONTRAST_PAIR_TABLE["sha256"]}
+
 
 ARM_A, ARM_T = "a-agree", "t-twin"
 

@@ -126,10 +126,14 @@ def branches_block(key: str, measure: dict) -> dict:
     bounds = measure["max_supplied_items"]
     cell = ff.CELLS[key]
     b_bound = bounds["top2_contrast"] if "presentation_id" in cell["b_axis"] else bounds["min_candidates"]
+    b_row = {"branch_id": cell["b_branch"], "max_supplied_items": b_bound, **cell["b_axis"]}
+    if cell["b_axis"].get("presentation_id") == "top2-contrast-v1":
+        # the pinned contrast-pair table (ruling O7, V2); the runtime verifies its bytes before any contact
+        b_row["contrast_pairs"] = ff.contrast_pairs_pin()
     return {
         "level": ff.LEVEL,
         "branches": [
-            {"branch_id": cell["b_branch"], "max_supplied_items": b_bound, **cell["b_axis"]},
+            b_row,
             {"branch_id": ff.ARM_T, "max_supplied_items": bounds["a_and_twin"], "replicate_of": ff.ARM_A},
             {"branch_id": ff.ARM_A, "deliver": True, "max_supplied_items": bounds["a_and_twin"]},
         ],
@@ -283,6 +287,23 @@ def budgets(rows: int, audio: float, parent: dict, kind: str) -> tuple[dict, dic
     return fam, plan
 
 
+def contrast_pin_sentence() -> str:
+    """P-SV-1's readiness sentence naming the V2 contrast-pair pin on the b-top2contrast branch (ruling O7)."""
+
+    v2, v1, cov = ff.CONTRAST_PAIR_TABLE, ff.CONTRAST_PAIR_TABLE_V1, ff.CONTRAST_PAIR_COVERAGE
+    return (
+        " The top2-contrast-v1 branch's contrast-pair table pin now sits on the branch (b-top2contrast.contrast_pairs: "
+        f"{v2['table_relpath']}, sha256 {v2['sha256']}, {ff.CONTRAST_PAIR_BUILDER} {ff.CONTRAST_PAIR_BUILDER_ARGS}; "
+        f"{ff.CONTRAST_PAIR_RULING} ruling, {ff.SPEC}), receipt {v2['receipt_relpath']} ({v2['pairs_written']:,} pairs "
+        f"written / {v2['pairs_skipped']} skipped of {v2['pairs_considered']:,} considered, insufficient-pool-support). "
+        f"This REPLACES the nearest-rival V1 pin ({v1['pairs_written']} pairs written / {v1['pairs_skipped']} skipped of "
+        f"{v1['pairs_considered']}, sha256 {v1['sha256']}, unchanged on disk and content-verified by --check), which "
+        f"covered only {cov['v1_nearest_rival']['rows_hit']} of {cov['rows_total']:,} P-SV-1 b-top2contrast rows (38.5%; "
+        f"{cov['coverage_script']}); V2 covers {cov['v2_all_pairs']['rows_hit']:,} of {cov['rows_total']:,} rows (96.0%), "
+        "and the runtime verifies the file's bytes against that sha256 before any contact."
+    )
+
+
 STAGE3_ALGORITHM_NOTE = (
     "This cell carries NO training-free RL operator and says so explicitly: it is a phase-2 cell of the same-flight "
     "INSTRUMENT (owner decisions 172 and 184) -- one Perception-branch axis and an in-flight twin read as branch "
@@ -354,8 +375,7 @@ def derive_experiment(key: str, kind: str, spec: dict, date: str) -> str:
         "scripts/flights/psv/psv_flip.sh), which also mints this cell's own first-phase supply under its own run id "
         "(item E16; the first Fold B supply at w_agree 1.0 over the whole roster, so there is no earlier digest to "
         "reproduce); --allow-output-change must never be passed."
-        + (" The top2-contrast-v1 branch additionally waits for the contrast-pair table "
-           f"({ff.CONTRAST_PAIR_BUILDER}; pin {ff.CONTRAST_PAIR_PLACEHOLDER})." if key == "psv1" else "")
+        + (contrast_pin_sentence() if key == "psv1" else "")
         + " Nothing here authorises a flight, a readiness flip or an admission entry."
     )
     cell["allowed_execution_stages"] = ["check", "prepare-supply", "prepare-branch-seeds", "worker"] + (

@@ -329,28 +329,44 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
     fit = fold_check(key, args.check_dir, measure)
     rule = decision_rule(key)
     measurement = measurement_blocks(key, ids, measure)
-    ct = ff.CONTRAST_PAIR_TABLE
+    ct, v1, cov = ff.CONTRAST_PAIR_TABLE, ff.CONTRAST_PAIR_TABLE_V1, ff.CONTRAST_PAIR_COVERAGE
     contrast_pin = {
         "presentation_id": "top2-contrast-v1",
         "table_relpath": ct["table_relpath"], "sha256": ct["sha256"],
-        "builder": ff.CONTRAST_PAIR_BUILDER,
+        "builder": f"{ff.CONTRAST_PAIR_BUILDER} {ff.CONTRAST_PAIR_BUILDER_ARGS}",
+        "coverage": cov,
         "status": (
-            f"PINNED {ct['pinned_date']} from the builder receipt (table under SPEECHRL_DATA_DIR, relpath relative "
-            f"to the data root; {ct['pairs_written']} pairs written / {ct['pairs_skipped']} skipped of "
-            f"{ct['pairs_considered']}, skip reason insufficient-pool-support; the build excluded the Fold A, Fold B "
-            "and R01 rosters by receipt). The runtime carries no table field yet: the top2-contrast-v1 renderer "
-            "takes the table as a mapping, so the cell is re-derived and re-pinned once the runtime wiring lands; "
-            "still no flip before that."
+            f"RE-PINNED {ct['pinned_date']} to V2 ({ff.CONTRAST_PAIR_RULING} ruling): the nearest-rival V1 table "
+            f"({v1['pairs_written']} pairs, pinned {v1['pinned_date']}) covered only {cov['v1_nearest_rival']['rows_hit']} of "
+            f"{cov['rows_total']:,} P-SV-1 b-top2contrast rows (38.5%; {cov['coverage_script']}), "
+            f"{cov['v1_nearest_rival']['rows_no_table_row']} rows naming a rank-1/rank-2 pair the table never built. V2 is "
+            "EVERY unordered pair of distinct SLURP intents above the same pool-support floor (min_pair_pool_support 5), "
+            f"roster-agnostic, from the SAME R01/Fold-A/Fold-B-excluded TRAIN pool: {ct['pairs_written']:,} pairs written / "
+            f"{ct['pairs_skipped']} skipped of {ct['pairs_considered']:,} considered (C(60,2)), skip reason "
+            f"insufficient-pool-support. Coverage against this seed rises to {cov['v2_all_pairs']['rows_hit']:,}/"
+            f"{cov['rows_total']:,} (96.0%); the residual {cov['v2_all_pairs']['rows_no_table_row']} rows land on the 2 "
+            "pairs still below the floor (cooking_query/cooking_recipe, iot_hue_lightoff/iot_hue_lighton -- the same 2 of "
+            f"60 V1 skipped). V1 itself is untouched and unchanged: {ff.CONTRAST_PAIR_BUILDER} --check confirms its content "
+            f"(schema, artifact_id, builder_id, min_pair_pool_support, rows) is still the pinned {v1['pairs_written']}-pair "
+            f"table, sha256 {v1['sha256']}. The table pin sits on the b-top2contrast branch (contrast_pairs: relpath "
+            f"{ct['table_relpath']}, sha256 {ct['sha256']}), emitted by {DERIVE_SCRIPT} from "
+            "scripts/flights/psv/psv_family.py, and the runtime loads it once per flight, verifies the file's bytes against "
+            "that sha256, and hands the top2-contrast-v1 renderer the table as a mapping; the table document's own schema "
+            "field is unchanged (saea-slurp-perception-contrast-pairs-v1). The cell was re-derived against this pin "
+            "(composed config and protocol hashes in identity); root's flip re-pins the prepared branch seed against the "
+            "widened branch identity."
         ),
         "receipt": {
             "relpath": ct["receipt_relpath"], "sha256": ct["receipt_sha256"], "artifact_id": ct["artifact_id"],
             "exposure_ledger_row": ct["exposure_ledger_row"], "pairs_considered": ct["pairs_considered"],
             "pairs_written": ct["pairs_written"], "pairs_skipped": ct["pairs_skipped"],
         },
-        "requirements": ("built model-free (W3a's word-gap method) over the R01-excluded TRAIN pool with its own "
-                         "receipt; its pool must be proven disjoint from TRAIN Fold B by utterance identity before the "
-                         "flip (phase-2 inputs README: 'Not checked here: a contrast-pair pool'); the pin enters where "
-                         "the runtime reads it (merge set C item 4/6), then the cell is re-derived and re-pinned"),
+        "requirements": ("built model-free (W3a's word-gap method) over the SAME R01-excluded TRAIN pool as V1, "
+                         f"roster-agnostic ({ff.CONTRAST_PAIR_RULING} ruling, {ff.SPEC}: every unordered pair of distinct "
+                         "intents above the pool-support floor, never selected from a roster's seeds); its pool must be "
+                         "proven disjoint from TRAIN Fold B by utterance identity before the flip (phase-2 inputs README: "
+                         "'Not checked here: a contrast-pair pool'); the pin enters where the runtime reads it (merge set C "
+                         "item 4/6), then the cell is re-derived and re-pinned"),
     } if key == "psv1" else None
     facts = {
         "schema": "saea-registered-facts-v1",
@@ -509,7 +525,7 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
         "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a branch read on a development fold whose ceiling is 'nominated'.",
         "failure_policy": protocol["failure_policy"],
         "not_authorized": ["any flight before the cells are flipped and the receipt is minted", "touching the resident np4 session by anyone but the coordinator", "any ASR, transcript, encoder or paid-API contact", "re-flying or re-scoring any sealed cell", "--allow-output-change on the re-pin tool", "any change beyond the registered re-target, program switch and branch block", "opening a branch column before the READ row is countersigned"]
-        + (["flipping P-SV-1 while its contrast-pair table pin is the placeholder " + ff.CONTRAST_PAIR_PLACEHOLDER] if key == "psv1" else []),
+        + ([f"flipping P-SV-1 with a b-top2contrast contrast_pairs pin other than the registered V2 table ({ff.CONTRAST_PAIR_TABLE['table_relpath']}, sha256 {ff.CONTRAST_PAIR_TABLE['sha256']}; {ff.CONTRAST_PAIR_RULING} ruling)"] if key == "psv1" else []),
         "population": {"count": arm["rows"], "split_identity_hash": arm["split_identity_hash"], "split_role": "discovery", "fold_a_contact_authorized": False, "test_contact_authorized": False},
         "registered_hashes": {kind: {"composed_config": ids[kind]["composed_config_hash"], "protocol": ids[kind]["protocol_hash"]} for kind in KINDS},
         "service": {"expected_session_id": ff.SESSION, "model_fragment": arm["model_fragment"], "slots": 4, "slot_tokens": 24576, "no_child_start_stop": True},
@@ -555,17 +571,26 @@ def render_docs(key, args, ids, group, measure, fit, rule, fence, caps, smoke_ca
         axis = ", ".join(f"`{k}` {v}" for k, v in row.items() if k in ("presentation_id", "min_candidates", "overrides", "release_swap")) or "none"
         rows.append(f"| `{row['branch_id']}` | {index} | {role} | {axis} | {row['max_supplied_items']} |")
     fe = group["fit_estimate"]
+    ct, v1, cov = ff.CONTRAST_PAIR_TABLE, ff.CONTRAST_PAIR_TABLE_V1, ff.CONTRAST_PAIR_COVERAGE
     placeholder = (
-        f"\n**Contrast-pair table pinned ({ff.CONTRAST_PAIR_TABLE['pinned_date']}).** The `top2-contrast-v1` renderer "
-        f"reads the model-free contrast-pair table built by `{ff.CONTRAST_PAIR_BUILDER}`: "
-        f"`{ff.CONTRAST_PAIR_TABLE['table_relpath']}` (data root), sha256 `{ff.CONTRAST_PAIR_TABLE['sha256']}`, "
-        f"receipt `{ff.CONTRAST_PAIR_TABLE['receipt_relpath']}` (sha256 `{ff.CONTRAST_PAIR_TABLE['receipt_sha256']}`; "
-        f"{ff.CONTRAST_PAIR_TABLE['pairs_written']} pairs written / {ff.CONTRAST_PAIR_TABLE['pairs_skipped']} skipped "
-        f"of {ff.CONTRAST_PAIR_TABLE['pairs_considered']}, insufficient pool support; the build excluded the Fold A, "
-        "Fold B and R01 rosters). The pin is registered in `registered-facts-v1.json` (`contrast_pair_table`). The "
-        "branch schema carries no table field yet, so the pin enters where the runtime reads it once that wiring "
-        "lands; then this cell is re-derived and re-pinned. The cell must not be flipped before that re-derivation.\n"
+        f"\n**Contrast-pair table pinned (V2, {ct['pinned_date']}, ruling {ff.CONTRAST_PAIR_RULING}).** The `top2-contrast-v1` "
+        f"renderer reads the model-free contrast-pair table built by `{ff.CONTRAST_PAIR_BUILDER} {ff.CONTRAST_PAIR_BUILDER_ARGS}`: "
+        f"`{ct['table_relpath']}` (data root), sha256 `{ct['sha256']}`, receipt `{ct['receipt_relpath']}` (sha256 "
+        f"`{ct['receipt_sha256']}`; {ct['pairs_written']:,} pairs written / {ct['pairs_skipped']} skipped of "
+        f"{ct['pairs_considered']:,}, insufficient pool support; every unordered pair of distinct intents above the floor, "
+        "roster-agnostic, from the R01/Fold-A/Fold-B-excluded TRAIN pool). The pin sits on the branch "
+        "(`b-top2contrast.contrast_pairs`) and the runtime verifies the file's bytes against it before any contact. It "
+        f"replaces the nearest-rival V1 pin (`{v1['sha256'][:8]}`, {v1['pairs_written']} pairs), which covered "
+        f"{cov['v1_nearest_rival']['coverage_fraction']} of this seed's rows against V2's "
+        f"{cov['v2_all_pairs']['coverage_fraction']} (`{cov['coverage_script']}`). Registered in `registered-facts-v1.json` "
+        "(`contrast_pair_table`).\n"
         if key == "psv1" else "")
+    placeholder += (
+        "\n**Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` "
+        f"(`{ff.branch_seed_relpath(key, 'arm')}`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining "
+        "Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than "
+        "of the branch.\n"
+    )
     readme = f"""# Cell {c['label']}: phase-2 same-flight Perception branches on TRAIN Fold B (owner decisions 184, 186, 188)
 
 Registered before contact {args.registered_at[:10]} at study commit `{args.study_commit}` (branch `{args.branch}`);
@@ -677,9 +702,9 @@ def append_ledger(key, args, ids, plan_shas, group, measurement) -> str:
                        f"aa_arm_id {ff.ARM_T}, tuning_roster {ff.TUNING_ROSTER}, read_roster {ff.READ_ROSTER}, variant_cost +2 Perception and +2 Solver contacts per row, rows 1080"
                        if kind == "arm" else f"measurement_design form-proof, claims_benefit false, expected_effect_pp 0.0, rows 4, tuning_roster none, read_roster {ff.READ_ROSTER}")
         placeholder = (
-            f" P-SV-1's top2-contrast-v1 branch reads its pinned contrast-pair table ({ff.CONTRAST_PAIR_BUILDER}; "
-            f"{ff.CONTRAST_PAIR_TABLE['table_relpath']} sha256 {ff.CONTRAST_PAIR_TABLE['sha256']}); the branch schema "
-            "carries no table field yet, so no flip before the runtime wiring lands and the cell is re-derived."
+            f" P-SV-1's top2-contrast-v1 branch reads its pinned contrast-pair table ({ff.CONTRAST_PAIR_BUILDER} "
+            f"{ff.CONTRAST_PAIR_BUILDER_ARGS}; {ff.CONTRAST_PAIR_TABLE['table_relpath']} sha256 {ff.CONTRAST_PAIR_TABLE['sha256']}, "
+            f"ruling {ff.CONTRAST_PAIR_RULING}) through b-top2contrast.contrast_pairs; the runtime verifies its bytes before any contact."
             if key == "psv1" else ""
         )
         return (
