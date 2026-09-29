@@ -1,7 +1,41 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T21:05:39Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records and read agent) · HEAD at writing `1099a19c` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T22:30:23Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records agent) · HEAD at writing `310110be` on `master` (plus this refresh commit), tree clean.
+**Since 21:05Z (records agent):** **Consumption-module steps 3-5 merged** (`6cc9a3d9`, `fable/module2`; 721 worktree
+tests passed). Step 3: the scope-rule table, built model-free over the R5 roster (TRAIN minus Fold A, Fold B, R01 and
+R01C: 8,554 exemplars; 3,629 phrases at >= 5 occurrences, 2,969 meeting the rule of >= 0.8 untagged; receipt
+`docs/receipts/knowledge/slurp-scope-rule-table-v1.json`, counts and hashes only), the deliver stage
+`saea-deliver-scope-rule-v1` in `core.base.DELIVERY_NORMALISERS`, and AT-M3 re-derived on the R5 table (offline rule ==
+table lookup == registered stage, row for row): AGREE **+1.18 [+0.67, +1.71]** SLU-F1 (66 drops), wave A/A **+1.07
+[+0.61, +1.55]** (59 drops). Step 4: module columns compile to Perception branch blocks (AT-M4 reproduces P-SV-1's and
+P-SV-2's registered branch bytes). Step 5: the SLURP hard-codings of the rails moved behind `CarrierHooks` (SLURP bytes
+unchanged). Module equivalence AT-M0/M1/M2/M4 ok on master. **Remaining gap:** the delivered-path Perception axes
+(`presentation_id` / `min_candidates` on branch A) are parsed but not rendered -- the runner refuses an axis on A
+until the wire rendering and the seal custody land with the first admission (SLURP's `delivered_path_admissions` is
+empty, so state `on` refuses today). **COMP-1b coordinator verdict** (`bc51a469`, read note + results-ledger row):
+**NOMINATED (intent), not admitted** -- intent +3.80 [+1.94, +5.65] clears the 2.5 pp cross-flight bar on the point
+with the lower bound above zero; SLU-F1 -0.60 [-2.29, +1.07], no measured loss. **Citation cause confirmed by
+removal:** vs COMP-1, SLU-F1 +1.64 [+0.38, +2.92] at intent -0.46 [-1.30, +0.37]; zero-gold rows emitting an entity
+161 (A/A 162, COMP-1 252); the citation contract is closed as a COMP-2 component. A2 is the admission test. **A2**
+(`slurp-native-stage3-comp1b-dev2000-added-v1`, declared +3.80, guard h_SLU 1.2525): six flight rows countersigned and
+the root-admission receipt minted (`2941bb23`; `coordination/slurp-stage3-comp1b-dev2000-added-v1/root-admission-v1.json`,
+sha256 `135ad690...`); the READ row stays DRAFT until the seal. The first flip was refused on the superseded COMP-1 DEV
+placeholder package's residue; fixed on `fable/repinsuperseded` (merged `6d3d58f1`: a superseded donor package's own
+record is exempt from repin residue; 229 tests passed). The flip then converged (`FLIP_EXIT=0`): A/A `72039b56`, smoke
+`a22feec1`, arm **`310110be`**; `/home/chao/comp1bdev-flight-commit.txt` = `310110be`. Queued as **`SAEA-Queue-A2`**
+(`/home/chao/saea-queue/queue_a2.sh`, log `/home/chao/queue-a2.out`, started 22:20:36Z), waiting for `NEXT DONE` and
+`filler hold removed` in `queue-next.out`. **GPU order:** P-SV-2 (flying since 20:50:29Z at `c6e98e6b`) -> P-SV-3 ->
+A2 -> filler; the 12-h serving restart rule (`MAX_UPTIME=43200`) is in both `queue_next.sh` and `queue_a2.sh`.
+**Inner-loop run 2 merged** (`0da2d81a`, `docs/results/2026-09-29-slurp-sealed-credit-inner-loop-run-2.md`,
+DESCRIPTIVE, model-free): the only single knob that clears under both designs is AGREE + centroid (= COMP-1b,
++4.26 intent / +0.58 SLU); compositions on top of it (SLU sums, upper bounds where components overlap): + scope rule
+SLU +1.76 (the smallest composition over the 1.49 same-flight floor), + none hint +1.93, + relisten drop-only +2.73.
+P-SV-1 pre-read (descriptive, not the verdict): level-1 top1 **-1.67 [-2.96, -0.37]**, present -1.85 [-2.96, -0.83],
+level-2 intent **-0.19 [-0.56, +0.19]**. **P-SV-1 official read BLOCKED:** the recipe-driven read driver (level-2
+column render + official scoring) is being built on `fable/psvreaddriver`; the P-SV-1 READ row stays DRAFT and is
+countersigned after the driver lands. **Pending owner:** decisions 200 (P-SV-3 column) and 201 (E5 Whisper route; E5
+design merged with rulings Q1-Q5 at `c2ae4404`).
 **Since 20:11Z (records and read agent):** **E5 design merged with the coordinator rulings** (`c2ae4404`;
 `docs/superpowers/specs/2026-09-29-e5-asr-tool-slot-value-verification-design.md`, section "Coordinator rulings (Fable
 5.1, 2026-09-29)"): Q1 decision 201 goes to the owner as a LIMITED exception to the 2026-09-06 no-transcript ruling
@@ -255,7 +289,7 @@ retrieved because the key side is text by design.
 | --- | --- | --- |
 | A2T-ORG-1 re-read against h_A2T 1.625 (decisions 166, 167, 173): official tool accuracy -3.225 [-4.30, -2.13] at n = 4,000, 2.0x h_A2T | `docs/results/2026-09-27-a2t-org-1-reread-against-h-a2t.md`, ledger annotated in both halves | **KEEP** (secondary-loss claim KEEP-PROVISIONAL) |
 | Test fixes: the A2T comparator-rows companion is recognised, the sys.path quarantine scan is narrowed, and the Perception-state parser is excluded from renderer catalogue coverage | merge of `fable/testfix` | merged |
-| A2 = COMP-1b on DEV-2000-ADDED (decision 198): arm + four-row smoke, with the in-chain A/A of the PLAN lock's bytes carried from the COMP-1 DEV placeholder; own null h 1.1520 intent / 1.2525 SLU | `docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/` (supersedes `docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/`, whose arm and smoke are superseded) | registered, **HELD** (`1099a19c`). `expected_effect_pp` 3.8 from the COMP-1b Fold A read; `stage3_effect_floor_check.py` PASS; flip after countersign + mint |
+| A2 = COMP-1b on DEV-2000-ADDED (decision 198): arm + four-row smoke, with the in-chain A/A of the PLAN lock's bytes carried from the COMP-1 DEV placeholder; own null h 1.1520 intent / 1.2525 SLU | `docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/` (supersedes `docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/`, whose arm and smoke are superseded) | registered (`1099a19c`), countersigned + minted (`2941bb23`, receipt sha256 `135ad690...`), **flipped at `310110be`** (after the residue fix `6d3d58f1`), queued as `SAEA-Queue-A2` after P-SV-3. `expected_effect_pp` 3.8; READ row DRAFT until the seal |
 | The knowledge wave's shared in-chain A/A `SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1` | `docs/readiness/2026-09-27-slurp-stage3-wave1-aa-fold-a-v1/` | registered; proven **IDENTICAL** to the AGREE arm's bytes |
 | W3 re-derived and re-registered as **W3a alone** (intent contrast cards; the per-intent exemplar cap dropped under decision 164's one-change rule) | `docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1/` (same run ids, rewritten in place) | registered, held |
 | W5 slot-side retrieval, with its offline estimate | `docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1/`, `docs/results/2026-09-28-slurp-w5-slot-exemplar-offline-estimate.md` | registered, **HELD** (outcome of 170) |
@@ -305,6 +339,11 @@ retrieved because the key side is text by design.
 | **Same-flight floor re-calibration** (model-free impact note) | `docs/results/2026-09-29-slurp-same-flight-floor-recalibration.md` (merge `67a6acad`) | Proposed owner decision 190: per-metric same-flight anchors from W-SV-1's contrast, intent 0.5093 / SLU 1.4866 at n = 1,080 (vs the provisional 0.3163), **amended after W4-SV to the larger of the two measurements, intent 0.65 / SLU 1.49**; no queued cell is refused; W4-SV (0.79) is underpowered on SLU; the inner-loop run-1 nomination (`phase_supply.k = 10`, +0.48 pp) no longer clears. The FLOOR_TABLE diff is text only, not applied. |
 | **COMP-1 Fold A paired read** (seal-only arm, decision 189-A; READ row `SAEA-SLURP-STAGE3-COMP1-FOLD-A-PAIRED-ANALYSIS-V1`, n = 1,080 vs the in-chain A/A): intent +4.26 [+2.41, +6.11] (76 / 30), official SLU-F1 -2.24 [-3.97, -0.47]; entity FP 497 -> 611; newly delivered 38 / 78 convert (newly-by-both 30 / 47) | `docs/results/2026-09-29-slurp-comp1-fold-a-read.md` (merge `99c5b004`; countersign `cf38bec3`) | DESCRIPTIVE; HARMFUL branch on the SLU-F1 guard, intent clears its declared 3.23; coordinator verdict pending |
 | **Consumption-module design** (decisions 195/196) with coordinator rulings R1-R5 | `docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md` (merge `d51063b4`) | merged; docs only |
+| **Consumption-module steps 3-5**: scope-rule table on the R5 roster (8,554 exemplars, 2,969 phrases) + stage `saea-deliver-scope-rule-v1` (AT-M3: AGREE +1.18 [+0.67, +1.71], A/A +1.07 [+0.61, +1.55]); columns compile to Perception branch blocks (AT-M4); SLURP hard-codings behind `CarrierHooks` | merge `6cc9a3d9` (`fable/module2`); receipt `docs/receipts/knowledge/slurp-scope-rule-table-v1.json` | merged; AT-M0/M1/M2/M4 ok. Gap: delivered-path Perception axes parsed, not rendered |
+| **COMP-1b coordinator verdict** (intent +3.80 [+1.94, +5.65], SLU-F1 -0.60 [-2.29, +1.07]; vs COMP-1 SLU +1.64, zero-gold emitting rows 161 vs 252) | `docs/results/2026-09-29-slurp-comp1b-fold-a-read.md` + results-ledger row (`bc51a469`) | **NOMINATED (intent), not admitted**; A2 is the admission test |
+| **Repin residue fix for a superseded donor package** | merge `6d3d58f1` (`fable/repinsuperseded`) | merged; unblocked the A2 flip |
+| **Sealed-credit inner loop run 2** (pools v2, policy space v2, compositions, P-SV-1 pre-read) | `docs/results/2026-09-29-slurp-sealed-credit-inner-loop-run-2.md` (merge `0da2d81a`) | DESCRIPTIVE. Only AGREE + centroid clears both designs; + scope rule SLU +1.76, + none hint +1.93, + relisten drop-only +2.73 (upper bounds); P-SV-1 pre-read level-1 top1 -1.67, level-2 intent -0.19 |
+| **P-SV-1 official read** | recipe-driven read driver on `fable/psvreaddriver` | **BLOCKED** on the driver; READ row DRAFT |
 
 ### What the wave taught
 
@@ -408,7 +447,7 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 24. 198: COMP-1 NOT ADMITTED (HARMFUL on the SLU-F1 guard; cause: the Solver citation contract); option B -- COMP-1b (AGREE + centroid key, no citation contract) held on `fable/comp1b`, then A2 = COMP-1b on DEV-2000-ADDED; recorded `f26e3cdb`.
 25. 199: owner directive, empty supply and none slots are first-class outcomes; recorded `f26e3cdb`; module design section 2c `c0067e0e`; offline analysis on `fable/emptysupply`.
 
-**Pending branches (not merged):** `fable/repinresume2` (the parent-package residue fix for the P-SV-1 seal-only flip); `fable/comp1slu` (COMP-1 SLU harm attribution); `fable/comp1b` (COMP-1b registration, held); `fable/emptysupply` (supply-abstention offline analysis, dispatched); `fable/psv3` (P-SV-3 registration, boundary-depth column). `fable/psvsealfix` is merged (`0177f83f`). `fable/moduledesign` is merged (`d51063b4`), `fable/comp1read` is merged (`99c5b004`). `fable/repinresume` is merged (`0ef6d98c`). `fable/floor190` (merge `c2f1be08`) and `fable/w5offline` (merge `949d77d1`) are merged today, after `fable/e4sealfix` (merge `109538e8`), `fable/psvrepinfix` (merge `4b1283e0`) and the earlier set. **Pending engineering:** the residue fix (`fable/repinresume2`), then P-SV-1's seal-only flip convergence (decision 197), P-SV-2's re-pin and P-SV-3's flip; the registration gate's direct check of seal-only decision receipts (header). Queue order: `SAEA-Queue-SEALONLY` (COMP-1 seal-only + G5, `fd8a01fe`) -> `SAEA-Queue-E4SEAL` (E4-1 seal-only, `0b50d47e`) -> filler; `SAEA-Queue-PSV` stays halted.
+**Pending branches (not merged):** `fable/psvreaddriver` only (the P-SV recipe-driven read driver: level-2 column render + official scoring). Merged since the previous list: `fable/repinresume2` (`4b2946f3`), `fable/comp1slu` (`1ab14dfc`), `fable/comp1b` (`c5cb5399`), `fable/emptysupply` (`70b67bbf`), `fable/psv3` (`776e3f84`), `fable/module1` (`fe08c9fc`), `fable/module2` (`6cc9a3d9`), `fable/repinsuperseded` (`6d3d58f1`), `fable/innerloop2` (`0da2d81a`). **Queue order:** `SAEA-Queue-NEXT` P-SV-2 (flying, `c6e98e6b`) -> P-SV-3 -> `SAEA-Queue-A2` (A2, `310110be`) -> filler; the 12-h serving restart rule is in both queues.
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code). The supply-router test failure found during E4 v1 (a bare `object()` double refusing the bolted-on binding) is fixed (`87146390`).
 
@@ -431,11 +470,10 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 
 ## 7. My next action
 
-1. COMP-1 is NOT ADMITTED (decision 198; cause the citation contract): merge `fable/comp1slu`, then flip and queue COMP-1b (`fable/comp1b`) after the P-SV flips; A2 = COMP-1b on DEV-2000-ADDED follows its read. G5 is flying (`SAEA-Queue-SEALONLY`, `fd8a01fe`); read it against the shared A/A when sealed.
-2. E4-1 seal-only runs next (`SAEA-Queue-E4SEAL`, `0b50d47e`); read the columns against the pre-declared gate; then the filler runs inline. SLURP only (187).
-3. P-SV-1: land the parent-package residue fix (`fable/repinresume2`), converge the decision-197 seal-only flip (no re-fly); then re-pin P-SV-2 and flip P-SV-3 (`fable/psv3`); read under the decision-190 floors.
-4. Build the one consumption module from the merged design (195/196, `d51063b4`; section 2c for decision 199, supply abstention, pending the `fable/emptysupply` analysis); remove `/home/chao/saea-queue/watchdog.hold` once `ready_chains.json` names the next ready chain.
-5. A2 is registered HELD with `expected_effect_pp` 3.8 from the COMP-1b read (`1099a19c`): countersign its seven rows, mint `slurp-stage3-comp1b-dev2000-added-admission-v1` (`comp1bdev_mint_receipt.py`), flip (`comp1bdev_flip.sh`), then queue `batch_chain_comp1bdev.sh`.
+1. Land the P-SV read driver (`fable/psvreaddriver`), countersign the P-SV-1 READ row, then read P-SV-1 (sealed) and P-SV-2 (when sealed) with it under the decision-190 floors; P-SV-3 reads the same way after it seals.
+2. A2 flies after P-SV-3 (`SAEA-Queue-A2`, flight commit `310110be`); countersign its READ row after the seal and read it against its in-chain A/A (declared +3.80 intent, guard h_SLU 1.2525). NOMINATED-or-better there makes AGREE + centroid the module's first composed component list and lets the test-sample milestone (decision 151) be requested.
+3. Consumption-module step 6 (supply abstention, section 2c, AT-M5) and the delivered-path axis rendering follow once the P-SV and A2 reads name the component list.
+4. Decisions 200 (P-SV-3 column) and 201 (E5 Whisper route, limited exception) await the owner.
 
 ## 8. Housekeeping we share
 
