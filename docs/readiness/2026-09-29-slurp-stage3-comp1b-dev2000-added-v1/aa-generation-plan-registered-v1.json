@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "70bdbcd42ac9830af67f6017dbf92b14eaa31cbeb5101b03b9e9b5f72f2f31f3"
+    "sha256": "7c4a5b8f640347c679df65c5790ef21514044e554e83bf2352936377a71a1786"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1: The in-chain A/A: the within-chain null the arm is read at.",
   "quality_read_gate": "No task-quality read before BOTH the arm and the A/A manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",

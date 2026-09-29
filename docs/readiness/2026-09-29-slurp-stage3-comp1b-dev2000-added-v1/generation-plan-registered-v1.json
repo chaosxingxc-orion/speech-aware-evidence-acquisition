@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1b-dev2000-added-v1",
-  "composed_config_hash": "7390b142c52f46c2146618088ea17ce3f9fb89af11c96668fcdcece8a1b42354",
+  "composed_config_hash": "ec812c170c863280615166736c6d1ed68689c556020cf02898062db244c7ba8d",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1b-dev2000-added-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 11000,
     "planned_speech_audio_seconds": 32819,
-    "protocol_hash": "16541c9afe2fe43f6a1fd9092d48b0035bbe8e5c9a599bc6964dcdb70172f294",
+    "protocol_hash": "35725c33535952e4add0097f7a3a64bc64718f9f997b8de5b1ed5ed0ae30df48",
     "run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "70bdbcd42ac9830af67f6017dbf92b14eaa31cbeb5101b03b9e9b5f72f2f31f3"
+    "sha256": "7c4a5b8f640347c679df65c5790ef21514044e554e83bf2352936377a71a1786"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1: Read against the in-chain A/A flown in the same campaign. PRIMARY: intent accuracy (scenario_action exact), paired per utterance, 10,000 bootstrap draws. GUARD: official pooled SLU-F1 (slurp-slu-official) non-inferior at this roster's own null (h_SLU 1.2525). REPLICATED: the intent CI95 lower bound above zero, the point at or above the 2.6 pp cross-flight bar at n = 1,000, AND the guard holds. NEUTRAL: both guards non-inferior at the own null (h_intent 1.152 / h_SLU 1.2525) without a replicated gain. HARMFUL: a measured loss on either guard (decision 25). Every verdict carries the per-stratum tables in both weightings and the attribution classes.",
   "quality_read_gate": "No task-quality read before BOTH the arm and the A/A manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",

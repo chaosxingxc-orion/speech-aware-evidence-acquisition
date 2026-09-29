@@ -16,6 +16,13 @@
         "reason": "Cell A2 registered before contact on 2026-09-29 from the committed COMP-1 DEV-2000-ADDED placeholder arm (decision 58: script-derived) by reverting the citation contract alone, the one change COMP-1b made on Fold A; it SUPERSEDES the placeholder arm. In-chain A/A: SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1 (the placeholder chain's own A/A cell, unchanged), flown in the same campaign before this arm. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply (item E16). --allow-output-change must never be passed.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1b-dev2000-added-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1b-dev2000-added-v1/root-admission-v1.json",
+            "sha256": "135ad690b368ef4967e4c74bbae6d0281e56537d868dfe46fed8c168c62d20c7",
+            "reason": "Decision slurp-stage3-comp1b-dev2000-added-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with: THIS roster's own table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against the sealed DEV-2000-ADDED plan cell with the builder, vote store, vote phase and target store of the Fold A table cell AGREE registered, from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,000 rows, every row 20 votes, 0 self-excluded exemplars (the TRAIN-built pool shares no utterance with the roster), 0 rows with no vote, 59 distinct boundary facets ever voted for. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
@@ -25,10 +32,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under this cell's own run id with core.flight.cli prepare-supply at the flip from the sealed DEV-2000-ADDED speech-query segment vectors, the CENTROID key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's sealed agreement table -- the same sources the superseded COMP-1 DEV placeholder arm's supply was built from -- with zero model, tokenizer, encoder, scorer or server contacts. The citation contract acts only on the Solver phase, so the output digest is expected to equal the placeholder's own (arm ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08, smoke d5ec9b1516cb6b389d39aebec32b2b700b663ff21d15303a4789893415e3e083); the flip's re-derivation checks this. E16: this cell pins its own. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "cbc12e655e73424f5ac5f42ba61e6cbe0552f1857cabbc46a2d8206293b673ef"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1"
     }
