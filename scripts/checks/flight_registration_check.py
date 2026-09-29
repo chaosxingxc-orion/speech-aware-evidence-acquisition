@@ -48,6 +48,18 @@ artifacts column points at; else the decision receipt's antecedents; else the pa
     (the read row is countersigned after the seal and before any number is read), but it must
     exist.
 
+For a cell that declares ``resume_from`` (owner ruling after the COMP-1 resume attempt 3 seal
+abort -- a four-row smoke cannot see seal-time checks on kept rows):
+
+``resume-replay-unproven``
+    the package's own ``*plan-registered*.json`` carries no ``resume_replay_proof`` block naming
+    every field of :data:`RESUME_REPLAY_PROOF_FIELDS` (rows checked / failing / sealed-twice /
+    checker sha256 / code commit), or the block it carries reports a failing or sealed-twice row.
+    Advisory in tree mode; BLOCKING at launch for a live, unflown resume cell -- see
+    ``scripts/checks/resume_prelaunch_gate_check.py``, the live form of the same check, which
+    ``scripts/flights/batch/batch_driver.sh`` runs automatically right before any resume cell
+    flies.
+
 **Scope and severity.**
 
 * Whole-tree mode (no ``--cell``): every cell of ``configs/experiment/*.json`` whose
@@ -163,6 +175,21 @@ ROSTER_RECEIPTS_DIR = Path("docs/receipts/rosters")
 _NORMALIZE_KEY = re.compile(r"[^a-z0-9]+")
 _SHARED_WITH_KEY = re.compile(r"^sharedwith(.+?)(recordings|utterances)$")
 
+# --------------------------------------------------------------------------
+# resume-replay proof (coordinator, after the COMP-1 resume attempt 3 seal abort): a four-row
+# smoke cannot see seal-time checks on kept rows, so a cell that declares resume_from must carry
+# proof, in its OWN readiness package, that scripts/analysis/replay_seal_consistency.py already
+# replayed every predecessor attempt under the current code with zero failing rows and nothing
+# sealed twice -- see scripts/checks/resume_prelaunch_gate_check.py (the checker's live, at-launch
+# form) and scripts/flights/batch/README.md.
+# --------------------------------------------------------------------------
+
+#: The fields a ``resume_replay_proof`` block must name (kept as one tuple shared with
+#: ``resume_prelaunch_gate_check.py`` so the two can never drift apart on the spelling).
+RESUME_REPLAY_PROOF_FIELDS = (
+    "rows_checked", "rows_failing", "sealed_twice", "checker_sha256", "code_commit",
+)
+
 
 class FlightRegistrationCheckError(RuntimeError):
     """The tree or the data root cannot be read; exit 2."""
@@ -214,6 +241,9 @@ class CellReport:
     #: Set for EVERY cell that declares a ``stage3_measurement`` block, whatever its design --
     #: item D3: ``{"tuning_roster": ..., "read_roster": ...}``, the raw values as registered.
     roster_split: dict[str, Any] | None = None
+    #: Set only for a cell that declares ``resume_from``: the ``resume_replay_proof`` block found
+    #: in its readiness package's ``*plan-registered*.json``, or ``None`` when none was found.
+    resume_replay_proof: dict[str, Any] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -235,6 +265,7 @@ class CellReport:
             "findings": [finding.as_dict() for finding in self.findings],
             "supply_variant": self.supply_variant,
             "roster_split": self.roster_split,
+            "resume_replay_proof": self.resume_replay_proof,
         }
 
 
@@ -962,6 +993,90 @@ def _check_roster_split_registration(
     _check_tuning_read_overlap(report, repo_root, tuning_roster, read_roster)
 
 
+def _resume_replay_proof_block(
+    index: PackageIndex, package: str, run_id: str
+) -> dict[str, Any] | None:
+    """The ``resume_replay_proof`` block from the package's own registered-plan facts.
+
+    ``None`` when no ``*plan-registered*.json`` under the package names this run id at all (the
+    package resolved but never registered this generation plan's facts); ``{}`` when it names the
+    run id but carries no block. Never raises: an unreadable or malformed registered-plan file is
+    skipped, exactly like :meth:`PackageIndex.packages_registering`.
+    """
+
+    directory = index.repo_root / READINESS / package
+    for path in sorted(directory.glob("*plan-registered*.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if not isinstance(document, dict):
+            continue
+        execution_plan = document.get("execution_plan")
+        named_run_id = document.get("run_id") or (
+            execution_plan.get("run_id") if isinstance(execution_plan, dict) else None
+        )
+        if named_run_id != run_id:
+            continue
+        block = document.get("resume_replay_proof")
+        return block if isinstance(block, dict) else {}
+    return None
+
+
+def _check_resume_replay_proof(
+    report: CellReport, cell: dict[str, Any], index: PackageIndex, package: str
+) -> None:
+    """``resume-replay-unproven`` -- a cell declaring ``resume_from`` must carry proof, in its own
+    package, that the offline replay already ran clean under the current code (owner ruling after
+    the COMP-1 resume attempt 3 seal abort: a four-row smoke cannot see seal-time checks on kept
+    rows).
+
+    Advisory in tree mode (a whole-tree scan reports the gap without failing the tree over
+    paperwork not yet done); BLOCKING at launch (``--cell`` / ``--campaign-plan``, what
+    ``batch_driver.sh`` runs) for a live, unflown resume cell -- inherits the cell's own severity,
+    which is only ``"blocking"`` there. A no-op for a cell that declares no ``resume_from`` at
+    all, and skipped for a cell reached only through tree-mode bulk iteration of an already-flown
+    run id (never blocking either way, so checking it would only add noise -- the same scope
+    :func:`check_cell` already applies to the roster-split check).
+    """
+
+    if cell.get("resume_from") is None:
+        return
+    if not (report.named or report.consumed_by is None):
+        return
+    severity = None if report.named else "advisory"
+    block = _resume_replay_proof_block(index, package, report.run_id)
+    report.resume_replay_proof = block
+    fields = RESUME_REPLAY_PROOF_FIELDS
+    if block is None:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: no *plan-registered*.json under {report.package} names this run id "
+            "with a resume_replay_proof block (scripts/analysis/replay_seal_consistency.py, run "
+            "offline over every resume_from predecessor under the current code, before this "
+            "resume launches)",
+            report.run_id, severity=severity,
+        ))
+        return
+    missing = [name for name in fields if name not in block]
+    if missing:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: {report.package}'s resume_replay_proof is missing {missing} (must "
+            f"name all of {list(fields)})",
+            report.run_id, severity=severity,
+        ))
+        return
+    if int(block.get("rows_failing") or 0) != 0 or int(block.get("sealed_twice") or 0) != 0:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: {report.package}'s resume_replay_proof reports "
+            f"{block.get('rows_failing')} row(s) failing and {block.get('sealed_twice')} sealed "
+            "twice -- the replay did not prove this resume safe to launch",
+            report.run_id, severity=severity,
+        ))
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -1023,6 +1138,7 @@ def check_cell(
         ))
         return
     report.package = f"{READINESS.as_posix()}/{package}"
+    _check_resume_replay_proof(report, cell, index, package)
     recipes = index.recipes(package)
     if not recipes:
         report.findings.append(Finding(
