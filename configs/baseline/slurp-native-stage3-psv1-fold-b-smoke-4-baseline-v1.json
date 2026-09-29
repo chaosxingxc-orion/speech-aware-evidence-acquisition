@@ -160,6 +160,10 @@
             {
               "branch_id": "b-top2contrast",
               "max_supplied_items": 12,
+              "prepared_seed": {
+                "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1/perception-branch-seeds-v1.json",
+                "sha256": "6872b5f4fafc8fcccb77ea4c2ca3a8fc14a80c411688aa5315971d4ab8f8dfe5"
+              },
               "presentation_id": "top2-contrast-v1"
             },
             {

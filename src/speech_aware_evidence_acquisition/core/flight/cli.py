@@ -100,7 +100,8 @@ def prepared_artifact_blockers(preflight) -> list[str]:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=[
-        "check", "wire-check", "prepare-supply", "prepare-phase-recall", "prepare-window-inventory", "prepare-window-features",
+        "check", "wire-check", "prepare-supply", "prepare-phase-recall", "prepare-branch-seeds",
+        "prepare-window-inventory", "prepare-window-features",
         "prepare-speech-observation-sources", "prompt-fit", "coordinate-fit", "worker", "campaign",
         # E10d (2026-09-29): a resume-recovery whose declared predecessor(s)
         # already cover the whole roster -- seals with zero contacts, no
@@ -136,8 +137,8 @@ def main(argv=None) -> int:
     if args.mode == "campaign" and (not args.owner or not args.expected_session_id):
         parser.error("campaign requires explicit --owner and --expected-session-id")
     if args.mode in {
-        "prepare-supply", "prepare-phase-recall", "prepare-window-inventory", "prepare-window-features",
-        "prepare-speech-observation-sources", "prompt-fit"
+        "prepare-supply", "prepare-phase-recall", "prepare-branch-seeds", "prepare-window-inventory",
+        "prepare-window-features", "prepare-speech-observation-sources", "prompt-fit"
     } and args.output is None:
         parser.error("preparation modes require --output")
     if args.mode == "prepare-phase-recall" and not args.phase:
@@ -243,6 +244,11 @@ def main(argv=None) -> int:
                 result = runtime.prepare_phase_supply(args.output)
             else:
                 result = runtime.prepare_phase_supply(args.output, max_workers=args.workers)
+        elif args.mode == "prepare-branch-seeds":
+            if args.workers == 1:
+                result = runtime.prepare_perception_branch_seeds(args.output)
+            else:
+                result = runtime.prepare_perception_branch_seeds(args.output, max_workers=args.workers)
         elif args.mode == "prepare-speech-observation-sources":
             result = runtime.prepare_speech_observation_sources(args.output)
         elif args.mode == "prepare-window-inventory":

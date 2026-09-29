@@ -3,11 +3,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",
       "cell": "slurp-native-stage3-relisten-fold-a-v1",
-      "composed_config_hash": "3681a6f5636ddab5aacbc1edb4a71ecde3718376e4626c54c1d7d2b4d31cfbc9",
+      "composed_config_hash": "76d777523e93b1eac72a2d5174b1484e600231269f415e10545a3fce7c35a083",
       "experiment": "slurp-native-stage3-relisten-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1",
-      "protocol_hash": "119db55d73e942fb17968b6742fc3d71d6c2ff53e8a47f60c9cafca8b9a9b135",
+      "protocol_hash": "e6210a6ad008f669078af191feea236b1f3fd07d4288a789dd7fa58f3c102122",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"

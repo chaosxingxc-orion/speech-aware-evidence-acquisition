@@ -174,7 +174,7 @@
     "cells": {
       "arm": {
         "blockers": null,
-        "check_path": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv2-fold-b-v1.json",
+        "check_path": "/home/chao/saea-worktrees/fable-branchseeds-check-dir/check-slurp-native-stage3-psv2-fold-b-v1.json",
         "config_hash": null,
         "prompt_budget_per_phase": [
           {
@@ -226,57 +226,9 @@
         }
       },
       "smoke": {
-        "blockers": null,
-        "check_path": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv2-fold-b-smoke-4-v1.json",
-        "config_hash": null,
-        "prompt_budget_per_phase": [
-          {
-            "completion_token_ceiling": 512,
-            "decision": "ALLOW",
-            "operational_margin_tokens": 1516,
-            "phase": "perception",
-            "physical_margin_tokens": 4588,
-            "rendered_text_tokens": 19448,
-            "required_window_tokens": 19988,
-            "speech_feature_tokens": 26
-          },
-          {
-            "completion_token_ceiling": 512,
-            "decision": "ALLOW",
-            "operational_margin_tokens": 1653,
-            "phase": "reviewer",
-            "physical_margin_tokens": 4725,
-            "rendered_text_tokens": 19311,
-            "required_window_tokens": 19851,
-            "speech_feature_tokens": 26
-          },
-          {
-            "completion_token_ceiling": 512,
-            "decision": "ALLOW",
-            "operational_margin_tokens": 1714,
-            "phase": "planner",
-            "physical_margin_tokens": 4786,
-            "rendered_text_tokens": 19250,
-            "required_window_tokens": 19790,
-            "speech_feature_tokens": 26
-          },
-          {
-            "completion_token_ceiling": 512,
-            "decision": "COMPACT_REQUIRED",
-            "operational_margin_tokens": -312,
-            "phase": "solver",
-            "physical_margin_tokens": 2760,
-            "rendered_text_tokens": 21276,
-            "required_window_tokens": 21816,
-            "speech_feature_tokens": 26
-          }
-        ],
-        "protocol_hash": null,
-        "sample_count": null,
-        "scientific_readiness": {
-          "reason": "Cell P-SV-2 four-row form smoke registered before contact on 2026-09-29 from the retained AGREE arm fragments by script (decision 58): Fold A -> Fold B re-target, program switched to phase-native-candidates-review-revise-pbranch3-l2-v1, a level-2 K = 3 Perception branch block (owner decisions 184, 186, 188). No cross-flight comparator: the read is within this flight (B and T branch columns against the delivering A column). HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/psv/psv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 over the whole roster, so there is no earlier digest to reproduce); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
-          "state": "held"
-        }
+        "error_tail": [],
+        "path": "/home/chao/saea-worktrees/fable-branchseeds-check-dir/check-slurp-native-stage3-psv2-fold-b-smoke-4-v1.json",
+        "status": "MISSING"
       }
     },
     "status": "MEASURED_BY_CHECK"
@@ -348,7 +300,11 @@
           {
             "branch_id": "b-list3",
             "max_supplied_items": 10,
-            "min_candidates": 3
+            "min_candidates": 3,
+            "prepared_seed": {
+              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1/perception-branch-seeds-v1.json",
+              "sha256": "9e2be65dc0f311d4ca701be2581202299c77afa0bd646e578181876bfc1b0e28"
+            }
           },
           {
             "branch_id": "t-twin",
@@ -371,7 +327,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-psv2-fold-b-v1",
-      "composed_config_hash": "cd3fa837545aec92c61d48abfcec9b1fca764b25710d7491efc964d13d062f17",
+      "composed_config_hash": "4d1b490a62147126fa702a660b848432ee1b297700d4f30e83b544b00a94d8a6",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-psv2-fold-b-v1",
@@ -396,7 +352,7 @@
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
       "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
-      "protocol_hash": "617892934c9f8a892d9763c8ed9c4d8a26a8baf260b6a9389b81324c72165e26",
+      "protocol_hash": "1864b0087e655fa7152240d78310f8f5f6eb547dc51fbdb7443813b9f5c4d428",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1",
@@ -411,7 +367,11 @@
           {
             "branch_id": "b-list3",
             "max_supplied_items": 10,
-            "min_candidates": 3
+            "min_candidates": 3,
+            "prepared_seed": {
+              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1/perception-branch-seeds-v1.json",
+              "sha256": "3a49989f8f3b44a43051a0bf6144a600aa10f3d235c6b826b027623783f15316"
+            }
           },
           {
             "branch_id": "t-twin",
@@ -434,7 +394,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-psv2-fold-b-smoke-4-v1",
-      "composed_config_hash": "34a8184463b52958d41d5e71485f710611bd60d0edef06c77da2b26767eefbf8",
+      "composed_config_hash": "8a684ee9d3d475636f0c9b109ac0b7a122a5324a64542d9de2d3a8e039afb390",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-psv2-fold-b-smoke-4-v1",
@@ -459,7 +419,7 @@
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
       "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
-      "protocol_hash": "46a2771cb2f1f43c473a892e608d76aebc74b5c8ede1bf0a0c819823e33aee9b",
+      "protocol_hash": "777583e24dde6174cb5b4ab9512272fa102a235c0c28e549667908ba0c2a2199",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1",
@@ -483,7 +443,7 @@
     "No system-level claim: a branch effect may only nominate (ruling O1).",
     "No branch value built from Fold B rollouts (owner decision 186)."
   ],
-  "registered_at_utc": "2026-09-29T00:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T05:15:03.000000+00:00",
   "rows": 1080,
   "schema": "saea-registered-facts-v1",
   "stage3_measurement": {
@@ -532,7 +492,7 @@
       }
     }
   },
-  "study_commit_at_registration": "6a2a62624",
+  "study_commit_at_registration": "f33e8a0f2",
   "the_cell": {
     "base": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1), re-targeted Fold A -> Fold B as the filler family re-pointed it",
     "branch_block": {
@@ -540,7 +500,11 @@
         {
           "branch_id": "b-list3",
           "max_supplied_items": 10,
-          "min_candidates": 3
+          "min_candidates": 3,
+          "prepared_seed": {
+            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1/perception-branch-seeds-v1.json",
+            "sha256": "9e2be65dc0f311d4ca701be2581202299c77afa0bd646e578181876bfc1b0e28"
+          }
         },
         {
           "branch_id": "t-twin",

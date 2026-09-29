@@ -279,3 +279,9 @@ Both are committed in this worktree ahead of the read. Neither changes a registe
   would need a null of that order, and this flight shows the SLU null is about ten times wider.
 - **Price.** A 53 % increase in contacts, 37 % of prompt tokens and about 50 % of speech seconds per flight,
   for two extra columns.
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+- **b-exk30 (exemplar k 30): NOT NOMINATED, inert.** SLU -0.46 [-1.85, +1.12], intent +0.37 [-0.09, +0.93]; both intervals cover zero and neither point clears the twin bar. The exemplar-k line is closed at k 30 on this roster.
+- **Instrument finding (the more important result).** The same-flight twin null on intent is exactly 0.00 (T chose A's intent on 1,080 of 1,080 rows); on SLU-F1 the twin half-width is 0.53 (bar 0.91), about 1.7 times the design's assumed 0.3. The same-flight design is therefore a sharp intent instrument for the Perception-branch reads (P-SV-1, P-SV-2) and a moderate SLU instrument; cross-flight remains the only route for whole-system SLU claims above about 1 pp.
+- Nothing is admitted or closed for the composed policy by this read (claim ceiling nominated, phase-1 ruling Q6). Development number (decision 28).

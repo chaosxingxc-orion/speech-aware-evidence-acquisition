@@ -1,6 +1,6 @@
 # Cell P-SV-2: phase-2 same-flight Perception branches on TRAIN Fold B (owner decisions 184, 186, 188)
 
-Registered before contact 2026-09-29 at study commit `6a2a62624` (branch `fable/psv`);
+Registered before contact 2026-09-29 at study commit `f33e8a0f2` (branch `fable/branchseeds`);
 both cells **held**. Nothing here authorises a flight, a flip or an admission entry. Development numbers only.
 
 **The question.** At the one Perception visit of every TRAIN Fold B row, does forcing a three-candidate hypothesis list (response-contract min_candidates 3) raise the share of rows whose gold intent is on Perception's list beyond the in-flight twin's null, read against the delivering branch A in the same flight, and what does the level-2 branch Solver make of the widened list?
@@ -25,6 +25,8 @@ tokens, 8 boundary items max, widest item 895 characters,
 6.023 characters per token); branch estimates {"a_and_twin": 4067, "min_candidates": 4067, "top2_contrast": 4365} against the
 20990-token prompt limit.
 
+**Branch-seed coverage (disclosed before countersigning, 2026-09-29).** The B branch's pinned `prepared_seed` (`prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1/perception-branch-seeds-v1.json`) carries seeds for 1,078 of the 1,080 Fold B rows: the two remaining Fold B rows have zero boundary recall for every column (A, B and T alike), a property of the data rather than of the branch.
+
 **Measurement.** `measurement_design` `same-flight-perception-variant` (the spelling `scripts/checks/stage3_effect_floor_check.py` and
 `scripts/checks/flight_registration_check.py` register; the spec's section 4 says `same-flight-perception-branch`,
 and the gate comment flags the reconciliation), level 2, claim **`nominated`**, `aa_arm_id` `t-twin`,
@@ -46,11 +48,7 @@ SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling '
 | arm | planner | ALLOW | 19255 | 1689 | 4761 |
 | arm | solver | COMPACT_REQUIRED | 21281 | -337 | 2735 |
 | arm | blockers | null | | | |
-| smoke | perception | ALLOW | 19448 | 1516 | 4588 |
-| smoke | reviewer | ALLOW | 19311 | 1653 | 4725 |
-| smoke | planner | ALLOW | 19250 | 1714 | 4786 |
-| smoke | solver | COMPACT_REQUIRED | 21276 | -312 | 2760 |
-| smoke | blockers | null | | | |
+| smoke | check | MISSING | | | |
 
 The first Solver visit's realised prompt on the AGREE arm was 5003-14426 tokens;
 a branch Solver contact carries a branch note of the same shape in place of A's.

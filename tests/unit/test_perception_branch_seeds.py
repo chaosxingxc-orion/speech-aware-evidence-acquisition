@@ -199,6 +199,129 @@ def test_branch_identity_receipts_differ_by_declared_axis(tmp_path):
     assert by_id["B"] != by_id["A"]
 
 
+def _presentation_only_group():
+    """A ``B`` branch shaped exactly like the real ``b-top2contrast``/
+    ``b-list3`` branches this fix was written for: no ``overrides`` (no
+    knobs), no ``release_swap`` -- only a ``presentation_id``, which is
+    recorded in the identity receipt but never changes the router."""
+
+    branch_b = {
+        "branch_id": "B", "max_supplied_items": 8,
+        "presentation_id": "top2-contrast-v1",
+    }
+    return parse_perception_branches(
+        {
+            "level": 1,
+            "fit_estimate": dict(FIT),
+            "branches": [
+                branch_b,
+                {"branch_id": "T", "replicate_of": "A", "max_supplied_items": 8},
+                {"branch_id": "A", "deliver": True, "max_supplied_items": 8},
+            ],
+        },
+        first_phase_id="direct",
+        declared_stores=(STORE, "slot-contracts"),
+    )
+
+
+def test_a_row_with_no_first_phase_candidate_still_reaches_a_presentation_only_branch(
+    tmp_path,
+):
+    """The bug this test pins (2026-09-29): ``_perception_branch_seeds``'s
+    live-compute path never applied ``_merge_unconditional_first_phase``, so
+    a row neither named store recalls any first-phase candidate for was
+    silently absent from a B branch's own seed even when the flight's own
+    seed -- built through the SAME merge, over a ``prepared_phase_supply``
+    artifact or a ``supply_for_phase`` seed -- still carried it. A
+    presentation-only branch (no knobs, no release_swap -- exactly
+    ``b-top2contrast``'s shape) must see the SAME row set A does.
+    """
+
+    config, _snapshots = _first_phase_config(tmp_path)
+    runtime = _fake_runtime(config, data_root=tmp_path)
+    group = _presentation_only_group()
+    program, _binding, plan = _binding_and_seed(config)
+    fallback_id = "fallback::unconditional-v1"
+
+    def seam(*, speech_packet_bindings, **_ignored):
+        return {
+            "direct": {
+                sample_id: (fallback_id,)
+                for sample_id in sorted(speech_packet_bindings)
+            }
+        }
+
+    # "s2" has no entry at all in the synthetic store's own query-vector
+    # file (only "s1" does), so both named stores' own bootstrap skips it
+    # entirely -- the same shape a genuine zero-candidate recall leaves
+    # behind (design section 3; docs/readiness/2026-09-28-slurp-fold-b-
+    # phase2-inputs-v1/README.md's "known recall property"). The outer
+    # binding's ``supply_for_store`` seam is the flight's OWN unconditional
+    # route, exactly the seam ``core.flight.runtime._merge_unconditional_
+    # first_phase`` reads off ``binding["supply_for_store"]``.
+    binding = {
+        "speech_packet_bindings": {
+            "s1": {"packet_id": "speech/s1", "sha256": "a" * 64},
+            "s2": {"packet_id": "speech/s2", "sha256": "c" * 64},
+        },
+        "supply_for_store": SimpleNamespace(unconditional_first_phase=seam),
+    }
+    expected = {
+        "s1": (
+            "intent-boundaries::value:dim-light",
+            "slot-contracts::value:dim-light",
+            fallback_id,
+        ),
+        "s2": (fallback_id,),
+    }
+
+    seeds, _receipts = FlightRuntime._perception_branch_seeds(
+        runtime, program, binding, group, expected, plan,
+    )
+
+    assert seeds["A"] == expected
+    assert seeds["T"] == expected
+    # THE FIX: the presentation-only B branch recalls no candidate of its
+    # own for "s2" either, but still carries the row via the same
+    # unconditional merge A's own seed used -- matching A's behaviour
+    # exactly instead of silently dropping the row.
+    assert seeds["B"] == expected
+    assert set(seeds["B"]) == {"s1", "s2"}
+
+
+def test_existing_branches_are_unchanged_when_no_unconditional_route_exists(
+    tmp_path,
+):
+    """Regression pin for the merge-call fix: every cell flown to date binds
+    no store with an ``unconditional_first_phase`` seam (``binding`` here
+    carries no ``supply_for_store`` at all, exactly like every existing
+    caller), so the added merge call is a byte-identical no-op and a row
+    WITH a candidate is completely unaffected -- for A, T, and a knob-
+    overridden B alike."""
+
+    config, _snapshots = _first_phase_config(tmp_path)
+    runtime = _fake_runtime(config, data_root=tmp_path)
+    group = _group()
+    program, binding, plan = _binding_and_seed(config)
+    assert "supply_for_store" not in binding
+    expected = {
+        "s1": (
+            "intent-boundaries::value:dim-light",
+            "slot-contracts::value:dim-light",
+        )
+    }
+
+    seeds, _receipts = FlightRuntime._perception_branch_seeds(
+        runtime, program, binding, group, expected, plan,
+    )
+
+    assert seeds["A"] == expected
+    assert seeds["T"] == expected
+    # B overrides intent-boundaries' own k to 1 -- still the single
+    # recalled facet, byte-identical to its pre-fix value.
+    assert seeds["B"] == expected
+
+
 def test_perception_branches_identity_is_empty_when_undeclared():
     assert _perception_branches_identity(None) == {}
     assert _perception_branches_identity({}) == {}

@@ -3399,6 +3399,7 @@ class FlightRuntime:
 
     def _perception_branch_seeds(
         self, program, binding, group, value_seed_for_first_phase, plan, max_workers=1,
+        *, seed_inputs=None,
     ):
         """Same-flight instrument, PHASE 2 (merge set C, design section 3,
         "Branch seeds"): one router per declared Perception branch, and each
@@ -3434,8 +3435,28 @@ class FlightRuntime:
         plus the same module hashes), computed here so a caller can pin it
         as a branch's own ``prepared_seed`` later; this method does not
         itself write an artifact file -- design section 5 names that as this
-        program's own offline preparation step, out of reach for an in-flight
-        runtime method.
+        program's own offline preparation step
+        (:meth:`prepare_perception_branch_seeds`), out of reach for an
+        in-flight runtime method.
+
+        Item-4 GAP close (design section 5 item 4): a B branch (never A or
+        T -- :func:`~speech_aware_evidence_acquisition.rails.supply_variants
+        .parse_perception_branches` refuses a ``prepared_seed`` on either)
+        that declares its own ``prepared_seed`` pin is BOUND here instead of
+        recomputed: :meth:`_load_perception_branch_seed` loads and verifies
+        the prepared artifact against ``seed_inputs`` (the SAME
+        :meth:`_phase_seed_inputs` identity :meth:`prepare_perception_branch_
+        seeds` bound it to) and this method refuses on any mismatch, exactly
+        as :meth:`_phase_supply_seeds` refuses a stale
+        ``prepared_phase_supply`` pin -- so the SAME bytes fly regardless of
+        whether ``lease_metadata_present`` or anything else about this
+        environment differs from the offline preparation run. A branch with
+        no ``prepared_seed`` is unaffected: it is computed live exactly as
+        before, so every existing caller that never declares one (every cell
+        written before this artifact existed) is byte-for-byte unchanged.
+        Declaring a pin while ``seed_inputs`` is ``None`` is a caller defect,
+        refused rather than silently falling back to a live recompute that
+        would defeat the pin's whole purpose.
         """
 
         from ...rails import kb_policy, knowledge_provider, knowledge_stores, phase_supply
@@ -3445,6 +3466,7 @@ class FlightRuntime:
             for module in (kb_policy, knowledge_provider, phase_supply, knowledge_stores)
         }
         lease_metadata_present = (self._data_root / "locks" / "flight.lock").exists()
+        first_phase = program.phase_names()[0]
 
         def branch_seed(branch):
             route = self._supply_action_router(
@@ -3457,13 +3479,41 @@ class FlightRuntime:
                     "first-phase route; a branch may only re-cap a store that "
                     "already seeds the program's first phase"
                 )
-            _facets, values = store_bootstrap(
+            facets, values = store_bootstrap(
                 speech_packet_bindings=binding["speech_packet_bindings"],
                 split_identity_hash=plan.split_identity_hash,
                 workers=max_workers,
                 lease_metadata_present=lease_metadata_present,
             )
-            return {sample_id: tuple(ids) for sample_id, ids in values.items()}
+            # Item-4 GAP fix (2026-09-29): a branch's own ``bootstrap_first_
+            # phase`` call above is structurally identical to
+            # :meth:`_phase_supply_seeds`'s PATH 2 (the named-store branch),
+            # which never re-merges because that route already composes any
+            # ``store_role: "stage3-deltas"`` unconditional coverage itself.
+            # But the flight's OWN seed (``value_seed_for_first_phase``,
+            # ``expected`` below) can ALSO come from PATH 1 (a pinned
+            # ``prepared_phase_supply`` artifact) or PATH 3
+            # (``supply_for_phase`` factories), both of which run this SAME
+            # merge against ``binding["supply_for_store"]`` -- so a row this
+            # branch's own router recalls no candidate for (a genuine empty
+            # selection, not a missing query vector) was silently absent
+            # from a B branch's live-computed seed even when the flight's
+            # own seed still carried it via that merge. Applying the SAME
+            # merge here, over the SAME outer ``binding`` every other path
+            # reads it from, closes that gap for EVERY branch kind (knob
+            # override, release swap, or presentation-only): a store with no
+            # ``unconditional_first_phase`` seam (every cell today) makes
+            # this call a byte-identical no-op, exactly as PATH 2's own
+            # comment already relies on elsewhere.
+            _merged_facets, merged_values = _merge_unconditional_first_phase(
+                ({first_phase: facets} if facets else {}),
+                ({first_phase: values} if values else {}),
+                binding, first_phase, seeded_from_artifact=True,
+            )
+            return {
+                sample_id: tuple(ids)
+                for sample_id, ids in merged_values.get(first_phase, {}).items()
+            }
 
         expected = {
             sample_id: tuple(ids)
@@ -3483,8 +3533,18 @@ class FlightRuntime:
         seeds: dict[str, dict[str, tuple[str, ...]]] = {}
         receipts: list[dict[str, object]] = []
         for branch in group.branches:
+            pin = branch.prepared_seed
             if branch.deliver or branch.is_twin:
                 branch_values = dict(expected)
+            elif pin is not None:
+                if seed_inputs is None:
+                    raise FlightRuntimeError(
+                        f"perception branch {branch.branch_id!r} pins a prepared_seed "
+                        "but no branch-seed identity was supplied to bind it against"
+                    )
+                branch_values = self._load_perception_branch_seed(
+                    branch, pin, binding, seed_inputs,
+                )
             else:
                 branch_values = branch_seed(branch)
             seeds[branch.branch_id] = branch_values
@@ -3505,8 +3565,75 @@ class FlightRuntime:
                         sort_keys=True, separators=(",", ":"),
                     ).encode("utf-8")
                 ).hexdigest(),
+                "prepared_seed": None if pin is None else dict(pin),
             })
         return seeds, tuple(receipts)
+
+    def _load_perception_branch_seed(self, branch, pin, binding, seed_inputs):
+        """Load and verify one B branch's prepared Perception seed artifact.
+
+        Design section 5 item 4 (the item-4 GAP), :meth:`_perception_branch_
+        seeds`'s own binding step. Structurally :meth:`_load_phase_supply_
+        seed`'s twin: the artifact is verified over the WHOLE roster it was
+        prepared over (:meth:`_identity_binding`) and the branch's selection
+        is then restricted to the rows THIS attempt dispatches, so a resume
+        or a partial attempt sees exactly the same seed an unresumed flight
+        would.
+
+        ``seed_inputs`` is the caller's already-computed
+        :meth:`_phase_seed_inputs` identity (the SAME one
+        :meth:`prepare_perception_branch_seeds` bound the artifact to); any
+        mismatch -- a stale pin, a moved implementation file, a tampered
+        branch axis -- raises :class:`~..preparation.PreparationError` here,
+        exactly as a stale ``prepared_phase_supply`` pin does.
+        """
+
+        from ..preparation import PreparationError, load_artifact
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+
+        if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
+            raise PreparationError(
+                f"perception branch {branch.branch_id!r} prepared_seed requires "
+                "relpath and sha256"
+            )
+        identity_binding = self._identity_binding(binding)
+        dispatched_rows = set(binding["speech_packet_bindings"])
+        relative = _normalized_relative_path(pin["relpath"], "perception branch seed")
+        path = _resolve_confined(
+            self._data_root, relative, self._data_root, "perception branch seed",
+            strict=True,
+        )
+        output = load_artifact(
+            path, expected_sha256=pin["sha256"], kind="perception-branch-seeds",
+            inputs=seed_inputs,
+        )
+        if not isinstance(output, dict) or set(output) != {"branches"}:
+            raise PreparationError("prepared perception branch seed shape mismatch")
+        branches = output["branches"]
+        if not isinstance(branches, dict) or branch.branch_id not in branches:
+            raise PreparationError(
+                f"prepared perception branch seed carries no branch {branch.branch_id!r}"
+            )
+        rows = branches[branch.branch_id]
+        allowed_rows = set(identity_binding["speech_packet_bindings"])
+        if not isinstance(rows, dict) or set(rows) - allowed_rows:
+            raise PreparationError("prepared perception branch seed contains another row")
+        snapshot = identity_binding["knowledge_snapshot"]
+        allowed_values = {value.value_id for value in snapshot.values}
+        decoded: dict[str, tuple[str, ...]] = {}
+        for sample_id, ids in rows.items():
+            if (
+                not isinstance(ids, list) or any(not isinstance(i, str) for i in ids)
+                or len(ids) != len(set(ids)) or set(ids) - allowed_values
+            ):
+                raise PreparationError(
+                    "prepared perception branch seed contains unknown IDs"
+                )
+            # E10b (mirrors _load_phase_supply_seed): verified over the whole
+            # roster, seeded only for the rows this attempt flies.
+            if sample_id in dispatched_rows:
+                decoded[sample_id] = tuple(ids)
+        return decoded
 
     def _acquisition_requery_binding(self, native_config, supply_for_phase, snapshot):
         """E36 / E36b: the flight-owned, model-free knowledge re-query the
@@ -7008,10 +7135,25 @@ class FlightRuntime:
                     program, binding, supply_specs, plan,
                 )
                 branch_first_phase = program.phase_names()[0]
+                # Item-4 GAP close: the SAME identity a branch's own prepared
+                # seed was pinned against (design section 5 item 4), so a
+                # branch that pins one is BOUND to it here rather than
+                # recomputed against this live environment. None -- and
+                # therefore no behaviour change -- when the first phase has
+                # no supply spec (a branch group always seeds the first
+                # phase, so this is defensive only).
+                branch_spec = supply_specs.get(branch_first_phase)
+                branch_seed_inputs = (
+                    None if branch_spec is None
+                    else self._phase_seed_inputs(
+                        binding, branch_spec, plan.split_identity_hash,
+                    )
+                )
                 perception_branch_seeds, perception_branch_identity_receipts = (
                     self._perception_branch_seeds(
                         program, binding, perception_branch_group,
                         branch_value_seed.get(branch_first_phase, {}), plan,
+                        seed_inputs=branch_seed_inputs,
                     )
                 )
                 self._phase_supply_receipt = {
@@ -8396,6 +8538,135 @@ class FlightRuntime:
         try:
             return prepare_artifact(
                 path, kind="phase-supply", inputs=inputs, producer=produce
+            )
+        except PreparationError as error:
+            if not Path(path).is_file():
+                raise
+            try:
+                difference = first_input_difference(
+                    inputs, read_artifact_inputs(Path(path))
+                )
+            except PreparationError:
+                difference = None
+            if difference is None:
+                raise
+            raise PreparationError(
+                f"{error}; first differing identity key: {difference}"
+            ) from error
+
+    def perception_branch_seed_artifact_identity(self):
+        """``(program, binding, group, first phase, split identity, inputs)``
+        for the prepared Perception branch-seeds artifact (design section 5
+        item 4; the item-4 GAP).
+
+        Mirrors :meth:`phase_supply_artifact_identity`: the SAME
+        :meth:`_prepared_phase_program_binding`, the SAME absent-reason guard
+        (:meth:`_prepared_phase_supply_absent_reason` -- a construction-
+        visible text arm builds no phase supply and therefore no branch seed
+        either), and the SAME :meth:`_phase_seed_inputs` identity a prepared
+        first-phase supply binds to -- design section 3's own words for the
+        branch identity receipt ("the SAME axes-plus-implementation identity
+        _phase_seed_inputs binds a prepared artifact to"), already sensitive
+        to the whole declared ``roles.perception.branches`` block
+        (:func:`_perception_branches_identity`, already wired into
+        :meth:`_phase_seed_inputs`'s own ``sources``). A cell's prepared
+        first-phase supply and its branch seeds therefore cannot disagree
+        about what makes either one stale.
+        """
+
+        from ..preparation import PreparationError
+        from ...rails.native_episode_config import load_native_episode_config
+
+        absent = self._prepared_phase_supply_absent_reason()
+        if absent is not None:
+            raise PreparationError(absent)
+
+        program, binding, identity = self._prepared_phase_program_binding()
+        specs = binding.get("supply_specs") or {}
+        first = program.phase_names()[0]
+        if first not in specs:
+            raise PreparationError("program has no supplied first phase to prepare")
+        native_config = load_native_episode_config(self._composed.values, program)
+        group = native_config.perception_branch_group
+        if group is None:
+            raise PreparationError(
+                "cell declares no roles.perception.branches; there is no "
+                "Perception branch seed to prepare"
+            )
+        return (
+            program, binding, group, first, identity,
+            self._phase_seed_inputs(binding, specs[first], identity),
+        )
+
+    def prepare_perception_branch_seeds(
+        self, path: Path, *, max_workers: int = 1,
+    ) -> Mapping[str, object]:
+        """Persist every non-A, non-T (B) Perception branch's pre-flight seed
+        offline (design section 5 item 4; the item-4 GAP this method closes).
+
+        Model-free: only the already-released vectors/stores every prepared
+        first-phase supply already reads; no server, tokenizer, or encoder
+        contact. Structurally :meth:`prepare_phase_supply`'s twin -- same
+        warm/cold ``prepare_artifact`` shape, same identity-mismatch
+        diagnostic -- over :meth:`perception_branch_seed_artifact_identity`
+        instead of :meth:`phase_supply_artifact_identity`.
+
+        At flight time :meth:`_perception_branch_seeds` LOADS this artifact
+        for a branch that pins it (:meth:`_load_perception_branch_seed`)
+        rather than recomputing it against a live environment that may
+        differ from this one (``lease_metadata_present`` above all), so the
+        SAME bytes fly no matter when or where this offline step ran.
+
+        A's own seed is the flight's own ``prepared_phase_supply`` (already
+        pinned by :meth:`prepare_phase_supply`, or computed live from the
+        same store-routed bootstrap when it is not yet pinned) and T takes
+        A's, so this method writes only the group's B branches, keyed by
+        ``branch_id``, each ``{sample_id: [value_id, ...]}`` over the WHOLE
+        roster this binding resolves -- restricted to one attempt's own rows
+        only when :meth:`_load_perception_branch_seed` loads it back.
+        """
+
+        from ..preparation import (
+            PreparationError, first_input_difference, prepare_artifact, read_artifact_inputs,
+        )
+
+        program, binding, group, first, identity, inputs = (
+            self.perception_branch_seed_artifact_identity()
+        )
+        b_branch_ids = tuple(
+            branch.branch_id for branch in group.branches
+            if not branch.deliver and not branch.is_twin
+        )
+        if not b_branch_ids:
+            raise PreparationError(
+                "perception branch group declares no B branch; there is nothing to prepare"
+            )
+
+        def produce():
+            from types import SimpleNamespace
+
+            specs = binding.get("supply_specs") or {}
+            plan = SimpleNamespace(split_identity_hash=identity)
+            _facet_seed, value_seed = self._phase_supply_seeds(
+                program, binding, specs, plan, max_workers=max_workers,
+            )
+            seeds, _receipts = self._perception_branch_seeds(
+                program, binding, group, value_seed.get(first, {}), plan,
+                max_workers=max_workers,
+            )
+            return {
+                "branches": {
+                    branch_id: {
+                        sample_id: list(ids)
+                        for sample_id, ids in sorted(seeds[branch_id].items())
+                    }
+                    for branch_id in b_branch_ids
+                },
+            }
+
+        try:
+            return prepare_artifact(
+                path, kind="perception-branch-seeds", inputs=inputs, producer=produce,
             )
         except PreparationError as error:
             if not Path(path).is_file():
