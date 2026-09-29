@@ -174,7 +174,7 @@
       "branch": "b-top2contrast",
       "coverage_script": "scripts/analysis/slurp_contrast_pair_coverage.py",
       "rows_total": 1078,
-      "seed": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json",
+      "seed": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v2.json",
       "v1_nearest_rival": {
         "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1",
         "coverage_fraction": "415/1078 (38.5%)",
@@ -402,8 +402,8 @@
             },
             "max_supplied_items": 12,
             "prepared_seed": {
-              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json",
-              "sha256": "3fec33de67bab840a65c28f86539b801d65bdce5b6d1e8b02a36fa90e5832b46"
+              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v2.json",
+              "sha256": "d17d2d062d286615d0a3f1ef62f3b5b1cfb239a2ec8d3cd2bc2d6096ad537dce"
             },
             "presentation_id": "top2-contrast-v1"
           },
@@ -428,7 +428,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-psv1-fold-b-v1",
-      "composed_config_hash": "c00da6f6b5ab502276087b58740389a975fce13faed5b701adf640b59680d222",
+      "composed_config_hash": "969050e12caf63c151d4019dfcff6cd537d74b39c41107a931323c4a0f93e4d4",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-psv1-fold-b-v1",
@@ -453,7 +453,7 @@
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
       "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
-      "protocol_hash": "7e7a2dfba063322d741f87e2d1ca52ce4e85d9678398b38447e959e5b39ace69",
+      "protocol_hash": "2b550afb78f48c8085e3eebd4994a8dfea89b301268037f64ed235c7fba1d4de",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
@@ -610,8 +610,8 @@
           },
           "max_supplied_items": 12,
           "prepared_seed": {
-            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json",
-            "sha256": "3fec33de67bab840a65c28f86539b801d65bdce5b6d1e8b02a36fa90e5832b46"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v2.json",
+            "sha256": "d17d2d062d286615d0a3f1ef62f3b5b1cfb239a2ec8d3cd2bc2d6096ad537dce"
           },
           "presentation_id": "top2-contrast-v1"
         },
