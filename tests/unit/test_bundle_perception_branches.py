@@ -73,6 +73,8 @@ def fixture():
                 "response_text_sha256": contacts[0]["response_text_sha256"],
                 "note_sha256": contacts[0]["response_text_sha256"],
                 "note_parse_status": "malformed", "candidate_intent_ids": ["unparsed"],
+                "presentation_skip_reason": None, "contrast_block_sha256": None,
+                "min_candidates_met": None,
             },
             {
                 "branch_index": 1, "branch_id": "T", "deliver": False,
@@ -84,6 +86,8 @@ def fixture():
                 "response_text_sha256": contacts[1]["response_text_sha256"],
                 "note_sha256": contacts[1]["response_text_sha256"],
                 "note_parse_status": "malformed", "candidate_intent_ids": ["unparsed"],
+                "presentation_skip_reason": None, "contrast_block_sha256": None,
+                "min_candidates_met": None,
             },
             {
                 "branch_index": 2, "branch_id": "A", "deliver": True,
@@ -95,6 +99,8 @@ def fixture():
                 "response_text_sha256": a_contact["response_text_sha256"],
                 "note_sha256": a_note_sha256,
                 "note_parse_status": "malformed", "candidate_intent_ids": ["unparsed"],
+                "presentation_skip_reason": None, "contrast_block_sha256": None,
+                "min_candidates_met": None,
             },
         ],
     }

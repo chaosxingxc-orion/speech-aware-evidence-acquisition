@@ -1,0 +1,488 @@
+{
+  "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2",
+  "boundary": "No card text, cue word, sentence or utterance appears in this receipt: intent ids, counts, the skip reason and hashes only.",
+  "builder": {
+    "relpath": "scripts/build_slurp_intent_contrast_pairs.py",
+    "sha256": "bce341878ad398f2d2f9bbe3fee2dbbc2498f7a5d852cf54c2a5166c7f4a6dbb"
+  },
+  "contacts": {
+    "asr": 0,
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer_process_vocab_only": 0
+  },
+  "exposure_ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V2",
+  "inputs": {
+    "base_snapshot": {
+      "content_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json"
+    },
+    "centroid_keys": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+      "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532"
+    },
+    "construction_pool": {
+      "content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "utterances": 8554
+    },
+    "forbidden_rosters": {
+      "docs/receipts/rosters/slurp-evo-fold-a-v2.json": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "docs/receipts/rosters/slurp-evo-fold-b-v2.json": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "docs/receipts/rosters/slurp-stage3-construction-r01.json": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+    }
+  },
+  "method": {
+    "min_pair_pool_support": 5,
+    "pair_selection": "every unordered pair of distinct SLURP intents whose pool support meets the registered floor (min_pair_pool_support), roster-agnostic: pairs are never selected from any roster's seeds, only from the full released intent set (O7 ruling, docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md)",
+    "word_gap_method": {
+      "functions": [
+        "load_pool",
+        "intent_stats",
+        "cues",
+        "typed"
+      ],
+      "min_df_gap": 0.05,
+      "min_support_utterances_per_word": 3,
+      "reused_from": "scripts/build_slurp_intent_contrast_cards.py",
+      "type_gap": 0.3
+    }
+  },
+  "output": {
+    "content_sha256": "0d74fdb6aae70bff82abbd52355fe34b58cf646fe36a80016220ba1e714a7e34",
+    "relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2/table-v1.json",
+    "sha256": "0d74fdb6aae70bff82abbd52355fe34b58cf646fe36a80016220ba1e714a7e34"
+  },
+  "pairs_considered": 1770,
+  "pairs_skipped": 60,
+  "pairs_written": 1710,
+  "schema": "saea-slurp-perception-contrast-pairs-receipt-v2",
+  "skipped": [
+    {
+      "intents": [
+        "alarm_query",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "alarm_remove",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "alarm_set",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "audio_volume_down",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "audio_volume_mute",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "audio_volume_other",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "audio_volume_up",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "calendar_query",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "calendar_remove",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "calendar_set",
+        "cooking_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "cooking_recipe"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "datetime_convert"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "datetime_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "email_addcontact"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "email_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "email_querycontact"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "email_sendemail"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "general_greet"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "general_joke"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "general_quirky"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_cleaning"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_coffee"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_hue_lightchange"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_hue_lightdim"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_hue_lightoff"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_hue_lighton"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_hue_lightup"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_wemo_off"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "iot_wemo_on"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "lists_createoradd"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "lists_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "lists_remove"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "music_dislikeness"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "music_likeness"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "music_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "music_settings"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "news_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "play_audiobook"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "play_game"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "play_music"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "play_podcasts"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "play_radio"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "qa_currency"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "qa_definition"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "qa_factoid"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "qa_maths"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "qa_stock"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "recommendation_events"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "recommendation_locations"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "recommendation_movies"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "social_post"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "social_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "takeaway_order"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "takeaway_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "transport_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "transport_taxi"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "transport_ticket"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "transport_traffic"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "cooking_query",
+        "weather_query"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "iot_hue_lightoff",
+        "iot_hue_lighton"
+      ],
+      "reason": "insufficient-pool-support"
+    }
+  ]
+}

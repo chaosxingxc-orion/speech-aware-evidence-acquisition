@@ -159,6 +159,10 @@
           "branches": [
             {
               "branch_id": "b-top2contrast",
+              "contrast_pairs": {
+                "relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2/table-v1.json",
+                "sha256": "0d74fdb6aae70bff82abbd52355fe34b58cf646fe36a80016220ba1e714a7e34"
+              },
               "max_supplied_items": 12,
               "prepared_seed": {
                 "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json",

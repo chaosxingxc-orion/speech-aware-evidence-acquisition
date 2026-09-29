@@ -1573,6 +1573,8 @@ _PERCEPTION_BRANCH_RECORD_FIELDS = frozenset(
         "supplied_count", "max_supplied_items", "contact_id", "request_sha256",
         "response_text_sha256", "note_sha256", "note_parse_status",
         "candidate_intent_ids",
+        # "What to build" items 2 and 3.
+        "presentation_skip_reason", "contrast_block_sha256", "min_candidates_met",
     }
 )
 _PERCEPTION_BRANCH_LEVEL2_FIELDS = _PERCEPTION_BRANCH_RECORD_FIELDS | {
@@ -1765,8 +1767,61 @@ def validate_perception_branch_receipt(
             or min_candidates < 1
         ):
             _raise(error_type, "perception branch min_candidates must be a positive integer")
+        presentation_skip_reason = row.get("presentation_skip_reason")
+        if presentation_skip_reason is not None and (
+            not isinstance(presentation_skip_reason, str) or not presentation_skip_reason
+        ):
+            _raise(
+                error_type,
+                "perception branch presentation_skip_reason must be a "
+                "non-empty string or None",
+            )
+        contrast_block_sha256 = row.get("contrast_block_sha256")
+        if contrast_block_sha256 is not None and (
+            not isinstance(contrast_block_sha256, str)
+            or len(contrast_block_sha256) != 64
+            or any(character not in "0123456789abcdef" for character in contrast_block_sha256)
+        ):
+            _raise(
+                error_type,
+                "perception branch contrast_block_sha256 must be a lowercase "
+                "64-hex SHA-256 or None",
+            )
+        if presentation_skip_reason is not None and contrast_block_sha256 is not None:
+            _raise(
+                error_type,
+                "perception branch cannot carry both a rendered "
+                "contrast_block_sha256 and a presentation_skip_reason",
+            )
+        if (
+            presentation_id is None
+            and (presentation_skip_reason is not None or contrast_block_sha256 is not None)
+        ):
+            _raise(
+                error_type,
+                "perception branch carries a presentation outcome but "
+                "declares no presentation_id",
+            )
+        min_candidates_met = row.get("min_candidates_met")
+        if min_candidates is None:
+            if min_candidates_met is not None:
+                _raise(
+                    error_type,
+                    "perception branch carries min_candidates_met but "
+                    "declares no min_candidates",
+                )
+        elif not isinstance(min_candidates_met, bool):
+            _raise(
+                error_type,
+                "perception branch declares min_candidates and must carry a "
+                "min_candidates_met bool",
+            )
         if deliver or is_twin:
-            if paths or release_swap is not None or presentation_id is not None or min_candidates is not None:
+            if (
+                paths or release_swap is not None or presentation_id is not None
+                or min_candidates is not None or presentation_skip_reason is not None
+                or contrast_block_sha256 is not None or min_candidates_met is not None
+            ):
                 _raise(
                     error_type,
                     "the delivering perception branch (A) and its twin (T) must "
