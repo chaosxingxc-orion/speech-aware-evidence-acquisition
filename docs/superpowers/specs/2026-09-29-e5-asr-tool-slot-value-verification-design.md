@@ -394,3 +394,11 @@ shown the number.
    restart (stop -> E5-0 A+B -> start), or should the coordinator run it by hand under the lease?
 5. **COMP-1b.** Should E5-1 wait for COMP-1b's seal, so that one read covers AGREE, the wave A/A
    and COMP-1b? Or should it read AGREE, the A/A and E4-1 now and append COMP-1b afterwards?
+
+## Coordinator rulings (Fable 5.1, 2026-09-29)
+
+- **Q1 (2026-09-06 "no transcript tokens" ruling).** Decision 201 is put to the owner as a LIMITED exception: ASR transcripts are used only for post-delivery ENTITY-VALUE checks (E5-1 offline, E5-2a deterministic, E5-2b one forced-choice contact after delivery); they never enter the intent decision, the Perception or Solver prompts, or any retrieval key. The DEV-1000 result (intent -0.90 [-1.68, -0.09] with transcripts in the prompt) is the reason the exception is this narrow.
+- **Q2 (bar for a deterministic edit).** On a single sealed pool the edit is judged by its own paired row-bootstrap CI95 excluding zero AND its point estimate clearing the same-flight SLU floor (1.49 pp at n = 1,080); the A/A replicate must show the same sign at >= 1.0 pp. The 1.547 pool null applies only to multi-sample pools (decision 179). This rule applies to E5-2a and to the scope rule alike.
+- **Q3 (pinned tool).** The study-pinned `.pt` with the existing plumbing; an umbrella `docs/datasets.lock.json` entry is added before E5-0 runs, so the lock stays the single source of dataset/model identity.
+- **Q4 (how E5-0 runs).** As a queue chain step at the 12-h serving restart, scripted and receipted through the batch driver's lease, never by hand.
+- **Q5 (E5-1 timing).** E5-1 reads AGREE, the A/A and E4-1 as soon as E5-0's transcripts exist; COMP-1b is added when sealed. Nothing here admits anything; decision 201 gates E5-0.
