@@ -473,8 +473,8 @@
             },
             "max_supplied_items": 12,
             "prepared_seed": {
-              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1/perception-branch-seeds-v1.json",
-              "sha256": "6872b5f4fafc8fcccb77ea4c2ca3a8fc14a80c411688aa5315971d4ab8f8dfe5"
+              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1/perception-branch-seeds-v2.json",
+              "sha256": "28fc8d27843139b04e709897a7ab6fa8abd921a2b0256d138cf39c8d7409e10f"
             },
             "presentation_id": "top2-contrast-v1"
           },
@@ -499,7 +499,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-psv1-fold-b-smoke-4-v1",
-      "composed_config_hash": "956ce7f08282e446b109df92094aca78c4f754450b94f22bfc9410f6ef92fd48",
+      "composed_config_hash": "1a77b38c55ca848de18cae6b3b32736ee2165d21a282480b36f4898798bae7bf",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-psv1-fold-b-smoke-4-v1",
@@ -524,7 +524,7 @@
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
       "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
-      "protocol_hash": "2f6ac62b01859f884b3bd8179d0d155cefe93ee59278bd7c909b9fa3cd79bb22",
+      "protocol_hash": "dc6a44c9ec54ad93ada200eab7878ab93fc89667b032dac5a52ba4b47c3c2339",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1",

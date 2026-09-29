@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "e159acf56035232f28ffc6dba5e191dd0aa58e2c85f6258e33dc827bb520a45b"
+    "sha256": "c8161e6aad6f55f19a2dc7dc2a0c93c98b3881016c7246d210f504483273f6d0"
   },
   "purpose": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "quality_read_gate": "No branch column is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-PSV1-FOLD-B-BRANCH-READ-V1 is root countersigned.",
