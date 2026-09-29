@@ -252,7 +252,7 @@
         "blockers": null,
         "check_path": "/home/chao/saea-worktrees/.w4svproof-checks/check-slurp-native-stage3-w4sv-fold-a-v1.json",
         "check_sha256": "e8e585c9b1fab2a9de904b8815d6672727afa1f9d3bd60908235b3dbcd8a68ca",
-        "config_hash": "ba34275543f0da154584d33884a957aceb9d0e87ab7f719f8cda34d440f9e890",
+        "config_hash": "e526ece2fb5989d549ccb73d8d6b2184060459e6d0d57deb856cad5161963b2a",
         "prompt_budget_per_phase": [
           {
             "completion_token_ceiling": 512,
@@ -295,7 +295,7 @@
             "speech_feature_tokens": 29
           }
         ],
-        "protocol_hash": "a5134bcb7554bd2063bfdf77d1a9048fc1bee26baf1735e9e5a1d726df4a8c3a",
+        "protocol_hash": "da41b2179f03280b67e052429fcb7e271275059ca7d14f5c1de66e6c3b0c93c5",
         "scientific_readiness": {
           "reason": "Cell W4-SV registered before contact on 2026-09-28 from the retained AGREE arm fragments by script (decision 58) under owner decision 172 and the release-swap amendment (coordinator, 2026-09-28). The null is the in-flight twin arm t-twin; there is no separate A/A and no comparator is re-flown. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4sv/w4sv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (neither the alternate nor the arm group is an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
           "state": "held"
@@ -305,7 +305,7 @@
         "blockers": null,
         "check_path": "/home/chao/saea-worktrees/.w4svproof-checks/check-slurp-native-stage3-w4sv-fold-a-smoke-4-v1.json",
         "check_sha256": "dbaf11ac1425428254e7d273fd3480dfbb90187126e69072b085148845d90665",
-        "config_hash": "ba4fb50c35f6e9d38b358150490abdde862f48ff1c6a6cb8ae6e4881aad04300",
+        "config_hash": "940f54274345442b7d4c7f4b3b9ac3a9721106e4c9183240a67a6ee5906b200e",
         "prompt_budget_per_phase": [
           {
             "completion_token_ceiling": 512,
@@ -348,7 +348,7 @@
             "speech_feature_tokens": 29
           }
         ],
-        "protocol_hash": "f38cf4a55cf406876f4d2c4efaa3e93641ba09b75ae18a832c7a9ba4c7ba2c3b",
+        "protocol_hash": "8b017901ecb15d4e4ea22c2746d41b8be335cc267ef7db0ccbf689a56d2c21a3",
         "scientific_readiness": {
           "reason": "Four-row form smoke of cell W4-SV, registered before contact on 2026-09-28 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4sv/w4sv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (neither the alternate nor the arm group is an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
           "state": "held"
@@ -390,7 +390,7 @@
       "baseline_fragment": "slurp-native-stage3-w4sv-fold-a-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w4sv-fold-a-v1",
-      "composed_config_hash": "ba34275543f0da154584d33884a957aceb9d0e87ab7f719f8cda34d440f9e890",
+      "composed_config_hash": "e526ece2fb5989d549ccb73d8d6b2184060459e6d0d57deb856cad5161963b2a",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -422,7 +422,7 @@
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
       "policy": "phase-native-candidates-review-revise-variants3first-v1",
-      "protocol_hash": "a5134bcb7554bd2063bfdf77d1a9048fc1bee26baf1735e9e5a1d726df4a8c3a",
+      "protocol_hash": "da41b2179f03280b67e052429fcb7e271275059ca7d14f5c1de66e6c3b0c93c5",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1",
       "slot_store": {
@@ -498,7 +498,7 @@
       "baseline_fragment": "slurp-native-stage3-w4sv-fold-a-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
-      "composed_config_hash": "ba4fb50c35f6e9d38b358150490abdde862f48ff1c6a6cb8ae6e4881aad04300",
+      "composed_config_hash": "940f54274345442b7d4c7f4b3b9ac3a9721106e4c9183240a67a6ee5906b200e",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -530,7 +530,7 @@
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
       "policy": "phase-native-candidates-review-revise-variants3first-v1",
-      "protocol_hash": "f38cf4a55cf406876f4d2c4efaa3e93641ba09b75ae18a832c7a9ba4c7ba2c3b",
+      "protocol_hash": "8b017901ecb15d4e4ea22c2746d41b8be335cc267ef7db0ccbf689a56d2c21a3",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1",
       "slot_store": {

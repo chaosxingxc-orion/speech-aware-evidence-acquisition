@@ -48,6 +48,18 @@ artifacts column points at; else the decision receipt's antecedents; else the pa
     (the read row is countersigned after the seal and before any number is read), but it must
     exist.
 
+For a cell that declares ``resume_from`` (owner ruling after the COMP-1 resume attempt 3 seal
+abort -- a four-row smoke cannot see seal-time checks on kept rows):
+
+``resume-replay-unproven``
+    the package's own ``*plan-registered*.json`` carries no ``resume_replay_proof`` block naming
+    every field of :data:`RESUME_REPLAY_PROOF_FIELDS` (rows checked / failing / sealed-twice /
+    checker sha256 / code commit), or the block it carries reports a failing or sealed-twice row.
+    Advisory in tree mode; BLOCKING at launch for a live, unflown resume cell -- see
+    ``scripts/checks/resume_prelaunch_gate_check.py``, the live form of the same check, which
+    ``scripts/flights/batch/batch_driver.sh`` runs automatically right before any resume cell
+    flies.
+
 **Scope and severity.**
 
 * Whole-tree mode (no ``--cell``): every cell of ``configs/experiment/*.json`` whose
@@ -163,6 +175,21 @@ ROSTER_RECEIPTS_DIR = Path("docs/receipts/rosters")
 _NORMALIZE_KEY = re.compile(r"[^a-z0-9]+")
 _SHARED_WITH_KEY = re.compile(r"^sharedwith(.+?)(recordings|utterances)$")
 
+# --------------------------------------------------------------------------
+# resume-replay proof (coordinator, after the COMP-1 resume attempt 3 seal abort): a four-row
+# smoke cannot see seal-time checks on kept rows, so a cell that declares resume_from must carry
+# proof, in its OWN readiness package, that scripts/analysis/replay_seal_consistency.py already
+# replayed every predecessor attempt under the current code with zero failing rows and nothing
+# sealed twice -- see scripts/checks/resume_prelaunch_gate_check.py (the checker's live, at-launch
+# form) and scripts/flights/batch/README.md.
+# --------------------------------------------------------------------------
+
+#: The fields a ``resume_replay_proof`` block must name (kept as one tuple shared with
+#: ``resume_prelaunch_gate_check.py`` so the two can never drift apart on the spelling).
+RESUME_REPLAY_PROOF_FIELDS = (
+    "rows_checked", "rows_failing", "sealed_twice", "checker_sha256", "code_commit",
+)
+
 
 class FlightRegistrationCheckError(RuntimeError):
     """The tree or the data root cannot be read; exit 2."""
@@ -211,9 +238,17 @@ class CellReport:
     #: Set only for a cell whose ``stage3_measurement.measurement_design`` is one of
     #: :data:`SUPPLY_VARIANT_INSTRUMENT_DESIGNS` -- owner decision 172, section 4.
     supply_variant: dict[str, Any] | None = None
+    #: Set only for a cell whose ``stage3_measurement.measurement_design`` is
+    #: ``same-flight-perception-variant`` -- same-flight instrument, PHASE 2 (merge set C,
+    #: design docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-
+    #: variants-design.md section 4).
+    perception_branch: dict[str, Any] | None = None
     #: Set for EVERY cell that declares a ``stage3_measurement`` block, whatever its design --
     #: item D3: ``{"tuning_roster": ..., "read_roster": ...}``, the raw values as registered.
     roster_split: dict[str, Any] | None = None
+    #: Set only for a cell that declares ``resume_from``: the ``resume_replay_proof`` block found
+    #: in its readiness package's ``*plan-registered*.json``, or ``None`` when none was found.
+    resume_replay_proof: dict[str, Any] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -234,7 +269,9 @@ class CellReport:
             "receipts": dict(self.receipts),
             "findings": [finding.as_dict() for finding in self.findings],
             "supply_variant": self.supply_variant,
+            "perception_branch": self.perception_branch,
             "roster_split": self.roster_split,
+            "resume_replay_proof": self.resume_replay_proof,
         }
 
 
@@ -723,6 +760,162 @@ def _check_supply_variant_registration(
 
 # --------------------------------------------------------------------------
 # tuning/read roster split registration (item D3; every Stage-3 cell, every design)
+
+# --------------------------------------------------------------------------
+# Perception-branch instrument registration (same-flight instrument, PHASE 2, merge set C,
+# docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md
+# section 4, "Registration")
+# --------------------------------------------------------------------------
+
+#: The one design whose cells declare a ``roles.perception.branches`` group. Phase 2 registers no
+#: ``offline-sealed-pool``-style rollout use (design section 5's inner-loop use is a phase-1-only
+#: concept); a phase-2 cell always names this one design.
+PERCEPTION_VARIANT_INSTRUMENT_DESIGNS = ("same-flight-perception-variant",)
+
+#: The path a Perception ``branches`` block is composed under in a baseline fragment (see
+#: ``rails.native_episode_config``'s ``roles.perception.branches``).
+PERCEPTION_BRANCH_PATH = ("native_episode", "roles", "perception", "branches")
+
+#: Design section 8 (O1 ruling): never "admitted", whatever the level -- a level-1 result
+#: nominates only into level 2; only a level-2 result nominates the full-system read.
+PERCEPTION_BRANCH_CLAIM_CEILING = "nominated"
+
+
+def _perception_branches_block(baseline: dict[str, Any] | None) -> Any:
+    """The cell's ``native_episode.roles.perception.branches`` block, or ``None``."""
+
+    node: Any = baseline
+    for key in PERCEPTION_BRANCH_PATH:
+        if not isinstance(node, dict):
+            return None
+        node = node.get(key)
+    return node
+
+
+def _check_perception_branch_registration(
+    report: CellReport,
+    fragment: dict[str, Any],
+    baseline: dict[str, Any] | None,
+    floor_gate: Any,
+    repo_root: Path,
+) -> None:
+    """Design section 4 registration fields and gate findings for a Perception-branch cell.
+
+    A no-op when the declaration is absent or unreadable, when it names a design outside
+    :data:`PERCEPTION_VARIANT_INSTRUMENT_DESIGNS`, or when the cell declares no
+    ``roles.perception.branches`` block at all -- the same three-guard shape
+    :func:`_check_supply_variant_registration` uses, for the same reason.
+
+    Four findings: ``branch-level-missing``, ``aa-arm-missing`` (reused from phase 1: the
+    required twin, T, is absent or its id disagrees with the registered ``aa_arm_id``),
+    ``variant-claim-not-nominated`` (reused from phase 1 verbatim), and ``branch-seed-unpinned``
+    (design section 4/5): every non-A, non-T (B) branch must declare a well-formed
+    ``prepared_seed {relpath, sha256}`` (``rails.supply_variants.PerceptionBranch.prepared_seed``)
+    before this cell may register -- read straight off the raw config a B branch's own
+    ``prepared_seed`` key carries, which is as far as a static-config gate can check without the
+    runtime's own prepared-artifact identity computation
+    (``core.flight.runtime.FlightRuntime._perception_branch_seeds``); it does not re-verify that
+    the pinned bytes actually reproduce that identity.
+    """
+
+    block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
+    if not isinstance(block, dict):
+        return
+    design = block.get("measurement_design")
+    if design not in PERCEPTION_VARIANT_INSTRUMENT_DESIGNS:
+        return
+    branches_block = _perception_branches_block(baseline)
+    if not isinstance(branches_block, dict):
+        return
+
+    branches = branches_block.get("branches")
+    branch_count = len(branches) if isinstance(branches, list) else None
+    declared_level = branches_block.get("level")
+
+    report.perception_branch = {
+        "measurement_design": design,
+        "level": declared_level,
+        "branches": branch_count,
+        "variant_cost": block.get("variant_cost"),
+        "claim": block.get("claim"),
+        "tuning_roster": block.get("tuning_roster"),
+        "read_roster": block.get("read_roster"),
+        "aa_arm_id": block.get("aa_arm_id"),
+    }
+
+    if declared_level not in (1, 2):
+        report.findings.append(Finding(
+            "branch-level-missing",
+            f"{report.run_id}: measurement_design {design!r} is the phase-2 Perception-branch "
+            "instrument design (design section 3, 'Two levels'), but "
+            f"roles.perception.branches.level is {declared_level!r}, not 1 or 2",
+            report.run_id,
+        ))
+
+    twin_id = None
+    if isinstance(branches, list):
+        for row in branches:
+            if isinstance(row, dict) and row.get("replicate_of") is not None:
+                twin_id = row.get("branch_id")
+                break
+    aa_arm_id = block.get("aa_arm_id")
+    if twin_id is None:
+        report.findings.append(Finding(
+            "aa-arm-missing",
+            f"{report.run_id}: measurement_design {design!r} declares no twin (T) branch -- no "
+            "branch row names replicate_of -- but design section 4 ('A/A = twin') requires "
+            "exactly one on every same-flight-perception-variant read",
+            report.run_id,
+        ))
+    elif aa_arm_id != twin_id:
+        report.findings.append(Finding(
+            "aa-arm-missing",
+            f"{report.run_id}: stage3_measurement.aa_arm_id is {aa_arm_id!r}, but the branch "
+            f"group's own twin (the branch naming replicate_of) is {twin_id!r}",
+            report.run_id,
+        ))
+
+    claim = block.get("claim")
+    if claim != PERCEPTION_BRANCH_CLAIM_CEILING:
+        report.findings.append(Finding(
+            "variant-claim-not-nominated",
+            f"{report.run_id}: measurement_design {design!r} may claim only "
+            f"{PERCEPTION_BRANCH_CLAIM_CEILING!r} (design section 8, O1 ruling: a level-1 result "
+            "nominates only into level 2; only a level-2 result nominates the full-system read), "
+            f"but claim is {claim!r}",
+            report.run_id,
+        ))
+
+    if isinstance(branches, list):
+        for row in branches:
+            if (
+                not isinstance(row, dict)
+                or row.get("deliver") is True
+                or row.get("replicate_of") is not None
+            ):
+                continue
+            seed = row.get("prepared_seed")
+            if (
+                not isinstance(seed, dict)
+                or set(seed) != {"relpath", "sha256"}
+                or not isinstance(seed.get("relpath"), str) or not seed["relpath"]
+                or not isinstance(seed.get("sha256"), str) or len(seed["sha256"]) != 64
+                or any(
+                    character not in "0123456789abcdef" for character in seed["sha256"]
+                )
+            ):
+                report.findings.append(Finding(
+                    "branch-seed-unpinned",
+                    f"{report.run_id}: perception branch {row.get('branch_id')!r} (a B branch) "
+                    "declares no well-formed pinned prepared_seed {relpath, sha256} -- design "
+                    "section 5 requires every non-A, non-T branch's pre-flight seed to be pinned "
+                    "as its own prepared artifact before this cell may register",
+                    report.run_id,
+                ))
+
+
+# --------------------------------------------------------------------------
+# tuning/read roster split registration (item D3; every Stage-3 cell, every design)
 # --------------------------------------------------------------------------
 
 
@@ -962,6 +1155,90 @@ def _check_roster_split_registration(
     _check_tuning_read_overlap(report, repo_root, tuning_roster, read_roster)
 
 
+def _resume_replay_proof_block(
+    index: PackageIndex, package: str, run_id: str
+) -> dict[str, Any] | None:
+    """The ``resume_replay_proof`` block from the package's own registered-plan facts.
+
+    ``None`` when no ``*plan-registered*.json`` under the package names this run id at all (the
+    package resolved but never registered this generation plan's facts); ``{}`` when it names the
+    run id but carries no block. Never raises: an unreadable or malformed registered-plan file is
+    skipped, exactly like :meth:`PackageIndex.packages_registering`.
+    """
+
+    directory = index.repo_root / READINESS / package
+    for path in sorted(directory.glob("*plan-registered*.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if not isinstance(document, dict):
+            continue
+        execution_plan = document.get("execution_plan")
+        named_run_id = document.get("run_id") or (
+            execution_plan.get("run_id") if isinstance(execution_plan, dict) else None
+        )
+        if named_run_id != run_id:
+            continue
+        block = document.get("resume_replay_proof")
+        return block if isinstance(block, dict) else {}
+    return None
+
+
+def _check_resume_replay_proof(
+    report: CellReport, cell: dict[str, Any], index: PackageIndex, package: str
+) -> None:
+    """``resume-replay-unproven`` -- a cell declaring ``resume_from`` must carry proof, in its own
+    package, that the offline replay already ran clean under the current code (owner ruling after
+    the COMP-1 resume attempt 3 seal abort: a four-row smoke cannot see seal-time checks on kept
+    rows).
+
+    Advisory in tree mode (a whole-tree scan reports the gap without failing the tree over
+    paperwork not yet done); BLOCKING at launch (``--cell`` / ``--campaign-plan``, what
+    ``batch_driver.sh`` runs) for a live, unflown resume cell -- inherits the cell's own severity,
+    which is only ``"blocking"`` there. A no-op for a cell that declares no ``resume_from`` at
+    all, and skipped for a cell reached only through tree-mode bulk iteration of an already-flown
+    run id (never blocking either way, so checking it would only add noise -- the same scope
+    :func:`check_cell` already applies to the roster-split check).
+    """
+
+    if cell.get("resume_from") is None:
+        return
+    if not (report.named or report.consumed_by is None):
+        return
+    severity = None if report.named else "advisory"
+    block = _resume_replay_proof_block(index, package, report.run_id)
+    report.resume_replay_proof = block
+    fields = RESUME_REPLAY_PROOF_FIELDS
+    if block is None:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: no *plan-registered*.json under {report.package} names this run id "
+            "with a resume_replay_proof block (scripts/analysis/replay_seal_consistency.py, run "
+            "offline over every resume_from predecessor under the current code, before this "
+            "resume launches)",
+            report.run_id, severity=severity,
+        ))
+        return
+    missing = [name for name in fields if name not in block]
+    if missing:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: {report.package}'s resume_replay_proof is missing {missing} (must "
+            f"name all of {list(fields)})",
+            report.run_id, severity=severity,
+        ))
+        return
+    if int(block.get("rows_failing") or 0) != 0 or int(block.get("sealed_twice") or 0) != 0:
+        report.findings.append(Finding(
+            "resume-replay-unproven",
+            f"{report.run_id}: {report.package}'s resume_replay_proof reports "
+            f"{block.get('rows_failing')} row(s) failing and {block.get('sealed_twice')} sealed "
+            "twice -- the replay did not prove this resume safe to launch",
+            report.run_id, severity=severity,
+        ))
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -974,6 +1251,7 @@ def check_cell(
 ) -> None:
     floor_gate = _floor_gate_module(index.repo_root)
     _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
+    _check_perception_branch_registration(report, fragment, baseline, floor_gate, index.repo_root)
     # Item D3's roster-split check still runs for a NAMED sealed/flown cell (a resume step
     # re-launching an already-consumed run id, gated the same as any other launch-mode cell --
     # see test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap: the finding is reported,
@@ -1023,6 +1301,7 @@ def check_cell(
         ))
         return
     report.package = f"{READINESS.as_posix()}/{package}"
+    _check_resume_replay_proof(report, cell, index, package)
     recipes = index.recipes(package)
     if not recipes:
         report.findings.append(Finding(

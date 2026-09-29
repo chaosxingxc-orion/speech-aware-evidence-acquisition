@@ -1178,6 +1178,322 @@ def score_supply_variant_copies(
     return summary
 
 
+# ---------------------------------------------------------------------------
+# Perception-branch LEVEL-2 first Solver visit (same-flight instrument phase
+# 2, merge set C, item 1). Structurally render_supply_variant_first_visit's
+# and score_supply_variant_copies's own twins, over the Perception role's
+# declared branch group instead of a Solver-declared arm group.
+# ---------------------------------------------------------------------------
+
+PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA = "saea-stage3-perception-branch-solver-first-visit-v1"
+
+
+def render_perception_branch_columns(
+    bundle, group, roster: Mapping[str, str], out_dir: Path,
+    *, run_id: str, attempt_id: str, roster_sha256: str, config_hash: str,
+) -> dict[str, Any]:
+    """Render every declared Perception branch's own LEVEL-2 Solver column.
+
+    The K contacts this render reads are the SOLVER's own first visit
+    (``role_visits`` stage "solver"), fanned out one per branch by
+    ``rails.runner``'s level-2 wiring (design section 3, "Level 2") -- NOT
+    the earlier Perception visit's own K contacts, which hold only branch
+    NOTES, never a scored answer. A bundle-verified terminal abstention with
+    no Solver visit is an explicit canonical-empty fallback in every column,
+    exactly as the supply-variant arm route's own render does. A partial
+    branch group (fewer contacts than declared branches) is invalid.
+    """
+    from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+        validate_native_episode_delivery_receipt, validate_perception_branch_receipt,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response
+    from speech_aware_evidence_acquisition.core.base import DELIVERY_NORMALISERS
+    from speech_aware_evidence_acquisition.rails import (  # noqa: F401 -- registration side effect
+        delivery_normalisers as _delivery_normalisers,
+    )
+
+    if group.level != 2:
+        raise Stage3ScoreError("perception-branch column rendering requires a level-2 group")
+    if (bundle.manifest.get("status") != "COMPLETED"
+            or bundle.attempt_state != "FINALIZED"
+            or bundle.manifest.get("run_id") != run_id
+            or bundle.manifest_path.parent.name != attempt_id):
+        raise Stage3ScoreError("source bundle is not the requested finalized complete attempt")
+    ids = sorted(roster)
+    if set(ids) != set(bundle.split_ids) or len(ids) != len(bundle.outputs_rows):
+        raise Stage3ScoreError("roster differs from complete bundle split")
+    rows = {row.get("sample_id"): row for row in bundle.outputs_rows}
+    if set(rows) != set(ids):
+        raise Stage3ScoreError("bundle outputs have missing, extra, or duplicate roster rows")
+    if bundle.manifest.get("config", {}).get("config_hash") != config_hash:
+        raise Stage3ScoreError("composed config hash differs from sealed manifest")
+    names = tuple(group.branch_ids)
+    if any(not isinstance(name, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name) is None
+           for name in names):
+        raise Stage3ScoreError("perception branch IDs must be safe single path segments")
+    columns = {name: [] for name in names}
+    row_meta = []
+    malformed = {name: 0 for name in names}
+    absent = 0
+    revisions = 0
+    at1_checked = 0
+    for sid in ids:
+        row = rows[sid]
+        episode = row.get("native_episode_receipt")
+        if not isinstance(episode, Mapping):
+            raise Stage3ScoreError(f"{sid}: no sealed native episode")
+        # Every column -- twin and A's own included -- goes through the DELIVERED ROW'S OWN
+        # normaliser (core.base.DELIVERY_NORMALISERS), read from this row's own sealed custody,
+        # exactly as render_supply_variant_first_visit's own AT1 self-check does.
+        deliver_normaliser_receipt = episode.get("deliver_normaliser")
+        normaliser_id = (
+            deliver_normaliser_receipt.get("normaliser_id")
+            if isinstance(deliver_normaliser_receipt, Mapping) else None
+        )
+        visits = episode.get("role_visits")
+        delivery = validate_native_episode_delivery_receipt(
+            episode, error_type=Stage3ScoreError
+        )
+        branches_receipt = episode.get("perception_branches")
+        if not isinstance(branches_receipt, Mapping):
+            raise Stage3ScoreError(f"{sid}: no sealed perception-branch custody")
+        validate_perception_branch_receipt(
+            branches_receipt, branch_ids=names,
+            delivered_branch_id=group.delivering_branch.branch_id,
+            twin_branch_id=group.twin_branch.branch_id,
+            phase_id=branches_receipt.get("phase_id"), level=2,
+            error_type=Stage3ScoreError,
+        )
+        solver = [visit for visit in visits if isinstance(visit, Mapping)
+                  and visit.get("stage") == "solver"]
+        revisions += max(0, len(solver) - 1)
+        if not solver:
+            if delivery.kind not in {"abstention", "context-abstention"}:
+                raise Stage3ScoreError(f"{sid}: missing Solver visit is not a declared terminal fallback")
+            absent += 1
+            for name in names:
+                columns[name].append({"sample_id": sid, "text": EMPTY_ANSWER})
+            row_meta.append({"sample_id": sid, "availability": "no_solver_visit",
+                             "fallback": "canonical_empty", "later_solver_visits": 0})
+            continue
+        first = solver[0].get("execution_receipt")
+        contacts = first.get("contacts") if isinstance(first, Mapping) else None
+        if not isinstance(contacts, list) or len(contacts) != len(names):
+            raise Stage3ScoreError(f"{sid}: first Solver visit lacks a complete branch group")
+        branch_meta = []
+        for i, name in enumerate(names):
+            contact = contacts[i]
+            if not isinstance(contact, Mapping):
+                raise Stage3ScoreError(f"{sid}: first Solver branch contact is malformed")
+            request_id = contact.get("request_id")
+            response = bundle.trace_records.get(f"{request_id}/response")
+            request = bundle.trace_records.get(f"{request_id}/request")
+            if not isinstance(response, Mapping) or not isinstance(request, Mapping):
+                raise Stage3ScoreError(f"{sid}: first Solver branch trace pair is absent")
+            raw = response.get("text")
+            if (not isinstance(raw, str)
+                    or request.get("payload_sha256") != contact.get("request_sha256")
+                    or hashlib.sha256(raw.encode("utf-8")).hexdigest()
+                    != contact.get("response_text_sha256")
+                    or response.get("response_text_sha256") != contact.get("response_text_sha256")):
+                raise Stage3ScoreError(f"{sid}: first Solver branch trace hash differs from custody")
+            if normaliser_id is not None:
+                normalisation = DELIVERY_NORMALISERS.resolve(normaliser_id)(raw)
+                branch_text = normalisation.text
+                ok = bool(normalisation.receipt.get("applied", False))
+            else:
+                scenario, action, entities, ok = parse_slu_response(raw)
+                parsed = ({"scenario": scenario or "", "action": action or "",
+                           "entities": [{"type": x.type, "filler": x.filler} for x in entities]}
+                          if ok else None)
+                branch_text = render_answer(parsed)
+            if not ok:
+                malformed[name] += 1
+            columns[name].append({"sample_id": sid, "text": branch_text})
+            branch_meta.append({
+                "branch_id": name, "contact_id": contact.get("agent_contact_id"),
+                "request_sha256": contact.get("request_sha256"),
+                "response_text_sha256": contact.get("response_text_sha256"),
+                "parse_status": "ok" if ok else "malformed",
+                "fallback": None if ok else "canonical_empty",
+            })
+            if name == group.delivering_branch.branch_id and len(solver) == 1:
+                # AT1: on every row with no revision visit, A's rendered level-2 column text
+                # equals the sealed delivered text byte for byte -- A spends no NEW Solver
+                # contact (design section 3, "Level 2"), so this is the SAME self-check
+                # render_supply_variant_first_visit's own AT1 makes for its delivering arm.
+                sealed_text = row.get("text")
+                if isinstance(sealed_text, str):
+                    at1_checked += 1
+                    if branch_text != sealed_text:
+                        raise Stage3ScoreError(
+                            f"{sid}: AT1 column reproduction failed -- branch A's rendered "
+                            "level-2 column text differs from the sealed delivered text byte "
+                            "for byte"
+                        )
+        row_meta.append({"sample_id": sid, "availability": "first_solver_visit",
+                         "later_solver_visits": len(solver) - 1, "branches": branch_meta})
+    source = {
+        "run_id": run_id, "attempt_id": attempt_id,
+        "manifest_path": str(bundle.manifest_path),
+        "manifest_sha256": sha256_file(bundle.manifest_path),
+        "outputs_sha256": bundle.manifest["outputs"]["sha256"],
+        "raw_trace_sha256": bundle.manifest["raw_trace"]["sha256"],
+        "sealed_scores_sha256": bundle.manifest["scores"]["sha256"],
+        "config_hash": config_hash, "roster_sha256": roster_sha256,
+    }
+    manifest = {
+        "schema": PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA, "stage": "render", "source": source,
+        "rows": len(ids), "branch_order": list(names),
+        "no_solver_visit_rows": absent, "malformed_first_visit_by_branch": malformed,
+        "later_solver_visit_count": revisions,
+        "meaning": "level-2 first Solver visit local branch outputs; not full-system returns",
+        "branch_order_source": "declared perception branch group order (A last); runtime invokes "
+                               "branches in this order",
+        # AT1 (design section 3): every no-revision row whose bundle carried a sealed delivered
+        # text had branch A's rendered column checked against it byte for byte.
+        "at1_column_reproduction_checked_rows": at1_checked,
+        "copies": {},
+    }
+    for name in names:
+        path = out_dir / f"arm-{name}-first-visit-outputs.jsonl"
+        digest = _immutable_jsonl(path, columns[name])
+        manifest["copies"][name] = {"path": str(path), "sha256": digest, "rows": len(ids)}
+    _immutable_json(out_dir / "first-visit-rows.json", {
+        "schema": PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA, "source": source, "rows": row_meta,
+        "note": "later visits are counted only, never mixed into first-visit columns",
+    })
+    _immutable_json(out_dir / "render-manifest.json", manifest)
+    return manifest
+
+
+def score_perception_branch_copies(
+    scorer_id: str, manifest: Mapping[str, Any], out_dir: Path,
+    lock: Mapping[str, object], data_root: Path, delivered: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Use score_copy once per whole-roster first-visit branch, then cache summary.
+
+    Writes ``arm-<branch>-<scorer_id>-scores.json`` -- the SAME file name
+    ``score_supply_variant_copies`` writes for a Solver-declared arm, so a
+    generic reader keyed only on "column name" + scorer id (``scripts/
+    analysis/slurp_paired_roster_read.py``'s own ``--left-column``/
+    ``--right-column``, wired through ``stage3_paired_read.py``) can read a
+    perception branch's own column exactly as it reads a supply-variant
+    arm's, with no reader-side change.
+    """
+    from speech_aware_evidence_acquisition.core.scoring_batch import (
+        score_complete_derived_copy,
+    )
+
+    if manifest.get("schema") != PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA:
+        raise Stage3ScoreError(
+            "perception-branch score requires a level-2 first-visit render manifest"
+        )
+    ids = None
+    sides = {}
+    for branch_id in manifest["branch_order"]:
+        entry = manifest["copies"].get(branch_id)
+        if not isinstance(entry, Mapping):
+            raise Stage3ScoreError(f"missing rendered copy for branch {branch_id}")
+        path = Path(entry["path"])
+        if sha256_file(path) != entry["sha256"]:
+            raise Stage3ScoreError(f"rendered copy hash mismatch for branch {branch_id}")
+        copy_rows = list(iter_jsonl(path))
+        current = {row.get("sample_id") for row in copy_rows}
+        if len(copy_rows) != manifest["rows"] or len(current) != len(copy_rows):
+            raise Stage3ScoreError(f"rendered copy has partial identities for branch {branch_id}")
+        if ids is None:
+            ids = current
+        elif ids != current:
+            raise Stage3ScoreError("branch copies do not share one complete roster")
+        score_path = out_dir / f"arm-{branch_id}-{scorer_id}-scores.json"
+        result = score_complete_derived_copy(
+            parent_manifest=Path(manifest["source"]["manifest_path"]),
+            outputs_copy=path, expected_copy_sha256=entry["sha256"],
+            scorer_id=scorer_id, result_path=score_path, lock=lock,
+            data_root=data_root,
+            column_binding={
+                "branch_id": branch_id,
+                "render_manifest_sha256": sha256_file(out_dir / "render-manifest.json"),
+                "roster_sha256": manifest["source"]["roster_sha256"],
+                "visit": "first-solver-level2",
+            },
+        )
+        aggregate = result.get("aggregate", {})
+        scores = result.get("per_sample")
+        if (not isinstance(scores, list) or len(scores) != len(current)
+                or {row.get("sample_id") for row in scores} != current
+                or not aggregate.get("identity_check", {}).get("passed")):
+            raise Stage3ScoreError(f"official scorer returned incomplete branch {branch_id}")
+        sides[branch_id] = {
+            "copy_sha256": entry["sha256"], "scores_sha256": sha256_file(score_path),
+            "official": aggregate["official"], "rows": len(scores),
+        }
+    if set(delivered) != ids:
+        raise Stage3ScoreError("sealed delivered scores differ from complete roster")
+    summary = {
+        "schema": PERCEPTION_BRANCH_SOLVER_RENDER_SCHEMA, "stage": "score",
+        "source": manifest["source"], "scorer_id": scorer_id,
+        "branch_order": manifest["branch_order"], "branches": sides,
+        "sealed_delivered_scores_sha256": manifest["source"]["sealed_scores_sha256"],
+        "sealed_delivered_rows": len(delivered),
+        "meaning": "level-2 first Solver visit local branch feedback; not full-system returns",
+        "contacts": {"model": 0, "tokenizer": 0, "encoder": 0, "asr": 0,
+                     "server": 0, "network": 0, "scorer": len(sides)},
+    }
+    _immutable_json(out_dir / "score-summary.json", summary)
+    return summary
+
+
+def perception_branch_main(args, repo_root: Path, root: Path, lock) -> int:
+    from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+    from speech_aware_evidence_acquisition.core.config import compose
+    from speech_aware_evidence_acquisition.rails.supply_variants import parse_perception_branches
+
+    if args.stage == "pairs" or args.samples is not None:
+        raise Stage3ScoreError(
+            "perception-branches mode supports render/score/all, not pairs or samples"
+        )
+    directory = run_dir(root, args.run, args.attempt)
+    bundle = verify_bundle(directory / f"{args.run}.run-manifest.json")
+    fragments = bundle.manifest.get("config", {}).get("fragments")
+    if not isinstance(fragments, Mapping):
+        raise Stage3ScoreError("sealed manifest has no composed fragments")
+    composed = compose(repo_root, *(fragments[k] for k in ("model", "dataset", "baseline", "experiment")))
+    if composed.config_hash != bundle.manifest["config"]["config_hash"]:
+        raise Stage3ScoreError("current fragments differ from sealed composed config")
+    native = composed.values.get("native_episode")
+    roles = native.get("roles") if isinstance(native, Mapping) else None
+    perception = roles.get("perception") if isinstance(roles, Mapping) else None
+    if not isinstance(perception, Mapping):
+        raise Stage3ScoreError("composed config lacks a native Perception role")
+    stores = composed.values.get("knowledge_stores")
+    if not isinstance(stores, Mapping):
+        raise Stage3ScoreError("composed config lacks declared knowledge stores")
+    group = parse_perception_branches(
+        perception.get("branches"), first_phase_id=perception.get("phase_id"),
+        declared_stores=tuple(stores),
+    )
+    roster, roster_sha256, _ = load_roster(repo_root, args.roster)
+    out_dir = Path(args.analysis_root)
+    if args.stage in ("render", "all"):
+        manifest = render_perception_branch_columns(
+            bundle, group, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
+            roster_sha256=roster_sha256, config_hash=composed.config_hash,
+        )
+    else:
+        path = out_dir / "render-manifest.json"
+        if not path.is_file():
+            raise Stage3ScoreError("perception-branch score requires a prior render")
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    if args.stage in ("score", "all"):
+        sealed = {row.get("sample_id"): row for row in bundle.outputs_rows}
+        score_perception_branch_copies(
+            args.scorer_id, manifest, out_dir, lock, root, sealed,
+        )
+    return 0
+
+
 def supply_variant_main(args, repo_root: Path, root: Path, lock) -> int:
     from speech_aware_evidence_acquisition.core.bundle import verify_bundle
     from speech_aware_evidence_acquisition.core.config import compose
@@ -1426,7 +1742,10 @@ def pairs(
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("grouped", "supply-variants"), default="grouped")
+    parser.add_argument(
+        "--mode", choices=("grouped", "supply-variants", "perception-branches"),
+        default="grouped",
+    )
     parser.add_argument("--run", required=True, help="sealed run id")
     parser.add_argument("--attempt", required=True, help="sealed attempt id")
     parser.add_argument("--roster", required=True, help="roster receipt relpath (repo-root relative)")
@@ -1492,6 +1811,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     roster, roster_sha256, roster_split_identity_hash = load_roster(repo_root, args.roster)
     if args.mode == "supply-variants":
         return supply_variant_main(args, repo_root, root, lock)
+    if args.mode == "perception-branches":
+        return perception_branch_main(args, repo_root, root, lock)
     out_dir = Path(args.analysis_root)
     out_dir.mkdir(parents=True, exist_ok=True)
 

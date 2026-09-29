@@ -173,6 +173,18 @@ class NativeEpisodeRole:
     # independently declared knobs. Declared LAST, for the same reason E39's
     # field is.
     supply_variants: object = None
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md): this node's PERCEPTION-BRANCH group -- a validated
+    # ``rails.supply_variants.PerceptionBranchGroup`` -- or ``None``, which is
+    # every role of every config written before phase 2 and composes exactly
+    # the role it always did. Perception-only, for the mechanical reason
+    # section 3 states: it forks the FIRST phase itself, before any contact,
+    # into K branches over one audio packet; refused beside
+    # ``supply_variants`` (two fan-out mechanisms in one episode would make
+    # the ceiling's extra-contact term ambiguous). Declared LAST, for the
+    # same reason ``supply_variants`` is.
+    perception_branches: object = None
 
     def __post_init__(self):
         if self.role_kind == ACQUISITION_ROLE_KIND:
@@ -187,6 +199,10 @@ class NativeEpisodeRole:
                 # Item E42: the sixth node answers nothing and delivers
                 # nothing, so it has no draft whose construction could be
                 # varied and no delivering arm to name.
+                raise ValueError("the acquisition role carries no role knobs")
+            if self.perception_branches is not None:
+                # Phase 2, merge set C: the sixth node is not Perception and
+                # has no first-phase seed of its own to fork.
                 raise ValueError("the acquisition role carries no role knobs")
             if self.max_completion_tokens is not None:
                 # Item E39: the sixth node answers nothing and, on every kind
@@ -291,6 +307,35 @@ class NativeEpisodeRole:
                 raise ValueError(
                     "supply_variants cannot combine with role tool authority: a "
                     "tool call would spend a second contact under one arm"
+                )
+        # Same-flight instrument, PHASE 2 (merge set C): the PERCEPTION-BRANCH
+        # group. Perception-only for the mechanical reason section 3 states: it
+        # forks the FIRST phase itself, and no other role owns that seed. The
+        # cross-role refusal beside a Solver ``supply_variants`` group is
+        # checked once, at the whole-config level
+        # (``load_native_episode_config``), because one role's own
+        # ``__post_init__`` cannot see another role's fields.
+        if self.perception_branches is not None:
+            from .supply_variants import PerceptionBranchGroup  # noqa: PLC0415
+
+            if self.role_kind != "perception":
+                raise ValueError(
+                    "only the Perception role may declare perception branches"
+                )
+            if not isinstance(self.perception_branches, PerceptionBranchGroup):
+                raise ValueError(
+                    "perception_branches must be a parsed "
+                    "rails.supply_variants.PerceptionBranchGroup"
+                )
+            if self.max_iterations != 1:
+                raise ValueError(
+                    "perception_branches requires roles.perception.max_iterations "
+                    "1: Perception has one visit per row and no refresh (design "
+                    "section 3, 'Branch visits')"
+                )
+            if self.tool_names:
+                raise ValueError(
+                    "perception_branches cannot combine with role tool authority"
                 )
         if self.samples == 1:
             if self.decoding_overrides is not None:
@@ -684,6 +729,28 @@ class NativeEpisodeConfig:
         return None if role.supply_variants is None else role.phase_id
 
     @property
+    def perception_branch_group(self):
+        """Same-flight instrument, PHASE 2 (merge set C): the Perception
+        role's declared branch group, or ``None``.
+
+        ``None`` for every config written before phase 2, which is what
+        makes every Perception-branch branch of the runner, the request
+        path and the seal unreachable and their bytes identical --
+        :attr:`supply_variant_group`'s own twin.
+        """
+
+        return self.role("perception").perception_branches
+
+    @property
+    def perception_branch_phase_id(self) -> str | None:
+        """Same-flight instrument, PHASE 2: the phase whose one visit fans
+        out into branches, or ``None`` -- :attr:`supply_variant_phase_id`'s
+        own twin."""
+
+        role = self.role("perception")
+        return None if role.perception_branches is None else role.phase_id
+
+    @property
     def acquisition_enabled(self) -> bool:
         """Whether this episode builds the sixth node (E18)."""
 
@@ -829,6 +896,17 @@ class NativeEpisodeRunBinding:
     # request, state, output or trace byte depends on it. None, the value of
     # every committed configuration, leaves the dispatch exactly as it was.
     slot_fill: object = None
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md section 3, "Branch seeds"): every declared Perception
+    # branch's own PRE-FLIGHT, whole-roster first-phase seed --
+    # ``{branch_id: {sample_id: (value_id, ...)}}`` -- flight-owned exactly
+    # as ``supply_variant_for_phase`` is, and computed the same way
+    # (:meth:`core.flight.runtime.FlightRuntime._perception_branch_seeds`).
+    # ``None`` -- and therefore byte-identical to the pre-phase-2 tree --
+    # unless ``roles.perception.branches`` is declared. Declared LAST, for
+    # the same reason ``supply_variant_for_phase``'s field is.
+    perception_branch_seeds: Mapping[str, Mapping[str, tuple]] | None = None
 
 
 @dataclass(frozen=True)
@@ -1185,10 +1263,14 @@ def load_native_episode_config(
             {"samples", "decoding_overrides", "commit", "twin", "supply_variants"}
             if kind == "solver" else set()
         )
+        # Same-flight instrument, PHASE 2 (merge set C): ``branches`` joins the
+        # Perception-only row fields for the same reason -- it forks the FIRST
+        # phase's own visit and nothing else may declare it.
+        perception_fields = {"branches"} if kind == "perception" else set()
         if (
             not isinstance(row, Mapping)
             or not {"phase_id", "max_iterations"} <= set(row)
-            or set(row) - base_fields - solver_fields
+            or set(row) - base_fields - solver_fields - perception_fields
         ):
             raise ValueError("each native role requires phase_id and max_iterations")
         if row["phase_id"] not in program.phase_names():
@@ -1310,6 +1392,67 @@ def load_native_episode_config(
                 "native_episode.knowledge_index: the index replaces the very "
                 "value blocks an arm varies"
             )
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md): the Perception's own PERCEPTION-BRANCH group, parsed HERE
+    # -- before any contact -- for the same reason the Solver's supply-variant
+    # arm group is: a fragment can never name a knob path this rail does not
+    # admit, an unregistered presentation, an out-of-range response-contract
+    # bound, or a combination whose prompt-fit estimate exceeds the live slot
+    # with the registered reserve. ``None`` for every config written before
+    # phase 2, which leaves the ceiling below and every role exactly as they
+    # were.
+    perception_branch_group = None
+    if "branches" in raw_roles["perception"]:
+        from .candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES
+        from .knowledge_stores import declared_alternate_release_relpaths
+        from .supply_variants import PerceptionBranchError, parse_perception_branches
+        # Importing the BARE registry object from ``core.base`` is not enough:
+        # ``core.base.PERCEPTION_PRESENTATIONS`` is populated by
+        # ``rails.perception_presentations``'s own module-level ``.register(
+        # ...)`` calls, which only run once that module has been imported --
+        # the same reason ``rails.acquisition`` must be imported to populate
+        # ``core.base.ACQUISITION_POLICIES``. Importing the REGISTERING
+        # module here (not just the registry) is what makes
+        # ``registered_presentation_ids`` below non-empty the first time this
+        # loader runs, regardless of what any other module has already
+        # imported.
+        from .perception_presentations import PERCEPTION_PRESENTATIONS  # noqa: F401
+
+        declared_stores = values.get("knowledge_stores")
+        if declared_stores is not None and not isinstance(declared_stores, Mapping):
+            raise ValueError("knowledge_stores must be a mapping")
+        try:
+            perception_branch_group = parse_perception_branches(
+                raw_roles["perception"]["branches"],
+                first_phase_id=program.phase_names()[0],
+                declared_stores=(
+                    None if declared_stores is None else tuple(declared_stores)
+                ),
+                declared_alternate_relpaths=declared_alternate_release_relpaths(
+                    declared_stores
+                ),
+                registered_presentation_ids=tuple(PERCEPTION_PRESENTATIONS.names()),
+                max_candidates_ceiling=DEFAULT_MAX_SLURP_CANDIDATES,
+            )
+        except PerceptionBranchError as error:
+            raise ValueError(
+                f"roles.perception.branches is invalid: {error}"
+            ) from error
+        if supply_variant_group is not None:
+            raise ValueError(
+                "roles.perception.branches cannot combine with "
+                "roles.solver.supply_variants: two fan-out mechanisms in one "
+                "episode make the ceiling's extra-contact term ambiguous"
+            )
+        if knowledge_index_armed:
+            # Same reason the Solver's own arm group refuses this combination
+            # above: the index replaces the very value blocks a branch varies.
+            raise ValueError(
+                "roles.perception.branches cannot combine with "
+                "native_episode.knowledge_index: the index replaces the very "
+                "value blocks a branch varies"
+            )
     roles = []
     for kind in kinds:
         row = raw_roles[kind]
@@ -1337,6 +1480,11 @@ def load_native_episode_config(
             # but the Solver of a config that declares the key at all.
             supply_variants=(
                 supply_variant_group if kind == "solver" else None
+            ),
+            # Phase 2, merge set C: keyword for the same reason, and None for
+            # every role but the Perception of a config that declares the key.
+            perception_branches=(
+                perception_branch_group if kind == "perception" else None
             ),
         ))
     # E17: ``constant`` rendering is admitted only where it leaves every
@@ -1861,6 +2009,26 @@ def load_native_episode_config(
     ceiling += refreshes * roles[0].max_iterations
     if variant_fans_out_once:
         ceiling += variant_arm_count_for_ceiling - 1
+    # Same-flight instrument, PHASE 2 (merge set C): the Perception-branch
+    # group's extra-contact term (design section 3, "Budget"): level 1 adds
+    # the K - 1 extra PERCEPTION contacts of the non-A branches; level 2 adds
+    # those plus one extra SOLVER contact per non-A branch. Perception has
+    # exactly one visit per row (no refresh, no revision re-entry), so --
+    # unlike the Solver arm-group term above -- this is added once, never
+    # multiplied by ``revisions``. Zero (the ``roles[0].perception_branches
+    # is None`` branch below is simply skipped) for every config that
+    # declares no branch group, which reduces this to exactly the
+    # pre-phase-2 formula. Refused beside a Solver arm group
+    # (``NativeEpisodeRole.__post_init__`` / the parse-time check above), so
+    # this and the ``variant_fans_out_once`` term above are never both taken.
+    if roles[0].perception_branches is not None:
+        from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
+
+        ceiling = perception_branch_ceiling(
+            base_ceiling=ceiling,
+            branch_count=roles[0].perception_branches.branch_count,
+            level=roles[0].perception_branches.level,
+        )
     # E18 (2026-09-19, owner decisions 43-44): plus the contacts the
     # Acquisition node's own visits may spend. Zero for every model-free kind
     # and for every config that declares no acquisition at all, which reduces
@@ -1899,6 +2067,47 @@ def load_native_episode_config(
                 "native_episode.knowledge_value_rendering cannot be armed beside a "
                 "Solver supply-variant arm group"
             )
+        # Same-flight instrument, PHASE 2 (merge set C): the same custody
+        # reason -- a Perception branch group resolves each branch's own
+        # selection independently of this row's supply step.
+        if roles[0].perception_branches is not None:
+            raise ValueError(
+                "native_episode.knowledge_value_rendering cannot be armed beside "
+                "a Perception branch group"
+            )
+    # Same-flight instrument, PHASE 2 (merge set C, design section 3,
+    # "Refused"): a declared branch group is refused beside a frozen
+    # finite_supply_policy (a frozen policy resolves this row's supply
+    # independently of a branch's own pre-flight seed -- the same custody
+    # reason knowledge_value_rendering is refused above) and beside an
+    # acquisition policy that RE-ENTERS Perception (kind
+    # ``speech-reobserve``): that policy's own re-observation node would
+    # contact Perception a SECOND time, outside the branch fork entirely,
+    # for a phase whose branch group already claims sole ownership of its
+    # one seed.
+    if roles[0].perception_branches is not None:
+        if values.get("finite_supply_policy") is not None:
+            raise ValueError(
+                "native_episode.roles.perception.branches cannot be armed "
+                "beside finite_supply_policy"
+            )
+        if acquisition_policy_id is not None:
+            # Function-local: the same registration discipline every other
+            # rails.acquisition import in this module follows.
+            from .acquisition import (  # noqa: PLC0415
+                KIND_SPEECH_REOBSERVE, AcquisitionError, resolve_acquisition_policy,
+            )
+
+            try:
+                acquisition_policy = resolve_acquisition_policy(acquisition_policy_id)
+            except AcquisitionError as error:
+                raise ValueError(f"acquisition.policy is invalid: {error}") from error
+            if acquisition_policy.kind == KIND_SPEECH_REOBSERVE:
+                raise ValueError(
+                    "native_episode.roles.perception.branches cannot be armed "
+                    "beside an acquisition policy that re-enters Perception "
+                    f"({KIND_SPEECH_REOBSERVE!r})"
+                )
     return NativeEpisodeConfig(
         raw["episode_id"],
         revisions,

@@ -376,6 +376,37 @@ def _knowledge_store_alternate_identity(raw_stores: object) -> Mapping[str, obje
     return identity
 
 
+def _perception_branches_identity(raw_native_episode: object) -> Mapping[str, object]:
+    """The declared ``native_episode.roles.perception.branches`` block, or ``{}``.
+
+    Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    design.md section 5, "Changes and merge set C", item 4): a branch's axes
+    (knobs, release_swap, presentation_id, min_candidates) already sit inside
+    ``self._composed.values`` and are therefore already inside
+    ``core.preparation.artifact_inputs``'s own ``config_sha256`` -- this is a
+    second, EXPLICIT binding of exactly that block, the same reason
+    :func:`_knowledge_store_alternate_identity` exists for a release-swap
+    arm's alternates, so a prepared first-phase supply artifact's identity is
+    provably sensitive to a branch's declared axis changing even if some
+    future config-hashing narrowing ever excluded another part of
+    ``native_episode``. ``{}`` -- and therefore no change to any existing
+    identity -- for every cell written before phase 2 and every cell that
+    declares no ``roles.perception.branches``.
+    """
+
+    if not isinstance(raw_native_episode, Mapping):
+        return {}
+    roles = raw_native_episode.get("roles")
+    if not isinstance(roles, Mapping):
+        return {}
+    perception = roles.get("perception")
+    if not isinstance(perception, Mapping):
+        return {}
+    branches = perception.get("branches")
+    return dict(branches) if isinstance(branches, Mapping) else {}
+
+
 def _default_token_counter(payload_bytes: bytes) -> int:
     """Placeholder-only ~4-bytes/token heuristic.
 
@@ -3358,6 +3389,117 @@ class FlightRuntime:
                 "supply_variant_release_swaps": release_swap_receipts,
             }
         return resolve
+
+    def _perception_branch_seeds(
+        self, program, binding, group, value_seed_for_first_phase, plan, max_workers=1,
+    ):
+        """Same-flight instrument, PHASE 2 (merge set C, design section 3,
+        "Branch seeds"): one router per declared Perception branch, and each
+        branch's own PRE-FLIGHT, WHOLE-ROSTER first-phase seed.
+
+        Structurally :meth:`_supply_variant_binding`'s twin, built over the
+        SAME already-admitted store binding through :meth:`_supply_action_
+        router`, with the one difference the design states: a Perception
+        branch's supply is never resolved PER ROW at a visit (Perception is
+        the program's first phase and has no preceding ``advance`` to resolve
+        against -- design section 0), so this method computes each branch's
+        seed through the SAME ``bootstrap_first_phase`` path
+        :meth:`_phase_supply_seeds` uses for the flight's own store-routed
+        seed, ONCE, before any contact.
+
+        Branch A carries no overrides and IS the cell's own request. Rather
+        than trust that by construction, this method still builds A's router
+        INDEPENDENTLY (zero knobs, no release_swap) and checks that it
+        reproduces ``value_seed_for_first_phase`` -- the SAME mapping the
+        caller already computed through :meth:`_phase_supply_seeds` and is
+        about to hand the runner as ``bootstrap_value_ids`` -- row for row,
+        before any branch's request is composed. This is phase 1's
+        non-circular delivering-arm check (``rails.runner.settle``, "the
+        delivering supply-variant arm resolves a different supply..."),
+        MOVED to the seed: Perception has no per-row ``settle`` to check it
+        in, so it is checked here instead. The twin (T) needs no router of
+        its own: design section 3 states plainly "T takes A's seed".
+
+        Returns ``({branch_id: {sample_id: (value_id, ...)}}, (branch
+        identity receipt, ...))``. The receipt's ``identity_sha256`` is the
+        SAME axes-plus-implementation identity :meth:`_phase_seed_inputs`
+        binds a prepared artifact to (:func:`_perception_branches_identity`
+        plus the same module hashes), computed here so a caller can pin it
+        as a branch's own ``prepared_seed`` later; this method does not
+        itself write an artifact file -- design section 5 names that as this
+        program's own offline preparation step, out of reach for an in-flight
+        runtime method.
+        """
+
+        from ...rails import kb_policy, knowledge_provider, knowledge_stores, phase_supply
+
+        implementation_hashes = {
+            module.__name__: _sha256_file(Path(module.__file__))
+            for module in (kb_policy, knowledge_provider, phase_supply, knowledge_stores)
+        }
+        lease_metadata_present = (self._data_root / "locks" / "flight.lock").exists()
+
+        def branch_seed(branch):
+            route = self._supply_action_router(
+                program, branch.branch_id, branch.knobs, release_swap=branch.release_swap,
+            )
+            store_bootstrap = getattr(route, "bootstrap_first_phase", None)
+            if not callable(store_bootstrap):
+                raise FlightRuntimeError(
+                    f"perception branch {branch.branch_id!r} router publishes no "
+                    "first-phase route; a branch may only re-cap a store that "
+                    "already seeds the program's first phase"
+                )
+            _facets, values = store_bootstrap(
+                speech_packet_bindings=binding["speech_packet_bindings"],
+                split_identity_hash=plan.split_identity_hash,
+                workers=max_workers,
+                lease_metadata_present=lease_metadata_present,
+            )
+            return {sample_id: tuple(ids) for sample_id, ids in values.items()}
+
+        expected = {
+            sample_id: tuple(ids)
+            for sample_id, ids in value_seed_for_first_phase.items()
+        }
+        a_branch = group.delivering_branch
+        a_values = branch_seed(a_branch)
+        if a_values != expected:
+            raise FlightRuntimeError(
+                "the Perception branch group's own independently built router "
+                f"(branch {a_branch.branch_id!r}) resolves a different "
+                "first-phase seed than this flight's own prepared supply; the "
+                "delivered request would not be the unvaried construction's "
+                "request"
+            )
+
+        seeds: dict[str, dict[str, tuple[str, ...]]] = {}
+        receipts: list[dict[str, object]] = []
+        for branch in group.branches:
+            if branch.deliver or branch.is_twin:
+                branch_values = dict(expected)
+            else:
+                branch_values = branch_seed(branch)
+            seeds[branch.branch_id] = branch_values
+            axes = {
+                "knobs": [knob.as_json() for knob in branch.knobs],
+                "release_swap": (
+                    None if branch.release_swap is None
+                    else branch.release_swap.as_json()
+                ),
+                "presentation_id": branch.presentation_id,
+                "min_candidates": branch.min_candidates,
+            }
+            receipts.append({
+                "branch_id": branch.branch_id,
+                "identity_sha256": hashlib.sha256(
+                    json.dumps(
+                        {"axes": axes, "implementation": implementation_hashes},
+                        sort_keys=True, separators=(",", ":"),
+                    ).encode("utf-8")
+                ).hexdigest(),
+            })
+        return seeds, tuple(receipts)
 
     def _acquisition_requery_binding(self, native_config, supply_for_phase, snapshot):
         """E36 / E36b: the flight-owned, model-free knowledge re-query the
@@ -6799,6 +6941,34 @@ class FlightRuntime:
                 native_fit_gate = build_native_contact_fit_gate(
                     self, program, self._fit_base_plan(plan),
                 )
+            # Same-flight instrument, PHASE 2 (merge set C): the Perception
+            # branch group's own pre-flight, whole-roster seed. None --
+            # and therefore byte-identical to the pre-phase-2 tree -- unless
+            # ``roles.perception.branches`` is declared, which is every cell
+            # written before phase 2. Computed model-free, before any
+            # contact, from the SAME store-routed bootstrap path the
+            # flight's own first-phase seed uses
+            # (:meth:`_phase_supply_seeds`), called a second time here only
+            # for the (currently unflown) phase-2 cells this guards, so the
+            # ordinary dispatch order above stays untouched for every other
+            # cell.
+            perception_branch_seeds = None
+            perception_branch_group = native_config.perception_branch_group
+            if perception_branch_group is not None:
+                _branch_facet_seed, branch_value_seed = self._phase_supply_seeds(
+                    program, binding, supply_specs, plan,
+                )
+                branch_first_phase = program.phase_names()[0]
+                perception_branch_seeds, perception_branch_identity_receipts = (
+                    self._perception_branch_seeds(
+                        program, binding, perception_branch_group,
+                        branch_value_seed.get(branch_first_phase, {}), plan,
+                    )
+                )
+                self._phase_supply_receipt = {
+                    **(self._phase_supply_receipt or {}),
+                    "perception_branches": perception_branch_identity_receipts,
+                }
             native_binding = NativeEpisodeRunBinding(
                 config=native_config, program=program,
                 material_for_phase=binding["material_for_phase"],
@@ -6853,6 +7023,11 @@ class FlightRuntime:
                 ),
                 # Owner decision 159: None unless ``dispatch`` is declared.
                 slot_fill=slot_fill,
+                # Same-flight instrument, PHASE 2 (merge set C): every
+                # declared Perception branch's own pre-flight seed. None --
+                # and therefore byte-identical to the pre-phase-2 tree --
+                # unless ``roles.perception.branches`` is declared.
+                perception_branch_seeds=perception_branch_seeds,
             )
         catalog = self._load_system_policy_catalog(program)
         if catalog is not None:
@@ -7793,6 +7968,9 @@ class FlightRuntime:
             "packets": dict(binding["speech_packet_bindings"]),
             "knowledge_store_alternates": _knowledge_store_alternate_identity(
                 self._composed.values.get("knowledge_stores")
+            ),
+            "perception_branches": _perception_branches_identity(
+                self._composed.values.get("native_episode")
             ),
             "implementation": {
                 **{

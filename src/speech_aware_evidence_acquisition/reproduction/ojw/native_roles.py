@@ -252,6 +252,14 @@ class NativeRoleContactContext:
     # and defaulted, so every positional construction written before E42
     # composes exactly the context it always did.
     variant_arm_id: str | None = None
+    # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
+    # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
+    # design.md): the declared PERCEPTION-BRANCH this contact is composed
+    # for, bound by the caller's contact_context_provider so ``rails.runner``
+    # 's binding provider knows which branch's seed to render. None for
+    # every non-branched role/contact -- today's entire behaviour. Declared
+    # LAST and defaulted, for the same reason ``variant_arm_id`` is.
+    perception_branch_id: str | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.sample_id, str) or not self.sample_id:
@@ -284,6 +292,13 @@ class NativeRoleContactContext:
             not isinstance(self.variant_arm_id, str) or not self.variant_arm_id
         ):
             raise ValueError("variant_arm_id must be a non-empty string or None")
+        if self.perception_branch_id is not None and (
+            not isinstance(self.perception_branch_id, str)
+            or not self.perception_branch_id
+        ):
+            raise ValueError(
+                "perception_branch_id must be a non-empty string or None"
+            )
         object.__setattr__(self, "evidence_pins", MappingProxyType(pins))
 
 
