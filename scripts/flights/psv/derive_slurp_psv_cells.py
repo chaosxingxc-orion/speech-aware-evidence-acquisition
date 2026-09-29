@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Derive the phase-2 Perception-branch cells P-SV-1 and P-SV-2 (owner decisions 184, 186, 188; spec
+"""Derive the phase-2 Perception-branch cells P-SV-1, P-SV-2 and P-SV-3 (owner decisions 184, 186, 188, 190; spec
 docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md with the coordinator
 rulings O1-O6) from the RETAINED AGREE arm fragments by script (decision 58).
 
@@ -19,21 +19,24 @@ THREE registered changes to the AGREE bytes, and nothing else moves:
    two program fragments differ only in ``program_id`` and ``max_contacts`` (verified leaf by leaf here).
 3. **The branch block** ``native_episode.roles.perception.branches`` (level 2, K = 3, A last): the B branch
    (P-SV-1 ``b-top2contrast``: ``presentation_id`` ``top2-contrast-v1``; P-SV-2 ``b-list3``: ``min_candidates``
-   3), the twin ``t-twin`` (``replicate_of`` ``a-agree``) and the delivering ``a-agree`` (AGREE's Perception
-   evidence as flown: w_agree 1.0, k 60, fuse 8/1/8). ``fit_estimate`` and every ``max_supplied_items`` are
-   MEASURED on the sealed AGREE arm by scripts/flights/psv/psv_fit_measure.py (hash-checked here).
+   3; P-SV-3 ``b-depth``: ``overrides`` raising the boundary-supply knobs ``fuse_coverage.m`` and
+   ``fuse_coverage.top_l`` together from 8 to 12, c unchanged -- ONE axis, ``knob_overrides()`` below), the twin
+   ``t-twin`` (``replicate_of`` ``a-agree``) and the delivering ``a-agree`` (AGREE's Perception evidence as
+   flown: w_agree 1.0, k 60, fuse 8/1/8). ``fit_estimate`` and every ``max_supplied_items`` are MEASURED (P-SV-1 /
+   P-SV-2) or DECLARED from the new depth (P-SV-3, never flown) on the sealed AGREE arm by
+   scripts/flights/psv/psv_fit_measure.py (hash-checked here).
 
 Bookkeeping that follows: run / attempt / FIT ids, ``native_contact_fit.contact_cap`` (rows x 15 x 4), the
 family budget and execution plan at ceiling 15 with the Fold B audio, readiness HELD with the Fold B agreement
 table as its preparation requirement, ``prepared_phase_supply`` DROPPED so the flip mints each cell's own
 first-phase supply under its own run id (item E16), ``stage3_algorithm`` ``none``, prose.
 
-FOUR experiment cells (per P-SV: the 1,080-row arm and its four-row form smoke on the committed Fold B prefix
-receipt) plus one one-cell campaign plan per P-SV. No A/A cell: the twin branch T flies inside every row.
+FOUR experiment cells per P-SV cell (the 1,080-row arm and its four-row form smoke on the committed Fold B prefix
+receipt) plus one one-cell campaign plan per P-SV cell. No A/A cell: the twin branch T flies inside every row.
 
 CONFIG ONLY: no contact, no ledger row, no receipt, no flip.
 
-    python scripts/flights/psv/derive_slurp_psv_cells.py --data-root "$SPEECHRL_DATA_DIR"
+    python scripts/flights/psv/derive_slurp_psv_cells.py --data-root "$SPEECHRL_DATA_DIR" [--cells psv1,psv2,psv3]
 """
 
 from __future__ import annotations
@@ -54,7 +57,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import psv_family as ff  # noqa: E402
 
-FIT_MEASURE_SHA256 = "f82f4a6c8e0e0b226e3ab3ae7b07732041112bc119d5a307853aff69db747118"
+FIT_MEASURE_SHA256 = "134f72812823f802ac9d62b616b29536f649bcb83d62aead295891bde9820237"
+# The previous pin (P-SV-1 / P-SV-2 registration, before the P-SV-3 boundary_depth bound was added to
+# psv_fit_measure.py::measure()): f82f4a6c8e0e0b226e3ab3ae7b07732041112bc119d5a307853aff69db747118. The new file
+# adds exactly two keys (max_supplied_items.boundary_depth, estimates.boundary_depth); every P-SV-1 / P-SV-2 bound
+# (a_and_twin 10, top2_contrast 12, min_candidates 10) and fit_estimate leaf is byte-identical.
 
 
 def rd(path: str) -> str:
@@ -122,12 +129,36 @@ def pin_branch_seed(block: dict, key: str, kind: str, data_root: str) -> dict:
     return block
 
 
+def knob_overrides(fuse_coverage: dict) -> dict:
+    """A boundary-supply-knob branch's ``overrides`` (design section 1's "boundary supply knob" axis;
+    rails/supply_variants.py PERCEPTION_BRANCH_KNOB_TAILS ``("fuse_coverage", "m")`` / ``("fuse_coverage",
+    "top_l")``): full ``knowledge_stores.<store>.phase_supply.<first phase>.fuse_coverage.<leaf>`` paths so
+    ``parse_perception_branch_knob`` resolves them. Every leaf here lands in the SAME branch's ``knobs`` tuple, so
+    ``parse_perception_branches`` counts it as exactly ONE axis category (``bool(knobs)``), whatever its length.
+    """
+
+    return {
+        f"knowledge_stores.{ff.BOUNDARY_STORE_ID}.phase_supply.{ff.FIRST_PHASE_ID}.fuse_coverage.{leaf}": value
+        for leaf, value in sorted(fuse_coverage.items())
+    }
+
+
 def branches_block(key: str, measure: dict) -> dict:
     bounds = measure["max_supplied_items"]
     cell = ff.CELLS[key]
-    b_bound = bounds["top2_contrast"] if "presentation_id" in cell["b_axis"] else bounds["min_candidates"]
-    b_row = {"branch_id": cell["b_branch"], "max_supplied_items": b_bound, **cell["b_axis"]}
-    if cell["b_axis"].get("presentation_id") == "top2-contrast-v1":
+    axis = cell["b_axis"]
+    if "presentation_id" in axis:
+        b_row = {"branch_id": cell["b_branch"], "max_supplied_items": bounds["top2_contrast"], **axis}
+    elif "min_candidates" in axis:
+        b_row = {"branch_id": cell["b_branch"], "max_supplied_items": bounds["min_candidates"], **axis}
+    elif "fuse_coverage" in axis:
+        b_row = {
+            "branch_id": cell["b_branch"], "max_supplied_items": bounds["boundary_depth"],
+            "overrides": knob_overrides(axis["fuse_coverage"]),
+        }
+    else:
+        raise SystemExit(f"cell {key!r} declares an unrecognised b_axis shape: {sorted(axis)}")
+    if axis.get("presentation_id") == "top2-contrast-v1":
         # the pinned contrast-pair table (ruling O7, V2); the runtime verifies its bytes before any contact
         b_row["contrast_pairs"] = ff.contrast_pairs_pin()
     return {
@@ -426,6 +457,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--date", default=ff.DATE)
     parser.add_argument("--data-root", required=True)
+    # Default stays "every cell in ff.CELLS" (today psv1,psv2,psv3): unscoped re-runs keep deriving the whole
+    # family, byte-identically, for any cell whose inputs have not moved. A caller that wants to touch only ONE
+    # cell's own baseline/experiment/campaign files (e.g. registering a new cell without re-deriving an
+    # already-flown one) passes --cells explicitly.
+    parser.add_argument("--cells", default=",".join(ff.CELLS))
     args = parser.parse_args(argv)
     check_program_fragments()
     raw = io.open(os.path.join(args.data_root, ff.FIT_MEASURE), "rb").read()
@@ -434,7 +470,11 @@ def main(argv: list[str] | None = None) -> int:
     measure = json.loads(raw)
     filler = json.loads(rd(ff.FILLER_C01_BASELINE))
     written, blocks = [], {}
-    for key in ff.CELLS:
+    keys = args.cells.split(",")
+    unknown = [key for key in keys if key not in ff.CELLS]
+    if unknown:
+        raise SystemExit(f"--cells names unknown cell(s) {unknown}; known cells are {sorted(ff.CELLS)}")
+    for key in keys:
         block = branches_block(key, measure)
         blocks[key] = block
         for kind in ("arm", "smoke"):

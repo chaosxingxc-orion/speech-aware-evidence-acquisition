@@ -1,0 +1,71 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-psv3-fold-b-generation-v1",
+      "branch": "b-depth",
+      "role": "the treatment branch",
+      "run_id": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-psv3-fold-b-generation-v1",
+      "branch": "a-agree",
+      "role": "the delivering branch: LEFT of both contrasts",
+      "run_id": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1"
+    },
+    "twin": {
+      "attempt_id": "attempt-slurp-native-stage3-psv3-fold-b-generation-v1",
+      "branch": "t-twin",
+      "role": "the in-flight twin: RIGHT of the null contrast",
+      "run_id": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1"
+    }
+  },
+  "boundary": "A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; branch-local, never a system-level claim. No utterance text, transcript, gold label or model output is printed or persisted.",
+  "decision_rule": "SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-depth, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the design's own provisional floor per metric (owner decision 190; stage3_measurement.provisional_floor_pp -- intent 0.6500 pp, SLU 1.4900 pp). (2) PRESENCE: b-depth minus A on gold-on-list (present) in the branch note (primary, ruling O4). NOMINATED (as a presence change) iff the present CI95 lower bound is above zero AND the point delta exceeds the twin's present bar. Reported beside, never gating: official intent accuracy and SLU-F1 of the level-2 branch Solver column (B vs A vs T), list size, gold rank, and the conversion of gold at rank 3. A presence nomination opens no system claim: it only informs a later level-2 intent cell on the same pair.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-PSV3-FOLD-B-BRANCH-READ-V1"
+  },
+  "passes": {
+    "branch": {
+      "gating": true,
+      "left": "a-agree",
+      "right": "b-depth"
+    },
+    "twin-null": {
+      "gating": "sets the bar",
+      "left": "a-agree",
+      "right": "t-twin"
+    }
+  },
+  "read_driver": "scripts/flights/psv/psv_read.sh psv3 -> scripts/analysis/slurp_perception_branch_read.py (not yet landed at registration; merge set C item 1)",
+  "read_run_id": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-BRANCH-READ-V1",
+  "recipe_id": "slurp-stage3-psv3-fold-b-branch-analysis-v1",
+  "registered_at_utc": "2026-09-29T00:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "cluster_key": "sample_id",
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1",
+      "present",
+      "top1",
+      "gold_rank"
+    ],
+    "seed": 20260929,
+    "unit": "row (paired)",
+    "utterance_level": "reported beside, never gating"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1",
+    "context_comparator": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+    "read": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-BRANCH-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "0. Refuse unless the READ row SAEA-SLURP-STAGE3-PSV3-FOLD-B-BRANCH-READ-V1 is root countersigned.",
+    "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one complete official TRAIN score, the saea-perception-branch-arms-v1 receipt on every row and I7v's Perception path verified by the bundle.",
+    "2. Level 1 (note): per branch gold rank / present / top1 from the sealed note (gold offline); scripts/analysis/slurp_perception_branch_read.py refuses unless branch A reproduces the ledger driver's P-node counting.",
+    "3. Level 2 (answer): render each branch's first-visit Solver answer through the delivered row's normaliser and projection and score it ONCE with slurp-slu-official-train (never sharded).",
+    "4. Twin null (T vs A), then B vs A under the rule; per-scenario tables in both weightings."
+  ],
+  "title": "Cell P-SV-3 -- the same-flight Perception-branch read: B (b-depth) and the twin T, each against the delivering branch A, level 2"
+}

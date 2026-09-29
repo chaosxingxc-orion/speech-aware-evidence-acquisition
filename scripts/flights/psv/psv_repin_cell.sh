@@ -1,13 +1,13 @@
 #!/bin/bash
 # Per-cell environment for scripts/flights/batch/repin_cell_generic.sh, for ONE P-SV cell. Model-free.
-# The caller exports PSV_CELL (psv1 | psv2) and PSV_KIND (arm | smoke); repin_loop_generic.sh runs this script
-# with no arguments on every pass, so the cell is named by the environment it inherits.
+# The caller exports PSV_CELL (psv1 | psv2 | psv3) and PSV_KIND (arm | smoke); repin_loop_generic.sh runs this
+# script with no arguments on every pass, so the cell is named by the environment it inherits.
 # No ALLOW_OUTPUT_CHANGE: a P-SV cell carries NO committed prepared_phase_supply, so the re-pin tool MINTS the
 # cell's own first-phase supply under its own run id (item E16) beside the Fold B agreement-table requirement.
 # There is no earlier digest to reproduce (the first Fold B supply at w_agree 1.0 over the whole roster); a
 # CHANGED output on a later re-pin means the knowledge channel moved -- stop and report.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-case "${PSV_CELL:-}" in psv1|psv2) ;; *) echo "PSV_CELL must be psv1 or psv2" >&2; exit 2;; esac
+case "${PSV_CELL:-}" in psv1|psv2|psv3) ;; *) echo "PSV_CELL must be psv1, psv2 or psv3" >&2; exit 2;; esac
 BASE=$PSV_CELL-fold-b
 export RD=docs/readiness/2026-09-29-slurp-stage3-$BASE-v1
 export PKG=slurp-stage3-$BASE-v1

@@ -1,6 +1,8 @@
-"""Shared identities of the phase-2 Perception-branch cells P-SV-1 and P-SV-2 (owner decisions 184, 186, 188).
+"""Shared identities of the phase-2 Perception-branch cells P-SV-1, P-SV-2 and P-SV-3 (owner decisions 184, 186,
+188; P-SV-3 registered separately on branch fable/psv3, decision 190's `present`-primary framing extended to a
+third axis: the boundary-supply DEPTH itself, fuse_coverage.m/top_l raised together).
 
-Both cells are the retained AGREE arm (docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1) re-targeted
+Every cell is the retained AGREE arm (docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1) re-targeted
 from TRAIN Fold A to TRAIN Fold B exactly the way the filler family re-pointed ROLL-2 + AGREE
 (scripts/flights/filler/derive_filler_cells.py: the two speech-query pins, the agreement table, the dataset view,
 the roster and the preparation receipts), with the program switched to the level-2 K = 3 fragment
@@ -178,8 +180,28 @@ def branch_seed_relpath(key: str, kind: str) -> str:
 LEDGER_ROWS = 1080
 RANK2_WRONG_ROWS = 42        # wrong delivered rows with gold at Perception rank 2
 RANK2_ALL_ROWS = 63          # every row with gold at Perception rank 2 (17 of them converted)
-IN_BLOCK_DROPPED_ROWS = 49   # wrong rows with gold in the boundary block but off Perception's list
+IN_BLOCK_DROPPED_ROWS = 49   # wrong rows with gold in the boundary block but off Perception's list (section 1.4)
+OUT_OF_BLOCK_DROPPED_ROWS = 34  # wrong rows with gold absent from the boundary block entirely (section 1.4)
+# section 1.4 "gold absent from the Perception list": 83 = 49 (in block) + 34 (outside it); the whole P-SV-3 ceiling.
+OFF_LIST_DROPPED_ROWS = IN_BLOCK_DROPPED_ROWS + OUT_OF_BLOCK_DROPPED_ROWS
 CONVERSION = {"rank1": 97.57, "rank2": 26.98, "rank3": 12.0}
+
+# P-SV-3's boundary-supply-depth axis (rails/supply_variants.py PERCEPTION_BRANCH_KNOB_TAILS: ("fuse_coverage",
+# "m") and ("fuse_coverage", "top_l")). The store the AGREE Perception phase_supply reads and the program's first
+# phase, needed to build a branch's ``overrides`` knob paths (``knowledge_stores.<store>.phase_supply.<phase>.
+# fuse_coverage.<leaf>``, rails/supply_variants.py::parse_perception_branch_knob).
+BOUNDARY_STORE_ID = "intent-boundaries"
+FIRST_PHASE_ID = "perception"
+# The "boundary_phase_supply +1 step" knob the sealed-credit inner loop lists as unobserved
+# (configs/analysis/sealed-credit-policy-space-v1.json, node "perception_seed", flown_value "as flown (8
+# entries)"): fuse_coverage.m and fuse_coverage.top_l raised TOGETHER (c stays 1), one branch axis
+# (rails/supply_variants.py::parse_perception_branches counts the whole ``knobs`` tuple as exactly one axis
+# category regardless of how many knob paths it carries). Raising only one of the two leaves the delivered count
+# unchanged: ``core/flight/runtime.py`` (the ``value_width = min(spec.k, spec.fuse_knobs().top_l)`` note) and
+# ``rails/kb_policy.py::fuse_associated_values_factory`` show the fuser scans only the top ``m`` ranked facets
+# (``rank_result.candidates[:resolved.m]``) and stops once ``len(selected) == resolved.top_l``, so with m == top_l
+# == 8 (AGREE, as flown) the delivered count is saturated by BOTH bounds at once.
+BOUNDARY_DEPTH_NEW_TOP_L = 12
 
 
 def pp(rows: int, n: int = LEDGER_ROWS) -> float:
@@ -225,11 +247,35 @@ CELLS = {
             "the level-2 branch Solver make of the widened list?"
         ),
     },
+    "psv3": {
+        "label": "P-SV-3",
+        "slug": "psv3-fold-b",
+        "run": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1",
+        "b_branch": "b-depth",
+        # ONE axis (a boundary-supply knob, design section 1): fuse_coverage.m and fuse_coverage.top_l raised
+        # together from the AGREE-as-flown 8 to BOUNDARY_DEPTH_NEW_TOP_L (12); c stays 1. branches_block() below
+        # turns this into the branch's ``overrides`` knob paths.
+        "b_axis": {"fuse_coverage": {"m": BOUNDARY_DEPTH_NEW_TOP_L, "top_l": BOUNDARY_DEPTH_NEW_TOP_L}},
+        "primary_metric": (
+            "gold-on-list (present) in the branch Perception note (primary, a presence measurement; owner decision "
+            "190's ruling-O4 framing extended to this axis): B (fuse_coverage.m and fuse_coverage.top_l raised "
+            "together 8 -> 12, c unchanged at 1 -- the boundary-supply DEPTH itself, the inner loop's "
+            "'boundary_phase_supply +1 step') minus A; official intent accuracy of the level-2 branch Solver column "
+            "reported beside, never gating; gold rank and list size beside"
+        ),
+        "ceiling_rows": OFF_LIST_DROPPED_ROWS,
+        "question": (
+            "At the one Perception visit of every TRAIN Fold B row, does raising the boundary-supply depth itself "
+            "(fuse_coverage.m and fuse_coverage.top_l together, 8 -> 12, c unchanged) raise the share of rows whose "
+            "gold intent is on Perception's list beyond the in-flight twin's null, read against the delivering "
+            "branch A in the same flight, and what does the level-2 branch Solver make of the widened supply?"
+        ),
+    },
 }
 
 
 def names(key: str, kind: str) -> dict:
-    """Every id of one cell ('psv1'|'psv2') and kind ('arm'|'smoke')."""
+    """Every id of one cell ('psv1'|'psv2'|'psv3') and kind ('arm'|'smoke')."""
 
     c = CELLS[key]
     slug = c["slug"]
