@@ -13,7 +13,7 @@ export CELL=slurp-native-stage3-comp1-fold-a-v1-resume
 export EXP=slurp-native-stage3-comp1-fold-a-v1-resume
 export PKG=slurp-stage3-comp1-fold-a-v1
 export PREREG=docs/readiness/2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1-preregistration.md
-export DEC_PATH=coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v2.json
+export DEC_PATH=coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json
 export DEC_ID=slurp-stage3-comp1-fold-a-resume-admission-v1
 export TAG=comp1-resume ARM=1
 export MSG=/home/chao/comp1-resume-commit.txt

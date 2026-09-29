@@ -94,10 +94,30 @@ RESUME = {
     "baseline": "slurp-native-stage3-comp1-fold-a-baseline-v1-resume",
     "campaign": "configs/campaign/slurp-native-stage3-comp1-fold-a-v1-resume.json",
     "run_id": RUN_ID,
-    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2",  # attempt 2 (2026-09-28: attempt 1 aborted on a server CUDA abort)
+    # attempt 3 (2026-09-29): attempt 1 aborted on a server CUDA abort; attempt 2 aborted at 00:20:43Z on a
+    # FIT-identity collision because its registration reused attempt 1's FIT attempt id. Both ids are fresh.
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
     "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
-    "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume",
-    "decision_relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v1.json",
+    "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3",
+    "decision_relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json",
+    "decision_id": "slurp-stage3-comp1-fold-a-resume-admission-v1",
+}
+# The four-row DRY RUN of resume attempt 3 (owner decision 181: fix, prove on a 4-row dry run, then resume).
+# core.flight.cli has no bounded-resume mode (no row cap or dry-run flag for a resume), so the dry run is a
+# four-row SMOKE of the arm's form (the parent COMP-1 smoke's bytes) under fresh run, attempt and FIT ids. It
+# flies through the same worker path and the same per-contact native FIT identity gate
+# (core.preparation_fit.build_native_contact_fit_gate) that refused attempt 2, and it is flown as the smoke of the
+# resume step: the batch driver stops before the resume opens unless the dry run passes its structural check.
+RESUME3_SMOKE = {
+    "rd": "docs/readiness/2026-09-28-slurp-stage3-comp-1-fold-a-v1-resume-v1",
+    "experiment": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
+    "cell": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
+    "baseline": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-baseline-v1",
+    "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1",
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3-smoke",
+    "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-FIT-V1",
+    "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3-smoke",
+    "decision_relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json",
     "decision_id": "slurp-stage3-comp1-fold-a-resume-admission-v1",
 }
 REC = {
@@ -597,11 +617,91 @@ def derive_rec() -> None:
     })
 
 
+def _resume3_note() -> str:
+    return (
+        "COMP-1 RESUME ATTEMPT 3 DRY RUN (owner decision 181: fix, prove on a 4-row dry run, then resume). "
+        "Resume attempt 2 attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2 aborted at "
+        "2026-09-29T00:20:43Z before sealing a row (48 calls, 119.3 s audio) on a FIT-identity collision "
+        "(core/preparation_fit.py: 'native contact fit identity already has contact or result evidence') caused "
+        "by a coordinator-side registration error: it reused resume attempt 1's FIT attempt id "
+        "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume, whose per-contact evidence already sat under "
+        "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1/. Resume attempt 3 uses fresh generation and FIT attempt "
+        "ids. This four-row smoke is the parent COMP-1 smoke's bytes under fresh run, attempt and FIT ids; it "
+        "proves the FORM of the fixed registration (a fresh FIT identity root, every request fits, every "
+        "episode completes) through the same worker and native FIT gate before the resume opens. Form only; "
+        "never scored or read."
+    )
+
+
+def derive_resume3_smoke() -> None:
+    v = RESUME3_SMOKE
+    note = _resume3_note()
+    _derive_baseline(SMOKE_BASE, v["baseline"], v["fit_run_id"], v["fit_attempt_id"], note)
+    policy = (
+        "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A "
+        "failed dry run stops the chain before resume attempt 3 opens (the batch driver flies it as the resume "
+        "step's smoke and stops on a failed structural check); the resume is then not flown and root reports."
+    )
+    _derive_experiment(SMOKE_EXP, v, note=note, failure_policy=policy, resume=False, smoke=True)
+    doc = _load(f"configs/experiment/{v['experiment']}.json")
+    cell = doc["cells"][0]
+    cell["readiness"]["reason"] = (
+        f"{note} Registered before contact 2026-09-29 by root flight operations (Claude Opus 5.5) on the "
+        f"coordinator's brief; HELD until root mints {v['decision_relpath']} (decision id {v['decision_id']}) "
+        "and flips this cell with scripts/flights/repin_cell.py (it inherits the parent smoke's prepared supply "
+        "pin and must reproduce its output; --allow-output-change is never passed)."
+    )
+    doc["date"] = "2026-09-29"
+    _dump(f"configs/experiment/{v['experiment']}.json", doc)
+    ident = _identity(v["experiment"], v["cell"])
+    rd = v["rd"]
+    protocol_path = f"{rd}/protocol-registered-v1.json"
+    protocol = _load(protocol_path)
+    protocol["cells"]["resume3_dry_run"] = {
+        "cell": v["cell"], "experiment": v["experiment"], "run_id": v["run_id"],
+        "attempt_id": v["attempt_id"], "fit_run_id": v["fit_run_id"], "fit_attempt_id": v["fit_attempt_id"],
+        "composed_config_hash": ident.config_hash, "protocol_hash": ident.protocol_hash,
+        "rows": 4, "role": "the four-row dry run of resume attempt 3 (owner decision 181), flown as the smoke of "
+                          "the resume step; form only",
+    }
+    protocol_sha = _dump(protocol_path, protocol)
+    for name in ("generation-plan-registered-v1.json", "fit-plan-registered-v1.json"):
+        plan = _load(f"{rd}/{name}")
+        plan["protocol_document"]["sha256"] = protocol_sha
+        _dump(f"{rd}/{name}", plan)
+    for kind, name in (("generation", "smoke-generation-plan-registered-v1.json"),
+                       ("fit", "smoke-fit-plan-registered-v1.json")):
+        route = ("core.flight.cli worker on the parent smoke's four-row roster, flown by the batch driver as the "
+                 "smoke of the resume step (scripts/flights/comp1/batch_chain_comp1_resume.sh) before resume "
+                 "attempt 3 opens." if kind == "generation" else
+                 "The shared core.flight.cli FIT path under the dry run's own fresh native_contact_fit ids.")
+        plan = _plan(name, v, ident, kind=kind, protocol_sha=protocol_sha, rd=rd, execution_route=route, extra={})
+        plan["registered_at_utc"] = "2026-09-29T00:45:00.000000+00:00"
+        plan["source_tree"] = ("studies/speech-aware-evidence-acquisition, worktree "
+                               "/home/chao/saea-worktrees/fable-comp1res3, branch fable/comp1res3")
+        plan["status"] = "REGISTERED_BEFORE_CONTACT_HELD_AWAITING_ROOT_RECEIPT"
+        _dump(f"{rd}/{name}", plan)
+    facts = _load(f"{PARENT_RD}/registered-facts-v1.json")["stage3_measurement"]
+    block = copy.deepcopy(facts["SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1"])
+    block["recovery_note"] = "Identical to the COMP-1 smoke declared block; the dry run of resume attempt 3; form only."
+    _dump(f"{rd}/registered-facts-v1.json", {
+        "schema": "saea-registered-facts-v1",
+        "registered_at_utc": "2026-09-29T00:45:00.000000+00:00",
+        "study_commit_at_registration": _head(),
+        "parent_registered_facts": f"{PARENT_RD}/registered-facts-v1.json",
+        "stage3_measurement": {v["run_id"]: block},
+    })
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--variant", choices=("resume", "rec", "both"), default="both")
+    parser.add_argument("--variant", choices=("resume", "rec", "both", "resume3-smoke"), default="both")
     parser.add_argument("--proof-receipt-sha256", default=None)
     args = parser.parse_args(argv)
+    if args.variant == "resume3-smoke":
+        derive_resume3_smoke()
+        print("derived:", args.variant)
+        return 0
     if args.variant in ("resume", "both"):
         derive_resume(args.proof_receipt_sha256)
     if args.variant in ("rec", "both"):
