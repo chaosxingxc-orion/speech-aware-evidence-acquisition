@@ -7,6 +7,9 @@ SCRIPT=$1; RD=$2; CELL=$3; PLAN=$4; MSG=$5
 cd $MAIN || exit 1
 for pass in 1 2 3 4 5; do
   echo "######## $CELL pass $pass HEAD $(git rev-parse --short HEAD)"
+  # 2026-09-29: D3 freeze refuses a __pycache__ entry beside the frozen scoring sources; purge cached
+  # bytecode under $MAIN/src before every pass. Only directories literally named __pycache__ are removed.
+  if [ -d "$MAIN/src" ]; then find "$MAIN/src" -type d -name __pycache__ -prune -exec rm -rf {} +; fi
   bash $SCRIPT 2>&1 | grep -v "^{'run_id'\|^On branch\|^Your branch\|^  (use\|^nothing to commit\|^COMMIT FAILED" | cut -c1-180
   ERR=$(ls -t /home/chao/*-repin-*.err 2>/dev/null | head -1)
   if grep -q "neither its freshly composed config_hash" "$ERR"; then
