@@ -16,8 +16,8 @@ Arm-B proof: registered on ARM-B-INERT (proof sha256 `913c5487d5c7cb37e6c323433d
 | primary / guard | official pooled SLU-F1 of the b-w4 minus a-agree column / intent accuracy |
 | expected effect / floor / bar | 0.79 pp / 0.3163 pp provisional / the twin null |
 | runs | `SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1` / `SAEA-SLURP-STAGE3-W4SV-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-W4SV-FOLD-A-COLUMN-READ-V1` |
-| composed config hashes | arm `ba34275543f0da154584d33884a957aceb9d0e87ab7f719f8cda34d440f9e890`; smoke `ba4fb50c35f6e9d38b358150490abdde862f48ff1c6a6cb8ae6e4881aad04300` |
-| protocol hashes | arm `a5134bcb7554bd2063bfdf77d1a9048fc1bee26baf1735e9e5a1d726df4a8c3a`; smoke `f38cf4a55cf406876f4d2c4efaa3e93641ba09b75ae18a832c7a9ba4c7ba2c3b` |
+| composed config hashes | arm `e526ece2fb5989d549ccb73d8d6b2184060459e6d0d57deb856cad5161963b2a`; smoke `940f54274345442b7d4c7f4b3b9ac3a9721106e4c9183240a67a6ee5906b200e` |
+| protocol hashes | arm `da41b2179f03280b67e052429fcb7e271275059ca7d14f5c1de66e6c3b0c93c5`; smoke `8b017901ecb15d4e4ea22c2746d41b8be335cc267ef7db0ccbf689a56d2c21a3` |
 | split identity | arm `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 
 ## Estimand

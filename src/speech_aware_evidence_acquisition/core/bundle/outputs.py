@@ -849,6 +849,153 @@ def _verify_supply_variant_trace_binding(
         refuse("output identity is not the final delivering arm contact")
 
 
+def _verify_perception_branch_trace_binding(
+    row: Mapping[str, object], trace_records: Mapping[str, Mapping[str, object]],
+) -> None:
+    """Bind every Perception branch's contact to its trace pair (same-flight
+    instrument, PHASE 2, merge set C, design section 3, "I7v, Perception
+    path" -- same invariant id, :data:`SUPPLY_VARIANT_INVARIANT`, as the
+    Solver arm route's own).
+
+    Structurally :func:`_verify_supply_variant_trace_binding`'s twin, over
+    the Perception role's own custody
+    (``native_episode_receipt.perception_branches``, sealed by
+    ``reproduction.ojw.native_episode._ApplyRole`` into
+    ``state["latest_perception"]`` -- see ``rails.runner``) rather than a
+    top-level sibling of the row: Perception is not necessarily the
+    episode's own final delivering role, so its custody cannot be read off
+    ``row["delivery"]`` the way a Solver arm group's can.
+
+    Perception has exactly ONE visit per row (design section 3, "Branch
+    visits"), so unlike the Solver arm route's ``arm_visits`` choice there
+    is no later-visit carry-forward to walk: the row's ONE Perception
+    ``role_visits`` entry names every declared branch's contact, in
+    declared order, in its own ``execution_receipt``.
+
+    The additional Perception-specific invariant this checks beyond the
+    generic per-contact trace binding: branch A's (the delivering branch's)
+    own ``note_sha256`` equals its own ``response_text_sha256`` -- A's note
+    IS its own response text, by construction
+    (``rails.runner.read_perception_branch_record``), so this is the
+    receipt-level statement of "A's note_sha256 equals the sealed
+    Perception state's hash". "Every later request history carries A's
+    note hash and no other" is a structural guarantee of
+    ``rails.runner.perception_branch_messages`` and ``settle`` (only A's
+    own contact ever registers downstream state -- checked live, fail-
+    closed, before any later contact is composed) rather than something
+    re-derived here from raw request bodies; ``tests/unit/
+    test_perception_branch_live.py`` proves it on a real episode.
+    """
+
+    label = _row_label(row)
+
+    def refuse(reason: str) -> None:
+        raise BundleError(f"{label}: {reason} ({SUPPLY_VARIANT_INVARIANT})")
+
+    episode = row.get("native_episode_receipt")
+    branches = episode.get("perception_branches") if isinstance(episode, Mapping) else None
+    if not isinstance(branches, Mapping):
+        refuse("perception_branches must be a receipt object")
+    branch_rows = branches.get("branches")
+    if (
+        not isinstance(branch_rows, Sequence)
+        or isinstance(branch_rows, (str, bytes))
+        or not branch_rows
+    ):
+        refuse("perception_branches has no ordered branches")
+    branch_ids = [
+        item.get("branch_id") if isinstance(item, Mapping) else None for item in branch_rows
+    ]
+    if any(not isinstance(branch_id, str) or not branch_id for branch_id in branch_ids):
+        refuse("perception_branches contains a branch without an id")
+
+    visits = episode.get("role_visits") if isinstance(episode, Mapping) else None
+    if not isinstance(visits, Sequence) or isinstance(visits, (str, bytes)):
+        refuse("perception_branches has no native episode role visits")
+    perception_visits = [
+        visit for visit in visits
+        if isinstance(visit, Mapping) and visit.get("stage") == "perception"
+    ]
+    if len(perception_visits) != 1:
+        refuse("perception_branches requires exactly one Perception visit")
+    perception_visit = perception_visits[0]
+    execution = perception_visit.get("execution_receipt")
+    contacts = execution.get("contacts") if isinstance(execution, Mapping) else None
+    if not isinstance(contacts, Sequence) or isinstance(contacts, (str, bytes)):
+        refuse("the Perception visit has no contacts")
+    if [item.get("contact_id") for item in branch_rows] != [
+        contact.get("agent_contact_id") if isinstance(contact, Mapping) else None
+        for contact in contacts
+    ]:
+        refuse("declared branch contact ids disagree with the Perception visit")
+
+    from ...rails.native_episode_receipt import validate_perception_branch_receipt
+
+    delivered_branch_id = branch_ids[-1]
+    twin_branch_id = None
+    for item in branch_rows:
+        if isinstance(item, Mapping) and item.get("replicate_of") is not None:
+            twin_branch_id = item.get("branch_id")
+            break
+    if twin_branch_id is None:
+        refuse("perception_branches has no declared twin")
+    try:
+        validate_perception_branch_receipt(
+            branches, branch_ids=branch_ids, delivered_branch_id=delivered_branch_id,
+            twin_branch_id=twin_branch_id, phase_id=str(perception_visit.get("role_id")),
+            level=branches.get("level"), error_type=BundleError,
+        )
+    except BundleError as error:
+        refuse(f"perception-branch receipt is invalid: {error}")
+
+    seen_contacts: set[str] = set()
+    for position, (branch_row, contact) in enumerate(zip(branch_rows, contacts, strict=True)):
+        if not isinstance(contact, Mapping):
+            refuse(f"Perception branch {position} contact has no contact")
+        contact_id = contact.get("agent_contact_id")
+        request_id = contact.get("request_id")
+        if (
+            not isinstance(contact_id, str) or not contact_id
+            or contact_id in seen_contacts
+            or not isinstance(request_id, str) or not request_id
+        ):
+            refuse(f"Perception branch {position} contact has invalid identity")
+        seen_contacts.add(contact_id)
+        request = trace_records.get(f"{request_id}/request")
+        response = trace_records.get(f"{request_id}/response")
+        if not isinstance(request, Mapping) or not isinstance(response, Mapping):
+            refuse(f"Perception branch {position} contact has no trace pair")
+        response_text = response.get("text")
+        if (
+            request.get("payload_sha256") != contact.get("request_sha256")
+            or _request_record_sample_id(request) != row.get("sample_id")
+            or not isinstance(response_text, str)
+            or hashlib.sha256(response_text.encode("utf-8")).hexdigest()
+            != contact.get("response_text_sha256")
+            or response.get("response_text_sha256") != contact.get("response_text_sha256")
+            or response.get("response_sha256") != contact.get("response_sha256")
+        ):
+            refuse(f"Perception branch {position} contact differs from its trace")
+        if (
+            not isinstance(branch_row, Mapping)
+            or branch_row.get("request_sha256") != contact.get("request_sha256")
+            or branch_row.get("response_text_sha256") != contact.get("response_text_sha256")
+        ):
+            refuse(
+                f"Perception branch {position} record disagrees with its own contact"
+            )
+
+    a_row = branch_rows[-1]
+    if (
+        not isinstance(a_row, Mapping)
+        or a_row.get("note_sha256") != a_row.get("response_text_sha256")
+    ):
+        refuse(
+            "the delivering branch's note_sha256 must equal its own "
+            "response_text_sha256 (its note IS its own response)"
+        )
+
+
 def _split_jsonl(text: str) -> list[str]:
     """Split on the literal record separator only (matches ``core.tracing``'s
     and ``core.scorers``' own discipline): ``json.dumps(ensure_ascii=False)``
@@ -1235,3 +1382,9 @@ def _verify_outputs_trace_binding(
                     f"grouped Solver commit ({SUPPLY_VARIANT_INVARIANT})"
                 )
             _verify_supply_variant_trace_binding(row, records)
+        episode_for_branches = row.get("native_episode_receipt")
+        if (
+            isinstance(episode_for_branches, Mapping)
+            and "perception_branches" in episode_for_branches
+        ):
+            _verify_perception_branch_trace_binding(row, records)
