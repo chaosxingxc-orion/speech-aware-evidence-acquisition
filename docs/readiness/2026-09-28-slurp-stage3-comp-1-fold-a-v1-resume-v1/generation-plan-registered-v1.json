@@ -2,7 +2,7 @@
   "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
   "composed_config_hash": "dfa6528a4ebb1388bde8a6c60a5dc6fd2b449fa9460f0830a6a80aabb62c36f1",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
+    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 12.0,
@@ -15,7 +15,7 @@
     "split_role": "discovery",
     "study": "speech-aware-evidence-acquisition"
   },
-  "execution_route": "Shared core.flight.cli campaign over the committed single-cell campaign plan configs/campaign/slurp-native-stage3-comp1-fold-a-v1-resume.json (the resume cell only; the shared A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 is FINALIZED and never re-flown), through the batch driver as a kind=resume step (scripts/flights/comp1/batch_chain_comp1_resume.sh).",
+  "execution_route": "core.flight.cli seal-only on the resume cell (--experiment slurp-native-stage3-comp1-fold-a-v1-resume --cell slurp-native-stage3-comp1-fold-a-v1-resume), through the batch driver as a kind=seal-only step (scripts/flights/comp1/batch_chain_comp1_sealonly.sh): preflight's gates, then zero-work preprocess / serve / run_phases (no packet promotion, no server, no slot, no lease), the seal of the merged 1,080-row manifest, and the one official finalize job. The shared A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1 is FINALIZED and never re-flown. Superseded route: the single-cell campaign plan configs/campaign/slurp-native-stage3-comp1-fold-a-v1-resume.json (resume attempts 1-3); the cell no longer allows campaign mode.",
   "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "experiment": "slurp-native-stage3-comp1-fold-a-v1-resume",
   "family_budget": {
@@ -46,21 +46,80 @@
   "registered_at_utc": "2026-09-28T12:00:00.000000+00:00",
   "schema": "saea-registered-generation-plan-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1res, branch fable/comp1res (from fable/comp1rec at a451f942)",
-  "status": "REGISTERED_BEFORE_CONTACT_HELD_AWAITING_OWNER_RECOVERY_RULING",
+  "status": "REGISTERED_BEFORE_CONTACT_SEAL_ONLY_HELD_AWAITING_OWNER_DECISION_189",
   "the_composition": "the locked v2.0 plan + (1) the agreement term as AGREE carries it (w_agree 1.0 over the self-excluded exemplar-intent vote, recall k 60, delivered 8-1-8) + (2) the centroid boundary key as KPROBE pins it (facet_source prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl) + (3) the citation contract (policy phase-native-candidates-review-revise-cited-v1, Solver response_format_id saea-solver-cited-answer-v1, instruction probes/slurp_native_role_solver_cited_v1.txt, deliver_normaliser saea-deliver-cited-answer-normalise-v3-v1) + (4) nothing else",
   "unused_budget_is_not_attempt_authority": true,
-  "resume_from": {
-    "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
-    "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997"
-  },
+  "resume_from": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
+      "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
+      "trace_sha256": "87be5cefcaa395ad58a010b6d79986c5c79981c8cebe0279029bd22f7343df26"
+    }
+  ],
   "resume_budget": {
-    "kept_rows": 471,
-    "flown_rows": 609,
-    "predecessor_calls": 1913,
-    "predecessor_audio_seconds": 5171.3779375,
-    "flown_worst_case_calls": 6699,
-    "run_cumulative_worst_case_calls": 8612,
+    "kept_rows": 1080,
+    "flown_rows": 0,
+    "kept_from": {
+      "attempt-slurp-native-stage3-comp1-fold-a-generation-v1": 471,
+      "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3": 609
+    },
+    "seal_only": true,
+    "flown_worst_case_calls": 0,
+    "run_cumulative_actual_calls": 4441,
+    "run_cumulative_actual_audio_seconds": 12694.1,
+    "run_cumulative_actual_breakdown_calls": {
+      "attempt-slurp-native-stage3-comp1-fold-a-generation-v1": 1913,
+      "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume": 4,
+      "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2": 48,
+      "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3": 2476
+    },
+    "run_cumulative_worst_case_calls": 4441,
     "cap_calls": 11880,
-    "headroom_calls": 3268
+    "headroom_calls": 7439
+  },
+  "resume_replay_proof": {
+    "schema": "saea-resume-replay-proof-v1",
+    "tool": "scripts/analysis/replay_seal_consistency.py --predecessor attempt-slurp-native-stage3-comp1-fold-a-generation-v1:029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997 --predecessor attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3:87be5cefcaa395ad58a010b6d79986c5c79981c8cebe0279029bd22f7343df26",
+    "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell: exit 0, the same counts",
+    "run_at_utc": "2026-09-29T05:43:00Z",
+    "predecessor_attempts": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
+        "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997",
+        "samples_started": 472,
+        "complete": 471,
+        "incomplete": 1,
+        "rows_checked": 471,
+        "rows_failing": 0
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
+        "trace_sha256": "87be5cefcaa395ad58a010b6d79986c5c79981c8cebe0279029bd22f7343df26",
+        "samples_started": 609,
+        "complete": 609,
+        "incomplete": 0,
+        "rows_checked": 609,
+        "rows_failing": 0
+      }
+    ],
+    "rows_checked": 1080,
+    "rows_failing": 0,
+    "sealed_twice": 0,
+    "union_complete_rows": 1080,
+    "checker_sha256": "5a90d298c3b099e668526ed042410524586ccce32c3de8ef4c846db85208d255",
+    "resume_py_sha256": "59904acddddb87c0dec56ea43bd3bbf498ac945ac0756ac3e8754831a1c0ed90",
+    "code_commit": "e4f4f5884864f172abcfbcaeeb4fba44a6a0982c",
+    "model_contacts": 0,
+    "note": "Model-free and read-only: every complete row of both predecessor traces rendered through the real FlightRuntime._canonical_output_rows seal stage and re-checked against I7 / I7n / I7g, one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
+  },
+  "seal_only_registration": {
+    "registered_at_utc": "2026-09-29T05:45:00.000000+00:00",
+    "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-comp1seal, branch fable/comp1seal (from fable/sealonly 40161cbb, master merged at 3d6c960e)",
+    "owner_decision": "189 option A (pending)",
+    "decision_receipt": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-sealonly-v1.json",
+    "decision_id": "slurp-stage3-comp1-fold-a-sealonly-admission-v1"
   }
 }
