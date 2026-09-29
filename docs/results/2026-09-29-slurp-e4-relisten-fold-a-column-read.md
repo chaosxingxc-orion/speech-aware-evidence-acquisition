@@ -237,3 +237,9 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$PWD/src python -B scripts/analysis/slurp_e
 ```
 
 Pass verdict sha256: replace-only `d2bf94c7...0c93`, replace-drop-unheard `7079c1db...473f`.
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+- **E4-1 core-native targeted re-listen v1: NOT NOMINATED, SHADOW HARM on both columns.** Replace-only SLU-F1 -4.11 [-5.41, -2.88]; replace + drop-when-unheard -3.59 [-5.08, -2.14]; neither pre-declared gate is met (net conversion 2.83 % of the 106 addressable items against 29 %; 40 net false positives removed against 49.5). Intent identical by construction. Development number (decisions 28/86).
+- **Mechanism reading.** The core cannot verify its own hearing by blind + forced-choice re-listen: 63 of the 122 accepted replacements turned an exact value into a BOUNDARY one (date, time, timeofday) and only 7 turned an item exact. The drop half of the mechanism is the only positive part (SPURIOUS 258 -> 208, 8 correct items lost), worth about +0.8 pp offline as a drop-only column, under the 1.49 pp same-flight SLU floor.
+- **Line status.** Core-native replacement re-listen is CLOSED. Per owner decision 180's sequence ("core-native first, Whisper after the E4 read"), the next verification route is the frozen tool-level ASR (Whisper) as a pinned, logged tool for slot VALUE verification; this needs an owner decision (proposed 201) because it is a new tool contact class. A drop-only shadow column may ride as a descriptive column beside a later cell; it is not registered on its own.
