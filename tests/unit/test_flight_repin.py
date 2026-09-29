@@ -98,6 +98,7 @@ def build_package(
     old_artifact_output: dict | None = None,
     consumed: str = "no",
     baseline_extra_fn=None,
+    own_resume_from=None,
 ):
     """Build a synthetic repo + data root carrying one registered cell,
     committed as the clean starting tree. Returns a dict of paths and the
@@ -111,7 +112,12 @@ def build_package(
     same way :func:`compute_cell_identity` will see it. This lets a test
     plant a stale value inside the cell's OWN baseline fragment, in a field
     this tool never rewrites, without breaking the fixture's internal
-    consistency."""
+    consistency.
+
+    ``own_resume_from``, when given, is written as the cell's own
+    ``resume_from`` field BEFORE ``compose()`` runs -- a resume/seal-only
+    cell declaring the aborted attempt(s) it resumes (item E4-1,
+    2026-09-29)."""
 
     repo = tmp_path / "repo"
     data = tmp_path / "data"
@@ -146,29 +152,30 @@ def build_package(
     _write(repo / "configs/baseline/baseline-1.json", baseline_document)
 
     declared_split = split_identity_hash(prefixed(CARRIER_LOCK_KEY, IDS))
+    cell_document = {
+        "cell_id": CELL_ID,
+        "model_fragment": "model-1",
+        "dataset_fragment": "dataset-1",
+        "baseline_fragment": "baseline-1",
+        "run_id": RUN_ID,
+        "attempt_id": "attempt-1",
+        "readiness": {
+            "state": "held",
+            "reason": "not yet admitted",
+            "requirements": [
+                {
+                    "kind": "preparation",
+                    "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                    "sha256": old_artifact_sha,
+                    "reason": "model-free prepared supply",
+                }
+            ],
+        },
+    }
+    if own_resume_from is not None:
+        cell_document["resume_from"] = own_resume_from
     experiment_document = {
-        "cells": [
-            {
-                "cell_id": CELL_ID,
-                "model_fragment": "model-1",
-                "dataset_fragment": "dataset-1",
-                "baseline_fragment": "baseline-1",
-                "run_id": RUN_ID,
-                "attempt_id": "attempt-1",
-                "readiness": {
-                    "state": "held",
-                    "reason": "not yet admitted",
-                    "requirements": [
-                        {
-                            "kind": "preparation",
-                            "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
-                            "sha256": old_artifact_sha,
-                            "reason": "model-free prepared supply",
-                        }
-                    ],
-                },
-            }
-        ],
+        "cells": [cell_document],
         "population": {"split_identity_hash": declared_split},
         "populations": [{"ids": list(IDS)}],
     }
@@ -578,6 +585,143 @@ def test_the_cells_own_baseline_fragment_with_a_stale_value_is_still_residue(tmp
         tmp_path,
         old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
         baseline_extra_fn=lambda sha: {"frozen_note": sha},
+    )
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    with pytest.raises(RepinError, match="residue"):
+        run(pkg, fake, allow_output_change=True)
+
+
+# --------------------------------------------------------------------------
+# resume_from parent config exemption (item E4-1, 2026-09-29): a
+# resume/seal-only cell's FIRST re-pin inherits its parent's supply pin byte
+# for byte, so the exact old value being superseded is also the parent's own,
+# permanently unchanged pin -- quoted in the PARENT's own configs/experiment
+# and configs/baseline fragments, which share the resume's run id (a RESUME
+# never gets a fresh run id) but name the parent's own attempt id, not the
+# resume's. ``_is_foreign_config`` alone cannot exempt it (the run id is not
+# disjoint); this is the configs-side twin of the existing docs-side
+# sealed-package-record rule, scoped to exactly the cell(s) the current
+# re-pin's own ``resume_from`` names.
+# --------------------------------------------------------------------------
+
+
+def test_a_resume_parents_own_config_quoting_the_old_pin_converges(tmp_path):
+    """The parent's own ``configs/experiment`` and ``configs/baseline``
+    fragments -- found by the resume cell's own ``resume_from.attempt_id``,
+    never by run id alone -- keep the superseded phase-supply-v1 pin forever
+    (E26: never rewrite a parent's own record); the resume cell's own re-pin
+    must still succeed and must never touch the parent's bytes."""
+    resume_trace_sha256 = hashlib.sha256(b"attempt-0-trace").hexdigest()
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+        own_resume_from={"attempt_id": "attempt-0", "trace_sha256": resume_trace_sha256},
+    )
+
+    parent_baseline_path = pkg["repo"] / "configs/baseline/parent-baseline-1.json"
+    _write(
+        parent_baseline_path,
+        {
+            "arm": "parent-arm",
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+        },
+    )
+    parent_experiment_path = pkg["repo"] / "configs/experiment/parent-experiment.json"
+    _write(
+        parent_experiment_path,
+        {
+            "cells": [
+                {
+                    "cell_id": "parent-cell",
+                    "model_fragment": "model-1",
+                    "dataset_fragment": "dataset-1",
+                    "baseline_fragment": "parent-baseline-1",
+                    "run_id": RUN_ID,
+                    "attempt_id": "attempt-0",
+                    "readiness": {
+                        "state": "ready",
+                        "reason": "",
+                        "requirements": [
+                            {
+                                "kind": "preparation",
+                                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                                "sha256": pkg["old_artifact_sha"],
+                                "reason": "the parent arm's own model-free prepared supply",
+                            }
+                        ],
+                    },
+                }
+            ],
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(pkg["repo"], "commit", "-q", "-m", "add the parent arm's own experiment and baseline fragments")
+
+    parent_baseline_snapshot = parent_baseline_path.read_bytes()
+    parent_experiment_snapshot = parent_experiment_path.read_bytes()
+
+    fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
+    summary = run(pkg, fake, allow_output_change=True)  # must not raise RepinError
+
+    assert summary["cells"][0]["artifact"]["rebuilt"] is True
+    assert parent_baseline_path.read_bytes() == parent_baseline_snapshot
+    assert parent_experiment_path.read_bytes() == parent_experiment_snapshot
+    # The resume cell's OWN fragments, by contrast, are rewritten in place.
+    own_baseline_text = (pkg["repo"] / "configs/baseline/baseline-1.json").read_text(encoding="utf-8")
+    own_experiment_text = (pkg["repo"] / "configs/experiment" / f"{EXPERIMENT_ID}.json").read_text(encoding="utf-8")
+    assert pkg["old_artifact_sha"] not in own_baseline_text
+    assert pkg["old_artifact_sha"] not in own_experiment_text
+    assert pkg["old_artifact_sha"] not in _all_text(pkg)
+
+
+def test_an_unrelated_config_outside_the_resume_chain_still_refuses(tmp_path):
+    """The resume-parent-config exemption names only the specific cell(s) the
+    current re-pin's own ``resume_from`` chain points at (found by attempt
+    id). A DIFFERENT cell that happens to share the same run id and quote the
+    same superseded pin, but whose own attempt id is not named by
+    ``resume_from``, is not the parent -- it is a foreign cell (or a defect),
+    and the scan must still refuse on it."""
+    resume_trace_sha256 = hashlib.sha256(b"attempt-0-trace").hexdigest()
+    pkg = build_package(
+        tmp_path,
+        old_artifact_output={"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"], "row-b": ["v2"]}}},
+        own_resume_from={"attempt_id": "attempt-0", "trace_sha256": resume_trace_sha256},
+    )
+
+    _write(
+        pkg["repo"] / "configs/baseline/unrelated-baseline-1.json",
+        {
+            "arm": "unrelated-arm",
+            "prepared_phase_supply": {
+                "relpath": f"prepared/{RUN_ID}/phase-supply-v1.json",
+                "sha256": pkg["old_artifact_sha"],
+            },
+        },
+    )
+    _write(
+        pkg["repo"] / "configs/experiment/unrelated-experiment.json",
+        {
+            "cells": [
+                {
+                    "cell_id": "unrelated-cell",
+                    "model_fragment": "model-1",
+                    "dataset_fragment": "dataset-1",
+                    "baseline_fragment": "unrelated-baseline-1",
+                    "run_id": RUN_ID,
+                    "attempt_id": "attempt-unrelated",
+                    "readiness": {"state": "ready", "reason": ""},
+                }
+            ],
+        },
+    )
+    _git(pkg["repo"], "add", "-A")
+    _git(
+        pkg["repo"], "commit", "-q", "-m",
+        "add an unrelated cell sharing the run id and the old pin, outside the resume_from chain",
     )
 
     fake = Fake(mismatched={RUN_ID}, outputs={RUN_ID: {"facets": {"p0": {}}, "values": {"p0": {"row-a": ["v1"]}}}})
