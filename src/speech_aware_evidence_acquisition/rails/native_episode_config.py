@@ -688,6 +688,16 @@ class NativeEpisodeConfig:
     # formula's relisten term is 0. Declared LAST, for the same reason
     # E20's, E21's, E22's, E39's and RANKVIS's fields are.
     relisten_json: str | None = None
+    # Owner decisions 195/196 (2026-09-29, the evidence-consumption module,
+    # migration steps 1-2): the canonical text of a declared
+    # ``native_episode.consumption_module`` block, or ``None`` when the key is
+    # absent -- which is every config written before it, so nothing here
+    # moves a byte for them. Present, the loader has already proven that the
+    # config's own policy blocks are exactly what the block compiles to
+    # (``rails.consumption_module.verify_declared_module``); the block is a
+    # verified DECLARATION and adds no runtime path. Declared LAST, for the
+    # same reason every field above it is.
+    consumption_module_json: str | None = None
 
     @property
     def knowledge_value_rendering(self) -> dict[str, object] | None:
@@ -1129,6 +1139,7 @@ def load_native_episode_config(
         "reviewer_verdict",
         "knowledge_value_rendering",
         "relisten",
+        "consumption_module",
     }
     if (
         not isinstance(raw, Mapping)
@@ -1522,6 +1533,21 @@ def load_native_episode_config(
                 "visit (roles.solver.samples > 1) in v1"
             )
         relisten_json = relisten_config.as_json()
+    # Owner decisions 195/196 (2026-09-29): the evidence-consumption module's
+    # block, parsed HERE -- before any contact -- fail-closed: an unknown
+    # component id or state, an armed component without a resolvable
+    # admitting record, or a config whose policy blocks are not exactly what
+    # the block compiles to is refused. Absent -> ``None``, byte for byte.
+    consumption_module_json = None
+    if "consumption_module" in raw:
+        from .consumption_module import (  # noqa: PLC0415
+            ConsumptionModuleConfigError, verify_declared_module,
+        )
+
+        try:
+            consumption_module_json = verify_declared_module(raw["consumption_module"], values)
+        except ConsumptionModuleConfigError as error:
+            raise ValueError(f"native_episode.consumption_module is invalid: {error}") from error
     roles = []
     for kind in kinds:
         row = raw_roles[kind]
@@ -2217,6 +2243,7 @@ def load_native_episode_config(
         finite_completion_scope,
         knowledge_value_rendering_json,
         relisten_json,
+        consumption_module_json,
     )
 
 
