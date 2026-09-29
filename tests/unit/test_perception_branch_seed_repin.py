@@ -64,7 +64,9 @@ def _baseline(*, branches: dict | None, extra: dict | None = None) -> dict:
     return document
 
 
-def _identity(baseline_fragment: str, *, pin: ArtifactPin | None) -> CellIdentity:
+def _identity(
+    baseline_fragment: str, *, pin: ArtifactPin | None, has_group: bool = True,
+) -> CellIdentity:
     return CellIdentity(
         experiment="experiment-1",
         cell_id="cell-1",
@@ -80,6 +82,7 @@ def _identity(baseline_fragment: str, *, pin: ArtifactPin | None) -> CellIdentit
         protocol_hash="c" * 64,
         prepared_phase_supply=None,
         perception_branch_seed_pin=pin,
+        has_perception_branch_group=has_group,
     )
 
 
@@ -285,11 +288,12 @@ def test_skipped_when_the_cell_declares_no_branch_group(tmp_path):
     baseline_path, baseline_fragment = _setup(tmp_path, branches=None)
     original = baseline_path.read_text(encoding="utf-8")
     fake = FakePrepareBranchSeeds(no_group=True)
-    identity = _identity(baseline_fragment, pin=None)
+    identity = _identity(baseline_fragment, pin=None, has_group=False)
 
     report = ensure_branch_seeds_pinned(**_kwargs(tmp_path, baseline_fragment, identity, fake))
 
     assert report == {"rebuilt": False, "pin": None, "skipped": NO_BRANCH_GROUP_MESSAGE}
+    assert not fake.calls
     assert baseline_path.read_text(encoding="utf-8") == original
 
 

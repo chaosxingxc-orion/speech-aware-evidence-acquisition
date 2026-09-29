@@ -174,6 +174,18 @@ class CellIdentity:
     #: (:func:`branch_seed_pin` refuses if they disagree), so one pin covers
     #: the whole cell.
     perception_branch_seed_pin: ArtifactPin | None = None
+    #: Whether this cell declares ``native_episode.roles.perception.branches``
+    #: AT ALL -- read straight off the composed config
+    #: (:func:`_perception_branches_list`), never by attempting a prepare and
+    #: pattern-matching its refusal message. ``ensure_branch_seeds_pinned``
+    #: uses this to skip the overwhelming majority of cells (every one
+    #: written before phase 2) WITHOUT ever building a runtime for them --
+    #: unlike ``prepared_phase_supply``, whose "no supplied phase" and
+    #: "construction-visible arm" skips are cheap only because a program
+    #: object already exists by the time they are discovered; a Perception
+    #: branch group is cheaper to rule out from the raw config than to reach
+    #: by building a whole runtime first.
+    has_perception_branch_group: bool = False
 
 
 PrepareSupplyFn = Callable[..., Mapping[str, object]]
@@ -381,6 +393,7 @@ def compute_cell_identity(repo_root: Path, experiment: str, cell: CampaignCell) 
         protocol_hash=phash,
         prepared_phase_supply=(ArtifactPin.from_mapping(pin) if pin is not None else None),
         perception_branch_seed_pin=branch_seed_pin(values),
+        has_perception_branch_group=_perception_branches_list(values) is not None,
     )
 
 
@@ -939,8 +952,17 @@ def ensure_branch_seeds_pinned(
     declares no Perception branch group at all is reported as ``{"rebuilt":
     False, "pin": None, "skipped": NO_BRANCH_GROUP_MESSAGE}``: nothing is
     derived, nothing is pinned -- the overwhelming majority of registered
-    cells, written before phase 2.
+    cells, written before phase 2. That case is caught HERE, off
+    ``identity.has_perception_branch_group`` (read straight off the composed
+    config), before ``prepare_branch_seeds_fn`` is ever called -- unlike
+    ``ensure_artifact_pinned``, this never needs to build a runtime just to
+    rule a cell out, so a synthetic test cell with no real carrier (most of
+    ``tests/unit/test_flight_repin.py``'s own fixtures) is unaffected by this
+    mechanism entirely.
     """
+
+    if not identity.has_perception_branch_group and identity.perception_branch_seed_pin is None:
+        return {"rebuilt": False, "pin": None, "skipped": NO_BRANCH_GROUP_MESSAGE}
 
     baseline_path = baseline_fragment_path(repo_root, identity.baseline_fragment)
     current_pin = identity.perception_branch_seed_pin
