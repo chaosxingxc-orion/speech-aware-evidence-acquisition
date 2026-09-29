@@ -15,8 +15,8 @@ contract alone. Development numbers only (owner decisions 28 and 86); never a te
 | margins | the plan's own null on this roster (PLANr): h_SLU 1.2485, h_intent 0.9943 |
 | smoke | four engineering rows, structural acceptance, never scored |
 | runs | `SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1` / `SAEA-SLURP-STAGE3-COMP1B-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-COMP1B-FOLD-A-SMOKE-4-FIT-V1` |
-| composed config hashes | arm `8c4517a3809f77b3973f683d488dcd2f4ea72eec05103408a2a20e1802c7d6f1`; smoke `3d9b7226067f67a34207c57183b33b71193ac014c2cfd78ed0bc6e235c944243` |
-| protocol hashes | arm `8976fa08d63b4cc6511253862c7c6b5f33ab380343cc55dad78d783f099828c5`; smoke `cd334d9326503db9563c63101ae76ff607301ef54884e8cf911bba928349615e` |
+| composed config hashes | arm `8c4517a3809f77b3973f683d488dcd2f4ea72eec05103408a2a20e1802c7d6f1`; smoke `fd070bce9d89f8297620261ceb7cf104169f15ef77c1e184473968f4a02b92a1` |
+| protocol hashes | arm `8976fa08d63b4cc6511253862c7c6b5f33ab380343cc55dad78d783f099828c5`; smoke `f0bdc735256c564195c9db48e12ee8ebe376717b9dcf4c9b56b0801f6144fb65` |
 | authority | the 2026-09-29 SLU-harm attribution note (branch fable/comp1slu commit e30aa1b61, docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md) and the COMP-1 read it explains (docs/results/2026-09-29-slurp-comp1-fold-a-read.md); owner decisions 138 and 152 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); the AGREE registration docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1; the KPROBE registration docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1; the instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; decisions 25 (harm), 127, 133, 139, 160, 190 (item D3) |
 
 ## Decision rule (fixed here)

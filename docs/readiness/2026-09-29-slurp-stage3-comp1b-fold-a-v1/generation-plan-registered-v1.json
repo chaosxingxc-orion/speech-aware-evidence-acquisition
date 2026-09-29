@@ -38,7 +38,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "ab36435801e906fd6cb85776f77194e5e818e7fcacd942fc959062b726a17ff7"
+    "sha256": "17f199c3fef6f914841ced7026b0e6400e0e4db691702f401d64f7af57be9823"
   },
   "purpose": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1: Read against the SAME sealed in-chain A/A cell COMP-1 used, reused cross-flight and never re-flown (owner decision 160's shared-A/A pattern). PRIMARY: intent accuracy (scenario_action exact), paired per row, 10,000 bootstrap draws. GUARD: official pooled SLU-F1 non-inferior at the plan's own null (h_SLU 1.2485). ADMITTED: the intent CI95 lower bound above zero, the point at or above the declared 4.26 pp and the 2.5 pp cross-flight bar, AND the guard holds. NEUTRAL: both guards non-inferior at the own null (h_intent 0.9943 / h_SLU 1.2485) without an admitted gain. HARMFUL: a measured loss on either guard (decision 25). Every verdict carries the per-channel table the attribution note (a) / (b) / (c) split uses, the per-stratum tables in both weightings, and the same-shortlist intent-choice check.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for the COMP-1b arm. A verdict computed against the sealed comparator alone, without re-verifying the shared A/A's byte identity, is refused.",
