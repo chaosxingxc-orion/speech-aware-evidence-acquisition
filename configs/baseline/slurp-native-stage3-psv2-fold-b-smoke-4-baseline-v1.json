@@ -160,7 +160,11 @@
             {
               "branch_id": "b-list3",
               "max_supplied_items": 10,
-              "min_candidates": 3
+              "min_candidates": 3,
+              "prepared_seed": {
+                "relpath": "prepared/SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1/perception-branch-seeds-v1.json",
+                "sha256": "3a49989f8f3b44a43051a0bf6144a600aa10f3d235c6b826b027623783f15316"
+              }
             },
             {
               "branch_id": "t-twin",

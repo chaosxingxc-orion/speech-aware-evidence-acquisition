@@ -167,6 +167,13 @@ class CellIdentity:
     config_hash: str
     protocol_hash: str
     prepared_phase_supply: ArtifactPin | None
+    #: The ONE shared pin every B branch of ``native_episode.roles.perception.
+    #: branches`` carries (design section 5 item 4; the item-4 GAP), or
+    #: ``None`` for a cell with no branch group, or one whose B branches carry
+    #: no pin yet. Every B branch shares the same artifact
+    #: (:func:`branch_seed_pin` refuses if they disagree), so one pin covers
+    #: the whole cell.
+    perception_branch_seed_pin: ArtifactPin | None = None
 
 
 PrepareSupplyFn = Callable[..., Mapping[str, object]]
@@ -199,6 +206,104 @@ def _write_json(path: Path, document: object) -> None:
         encoding="utf-8",
         newline="\n",
     )
+
+
+# --------------------------------------------------------------------------
+# Perception branch-seed pins (design section 5 item 4; the item-4 GAP).
+# One shared artifact per cell, one shared pin across every B branch of its
+# ``native_episode.roles.perception.branches.branches`` list -- the SAME
+# nested location :func:`compute_cell_identity` and
+# :func:`ensure_branch_seeds_pinned` both read/write, structurally the twin
+# of ``prepared_phase_supply``'s own top-level pin above.
+# --------------------------------------------------------------------------
+
+
+def _perception_branches_list(document: Mapping) -> list | None:
+    """The declared ``native_episode.roles.perception.branches.branches``
+    list, or ``None`` when the cell declares no Perception branch group at
+    all (every cell written before phase 2)."""
+
+    native_episode = document.get("native_episode") if isinstance(document, Mapping) else None
+    roles = native_episode.get("roles") if isinstance(native_episode, Mapping) else None
+    perception = roles.get("perception") if isinstance(roles, Mapping) else None
+    branches_block = perception.get("branches") if isinstance(perception, Mapping) else None
+    branches = branches_block.get("branches") if isinstance(branches_block, Mapping) else None
+    return branches if isinstance(branches, list) else None
+
+
+def _b_branch_ids(branches: list) -> list[str]:
+    """Every non-A, non-T (B) branch id in declaration order."""
+
+    return [
+        row["branch_id"] for row in branches
+        if isinstance(row, Mapping) and row.get("deliver") is not True
+        and row.get("replicate_of") is None and isinstance(row.get("branch_id"), str)
+    ]
+
+
+def branch_seed_pin(document: Mapping) -> ArtifactPin | None:
+    """The one ``prepared_seed`` pin every B branch of ``document`` shares.
+
+    ``None`` when the cell declares no branch group, when it declares one
+    with no B branch, or when no B branch carries a pin yet. Refuses
+    (:class:`RepinError`) if two B branches of the SAME cell disagree --
+    design section 3 states plainly they share one artifact, so a
+    disagreement is a malformed cell, not a value to silently pick one of.
+    """
+
+    branches = _perception_branches_list(document)
+    if not branches:
+        return None
+    b_ids = _b_branch_ids(branches)
+    if not b_ids:
+        return None
+    pins: dict[str, ArtifactPin | None] = {}
+    for row in branches:
+        if isinstance(row, Mapping) and row.get("branch_id") in b_ids:
+            seed = row.get("prepared_seed")
+            pins[row["branch_id"]] = None if seed is None else ArtifactPin.from_mapping(seed)
+    distinct = set(pins.values())
+    if len(distinct) > 1:
+        raise RepinError(
+            f"perception branch group's B branches disagree on prepared_seed: {pins}"
+        )
+    return next(iter(distinct)) if distinct else None
+
+
+def _drop_perception_branch_seed_pins(baseline_path: Path) -> None:
+    document = _read_json(baseline_path)
+    if not isinstance(document, dict):
+        raise RepinError(f"baseline fragment {baseline_path} is not a JSON object")
+    branches = _perception_branches_list(document)
+    if not branches:
+        return
+    changed = False
+    for row in branches:
+        if isinstance(row, dict) and row.pop("prepared_seed", None) is not None:
+            changed = True
+    if changed:
+        _write_json(baseline_path, document)
+
+
+def _set_perception_branch_seed_pins(baseline_path: Path, pin: ArtifactPin) -> int:
+    """Point every B branch's ``prepared_seed`` at ``pin``. Returns the count updated."""
+
+    document = _read_json(baseline_path)
+    if not isinstance(document, dict):
+        raise RepinError(f"baseline fragment {baseline_path} is not a JSON object")
+    branches = _perception_branches_list(document)
+    if not branches:
+        raise RepinError(f"baseline fragment {baseline_path} declares no Perception branch group")
+    b_ids = set(_b_branch_ids(branches))
+    if not b_ids:
+        raise RepinError(f"baseline fragment {baseline_path} declares no B branch to pin")
+    updated = 0
+    for row in branches:
+        if isinstance(row, dict) and row.get("branch_id") in b_ids:
+            row["prepared_seed"] = pin.as_dict()
+            updated += 1
+    _write_json(baseline_path, document)
+    return updated
 
 
 def resolve_split_identity_hash(
@@ -275,6 +380,7 @@ def compute_cell_identity(repo_root: Path, experiment: str, cell: CampaignCell) 
         config_hash=composed.config_hash,
         protocol_hash=phash,
         prepared_phase_supply=(ArtifactPin.from_mapping(pin) if pin is not None else None),
+        perception_branch_seed_pin=branch_seed_pin(values),
     )
 
 
@@ -712,6 +818,217 @@ def ensure_artifact_pinned(
         "new_pin": new_pin.as_dict(),
         "row_counts": row_counts,
         "readiness_requirement": requirement_edit,
+    }
+
+
+# --------------------------------------------------------------------------
+# Perception branch-seed re-pin (design section 5 item 4; the item-4 GAP).
+# Structurally :func:`ensure_artifact_pinned`'s twin: same verify-or-rebuild
+# shape, over the branch-seed artifact instead of the phase-supply one, and
+# over the nested ``native_episode.roles.perception.branches.branches`` pin
+# location instead of the baseline's top-level ``prepared_phase_supply`` key.
+# No 'preparation' readiness requirement bookkeeping: the registration gate
+# (``scripts/checks/flight_registration_check.py``) reads the branch's own
+# ``prepared_seed`` field directly, so none is needed here.
+# --------------------------------------------------------------------------
+
+#: The preparation runtime's own message for a cell with no declared
+#: Perception branch group at all (every cell written before phase 2).
+NO_BRANCH_GROUP_MESSAGE = (
+    "cell declares no roles.perception.branches; there is no Perception branch seed to prepare"
+)
+
+_BRANCH_SEED_VERSION_PATTERN = re.compile(r"^perception-branch-seeds-v(\d+)\.json$")
+
+
+def default_prepare_branch_seeds(
+    *,
+    repo_root: Path,
+    data_root: Path,
+    runtime_root: Path,
+    lock_path: Path,
+    experiment: str,
+    cell_id: str,
+    model_fragment: str,
+    dataset_fragment: str,
+    baseline_fragment: str,
+    run_id: str,
+    attempt_id: str,
+    output_path: Path,
+) -> Mapping[str, object]:
+    """Run the real, model-free ``core.flight.cli prepare-branch-seeds`` path.
+
+    Mirrors :func:`default_prepare_supply` exactly: called with an existing
+    ``output_path`` this is a pure identity check; called with a path that
+    does not yet exist, it derives and publishes a fresh artifact.
+    """
+
+    from .factory import build_flight_runtime
+
+    runtime = build_flight_runtime(
+        repo_root,
+        data_root,
+        model=model_fragment,
+        dataset=dataset_fragment,
+        baseline=baseline_fragment,
+        experiment=experiment,
+        run_id=run_id,
+        attempt_id=attempt_id,
+        runtime_root=runtime_root,
+        lock_path=lock_path,
+    )
+    return runtime.prepare_perception_branch_seeds(Path(output_path))
+
+
+def _next_branch_seed_version(directory: Path) -> int:
+    if not directory.is_dir():
+        return 1
+    versions = [
+        int(match.group(1))
+        for path in directory.iterdir()
+        if (match := _BRANCH_SEED_VERSION_PATTERN.match(path.name))
+    ]
+    return max(versions) + 1 if versions else 1
+
+
+def _branch_seed_row_counts(output: object) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    if isinstance(output, Mapping):
+        branches = output.get("branches")
+        if isinstance(branches, Mapping):
+            for branch_id, rows in branches.items():
+                counts[str(branch_id)] = len(rows) if isinstance(rows, Mapping) else 0
+    return counts
+
+
+def _compare_branch_seed_output(
+    *, old_path: Path | None, new_path: Path, allow_output_change: bool
+) -> dict[str, object] | None:
+    if old_path is None or not old_path.is_file():
+        return None
+    old_document = _read_json(old_path)
+    new_document = _read_json(new_path)
+    old_output = old_document.get("output") if isinstance(old_document, Mapping) else None
+    new_output = new_document.get("output") if isinstance(new_document, Mapping) else None
+    counts = {"old": _branch_seed_row_counts(old_output), "new": _branch_seed_row_counts(new_output)}
+    if old_output != new_output and not allow_output_change:
+        raise RepinError(
+            "rebuilt perception branch-seed artifact selects a different output than the "
+            f"previous artifact ({old_path}); row counts old={counts['old']} "
+            f"new={counts['new']}; pass --allow-output-change to accept this deliberately"
+        )
+    return counts
+
+
+def ensure_branch_seeds_pinned(
+    *,
+    repo_root: Path,
+    data_root: Path,
+    runtime_root: Path,
+    lock_path: Path,
+    experiment: str,
+    identity: CellIdentity,
+    prepare_branch_seeds_fn: PrepareSupplyFn = default_prepare_branch_seeds,
+    allow_output_change: bool = False,
+) -> dict[str, object]:
+    """Re-run ``prepare-branch-seeds`` only if the pinned artifact would mismatch.
+
+    Every B branch of one cell shares ONE artifact (design section 3), so
+    this verifies (or rebuilds) it once and writes the SAME new pin onto
+    every B branch (:func:`_set_perception_branch_seed_pins`). A cell that
+    declares no Perception branch group at all is reported as ``{"rebuilt":
+    False, "pin": None, "skipped": NO_BRANCH_GROUP_MESSAGE}``: nothing is
+    derived, nothing is pinned -- the overwhelming majority of registered
+    cells, written before phase 2.
+    """
+
+    baseline_path = baseline_fragment_path(repo_root, identity.baseline_fragment)
+    current_pin = identity.perception_branch_seed_pin
+    existing_absolute: Path | None = None
+    needs_rebuild = current_pin is None
+    mismatch_reason = "no prepared_seed pin is currently configured on the B branch(es)"
+    if current_pin is not None:
+        existing_absolute = (Path(data_root) / current_pin.relpath).resolve()
+        if not existing_absolute.is_file():
+            needs_rebuild = True
+            mismatch_reason = f"pinned artifact is absent on disk: {current_pin.relpath}"
+        else:
+            try:
+                prepare_branch_seeds_fn(
+                    repo_root=repo_root,
+                    data_root=data_root,
+                    runtime_root=runtime_root,
+                    lock_path=lock_path,
+                    experiment=experiment,
+                    cell_id=identity.cell_id,
+                    model_fragment=identity.model_fragment,
+                    dataset_fragment=identity.dataset_fragment,
+                    baseline_fragment=identity.baseline_fragment,
+                    run_id=identity.run_id,
+                    attempt_id=identity.attempt_id,
+                    output_path=existing_absolute,
+                )
+            except Exception as error:  # noqa: BLE001 -- any failure means the pin cannot be trusted
+                needs_rebuild = True
+                mismatch_reason = str(error)
+
+    if not needs_rebuild:
+        assert current_pin is not None
+        return {"rebuilt": False, "pin": current_pin.as_dict()}
+
+    directory = Path(data_root) / "prepared" / identity.run_id
+    version = _next_branch_seed_version(directory)
+    new_relpath = f"prepared/{identity.run_id}/perception-branch-seeds-v{version}.json"
+    new_absolute = Path(data_root) / new_relpath
+    if new_absolute.exists():
+        raise RepinError(f"refusing to overwrite an existing artifact at {new_relpath}")
+
+    original_baseline_text = baseline_path.read_text(encoding="utf-8")
+    _drop_perception_branch_seed_pins(baseline_path)
+    try:
+        receipt = prepare_branch_seeds_fn(
+            repo_root=repo_root,
+            data_root=data_root,
+            runtime_root=runtime_root,
+            lock_path=lock_path,
+            experiment=experiment,
+            cell_id=identity.cell_id,
+            model_fragment=identity.model_fragment,
+            dataset_fragment=identity.dataset_fragment,
+            baseline_fragment=identity.baseline_fragment,
+            run_id=identity.run_id,
+            attempt_id=identity.attempt_id,
+            output_path=new_absolute,
+        )
+    except Exception as error:  # noqa: BLE001 -- the baseline is restored verbatim on every failure
+        baseline_path.write_text(original_baseline_text, encoding="utf-8", newline="\n")
+        if NO_BRANCH_GROUP_MESSAGE in str(error) and current_pin is None:
+            # No branch group at all: nothing to prepare, nothing to pin --
+            # the overwhelming majority of registered cells.
+            return {"rebuilt": False, "pin": None, "skipped": NO_BRANCH_GROUP_MESSAGE}
+        raise
+    new_sha256 = receipt.get("sha256") if isinstance(receipt, Mapping) else None
+    if not isinstance(new_sha256, str) or SHA256_PATTERN.fullmatch(new_sha256) is None:
+        baseline_path.write_text(original_baseline_text, encoding="utf-8", newline="\n")
+        raise RepinError(f"prepare_branch_seeds_fn returned no valid sha256 for {new_relpath}")
+
+    try:
+        row_counts = _compare_branch_seed_output(
+            old_path=existing_absolute, new_path=new_absolute, allow_output_change=allow_output_change
+        )
+    except RepinError:
+        baseline_path.write_text(original_baseline_text, encoding="utf-8", newline="\n")
+        raise
+
+    new_pin = ArtifactPin(new_relpath, new_sha256)
+    updated = _set_perception_branch_seed_pins(baseline_path, new_pin)
+    return {
+        "rebuilt": True,
+        "reason": mismatch_reason,
+        "old_pin": current_pin.as_dict() if current_pin is not None else None,
+        "new_pin": new_pin.as_dict(),
+        "row_counts": row_counts,
+        "branches_updated": updated,
     }
 
 
@@ -1488,6 +1805,7 @@ def repin_package(
     set_ready: bool = False,
     allow_output_change: bool = False,
     prepare_supply_fn: PrepareSupplyFn = default_prepare_supply,
+    prepare_branch_seeds_fn: PrepareSupplyFn = default_prepare_branch_seeds,
     run_check_fn: RunCheckFn = default_run_check,
     python: str = sys.executable,
     package_name: str | None = None,
@@ -1571,6 +1889,22 @@ def repin_package(
             prepare_supply_fn=prepare_supply_fn,
             allow_output_change=allow_output_change,
         )
+        # Item-4 GAP close (design section 5 item 4): the SAME verify-or-
+        # rebuild treatment for a cell's Perception branch-seed artifact,
+        # AFTER the phase supply above (a branch's own bootstrap reads
+        # whatever prepared_phase_supply pin now stands, so ordering
+        # matters). A no-op (skipped) for the overwhelming majority of
+        # cells, which declare no Perception branch group at all.
+        branch_seed_report = ensure_branch_seeds_pinned(
+            repo_root=repo_root,
+            data_root=data_root,
+            runtime_root=runtime_root,
+            lock_path=lock_path,
+            experiment=experiment,
+            identity=old_identity,
+            prepare_branch_seeds_fn=prepare_branch_seeds_fn,
+            allow_output_change=allow_output_change,
+        )
         apply_decision_and_readiness(
             repo_root=repo_root,
             data_root=data_root,
@@ -1597,6 +1931,16 @@ def repin_package(
                 if old_pin["sha256"] != new_pin["sha256"]:
                     mapping[old_pin["sha256"]] = new_pin["sha256"]
                     all_old_values.add(old_pin["sha256"])
+        if branch_seed_report.get("rebuilt"):
+            old_pin = branch_seed_report.get("old_pin")
+            new_pin = branch_seed_report["new_pin"]
+            if old_pin is not None:
+                if old_pin["relpath"] != new_pin["relpath"]:
+                    mapping[old_pin["relpath"]] = new_pin["relpath"]
+                    all_old_values.add(old_pin["relpath"])
+                if old_pin["sha256"] != new_pin["sha256"]:
+                    mapping[old_pin["sha256"]] = new_pin["sha256"]
+                    all_old_values.add(old_pin["sha256"])
         if old_identity.config_hash != new_identity.config_hash:
             mapping[old_identity.config_hash] = new_identity.config_hash
             all_old_values.add(old_identity.config_hash)
@@ -1612,6 +1956,7 @@ def repin_package(
                 "old": {"config_hash": old_identity.config_hash, "protocol_hash": old_identity.protocol_hash},
                 "new": {"config_hash": new_identity.config_hash, "protocol_hash": new_identity.protocol_hash},
                 "artifact": artifact_report,
+                "branch_seeds": branch_seed_report,
             }
         )
 

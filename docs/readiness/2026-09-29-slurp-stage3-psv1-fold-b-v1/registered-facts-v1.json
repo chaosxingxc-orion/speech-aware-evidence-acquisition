@@ -171,53 +171,23 @@
   "contrast_pair_table": {
     "builder": "scripts/build_slurp_intent_contrast_pairs.py",
     "presentation_id": "top2-contrast-v1",
-    "requirements": "built model-free (W3a's word-gap method) over the R01-excluded TRAIN pool with its own receipt; its pool must be proven disjoint from TRAIN Fold B by utterance identity before the flip (phase-2 inputs README: 'Not checked here: a contrast-pair pool'); the pin enters where the runtime reads it (merge set C item 4/6), then the cell is re-derived and re-pinned",
-    "sha256": "19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059",
-    "status": "PINNED 2026-09-28 from the builder receipt (table under SPEECHRL_DATA_DIR, relpath relative to the data root; 48 pairs written / 2 skipped of 50, skip reason insufficient-pool-support; the build excluded the Fold A, Fold B and R01 rosters by receipt). The runtime carries no table field yet: the top2-contrast-v1 renderer takes the table as a mapping, so the cell is re-derived and re-pinned once the runtime wiring lands; still no flip before that.",
-    "table_relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json",
     "receipt": {
-      "relpath": "docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json",
-      "sha256": "4af9e874dea15f5846034ceaff9fbc15b6ba555b81fa959e7a96bf5f6f59a368",
       "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1",
       "exposure_ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V1",
       "pairs_considered": 50,
+      "pairs_skipped": 2,
       "pairs_written": 48,
-      "pairs_skipped": 2
-    }
+      "relpath": "docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json",
+      "sha256": "4af9e874dea15f5846034ceaff9fbc15b6ba555b81fa959e7a96bf5f6f59a368"
+    },
+    "requirements": "built model-free (W3a's word-gap method) over the R01-excluded TRAIN pool with its own receipt; its pool must be proven disjoint from TRAIN Fold B by utterance identity before the flip (phase-2 inputs README: 'Not checked here: a contrast-pair pool'); the pin enters where the runtime reads it (merge set C item 4/6), then the cell is re-derived and re-pinned",
+    "sha256": "19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059",
+    "status": "PINNED 2026-09-28 from the builder receipt (table under SPEECHRL_DATA_DIR, relpath relative to the data root; 48 pairs written / 2 skipped of 50, skip reason insufficient-pool-support; the build excluded the Fold A, Fold B and R01 rosters by receipt). The runtime carries no table field yet: the top2-contrast-v1 renderer takes the table as a mapping, so the cell is re-derived and re-pinned once the runtime wiring lands; still no flip before that.",
+    "table_relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json"
   },
   "decision_rule": "SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-top2contrast, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the provisional floor 0.3163 pp. (2) THE CONTRAST: b-top2contrast minus A on the level-2 branch Solver column's official intent accuracy (primary). NOMINATED iff the intent CI95 lower bound is above zero AND the point delta exceeds the twin's intent bar AND the SLU-F1 CI95 lower bound of the same column is not below minus the twin's SLU bar (guard). BRANCH-LOCAL HARM iff the intent CI95 upper bound is below zero and the point magnitude exceeds the twin bar. Otherwise NOT NOMINATED. Reported beside, never gating: gold-on-list and mean gold rank of the B note vs A and T, the conversion P(correct | gold rank r in the branch note) against the ledger's 97.57 / 26.98 / 12.0 %, the rows where top2-contrast-v1 rendered nothing (presentation_skip_reason, ruling O5), and the delivered row (identical by construction). A nomination sends the composed policy to a full-system cross-flight read against an in-chain A/A; it admits nothing.",
   "fit": {
-    "cells": {
-      "arm": {
-        "error_tail": [
-          "ValueError: roles.perception.branches is invalid: perception branches.branches[0].presentation_id 'top2-contrast-v1' is not registered; registered ids are []"
-        ],
-        "path": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv1-fold-b-v1.json",
-        "status": "MISSING",
-        "top2_contrast_branch_perception_from_psv2_a_branch": {
-          "contrast_block_allowance_tokens_at_4_bytes": 448,
-          "contrast_branch_physical_margin_estimate": 4116,
-          "delivering_branch_physical_margin": 4564,
-          "note": "P-SV-1's own check refused at config load (the presentation registry is empty when the loader validates branches); this estimate uses P-SV-2's held check of the identical delivering branch A minus two widest boundary items at 4 bytes per token",
-          "source": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv2-fold-b-v1.json"
-        }
-      },
-      "smoke": {
-        "error_tail": [
-          "ValueError: roles.perception.branches is invalid: perception branches.branches[0].presentation_id 'top2-contrast-v1' is not registered; registered ids are []"
-        ],
-        "path": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv1-fold-b-smoke-4-v1.json",
-        "status": "MISSING",
-        "top2_contrast_branch_perception_from_psv2_a_branch": {
-          "contrast_block_allowance_tokens_at_4_bytes": 448,
-          "contrast_branch_physical_margin_estimate": 4140,
-          "delivering_branch_physical_margin": 4588,
-          "note": "P-SV-1's own check refused at config load (the presentation registry is empty when the loader validates branches); this estimate uses P-SV-2's held check of the identical delivering branch A minus two widest boundary items at 4 bytes per token",
-          "source": "/home/chao/saea-worktrees/.psv-checks/check-slurp-native-stage3-psv2-fold-b-smoke-4-v1.json"
-        }
-      }
-    },
-    "status": "MEASURED_BY_CHECK"
+    "status": "PENDING_CHECK"
   },
   "fit_measure": {
     "relpath": "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v1.json",
@@ -286,6 +256,10 @@
           {
             "branch_id": "b-top2contrast",
             "max_supplied_items": 12,
+            "prepared_seed": {
+              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json",
+              "sha256": "3fec33de67bab840a65c28f86539b801d65bdce5b6d1e8b02a36fa90e5832b46"
+            },
             "presentation_id": "top2-contrast-v1"
           },
           {
@@ -309,7 +283,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-psv1-fold-b-v1",
-      "composed_config_hash": "02414b820425b2546db8d8133deca847b72feb2f34125568c06b4ac17ae2ca5b",
+      "composed_config_hash": "535bb34e6e1628cef7e6d3f4494fe9a3a1b106a74ecde0a560e49798878f5224",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-psv1-fold-b-v1",
@@ -334,7 +308,7 @@
       "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
       "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
-      "protocol_hash": "0a00f9eed506ee159bd8fe6e0e78e5abcbc10172efbe54ec1fe6ba2c7aea7786",
+      "protocol_hash": "b0451b8ea7ac4cbe2e82252585dbd6588dd80f12b5aa0c391331f8c68e8389a9",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
@@ -349,6 +323,10 @@
           {
             "branch_id": "b-top2contrast",
             "max_supplied_items": 12,
+            "prepared_seed": {
+              "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1/perception-branch-seeds-v1.json",
+              "sha256": "6872b5f4fafc8fcccb77ea4c2ca3a8fc14a80c411688aa5315971d4ab8f8dfe5"
+            },
             "presentation_id": "top2-contrast-v1"
           },
           {
@@ -372,7 +350,7 @@
       },
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-psv1-fold-b-smoke-4-v1",
-      "composed_config_hash": "7b49c707c06eefaf433a623120b5d1d111b97c287556d7e45772276b3297ed7f",
+      "composed_config_hash": "7ff13206535866e48788fce8abd82524393e650ada1aa26a7962eb81f405db97",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-psv1-fold-b-smoke-4-v1",
@@ -397,7 +375,7 @@
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
       "program": "phase-native-candidates-review-revise-pbranch3-l2-v1",
-      "protocol_hash": "63b31e62a0845b6bb3f35290a8d5fdfccace491b652ee1bf4f5c467237e7b903",
+      "protocol_hash": "a4d2b1b237c7a0bf69558c7bbf383418919e37cf2036e621184aa08c2dc632db",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-SMOKE-4-V1",
@@ -421,7 +399,7 @@
     "No system-level claim: a branch effect may only nominate (ruling O1).",
     "No branch value built from Fold B rollouts (owner decision 186)."
   ],
-  "registered_at_utc": "2026-09-29T00:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T05:15:03.000000+00:00",
   "rows": 1080,
   "schema": "saea-registered-facts-v1",
   "stage3_measurement": {
@@ -470,7 +448,7 @@
       }
     }
   },
-  "study_commit_at_registration": "6a2a62624",
+  "study_commit_at_registration": "f33e8a0f2",
   "the_cell": {
     "base": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1), re-targeted Fold A -> Fold B as the filler family re-pointed it",
     "branch_block": {
@@ -478,6 +456,10 @@
         {
           "branch_id": "b-top2contrast",
           "max_supplied_items": 12,
+          "prepared_seed": {
+            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1/perception-branch-seeds-v1.json",
+            "sha256": "3fec33de67bab840a65c28f86539b801d65bdce5b6d1e8b02a36fa90e5832b46"
+          },
           "presentation_id": "top2-contrast-v1"
         },
         {

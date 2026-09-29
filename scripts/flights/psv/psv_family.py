@@ -101,11 +101,38 @@ READ_ANALYSIS = "scripts/analysis/slurp_perception_branch_read.py"
 FIT_MEASURE = "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v1.json"
 
 # The contrast-pair table top2-contrast-v1 renders from (spec section 5 item 6). Built model-free by
-# scripts/build_slurp_intent_contrast_pairs.py, which has NOT landed on the phase-2 branch at registration.
+# scripts/build_slurp_intent_contrast_pairs.py. Registered as a placeholder at first registration
+# (2026-09-28); commit 3ee765f34 hand-patched registered-facts-v1.json/README.md with the real pin once
+# the builder landed (docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json). CONTRAST_PAIR_TABLE
+# below is that same real pin, so a re-run of write_slurp_psv_registration.py reproduces it instead of
+# regressing to the placeholder; CONTRAST_PAIR_PLACEHOLDER stays defined for the one residual safety line
+# (root-admission-draft-v1.json's not_authorized entry) 3ee765f34 deliberately left unchanged -- the
+# BRANCH SCHEMA still carries no table field until the runtime wiring in a later merge set lands.
 CONTRAST_PAIR_PLACEHOLDER = "TO-BE-PINNED-AFTER-CONTRAST-PAIR-BUILD"
 CONTRAST_PAIR_BUILDER = "scripts/build_slurp_intent_contrast_pairs.py"
+CONTRAST_PAIR_TABLE = {
+    "table_relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json",
+    "sha256": "19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059",
+    "receipt_relpath": "docs/receipts/knowledge/slurp-perception-contrast-pairs-v1.json",
+    "receipt_sha256": "4af9e874dea15f5846034ceaff9fbc15b6ba555b81fa959e7a96bf5f6f59a368",
+    "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1",
+    "exposure_ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V1",
+    "pinned_date": "2026-09-28",
+    "pairs_considered": 50,
+    "pairs_written": 48,
+    "pairs_skipped": 2,
+}
 
 ARM_A, ARM_T = "a-agree", "t-twin"
+
+
+def branch_seed_relpath(key: str, kind: str) -> str:
+    """The ``prepared/<run-id>/perception-branch-seeds-v1.json`` relpath this
+    cell's non-A/T (B) branch pins as ``prepared_seed`` once
+    ``core.flight.cli prepare-branch-seeds`` has produced it (design section
+    5 item 4; the item-4 GAP)."""
+
+    return f"prepared/{names(key, kind)['run_id']}/perception-branch-seeds-v1.json"
 
 # Fold A node-ledger numbers (docs/results/2026-09-28-slurp-node-information-gain-ledger.md, AGREE arm, 1,080 rows).
 LEDGER_ROWS = 1080

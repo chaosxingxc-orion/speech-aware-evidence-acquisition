@@ -3,11 +3,11 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/analysis-recipe-v1.json",
-      "sha256": "fc9a9d7ddbc7e662a3a3719b6fea95ef3a20fa512343cc408faa3b8324a6d26d"
+      "sha256": "e99efa42daa6a4d344f9329ee34522edb7e229eb02dd4ec5f1f93846c7569210"
     },
     "derive_script": {
       "path": "scripts/flights/psv/derive_slurp_psv_cells.py",
-      "sha256": "1f6991d91a5eaa3cab665e34df113fe74d57762111da718f108d67d42015546f"
+      "sha256": "3040af931e22ceb6e4481d3b34c6f9c07732abc4fa1da592d052fd9a0714f0e6"
     },
     "fold_b_inputs": {
       "path": "docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md",
@@ -19,7 +19,7 @@
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "c18a5c628db9763f4cfb341b953573c2d333876ed4138927880cc437ae4bef24"
+      "sha256": "4d9fecafe612c36b62960228aa8e3972c28315693893bd730a9e1657f3d0dfa8"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-preregistration.md",
@@ -27,7 +27,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "9fb39bce8896f236cf9516d432671386af07205c6667d559cbf63cb7386b0710"
+      "sha256": "6066005515f4616abd25d964bc6b9844db88a5c932eb20061fec19eb8a9d6605"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/README.md",
@@ -35,12 +35,12 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/registered-facts-v1.json",
-      "sha256": "dcaccc2aed9d2ddb73c50994f1750d884fdde53e1c9d80a9af621a4378900448"
+      "sha256": "72c054bd0225c5fbe103ce207e20efe1370e66311cba90a293bdd662a372c2e5"
     },
-    "registration_base_commit": "6a2a62624",
+    "registration_base_commit": "f33e8a0f2",
     "spec": {
       "path": "docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md",
-      "sha256": "d9be935a0826315a09def6050f0abdc6e3aebb7ef04479def89a850f97029dbb"
+      "sha256": "e269bface828e4e43d70be7d220c6e5d306d7e1db5e9412c0c4b1bfc4ce7633a"
     }
   },
   "authorization_basis": "Owner decisions 184, 186, 188 (and 172 for the instrument), 139, 28/86; the spec docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md with rulings O1-O6.",
@@ -101,12 +101,12 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "02414b820425b2546db8d8133deca847b72feb2f34125568c06b4ac17ae2ca5b",
-      "protocol": "0a00f9eed506ee159bd8fe6e0e78e5abcbc10172efbe54ec1fe6ba2c7aea7786"
+      "composed_config": "535bb34e6e1628cef7e6d3f4494fe9a3a1b106a74ecde0a560e49798878f5224",
+      "protocol": "b0451b8ea7ac4cbe2e82252585dbd6588dd80f12b5aa0c391331f8c68e8389a9"
     },
     "smoke": {
-      "composed_config": "7b49c707c06eefaf433a623120b5d1d111b97c287556d7e45772276b3297ed7f",
-      "protocol": "63b31e62a0845b6bb3f35290a8d5fdfccace491b652ee1bf4f5c467237e7b903"
+      "composed_config": "7ff13206535866e48788fce8abd82524393e650ada1aa26a7962eb81f405db97",
+      "protocol": "a4d2b1b237c7a0bf69558c7bbf383418919e37cf2036e621184aa08c2dc632db"
     }
   },
   "schema": "saea-campaign-decision-v1",

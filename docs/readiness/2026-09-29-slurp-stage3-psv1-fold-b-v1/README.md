@@ -1,6 +1,6 @@
 # Cell P-SV-1: phase-2 same-flight Perception branches on TRAIN Fold B (owner decisions 184, 186, 188)
 
-Registered before contact 2026-09-29 at study commit `6a2a62624` (branch `fable/psv`);
+Registered before contact 2026-09-29 at study commit `f33e8a0f2` (branch `fable/branchseeds`);
 both cells **held**. Nothing here authorises a flight, a flip or an admission entry. Development numbers only.
 
 **The question.** At the one Perception visit of every TRAIN Fold B row, does rendering the branch's rank-1/rank-2 candidate pair as a top-2 contrast block (top2-contrast-v1) move the level-2 branch Solver column's official intent accuracy beyond the in-flight twin's null, read against the delivering branch A (AGREE's Perception evidence as flown) in the same flight?
@@ -41,10 +41,7 @@ SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling '
 
 ## Fit (core.flight.cli check, held)
 
-| cell | phase | decision | rendered (4 B/token) | operational margin | physical margin |
-| --- | --- | --- | ---: | ---: | ---: |
-| arm | check | MISSING | | | |
-| smoke | check | MISSING | | | |
+PENDING: core.flight.cli check not yet folded in.
 
 The first Solver visit's realised prompt on the AGREE arm was 5003-14426 tokens;
 a branch Solver contact carries a branch note of the same shape in place of A's.
