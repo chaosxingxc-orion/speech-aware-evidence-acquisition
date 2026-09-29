@@ -27,9 +27,11 @@ def _estimate(knob_id, value, intent_pp, slu_pp, unobserved=False):
 
 def test_design_guard_and_floor_matches_floor_table():
     bounds = accept.design_guard_and_floor(DESIGN, ROWS, REPO_ROOT)
-    # design spec section 2d: 0.735 * sqrt(200/1080) = 0.3163 pp, no admission bar for this design
-    assert abs(bounds["guard_pp"] - 0.3163) < 0.001
-    assert abs(bounds["floor_pp"] - 0.3163) < 0.001
+    # owner decision 190 (2026-09-29): per-metric anchors at n = 1,080 -- the guard reads the
+    # SLU anchor (1.49 pp), the floor reads the intent anchor (0.65 pp); no admission bar for
+    # this design either way.
+    assert abs(bounds["guard_pp"] - 1.49) < 0.001
+    assert abs(bounds["floor_pp"] - 0.65) < 0.001
 
 
 def test_candidate_clears_floor_vs_does_not():
