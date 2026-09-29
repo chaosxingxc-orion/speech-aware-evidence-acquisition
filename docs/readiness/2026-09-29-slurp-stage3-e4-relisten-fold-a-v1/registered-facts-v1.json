@@ -360,7 +360,7 @@
       "baseline_fragment": "slurp-native-stage3-relisten-fold-a-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-relisten-fold-a-smoke-4-v1",
-      "composed_config_hash": "cc232698353ef3ff794ec72aef93c3c729f48702e0f4d1ab761b5a985d975995",
+      "composed_config_hash": "c6be9b29ad5947066a4d69455da0becf7b2a1859158e8688c6e5079a362da077",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_profile": "bounded-discovery-probe",
       "experiment": "slurp-native-stage3-relisten-fold-a-smoke-4-v1",
@@ -385,7 +385,7 @@
       "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
       "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
       "program": "phase-native-candidates-review-revise-relisten-v1",
-      "protocol_hash": "72e228b3c53eb77190e17e3400b7d8d5c2e20ac3348b128a0e6e7f9ecc663f72",
+      "protocol_hash": "e07d5bb93eb7025ca83fec88f29dcacf7e78834f9616f41891b3bd58ba428ae5",
       "relisten": {
         "blind_template_id": "slurp_relisten_blind_v1",
         "confirm_template_id": "slurp_relisten_confirm_v1",
