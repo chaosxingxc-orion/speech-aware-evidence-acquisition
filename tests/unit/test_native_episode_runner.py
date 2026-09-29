@@ -525,6 +525,12 @@ class _ActualEpisodeHarness:
             # group -- leaves this binding byte-identical to its pre-E42 self,
             # and the runner refuses a resolver it did not ask for.
             supply_variant_for_phase=getattr(self, "supply_variant_for_phase", None),
+            # Same-flight instrument, PHASE 2 (merge set C): every declared
+            # Perception branch's own pre-flight seed. None -- every harness
+            # written before phase 2 and every episode that declares no
+            # branch group -- leaves this binding byte-identical to its
+            # pre-phase-2 self.
+            perception_branch_seeds=getattr(self, "perception_branch_seeds", None),
         )
         source_kwargs = (
             {}

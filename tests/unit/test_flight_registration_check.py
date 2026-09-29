@@ -107,6 +107,10 @@ class World:
         # real baselines carry it (see configs/baseline/*var2-supply-variants*.json).
         self.measurement: dict | None = None
         self.supply_variants: dict | None = None
+        # Same-flight instrument, PHASE 2 (merge set C): written into the EXPERIMENT
+        # baseline's native_episode.roles.perception.branches, exactly where the real
+        # baselines will carry it once a phase-2 fragment is minted.
+        self.perception_branches: dict | None = None
 
     def write_roster_receipt(
         self, roster_id: str, disjointness_proof: dict | None = None, **extra: object
@@ -135,6 +139,11 @@ class World:
             if experiment == EXPERIMENT and self.supply_variants is not None:
                 baseline["native_episode"] = {
                     "roles": {"solver": {"supply_variants": self.supply_variants}}
+                }
+            if experiment == EXPERIMENT and self.perception_branches is not None:
+                native_episode = baseline.setdefault("native_episode", {})
+                native_episode.setdefault("roles", {})["perception"] = {
+                    "branches": self.perception_branches
                 }
             _write(self.repo / "configs" / "baseline" / f"{experiment}-baseline.json", baseline)
             fragment: dict = {
@@ -447,6 +456,194 @@ def test_offline_sealed_pool_with_no_supply_variants_at_all_is_not_checked(world
     kinds = _kinds(data)
     assert "arm-visits-not-first" not in kinds
     assert "variant-cost-mismatch" not in kinds
+    assert "variant-claim-not-nominated" not in kinds
+
+
+# --------------------------------------------------------------------------
+# Perception-branch instrument registration (same-flight instrument, PHASE 2, merge set C,
+# docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-variants-design.md
+# section 4)
+# --------------------------------------------------------------------------
+
+
+def _three_branches(
+    *, level: int = 1, twin_id: str | None = "T", b_prepared_seed: dict | None = "default",
+) -> dict:
+    b_branch = {
+        "branch_id": "B", "max_supplied_items": 8,
+        "overrides": {
+            "knowledge_stores.intent-boundaries.phase_supply.perception.k": 16
+        },
+    }
+    if b_prepared_seed == "default":
+        b_branch["prepared_seed"] = {
+            "relpath": "prepared/SAEA-SLURP-PERCEPTION-BRANCH-B-SEED-V1/seed.json",
+            "sha256": "b" * 64,
+        }
+    elif b_prepared_seed is not None:
+        b_branch["prepared_seed"] = b_prepared_seed
+    branches = [b_branch, {"branch_id": "A", "deliver": True, "max_supplied_items": 8}]
+    if twin_id is not None:
+        branches.insert(1, {"branch_id": twin_id, "replicate_of": "A", "max_supplied_items": 8})
+    return {"level": level, "fit_estimate": {}, "branches": branches}
+
+
+def test_branch_level_missing_is_refused_for_a_perception_variant_cell(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "aa_arm_id": "T",
+    }
+    block = _three_branches()
+    del block["level"]
+    world.perception_branches = block
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "branch-level-missing" in _kinds(data)
+
+
+def test_a_declared_level_passes_the_level_check(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "aa_arm_id": "T",
+    }
+    world.perception_branches = _three_branches(level=2)
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "branch-level-missing" not in _kinds(data)
+
+
+def test_aa_arm_missing_when_no_branch_names_replicate_of(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+    }
+    world.perception_branches = _three_branches(twin_id=None)
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "aa-arm-missing" in _kinds(data)
+
+
+def test_aa_arm_missing_when_aa_arm_id_disagrees_with_the_declared_twin(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "aa_arm_id": "not-the-twin",
+    }
+    world.perception_branches = _three_branches(twin_id="T")
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "aa-arm-missing" in _kinds(data)
+
+
+def test_perception_variant_claim_not_nominated_when_missing_or_wrong(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "aa_arm_id": "T",
+        "claim": "admitted",
+    }
+    world.perception_branches = _three_branches()
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "variant-claim-not-nominated" in _kinds(data)
+
+    del world.measurement["claim"]
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "variant-claim-not-nominated" in _kinds(data)
+
+
+def test_a_well_formed_perception_variant_cell_passes_and_records_fields(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "aa_arm_id": "T",
+        "tuning_roster": "docs/readiness/2026-09-28-svphase2/tuning-roster-receipt-v1.json",
+        "read_roster": "docs/readiness/2026-09-28-svphase2/read-roster-receipt-v1.json",
+        "variant_cost": {"extra_contacts_per_row": 2, "extra_audio_seconds": 6.4},
+    }
+    world.perception_branches = _three_branches(level=1)
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "branch-level-missing" not in kinds
+    assert "aa-arm-missing" not in kinds
+    assert "variant-claim-not-nominated" not in kinds
+    assert "branch-seed-unpinned" not in kinds
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["perception_branch"]["measurement_design"] == "same-flight-perception-variant"
+    assert cell["perception_branch"]["level"] == 1
+    assert cell["perception_branch"]["branches"] == 3
+    assert cell["perception_branch"]["aa_arm_id"] == "T"
+
+
+def test_branch_seed_unpinned_when_a_b_branch_declares_no_prepared_seed(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "aa_arm_id": "T",
+    }
+    world.perception_branches = _three_branches(b_prepared_seed=None)
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "branch-seed-unpinned" in _kinds(data)
+
+
+@pytest.mark.parametrize("bad_seed", [
+    {"relpath": "prepared/x.json"},
+    {"relpath": "prepared/x.json", "sha256": "not-hex"},
+    {"relpath": "prepared/x.json", "sha256": "b" * 63},
+    {"relpath": "", "sha256": "b" * 64},
+    {"relpath": "prepared/x.json", "sha256": "b" * 64, "extra": "field"},
+])
+def test_branch_seed_unpinned_when_the_prepared_seed_is_malformed(
+    world: World, bad_seed: dict,
+) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+        "claim": "nominated",
+        "aa_arm_id": "T",
+    }
+    world.perception_branches = _three_branches(b_prepared_seed=bad_seed)
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "branch-seed-unpinned" in _kinds(data)
+
+
+def test_branch_seed_unpinned_never_fires_for_a_or_t():
+    """A and T never need a prepared_seed of their own (design: A's seed is the cell's own
+    prepared_phase_supply, T takes A's seed) -- only a B branch's absence is checked."""
+
+    branches = _three_branches(b_prepared_seed=None)["branches"]
+    kinds = {row["branch_id"]: row for row in branches}
+    assert "prepared_seed" not in kinds["T"]
+    assert "prepared_seed" not in kinds["A"]
+
+
+def test_a_design_outside_the_instrument_skips_the_perception_branch_checks(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "cross-flight-with-in-chain-replicate",
+        "expected_effect_pp": 5.0,
+        "replicate_run_id": "SAEA-SLURP-STAGE3-SOME-REPLICATE-V1",
+    }
+    world.perception_branches = _three_branches(twin_id=None)
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "branch-level-missing" not in kinds
+    assert "aa-arm-missing" not in kinds
+    assert "variant-claim-not-nominated" not in kinds
+
+
+def test_perception_variant_with_no_branches_block_at_all_is_not_checked(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "same-flight-perception-variant",
+        "expected_effect_pp": 1.0,
+    }
+    world.perception_branches = None
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    assert "branch-level-missing" not in kinds
+    assert "aa-arm-missing" not in kinds
     assert "variant-claim-not-nominated" not in kinds
     cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
     assert cell.get("supply_variant") is None

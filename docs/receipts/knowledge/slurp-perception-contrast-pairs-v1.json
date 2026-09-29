@@ -1,0 +1,82 @@
+{
+  "artifact_id": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1",
+  "boundary": "No card text, cue word, sentence or utterance appears in this receipt: intent ids, counts, the skip reason and hashes only.",
+  "builder": {
+    "relpath": "scripts/build_slurp_intent_contrast_pairs.py",
+    "sha256": "3c71aad7486703173af7a45778d43adc01d1bc201dba23bcbda9731f99ee9cdd"
+  },
+  "contacts": {
+    "asr": 0,
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer_process_vocab_only": 0
+  },
+  "exposure_ledger_row": "SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-BUILD-V1",
+  "inputs": {
+    "base_snapshot": {
+      "content_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json"
+    },
+    "centroid_keys": {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+      "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532"
+    },
+    "construction_pool": {
+      "content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "utterances": 8554
+    },
+    "forbidden_rosters": {
+      "docs/receipts/rosters/slurp-evo-fold-a-v2.json": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "docs/receipts/rosters/slurp-evo-fold-b-v2.json": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "docs/receipts/rosters/slurp-stage3-construction-r01.json": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+    }
+  },
+  "method": {
+    "min_pair_pool_support": 5,
+    "pair_selection": "one pair per intent: its single nearest rival by centroid cosine, deduplicated by unordered pair",
+    "word_gap_method": {
+      "functions": [
+        "load_pool",
+        "intent_stats",
+        "cues",
+        "typed"
+      ],
+      "min_df_gap": 0.05,
+      "min_support_utterances_per_word": 3,
+      "reused_from": "scripts/build_slurp_intent_contrast_cards.py",
+      "type_gap": 0.3
+    }
+  },
+  "output": {
+    "content_sha256": "19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059",
+    "relpath": "prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json",
+    "sha256": "19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059"
+  },
+  "pairs_considered": 50,
+  "pairs_skipped": 2,
+  "pairs_written": 48,
+  "schema": "saea-slurp-perception-contrast-pairs-receipt-v1",
+  "skipped": [
+    {
+      "intents": [
+        "cooking_query",
+        "cooking_recipe"
+      ],
+      "reason": "insufficient-pool-support"
+    },
+    {
+      "intents": [
+        "iot_hue_lightoff",
+        "iot_hue_lighton"
+      ],
+      "reason": "insufficient-pool-support"
+    }
+  ]
+}
