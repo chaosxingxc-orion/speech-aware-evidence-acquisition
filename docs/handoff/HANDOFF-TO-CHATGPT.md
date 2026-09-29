@@ -1,7 +1,7 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T07:50:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent, Claude Opus 5.5) · HEAD at writing `aaa9b573` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T09:09:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records agent, Claude Opus 5.5) · HEAD at writing `f52af202` on `master` (plus this refresh commit), tree clean.
 **GPU: W4-SV flying.** W-SV-1 is **sealed** (DONE 06:33:03Z at `1c1e19ce`) and its column read **landed** (merge `3a6cb9cb`,
 coordinator verdict `aaa9b573`): b-exk30 (exemplar k 30) **NOT NOMINATED, inert** (SLU -0.46 [-1.85, +1.12], intent +0.37
 [-0.09, +0.93]; the exemplar-k line is closed at k 30 on this roster). **Instrument finding:** the same-flight twin null is
@@ -152,6 +152,7 @@ retrieved because the key side is text by design.
 | **COMP-1 seal-only completion** (option A of decision 189) | merge of `fable/comp1seal` (`ad0f0d8e`; worktree merge of master clean) | registered **HELD** pending owner decision 189. `resume_from` = the original attempt (471 kept rows) + attempt 3 (609 rows); replay proof 1,080 rows / 0 failing / 0 sealed twice; `cli seal-only` refuses held cells and scores after the seal. The `--include-held` blocking set is unchanged (9 cells) |
 | **Idle watchdog** (decision 182): one tick every 5 min; never launches onto a STOP (except a proven server-death STOP), respects hold files, ready-chain list `scripts/flights/batch/ready_chains.json` (`allowed_carriers: [slurp]`), server-death and 12 h uptime restart | merge `bdaa66b4`; `saea_task.ps1` repetition fix `8d36213f` (PS 5.1 refused `-RepetitionDuration MaxValue`) | Windows task `SAEA-Watchdog` registered and **PAUSED** by `/home/chao/saea-queue/watchdog.hold` (the coordinator removes it). First ticks 00:20:58Z / 00:21:59Z: "busy, exiting quietly" (stale flight lock + parked queue script); nothing launched |
 | **W-SV-1 column read** (same-flight supply variant, Solver train-exemplars k 30, TRAIN Fold A, n = 1,080; READ row `SAEA-SLURP-STAGE3-WSV1-FOLD-A-COLUMN-READ-V1`): twin null SLU-F1 +0.37 [-0.14, +0.92] (half-width 0.53), intent 0.00 (identical on all 1,080 rows); b-exk30 vs a-base SLU-F1 -0.46 [-1.85, +1.12], intent +0.37 [-0.09, +0.93] (6 saves / 2 harms) | `docs/results/2026-09-29-slurp-wsv1-fold-a-column-read.md` (merge of `fable/wsv1read` `3a6cb9cb`, with the `wsv1_read.sh` module-registration and `stage3_paired_read` column-arm fixes; verdict `aaa9b573`) | **NOT NOMINATED (inert)** (coordinator); instrument: intent null 0.00, SLU null hw 0.53. The exemplar-k line is closed at k 30 on this roster; nothing is admitted or closed for the composed policy (claim ceiling nominated, phase-1 ruling Q6). Development number (decision 28) |
+| **Sealed-credit inner loop run 1** | `docs/results/2026-09-29-slurp-sealed-credit-inner-loop-run-1.md` (merge `f52af202`) | Sealed-credit inner loop run 1 landed (model-free, DESCRIPTIVE): mechanical rule nominates `phase_supply.k = 10` (+0.48 pp intent predicted, CI95 crosses zero, folds -0.33 / +1.24); registration held pending the coordinator's floor re-calibration ruling (owner decision 190 proposed: same-flight floor from the W-SV-1 measured contrast half-widths, intent 0.51 / SLU 1.48, not the twin null 0.3163). |
 
 ### What the wave taught
 
