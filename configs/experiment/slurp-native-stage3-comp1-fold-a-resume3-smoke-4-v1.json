@@ -15,6 +15,13 @@
         "reason": "COMP-1 RESUME ATTEMPT 3 DRY RUN (owner decision 181: fix, prove on a 4-row dry run, then resume). Resume attempt 2 attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2 aborted at 2026-09-29T00:20:43Z before sealing a row (48 calls, 119.3 s audio) on a FIT-identity collision (core/preparation_fit.py: 'native contact fit identity already has contact or result evidence') caused by a coordinator-side registration error: it reused resume attempt 1's FIT attempt id attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume, whose per-contact evidence already sat under prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1/. Resume attempt 3 uses fresh generation and FIT attempt ids. This four-row smoke is the parent COMP-1 smoke's bytes under fresh run, attempt and FIT ids; it proves the FORM of the fixed registration (a fresh FIT identity root, every request fits, every episode completes) through the same worker and native FIT gate before the resume opens. Form only; never scored or read. Registered before contact 2026-09-29 by root flight operations (Claude Opus 5.5) on the coordinator's brief; HELD until root mints coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json (decision id slurp-stage3-comp1-fold-a-resume-admission-v1) and flips this cell with scripts/flights/repin_cell.py (it inherits the parent smoke's prepared supply pin and must reproduce its output; --allow-output-change is never passed).",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1-fold-a-resume-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json",
+            "sha256": "af9401aec9129edc304d466efc328f9953ad555fd7ee97c7d0d8f25caab7d5d3",
+            "reason": "Decision slurp-stage3-comp1-fold-a-resume-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, exactly the artifact cell AGREE registered: built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded rows, 0 rows with no vote, all 60 boundary facets reachable. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -23,11 +30,11 @@
           {
             "kind": "preparation",
             "reason": "INHERITED from SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1: that cell's own model-free first-phase Perception supply (built by core.flight.cli prepare-supply with zero model, tokenizer, encoder, scorer or server contacts). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, cell and attempt identities included, so scripts/flights/repin_cell.py rebuilds it model-free into prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1/phase-supply-v<N>.json, ASSERTS the new output equals this artifact's output (1d55ea73ae0ef4ef2d175e66303eaa5b500c7fc2a3ac356f3808686deba051e0) and re-pins it in the same cycle. --allow-output-change must NEVER be passed: an output that moved means the knowledge channel moved and the recovery is no longer the arm.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1/phase-supply-v3.json",
-            "sha256": "af1acd831ee9638d4227f86e9ec50f5dfa52c4022503333faeb4b585c7c34906"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "df7c9332df630a3fb63b8ddfc5b1f5de6195b0905bad2c1797a15e6b81f3ac87"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1"
     }

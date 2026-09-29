@@ -63,8 +63,8 @@
       "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3-smoke",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-FIT-V1",
       "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3-smoke",
-      "composed_config_hash": "85ba7e6686149ea4257cc7b3866f54c2175a5e448c1027bf6f1a4978c32fffd6",
-      "protocol_hash": "36fbc1e3c9984eceec5a1629bcf5dd515bbd4b6667822288ea3cd341f768faf5",
+      "composed_config_hash": "5e5d260eec186c804cda4df75574a90ad4943a1c508eae8657b1e33fb8ec195b",
+      "protocol_hash": "e19c8143bd4a8a84ce1280ae81c19a371884f10c8fcbbcc16135d3dbc339e443",
       "rows": 4,
       "role": "the four-row dry run of resume attempt 3 (owner decision 181), flown as the smoke of the resume step; form only"
     }
