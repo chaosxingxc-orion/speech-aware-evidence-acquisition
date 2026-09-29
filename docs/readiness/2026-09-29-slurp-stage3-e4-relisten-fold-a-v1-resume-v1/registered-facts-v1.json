@@ -109,7 +109,7 @@
       "model_contacts": 0,
       "note": "Model-free and read-only over the REAL attempt trace: every complete row rendered through the real FlightRuntime._canonical_output_rows seal stage (the fixed finite-source rule) and re-checked against I7 / I7n / I7g / I7l one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
     },
-    "composed_config_hash": "5ccd8b650dc7ef530f7d19dfde9c891c5c8cf9b2ff540f978e59a7f74413e121",
-    "protocol_hash": "6d8a8e1c5463c39421e6bf75cf75945ec09b4b514466e9cc9f4b4c129d6a863c"
+    "composed_config_hash": "1e96fa6271ad9eed130ba5593989a751482c6b29f609944cbf46c0ef5e87cf89",
+    "protocol_hash": "390949be103b3b9af74ee2eebaf7f8a5e278671aa5bf5d37471d3190d59256be"
   }
 }

@@ -15,6 +15,13 @@
         "reason": "Cell E4-1 SEAL-ONLY COMPLETION (owner decision 194, PENDING; the COMP-1 seal-only shape of owner decision 189), HELD. The arm attempt attempt-slurp-native-stage3-relisten-fold-a-generation-v1 of run SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1 (flight commit e9777e18) flew all 1,080 rows (6,304 contacts, 18,730.5 s repeated speech; run_phases complete 09:47:07Z-11:40:06Z) and ABORTED AT THE SEAL with FlightRuntimeError: finite source is not the last actual sample contact (FlightRuntime.seal -> _merged_canonical_rows -> _canonical_output_rows); no run manifest, nothing read. Root cause (fable/e4sealfix, b286d8974, merged): on 8 of the 10 finite-completion rows (deliver-latest-or-abstain, item E13) the post-accept relisten stage (owner decision 185) spent its blind / forced-choice contacts after the interrupted source contact, and the seal compared the source with the sample's last recorded contact instead of the last contact that can move delivery; the fix admits exactly the row's own saea-relisten-v1 receipt contacts after the source, and the resume replay re-derives the relisten receipt from the trace. Every row is COMPLETE in the aborted attempt's trace (sha256 966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6), so this attempt (attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only, FIT identity attempt-slurp-native-stage3-relisten-fold-a-fit-v1-seal-only) declares resume_from that attempt and its trace; the union covers the 1,080-row roster, so core.flight.runtime sets is_seal_only: zero new model contacts, no server, no slot, no lease; core.flight.cli seal-only seals the manifest (I7r binds every kept row to the predecessor trace) and runs the one official finalize job. THIS IS E4-1's ONE root-diagnosed recovery re-registration; a second failure closes the cell. Registered before contact by the E4-1 seal-only registration agent (Claude Opus 5.5) on 2026-09-29; HELD pending owner decision 194. The coordinator, once the owner admits the seal-only completion, countersigns the DRAFT seal-only clauses on the arm's generation and FIT rows and the DRAFT row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SEALONLY-REPLAY-PROOF-V1, mints coordination/slurp-stage3-relisten-fold-a-v1/root-admission-sealonly-v1.json (decision id slurp-stage3-relisten-fold-a-sealonly-admission-v1) with scripts/flights/e4/e4_sealonly_mint_receipt.py and flips with scripts/flights/e4/e4_sealonly_flip.sh. Nothing here authorises a seal, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-relisten-fold-a-sealonly-admission-v1",
+            "relpath": "coordination/slurp-stage3-relisten-fold-a-v1/root-admission-sealonly-v1.json",
+            "sha256": "43d83158c93c1448f4bbb9e7ffcc1696c69b469153029a28539ddad50f0d2d95",
+            "reason": "Decision slurp-stage3-relisten-fold-a-sealonly-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
@@ -22,12 +29,12 @@
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/phase-supply-v1.json",
-            "sha256": "1cb8ec779988ca1070e053f1c6422ced8d58ecebc4bec0f702be7047cc8336fc",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/phase-supply-v2.json",
+            "sha256": "7e5cc08a324ce9082dbc33ab3df0d17594c115ddff37a478f46b2d58ea364db4",
             "reason": "INHERITED from the E4-1 arm SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1 (its own model-free first-phase Perception supply, minted at the E4-1 flip with zero model, tokenizer, encoder, scorer or server contacts; output digest eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae, the AGREE arm's). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, the cell and attempt identities and runtime.py's whole-file hash (changed by the seal fix), so scripts/flights/repin_cell.py rebuilds it model-free into the next phase-supply-v<N>.json under the same run id, ASSERTS the output unchanged and re-pins it in the same cycle. --allow-output-change must NEVER be passed. The seal-only path never reads the supply (no contact is made); the pin is kept so the cell's identity stays the arm's."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "resume_from": {
         "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",

@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-relisten-fold-a-v1-resume",
-  "composed_config_hash": "5ccd8b650dc7ef530f7d19dfde9c891c5c8cf9b2ff540f978e59a7f74413e121",
+  "composed_config_hash": "1e96fa6271ad9eed130ba5593989a751482c6b29f609944cbf46c0ef5e87cf89",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-fit-v1-seal-only",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 18.5,
     "planned_model_calls": 73440,
     "planned_speech_audio_seconds": 52437,
-    "protocol_hash": "6d8a8e1c5463c39421e6bf75cf75945ec09b4b514466e9cc9f4b4c129d6a863c",
+    "protocol_hash": "390949be103b3b9af74ee2eebaf7f8a5e278671aa5bf5d37471d3190d59256be",
     "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -34,13 +34,13 @@
   "preparation_base_commit": "109538e87",
   "prepared_phase_supply": {
     "note": "INHERITED pin; the flip rebuilds it under the same run id and asserts the output unchanged (never --allow-output-change). The seal-only path never reads it.",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/phase-supply-v1.json",
-    "sha256": "1cb8ec779988ca1070e053f1c6422ced8d58ecebc4bec0f702be7047cc8336fc",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/phase-supply-v2.json",
+    "sha256": "7e5cc08a324ce9082dbc33ab3df0d17594c115ddff37a478f46b2d58ea364db4",
     "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-resume-v1/protocol-registered-v1.json",
-    "sha256": "d63ba42e6fd1713373d5c407f0664d45455dd3ee9b4c236e48aee8eb52dfb37a"
+    "sha256": "51809b51f64bb8bba5a47aa7691cacae7edcc59e0e444c84494630e6b7ee0076"
   },
   "purpose": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1: request envelopes only; reads nothing.",
   "quality_read_gate": "No shadow-column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1 is root countersigned; each column is then scored once, never sharded.",
