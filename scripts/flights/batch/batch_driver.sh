@@ -13,6 +13,7 @@
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+source "$SP/resume_gate_lib.sh"
 # Reuse an existing clean frozen checkout while retaining an older failed source.
 # 2026-09-26: the override is NAMED in the log and validated below. A stale override left by a
 # previous flight (one pointed at a worktree whose admin dir had been pruned) made this driver stop
@@ -72,6 +73,7 @@ field() { $PY -c "import json,sys;d=json.load(open('$QUEUE'))[$1];v=d.get('$2');
 # report-only. Before 2026-09-27 two defects slipped through without it: ROLL-3 flew on draft rows,
 # and AGREE / KPROBE / ROLL-3 had their READ rows registered only after the seal.
 REGCHECK=$MAIN/scripts/checks/flight_registration_check.py
+RESUMEGATE=$SP/resume_prelaunch_gate.sh
 registration_gate() {  # $1 order; reads the step's exp / cell / sexp / scell / plan
   [ -f "$REGCHECK" ] || stop "flight registration gate missing: $REGCHECK"
   local args=(--repo-root "$REPO" --data-root "$DATA" --cell "$exp:$cell")
@@ -90,6 +92,11 @@ prelaunch() {
   local ok; ok=$(cd "$MAIN" && bash scripts/serving_session.sh status --session-id $SESSION 2>/dev/null | $PY -c "import json,sys;d=json.load(sys.stdin);m=d.get('last_monitor_sample') or {};print(m.get('server_ok'), (m.get('slots') or {}).get('busy'), (d.get('session') or {}).get('session_id'))" 2>/dev/null)
   case "$ok" in "True 0 $SESSION") ;; *) stop "serving session not idle/healthy before step $1: $ok";; esac
   registration_gate "$1"
+  # Coordinator, after the COMP-1 resume attempt 3 seal abort: a 4-row smoke cannot see seal-time
+  # checks on kept rows, so EVERY resume launch first passes the OFFLINE full-trace replay check.
+  # A no-op (RESUMEGATE never invoked) for a step whose experiment config declares no resume_from
+  # on cell $cell -- resume_gate_run (scripts/flights/batch/resume_gate_lib.sh) does the scoping.
+  resume_gate_run "$1" "$REPO" "$DATA" "$exp" "$cell" "$RESUMEGATE" "/home/chao/batch-resumegate-$1.out"
   # Do not allocate a second CUDA context for a synthetic warmup beside the model.
   # The shared transport and tokenizer check the opted-in resident resource receipt.
   log "prelaunch-ok" "{\"step\":$1,\"warmup\":\"registered-model-work-only\"}"

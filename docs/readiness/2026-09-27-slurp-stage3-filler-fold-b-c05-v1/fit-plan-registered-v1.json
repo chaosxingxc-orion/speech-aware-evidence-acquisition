@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-filler-fold-b-c05-v1",
-  "composed_config_hash": "2baed6b4151bfef99dac00a71b4f22b1b2dc35127003acb7e68a63422d9a4ced",
+  "composed_config_hash": "c3205cadfacd6635570ed0283a4db6672213a4930677fe9dc2cdf54c0579d891",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-filler-fold-b-c05-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 2.0,
     "planned_model_calls": 13680,
     "planned_speech_audio_seconds": 10468,
-    "protocol_hash": "3ca0e214c41d353da9f3560038e00e0d43a043a833dd50fcd181527fe33faa73",
+    "protocol_hash": "cd92b10cac9db44962a9be24bde42440a9af7b671d343fa04e46e38c37f4cfd9",
     "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C05-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "c4630f930d747d0ae1eec3d2302f8a807c2340538798e29ee21f67707666efa2",
@@ -34,7 +34,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c05-v1/protocol-registered-v1.json",
-    "sha256": "6df49e9fe59cd08a2597525e3b845460527d4d1122d6bfc5f679e776ffb6972f"
+    "sha256": "8691661c0e80c21f5b390256879dd2fff3b103310cda7bb557dabf64b89796d7"
   },
   "purpose": "Filler chunk c05 (owner decision 162): seal a 180-row x 5-sample rollout pool of the current best SLURP system on TRAIN Fold B rows, flown ONLY when the GPU would otherwise idle (the idle-filler queue: no flight running, no main-line chain ready, the np4 session resident and healthy). The pool is the rollout substrate of the training-free RL inner loop (sealed-credit-system-policy-v1), read OFFLINE at zero further GPU cost. DESCRIPTIVE by construction: no comparator, no gate, no admission claim, no superiority, transfer, generalisation or confirmatory statement. Development numbers only (owner decisions 28 and 86); never a test claim.",
   "quality_read_gate": "No read before the complete sealed manifest with exactly five custodied solver_group samples per row exists; a partial manifest is never read; a failed smoke stops the arm.",

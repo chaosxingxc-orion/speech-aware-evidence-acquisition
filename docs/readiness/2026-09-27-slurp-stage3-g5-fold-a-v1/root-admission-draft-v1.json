@@ -33,7 +33,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "601192aab5043471bbf292da1297e595ae508181116c46166cd4ff66c7f9a9ce"
+      "sha256": "29261dc5b4ef9c01af0d12b0907de37422153d8c37aae2ddeb291b73c874ee48"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/README.md",
@@ -126,13 +126,13 @@
       "protocol": "cbf039dc491d5238d55a271735abd4a6d8a7179e383e5f8ed327132d001c8c05"
     },
     "arm": {
-      "composed_config": "747e0f23ee0b1b3a7824f2da2a8d87e956afea28b60436ae69089b4ee64125a0",
-      "protocol": "27ae01b968b634fe768b95960de0db447fc1f68376c5467bd0a1aa34a5ce4dc2"
+      "composed_config": "56a5ccacb94acc87ed60d4cb7e970d54b4bc7bb5a9d163eff80d453195c5f12b",
+      "protocol": "7a7d3da45288ff4d8104e3bac71091675362ae29cca804ba5b53a1b364df8503"
     },
     "note": "the values of the fragments exactly as committed at 81307ac3 (readiness held, no decision requirement); repin_cell.py recomputes them at the flip.",
     "smoke": {
-      "composed_config": "a962d1056448cb592ce9b7f2538bbf14a22e59cc81018b7348268b1317db368a",
-      "protocol": "0abdf5b0749b16c991807d5a04b394b51738dfdbd5873723e947377888206f59"
+      "composed_config": "37687e5d248037b261f6307e0fbfb7a02d0e01dff16bfd97dd5ee9e996567253",
+      "protocol": "c36a0c668a4ce3dd688fad39b5c841e899b693b8605e804ac6ca26899fe8191d"
     }
   },
   "schema": "saea-campaign-decision-v1",

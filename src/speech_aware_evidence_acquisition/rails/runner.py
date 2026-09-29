@@ -2420,11 +2420,32 @@ async def _invoke_native_role_episode(
             response_sha256s=state.response_sha256s, contact_index=len(state.contacts),
         )
 
-    def base_messages(ctx, *, index_role_kind=None, index_sink=None):
+    def base_messages(ctx, *, index_role_kind=None, index_sink=None, snapshot_override=None):
+        """Render one contact's two messages.
+
+        Coordinator amendment, 2026-09-28 (the release-swap arm route):
+        ``snapshot_override`` is ``None`` for every call site written before
+        this fix -- the delivering arm, its twin and every ordinary contact --
+        which renders from the row's own composite ``snapshot`` exactly as
+        before, byte-identically. A release-swap arm's own visible facets and
+        values are looked up in ITS OWN alternate composite snapshot instead
+        (``rails.supply_variants.SupplyVariantReleaseSwap``,
+        ``core.flight.runtime.FlightRuntime._supply_variant_binding``): the
+        one store it repoints renders the alternate's content, and every other
+        store renders identical bytes to the base snapshot (the runtime
+        already refuses an alternate that moves any other store's pins), so
+        using the alternate's own composite snapshot for the WHOLE arm
+        rendering is exactly equivalent to swapping just the one store.
+        """
+
+        active_snapshot, active_snapshot_sha256 = (
+            (snapshot, snapshot_sha256) if snapshot_override is None
+            else (snapshot_override, snapshot_override.content_hash())
+        )
         return _agent_messages(
             adapter=adapter, sample=state.prepared.sample,
-            task_contract=state.prepared.task_contract, snapshot=snapshot,
-            snapshot_sha256=snapshot_sha256, query_state=ctx.query_state,
+            task_contract=state.prepared.task_contract, snapshot=active_snapshot,
+            snapshot_sha256=active_snapshot_sha256, query_state=ctx.query_state,
             agent_states=ctx.agent_states, knowledge_value_renderer=knowledge_value_renderer,
             # E21: None for every episode that does not arm
             # ``native_episode.knowledge_index``, which makes every line of
@@ -2490,12 +2511,41 @@ async def _invoke_native_role_episode(
                 )
             except SupplyVariantError as error:
                 raise RailsRunnerError(str(error)) from error
-            messages = base_messages(replace(
-                ctx,
-                query_state=replace(
-                    ctx.query_state, retrieved_value_ids=supplied,
+            snapshot_override = None
+            if arm.release_swap is not None:
+                # Coordinator amendment, 2026-09-28 (the release-swap arm
+                # route): this arm renders from its OWN alternate composite
+                # snapshot -- the one the flight built over the base's
+                # declared ``knowledge_stores.<store>.alternates`` entry for
+                # this arm (``core.flight.runtime.FlightRuntime.
+                # _supply_variant_binding``) -- not the flight's own
+                # ``snapshot``. Bound as an attribute of the flight-owned
+                # ``supply_variant_for_phase`` resolver, exactly as other
+                # optional flight-owned extras are (e.g.
+                # ``supply_for_phase.prefetch_recall``), so a resolver built
+                # before this route existed -- or a test double that declares
+                # no release-swap arm -- carries none and every arm renders
+                # exactly as before.
+                release_swap_snapshots = getattr(
+                    binding.supply_variant_for_phase, "release_swap_snapshots", {},
+                )
+                snapshot_override = release_swap_snapshots.get(arm_id)
+                if snapshot_override is None:
+                    raise RailsRunnerError(
+                        "a release-swap supply-variant arm has no resolved "
+                        "alternate snapshot bound; the flight-owned resolver "
+                        "must carry one alternate composite snapshot per "
+                        "release-swap arm id"
+                    )
+            messages = base_messages(
+                replace(
+                    ctx,
+                    query_state=replace(
+                        ctx.query_state, retrieved_value_ids=supplied,
+                    ),
                 ),
-            ))
+                snapshot_override=snapshot_override,
+            )
         try:
             record = supply_variant_arm_record(
                 arm=arm, arm_index=arm_index, contact_id=plan.contact_id,

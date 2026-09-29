@@ -1,0 +1,52 @@
+{
+  "arms": {
+    "a-agree": "delivering, last, no overrides: the AGREE Solver supply",
+    "b-w4": "release_swap slot-contracts -> slot-contracts-w4-v1 (the W4 conventions)",
+    "t-twin": "replicate_of a-agree (the in-flight null)"
+  },
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-generation-v1",
+      "cell": "slurp-native-stage3-w4sv-fold-a-v1",
+      "composed_config_hash": "e526ece2fb5989d549ccb73d8d6b2184060459e6d0d57deb856cad5161963b2a",
+      "experiment": "slurp-native-stage3-w4sv-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-FIT-V1",
+      "protocol_hash": "da41b2179f03280b67e052429fcb7e271275059ca7d14f5c1de66e6c3b0c93c5",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
+      "composed_config_hash": "940f54274345442b7d4c7f4b3b9ac3a9721106e4c9183240a67a6ee5906b200e",
+      "experiment": "slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-FIT-V1",
+      "protocol_hash": "8b017901ecb15d4e4ea22c2746d41b8be335cc267ef7db0ccbf689a56d2c21a3",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "decision_rule_fixed_here": "Columns: the first-visit Solver answers of arm b-w4 (B), the twin t-twin (T) and the delivering arm a-agree (A), each rendered through the delivered row's deliver normaliser and projection (AT1 self-check) and scored ONCE as a complete column with slurp-slu-official-train (stage3_rollout_score.py --mode supply-variants), paired by row (sample_id), 10,000 draws, seed 20260928. THE NULL: T minus A on official pooled SLU-F1 and intent accuracy; its bar is |T - A delta| + the T - A CI95 half-width (the same law as the cross-flight in-chain A/A), never below the provisional floor 0.3163 pp SLU-F1 (the ROLL-AA anchor 0.735 pp at n = 200 scaled to n = 1,080, scripts/checks/stage3_effect_floor_check.py). INSTRUMENT FAULT (no verdict): the T - A CI95 excludes zero on either metric. NOMINATED (the claim ceiling; Q6 ruling): the B - A official pooled SLU-F1 delta exceeds the bar AND its CI95 lower bound is above zero AND the B - A intent CI95 upper bound is not below zero (the guard: no measured intent loss). HARMFUL: the B - A CI95 upper bound below zero on either metric. Otherwise NOT NOMINATED (width). A nomination only sends the composed policy to a full-system read against an in-chain A/A; it is never an admission and never a system-level claim. Every verdict carries the per-scenario table in both weightings and the per-type exact TP/FP/FN of the 19 revised types, B vs A and T vs A.",
+  "development_numbers_only": "Every number is a TRAIN Fold A development number (owner decisions 28 and 86), never a test claim.",
+  "estimand": "ESTIMAND CAVEAT. The expectation is transferred from cell W4's CROSS-FLIGHT full-system read (docs/results/2026-09-28-slurp-w4-fold-a-read.md: official pooled SLU-F1 +0.79 pp CI95 [-0.56, +2.12] against the shared wave A/A). In that flight the W4 cards reached EVERY node whose request carries the slot-contract supply: the realised prompt tokens rose +1,207.8 per Solver, +1,207.4 per Reviewer and +1,201.9 per Planner contact (the registration had projected +724.5 per Solver contact). Here only arm b-w4's FIRST Solver request carries them: the Reviewer, the Planner and the Solver revisit see the AGREE v2 cards and never see an arm's output. B minus A is therefore the Solver-local first-visit effect of the W4 cards, a DIFFERENT estimand from the +0.79 pp system effect (which also includes the Reviewer and Planner reading the conventions and any revision they drive); 0.79 pp is declared only as the size to look for, not as the value this read should reproduce.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "prohibitions": [
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE or W4 arms.",
+    "No second factor: no other template, knob, store, roster, geometry or session change.",
+    "No paper-scale profile.",
+    "No claim above 'nominated'.",
+    "No flight while arm b-w4 is inert (w4sv_flip.sh refuses) and none before root mints the decision receipt and the cells are flipped."
+  ],
+  "protocol_id": "slurp-stage3-w4sv-fold-a-protocol-v1",
+  "registered_at_utc": "2026-09-28T13:30:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w4sv2, branch fable/w4sv2",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "190e178db",
+  "the_question": "At the FIRST Solver visit of the AGREE episode on TRAIN Fold A 1,080, does the Solver's official pooled SLU-F1 move when its slot-contract cards come from the W4 conventions release (arm b-w4) instead of the AGREE v2 cards (arm a-agree), beyond the in-flight twin's null?"
+}

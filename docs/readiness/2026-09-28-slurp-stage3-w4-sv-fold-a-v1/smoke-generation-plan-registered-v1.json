@@ -1,0 +1,80 @@
+{
+  "cell": "slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
+  "composed_config_hash": "940f54274345442b7d4c7f4b3b9ac3a9721106e4c9183240a67a6ee5906b200e",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 138,
+    "protocol_hash": "8b017901ecb15d4e4ea22c2746d41b8be335cc267ef7db0ccbf689a56d2c21a3",
+    "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-w4sv-fold-a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 208,
+    "generation_calls_cap": 52,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 138
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "190e178db",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9",
+    "note": "neither the alternate nor the arm group is an input to the first-phase (Perception boundary) supply, so the supply the flip mints must carry the AGREE digests; the proof minted the arm's: eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "3017903fc74d84ad95b586613afe44e8b2d9d9bafc41085d8baa4e2db12de0f6"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1: structural form proof only: no score and no read.",
+  "quality_read_gate": "No column read before the complete sealed manifest, the ordered outputs, the phase summary, the single complete official TRAIN score of the delivered rows and the three rendered-and-scored first-visit columns exist; the READ row must be countersigned first.",
+  "registered_at_utc": "2026-09-28T13:30:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-w4sv2, branch fable/w4sv2",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "supply_variants": {
+    "arm_visits": "first",
+    "arms": [
+      {
+        "arm_id": "b-w4",
+        "max_supplied_items": 56,
+        "release_swap": {
+          "release": "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json",
+          "store_id": "slot-contracts"
+        }
+      },
+      {
+        "arm_id": "t-twin",
+        "max_supplied_items": 56,
+        "replicate_of": "a-agree"
+      },
+      {
+        "arm_id": "a-agree",
+        "deliver": true,
+        "max_supplied_items": 56
+      }
+    ],
+    "fit_estimate": {
+      "base_prompt_tokens": 1,
+      "completion_ceiling": 512,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 325
+    }
+  },
+  "unused_budget_is_not_attempt_authority": true
+}

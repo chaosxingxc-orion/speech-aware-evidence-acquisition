@@ -1,0 +1,93 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3-smoke",
+      "baseline_fragment": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "COMP-1 RESUME ATTEMPT 3 DRY RUN (owner decision 181: fix, prove on a 4-row dry run, then resume). Resume attempt 2 attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2 aborted at 2026-09-29T00:20:43Z before sealing a row (48 calls, 119.3 s audio) on a FIT-identity collision (core/preparation_fit.py: 'native contact fit identity already has contact or result evidence') caused by a coordinator-side registration error: it reused resume attempt 1's FIT attempt id attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume, whose per-contact evidence already sat under prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1/. Resume attempt 3 uses fresh generation and FIT attempt ids. This four-row smoke is the parent COMP-1 smoke's bytes under fresh run, attempt and FIT ids; it proves the FORM of the fixed registration (a fresh FIT identity root, every request fits, every episode completes) through the same worker and native FIT gate before the resume opens. Form only; never scored or read. Registered before contact 2026-09-29 by root flight operations (Claude Opus 5.5) on the coordinator's brief; HELD until root mints coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json (decision id slurp-stage3-comp1-fold-a-resume-admission-v1) and flips this cell with scripts/flights/repin_cell.py (it inherits the parent smoke's prepared supply pin and must reproduce its output; --allow-output-change is never passed).",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1-fold-a-resume-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1-fold-a-v1/root-admission-resume-v3.json",
+            "sha256": "af9401aec9129edc304d466efc328f9953ad555fd7ee97c7d0d8f25caab7d5d3",
+            "reason": "Decision slurp-stage3-comp1-fold-a-resume-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, exactly the artifact cell AGREE registered: built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded rows, 0 rows with no vote, all 60 boundary facets reachable. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+            "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          },
+          {
+            "kind": "preparation",
+            "reason": "INHERITED from SAEA-SLURP-STAGE3-COMP1-FOLD-A-SMOKE-4-V1: that cell's own model-free first-phase Perception supply (built by core.flight.cli prepare-supply with zero model, tokenizer, encoder, scorer or server contacts). EXPECT THIS PIN TO BE REBUILT rather than to verify as it stands: core.preparation.artifact_inputs binds the composed configuration, cell and attempt identities included, so scripts/flights/repin_cell.py rebuilds it model-free into prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1/phase-supply-v<N>.json, ASSERTS the new output equals this artifact's output (1d55ea73ae0ef4ef2d175e66303eaa5b500c7fc2a3ac356f3808686deba051e0) and re-pins it in the same cycle. --allow-output-change must NEVER be passed: an output that moved means the knowledge channel moved and the recovery is no longer the arm.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "df7c9332df630a3fb63b8ddfc5b1f5de6195b0905bad2c1797a15e6b81f3ac87"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-09-29",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed dry run stops the chain before resume attempt 3 opens (the batch driver flies it as the resume step's smoke and stops on a failed structural check); the resume is then not flown and root reports.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 24,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 117
+  },
+  "fragment_kind": "saea-slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "decision_population": "The same unchanged TRAIN Fold A roster the sealed anchor, cell B1 and cell B1r flew; every row is preserved so the paired contrast against the sealed B1 arm covers the whole roster.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "COMP-1 RESUME ATTEMPT 3 DRY RUN (owner decision 181: fix, prove on a 4-row dry run, then resume). Resume attempt 2 attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-2 aborted at 2026-09-29T00:20:43Z before sealing a row (48 calls, 119.3 s audio) on a FIT-identity collision (core/preparation_fit.py: 'native contact fit identity already has contact or result evidence') caused by a coordinator-side registration error: it reused resume attempt 1's FIT attempt id attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume, whose per-contact evidence already sat under prepared/SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1/. Resume attempt 3 uses fresh generation and FIT attempt ids. This four-row smoke is the parent COMP-1 smoke's bytes under fresh run, attempt and FIT ids; it proves the FORM of the fixed registration (a fresh FIT identity root, every request fits, every episode completes) through the same worker and native FIT gate before the resume opens. Form only; never scored or read. THE PARENT'S PURPOSE, UNCHANGED: Four-row structural form smoke of cell COMP-1: that the agreement table and the centroid key file load and hash-verify, that the boundary channel still delivers eight entries, that the Solver answers under the cited-answer contract and the unwrapping normaliser delivers the answer's own bytes, that every request fits and that the episode completes. It is scored by no one and read by no one: four rows can never be evidence of benefit. COMP-1 composes FOUR registered changes on the locked v2.0 plan and nothing else. (1) The agreement term exactly as cell AGREE carries it: the intent-boundary Perception channel ranks with w_agree 1.0 over the pre-computed, self-excluded exemplar-intent vote, w_cos 1.0, w_prior 0.0, recall k 60 (at 8 the term is inert, measured), delivered width unchanged at 8 (fuse_coverage m 8 / c 1 / top_l 8). (2) The centroid boundary key exactly as cell KPROBE pins it: that channel's facet_source is the unit-normalised mean construction-TRAIN utterance vector per released intent (zero encoder contacts; the one intent with no pool member keeps its written key) instead of the written one-line description; the delivered body is unchanged. (3) The citation contract as a row-127 no-harm base item (owner decision 152): the Solver answers under saea-solver-cited-answer-v1 -- the task answer's own bytes plus the supplied evidence ids it relied on for the intent and for each entity -- under the cited Solver instruction, with the registered unwrapping normaliser saea-deliver-cited-answer-normalise-v3-v1 (the unwrap, then the locked plan's own v3 projection) so the delivered text is the answer's own bytes (invariant I7n); its per-entry credit table is the reward signal every later construction round reads. (4) Nothing else: the roster, the geometry, the session, the phase program's 11-contact ceiling, the three stores' snapshots and releases, the exemplar k of 20, the role graph, the Perception / Reviewer / Planner templates and the scorers are the locked plan's, byte for byte. Factors 1 and 2 act on the SAME retrieval channel and are composed as one ranker: w_cos x cosine-to-the-centroid-key + w_agree x the exemplar vote, eight delivered.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-A-V2",
+  "stage3_algorithm": {
+    "id": "sealed-credit-system-policy-v1",
+    "note": "The four-row structural form smoke of the composed COMP-1 arm: the same three composed actions on the first four rows of the unchanged roster, labelled as the arm is because it flies the arm's form; scored by no one and read by no one, it exercises context_application only in the sense that the composed actions reach four rows' contexts.",
+    "operators_used": [
+      "context_application"
+    ]
+  }
+}

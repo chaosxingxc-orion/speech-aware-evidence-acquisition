@@ -46,15 +46,27 @@
       "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
       "experiment": "slurp-native-stage3-comp1-fold-a-v1-resume",
       "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
-      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3",
       "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
-      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume",
-      "composed_config_hash": "80344ed385fda4dc20adbed64893701f9c014983ef3c7900dcddb310ab7ddb20",
-      "protocol_hash": "b885fb12801695b5fb84b6701f9a89cac42e025958d477a0fdfdc55dc21824d6",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3",
+      "composed_config_hash": "dfa6528a4ebb1388bde8a6c60a5dc6fd2b449fa9460f0830a6a80aabb62c36f1",
+      "protocol_hash": "4acaf442f37b5d6a8e12c85de6486e31a440866b9a4362f3a0bb7ab928457d22",
       "resume_from": {
         "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1",
         "trace_sha256": "029a2dbbd62bc8752ff9e7d6a53dfee0cb49872f48b11267e49c4022c9561997"
       }
+    },
+    "resume3_dry_run": {
+      "cell": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
+      "experiment": "slurp-native-stage3-comp1-fold-a-resume3-smoke-4-v1",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-resume-3-smoke",
+      "fit_run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-RESUME3-SMOKE-4-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3-smoke",
+      "composed_config_hash": "5e5d260eec186c804cda4df75574a90ad4943a1c508eae8657b1e33fb8ec195b",
+      "protocol_hash": "e19c8143bd4a8a84ce1280ae81c19a371884f10c8fcbbcc16135d3dbc339e443",
+      "rows": 4,
+      "role": "the four-row dry run of resume attempt 3 (owner decision 181), flown as the smoke of the resume step; form only"
     }
   },
   "recovery_form": "resume-recovery (owner decision 22, harness item E10)",

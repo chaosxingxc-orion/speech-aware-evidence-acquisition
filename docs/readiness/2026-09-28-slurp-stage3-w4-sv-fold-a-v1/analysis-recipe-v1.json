@@ -1,0 +1,65 @@
+{
+  "boundary": "A development read on a TRAIN construction fold (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold label or model output is printed or persisted.",
+  "columns": {
+    "delivering": {
+      "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-generation-v1",
+      "column": "a-agree",
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1"
+    },
+    "treatment": {
+      "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-generation-v1",
+      "column": "b-w4",
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1"
+    },
+    "twin": {
+      "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-generation-v1",
+      "column": "t-twin",
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1"
+    }
+  },
+  "decision_rule": "Columns: the first-visit Solver answers of arm b-w4 (B), the twin t-twin (T) and the delivering arm a-agree (A), each rendered through the delivered row's deliver normaliser and projection (AT1 self-check) and scored ONCE as a complete column with slurp-slu-official-train (stage3_rollout_score.py --mode supply-variants), paired by row (sample_id), 10,000 draws, seed 20260928. THE NULL: T minus A on official pooled SLU-F1 and intent accuracy; its bar is |T - A delta| + the T - A CI95 half-width (the same law as the cross-flight in-chain A/A), never below the provisional floor 0.3163 pp SLU-F1 (the ROLL-AA anchor 0.735 pp at n = 200 scaled to n = 1,080, scripts/checks/stage3_effect_floor_check.py). INSTRUMENT FAULT (no verdict): the T - A CI95 excludes zero on either metric. NOMINATED (the claim ceiling; Q6 ruling): the B - A official pooled SLU-F1 delta exceeds the bar AND its CI95 lower bound is above zero AND the B - A intent CI95 upper bound is not below zero (the guard: no measured intent loss). HARMFUL: the B - A CI95 upper bound below zero on either metric. Otherwise NOT NOMINATED (width). A nomination only sends the composed policy to a full-system read against an in-chain A/A; it is never an admission and never a system-level claim. Every verdict carries the per-scenario table in both weightings and the per-type exact TP/FP/FN of the 19 revised types, B vs A and T vs A.",
+  "expected_effect_pp": 0.79,
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-W4SV-FOLD-A-COLUMN-READ-V1"
+  },
+  "passes": {
+    "b-vs-a": {
+      "left": "a-agree",
+      "right": "b-w4",
+      "role": "GATING"
+    },
+    "t-vs-a": {
+      "left": "a-agree",
+      "right": "t-twin",
+      "role": "the in-flight null (the bar)"
+    }
+  },
+  "provisional_floor_pp": 0.3163,
+  "read_driver": "scripts/flights/w4sv/w4sv_read.sh",
+  "read_run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-COLUMN-READ-V1",
+  "recipe_id": "slurp-stage3-w4sv-fold-a-column-read-v1",
+  "registered_at_utc": "2026-09-28T13:30:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "cluster_key": "sample_id",
+    "metrics": [
+      "slu_f1_f1",
+      "scenario_action_exact"
+    ],
+    "seed": 20260928,
+    "unit": "row (paired)"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1",
+    "read": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-COLUMN-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless the arm carries a COMPLETE sealed 1,080-row manifest (I7, I7n, I7v verified) with one successful complete official TRAIN score of the delivered rows and this package's config hash.",
+    "2. Render the three first-visit columns with scripts/analysis/stage3_rollout_score.py --mode supply-variants --stage all (AT1: the delivering column reproduces the sealed delivered text on every row with no revision) into <run dir>/supply-variants/, scoring each column ONCE with slurp-slu-official-train.",
+    "3. Pass t-vs-a (the null) and pass b-vs-a (gating) with scripts/analysis/stage3_paired_read.py --left-column a-agree --right-column <t-twin|b-w4>: paired row bootstrap, 10,000 draws, seed 20260928; per-scenario tables in both weightings.",
+    "4. Apply the rule; the verdict word is the coordinator's (decision 139); the driver writes 'nominated' where it would write an admitting verdict (Q6).",
+    "5. Mechanism read (model-free, counts only): per revised type exact TP/FP/FN, b-w4 vs a-agree and t-twin vs a-agree."
+  ],
+  "title": "Cell W4-SV -- the same-flight first-visit column read: b-w4 vs a-agree (gating) against the twin null t-twin vs a-agree"
+}

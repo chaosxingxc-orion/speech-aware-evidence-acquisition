@@ -142,6 +142,10 @@ class ReplayedEpisodeResult:
     ``native_episode_receipt``, ``solver_group``). A replayed row that needed
     anything else would be a row this module must refuse rather than
     approximate.
+
+    ``final_response_text`` is the DELIVERED text: the delivered contact's
+    recorded response, or -- when the receipt carries a ``deliver_normaliser``
+    block -- that rule's reproduced output over it.
     """
 
     sample_id: str
@@ -511,6 +515,20 @@ def _classify(
         ):
             return None, "the delivered response text does not match its recorded hash"
         final_text = recorded.text
+        normalisation = receipt.get("deliver_normaliser")
+        if normalisation is not None:
+            # 2026-09-29 (COMP-1 resume attempt 3 seal abort): a row whose
+            # episode ran the delivery-time normaliser node (E11) delivered
+            # the node's OUTPUT, not the accepted contact's raw response. The
+            # live runner (``rails.runner``) replaces ``final_text`` with the
+            # normaliser output before it becomes ``final_response_text``, and
+            # the seal binds that text to the receipt's ``output_sha256``. The
+            # replay therefore re-applies the SAME registered rule to the
+            # recorded response -- never a copy of it -- and keeps the row
+            # only when the rule reproduces the recorded output digest.
+            final_text, reason = _replay_delivery_normalisation(normalisation, final_text)
+            if final_text is None:
+                return None, reason
     return (
         ReplayedEpisodeResult(
             sample_id=sample_id,
@@ -520,6 +538,57 @@ def _classify(
         ),
         None,
     )
+
+
+def _replay_delivery_normalisation(
+    block: object, source_text: str,
+) -> tuple[str | None, str | None]:
+    """Re-derive a normalised row's delivered bytes from its recorded response.
+
+    Returns ``(delivered_text, None)`` when the registered rule named by the
+    receipt, run over ``source_text`` (the delivered contact's recorded
+    response), reproduces the receipt's ``output_sha256``; otherwise
+    ``(None, reason)`` and the row is re-flown rather than approximated. The
+    same four facts the bundle's I7n re-checks: the block is structured, its
+    input is the recorded response, the rule resolves, and its output is the
+    recorded output. Reasons carry ids and digest prefixes only, never text.
+    """
+
+    if not isinstance(block, Mapping):
+        return None, "the delivery normalisation receipt is not a structured block"
+    missing = sorted({"normaliser_id", "input_sha256", "output_sha256"} - set(block))
+    if missing:
+        return None, f"the delivery normalisation receipt is missing {missing}"
+    source_sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
+    if block["input_sha256"] != source_sha256:
+        return None, (
+            "the delivery normaliser did not run on the delivered contact's recorded "
+            f"response (input {str(block['input_sha256'])[:12]}..., recorded "
+            f"{source_sha256[:12]}...)"
+        )
+    from ...rails import delivery_normalisers as _normalisers  # noqa: PLC0415, F401
+    from ..base import DELIVERY_NORMALISERS, CoreError  # noqa: PLC0415
+
+    normaliser_id = str(block["normaliser_id"])
+    try:
+        normaliser = DELIVERY_NORMALISERS.resolve(normaliser_id)
+    except CoreError:
+        return None, f"delivery normaliser {normaliser_id!r} is not registered"
+    try:
+        outcome = normaliser(source_text)
+    except Exception as error:  # noqa: BLE001 - any rule failure re-flies the row
+        return None, (
+            f"delivery normaliser {normaliser_id!r} failed over the recorded "
+            f"response: {type(error).__name__}"
+        )
+    output_sha256 = hashlib.sha256(outcome.text.encode("utf-8")).hexdigest()
+    if output_sha256 != block["output_sha256"]:
+        return None, (
+            f"delivery normaliser {normaliser_id!r} does not reproduce its recorded "
+            f"output under this code (recomputed {output_sha256[:12]}..., recorded "
+            f"{str(block['output_sha256'])[:12]}...)"
+        )
+    return outcome.text, None
 
 
 def read_predecessor_attempt(

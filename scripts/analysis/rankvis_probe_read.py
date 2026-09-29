@@ -428,6 +428,14 @@ def load_generation_plan(repo: Path) -> dict:
             "(scripts/flights/repin_cell.py --set-ready) yet, so there is no flown attempt to read",
         )
     plan = load_json(path)
+    # The registered generation plan nests the attempt identity under execution_plan (the
+    # contracts.ExecutionPlan record); a top-level attempt_id is accepted only if it agrees.
+    nested = (plan.get("execution_plan") or {}).get("attempt_id")
+    top = plan.get("attempt_id")
+    if top and nested and top != nested:
+        raise ReadRefused(0, "the generation plan names two different attempt ids")
+    if top or nested:
+        plan = dict(plan, attempt_id=top or nested)
     for key in ("composed_config_hash", "attempt_id"):
         if not plan.get(key):
             raise ReadRefused(0, f"the generation plan carries no {key!r}")
@@ -438,9 +446,19 @@ def load_baseline_rendering(repo: Path, facts: dict) -> dict:
     relpath = Path(str(facts["cell"]["baseline"]))
     path = repo / relpath
     sha = digest_file(path)
-    if sha != facts["cell"]["baseline_sha256"]:
-        raise ReadRefused(1, "the committed baseline fragment does not hash to the registered facts' pin")
     baseline = load_json(path)
+    repin_pin = None
+    if sha != facts["cell"]["baseline_sha256"]:
+        # The flip (scripts/flights/repin_cell.py --set-ready) adds exactly one key to the fragment,
+        # the prepared_phase_supply pin, after the facts were registered. Accept the fragment only if
+        # dropping that one key re-serialises (indent 2, trailing newline) to the registered bytes;
+        # the flown bytes stay bound by the manifest's config hash against the generation plan.
+        pin = baseline.get("prepared_phase_supply")
+        stripped = {k: v for k, v in baseline.items() if k != "prepared_phase_supply"}
+        restored = (json.dumps(stripped, indent=2, ensure_ascii=False) + chr(10)).encode("utf-8")
+        if not isinstance(pin, dict) or hashlib.sha256(restored).hexdigest() != facts["cell"]["baseline_sha256"]:
+            raise ReadRefused(1, "the committed baseline fragment does not hash to the registered facts' pin")
+        repin_pin = pin
     rendering = (baseline.get("native_episode") or {}).get("knowledge_value_rendering")
     if rendering != EXPECTED_RENDERING:
         raise ReadRefused(
@@ -448,7 +466,10 @@ def load_baseline_rendering(repo: Path, facts: dict) -> dict:
             "the registered baseline fragment does not declare the expected knowledge_value_rendering "
             "block: the flown requests would not carry the rank labels",
         )
-    return {"relpath": str(relpath).replace("\\", "/"), "sha256": sha, "rendering": rendering}
+    return {
+        "relpath": str(relpath).replace("\\", "/"), "sha256": sha, "rendering": rendering,
+        "registered_sha256": facts["cell"]["baseline_sha256"], "flip_added_prepared_phase_supply": repin_pin,
+    }
 
 
 def load_probe(data_root: Path, facts: dict, roster: dict, plan: dict) -> dict:

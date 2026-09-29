@@ -27,7 +27,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/protocol-registered-v1.json",
-      "sha256": "0c198ebb9346a4e87a4a90e17bbd96df5f0b68996afbc4373e255dad01aefea0"
+      "sha256": "b872fe9c2fe5823589d8bbce67e038d7d9f8ea20ed1633d10c4d98ce35ab0666"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c01-v1/README.md",

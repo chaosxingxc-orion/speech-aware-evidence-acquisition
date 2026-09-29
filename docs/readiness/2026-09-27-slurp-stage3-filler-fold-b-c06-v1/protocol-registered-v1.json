@@ -17,8 +17,8 @@
   "cells": {
     "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C06-V1": {
       "cell": "slurp-native-stage3-filler-fold-b-c06-v1",
-      "composed_config_hash": "bab4ea152cfe19c85f73dfe5f308bb5163b4f970641c3b7039bd3e122631e1c0",
-      "protocol_hash": "d6f6bfb8e402968a5d4f91be214d9f447f43042b5372683cac74604a75cf8386",
+      "composed_config_hash": "390a0b60c3770f1318ca7710f11fafb3bfe25cd5776c170f5aa99f97b5158588",
+      "protocol_hash": "e5f78d6876926c51473b8d3ef681fa3d9242993b618e8a220759edf9eb0e1919",
       "rows": 180,
       "split_identity_hash": "fbfaf96c49e9e7d131612ad38e262ba071aec999ee45f451d7d3d7e80056036e"
     }
