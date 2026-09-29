@@ -216,6 +216,10 @@ class CellReport:
     #: design docs/superpowers/specs/2026-09-28-same-flight-instrument-phase2-perception-
     #: variants-design.md section 4).
     perception_branch: dict[str, Any] | None = None
+    #: Set only for a cell whose ``stage3_measurement.measurement_design`` is
+    #: ``same-flight-shadow-relisten`` -- owner decision 185, design docs/superpowers/specs/
+    #: 2026-09-28-e4-core-native-targeted-relisten-design.md section 8 rulings 2 and 7.
+    relisten: dict[str, Any] | None = None
     #: Set for EVERY cell that declares a ``stage3_measurement`` block, whatever its design --
     #: item D3: ``{"tuning_roster": ..., "read_roster": ...}``, the raw values as registered.
     roster_split: dict[str, Any] | None = None
@@ -240,6 +244,7 @@ class CellReport:
             "findings": [finding.as_dict() for finding in self.findings],
             "supply_variant": self.supply_variant,
             "perception_branch": self.perception_branch,
+            "relisten": self.relisten,
             "roster_split": self.roster_split,
         }
 
@@ -1097,6 +1102,118 @@ def _check_roster_split_registration(
     _check_tuning_read_overlap(report, repo_root, tuning_roster, read_roster)
 
 
+# --------------------------------------------------------------------------
+# E4 targeted-relisten registration (owner decision 185, design docs/
+# superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md
+# section 8 coordinator rulings 2 and 7)
+# --------------------------------------------------------------------------
+
+#: The one design whose cells must carry this section's three fields beside
+#: ``measurement_design`` (ruling 7: "the bar is the twin/shadow null").
+RELISTEN_INSTRUMENT_DESIGNS = ("same-flight-shadow-relisten",)
+
+#: The path a ``relisten`` block is composed under in a baseline fragment
+#: (``rails.native_episode_config``'s ``native_episode.relisten``).
+RELISTEN_PATH = ("native_episode", "relisten")
+
+#: Ruling 7 / the same-flight-supply-variant precedent (Q6 ruling this
+#: design copies): a post-accept shadow effect never supports a
+#: system-level claim.
+RELISTEN_CLAIM_CEILING = "nominated"
+
+#: The exact two shadow-column ids ruling 2 registers
+#: (``rails.relisten.SHADOW_COLUMNS``, restated here as a literal so this
+#: gate reads its own name set from source, the same discipline
+#: ``register_phase_programs_v1`` uses).
+RELISTEN_SHADOW_COLUMNS = ("relisten-replace-only", "relisten-replace-drop-unheard")
+
+
+def _relisten_block(baseline: dict[str, Any] | None) -> Any:
+    """The cell's ``native_episode.relisten`` block, or ``None``."""
+
+    node: Any = baseline
+    for key in RELISTEN_PATH:
+        if not isinstance(node, dict):
+            return None
+        node = node.get(key)
+    return node
+
+
+def _check_relisten_registration(
+    report: CellReport,
+    fragment: dict[str, Any],
+    baseline: dict[str, Any] | None,
+    floor_gate: Any,
+    repo_root: Path,
+) -> None:
+    """Ruling 2/7 registration fields and gate findings for an E4 cell.
+
+    A no-op when the declaration is absent or unreadable, when it names a
+    design outside :data:`RELISTEN_INSTRUMENT_DESIGNS`, or when the cell
+    declares no ``relisten`` block at all -- the same three-guard shape
+    :func:`_check_supply_variant_registration` uses, for the same reason.
+
+    Three findings: ``relisten-claim-not-nominated`` (the claim ceiling,
+    ruling 7), ``relisten-not-shadow-delivery`` (ruling 5: the delivered
+    answer is never changed in flight -- v1 admits no other mode), and
+    ``relisten-columns-missing`` (ruling 2: both shadow columns, and only
+    those two, must be declared by id).
+    """
+
+    block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
+    if not isinstance(block, dict):
+        return
+    design = block.get("measurement_design")
+    if design not in RELISTEN_INSTRUMENT_DESIGNS:
+        return
+    relisten_block = _relisten_block(baseline)
+    if not isinstance(relisten_block, dict):
+        return
+
+    columns = block.get("columns")
+    report.relisten = {
+        "measurement_design": design,
+        "max_slots_per_row": relisten_block.get("max_slots_per_row"),
+        "shadow_delivery": block.get("shadow_delivery"),
+        "columns": columns,
+        "claim": block.get("claim"),
+        "tuning_roster": block.get("tuning_roster"),
+        "read_roster": block.get("read_roster"),
+    }
+
+    claim = block.get("claim")
+    if claim != RELISTEN_CLAIM_CEILING:
+        report.findings.append(Finding(
+            "relisten-claim-not-nominated",
+            f"{report.run_id}: measurement_design {design!r} may claim only "
+            f"{RELISTEN_CLAIM_CEILING!r} (ruling 7: a post-accept shadow effect never "
+            f"supports a system-level claim), but claim is {claim!r}",
+            report.run_id,
+        ))
+
+    if block.get("shadow_delivery") is not True:
+        report.findings.append(Finding(
+            "relisten-not-shadow-delivery",
+            f"{report.run_id}: measurement_design {design!r} requires "
+            "stage3_measurement.shadow_delivery true (ruling 5: 'Shadow delivery, on "
+            "TRAIN Fold A first' -- the delivered answer is never changed in flight in "
+            f"v1), but shadow_delivery is {block.get('shadow_delivery')!r}",
+            report.run_id,
+        ))
+
+    if (
+        not isinstance(columns, list)
+        or sorted(columns) != sorted(RELISTEN_SHADOW_COLUMNS)
+    ):
+        report.findings.append(Finding(
+            "relisten-columns-missing",
+            f"{report.run_id}: measurement_design {design!r} requires "
+            f"stage3_measurement.columns to name exactly the two shadow columns "
+            f"{sorted(RELISTEN_SHADOW_COLUMNS)} (ruling 2), but columns is {columns!r}",
+            report.run_id,
+        ))
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -1110,6 +1227,7 @@ def check_cell(
     floor_gate = _floor_gate_module(index.repo_root)
     _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_perception_branch_registration(report, fragment, baseline, floor_gate, index.repo_root)
+    _check_relisten_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_roster_split_registration(report, fragment, floor_gate, index.repo_root)
 
     run_ids = {"generation": report.run_id, **fit_run_ids(fragment, baseline)}

@@ -298,6 +298,33 @@ FLOOR_TABLE: dict[str, Floor] = {
         ),
         sampling=((200, 0.735),),
     ),
+    # Item E4 (2026-09-28, owner decision 185, "core-native targeted re-
+    # listen"; design docs/superpowers/specs/2026-09-28-e4-core-native-
+    # targeted-relisten-design.md section 4, extended by the section 8
+    # coordinator rulings, ruling 7): a shadow-delivery column read against
+    # the SAME flight's delivered column, built by a pure ``bind()`` over
+    # already-sealed bytes -- structurally ``same-flight-paired``'s own
+    # shape. The design's own floor is the shadow column's twin/shadow null
+    # (the paired-difference null on the UNCHANGED rows of the pair); until
+    # an E4 cell has flown and measured that null, the provisional floor
+    # anchor is the same one ``same-flight-supply-variant`` uses --
+    # {INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, h_within 0.735
+    # SLU / 0.000 intent at n = 200) -- kept as its own design value because
+    # the estimand (two POST-HOC derived columns from one flight's sealed
+    # relisten receipts, never a second contact stream) and the claim
+    # ceiling (nominated only, never admitted -- ``flight_registration_
+    # check.py``) both differ from the Solver-arm estimand
+    # ``same-flight-supply-variant`` reads.
+    "same-flight-shadow-relisten": Floor(
+        source=(
+            f"{INSTRUMENT_NOTE} section 2a/2d row 2 (cell ROLL-AA, h_within 0.735 "
+            "SLU / 0.000 intent at n = 200); design docs/superpowers/specs/2026-09-28-"
+            "e4-core-native-targeted-relisten-design.md section 4 ('same-flight-paired, "
+            "shadow delivery') and section 8 ruling 7 ('the bar is the twin/shadow "
+            "null')"
+        ),
+        sampling=((200, 0.735),),
+    ),
     "cross-flight-with-in-chain-replicate": Floor(
         source=(
             f"{INSTRUMENT_NOTE} section 2b/2d rows 3-5 (sampling half-widths 1.474 at 625, "
