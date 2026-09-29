@@ -1,0 +1,195 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/e4/e4_sealonly_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites) ONLY after owner decision 194 admits the seal-only completion. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "60aa87588d32fc201ad98ff2b47448962031430c3f9a839077faf437087ffc93"
+    },
+    "base_cell": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (owner decision 161)",
+    "derive_script": {
+      "path": "scripts/flights/e4/derive_slurp_e4_sealonly_cell.py",
+      "sha256": "92efc070263eca86f6df90b2953759979d068e2bf55a9f36fd2703f076c7221a"
+    },
+    "node_gain_ledger": {
+      "path": "docs/results/2026-09-28-slurp-node-information-gain-ledger.md",
+      "sha256": "5910c781c5bc841a28e19fbc876314913bd3ffb92cbd824aebb556816de3bd40"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "b6c9343a65d0a80b1e0afc012f36ff7b4d6fb97557059a727eedd9acd82fb642"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "eaeee54f3deaac601fedafc531342467744b10af4fe18203c60fab7ec33d5082"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/registered-facts-v1.json",
+      "sha256": "2a19a10d6000731dc11c96af066f6a912bacdb7447891ce068cc4e44460cb3a3"
+    },
+    "registration_base_commit": "109538e87",
+    "shadow_proof": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/shadow-proof-v1.json",
+      "sha256": "221439e1449b27abe14c46368b6b4605d196d882e5734661c760529ab84b3e28"
+    },
+    "spec": {
+      "path": "docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md",
+      "sha256": "bf119bb265a8576c32d30f31684e50a6477a2ee176be875bb2563550040f85a3"
+    },
+    "parent_registration_draft": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/root-admission-draft-v1.json",
+      "sha256": "350792b8559ac0a588c4d91a87e73297cccdde960baf15c874d91d0a9e4cfdf4"
+    },
+    "parent_decision_receipt": {
+      "relpath": "coordination/slurp-stage3-relisten-fold-a-v1/root-admission-v1.json",
+      "decision_id": "slurp-stage3-relisten-fold-a-admission-v1",
+      "status": "stands; it admitted the original attempt, which aborted at the seal"
+    },
+    "sealonly_protocol": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-resume-v1/protocol-registered-v1.json",
+      "sha256": "51809b51f64bb8bba5a47aa7691cacae7edcc59e0e444c84494630e6b7ee0076"
+    },
+    "sealonly_analysis_recipe": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-resume-v1/analysis-recipe-v1.json",
+      "sha256": "ff2476f625ac8e86e62fdfc0d1b53152b4c7a1006bceadfd8fa381a8ff61ec5b"
+    },
+    "sealonly_registered_facts": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-resume-v1/registered-facts-v1.json",
+      "sha256": "d0649b12cf532bb12f531bf16d0006f767f33aeb2b9eb195cacd1b4c9175704c"
+    },
+    "sealonly_preregistration": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-resume-v1-preregistration.md",
+      "sha256": null
+    },
+    "sealonly_readme": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-resume-v1/README.md",
+      "sha256": null
+    }
+  },
+  "authorization_basis": "Owner decision 194 (PENDING): seal-only completion of the aborted E4-1 arm under the merged seal fix (b286d8974), on the offline replay proof recorded as resume_replay_proof (1,080 rows checked, 0 failing, 0 sealed twice), the same shape as owner decision 189 option A. Owner decision 22 (resume-recovery) stands; the parent authorization basis stands: Owner decision 185 (E4 v1, its dry run and its flight after merge set C), 180, 187, 28/86; the spec docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md with its section 8 coordinator rulings; the node information-gain ledger docs/results/2026-09-28-slurp-node-information-gain-ledger.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 73440,
+    "generation_calls_cap": 18360,
+    "gpu_hours_fit_inclusive": 18.5,
+    "native_task_contract_calls_cap": 12960,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 52437,
+    "resume": {
+      "kept_rows": 1080,
+      "flown_rows": 0,
+      "kept_from": {
+        "attempt-slurp-native-stage3-relisten-fold-a-generation-v1": 1080
+      },
+      "seal_only": true,
+      "flown_worst_case_calls": 0,
+      "run_cumulative_actual_calls": 6304,
+      "run_cumulative_actual_audio_seconds": 18730.5,
+      "run_cumulative_actual_breakdown_calls": {
+        "attempt-slurp-native-stage3-relisten-fold-a-generation-v1": 6304
+      },
+      "run_cumulative_worst_case_calls": 6304,
+      "cap_calls": 18360,
+      "headroom_calls": 12056,
+      "note": "plan budgets are run-cumulative; the seal-only completion adds none"
+    }
+  },
+  "cell_kind": "E4-1 SEAL-ONLY COMPLETION: a new attempt attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only (FIT attempt attempt-slurp-native-stage3-relisten-fold-a-fit-v1-seal-only, records no contact) under the SAME run id SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1, resume_from [attempt-slurp-native-stage3-relisten-fold-a-generation-v1]; the union covers the 1,080-row roster, so nothing is flown. Claim ceiling 'nominated', unchanged.",
+  "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a shadow-column read on a development fold whose ceiling is 'nominated'.",
+  "coordinator": "Fable5.1",
+  "decision": "Seal the E4-1 arm SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1 as the SEAL-ONLY completion of its one recovery: attempt attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only keeps all 1,080 rows of the aborted attempt attempt-slurp-native-stage3-relisten-fold-a-generation-v1 (trace 966613e4...) with ZERO new model contacts through core.flight.cli seal-only, finalizes it with the one official score job, and reads it by the unchanged READ row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1.",
+  "decision_id": "slurp-stage3-relisten-fold-a-sealonly-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, Whisper, transcript, encoder or paid-API contact",
+    "live delivery of a relisten value",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered program switch and relisten block",
+    "opening a column score before the READ row is countersigned",
+    "flying any row of SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1 again (the seal-only completion makes zero model contacts)",
+    "any core.flight.cli worker or campaign run of the resume cell (it allows check, prepare-supply and seal-only only)",
+    "writing, moving or compressing anything under the aborted attempt's directory attempt-slurp-native-stage3-relisten-fold-a-generation-v1"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false,
+    "partition": "TRAIN Fold A 1,080, unchanged; 1,080 kept from the aborted attempt, 0 flown"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "seal-only": {
+      "composed_config": "1e96fa6271ad9eed130ba5593989a751482c6b29f609944cbf46c0ef5e87cf89",
+      "protocol": "390949be103b3b9af74ee2eebaf7f8a5e278671aa5bf5d37471d3190d59256be"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED",
+  "eligible_attempt_ids": [
+    "attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only"
+  ],
+  "fit_attempt_ids": {
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1": "attempt-slurp-native-stage3-relisten-fold-a-fit-v1-seal-only"
+  },
+  "resume_from": {
+    "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",
+    "trace_sha256": "966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6"
+  },
+  "resume_replay_proof": {
+    "schema": "saea-resume-replay-proof-v1",
+    "tool": "scripts/analysis/replay_seal_consistency.py --experiment slurp-native-stage3-relisten-fold-a-v1 --run-id SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1 --predecessor attempt-slurp-native-stage3-relisten-fold-a-generation-v1:966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6",
+    "gate": "scripts/checks/resume_prelaunch_gate_check.py (via scripts/flights/batch/resume_prelaunch_gate.sh) on this cell: re-run at registration, see the package README",
+    "run_at_utc": "2026-09-29T12:25:14Z",
+    "predecessor_attempts": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1",
+        "trace_sha256": "966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6",
+        "samples_started": 1080,
+        "complete": 1080,
+        "incomplete": 0,
+        "rows_checked": 1080,
+        "rows_failing": 0,
+        "rows_with_relisten_receipt": 1080,
+        "rows_with_deliver_normaliser": 1080
+      }
+    ],
+    "rows_checked": 1080,
+    "rows_failing": 0,
+    "sealed_twice": 0,
+    "union_complete_rows": 1080,
+    "checker_sha256": "075b93f17359dd93494861532dd17755607721a53d9e92aca454e987e4d3312e",
+    "resume_py_sha256": "40770c1e9e3b6dacdab6a35d8bcb6a330667dd43598b5032bdf848ec088766c6",
+    "code_commit": "109538e874897a6782c32be60f54ffb660be6751",
+    "model_contacts": 0,
+    "note": "Model-free and read-only over the REAL attempt trace: every complete row rendered through the real FlightRuntime._canonical_output_rows seal stage (the fixed finite-source rule) and re-checked against I7 / I7n / I7g / I7l one row at a time; no row fails and no sample is sealed twice. The driver's prelaunch replay gate re-runs the same check at launch on the flight commit."
+  },
+  "retry_basis": "The E4-1 arm flew all 1,080 rows (6,304 calls, 18,730.5 s audio) and ABORTED at the seal on FlightRuntimeError: finite source is not the last actual sample contact; root cause named to a component (the seal's finite-completion rule vs post-accept relisten shadow contacts on 8 of 10 finite rows) and fixed at b286d8974. Its 1,080 rows are complete in its trace; the seal-only completion keeps them and flies nothing. The aborted attempt stays charged run-cumulatively (6,304 calls of 18,360)."
+}

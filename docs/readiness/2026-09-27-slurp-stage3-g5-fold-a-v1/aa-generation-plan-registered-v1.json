@@ -40,7 +40,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "29261dc5b4ef9c01af0d12b0907de37422153d8c37aae2ddeb291b73c874ee48"
+    "sha256": "dc1dabe139775b3d5e4f91f1a2a639988152ec31b7b10993fd5b4e17d747e820"
   },
   "purpose": "SAEA-SLURP-STAGE3-G5-AA-FOLD-A-V1: The in-chain A/A replicate of cell G5. It supplies the within-chain null the G5 no-harm read is taken at and makes no claim of its own.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",

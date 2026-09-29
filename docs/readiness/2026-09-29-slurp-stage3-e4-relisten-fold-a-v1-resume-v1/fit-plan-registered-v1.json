@@ -1,0 +1,59 @@
+{
+  "cell": "slurp-native-stage3-relisten-fold-a-v1-resume",
+  "composed_config_hash": "1e96fa6271ad9eed130ba5593989a751482c6b29f609944cbf46c0ef5e87cf89",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-relisten-fold-a-fit-v1-seal-only",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 18.5,
+    "planned_model_calls": 73440,
+    "planned_speech_audio_seconds": 52437,
+    "protocol_hash": "390949be103b3b9af74ee2eebaf7f8a5e278671aa5bf5d37471d3190d59256be",
+    "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids (the SAME FIT run id, a new attempt). SEAL-ONLY: the seal-only attempt never builds the native contact FIT gate (run_phases is a zero-work receipt), so this FIT identity records no contact; it is fresh (attempt-slurp-native-stage3-relisten-fold-a-fit-v1-seal-only, unused on the data root at registration) because validate_native_contact_fit_config requires the block and no FIT attempt id that already holds evidence is ever reused.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-relisten-fold-a-v1-resume",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 73440,
+    "generation_calls_cap": 18360,
+    "gpu_hours_fit_inclusive": 18.5,
+    "native_task_contract_calls_cap": 12960,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 52437
+  },
+  "one_factor": "the post-accept native_episode.relisten stage {\"blind_template_id\": \"slurp_relisten_blind_v1\", \"confirm_template_id\": \"slurp_relisten_confirm_v1\", \"delivery\": \"shadow\", \"max_slots_per_row\": 3, \"policy\": \"saea-obs-targeted-relisten-v1\", \"value_max_words\": 8}; the program switch to phase-native-candidates-review-revise-relisten-v1 is its carrier (ceiling +6), not a factor; the delivered path is the AGREE arm's modulo the program id in quoted contact ids and remaining_model_contacts (shadow_proof)",
+  "plan_kind": "fit",
+  "preparation_base_commit": "109538e87",
+  "prepared_phase_supply": {
+    "note": "INHERITED pin; the flip rebuilds it under the same run id and asserts the output unchanged (never --allow-output-change). The seal-only path never reads it.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/phase-supply-v2.json",
+    "sha256": "7e5cc08a324ce9082dbc33ab3df0d17594c115ddff37a478f46b2d58ea364db4",
+    "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-resume-v1/protocol-registered-v1.json",
+    "sha256": "51809b51f64bb8bba5a47aa7691cacae7edcc59e0e444c84494630e6b7ee0076"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1: request envelopes only; reads nothing.",
+  "quality_read_gate": "No shadow-column score is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1 is root countersigned; each column is then scored once, never sharded.",
+  "registered_at_utc": "2026-09-29T12:30:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, master (single master writer, after the fable/e4sealfix merge)",
+  "status": "REGISTERED_BEFORE_CONTACT_SEAL_ONLY_HELD_AWAITING_OWNER_DECISION_194",
+  "unused_budget_is_not_attempt_authority": true,
+  "seal_only_registration": {
+    "registered_at_utc": "2026-09-29T12:30:00.000000+00:00",
+    "source_tree": "studies/speech-aware-evidence-acquisition, master (single master writer, after the fable/e4sealfix merge)",
+    "owner_decision": "194 (pending; the same shape as 189 option A)",
+    "decision_receipt": "coordination/slurp-stage3-relisten-fold-a-v1/root-admission-sealonly-v1.json",
+    "decision_id": "slurp-stage3-relisten-fold-a-sealonly-admission-v1"
+  }
+}
