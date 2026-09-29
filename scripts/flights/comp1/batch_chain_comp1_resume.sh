@@ -100,5 +100,17 @@ steps = [
 json.dump(steps, open(os.environ["QUEUE"], "w"), indent=1)
 PY
 echo "queue [comp1res: the four-row dry run (owner decision 181) as the smoke, then resume attempt 3 (the A/A never re-flown); g5: smoke, then the G5 arm] written; starting driver $(date -u +%FT%TZ)" >> $LOG
+# Coordinator, after the COMP-1 resume attempt 3 seal abort: EVERY resume launch first passes the
+# OFFLINE full-trace replay check, run here directly (belt) as well as by the driver's own
+# per-step prelaunch (suspenders, scripts/flights/batch/batch_driver.sh resume_gate_run) -- this
+# call fails the chain fast, before any lease or smoke overhead, on the resume cell specifically.
+echo "resume prelaunch replay gate: checking $(date -u +%FT%TZ)" >> $LOG
+GATEOUT=$(bash $SP/resume_prelaunch_gate.sh --repo-root "$REPO" --data-root "$DATA" \
+  --experiment slurp-native-stage3-comp1-fold-a-v1-resume \
+  --cell slurp-native-stage3-comp1-fold-a-v1-resume 2>&1)
+GATERC=$?
+printf '%s\n' "$GATEOUT" >> "$LOG"
+if [ $GATERC -ne 0 ]; then echo "resume prelaunch replay gate REFUSED (exit $GATERC); abort" >> "$LOG"; exit 5; fi
+echo "resume prelaunch replay gate OK $(date -u +%FT%TZ)" >> "$LOG"
 bash $SP/batch_driver.sh >> /home/chao/batch-driver.out 2>&1
 echo "driver exit $? $(date -u +%FT%TZ)" >> $LOG
