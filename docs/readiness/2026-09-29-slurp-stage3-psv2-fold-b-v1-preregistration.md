@@ -13,8 +13,8 @@ arm fragments by script (decision 58) under owner decisions 184, 186 and 188. De
 | expected effect | 0.0 pp, `claims_benefit` false; ceiling 49 rows = 4.54 pp on Fold A |
 | rosters | tuning `SLURP-EVO-FOLD-A-V2`; read `SLURP-EVO-FOLD-B-V2` |
 | runs | `SAEA-SLURP-STAGE3-PSV2-FOLD-B-V1` / `SAEA-SLURP-STAGE3-PSV2-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-PSV2-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-PSV2-FOLD-B-BRANCH-READ-V1` |
-| composed config hashes | arm `bd3b2372c7b1d601078370860dcc58a123d04a14bf6e17f1091343ca61a294c6`; smoke `e2653674a2107ff579560bcbfac445991ef485a6d909e9e98f01d1d27eafdd13` |
-| protocol hashes | arm `c3d3d8f6d15b31b212f61d89c4a7d16ba73dcf694d39d5d80e24f4775f91f53c`; smoke `9ca9909a6b208fa278efcbb744b5bbc91f9f00ae07dc73463e4c25d738032bea` |
+| composed config hashes | arm `6dd791b7c2924d618643345c4e14fa4d7b3223f9d8fdcc903246b480c2b16048`; smoke `e2653674a2107ff579560bcbfac445991ef485a6d909e9e98f01d1d27eafdd13` |
+| protocol hashes | arm `acde331034cae261a0c4af33ade84bfafdff57b7a8d78e90f52bb5e2d33788b3`; smoke `9ca9909a6b208fa278efcbb744b5bbc91f9f00ae07dc73463e4c25d738032bea` |
 | split identity | arm `4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a`; smoke `bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32` |
 
 ## Decision rule (fixed here)
