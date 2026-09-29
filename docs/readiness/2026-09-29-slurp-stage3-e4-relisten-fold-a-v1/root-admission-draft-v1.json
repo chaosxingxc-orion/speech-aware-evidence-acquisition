@@ -1,0 +1,122 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/e4/e4_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "60aa87588d32fc201ad98ff2b47448962031430c3f9a839077faf437087ffc93"
+    },
+    "base_cell": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (owner decision 161)",
+    "derive_script": {
+      "path": "scripts/flights/e4/derive_slurp_e4_cells.py",
+      "sha256": "affdb2ed9ac84ae4b3c8100beba07dd921b4c0da9c586ebd0f06c0cb6e54e6bb"
+    },
+    "node_gain_ledger": {
+      "path": "docs/results/2026-09-28-slurp-node-information-gain-ledger.md",
+      "sha256": "5910c781c5bc841a28e19fbc876314913bd3ffb92cbd824aebb556816de3bd40"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "b6c9343a65d0a80b1e0afc012f36ff7b4d6fb97557059a727eedd9acd82fb642"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "091a45a4c1370967b7d8b58daa958a5275b1ebda6ec4f359f67d839b07b36a25"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/registered-facts-v1.json",
+      "sha256": "e71914423cf7a52eacd933c59a4eb268181d83663c32c1cdd3971ff194e2c5c8"
+    },
+    "registration_base_commit": "6287181f1",
+    "shadow_proof": {
+      "path": "docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/shadow-proof-v1.json",
+      "sha256": "221439e1449b27abe14c46368b6b4605d196d882e5734661c760529ab84b3e28"
+    },
+    "spec": {
+      "path": "docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md",
+      "sha256": "bf119bb265a8576c32d30f31684e50a6477a2ee176be875bb2563550040f85a3"
+    }
+  },
+  "authorization_basis": "Owner decision 185 (E4 v1, its dry run and its flight after merge set C), 180, 187, 28/86; the spec docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md with its section 8 coordinator rulings; the node information-gain ledger docs/results/2026-09-28-slurp-node-information-gain-ledger.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 73440,
+    "generation_calls_cap": 18360,
+    "gpu_hours_fit_inclusive": 18.5,
+    "native_task_contract_calls_cap": 12960,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 52437,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 272,
+      "generation_calls_cap": 68,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 48,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 196
+    }
+  },
+  "cell_kind": "Stage-3 same-flight shadow-relisten cell (label none), claim ceiling 'nominated'. One arm on TRAIN Fold A 1,080 (the AGREE form delivering, a post-accept relisten stage in shadow) and a four-row charged dry run.",
+  "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a shadow-column read on a development fold whose ceiling is 'nominated'.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell E4-1: the retained AGREE arm under phase-native-candidates-review-revise-relisten-v1 with native_episode.relisten {\"blind_template_id\": \"slurp_relisten_blind_v1\", \"confirm_template_id\": \"slurp_relisten_confirm_v1\", \"delivery\": \"shadow\", \"max_slots_per_row\": 3, \"policy\": \"saea-obs-targeted-relisten-v1\", \"value_max_words\": 8}; read shadow columns relisten-replace-only and relisten-replace-drop-unheard against the delivered column in the same flight; SLU-F1 primary, intent identical by construction; nominate or not at the design's null.",
+  "decision_id": "slurp-stage3-relisten-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, Whisper, transcript, encoder or paid-API contact",
+    "live delivery of a relisten value",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered program switch and relisten block",
+    "opening a column score before the READ row is countersigned"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "3681a6f5636ddab5aacbc1edb4a71ecde3718376e4626c54c1d7d2b4d31cfbc9",
+      "protocol": "119db55d73e942fb17968b6742fc3d71d6c2ff53e8a47f60c9cafca8b9a9b135"
+    },
+    "smoke": {
+      "composed_config": "cc232698353ef3ff794ec72aef93c3c729f48702e0f4d1ab761b5a985d975995",
+      "protocol": "72e228b3c53eb77190e17e3400b7d8d5c2e20ac3348b128a0e6e7f9ecc663f72"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
