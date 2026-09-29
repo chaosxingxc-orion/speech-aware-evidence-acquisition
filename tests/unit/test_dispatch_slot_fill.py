@@ -383,7 +383,7 @@ def test_a_crashed_attempt_resumes_with_identical_semantics_under_the_key(
         recovery.close()
     runtime._output_rows = rows
     runtime._client = recovery.client
-    merged, block = runtime._merged_canonical_rows()
+    merged, block, _seal_only_results = runtime._merged_canonical_rows()
 
     assert [row["sample_id"] for row in merged] == ["s1", "s2"]
     # The kept row, replayed from a key-ON trace, equals the key-OFF seal

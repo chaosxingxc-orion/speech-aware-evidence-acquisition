@@ -121,6 +121,7 @@ from .resume import (
     RESUME_PREDECESSOR_SCHEMA,
     MergedPredecessors,
     PredecessorAttempt,
+    ReplayedEpisodeResult,
     ResumeDeclaration,
     ResumeRecoveryError,
     read_predecessor_attempt,
@@ -11256,8 +11257,11 @@ class FlightRuntime:
     ) -> tuple[
         list[Mapping[str, object]],
         Mapping[str, object] | list[Mapping[str, object]] | None,
+        tuple[ReplayedEpisodeResult, ...] | None,
     ]:
-        """The rows to seal, and the predecessor manifest block(s), if any.
+        """The rows to seal, the predecessor manifest block(s), and (E10e,
+        2026-09-29) the merged replayed phase results a seal-only completion
+        needs to write its own ``phases.json``.
 
         For an ordinary flight this is exactly what it always was: the live
         client's rows through :meth:`_canonical_output_rows`.
@@ -11279,6 +11283,14 @@ class FlightRuntime:
         per predecessor that kept a row of this resume) for more than one --
         :meth:`seal` tells them apart by type.
 
+        The third return value is ``None`` unless :attr:`is_seal_only`, in
+        which case it is every predecessor's replayed
+        :class:`~core.flight.resume.ReplayedEpisodeResult`, in this flight's
+        own roster order -- the SAME objects :meth:`_rows_from_phase_summaries`
+        already rendered the outputs from, handed back rather than
+        re-replayed a second time, so :meth:`seal` can render a seal-only
+        ``phases.json`` from the one replay this method already performed.
+
         The merged rows are emitted in this flight's own roster order, so the
         sealed file does not advertise which half a row came from; the
         manifest block(s) and the trace custody do.
@@ -11286,9 +11298,10 @@ class FlightRuntime:
 
         live_rows = self._canonical_output_rows(self._client)
         if getattr(self, "_resume", None) is None:
-            return list(live_rows), None
+            return list(live_rows), None, None
         policy_id = str(self._composed.values.get("policy", "")) or None
         by_sample: dict[str, Mapping[str, object]] = {}
+        replayed_by_sample: dict[str, ReplayedEpisodeResult] = {}
 
         def _absorb(rows) -> None:
             for row in rows:
@@ -11318,6 +11331,16 @@ class FlightRuntime:
             summaries, timings = predecessor.replay(
                 kept_ids, controller_policy_id=policy_id,
             )
+            if getattr(self, "_seal_only", False):
+                # E10e: the one replay this loop already performed IS every
+                # complete row's phase result -- collected here rather than
+                # replayed a second time when seal() renders phases.json.
+                # ``getattr`` (not ``self._seal_only``): several dispatch
+                # proofs drive an ``object.__new__(FlightRuntime)`` skeleton
+                # that never ran ``__init__`` and never sets this attribute
+                # (see ``_resume_dispatch_roster``'s own note above).
+                for result in summaries[0].results:
+                    replayed_by_sample[result.sample_id] = result
             replayed_rows = self._rows_from_phase_summaries(
                 summaries, policy=str(self._composed.values.get("policy", ""))
             )
@@ -11363,7 +11386,12 @@ class FlightRuntime:
                     kept_ids, flown=len(self._resume_flown_sample_ids), partial=len(partial),
                 )
             )
-        return [by_sample[sample_id] for sample_id in roster], block
+        seal_only_results = (
+            tuple(replayed_by_sample[sample_id] for sample_id in roster)
+            if getattr(self, "_seal_only", False)
+            else None
+        )
+        return [by_sample[sample_id] for sample_id in roster], block, seal_only_results
 
     def _close_live_speech_provider(
         self, *, finalize: bool, reason: str | None = None
@@ -11489,6 +11517,192 @@ class FlightRuntime:
             },
         }
 
+    def _seal_only_predecessor_cost_summary(self) -> Mapping[str, object]:
+        """Sum every declared predecessor's OWN real spend.
+
+        E10e (2026-09-29, seal-only read gap): a seal-only paired read cannot
+        get contacts/tokens/GPU-hours from this attempt's own manifest,
+        because :meth:`_seal_only_close_receipt` is honestly all-zero -- THIS
+        attempt contacted nothing. The rows it seals were paid for by its
+        predecessors, so a read of the merged attempt needs THEIR spend.
+
+        A declared predecessor is, in the ordinary case, an ABORTED attempt
+        (the resume-recovery module docstring: "an infrastructure failure --
+        the resident server was killed"), which by definition never reached
+        its own ``seal()`` and therefore never wrote a
+        ``<run_id>.generation-manifest.json`` or even a
+        ``<run_id>.run-manifest.json`` of its own -- there is no sealed
+        sibling file to read. Its real cost survives in exactly one place:
+        the trace this module already scanned when ``preflight()`` loaded
+        the resume (:attr:`_resume`, a
+        ``core.flight.resume.MergedPredecessors``). This calls its
+        :meth:`~core.flight.resume.MergedPredecessors.cost_totals` --
+        summed, per predecessor, from every contact's own recorded ``COST``
+        record -- rather than re-deriving that sum a second way.
+
+        GPU-hours is NOT in the trace at all (no GPU accounting record
+        exists at the per-contact level), so it is read, best-effort, from
+        each predecessor's OWN ``flight-receipts.json`` seal-stage serving
+        monitor when that file happens to exist (e.g. a predecessor that was
+        itself an ordinary completed flight rather than an aborted one).
+        ``None`` the moment ANY declared predecessor carries no monitor
+        summary -- a partial sum would silently understate real GPU cost, so
+        the honest answer is "not fully known" rather than a number that
+        looks complete but is not.
+        """
+
+        assert self._resume is not None
+        totals = self._resume.cost_totals()
+        attempt_ids = [predecessor.attempt_id for predecessor in self._resume.predecessors]
+        gpu_seconds_total = 0.0
+        gpu_available = True
+        for predecessor in self._resume.predecessors:
+            attempt_dir = self._predecessor_attempt_dir(predecessor.attempt_id)
+            receipts_path = attempt_dir / "flight-receipts.json"
+            active_seconds = None
+            if receipts_path.is_file():
+                try:
+                    receipts_document = json.loads(receipts_path.read_text(encoding="utf-8"))
+                except (OSError, ValueError):
+                    receipts_document = None
+                if isinstance(receipts_document, Mapping):
+                    stages = receipts_document.get("stages")
+                    seal_stage = stages.get("seal") if isinstance(stages, Mapping) else None
+                    monitor = (
+                        seal_stage.get("serving_monitor_summary")
+                        if isinstance(seal_stage, Mapping) else None
+                    )
+                    if isinstance(monitor, Mapping):
+                        active_seconds = monitor.get("active_seconds")
+            if isinstance(active_seconds, (int, float)) and not isinstance(active_seconds, bool):
+                gpu_seconds_total += active_seconds
+            else:
+                gpu_available = False
+        return {
+            "cost": {**totals, "umbrella_lock_sha256": None},
+            "predecessor_attempt_ids": attempt_ids,
+            "gpu_hours": (gpu_seconds_total / 3600.0) if gpu_available else None,
+        }
+
+    def _seal_only_phases_document(
+        self, seal_only_phase_results: Sequence[ReplayedEpisodeResult],
+    ) -> dict[str, object]:
+        """The ``<run_id>.phases.json``-shaped document a seal-only
+        completion's replay actually supports (E10e, 2026-09-29).
+
+        Deliberately NARROWER than a live flight's own ``phases.json``:
+        ``core.flight.resume``'s model-free replay reconstructs only what
+        the recorded ``MODEL_REQUEST``/``MODEL_RESPONSE``/``USE`` trace
+        bytes can prove -- the delivered text and the compact native-episode
+        receipt -- never ``consumption``, ``waves``, ``transitions``,
+        ``agent_states`` or the query-state custody a live
+        ``rails.runner.AgentLoopResult`` also carries. Those are
+        knowledge-provider and controller bookkeeping the live runner does
+        not separately re-emit to the trace for this program (its
+        ``ORG``/posthoc ``USE`` audit records are absent from a sealed SLURP
+        native trace; only ``MODEL_REQUEST``/``MODEL_RESPONSE``/
+        ``MODEL_WIRE_RESPONSE``/``COST``/native-role-contact/native-episode
+        records exist). Rather than silently omit or fabricate those
+        fields, every result names them under ``omitted_fields`` and the
+        document is marked ``seal_only_replay: true`` so a reader (e.g.
+        ``scripts/analysis/stage3_paired_read.py``'s ``_phase_boundaries``)
+        can tell a narrowed artefact from a full one and refuse to treat a
+        missing ``consumption`` block as "no item was ever supplied".
+
+        A free function of ``seal_only_phase_results`` (this attempt's own
+        plan/composed values aside), so a model-free BACKFILL over an
+        already-sealed run can call it too, from a replay it performs the
+        same way ``seal()`` does -- never a second derivation of the shape.
+        """
+
+        return {
+            "schema": "saea-flight-phase-summaries-v1",
+            "run_id": self._plan.run_id,
+            "attempt_id": self._plan.attempt_id,
+            "policy": self._composed.values.get("policy"),
+            "seal_only_replay": True,
+            "predecessor_attempt_ids": [
+                predecessor.attempt_id for predecessor in self._resume.predecessors
+            ],
+            "omitted_fields": [
+                "consumption", "waves", "transitions", "agent_states",
+                "initial_query_state", "final_query_state", "metrics",
+            ],
+            "phases": [
+                {
+                    "results": [
+                        {
+                            "sample_id": result.sample_id,
+                            "final_response_text": result.final_response_text,
+                            "final_response_sha256": hashlib.sha256(
+                                result.final_response_text.encode("utf-8")
+                            ).hexdigest(),
+                            "native_episode_receipt": dict(result.native_episode_receipt),
+                            "consumption": None,
+                            **(
+                                {"solver_group": dict(result.solver_group)}
+                                if result.solver_group is not None
+                                else {}
+                            ),
+                            **(
+                                {"relisten": dict(result.relisten)}
+                                if result.relisten is not None
+                                else {}
+                            ),
+                        }
+                        for result in seal_only_phase_results
+                    ],
+                }
+            ],
+        }
+
+    def _write_seal_only_generation_manifest(self, run_dir: Path) -> Mapping[str, object]:
+        """The seal-only substitute for the deferred-scoring generation
+        manifest an ordinary queue-managed flight writes.
+
+        E10e (2026-09-29). A seal-only completion never binds an
+        ``execution_policy`` and declares no delivery derivatives (it runs
+        as a standalone ``core.flight.cli seal-only`` invocation, never a
+        queue-managed worker), so ``seal()`` never reaches
+        ``core.flight.scoring.seal_scoring_inputs`` and
+        ``<run_id>.generation-manifest.json`` would otherwise be missing
+        entirely -- exactly the gap
+        ``scripts/analysis/slurp_paired_roster_read.py``'s ``load_arm``
+        refuses on. This writes a genuinely MINIMAL substitute, explicitly
+        marked ``seal_only: true`` and carrying a ``cost_provenance`` block
+        naming every predecessor attempt its ``cost`` was summed from
+        (:meth:`_seal_only_predecessor_cost_summary`) -- never this
+        attempt's own (honestly zero) spend, and never a byte-for-byte copy
+        of the run manifest the way an ordinary deferred flight's generation
+        manifest is.
+        """
+
+        summary = self._seal_only_predecessor_cost_summary()
+        path = run_dir / f"{self._plan.run_id}.generation-manifest.json"
+        document = {
+            "schema": "saea-seal-only-generation-manifest-v1",
+            "run_id": self._plan.run_id,
+            "attempt_id": self._plan.attempt_id,
+            "seal_only": True,
+            "cost": summary["cost"],
+            "cost_provenance": {
+                "kind": "predecessor-attempts",
+                "predecessor_attempt_ids": summary["predecessor_attempt_ids"],
+                "gpu_hours": summary["gpu_hours"],
+            },
+        }
+        raw = (
+            json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        ).encode("utf-8")
+        try:
+            with path.open("xb") as handle:
+                handle.write(raw)
+        except FileExistsError as error:
+            raise FlightRuntimeError(
+                f"seal-only generation manifest already exists at {path}"
+            ) from error
+        return document
+
     def seal(
         self,
         *,
@@ -11534,7 +11748,9 @@ class FlightRuntime:
         # and refuses any other name. Writing the bare name made official
         # scoring fail AFTER every contact had been spent.
         outputs_path = run_dir / f"{self._plan.run_id}.outputs.jsonl"
-        canonical_rows, predecessor_block = self._merged_canonical_rows()
+        canonical_rows, predecessor_block, seal_only_phase_results = (
+            self._merged_canonical_rows()
+        )
         self._trace_execution_unit_deliveries(self._client, canonical_rows)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
@@ -11583,6 +11799,28 @@ class FlightRuntime:
                 encoding="utf-8",
                 newline="\n",
             )
+        elif self._seal_only and seal_only_phase_results:
+            # E10e (2026-09-29, seal-only read gap). ``run_phases()`` never
+            # populates ``self._phase_summaries`` for a seal-only completion
+            # (E10d: "nothing left to fly, no client is built") -- but this
+            # attempt's sealed rows ARE every declared predecessor's replayed
+            # COMPLETE row (``_merged_canonical_rows``, above), so a per-phase
+            # artefact IS renderable from that SAME replay, not a second
+            # derivation of it. See :meth:`_seal_only_phases_document` for
+            # exactly what it carries and deliberately omits.
+            phases_path = run_dir / f"{self._plan.run_id}.phases.json"
+            phases_path.write_text(
+                json.dumps(
+                    self._seal_only_phases_document(seal_only_phase_results),
+                    ensure_ascii=False,
+                    indent=2,
+                    sort_keys=True,
+                    default=str,
+                )
+                + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
 
         if self._obs_result is not None:
             # The Earnings/obs dispatch: the obs driver already closed its own
@@ -11601,6 +11839,14 @@ class FlightRuntime:
             # its own attempt-store record and its own (empty) trace here,
             # the one place a seal-only completion establishes custody.
             close_receipt = self._seal_only_close_receipt()
+            # E10e (2026-09-29): this attempt's own cost is honestly zero
+            # (above); the paired-read driver needs the REAL predecessor
+            # spend, which a seal-only completion otherwise never seals
+            # anywhere (no execution_policy is ever bound for a standalone
+            # ``seal-only`` invocation, so ``seal_scoring_inputs`` below is
+            # never reached and no ``<run_id>.generation-manifest.json``
+            # would exist at all).
+            self._write_seal_only_generation_manifest(run_dir)
         else:
             close_receipt = self._client.close()
         result = RunResult(
@@ -11772,7 +12018,11 @@ class FlightRuntime:
             "phases_sha256": (
                 _sha256_file(phases_path) if phases_path is not None else None
             ),
-            "phase_count": len(self._phase_summaries),
+            "phase_count": (
+                len(self._phase_summaries)
+                if self._phase_summaries
+                else (1 if phases_path is not None else 0)
+            ),
             "trace_manifest_hash": close_receipt["trace_manifest_hash"],
             "cost": close_receipt["cost"],
             "ledger_cells": merged_ledger_cells,

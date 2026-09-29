@@ -164,21 +164,50 @@ def test_the_receipts_and_every_other_store_pin_are_comp1s_own(cells, comp1_cell
         assert composed.values["serving_slots"] == parent.values["serving_slots"]
 
 
-def test_no_prepared_phase_supply_is_committed_and_each_cell_pins_its_own(cells):
+def test_each_cell_pins_its_own_prepared_phase_supply_and_no_cell_pins_anothers(cells, comp1_cells):
+    """Post-flip invariant (flip at c6e98e6b, re-pinned by scripts/flights/repin_cell.py).
+
+    Before the flip no prepared phase supply was committed. The flip re-minted
+    each cell's own first-phase supply, so the invariant is now: each COMP-1b
+    cell pins exactly one prepared phase supply, under its OWN run id, declared
+    once among its readiness requirements, and no cell pins another cell's
+    supply (neither its sibling's nor COMP-1's).
+    """
+
+    pins = {}
     for name, (doc, cell, composed) in cells.items():
         run_id, fit_run = RUNS[name]
-        assert composed.values.get("prepared_phase_supply") is None
         assert cell["run_id"] == run_id
         assert composed.values["native_contact_fit"]["run_id"] == fit_run
-        assert cell["readiness"]["state"] == "held"
+        supply = composed.values.get("prepared_phase_supply")
+        assert supply is not None
+        assert supply["relpath"] == f"prepared/{run_id}/phase-supply-v1.json"
+        sha = supply["sha256"]
+        assert isinstance(sha, str) and len(sha) == 64 and all(ch in "0123456789abcdef" for ch in sha)
+        pins[name] = (supply["relpath"], sha)
+        assert cell["readiness"]["state"] == "ready"
         own = [r for r in cell["readiness"]["requirements"] if r["relpath"].endswith("phase-supply-v1.json")]
         assert len(own) == 1
         assert own[0]["kind"] == "preparation"
+        assert own[0]["relpath"] == supply["relpath"]
+        if "sha256" in own[0]:
+            assert own[0]["sha256"] == sha
         decisions = [r for r in cell["readiness"]["requirements"] if r["kind"] == "decision"]
-        assert not decisions
-        assert "--allow-output-change must never be passed" in cell["readiness"]["reason"]
+        assert len(decisions) == 1
+        assert decisions[0]["relpath"] == "coordination/slurp-stage3-comp1b-fold-a-v1/root-admission-v1.json"
         agreement = [r for r in cell["readiness"]["requirements"] if r["relpath"].endswith("agreement.jsonl")]
         assert len(agreement) == 1
+    # No cell pins another's supply: the two COMP-1b pins are distinct in path and bytes ...
+    assert len({relpath for relpath, _sha in pins.values()}) == len(pins)
+    assert len({sha for _relpath, sha in pins.values()}) == len(pins)
+    # ... and neither is one of COMP-1's own pins.
+    for _pdoc, _pcell, parent in comp1_cells.values():
+        theirs = parent.values.get("prepared_phase_supply")
+        if theirs is None:
+            continue
+        for relpath, sha in pins.values():
+            assert relpath != theirs["relpath"]
+            assert sha != theirs["sha256"]
 
 
 def test_the_caps_are_comp1s_own(cells):
