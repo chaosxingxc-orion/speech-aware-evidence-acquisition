@@ -167,7 +167,7 @@ def test_batch_driver_dispatches_a_seal_only_step_through_the_seal_only_mode():
         encoding="utf-8"
     )
     branch = driver[driver.index('if [ "$kind" = "seal-only" ]; then\n    $PY'):]
-    branch = branch[: branch.index("  fi\n")]
+    branch = branch[: branch.index("  else\n")]
     assert "core.flight.cli seal-only" in branch
     assert '--experiment "$exp" --cell "$cell"' in branch
     assert "--expected-session-id" not in branch and "--campaign-plan" not in branch
