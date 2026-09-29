@@ -290,13 +290,17 @@ def extract_pool(
     data_root: Path,
     gold_by_sid: Mapping[str, Any],
     attempt_dir: Path,
+    phases_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Load and derive one pool's full row/item state. ``attempt_dir`` is the sealed
     attempt directory carrying ``<run_id>.{phases.json,scores.json,outputs.jsonl}``
-    (``analysis.sealed_credit.pools.attempt_dir``)."""
+    (``analysis.sealed_credit.pools.attempt_dir``). ``phases_dir`` (run 2) reads the
+    phases file from a different attempt of the same run: a seal-only completion keeps
+    every row of its predecessor but seals no ``phases.json`` of its own, so its node
+    states come from the predecessor attempt (the pool's ``phases_attempt``)."""
 
     run_id = pool["run_id"]
-    phases = load_phases(attempt_dir, run_id)
+    phases = load_phases(phases_dir if phases_dir is not None else attempt_dir, run_id)
     scores = load_scores(attempt_dir, run_id, pool["scorer"])
     outputs = load_outputs(attempt_dir, run_id)
     ids = sorted(set(phases["rows"]) & set(scores["rows"]) & set(outputs["rows"]) & set(gold_by_sid))

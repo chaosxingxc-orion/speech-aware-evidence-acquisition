@@ -116,3 +116,29 @@ def test_blocking_roster_finding_refuses_before_any_pool_is_opened(tmp_path, cap
     # roster receipts instead: SLURP-STAGE3-CONSTRUCTION-R01C / SLURP-EVO-FOLD-A-V2 /
     # SLURP-EVO-FOLD-B-V2 are real, registered rosters, so dry-run succeeds.
     assert exit_code == 0
+
+
+def test_cross_flight_in_chain_replicate_alias_reads_at_fold_a_size(tmp_path, capsys):
+    cli = _load_cli()
+    exit_code = cli.main([
+        "--pools", str(_pools_manifest(tmp_path)), "--policy-space", str(_policy_space(tmp_path)),
+        "--read-design", "cross-flight-with-in-chain-replicate", "--out", str(tmp_path / "out"),
+        "--dry-run",
+    ])
+    assert exit_code == 0
+    out = capsys.readouterr().out
+    assert "'cross-flight-with-in-chain-replicate' at rows=1080" in out
+
+
+def test_report_renders_run_label_and_compositions():
+    cli = _load_cli()
+    credit_table = {"pools": {}}
+    comp = {"id": "c1", "components": [{"knob_id": "a", "value": "x"}], "predicted_intent_pp": 3.0,
+            "predicted_slu_pp": None, "guard_pp": 1.2485, "floor_pp": 2.5, "guard_discarded": False,
+            "clears_floor": True}
+    text = cli.render_report(credit_table, [], {"nominated": False, "reason": "none"}, "d", 1080,
+                             run_label="run 2", compositions=[comp], top_n=8)
+    assert text.startswith("# Sealed-credit inner loop, run 2")
+    assert "sealed-credit-inner-loop-run-2-v1" in text
+    assert "| c1 | a=x | +3.0000 | n/a |" in text
+    assert "## Top 8 candidates" in text

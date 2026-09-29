@@ -122,15 +122,42 @@ def _from_cited(knob: Mapping[str, Any], value: Any, source: Mapping[str, Any], 
             document = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, UnicodeError, json.JSONDecodeError) as error:
             raise EstimateError(f"cited source {read_json['path']!r}: cannot read: {error}") from error
-        intent_pp = float(_get_path(document, read_json["intent_field"]))
+        # Per metric: a field read off the sealed JSON or, when the artefact carries no such
+        # field (a deterministic entity edit changes no intent by construction; a composite whose
+        # SLU side is a counterfactual stated elsewhere), the literal ``intent_delta_pp`` /
+        # ``slu_delta_pp`` the source states. A literal half is recorded in ``evidence``
+        # (``literal_metrics``); an all-field source keeps run 1's evidence shape byte for byte.
+        literal_metrics = []
+        if "intent_field" in read_json:
+            intent_pp = float(_get_path(document, read_json["intent_field"]))
+        elif source.get("intent_delta_pp") is not None:
+            intent_pp = float(source["intent_delta_pp"])
+            literal_metrics.append("intent")
+        else:
+            raise EstimateError(
+                f"cited source {read_json['path']!r}: names neither read_json.intent_field nor intent_delta_pp"
+            )
         intent_ci = _get_path(document, read_json["intent_ci_field"]) if "intent_ci_field" in read_json else None
-        slu_pp = float(_get_path(document, read_json["slu_field"])) if "slu_field" in read_json else None
+        if "slu_field" in read_json:
+            slu_pp = float(_get_path(document, read_json["slu_field"]))
+        elif source.get("slu_delta_pp") is not None:
+            slu_pp = float(source["slu_delta_pp"])
+            literal_metrics.append("slu")
+        else:
+            slu_pp = None
         slu_ci = _get_path(document, read_json["slu_ci_field"]) if "slu_ci_field" in read_json else None
         evidence = {
             "type": "cited_json", "path": read_json["path"], "sha256": _digest_file(path),
-            "intent_field": read_json["intent_field"], "slu_field": read_json.get("slu_field"),
+            "intent_field": read_json.get("intent_field"), "slu_field": read_json.get("slu_field"),
             "intent_ci95": intent_ci, "slu_ci95": slu_ci,
         }
+        if literal_metrics:
+            evidence["literal_metrics"] = literal_metrics
+            evidence["literal_source"] = source.get("source")
+            if intent_ci is None and source.get("intent_ci95") is not None:
+                evidence["intent_ci95"] = source["intent_ci95"]
+            if slu_ci is None and source.get("slu_ci95") is not None:
+                evidence["slu_ci95"] = source["slu_ci95"]
     else:
         intent_pp = float(source["intent_delta_pp"])
         slu_pp = float(source["slu_delta_pp"]) if source.get("slu_delta_pp") is not None else None

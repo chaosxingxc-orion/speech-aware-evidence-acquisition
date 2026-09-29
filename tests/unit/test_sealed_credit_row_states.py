@@ -169,3 +169,16 @@ def test_note_state_and_entity_items_reused_from_entity_states():
     assert note_state("five pm", perc_tokens) == "CONTIGUOUS"
     assert note_state("five pm", ["nothing", "here"]) == "ABSENT"
     assert entity_items(gold, pred_exact) == []
+
+
+def test_extract_pool_reads_phases_from_a_separate_directory(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import row_states as rs_mod
+
+    seen = {}
+    monkeypatch.setattr(rs_mod, "load_phases", lambda d, r: seen.setdefault("phases", d) and {"rows": {}, "sha256": "0", "relpath": "p"})
+    monkeypatch.setattr(rs_mod, "load_scores", lambda d, r, s: seen.setdefault("scores", d) and {"rows": {}, "sha256": "0", "relpath": "s"})
+    monkeypatch.setattr(rs_mod, "load_outputs", lambda d, r: seen.setdefault("outputs", d) and {"rows": {}, "sha256": "0", "relpath": "o"})
+    pool = {"label": "x", "run_id": "R", "kind": "single-sample-arm", "roster": "F", "use": "tuning", "scorer": "s"}
+    out = rs_mod.extract_pool(pool, tmp_path, {}, tmp_path / "seal-only", tmp_path / "generation")
+    assert seen == {"phases": tmp_path / "generation", "scores": tmp_path / "seal-only", "outputs": tmp_path / "seal-only"}
+    assert out["row_count"] == 0

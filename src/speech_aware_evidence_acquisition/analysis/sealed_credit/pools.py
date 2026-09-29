@@ -45,7 +45,7 @@ SCHEMA = "saea-sealed-credit-pools-v1"
 POOL_KINDS = ("single-sample-arm", "grouped-multi-sample")
 POOL_USES = ("tuning", "read", "never-tuning", "descriptive")
 REQUIRED_POOL_KEYS = frozenset({"label", "run_id", "kind", "roster", "use", "scorer"})
-OPTIONAL_POOL_KEYS = frozenset({"attempt", "samples_per_row", "note", "program"})
+OPTIONAL_POOL_KEYS = frozenset({"attempt", "phases_attempt", "samples_per_row", "note", "program"})
 REQUIRED_MANIFEST_KEYS = frozenset({"schema", "tuning_roster", "read_rosters", "pools"})
 
 

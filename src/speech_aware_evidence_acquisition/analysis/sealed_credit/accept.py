@@ -159,4 +159,65 @@ def nominate(ranked: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-__all__ = ["AcceptError", "design_guard_and_floor", "score_candidate", "rank_candidates", "nominate"]
+def score_compositions(
+    estimates: list[Mapping[str, Any]], compositions: list[Mapping[str, Any]],
+    design: str, rows: int, repo_root: Path,
+) -> list[dict[str, Any]]:
+    """Composed policies (run 2; the design spec's coordinator ruling Q4 deferred them from run
+    1): each named composition lists ``{"knob_id", "value"}`` components; their single-knob
+    estimates are summed by ``estimate.compose`` (which refuses two components on one node) and
+    the sum is scored against ``design``'s guard and floor exactly like a single candidate.
+
+    The sum is ADDITIVE: rows two components both act on are not de-duplicated for cited or
+    pool-pair sources, so for same-direction components the sum is an upper bound and every
+    composition carries that caveat. A composition naming an unknown (knob, value) is refused.
+    """
+
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import estimate as est
+
+    bounds = design_guard_and_floor(design, rows, repo_root)
+    index = {(e["knob_id"], json.dumps(e["value"], sort_keys=True)): e for e in estimates}
+    out = []
+    for comp in compositions:
+        parts = []
+        for component in comp["components"]:
+            key = (component["knob_id"], json.dumps(component["value"], sort_keys=True))
+            if key not in index:
+                raise AcceptError(
+                    f"composition {comp['id']!r}: no estimate for knob {component['knob_id']!r} "
+                    f"value {component['value']!r}"
+                )
+            parts.append(index[key])
+        composed = est.compose(parts)
+        scored = score_candidate(
+            {"knob_id": comp["id"], "value": [c["value"] for c in comp["components"]],
+             "predicted_intent_pp": composed["predicted_intent_pp"],
+             "predicted_slu_pp": composed["predicted_slu_pp"], "unobserved": composed["unobserved"]},
+            bounds,
+        )
+        out.append({
+            "id": comp["id"], "note": comp.get("note", ""),
+            "components": [
+                {"knob_id": c["knob_id"], "value": c["value"], "node": c["node"],
+                 "predicted_intent_pp": c["predicted_intent_pp"], "predicted_slu_pp": c["predicted_slu_pp"],
+                 "unobserved": c["unobserved"]}
+                for c in composed["components"]
+            ],
+            "predicted_intent_pp": composed["predicted_intent_pp"],
+            "predicted_slu_pp": composed["predicted_slu_pp"],
+            "unobserved_component": composed["unobserved"],
+            "read_design": design, "read_rows": rows,
+            "guard_pp": bounds["guard_pp"], "floor_pp": bounds["floor_pp"],
+            "guard_discarded": scored["guard_discarded"], "guard_note": scored["guard_note"],
+            "clears_floor": (not scored["guard_discarded"]
+                             and bounds["floor_pp"] is not None
+                             and composed["predicted_intent_pp"] > bounds["floor_pp"]),
+            "caveat": "additive sum of single-knob estimates; overlapping rows are not de-duplicated",
+        })
+    return out
+
+
+__all__ = [
+    "AcceptError", "design_guard_and_floor", "score_candidate", "rank_candidates", "nominate",
+    "score_compositions",
+]

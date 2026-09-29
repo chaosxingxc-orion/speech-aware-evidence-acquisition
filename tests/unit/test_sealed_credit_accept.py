@@ -86,3 +86,39 @@ def test_claim_ceiling_is_always_nominated_never_admitted():
     ranked = accept.rank_candidates([clears], DESIGN, ROWS, REPO_ROOT)
     nomination = accept.nominate(ranked)
     assert nomination["claim_ceiling"] == "nominated"
+
+
+def _node_estimate(knob_id, node, intent_pp, slu_pp, unobserved=False):
+    e = _estimate(knob_id, "v", intent_pp, slu_pp, unobserved)
+    e["node"] = node
+    return e
+
+
+def test_compositions_sum_distinct_nodes_and_score_against_cross_flight_bar():
+    estimates = [
+        _node_estimate("seed", "perception_seed", 2.0, 0.5),
+        _node_estimate("scope", "delivery_scope", 0.0, 1.0),
+        _node_estimate("contract", "solver_contract", 0.0, -3.0),
+        _node_estimate("passenger", "perception_boundary_depth", 0.0, 0.0, unobserved=True),
+    ]
+    comps = [
+        {"id": "c-ok", "components": [{"knob_id": "seed", "value": "v"}, {"knob_id": "scope", "value": "v"},
+                                      {"knob_id": "passenger", "value": "v"}]},
+        {"id": "c-harm", "components": [{"knob_id": "seed", "value": "v"}, {"knob_id": "contract", "value": "v"}]},
+    ]
+    out = {c["id"]: c for c in accept.score_compositions(
+        estimates, comps, "cross-flight-with-in-chain-replicate", 1080, REPO_ROOT)}
+    assert abs(out["c-ok"]["floor_pp"] - 2.5) < 1e-9
+    assert out["c-ok"]["predicted_intent_pp"] == 2.0 and out["c-ok"]["predicted_slu_pp"] == 1.5
+    assert out["c-ok"]["clears_floor"] is False  # 2.0 < 2.5 bar
+    assert out["c-ok"]["unobserved_component"] is True
+    assert out["c-harm"]["guard_discarded"] is True  # -2.5 below -1.2485
+
+
+def test_composition_naming_unknown_value_is_refused():
+    try:
+        accept.score_compositions([], [{"id": "x", "components": [{"knob_id": "k", "value": 1}]}],
+                                  DESIGN, ROWS, REPO_ROOT)
+        assert False, "expected AcceptError"
+    except accept.AcceptError:
+        pass
