@@ -1,7 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T15:04:31Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records and read agent) · HEAD at writing `99c5b004` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T16:04:34Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records and read agent) · HEAD at writing `c0067e0e` on `master` (plus this refresh commit), tree clean.
+**Since 15:04Z (records agent):** **Owner decisions 198/199 recorded** (registry rows at `f26e3cdb`). **198: COMP-1
+NOT ADMITTED** (intent +4.26 [+2.41, +6.11], SLU-F1 -2.24 [-3.97, -0.47], HARMFUL branch). Cause named by the
+attribution `docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md` (branch `fable/comp1slu`, not yet merged):
+the Solver cited-answer contract, +102 false positives on the 414 zero-gold rows; the unwrap and the supply are
+cleared. Owner adopted option B ("可以", "OK"): **COMP-1b** = AGREE + centroid boundary key WITHOUT the citation
+contract, TRAIN Fold A vs the same in-chain A/A, declared intent +4.26, SLU guard -1.2485, registered and held on
+`fable/comp1b` (cell `slurp-native-stage3-comp1b-fold-a-v1`), flipped/queued after the P-SV flips; then **A2 =
+COMP-1b on DEV-2000-ADDED**. The citation contract leaves the COMP-2 component list (it may return only as its own
+single-factor cell with an entity-emission limit). GPU order: G5 -> COMP-1b -> P-SV-2 / P-SV-3 -> A2. **199 (owner
+directive): empty is legal** -- a slot may be none and knowledge retrieval may return nothing; supply abstention and
+the answer-side "no entities" option become first-class, receipted outcomes (never padded to k); the module design
+gains section 2c "Empty is legal" (`c0067e0e`: `supply_abstain: {rule, threshold, pinned table}`, inventory row 19,
+model-free migration step 6a / AT-M5; all-off arms keep fixed-k bytes); the offline supply-abstention headroom
+analysis is dispatched on `fable/emptysupply`; B4 (offline net -0.19) is re-examined under 199, not closed.
+**P-SV-1 seal-only** (decision 197): registered and countersigned (`a842f670`), flipped to ready at `e42e87f3`, but the
+flip was refused on the parent-package residue -- the cell is ready-unconverged at `e42e87f3`; the fix is on
+`fable/repinresume2`. **P-SV-2's re-pin and P-SV-3's flip are queued behind that fix.** **G5 is flying.**
 **Since 14:45Z (records and read agent):** the consumption-module design spec with coordinator rulings R1-R5 is merged
 (`d51063b4`, `docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md`, decisions 195/196). **COMP-1
 seal-only COMPLETED**: attempt `attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only` FINALIZED at
@@ -247,7 +264,7 @@ Yours, unchanged:
 
 Mine: make no cross-flight claim without an in-chain replicate and no benefit claim under 200 rows. Every cell registered from 2026-09-27 carries a `stage3_measurement` block, and `stage3_effect_floor_check.py` enforces it.
 
-**Owner rulings received (decisions 175-194, 2026-09-28 / 29).** Open: **decision 195** (proposed; header), the bar for the deterministic do-not-tag scope rule: A, no-harm cross-flight on DEV-2000 (2.5 pp), or B, a USE-layer node action read inside the COMP-2 composed arm's DEV read (recommended).
+**Owner rulings received (decisions 175-199, 2026-09-28 / 29).** None open; 197-199 are listed below.
 
 1. 175: COMP-1 recovers by RESUME; `-REC` superseded unflown; the resume is the flight's one recovery.
 2. 176: `kb_policy` digest lock re-pinned (`cfd34bf5`).
@@ -271,8 +288,11 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 20. 194: E4-1 seal-only completion GO; countersigned `b3984358`, receipt minted, column gate pre-declared; residue fix merged `0ef6d98c`; flipped at `0b50d47e`, queued as `SAEA-Queue-E4SEAL`.
 21. 195: option B (USE-layer node action inside COMP-2; one consumption module that may call the model), recorded `da979818`.
 22. 196: owner directive, carrier-agnostic consumption module (Audio2Tool, Earnings-21, Earnings-22 after stable SLURP gains), recorded `da979818`; design merged `d51063b4` (rulings R1-R5).
+23. 197: P-SV-1 seal-only completion GO; registered and countersigned `a842f670`, flipped to ready `e42e87f3`; the flip was refused on the parent-package residue (cell ready-unconverged), fix on `fable/repinresume2`.
+24. 198: COMP-1 NOT ADMITTED (HARMFUL on the SLU-F1 guard; cause: the Solver citation contract); option B -- COMP-1b (AGREE + centroid key, no citation contract) held on `fable/comp1b`, then A2 = COMP-1b on DEV-2000-ADDED; recorded `f26e3cdb`.
+25. 199: owner directive, empty supply and none slots are first-class outcomes; recorded `f26e3cdb`; module design section 2c `c0067e0e`; offline analysis on `fable/emptysupply`.
 
-**Pending branches (not merged):** `fable/psvsealfix` (the P-SV-1 I7v receipt fix); `fable/psv3` (P-SV-3 registration, boundary-depth column). `fable/moduledesign` is merged (`d51063b4`), `fable/comp1read` is merged (`99c5b004`). `fable/repinresume` is merged (`0ef6d98c`). `fable/floor190` (merge `c2f1be08`) and `fable/w5offline` (merge `949d77d1`) are merged today, after `fable/e4sealfix` (merge `109538e8`), `fable/psvrepinfix` (merge `4b1283e0`) and the earlier set. **Pending engineering:** the P-SV-1 I7v receipt fix, then P-SV-1's seal-only recovery (decision 197) and P-SV-2's re-pin; the registration gate's direct check of seal-only decision receipts (header). Queue order: `SAEA-Queue-SEALONLY` (COMP-1 seal-only + G5, `fd8a01fe`) -> `SAEA-Queue-E4SEAL` (E4-1 seal-only, `0b50d47e`) -> filler; `SAEA-Queue-PSV` stays halted.
+**Pending branches (not merged):** `fable/repinresume2` (the parent-package residue fix for the P-SV-1 seal-only flip); `fable/comp1slu` (COMP-1 SLU harm attribution); `fable/comp1b` (COMP-1b registration, held); `fable/emptysupply` (supply-abstention offline analysis, dispatched); `fable/psv3` (P-SV-3 registration, boundary-depth column). `fable/psvsealfix` is merged (`0177f83f`). `fable/moduledesign` is merged (`d51063b4`), `fable/comp1read` is merged (`99c5b004`). `fable/repinresume` is merged (`0ef6d98c`). `fable/floor190` (merge `c2f1be08`) and `fable/w5offline` (merge `949d77d1`) are merged today, after `fable/e4sealfix` (merge `109538e8`), `fable/psvrepinfix` (merge `4b1283e0`) and the earlier set. **Pending engineering:** the residue fix (`fable/repinresume2`), then P-SV-1's seal-only flip convergence (decision 197), P-SV-2's re-pin and P-SV-3's flip; the registration gate's direct check of seal-only decision receipts (header). Queue order: `SAEA-Queue-SEALONLY` (COMP-1 seal-only + G5, `fd8a01fe`) -> `SAEA-Queue-E4SEAL` (E4-1 seal-only, `0b50d47e`) -> filler; `SAEA-Queue-PSV` stays halted.
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code). The supply-router test failure found during E4 v1 (a bare `object()` double refusing the bolted-on binding) is fixed (`87146390`).
 
@@ -295,11 +315,11 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 
 ## 7. My next action
 
-1. COMP-1 is read (`99c5b004`): write the coordinator verdict clause (HARMFUL branch on the SLU-F1 guard; locate the slot-side conflict, the cited-answer contract being the leading suspect). G5 is flying (`SAEA-Queue-SEALONLY`, `fd8a01fe`); read it against the shared A/A when sealed.
+1. COMP-1 is NOT ADMITTED (decision 198; cause the citation contract): merge `fable/comp1slu`, then flip and queue COMP-1b (`fable/comp1b`) after the P-SV flips; A2 = COMP-1b on DEV-2000-ADDED follows its read. G5 is flying (`SAEA-Queue-SEALONLY`, `fd8a01fe`); read it against the shared A/A when sealed.
 2. E4-1 seal-only runs next (`SAEA-Queue-E4SEAL`, `0b50d47e`); read the columns against the pre-declared gate; then the filler runs inline. SLURP only (187).
-3. P-SV-1: land the I7v receipt fix (`fable/psvsealfix`), then the decision-197 seal-only recovery (no re-fly); re-pin and fly P-SV-2; register P-SV-3 (`fable/psv3`); read under the decision-190 floors.
-4. Build the one consumption module from the merged design (195/196, `d51063b4`); remove `/home/chao/saea-queue/watchdog.hold` once `ready_chains.json` names the next ready chain.
-5. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), then flip and queue A2.
+3. P-SV-1: land the parent-package residue fix (`fable/repinresume2`), converge the decision-197 seal-only flip (no re-fly); then re-pin P-SV-2 and flip P-SV-3 (`fable/psv3`); read under the decision-190 floors.
+4. Build the one consumption module from the merged design (195/196, `d51063b4`; section 2c for decision 199, supply abstention, pending the `fable/emptysupply` analysis); remove `/home/chao/saea-queue/watchdog.hold` once `ready_chains.json` names the next ready chain.
+5. Declare A2's `expected_effect_pp` from the COMP-1b read (A2 = COMP-1b on DEV-2000-ADDED, decision 198) by its formula (row 139), then flip and queue A2.
 
 ## 8. Housekeeping we share
 

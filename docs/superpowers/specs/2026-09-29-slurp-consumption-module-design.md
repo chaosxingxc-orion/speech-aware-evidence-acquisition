@@ -62,6 +62,7 @@ lock (the base every composed read is compared against, decision 169); **C** = a
 | 16 | E3 progressive slot loading (slot-types node, then full cards for chosen types) | `docs/superpowers/specs/2026-09-28-e3-progressive-slot-loading-design.md` only | designed, not built (re-plan v3, R9) | C, ORG/USE; new `slot-types` node before the Solver | +1 (ceiling 12, E3 spec section 3) | none measured |
 | 17 | finite-completion / ReAct-exhaustion declarations | `native_episode.finite_completion_policy`, `react_exhaustion_policy` | NEUTRAL (harness receipt), mandatory (`scripts/checks/finite_completion_policy_check.py`) | L, harness | none | never fired (harness receipt) |
 | 18 | dispatcher slot fill | `rails/dispatch_slot_fill.py` | PENDING, request-bytes-identical run-level module (harness receipt) | scheduling, not a component | none | throughput only |
+| 19 | supply abstention (decision 199): `supply_abstain: {rule, threshold, pinned table}` per supply node; empty supply and empty entity list are valid (section 2c) | this design only | designed, offline analysis pending (branch fable/emptysupply) | C, SUPPLY/USE; every supply node the module owns, plus the Solver "no entities" option | none | none measured; B4 offline net -0.19 re-examined under it |
 
 Closed or barred, never components: W-SV-1 (inert), W4 / W4-SV and every slot-convention card (decision 191), W5
 (decision 192), W3a contrast cards (phase-2 spec ruling O5), and the HARMFUL modules of the harness receipt (silence
@@ -223,6 +224,25 @@ The adapter line budget is 260 per file (`engineering_base_check.py:71`); `rails
 already at 260, so the hooks go into one new per-carrier file beside the runtime adapter (precedent
 `rails/adapters/slurp_runtime_material.py`), each under the budget.
 
+## 2c. Empty is legal (owner decision 199, 2026-09-29)
+
+The owner ruled that a slot may be none and that knowledge retrieval may return nothing (registry row 199); the module
+makes both first-class outcomes. The supply policy of every node the module owns (exemplar supply, boundary supply,
+slot views) returns an ordered list that MAY be empty; nothing pads it back up to k. The decision to return empty is a
+registered, receipted policy, `supply_abstain: {rule, threshold, pinned table}`, applied to the retrieval scores of
+that node, never a silent cap or a truncation hidden inside a store. Every abstention writes a receipt row (node, rule,
+threshold, the scores it saw, the empty delivery), so an empty supply is as auditable as a full one. The Perception and
+Solver contracts state in their instruction bytes that an empty supply is valid input and that an empty entity list
+is a valid answer; the Solver contract carries an explicit "no entities" option instead of forcing emission, which is
+the failure the COMP-1 citation contract showed (+102 false positives on the 414 zero-gold rows of Fold A). The read
+design counts abstentions per node and reads `present`, intent and SLU-F1 on the abstained rows separately from the
+supplied rows, beside the pooled table. The all-off arms keep today's fixed-k behaviour (no `supply_abstain` block),
+so the module-all-off A/A request bytes are unchanged and AT-M0 to AT-M4 still hold. Carrier independence follows
+section 2b: the abstain rule and its receipt live in the module, while the score it thresholds comes from the carrier
+adapter (retrieval similarity, vote share, or a carrier-defined relevance). The threshold is fitted model-free on
+construction data only (the offline headroom analysis on branch fable/emptysupply) and pinned before any flight; B4
+(explicit empty-entity decision, offline net -0.19) is re-examined under this rule rather than closed.
+
 ## 3. Composition rule
 
 ### 3.1 The config block
@@ -305,6 +325,11 @@ convergence.
    and records. Checks that must pass: `harness_admission_check`, `engineering_base_check`,
    `flight_registration_check`, `stage3_effect_floor_check` (with `primary_metric_key` declared, decision 190),
    `finite_completion_policy_check`, `stage3_algorithm_label_check`, plus `cli check` and the handoff freshness stamp.
+6a. **Supply abstention, model-free (decision 199, section 2c).** Register the `supply_abstain` block and its receipt
+   rows; pin the threshold table fitted offline on construction data (branch fable/emptysupply); add the explicit
+   "no entities" option to the Solver contract as a component-owned template. **AT-M5:** with the block absent the
+   module renders the AT-M0 to AT-M4 bytes unchanged; with it present, on a sealed pool and a recording fake server,
+   every abstained node delivers an empty list with a receipt row and no node is padded to k.
 7. **First composed read (first model contact of the module).** DEV-2000-ADDED: the module with its C components as
    decided by the reads R4 (COMP-1/G5), R6 (P-SV) and R3 (E4-1) plus the scope rule (decision 195 = B), against the
    module-all-off (lock layer) in-chain A/A; bar: cross-flight 2.5 pp at n = 1,080 (instrument note
