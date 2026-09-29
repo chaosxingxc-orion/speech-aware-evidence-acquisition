@@ -218,3 +218,9 @@ PYTHONPATH=src python -B scripts/analysis/slurp_comp1b_read_supplement.py --repo
 Outputs under `analysis/SAEA-SLURP-STAGE3-COMP1B-FOLD-A-PAIRED-ANALYSIS-V1/`: `vs-aa/`, `vs-comparator-sealonly/`,
 `supplement-v1.json` (sha256 `bdde064c...b1b486`); `attribution-classes-comp1b-v1.json` is an earlier in-session
 run of the same class table (identical counts).
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+- **COMP-1b (AGREE + centroid boundary key, no citation contract): NOMINATED on intent, not admitted.** Intent +3.80 [+1.94, +5.65] vs the in-chain A/A clears the 2.5 pp cross-flight bar on the point estimate with the lower bound above zero (0.46 pp under the declared 4.26); official SLU-F1 -0.60 [-2.29, +1.07] shows no measured loss (guard -1.2485 on the point). Development number (decisions 28/86).
+- **Root cause confirmed by removal.** Against COMP-1, removing the citation contract gives SLU-F1 +1.64 [+0.38, +2.92] with intent -0.46 [-1.30, +0.37]; zero-gold rows emitting an entity return to the A/A level (161 vs 162; COMP-1 252). The citation contract is closed as a COMP-2 component (decision 198).
+- **Admission test = A2.** COMP-1b's replication on DEV-2000-ADDED against its own in-chain A/A (registered held: `slurp-native-stage3-comp1b-dev2000-added-v1`, declared +3.80, guard h_SLU 1.2525) is the dev-admission read; on NOMINATED-or-better there, COMP-1b becomes the first composed component list of the consumption module (AGREE + centroid) and the test-sample milestone (decision 151) can be requested. Takeaway intent -10.0 and general SLU -15.5 (n = 60 strata) are noted for the DEV read's per-stratum table, not gated.
