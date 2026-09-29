@@ -1292,8 +1292,22 @@ def render_relisten_shadow_columns(
             delivered_entities, receipt, bound_values=bound_values,
         )
         if ok:
-            text_a = render_answer({"scenario": scenario, "action": action, "entities": column_a_entities})
-            text_b = render_answer({"scenario": scenario, "action": action, "entities": column_b_entities})
+            # A column whose bound entity list equals the delivered one IS the
+            # delivered answer: it keeps the sealed text byte for byte. The
+            # canonical render (sorted keys) is used only for a column bind()
+            # actually changed. The sealed delivered text is not always the
+            # canonical render: a natively committed answer is sealed in the
+            # core's own emitted JSON form (key order scenario/action/entities,
+            # compact separators), which the official scorer parses to the same
+            # items; E4-1 read, 2026-09-29: 976 of 1,080 sealed rows.
+            text_a = (
+                sealed_text if column_a_entities == delivered_entities
+                else render_answer({"scenario": scenario, "action": action, "entities": column_a_entities})
+            )
+            text_b = (
+                sealed_text if column_b_entities == delivered_entities
+                else render_answer({"scenario": scenario, "action": action, "entities": column_b_entities})
+            )
         else:
             # A malformed delivered answer carries no entities to re-bind at
             # all; both shadow columns fall back to the sealed text

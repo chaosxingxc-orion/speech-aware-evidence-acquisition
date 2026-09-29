@@ -308,6 +308,42 @@ def test_render_relisten_shadow_columns_no_receipt_row_is_at1_by_construction(tm
         assert rows[0]["text"] == text
 
 
+def test_render_relisten_shadow_columns_keeps_a_non_canonical_sealed_text_when_nothing_binds(tmp_path):
+    """AT1 on a natively committed answer: the sealed text is the core's own
+    compact JSON (key order scenario/action/entities), not the sorted-key
+    canonical render. A row whose receipt accepted nothing keeps that text
+    byte for byte in both columns (E4-1 read, 2026-09-29)."""
+    text = json.dumps(
+        {"scenario": "alarm", "action": "set", "entities": [{"type": "time", "filler": "7 pm"}]},
+        separators=(",", ":"),
+    )
+    assert text != score_mod.render_answer(json.loads(text))
+    order = rl.confirm_order("s1", "time")
+    heard_same = rl.decide_entity(
+        index=0, slot_type="time", delivered_value="7 pm",
+        blind=rl.BlindResult(rl.BLIND_UNHEARD, None, 0), blind_contact_id="blind-0",
+        confirm_letter=("B" if order[0] == rl.CONFIRM_CANDIDATE else "A"),
+        order=order, confirm_contact_id="confirm-0",
+    )
+    assert heard_same.accept is False
+    receipt = rl.seal_relisten_receipt([heard_same], max_slots_per_row=3)
+    row = {"sample_id": "s1", "text": text, "native_episode_receipt": {"kind": "accepted"},
+           "relisten": receipt}
+    bundle = _bundle(tmp_path, [row], {})
+    manifest = score_mod.render_relisten_shadow_columns(
+        bundle, {"s1": "alarm"}, tmp_path / "analysis",
+        run_id="RUN", attempt_id="ATT", roster_sha256="1" * 64, config_hash="c" * 64,
+    )
+    a_rows = list(score_mod.iter_jsonl(Path(manifest["copies"][rl.COLUMN_REPLACE_ONLY]["path"])))
+    assert a_rows[0]["text"] == text
+    assert manifest["at1_column_reproduction_checked_rows"] >= 1
+    b_rows = list(score_mod.iter_jsonl(Path(manifest["copies"][rl.COLUMN_REPLACE_DROP_UNHEARD]["path"])))
+    if heard_same.dropped_when_unheard:
+        assert json.loads(b_rows[0]["text"])["entities"] == []
+    else:
+        assert b_rows[0]["text"] == text
+
+
 def test_render_relisten_shadow_columns_replaces_and_drops(tmp_path):
     trace = {}
     _trace_contact(trace, "blind-0", json.dumps({"heard": True, "value": "eight pm"}))
