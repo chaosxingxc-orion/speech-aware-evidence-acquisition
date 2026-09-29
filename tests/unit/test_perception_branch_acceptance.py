@@ -125,6 +125,8 @@ def _at_p5_fixture():
                     "note_sha256": contact["response_text_sha256"],
                     "note_parse_status": "ok",
                     "candidate_intent_ids": list(candidates[branch_id]),
+                    "presentation_skip_reason": None, "contrast_block_sha256": None,
+                    "min_candidates_met": None,
                 }
                 for index, (branch_id, contact) in enumerate(zip(BRANCH_IDS, contacts))
             ],

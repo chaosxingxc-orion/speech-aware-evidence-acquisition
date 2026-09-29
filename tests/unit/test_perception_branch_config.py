@@ -180,6 +180,10 @@ values["native_episode"]["roles"]["perception"]["branches"] = {{
         {{
             "branch_id": "B", "max_supplied_items": 8,
             "presentation_id": "top2-contrast-v1",
+            "contrast_pairs": {{
+                "relpath": "prepared/SAEA-TEST-PERCEPTION-CONTRAST-PAIRS-V1/table.json",
+                "sha256": "a" * 64,
+            }},
         }},
         {{"branch_id": "T", "replicate_of": "A", "max_supplied_items": 8}},
         {{"branch_id": "A", "deliver": True, "max_supplied_items": 8}},
