@@ -8,11 +8,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-generation-v1",
       "cell": "slurp-native-stage3-w4sv-fold-a-v1",
-      "composed_config_hash": "ba34275543f0da154584d33884a957aceb9d0e87ab7f719f8cda34d440f9e890",
+      "composed_config_hash": "e526ece2fb5989d549ccb73d8d6b2184060459e6d0d57deb856cad5161963b2a",
       "experiment": "slurp-native-stage3-w4sv-fold-a-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-w4sv-fold-a-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-FIT-V1",
-      "protocol_hash": "a5134bcb7554bd2063bfdf77d1a9048fc1bee26baf1735e9e5a1d726df4a8c3a",
+      "protocol_hash": "da41b2179f03280b67e052429fcb7e271275059ca7d14f5c1de66e6c3b0c93c5",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1",
       "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"

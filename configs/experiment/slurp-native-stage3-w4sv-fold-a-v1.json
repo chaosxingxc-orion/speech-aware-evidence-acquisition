@@ -16,13 +16,26 @@
         "reason": "Cell W4-SV registered before contact on 2026-09-28 from the retained AGREE arm fragments by script (decision 58) under owner decision 172 and the release-swap amendment (coordinator, 2026-09-28). The null is the in-flight twin arm t-twin; there is no separate A/A and no comparator is re-flown. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/w4sv/w4sv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (neither the alternate nor the arm group is an input to it). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-w4sv-fold-a-admission-v1",
+            "relpath": "coordination/slurp-stage3-w4sv-fold-a-v1/root-admission-v1.json",
+            "sha256": "aeca648727dc747e9a7ca96a9cdfa24041dfce3fa30c33db73224e7482981816",
+            "reason": "Decision slurp-stage3-w4sv-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors, through the same rails.phase_supply.build_bootstrap_selection recall/rank/fuse the flight runs at the Solver -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 rows with a self-excluded exemplar (the pool excludes every Fold A recording by construction, and the exclusion is implemented and tested anyway), 0 rows with no vote, 0 pool values without a build-time target, all 60 boundary facets reachable.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
             "sha256": "018ca6ef0d10bbf8d19645994420820faf7f31961cf91a6080116e4b434016c1"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1/phase-supply-v1.json",
+            "sha256": "a635b7426412b456c3f770c3ac95f75ff5342ebeae0ece7542993edcd3f38d71",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1"
     }

@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "f3a9427ae9506059c472ae10408fc72f4b75957032c689e9554013b248741d4a"
+    "sha256": "3017903fc74d84ad95b586613afe44e8b2d9d9bafc41085d8baa4e2db12de0f6"
   },
   "purpose": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1: structural form proof only: no score and no read.",
   "quality_read_gate": "No column read before the complete sealed manifest, the ordered outputs, the phase summary, the single complete official TRAIN score of the delivered rows and the three rendered-and-scored first-visit columns exist; the READ row must be countersigned first.",
