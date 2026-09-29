@@ -927,6 +927,17 @@ class NativeEpisodeRunBinding:
     # unless ``roles.perception.branches`` is declared. Declared LAST, for
     # the same reason ``supply_variant_for_phase``'s field is.
     perception_branch_seeds: Mapping[str, Mapping[str, tuple]] | None = None
+    # Same-flight instrument, PHASE 2, "What to build" item 1: every
+    # declared Perception branch's own pinned, loaded, verified contrast-pair
+    # table -- ``{branch_id: Mapping[frozenset[str], Mapping[str, object]]}``
+    # -- flight-owned exactly as ``perception_branch_seeds`` is and computed
+    # once, before any contact
+    # (:meth:`core.flight.runtime.FlightRuntime._perception_contrast_pairs_
+    # for_group`). ``None`` -- and therefore byte-identical to the tree
+    # before this table existed -- unless some declared branch carries a
+    # ``contrast_pairs`` pin. Declared LAST, after ``perception_branch_
+    # seeds``, for the same reason that field is.
+    perception_contrast_pairs: Mapping[str, Mapping] | None = None
 
 
 @dataclass(frozen=True)
@@ -1438,7 +1449,9 @@ def load_native_episode_config(
         # ``registered_presentation_ids`` below non-empty the first time this
         # loader runs, regardless of what any other module has already
         # imported.
-        from .perception_presentations import PERCEPTION_PRESENTATIONS  # noqa: F401
+        from .perception_presentations import (  # noqa: F401
+            PERCEPTION_PRESENTATIONS, TOP2_CONTRAST_PRESENTATION_ID,
+        )
 
         declared_stores = values.get("knowledge_stores")
         if declared_stores is not None and not isinstance(declared_stores, Mapping):
@@ -1455,6 +1468,9 @@ def load_native_episode_config(
                 ),
                 registered_presentation_ids=tuple(PERCEPTION_PRESENTATIONS.names()),
                 max_candidates_ceiling=DEFAULT_MAX_SLURP_CANDIDATES,
+                # "What to build" item 1: a branch declaring top2-contrast-v1
+                # must carry a contrast_pairs pin, and no other branch may.
+                top2_contrast_presentation_id=TOP2_CONTRAST_PRESENTATION_ID,
             )
         except PerceptionBranchError as error:
             raise ValueError(
