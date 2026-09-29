@@ -79,6 +79,68 @@ def digest(value: object) -> str:
     return hashlib.sha256(canonical_bytes(value)).hexdigest()
 
 
+#: The per-branch receipt key of a Perception branch group
+#: (``native_episode.roles.perception.branches.branches[*]``): the pin of the
+#: prepared branch-seed artifact, written onto the B branches AFTER that
+#: artifact is prepared. It is the nested twin of ``prepared_phase_supply``
+#: in :data:`_RECEIPT_KEYS` and is excluded from every artifact identity for
+#: the same reason.
+BRANCH_SEED_RECEIPT_KEY = "prepared_seed"
+
+
+def without_branch_seed_receipts(branches_block: object) -> object:
+    """``branches_block`` with every branch row's ``prepared_seed`` removed.
+
+    ``branches_block`` is a declared ``native_episode.roles.perception.
+    branches`` mapping. The pin names an artifact PRODUCED from an identity
+    that includes this block, so it must never be one of that identity's own
+    inputs: binding it made the identity circular (2026-09-29, P-SV-1 smoke
+    re-pin). The branch-seed re-pin drops the pin before producing and
+    writes a new one after, so every artifact whose identity carried the pin
+    -- the cell's own prepared first-phase supply, loaded by the branch-seed
+    producer, and the branch seed itself, verified at flight time with the
+    pin present -- stopped verifying. Every other key, including each
+    branch's real axes (knobs, release_swap, presentation_id,
+    min_candidates, contrast_pairs), is kept. Returned unchanged (the same
+    object) when no row carries the key, so no identity of a cell without a
+    pinned branch seed moves.
+    """
+
+    if not isinstance(branches_block, Mapping):
+        return branches_block
+    rows = branches_block.get("branches")
+    if not isinstance(rows, list) or not any(
+        isinstance(row, Mapping) and BRANCH_SEED_RECEIPT_KEY in row for row in rows
+    ):
+        return branches_block
+    return {
+        **branches_block,
+        "branches": [
+            {k: v for k, v in row.items() if k != BRANCH_SEED_RECEIPT_KEY}
+            if isinstance(row, Mapping)
+            else row
+            for row in rows
+        ],
+    }
+
+
+def _without_nested_branch_seed_receipts(config: dict[str, object]) -> dict[str, object]:
+    native_episode = config.get("native_episode")
+    roles = native_episode.get("roles") if isinstance(native_episode, Mapping) else None
+    perception = roles.get("perception") if isinstance(roles, Mapping) else None
+    block = perception.get("branches") if isinstance(perception, Mapping) else None
+    stripped = without_branch_seed_receipts(block)
+    if stripped is block:
+        return config
+    return {
+        **config,
+        "native_episode": {
+            **native_episode,
+            "roles": {**roles, "perception": {**perception, "branches": stripped}},
+        },
+    }
+
+
 def artifact_inputs(
     *,
     config: Mapping[str, object],
@@ -90,6 +152,10 @@ def artifact_inputs(
     ):
         raise PreparationError("split identity must be a lowercase SHA256")
     normalized = {k: v for k, v in config.items() if k not in _RECEIPT_KEYS}
+    # The nested twin of ``prepared_phase_supply``: a Perception branch's
+    # ``prepared_seed`` pin is a receipt written after preparation, never an
+    # input (see :func:`without_branch_seed_receipts`).
+    normalized = _without_nested_branch_seed_receipts(normalized)
     # Admission records may acquire THIS artifact's digest after preparation.
     # Remove only that operational field, never a cell's actual fragments,
     # model parameters, or other configuration. The composed protocol hash
