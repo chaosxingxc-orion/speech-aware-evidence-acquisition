@@ -20,8 +20,10 @@ import pytest
 
 from speech_aware_evidence_acquisition.reproduction.ojw.native_supply_variants import (
     PerceptionBranchRoleNode,
+    PerceptionBranchSolverRoleNode,
     SupplyVariantNodeError,
     run_perception_branch_arms,
+    run_perception_branch_solver_arms,
 )
 from speech_aware_evidence_acquisition.rails.supply_variants import (
     PerceptionBranchError,
@@ -204,4 +206,151 @@ def test_role_node_refuses_a_non_perception_inner():
     with pytest.raises(SupplyVariantNodeError, match="inner Perception NativeRoleNode"):
         PerceptionBranchRoleNode(
             inner=_FakeInner(), group=_group(), branch_record=_record_factory(_group()),
+        )
+
+
+# ---------------------------------------------------------------------------
+# LEVEL 2 (merge set C item 1): run_perception_branch_solver_arms and
+# PerceptionBranchSolverRoleNode -- the Solver's own first-visit branch
+# fan-out. Structurally this file's own tests above (run_perception_branch_
+# arms/PerceptionBranchRoleNode) restated over the Solver's phase instead of
+# Perception's; AT-P7 (design section 5): "A's level-2 column equals the
+# sealed first Solver visit after the normaliser" is a RECEIPT-assembly
+# property tests/unit/test_perception_branch_acceptance.py already covers on
+# a fixture, and a RUNTIME property tests/unit/test_perception_branch_live.py
+# now covers on a real graph; the tests below close the THIRD gap -- the pure
+# orchestration function and node class themselves, no model, server, GPU or
+# openjiuwen contact.
+# ---------------------------------------------------------------------------
+
+
+def _solver_record_factory(group):
+    """Every branch's own Solver-column custody, keyed to its branch id --
+    the shape ``rails.runner.read_perception_branch_solver_record`` returns,
+    restated here as a bare stub so these tests need no runner closures."""
+
+    def record(branch_index: int, result) -> dict:
+        branch = group.branch_at(branch_index)
+        contact_id = result["execution_receipt"]["contacts"][0]["contact_id"]
+        return {
+            "branch_id": branch.branch_id,
+            "solver_contact_id": contact_id,
+            "solver_request_sha256": SHA,
+            "solver_response_text_sha256": SHA,
+            "candidate_supply_value_ids": [],
+        }
+    return record
+
+
+def test_solver_fanout_a_delivers_last_and_spends_k_contacts():
+    group = _group(level=2)
+    calls: list[int] = []
+
+    async def invoke_branch(index: int) -> dict:
+        calls.append(index)
+        branch = group.branch_at(index)
+        return _answer(role_id="solver", text=f"solver-for-{branch.branch_id}", contact_id=f"s{index}")
+
+    result = _run(run_perception_branch_solver_arms(
+        invoke_branch, group=group, branch_record=_solver_record_factory(group),
+    ))
+    assert calls == [0, 1, 2]
+    assert result["role_id"] == "solver"
+    assert result["actor_output"] == "solver-for-A"
+    assert result["result_type"] == "answer"
+    assert result["delivery_eligible"] is True
+    assert [c["contact_id"] for c in result["execution_receipt"]["contacts"]] == ["s0", "s1", "s2"]
+    assert result["execution_receipt"]["final_contact"]["contact_id"] == "s2"
+    # Unlike run_supply_variant_arms/run_perception_branch_arms, no extra
+    # custody key rides the returned result: the Solver's own state["latest_
+    # solver"] capture needs no change for this route (design section 3).
+    assert "supply_variants" not in result
+    assert "perception_branches" not in result
+
+
+def test_solver_fanout_calls_branch_record_for_every_branch_including_a():
+    group = _group(level=2)
+    seen: list[str] = []
+
+    async def invoke_branch(index: int) -> dict:
+        branch = group.branch_at(index)
+        return _answer(role_id="solver", text=f"solver-for-{branch.branch_id}", contact_id=f"s{index}")
+
+    def record(branch_index, result):
+        branch = group.branch_at(branch_index)
+        seen.append(branch.branch_id)
+        return _solver_record_factory(group)(branch_index, result)
+
+    _run(run_perception_branch_solver_arms(invoke_branch, group=group, branch_record=record))
+    assert seen == ["B", "T", "A"]
+
+
+def test_solver_fanout_non_a_branch_answers_never_become_the_delivered_output():
+    group = _group(level=2)
+
+    async def invoke_branch(index: int) -> dict:
+        branch = group.branch_at(index)
+        text = "MUTATED SOLVER ANSWER" if branch.branch_id != "A" else "A's real solver answer"
+        return _answer(role_id="solver", text=text, contact_id=f"s{index}")
+
+    result = _run(run_perception_branch_solver_arms(
+        invoke_branch, group=group, branch_record=_solver_record_factory(group),
+    ))
+    assert result["actor_output"] == "A's real solver answer"
+    assert "MUTATED SOLVER ANSWER" not in result["actor_output"]
+
+
+def test_solver_fanout_refuses_a_branch_answer_with_no_execution_receipt():
+    group = _group(level=2)
+
+    async def invoke_branch(index: int) -> dict:
+        answer = _answer(role_id="solver", contact_id=f"s{index}")
+        del answer["execution_receipt"]
+        return answer
+
+    with pytest.raises(SupplyVariantNodeError, match="no execution receipt"):
+        _run(run_perception_branch_solver_arms(
+            invoke_branch, group=group, branch_record=_solver_record_factory(group),
+        ))
+
+
+def test_solver_fanout_refuses_mismatched_role_ids_across_branches():
+    group = _group(level=2)
+
+    async def invoke_branch(index: int) -> dict:
+        role_id = "solver" if index == 0 else "not-solver"
+        return _answer(role_id=role_id, contact_id=f"s{index}")
+
+    with pytest.raises(SupplyVariantNodeError, match="share one role_id"):
+        _run(run_perception_branch_solver_arms(
+            invoke_branch, group=group, branch_record=_solver_record_factory(group),
+        ))
+
+
+def test_solver_fanout_refuses_a_record_naming_another_branch():
+    group = _group(level=2)
+
+    async def invoke_branch(index: int) -> dict:
+        return _answer(role_id="solver", contact_id=f"s{index}")
+
+    def bad_record(branch_index, result):
+        return {"branch_id": "not-a-real-branch"}
+
+    with pytest.raises(SupplyVariantNodeError, match="names another branch"):
+        _run(run_perception_branch_solver_arms(
+            invoke_branch, group=group, branch_record=bad_record,
+        ))
+
+
+def test_solver_role_node_refuses_a_non_solver_inner():
+    class _FakeSpec:
+        role_kind = "perception"
+
+    class _FakeInner:
+        spec = _FakeSpec()
+
+    with pytest.raises(SupplyVariantNodeError, match="inner Solver NativeRoleNode"):
+        PerceptionBranchSolverRoleNode(
+            inner=_FakeInner(), group=_group(level=2),
+            branch_record=_solver_record_factory(_group(level=2)),
         )

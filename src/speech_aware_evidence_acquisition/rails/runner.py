@@ -2189,6 +2189,15 @@ async def _invoke_native_role_episode(
     # the composed requests byte-identical.
     perception_branch_group = config.perception_branch_group
     perception_branch_phase_id = config.perception_branch_phase_id
+    # LEVEL 2 (merge set C item 1): the Solver's own phase id, resolved once,
+    # so the Solver-fan-out messages/settle/contact-context seams below can
+    # tell "this is the Solver's own phase" from "this is Perception's own
+    # phase" without re-deriving it per contact. Every config declares
+    # exactly one Solver role, branched or not.
+    solver_phase_id = next(
+        role.phase_id for role in config.roles if role.role_kind == "solver"
+    )
+    from .supply_variants import PERCEPTION_BRANCH_LEVEL_SOLVER
     # ``{branch_id: {sample_id: (value_id, ...)}}`` -- the flight-owned,
     # pre-flight seeds ``core.flight.runtime.FlightRuntime.
     # _perception_branch_seeds`` computed once, before any contact. None
@@ -2209,6 +2218,28 @@ async def _invoke_native_role_episode(
     # value ids a branch's request actually carried, because it is the
     # place that composed them.
     perception_branch_records: dict[str, dict[str, object]] = {}
+    # LEVEL 2 (merge set C item 1, design section 3 "Level 2"): every
+    # branch's own RAW note text, keyed by branch id, populated by
+    # ``read_perception_branch_record`` once a branch's note is parsed and
+    # kept for the rest of the row (never cleared) -- the Solver's later
+    # first visit needs it to render a non-A branch's own history without a
+    # second Perception contact. Empty unless ``perception_branch_group`` is
+    # declared.
+    perception_branch_notes: dict[str, str] = {}
+    # The Solver-level twin of ``perception_branch_contacts``/
+    # ``perception_branch_records``: the K in-flight Solver branch contacts
+    # of the visit (cleared once its wave is sealed), the lightweight
+    # pending row per contact id (``perception_branch_solver_messages``
+    # writes it, ``read_perception_branch_solver_record`` completes it), and
+    # the final per-branch Solver-column custody (``branch_id`` keyed), kept
+    # for the whole row so the episode's final receipt assembly can fold it
+    # into the ALREADY-SEALED ``perception_branches`` receipt (the Perception
+    # visit that owns that receipt has completed long before the Solver's
+    # own first visit runs). All three stay empty unless
+    # ``perception_branch_group.level`` is 2.
+    perception_branch_solver_contacts: list[tuple[AgentContactPlan, object, int]] = []
+    perception_branch_solver_pending: dict[str, dict[str, object]] = {}
+    perception_branch_solver_records: dict[str, dict[str, object]] = {}
     pending = {}
     visits = {}
     completed = {}
@@ -2478,6 +2509,111 @@ async def _invoke_native_role_episode(
             )
         return messages
 
+    def _perception_note_view(agent_states, *, note_text):
+        """LEVEL 2: a VIEW of ``agent_states`` with the sealed Perception
+        state's own ``content`` (A's note) replaced by ``note_text`` (a
+        non-A branch's own note) -- used for rendering only, exactly as
+        ``perception_branch_messages`` swaps ``retrieved_value_ids`` for a
+        view rather than for custody. Every other state (the speech query,
+        any earlier phase) is untouched.
+        """
+
+        expected_kind = f"phase:{perception_branch_phase_id}"
+        matches = [
+            index for index, state in enumerate(agent_states)
+            if getattr(state, "state_kind", None) == expected_kind
+        ]
+        if len(matches) != 1:
+            raise RailsRunnerError(
+                "a perception-branch Solver view requires exactly one sealed "
+                "Perception state to replace"
+            )
+        swapped = list(agent_states)
+        swapped[matches[0]] = replace(swapped[matches[0]], content=note_text)
+        return tuple(swapped)
+
+    def _rendered_candidate_value_ids(messages):
+        """LEVEL 2: the ``value`` evidence ids THIS rendering actually
+        carried -- ``perception_branch_record``'s own
+        ``candidate_supply_value_ids`` field (design section 3, "Receipt"),
+        read directly off the composed user message rather than re-derived
+        from a separate candidate-supply resolution, so it can never drift
+        from what the branch's own contact actually rendered.
+        """
+
+        user_message = messages[1] if len(messages) > 1 else None
+        content = user_message.get("content") if isinstance(user_message, Mapping) else None
+        if not isinstance(content, list):
+            return ()
+        return tuple(
+            item["evidence_id"] for item in content
+            if isinstance(item, Mapping)
+            and item.get("knowledge_role") == "value"
+            and isinstance(item.get("evidence_id"), str)
+        )
+
+    def perception_branch_solver_messages(ctx, *, request, plan):
+        """LEVEL 2 (merge set C item 1, design section 3, "Level 2"): ONE
+        Perception branch's own Solver contact -- structurally
+        ``perception_branch_messages``'s twin, over the Solver's own phase
+        instead of Perception's.
+
+        A and T take ``base_messages(ctx)`` UNCHANGED: A is the ordinary
+        path (this visit's own real Solver contact, spending no NEW request
+        beyond what an unbranched episode would make) and T repeats it byte
+        for byte in the same batch, reading the SAME already-sealed
+        Perception state A's own note sealed. Every other branch renders
+        over an ``agent_states`` VIEW whose sealed Perception state is
+        replaced by that branch's OWN note (``perception_branch_notes``,
+        populated by ``read_perception_branch_record`` at the earlier
+        Perception visit) -- there is no supply to swap here (the Solver's
+        own candidate construction is a pure function of the ``phase:
+        <perception>`` state this view replaces, so it re-resolves on its
+        own); the view is used for rendering only and never for custody.
+        """
+
+        from .supply_variants import (
+            PERCEPTION_BRANCH_LEVEL_SOLVER, PerceptionBranchError,
+        )
+
+        branch_id = request.context.perception_branch_id
+        if (
+            perception_branch_group is None
+            or perception_branch_group.level != PERCEPTION_BRANCH_LEVEL_SOLVER
+            or request.role_id != solver_phase_id
+        ):
+            raise RailsRunnerError(
+                "only the registered perception-branch Solver fan-out may "
+                "bind a branch at the Solver's own phase"
+            )
+        try:
+            branch = perception_branch_group.branch(branch_id)
+        except PerceptionBranchError as error:
+            raise RailsRunnerError(str(error)) from error
+        if branch.deliver or branch.is_twin:
+            messages = base_messages(ctx)
+        else:
+            note_text = perception_branch_notes.get(branch_id)
+            if not isinstance(note_text, str) or not note_text:
+                raise RailsRunnerError(
+                    f"perception branch {branch_id!r} has no sealed note to "
+                    "render into the Solver's history"
+                )
+            messages = base_messages(replace(
+                ctx,
+                agent_states=_perception_note_view(ctx.agent_states, note_text=note_text),
+            ))
+        record = {
+            "branch_id": branch_id,
+            "candidate_supply_value_ids": _rendered_candidate_value_ids(messages),
+        }
+        existing = perception_branch_solver_pending.setdefault(plan.contact_id, record)
+        if existing != record:
+            raise RailsRunnerError(
+                "one perception-branch Solver contact has conflicting branch records"
+            )
+        return messages
+
     def settle(*, tool_step=None, rejected_steps=(), next_phase=None):
         if not pending:
             return
@@ -2660,6 +2796,61 @@ async def _invoke_native_role_episode(
             response_record = tuple(item[1].text for item in perception_branch_contacts)
             slot_ids = tuple(item[2] for item in perception_branch_contacts)
             perception_branch_contacts.clear()
+        if (
+            pending["phase_id"] == solver_phase_id
+            and pending["perception_branch_id"] is not None
+        ):
+            # LEVEL 2 (merge set C item 1, design section 3, "Level 2"): the
+            # Solver's own first-visit branch fan-out -- structurally the
+            # Perception branch group's own settle block just above, over the
+            # Solver's phase instead: EVERY declared branch (A included)
+            # carries ``perception_branch_id`` here (``contact_context``
+            # below marks branch A's own contact too, exactly as the K - 1
+            # non-A branches are, so A's contact is a REAL, marked contact
+            # whose request bytes just happen to equal the unbranched
+            # episode's own -- the same convention the Solver arm-group
+            # route already uses for its own delivering arm). A is the LAST
+            # declared branch, so its own contact is the one that reaches
+            # this ``if`` block's tail and falls through to register state,
+            # exactly as an ordinary Solver visit's single contact would.
+            branch_id = pending["perception_branch_id"]
+            expected = perception_branch_group.branch_ids[
+                len(perception_branch_solver_contacts)
+            ] if (
+                len(perception_branch_solver_contacts)
+                < perception_branch_group.branch_count
+            ) else None
+            if branch_id is None or branch_id != expected:
+                raise RailsRunnerError(
+                    "perception-branch Solver contacts settled out of their "
+                    "declared order"
+                )
+            if tool_step is not None or rejected_steps:
+                raise RailsRunnerError(
+                    "a perception-branch Solver contact cannot execute a tool"
+                )
+            perception_branch_solver_contacts.append((plan, completion, slot_id))
+            if (
+                len(perception_branch_solver_contacts)
+                < perception_branch_group.branch_count
+            ):
+                pending.clear()
+                return
+            if branch_id != perception_branch_group.delivering_branch.branch_id:
+                raise RailsRunnerError(
+                    "a perception-branch Solver visit registered downstream "
+                    "state from a non-delivering branch; only branch A's own "
+                    "answer may reach the Reviewer or the Planner"
+                )
+            contact_record = AgentContactBatch(
+                batch_id=f"{perception_branch_solver_contacts[0][0].contact_id}:branch-solver",
+                query_state_sha256=before.query_state.content_hash(),
+                contacts=tuple(item[0] for item in perception_branch_solver_contacts),
+                fanout_semantics="action_alternatives",
+            ).validate()
+            response_record = tuple(item[1].text for item in perception_branch_solver_contacts)
+            slot_ids = tuple(item[2] for item in perception_branch_solver_contacts)
+            perception_branch_solver_contacts.clear()
         staged = replace(
             before, agent_states=before.agent_states + (source,),
             prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
@@ -2992,6 +3183,7 @@ async def _invoke_native_role_episode(
         elif (
             knowledge_index is None
             and request.context.perception_branch_id is not None
+            and request.role_id == perception_branch_phase_id
         ):
             # Same-flight instrument, PHASE 2 (merge set C): the twin seam,
             # over the Perception role's own declared branch group instead
@@ -3000,6 +3192,14 @@ async def _invoke_native_role_episode(
             # every episode form written before phase 2), so every other
             # form's bytes are identical.
             messages = perception_branch_messages(ctx, request=request, plan=plan)
+        elif (
+            knowledge_index is None
+            and request.context.perception_branch_id is not None
+        ):
+            # LEVEL 2 (merge set C item 1): the SAME context field, bound at
+            # the SOLVER's own phase instead of Perception's -- the Solver's
+            # first-visit branch fan-out (design section 3, "Level 2").
+            messages = perception_branch_solver_messages(ctx, request=request, plan=plan)
         elif knowledge_index is None:
             messages = base_messages(ctx)
         else:
@@ -3429,6 +3629,12 @@ async def _invoke_native_role_episode(
         note_sha256 = hashlib.sha256(note_text.encode("utf-8")).hexdigest()
         note_parse_status, candidate_intent_ids = _parse_perception_branch_note(note_text)
         branch = perception_branch_group.branch_at(branch_index)
+        # LEVEL 2 (merge set C item 1): keep this branch's own RAW note text
+        # for the whole row -- the Solver's later first visit
+        # (``perception_branch_solver_messages``) needs it to render a
+        # non-A branch's own history without a second Perception contact.
+        # Harmless at level 1 too (simply never read).
+        perception_branch_notes[branch.branch_id] = note_text
         return perception_branch_record(
             branch=branch, branch_index=branch_index, contact_id=contact_id,
             request_sha256=request_sha256, response_text_sha256=response_text_sha256,
@@ -3436,6 +3642,57 @@ async def _invoke_native_role_episode(
             candidate_intent_ids=candidate_intent_ids,
             supplied_value_ids=pending_row["supplied_value_ids"],
         )
+
+    def read_perception_branch_solver_record(branch_index, result):
+        """LEVEL 2 (merge set C item 1, design section 3, "Level 2"): one
+        branch's own Solver-column custody.
+
+        Structurally :func:`read_perception_branch_record`'s twin, over the
+        Solver's own contact instead of Perception's: the branch's contact
+        id, request and response digests are read off its OWN execution
+        receipt's final contact, combined with the lightweight pending row
+        ``perception_branch_solver_messages`` recorded at request-composition
+        time (this contact's own rendered ``candidate_supply_value_ids``).
+        The returned row is NOT embedded in the Solver's own result (unlike
+        a supply-variant arm's row, there is no ``latest_solver`` custody key
+        for it to ride): it is recorded into
+        ``perception_branch_solver_records``, keyed by branch id, and folded
+        into the ALREADY-SEALED ``perception_branches`` receipt at the
+        episode's own final receipt assembly.
+        """
+
+        receipt = result.get("execution_receipt")
+        final = receipt.get("final_contact") if isinstance(receipt, Mapping) else None
+        contact_id = final.get("agent_contact_id") if isinstance(final, Mapping) else None
+        pending_row = perception_branch_solver_pending.pop(contact_id, None)
+        if pending_row is None:
+            raise RailsRunnerError(
+                "a perception-branch Solver contact sealed no recorded branch "
+                "of its own"
+            )
+        branch = perception_branch_group.branch_at(branch_index)
+        if pending_row["branch_id"] != branch.branch_id:
+            raise RailsRunnerError(
+                "a perception-branch Solver contact sealed another branch's "
+                "pending record"
+            )
+        request_sha256 = final.get("request_sha256") if isinstance(final, Mapping) else None
+        response_text_sha256 = (
+            final.get("response_text_sha256") if isinstance(final, Mapping) else None
+        )
+        if not isinstance(request_sha256, str) or not isinstance(response_text_sha256, str):
+            raise RailsRunnerError(
+                "a perception-branch Solver contact has no request/response digest"
+            )
+        record = {
+            "branch_id": branch.branch_id,
+            "solver_contact_id": contact_id,
+            "solver_request_sha256": request_sha256,
+            "solver_response_text_sha256": response_text_sha256,
+            "candidate_supply_value_ids": list(pending_row["candidate_supply_value_ids"]),
+        }
+        perception_branch_solver_records[branch.branch_id] = record
+        return record
 
     def cleaning_binding_provider(request):
         """E8b: hand the cleaning contact its own prepared speech binding.
@@ -4073,6 +4330,26 @@ async def _invoke_native_role_episode(
                     kwargs["perception_branch_id"] = branch_group.branch_ids[
                         index % branch_group.branch_count
                     ]
+                if (
+                    role.role_kind == "solver"
+                    and perception_branch_group is not None
+                    and perception_branch_group.level == PERCEPTION_BRANCH_LEVEL_SOLVER
+                ):
+                    # LEVEL 2 (merge set C item 1, design section 3, "Level
+                    # 2"): forced ``arm_visits: "first"`` (there is no config
+                    # knob for it, unlike the Solver's own supply-variant
+                    # route) -- ONLY the Solver's global contact indices
+                    # 0..branch_count-1 (its first visit) carry a branch id,
+                    # A's own included (the SAME convention the supply-variant
+                    # arm route uses for its own delivering arm); every later
+                    # contact (a Planner REVISE route back to the Solver)
+                    # leaves ``perception_branch_id`` at its default ``None``
+                    # -- the ordinary, unbranched contact path, which is what
+                    # makes a revisit contact branch A alone.
+                    if index < perception_branch_group.branch_count:
+                        kwargs["perception_branch_id"] = (
+                            perception_branch_group.branch_ids[index]
+                        )
                 return NativeRoleContactContext(**kwargs)
             def role_delivery_allowed(_role: str, output: str) -> bool:
                 return isinstance(output, str) and bool(output.strip())
@@ -4128,6 +4405,31 @@ async def _invoke_native_role_episode(
                 nodes[role.role_kind] = SupplyVariantRoleNode(
                     inner=solver_node, group=role.supply_variants,
                     arm_record=read_supply_variant_arm_record,
+                    delivery_allowed=role_delivery_allowed,
+                )
+            elif (
+                role.role_kind == "solver"
+                and perception_branch_group is not None
+                and perception_branch_group.level == PERCEPTION_BRANCH_LEVEL_SOLVER
+            ):
+                # LEVEL 2 (merge set C item 1, design section 3, "Level 2"):
+                # the Solver's own first-visit branch fan-out -- K real
+                # invoke_direct calls on the SAME solver_node above, through
+                # the SAME metered request path, one per declared Perception
+                # branch, A's (last, override-free) own answer delivered.
+                # Refused beside ``role.supply_variants`` at config-parse
+                # time (``roles.perception.branches`` cannot combine with
+                # ``roles.solver.supply_variants``), so this ``elif`` and the
+                # one above are mutually exclusive in practice. Every other
+                # role keeps the plain node unwrapped, byte-identical to
+                # before.
+                from ..reproduction.ojw.native_supply_variants import (
+                    PerceptionBranchSolverRoleNode,
+                )
+
+                nodes[role.role_kind] = PerceptionBranchSolverRoleNode(
+                    inner=solver_node, group=perception_branch_group,
+                    branch_record=read_perception_branch_solver_record,
                     delivery_allowed=role_delivery_allowed,
                 )
             elif role.perception_branches is not None:
@@ -4812,7 +5114,53 @@ async def _invoke_native_role_episode(
                 raise RailsRunnerError(
                     "a declared Perception branch group delivered no branch custody"
                 )
-            compact_receipt["perception_branches"] = dict(branches_block)
+            branches_block = dict(branches_block)
+            if perception_branch_group.level == PERCEPTION_BRANCH_LEVEL_SOLVER:
+                # LEVEL 2 (merge set C item 1, design section 3, "Level 2"):
+                # the Solver's own first-visit branch fan-out sealed its
+                # per-branch custody into ``perception_branch_solver_
+                # records`` (keyed by branch id) separately from -- and
+                # strictly after -- the Perception visit that already sealed
+                # ``branches_block`` above (Perception has exactly one visit
+                # per row and has long completed by the time the Solver's
+                # own first visit runs). Folded in here, at the episode's own
+                # final receipt assembly, through the SAME validating
+                # constructor (``perception_branch_record``) that sealed the
+                # level-1 fields, so the merged row is re-validated in full
+                # rather than patched by a raw dict update.
+                from .supply_variants import perception_branch_record
+
+                sealed_branches = []
+                for row in branches_block.get("branches", []):
+                    branch = perception_branch_group.branch_at(row["branch_index"])
+                    solver_row = perception_branch_solver_records.pop(
+                        branch.branch_id, None,
+                    )
+                    if solver_row is None:
+                        raise RailsRunnerError(
+                            f"perception branch {branch.branch_id!r} sealed no "
+                            "level-2 Solver column"
+                        )
+                    sealed_branches.append(perception_branch_record(
+                        branch=branch, branch_index=row["branch_index"],
+                        contact_id=row["contact_id"],
+                        request_sha256=row["request_sha256"],
+                        response_text_sha256=row["response_text_sha256"],
+                        note_sha256=row["note_sha256"],
+                        note_parse_status=row["note_parse_status"],
+                        candidate_intent_ids=row["candidate_intent_ids"],
+                        supplied_value_ids=row["supplied_value_ids"],
+                        solver_contact_id=solver_row["solver_contact_id"],
+                        solver_request_sha256=solver_row["solver_request_sha256"],
+                        solver_response_text_sha256=(
+                            solver_row["solver_response_text_sha256"]
+                        ),
+                        candidate_supply_value_ids=(
+                            solver_row["candidate_supply_value_ids"]
+                        ),
+                    ))
+                branches_block["branches"] = sealed_branches
+            compact_receipt["perception_branches"] = branches_block
         elif (
             isinstance(receipt.get("latest_perception"), Mapping)
             and "perception_branches" in receipt["latest_perception"]
@@ -4824,6 +5172,18 @@ async def _invoke_native_role_episode(
         if perception_branch_records:
             raise RailsRunnerError(
                 "perception-branch records were composed but never sealed"
+            )
+        if (
+            perception_branch_group is None
+            or perception_branch_group.level != PERCEPTION_BRANCH_LEVEL_SOLVER
+        ) and perception_branch_solver_records:
+            raise RailsRunnerError(
+                "perception-branch Solver records were sealed by an episode "
+                "that declares no level-2 branch group"
+            )
+        if perception_branch_solver_pending or perception_branch_solver_records:
+            raise RailsRunnerError(
+                "perception-branch Solver records were composed but never sealed"
             )
         if config.role_context_json is not None:
             compact_receipt["role_context_compilations"] = list(context_compilations.values())

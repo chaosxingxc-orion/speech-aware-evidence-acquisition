@@ -2053,20 +2053,29 @@ def build_native_episode(
             # same reason. Imported function-locally, exactly as this module's
             # other registration-style imports are, so the light top-level
             # import discipline is kept.
+            # Same-flight instrument, PHASE 2, LEVEL 2 (merge set C item 1):
+            # a branched Perception group's own first-visit Solver fan-out is
+            # a PerceptionBranchSolverRoleNode, SupplyVariantRoleNode's own
+            # twin over the branch group instead of a Solver-declared arm
+            # group, exposing the same contract for the same reason.
             from .native_supply_variants import (  # noqa: PLC0415
-                SupplyVariantRoleNode,
+                PerceptionBranchSolverRoleNode, SupplyVariantRoleNode,
             )
 
             if (
                 not isinstance(
                     node,
-                    (NativeRoleNode, GroupedSolverRoleNode, SupplyVariantRoleNode),
+                    (
+                        NativeRoleNode, GroupedSolverRoleNode,
+                        SupplyVariantRoleNode, PerceptionBranchSolverRoleNode,
+                    ),
                 )
                 or node.spec.role_kind != kind
             ):
                 raise ValueError(
                     f"{field} must be a {kind} NativeRoleNode, "
-                    "GroupedSolverRoleNode or SupplyVariantRoleNode"
+                    "GroupedSolverRoleNode, SupplyVariantRoleNode or "
+                    "PerceptionBranchSolverRoleNode"
                 )
             continue
         if field == "perception":
