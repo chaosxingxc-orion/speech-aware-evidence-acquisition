@@ -35,7 +35,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1/registered-facts-v1.json",
-      "sha256": "14dab30d66633959edbb03a54d2cd8696e83f50eedf910678ffe0bc0d04aa0c4"
+      "sha256": "dcaccc2aed9d2ddb73c50994f1750d884fdde53e1c9d80a9af621a4378900448"
     },
     "registration_base_commit": "6a2a62624",
     "spec": {
