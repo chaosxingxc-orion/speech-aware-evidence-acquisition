@@ -9,7 +9,7 @@
 # /home/chao/psv-flight-commit.txt), the resident session is the np4 one above, and no other batch is running.
 # The driver's registration gate (scripts/checks/flight_registration_check.py) refuses a step whose rows are not
 # countersigned or whose receipt does not list every run id eligible.
-#   bash scripts/flights/psv/batch_chain_psv.sh [psv1 psv2]   (default both, P-SV-1 first)
+#   bash scripts/flights/psv/batch_chain_psv.sh [psv1 psv2 psv3]   (default psv1 psv2 unchanged; name psv3 to fly it)
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
