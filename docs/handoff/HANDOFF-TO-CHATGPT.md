@@ -1,64 +1,40 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T12:44:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-ops agent, Claude Opus 5.5) · HEAD at writing `9c9ee145` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-29T14:01:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records agent) · HEAD at writing `ef2dd3e0` on `master` (plus this refresh commit), tree clean.
 **GPU: P-SV flying** (P-SV-1 smoke -> arm, then P-SV-2 smoke -> arm; flight commit `b9af3e58`, `SAEA-Queue-PSV`,
-registered 11:49Z, slurp-np4, A/A-free). **E4-1 seal fix merged; its seal-only completion is registered HELD (owner decision 194 pending, the same shape
-as 189):** the arm `SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1` (flight commit `e9777e18`) flew all 1,080 rows (6,304 calls,
-18,730.5 audio-s) and aborted at the seal (`finite source is not the last actual sample contact`). Root cause: on 8
-of the 10 finite-completion rows the post-accept relisten stage spent its shadow contacts after the interrupted
-source contact, and the seal compared the source with the last recorded contact rather than the last contact that
-can move delivery. `fable/e4sealfix` is merged at **`109538e8`**: only the row's own relisten receipt contacts may
-follow the source, and the resume replay re-derives the relisten receipt; 1,196 targeted tests pass. The seal-only
-cell `slurp-native-stage3-relisten-fold-a-v1-resume` is registered HELD at `9c9ee145`. Its attempt is
-`attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only`, with `resume_from` set to the aborted attempt
-(trace `966613e4...`) and zero model contacts. The replay proof on the real trace reads 1,080 checked / 0 failing /
-0 sealed twice. `cli check` reports `seal_only` true (kept 1,080, flown 0) with one expected blocker, the inherited
-supply pin, which the flip rebuilds. The DRAFT ledger clauses are not countersigned and the receipt is not minted.
-The fix touches `runtime.py` (identity-bound), so a cell flipped on master before `109538e8` needs a loop-form re-pin
-before its next flip. P-SV flies unaffected at `b9af3e58`; the E4-1 run and attempt trees are untouched.
-Its flight.lock and batch-STOP were reconciled into
-`$DATA/coordination/slurp-stage3-relisten-fold-a-v1/flight-lock-reconciliation-20260929T114801Z.json` (lock filed as
-`locks/flight.lock.reconciled-20260929T114801Z`, STOP text recorded, marker moved to `batch-STOP.20260929T114801Z.bak`;
-script `scripts/flights/batch/lease_reconcile_e4.sh`). `queue_psv.sh` no longer waits on `queue-e4.out` (backup
-`queue_psv.sh.e4wait-20260929T114841Z.bak`) and checks the flip commit. **Earlier (context):** **W4-SV is sealed** (DONE 09:40:11Z at `4f203ea9`;
-6,531 contacts, 2.7883 GPU-h) and its column read **landed** (merge `c2ebffe4`, coordinator verdict `5dfc7791`): b-w4
-(slot-convention cards as a release swap) **NOT NOMINATED (width)** (SLU-F1 -0.15 [-1.40, +1.11], intent +0.19 [-0.46,
-+0.83]; twin null SLU +0.43 [-0.19, +1.04], intent +0.09 [-0.19, +0.46]). Not resolvable at n = 1,080, not evidence of
-absence; the rule-card conventions line (W4, W4-SV) is **closed for same-flight reads** and reopens only cross-flight on
-DEV-2000-ADDED or larger behind a mechanism that reads above floor on TRAIN first. W-SV-1 (b-exk30) stays NOT NOMINATED,
-inert. **Instrument:** second same-flight measurement gives intent twin null +0.09 (3 discordant rows) and contrast intent
-half-width 0.65 (0.51 in W-SV-1); the **decision 190 proposal is amended** to the larger of the two measurements,
-**intent 0.65 / SLU 1.49** at n = 1,080. SLURP only on the GPU (decision 187).
-**P-SV-1 / P-SV-2 flipped and flying:** re-derived with the v2 contrast-pair table pin (`ec9e1b65`; ruling O7); the
-first flip cycle's `prepared artifact identity mismatch` was fixed by the **branch-seed identity fix** (`85af4755`: a
-Perception branch's `prepared_seed` pin is excluded from every artifact identity); the second cycle then refused on the
-D3 freeze (`__pycache__` bytecode beside the frozen scoring sources), fixed by the **`__pycache__` purge before every
-re-pin pass in `repin_loop_generic.sh`** (`ead01140e`). Both cells are gate-clean and ready at flight commit
-**`b9af3e58`** (`/home/chao/psv-flight-commit.txt`). The pinned B seeds cover 1,078 of 1,080 Fold B rows (two rows have
-zero boundary recall for every column, disclosed in both P-SV READMEs); P-SV-1 B-row coverage under the v2 table is
-1,035 of 1,078 (96.0 %). **Every held cell's prepared artifacts are stale** (`85af4755` and other merges changed
-identity-bound implementation) **until its own flip re-pins them**; flipped cells fly from their own flight commits.
-**The COMP-1 seal-only completion is registered HELD** (`fable/comp1seal`, merge `ad0f0d8e`) pending owner decision
-189: `resume_from` lists the original attempt (471 kept rows) and attempt 3 (609 rows); the replay proof reads **1,080
-rows, 0 failing, 0 sealed twice**; `core.flight.cli seal-only` refuses a held cell and scores after the seal.
-**Test bug found and fixed:** `test_shared_action_factory_only_changes_existing_selection_knobs` failed because
-`_supply_action_router` attached the resolved binding to a bare `object()` test double (the release-swap fix
-`3f6688de`); the binding is now attached in a try block and a refusal is re-raised only when a release swap needs it
-(`87146390`); the real router path is unchanged. `core/flight/runtime.py` changed with these merges, so HELD cells
-re-pin at their flip; flipped cells fly from their own flight commits.
-**COMP-1 aborted a third time.** Resume attempt 3 flew all 609 remaining rows (2,476 calls) and then failed at the SEAL
-on the 471 replayed rows (the deliver normaliser's output hash did not match the replayed `final_response_text`). Nothing
-is read. **The fix is now merged** (`fable/sealcheck`, merge `3ca7bfca`): `core/flight/resume.py` replays a normalised
-kept row by re-applying the registered normaliser and delivering its output (`d619e1c5`); the offline seal-replay checker
-`scripts/analysis/replay_seal_consistency.py` finds **0 failing rows of 1,080** under the fix (471/471 failing under the
-old code); diagnosis `docs/results/2026-09-29-slurp-comp1-resume3-seal-abort-diagnosis.md`. **The resume prelaunch replay
-gate is merged** (`fable/resumegate`, merge `6473df27`): every resume cell must pass the offline full-trace replay before
-it opens (`scripts/checks/resume_prelaunch_gate_check.py`, wired into `batch_driver.sh` and the COMP-1 resume chain), and
-`flight_registration_check.py` reports `resume-replay-unproven` for a `resume_from` cell without a passing
-`resume_replay_proof` (blocking at launch). **Owner decision 189 is pending:** A, a seal-only completion of attempt 3
-(recommended; the capability is merged and the completion cell is registered held on master), or B, a
-resume from attempt 3. RANKVIS stays **INERT** and REV-TFRL-1 **NOT ADMITTED**. SLURP only on the GPU (decision 187).
+since 11:51Z, slurp-np4; owner decision 193 GO). **Owner decisions 189-194 are ruled and recorded** (registry
+`docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`, rows 189-195, commit `70b2054e`):
+189 option A (COMP-1 seal-only completion), 190 per-metric same-flight floors, 191 rule-card slot-convention line
+CLOSED, 192 W5 held and a 1.5 pp offline bar for any SLU mechanism, 193 P-SV GO, 194 E4-1 seal-only completion GO.
+**Decision 195 is PROPOSED** (awaiting the owner): the bar for the deterministic do-not-tag scope rule (+1.04
+[+0.53, +1.57] pp offline, replicate +0.93, under the DEV-2000 pool null 1.547): A, a normaliser-class form change read
+no-harm cross-flight on DEV-2000 (2.5 pp bar; would not clear), or B, a USE-layer deterministic node action inside the
+COMP-2 composed policy, read only inside the composed arm's DEV read (recommended).
+**Merged today by the records agent:** `fable/floor190` (merge `c2f1be08`; decision 190: `stage3_effect_floor_check.py`
+floors per metric, intent 0.65 / SLU 1.49 at n = 1,080, shadow-relisten on SLU only, `primary_metric_key` required from
+2026-09-30; `accept.py`, the four registration writers and tests; 1,072 worktree tests passed) and `fable/w5offline`
+(merge `949d77d1`; `docs/results/2026-09-29-slurp-slu-consumption-headroom-offline.md`: no SLU mechanism at >= 1.5 pp at
+a measured conversion, best composition about 1.28; W5 expected 0.15, line closed by the coordinator; consumption
+214 / 407, 107 of 229 undetermined items had the gold value supplied; 16 worktree tests passed). Under decision 190
+inner-loop run 1's k = 10 nomination (+0.48) lapses; run 1 nominates nothing. The floor check now FAILs on one blocker,
+the comp1dev placeholder `expected_effect_pp` (A2 waits for the COMP-1 Fold A read), with 17 advisories (W4-SV
+`primary-metric-key-missing` and 16 missing declarations).
+**COMP-1 seal-only completion + G5** (decision 189): countersigned `b3984358`, receipt
+`coordination/slurp-stage3-comp1-fold-a-v1/root-admission-sealonly-v1.json` (sha256 `8a203ffd...`), flipped with G5
+at flight commit **`fd8a01fe`**, queued as **`SAEA-Queue-SEALONLY` behind P-SV** (zero model contacts; replay proof
+1,080 / 0 / 0). **E4-1 seal-only completion** (decision 194): countersigned `b3984358`, receipt
+`coordination/slurp-stage3-relisten-fold-a-v1/root-admission-sealonly-v1.json` (sha256 `43d83158...`), the
+coordinator's column gate pre-declared on the READ row (replace-only >= 29 % net conversion of the 106 items; drop
+column >= 49.5 net false positives removed); **the flip was refused on the parent-config residue** (fix in progress on
+`fable/repinresume`); not yet queued.
+**Lines closed:** W4 / W4-SV rule-card slot conventions (191; results-ledger clauses added), W5 (192, coordinator; the
+owner may reopen). **Re-plan v3:** `docs/readiness/2026-09-29-slurp-stage3-replan-v3.md` (supersedes v2; rounds
+P-SV -> COMP-1 seal-only + G5 -> E4-1 seal-only -> COMP-1 / G5 read -> A2 on DEV-2000-ADDED -> P-SV reads -> composed
+Perception policy -> milestone test read on the owner's go; the boundary-recall gap, 83 off-list rows with 49 in the
+boundary block, is the named blank for 95). **Engineering item:** the registration gate treats seal-only cells as
+historical and their decision receipts are checked only by the flip scripts; the gate should check them directly.
+SLURP only on the GPU (decision 187). RANKVIS stays **INERT** and REV-TFRL-1 **NOT ADMITTED**.
 **Isolation:** every chain flies from the `fable-batch-flight` worktree at its own flight commit, never from
 master. Never re-flip a queued cell on master without updating its flight-commit file and the queue script's
 hard-coded commits. **Hazard:** any `core.flight.cli` process alive between chain steps makes the running
@@ -115,7 +91,7 @@ unused -- a consumption-form problem. Three coordinator claims were corrected by
 dead (0 of 60 values carry a prior), the locked plan supplies k=20 not top-5, and text-only rows CAN be
 retrieved because the key side is text by design.
 
-**Current best arm, pending replication.** AGREE (the boundary agreement term) reads intent 82.50 -> **85.83**, +3.33 [+1.57, +5.09] against its in-chain A/A, with SLU +1.85 [+0.23, +3.47] on TRAIN Fold A. That leaves 9.17 points to 95. Under decision 166 it is KEEP-PROVISIONAL because the roster was reused for selection and for reading. COMP-1 composes AGREE + the centroid key + the citation contract; its arm **ABORTED** at 1,913 calls on the citation contract (section 2), so it is unread; the recovery is RESUME (decision 175; `-REC` superseded unflown), whose attempt 1 died on a server CUDA abort, whose attempt 2 STOPped on a fit-identity refusal, and whose attempt 3 flew every row but failed at the seal on the replayed rows (header; decision 189 pending) -- still unread. A2 (COMP-1 on DEV-2000-ADDED) settles AGREE's classification and gates every wave item into COMP-2 (row 138); its per-class attribution is now fixed model-free, and its declaration formula waits for the COMP-1 Fold A read.
+**Current best arm, pending replication.** AGREE (the boundary agreement term) reads intent 82.50 -> **85.83**, +3.33 [+1.57, +5.09] against its in-chain A/A, with SLU +1.85 [+0.23, +3.47] on TRAIN Fold A. That leaves 9.17 points to 95. Under decision 166 it is KEEP-PROVISIONAL because the roster was reused for selection and for reading. COMP-1 composes AGREE + the centroid key + the citation contract; its arm **ABORTED** at 1,913 calls on the citation contract (section 2), so it is unread; the recovery is RESUME (decision 175; `-REC` superseded unflown), whose attempt 1 died on a server CUDA abort, whose attempt 2 STOPped on a fit-identity refusal, and whose attempt 3 flew every row but failed at the seal on the replayed rows (header); decision 189 ruled option A, the seal-only completion is queued behind P-SV -- still unread. A2 (COMP-1 on DEV-2000-ADDED) settles AGREE's classification and gates every wave item into COMP-2 (row 138); its per-class attribution is now fixed model-free, and its declaration formula waits for the COMP-1 Fold A read.
 
 ## 2. What landed (2026-09-27 evening to 2026-09-29)
 
@@ -246,7 +222,7 @@ Yours, unchanged:
 
 Mine: make no cross-flight claim without an in-chain replicate and no benefit claim under 200 rows. Every cell registered from 2026-09-27 carries a `stage3_measurement` block, and `stage3_effect_floor_check.py` enforces it.
 
-**Owner rulings received (decisions 175-188, 2026-09-28 / 29).** Open: **decision 194**, admitting the E4-1 seal-only completion (header; the same shape as 189 option A); **decision 189**, the COMP-1 disposition after resume attempt 3's seal failure: A, a seal-only completion of attempt 3 under the merged fix (recommended; the capability is merged and the completion cell is registered held on master), or B, a resume from attempt 3.
+**Owner rulings received (decisions 175-194, 2026-09-28 / 29).** Open: **decision 195** (proposed; header), the bar for the deterministic do-not-tag scope rule: A, no-harm cross-flight on DEV-2000 (2.5 pp), or B, a USE-layer node action read inside the COMP-2 composed arm's DEV read (recommended).
 
 1. 175: COMP-1 recovers by RESUME; `-REC` superseded unflown; the resume is the flight's one recovery.
 2. 176: `kb_policy` digest lock re-pinned (`cfd34bf5`).
@@ -262,8 +238,15 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 12. 186: Fold B is ROLLOUT-exposed while it is the phase-2 read roster.
 13. 187: SLURP only on the GPU; E41 sub10 deferred (ready at `bf6db903`, disabled in the watchdog list).
 14. 188: REV-TFRL-1 NOT ADMITTED; B5 deferred behind P-SV-1 / P-SV-2; row 165's route open.
+15. 189: option A; COMP-1 seal-only completion countersigned (`b3984358`), flipped with G5 at `fd8a01fe`, queued as `SAEA-Queue-SEALONLY` behind P-SV.
+16. 190: same-flight floors per metric, intent 0.65 / SLU 1.49 at n = 1,080; merged `c2f1be08`; inner-loop run 1 nominates nothing.
+17. 191: rule-card slot-convention line CLOSED; no re-fly in any design.
+18. 192: W5 held; >= 1.5 pp offline prediction required for any SLU mechanism; the headroom note (merged `949d77d1`) finds none; W5 line closed by the coordinator.
+19. 193: P-SV GO; flipped `b9af3e58`, flying since 11:51Z.
+20. 194: E4-1 seal-only completion GO; countersigned `b3984358`, receipt minted, column gate pre-declared; flip refused on the parent-config residue (fix on `fable/repinresume`).
+21. 195: PROPOSED, pending (header).
 
-**Pending branches (not merged):** none. `fable/e4sealfix` (merge `109538e8`), `fable/psvrepinfix` (merge `4b1283e0`, fix `85af4755`), `fable/w4svread`, `fable/psvrender`, `fable/pairsv2`, `fable/floorcal`, `fable/wsv1read`, `fable/branchseeds`, `fable/branchseedfix`, `fable/sealcheck`, `fable/resumegate`, `fable/sealonly`, `fable/e4v1`, `fable/e4cell` and `fable/comp1seal` are merged. **Pending engineering:** none for E4-1; its seal-only completion is registered held pending owner decision 194. P-SV-1 / P-SV-2 are flipped at `b9af3e58` and flying as `SAEA-Queue-PSV` (header).
+**Pending branches (not merged):** `fable/repinresume` (the parent-config residue fix that blocks the E4-1 seal-only flip; in progress). `fable/floor190` (merge `c2f1be08`) and `fable/w5offline` (merge `949d77d1`) are merged today, after `fable/e4sealfix` (merge `109538e8`), `fable/psvrepinfix` (merge `4b1283e0`) and the earlier set. **Pending engineering:** the E4-1 residue fix, then its flip and queue; the registration gate's direct check of seal-only decision receipts (header). P-SV-1 / P-SV-2 are flying as `SAEA-Queue-PSV` at `b9af3e58`; the COMP-1 seal-only completion + G5 wait behind them as `SAEA-Queue-SEALONLY` at `fd8a01fe`.
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code). The supply-router test failure found during E4 v1 (a bare `object()` double refusing the bolted-on binding) is fixed (`87146390`).
 
@@ -286,10 +269,10 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 
 ## 7. My next action
 
-1. Take owner decision 189 (A, seal-only completion, recommended; B, resume from attempt 3); for A, the completion cell is on master held: pass the resume prelaunch replay gate, flip, seal-only, then read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`.
-2. W-SV-1 and W4-SV column reads have landed (both NOT NOMINATED); the per-type TP/FP/FN table over W4-SV's 19 changed cards is outstanding (model-free, descriptive). E4-1 flew all rows and aborted at the seal (header); the fix is merged (`109538e8`) and the seal-only completion is registered held (`9c9ee145`). Take owner decision 194, then countersign, mint (`e4_sealonly_mint_receipt.py`), flip (`e4_sealonly_flip.sh`), run the seal-only step (`batch_chain_e4_sealonly.sh`) and read the columns. SLURP only (187).
-3. P-SV-1 then P-SV-2 are flying (`SAEA-Queue-PSV`, `b9af3e58`); after P-SV DONE the queue removes `filler.hold` and runs the filler. Read both same-flight columns when sealed. Rule on owner decision 190 (amended: intent 0.65 / SLU 1.49) before sizing further same-flight claims.
-4. Remove `/home/chao/saea-queue/watchdog.hold` once the STOP is resolved and `ready_chains.json` names the next ready chain.
+1. COMP-1 seal-only completion + G5 run after P-SV (`SAEA-Queue-SEALONLY`, `fd8a01fe`); then read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`, and G5.
+2. E4-1: merge the parent-config residue fix (`fable/repinresume`), re-run the flip (`e4_sealonly_flip.sh`), queue the seal-only step (`batch_chain_e4_sealonly.sh`) and read the columns against the pre-declared gate. SLURP only (187).
+3. Read P-SV-1 and P-SV-2 when sealed, under the decision-190 floors; after P-SV DONE the queue removes `filler.hold` and runs the filler.
+4. Take owner decision 195; remove `/home/chao/saea-queue/watchdog.hold` once `ready_chains.json` names the next ready chain.
 5. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), then flip and queue A2.
 
 ## 8. Housekeeping we share
