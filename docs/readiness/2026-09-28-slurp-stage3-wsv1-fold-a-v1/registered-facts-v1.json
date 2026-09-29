@@ -1,0 +1,643 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "arm_a_proof": {
+    "arm_a_first_solver_vs_agree_first_solver": {
+      "agree_first_solver_contacts": 120,
+      "all_identical": false,
+      "all_identical_after_program_identity_normalisation": true,
+      "mismatch_rows": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038",
+        "slurp:train:000036:audio-1502376074"
+      ],
+      "normalised_mismatch_rows": [],
+      "post_body_identical": 0,
+      "post_body_identical_after_program_identity_normalisation": 120,
+      "rows": 120
+    },
+    "b_exk30_vs_arm_a": {
+      "post_body_bytes_delta_b_minus_a": {
+        "at_4_bytes_per_token_max": 488,
+        "max": 1949,
+        "mean": 1491.9,
+        "min": 1169,
+        "note": "the check's placeholder counter is 4 bytes per token; the k-30 column's Solver physical margin is the check's Solver margin minus these tokens"
+      },
+      "post_body_bytes_delta_on_the_check_representative_row": 1542,
+      "post_body_identical_to_a": 0,
+      "rows": 120
+    },
+    "config_classes": {
+      "bookkeeping": 40,
+      "program-switch": 1,
+      "supply-pin": 2,
+      "variants-block": 17
+    },
+    "every_other_contact_mapped_across_programs": {
+      "by_role": {
+        "perception": {
+          "contacts": 120,
+          "normalised_identical": 120,
+          "post_body_identical": 0
+        },
+        "planner": {
+          "contacts": 181,
+          "normalised_identical": 181,
+          "post_body_identical": 0
+        },
+        "reviewer": {
+          "contacts": 181,
+          "normalised_identical": 181,
+          "post_body_identical": 0
+        },
+        "solver": {
+          "contacts": 61,
+          "normalised_identical": 61,
+          "post_body_identical": 0
+        }
+      },
+      "contacts": 543,
+      "post_body_identical": 0,
+      "post_body_identical_after_program_identity_normalisation": 543,
+      "unpaired": 0
+    },
+    "payload_custody_leaf_classes_first_rows": {
+      "payload_leaf_classes_differing": {
+        "evidence_provenance[].relpath": 12,
+        "history[].contact_id": 12,
+        "history[].content": 12,
+        "history[].content_sha256": 12,
+        "history[].producer_policy_id": 12,
+        "history[].state_id": 12,
+        "key_representation_id": 12,
+        "matcher_policy_id": 12,
+        "request_id": 12
+      },
+      "post_body_leaf_classes_differing": {
+        "messages[].content[].text": 12
+      },
+      "rows": 12
+    },
+    "prepared_supply_equal_registered_and_committed": true,
+    "prepared_supply_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "relpath": "docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/arm-a-proof-v1.json",
+    "request_affecting_leaves": [],
+    "rows_dispatched": 120,
+    "sha256": "2cd8c94fa8f4e2524c95f465005549abd73d66990785510f61f2eb355c1cc9f8",
+    "status": "RUN",
+    "study_commit": "69cc6eaf2cb0eea6a30ba27f4662bf9bf1be9b19",
+    "tool": "scripts/flights/wsv1/wsv1_arm_a_proof.py",
+    "twin_vs_arm_a_AT2": {
+      "post_body_identical_to_a": 120,
+      "rows": 120
+    },
+    "verdict": "IDENTICAL_MODULO_PROGRAM_IDENTITY"
+  },
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 56160,
+      "generation_calls_cap": 14040,
+      "gpu_hours_fit_inclusive": 14.2,
+      "native_task_contract_calls_cap": 8640,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 40099
+    },
+    "note": "the AGREE arithmetic at ceiling 13: generation rows x 13, FIT rows x 13 x 4, speech ceil(audio x 13), GPU hours 12.0 x 13 / 11 = 14.2 (smoke 1.0); native task-contract calls + 2 per row; run-cumulative",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 208,
+      "generation_calls_cap": 52,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 32,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 138
+    }
+  },
+  "byte_identity_expectation": {
+    "agree_first_phase_supply_output_sha256": {
+      "arm": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "smoke": "308601c52b54ec49013422349e045dd3a4d621c530bf3d2be730fdfe1fdd2fc9"
+    },
+    "claim": "the first-phase (Perception boundary) supply is upstream of the Solver arm group and of the program id, so the supply the flip mints must carry the AGREE arm's / smoke's output digest; a different digest means the boundary channel moved -- stop and report"
+  },
+  "columns": {
+    "contrasts": {
+      "knob": "right b-exk30 vs left a-base",
+      "twin_null": "right t-twin vs left a-base"
+    },
+    "identities": {
+      "a-base": "<data root>/runs/SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1/attempt-slurp-native-stage3-wsv1-fold-a-generation-v1/supply-variants/arm-a-base-slurp-slu-official-train-scores.json (+ .receipt.json)",
+      "b-exk30": "<data root>/runs/SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1/attempt-slurp-native-stage3-wsv1-fold-a-generation-v1/supply-variants/arm-b-exk30-slurp-slu-official-train-scores.json (+ .receipt.json)",
+      "t-twin": "<data root>/runs/SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1/attempt-slurp-native-stage3-wsv1-fold-a-generation-v1/supply-variants/arm-t-twin-slurp-slu-official-train-scores.json (+ .receipt.json)"
+    },
+    "render_and_score": "scripts/analysis/stage3_rollout_score.py --mode supply-variants --scorer-id slurp-slu-official-train --analysis-root <data root>/runs/<run>/<attempt>/supply-variants (one complete official scoring per column, serial, never sharded)"
+  },
+  "composed_config_diff_against_the_agree_cell": {
+    "arm": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.contact_cap",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "execution_plan.planned_gpu_hours",
+        "execution_plan.planned_model_calls",
+        "execution_plan.planned_speech_audio_seconds",
+        "experiment_id",
+        "failure_policy",
+        "family_budget.fit_endpoint_calls_cap",
+        "family_budget.generation_calls_cap",
+        "family_budget.gpu_hours_fit_inclusive",
+        "family_budget.native_task_contract_calls_cap",
+        "family_budget.repeated_speech_audio_seconds_cap",
+        "fragment_kind",
+        "generation_budget.cap",
+        "generation_budget.definition",
+        "generation_budget.target",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "program_switch": [
+        "policy"
+      ],
+      "variants_block": [
+        "native_episode.roles.solver.supply_variants.arm_visits",
+        "native_episode.roles.solver.supply_variants.arms",
+        "native_episode.roles.solver.supply_variants.fit_estimate.base_prompt_tokens",
+        "native_episode.roles.solver.supply_variants.fit_estimate.completion_ceiling",
+        "native_episode.roles.solver.supply_variants.fit_estimate.slot_tokens",
+        "native_episode.roles.solver.supply_variants.fit_estimate.tokens_per_supplied_item"
+      ]
+    },
+    "smoke": {
+      "anything_else": [],
+      "bookkeeping": [
+        "native_contact_fit.attempt_id",
+        "native_contact_fit.contact_cap",
+        "native_contact_fit.run_id",
+        "prepared_phase_supply.relpath",
+        "prepared_phase_supply.sha256",
+        "what_this_is"
+      ],
+      "experiment_fragment_own_block": [
+        "cells",
+        "date",
+        "execution_plan.planned_model_calls",
+        "execution_plan.planned_speech_audio_seconds",
+        "experiment_id",
+        "failure_policy",
+        "family_budget.fit_endpoint_calls_cap",
+        "family_budget.generation_calls_cap",
+        "family_budget.native_task_contract_calls_cap",
+        "family_budget.repeated_speech_audio_seconds_cap",
+        "fragment_kind",
+        "purpose",
+        "stage3_algorithm.note"
+      ],
+      "program_switch": [
+        "policy"
+      ],
+      "variants_block": [
+        "native_episode.roles.solver.supply_variants.arm_visits",
+        "native_episode.roles.solver.supply_variants.arms",
+        "native_episode.roles.solver.supply_variants.fit_estimate.base_prompt_tokens",
+        "native_episode.roles.solver.supply_variants.fit_estimate.completion_ceiling",
+        "native_episode.roles.solver.supply_variants.fit_estimate.slot_tokens",
+        "native_episode.roles.solver.supply_variants.fit_estimate.tokens_per_supplied_item"
+      ]
+    }
+  },
+  "context_comparator": {
+    "attempt_id": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+    "never_reflown": true,
+    "official": {
+      "intent_accuracy": 85.8333,
+      "slu_f1": 65.1575
+    },
+    "role": "context only: the delivering arm A is the AGREE form; no cross-flight contrast gates this cell",
+    "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+  },
+  "decision_rule": "SAME-FLIGHT COLUMN READ (owner decision 172; claim ceiling 'nominated', Q6 ruling). Every column -- a-base (the delivering arm's first-visit column), b-exk30 and t-twin -- is rendered from the sealed first Solver visit through the delivered row's normaliser and projection (the render refuses on any acceptance-test AT1 failure) and scored ONCE with slurp-slu-official-train through core.scoring_batch.score_complete_derived_copy; each contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260928). (1) THE TWIN NULL: t-twin minus a-base on official pooled SLU-F1 (primary) and intent accuracy (guard); the bar on each metric is |twin offset| + the twin's CI95 half-width (the same law as the cross-flight in-chain A/A), reported beside the provisional floor 0.3163 pp SLU / 0.0000 pp intent (scripts/checks/stage3_effect_floor_check.py, design same-flight-supply-variant: 0.735 x sqrt(200 / 1080)). (2) THE KNOB: b-exk30 minus a-base. NOMINATED iff the SLU-F1 CI95 lower bound is above zero AND the SLU-F1 point delta exceeds the twin bar AND the intent CI95 lower bound is not below minus the twin's intent bar. SOLVER-LOCAL HARM iff the SLU-F1 (or intent) CI95 upper bound is below zero and the point delta's magnitude exceeds that metric's twin bar. Otherwise NOT NOMINATED (within the twin null). A nomination claims nothing at system level: it only sends the exk30 construction to a full-system read against an in-chain A/A. The utterance-level number is reported beside the row-level one and never gates (Q4). Every verdict carries the per-scenario table in both weightings.",
+  "expectation_basis": {
+    "declared": "claims_benefit false (0.09 < floor)",
+    "provisional_floor_pp": 0.3163,
+    "source": "docs/results/2026-09-27-slurp-mechanism-synthesis/mechanism-table.json (row C7: 'vs PLANR: ... K30 +0.09 [-1.47, +1.60]') from docs/results/2026-09-25-slurp-var1-complete-evidence.md (exk30 vs plan +1.95 [0.48, 3.45]; planr vs plan +1.87 [0.41, 3.36]; so exk30 vs the in-chain replicate PLANR is +0.09)",
+    "var1_exk30_vs_planr_slu_pp": "+0.09 [-1.47, +1.60]"
+  },
+  "fit": {
+    "cells": {
+      "arm": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.wsv1-checks/check-slurp-native-stage3-wsv1-fold-a-v1.json",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1508,
+            "phase": "perception",
+            "physical_margin_tokens": 4580,
+            "rendered_text_tokens": 19453,
+            "required_window_tokens": 19996,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1645,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4717,
+            "rendered_text_tokens": 19316,
+            "required_window_tokens": 19859,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1705,
+            "phase": "planner",
+            "physical_margin_tokens": 4777,
+            "rendered_text_tokens": 19256,
+            "required_window_tokens": 19799,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -320,
+            "phase": "solver",
+            "physical_margin_tokens": 2752,
+            "rendered_text_tokens": 21281,
+            "required_window_tokens": 21824,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "scientific_readiness": {
+          "reason": "Cell W-SV-1 registered before contact on 2026-09-28 from the retained AGREE arm fragments by script (decision 58) with the program switched to its 13-ceiling uncited 'first' twin and a Solver supply_variants block (owner decision 172). No cross-flight comparator: the paired read is within this flight (B and T columns against the delivering A column); the sealed AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 is context only. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/wsv1/wsv1_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the Perception supply is upstream of the Solver arm group and of the program id). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      },
+      "smoke": {
+        "blockers": null,
+        "check_path": "/home/chao/saea-worktrees/.wsv1-checks/check-slurp-native-stage3-wsv1-fold-a-smoke-4-v1.json",
+        "prompt_budget_per_phase": [
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1509,
+            "phase": "perception",
+            "physical_margin_tokens": 4581,
+            "rendered_text_tokens": 19452,
+            "required_window_tokens": 19995,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1645,
+            "phase": "reviewer",
+            "physical_margin_tokens": 4717,
+            "rendered_text_tokens": 19316,
+            "required_window_tokens": 19859,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "ALLOW",
+            "operational_margin_tokens": 1706,
+            "phase": "planner",
+            "physical_margin_tokens": 4778,
+            "rendered_text_tokens": 19255,
+            "required_window_tokens": 19798,
+            "speech_feature_tokens": 29
+          },
+          {
+            "completion_token_ceiling": 512,
+            "decision": "COMPACT_REQUIRED",
+            "operational_margin_tokens": -320,
+            "phase": "solver",
+            "physical_margin_tokens": 2752,
+            "rendered_text_tokens": 21281,
+            "required_window_tokens": 21824,
+            "speech_feature_tokens": 29
+          }
+        ],
+        "scientific_readiness": {
+          "reason": "Four-row form smoke of cell W-SV-1, registered before contact on 2026-09-28 from the AGREE smoke fragments by script (decision 58). Structural form proof only: no score, no read, no claim. HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/wsv1/wsv1_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed, and the minted supply must reproduce the AGREE arm's own first-phase output digest (the Perception supply is upstream of the Solver arm group and of the program id). Nothing here authorises a flight, a readiness flip or an admission entry.",
+          "state": "held"
+        }
+      }
+    },
+    "status": "MEASURED_BY_CHECK"
+  },
+  "fit_measure": {
+    "relpath": "analysis/SAEA-SLURP-STAGE3-WSV1-FOLD-A-FIT-MEASURE-V1/fit-measure-v1.json",
+    "sha256": "f992545afd275964d190b57c37a36886a7cef53fe1ecd298fe4d305ce0b8fe9f",
+    "summary": {
+      "b_realistic_projection_max_prompt_tokens": 14614,
+      "chars_per_token_least_squares": 5.0067,
+      "estimates": {
+        "a_and_twin": 14906,
+        "b_exk30": 15706
+      },
+      "first_visit": {
+        "exemplar_item_chars": {
+          "max": 396,
+          "mean": 93.7,
+          "min": 23
+        },
+        "exemplar_item_tokens_mean": 18.7,
+        "exemplar_items_histogram": {
+          "20": 1080
+        },
+        "items": {
+          "max": 52,
+          "mean": 40.889,
+          "min": 29
+        },
+        "nonexemplar_items_max": 32,
+        "prompt_tokens": {
+          "max": 14426,
+          "mean": 10201.0,
+          "min": 5003
+        }
+      },
+      "fit_estimate": {
+        "base_prompt_tokens": 10266,
+        "completion_ceiling": 512,
+        "slot_tokens": 24576,
+        "tokens_per_supplied_item": 80
+      },
+      "headroom_items": 6,
+      "max_supplied_items": {
+        "a_and_twin": 58,
+        "b_exk30": 68
+      }
+    },
+    "tool": "scripts/flights/wsv1/wsv1_fit_measure.py"
+  },
+  "fit_statement": "Fit numbers are MEASURED, never placeholders (the VAR-2 lesson): scripts/flights/wsv1/wsv1_fit_measure.py read the sealed AGREE arm (its first Solver contact on every one of the 1080 rows; the delivering arm A renders that request up to the two program-identity fields, a few characters): supplied items min/mean/max 29/40.889/52, exemplar items 20 on every row, non-exemplar max 32, 5.0067 characters per token (least squares over every Solver contact), widest exemplar item 396 characters -> tokens_per_supplied_item 80, base_prompt_tokens 10266 (max over rows of prompt minus items x per-item, so base + items x per-item bounds every realised first Solver prompt; realised max 14426). Bounds: A and T 58 (measured max + 6 headroom -- the candidate-keyed stores follow Perception's output), B 68 (non-exemplar max + headroom + 30). Parser estimates: A/T 14906, B 15706 tokens, against a prompt limit of about 20,9xx at the 24,576 slot; the realistic widest B request (widest realised + 10 mean exemplars) is 14614 tokens. The preflight (core.flight.cli check, placeholder 4-bytes-per-token counter) is folded in 'fit'; under the armed compact-or-abstain policy a COMPACT_REQUIRED preflight with a non-negative PHYSICAL margin proceeds, and only a negative physical margin refuses.",
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-wsv1-fold-a-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-wsv1-fold-a-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-wsv1-fold-a-v1",
+      "composed_config_hash": "d9f9503ea77877cc0e1bc80285eeeb5515d5e85fc01614edb731c32ce6cee659",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-wsv1-fold-a-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 56160,
+        "generation_calls_cap": 14040,
+        "gpu_hours_fit_inclusive": 14.2,
+        "native_task_contract_calls_cap": 8640,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 40099
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-wsv1-fold-a-fit-v1",
+        "contact_cap": 56160,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-WSV1-FOLD-A-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "9a21f53e5319ab6f4271d171f03c64da3fc67036ec83d2ff36893cbfafb842cf",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "program": "phase-native-candidates-review-revise-variants3first-v1",
+      "protocol_hash": "e9e2fbf7251583409a8b5c5d40885a6c5e967eda1772d93291974b9be4e564f1",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "supply_variants": {
+        "arm_visits": "first",
+        "arms": [
+          {
+            "arm_id": "b-exk30",
+            "max_supplied_items": 68,
+            "overrides": {
+              "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c": 30,
+              "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m": 30,
+              "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.top_l": 30,
+              "knowledge_stores.train-exemplars.phase_supply.solver.k": 30
+            }
+          },
+          {
+            "arm_id": "t-twin",
+            "max_supplied_items": 58,
+            "replicate_of": "a-base"
+          },
+          {
+            "arm_id": "a-base",
+            "deliver": true,
+            "max_supplied_items": 58
+          }
+        ],
+        "fit_estimate": {
+          "base_prompt_tokens": 10266,
+          "completion_ceiling": 512,
+          "slot_tokens": 24576,
+          "tokens_per_supplied_item": 80
+        }
+      }
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-wsv1-fold-a-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-wsv1-fold-a-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-wsv1-fold-a-smoke-4-v1",
+      "composed_config_hash": "f51360fa518198d0811cd84d2249d05e8edec0ff5e47d9c92cfea8403725077a",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-wsv1-fold-a-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 208,
+        "generation_calls_cap": 52,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 32,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 138
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-wsv1-fold-a-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "parent_composed_config_hash": "cc94ce109648ccc24c42aa965df12586d50f33db83fbf638140bfc16bd32a216",
+      "parent_experiment": "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1",
+      "program": "phase-native-candidates-review-revise-variants3first-v1",
+      "protocol_hash": "d32892dade05b17e01daf1965d8d262e4bc5c55ec18cc879119813daee1f7856",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+      "supply_variants": {
+        "arm_visits": "first",
+        "arms": [
+          {
+            "arm_id": "b-exk30",
+            "max_supplied_items": 68,
+            "overrides": {
+              "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c": 30,
+              "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m": 30,
+              "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.top_l": 30,
+              "knowledge_stores.train-exemplars.phase_supply.solver.k": 30
+            }
+          },
+          {
+            "arm_id": "t-twin",
+            "max_supplied_items": 58,
+            "replicate_of": "a-base"
+          },
+          {
+            "arm_id": "a-base",
+            "deliver": true,
+            "max_supplied_items": 58
+          }
+        ],
+        "fit_estimate": {
+          "base_prompt_tokens": 10266,
+          "completion_ceiling": 512,
+          "slot_tokens": 24576,
+          "tokens_per_supplied_item": 80
+        }
+      }
+    }
+  },
+  "k30_column_fit": {
+    "arm": {
+      "delivering_column_solver_decision": "COMPACT_REQUIRED",
+      "delivering_column_solver_physical_margin": 2752,
+      "k30_added_placeholder_tokens_on_the_representative_row": 386,
+      "k30_column_solver_physical_margin_at_the_widest_delta": 2264,
+      "k30_column_solver_physical_margin_on_the_representative_row": 2366
+    },
+    "slot_tokens": 24576,
+    "smoke": {
+      "delivering_column_solver_decision": "COMPACT_REQUIRED",
+      "delivering_column_solver_physical_margin": 2752,
+      "k30_added_placeholder_tokens_on_the_representative_row": 386,
+      "k30_column_solver_physical_margin_at_the_widest_delta": 2264,
+      "k30_column_solver_physical_margin_on_the_representative_row": 2366
+    },
+    "status": "COMPUTED"
+  },
+  "owner_decisions": {
+    "115": "SLU-F1 primary, intent the guard (the knob acts on the exemplar supply, not on an intent-only channel)",
+    "139": "no prior: the expectation is declared from a measured analogue only (VAR-1 exk30 vs PLANR)",
+    "172": "same-flight supply variants re-authorised as an engineering-base INSTRUMENT; W-SV-1 is its first real cell (coordinator ruling: base = the AGREE arm bytes, program switched to the uncited 13-ceiling 'first' fragment, arms A k-20 delivering / B k-30 / T twin)",
+    "28/86": "TRAIN Fold A numbers are development numbers, never a test claim"
+  },
+  "prohibitions": [
+    "No test-split, Fold B or DEV contact or read.",
+    "No re-flying of the sealed AGREE arm.",
+    "No second factor: no other template, knob, store, roster, geometry or session change.",
+    "No paper-scale profile.",
+    "No flight before root mints the decision receipt and the cells are flipped.",
+    "No column score opened before the READ row is root countersigned.",
+    "No system-level claim: a column effect may only nominate (Q6 ruling)."
+  ],
+  "registered_at_utc": "2026-09-28T13:45:00.000000+00:00",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four rows (the first four of the Fold A roster) prove FORM and nothing else: the 13-ceiling uncited program loads, the three Solver arms fan out at the first visit only, every arm fits its measured bound, the v3 supply-variant receipt and I7v seal, and the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "read_roster": "SLURP-EVO-FOLD-A-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1": {
+      "aa_arm_id": "t-twin",
+      "claim": "nominated",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.09,
+      "measurement_design": "same-flight-supply-variant",
+      "note": "The FIRST real same-flight supply-variant cell. The expectation is declared from the measured analogue only (row 139): VAR-1's exk30 arm read against the in-chain request-identical replicate PLANR on the R01C construction roster moved official pooled SLU-F1 by +0.09 pp CI95 [-1.47, +1.60] (docs/results/2026-09-27-slurp-mechanism-synthesis/mechanism-table.json (row C7: 'vs PLANR: ... K30 +0.09 [-1.47, +1.60]') from docs/results/2026-09-25-slurp-var1-complete-evidence.md (exk30 vs plan +1.95 [0.48, 3.45]; planr vs plan +1.87 [0.41, 3.36]; so exk30 vs the in-chain replicate PLANR is +0.09)), so expected_effect_pp is 0.09. That is BELOW this design's provisional floor 0.3163 pp at n = 1080 (0.735 x sqrt(200 / 1080); the ROLL-AA anchor, provisional until this very cell measures the twin null), so a benefit declaration would be refused (effect-below-floor, blocking) and the cell declares claims_benefit false: its first deliverable is the instrument's own twin null on the Solver-local estimand, its second the exk30 column read at that null, whose most likely outcome is NOT NOMINATED. The read's bar is the twin null, not the provisional floor. SLU-F1 primary (the knob changes the exemplar supply, which carries slot annotations; decision 115's shape), intent the guard.",
+      "primary_metric": "official pooled SLU-F1 of the Solver-local first-visit column (primary), intent accuracy the guard",
+      "provisional_floor_pp": {
+        "arithmetic": "0.735 * sqrt(200 / 1080) = 0.3163 pp (ROLL-AA anchor, provisional)",
+        "intent_accuracy": 0.0,
+        "slu_f1": 0.3163
+      },
+      "read_bar": "|twin offset| + twin CI95 half-width, per metric, measured in this flight (Q3 ruling)",
+      "read_roster": "SLURP-EVO-FOLD-A-V2",
+      "rows": 1080,
+      "tuning_roster": "none",
+      "variant_cost": {
+        "extra_audio_seconds": 6169.057,
+        "extra_audio_seconds_per_row_mean": 5.7121,
+        "extra_contacts_per_row": 2,
+        "note": "K - 1 = 2 extra first-visit Solver contacts per row (B and the twin T); each re-sends the row's speech packet, so the flight's extra audio is 2 x the Fold A total 3084.5284375 s"
+      }
+    }
+  },
+  "study_commit_at_registration": "6cb6086de",
+  "the_cell": {
+    "arm_visits": "first: arms fan out only at the first Solver visit; a revisit contacts A alone; B and T never reach the Reviewer, the Planner or the delivered text",
+    "arms": {
+      "a-base": "A, delivering, LAST, no overrides: the AGREE arm's own train-exemplar Solver supply at k 20 (fuse_coverage 20/20/20); its request bytes equal the AGREE arm's EXCEPT the two program-identity fields the program switch moves (the program id and global invocation index inside quoted prior contact ids; remaining_model_contacts, +2) -- arm_a_proof",
+      "b-exk30": "B, the VAR-1 exk30 construction: knowledge_stores.train-exemplars.phase_supply.solver.k 20 -> 30 and fuse_coverage m/c/top_l 20 -> 30 (the knob path and values of docs/readiness/2026-09-24-slurp-stage3-var1-v1, configs/baseline/slurp-native-stage3-var1-ex-k30-r01c-baseline-v1.json, scripts/flights/batch/var1_repin_exk30.sh)",
+      "t-twin": "T, replicate_of a-base: no overrides, the delivering arm's greedy repeat in the same contact batch -- the read's own null (Q3 ruling)"
+    },
+    "base": "the retained AGREE arm SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 (configs/baseline/slurp-native-stage3-agree-w1-fold-a-baseline-v1.json)",
+    "estimand": "the Solver-local answer under each supply at the FIRST Solver visit (spec section 1), never the delivered full-system answer",
+    "program_switch": "policy phase-native-candidates-review-revise-v1 (ceiling 11) -> phase-native-candidates-review-revise-variants3first-v1 (ceiling 13 = 11 + (K - 1), K = 3 counting the twin; UNCITED, the Solver keeps response_format_id null; the two fragments differ only in program_id and max_contacts) -- the ONLY base change besides the variants block",
+    "variants_block": {
+      "arm_visits": "first",
+      "arms": [
+        {
+          "arm_id": "b-exk30",
+          "max_supplied_items": 68,
+          "overrides": {
+            "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.c": 30,
+            "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.m": 30,
+            "knowledge_stores.train-exemplars.phase_supply.solver.fuse_coverage.top_l": 30,
+            "knowledge_stores.train-exemplars.phase_supply.solver.k": 30
+          }
+        },
+        {
+          "arm_id": "t-twin",
+          "max_supplied_items": 58,
+          "replicate_of": "a-base"
+        },
+        {
+          "arm_id": "a-base",
+          "deliver": true,
+          "max_supplied_items": 58
+        }
+      ],
+      "fit_estimate": {
+        "base_prompt_tokens": 10266,
+        "completion_ceiling": 512,
+        "slot_tokens": 24576,
+        "tokens_per_supplied_item": 80
+      }
+    }
+  }
+}

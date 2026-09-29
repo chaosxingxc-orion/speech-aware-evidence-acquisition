@@ -1,0 +1,672 @@
+{
+  "arm_b_reading": "arm b-w4's first-visit bodies differ from arm a-agree's on the counted rows",
+  "arm_b_verdict": "ARM-B-VARIES",
+  "cells": {
+    "agree_arm": {
+      "baseline_fragment": "slurp-native-stage3-agree-w1-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:9a21f53e5319ab6f",
+      "experiment": "slurp-native-stage3-agree-w1-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:d33252e173b23f74",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+    },
+    "w4sv": {
+      "baseline_fragment": "slurp-native-stage3-w4sv-fold-a-baseline-v1",
+      "composed_config_hash": "sha256-prefix16:ba34275543f0da15",
+      "experiment": "slurp-native-stage3-w4sv-fold-a-v1",
+      "protocol_hash": "sha256-prefix16:a5134bcb7554bd20",
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1"
+    }
+  },
+  "composed_config_diff": {
+    "by_class": {
+      "bookkeeping": 34,
+      "supply-pin": 2,
+      "variant-declaration": 29
+    },
+    "differing_leaves": [
+      {
+        "agree_arm": "attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].attempt_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "attempt-slurp-native-stage3-w4sv-fold-a-generation-v1"
+      },
+      {
+        "agree_arm": "slurp-native-stage3-agree-w1-fold-a-baseline-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].baseline_fragment",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "slurp-native-stage3-w4sv-fold-a-baseline-v1"
+      },
+      {
+        "agree_arm": "slurp-native-stage3-agree-w1-fold-a-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].cell_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "slurp-native-stage3-w4sv-fold-a-v1"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<long>"
+      },
+      {
+        "agree_arm": "slurp-stage3-agree-w1-fold-a-admission-v1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].expected_decision_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "decision",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "preparation"
+      },
+      {
+        "agree_arm": "Decision slurp-stage3-agree-w1-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py.",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<long>"
+      },
+      {
+        "agree_arm": "coordination/slurp-stage3-agree-w1-fold-a-v1/root-admission-v1.json",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl"
+      },
+      {
+        "agree_arm": "sha256-prefix16:ebdf2f439bf2254c",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[0].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "sha256-prefix16:018ca6ef0d10bbf8"
+      },
+      {
+        "agree_arm": "preparation",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-A-V1/agreement.jsonl",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "sha256-prefix16:018ca6ef0d10bbf8",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[1].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "preparation",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].kind",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].reason",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].relpath",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "sha256-prefix16:be70d4d0fa990a1b",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.requirements[2].sha256",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "ready",
+        "class": "bookkeeping",
+        "leaf": "cells[0].readiness.state",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "held"
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "class": "bookkeeping",
+        "leaf": "cells[0].run_id",
+        "reason": "the experiment fragment's cell list: run, attempt and cell ids, the baseline fragment NAME, readiness state, reason and requirements (the AGREE arm's decision pin, the A/A's held state) -- read by the campaign loader, the readiness gate and the re-pin tool, never by request composition",
+        "request_affecting": false,
+        "w4sv": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1"
+      },
+      {
+        "agree_arm": "2026-09-26",
+        "class": "bookkeeping",
+        "leaf": "date",
+        "reason": "the registration date",
+        "request_affecting": false,
+        "w4sv": "2026-09-28"
+      },
+      {
+        "agree_arm": 11880,
+        "class": "variant-declaration",
+        "leaf": "execution_plan.planned_model_calls",
+        "reason": "the plan budget at the 13-contact ceiling",
+        "request_affecting": false,
+        "w4sv": 14040
+      },
+      {
+        "agree_arm": 33930,
+        "class": "variant-declaration",
+        "leaf": "execution_plan.planned_speech_audio_seconds",
+        "reason": "the plan audio budget at the 13-contact ceiling",
+        "request_affecting": false,
+        "w4sv": 40099
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+        "class": "bookkeeping",
+        "leaf": "experiment_id",
+        "reason": "the experiment's registered id (ledger and receipts)",
+        "request_affecting": false,
+        "w4sv": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "failure_policy",
+        "reason": "prose",
+        "request_affecting": false,
+        "w4sv": "<long>"
+      },
+      {
+        "agree_arm": 47520,
+        "class": "bookkeeping",
+        "leaf": "family_budget.fit_endpoint_calls_cap",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false,
+        "w4sv": 56160
+      },
+      {
+        "agree_arm": 11880,
+        "class": "bookkeeping",
+        "leaf": "family_budget.generation_calls_cap",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false,
+        "w4sv": 14040
+      },
+      {
+        "agree_arm": 33930,
+        "class": "bookkeeping",
+        "leaf": "family_budget.repeated_speech_audio_seconds_cap",
+        "reason": "the family caps (the decision receipt and the gate read them)",
+        "request_affecting": false,
+        "w4sv": 40099
+      },
+      {
+        "agree_arm": "saea-slurp-native-stage3-agree-w1-fold-a-v1",
+        "class": "bookkeeping",
+        "leaf": "fragment_kind",
+        "reason": "the fragment's self-description tag",
+        "request_affecting": false,
+        "w4sv": "saea-slurp-native-stage3-w4sv-fold-a-v1"
+      },
+      {
+        "agree_arm": 11880,
+        "class": "bookkeeping",
+        "leaf": "generation_budget.cap",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false,
+        "w4sv": 14040
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "generation_budget.definition",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false,
+        "w4sv": "<long>"
+      },
+      {
+        "agree_arm": 5425,
+        "class": "bookkeeping",
+        "leaf": "generation_budget.target",
+        "reason": "the run-cumulative generation budget prose and target (the ledger and the batch inspector read it; the request composer never does)",
+        "request_affecting": false,
+        "w4sv": 6553
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "knowledge_stores.slot-contracts.alternates[0].release.relpath",
+        "reason": "the ONE declared alternate (the W4 release/snapshot pins); read only when an arm's release_swap selects it",
+        "request_affecting": false,
+        "w4sv": "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "knowledge_stores.slot-contracts.alternates[0].release.sha256",
+        "reason": "the ONE declared alternate (the W4 release/snapshot pins); read only when an arm's release_swap selects it",
+        "request_affecting": false,
+        "w4sv": "sha256-prefix16:c7bdeee6e0859fbb"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "knowledge_stores.slot-contracts.alternates[0].snapshot.relpath",
+        "reason": "the ONE declared alternate (the W4 release/snapshot pins); read only when an arm's release_swap selects it",
+        "request_affecting": false,
+        "w4sv": "knowledge/slurp/semantic/slot-contracts-w4-v1/snapshot.json"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "knowledge_stores.slot-contracts.alternates[0].snapshot.sha256",
+        "reason": "the ONE declared alternate (the W4 release/snapshot pins); read only when an arm's release_swap selects it",
+        "request_affecting": false,
+        "w4sv": "sha256-prefix16:51d634cfcb398038"
+      },
+      {
+        "agree_arm": "attempt-slurp-native-stage3-agree-w1-fold-a-fit-v1",
+        "class": "bookkeeping",
+        "leaf": "native_contact_fit.attempt_id",
+        "reason": "the cell's own FIT spend identity (an attempt id)",
+        "request_affecting": false,
+        "w4sv": "attempt-slurp-native-stage3-w4sv-fold-a-fit-v1"
+      },
+      {
+        "agree_arm": 47520,
+        "class": "variant-declaration",
+        "leaf": "native_contact_fit.contact_cap",
+        "reason": "the FIT cap at the 13-contact ceiling",
+        "request_affecting": false,
+        "w4sv": 56160
+      },
+      {
+        "agree_arm": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1",
+        "class": "bookkeeping",
+        "leaf": "native_contact_fit.run_id",
+        "reason": "the cell's own FIT spend identity (a run id)",
+        "request_affecting": false,
+        "w4sv": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-FIT-V1"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arm_visits",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": "first"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[0].arm_id",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": "b-w4"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[0].max_supplied_items",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": 56
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[0].release_swap.release",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[0].release_swap.store_id",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": "slot-contracts"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[1].arm_id",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": "t-twin"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[1].max_supplied_items",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": 56
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[1].replicate_of",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": "a-agree"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[2].arm_id",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": "a-agree"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[2].deliver",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": true
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.arms[2].max_supplied_items",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": 56
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.fit_estimate.base_prompt_tokens",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": 1
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.fit_estimate.completion_ceiling",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": 512
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.fit_estimate.slot_tokens",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": 24576
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "native_episode.roles.solver.supply_variants.fit_estimate.tokens_per_supplied_item",
+        "reason": "the three-arm group, arm_visits first",
+        "request_affecting": false,
+        "w4sv": 325
+      },
+      {
+        "agree_arm": "phase-native-candidates-review-revise-v1",
+        "class": "variant-declaration",
+        "leaf": "policy",
+        "reason": "the program id: the uncited 13-contact copy of the AGREE program (max_contacts 11 + (3 - 1))",
+        "request_affecting": false,
+        "w4sv": "phase-native-candidates-review-revise-variants3first-v1"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "preparation_source_receipts[8].relpath",
+        "reason": "the two W4 release receipts appended for the alternate's provenance",
+        "request_affecting": false,
+        "w4sv": "knowledge/slurp/semantic/slot-contracts-w4-v1/completion.json"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "preparation_source_receipts[8].root",
+        "reason": "the two W4 release receipts appended for the alternate's provenance",
+        "request_affecting": false,
+        "w4sv": "data"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "preparation_source_receipts[8].sha256",
+        "reason": "the two W4 release receipts appended for the alternate's provenance",
+        "request_affecting": false,
+        "w4sv": "sha256-prefix16:1e71784e1af305de"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "preparation_source_receipts[9].relpath",
+        "reason": "the two W4 release receipts appended for the alternate's provenance",
+        "request_affecting": false,
+        "w4sv": "knowledge/slurp/semantic/slot-contracts-w4-v1/release.json"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "preparation_source_receipts[9].root",
+        "reason": "the two W4 release receipts appended for the alternate's provenance",
+        "request_affecting": false,
+        "w4sv": "data"
+      },
+      {
+        "agree_arm": "<absent>",
+        "class": "variant-declaration",
+        "leaf": "preparation_source_receipts[9].sha256",
+        "reason": "the two W4 release receipts appended for the alternate's provenance",
+        "request_affecting": false,
+        "w4sv": "sha256-prefix16:c7bdeee6e0859fbb"
+      },
+      {
+        "agree_arm": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json",
+        "class": "supply-pin",
+        "leaf": "prepared_phase_supply.relpath",
+        "reason": "the AGREE arm's committed prepared first-phase supply pin (relpath + file sha256); the A/A drops it so the flip mints its own under its own run id (item E16). It reaches a request only through the supply's OUTPUT, so it is output-neutral exactly when the two prepared supply output digests are equal",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "sha256-prefix16:be70d4d0fa990a1b",
+        "class": "supply-pin",
+        "leaf": "prepared_phase_supply.sha256",
+        "reason": "the AGREE arm's committed prepared first-phase supply pin (relpath + file sha256); the A/A drops it so the flip mints its own under its own run id (item E16). It reaches a request only through the supply's OUTPUT, so it is output-neutral exactly when the two prepared supply output digests are equal",
+        "request_affecting": false,
+        "w4sv": "<absent>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "purpose",
+        "reason": "prose",
+        "request_affecting": false,
+        "w4sv": "<long>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "stage3_algorithm.note",
+        "reason": "the Stage-3 algorithm label and its prose (the label gate reads it)",
+        "request_affecting": false,
+        "w4sv": "<long>"
+      },
+      {
+        "agree_arm": "<long>",
+        "class": "bookkeeping",
+        "leaf": "what_this_is",
+        "reason": "prose",
+        "request_affecting": false,
+        "w4sv": "<long>"
+      }
+    ],
+    "request_affecting_leaves": []
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "generated_at_utc": "2026-09-29T00:20:33.903064+00:00",
+  "hash_quoting": "64-hex identities other than the prepared-supply output digests and the study commit are quoted as sha256-prefix16:<first 16 hex> (core.flight.repin rewrites package JSON from old identity hashes to new ones at the flip and refuses any old hash left under docs/); the full values are recomputable from study_commit",
+  "owner_decision": 172,
+  "precedent": "the wave shared-A/A proof (scripts/flights/wave/wave_shared_aa_proof.py; decision 160's method)",
+  "prepared_supply": {
+    "agree_arm": {
+      "file_sha256_matches_pin": true,
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "output_sha256_recomputed": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "relpath": "prepared/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/phase-supply-v2.json"
+    },
+    "agree_arm_registered_output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+    "equal_registered_and_committed": true,
+    "output_digests_equal": true,
+    "w4sv": {
+      "output_sha256": "eab5c61e92a47c1723c478f2b7914abade6152b195f676d7d32251f3d18884ae",
+      "seconds": 25.9
+    }
+  },
+  "question": "Is W4-SV's delivering arm a-agree the retained AGREE arm's own bytes (SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1) -- byte-identical prepared first-phase supply output and byte-identical POST bodies for every contact, arm A's first Solver contact included -- and is the twin t-twin's body arm A's, contact for contact?",
+  "request_bytes": {
+    "agree_arm": {
+      "contacts": 663,
+      "contacts_by_role": {
+        "perception": 120,
+        "planner": 181,
+        "reviewer": 181,
+        "solver": 181
+      },
+      "rows_dispatched": 120,
+      "rows_revised_by_canned_planner": 61,
+      "seconds": 120.1,
+      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1-1790640874015"
+    },
+    "comparison": {
+      "arm_a_first_solver_contacts": 120,
+      "arm_b_bodies_different_from_arm_a": 120,
+      "arm_b_bodies_equal_to_arm_a": 0,
+      "contacts_agree_arm": 663,
+      "contacts_w4sv": 903,
+      "first_mismatches": [
+        "slurp:train:000007:audio--1504197557|perception:0",
+        "slurp:train:000007:audio--1504197557|planner:0",
+        "slurp:train:000007:audio--1504197557|planner:1",
+        "slurp:train:000007:audio--1504197557|reviewer:0",
+        "slurp:train:000007:audio--1504197557|reviewer:1",
+        "slurp:train:000007:audio--1504197557|solver:2",
+        "slurp:train:000007:audio--1504197557|solver:3",
+        "slurp:train:000009:audio-1497557594-headset|perception:0",
+        "slurp:train:000009:audio-1497557594-headset|planner:0",
+        "slurp:train:000009:audio-1497557594-headset|reviewer:0",
+        "slurp:train:000009:audio-1497557594-headset|solver:2",
+        "slurp:train:000015:audio-1488524781|perception:0",
+        "slurp:train:000015:audio-1488524781|planner:0",
+        "slurp:train:000015:audio-1488524781|planner:1",
+        "slurp:train:000015:audio-1488524781|reviewer:0",
+        "slurp:train:000015:audio-1488524781|reviewer:1",
+        "slurp:train:000015:audio-1488524781|solver:2",
+        "slurp:train:000015:audio-1488524781|solver:3",
+        "slurp:train:000023:audio-1490956038|perception:0",
+        "slurp:train:000023:audio-1490956038|planner:0"
+      ],
+      "first_twin_mismatches": [],
+      "identical": false,
+      "paired_contacts": 663,
+      "post_body_mismatches": 663,
+      "twin_body_mismatches": 0,
+      "unpaired_agree_arm": [],
+      "unpaired_counts": {
+        "agree_arm": 0,
+        "w4sv": 0
+      },
+      "unpaired_w4sv": []
+    },
+    "comparison_normalised": {
+      "arm_a_first_solver_contacts": 120,
+      "arm_b_bodies_different_from_arm_a": 120,
+      "arm_b_bodies_equal_to_arm_a": 0,
+      "contacts_agree_arm": 663,
+      "contacts_w4sv": 903,
+      "first_mismatches": [],
+      "first_twin_mismatches": [],
+      "identical": true,
+      "paired_contacts": 663,
+      "post_body_mismatches": 0,
+      "twin_body_mismatches": 0,
+      "unpaired_agree_arm": [],
+      "unpaired_counts": {
+        "agree_arm": 0,
+        "w4sv": 0
+      },
+      "unpaired_w4sv": []
+    },
+    "method": "P160.capture_requests on each cell's own composed fragments (own run ids, serial, one slot), the real transport with a fake POST answering a canned role-appropriate completion; contacts paired by (sample, role, AGREE index) with W4-SV Solver index 2 (a-agree) -> 0, 1 (t-twin) compared with its own arm A, 0 (b-w4) counted, i >= 3 -> i - 2; POST body sha256 compared",
+    "normalisation": "the program id phase-native-candidates-review-revise-variants3first-v1 replaced by phase-native-candidates-review-revise-v1, the Solver's global contact index in agent-state labels shifted back by 2 (the arm group's K - 1), and every remaining_model_contacts value masked -- the three prompt fields the arm group necessarily moves",
+    "rows": 120,
+    "w4sv": {
+      "contacts": 903,
+      "contacts_by_role": {
+        "perception": 120,
+        "planner": 181,
+        "reviewer": 181,
+        "solver": 421
+      },
+      "rows_dispatched": 120,
+      "rows_revised_by_canned_planner": 61,
+      "seconds": 353.0,
+      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1-1790640874015"
+    }
+  },
+  "schema": "saea-w4sv-arm-a-byte-identity-proof-v1",
+  "scratch": "/tmp/w4sv-proof-120-rerun-1790640843",
+  "study_commit": "c24824a462b254328f7df3d28fceb25dbad9679e",
+  "tool": "scripts/flights/w4sv/w4sv_arm_a_proof.py",
+  "verdict": "IDENTICAL-MODULO-PROGRAM-FIELDS"
+}

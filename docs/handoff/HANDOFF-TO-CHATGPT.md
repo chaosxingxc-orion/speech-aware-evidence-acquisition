@@ -1,16 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-28T13:57:07Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge and records agent, Claude Opus 5.5) · HEAD at writing `88897512` on `master`, tree clean. **GPU:**
-REV-TFRL-1 is flying/sealing from its own flight worktree at `5f8b4c9d` under queue task
-`SAEA-Queue-WAVE-REVTFRL`. **The knowledge wave is complete** (W1 NEUTRAL, retained as an enabler; W3a and
-W4 NOT ADMITTED, neutral by width; W4 moves to the same-flight supply-variant instrument).
-**Owner decisions 175-180 are ruled** (section 6). 175: COMP-1 recovers by **RESUME**; `-REC` is superseded
-unflown; the resume flip is pending the repin residue-scan fix on `fable/repinresume`. **Queue:**
-`SAEA-Queue-AFTER-REVTFRL` will HALT on the missing resume flight-commit file until that flip lands; after it,
-the chain is COMP-1 resume + G5 -> RANKVIS (`b0c6c608`) -> the E41 sub10 re-read (`bf6db903`; swap to
-e21-np4, fly, swap back) -> the filler. **New since the last refresh:** the SLURP node information-gain
-ledger (E1) and the E3 / E4 designs are merged with coordinator rulings (section 2).
+Last refreshed: 2026-09-29T00:25:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge and records agent, Claude Opus 5.5) · HEAD at writing `0d9e03e5` on `master` (plus this refresh commit), tree clean.
+**GPU: idle, halted on a STOP.** COMP-1 resume attempt 1 died on a **server CUDA abort** (decision 181 outcome: an
+infrastructure failure, no harness defect); the owner ruled a direct retry under decision 22, and **resume attempt 2**
+launched at flight commit `c24824a4` under queue `SAEA-Queue-RESUME2` at 00:14:51Z -- and **STOPped at 00:20:43Z** on
+a different, harness-side refusal: `PreparationError: native contact fit identity already has contact or result evidence`
+(Perception role, `core/preparation_fit.py` `fit_contact`; log `/home/chao/batch-campaign-1-comp1res-20260929T001456Z.log`).
+`SAEA-Queue-RESUME2` HALTed (exit 4); G5, W-SV-1, W4-SV and the filler did not run; the RANKVIS/SUB10 queue stays parked
+on `pre-sub10.hold`; the aborted attempt's `flight.lock` is still present with a dead pid. This is COMP-1's second
+recovery failure -- the coordinator's ruling is pending. **New since the last refresh:** owner decisions 181-188;
+RANKVIS read **INERT**; REV-TFRL-1 read **NOT ADMITTED**; W-SV-1 and W4-SV registered (held); the idle watchdog
+merged and registered **paused**; P-SV-1 / P-SV-2 registered held on `fable/psv`.
 **Isolation:** every chain flies from the `fable-batch-flight` worktree at its own flight commit, never from
 master. Never re-flip a queued cell on master without updating its flight-commit file and the queue script's
 hard-coded commits. **Hazard:** any `core.flight.cli` process alive between chain steps makes the running
@@ -67,9 +68,9 @@ unused -- a consumption-form problem. Three coordinator claims were corrected by
 dead (0 of 60 values carry a prior), the locked plan supplies k=20 not top-5, and text-only rows CAN be
 retrieved because the key side is text by design.
 
-**Current best arm, pending replication.** AGREE (the boundary agreement term) reads intent 82.50 -> **85.83**, +3.33 [+1.57, +5.09] against its in-chain A/A, with SLU +1.85 [+0.23, +3.47] on TRAIN Fold A. That leaves 9.17 points to 95. Under decision 166 it is KEEP-PROVISIONAL because the roster was reused for selection and for reading. COMP-1 composes AGREE + the centroid key + the citation contract; its arm **ABORTED** at 1,913 calls on the citation contract (section 2), so it is unread; the `-REC` re-fly is queued. A2 (COMP-1 on DEV-2000-ADDED) settles AGREE's classification and gates every wave item into COMP-2 (row 138); its per-class attribution is now fixed model-free, and its declaration formula waits for the COMP-1 Fold A read.
+**Current best arm, pending replication.** AGREE (the boundary agreement term) reads intent 82.50 -> **85.83**, +3.33 [+1.57, +5.09] against its in-chain A/A, with SLU +1.85 [+0.23, +3.47] on TRAIN Fold A. That leaves 9.17 points to 95. Under decision 166 it is KEEP-PROVISIONAL because the roster was reused for selection and for reading. COMP-1 composes AGREE + the centroid key + the citation contract; its arm **ABORTED** at 1,913 calls on the citation contract (section 2), so it is unread; the recovery is RESUME (decision 175; `-REC` superseded unflown), whose attempt 1 died on a server CUDA abort and whose attempt 2 STOPped on a fit-identity refusal (header) -- still unread. A2 (COMP-1 on DEV-2000-ADDED) settles AGREE's classification and gates every wave item into COMP-2 (row 138); its per-class attribution is now fixed model-free, and its declaration formula waits for the COMP-1 Fold A read.
 
-## 2. What landed (2026-09-27 evening to 2026-09-28)
+## 2. What landed (2026-09-27 evening to 2026-09-29)
 
 | work | artefact | state |
 | --- | --- | --- |
@@ -93,7 +94,7 @@ retrieved because the key side is text by design.
 | **Same-flight supply-variant instrument, merge set A** (decision 172): design note plus the model-free read side (paired roster read, rollout score, citation credit, registration gate) | merge of `fable/svinst` (`2cef09ec`) | merged; touches no identity file (W1 `cli check` unchanged: same config and protocol hash, ready, `prepared_artifacts_ok: true`). **Set B waits for its named re-pin point** |
 | **W1 card selection read** against the shared wave A/A (TRAIN Fold A, n = 1,080): intent +0.19 [-0.74, +1.11], official SLU-F1 +0.53 [-0.85, +1.93]; both no-harm clauses hold (margins 0.9943 / 1.2485); -3,379.5 prompt tokens per row, -8.0 % GPU-h, Solver -1,125 tokens per contact (registered -1,186); instrument reading (A/A vs the AGREE arm it re-flies) intent -0.19 / SLU -1.00, inside the between-flight band | `docs/results/2026-09-28-slurp-w1-fold-a-read.md` (merge `01b98eef`, verdict `af29c70c`) | **NEUTRAL (no-harm holds; retained as an enabler)** (coordinator). The saving is the room W3a and W4 need; W1 folds into COMP-2 only after AGREE replicates on DEV-2000-ADDED (decisions 138 / 161 / 169) |
 | **W3a intent contrast cards read** against the shared wave A/A (TRAIN Fold A, n = 1,080): intent -0.56 [-1.67, +0.56] (15 saves / 21 harms, p 0.405), official SLU-F1 +0.32 [-1.39, +2.02]; the intent no-harm clause does not hold (-1.67 below -0.9943) and no harm clause is met; the K1 ceiling (+6.94 pp oracle) did not convert in card form; -1,378.6 prompt tokens per row, -0.126 GPU-h per 1,080 rows (noted, not a reason to retain) | `docs/results/2026-09-28-slurp-w3a-fold-a-read.md` (merge of `fable/wavereads`, `25826028`; verdict `9d8ba00d`) | **NOT ADMITTED** (coordinator: neutral by width; the card form of K1 is closed; contrast evidence continues only at the decision node -- RANKVIS and the Reviewer top-2 contrast of decision 165's second round; does not enter COMP-2) |
-| **RANKVIS** (B1 rank-visible probe, 119 Fold A rows AGREE got wrong): registration completed, exposure rows countersigned, flipped ready | flip `b0c6c608` (flight commit in `/home/chao/rankvis-flight-commit.txt`) | queued in `SAEA-Queue-AFTER-REVTFRL` after `-REC` + G5 |
+| **RANKVIS** (B1 rank-visible probe, 119 Fold A rows AGREE got wrong): registration completed, exposure rows countersigned, flipped ready | flip `b0c6c608` (flight commit in `/home/chao/rankvis-flight-commit.txt`) | flown and read: **INERT** (row below) |
 | **Same-flight supply-variant instrument, merge set B** (decision 172) | merge of `fable/svinst` (`0f17a5e1`) | merged on master; queued flights are unaffected because they fly at their own flight commits |
 | Tool-gap fixes: the repin residue scan is scoped to the cell, the flip scripts carry the current trailer; config tests made flip-state agnostic | merges of `fable/repinfix2` (`da541f92`) and `fable/cfgtests` (`18f1ae2e`) | merged; both gaps from the `-REC` staging are closed |
 | **W4 slot conventions read** against the shared wave A/A (TRAIN Fold A, n = 1,080): official SLU-F1 (primary) +0.79 [-0.56, +2.12], intent guard -0.09 [-1.02, +0.83] (13 saves / 14 harms); the SLU no-harm margin (1.2485) holds but the result sits below the M4b analogue's lower end (1.3285) and far below the 2.5 pp cross-flight floor; the intent guard misses its margin (0.9943) by 0.024 pp, under one row's step (0.0926), so the cell is in the residual branch; entity classes SPURIOUS -29, BOUNDARY -12, MISSING +14, WRONG-TYPE -4 (FP 506 -> 461); cost +3,529 prompt tokens per row, +1,207.8 per Solver contact (registered +724.5), +0.1643 GPU-h per 1,080 rows | `docs/results/2026-09-28-slurp-w4-fold-a-read.md` (read `d28f098d`, verdict `06810352`) | **NOT ADMITTED (neutral by width)** (coordinator); does not enter COMP-2, not an enabler. **Re-registered as the first real cell of the same-flight supply-variant instrument's phase 1** (decision 172; spec `docs/superpowers/specs/2026-09-27-same-flight-supply-variant-instrument-design.md`): Solver-local columns with an in-flight twin arm; base = the AGREE arm bytes; arm A = the AGREE Solver supply; arm B = the W4 conventions; twin = a replicate of A; `arm_visits: "first"`; claim `"nominated"` only. Its plausible effect (about 0.8 pp SLU) is the size that design reads (about 0.7 pp at n = 200) and the cross-flight design cannot |
@@ -102,6 +103,13 @@ retrieved because the key side is text by design.
 | **E1: SLURP node information-gain ledger** (model-free, TRAIN Fold A, AGREE arm + its same-bytes replicate). Intent: boundary block -> Perception +7.04 [+5.00, +9.07] pp; Perception -> Solver 0.00 [-1.20, +1.20]; Reviewer/Planner net -1 row; deliver normaliser +1.94. Conversion by Perception rank 97.6 / 27.0 / 12.0 %; of 153 wrong rows gold is at rank 2 on 42 (3.89 pp), rank 3 on 20, off the list on 83 (49 in the block, 34 outside). Slots: SLU-F1 63.89 -> 63.94 -> 65.16; only FORMAT moves after the Solver (normaliser +1.22 [+0.80, +1.66]); of 407 delivered errors 107 consumption origin, 71 visible hearing/span, 229 undetermined; 35 of 142 BOUNDARY + NEAR + FORMAT re-listen addressable; SPURIOUS 253 | `docs/results/2026-09-28-slurp-node-information-gain-ledger.md` (merge `1bf2877d`; coordinator reading section 5, `8e843055`) | **DESCRIPTIVE.** Coordinator reading: Perception's shortlist decides intent, so the contrast action must reach it (same-flight instrument **phase 2** is now the priority engineering item; RANKVIS stays queued as a cheap Solver-side test, bounded by the rank-2/3 conversion); E6's first instance: the Solver (intent) and the Reviewer/Planner (intent and slots) show no measurable gain |
 | **E3 progressive slot loading design** (type first, then the chosen type's closed vocabulary) | `docs/superpowers/specs/2026-09-28-e3-progressive-slot-loading-design.md` (merge `17361233`) | merged, model-free. Supported by 34 of 41 closed-type misses being Solver omissions; flies **after E4** as a cross-flight no-harm enabler |
 | **E4 core-native targeted re-listen design** (blind re-listen of each delivered slot keyed by intent + type, then a forced-choice confirm) | `docs/superpowers/specs/2026-09-28-e4-core-native-targeted-relisten-design.md` (merge `73aae18f`; rulings section 8, `b12810a5` / `88897512`) | merged with coordinator rulings: NOT shelved (hearing share 17-74 %); two shadow columns from the same contacts, (a) replace-only and (b) replace + drop-when-both-contacts-say-unheard (aimed at the 253 SPURIOUS); the confirm contact does not see Perception's candidates; missing-slot probe left to E3; shadow on Fold A first; host = the AGREE arm bytes; expected effect 0.0 nominated, bar = the twin/shadow null; SLU-F1 primary, intent identical by construction. Not registered |
+| **Owner decisions 181-188** (2026-09-28 ~23:30Z to 2026-09-29 ~00:05Z) | `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md` rows 181-188 and their outcomes | 181 COMP-1 resume STOP -> option A, but the diagnosis found a server CUDA abort (infrastructure), so the outcome is a direct retry under decision 22 (resume attempt 2, same run, `resume_from` the aborted attempt); 182 idle watchdog authorised (merged, registered paused); 183 card order RANKVIS -> W-SV-1 -> W4-SV -> sub10 -> filler; 184 P-SV-1 / P-SV-2 (phase-2 Perception variants, TRAIN Fold B, `nominated`) registered after merge set C; 185 E4 v1 implemented after set C with a 4-row dry run; 186 Fold B is ROLLOUT-exposed, a phase-2 cell built from Fold B rollouts may not be read on Fold B; 187 **SLURP only on the GPU** (sub10 deferred, its cell stays ready at `bf6db903`; A2T and Earnings fly nothing; model-free work continues everywhere); 188 B5 deferred, P-SV first |
+| **Server CUDA abort** (decision 181 outcome): resume attempt 1 loaded, replayed and passed prelaunch; 3 s after its first Perception wave the resident llama-server aborted on `CUDA error: the function failed to launch on the GPU` (`ggml_cuda_op_mul_mat_cublas`; an earlier `illegal memory access` abort in the same 14.6 h server log); 4 calls / 10.6 s audio spent; the 471 kept rows untouched | decisions file, outcome of 181 | retried as **resume attempt 2** at `c24824a4` (flip `27c2b372`, G5 re-converged `c24824a4`), queue `SAEA-Queue-RESUME2`: resume + G5 -> W-SV-1 / W4-SV when flipped -> release `pre-sub10.hold` -> the filler (SLURP only, row 187). **Attempt 2 STOPped at 00:20:43Z** on `native contact fit identity already has contact or result evidence` (header); the watchdog's uptime-restart rule (12 h) is the standing answer to the server-age finding |
+| **RANKVIS read** (B1 rank-visible probe, 119 Fold A rows AGREE got wrong): m = 19 / 119 (Wilson [10.47, 23.59] %) against the no-op 15.9 (+0.29 pp net; m >= 43 net needed cross-flight, >= 20 same-flight); gold at boundary position 1 converted 14 / 18 (no-op 6.97), positions 2-8 only 5 / 101 | `docs/results/2026-09-29-slurp-rankvis-probe-fold-a-119-read.md` (merge `6f3c2974`, verdict `0d9e03e5`) | **INERT (form proof; the B1 arm is not registered)** (coordinator). Rank labels make the Solver follow the presented rank 1 -- consistent with the node-gain ledger (Solver follows Perception's rank 1 on 97.6 %); the contrast route continues at Perception (P-SV-1 / P-SV-2). The driver's two path repairs are accepted |
+| **REV-TFRL-1 read** (contrastive Reviewer form vs its in-chain A/A, TRAIN Fold A, n = 1,080): intent -0.46 [-1.57, +0.65], official SLU-F1 -0.55 [-1.79, +0.69]; both no-harm clauses fail, no harm clause met; the +0.80 declaration lies above the CI; REVISE reach 3.32 % -> 30.57 % of visits but intent repairs / breaks 14 / 15 and entity 34 / 16; +0.42 GPU-h per 1,080 rows | `docs/results/2026-09-28-slurp-revtfrl-1-fold-a-read.md` (merge `46fd19d8`, verdict `0d9e03e5`) | **NOT ADMITTED (neutral by width with a measured cost)** (coordinator; decision 188): reach was achieved, judgment was not; B5 deferred behind P-SV-1 / P-SV-2; row 165's route stays open |
+| **W-SV-1 and W4-SV** (the first two same-flight supply-variant cells, decision 179) | merges of `fable/wsv1` and `fable/w4sv2` (`c30d03d5`); `docs/readiness/2026-09-28-slurp-stage3-wsv1-fold-a-v1/`, `docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/` | registered, **HELD** (W4-SV's arm B now varies; that proof re-run sits on `fable/w4svproof`, unmerged); not flipped, so `SAEA-Queue-RESUME2` would skip them |
+| **P-SV-1 / P-SV-2** (phase-2 Perception variants, decision 184) | `fable/psv` (`caec8dcf`, unmerged) | registered **HELD** on the branch, pending the set C items |
+| **Idle watchdog** (decision 182): one tick every 5 min; never launches onto a STOP (except a proven server-death STOP), respects hold files, ready-chain list `scripts/flights/batch/ready_chains.json` (`allowed_carriers: [slurp]`), server-death and 12 h uptime restart | merge `bdaa66b4`; `saea_task.ps1` repetition fix `8d36213f` (PS 5.1 refused `-RepetitionDuration MaxValue`) | Windows task `SAEA-Watchdog` registered and **PAUSED** by `/home/chao/saea-queue/watchdog.hold` (the coordinator removes it). First ticks 00:20:58Z / 00:21:59Z: "busy, exiting quietly" (stale flight lock + parked queue script); nothing launched |
 
 ### What the wave taught
 
@@ -177,18 +185,26 @@ Yours, unchanged:
 
 Mine: make no cross-flight claim without an in-chain replicate and no benefit claim under 200 rows. Every cell registered from 2026-09-27 carries a `stage3_measurement` block, and `stage3_effect_floor_check.py` enforces it.
 
-**Owner rulings received (decisions 175-180, 2026-09-28); none open.**
+**Owner rulings received (decisions 175-188, 2026-09-28 / 29).** Open: the COMP-1 disposition after resume attempt 2's STOP (header) -- the standing rule says a second failure stops the flight and the fix is proven on a 4-row dry run.
 
-1. 175: COMP-1 recovers by RESUME; `-REC` superseded unflown; the resume is the flight's one recovery. The flip is pending the repin residue-scan fix on `fable/repinresume`.
+1. 175: COMP-1 recovers by RESUME; `-REC` superseded unflown; the resume is the flight's one recovery.
 2. 176: `kb_policy` digest lock re-pinned (`cfd34bf5`).
 3. 177: successor receipt `A2T-CANONICAL-FAMILY-SECONDARY-FIXED8-v2.json` issued (`3d02f68f`); v1 untouched.
 4. 178: K1-as-cards closed; contrast evidence only at the decision node. After E1, the deciding node for intent is Perception's shortlist.
-5. 179: offline rule designs on multi-sample pools discontinued; W-SV-1 and W4-SV are registered and held on branches.
+5. 179: offline rule designs on multi-sample pools discontinued; W-SV-1 and W4-SV are registered on master and held.
 6. 180: core-native re-listen first; Whisper waits for E4's read; E1-E6 adopted. E1 has landed; E3 and E4 are designed and merged.
+7. 181: option A ruled; the diagnosis found a server CUDA abort, so the outcome is a direct retry under decision 22 (attempt 2 at `c24824a4`), which then STOPped on the fit-identity refusal.
+8. 182: idle watchdog authorised; merged `bdaa66b4`; task `SAEA-Watchdog` registered paused by `watchdog.hold`.
+9. 183: card order RANKVIS -> W-SV-1 -> W4-SV -> sub10 -> filler (sub10 then deferred by 187).
+10. 184: P-SV-1 / P-SV-2 registered after merge set C (held on `fable/psv`).
+11. 185: E4 v1 is the next engineering item after set C, with a 4-row dry run before its flight.
+12. 186: Fold B is ROLLOUT-exposed while it is the phase-2 read roster.
+13. 187: SLURP only on the GPU; E41 sub10 deferred (ready at `bf6db903`, disabled in the watchdog list).
+14. 188: REV-TFRL-1 NOT ADMITTED; B5 deferred behind P-SV-1 / P-SV-2; row 165's route open.
 
-**Pending branches (not merged):** `fable/gateperf` (uncommitted edits to the flight-registration and effect-floor checks), `fable/wsv1` (W-SV-1 registration, HELD), `fable/w4sv2` (W4-SV registration, HELD and BLOCKED: arm b-w4 inert), `fable/repinresume` (the repin residue-scan fix the resume flip needs; staged, uncommitted).
+**Pending branches (not merged):** `fable/psv` (P-SV-1 / P-SV-2 registrations and operational scripts, HELD pending set C), `fable/w4svproof` (the W4-SV arm-B-varies proof re-run folded into its registration: blocker lifted, cells still held).
 
-**Remaining test failures:** a test that calls a bare `python`, which is not on the WSL PATH (environment, not code).
+**Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code); none else after decisions 176 / 177.
 
 **Offline reads closed today:** B3 CATCHALL **INERT**; B4 EMPTYENT **INERT-BY-INSTRUMENT** (size any offline rule on a multi-sample pool against the 1.547 pp null, not 0.67).
 
@@ -203,17 +219,17 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 | W4 | Slot conventions. Sealed and read: **NOT ADMITTED (neutral by width)**; re-registered as the first cell of the same-flight supply-variant instrument's phase 1. |
 | W5 | Held (outcome of 170). |
 
-The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP, and is complete: all four arms are sealed and read. REV-TFRL-1 is in flight in the same queue (smoke passed 11:17:57Z, arm-start 11:18:08Z).
+The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh after the COMP-1 + G5 STOP, and is complete: all four arms are sealed and read. REV-TFRL-1 flew in the same queue and is read: **NOT ADMITTED (neutral by width with a measured cost)**.
 
-**Same-flight supply-variant instrument (decision 172).** Merge set A (`2cef09ec`) and merge set B (`0f17a5e1`) are both on master. Set B touches identity-bound implementation files; the queued flights fly at their own flight commits and are not affected. VAR-2 as a mechanism stays closed. Its first real phase-1 cell is W4's slot conventions (arm A = the AGREE Solver supply, arm B = the W4 conventions, twin = a replicate of A, `arm_visits: "first"`, claim `"nominated"`); not yet registered as a flight.
+**Same-flight supply-variant instrument (decision 172).** Merge set A (`2cef09ec`) and merge set B (`0f17a5e1`) are both on master. Set B touches identity-bound implementation files; the queued flights fly at their own flight commits and are not affected. VAR-2 as a mechanism stays closed. Its first real phase-1 cells are W-SV-1 and W4-SV (arm A = the AGREE Solver supply, arm B = the W4 conventions, twin = a replicate of A, `arm_visits: "first"`, claim `"nominated"`), both registered and held, not flipped. Phase 2 (Perception variants) is P-SV-1 / P-SV-2 on `fable/psv`.
 
 ## 7. My next action
 
-1. Let `SAEA-Queue-WAVE-REVTFRL` finish sealing REV-TFRL-1 at `5f8b4c9d`, then read it with the standard paired read.
-2. Land `fable/repinresume` and flip the COMP-1 resume (decision 175), so that `SAEA-Queue-AFTER-REVTFRL` stops halting on the missing resume flight-commit file. The chain then flies COMP-1 resume + G5 -> RANKVIS -> E41 sub10 -> the filler. Read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`.
-3. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), then flip and queue A2.
-4. Engineering priority after E1: phase 2 of the same-flight instrument (Perception-phase variants as an episode-level fork with their own A/A). Then register E4 v1 (two shadow columns, Fold A, AGREE host); E3 flies after E4.
-5. Earnings E-C1 is registered only after sub10 passes its form gates (174). A-C1 on Audio2Tool waits for the SLURP lock (173).
+1. Rule on COMP-1 after resume attempt 2's STOP (fit identity already has contact or result evidence): root-cause the resume path's fit gate against the kept rows and attempt-1 contacts, prove the fix on a 4-row dry run, reconcile the stale `flight.lock`, and only then re-queue; read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`.
+2. Flip W-SV-1 and W4-SV (write their flight-commit files) so the card's SLURP same-flight cells fly; SLURP only (187).
+3. Land merge set C, then `fable/psv` (P-SV-1 / P-SV-2 on TRAIN Fold B), then E4 v1 with its 4-row dry run.
+4. Remove `/home/chao/saea-queue/watchdog.hold` once the STOP is resolved and `ready_chains.json` names the next ready chain.
+5. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), then flip and queue A2.
 
 ## 8. Housekeeping we share
 

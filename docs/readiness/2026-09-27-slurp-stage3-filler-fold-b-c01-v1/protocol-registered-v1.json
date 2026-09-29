@@ -29,15 +29,15 @@
   "cells": {
     "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1": {
       "cell": "slurp-native-stage3-filler-fold-b-c01-smoke-4-v1",
-      "composed_config_hash": "ce5f93020fafb38cc42549f12552c2534cf608b30c261ddbb12163af3d0fc368",
-      "protocol_hash": "e107acc10f5a1ceafd3a447d33f137181bd0fad45b32f05751e9b375a37065ee",
+      "composed_config_hash": "a682f675bb0221ce20129a5af392dec962d108db2ebc2ac0689df77e03771c37",
+      "protocol_hash": "845907979b56540ac214643946cb6def4e9fa1bf97987879b1e503e1aa7bc018",
       "rows": 4,
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
     },
     "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1": {
       "cell": "slurp-native-stage3-filler-fold-b-c01-v1",
-      "composed_config_hash": "d4555edd3ce6251f41f2e12b95438929ba338ee3c04437c75f7a49cafbb8ea90",
-      "protocol_hash": "0361018c0bb0e9500200e447c30a7dc18f54414eea9419c09e3421fecdbb629a",
+      "composed_config_hash": "ef93a2754db38b4464364e8dcf46b2ad68d1e2ab1f924ebd0d889452b11141f7",
+      "protocol_hash": "33bdecfe2011049f432ed1c5977d16b5ab9ea7f8904ad68f8de9a11f46bd7988",
       "rows": 180,
       "split_identity_hash": "a7f41a899ee466a3819c0601c73544459a33808a84320e44ef5ae68d738995ec"
     }

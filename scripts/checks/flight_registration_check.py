@@ -913,38 +913,65 @@ def _normalize_roster_key(value: str) -> str:
     return _NORMALIZE_KEY.sub("", value.lower())
 
 
+#: ``str(repo_root) -> {lookup key -> receipt document}``, built once per run by
+#: :func:`_roster_receipt_index` and reused by every :func:`_load_roster_receipt` call. Every real
+#: receipt file under ``ROSTER_RECEIPTS_DIR`` is read and parsed at most once per process, however
+#: many cells or directions query it (2026-09-28 fix: a cell's tuning/read overlap check used to
+#: reopen the same files on every call, and doubling the callers per cell -- item D3 -- made the
+#: previously-latent cost visible as a full-minutes regression).
+_ROSTER_RECEIPT_INDEX_CACHE: dict[str, dict[str, dict[str, Any]]] = {}
+
+
+def _roster_receipt_index(repo_root: Path) -> dict[str, dict[str, Any]]:
+    """Every roster receipt under ``ROSTER_RECEIPTS_DIR``, read once, keyed for lookup.
+
+    Two keys point at the same document: its own filename slug (the convention every real receipt
+    follows) and its internal ``roster_id`` field, lowercased -- the two disagree in case for
+    several real receipts (``SLURP-DEV-2000-V1`` in ``slurp-dev-2000-v1.json``). Filename-slug keys
+    are populated first and never overwritten, so a slug that matches one file's name always
+    resolves to THAT file even if some other file's ``roster_id`` field also happens to match it --
+    bit-for-bit the old function's "try the exact filename first" precedence. Among files whose own
+    ``roster_id`` field ties on the fallback key, the first in sorted (filename) order wins, same as
+    the old function's fallback scan.
+    """
+
+    key = str(repo_root)
+    cached = _ROSTER_RECEIPT_INDEX_CACHE.get(key)
+    if cached is not None:
+        return cached
+    directory = repo_root / ROSTER_RECEIPTS_DIR
+    by_filename: dict[str, dict[str, Any]] = {}
+    if directory.is_dir():
+        for path in sorted(directory.glob("*.json")):
+            try:
+                document = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                continue
+            if isinstance(document, dict):
+                by_filename[path.stem.strip().lower()] = document
+    index: dict[str, dict[str, Any]] = dict(by_filename)
+    for document in by_filename.values():
+        roster_id_field = str(document.get("roster_id", "")).strip().lower()
+        if roster_id_field:
+            index.setdefault(roster_id_field, document)
+    _ROSTER_RECEIPT_INDEX_CACHE[key] = index
+    return index
+
+
 def _load_roster_receipt(repo_root: Path, roster_id: str) -> dict[str, Any] | None:
     """The roster receipt naming ``roster_id``, or ``None`` when none can be found.
 
-    Tries the exact-slug filename first (``docs/receipts/rosters/<roster_id lowercased>.json``,
-    the convention every real receipt in that directory follows), then falls back to scanning the
-    directory for the receipt whose own ``roster_id`` field matches (case-insensitive) -- the
-    field and the filename slug disagree in case for several real receipts (``SLURP-DEV-2000-V1``
-    in ``slurp-dev-2000-v1.json``).
+    Looks up the exact-slug filename first (``docs/receipts/rosters/<roster_id lowercased>.json``,
+    the convention every real receipt in that directory follows), then falls back to the receipt
+    whose own ``roster_id`` field matches (case-insensitive) -- see :func:`_roster_receipt_index`.
+    Every receipt file is read from disk at most once per run, however many roster ids are looked
+    up.
     """
 
-    directory = repo_root / ROSTER_RECEIPTS_DIR
-    if not directory.is_dir():
-        return None
     slug = roster_id.strip().lower()
     if not slug:
         return None
-    candidate = directory / f"{slug}.json"
-    if candidate.is_file():
-        try:
-            document = json.loads(candidate.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError):
-            document = None
-        if isinstance(document, dict):
-            return document
-    for path in sorted(directory.glob("*.json")):
-        try:
-            document = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError):
-            continue
-        if isinstance(document, dict) and str(document.get("roster_id", "")).strip().lower() == slug:
-            return document
-    return None
+    return _roster_receipt_index(repo_root).get(slug)
 
 
 def _extract_shared_count(value: Any) -> int | None:
@@ -1110,7 +1137,14 @@ def check_cell(
     floor_gate = _floor_gate_module(index.repo_root)
     _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_perception_branch_registration(report, fragment, baseline, floor_gate, index.repo_root)
-    _check_roster_split_registration(report, fragment, floor_gate, index.repo_root)
+    # Item D3's roster-split check still runs for a NAMED sealed/flown cell (a resume step
+    # re-launching an already-consumed run id, gated the same as any other launch-mode cell --
+    # see test_a_sealed_cell_is_never_blocked_by_tuning_read_overlap: the finding is reported,
+    # never blocking, exactly as today). It is skipped for a cell reached only through tree-mode
+    # bulk iteration (not named) that is already flown: that cell can never block regardless of
+    # what this check would find, so this skips it without changing any pass/fail outcome.
+    if report.named or report.consumed_by is None:
+        _check_roster_split_registration(report, fragment, floor_gate, index.repo_root)
 
     run_ids = {"generation": report.run_id, **fit_run_ids(fragment, baseline)}
     report.run_ids = run_ids

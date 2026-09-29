@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-g5-fold-a-v1",
-  "composed_config_hash": "747e0f23ee0b1b3a7824f2da2a8d87e956afea28b60436ae69089b4ee64125a0",
+  "composed_config_hash": "56a5ccacb94acc87ed60d4cb7e970d54b4bc7bb5a9d163eff80d453195c5f12b",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-g5-fold-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "27ae01b968b634fe768b95960de0db447fc1f68376c5467bd0a1aa34a5ce4dc2",
+    "protocol_hash": "7a7d3da45288ff4d8104e3bac71091675362ae29cca804ba5b53a1b364df8503",
     "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -35,12 +35,12 @@
   "prepared_phase_supply": {
     "expected_output_sha256": "ba5e1faab9550fcae700f649a0ec6674327ffefe97d7044bb7ea3887536fb54f",
     "note": "NONE COMMITTED, by design: the flip mints each cell's own under its own run id (item E16), the readiness requirements list is empty, and --allow-output-change must never be passed. the Reviewer instruction is not an input to the first-phase supply, so every supply the flip mints for this family must carry this output digest on all 1,080 rows (the smoke on its four); a different digest means the knowledge channel moved -- stop and report",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-G5-FOLD-A-V1/phase-supply-v3.json",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-G5-FOLD-A-V1/phase-supply-v4.json",
     "sha256": "MINTED_AT_THE_FLIP"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "601192aab5043471bbf292da1297e595ae508181116c46166cd4ff66c7f9a9ce"
+    "sha256": "29261dc5b4ef9c01af0d12b0907de37422153d8c37aae2ddeb291b73c874ee48"
   },
   "purpose": "SAEA-SLURP-STAGE3-G5-FOLD-A-FIT-V1: Cell G5. It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the complete sealed manifest, the exact ordered outputs, the native phase summary and the single successful complete official TRAIN score all exist for BOTH the G5 arm and its in-chain A/A replicate. A verdict computed against the sealed comparator alone is refused.",
