@@ -335,7 +335,7 @@ def test_a_row_the_predecessor_did_not_finish_is_re_flown_in_full(
     recovery_runtime._output_rows = rows
     recovery_runtime._client = recovery.client
 
-    merged, block = recovery_runtime._merged_canonical_rows()
+    merged, block, _seal_only_results = recovery_runtime._merged_canonical_rows()
     assert [row["sample_id"] for row in merged] == ["s1", "s2"]
     # The kept row is byte identical to the uninterrupted seal.
     assert json.dumps(merged[0], sort_keys=True) == json.dumps(
@@ -889,7 +889,7 @@ def test_a_resume_loads_a_prepared_supply_prepared_over_the_whole_roster(
     assert set(facet_seed[recovery_spec.phase]) == {"s2"}
     assert value_seed[recovery_spec.phase]["s2"] == ("value:dim-light",)
 
-    merged, block = recovery_runtime._merged_canonical_rows()
+    merged, block, _seal_only_results = recovery_runtime._merged_canonical_rows()
     assert [row["sample_id"] for row in merged] == list(roster)
     assert json.dumps(merged[0], sort_keys=True) == json.dumps(
         full_rows["s1"], sort_keys=True
