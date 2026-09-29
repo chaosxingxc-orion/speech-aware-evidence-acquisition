@@ -102,6 +102,13 @@ def main(argv=None) -> int:
     parser.add_argument("mode", choices=[
         "check", "wire-check", "prepare-supply", "prepare-phase-recall", "prepare-window-inventory", "prepare-window-features",
         "prepare-speech-observation-sources", "prompt-fit", "coordinate-fit", "worker", "campaign",
+        # E10d (2026-09-29): a resume-recovery whose declared predecessor(s)
+        # already cover the whole roster -- seals with zero contacts, no
+        # server, no slot, no lease. The batch driver runs this as an
+        # ordinary chain step; preflight()'s own gates (clean tree, exposure
+        # row, prepared-artifact identity, attempt registration) stay in
+        # force exactly as for "worker".
+        "seal-only",
     ])
     for name in ("repo-root", "data-root", "runtime-root", "lock-path"):
         parser.add_argument("--" + name, required=True)
@@ -186,7 +193,7 @@ def main(argv=None) -> int:
         )
         for experiment, cell in selected
     ]
-    if args.mode in {"worker", "campaign"}:
+    if args.mode in {"worker", "campaign", "seal-only"}:
         assert_prepared_artifacts_current(flights)
     if args.mode == "campaign":
         result = run_campaign(
@@ -247,6 +254,14 @@ def main(argv=None) -> int:
         else:
             try:
                 runtime.preflight()
+                if args.mode == "seal-only" and not runtime.is_seal_only:
+                    raise CampaignError(
+                        f"cell {cells[0].document['cell_id']} is not seal-only: its "
+                        "declared predecessor(s) do not yet cover the whole roster, "
+                        "so this attempt still has contacts to make; seal-only mode "
+                        "never starts a server to fly them -- run it as an ordinary "
+                        "'worker' with a coordinator-assigned session instead"
+                    )
                 runtime.preprocess()
                 runtime.serve()
                 runtime.run_phases()
