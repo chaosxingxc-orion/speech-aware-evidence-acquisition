@@ -2121,6 +2121,148 @@ def _parse_perception_branch_note(text: str) -> tuple[str, tuple[str, ...]]:
         return "malformed", ("unparsed",)
 
 
+#: The synthetic evidence-id scheme a Perception branch's own presentation or
+#: response-contract addition uses (design section 3, "What to build" items 2
+#: and 3): distinguishable at a glance from a real snapshot value id (which
+#: is always store-qualified with ``"::"``) and from a branch's own supplied
+#: ids, so it can never be mistaken for either.
+PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_SCHEME = "perception-branch-presentation"
+PERCEPTION_BRANCH_CONTRACT_EVIDENCE_SCHEME = "perception-branch-contract"
+
+
+def _perception_branch_value_renderer(*, branch, snapshot_sha256, supplied_value_ids):
+    """The ``knowledge_value_renderer`` a non-A, non-T branch's own view
+    renders with (design section 3, "What to build" item 2): ``rank-
+    visible-v1`` wraps ``rank_visible_value_renderer`` over the stores THIS
+    branch's own supplied ids span, so a branch's own view -- and only its
+    own view, since ``base_messages``'s own ``value_renderer_override`` is
+    per-call -- shows retrieval-rank labels. ``None`` for every other
+    presentation (including no presentation at all), which leaves
+    ``base_messages`` to use the row's own outer renderer, byte-identically
+    to before this axis existed.
+    """
+
+    from ..core.base import PERCEPTION_PRESENTATIONS
+    from .perception_presentations import RANK_VISIBLE_PRESENTATION_ID
+
+    if branch.presentation_id != RANK_VISIBLE_PRESENTATION_ID:
+        return None
+    stores = tuple(sorted({
+        store for store in (
+            _value_store_id(value_id) for value_id in supplied_value_ids
+        )
+        if store
+    }))
+    presentation = PERCEPTION_PRESENTATIONS.resolve(RANK_VISIBLE_PRESENTATION_ID)
+    return presentation(snapshot_sha256=snapshot_sha256, stores=stores)
+
+
+def _render_perception_branch_presentation(*, branch, supplied_value_ids, contrast_pairs):
+    """A non-A, non-T branch's own ``top2-contrast-v1`` content item, or a
+    reason it renders none (design section 3, "What to build" item 2).
+
+    Returns ``(extra_content_item_or_None, skip_reason_or_None)``. ``rank-
+    visible-v1`` and "no presentation" both return ``(None, None)`` here --
+    ``rank-visible-v1`` is wired separately, as a value-RENDERER override
+    (:func:`_perception_branch_value_renderer`), because it reshapes how the
+    whole value block renders rather than adding one block.
+
+    Fewer than two DISTINCT candidate intents in the branch's own rendered
+    supply (:func:`rails.perception_presentations.branch_supplied_intent_ids`)
+    is checked BEFORE the contrast-pair table is ever consulted -- there is
+    no rank-1/rank-2 pair to look up at all -- and is its own receipted
+    reason (O5's own floor is a DIFFERENT, later reason: a genuine pair with
+    too little pool support to have minted a table row).
+    """
+
+    from .perception_presentations import (
+        TOP2_CONTRAST_PRESENTATION_ID, TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES,
+        branch_supplied_intent_ids,
+    )
+
+    if branch.presentation_id != TOP2_CONTRAST_PRESENTATION_ID:
+        return None, None
+    from ..core.base import PERCEPTION_PRESENTATIONS
+
+    intents = branch_supplied_intent_ids(supplied_value_ids)
+    if len(intents) < 2:
+        return None, TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES
+    presentation = PERCEPTION_PRESENTATIONS.resolve(TOP2_CONTRAST_PRESENTATION_ID)
+    text, skip_reason = presentation(
+        rank1_intent_id=intents[0], rank2_intent_id=intents[1],
+        contrast_pairs=contrast_pairs or {},
+    )
+    if text is None:
+        return None, skip_reason
+    item = {
+        "type": "text",
+        "text": text,
+        "evidence_id": (
+            f"{PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_SCHEME}:{branch.branch_id}"
+        ),
+        "source_uri": (
+            f"{PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_SCHEME}://"
+            f"{branch.presentation_id}/{branch.branch_id}"
+        ),
+        # Tagged "value" rather than a wire-level-unregistered "contrast"
+        # role: ``core.model.transport._ordered_speech_feature_content`` and
+        # ``rails.core_client._typed_supply_part`` both admit only
+        # {None, "key", "value"} on the actual wire path this study's native
+        # episodes send (speech-feature-query arms), and widening that
+        # closed, fail-closed set is out of this change's scope. "value" is
+        # semantically apt regardless: this block is exactly the kind of
+        # cache-MUTABLE, per-branch content a real value is (never a stable
+        # instruction key), and its synthetic
+        # ``perception-branch-presentation:`` evidence-id scheme keeps it
+        # from ever being mistaken for a genuine snapshot value id or for
+        # this branch's own ``supplied_value_ids``.
+        "knowledge_role": "value",
+    }
+    return item, None
+
+
+def _perception_branch_min_candidates_sentence(branch):
+    """A non-A, non-T branch's own response-contract sentence (design
+    section 3, "What to build" item 3), or ``None`` when the branch declares
+    no ``min_candidates``.
+
+    ``DEFAULT_MAX_SLURP_CANDIDATES`` (3) is this study's own fixed ceiling on
+    a SLURP candidate list -- the SAME ceiling ``rails.native_episode_config``
+    already validates every branch's own ``min_candidates`` against
+    (``parse_perception_branches(..., max_candidates_ceiling=DEFAULT_MAX_
+    SLURP_CANDIDATES)``) and the value every registered cell's own
+    ``phase_material.perception.fill_params.max_candidates`` carries today.
+    Stating it here needs no new plumbing from the row's own bound
+    ``PhaseMaterial.response_format`` (a config-composition-time object this
+    runner-level function does not have easy reach into) and stays accurate
+    for as long as that coincidence holds; a future cell that ever declares a
+    SMALLER ``max_candidates`` would need this sentence threaded from the
+    bound material instead.
+    """
+
+    if branch.min_candidates is None:
+        return None
+    from .candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES
+
+    sentence = (
+        "This candidate list must carry at least "
+        f"{branch.min_candidates} and at most {DEFAULT_MAX_SLURP_CANDIDATES} "
+        "candidates."
+    )
+    return {
+        "type": "text",
+        "text": sentence,
+        "evidence_id": (
+            f"{PERCEPTION_BRANCH_CONTRACT_EVIDENCE_SCHEME}:{branch.branch_id}"
+        ),
+        "source_uri": (
+            f"{PERCEPTION_BRANCH_CONTRACT_EVIDENCE_SCHEME}://"
+            f"min-candidates/{branch.branch_id}"
+        ),
+        "knowledge_role": "value",
+    }
+
+
 async def _invoke_native_role_episode(
     *, state, run_contact, session, binding, adapter, core_client, snapshot,
     snapshot_sha256, protected_material, base_decoding_params, run_id,
@@ -2281,6 +2423,16 @@ async def _invoke_native_role_episode(
         binding.perception_branch_seeds if perception_branch_group is not None
         else None
     )
+    # "What to build" item 1: every declared branch's own pinned, loaded,
+    # verified contrast-pair table, keyed by branch id
+    # (``core.flight.runtime.FlightRuntime._perception_contrast_pairs_for_
+    # group``, computed once per flight, before any contact). None unless
+    # ``perception_branch_group`` is declared, exactly like
+    # ``perception_branch_seeds``.
+    perception_contrast_pairs = (
+        getattr(binding, "perception_contrast_pairs", None)
+        if perception_branch_group is not None else None
+    )
     # The ``(plan, completion, slot_id)`` of the branches of the visit in
     # flight, in branch order, so the visit's ONE wave can name every one of
     # its K contacts. Emptied when that wave is recorded. Perception has
@@ -2420,7 +2572,10 @@ async def _invoke_native_role_episode(
             response_sha256s=state.response_sha256s, contact_index=len(state.contacts),
         )
 
-    def base_messages(ctx, *, index_role_kind=None, index_sink=None, snapshot_override=None):
+    def base_messages(
+        ctx, *, index_role_kind=None, index_sink=None, snapshot_override=None,
+        value_renderer_override=None,
+    ):
         """Render one contact's two messages.
 
         Coordinator amendment, 2026-09-28 (the release-swap arm route):
@@ -2436,17 +2591,30 @@ async def _invoke_native_role_episode(
         already refuses an alternate that moves any other store's pins), so
         using the alternate's own composite snapshot for the WHOLE arm
         rendering is exactly equivalent to swapping just the one store.
+
+        Same-flight instrument, PHASE 2 (merge set C, "What to build" item 2):
+        ``value_renderer_override`` is ``None`` for every call site above --
+        every one renders with the row's own ``knowledge_value_renderer``,
+        byte-identically. A Perception branch's own ``rank-visible-v1``
+        presentation renders ONE branch's own view with a value renderer
+        ``rank_visible_value_renderer`` builds for that branch alone
+        (``_perception_branch_value_renderer``); every other branch, and
+        every non-branch contact, is unaffected.
         """
 
         active_snapshot, active_snapshot_sha256 = (
             (snapshot, snapshot_sha256) if snapshot_override is None
             else (snapshot_override, snapshot_override.content_hash())
         )
+        active_value_renderer = (
+            knowledge_value_renderer if value_renderer_override is None
+            else value_renderer_override
+        )
         return _agent_messages(
             adapter=adapter, sample=state.prepared.sample,
             task_contract=state.prepared.task_contract, snapshot=active_snapshot,
             snapshot_sha256=active_snapshot_sha256, query_state=ctx.query_state,
-            agent_states=ctx.agent_states, knowledge_value_renderer=knowledge_value_renderer,
+            agent_states=ctx.agent_states, knowledge_value_renderer=active_value_renderer,
             # E21: None for every episode that does not arm
             # ``native_episode.knowledge_index``, which makes every line of
             # the index seam unreachable and the messages byte-identical.
@@ -2585,10 +2753,24 @@ async def _invoke_native_role_episode(
         ``rails.supply_variants.perception_branch_record`` needs the
         RESPONSE (its note text, hence ``note_sha256``/``note_parse_status``/
         ``candidate_intent_ids``), which is not known until the contact
-        completes. So only a lightweight pending row -- the branch identity
-        and the value ids THIS request actually carried -- is recorded here,
-        keyed by contact id; :func:`read_perception_branch_record` completes
-        it once the response is known.
+        completes. So only a lightweight pending row -- the branch identity,
+        the value ids THIS request actually carried, and this branch's own
+        presentation outcome (design section 3, "What to build" item 2) --
+        is recorded here, keyed by contact id;
+        :func:`read_perception_branch_record` completes it once the response
+        is known.
+
+        Same-flight instrument, PHASE 2 ("What to build" items 2 and 3): a
+        non-A, non-T branch's own ``presentation_id`` or ``min_candidates``
+        axis is rendered here, over the SAME QueryState view its seed is
+        rendered from -- ``rank-visible-v1`` as a per-branch value-renderer
+        override (:func:`_perception_branch_value_renderer`), ``top2-
+        contrast-v1`` and ``min_candidates`` as one extra content item each,
+        appended after the value items (:func:`_render_perception_branch_
+        presentation`, :func:`_perception_branch_min_candidates_sentence`).
+        A and T carry neither axis (parse-time refusal), so neither ever
+        reaches this branch: their messages stay exactly
+        ``base_messages(ctx)``.
         """
 
         from .supply_variants import PerceptionBranchError
@@ -2606,6 +2788,8 @@ async def _invoke_native_role_episode(
         except PerceptionBranchError as error:
             raise RailsRunnerError(str(error)) from error
         branch_index = perception_branch_group.branch_ids.index(branch_id)
+        extra_item = None
+        presentation_skip_reason = None
         if branch.deliver or branch.is_twin:
             # AT-P1 / AT-P2: A is the cell's own request, override-free; the
             # twin (replicate_of A) resolves exactly A's ids and takes the
@@ -2619,13 +2803,42 @@ async def _invoke_native_role_episode(
                 if perception_branch_seeds else {}
             )
             supplied = tuple(seed.get(ctx.sample_id, ()))
-            messages = base_messages(replace(
-                ctx,
-                query_state=replace(ctx.query_state, retrieved_value_ids=supplied),
-            ))
+            renderer_override = _perception_branch_value_renderer(
+                branch=branch, snapshot_sha256=snapshot_sha256,
+                supplied_value_ids=supplied,
+            )
+            messages = base_messages(
+                replace(
+                    ctx,
+                    query_state=replace(ctx.query_state, retrieved_value_ids=supplied),
+                ),
+                value_renderer_override=renderer_override,
+            )
+            branch_contrast_pairs = (
+                perception_contrast_pairs.get(branch_id)
+                if perception_contrast_pairs else None
+            )
+            extra_item, presentation_skip_reason = _render_perception_branch_presentation(
+                branch=branch, supplied_value_ids=supplied,
+                contrast_pairs=branch_contrast_pairs,
+            )
+            contract_item = _perception_branch_min_candidates_sentence(branch)
+            extra_items = [item for item in (extra_item, contract_item) if item is not None]
+            if extra_items:
+                user_message = messages[1]
+                messages = (
+                    messages[0],
+                    {**user_message, "content": [*user_message["content"], *extra_items]},
+                )
+        contrast_block_sha256 = (
+            None if extra_item is None
+            else hashlib.sha256(extra_item["text"].encode("utf-8")).hexdigest()
+        )
         record = {
             "branch_id": branch_id, "branch_index": branch_index,
             "supplied_value_ids": supplied,
+            "presentation_skip_reason": presentation_skip_reason,
+            "contrast_block_sha256": contrast_block_sha256,
         }
         existing = perception_branch_records.setdefault(plan.contact_id, record)
         if existing != record:
@@ -3760,12 +3973,23 @@ async def _invoke_native_role_episode(
         # non-A branch's own history without a second Perception contact.
         # Harmless at level 1 too (simply never read).
         perception_branch_notes[branch.branch_id] = note_text
+        # "What to build" item 3: a short list is a measured outcome, never
+        # a refusal -- ``candidate_intent_ids`` carries ``("unparsed",)`` on
+        # a malformed note, which is honestly reported as NOT meeting the
+        # bound rather than raising.
+        min_candidates_met = (
+            None if branch.min_candidates is None
+            else len(candidate_intent_ids) >= branch.min_candidates
+        )
         return perception_branch_record(
             branch=branch, branch_index=branch_index, contact_id=contact_id,
             request_sha256=request_sha256, response_text_sha256=response_text_sha256,
             note_sha256=note_sha256, note_parse_status=note_parse_status,
             candidate_intent_ids=candidate_intent_ids,
             supplied_value_ids=pending_row["supplied_value_ids"],
+            presentation_skip_reason=pending_row.get("presentation_skip_reason"),
+            contrast_block_sha256=pending_row.get("contrast_block_sha256"),
+            min_candidates_met=min_candidates_met,
         )
 
     def read_perception_branch_solver_record(branch_index, result):
