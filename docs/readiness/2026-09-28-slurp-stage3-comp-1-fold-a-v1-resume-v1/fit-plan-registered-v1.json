@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1-fold-a-v1-resume",
-  "composed_config_hash": "ce6c26d448c2db1964d13d86ba19d6c754a0e5cd145d9afcdfb92d03be60336c",
+  "composed_config_hash": "cfc058e7843369d98c594cabdb72d2ab2ab92704a387abff2a5a102480f15d9b",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-comp1-fold-a-fit-v1-resume-3",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 47520,
     "planned_speech_audio_seconds": 33930,
-    "protocol_hash": "b62a8c906f50bed9ab94314f0f0edc2847013a24aeab758b4eed7ef96ced5433",
+    "protocol_hash": "44cd16ae0ddb6abee901e51df773bcd4c47427879a0e83e72b42962e0e94d086",
     "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
