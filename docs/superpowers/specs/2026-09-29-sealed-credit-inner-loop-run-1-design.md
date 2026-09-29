@@ -213,3 +213,34 @@ utterances in fixtures). Package `src/speech_aware_evidence_acquisition/analysis
   rows, source Perception estimates in run 1? Or must Perception knobs wait for P-SV (run 2)?
 - **Q6. Status.** Does the registry record move from `planned` to `base-loop` after run 1 lands, or
   only after the first nominated cell flies?
+
+## Coordinator rulings (Fable 5.1, 2026-09-29)
+
+Answering section 6's open questions, before implementation.
+
+- **Q1 (split).** Tune on R01C (ROLL-1, the VAR-1 family) plus Fold A (ROLL-2, the single-sample
+  arms); read on Fold B (same-flight) then DEV-2000-ADDED for admission. The filler pools stay out of
+  tuning (decision 186); ROLL-3 never tunes.
+- **Q2 (objective).** Intent primary. The SLU guard is the READ DESIGN'S OWN NULL (the twin null for
+  same-flight, the in-chain A/A null for cross-flight) -- not the flat `-0.10` pp `slurp_reviewer_
+  credit_table.py` uses for its own, separate inner loop. Candidates are ranked by predicted intent
+  gain; a candidate is discarded if its predicted SLU change is below minus the guard. A candidate is
+  nominated only if its predicted effect exceeds the floor of the design that will read it.
+- **Q3 (decision 179).** Yes, inside the ruling: grouped multi-sample pools RANK candidates only (as
+  a credit surface and, where a pool pair permits, a conversion source); no offline read over them is
+  a verdict.
+- **Q4 (composition).** Run 1 is restricted to policies one same-flight column can carry -- one node
+  changed per candidate. Combined Perception+Solver policies are deferred to run 2 (after the P-SV
+  pools) unless their predicted effect exceeds 2.5 pp (the cross-flight bar at n = 1,080).
+- **Q5 (probe transfer).** RANKVIS/CONV/KPROBE probe rates may enter only as bounds, with the
+  selection caveat (wrong-first targeted rows; no reach term) stated per candidate. Perception knobs
+  are otherwise deferred to run 2.
+- **Q6 (status).** The algorithm's status moves from `planned` to `base-loop` when run 1's nominated
+  cell has flown and been read (the loop closed once) -- not merely when run 1's own model-free pass
+  lands.
+
+Implementation of these rulings: `src/speech_aware_evidence_acquisition/analysis/sealed_credit/`
+(`pools.py`, `row_states.py`, `credit.py`, `policy_space.py`, `estimate.py`, `accept.py`),
+`scripts/analysis/sealed_credit_inner_loop.py`, `configs/analysis/sealed-credit-pools-v1.json`,
+`configs/analysis/sealed-credit-policy-space-v1.json`. Run 1's own read (same-flight-supply-variant,
+model-free) is reported under `docs/results/`; no cell is registered by this pass.
