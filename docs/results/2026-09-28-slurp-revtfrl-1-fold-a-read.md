@@ -210,3 +210,17 @@ ratios: intent -0.2237 pp per GPU-hour per 1,080 rows; -0.0497 pp per 1,000 pref
   summaries (A/A 1,113 visits, one row with no Reviewer visit); the credit table uses the phase count.
 - Step 6 (hand the arm's per-visit credit table to the next proposer round) is the coordinator's; the table is
   `node-credit/node-credit-v1.json`, key `credit.arm`.
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+**NOT ADMITTED (neutral by width with a measured cost).** Against the in-chain A/A (n = 1,080), intent
+-0.46 [-1.57, +0.65] and official SLU-F1 -0.55 [-1.79, +0.69]: both no-harm clauses fail (each lower end
+sits below its margin) and no harm clause is met (each interval contains zero), so by the registered rule
+the cell is neutral by width; the declared +0.80 pp intent expectation lies above the whole CI. The
+contrastive form achieved reach -- REVISE rose from 3.32 % to 30.57 % of Reviewer visits -- but not
+judgment: on revised visits intent repairs / breaks are 14 / 15 and entity repairs / breaks 34 / 16, so
+more revisions did not make the Reviewer's calls better. The cost is measured: +0.42 GPU-h per 1,080 rows
+(1.6467 -> 2.0692). Owner decision 188: the Reviewer's second TF-RL round (B5, the Reviewer top-2
+contrast) is deferred behind the Perception-phase cells P-SV-1 / P-SV-2 (row 184); row 165's route stays
+open, and B5 is offered afterwards only if P-SV shows that contrastive evidence moves the deciding node.
+The agent's numbers above are unchanged.

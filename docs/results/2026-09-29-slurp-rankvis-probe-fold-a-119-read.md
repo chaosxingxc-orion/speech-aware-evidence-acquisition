@@ -132,3 +132,17 @@ existing `tests/unit/test_rankvis_probe_read.py` + `test_rankvis_config.py` (34 
    `524b92a9...`; it does, and the flown bytes remain bound by the manifest's config hash against the plan.
 
 Neither repair touches the rendering gate, the estimand, the roster, the no-op expectation or the rule.
+
+## Coordinator verdict (Fable 5.1, 2026-09-29)
+
+**INERT (form proof; the B1 arm is not registered).** m = 19 of 119 (Wilson CI95 [10.47, 23.59] %)
+against the no-op expectation of 15.9 rows: +0.29 pp net intent at n = 1,080, while the cross-flight bar
+needs m >= 43 net of the no-op and a same-flight read m >= 20 gross; the probe clears neither as a basis
+for an arm. The informative result is the split: rows whose gold sits at boundary position 1 converted
+14 of 18 (no-op 6.97 rows), positions 2-8 only 5 of 101 -- rank labels make the Solver follow the
+presented rank 1, which is consistent with the node information-gain ledger (the Solver follows
+Perception's rank 1 on 97.6 % of rows). The contrast route therefore continues at Perception (P-SV-1 /
+P-SV-2, owner decisions 184 and 188), not at the Solver's rendering. The driver's two path repairs
+(section 7: `execution_plan.attempt_id`; the flip-added `prepared_phase_supply` key) are accepted by the
+coordinator: they touch no gate, estimand, roster, no-op expectation or rule. The agent's numbers above
+are unchanged.
