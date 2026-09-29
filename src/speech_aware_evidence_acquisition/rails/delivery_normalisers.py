@@ -48,6 +48,7 @@ from typing import TYPE_CHECKING
 
 from ..core.base import DELIVERY_NORMALISERS, DeliveryNormalisation, DeliveryNormaliserError
 from .solver_citation import (
+    DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1,
     DELIVER_CITED_ANSWER_NORMALISE_V3_V1,
     DELIVER_CITED_ANSWER_V1,
     SolverCitationError,
@@ -398,6 +399,320 @@ class CitedAnswerNormaliseV3DeliveryNormaliser:
         return DeliveryNormalisation(text=delivered, changed=changed, receipt=receipt).validate()
 
 
+# ---------------------------------------------------------------------------
+# The do-not-tag SCOPE-RULE stage (evidence-consumption module, migration
+# step 3; owner decision 195 = B; coordinator ruling R5).
+# ---------------------------------------------------------------------------
+
+#: The stage's registered id. A deliver-normaliser STAGE: it takes the
+#: delivered answer text like every normaliser, and it is composed AFTER
+#: ``saea-deliver-normalise-v3`` under one registered id (below), because
+#: ``native_episode.deliver_normaliser`` names exactly one normaliser.
+DELIVER_SCOPE_RULE_V1 = "saea-deliver-scope-rule-v1"
+#: Bumped when the RULE or its pinned table changes, never when this file is
+#: merely edited.
+DELIVER_SCOPE_RULE_V1_VERSION = "1"
+#: The sub-receipt's rule id (receipt ``rule_id``).
+SCOPE_RULE_ID = "slurp-do-not-tag-scope-rule-v1"
+#: The pinned pool-statistics table (``scripts/build_slurp_scope_rule_table.py``,
+#: receipt ``docs/receipts/knowledge/slurp-scope-rule-table-v1.json``, exposure
+#: row ``SAEA-SLURP-SCOPE-RULE-TABLE-BUILD-V1``). Built model-free from TRAIN
+#: minus Fold A, minus Fold B, minus R01/R01C (ruling R5). It lives under the
+#: data root (its keys are TRAIN phrases, never committed); its sha256 is the
+#: stage's identity and every receipt carries it.
+SCOPE_RULE_TABLE_SCHEMA = "saea-slurp-scope-rule-table-v1"
+SCOPE_RULE_TABLE_RELPATH = "prepared/SAEA-SLURP-SCOPE-RULE-TABLE-V1/table-v1.json"
+SCOPE_RULE_TABLE_SHA256 = "fcff0c42ca0e3c30ed56cc1f137d85b255d0ecea876ea4fe8efae560f2c58df5"
+#: The rule's registered thresholds, fixed by the offline read
+#: (``docs/results/2026-09-29-slurp-slu-consumption-headroom-offline.md``)
+#: before its first run: drop a delivered entity whose phrase occurs in at
+#: least 5 pool exemplars and is untagged in at least 80 % of them.
+SCOPE_RULE_MIN_POOL_OCCURRENCES = 5
+SCOPE_RULE_UNTAGGED_SHARE = 0.8
+
+#: The composed ids (one registered rule each, the cited-v3 precedent).
+DELIVER_NORMALISE_V3_SCOPE_RULE_V1 = "saea-deliver-normalise-v3-scope-rule-v1"
+DELIVER_NORMALISE_V3_SCOPE_RULE_V1_VERSION = "1"
+DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1_VERSION = "1"
+#: ``{base normaliser id: the base composed with the scope stage}`` -- what
+#: the module's ``scope-rule`` component compiles the deliver node to.
+SCOPE_RULE_COMPOSITIONS: dict[str, str] = {}
+
+#: The exact key set of the stage's sub-receipt (``validate_scope_rule_receipt``).
+SCOPE_RULE_RECEIPT_KEYS = frozenset({
+    "schema", "normaliser_id", "version", "rule_id", "carrier_lock_key", "applied",
+    "changed", "input_sha256", "output_sha256", "table_relpath", "table_sha256",
+    "min_pool_occurrences", "untagged_share", "entities_in", "dropped_entity_indices",
+    "reason",
+})
+
+
+class ScopeRuleTable:
+    """The pinned pool statistics: ``phrase -> (pool occurrences, tagged
+    occurrences)``, keyed by the space-joined folded tokens
+    (``analysis.sealed_credit.entity_states.fold``). Rows below the table's own
+    occurrence floor are absent (an absent phrase is never dropped)."""
+
+    __slots__ = ("rows", "sha256", "floor")
+
+    def __init__(self, rows: dict[str, tuple[int, int]], *, sha256: str, floor: int) -> None:
+        self.rows = rows
+        self.sha256 = sha256
+        self.floor = floor
+
+    @classmethod
+    def from_bytes(cls, data: bytes, *, expected_sha256: str | None) -> "ScopeRuleTable":
+        digest = hashlib.sha256(data).hexdigest()
+        if expected_sha256 is not None and digest != expected_sha256:
+            raise DeliveryNormaliserError(
+                f"{DELIVER_SCOPE_RULE_V1}: the scope-rule table hashes to {digest[:12]}..., "
+                f"not the pinned {expected_sha256[:12]}..."
+            )
+        document = json.loads(data.decode("utf-8"))
+        if not isinstance(document, dict) or document.get("schema") != SCOPE_RULE_TABLE_SCHEMA:
+            raise DeliveryNormaliserError(
+                f"{DELIVER_SCOPE_RULE_V1}: the table schema must be {SCOPE_RULE_TABLE_SCHEMA!r}"
+            )
+        floor = document.get("min_pool_occurrences_floor")
+        raw = document.get("rows")
+        if not isinstance(floor, int) or floor < 1 or not isinstance(raw, dict):
+            raise DeliveryNormaliserError(f"{DELIVER_SCOPE_RULE_V1}: malformed scope-rule table")
+        rows: dict[str, tuple[int, int]] = {}
+        for phrase, counts in raw.items():
+            if (
+                not isinstance(counts, list) or len(counts) != 2
+                or not all(isinstance(c, int) for c in counts)
+                or counts[0] < floor or not 0 <= counts[1] <= counts[0]
+            ):
+                raise DeliveryNormaliserError(f"{DELIVER_SCOPE_RULE_V1}: malformed table row")
+            rows[phrase] = (counts[0], counts[1])
+        return cls(rows, sha256=digest, floor=floor)
+
+
+_DEFAULT_SCOPE_RULE_TABLE: list[ScopeRuleTable] = []
+
+
+def default_scope_rule_table() -> ScopeRuleTable:
+    """The pinned table under ``SPEECHRL_DATA_DIR``, loaded once per process
+    and refused unless it hashes to :data:`SCOPE_RULE_TABLE_SHA256`."""
+
+    if not _DEFAULT_SCOPE_RULE_TABLE:
+        from ..data.lock import data_root  # noqa: PLC0415
+
+        path = data_root() / SCOPE_RULE_TABLE_RELPATH
+        _DEFAULT_SCOPE_RULE_TABLE.append(
+            ScopeRuleTable.from_bytes(path.read_bytes(), expected_sha256=SCOPE_RULE_TABLE_SHA256)
+        )
+    return _DEFAULT_SCOPE_RULE_TABLE[0]
+
+
+def scope_rule_phrase(filler: str) -> str:
+    """The table key of one delivered filler: its folded tokens, space-joined
+    -- the offline read's ``tuple(fold(filler).split())``."""
+
+    from ..analysis.sealed_credit.entity_states import fold  # noqa: PLC0415
+
+    return " ".join(fold(filler).split())
+
+
+def scope_rule_drops(
+    fillers: "list[str] | tuple[str, ...]",
+    table: ScopeRuleTable,
+    *,
+    min_pool_occurrences: int = SCOPE_RULE_MIN_POOL_OCCURRENCES,
+    untagged_share: float = SCOPE_RULE_UNTAGGED_SHARE,
+) -> tuple[int, ...]:
+    """The indices of the delivered entities the rule drops: phrase in at
+    least ``min_pool_occurrences`` pool exemplars and untagged in at least
+    ``untagged_share`` of them (the offline read's arithmetic, operand for
+    operand: ``1.0 - tagged / occurrences >= share``)."""
+
+    if min_pool_occurrences < table.floor:
+        raise DeliveryNormaliserError(
+            f"{DELIVER_SCOPE_RULE_V1}: min_pool_occurrences {min_pool_occurrences} is below "
+            f"the table's floor {table.floor}"
+        )
+    drops = []
+    for index, filler in enumerate(fillers):
+        counts = table.rows.get(scope_rule_phrase(filler))
+        if counts is None:
+            continue
+        occurrences, tagged = counts
+        if occurrences >= min_pool_occurrences and 1.0 - tagged / occurrences >= untagged_share:
+            drops.append(index)
+    return tuple(drops)
+
+
+class ScopeRuleDeliveryStage:
+    """``saea-deliver-scope-rule-v1``: the do-not-tag scope rule, applied once
+    to the delivered answer after the projection.
+
+    Pure and deterministic given its pinned table. It parses the delivered
+    answer with the SAME parser the official scorer's adapter uses
+    (:func:`reproduction.slurp_scoring.parse_slu_response`), drops every
+    entity the rule selects (:func:`scope_rule_drops`) and re-renders the
+    answer canonically (:func:`rails.slurp_projection_v3.render_slurp_answer`)
+    ONLY when it dropped something: a row it leaves alone is delivered
+    VERBATIM (one factor, down to the byte, as the v3 node). An unparsed
+    answer is delivered verbatim with ``applied: false``. Never changes a
+    label; never adds an entity. Zero contact.
+    """
+
+    id = DELIVER_SCOPE_RULE_V1
+    version = DELIVER_SCOPE_RULE_V1_VERSION
+    carrier_lock_key = "slurp"
+
+    def __call__(self, text: str, *, table: ScopeRuleTable | None = None) -> DeliveryNormalisation:
+        if not isinstance(text, str):
+            raise TypeError("a delivery normaliser takes the delivered answer text")
+        from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
+        from .slurp_projection_v3 import render_slurp_answer  # noqa: PLC0415
+
+        if table is None:
+            table = default_scope_rule_table()
+        scenario, action, entities, parsed = parse_slu_response(text)
+        drops: tuple[int, ...] = ()
+        delivered = text
+        if parsed:
+            drops = scope_rule_drops([entity.filler for entity in entities], table)
+            if drops:
+                kept = [entity for i, entity in enumerate(entities) if i not in drops]
+                delivered = render_slurp_answer(scenario, action, kept)
+        changed = delivered != text
+        receipt: dict[str, object] = {
+            "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA,
+            "normaliser_id": self.id,
+            "version": self.version,
+            "rule_id": SCOPE_RULE_ID,
+            "carrier_lock_key": self.carrier_lock_key,
+            "applied": bool(parsed),
+            "changed": changed,
+            "input_sha256": _sha256(text),
+            "output_sha256": _sha256(delivered),
+            "table_relpath": SCOPE_RULE_TABLE_RELPATH,
+            "table_sha256": table.sha256,
+            "min_pool_occurrences": SCOPE_RULE_MIN_POOL_OCCURRENCES,
+            "untagged_share": SCOPE_RULE_UNTAGGED_SHARE,
+            "entities_in": len(entities),
+            # Indices into the parsed entity list, never the fillers.
+            "dropped_entity_indices": list(drops),
+            "reason": None if parsed else "unparsed",
+        }
+        return DeliveryNormalisation(text=delivered, changed=changed, receipt=receipt).validate()
+
+
+def validate_scope_rule_receipt(receipt: object) -> "dict[str, object]":
+    """Refuse a scope-stage sub-receipt that is not exactly the stage's shape
+    or that does not bind the pinned table and thresholds."""
+
+    if not isinstance(receipt, dict) or set(receipt) != SCOPE_RULE_RECEIPT_KEYS:
+        raise DeliveryNormaliserError(
+            f"a {DELIVER_SCOPE_RULE_V1} receipt carries exactly {sorted(SCOPE_RULE_RECEIPT_KEYS)}"
+        )
+    expected = {
+        "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA, "normaliser_id": DELIVER_SCOPE_RULE_V1,
+        "rule_id": SCOPE_RULE_ID, "table_relpath": SCOPE_RULE_TABLE_RELPATH,
+        "min_pool_occurrences": SCOPE_RULE_MIN_POOL_OCCURRENCES,
+        "untagged_share": SCOPE_RULE_UNTAGGED_SHARE,
+    }
+    for key, value in expected.items():
+        if receipt[key] != value:
+            raise DeliveryNormaliserError(f"{DELIVER_SCOPE_RULE_V1} receipt {key} must be {value!r}")
+    if not re.fullmatch(r"[0-9a-f]{64}", str(receipt["table_sha256"])):
+        raise DeliveryNormaliserError(f"{DELIVER_SCOPE_RULE_V1} receipt table_sha256 must be 64-hex")
+    indices = receipt["dropped_entity_indices"]
+    if (
+        not isinstance(indices, list) or indices != sorted(set(indices))
+        or not all(isinstance(i, int) and 0 <= i < int(receipt["entities_in"]) for i in indices)
+    ):
+        raise DeliveryNormaliserError(
+            f"{DELIVER_SCOPE_RULE_V1} receipt dropped_entity_indices must be sorted, unique "
+            "indices into the parsed entities"
+        )
+    if bool(indices) != bool(receipt["changed"]):
+        raise DeliveryNormaliserError(
+            f"{DELIVER_SCOPE_RULE_V1} receipt: changed must hold exactly when an entity was dropped"
+        )
+    return receipt
+
+
+class _ScopeRuleComposition:
+    """A registered base normaliser, then the scope stage, as ONE registered
+    rule. It composes the two REGISTERED callables (one implementation, two
+    callers); the receipt carries the base's own stage receipts (or the base
+    receipt itself) and the scope sub-receipt under ``stages``, beside the
+    top-level input/output digests I7n binds."""
+
+    id = ""
+    version = ""
+    base_id = ""
+    carrier_lock_key = "slurp"
+
+    def __call__(
+        self,
+        text: str,
+        *,
+        inventory: "LegalIntentInventory | None" = None,
+        table: ScopeRuleTable | None = None,
+    ) -> DeliveryNormalisation:
+        if not isinstance(text, str):
+            raise TypeError("a delivery normaliser takes the delivered answer text")
+        base = DELIVERY_NORMALISERS.resolve(self.base_id)(text, inventory=inventory)
+        scoped = DELIVERY_NORMALISERS.resolve(DELIVER_SCOPE_RULE_V1)(base.text, table=table)
+        delivered = scoped.text
+        base_stages = base.receipt.get("stages")
+        stages = (
+            [dict(r) for r in base_stages] if isinstance(base_stages, list)
+            else [dict(base.receipt)]
+        )
+        receipt: dict[str, object] = {
+            "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA,
+            "normaliser_id": self.id,
+            "version": self.version,
+            "rule_id": f"{base.receipt['rule_id']}-then-{SCOPE_RULE_ID}",
+            "carrier_lock_key": self.carrier_lock_key,
+            "applied": bool(base.receipt["applied"]) or bool(scoped.receipt["applied"]),
+            "changed": delivered != text,
+            "input_sha256": _sha256(text),
+            "output_sha256": _sha256(delivered),
+            "labels_changed": base.receipt["labels_changed"],
+            "label_branch": base.receipt["label_branch"],
+            "fillers_changed": base.receipt["fillers_changed"],
+            "entities_dropped": len(scoped.receipt["dropped_entity_indices"]),
+            "stages": [*stages, dict(scoped.receipt)],
+            "reason": None,
+        }
+        return DeliveryNormalisation(
+            text=delivered, changed=delivered != text, receipt=receipt
+        ).validate()
+
+
+class NormaliseV3ScopeRuleDeliveryNormaliser(_ScopeRuleComposition):
+    """``saea-deliver-normalise-v3-scope-rule-v1``: projection v3, then the
+    scope stage (the module's ``scope-rule`` component over the lock's
+    deliver node)."""
+
+    id = DELIVER_NORMALISE_V3_SCOPE_RULE_V1
+    version = DELIVER_NORMALISE_V3_SCOPE_RULE_V1_VERSION
+    base_id = DELIVER_NORMALISE_V3
+
+
+class CitedAnswerNormaliseV3ScopeRuleDeliveryNormaliser(_ScopeRuleComposition):
+    """``saea-deliver-cited-answer-normalise-v3-scope-rule-v1``: the cited
+    unwrap, projection v3, then the scope stage (``scope-rule`` over the
+    citation contract's deliver node)."""
+
+    id = DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1
+    version = DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1_VERSION
+    base_id = DELIVER_CITED_ANSWER_NORMALISE_V3_V1
+
+
+SCOPE_RULE_COMPOSITIONS.update({
+    DELIVER_NORMALISE_V3: DELIVER_NORMALISE_V3_SCOPE_RULE_V1,
+    DELIVER_CITED_ANSWER_NORMALISE_V3_V1: DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1,
+})
+
+
 DELIVERY_NORMALISERS.register(
     DELIVER_NORMALISE_V3, SlurpProjectionV3DeliveryNormaliser()
 )
@@ -409,6 +724,14 @@ DELIVERY_NORMALISERS.register(
 )
 DELIVERY_NORMALISERS.register(
     DELIVER_CITED_ANSWER_NORMALISE_V3_V1, CitedAnswerNormaliseV3DeliveryNormaliser()
+)
+DELIVERY_NORMALISERS.register(DELIVER_SCOPE_RULE_V1, ScopeRuleDeliveryStage())
+DELIVERY_NORMALISERS.register(
+    DELIVER_NORMALISE_V3_SCOPE_RULE_V1, NormaliseV3ScopeRuleDeliveryNormaliser()
+)
+DELIVERY_NORMALISERS.register(
+    DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1,
+    CitedAnswerNormaliseV3ScopeRuleDeliveryNormaliser(),
 )
 
 
@@ -426,4 +749,20 @@ __all__ = [
     "EarningsTextDeliveryNormaliser",
     "CitedAnswerUnwrapDeliveryNormaliser",
     "CitedAnswerNormaliseV3DeliveryNormaliser",
+    "DELIVER_SCOPE_RULE_V1",
+    "DELIVER_NORMALISE_V3_SCOPE_RULE_V1",
+    "DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1",
+    "SCOPE_RULE_COMPOSITIONS",
+    "SCOPE_RULE_MIN_POOL_OCCURRENCES",
+    "SCOPE_RULE_TABLE_RELPATH",
+    "SCOPE_RULE_TABLE_SHA256",
+    "SCOPE_RULE_UNTAGGED_SHARE",
+    "ScopeRuleDeliveryStage",
+    "ScopeRuleTable",
+    "NormaliseV3ScopeRuleDeliveryNormaliser",
+    "CitedAnswerNormaliseV3ScopeRuleDeliveryNormaliser",
+    "default_scope_rule_table",
+    "scope_rule_drops",
+    "scope_rule_phrase",
+    "validate_scope_rule_receipt",
 ]

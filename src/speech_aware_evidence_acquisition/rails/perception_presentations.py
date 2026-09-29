@@ -142,19 +142,6 @@ PERCEPTION_PRESENTATIONS.register(RANK_VISIBLE_PRESENTATION_ID, _RankVisiblePres
 PERCEPTION_PRESENTATIONS.register(TOP2_CONTRAST_PRESENTATION_ID, _Top2ContrastPresentation())
 
 
-#: The intent-boundary store's own value id shape (``rails.
-#: semantic_knowledge_build.build_intent_boundary_snapshot``, dimension
-#: ``"intent-boundary"``): a value id qualified for a composed supply is
-#: ``qualify_id(store_id, local_id)`` (``rails.knowledge_stores.qualify_id``)
-#: where ``local_id`` is ``"intent-boundary:<intent_id>"``, i.e. the whole
-#: qualified id is ``<store_id>::intent-boundary:<intent_id>``.
-#: :func:`branch_supplied_intent_ids` reads this shape back off a branch's
-#: own rendered supply -- it never re-derives it from the snapshot or a
-#: store binding, so it stays a pure, model-free, zero-contact function over
-#: the ids a branch's own request already named.
-_INTENT_BOUNDARY_LOCAL_PREFIX = "intent-boundary:"
-
-
 def branch_supplied_intent_ids(supplied_value_ids: Sequence[str]) -> tuple[str, ...]:
     """The first two DISTINCT candidate intents a branch's own supply names,
     in rendered order (design section 3, item 6: "the seed order is the
@@ -173,26 +160,16 @@ def branch_supplied_intent_ids(supplied_value_ids: Sequence[str]) -> tuple[str, 
     ``"intent-boundary:shared-guidance"``) names no intent and is skipped.
     Returns at most two ids; a caller needing "how many total" does its own
     counting.
+
+    Migration step 5 (evidence-consumption module, design 2b.4): the id shape
+    is a SLURP fact and now lives behind SLURP's ``decision_candidates`` hook
+    (``rails.adapters.slurp_module_hooks.slurp_decision_candidates``); this
+    name stays as that hook's SLURP-profile alias for existing callers.
     """
 
-    from .semantic_knowledge_build import SHARED_INTENT_GUIDANCE_VALUE_ID
+    from .adapters.slurp_module_hooks import slurp_decision_candidates  # noqa: PLC0415
 
-    seen: list[str] = []
-    for value_id in supplied_value_ids:
-        if not isinstance(value_id, str):
-            continue
-        _store_id, separator, local_id = value_id.partition("::")
-        if not separator or not local_id.startswith(_INTENT_BOUNDARY_LOCAL_PREFIX):
-            continue
-        if local_id == SHARED_INTENT_GUIDANCE_VALUE_ID:
-            continue
-        intent_id = local_id[len(_INTENT_BOUNDARY_LOCAL_PREFIX):]
-        if not intent_id or intent_id in seen:
-            continue
-        seen.append(intent_id)
-        if len(seen) == 2:
-            break
-    return tuple(seen)
+    return slurp_decision_candidates(supplied_value_ids)
 
 
 __all__ = [

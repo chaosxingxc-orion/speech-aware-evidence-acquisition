@@ -1,0 +1,81 @@
+{
+  "artifact_id": "SAEA-SLURP-SCOPE-RULE-TABLE-V1",
+  "boundary": "No phrase, utterance, filler or card text appears in this receipt: counts and hashes only.",
+  "builder": {
+    "relpath": "scripts/build_slurp_scope_rule_table.py",
+    "sha256": "c547f7b0b59da03bbdd64890a98aa29a1005b854dc64f93a4fdfc64d498ae0ee"
+  },
+  "builder_id": "saea-slurp-scope-rule-table-v1",
+  "contacts": {
+    "asr": 0,
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "counts": {
+    "phrases_by_ngram_length": {
+      "1": 982,
+      "2": 1490,
+      "3": 787,
+      "4": 282,
+      "5": 76,
+      "6": 12
+    },
+    "phrases_in_table": 3629,
+    "phrases_the_registered_rule_drops": 2969
+  },
+  "exposure_ledger_row": "SAEA-SLURP-SCOPE-RULE-TABLE-BUILD-V1",
+  "inputs": {
+    "construction_pool": {
+      "content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "exemplars": 8554,
+      "file_sha256": "f549466f22bb0cae00a99849a1a811889eb82af9b632305c815fa123ad5795ca",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "utterances": 8554
+    },
+    "forbidden_rosters": {
+      "docs/receipts/rosters/slurp-evo-fold-a-v2.json": {
+        "overlap": 0,
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "utterances": 1080
+      },
+      "docs/receipts/rosters/slurp-evo-fold-b-v2.json": {
+        "overlap": 0,
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "utterances": 1080
+      },
+      "docs/receipts/rosters/slurp-stage3-construction-r01.json": {
+        "overlap": 0,
+        "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+        "utterances": 800
+      },
+      "docs/receipts/rosters/slurp-stage3-construction-r01c.json": {
+        "overlap": 0,
+        "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+        "utterances": 625
+      }
+    }
+  },
+  "method": {
+    "max_ngram": 8,
+    "min_pool_occurrences_floor": 5,
+    "registered_thresholds": {
+      "min_pool_occurrences": 5,
+      "untagged_share": 0.8
+    },
+    "reused_from": "scripts/analysis/slurp_slu_consumption_headroom.py (ngrams, scope_counts, SCOPE_MIN_OCC, MAX_NGRAM); exemplar parse load_exemplar_pool of scripts/analysis/slurp_gold_position_and_solver_freedom_read.py",
+    "roster_ruling": "R5: TRAIN minus Fold A, minus Fold B, minus R01/R01C (the contrast-pair tables' exclusions plus R01C)",
+    "rule": "drop a delivered entity whose folded phrase occurs in >= min_pool_occurrences pool exemplars and is untagged in >= untagged_share of them"
+  },
+  "output": {
+    "relpath": "prepared/SAEA-SLURP-SCOPE-RULE-TABLE-V1/table-v1.json",
+    "sha256": "fcff0c42ca0e3c30ed56cc1f137d85b255d0ecea876ea4fe8efae560f2c58df5"
+  },
+  "schema": "saea-slurp-scope-rule-table-receipt-v1"
+}

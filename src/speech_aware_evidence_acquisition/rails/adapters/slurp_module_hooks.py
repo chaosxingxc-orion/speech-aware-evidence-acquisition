@@ -8,11 +8,22 @@ slurp_runtime.py`` is near its line budget, so the hooks get their own file,
 the ``slurp_runtime_material.py`` precedent). Resolved by profile name:
 ``rails.consumption_module.resolve_carrier_hooks("slurp")``.
 
-Migration step 2 (this file): the lock layer, the decision node's supply-seed
-path and the flown program ids the compiler needs, plus the design's four
-hooks as thin references to where SLURP implements them today. Moving the
-SLURP hard-codings behind these hooks (design 2b.4) is migration step 5, not
-this file's job; ``delivered_units`` stays ``None`` until then.
+Migration step 2: the lock layer, the decision node's supply-seed path and
+the flown program ids the compiler needs. Migration step 5 (design 2b.4): the
+SLURP hard-codings the carrier-agnostic rails used to spell themselves now
+live HERE, behind the design's four hooks, and the rails reach them through
+``CarrierHooks`` (``rails.consumption_module.carrier_hooks_for_lock_key``):
+
+* ``decision_candidates`` -- :func:`slurp_decision_candidates`, the
+  intent-boundary value-id shape ``<store>::intent-boundary:<intent_id>``
+  (formerly the body of ``perception_presentations.branch_supplied_intent_ids``,
+  which now delegates here);
+* ``max_decision_candidates`` -- SLURP's candidate-list ceiling (the
+  ``min_candidates`` bound of the loader and the Perception contract sentence);
+* ``delivered_units`` -- :func:`slurp_delivered_units`, the delivered answer's
+  (intent label, entities) through ``parse_slu_response`` (re-listen's
+  targeting, live and replayed);
+* ``default_deliver_normaliser`` -- the projection v3 deliver node.
 """
 
 from __future__ import annotations
@@ -23,6 +34,74 @@ from typing import Mapping, Sequence
 from ..consumption_module import POLICY_OWNED_KEYS, CarrierHooks
 
 PROFILE = "slurp"
+
+#: The intent-boundary store's own value id shape (``rails.
+#: semantic_knowledge_build.build_intent_boundary_snapshot``, dimension
+#: ``"intent-boundary"``): a value id qualified for a composed supply is
+#: ``qualify_id(store_id, local_id)`` (``rails.knowledge_stores.qualify_id``)
+#: where ``local_id`` is ``"intent-boundary:<intent_id>"``, i.e. the whole
+#: qualified id is ``<store_id>::intent-boundary:<intent_id>``.
+INTENT_BOUNDARY_LOCAL_PREFIX = "intent-boundary:"
+
+
+def slurp_decision_candidates(supplied_value_ids: Sequence[str]) -> tuple[str, ...]:
+    """The first two DISTINCT candidate intents a supply names, in rendered
+    order (the ``decision_candidates`` hook; formerly
+    ``perception_presentations.branch_supplied_intent_ids``, byte for byte).
+
+    Pure and zero-contact: it inspects only the qualified value ids the
+    caller already resolved, never a snapshot, a store binding or the
+    network. A value id that does not carry the intent-boundary store's own
+    local-id shape contributes nothing; the shared preamble sentinel
+    (``rails.semantic_knowledge_build.SHARED_INTENT_GUIDANCE_VALUE_ID``) names
+    no intent and is skipped. Returns at most two ids.
+    """
+
+    from ..semantic_knowledge_build import SHARED_INTENT_GUIDANCE_VALUE_ID  # noqa: PLC0415
+
+    seen: list[str] = []
+    for value_id in supplied_value_ids:
+        if not isinstance(value_id, str):
+            continue
+        _store_id, separator, local_id = value_id.partition("::")
+        if not separator or not local_id.startswith(INTENT_BOUNDARY_LOCAL_PREFIX):
+            continue
+        if local_id == SHARED_INTENT_GUIDANCE_VALUE_ID:
+            continue
+        intent_id = local_id[len(INTENT_BOUNDARY_LOCAL_PREFIX):]
+        if not intent_id or intent_id in seen:
+            continue
+        seen.append(intent_id)
+        if len(seen) == 2:
+            break
+    return tuple(seen)
+
+
+def slurp_max_decision_candidates() -> int:
+    """SLURP's candidate-list ceiling (the ``max_decision_candidates`` hook):
+    ``rails.candidate_semantic_supply.DEFAULT_MAX_SLURP_CANDIDATES`` (3), the
+    value every registered cell's ``phase_material.perception.fill_params.
+    max_candidates`` carries. The constant itself stays where it is: that
+    file is bound into prepared-supply identity."""
+
+    from ..candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES  # noqa: PLC0415
+
+    return DEFAULT_MAX_SLURP_CANDIDATES
+
+
+def slurp_delivered_units(delivered_text: str) -> tuple[str | None, tuple, bool]:
+    """The ``delivered_units`` hook: ``(context label, units, parsed)`` of a
+    delivered SLURP answer -- the intent label ``<scenario>_<action>`` and the
+    entities (``.type``, ``.filler``) that re-listen targets, through the SAME
+    parser the official scorer's adapter uses. An unparsed answer is
+    ``(None, (), False)``."""
+
+    from ...reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
+
+    scenario, action, entities, parsed = parse_slu_response(delivered_text)
+    if not parsed:
+        return None, (), False
+    return f"{scenario}_{action}", tuple(entities), True
 
 #: The v2.0 lock (decision 169): the null arm of every composed read and the
 #: layer the module compiles its components onto (ruling R2).
@@ -45,6 +124,34 @@ FLOWN_PROGRAMS: Mapping[tuple[int, str | None], str] = {
     (17, None): "phase-native-candidates-review-revise-relisten-v1",
 }
 
+#: ``(branch level, contact ceiling, Solver response_format_id) -> program
+#: id`` for the branched programs SLURP cells already flew (the P-SV cells:
+#: three Perception branches, level 2 -> ceiling 15; level 1 -> 13).
+FLOWN_BRANCH_PROGRAMS: Mapping[tuple[int, int, str | None], str] = {
+    (1, 13, None): "phase-native-candidates-review-revise-pbranch3-l1-v1",
+    (2, 15, None): "phase-native-candidates-review-revise-pbranch3-l2-v1",
+}
+
+#: Where and how Perception columns compile (migration step 4): the frame
+#: every flown P-SV branch block shares -- the delivering branch A and its
+#: twin T at the lock's 10 supplied items, and the registered fit estimate.
+PERCEPTION_BRANCH_FRAME: Mapping[str, object] = {
+    "block_path": ("native_episode", "roles", "perception", "branches"),
+    "delivering_branch_id": "a-agree",
+    "twin_branch_id": "t-twin",
+    "max_supplied_items": 10,
+    "fit_estimate": {
+        "base_prompt_tokens": 2577, "completion_ceiling": 512,
+        "slot_tokens": 24576, "tokens_per_supplied_item": 149,
+    },
+}
+
+#: Ruling R3: ``{component id: admitting record}`` of the Perception
+#: components admitted to the delivered path. EMPTY: no column read has
+#: nominated one yet, so ``top2-contrast`` / ``forced-candidate-list`` may be
+#: ``column`` but never ``on``.
+DELIVERED_PATH_ADMISSIONS: Mapping[str, str] = {}
+
 #: SLURP's delivered-row normaliser (``rails/delivery_normalisers.py``).
 DEFAULT_DELIVER_NORMALISER = "saea-deliver-normalise-v3"
 
@@ -62,23 +169,31 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         fragment = read_fragment(root, "baseline", LOCK_BASELINE_FRAGMENT)
         return {key: fragment[key] for key in POLICY_OWNED_KEYS}
 
-    def decision_candidates(supplied_value_ids: Sequence[str]) -> tuple[str, ...]:
-        from ..perception_presentations import branch_supplied_intent_ids  # noqa: PLC0415
+    def deliver_stages() -> Mapping[str, Mapping[str, object]]:
+        from .. import delivery_normalisers as dn  # noqa: PLC0415
 
-        return branch_supplied_intent_ids(supplied_value_ids)
-
-    def max_decision_candidates() -> int:
-        from ..candidate_semantic_supply import DEFAULT_MAX_SLURP_CANDIDATES  # noqa: PLC0415
-
-        return DEFAULT_MAX_SLURP_CANDIDATES
+        return {
+            "scope-rule": {
+                "compositions": dict(dn.SCOPE_RULE_COMPOSITIONS),
+                "params": {
+                    "min_pool_occurrences": dn.SCOPE_RULE_MIN_POOL_OCCURRENCES,
+                    "untagged_share": dn.SCOPE_RULE_UNTAGGED_SHARE,
+                    "table": {"relpath": dn.SCOPE_RULE_TABLE_RELPATH, "sha256": dn.SCOPE_RULE_TABLE_SHA256},
+                },
+            },
+        }
 
     return CarrierHooks(
         profile=PROFILE,
         lock_layer=lock_layer,
         decision_supply_path=DECISION_SUPPLY_PATH,
         flown_programs=FLOWN_PROGRAMS,
-        decision_candidates=decision_candidates,
-        max_decision_candidates=max_decision_candidates,
-        delivered_units=None,
+        decision_candidates=slurp_decision_candidates,
+        max_decision_candidates=slurp_max_decision_candidates,
+        delivered_units=slurp_delivered_units,
         default_deliver_normaliser=lambda: DEFAULT_DELIVER_NORMALISER,
+        deliver_stages=deliver_stages(),
+        perception_branch_frame=PERCEPTION_BRANCH_FRAME,
+        flown_branch_programs=FLOWN_BRANCH_PROGRAMS,
+        delivered_path_admissions=DELIVERED_PATH_ADMISSIONS,
     )

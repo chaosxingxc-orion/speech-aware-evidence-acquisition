@@ -37,6 +37,13 @@ Cases:
   registration commit (composed hashes ``8c4517a3...`` / ``3d9b7226...``).
 * ``extra`` -- AGREE + re-listen (shadow) -> cell E4-1; the Reviewer repair
   alone -> cell G5.
+* ``m4`` -- AGREE + ``top2-contrast`` as a ``column`` -> cell P-SV-1's
+  registered branch block and program; AGREE + ``forced-candidate-list`` as a
+  ``column`` -> cell P-SV-2's (arm and smoke fragments). The P-SV cells fly on
+  TRAIN Fold B, so their Perception and Solver ``query_source`` pins are
+  roster pins, not policy: the proof requires the compiled branch block to be
+  the cell's own bytes, the program id and ceiling to be the cell's, and every
+  other differing policy leaf to be a ``query_source`` leaf.
 
     python scripts/analysis/module_equivalence_proof.py --at all
 """
@@ -44,6 +51,7 @@ Cases:
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import subprocess
@@ -65,6 +73,8 @@ AGREE_BASELINE = "configs/baseline/slurp-native-stage3-agree-w1-fold-a-baseline-
 COMP1_BASELINE = "configs/baseline/slurp-native-stage3-comp1-fold-a-baseline-v1.json"
 RELISTEN_BASELINE = "configs/baseline/slurp-native-stage3-relisten-fold-a-baseline-v1.json"
 G5_BASELINE = "configs/baseline/slurp-native-stage3-g5-fold-a-baseline-v1.json"
+#: The scope rule's admitting read (owner decision 195 = B).
+SCOPE_RULE_RECORD = "docs/results/2026-09-29-slurp-slu-consumption-headroom-offline.md"
 
 #: COMP-1b's registration commit and the composed hashes its exposure-ledger
 #: rows pinned at registration (arm, smoke).
@@ -78,6 +88,14 @@ COMP1B_REGISTERED_HASHES = {
     ),
 }
 AGREE_SEALED_RUN_ID = "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1"
+#: AT-M4 targets: {baseline fragment: the Perception component its B branch carries}.
+PSV_TARGETS = {
+    "configs/baseline/slurp-native-stage3-psv1-fold-b-baseline-v1.json": cm.TOP2_CONTRAST,
+    "configs/baseline/slurp-native-stage3-psv1-fold-b-smoke-4-baseline-v1.json": cm.TOP2_CONTRAST,
+    "configs/baseline/slurp-native-stage3-psv2-fold-b-baseline-v1.json": cm.FORCED_CANDIDATE_LIST,
+    "configs/baseline/slurp-native-stage3-psv2-fold-b-smoke-4-baseline-v1.json": cm.FORCED_CANDIDATE_LIST,
+}
+BRANCH_BLOCK_PATH = ("native_episode", "roles", "perception", "branches")
 AGREE_ARM_EXPERIMENT = "slurp-native-stage3-agree-w1-fold-a-v1"
 
 
@@ -128,6 +146,13 @@ def component_entries(repo_root: Path = REPO_ROOT) -> dict[str, dict]:
             "component_id": cm.RELISTEN, "state": "shadow",
             "admitted_by": "registry row 185", "record": RELISTEN_BASELINE,
             "params": relisten,
+        },
+        cm.SCOPE_RULE: {
+            "component_id": cm.SCOPE_RULE, "state": "on",
+            "admitted_by": "registry row 195", "record": SCOPE_RULE_RECORD,
+            "params": copy.deepcopy(dict(
+                carrier_module_hooks(repo_root=repo_root).deliver_stages[cm.SCOPE_RULE]["params"]
+            )),
         },
         cm.REVIEWER_G5_REPAIR: {
             "component_id": cm.REVIEWER_G5_REPAIR, "state": "on",
@@ -254,7 +279,67 @@ def sealed_pool_binding(arm_module_hash: str) -> dict:
     }
 
 
+def psv_column_block(baseline_relpath: str, repo_root: Path = REPO_ROOT) -> dict:
+    """The module block that should compile to a P-SV cell: AGREE on with the
+    cell's own agreement term, the cell's B-branch component as a ``column``
+    (params and prepared seed from the cell's own B row)."""
+
+    cell = _read_json(baseline_relpath, repo_root)
+    component = PSV_TARGETS[baseline_relpath]
+    branches = _node(cell, BRANCH_BLOCK_PATH)
+    b_row = branches["branches"][0]
+    seed = _node(cell, DECISION_SUPPLY_PATH)
+    agree = component_entries(repo_root)[cm.AGREE_VOTE_SEED]
+    agree["params"] = {"w_agree": seed["rank_weights"]["w_agree"], "k": seed["k"],
+                       "agreement_source": seed["agreement_source"]}
+    params = {"max_supplied_items": b_row["max_supplied_items"]}
+    for key in cm.PERCEPTION_AXIS_COMPONENTS[component]:
+        params[key] = b_row[key]
+    entries = {
+        cm.AGREE_VOTE_SEED: agree,
+        component: {"component_id": component, "state": "column", "admitted_by": "registry row 193",
+                    "record": baseline_relpath, "params": params},
+    }
+    column = {"column_id": b_row["branch_id"], "toggle": component, "to": "on",
+              "level": branches["level"]}
+    if "prepared_seed" in b_row:
+        column["prepared_seed"] = b_row["prepared_seed"]
+    return {
+        "module_id": cm.CONSUMPTION_MODULE_ID, "profile": "slurp",
+        "components": [entries.get(spec.component_id, {"component_id": spec.component_id, "state": "off"})
+                       for spec in cm.COMPONENT_CATALOGUE],
+        "columns": [column],
+    }
+
+
+def run_m4(repo_root: Path = REPO_ROOT) -> dict:
+    hooks = carrier_module_hooks(repo_root=repo_root)
+    results, ok = [], True
+    for relpath, component in PSV_TARGETS.items():
+        cell = _read_json(relpath, repo_root)
+        composed = cm.compile_module(psv_column_block(relpath, repo_root), hooks, repo_root=repo_root)
+        compiled_block = _node(composed.values(), BRANCH_BLOCK_PATH)
+        own_block = _node(cell, BRANCH_BLOCK_PATH)
+        diff = cm.differing_paths(composed.values(), cm.policy_owned_values(cell))
+        row = {
+            "baseline": relpath, "component": component,
+            "program_id": composed.program_id, "program_ceiling": composed.program_ceiling,
+            "cell_program_id": cell["policy"],
+            "branch_block_identical": cm._canonical(compiled_block) == cm._canonical(own_block),
+            "branch_block_sha256": cm._sha256_text(cm._canonical(compiled_block)),
+            "non_roster_differing_paths": [p for p in diff if ".query_source." not in p],
+            "roster_pin_paths_differing": len([p for p in diff if ".query_source." in p]),
+        }
+        row["ok"] = (row["branch_block_identical"] and composed.program_id == cell["policy"]
+                     and not row["non_roster_differing_paths"])
+        ok &= row["ok"]
+        results.append(row)
+    return {"at": "m4", "results": results, "ok": bool(ok)}
+
+
 def run_case(at: str, repo_root: Path = REPO_ROOT) -> dict:
+    if at == "m4":
+        return run_m4(repo_root)
     hooks = carrier_module_hooks(repo_root=repo_root)
     results = []
     ok = True
@@ -282,10 +367,10 @@ def run_case(at: str, repo_root: Path = REPO_ROOT) -> dict:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--at", choices=(*CASES, "all"), default="all")
+    parser.add_argument("--at", choices=(*CASES, "m4", "all"), default="all")
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     args = parser.parse_args(argv)
-    ats = tuple(CASES) if args.at == "all" else (args.at,)
+    ats = (*CASES, "m4") if args.at == "all" else (args.at,)
     reports = [run_case(at, args.repo_root) for at in ats]
     print(json.dumps({"reports": reports, "ok": all(r["ok"] for r in reports)}, indent=2, sort_keys=True))
     return 0 if all(r["ok"] for r in reports) else 1

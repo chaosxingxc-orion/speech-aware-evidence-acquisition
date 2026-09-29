@@ -957,6 +957,10 @@ PERCEPTION_BRANCH_KNOB_TAILS: tuple[tuple[str, ...], ...] = (
 #: Keys the ``perception_branches`` (``native_episode.roles.perception.
 #: branches``) block carries, required exactly.
 PERCEPTION_BRANCH_BLOCK_KEYS = frozenset({"branches", "fit_estimate", "level"})
+#: The axes a consumption module's admitted delivered policy may set on the
+#: delivering branch A (ruling R3; ``parse_perception_branches``'s
+#: ``delivering_axes_admitted``). Knobs and release swaps stay refused on A.
+DELIVERING_BRANCH_MODULE_AXES = frozenset({"presentation_id", "min_candidates"})
 #: Keys one branch row carries. ``branch_id`` and ``max_supplied_items`` are
 #: required; every other key is one of the four closed axis categories a
 #: non-A, non-T branch declares exactly one of (design section 1, "one factor
@@ -1290,6 +1294,7 @@ def parse_perception_branches(
     registered_presentation_ids: Sequence[str] | None = None,
     max_candidates_ceiling: int | None = None,
     top2_contrast_presentation_id: str | None = None,
+    delivering_axes_admitted: Sequence[str] = (),
 ) -> PerceptionBranchGroup:
     """Parse ``native_episode.roles.perception.branches``, fail-closed.
 
@@ -1350,7 +1355,24 @@ def parse_perception_branches(
         one anyway, when ``top2_contrast_presentation_id`` is given;
     18. ``contrast_pairs`` on A or its twin T (like ``prepared_seed``,
         neither may carry a branch-owned pin).
+
+    ``delivering_axes_admitted`` (evidence-consumption module, migration
+    step 4, coordinator ruling R3) lifts refusal 6 for exactly the named
+    axes -- a subset of :data:`DELIVERING_BRANCH_MODULE_AXES` -- on A only:
+    the module's own delivered Perception policy may carry an ADMITTED
+    presentation (with its ``contrast_pairs`` pin) or response contract. The
+    twin T still declares no axis and resolves A's request, axes included.
+    Only ``rails.native_episode_config`` passes it, and only for a config
+    whose declared ``native_episode.consumption_module`` compiles those axes
+    onto A; a hand-written block (the default ``()``) keeps refusal 6 whole.
     """
+
+    admitted_axes = frozenset(delivering_axes_admitted)
+    if not admitted_axes <= DELIVERING_BRANCH_MODULE_AXES:
+        raise PerceptionBranchError(
+            f"delivering_axes_admitted {sorted(admitted_axes)} is not a subset of "
+            f"{sorted(DELIVERING_BRANCH_MODULE_AXES)}"
+        )
 
     if not isinstance(block, Mapping) or set(block) != PERCEPTION_BRANCH_BLOCK_KEYS:
         raise PerceptionBranchError(
@@ -1539,11 +1561,19 @@ def parse_perception_branches(
                 "and must declare no axis: it resolves exactly the delivering "
                 "branch's (A's) own request"
             )
-        if deliver and has_axis:
+        delivering_axes = {
+            "presentation_id": presentation_id is not None,
+            "min_candidates": min_candidates is not None,
+        }
+        if deliver and (
+            bool(knobs) or release_swap is not None
+            or any(present and axis not in admitted_axes for axis, present in delivering_axes.items())
+        ):
             raise PerceptionBranchError(
                 f"perception branches.branches[{position}] carries deliver: "
                 "true and must declare no axis: A is the cell's own request, "
-                "override-free"
+                "override-free (only a consumption module's admitted delivered "
+                "policy may set A's presentation_id / min_candidates)"
             )
         if (deliver or replicate_of is not None) and prepared_seed is not None:
             raise PerceptionBranchError(
@@ -1551,7 +1581,10 @@ def parse_perception_branches(
                 "prepared_seed but is A or its twin (T): A's seed is the "
                 "cell's own prepared_phase_supply, and T takes A's seed"
             )
-        if (deliver or replicate_of is not None) and contrast_pairs is not None:
+        if (
+            (replicate_of is not None or (deliver and "presentation_id" not in admitted_axes))
+            and contrast_pairs is not None
+        ):
             raise PerceptionBranchError(
                 f"perception branches.branches[{position}] carries "
                 "contrast_pairs but is A or its twin (T): neither branch "

@@ -854,6 +854,7 @@ def replay_relisten_receipt(
     delivered_text: str,
     contacts: Sequence[tuple[str, str, str]],
     config: RelistenConfig,
+    delivered_units=None,
 ) -> dict[str, object]:
     """Re-derive a row's sealed ``saea-relisten-v1`` receipt from its trace.
 
@@ -870,10 +871,15 @@ def replay_relisten_receipt(
     resume-recovery then re-flies the row (``core.flight.resume``).
     """
 
-    from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
-
     if not isinstance(config, RelistenConfig):
         raise RelistenError("relisten replay requires the cell's RelistenConfig")
+    # Migration step 5: the delivered units come from the carrier's
+    # ``delivered_units`` hook; ``None`` is SLURP's (the one carrier re-listen
+    # is armed on), exactly the live runner's default.
+    if delivered_units is None:
+        from .adapters.slurp_module_hooks import slurp_delivered_units  # noqa: PLC0415
+
+        delivered_units = slurp_delivered_units
     pending = list(contacts)
 
     def take(kind: str) -> tuple[str, str]:
@@ -889,7 +895,7 @@ def replay_relisten_receipt(
             raise RelistenError(f"relisten contact {request_id!r} has no recorded response")
         return request_id, text
 
-    _scenario, _action, entities, parsed = parse_slu_response(delivered_text)
+    _label, entities, parsed = delivered_units(delivered_text)
     records: list[RelistenEntityRecord] = []
     if parsed:
         for index in select_relisten_targets(entities, config.max_slots_per_row):

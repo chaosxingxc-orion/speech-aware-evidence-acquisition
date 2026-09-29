@@ -120,6 +120,22 @@ CENTROID_BOUNDARY_KEY = "centroid-boundary-key"
 SOLVER_CITATION_CONTRACT = "solver-citation-contract"
 REVIEWER_G5_REPAIR = "reviewer-g5-repair"
 RELISTEN = "relisten"
+SCOPE_RULE = "scope-rule"
+TOP2_CONTRAST = "top2-contrast"
+FORCED_CANDIDATE_LIST = "forced-candidate-list"
+#: The Perception components (migration step 4): each compiles to one axis of
+#: a Perception branch -- a B branch in ``column`` state, the delivering
+#: branch A in ``on`` state (ruling R3, admitted only). ``{component id: the
+#: branch-row keys its params write}``.
+PERCEPTION_AXIS_COMPONENTS: dict[str, tuple[str, ...]] = {
+    TOP2_CONTRAST: ("presentation_id", "contrast_pairs"),
+    FORCED_CANDIDATE_LIST: ("min_candidates",),
+}
+_COLUMN_REQUIRED = frozenset({"column_id", "toggle", "to", "level"})
+#: ``prepared_seed`` is the receipt of an artifact prepared FROM the compiled
+#: identity (design 2.6, the branch-seed lesson): it is written into the
+#: branch row and excluded from the block's own sha256.
+_COLUMN_OPTIONAL = frozenset({"prepared_seed"})
 
 COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
     ComponentSpec(
@@ -147,17 +163,22 @@ COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
             "blind_template_id", "confirm_template_id",
         }),
     ),
+    # Migration step 4: ``column`` compiles to a same-flight Perception B
+    # branch; ``on`` sets the delivering branch A's axis and is admitted only
+    # through the carrier's ``delivered_path_admissions`` (ruling R3).
     ComponentSpec(
-        "top2-contrast", "SUPPLY presentation -> Perception", frozenset(), frozenset(),
-        pending="migration step 4 (delivered-path Perception policy)",
+        TOP2_CONTRAST, "SUPPLY presentation -> Perception", frozenset({STATE_COLUMN, STATE_ON}),
+        frozenset({"presentation_id", "contrast_pairs", "max_supplied_items"}),
     ),
     ComponentSpec(
-        "forced-candidate-list", "Perception response contract", frozenset(), frozenset(),
-        pending="migration step 4 (delivered-path Perception policy)",
+        FORCED_CANDIDATE_LIST, "Perception response contract", frozenset({STATE_COLUMN, STATE_ON}),
+        frozenset({"min_candidates", "max_supplied_items"}),
     ),
+    # Migration step 3 (owner decision 195 = B): a deterministic deliver
+    # stage composed after the carrier's deliver normaliser; zero contacts.
     ComponentSpec(
-        "scope-rule", "USE, deliver node", frozenset(), frozenset(),
-        pending="migration step 3 (deterministic USE stage)",
+        SCOPE_RULE, "USE, deliver node", frozenset({STATE_ON}),
+        frozenset({"min_pool_occurrences", "untagged_share", "table"}),
     ),
     ComponentSpec(
         "e3-progressive-slots", "ORG/USE slot-types node", frozenset(), frozenset(),
@@ -192,6 +213,20 @@ class CarrierHooks:
     * ``decision_candidates`` / ``max_decision_candidates`` /
       ``delivered_units`` / ``default_deliver_normaliser`` -- the four design
       hooks of section 2b.1, consumed from migration step 4 on.
+    * ``perception_branch_frame`` -- where and how Perception columns
+      compile: ``{"block_path", "delivering_branch_id", "twin_branch_id",
+      "max_supplied_items", "fit_estimate"}`` (migration step 4).
+    * ``flown_branch_programs`` -- ``{(branch level, ceiling, Solver
+      response_format_id): program id}`` for the branched programs the
+      carrier already flew.
+    * ``delivered_path_admissions`` -- ``{component id: admitting record}``
+      of the Perception components whose column read NOMINATED and whose
+      composed read carried them (ruling R3); empty until then, so ``on``
+      refuses.
+    * ``deliver_stages`` -- ``{component id: {"compositions": {base deliver
+      normaliser id: that normaliser composed with the stage}, "params": the
+      stage's registered pins}}`` for the deterministic deliver stages the
+      carrier registers (migration step 3).
     """
 
     profile: str | None = None
@@ -202,6 +237,10 @@ class CarrierHooks:
     max_decision_candidates: Callable[[], int] | None = None
     delivered_units: Callable[..., tuple[str, ...]] | None = None
     default_deliver_normaliser: Callable[[], str] | None = None
+    deliver_stages: Mapping[str, Mapping[str, object]] | None = None
+    perception_branch_frame: Mapping[str, object] | None = None
+    flown_branch_programs: Mapping[tuple[int, int, str | None], str] | None = None
+    delivered_path_admissions: Mapping[str, str] | None = None
 
 
 def resolve_carrier_hooks(profile: str, *, repo_root: Path | None = None) -> CarrierHooks:
@@ -226,6 +265,20 @@ def resolve_carrier_hooks(profile: str, *, repo_root: Path | None = None) -> Car
             f"carrier hooks for {profile!r} must be a CarrierHooks naming that profile"
         )
     return hooks
+
+
+def carrier_hooks_for_lock_key(carrier_lock_key: object) -> CarrierHooks | None:
+    """The hooks of the carrier a config declares (``carrier_lock_key``), or
+    ``None`` when that carrier has no hooks file -- the carrier-agnostic
+    rails (the config loader, the runner, re-listen's replay) reach carrier
+    facts through this, never by naming a carrier (migration step 5)."""
+
+    if not isinstance(carrier_lock_key, str) or _PROFILE.fullmatch(carrier_lock_key) is None:
+        return None
+    try:
+        return resolve_carrier_hooks(carrier_lock_key)
+    except ConsumptionModuleConfigError:
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -255,12 +308,28 @@ class ComponentDecl:
 
 
 @dataclass(frozen=True)
+class ColumnDecl:
+    """One same-flight column: it toggles exactly one component (design 3.3)."""
+
+    column_id: str
+    toggle: str
+    to: str
+    level: int
+    prepared_seed_json: str | None
+
+    @property
+    def prepared_seed(self) -> dict[str, str] | None:
+        return None if self.prepared_seed_json is None else json.loads(self.prepared_seed_json)
+
+
+@dataclass(frozen=True)
 class ConsumptionModuleBlock:
     module_id: str
     profile: str
     components: tuple[ComponentDecl, ...]
     block_sha256: str
     block_json: str
+    columns: tuple[ColumnDecl, ...] = ()
 
     def component(self, component_id: str) -> ComponentDecl | None:
         for decl in self.components:
@@ -309,8 +378,11 @@ def parse_consumption_module_block(
     repeated ``component_id``; an unknown ``state``; a non-off state the
     component does not compile in this step; a non-off component without an
     ``admitted_by`` text and a ``record`` path that resolves to a repository
-    file; params whose key set is not exactly the component's; a non-empty
-    ``columns`` list (columns compile from migration step 4)."""
+    file; params whose key set is not exactly the component's; a malformed
+    column, a column toggling a component that is not in ``column`` state (or
+    re-listen, whose same-flight columns are its ``shadow`` state), a
+    ``column`` component no column toggles or two columns toggle, a ``to``
+    other than ``on``, mixed levels, or repeated column ids."""
 
     root = _REPO_ROOT if repo_root is None else Path(repo_root)
     if not isinstance(raw, Mapping):
@@ -335,11 +407,6 @@ def parse_consumption_module_block(
     columns = raw.get("columns", [])
     if not isinstance(columns, list):
         raise ConsumptionModuleConfigError("consumption_module.columns must be a list")
-    if columns:
-        raise ConsumptionModuleConfigError(
-            "consumption_module.columns compile from migration step 4; v1 of the "
-            "compiler accepts only an empty list"
-        )
     components = raw["components"]
     if not isinstance(components, list):
         raise ConsumptionModuleConfigError("consumption_module.components must be a list")
@@ -397,14 +464,88 @@ def parse_consumption_module_block(
         decls.append(ComponentDecl(
             component_id, state, admitted_by, record, _canonical(dict(params)),
         ))
+    column_decls = _parse_columns(columns, decls)
     block_json = _canonical(dict(raw))
+    identity = dict(raw)
+    if "columns" in identity:
+        identity["columns"] = [
+            {k: v for k, v in dict(c).items() if k != "prepared_seed"} for c in columns
+        ]
     return ConsumptionModuleBlock(
         module_id=module_id,
         profile=profile,
         components=tuple(decls),
-        block_sha256=_sha256_text(block_json),
+        block_sha256=_sha256_text(_canonical(identity)),
         block_json=block_json,
+        columns=column_decls,
     )
+
+
+def _pin(value: object, *, field: str) -> dict[str, str]:
+    if (
+        not isinstance(value, Mapping) or set(value) != {"relpath", "sha256"}
+        or not isinstance(value["relpath"], str) or not value["relpath"]
+        or not re.fullmatch(r"[0-9a-f]{64}", str(value["sha256"]))
+    ):
+        raise ConsumptionModuleConfigError(
+            f"{field} must be exactly {{relpath, sha256}} with a lowercase 64-hex sha256"
+        )
+    return {"relpath": value["relpath"], "sha256": value["sha256"]}
+
+
+def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDecl, ...]:
+    by_id = {d.component_id: d for d in decls}
+    out: list[ColumnDecl] = []
+    for index, entry in enumerate(columns):
+        field = f"consumption_module.columns[{index}]"
+        if not isinstance(entry, Mapping):
+            raise ConsumptionModuleConfigError(f"{field} must be an object")
+        keys = set(entry)
+        if not _COLUMN_REQUIRED <= keys or keys - _COLUMN_REQUIRED - _COLUMN_OPTIONAL:
+            raise ConsumptionModuleConfigError(
+                f"{field} keys must be {sorted(_COLUMN_REQUIRED)} plus optional "
+                f"{sorted(_COLUMN_OPTIONAL)}, got {sorted(keys)}"
+            )
+        column_id = _require_text(entry["column_id"], field=f"{field}.column_id")
+        toggle = entry["toggle"]
+        if toggle == RELISTEN:
+            raise ConsumptionModuleConfigError(
+                f"{field}: re-listen's same-flight columns are its 'shadow' state "
+                "(replace-only and replace + drop, read in the same flight); it takes no column"
+            )
+        decl = by_id.get(toggle) if isinstance(toggle, str) else None
+        if decl is None or decl.state != STATE_COLUMN:
+            raise ConsumptionModuleConfigError(
+                f"{field}.toggle {toggle!r} must name a listed component in 'column' state"
+            )
+        if entry["to"] != STATE_ON:
+            raise ConsumptionModuleConfigError(
+                f"{field}.to must be 'on': a column shows one component on over a "
+                "delivered policy that carries it off"
+            )
+        level = entry["level"]
+        if isinstance(level, bool) or level not in (1, 2):
+            raise ConsumptionModuleConfigError(f"{field}.level must be 1 or 2")
+        seed = entry.get("prepared_seed")
+        out.append(ColumnDecl(
+            column_id, toggle, STATE_ON, level,
+            None if seed is None else _canonical(_pin(seed, field=f"{field}.prepared_seed")),
+        ))
+    ids = [c.column_id for c in out]
+    if len(set(ids)) != len(ids):
+        raise ConsumptionModuleConfigError("consumption_module.columns ids must be distinct")
+    toggled = [c.toggle for c in out]
+    for decl in decls:
+        if decl.state == STATE_COLUMN and toggled.count(decl.component_id) != 1:
+            raise ConsumptionModuleConfigError(
+                f"component {decl.component_id!r} is in 'column' state and must be toggled "
+                "by exactly one column"
+            )
+    if len({c.level for c in out}) > 1:
+        raise ConsumptionModuleConfigError(
+            "consumption_module.columns must share one level (one branch block per flight)"
+        )
+    return tuple(out)
 
 
 # ---------------------------------------------------------------------------
@@ -494,6 +635,25 @@ class _Writer:
         parent[path[-1]] = copy.deepcopy(value)
         self.written[dotted] = component_id
 
+    def chain(self, path: Sequence[str], compositions: Mapping[str, str], *, component_id: str) -> None:
+        """Replace an existing leaf by its registered composition with a
+        stage (a deliver stage runs AFTER whatever normaliser the layer, or an
+        earlier component, put there). The one sanctioned second write of a
+        leaf: it never discards the earlier writer's choice, it composes it."""
+
+        dotted = ".".join(path)
+        parent = _node(self.layer, path[:-1], field=component_id)
+        current = parent.get(path[-1])
+        composed = compositions.get(current) if isinstance(current, str) else None
+        if composed is None:
+            raise ConsumptionModuleConfigError(
+                f"{component_id}: no registered composition of {dotted} = {current!r} with "
+                f"this stage; composable: {sorted(compositions)}"
+            )
+        parent[path[-1]] = composed
+        prior = self.written.get(dotted)
+        self.written[dotted] = component_id if prior is None else f"{prior}+{component_id}"
+
 
 def _require_hook(hooks: CarrierHooks, name: str, component_id: str) -> object:
     value = getattr(hooks, name)
@@ -525,6 +685,13 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
     layer = json.loads(_canonical(dict(lock_layer)))
     if CONSUMPTION_MODULE_CONFIG_KEY in layer["native_episode"]:
         raise ConsumptionModuleConfigError("the lock layer must not itself declare a module")
+    if hooks.default_deliver_normaliser is not None:
+        deliver = layer["native_episode"].get("deliver_normaliser")
+        if not isinstance(deliver, Mapping) or deliver.get("normaliser") != hooks.default_deliver_normaliser():
+            raise ConsumptionModuleConfigError(
+                "the lock layer's deliver node is not the carrier's default deliver "
+                f"normaliser {hooks.default_deliver_normaliser()!r}"
+            )
     lock_program = default_phase_program(str(layer["policy"]))
     ceiling = lock_program.max_contacts
     writer = _Writer(layer)
@@ -560,11 +727,38 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 raise ConsumptionModuleConfigError(f"relisten params are invalid: {error}") from error
             writer.set(("native_episode", "relisten"), params, component_id=cid, replace_only=False)
             ceiling += relisten.extra_contacts_ceiling
+        elif cid == SCOPE_RULE:
+            stage = _require_hook(hooks, "deliver_stages", cid).get(cid)
+            if not isinstance(stage, Mapping):
+                raise ConsumptionModuleConfigError(
+                    f"profile {hooks.profile!r} registers no {cid!r} deliver stage"
+                )
+            if _canonical(dict(params)) != _canonical(dict(stage["params"])):
+                raise ConsumptionModuleConfigError(
+                    f"{cid} params must equal the registered stage's pins "
+                    "(thresholds and the table's relpath and sha256)"
+                )
+            writer.chain(("native_episode", "deliver_normaliser", "normaliser"),
+                         stage["compositions"], component_id=cid)
+        elif cid in PERCEPTION_AXIS_COMPONENTS:
+            continue  # compiled below, with the columns (one branch block)
         else:  # pragma: no cover - the parse refuses every other armed id
             raise ConsumptionModuleConfigError(f"component {cid!r} does not compile in v1")
+    level = _compile_perception_branches(block, hooks, writer)
+    if level is not None:
+        from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
+
+        branch_count = len(block.columns) + 2
+        ceiling = perception_branch_ceiling(base_ceiling=ceiling, branch_count=branch_count, level=level)
     solver_material = layer["phase_material"].get("solver")
     contract = solver_material.get("response_format_id") if isinstance(solver_material, Mapping) else None
-    flown = dict(hooks.flown_programs or {})
+    flown = (
+        dict(hooks.flown_programs or {}) if level is None
+        else {
+            (c, f): pid for (lv, c, f), pid in dict(hooks.flown_branch_programs or {}).items()
+            if lv == level
+        }
+    )
     program_id = flown.get((ceiling, contract))
     if program_id is None:
         if contract is not None:
@@ -601,6 +795,85 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         blocks_json=_canonical(layer),
         written_paths=tuple(sorted(writer.written)),
     )
+
+
+def _compile_perception_branches(
+    block: ConsumptionModuleBlock, hooks: CarrierHooks, writer: _Writer,
+) -> int | None:
+    """Compile the Perception components into ONE branch block: one B branch
+    per column (in column order), the twin T, then the delivering branch A
+    carrying the ``on`` components' axes (ruling R3, admitted only). Returns
+    the block's level, or ``None`` when no Perception component is armed."""
+
+    armed = [d for d in block.armed() if d.component_id in PERCEPTION_AXIS_COMPONENTS]
+    if not armed:
+        return None
+    on = [d for d in armed if d.state == STATE_ON]
+    admissions = dict(hooks.delivered_path_admissions or {})
+    for decl in on:
+        if admissions.get(decl.component_id) != decl.record:
+            raise ConsumptionModuleConfigError(
+                f"component {decl.component_id!r} cannot be 'on': no admitting record for the "
+                f"delivered path on profile {hooks.profile!r} (ruling R3: a Perception component "
+                "rides the delivered path only after its column read NOMINATED it and a composed "
+                "read carried it; until then it is a 'column')"
+            )
+    if not block.columns:
+        raise ConsumptionModuleConfigError(
+            "a delivered-path Perception axis rides the branch block's delivering branch A; "
+            "declare at least one column"
+        )
+    frame = _require_hook(hooks, "perception_branch_frame", armed[0].component_id)
+    by_id = {d.component_id: d for d in armed}
+    rows = []
+    for column in block.columns:
+        params = by_id[column.toggle].params
+        row = {"branch_id": column.column_id, "max_supplied_items": params["max_supplied_items"]}
+        for key in PERCEPTION_AXIS_COMPONENTS[column.toggle]:
+            row[key] = params[key]
+        if column.prepared_seed is not None:
+            row["prepared_seed"] = column.prepared_seed
+        rows.append(row)
+    delivering = {
+        "branch_id": frame["delivering_branch_id"], "deliver": True,
+        "max_supplied_items": frame["max_supplied_items"],
+    }
+    for decl in on:
+        for key in PERCEPTION_AXIS_COMPONENTS[decl.component_id]:
+            delivering[key] = decl.params[key]
+    rows.append({
+        "branch_id": frame["twin_branch_id"], "max_supplied_items": frame["max_supplied_items"],
+        "replicate_of": frame["delivering_branch_id"],
+    })
+    rows.append(delivering)
+    level = block.columns[0].level
+    branches_block = {
+        "branches": rows, "fit_estimate": dict(frame["fit_estimate"]), "level": level,
+    }
+    writer.set(tuple(frame["block_path"]), branches_block,
+               component_id="+".join(d.component_id for d in armed), replace_only=False)
+    return level
+
+
+def delivered_perception_axes(raw_block: object) -> tuple[str, ...]:
+    """The branch-row axes a declared block's ``on`` Perception components
+    set on the delivering branch A -- what the loader passes to
+    ``parse_perception_branches(..., delivering_axes_admitted=)``. ``()`` for
+    an absent or malformed block (the loader's own verification refuses the
+    latter) and for every block with no Perception component ``on``."""
+
+    if not isinstance(raw_block, Mapping) or not isinstance(raw_block.get("components"), list):
+        return ()
+    axes: set[str] = set()
+    for entry in raw_block["components"]:
+        if (
+            isinstance(entry, Mapping) and entry.get("state") == STATE_ON
+            and entry.get("component_id") in PERCEPTION_AXIS_COMPONENTS
+        ):
+            axes.update(
+                key for key in PERCEPTION_AXIS_COMPONENTS[entry["component_id"]] if key != "contrast_pairs"
+            )
+    return tuple(sorted(axes))
 
 
 class EvidenceConsumptionModule:
@@ -764,17 +1037,24 @@ __all__ = [
     "CONSUMPTION_MODULE_RECEIPT_SCHEMA",
     "CONSUMPTION_MODULE_VERSION",
     "CarrierHooks",
+    "ColumnDecl",
     "ComponentDecl",
     "ComposedPolicy",
     "ConsumptionModuleBlock",
     "ConsumptionModuleConfigError",
     "EvidenceConsumptionModule",
+    "FORCED_CANDIDATE_LIST",
+    "PERCEPTION_AXIS_COMPONENTS",
+    "TOP2_CONTRAST",
     "NODE_RECEIPT_SCHEMAS",
     "POLICY_OWNED_KEYS",
     "RELISTEN",
     "REVIEWER_G5_REPAIR",
+    "SCOPE_RULE",
     "SOLVER_CITATION_CONTRACT",
+    "carrier_hooks_for_lock_key",
     "compile_module",
+    "delivered_perception_axes",
     "differing_paths",
     "module_header_receipt",
     "parse_consumption_module_block",
