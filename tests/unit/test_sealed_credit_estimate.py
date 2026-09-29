@@ -115,3 +115,36 @@ def test_compose_sums_distinct_nodes():
     composed = estimate.compose([e1, e2])
     assert composed["predicted_intent_pp"] == 3.0
     assert round(composed["predicted_slu_pp"], 4) == 0.3
+
+
+def test_cited_json_all_fields_keeps_run1_evidence_shape(tmp_path):
+    artefact = tmp_path / "a" / "c.json"
+    artefact.parent.mkdir()
+    artefact.write_text('{"i": {"d": 0.5}, "s": {"d": -0.25}}', encoding="utf-8")
+    knob = _knob("k", "solver_supply", 30, {"type": "cited", "read_json": {
+        "path": "a/c.json", "intent_field": "i.d", "slu_field": "s.d"}})
+    out = estimate.estimate_knob_value(knob, knob["values"][0], {}, REPO_ROOT, tmp_path)
+    assert out["predicted_intent_pp"] == 0.5 and out["predicted_slu_pp"] == -0.25
+    assert "literal_metrics" not in out["evidence"]
+
+
+def test_cited_json_with_literal_intent_half(tmp_path):
+    artefact = tmp_path / "r.json"
+    artefact.write_text('{"arms": {"x": {"pp": 1.18, "ci": [0.67, 1.71]}}}', encoding="utf-8")
+    knob = _knob("scope", "delivery_scope", "on", {"type": "cited", "intent_delta_pp": 0.0,
+        "source": "deterministic entity edit: intent unchanged by construction",
+        "read_json": {"path": "r.json", "slu_field": "arms.x.pp", "slu_ci_field": "arms.x.ci"}})
+    out = estimate.estimate_knob_value(knob, knob["values"][0], {}, REPO_ROOT, tmp_path)
+    assert out["predicted_intent_pp"] == 0.0 and out["predicted_slu_pp"] == 1.18
+    assert out["evidence"]["literal_metrics"] == ["intent"]
+    assert out["evidence"]["slu_ci95"] == [0.67, 1.71]
+
+
+def test_cited_json_without_any_intent_is_refused(tmp_path):
+    (tmp_path / "r.json").write_text('{"s": 1.0}', encoding="utf-8")
+    knob = _knob("k", "n", "v", {"type": "cited", "read_json": {"path": "r.json", "slu_field": "s"}})
+    try:
+        estimate.estimate_knob_value(knob, knob["values"][0], {}, REPO_ROOT, tmp_path)
+        assert False, "expected EstimateError"
+    except estimate.EstimateError:
+        pass

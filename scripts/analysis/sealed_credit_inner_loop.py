@@ -59,6 +59,9 @@ DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-da
 READ_DESIGNS = {
     "same-flight-supply-variant": ("same-flight-supply-variant", 1080),
     "cross-flight": ("cross-flight-with-in-chain-replicate", 1000),
+    # run 2: the composed-policy question at the Fold A arm size (COMP-1 / COMP-1b read at
+    # n = 1,080 against their in-chain A/A; rule-3 bar 2.5 pp at 1,080).
+    "cross-flight-with-in-chain-replicate": ("cross-flight-with-in-chain-replicate", 1080),
 }
 RECIPE = "sealed-credit-inner-loop-run-1-v1"
 
@@ -115,20 +118,22 @@ def row_state_lines(pools_extracted: list[dict]) -> list[str]:
 
 def render_report(
     credit_table: dict, ranked: list[dict], nomination: dict, design: str, rows: int,
+    run_label: str = "run 1", compositions: list[dict] | None = None, top_n: int = 5,
 ) -> str:
+    recipe = RECIPE if run_label == "run 1" else f"sealed-credit-inner-loop-{run_label.replace(' ', '-')}-v1"
     lines = [
-        "# Sealed-credit inner loop, run 1 -- model-free read", "",
-        f"Read design: `{design}` at n = {rows}. Recipe `{RECIPE}`. Counts and rates only.", "",
+        f"# Sealed-credit inner loop, {run_label} -- model-free read", "",
+        f"Read design: `{design}` at n = {rows}. Recipe `{recipe}`. Counts and rates only.", "",
         "## Pools", "",
         "| pool | kind | rows | d_ok | s1_ok |", "| --- | --- | --- | --- | --- |",
     ]
     for label, entry in sorted(credit_table["pools"].items()):
         h = entry["headline"]
         lines.append(f"| {label} | {h['kind']} | {h['rows']} | {h['d_ok']} | {h['s1_ok']} |")
-    lines += ["", "## Top 5 candidates (ranked by predicted intent gain)", "",
+    lines += ["", f"## Top {top_n} candidates (ranked by predicted intent gain)", "",
               "| rank | knob | value | predicted intent pp | predicted SLU pp | guard | floor | clears floor |",
               "| --- | --- | --- | --- | --- | --- | --- | --- |"]
-    for c in ranked[:5]:
+    for c in ranked[:top_n]:
         lines.append(
             f"| {c['rank']} | {c['knob_id']} | {c['value']} | {c['predicted_intent_pp']:.4f} | "
             f"{c['predicted_slu_pp'] if c['predicted_slu_pp'] is not None else 'n/a'} | "
@@ -143,6 +148,17 @@ def render_report(
         )
     else:
         lines.append(f"No candidate nominated: {nomination['reason']}.")
+    if compositions:
+        lines += ["", "## Composed policies (additive; overlapping rows not de-duplicated)", "",
+                  "| id | components | predicted intent pp | predicted SLU pp | guard | floor | guard discarded | clears floor |",
+                  "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+        for c in compositions:
+            parts = " + ".join(f"{p['knob_id']}={p['value']}" for p in c["components"])
+            slu = f"{c['predicted_slu_pp']:+.4f}" if c["predicted_slu_pp"] is not None else "n/a"
+            lines.append(
+                f"| {c['id']} | {parts} | {c['predicted_intent_pp']:+.4f} | {slu} | {c['guard_pp']:.4f} | "
+                f"{c['floor_pp']:.4f} | {c['guard_discarded']} | {c['clears_floor']} |"
+            )
     lines.append("")
     return "\n".join(lines)
 
@@ -159,6 +175,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--lock", default=DEFAULT_LOCK)
     parser.add_argument("--rows", type=int, default=None)
     parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--run-label", default="run 1", help="report title label, e.g. 'run 2'")
+    parser.add_argument("--compositions", default=None,
+                        help="optional JSON {schema, compositions: [{id, components: [{knob_id, value}]}]}")
+    parser.add_argument("--top", type=int, default=5, help="candidates shown in report.md")
     args = parser.parse_args(argv)
 
     manifest = pl.load_manifest(Path(args.pools))
@@ -195,8 +215,17 @@ def main(argv: list[str] | None = None) -> int:
 
     extracted = []
     for pool in tuning_pools:
-        attempt = pl.attempt_dir(data_root, pool["run_id"], pool.get("attempt"))
-        extracted.append(rs.extract_pool(pool, data_root, gold, attempt))
+        phases_dir = None
+        if pool.get("phases_attempt"):
+            # a seal-only completion: outputs + scores in ``attempt``, phases in the predecessor
+            phases_dir = pl.attempt_dir(data_root, pool["run_id"], pool["phases_attempt"])
+            attempt = data_root / "runs" / pool["run_id"] / pool["attempt"]
+            if not (attempt / f"{pool['run_id']}.scores.json").is_file():
+                print(f"refused: {pool['label']}: seal-only attempt carries no scores", file=sys.stderr)
+                return 1
+        else:
+            attempt = pl.attempt_dir(data_root, pool["run_id"], pool.get("attempt"))
+        extracted.append(rs.extract_pool(pool, data_root, gold, attempt, phases_dir))
 
     pairs = build_pairs_from_policy_space(policy)
     credit_table = credit.build_credit_table(extracted, pairs=pairs)
@@ -204,6 +233,13 @@ def main(argv: list[str] | None = None) -> int:
     estimates = estimate.estimate_all(policy, pools_by_label, REPO_ROOT, data_root)
     ranked = accept.rank_candidates(estimates, design, rows, REPO_ROOT)
     nomination = accept.nominate(ranked)
+    compositions = None
+    if args.compositions:
+        comp_doc = json.loads(Path(args.compositions).read_text(encoding="utf-8"))
+        if comp_doc.get("schema") != "saea-sealed-credit-compositions-v1":
+            print("refused: --compositions schema must be 'saea-sealed-credit-compositions-v1'", file=sys.stderr)
+            return 1
+        compositions = accept.score_compositions(estimates, comp_doc["compositions"], design, rows, REPO_ROOT)
 
     texts = {
         "row-states.jsonl": "\n".join(row_state_lines(extracted)) + "\n",
@@ -217,8 +253,15 @@ def main(argv: list[str] | None = None) -> int:
             {"schema": "saea-sealed-credit-nomination-v1", "read_design": design, "rows": rows, **nomination},
             indent=2, sort_keys=True,
         ) + "\n",
-        "report.md": render_report(credit_table, ranked, nomination, design, rows),
+        "report.md": render_report(credit_table, ranked, nomination, design, rows,
+                                   run_label=args.run_label, compositions=compositions, top_n=args.top),
     }
+    if compositions is not None:
+        texts["compositions.json"] = json.dumps(
+            {"schema": "saea-sealed-credit-composition-scores-v1", "read_design": design, "rows": rows,
+             "compositions": compositions},
+            indent=2, sort_keys=True,
+        ) + "\n"
 
     if args.check:
         if not out_dir.is_dir():

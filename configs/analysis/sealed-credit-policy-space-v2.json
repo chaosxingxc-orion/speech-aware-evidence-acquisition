@@ -1,0 +1,461 @@
+{
+  "schema": "saea-sealed-credit-policy-space-v1",
+  "note": "Run 2 policy space (docs/results/2026-09-29-slurp-sealed-credit-inner-loop-run-2.md): run 1's fourteen knobs with the observations sealed since, plus seven: perception_seed_agree_centroid (the COMP-1b composite), scope_rule, none_hint, boundary_depth, citation_contract, relisten_drop_only, reviewer_repair_g5. Every value cites a sealed artefact or a note; unobserved values stay 0.0 and flagged. Schema string is the format version.",
+  "knobs": [
+    {
+      "id": "phase_supply.k",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": [
+        "k"
+      ],
+      "estimator": "conversion_estimate",
+      "flown_value": 20,
+      "values": [
+        {
+          "value": 10,
+          "conversion_source": {
+            "type": "pool_pair_delta",
+            "pools": [
+              "var1-ex-k10",
+              "var1-planr"
+            ],
+            "note": "VAR-1 EX-K10 vs PLANR, paired on the shared R01C roster"
+          }
+        },
+        {
+          "value": 30,
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-STAGE3-WSV1-FOLD-A-COLUMN-READ-V1/knob/score-contrasts.json",
+              "intent_field": "per_row.scenario_action_exact.delta_pp",
+              "intent_ci_field": "per_row.scenario_action_exact.cluster_bootstrap.ci95_pp",
+              "slu_field": "pooled_micro.slu_f1_micro.delta_pp",
+              "slu_ci_field": "pooled_micro.slu_f1_micro.cluster_bootstrap.ci95_pp"
+            },
+            "note": "W-SV-1 same-flight column read, knob b-exk30 vs the delivering column a-base, n=1080"
+          }
+        }
+      ]
+    },
+    {
+      "id": "phase_supply.fuse_coverage.m",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": [
+        "fuse_coverage",
+        "m"
+      ],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "no sealed conversion source (design spec section 2c: 'none sealed; W-SV family')"
+          }
+        }
+      ]
+    },
+    {
+      "id": "phase_supply.fuse_coverage.c",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": [
+        "fuse_coverage",
+        "c"
+      ],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "no sealed conversion source (design spec section 2c: 'none sealed; W-SV family')"
+          }
+        }
+      ]
+    },
+    {
+      "id": "phase_supply.fuse_coverage.top_l",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": [
+        "fuse_coverage",
+        "top_l"
+      ],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "no sealed conversion source (design spec section 2c: 'none sealed; W-SV family')"
+          }
+        }
+      ]
+    },
+    {
+      "id": "release_swap",
+      "node": "solver_supply",
+      "estimator": "conversion_estimate",
+      "flown_value": "none",
+      "values": [
+        {
+          "value": "slot-contracts-w4-v1",
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-STAGE3-W4SV-FOLD-A-COLUMN-READ-V1/b-vs-a/score-contrasts.json",
+              "intent_field": "per_row.scenario_action_exact.delta_pp",
+              "intent_ci_field": "per_row.scenario_action_exact.cluster_bootstrap.ci95_pp",
+              "slu_field": "pooled_micro.slu_f1_micro.delta_pp",
+              "slu_ci_field": "pooled_micro.slu_f1_micro.cluster_bootstrap.ci95_pp"
+            },
+            "note": "W4-SV same-flight column read, b-w4 vs a-agree, TRAIN Fold A, n = 1,080 (docs/results/2026-09-29-slurp-w4sv-fold-a-column-read.md; coordinator: NOT NOMINATED (width)). Run 1's source (W4 vs wave A/A, a cross-flight pool pair) is superseded by this same-flight column."
+          }
+        }
+      ]
+    },
+    {
+      "id": "candidate_supply.max_candidates",
+      "node": "solver_supply_candidates",
+      "route": "candidate_supply",
+      "tail": [
+        "max_candidates"
+      ],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "no sealed conversion source (design spec section 2c: 'none sealed')"
+          }
+        }
+      ]
+    },
+    {
+      "id": "boundary_phase_supply",
+      "node": "perception_seed",
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown (8 entries)",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "no moved-row estimate for a generic +1 step; the concrete registered step is knob boundary_depth (P-SV-3), also unobserved"
+          }
+        }
+      ]
+    },
+    {
+      "id": "rank_weights.w_agree",
+      "node": "perception_seed",
+      "estimator": "conversion_estimate",
+      "flown_value": 1.0,
+      "values": [
+        {
+          "value": 0.0,
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "AGREE-vs-PLAN Fold A comparison flagged circular-source (design spec section 3, item D3); in run 2 the agreement term is carried only inside the observed composite knob perception_seed_agree_centroid"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation_id",
+      "node": "perception",
+      "estimator": "conversion_estimate",
+      "flown_value": "none",
+      "values": [
+        {
+          "value": "rank-visible-v1",
+          "conversion_source": {
+            "type": "cited",
+            "intent_delta_pp": 0.287,
+            "slu_delta_pp": null,
+            "intent_ci95": null,
+            "source": "RANKVIS probe: m=19 of 119 targeted rows converted vs a 15.9-row no-op expectation; scaled to the 1,080-row roster as 119 * (19-15.9)/119/1080*119 = (19-15.9)/1080",
+            "caveats": [
+              "probe-transfer caveat: RANKVIS rows were selected wrong-first; conversion does not transfer to a whole roster without a reach term (design spec section 4)",
+              "claim ceiling at most 'nominated' per the design spec"
+            ]
+          }
+        },
+        {
+          "value": "top2-contrast-v1",
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-SEALED-CREDIT-INNER-LOOP-RUN-2-PSV1-PREREAD-V1/report.json",
+              "intent_field": "level2.intent_b_minus_a.point_pp",
+              "intent_ci_field": "level2.intent_b_minus_a.ci95",
+              "slu_field": "level2.slu_b_minus_a.point_pp",
+              "slu_ci_field": "level2.slu_b_minus_a.ci95"
+            },
+            "note": "P-SV-1 (TRAIN Fold B, n = 1,080, seal-only) level-2 answer column b-top2contrast minus the delivering branch a-agree, computed PRE-READ and DESCRIPTIVE by scripts/analysis/sealed_credit_psv1_preread.py with the perception-branch read primitives and in-process official SLURP arithmetic; twin null t-twin minus a-agree in the same report. The P-SV-1 READ row is the coordinator's to countersign.",
+            "caveats": [
+              "pre-read: not a READ verdict",
+              "Fold B source: anything built from it may not be read on Fold B (owner decision 186)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "min_candidates",
+      "node": "perception_contract",
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": 3,
+          "conversion_source": {
+            "type": "credit_table_perception_rank",
+            "primary_pool": "agree",
+            "from_bucket": "absent",
+            "to_bucket": "3+",
+            "moved_rows_cited": 6,
+            "moved_rows_source": "design spec section 2c: the P-SV-2 ceiling, 'about 6 rows', of the 49 wrong rows with gold in the boundary block but off Perception's list"
+          }
+        }
+      ]
+    },
+    {
+      "id": "relisten_acceptance",
+      "node": "post_accept",
+      "estimator": "conversion_estimate",
+      "flown_value": "off",
+      "values": [
+        {
+          "value": "replace-only",
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1/replace-only/score-contrasts.json",
+              "intent_field": "per_row.scenario_action_exact.delta_pp",
+              "intent_ci_field": "per_row.scenario_action_exact.cluster_bootstrap.ci95_pp",
+              "slu_field": "pooled_micro.slu_f1_micro.delta_pp",
+              "slu_ci_field": "pooled_micro.slu_f1_micro.cluster_bootstrap.ci95_pp"
+            },
+            "note": "E4-1 same-flight shadow column replace-only vs the delivered column, TRAIN Fold A, n = 1,080 (docs/results/2026-09-29-slurp-e4-relisten-fold-a-column-read.md; coordinator: NOT NOMINATED, SHADOW HARM). Intent identical by construction."
+          }
+        },
+        {
+          "value": "replace-and-drop-when-unheard",
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-COLUMN-READ-V1/replace-drop-unheard/score-contrasts.json",
+              "intent_field": "per_row.scenario_action_exact.delta_pp",
+              "intent_ci_field": "per_row.scenario_action_exact.cluster_bootstrap.ci95_pp",
+              "slu_field": "pooled_micro.slu_f1_micro.delta_pp",
+              "slu_ci_field": "pooled_micro.slu_f1_micro.cluster_bootstrap.ci95_pp"
+            },
+            "note": "E4-1 same-flight shadow column replace-drop-unheard vs the delivered column, TRAIN Fold A, n = 1,080 (docs/results/2026-09-29-slurp-e4-relisten-fold-a-column-read.md; coordinator: NOT NOMINATED, SHADOW HARM). Intent identical by construction."
+          }
+        }
+      ]
+    },
+    {
+      "id": "reviewer_planner",
+      "node": "review_loop",
+      "estimator": "exact_offline",
+      "flown_value": "on",
+      "values": [
+        {
+          "value": "off",
+          "conversion_source": {
+            "type": "credit_table_reviewer_toggle",
+            "pool": "agree"
+          }
+        }
+      ]
+    },
+    {
+      "id": "deliver_normaliser",
+      "node": "delivery",
+      "estimator": "exact_offline",
+      "flown_value": "on",
+      "values": [
+        {
+          "value": "off",
+          "conversion_source": {
+            "type": "credit_table_normaliser_toggle",
+            "pool": "agree"
+          }
+        }
+      ]
+    },
+    {
+      "id": "commit_rule",
+      "node": "grouped_solver",
+      "estimator": "excluded",
+      "flown_value": "none",
+      "values": [],
+      "excluded_reason": "commit line closed (0 of 29 rules cleared the floor as a gain; decision 179); multi-sample rule designs are discontinued"
+    },
+    {
+      "id": "perception_seed_agree_centroid",
+      "node": "perception_seed",
+      "estimator": "conversion_estimate",
+      "flown_value": "locked PLAN v2.0 seed (the COMP-1 in-chain A/A bytes)",
+      "note": "composite: agreement term (w_agree 1.0, k 60, fuse 8-1-8) + centroid boundary key, i.e. COMP-1 minus the cited-answer contract = the flying cell COMP-1b",
+      "values": [
+        {
+          "value": "agree-w1+centroid-key",
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-STAGE3-COMP1-FOLD-A-PAIRED-ANALYSIS-V1/seal-only-mirror-read/vs-aa/score-contrasts.json",
+              "intent_field": "per_row.scenario_action_exact.delta_pp",
+              "intent_ci_field": "per_row.scenario_action_exact.cluster_bootstrap.ci95_pp"
+            },
+            "slu_delta_pp": 0.58,
+            "source": "intent: COMP-1 vs its in-chain A/A (docs/results/2026-09-29-slurp-comp1-fold-a-read.md); the contract is not credited with intent (COMP-1b declares 4.26). SLU: harm-attribution counterfactual, COMP-1 with its 414 zero-gold rows swapped to the A/A = 64.80 vs the A/A 64.21, +0.58 pp (docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md section 3). Alternative bound: AGREE - COMP-1 A/A +0.94.",
+            "caveats": [
+              "the SLU half is a counterfactual row swap, not a flown arm; COMP-1b (flying) measures it",
+              "the centroid key has no flown arm of its own (harm-attribution section 3)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "scope_rule",
+      "node": "delivery_scope",
+      "estimator": "conversion_estimate",
+      "flown_value": "off",
+      "note": "deterministic do-not-tag deliver stage saea-deliver-scope-rule-v1 (>= 5 pool occurrences, >= 0.8 untagged); owner decision 195 = B",
+      "values": [
+        {
+          "value": "saea-deliver-scope-rule-v1",
+          "conversion_source": {
+            "type": "cited",
+            "intent_delta_pp": 0.0,
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-SCOPE-RULE-STAGE-ESTIMATE-R5-V1/report.json",
+              "slu_field": "arms.agree.bootstrap_pp.point_pp",
+              "slu_ci_field": "arms.agree.bootstrap_pp.ci95"
+            },
+            "source": "R5-table re-derivation on AGREE (branch fable/module2 commit 17711e68c, AT-M3, ledger row SAEA-SLURP-SCOPE-RULE-STAGE-ESTIMATE-R5-V1; not merged to master at run time): +1.18 [+0.67, +1.71], wave A/A +1.07 [+0.61, +1.55]; original-pool control +1.04 / +0.93 (docs/results/2026-09-29-slurp-slu-consumption-headroom-offline.md:94). Intent 0.0: entities only.",
+            "caveats": [
+              "exact offline edit on one sealed arm (AGREE), not a flown column"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "none_hint",
+      "node": "solver_none_hint",
+      "estimator": "conversion_estimate",
+      "flown_value": "off",
+      "note": "N1: entity-free exemplar share >= 0.6 triggers an explicit empty-entity decision (owner decision 199)",
+      "values": [
+        {
+          "value": "n1-entity-free-share-0.6",
+          "conversion_source": {
+            "type": "cited",
+            "intent_delta_pp": 0.0,
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-SUPPLY-ABSTENTION-HEADROOM-OFFLINE-V1/report.json",
+              "slu_field": "n1_none_share_gated_empty_answer.best_in_sample.expected_net_pp_at_m1"
+            },
+            "source": "predicted at the M1 conversion (0.2471) on AGREE: +0.17; oracle +0.68 [+0.28, +1.10]; on COMP-1 oracle +1.78 (docs/results/2026-09-29-slurp-supply-abstention-headroom-offline.md section 3.3). Intent 0.0: entities only.",
+            "caveats": [
+              "cross-fit did not confirm theta (+0.01 [-0.91, +0.91]); theta 0.6 must be declared, not tuned",
+              "conversion is M1's printing rate, not a measured none-hint conversion"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "boundary_depth",
+      "node": "perception_boundary_depth",
+      "estimator": "conversion_estimate",
+      "flown_value": "m / top_l 8",
+      "note": "boundary block depth m / top_l 8 -> 12 (P-SV-3 registered, unflown)",
+      "values": [
+        {
+          "value": "m-top_l-12",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "P-SV-3 registered but not flown; presence ceiling 83 rows = 7.69 pp present (docs/readiness/2026-09-29-slurp-stage3-psv3-fold-b-v1-preregistration.md); no conversion measured"
+          }
+        }
+      ]
+    },
+    {
+      "id": "citation_contract",
+      "node": "solver_contract",
+      "estimator": "conversion_estimate",
+      "flown_value": "off (locked non-cited program)",
+      "values": [
+        {
+          "value": "saea-solver-cited-answer-v1",
+          "conversion_source": {
+            "type": "cited",
+            "intent_delta_pp": 0.0,
+            "slu_delta_pp": -2.83,
+            "source": "OBSERVED HARMFUL: COMP-1 with the 414 zero-gold rows swapped to its A/A recovers +2.83 pp (forced emission, +102 of +114 FP on zero-gold rows; docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md section 3). Intent 0.0: the contract is not credited with COMP-1's intent gain (COMP-1b isolates it).",
+            "caveats": [
+              "counterfactual row swap on COMP-1, not a flown contract-only arm"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "relisten_drop_only",
+      "node": "post_accept",
+      "estimator": "conversion_estimate",
+      "flown_value": "off",
+      "values": [
+        {
+          "value": "drop-when-unheard-only",
+          "conversion_source": {
+            "type": "cited",
+            "intent_delta_pp": 0.0,
+            "slu_delta_pp": 0.8,
+            "source": "coordinator verdict on E4-1 (docs/results/2026-09-29-slurp-e4-relisten-fold-a-column-read.md, Coordinator verdict): about +0.8 pp offline as a drop-only column; drop rule 68 entities: 48 SPURIOUS removed, 10 EXACT and 10 partial lost (gate/report.json gate_drop); replace+drop minus replace-only = +0.51 pp. Intent identical by construction.",
+            "caveats": [
+              "APPROXIMATE: no sealed artefact computes the drop-only column exactly; +0.8 is the coordinator's stated offline estimate"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "reviewer_repair_g5",
+      "node": "review_loop",
+      "estimator": "conversion_estimate",
+      "flown_value": "locked Reviewer instruction",
+      "values": [
+        {
+          "value": "g5-no-retired-tool-order",
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-STAGE3-G5-FOLD-A-PAIRED-ANALYSIS-V1/vs-aa/score-contrasts.json",
+              "intent_field": "per_row.scenario_action_exact.delta_pp",
+              "intent_ci_field": "per_row.scenario_action_exact.cluster_bootstrap.ci95_pp",
+              "slu_field": "pooled_micro.slu_f1_micro.delta_pp",
+              "slu_ci_field": "pooled_micro.slu_f1_micro.cluster_bootstrap.ci95_pp"
+            },
+            "note": "G5 vs the shared in-chain A/A, TRAIN Fold A, n = 1,080 (docs/results/2026-09-29-slurp-g5-fold-a-read.md); a no-harm base item (decision 127), never a gain"
+          }
+        }
+      ]
+    }
+  ]
+}

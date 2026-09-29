@@ -269,3 +269,13 @@ def test_attempt_dir_refuses_ambiguous(tmp_path):
         (run_dir / "RUN-1.phases.json").write_text("{}", encoding="utf-8")
     with pytest.raises(pl.PoolManifestError):
         pl.attempt_dir(tmp_path, "RUN-1")
+
+
+def test_seal_only_pool_may_name_its_phases_attempt(tmp_path):
+    pools = [{"label": "p1", "run_id": "RUN-1", "kind": "single-sample-arm", "roster": "TUNE-A",
+              "use": "tuning", "scorer": "slurp-slu-official-train",
+              "attempt": "attempt-x-seal-only", "phases_attempt": "attempt-x"}]
+    path = tmp_path / "m.json"
+    _write(path, _manifest(pools=pools))
+    manifest = pl.load_manifest(path)
+    assert manifest["pools"][0]["phases_attempt"] == "attempt-x"

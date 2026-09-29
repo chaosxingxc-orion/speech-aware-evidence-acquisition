@@ -1,0 +1,249 @@
+{
+  "schema": "saea-sealed-credit-pools-v1",
+  "note": "Run 2 pool manifest (docs/results/2026-09-29-slurp-sealed-credit-inner-loop-run-2.md). Run 1's twelve pools plus every pool sealed since. Split for run 2 (coordinator brief for run 2, the Q1 alternative of the run-1 design spec section 3): tune on R01C + TRAIN Fold A + the TRAIN Fold B filler / P-SV-1 pools; because Fold B now tunes, no read design may use Fold B (owner decision 186) and both read designs name DEV-2000-ADDED. A candidate whose conversion source is Fold-A-only could still be read same-flight on Fold B; the run-2 note states per candidate which rosters remain admissible. ROLL-3 (DEV) never tunes. Schema string is the format version, not the content version.",
+  "tuning_roster": [
+    "SLURP-STAGE3-CONSTRUCTION-R01C",
+    "SLURP-EVO-FOLD-A-V2",
+    "SLURP-EVO-FOLD-B-V2"
+  ],
+  "read_rosters": {
+    "same-flight-supply-variant": "SLURP-DEV-2000-ADDED-V1",
+    "cross-flight": "SLURP-DEV-2000-ADDED-V1"
+  },
+  "pools": [
+    {
+      "label": "roll-1",
+      "run_id": "SAEA-SLURP-STAGE3-ROLLOUT-R01-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "R01C, grouped 5, locked PLAN"
+    },
+    {
+      "label": "roll-2",
+      "run_id": "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "Fold A, grouped 5, PLAN + agreement term"
+    },
+    {
+      "label": "var1-plan",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-PLAN-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "label": "var1-planr",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-PLANR-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "PLANr -- the flown comparator for the VAR-1 family's own knob values"
+    },
+    {
+      "label": "var1-ex-k10",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K10-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "phase_supply.k = 10 variant"
+    },
+    {
+      "label": "var1-ex-k30",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-K30-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "phase_supply.k = 30 variant"
+    },
+    {
+      "label": "var1-ex-div",
+      "run_id": "SAEA-SLURP-STAGE3-VAR1-EX-DIV-R01C-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "diversity supply variant; loaded for the credit surface, not a named run-1 knob source"
+    },
+    {
+      "label": "agree",
+      "run_id": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "the primary Fold A arm; the node-gain ledger's own reference pool"
+    },
+    {
+      "label": "wave-aa",
+      "run_id": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "wave A/A (same bytes re-flown); the shared comparator W1/W3a/W4 are read against"
+    },
+    {
+      "label": "w1",
+      "run_id": "SAEA-SLURP-STAGE3-W1-CARDSEL-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "label": "w3a",
+      "run_id": "SAEA-SLURP-STAGE3-W3-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train"
+    },
+    {
+      "label": "w4",
+      "run_id": "SAEA-SLURP-STAGE3-W4-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "release-swap (slot-contracts-w4-v1) source, read against wave-aa"
+    },
+    {
+      "label": "comp1-aa",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "the shared in-chain A/A (locked PLAN bytes; decision 160) that COMP-1, COMP-1b and G5 are read against"
+    },
+    {
+      "label": "comp1",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1",
+      "attempt": "attempt-slurp-native-stage3-comp1-fold-a-generation-v1-seal-only",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "COMP-1 seal-only (AGREE + centroid boundary key + cited-answer contract); read +4.26 intent / -2.24 SLU vs comp1-aa"
+    },
+    {
+      "label": "g5",
+      "run_id": "SAEA-SLURP-STAGE3-G5-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "G5 Reviewer instruction without the retired-tool order; read +0.09 / -0.38 vs comp1-aa"
+    },
+    {
+      "label": "e4-relisten",
+      "run_id": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1",
+      "attempt": "attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "E4-1 seal-only; the delivered column (the shadow columns live in the column read, cited in the policy space)"
+    },
+    {
+      "label": "wsv1",
+      "run_id": "SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "W-SV-1 delivered column a-base; the k 30 column is cited from its column read"
+    },
+    {
+      "label": "w4sv",
+      "run_id": "SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-A-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "W4-SV delivered column a-agree; the b-w4 column is cited from its column read"
+    },
+    {
+      "label": "filler-c01",
+      "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C01-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-FILLER-FOLD-B-C01-V1",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "TRAIN Fold B filler chunk, grouped 5; credit surface only (decision 179: no rule read over grouped pools)"
+    },
+    {
+      "label": "filler-c02",
+      "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C02-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-FILLER-FOLD-B-C02-V1",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "TRAIN Fold B filler chunk, grouped 5; credit surface only (decision 179: no rule read over grouped pools)"
+    },
+    {
+      "label": "filler-c03",
+      "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C03-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-FILLER-FOLD-B-C03-V1",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "TRAIN Fold B filler chunk, grouped 5; credit surface only (decision 179: no rule read over grouped pools)"
+    },
+    {
+      "label": "filler-c04",
+      "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C04-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-FILLER-FOLD-B-C04-V1",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "TRAIN Fold B filler chunk, grouped 5; credit surface only (decision 179: no rule read over grouped pools)"
+    },
+    {
+      "label": "filler-c05",
+      "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C05-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-FILLER-FOLD-B-C05-V1",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "TRAIN Fold B filler chunk, grouped 5; credit surface only (decision 179: no rule read over grouped pools)"
+    },
+    {
+      "label": "filler-c06",
+      "run_id": "SAEA-SLURP-STAGE3-FILLER-FOLD-B-C06-V1",
+      "kind": "grouped-multi-sample",
+      "samples_per_row": 5,
+      "roster": "SLURP-STAGE3-FILLER-FOLD-B-C06-V1",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "TRAIN Fold B filler chunk, grouped 5; credit surface only (decision 179: no rule read over grouped pools)"
+    },
+    {
+      "label": "psv1",
+      "run_id": "SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1",
+      "attempt": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only",
+      "phases_attempt": "attempt-slurp-native-stage3-psv1-fold-b-generation-v1",
+      "kind": "single-sample-arm",
+      "roster": "SLURP-EVO-FOLD-B-V2",
+      "use": "tuning",
+      "scorer": "slurp-slu-official-train",
+      "note": "P-SV-1 seal-only; outputs/scores from the FINALIZED seal-only attempt (1,080 kept, 0 flown), node states from its predecessor's phases; delivered branch a-agree; the b-top2contrast contrast is computed pre-read (scripts/analysis/sealed_credit_psv1_preread.py)"
+    }
+  ]
+}
