@@ -5938,6 +5938,31 @@ class FlightRuntime:
         return rows
 
     @staticmethod
+    def _result_contact_count(result: object) -> int:
+        """How many model contacts ONE result accounts for, INCLUDING a
+        relisten receipt's own spend.
+
+        ``result.contacts`` (``rails.runner.AgentContactRecord`` tuple) never
+        names a relisten contact -- design section 6: a relisten contact is
+        dispatched OUTSIDE the ACCEPT/REVISE/ACQUIRE graph and registers no
+        phase state, so it is never added there, and this stays true after
+        this fix (``native_episode_receipt.role_visits`` and ``state.
+        contacts`` are unchanged). What this fixes is every DERIVED count a
+        reader takes ``result.contacts`` to mean "every model contact this
+        row spent" -- the row's own ``contact_count`` field and the flight's
+        own per-sample budget accounting both read this, so both undercounted
+        a relisten-armed row by its own ``relisten.contacts_used`` (one blind
+        contact per triggered entity plus one forced-choice contact per
+        entity whose confirm fired) before this fix.
+        """
+
+        base = len(getattr(result, "contacts", ()) or ())
+        relisten = getattr(result, "relisten", None)
+        if not isinstance(relisten, Mapping):
+            return base
+        return base + int(relisten.get("contacts_used") or 0)
+
+    @staticmethod
     def _phase_summary_contacts(summary: object) -> int:
         """How many model contacts one phase summary accounts for.
 
@@ -5945,11 +5970,12 @@ class FlightRuntime:
         result of a phase carries exactly one contact, so this is normally
         ``len(summary.results)``; summing the contact tuples instead keeps
         the receipt honest if a future program ever runs a phase with a
-        richer per-sample trajectory.
+        richer per-sample trajectory. Item E4: a relisten-armed result's own
+        extra spend is added in through :meth:`_result_contact_count`.
         """
 
         return sum(
-            len(getattr(result, "contacts", ()) or ()) for result in summary.results
+            FlightRuntime._result_contact_count(result) for result in summary.results
         )
 
     @staticmethod
@@ -6010,7 +6036,10 @@ class FlightRuntime:
                 "phase": phase_id,
                 "sample_id": result.sample_id,
                 "final_response_text": getattr(result, "final_response_text", None),
-                "contact_count": len(getattr(result, "contacts", ()) or ()),
+                # Item E4 fix: includes a relisten receipt's own spend (see
+                # _result_contact_count) -- this field previously undercounted
+                # a relisten-armed row by its blind/confirm contacts.
+                "contact_count": FlightRuntime._result_contact_count(result),
                 **(
                     {
                         "execution_unit_id": result.execution_unit_id,
@@ -6029,6 +6058,19 @@ class FlightRuntime:
                 **(
                     {"supply_variants": dict(result.supply_variants)}
                     if getattr(result, "supply_variants", None) is not None else {}
+                ),
+                # Item E4 (2026-09-28, owner decision 185): the row's own
+                # sealed post-accept relisten receipt
+                # (``rails.relisten.seal_relisten_receipt``), carried into
+                # the seal exactly as ``solver_group``/``supply_variants``
+                # above are -- contact ids, hashes and flags only, never the
+                # value's own bytes. Absent for a row whose config never
+                # armed ``native_episode.relisten`` (or whose delivery was an
+                # abstention), which leaves this row byte-identical to before
+                # E4.
+                **(
+                    {"relisten": dict(result.relisten)}
+                    if getattr(result, "relisten", None) is not None else {}
                 ),
             }
             for result in last.results
@@ -7128,7 +7170,15 @@ class FlightRuntime:
                 "contacts_per_sample"
             )
             dispatch["contacts_per_sample_observed"] = [
-                {"sample_id": result.sample_id, "contacts": len(result.contacts)}
+                # Item E4 fix: includes a relisten receipt's own spend (see
+                # _result_contact_count) -- this budget-accounting field
+                # previously undercounted a relisten-armed row against its
+                # own contacts_per_sample_ceiling, which already includes the
+                # relisten term (load_native_episode_config's formula).
+                {
+                    "sample_id": result.sample_id,
+                    "contacts": self._result_contact_count(result),
+                }
                 for summary in self._phase_summaries
                 for result in summary.results
             ]
@@ -7211,9 +7261,12 @@ class FlightRuntime:
                     dispatch["contacts_per_execution_unit" + suffix] = dispatch.pop(key)
             dispatch.pop("contacts_per_sample_observed", None)
             dispatch["contacts_per_execution_unit_observed"] = [
+                # Item E4 fix: includes a relisten receipt's own spend (see
+                # _result_contact_count), the same fix as
+                # contacts_per_sample_observed above.
                 {"sample_id": result.sample_id,
                  "execution_unit_id": result.execution_unit_id,
-                 "contacts": len(result.contacts)}
+                 "contacts": self._result_contact_count(result)}
                 for summary in self._phase_summaries for result in summary.results
             ]
         return rows, contact_count, "phase-program", dispatch, phase_receipt
@@ -10077,6 +10130,14 @@ class FlightRuntime:
             # response text, so the response_text_sha256 branch below needs no
             # arm case -- the recorded contact's own text hash describes it.
             supply_variants = row.get("supply_variants")
+            # Item E4 (2026-09-28, owner decision 185): present exactly when
+            # this row's config armed ``native_episode.relisten`` and the
+            # delivery was not an abstention. Carried through unchanged, the
+            # same way ``solver_group``/``supply_variants`` above are: the
+            # delivered final_response_text is NEVER mutated by this stage
+            # (shadow delivery), so no response_text_sha256 branch needs a
+            # relisten case either.
+            relisten = row.get("relisten")
             # E11 (2026-09-18, owner directive 26): present exactly when this
             # row's episode ran the delivery-time normaliser node. The
             # delivered final_response_text is then that node's output over
@@ -10540,6 +10601,19 @@ class FlightRuntime:
                         {"advantage_statements": dict(row["advantage_statements"])}
                         if isinstance(row.get("advantage_statements"), Mapping)
                         else {}
+                    ),
+                    # Item E4 (2026-09-28, owner decision 185): the row's own
+                    # sealed post-accept relisten receipt
+                    # (``rails.relisten.seal_relisten_receipt``), carried
+                    # into the seal exactly as ``solver_group`` above is --
+                    # contact ids, hashes and flags only, never the value's
+                    # own bytes. Absent for a row whose config never armed
+                    # ``native_episode.relisten`` (or whose delivery was an
+                    # abstention), which leaves this row byte-identical to
+                    # before E4.
+                    **(
+                        {"relisten": dict(relisten)}
+                        if relisten is not None else {}
                     ),
                 }
             )

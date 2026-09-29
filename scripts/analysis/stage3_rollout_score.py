@@ -1809,6 +1809,65 @@ def supply_variant_main(args, repo_root: Path, root: Path, lock) -> int:
     return 0
 
 
+def relisten_main(args, repo_root: Path, root: Path, lock) -> int:
+    """The ``--mode relisten`` CLI entry (E4, owner decision 185): render
+    both post-accept shadow columns from the sealed ``saea-relisten-v1``
+    receipts (:func:`render_relisten_shadow_columns`) and score each once
+    (:func:`score_relisten_shadow_copies`) -- structurally ``supply_variant_
+    main``'s own twin, at a smaller surface (no supply-variant arm group to
+    parse: a relisten row's own receipt is read directly off it), so
+    ``scripts/flights/e4/e4_read.sh`` can drive it exactly as ``scripts/
+    flights/*/{...}_read.sh`` drives ``--mode supply-variants``.
+    """
+
+    from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+    from speech_aware_evidence_acquisition.core.config import compose
+
+    if args.stage == "pairs" or args.samples is not None:
+        raise Stage3ScoreError("relisten mode supports render/score/all, not pairs or samples")
+    directory = run_dir(root, args.run, args.attempt)
+    bundle = verify_bundle(directory / f"{args.run}.run-manifest.json")
+    fragments = bundle.manifest.get("config", {}).get("fragments")
+    if not isinstance(fragments, Mapping):
+        raise Stage3ScoreError("sealed manifest has no composed fragments")
+    composed = compose(repo_root, *(fragments[k] for k in ("model", "dataset", "baseline", "experiment")))
+    if composed.config_hash != bundle.manifest["config"]["config_hash"]:
+        raise Stage3ScoreError("current fragments differ from sealed composed config")
+    roster, roster_sha256, _ = load_roster(repo_root, args.roster)
+    out_dir = Path(args.analysis_root)
+    if args.stage in ("render", "all"):
+        manifest = render_relisten_shadow_columns(
+            bundle, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
+            roster_sha256=roster_sha256, config_hash=composed.config_hash,
+        )
+    else:
+        path = out_dir / "relisten-render-manifest.json"
+        if not path.is_file():
+            raise Stage3ScoreError("relisten score requires a prior render")
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+        if any(not Path(entry["path"]).is_file()
+               for entry in manifest.get("copies", {}).values()):
+            raise Stage3ScoreError("relisten score requires every prior rendered copy")
+        # Rebuild from the verified source before trusting cached copies.
+        checked = render_relisten_shadow_columns(
+            bundle, roster, out_dir, run_id=args.run, attempt_id=args.attempt,
+            roster_sha256=roster_sha256, config_hash=composed.config_hash,
+        )
+        if manifest != checked:
+            raise Stage3ScoreError("render manifest differs from verified source")
+    if args.stage in ("score", "all"):
+        delivered = sealed_per_sample(directory, args.run, args.scorer_id)
+        summary = score_relisten_shadow_copies(
+            args.scorer_id, manifest, out_dir, lock=lock, data_root=root, delivered=delivered,
+        )
+        print(json.dumps({"stage": "score", "columns": list(summary["columns"]),
+                          "rows": summary["sealed_delivered_rows"]}))
+    else:
+        print(json.dumps({"stage": "render", "columns": manifest["column_order"],
+                          "rows": manifest["rows"]}))
+    return 0
+
+
 # ---------------------------------------------------------------------------
 # pairs
 # ---------------------------------------------------------------------------
@@ -1995,7 +2054,8 @@ def pairs(
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--mode", choices=("grouped", "supply-variants", "perception-branches"),
+        "--mode",
+        choices=("grouped", "supply-variants", "perception-branches", "relisten"),
         default="grouped",
     )
     parser.add_argument("--run", required=True, help="sealed run id")
@@ -2065,6 +2125,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return supply_variant_main(args, repo_root, root, lock)
     if args.mode == "perception-branches":
         return perception_branch_main(args, repo_root, root, lock)
+    if args.mode == "relisten":
+        return relisten_main(args, repo_root, root, lock)
     out_dir = Path(args.analysis_root)
     out_dir.mkdir(parents=True, exist_ok=True)
 
