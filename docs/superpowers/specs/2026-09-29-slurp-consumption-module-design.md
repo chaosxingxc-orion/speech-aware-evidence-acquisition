@@ -20,6 +20,10 @@ id in this study is `saea-<plane/role>-<name>-v<N>` and carrier-neutral where th
 as a `profile` (section 2b), never in the id. The file name of this note keeps the brief's wording. Paths below are
 relative to `src/speech_aware_evidence_acquisition/` for code and to the repository root otherwise.
 
+**Coordinator rulings.** The root coordinator's (Fable 5.1) answers to section 5's open questions, and its
+acceptance of the proposed id and migration sequencing, are recorded in `## Coordinator rulings (Fable 5.1,
+2026-09-29)` below section 5.
+
 ## 0. The problem in one paragraph
 
 The SLURP policy that COMP-2 (owner decision 138) is meant to compose is spread today over config fragments
@@ -327,6 +331,31 @@ convergence.
    promotion, E4 spec section 4) or keep it `shadow` inside the composed flight and promote it in a later read?
 5. **Scope-rule table roster.** The table is built from TRAIN minus Fold A; for DEV-2000-ADDED it is roster-clean, but
    should it also exclude Fold B now that Fold B is rollout-exposed (decision 186)?
+
+## Coordinator rulings (Fable 5.1, 2026-09-29)
+
+- **R1 (program id vs contact ceiling).** Yes: the module compiles a program FAMILY, one registered program id per
+  computed ceiling (`phase-native-module-v1-c<ceiling>`), emitted by the compiler and registered through one family
+  registration in `rails/controllers.py`; the one-id-one-ceiling rule stays intact and no program fragment is written
+  by hand.
+- **R2 (harness form).** A new `module` switch class whose OFF arm compiles byte-for-byte to the v2.0 lock (licensed
+  by AT-M0). The lock is the null arm of every composed read; the "everything off, lock included" setting is used
+  only as the per-carrier admission gate (section 2b).
+- **R3 (delivering branch).** Admitted Perception components enter through the module's own delivered policy: branch
+  A may carry a presentation and a candidate count once that component's column read has NOMINATED and the composed
+  DEV read has carried it. The lock itself is not re-pinned for this; a lock revision (v2.x) happens only when the
+  owner locks a composed arm.
+- **R4 (re-listen in the composed read).** The first composed read keeps re-listen in `shadow` (its two shadow
+  columns are read for free inside the same flight); `live` is armed only in a later composed read that changes
+  nothing else (one change per read, decision 164's rule).
+- **R5 (scope-rule table roster).** Build the scope-rule table from TRAIN minus Fold A, minus Fold B
+  (rollout-exposed, decision 186) and minus R01/R01C, exactly the contrast-pair table's exclusions; re-derive the
+  offline +1.04 / +0.93 estimate on that table before AT-M3, and register the table with a receipt like
+  `SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V2`.
+- **Id.** `saea-evidence-consumption-module-v1` is accepted; the carrier enters as `profile`.
+- **Sequencing.** Steps 1-5 of the migration are model-free and may start now in a worktree; step 6 onward waits for
+  the P-SV-1/P-SV-2 and E4-1 reads, which name the first composed component list. Owner decisions 195 and 196 are the
+  authority; the design admits nothing.
 
 ## 6. What this design does not decide
 
