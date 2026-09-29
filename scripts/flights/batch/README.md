@@ -196,8 +196,10 @@ powershell -File scripts/flights/batch/saea_task.ps1 -Name SAEA-Watchdog \
 `saea_task.ps1` had no repetition before owner decision 182 (every task it registers uses a
 `-Once -At (Get-Date).AddYears(1)` trigger and is started by hand or by `-Start`); `-RepeatMinutes N`
 is the minimal addition this needs -- when `N > 0` the registration trigger becomes
-`-Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes N) -RepetitionDuration
-([TimeSpan]::MaxValue)` (fires every N minutes, indefinitely); `N` defaults to `0` (the old
+`-Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes N)` with no
+`-RepetitionDuration` (fires every N minutes, indefinitely; Windows PowerShell 5.1 refuses
+`-RepetitionDuration ([TimeSpan]::MaxValue)` with HRESULT 0x80041318, "Duration:P99999999DT23H59M59S", which
+the first registration on 2026-09-29 hit); `N` defaults to `0` (the old
 one-shot-until-started trigger), so every existing caller is unaffected.
 
 Pause it at any time with `touch /home/chao/saea-queue/watchdog.hold` (no task stop needed: the next

@@ -25,7 +25,7 @@ param(
 function Register-SaeaTask([string]$TaskName, [string]$TaskScript, [bool]$Strict, [int]$Repeat) {
   $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -StartWhenAvailable
   if ($Repeat -gt 0) {
-    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes $Repeat) -RepetitionDuration ([TimeSpan]::MaxValue)
+    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes $Repeat)
   } else {
     $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddYears(1)
   }
