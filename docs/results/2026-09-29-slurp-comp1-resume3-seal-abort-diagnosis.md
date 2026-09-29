@@ -15,7 +15,7 @@ which replaces the delivered text with the normaliser output) with
 It does not re-run the normaliser; the bundle's I7n (`core/bundle/outputs.py:495`) does.
 
 Traceback path: `queue.run -> seal (runtime.py:10537) -> _merged_canonical_rows (:10401) ->
-_canonical_output_rows(output_rows=replayed_rows, ...)`. The live rows (`:10385`) are rendered
+_canonical_output_rows(output_rows=replayed_rows, ...)`. The live rows (`:10390`) are rendered
 first and passed; the refusal comes from the KEPT rows.
 
 ## 2. Which row tripped it
