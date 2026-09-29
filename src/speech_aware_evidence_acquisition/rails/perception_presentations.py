@@ -52,6 +52,17 @@ TOP2_CONTRAST_PRESENTATION_VERSION = "1"
 #: W3a's closed contrast-card line. This is the receipted reason.
 TOP2_CONTRAST_SKIP_REASON_INSUFFICIENT_POOL_SUPPORT = "insufficient-pool-support"
 
+#: The runner's own floor (merge set C item 6, "What to build" item 2): a
+#: branch's own rendered supply names fewer than two DISTINCT candidate
+#: intents (e.g. a one-value seed, or a seed whose values all resolve to the
+#: same intent), so there is no rank-1/rank-2 PAIR to look up at all -- this
+#: is checked before ``contrast_pairs`` is ever consulted, and is therefore a
+#: distinct receipted reason from :data:`TOP2_CONTRAST_SKIP_REASON_
+#: INSUFFICIENT_POOL_SUPPORT` (which fires only once a genuine pair is
+#: looked up and the TABLE itself has no row for it, or too little pool
+#: support to have minted one).
+TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES = "fewer-than-two-candidates"
+
 #: The two fields one pinned contrast-pair table ROW must carry for
 #: ``top2-contrast-v1`` to render it: the activation sentence (what picks
 #: THIS intent over the other) and the exclusion sentence (what rules the
@@ -131,10 +142,65 @@ PERCEPTION_PRESENTATIONS.register(RANK_VISIBLE_PRESENTATION_ID, _RankVisiblePres
 PERCEPTION_PRESENTATIONS.register(TOP2_CONTRAST_PRESENTATION_ID, _Top2ContrastPresentation())
 
 
+#: The intent-boundary store's own value id shape (``rails.
+#: semantic_knowledge_build.build_intent_boundary_snapshot``, dimension
+#: ``"intent-boundary"``): a value id qualified for a composed supply is
+#: ``qualify_id(store_id, local_id)`` (``rails.knowledge_stores.qualify_id``)
+#: where ``local_id`` is ``"intent-boundary:<intent_id>"``, i.e. the whole
+#: qualified id is ``<store_id>::intent-boundary:<intent_id>``.
+#: :func:`branch_supplied_intent_ids` reads this shape back off a branch's
+#: own rendered supply -- it never re-derives it from the snapshot or a
+#: store binding, so it stays a pure, model-free, zero-contact function over
+#: the ids a branch's own request already named.
+_INTENT_BOUNDARY_LOCAL_PREFIX = "intent-boundary:"
+
+
+def branch_supplied_intent_ids(supplied_value_ids: Sequence[str]) -> tuple[str, ...]:
+    """The first two DISTINCT candidate intents a branch's own supply names,
+    in rendered order (design section 3, item 6: "the seed order is the
+    boundary supply's rank order").
+
+    Pure and zero-contact: it inspects only the qualified value ids the
+    caller already resolved (``perception_branch_messages``'s own
+    ``supplied`` tuple), never a snapshot, a store binding or the network.
+    A value id that does not carry the intent-boundary store's own local-id
+    shape (``<store>::intent-boundary:<intent_id>``) contributes nothing --
+    this admits a branch whose boundary-supply knob targets a store this
+    function does not recognise without raising, since the ONLY consumer of
+    this list (``top2-contrast-v1``) already renders nothing when it finds
+    fewer than two candidates. The shared preamble sentinel
+    (``rails.semantic_knowledge_build.SHARED_INTENT_GUIDANCE_VALUE_ID``,
+    ``"intent-boundary:shared-guidance"``) names no intent and is skipped.
+    Returns at most two ids; a caller needing "how many total" does its own
+    counting.
+    """
+
+    from .semantic_knowledge_build import SHARED_INTENT_GUIDANCE_VALUE_ID
+
+    seen: list[str] = []
+    for value_id in supplied_value_ids:
+        if not isinstance(value_id, str):
+            continue
+        _store_id, separator, local_id = value_id.partition("::")
+        if not separator or not local_id.startswith(_INTENT_BOUNDARY_LOCAL_PREFIX):
+            continue
+        if local_id == SHARED_INTENT_GUIDANCE_VALUE_ID:
+            continue
+        intent_id = local_id[len(_INTENT_BOUNDARY_LOCAL_PREFIX):]
+        if not intent_id or intent_id in seen:
+            continue
+        seen.append(intent_id)
+        if len(seen) == 2:
+            break
+    return tuple(seen)
+
+
 __all__ = [
     "RANK_VISIBLE_PRESENTATION_ID",
     "RANK_VISIBLE_PRESENTATION_VERSION",
     "TOP2_CONTRAST_PRESENTATION_ID",
     "TOP2_CONTRAST_PRESENTATION_VERSION",
+    "TOP2_CONTRAST_SKIP_REASON_FEWER_THAN_TWO_CANDIDATES",
     "TOP2_CONTRAST_SKIP_REASON_INSUFFICIENT_POOL_SUPPORT",
+    "branch_supplied_intent_ids",
 ]

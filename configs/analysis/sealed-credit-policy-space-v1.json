@@ -1,0 +1,236 @@
+{
+  "schema": "saea-sealed-credit-policy-space-v1",
+  "note": "The closed knob list of docs/superpowers/specs/2026-09-29-sealed-credit-inner-loop-run-1-design.md section 2c. route/tail is validated against rails.supply_variants.SUPPLY_VARIANT_KNOB_TAILS when present; every other knob validates structurally only.",
+  "knobs": [
+    {
+      "id": "phase_supply.k",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": ["k"],
+      "estimator": "conversion_estimate",
+      "flown_value": 20,
+      "values": [
+        {
+          "value": 10,
+          "conversion_source": {
+            "type": "pool_pair_delta",
+            "pools": ["var1-ex-k10", "var1-planr"],
+            "note": "VAR-1 EX-K10 vs PLANR, paired on the shared R01C roster"
+          }
+        },
+        {
+          "value": 30,
+          "conversion_source": {
+            "type": "cited",
+            "read_json": {
+              "path": "analysis/SAEA-SLURP-STAGE3-WSV1-FOLD-A-COLUMN-READ-V1/knob/score-contrasts.json",
+              "intent_field": "per_row.scenario_action_exact.delta_pp",
+              "intent_ci_field": "per_row.scenario_action_exact.cluster_bootstrap.ci95_pp",
+              "slu_field": "pooled_micro.slu_f1_micro.delta_pp",
+              "slu_ci_field": "pooled_micro.slu_f1_micro.cluster_bootstrap.ci95_pp"
+            },
+            "note": "W-SV-1 same-flight column read, knob b-exk30 vs the delivering column a-base, n=1080"
+          }
+        }
+      ]
+    },
+    {
+      "id": "phase_supply.fuse_coverage.m",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": ["fuse_coverage", "m"],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {"type": "unobserved", "reason": "no sealed conversion source (design spec section 2c: 'none sealed; W-SV family')"}
+        }
+      ]
+    },
+    {
+      "id": "phase_supply.fuse_coverage.c",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": ["fuse_coverage", "c"],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {"type": "unobserved", "reason": "no sealed conversion source (design spec section 2c: 'none sealed; W-SV family')"}
+        }
+      ]
+    },
+    {
+      "id": "phase_supply.fuse_coverage.top_l",
+      "node": "solver_supply",
+      "route": "phase_supply",
+      "tail": ["fuse_coverage", "top_l"],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {"type": "unobserved", "reason": "no sealed conversion source (design spec section 2c: 'none sealed; W-SV family')"}
+        }
+      ]
+    },
+    {
+      "id": "release_swap",
+      "node": "solver_supply",
+      "estimator": "conversion_estimate",
+      "flown_value": "none",
+      "values": [
+        {
+          "value": "slot-contracts-w4-v1",
+          "conversion_source": {
+            "type": "pool_pair_delta",
+            "pools": ["w4", "wave-aa"],
+            "note": "W4 read against the shared wave A/A on TRAIN Fold A"
+          }
+        }
+      ]
+    },
+    {
+      "id": "candidate_supply.max_candidates",
+      "node": "solver_supply_candidates",
+      "route": "candidate_supply",
+      "tail": ["max_candidates"],
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {"type": "unobserved", "reason": "no sealed conversion source (design spec section 2c: 'none sealed')"}
+        }
+      ]
+    },
+    {
+      "id": "boundary_phase_supply",
+      "node": "perception_seed",
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown (8 entries)",
+      "values": [
+        {
+          "value": "+1 step",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "the ledger's block-position conversions (credit table block_position_conversion) describe the reach but no moved-row estimate is given in the design spec text for this knob"
+          }
+        }
+      ]
+    },
+    {
+      "id": "rank_weights.w_agree",
+      "node": "perception_seed",
+      "estimator": "conversion_estimate",
+      "flown_value": 1.0,
+      "values": [
+        {
+          "value": 0.0,
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "AGREE-vs-PLAN Fold A comparison flagged circular-source (design spec section 3, item D3) and not among this run's loaded tuning pools"
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation_id",
+      "node": "perception",
+      "estimator": "conversion_estimate",
+      "flown_value": "none",
+      "values": [
+        {
+          "value": "rank-visible-v1",
+          "conversion_source": {
+            "type": "cited",
+            "intent_delta_pp": 0.287,
+            "slu_delta_pp": null,
+            "intent_ci95": null,
+            "source": "RANKVIS probe: m=19 of 119 targeted rows converted vs a 15.9-row no-op expectation; scaled to the 1,080-row roster as 119 * (19-15.9)/119/1080*119 = (19-15.9)/1080",
+            "caveats": [
+              "probe-transfer caveat: RANKVIS rows were selected wrong-first; conversion does not transfer to a whole roster without a reach term (design spec section 4)",
+              "claim ceiling at most 'nominated' per the design spec"
+            ]
+          }
+        },
+        {
+          "value": "top2-contrast-v1",
+          "conversion_source": {
+            "type": "unobserved",
+            "reason": "CONV probe (m=32 of 70) has no published no-op baseline in this repository's record, so no delta-vs-flown can be computed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "min_candidates",
+      "node": "perception_contract",
+      "estimator": "conversion_estimate",
+      "flown_value": "as flown",
+      "values": [
+        {
+          "value": 3,
+          "conversion_source": {
+            "type": "credit_table_perception_rank",
+            "primary_pool": "agree",
+            "from_bucket": "absent",
+            "to_bucket": "3+",
+            "moved_rows_cited": 6,
+            "moved_rows_source": "design spec section 2c: the P-SV-2 ceiling, 'about 6 rows', of the 49 wrong rows with gold in the boundary block but off Perception's list"
+          }
+        }
+      ]
+    },
+    {
+      "id": "relisten_acceptance",
+      "node": "post_accept",
+      "estimator": "conversion_estimate",
+      "flown_value": "off",
+      "values": [
+        {
+          "value": "replace-only",
+          "conversion_source": {"type": "credit_table_relisten_reach", "pool": "agree"}
+        },
+        {
+          "value": "replace-and-drop-when-unheard",
+          "conversion_source": {"type": "credit_table_relisten_reach", "pool": "agree"}
+        }
+      ]
+    },
+    {
+      "id": "reviewer_planner",
+      "node": "review_loop",
+      "estimator": "exact_offline",
+      "flown_value": "on",
+      "values": [
+        {
+          "value": "off",
+          "conversion_source": {"type": "credit_table_reviewer_toggle", "pool": "agree"}
+        }
+      ]
+    },
+    {
+      "id": "deliver_normaliser",
+      "node": "delivery",
+      "estimator": "exact_offline",
+      "flown_value": "on",
+      "values": [
+        {
+          "value": "off",
+          "conversion_source": {"type": "credit_table_normaliser_toggle", "pool": "agree"}
+        }
+      ]
+    },
+    {
+      "id": "commit_rule",
+      "node": "grouped_solver",
+      "estimator": "excluded",
+      "flown_value": "none",
+      "values": [],
+      "excluded_reason": "commit line closed (0 of 29 rules cleared the floor as a gain; decision 179); multi-sample rule designs are discontinued"
+    }
+  ]
+}

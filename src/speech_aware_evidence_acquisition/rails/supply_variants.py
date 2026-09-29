@@ -958,7 +958,7 @@ PERCEPTION_BRANCH_REQUIRED_KEYS = frozenset({"branch_id", "max_supplied_items"})
 #: the ``branch-seed-unpinned`` registration gate.
 PERCEPTION_BRANCH_OPTIONAL_KEYS = frozenset({
     "deliver", "overrides", "replicate_of", "release_swap",
-    "presentation_id", "min_candidates", "prepared_seed",
+    "presentation_id", "min_candidates", "prepared_seed", "contrast_pairs",
 })
 
 #: K counts A and T (design section 1): at least A plus its required twin T,
@@ -979,6 +979,13 @@ PERCEPTION_BRANCH_RECORD_KEYS = frozenset({
     "supplied_count", "max_supplied_items", "contact_id", "request_sha256",
     "response_text_sha256", "note_sha256", "note_parse_status",
     "candidate_intent_ids",
+    # "What to build" items 2 and 3: a branch's own presentation outcome
+    # (None/None when the branch has no presentation_id, or when it does but
+    # the renderer added no block -- "no extra content item" and "skipped
+    # with a reason" are then the same receipted shape: text absent,
+    # skip_reason present) and its own response-contract outcome (None
+    # unless the branch declares min_candidates).
+    "presentation_skip_reason", "contrast_block_sha256", "min_candidates_met",
 })
 PERCEPTION_BRANCH_LEVEL2_RECORD_KEYS = PERCEPTION_BRANCH_RECORD_KEYS | frozenset({
     "solver_contact_id", "solver_request_sha256", "solver_response_text_sha256",
@@ -1079,6 +1086,14 @@ class PerceptionBranch:
     # refuses a REGISTERED same-flight-perception-variant cell with a B
     # branch that still carries ``None`` here.
     prepared_seed: Mapping[str, str] | None = None
+    # "What to build" item 1: the pinned, model-free contrast-pair table a
+    # ``top2-contrast-v1`` branch's presentation reads, ``{relpath, sha256}``
+    # shaped exactly like ``prepared_seed``. Required on (and only on) a
+    # branch whose ``presentation_id`` is ``top2-contrast-v1``
+    # (``parse_perception_branches`` refuses both directions); ``None`` for
+    # every other branch, including A and T, and for every config written
+    # before this table existed.
+    contrast_pairs: Mapping[str, str] | None = None
 
     @property
     def is_twin(self) -> bool:
@@ -1103,6 +1118,9 @@ class PerceptionBranch:
             "min_candidates": self.min_candidates,
             "prepared_seed": (
                 None if self.prepared_seed is None else dict(self.prepared_seed)
+            ),
+            "contrast_pairs": (
+                None if self.contrast_pairs is None else dict(self.contrast_pairs)
             ),
         }
 
@@ -1258,6 +1276,7 @@ def parse_perception_branches(
     declared_alternate_relpaths: Mapping[str, Sequence[str]] | None = None,
     registered_presentation_ids: Sequence[str] | None = None,
     max_candidates_ceiling: int | None = None,
+    top2_contrast_presentation_id: str | None = None,
 ) -> PerceptionBranchGroup:
     """Parse ``native_episode.roles.perception.branches``, fail-closed.
 
@@ -1274,7 +1293,12 @@ def parse_perception_branches(
     caller that omits it gets shape checking only, exactly as
     ``declared_stores=None`` does for a knob's store. ``max_candidates_ceiling``
     bounds ``min_candidates`` the same way; a caller that omits it gets no
-    upper check beyond "positive integer".
+    upper check beyond "positive integer". ``top2_contrast_presentation_id``
+    is ``rails.perception_presentations.TOP2_CONTRAST_PRESENTATION_ID`` --
+    passed in by name for the same reason ``registered_presentation_ids`` is
+    (this module does not import that registering module either); a caller
+    that omits it gets no coupling check between ``presentation_id`` and
+    ``contrast_pairs`` beyond each field's own shape.
 
     The refusals, in order, each raised by name BEFORE any contact:
 
@@ -1304,7 +1328,15 @@ def parse_perception_branches(
         -- "one factor per non-A branch" (design section 1);
     14. two B branches whose whole axis is identical;
     15. a branch whose estimated prompt exceeds the live slot with the
-        registered reserve.
+        registered reserve;
+    16. a malformed ``contrast_pairs`` pin (not exactly ``{relpath, sha256}``,
+        with sha256 a lowercase 64-hex SHA-256);
+    17. a branch whose ``presentation_id`` equals ``top2_contrast_
+        presentation_id`` and carries no ``contrast_pairs``, or a branch
+        whose ``presentation_id`` differs (including ``None``) and carries
+        one anyway, when ``top2_contrast_presentation_id`` is given;
+    18. ``contrast_pairs`` on A or its twin T (like ``prepared_seed``,
+        neither may carry a branch-owned pin).
     """
 
     if not isinstance(block, Mapping) or set(block) != PERCEPTION_BRANCH_BLOCK_KEYS:
@@ -1444,6 +1476,49 @@ def parse_perception_branches(
                 "relpath": raw_prepared_seed["relpath"],
                 "sha256": raw_prepared_seed["sha256"],
             }
+        raw_contrast_pairs = row.get("contrast_pairs")
+        contrast_pairs = None
+        if raw_contrast_pairs is not None:
+            if (
+                not isinstance(raw_contrast_pairs, Mapping)
+                or set(raw_contrast_pairs) != {"relpath", "sha256"}
+                or not isinstance(raw_contrast_pairs.get("relpath"), str)
+                or not raw_contrast_pairs["relpath"]
+                or not isinstance(raw_contrast_pairs.get("sha256"), str)
+                or len(raw_contrast_pairs["sha256"]) != 64
+                or any(
+                    character not in "0123456789abcdef"
+                    for character in raw_contrast_pairs["sha256"]
+                )
+            ):
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}].contrast_pairs "
+                    "must be exactly {relpath, sha256}, with sha256 a "
+                    "lowercase 64-hex SHA-256"
+                )
+            contrast_pairs = {
+                "relpath": raw_contrast_pairs["relpath"],
+                "sha256": raw_contrast_pairs["sha256"],
+            }
+        if top2_contrast_presentation_id is not None:
+            if (
+                presentation_id == top2_contrast_presentation_id
+                and contrast_pairs is None
+            ):
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}] declares "
+                    f"presentation_id {top2_contrast_presentation_id!r} and "
+                    "must carry a contrast_pairs pin"
+                )
+            if (
+                presentation_id != top2_contrast_presentation_id
+                and contrast_pairs is not None
+            ):
+                raise PerceptionBranchError(
+                    f"perception branches.branches[{position}] carries "
+                    "contrast_pairs but its presentation_id is not "
+                    f"{top2_contrast_presentation_id!r}"
+                )
         has_axis = bool(knobs) or release_swap is not None or presentation_id is not None or min_candidates is not None
         if replicate_of is not None and has_axis:
             raise PerceptionBranchError(
@@ -1462,6 +1537,12 @@ def parse_perception_branches(
                 f"perception branches.branches[{position}] carries a "
                 "prepared_seed but is A or its twin (T): A's seed is the "
                 "cell's own prepared_phase_supply, and T takes A's seed"
+            )
+        if (deliver or replicate_of is not None) and contrast_pairs is not None:
+            raise PerceptionBranchError(
+                f"perception branches.branches[{position}] carries "
+                "contrast_pairs but is A or its twin (T): neither branch "
+                "carries a presentation axis"
             )
         if not deliver and replicate_of is None:
             axis_categories = sum((
@@ -1483,7 +1564,7 @@ def parse_perception_branches(
             ),
             replicate_of=replicate_of, release_swap=release_swap,
             presentation_id=presentation_id, min_candidates=min_candidates,
-            prepared_seed=prepared_seed,
+            prepared_seed=prepared_seed, contrast_pairs=contrast_pairs,
         ))
     ids = [branch.branch_id for branch in branches]
     if len(set(ids)) != len(ids):
@@ -1572,6 +1653,9 @@ def perception_branch_record(
     solver_request_sha256: str | None = None,
     solver_response_text_sha256: str | None = None,
     candidate_supply_value_ids: Sequence[str] | None = None,
+    presentation_skip_reason: str | None = None,
+    contrast_block_sha256: str | None = None,
+    min_candidates_met: bool | None = None,
 ) -> dict[str, object]:
     """One branch's receipt row (design section 3, "Receipt").
 
@@ -1580,6 +1664,17 @@ def perception_branch_record(
     them for every branch (A's naming its own ordinary first Solver visit,
     every other branch's naming the one Solver contact its note fanned out
     -- design section 3, "Level 2").
+
+    ``presentation_skip_reason``/``contrast_block_sha256`` ("What to build"
+    item 2) are the rendered outcome of the branch's own ``presentation_id``:
+    at most one of the two is ever non-``None`` (a block either rendered --
+    ``contrast_block_sha256`` -- or was skipped and says why -- ``
+    presentation_skip_reason``), and both are ``None`` for a branch that
+    declares no ``presentation_id`` (A, T, and every non-presentation B
+    branch). ``min_candidates_met`` ("What to build" item 3) is ``None``
+    unless ``branch.min_candidates`` is declared, in which case it is
+    whatever this branch's own note parse found -- a bool, never a refusal:
+    a short list is a measured outcome, not a defect.
     """
 
     ids = tuple(supplied_value_ids)
@@ -1617,6 +1712,43 @@ def perception_branch_record(
             f"perception branch {branch.branch_id!r} must declare all four "
             "level-2 fields together or none of them"
         )
+    if presentation_skip_reason is not None and (
+        not isinstance(presentation_skip_reason, str) or not presentation_skip_reason
+    ):
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} presentation_skip_reason "
+            "must be a non-empty string or None"
+        )
+    if presentation_skip_reason is not None and branch.presentation_id is None:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} carries a "
+            "presentation_skip_reason but declares no presentation_id"
+        )
+    if contrast_block_sha256 is not None:
+        contrast_block_sha256 = _sha256_hex(
+            contrast_block_sha256, field="contrast_block_sha256",
+        )
+        if branch.presentation_id is None:
+            raise PerceptionBranchError(
+                f"perception branch {branch.branch_id!r} carries a "
+                "contrast_block_sha256 but declares no presentation_id"
+            )
+    if presentation_skip_reason is not None and contrast_block_sha256 is not None:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} cannot carry both a "
+            "rendered contrast_block_sha256 and a presentation_skip_reason"
+        )
+    if branch.min_candidates is None and min_candidates_met is not None:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} carries "
+            "min_candidates_met but declares no min_candidates"
+        )
+    if branch.min_candidates is not None:
+        if not isinstance(min_candidates_met, bool):
+            raise PerceptionBranchError(
+                f"perception branch {branch.branch_id!r} declares "
+                "min_candidates and must carry a min_candidates_met bool"
+            )
     record: dict[str, object] = {
         "branch_index": int(branch_index),
         "branch_id": branch.branch_id,
@@ -1646,6 +1778,9 @@ def perception_branch_record(
             note_parse_status, field="note_parse_status",
         ),
         "candidate_intent_ids": list(candidates),
+        "presentation_skip_reason": presentation_skip_reason,
+        "contrast_block_sha256": contrast_block_sha256,
+        "min_candidates_met": min_candidates_met,
     }
     if has_level2:
         record["solver_contact_id"] = _nonempty_str(

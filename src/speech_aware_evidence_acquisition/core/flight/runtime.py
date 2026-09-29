@@ -3556,6 +3556,17 @@ class FlightRuntime:
                 ),
                 "presentation_id": branch.presentation_id,
                 "min_candidates": branch.min_candidates,
+                # "What to build" item 4: a branch's contrast-pair table pin
+                # is an axis exactly like ``prepared_seed`` is not (that one
+                # is deliberately EXCLUDED here -- it is the artifact this
+                # identity BINDS, not one of its inputs) -- a prepared seed
+                # pinned before this table pin existed must no longer verify
+                # once the branch declares one, so root re-derives and
+                # re-pins the affected cells.
+                "contrast_pairs": (
+                    None if branch.contrast_pairs is None
+                    else dict(branch.contrast_pairs)
+                ),
             }
             receipts.append({
                 "branch_id": branch.branch_id,
@@ -3634,6 +3645,133 @@ class FlightRuntime:
             if sample_id in dispatched_rows:
                 decoded[sample_id] = tuple(ids)
         return decoded
+
+    def _load_perception_contrast_pairs_table(self, pin):
+        """Load and verify ONE ``top2-contrast-v1`` contrast-pair table pin.
+
+        "What to build" item 1: ``pin`` is ``{relpath, sha256}``-shaped
+        exactly like ``prepared_seed``, confined to the data root and
+        verified byte-for-byte against its pinned SHA-256 -- fail closed on
+        any mismatch, exactly as every other pinned artifact this runtime
+        loads. The table's own JSON shape is the one
+        ``scripts/build_slurp_intent_contrast_pairs.py`` writes: ``rows`` is
+        an object keyed by an arbitrary pair key, each row carrying
+        ``intents`` (the pair, as a 2-element list of intent ids) plus
+        ``activation_sentence``/``exclusion_sentence``. This method never
+        reads a sentence's own text for any purpose beyond handing it to the
+        caller: it is not logged, hashed piecewise, or otherwise surfaced.
+
+        Returns a ``Mapping[frozenset[str], Mapping[str, object]]`` keyed by
+        the pair's UNORDERED intent-id set -- exactly the shape
+        ``rails.perception_presentations._Top2ContrastPresentation`` takes --
+        with each row stripped to ``activation_sentence``/``exclusion_
+        sentence`` (the ``intents`` list itself becomes the key and is not
+        repeated in the row).
+        """
+
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+
+        if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
+            raise FlightRuntimeError(
+                "perception contrast-pairs table pin requires relpath and sha256"
+            )
+        relative = _normalized_relative_path(
+            pin["relpath"], "perception contrast-pairs table",
+        )
+        path = _resolve_confined(
+            self._data_root, relative, self._data_root,
+            "perception contrast-pairs table", strict=True,
+        )
+        try:
+            raw = path.read_bytes()
+        except OSError as error:
+            raise FlightRuntimeError(
+                f"cannot read perception contrast-pairs table: {path}"
+            ) from error
+        if hashlib.sha256(raw).hexdigest() != pin["sha256"]:
+            raise FlightRuntimeError(
+                "perception contrast-pairs table SHA-256 mismatch"
+            )
+        try:
+            document = json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise FlightRuntimeError(
+                f"perception contrast-pairs table is not valid JSON: {error}"
+            ) from error
+        if (
+            not isinstance(document, Mapping)
+            or document.get("schema") != "saea-slurp-perception-contrast-pairs-v1"
+        ):
+            raise FlightRuntimeError(
+                "perception contrast-pairs table has an unregistered schema"
+            )
+        rows = document.get("rows")
+        if not isinstance(rows, Mapping):
+            raise FlightRuntimeError(
+                "perception contrast-pairs table carries no rows object"
+            )
+        table: dict[frozenset, dict[str, object]] = {}
+        for row_key, row in rows.items():
+            if not isinstance(row, Mapping) or set(row) != {
+                "intents", "activation_sentence", "exclusion_sentence",
+            }:
+                raise FlightRuntimeError(
+                    f"perception contrast-pairs table row {row_key!r} has an "
+                    "invalid shape"
+                )
+            intents = row["intents"]
+            if (
+                not isinstance(intents, list) or len(intents) != 2
+                or any(not isinstance(item, str) or not item for item in intents)
+                or intents[0] == intents[1]
+            ):
+                raise FlightRuntimeError(
+                    f"perception contrast-pairs table row {row_key!r} names an "
+                    "invalid intent pair"
+                )
+            activation, exclusion = row["activation_sentence"], row["exclusion_sentence"]
+            if (
+                not isinstance(activation, str) or not activation.strip()
+                or not isinstance(exclusion, str) or not exclusion.strip()
+            ):
+                raise FlightRuntimeError(
+                    f"perception contrast-pairs table row {row_key!r} has an "
+                    "empty sentence"
+                )
+            key = frozenset(intents)
+            if key in table:
+                raise FlightRuntimeError(
+                    "perception contrast-pairs table has a duplicate pair"
+                )
+            table[key] = {
+                "activation_sentence": activation, "exclusion_sentence": exclusion,
+            }
+        return MappingProxyType(table)
+
+    def _perception_contrast_pairs_for_group(self, group):
+        """Every declared branch's own contrast-pair table, loaded ONCE per
+        flight (design section 3, "What to build" item 1: "the runtime loads
+        the table once per flight").
+
+        ``{}`` for a group with no ``top2-contrast-v1`` branch -- and
+        therefore no behaviour change for every cell written before this
+        table existed. A distinct ``(relpath, sha256)`` pin is loaded once
+        and reused for every branch that shares it, so two branches pinning
+        the SAME table pay the read/verify cost only once.
+        """
+
+        loaded: dict[tuple[str, str], Mapping] = {}
+        tables: dict[str, Mapping] = {}
+        for branch in group.branches:
+            if branch.contrast_pairs is None:
+                continue
+            key = (branch.contrast_pairs["relpath"], branch.contrast_pairs["sha256"])
+            if key not in loaded:
+                loaded[key] = self._load_perception_contrast_pairs_table(
+                    branch.contrast_pairs,
+                )
+            tables[branch.branch_id] = loaded[key]
+        return tables
 
     def _acquisition_requery_binding(self, native_config, supply_for_phase, snapshot):
         """E36 / E36b: the flight-owned, model-free knowledge re-query the
@@ -7160,6 +7298,21 @@ class FlightRuntime:
                     **(self._phase_supply_receipt or {}),
                     "perception_branches": perception_branch_identity_receipts,
                 }
+            # "What to build" item 1: every declared branch's own pinned
+            # contrast-pair table, loaded and verified ONCE here -- before
+            # any contact -- fail-closed on a sha256 mismatch. ``None`` --
+            # and therefore byte-identical to before this table existed --
+            # unless some branch declares ``contrast_pairs``, which no
+            # branch may without also declaring ``presentation_id: "top2-
+            # contrast-v1"`` (``parse_perception_branches``).
+            perception_contrast_pairs = None
+            if perception_branch_group is not None:
+                perception_contrast_pairs = (
+                    self._perception_contrast_pairs_for_group(
+                        perception_branch_group,
+                    )
+                    or None
+                )
             native_binding = NativeEpisodeRunBinding(
                 config=native_config, program=program,
                 material_for_phase=binding["material_for_phase"],
@@ -7219,6 +7372,11 @@ class FlightRuntime:
                 # and therefore byte-identical to the pre-phase-2 tree --
                 # unless ``roles.perception.branches`` is declared.
                 perception_branch_seeds=perception_branch_seeds,
+                # "What to build" item 1: every declared branch's own
+                # loaded, verified contrast-pair table, keyed by branch id.
+                # None -- and therefore byte-identical to before this table
+                # existed -- unless some branch declares ``contrast_pairs``.
+                perception_contrast_pairs=perception_contrast_pairs,
             )
         catalog = self._load_system_policy_catalog(program)
         if catalog is not None:

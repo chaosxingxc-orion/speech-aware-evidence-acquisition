@@ -88,7 +88,7 @@
     "--allow-output-change on the re-pin tool",
     "any change beyond the registered re-target, program switch and branch block",
     "opening a branch column before the READ row is countersigned",
-    "flipping P-SV-1 while its contrast-pair table pin is the placeholder TO-BE-PINNED-AFTER-CONTRAST-PAIR-BUILD"
+    "flipping P-SV-1 before root's own re-pin -- update 2026-09-29: the contrast-pair table pin now sits on the b-top2contrast branch (contrast_pairs: prepared/SAEA-SLURP-PERCEPTION-CONTRAST-PAIRS-V1/table-v1.json, sha256 19bf2487cf6821ed55ceb123532f738f5c82cc51f63a17bc11d88ca37e495059) and the runtime verifies it before any contact, but the branch's prepared_seed pin still needs re-deriving and re-pinning against the widened branch-axis identity"
   ],
   "owner": "root",
   "population": {

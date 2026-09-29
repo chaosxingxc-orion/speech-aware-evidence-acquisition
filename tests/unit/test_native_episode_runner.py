@@ -489,12 +489,19 @@ class _ActualEpisodeHarness:
             }
             self.events.append(("fit", key))
 
-    def run(self, *, decoding_params=None):
+    def run(self, *, decoding_params=None, snapshot=None):
         # E13 (2026-09-19): an OPTIONAL override of this fixture's decoding
         # params, so a proof that needs the carrier's real output cap (the
         # 512-token SLURP geometry a finite completion stops at) can say so.
         # Omitted -- every caller written before E13 -- the historical
         # {"temperature": 0, "max_tokens": 64} is used, byte-identically.
+        # Same-flight instrument, PHASE 2, "What to build" item 2: an
+        # OPTIONAL override of this fixture's default knowledge snapshot, so
+        # a proof needing intent-boundary-shaped value ids (for
+        # ``top2-contrast-v1``'s own rank-1/rank-2 derivation) can supply its
+        # own. Omitted -- every caller written before this item -- the
+        # historical ``_knowledge_snapshot()`` is used, byte-identically.
+        active_snapshot = _knowledge_snapshot() if snapshot is None else snapshot
         binding = NativeEpisodeRunBinding(
             config=self.config,
             program=self.program,
@@ -531,6 +538,12 @@ class _ActualEpisodeHarness:
             # branch group -- leaves this binding byte-identical to its
             # pre-phase-2 self.
             perception_branch_seeds=getattr(self, "perception_branch_seeds", None),
+            # Same-flight instrument, PHASE 2, "What to build" item 1: every
+            # declared branch's own contrast-pair table. None -- every
+            # harness written before this table existed and every episode
+            # that declares no ``contrast_pairs`` branch -- leaves this
+            # binding byte-identical to its pre-existing self.
+            perception_contrast_pairs=getattr(self, "perception_contrast_pairs", None),
         )
         source_kwargs = (
             {}
@@ -543,7 +556,7 @@ class _ActualEpisodeHarness:
             adapter=self.adapter,
             core_client=self.client,
             split_id="all",
-            knowledge_snapshot=_knowledge_snapshot(),
+            knowledge_snapshot=active_snapshot,
             speech_packet_bindings=self.speech_bindings,
             **source_kwargs,
             controller_policy_id=self.program.program_id,

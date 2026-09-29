@@ -276,3 +276,17 @@ rank numerals.
 - **O6.** No second twin. One A/A per row is the within-flight null at both levels; a second twin would
   add a contact per row to re-measure discordance the first twin already measures. Phase 1's Q3 ruling
   (one twin per same-flight read) extends here unchanged.
+
+- **O7.** The nearest-rival contrast-pair table (one pair per intent, its single nearest rival by
+  centroid cosine) covered only 415 of P-SV-1's 1,078 `b-top2contrast` rows (38.5%; `scripts/analysis/
+  slurp_contrast_pair_coverage.py`), because the branch renders a block only when a row's OWN
+  rank-1/rank-2 candidate pair is a key in the table, and 662 rows named a pair the nearest-rival
+  selection never built. The table is now every unordered pair of distinct SLURP intents whose pool
+  support meets the registered floor (`min_pair_pool_support` 5, unchanged), built by the SAME
+  word-gap method over the SAME R01-excluded, Fold-A- and Fold-B-excluded TRAIN pool, roster-agnostic:
+  pairs are never selected from any roster's seeds, only from the full released intent set. O5 stands
+  unchanged -- a pair under the floor still renders nothing, and the runtime receipt still reports
+  `presentation_skip_reason` per row. Coverage against the same P-SV-1 seed rises to 1,035 of 1,078
+  rows (96.0%); the residual 42 rows land on the 2 pairs the floor still skips
+  (`cooking_query`/`cooking_recipe`, `iot_hue_lightoff`/`iot_hue_lighton`) -- the identical 2 of 60
+  pairs the nearest-rival table also skipped for insufficient pool support.
