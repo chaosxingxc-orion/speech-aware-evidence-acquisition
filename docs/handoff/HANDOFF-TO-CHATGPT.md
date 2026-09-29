@@ -1,8 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T10:11:47Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent, Claude Opus 5.5) · HEAD at writing `5dfc7791` on `master` (plus this refresh commit), tree clean.
-**GPU: E4-1 arm flying** (flight commit `e9777e18`, `SAEA-Queue-E4`). **W4-SV is sealed** (DONE 09:40:11Z at `4f203ea9`;
+Last refreshed: 2026-09-29T11:52:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+ops agent, Claude Opus 5.5) · HEAD at writing `b9af3e58` on `master` (plus this refresh commit), tree clean.
+**GPU: P-SV flying** (P-SV-1 smoke -> arm, then P-SV-2 smoke -> arm; flight commit `b9af3e58`, `SAEA-Queue-PSV`,
+registered 11:49Z, slurp-np4, A/A-free). **E4-1 ABORTED AT SEAL, rows safe:** the arm `SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1`
+(flight commit `e9777e18`) flew all 1,080 rows (6,304 calls, 18,730.5 audio-s, run_phases complete 09:47:07Z-11:40:06Z)
+and raised at the seal, `FlightRuntimeError: finite source is not the last actual sample contact`
+(`FlightRuntime.seal -> _merged_canonical_rows -> _canonical_output_rows`); attempt ABORTED, no run manifest, nothing
+read. Not a serving death and not a cli-hazard STOP. Diagnosis on `fable/e4sealfix` (read-only on the real run);
+recovery is expected to be **seal-only after the fix, no re-fly, no re-pin**; the run and attempt trees are untouched.
+Its flight.lock and batch-STOP were reconciled into
+`$DATA/coordination/slurp-stage3-relisten-fold-a-v1/flight-lock-reconciliation-20260929T114801Z.json` (lock filed as
+`locks/flight.lock.reconciled-20260929T114801Z`, STOP text recorded, marker moved to `batch-STOP.20260929T114801Z.bak`;
+script `scripts/flights/batch/lease_reconcile_e4.sh`). `queue_psv.sh` no longer waits on `queue-e4.out` (backup
+`queue_psv.sh.e4wait-20260929T114841Z.bak`) and checks the flip commit. **Earlier (context):** **W4-SV is sealed** (DONE 09:40:11Z at `4f203ea9`;
 6,531 contacts, 2.7883 GPU-h) and its column read **landed** (merge `c2ebffe4`, coordinator verdict `5dfc7791`): b-w4
 (slot-convention cards as a release swap) **NOT NOMINATED (width)** (SLU-F1 -0.15 [-1.40, +1.11], intent +0.19 [-0.46,
 +0.83]; twin null SLU +0.43 [-0.19, +1.04], intent +0.09 [-0.19, +0.46]). Not resolvable at n = 1,080, not evidence of
@@ -11,12 +22,15 @@ DEV-2000-ADDED or larger behind a mechanism that reads above floor on TRAIN firs
 inert. **Instrument:** second same-flight measurement gives intent twin null +0.09 (3 discordant rows) and contrast intent
 half-width 0.65 (0.51 in W-SV-1); the **decision 190 proposal is amended** to the larger of the two measurements,
 **intent 0.65 / SLU 1.49** at n = 1,080. SLURP only on the GPU (decision 187).
-**P-SV-1 / P-SV-2:** re-derived with the v2 contrast-pair table pin (`ec9e1b65`; ruling O7) and **P-SV-1 is minted**. The
-flip loop `psv_flip.sh` **refused at its first cycle** with `prepared artifact identity mismatch` in the branch-seed
-re-pin path; its auto-commit `2a6f3890` pinned the smoke's phase supply, but the cell is **still held** (not ready). The
-root-cause fix is in progress on `fable/psvrepinfix`. `SAEA-Queue-PSV` is **not yet registered**; `queue_psv.sh` now waits
-on `queue-e4.out`. The pinned B seeds cover 1,078 of 1,080 Fold B rows (two rows have zero boundary recall for every
-column, disclosed in both P-SV READMEs); P-SV-1 B-row coverage under the v2 table is 1,035 of 1,078 (96.0 %).
+**P-SV-1 / P-SV-2 flipped and flying:** re-derived with the v2 contrast-pair table pin (`ec9e1b65`; ruling O7); the
+first flip cycle's `prepared artifact identity mismatch` was fixed by the **branch-seed identity fix** (`85af4755`: a
+Perception branch's `prepared_seed` pin is excluded from every artifact identity); the second cycle then refused on the
+D3 freeze (`__pycache__` bytecode beside the frozen scoring sources), fixed by the **`__pycache__` purge before every
+re-pin pass in `repin_loop_generic.sh`** (`ead01140e`). Both cells are gate-clean and ready at flight commit
+**`b9af3e58`** (`/home/chao/psv-flight-commit.txt`). The pinned B seeds cover 1,078 of 1,080 Fold B rows (two rows have
+zero boundary recall for every column, disclosed in both P-SV READMEs); P-SV-1 B-row coverage under the v2 table is
+1,035 of 1,078 (96.0 %). **Every held cell's prepared artifacts are stale** (`85af4755` and other merges changed
+identity-bound implementation) **until its own flip re-pins them**; flipped cells fly from their own flight commits.
 **The COMP-1 seal-only completion is registered HELD** (`fable/comp1seal`, merge `ad0f0d8e`) pending owner decision
 189: `resume_from` lists the original attempt (471 kept rows) and attempt 3 (609 rows); the replay proof reads **1,080
 rows, 0 failing, 0 sealed twice**; `core.flight.cli seal-only` refuses a held cell and scores after the seal.
@@ -240,7 +254,7 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 13. 187: SLURP only on the GPU; E41 sub10 deferred (ready at `bf6db903`, disabled in the watchdog list).
 14. 188: REV-TFRL-1 NOT ADMITTED; B5 deferred behind P-SV-1 / P-SV-2; row 165's route open.
 
-**Pending branches (not merged):** `fable/psvrepinfix` (in progress: the branch-seed re-pin `prepared artifact identity mismatch` fix). `fable/w4svread`, `fable/psvrender`, `fable/pairsv2`, `fable/floorcal`, `fable/wsv1read`, `fable/branchseeds`, `fable/branchseedfix`, `fable/sealcheck`, `fable/resumegate`, `fable/sealonly`, `fable/e4v1`, `fable/e4cell` and `fable/comp1seal` are merged. **Pending engineering:** the P-SV re-pin fix (`fable/psvrepinfix`), then the P-SV-1 / P-SV-2 flip and `SAEA-Queue-PSV` registration (header).
+**Pending branches (not merged):** `fable/e4sealfix` (in progress: diagnosis of the E4-1 seal abort `finite source is not the last actual sample contact`; read-only on the real run). `fable/psvrepinfix` (merge `4b1283e0`, fix `85af4755`), `fable/w4svread`, `fable/psvrender`, `fable/pairsv2`, `fable/floorcal`, `fable/wsv1read`, `fable/branchseeds`, `fable/branchseedfix`, `fable/sealcheck`, `fable/resumegate`, `fable/sealonly`, `fable/e4v1`, `fable/e4cell` and `fable/comp1seal` are merged. **Pending engineering:** the E4-1 seal fix (`fable/e4sealfix`), then a seal-only completion of the existing attempt (no re-fly). P-SV-1 / P-SV-2 are flipped at `b9af3e58` and flying as `SAEA-Queue-PSV` (header).
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code). The supply-router test failure found during E4 v1 (a bare `object()` double refusing the bolted-on binding) is fixed (`87146390`).
 
@@ -264,8 +278,8 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 ## 7. My next action
 
 1. Take owner decision 189 (A, seal-only completion, recommended; B, resume from attempt 3); for A, the completion cell is on master held: pass the resume prelaunch replay gate, flip, seal-only, then read COMP-1 against the sealed shared A/A `SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1`.
-2. W-SV-1 and W4-SV column reads have landed (both NOT NOMINATED); the per-type TP/FP/FN table over W4-SV's 19 changed cards is outstanding (model-free, descriptive). E4-1 is flying (`e9777e18`), then the filler; SLURP only (187).
-3. Land the P-SV re-pin fix (`fable/psvrepinfix`: `prepared artifact identity mismatch` in the branch-seed re-pin path), re-run the P-SV-1 / P-SV-2 flip in one converged loop, then register `SAEA-Queue-PSV` (`queue_psv.sh` waits on `queue-e4.out`). Rule on owner decision 190 (amended: intent 0.65 / SLU 1.49) before sizing further same-flight claims.
+2. W-SV-1 and W4-SV column reads have landed (both NOT NOMINATED); the per-type TP/FP/FN table over W4-SV's 19 changed cards is outstanding (model-free, descriptive). E4-1 flew all rows and aborted at the seal (header); land `fable/e4sealfix`, then complete it seal-only from the existing attempt (no re-fly, no re-pin) and read it. SLURP only (187).
+3. P-SV-1 then P-SV-2 are flying (`SAEA-Queue-PSV`, `b9af3e58`); after P-SV DONE the queue removes `filler.hold` and runs the filler. Read both same-flight columns when sealed. Rule on owner decision 190 (amended: intent 0.65 / SLU 1.49) before sizing further same-flight claims.
 4. Remove `/home/chao/saea-queue/watchdog.hold` once the STOP is resolved and `ready_chains.json` names the next ready chain.
 5. From the COMP-1 Fold A read, declare A2's `expected_effect_pp` by its formula (row 139), then flip and queue A2.
 
