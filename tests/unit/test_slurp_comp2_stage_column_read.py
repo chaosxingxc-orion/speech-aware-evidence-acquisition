@@ -138,8 +138,23 @@ def test_countersignature_parse():
     assert C.read_countersigned(signed, "OTHER") is None
 
 
-def test_the_a2_preset_refuses_before_any_score_while_its_read_row_is_a_draft(tmp_path):
-    args = argparse.Namespace(preset="a2", data_root=str(tmp_path), lock="unused", none_hint=False, dry_run=False)
-    with pytest.raises(C.ColumnReadError, match="REFUSED"):
+def test_the_a2_preset_refuses_before_any_score_while_its_read_row_is_a_draft(tmp_path, monkeypatch):
+    # A FAKE repo root whose ledger carries the A2 READ row as a DRAFT: the refusal is tested without
+    # depending on the live ledger (whose row was countersigned on 2026-09-30).
+    fake_repo = tmp_path / "repo"
+    (fake_repo / "docs").mkdir(parents=True)
+    read_id = C.PRESETS["a2"]["read_id"]
+    (fake_repo / C.LEDGER).write_text(
+        f"| 2026-09-29 | {read_id} | model-free-check | x | REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) |\n",
+        encoding="utf-8")
+    monkeypatch.setattr(C, "REPO_ROOT", fake_repo)
+    data_root = tmp_path / "data"
+    data_root.mkdir()
+    args = argparse.Namespace(preset="a2", data_root=str(data_root), lock="unused", none_hint=False, dry_run=False)
+    with pytest.raises(C.ColumnReadError, match="REFUSED.*not root countersigned"):
         C.run(args)
-    assert not any(tmp_path.iterdir())
+    assert not any(data_root.iterdir())
+    (fake_repo / C.LEDGER).write_text("", encoding="utf-8")
+    with pytest.raises(C.ColumnReadError, match="REFUSED.*missing"):
+        C.run(args)
+    assert not any(data_root.iterdir())
