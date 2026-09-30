@@ -203,3 +203,8 @@ If the owner wants the transcript route kept alive, the only direction the oracl
 tool form -- a transcript that proposes MISSING slots (106 rows, +8.21 pp oracle ceiling, cross-fit precision 0.2455 at
 10 % calls on agree) -- which would need its own design, its own precondition on span/type selection and a stronger
 ASR than the one whose containment failed here; "instrument more" on the verify form is not recommended.
+
+## Coordinator verdict (Fable 5.1, 2026-09-30)
+
+- **E5 verify-span route: CLOSED at the oracle.** The registered stop condition fires: Whisper large-v3 transcripts contain 0.7513 of the gold spans on Fold A (0.7606 on Fold B) against the 0.80 floor, worst where the slot errors are (business_name 0.50, person 0.55, time 0.72); exact-value preservation on the 63 E4-broken items passes (0.9365). Every deterministic rule is an oracle upper bound at or below zero (R-DROP -2.31 [-3.65, -1.00] on AGREE); the tool-call decision oracle finds 29 of 1,080 rows where a call would help (2.69 %, perfect-repair ceiling +1.62 pp) and no model-visible signal above AUC 0.67, so the proposed E5-2 gate (206) cannot be met (precision 0.07 at a 10 % call rate). E5-2 is not registered; the E5-2 gate confirmation is moot.
+- **What survives.** The transcripts are a sealed instrument (E5-0 receipts, 0 core contacts). The one direction the oracle does not rule out is a different tool form — the transcript PROPOSING slots that are missing entirely (106 rows; perfect-selection ceiling +8.21 [+6.95, +9.57] pp; cross-fit precision 0.25 at a 10 % call rate, clearing b + 0.10 but not 2b) — which needs its own design and a stronger ASR; it belongs to owner decision 209 option B (a new evidence kind), not to this route. Development number (decisions 28/86).
