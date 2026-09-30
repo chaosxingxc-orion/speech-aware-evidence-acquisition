@@ -34,6 +34,11 @@ SOURCE_TYPES = (
 REQUIRED_KNOB_KEYS = frozenset({"id", "node", "estimator", "flown_value", "values"})
 OPTIONAL_KNOB_KEYS = frozenset({"route", "tail", "note", "excluded_reason"})
 REQUIRED_VALUE_KEYS = frozenset({"value", "conversion_source"})
+# Run 3: an optional value-level ``status`` records the coordinator's disposition of a line.
+# ``open`` (the default when absent) may be nominated; ``admitted`` (already dev-admitted, kept
+# so compositions can build on it) and ``closed`` (a closed line, kept as an observation) are
+# ranked and composed but never nominated. ``status_note`` states the ruling.
+VALUE_STATUSES = ("open", "admitted", "closed")
 
 
 class PolicySpaceError(RuntimeError):
@@ -83,6 +88,11 @@ def load_policy_space(path: Path) -> dict[str, Any]:
             vmissing = sorted(REQUIRED_VALUE_KEYS - set(value))
             if vmissing:
                 _fail(f"{path}: knob {knob['id']!r}: value entry missing key(s) {vmissing}")
+            if "status" in value and value["status"] not in VALUE_STATUSES:
+                _fail(
+                    f"{path}: knob {knob['id']!r} value {value.get('value')!r}: "
+                    f"status must be one of {VALUE_STATUSES}"
+                )
             source = value["conversion_source"]
             if not isinstance(source, Mapping) or source.get("type") not in SOURCE_TYPES:
                 _fail(
@@ -143,6 +153,6 @@ def knob_by_id(document: Mapping[str, Any], knob_id: str) -> dict[str, Any]:
 
 
 __all__ = [
-    "ESTIMATORS", "SOURCE_TYPES", "PolicySpaceError",
+    "ESTIMATORS", "SOURCE_TYPES", "VALUE_STATUSES", "PolicySpaceError",
     "load_policy_space", "validate_supply_variant_routes", "validate_tuning_sources", "knob_by_id",
 ]
