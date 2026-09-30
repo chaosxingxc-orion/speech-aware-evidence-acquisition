@@ -403,7 +403,80 @@ shown the number.
 - **Q4 (how E5-0 runs).** As a queue chain step at the 12-h serving restart, scripted and receipted through the batch driver's lease, never by hand.
 - **Q5 (E5-1 timing).** E5-1 reads AGREE, the A/A and E4-1 as soon as E5-0's transcripts exist; COMP-1b is added when sealed. Nothing here admits anything; decision 201 gates E5-0.
 
-## Addendum (2026-09-29): the owner supplement to decision 201 -- tools are called by the model
+## Addendum: runtime form is model-initiated (owner directive, 2026-09-29)
+
+**Owner directive (2026-09-29; translated from the owner's Chinese, verbatim text in
+`docs/readiness/2026-09-29-research-direction-system-level-v1.md`).** "Tools should be invoked by the model on its own
+initiative, not called by the system by default; otherwise we fall into the self-proof trap -- why would the task not
+be done by an ASR + LLM combination, and why would it need an omni agent system!" The module-level rule is section 2d
+of `docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md`; this addendum applies it to E5 and
+supersedes section 2.3 where they disagree.
+
+**What E5-0 and E5-1 become.** Both are instruments and oracles only. E5-0 produces the pinned transcript catalog that
+the tool will read; it is a tool pass over audio, not a runtime step, and nothing it produces reaches a core request
+by itself. E5-1 bounds what a perfect call would yield and defines the **decision oracle**: the set of delivered
+entities where a call would have helped (delivered value wrong, gold span contained in the transcript: Q1 true and Q2
+false), its complement where a call can only cost (delivered value EXACT; Q3 and Q4 give the false-reject rate), and
+its base rate `b` = oracle-positive entities over delivered entities on the read roster. Section 2.2's thresholds keep
+their role as the precondition (Q6 >= 0.80, Q3 >= 0.85) and as the upper bound; they no longer gate a runtime rule.
+
+**E5-2a is WITHDRAWN as a runtime candidate.** A transcript check applied by the system to every delivered entity is
+exactly the "ASR + LLM" form the owner barred. Its R-FLAG / R-DROP / R-SWAP columns survive only offline, as the
+oracle's upper bound: the best any decision policy over the same tool could do. E5-2b's forced-choice contact is
+likewise not registered in its system-triggered form; its format (A/B in sha256 order plus "neither") is not reused.
+
+**E5-2 is the tool offer at the Solver's slot-value step** (`tool-offer:asr-slot-value`, inventory row 20 of the
+module design). One tool is offered, and only there:
+
+- **Chosen signature: `verify_span(entity_index: int)`**, where `entity_index` indexes the entity list of the Solver's
+  own draft in the same episode (the cited-answer draft). It returns the span-preserving transcript n-gram for that
+  entity from the pinned E5-0 catalog -- the same-token-count nearest match under the section 2.2 canonicaliser, which
+  is the entity's window on SLURP, where E5-0 carries no timestamps -- or an empty result when none qualifies (empty is
+  legal, decision 199). It never returns the whole transcript.
+- **Rejected: `transcribe_segment(t0, t1)`.** It is the wider tool and therefore the less safe one. Its argument space
+  is open (two real numbers that the core cannot ground, because the core sees no timeline); its output is arbitrary
+  transcript text, including the intent-bearing words that the 2026-09-12 fixed-supply result showed to hurt intent
+  (DEV-1000 intent -0.90 [-1.68, -0.09]); it needs a live decode per call and derived media per range; and its
+  decision oracle is undefined, because "a call would have helped" has no closed unit. `verify_span` has a closed
+  argument space (0 .. n-1 of the model's own draft), a bounded output (one span or empty), a deterministic answer
+  read from a pinned catalog (a `speech-tool` catalog read through `saea-tool-prepared-speech-observation-v1`, no live
+  decode on SLURP), an `args_hash` that is enumerable, and an oracle that is defined per entity. On Earnings the same
+  signature resolves the window through MMS_FA timings (section 4); the argument space does not widen.
+- **Schema budget.** One function, one integer parameter, a description of at most two sentences; rendered only in
+  the Solver's request at that step (per-role rendering, never constant: EFF-1).
+- **Receipt.** `tool_decision: {offered, called, args_hash, result_hash, used_in_answer}` per row, plus the
+  `saea-asr-verify-v1` hash-only sub-receipt per returned span (value sha256, transcript artifact sha256; never value
+  or transcript bytes).
+
+**Pre-declared gate (three parts, all required; fixed now, before E5-0 exists).**
+
+1. **Call rate within a declared band:** calls per offered row in [max(0.01, 0.5 b), min(0.50, 4 b)], with `b` the
+   oracle base rate measured by E5-1 and frozen before the flight. Below the band the offer is inert; above it the
+   model is calling by reflex, which is the system-default form by another name.
+2. **Decision precision above the oracle's base rate by a margin:** precision (calls on oracle-positive entities over
+   calls) >= b + 0.10 absolute and >= 2 b, with a paired-cluster bootstrap CI95 (cluster `sample_id`, 10,000 draws,
+   seed 20260807) whose lower bound exceeds b. Recall is reported beside it and not gated.
+3. **Conversion clears the floor, and the column does no harm:** the SLU-F1 delta carried by the called rows (the
+   arm's delivered column against its no-offer comparator, which differ only on called rows), expressed over the whole
+   read roster, is >= +1.49 pp (the same-flight SLU floor at n = 1,080, decision 190) with CI95 lower bound > 0; and
+   the arm's whole-column SLU-F1 does not breach the guard (no measured loss: the CI95 upper bound is not below zero)
+   while intent differs on 0 rows.
+
+**Read form.** An offer changes the Solver's request bytes (the `tools` array is rendered), so it cannot be a shadow of
+the delivered request. If the module's same-flight columns (module design 3.3) reach the Solver node by the time E5-2
+is registered, the read is a same-flight **column** (the offered Solver contact as a branch beside the delivered,
+unoffered one) under the 1.49 pp bar above; otherwise it is a **cross-flight** read against the in-chain A/A with the
+2.5 pp bar at n = 1,080 in place of 1.49 in part 3. Either way the `stage3_measurement` block declares the design, and
+`expected_effect_pp` is the E5-1 upper bound times the measured decision precision times the conversion, never the
+upper bound alone.
+
+**Unchanged boundary.** Transcripts never enter the intent decision: `verify_span` is not offered to Perception, the
+Planner or the Reviewer, its result is scoped to the entity it was called for, the read requires 0 intent rows
+differing, and no transcript byte becomes a retrieval key. Gold stays scoring-side only (section 3, item 2).
+
+*Merge note (2026-09-29): the preparation addendum below was written on `fable/e5prep` concurrently with the master addendum above. Both record the same owner directive. Where they differ on the E5-2 runtime form (signature, gate, read form), the addendum above and module design section 2d govern; the preparation addendum records what E5-0 and E5-1 register and compute.*
+
+## Preparation addendum (2026-09-29): the owner supplement to decision 201 -- tools are called by the model
 
 Owner, 2026-09-29, translated to English (First principle 1; the original-language message is the
 addressable source in the coordinator's brief of 2026-09-29 to the E5 preparation agent): "A tool should
