@@ -1045,6 +1045,65 @@ def score_slurp_outputs_official_train(
     )
 
 
+def score_slurp_outputs_official_test(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    allow_heldout: bool = True,
+) -> dict[str, object]:
+    """:func:`score_slurp_outputs_official` against the TEST gold -- the
+    registered ``"slurp-slu-official-test"`` scorer.
+
+    The one legal route the one-read protocol names
+    (``docs/readiness/2026-09-19-slurp-test-split-one-read-protocol-v1-draft.md``
+    section 3.4): ``core.scorers.score_bundle`` calls every scorer with three
+    positional arguments, so ``split_id`` and ``allow_heldout`` cannot be
+    threaded through the registered scoring path at call time; a test read
+    needs its own registry entry, exactly as the ``-train`` siblings were
+    added. The same evaluator at the same pinned commit with the same flags;
+    only the gold split differs.
+
+    Registering it is NOT authority to read anything. The test gold is opened
+    only when a sealed ``final-report`` manifest is scored, and such a
+    manifest exists only after a plan passed
+    ``contracts.plan.require_owner_split_allowance`` and the gate's
+    one-attempt budget. Two refusals are local to this binding and run before
+    the data root is touched:
+
+    * ``allow_heldout`` must stay ``True`` -- the keyword exists for signature
+      uniformity with the siblings; passing ``False`` would silently turn this
+      into the DEVEL-refusing path and is refused outright;
+    * every outputs row must name a ``"slurp:test:..."`` sample id: a test
+      scorer must never score a devel or train row against test gold.
+    """
+
+    if allow_heldout is not True:
+        raise SlurpOfficialEvalError(
+            "slurp-slu-official-test binds allow_heldout=True by construction; "
+            "refusing a call that would turn it into another split's scorer"
+        )
+    try:
+        text = Path(outputs_path).read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise SlurpOfficialEvalError(f"cannot read outputs {outputs_path}: {error}") from error
+    for number, line in enumerate(text.split("\n"), start=1):
+        if not line:
+            continue
+        try:
+            sample_id = json.loads(line).get("sample_id")
+        except (json.JSONDecodeError, AttributeError) as error:
+            raise SlurpOfficialEvalError(f"outputs line {number} malformed: {error}") from error
+        if not isinstance(sample_id, str) or not sample_id.startswith("slurp:test:"):
+            raise SlurpOfficialEvalError(
+                f"outputs line {number} names {sample_id!r}, not a 'slurp:test:' sample; "
+                "the test scorer never scores another split's row against test gold"
+            )
+    return score_slurp_outputs_official(
+        outputs_path, lock, root, split_id="test", allow_heldout=True
+    )
+
+
 def score_slurp_outputs_official_projected_v2_train(
     outputs_path: Path,
     lock: Mapping[str, object],

@@ -758,6 +758,7 @@ from ..reproduction.slurp_official_eval import (  # noqa: E402
     score_slurp_outputs_official_projected_v2_train,
     score_slurp_outputs_official_projected_v3,
     score_slurp_outputs_official_projected_v3_train,
+    score_slurp_outputs_official_test,
     score_slurp_outputs_official_train,
     score_slurp_outputs_slu_normalized,
     score_slurp_outputs_slu_normalized_train,
@@ -765,6 +766,10 @@ from ..reproduction.slurp_official_eval import (  # noqa: E402
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
 SCORERS.register("slurp-slu-official", score_slurp_outputs_official)
+# The TEST sibling (one-read protocol section 3.4): the same evaluator at the
+# same pinned commit, gold from ``test``. Inert until a sealed final-report
+# manifest exists; it refuses any non-test row before the data root is touched.
+SCORERS.register("slurp-slu-official-test", score_slurp_outputs_official_test)
 
 # ---------------------------------------------------------------------------
 # The same scorer with the LEGAL-LABEL PROJECTION on (owner ruling 2026-09-06:

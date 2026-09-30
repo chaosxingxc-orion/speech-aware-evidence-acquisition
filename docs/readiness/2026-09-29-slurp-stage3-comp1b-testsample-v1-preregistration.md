@@ -1,0 +1,97 @@
+# Test-sample milestone MILESTONE-01 (COMP-1b) against MILESTONE-00-PLAN: preregistration
+
+Registered 2026-09-29 at study commit `881b1787c`, before any contact (owner decisions 151 and 202).
+A MILESTONE read: development evidence under owner decision 28; never a test claim and never the final read.
+
+## One-shot semantics
+
+ONE attempt per read run id, ever (allowance `milestone_rule` and `attempt_budget`; enforced by
+`contracts.gate_exposure._ExposureAndCarrierMixin._require_final_report_attempt_budget`). No re-fly, no recovery, no
+resume, no re-score, no re-projection of delivered bytes, no best-of, no tuning on the sample. A failed or aborted
+attempt consumes the milestone number; a further milestone needs a fresh run id in a successor allowance under a fresh
+coordinator report to the owner. The results are reported as the milestone read of decisions 151 and 202, whatever
+they are.
+
+## The cells
+
+| item | value |
+| --- | --- |
+| composition | MILESTONE-01 is cell A2's arm (COMP-1b) with only the roster moved to the signed test sample: the locked v2.0 plan + (1) the agreement term (w_agree 1.0, recall k 60, delivered 8-1-8) with this roster's own vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1 (PENDING) + (2) the centroid boundary key + (3) no citation contract + (4) nothing else. MILESTONE-00-PLAN is the sealed DEV plan arm (the v2.0 lock as flown) with only the roster moved. |
+| roster | SLURP-TEST-SAMPLE-3010-V1, 3,010 recordings / 682 prompts, split role final-report, scorer slurp-slu-official-test |
+| comparator / in-chain replicate | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1`, flown in the same campaign before the arm |
+| guard null | FALLBACK (no own null): h_intent 1.3329, h_SLU 1.4492 (DEV-2000-ADDED null x sqrt(913/682)) |
+| smoke | none (the allowance names no smoke run id) |
+| runs | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1`; `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1` |
+| composed config hashes | comparator `2282f84964b3582cb79df585907ee2cb740399ca4bc3f3dae3b9966ecb557db2`; arm `209503e472a3e7f28ae920503612b9f7ea1890907e6878a44c5edb9679d8849c` |
+| protocol hashes | comparator `497c68396396254a8593ef956e1188e38f236583441c01d2e7e4aee67a3ff351`; arm `21afebbed474cf1cef8d27f9c71ff71302d7ec696682f74e9264bf4bf0bca0ad` |
+
+## Decision rule (fixed here)
+
+Read MILESTONE-01 against MILESTONE-00-PLAN flown in the same chain, on the same 3,010 rows. PRIMARY: intent accuracy (scenario_action exact), paired per recording with prompt-clustered bootstrap, 10,000 draws, seed 20260929. GUARD: official pooled SLU-F1 (slurp-slu-official-test) non-inferior at the FALLBACK null h_SLU 1.4492 (h_intent 1.3329; the DEV-2000-ADDED own null scaled by sqrt(913 / 682), flagged). HELD: the intent CI95 lower bound above zero AND the guard holds. NEUTRAL: both metrics non-inferior at the fallback null without a held gain. HARMFUL: a measured loss on either metric (decision 25). Every verdict carries intent and SLU separately, per-intent and per-scenario tables in both weightings (post-stratified natural mixture; equal stratum over 58 intents). The number is a MILESTONE read, development evidence under owner decision 28, never a test claim.
+
+## The measurement declaration
+
+```json
+{
+  "stage3_measurement": {
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1": {
+      "claim": "nominated",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "MILESTONE-00-PLAN is the INSTRUMENT, not a claim: the locked v2.0 plan exactly as flown on DEV-2000-ADDED, re-targeted to the sample, flown in the same chain before MILESTONE-01. The allowance makes it THE comparator of every milestone arm; its own number is the locked system's sample read.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the guard",
+      "primary_metric_key": "intent",
+      "read_roster": "SLURP-TEST-SAMPLE-3010-V1",
+      "replicate_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
+      "rows": 3010,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1": {
+      "claim": "nominated",
+      "claims_benefit": true,
+      "expected_effect_pp": 3.8,
+      "expected_effect_status": "PROVISIONAL: A2's own declared number; root re-declares from the A2 read before the flip",
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "MILESTONE-01 = COMP-1b on the signed test sample (owner decisions 151 and 202). expected_effect_pp 3.8 is cell A2's own declared number (docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/registered-facts-v1.json: the COMP-1b TRAIN Fold A intent point, docs/results/2026-09-29-slurp-comp1b-fold-a-read.md), carried PROVISIONALLY because the floor gate refuses a placeholder: root RE-DECLARES it from the A2 read (owner decision 139: a measured number, not a prior) before the flip, and the flip refuses while registered-facts' redeclared_from_a2_read is false. The contrast is against MILESTONE-00-PLAN, the LOCKED plan (recall k 8), not A2's in-chain A/A (k 60), so the milestone delta includes the k 8 -> 60 recall change the composed arm carries (the allowance prescribes the locked system as the comparator). The guard is a FALLBACK null (own_null.flag). tuning_roster / read_roster (item D3): the vote pool and centroid key are TRAIN construction artifacts; the arm was SELECTED on DEV-2000-ADDED by cell A2's read; both are disjoint from the sample by the sample's own disjointness proof (docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json, CLEAN); nothing was chosen or tuned on the sample.",
+      "own_null": {
+        "flag": "NO OWN NULL EXISTS FOR SLURP-TEST-SAMPLE-3010-V1 (no A/A pair has flown on it, and the allowance names no second PLAN read id that could measure one). Declared guard = the DEV-2000-ADDED own null scaled by sqrt(913 / 682) at the PROMPT level (rho = 1, conservative: every recording of a prompt moves together; design note section 4 'Sample paired h 1.33'). The recording-level scaling sqrt(1000 / 3010) is given beside it and is the OPTIMISTIC bound; the read reports both.",
+        "h_intent": 1.3329,
+        "h_intent_recording_scaled": 0.664,
+        "h_slu": 1.4492,
+        "h_slu_recording_scaled": 0.7219,
+        "kind": "FALLBACK-SCALED-NOT-MEASURED",
+        "n": 3010,
+        "n_prompts": 682,
+        "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, row 'cross-flight A/A, DEV-2000-ADDED' (the B6 pair); scaling: docs/readiness/2026-09-27-slurp-test-sample-design-v1.md section 4"
+      },
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 (slurp-slu-official-test) the non-inferiority guard (owner decision 133)",
+      "primary_metric_key": "intent",
+      "read_roster": "SLURP-TEST-SAMPLE-3010-V1",
+      "replicate_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
+      "roster": "TEST-SAMPLE (SLURP-TEST-SAMPLE-3010-V1, split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9), 3,010 recordings / 682 prompts",
+      "rows": 3010,
+      "tuning_roster": [
+        "slurp-train-construction-pool-agree-kprobe-r01-excluded",
+        "SLURP-DEV-2000-ADDED-V1"
+      ]
+    }
+  }
+}
+```
+
+## Blockers before the flip
+
+1. OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).
+2. ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell (core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name ['SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1', 'SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1'] as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.
+3. PREPARATIONS: preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, GPU encoder) and preparation 3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1) have not run; their rows are not countersigned. Then this roster's agreement table must be built model-free (scripts/build_slurp_intent_exemplar_agreement.py against MILESTONE-00-PLAN). Pending pins: ['prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl'].
+4. EXPECTATION: root re-declares expected_effect_pp from the A2 read (registered-facts redeclared_from_a2_read).
+5. READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned.
+
+## Prohibitions
+
+- No contact before every blocker above is cleared, root countersigns the rows, mints the decision receipt and both cells are flipped in one converged cycle.
+- ONE attempt per read run id, ever: no re-fly, no recovery, no resume, no re-score, no re-projection, no best-of, no tuning on the sample.
+- No smoke on the sample; no direct-baseline read; no closure-roster or FULL-test contact.
+- No k, tau, fuse_coverage, w_prior, store, release, snapshot, roster or geometry change. --allow-output-change is never passed.
+- No utterance text, gold label, transcript or model output is printed or persisted by any read.

@@ -1,0 +1,54 @@
+{
+  "cell": "slurp-native-stage3-plan-testsample-milestone00-v1",
+  "composed_config_hash": "2282f84964b3582cb79df585907ee2cb740399ca4bc3f3dae3b9966ecb557db2",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-test-sample-3010-milestone-00-plan-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "owner_allowance": {
+      "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
+      "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+    },
+    "planned_gpu_hours": 36.2,
+    "planned_model_calls": 33110,
+    "planned_speech_audio_seconds": 90271,
+    "protocol_hash": "497c68396396254a8593ef956e1188e38f236583441c01d2e7e4aee67a3ff351",
+    "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
+    "split_role": "final-report",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-comp1b-testsample-v1.json, which flies MILESTONE-00-PLAN and then MILESTONE-01 in ONE campaign (instrument rule 3), one official slurp-slu-official-test score per generation cell at finalize. No smoke step.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-plan-testsample-milestone00-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 132440,
+    "generation_calls_cap": 33110,
+    "gpu_hours_fit_inclusive": 36.2,
+    "native_task_contract_calls_cap": 18060,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 90271
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "881b1787c",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
+    "sha256": "d9f7acf5bde5e9b5305b339d99d59d2d830d6fc98f57a75b9419b7e07ec5e95c"
+  },
+  "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1: THE COMPARATOR and in-chain replicate: the locked system's own sample read.",
+  "quality_read_gate": "No task-quality read before BOTH manifests are complete and sealed with one successful complete official slurp-slu-official-test score each, and the READ row is root countersigned.",
+  "registered_at_utc": "2026-09-29T23:30:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-milestoneprep, branch fable/milestoneprep",
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_OWNER_ALLOWANCE_AND_PREPARATIONS",
+  "unused_budget_is_not_attempt_authority": true
+}
