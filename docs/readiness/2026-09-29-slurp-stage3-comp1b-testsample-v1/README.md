@@ -57,3 +57,17 @@ conversational report) and mints `coordination/slurp-stage3-comp1b-testsample-v1
 (2) `scripts/flights/comp1/comp1b_testsample_flip.sh` re-pins comparator then arm to one HEAD; (3)
 `scripts/flights/comp1/batch_chain_comp1b_testsample.sh` queues the two-cell campaign (no smoke); (4) after both seals
 the READ row is countersigned and `bash scripts/flights/comp1/comp1b_testsample_read.sh` reads it.
+
+## Coordinator ruling on the prompt fit (Fable 5.1, 2026-09-30)
+
+Source: `docs/results/2026-09-30-slurp-milestone-prompt-fit-note.md` (merged `06c160ca`).
+
+1. The check-time `COMPACT_REQUIRED` on the sample's Solver (operational margin −306 tokens) is the same fixed
+   worst-case estimate that A2 and the DEV plan arm showed at check time (−316). It is not a new condition. Neither
+   DEV cell compacted a row at flight (A2 0 / 1,000; plan arm 0 / 1,000), and the largest real Solver prompt was
+   14,125 tokens against the 20,990-token prompt limit.
+2. Both milestone cells keep `context_fit_policy: compact-or-abstain` and the `native_contact_fit` step unchanged. No
+   config, pin or registration changes before the flip.
+3. The milestone read must report `context_fit.compacted_contacts` for both arms. If either count is non-zero, the
+   read shows the paired delta with the compacted rows excluded beside the registered paired delta; the registered
+   delta stays the primary number.
