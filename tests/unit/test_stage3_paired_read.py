@@ -89,30 +89,52 @@ class World:
     LEFT_DELIVERED = set(range(6))
     RIGHT_DELIVERED = set(range(4)) | set(range(6, 12))
 
-    def __init__(self, tmp_path: Path, *, stratum: bool = True) -> None:
+    def __init__(
+        self, tmp_path: Path, *, stratum: bool = True, roster_id: str = ROSTER_ID,
+        ids: list[str] | None = None, scenario_of=None,
+        left_correct: set | None = None, right_correct: set | None = None,
+        left_delivered: set | None = None, right_delivered: set | None = None,
+        stratification: dict | None = None, split_role: str = "discovery",
+        bank_roster: str = "train-fold-a",
+    ) -> None:
         self.tmp = tmp_path
         self.repo = tmp_path / "repo"
         self.data = tmp_path / "data"
-        self.ids = _ids()
+        self.ids = ids if ids is not None else _ids()
+        self.scenario_of = scenario_of or _scenario
+        self.bank_roster = bank_roster
+        self.roster_id = roster_id
+        self.split_role = split_role
+        # Instance overrides shadow the class defaults above; a caller that passes none of these
+        # gets EXACTLY the class-level sets, unchanged (every pre-existing World(...) call).
+        self.LEFT_CORRECT = World.LEFT_CORRECT if left_correct is None else left_correct
+        self.RIGHT_CORRECT = World.RIGHT_CORRECT if right_correct is None else right_correct
+        self.LEFT_DELIVERED = World.LEFT_DELIVERED if left_delivered is None else left_delivered
+        self.RIGHT_DELIVERED = World.RIGHT_DELIVERED if right_delivered is None else right_delivered
         items = []
         for i, sample_id in enumerate(self.ids):
             item = {"audio_seconds": 1.0, "headset": i % 2 == 0, "id": sample_id, "sample_id": sample_id,
                     "key": f"slurp:{sample_id}", "utterance_id": sample_id.rsplit(":", 1)[0]}
             if stratum:
-                item["stratum"] = _scenario(i)
+                item["stratum"] = self.scenario_of(i)
             items.append(item)
         self.split_hash = core.split_identity_hash(core.prefixed("slurp", self.ids))
-        roster = {"carrier_lock_key": "slurp", "items": items, "roster_id": ROSTER_ID,
-                  "split_identity_hash": self.split_hash, "split_role": "discovery"}
+        roster = {"carrier_lock_key": "slurp", "items": items, "roster_id": roster_id,
+                  "split_identity_hash": self.split_hash, "split_role": split_role}
         if not stratum:
             roster["stratum_withheld_per_item"] = True
+        if stratification is not None:
+            roster["stratification"] = stratification
         self.roster_rel = "docs/receipts/rosters/unit-fold-a.json"
         _write(self.repo / self.roster_rel, roster)
         self._arm("UNIT-LEFT-V1", "attempt-left", self.LEFT_CORRECT, self.LEFT_DELIVERED, prefill=100)
         self._arm("UNIT-RIGHT-V1", "attempt-right", self.RIGHT_CORRECT, self.RIGHT_DELIVERED, prefill=130)
-        bank = [json.dumps({"roster": "train-fold-a", "sample_id": s, "gold_intent": f"{_scenario(i)}_query",
-                            "plan_class": "CORRECT" if i < 6 else "INTENT-UNCOVERED"})
-                for i, s in enumerate(self.ids)]
+        bank = [
+            json.dumps({"roster": self.bank_roster, "sample_id": s,
+                        "gold_intent": f"{self.scenario_of(i)}_query",
+                        "plan_class": "CORRECT" if i in self.LEFT_CORRECT else "INTENT-UNCOVERED"})
+            for i, s in enumerate(self.ids)
+        ]
         bank.append(json.dumps({"roster": "dev2000-added", "sample_id": "other", "gold_intent": "x"}))
         _write(self.data / drv.DEFAULT_BANK, "\n".join(bank) + "\n")
 
@@ -135,14 +157,14 @@ class World:
         _write(run_dir / f"{run_id}.run-manifest.json", {
             "status": "COMPLETED", "study_repo_dirt": [],
             "scores": {"path": str(scores_path), "sha256": _sha(scores_path)},
-            "split": {"count": len(self.ids), "identity_hash": self.split_hash, "role": "discovery",
-                      "name": ROSTER_ID}})
+            "split": {"count": len(self.ids), "identity_hash": self.split_hash, "role": self.split_role,
+                      "name": self.roster_id}})
         _write(run_dir / "score-jobs.jsonl", json.dumps({"job_id": attempt}) + "\n")
         results = []
         for i, s in enumerate(self.ids):
             records = [{"supplied_item_id": f"intent-boundaries::intent-boundary:decoy_{i}", "outcome": "ignore"}]
             if i in delivered:
-                records.append({"supplied_item_id": f"intent-boundaries::intent-boundary:{_scenario(i)}_query",
+                records.append({"supplied_item_id": f"intent-boundaries::intent-boundary:{self.scenario_of(i)}_query",
                                 "outcome": "use"})
             results.append({"sample_id": s, "consumption": {"records": records}})
         phases_path = run_dir / f"{run_id}.phases.json"
@@ -165,7 +187,7 @@ class World:
         return [
             "--stage", "all", "--left-run", "UNIT-LEFT-V1", "--left-attempt", "attempt-left", "--left-label", "left",
             "--right-run", "UNIT-RIGHT-V1", "--right-attempt", "attempt-right", "--right-label", "right",
-            "--scorer-id", SCORER, "--expected-split-role", "discovery", "--roster", self.roster_rel,
+            "--scorer-id", SCORER, "--expected-split-role", self.split_role, "--roster", self.roster_rel,
             "--cluster-key", "sample_id", "--repo-root", str(self.repo), "--data-root", str(self.data),
             "--seed", "7", "--draws", "300", "--analysis-root", str(out), *extra,
         ]
@@ -514,3 +536,240 @@ def test_the_sealed_reads_reproduce_byte_for_byte(case: str, tmp_path: Path) -> 
         fresh = _canonical_modulo_driver_provenance(json.loads(fresh_bytes), is_fresh=True)
         expected = _canonical_modulo_driver_provenance(json.loads(sealed_bytes), is_fresh=False)
         assert fresh == expected, name
+
+
+# --------------------------------------------------------------------------
+# Population-weighted post-stratification (owner, 2026-09-29): a floored roster's
+# natural-mixture slot must be POST-STRATIFIED, never the raw roster mean; DEV-2000-ADDED-shaped
+# rosters are not floored and must reproduce raw == post-stratified when weights are proportional.
+# --------------------------------------------------------------------------
+
+
+def test_detect_roster_floored_reads_the_stratification_block() -> None:
+    assert drv._detect_roster_floored({}, "auto") is False
+    assert drv._detect_roster_floored({"stratification": {}}, "auto") is False
+    assert drv._detect_roster_floored({"stratification": {"floor_driven_utterances": 279}}, "auto") is True
+    assert drv._detect_roster_floored({"stratification": {"sample_floor_utterances": 5}}, "auto") is True
+    assert drv._detect_roster_floored(
+        {"stratification": {"even_split_intents": [{"intent": "x"}]}}, "auto"
+    ) is True
+    # override forces the answer regardless of the receipt's own content
+    assert drv._detect_roster_floored({"stratification": {"floor_driven_utterances": 279}}, "false") is False
+    assert drv._detect_roster_floored({}, "true") is True
+    with pytest.raises(drv.Stage3ReadError):
+        drv._detect_roster_floored({}, "bogus")
+
+
+def test_load_population_weights_drops_and_renormalises_absent_strata(tmp_path: Path) -> None:
+    path = tmp_path / "population-counts-v1.json"
+    path.write_text(json.dumps({"population_counts": {"a": 80, "b": 15, "c": 5}}), encoding="utf-8")
+    weights, source = drv._load_population_weights(str(path), ["a", "b"])
+    assert weights == pytest.approx({"a": 80 / 95, "b": 15 / 95})
+    assert source["dropped_strata"] == ["c"]
+    assert source["strata"] == ["a", "b"]
+
+
+def test_load_population_weights_accepts_a_bare_mapping_too(tmp_path: Path) -> None:
+    path = tmp_path / "counts.json"
+    path.write_text(json.dumps({"a": 1, "b": 1}), encoding="utf-8")
+    weights, _source = drv._load_population_weights(str(path), ["a", "b"])
+    assert weights == pytest.approx({"a": 0.5, "b": 0.5})
+
+
+def test_load_population_weights_refuses_a_missing_stratum(tmp_path: Path) -> None:
+    path = tmp_path / "population-counts-v1.json"
+    path.write_text(json.dumps({"a": 1}), encoding="utf-8")
+    with pytest.raises(drv.Stage3ReadError):
+        drv._load_population_weights(str(path), ["a", "d"])
+
+
+def test_load_population_weights_resolves_a_relative_path_against_repo_root(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    (repo / "docs").mkdir(parents=True)
+    (repo / "docs" / "counts.json").write_text(json.dumps({"a": 1, "b": 1}), encoding="utf-8")
+    weights, _source = drv._load_population_weights("docs/counts.json", ["a", "b"], repo_root=repo)
+    assert weights == pytest.approx({"a": 0.5, "b": 0.5})
+
+
+def test_post_stratified_intent_statistic_and_levels_match_the_weighted_mean_formula() -> None:
+    field = drv.INTENT
+    left = {"r1": {field: 0.0}, "r2": {field: 1.0}, "r3": {field: 0.0}, "r4": {field: 1.0}}
+    right = {"r1": {field: 1.0}, "r2": {field: 1.0}, "r3": {field: 0.0}, "r4": {field: 0.0}}
+    stratum_of = {"r1": "a", "r2": "a", "r3": "b", "r4": "b"}.get
+    ids = ["r1", "r2", "r3", "r4"]
+    weights = {"a": 0.75, "b": 0.25}
+    statistic = drv._post_stratified_intent_statistic(weights, stratum_of, left, right)
+    # stratum a: left mean 0.5, right mean 1.0, delta +0.5; stratum b: left mean 0.5, right mean 0.0, delta -0.5
+    expected = 0.75 * 0.5 + 0.25 * (-0.5)
+    assert statistic(ids) == pytest.approx(expected)
+    assert drv._post_stratified_intent_level(weights, stratum_of, left, ids) == pytest.approx(0.75 * 0.5 + 0.25 * 0.5)
+    assert drv._post_stratified_intent_level(weights, stratum_of, right, ids) == pytest.approx(0.75 * 1.0 + 0.25 * 0.0)
+
+
+def test_post_stratified_slu_statistic_weights_totals_before_pooling_not_per_stratum_f1() -> None:
+    """The documented formula: weight each stratum's TP/FP/FN TOTALS (divided by its own row
+    count) before pooling into one F1 per arm -- never weight each stratum's own F1 score."""
+
+    fields = (("tp",), ("fp",), ("fn",))
+    left = {
+        "r1": {"tp": 1, "fp": 0, "fn": 1}, "r2": {"tp": 0, "fp": 1, "fn": 0}, "r3": {"tp": 2, "fp": 0, "fn": 0},
+        "r4": {"tp": 5, "fp": 5, "fn": 0},
+    }
+    right = {
+        "r1": {"tp": 2, "fp": 0, "fn": 0}, "r2": {"tp": 1, "fp": 0, "fn": 1}, "r3": {"tp": 0, "fp": 2, "fn": 2},
+        "r4": {"tp": 10, "fp": 0, "fn": 0},
+    }
+    stratum_of = {"r1": "a", "r2": "a", "r3": "a", "r4": "b"}.get
+    ids = ["r1", "r2", "r3", "r4"]
+    weights = {"a": 0.2, "b": 0.8}
+
+    def grouped():
+        groups: dict[str, list[str]] = {}
+        for sid in ids:
+            groups.setdefault(stratum_of(sid), []).append(sid)
+        return groups
+
+    def f1_of_weighted_totals(rows):
+        tp = fp = fn = 0.0
+        for stratum, members in grouped().items():
+            n = len(members)
+            tp += weights[stratum] * sum(rows[s]["tp"] for s in members) / n
+            fp += weights[stratum] * sum(rows[s]["fp"] for s in members) / n
+            fn += weights[stratum] * sum(rows[s]["fn"] for s in members) / n
+        return 2 * tp / (2 * tp + fp + fn)
+
+    expected = f1_of_weighted_totals(right) - f1_of_weighted_totals(left)
+    statistic = drv._post_stratified_slu_statistic(weights, stratum_of, left, right, fields)
+    assert statistic(ids) == pytest.approx(expected)
+    assert drv._post_stratified_slu_level(weights, stratum_of, left, ids, fields) == pytest.approx(
+        f1_of_weighted_totals(left)
+    )
+    assert drv._post_stratified_slu_level(weights, stratum_of, right, ids, fields) == pytest.approx(
+        f1_of_weighted_totals(right)
+    )
+
+    # The WRONG formula -- weight each stratum's own F1 SCORE, never its TP/FP/FN totals -- gives
+    # a materially different number on this fixture, proving the driver is not accidentally
+    # computing that instead.
+    def stratum_f1(rows, members):
+        tp = sum(rows[s]["tp"] for s in members)
+        fp = sum(rows[s]["fp"] for s in members)
+        fn = sum(rows[s]["fn"] for s in members)
+        return 2 * tp / (2 * tp + fp + fn) if (2 * tp + fp + fn) else 0.0
+
+    def naive_weighted_f1_delta():
+        groups = grouped()
+        left_naive = sum(weights[s] * stratum_f1(left, m) for s, m in groups.items())
+        right_naive = sum(weights[s] * stratum_f1(right, m) for s, m in groups.items())
+        return right_naive - left_naive
+
+    assert statistic(ids) != pytest.approx(naive_weighted_f1_delta())
+
+
+def test_gold_bank_strata_source_produces_an_available_table_when_items_withhold_it(
+    tmp_path: Path,
+) -> None:
+    """A dev/test roster withholds its per-item stratum by design; ``--strata-source gold-bank``
+    is the sanctioned fallback (the same offline gold bank ``--delivery`` already reads)."""
+
+    world = World(tmp_path, stratum=False)  # stratum_withheld_per_item: true, as a real test roster is
+    out = tmp_path / "read"
+    assert drv.main(world.argv(
+        out, "--per-scenario", "--strata-source", "gold-bank", "--strata-key", "gold_intent"
+    )) == 0
+    table = json.loads((out / "per-scenario-tables.json").read_text())
+    assert table["status"] == "AVAILABLE"
+    assert table["stratum_source"]["field"] == "gold-bank:train-fold-a.gold_intent"
+    assert table["strata_rows"] == {f"{s}_query": 4 for s in SCENARIOS}
+    for scenario in SCENARIOS:
+        members = [i for i in range(12) if _scenario(i) == scenario]
+        left = sum(i in World.LEFT_CORRECT for i in members) / 4
+        right = sum(i in World.RIGHT_CORRECT for i in members) / 4
+        row = table["per_scenario"][f"{scenario}_query"]
+        assert row["intent"]["delta_pp"] == pytest.approx(100 * (right - left))
+
+
+def test_floored_roster_reports_three_different_weightings_and_refuses_raw_as_natural_mixture(
+    tmp_path: Path,
+) -> None:
+    """A floored two-stratum fake (3 'small'-stratum rows, 9 'big'-stratum rows): the RIGHT arm is
+    correct on every 'small' row and no 'big' row, the LEFT arm on none, so the per-stratum intent
+    delta is +100pp ('small') and 0pp ('big'). The raw roster mean (weighted by the roster's own
+    3:9 row split) is +25pp, the equal-stratum mean (unweighted 1:1) is +50pp, and the
+    population-weighted post-stratified mean (weights 0.9:0.1) is +90pp -- three DIFFERENT numbers
+    by construction, each with a bootstrap CI95 straddling its own point estimate."""
+
+    ids = _ids()
+    scenario_of = lambda i: "small" if i < 3 else "big"  # noqa: E731
+    world = World(
+        tmp_path, stratum=False, roster_id="SLURP-POSTSTRAT-FAKE-V1", ids=ids, scenario_of=scenario_of,
+        left_correct=set(), right_correct={0, 1, 2}, left_delivered=set(), right_delivered=set(),
+        stratification={"floor_driven_utterances": 3, "sample_floor_utterances": 3},
+        split_role="dev", bank_roster="poststrat-fake",
+    )
+    counts_path = world.repo / "docs" / "readiness" / "unit-poststrat" / "population-counts-v1.json"
+    # the bank's gold_intent values carry the "_query" suffix World's bank-building always adds
+    # (f"{scenario_of(i)}_query"); the population counts must key on those same strings.
+    _write(counts_path, {"population_counts": {"small_query": 90, "big_query": 10}})
+    counts_rel = "docs/readiness/unit-poststrat/population-counts-v1.json"
+    common = ["--per-scenario", "--strata-source", "gold-bank", "--strata-key", "gold_intent",
+              "--gold-bank-roster", "poststrat-fake", "--population-counts", counts_rel]
+
+    # default --weighting is "raw"; the roster is floored, so the read REFUSES rather than
+    # silently labelling the raw roster mean "natural_mixture".
+    out_refused = tmp_path / "read-refused"
+    assert drv.main(world.argv(out_refused, *common)) == 1
+
+    out = tmp_path / "read"
+    assert drv.main(world.argv(out, *common, "--weighting", "post-stratified")) == 0
+    table = json.loads((out / "per-scenario-tables.json").read_text())
+    assert table["status"] == "AVAILABLE" and table["roster_floored"] is True
+    assert table["raw"]["label"] == "raw roster mean (not a population estimate)"
+    assert table["raw"]["intent"]["delta_pp"] == pytest.approx(25.0)
+    assert table["equal_scenario"]["intent"]["delta_pp"] == pytest.approx(50.0)
+    assert table["post_stratified"]["status"] == "AVAILABLE"
+    assert table["post_stratified"]["intent"]["delta_pp"] == pytest.approx(90.0)
+    assert table["natural_mixture"]["selected_weighting"] == "post-stratified"
+    assert table["natural_mixture"]["roster_floored"] is True
+    assert table["natural_mixture"]["intent"]["delta_pp"] == pytest.approx(90.0)
+    for block in (table["raw"], table["post_stratified"], table["equal_scenario"]):
+        low, high = block["intent"]["ci95_pp"]
+        assert low <= block["intent"]["delta_pp"] <= high
+    # the three weightings differ from one another, by construction
+    values = {table["raw"]["intent"]["delta_pp"], table["equal_scenario"]["intent"]["delta_pp"],
+              table["post_stratified"]["intent"]["delta_pp"]}
+    assert len(values) == 3
+
+    # equal-stratum is also a legal --weighting for a floored roster (only "raw" is refused)
+    out_eq = tmp_path / "read-eq"
+    assert drv.main(world.argv(out_eq, *common, "--weighting", "equal-stratum")) == 0
+    table_eq = json.loads((out_eq / "per-scenario-tables.json").read_text())
+    assert table_eq["natural_mixture"]["selected_weighting"] == "equal-stratum"
+    assert table_eq["natural_mixture"]["intent"]["delta_pp"] == pytest.approx(50.0)
+
+
+def test_proportional_population_weights_make_post_stratified_equal_raw_on_a_dev2000_added_shaped_roster(
+    tmp_path: Path,
+) -> None:
+    """DEV-2000-ADDED is not floored: its roster is drawn proportionally to the full split, so
+    population weights equal to the roster's own per-stratum share must reproduce the raw roster
+    mean exactly (owner, 2026-09-29)."""
+
+    world = World(
+        tmp_path, stratum=False, roster_id="SLURP-DEV-2000-ADDED-V1", split_role="dev",
+        bank_roster="dev2000-added",
+    )
+    counts_path = world.repo / "docs" / "readiness" / "unit-a2" / "population-counts-v1.json"
+    # equal population shares, matching this roster's own equal 4:4:4 per-scenario row split.
+    _write(counts_path, {"population_counts": {f"{s}_query": 400 for s in SCENARIOS}})
+    counts_rel = "docs/readiness/unit-a2/population-counts-v1.json"
+    out = tmp_path / "read"
+    assert drv.main(world.argv(
+        out, "--per-scenario", "--strata-source", "gold-bank", "--strata-key", "gold_intent",
+        "--population-counts", counts_rel, "--weighting", "post-stratified",
+    )) == 0
+    table = json.loads((out / "per-scenario-tables.json").read_text())
+    assert table["roster_floored"] is False
+    assert table["post_stratified"]["intent"]["delta_pp"] == pytest.approx(table["raw"]["intent"]["delta_pp"])
+    assert table["post_stratified"]["slu_f1"]["delta_pp"] == pytest.approx(table["raw"]["slu_f1"]["delta_pp"])
+    assert table["natural_mixture"]["selected_weighting"] == "post-stratified"
