@@ -1,0 +1,338 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement mapping (run id -> block) scripts/checks/stage3_effect_floor_check.py resolves; this copy has precedence over the preregistration's fence.",
+  "authority_relpaths": [
+    "docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "configs/baseline/e21-native-window-direct-full44-v1.json",
+    "src/speech_aware_evidence_acquisition/rails/adapters/earnings_module_hooks.py"
+  ],
+  "carrier_hooks": {
+    "carrier_components": {
+      "e-c3-numeric-relisten": {
+        "analogue_of": "relisten (post-delivery re-listen)",
+        "armable": false,
+        "plane": "OBS post-delivery verification",
+        "record": "docs/results/2026-09-27-a2t-earnings-gap-diagnosis.md",
+        "status": "not flown (re-plan v2 row C3)"
+      },
+      "kc-e1f-repair-supply": {
+        "analogue_of": "Solver consumption / USE repair (E-C1)",
+        "armable": false,
+        "harness_row": "SAEA-E21-KC-E1F-VERDICT-V2",
+        "plane": "SUPPLY -> Solver repair (roster-grounded entity substitution, the ConEC brief)",
+        "record": "docs/readiness/2026-09-08-e21-kc-e1f-replication-v1-verdict.md",
+        "status": "admitted on E21 (replicated PERSON +3.634)"
+      }
+    },
+    "members": {
+      "carrier_components": "implemented",
+      "current_lock": "None",
+      "decision_candidates": "None",
+      "decision_supply_path": "None",
+      "default_deliver_normaliser": "implemented",
+      "deliver_stages": "None",
+      "delivered_path_admissions": "None",
+      "delivered_units": "implemented",
+      "flown_branch_programs": "None",
+      "flown_programs": "implemented",
+      "lock_layer": "implemented",
+      "lock_versions": "None",
+      "max_decision_candidates": "None",
+      "perception_branch_frame": "None",
+      "profile": "implemented",
+      "roster_pin_paths": "implemented",
+      "tool_offer_units": "implemented"
+    },
+    "profile": "earnings"
+  },
+  "cells": {
+    "arm": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-earnings21-native-stage3-module-alloff-v1-generation-v1",
+      "baseline_fragment": "e21-native-window-direct-full44-v1",
+      "cell": "earnings21-native-stage3-module-alloff-v1",
+      "composed_config_hash": "3b5c8ed17fe0a6fc814cd557f5af63e95b1e1c9814a0900de612d0dcbb6cab04",
+      "dataset_fragment": "earnings21-native-window-full44-v1",
+      "experiment": "earnings21-native-stage3-module-alloff-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 1593,
+        "gpu_hours_fit_inclusive": 4.0,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 141346
+      },
+      "fit_attempt_id": null,
+      "fit_run_id": null,
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "0127ee712b4d785d067951afc4a56696dadae3c4142d28bb549e1093726f0053",
+      "rows": 1593,
+      "run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "scorers": [
+        "asr-wer-whisper",
+        "conec-entity-wer-official",
+        "numeric-value-accuracy-v1",
+        "semantic-high-impact-error-rate-v1",
+        "cost"
+      ],
+      "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+    },
+    "smoke": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-earnings21-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "baseline_fragment": "e21-native-window-direct-four-row-v1",
+      "cell": "earnings21-native-stage3-module-alloff-smoke-4-v1",
+      "composed_config_hash": "5d260a651f9b777fe82bf34559c7b8b1e1543bad7e5a3a9b3492b2fa0922519b",
+      "dataset_fragment": "e21-native-window-four-row-v1",
+      "experiment": "earnings21-native-stage3-module-alloff-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 4,
+        "gpu_hours_fit_inclusive": 0.3,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 360
+      },
+      "fit_attempt_id": null,
+      "fit_run_id": null,
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "475b41b9b96f2e119d771ec90f3d9c91eb183269b3dadba7f8efa0b20859e4fc",
+      "rows": 4,
+      "run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "scorers": [
+        "asr-wer-whisper",
+        "conec-entity-wer-official",
+        "numeric-value-accuracy-v1",
+        "semantic-high-impact-error-rate-v1",
+        "cost"
+      ],
+      "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992"
+    }
+  },
+  "consumption_module_block": {
+    "columns": [],
+    "components": [
+      {
+        "component_id": "agree-vote-seed",
+        "state": "off"
+      },
+      {
+        "component_id": "centroid-boundary-key",
+        "state": "off"
+      },
+      {
+        "component_id": "solver-citation-contract",
+        "state": "off"
+      },
+      {
+        "component_id": "reviewer-g5-repair",
+        "state": "off"
+      },
+      {
+        "component_id": "relisten",
+        "state": "off"
+      },
+      {
+        "component_id": "top2-contrast",
+        "state": "off"
+      },
+      {
+        "component_id": "forced-candidate-list",
+        "state": "off"
+      },
+      {
+        "component_id": "key-source:k6p",
+        "state": "off"
+      },
+      {
+        "component_id": "scope-rule",
+        "state": "off"
+      },
+      {
+        "component_id": "e3-progressive-slots",
+        "state": "off"
+      },
+      {
+        "component_id": "supply-abstain",
+        "state": "off"
+      }
+    ],
+    "module_id": "saea-evidence-consumption-module-v1",
+    "profile": "earnings"
+  },
+  "module_byte_proof": {
+    "command": "python -B scripts/analysis/module_equivalence_proof.py --at e210",
+    "ok": true,
+    "results": [
+      {
+        "differing_policy_paths": [],
+        "fragment": "e21-native-window-direct-full44-v1",
+        "module_block_sha256": "278938e46b6f796b99119ea5fcdd6c594a0ca609d1a57b8167f043f440c9d41a",
+        "ok": true,
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "target": "direct-layer"
+      },
+      {
+        "baseline_object_identical": true,
+        "cell": "arm",
+        "composed_config_diff_vs_parent": {
+          "anything_else": [],
+          "bookkeeping": [],
+          "experiment_fragment": [
+            "analysis_plan.relpath",
+            "analysis_plan.sha256",
+            "cells",
+            "consumption_module_declaration.block.columns",
+            "consumption_module_declaration.block.components",
+            "consumption_module_declaration.block.module_id",
+            "consumption_module_declaration.block.profile",
+            "consumption_module_declaration.compiles_to",
+            "consumption_module_declaration.proof",
+            "consumption_module_declaration.why_not_native_episode",
+            "date",
+            "experiment_id",
+            "failure_policy",
+            "family_budget.asr_calls",
+            "family_budget.ceilings_are_not_targets",
+            "family_budget.encoder_calls",
+            "family_budget.fit_endpoint_calls_cap",
+            "family_budget.generation_calls_cap",
+            "family_budget.gpu_hours_fit_inclusive",
+            "family_budget.native_task_contract_calls_cap",
+            "family_budget.official_complete_scoring_jobs",
+            "family_budget.repeated_speech_audio_seconds_cap",
+            "fragment_kind",
+            "generation_budget.definition",
+            "purpose",
+            "stage3_algorithm.id",
+            "stage3_algorithm.note",
+            "stage3_algorithm.operators_used",
+            "stage3_measurement.claims_benefit",
+            "stage3_measurement.expected_effect_pp",
+            "stage3_measurement.measurement_design",
+            "stage3_measurement.note",
+            "stage3_measurement.primary_metric",
+            "stage3_measurement.read_roster",
+            "stage3_measurement.rows",
+            "stage3_measurement.tuning_roster"
+          ],
+          "policy": []
+        },
+        "composed_identical": true,
+        "declared_is_the_all_off_block": true,
+        "differing_policy_paths": [],
+        "direct_parent": "e21-native-window-direct-full44-v1",
+        "experiment": "earnings21-native-stage3-module-alloff-v1",
+        "lock": null,
+        "module_composed_hash": "3b5c8ed17fe0a6fc814cd557f5af63e95b1e1c9814a0900de612d0dcbb6cab04",
+        "off_arm": true,
+        "ok": true,
+        "own_composed_hash": "3b5c8ed17fe0a6fc814cd557f5af63e95b1e1c9814a0900de612d0dcbb6cab04",
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "rev": "working-tree"
+      },
+      {
+        "baseline_object_identical": true,
+        "cell": "smoke",
+        "composed_config_diff_vs_parent": {
+          "anything_else": [],
+          "bookkeeping": [],
+          "experiment_fragment": [
+            "cells",
+            "consumption_module_declaration.block.columns",
+            "consumption_module_declaration.block.components",
+            "consumption_module_declaration.block.module_id",
+            "consumption_module_declaration.block.profile",
+            "consumption_module_declaration.compiles_to",
+            "consumption_module_declaration.proof",
+            "consumption_module_declaration.why_not_native_episode",
+            "date",
+            "execution_plan.planned_gpu_hours",
+            "execution_plan.planned_model_calls",
+            "execution_plan.planned_speech_audio_seconds",
+            "execution_plan_note",
+            "experiment_id",
+            "failure_policy",
+            "family_budget.asr_calls",
+            "family_budget.ceilings_are_not_targets",
+            "family_budget.encoder_calls",
+            "family_budget.fit_endpoint_calls_cap",
+            "family_budget.generation_calls_cap",
+            "family_budget.gpu_hours_fit_inclusive",
+            "family_budget.native_task_contract_calls_cap",
+            "family_budget.official_complete_scoring_jobs",
+            "family_budget.repeated_speech_audio_seconds_cap",
+            "fragment_kind",
+            "generation_budget.cap",
+            "generation_budget.ceilings_are_not_targets",
+            "generation_budget.definition",
+            "generation_budget.target",
+            "purpose",
+            "stage3_algorithm.id",
+            "stage3_algorithm.note",
+            "stage3_algorithm.operators_used",
+            "stage3_measurement.claims_benefit",
+            "stage3_measurement.expected_effect_pp",
+            "stage3_measurement.measurement_design",
+            "stage3_measurement.note",
+            "stage3_measurement.primary_metric",
+            "stage3_measurement.read_roster",
+            "stage3_measurement.rows",
+            "stage3_measurement.tuning_roster"
+          ],
+          "policy": []
+        },
+        "composed_identical": true,
+        "declared_is_the_all_off_block": true,
+        "differing_policy_paths": [],
+        "direct_parent": "e21-native-window-four-row-direct-vs-system-v1",
+        "experiment": "earnings21-native-stage3-module-alloff-smoke-4-v1",
+        "lock": null,
+        "module_composed_hash": "5d260a651f9b777fe82bf34559c7b8b1e1543bad7e5a3a9b3492b2fa0922519b",
+        "off_arm": true,
+        "ok": true,
+        "own_composed_hash": "5d260a651f9b777fe82bf34559c7b8b1e1543bad7e5a3a9b3492b2fa0922519b",
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "rev": "working-tree"
+      }
+    ]
+  },
+  "no_lock": "Earnings has no locked system: the six-node form flew once (item E35, STRUCTURAL PASS) and is NOT admitted (base lock v3 section 4; E39 / E41 are four-row form proofs). The E35 read names the DIRECT arm as the comparator, so the module's all-off arm is the direct baseline on the full discovery roster -- e21-native-window-direct-full44-v1, referenced byte for byte (it carries no fit identity).",
+  "not_registered": "No component-on cell for this carrier (decision 187 keeps the GPU on SLURP; a component turns on per carrier only through its own read, design 2b.3 item 4).",
+  "own_null": "E21's measured own null (WER 0.058, PERSON 0.250, ORG 0.356, numeric 0.157; docs/results/2026-09-27-verdict-reclassification.md) was measured on the pre-FlightRuntime buf90 direct form (SAEA-E21-FULL44-NULL-REPLICATE-V1), NOT on these native-window bytes; the module null on this form is unmeasured until an in-chain A/A of this arm seals (design 2b.3).",
+  "read_run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-FORM-READ-V1",
+  "stage3_measurement": {
+    "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+      "primary_metric": "asr-wer-whisper (Whisper-normalised WER) beside conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1 and cost",
+      "read_roster": "Earnings-21 full discovery, 44 calls / 1,593 native windows (split identity fcc1b0bc...)",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+      "primary_metric": "asr-wer-whisper (Whisper-normalised WER) beside conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1 and cost",
+      "read_roster": "Earnings-21 full discovery, 44 calls / 1,593 native windows (split identity fcc1b0bc...)",
+      "rows": 1593,
+      "tuning_roster": "none"
+    }
+  }
+}

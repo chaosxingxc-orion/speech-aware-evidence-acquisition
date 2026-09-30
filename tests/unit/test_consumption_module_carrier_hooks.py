@@ -51,7 +51,10 @@ IDS = (
 def test_slurp_hooks_resolve_by_carrier_lock_key_and_others_have_none():
     hooks = cm.carrier_hooks_for_lock_key("slurp")
     assert hooks is not None and hooks.profile == "slurp"
-    assert cm.carrier_hooks_for_lock_key("earnings21-original") is None
+    # 2026-09-30 (carrier transfer): Earnings-21 and Audio2Tool have hook files; a lock key
+    # reaches its profile through core.base.CONSUMPTION_MODULE_PROFILES. Earnings-22 has none.
+    assert cm.carrier_hooks_for_lock_key("earnings21-original").profile == "earnings"
+    assert cm.carrier_hooks_for_lock_key("earnings22-original") is None
     assert cm.carrier_hooks_for_lock_key(None) is None
     assert hooks.decision_candidates is sh.slurp_decision_candidates
     assert hooks.delivered_units is sh.slurp_delivered_units
@@ -94,6 +97,9 @@ def test_the_loader_takes_the_min_candidates_ceiling_from_the_carrier():
     assert _carrier_max_decision_candidates({"carrier_lock_key": "slurp"}) == 3
     assert _carrier_profile({"carrier_lock_key": "slurp"}) == "slurp"
     assert _carrier_max_decision_candidates({"carrier_lock_key": "earnings21-original"}) == 0
+    assert _carrier_profile({"carrier_lock_key": "earnings21-original"}) == "earnings"
+    assert _carrier_max_decision_candidates({"carrier_lock_key": "audio2tool"}) == 4
+    assert _carrier_max_decision_candidates({"carrier_lock_key": "earnings22-original"}) == 0
     assert _carrier_profile({}) is None
 
 

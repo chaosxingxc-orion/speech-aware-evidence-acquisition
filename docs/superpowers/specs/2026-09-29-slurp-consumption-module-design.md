@@ -350,7 +350,52 @@ convergence.
      component is nominated and a composed read has carried it. `DELIVERED_PATH_ADMISSIONS` is still empty.
      (b) Re-listen `live` delivery (ruling R4): this needs its own later read. (c) Carrier hook files for
      Audio2Tool and Earnings (`rails/adapters/<profile>_module_hooks.py`), plus Earnings-22's runtime
-     TaskAdapter registration (section 2b.2). (d) Step 6a, supply abstention. (e) Step 7, the first composed read.
+     TaskAdapter registration (section 2b.2) -- DONE 2026-09-30, see "Carrier transfer status" below. (d) Step 6a,
+     supply abstention. (e) Step 7, the first composed read.
+   - *Carrier transfer status (2026-09-30, branch `fable/carrierhooks`; owner decision 196, direction 205;
+     model-free, nothing flown, decision 187 still bars every Audio2Tool and Earnings flight).*
+     - *Profiles.* `core.base.CONSUMPTION_MODULE_PROFILES` maps each profile to its carrier lock keys
+       (`slurp` -> `slurp`, `audio2tool` -> `audio2tool`, `earnings` -> `earnings21-original`); the module file
+       still names no carrier. `earnings22-original` maps to no profile: it has no baseline and no own null.
+     - *Hook files.* `rails/adapters/audio2tool_module_hooks.py` implements `decision_candidates` (the first two
+       distinct tool names of the A2T Perception state's `candidate_tools`, or of tool-card value ids),
+       `max_decision_candidates` (`max_candidates_per_action` 4), `delivered_units` (parameter values per action,
+       through the repository scorer's parser), `tool_offer_units` (string parameter values, section 2d) and
+       `carrier_components` (the exemplar-vote seed: not built; A2T-ORG-1: closed HARMFUL); `None`:
+       `decision_supply_path`, `default_deliver_normaliser` (none registered), `deliver_stages`,
+       `perception_branch_frame`, `flown_branch_programs`, `delivered_path_admissions`, `lock_versions`,
+       `current_lock`. `rails/adapters/earnings_module_hooks.py` implements `delivered_units` (numeric values, the
+       `numeric-value-accuracy-v1` unit, plus ConEC-term entity mentions when the caller passes the call's context
+       terms), `tool_offer_units` (numeric values, E-C3), `default_deliver_normaliser`
+       (`saea-deliver-earnings-text-v1`, the registered FORM step; the Whisper normaliser is scorer-side only) and
+       `carrier_components` (`kc-e1f-repair-supply`, "admitted on E21 (replicated PERSON +3.634)", the
+       Solver-repair analogue, never armable here); `None`: every decision / contrast / forced-candidate member
+       (no closed decision label), `deliver_stages`, `perception_branch_frame`, `flown_branch_programs`,
+       `delivered_path_admissions`, `lock_versions`, `current_lock`. Two defaulted `CarrierHooks` members were
+       added (`tool_offer_units`, `carrier_components`) and a generic `DeliveredUnit`.
+     - *Direct layers.* Neither carrier has a locked system, so each hook file's `lock_layer` is a DIRECT layer
+       (`policy` + `phase_material` of `a2t-native-system-direct-v1` / `e21-native-window-direct-full44-v1`,
+       section 3.2 "bare"). The compiler accepts a direct layer only with every component off and no column;
+       anything armed there is refused, and any component whose hook is `None` is refused on a system layer too.
+     - *All-off arms (the 2b.3 admission gate), HELD.* `a2t-native-stage3-module-alloff-v1` (+ smoke) on the
+       paired 400 and `earnings21-native-stage3-module-alloff-v1` (+ smoke) on the full 44-call discovery roster;
+       packages `docs/readiness/2026-09-30-{a2t,earnings21}-native-stage3-module-alloff-v1/`, DRAFT ledger rows,
+       `stage3_measurement` form-proof with `claims_benefit: false`. Each declares its all-off block in the
+       experiment fragment (`consumption_module_declaration`; a direct program carries no `native_episode`). Byte
+       proofs `module_equivalence_proof.py --at a2t0 e210`: the block compiles to the direct baseline's policy
+       blocks with no differing leaf, each cell rebuilds to its own composed hash, and each differs from its
+       direct parent (A2T-AA pass A / smoke; the E21 full44 / four-row direct cells) by no policy leaf.
+     - *Earnings-22.* `rails/adapters/earnings22_runtime.py`, a thin derivation of the Earnings-21 runtime adapter
+       (carrier and whole `dev` split only), registered in the shared factory; scoring reuses `asr-wer-whisper`.
+     - *What remains per carrier.* Audio2Tool: its all-off arm is request-identical to A2T-AA, so its module null
+       is h_A2T 1.625 by construction; next are component candidates (A-C1 do-no-harm candidate formation / the
+       exemplar-vote seed once the decision-157 store exists, then A-C3 value grounding) and a system lock to
+       compile them onto. Earnings-21: the module null on the native-window form is unmeasured (the measured E21
+       null is on the buf90 form) until an in-chain A/A of the all-off arm seals; component candidates are E-C1
+       (KC-E1f, admitted, needs an Earnings system lock) then E-C2 / E-C3. Earnings-22: no own null, no baseline
+       fragment (its direct program needs prepared execution units that do not exist), so no cell on it may claim
+       a benefit. For every carrier: no component-on cell and no composed read before the SLURP lock, when the
+       owner reopens the carrier (decision 187).
 6a. **Supply abstention, model-free (decision 199, section 2c).** Register the `supply_abstain` block and its receipt
    rows; pin the threshold table fitted offline on construction data (branch fable/emptysupply); add the explicit
    "no entities" option to the Solver contract as a component-owned template. **AT-M5:** with the block absent the

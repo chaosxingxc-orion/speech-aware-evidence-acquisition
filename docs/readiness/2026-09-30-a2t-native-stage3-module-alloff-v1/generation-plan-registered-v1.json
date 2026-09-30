@@ -1,0 +1,44 @@
+{
+  "cell": "a2t-native-stage3-module-alloff-v1",
+  "composed_config_hash": "b78a4171904e6f6a75afa6985a1f0b7aa28d1a51810162a4bdb67e0828b6ec01",
+  "execution_plan": {
+    "attempt_id": "attempt-a2t-native-stage3-module-alloff-v1-generation-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 400,
+    "planned_speech_audio_seconds": 2761,
+    "protocol_hash": "97c29628611f08410accd268fdee4c4faab698b161e76d180861ceaffe1ccdd2",
+    "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v3",
+  "experiment": "a2t-native-stage3-module-alloff-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 1201,
+    "generation_calls_cap": 400,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 2761
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "60eb5feaa",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-30-a2t-native-stage3-module-alloff-v1/protocol-registered-v1.json",
+    "sha256": "db55cc4b9a122df8f388508de25de4f90e4054adfb4df13a8785da35d9bf8943"
+  },
+  "purpose": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1: the consumption module's all-off arm on audio2tool (arm); a form proof, no benefit claimed.",
+  "registered_at_utc": "2026-09-30T12:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "One complete official score after a successful seal; no partial score.",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-carrierhooks, branch fable/carrierhooks",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

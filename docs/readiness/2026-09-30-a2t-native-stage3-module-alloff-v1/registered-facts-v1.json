@@ -1,0 +1,328 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement mapping (run id -> block) scripts/checks/stage3_effect_floor_check.py resolves; this copy has precedence over the preregistration's fence.",
+  "authority_relpaths": [
+    "docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "configs/baseline/a2t-native-system-direct-v1.json",
+    "src/speech_aware_evidence_acquisition/rails/adapters/audio2tool_module_hooks.py"
+  ],
+  "carrier_hooks": {
+    "carrier_components": {
+      "a2t-exemplar-vote-seed": {
+        "analogue_of": "agree-vote-seed (decision-node supply seed)",
+        "armable": false,
+        "plane": "SUPPLY -> tool shortlist",
+        "record": "docs/results/2026-09-27-a2t-earnings-gap-diagnosis.md",
+        "status": "not built: needs the Audio2Tool exemplar store (owner decision 157)"
+      },
+      "a2t-org-1-domain-grouping": {
+        "analogue_of": "top2-contrast (presentation)",
+        "armable": false,
+        "plane": "SUPPLY presentation -> tool shortlist",
+        "record": "docs/results/2026-09-27-a2t-org-1-reread-against-h-a2t.md",
+        "status": "closed: HARMFUL, official tool accuracy -3.225 pp [-4.30, -2.13] at n = 4,000 (2.0x h_A2T 1.625)"
+      }
+    },
+    "members": {
+      "carrier_components": "implemented",
+      "current_lock": "None",
+      "decision_candidates": "implemented",
+      "decision_supply_path": "None",
+      "default_deliver_normaliser": "None",
+      "deliver_stages": "None",
+      "delivered_path_admissions": "None",
+      "delivered_units": "implemented",
+      "flown_branch_programs": "None",
+      "flown_programs": "implemented",
+      "lock_layer": "implemented",
+      "lock_versions": "None",
+      "max_decision_candidates": "implemented",
+      "perception_branch_frame": "None",
+      "profile": "implemented",
+      "roster_pin_paths": "implemented",
+      "tool_offer_units": "implemented"
+    },
+    "profile": "audio2tool"
+  },
+  "cells": {
+    "arm": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-v1-generation-v1",
+      "baseline_fragment": "a2t-native-stage3-module-alloff-baseline-v1",
+      "cell": "a2t-native-stage3-module-alloff-v1",
+      "composed_config_hash": "b78a4171904e6f6a75afa6985a1f0b7aa28d1a51810162a4bdb67e0828b6ec01",
+      "dataset_fragment": "audio2tool-paired-400",
+      "experiment": "a2t-native-stage3-module-alloff-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 1201,
+        "generation_calls_cap": 400,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 2761
+      },
+      "fit_attempt_id": "attempt-a2t-native-stage3-module-alloff-v1-fit-v1",
+      "fit_run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "97c29628611f08410accd268fdee4c4faab698b161e76d180861ceaffe1ccdd2",
+      "rows": 400,
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "scorers": [
+        "a2t-toolcall-official",
+        "a2t-toolcall-v2",
+        "a2t-toolcall",
+        "cost"
+      ],
+      "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "baseline_fragment": "a2t-native-stage3-module-alloff-smoke-4-baseline-v1",
+      "cell": "a2t-native-stage3-module-alloff-smoke-4-v1",
+      "composed_config_hash": "c2d2a606e062caaa5115c95fd15a414a7982f7c898d57d2a5040f2226826b05b",
+      "dataset_fragment": "audio2tool-paired-400",
+      "experiment": "a2t-native-stage3-module-alloff-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 13,
+        "generation_calls_cap": 4,
+        "gpu_hours_fit_inclusive": 0.2,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 21
+      },
+      "fit_attempt_id": "attempt-a2t-native-stage3-module-alloff-smoke-4-v1-fit-v1",
+      "fit_run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "41ab6e9db0bda6b64e740681799a72e276d7c4ef1c319a778ed5a7446c0dfd61",
+      "rows": 4,
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "scorers": [
+        "a2t-toolcall-official",
+        "a2t-toolcall-v2",
+        "a2t-toolcall",
+        "cost"
+      ],
+      "split_identity_hash": "c7057020334be227c430d661953fa3ad3b0b044dfbc97c4e186c5777cb6a5baa"
+    }
+  },
+  "consumption_module_block": {
+    "columns": [],
+    "components": [
+      {
+        "component_id": "agree-vote-seed",
+        "state": "off"
+      },
+      {
+        "component_id": "centroid-boundary-key",
+        "state": "off"
+      },
+      {
+        "component_id": "solver-citation-contract",
+        "state": "off"
+      },
+      {
+        "component_id": "reviewer-g5-repair",
+        "state": "off"
+      },
+      {
+        "component_id": "relisten",
+        "state": "off"
+      },
+      {
+        "component_id": "top2-contrast",
+        "state": "off"
+      },
+      {
+        "component_id": "forced-candidate-list",
+        "state": "off"
+      },
+      {
+        "component_id": "key-source:k6p",
+        "state": "off"
+      },
+      {
+        "component_id": "scope-rule",
+        "state": "off"
+      },
+      {
+        "component_id": "e3-progressive-slots",
+        "state": "off"
+      },
+      {
+        "component_id": "supply-abstain",
+        "state": "off"
+      }
+    ],
+    "module_id": "saea-evidence-consumption-module-v1",
+    "profile": "audio2tool"
+  },
+  "module_byte_proof": {
+    "command": "python -B scripts/analysis/module_equivalence_proof.py --at a2t0",
+    "ok": true,
+    "results": [
+      {
+        "differing_policy_paths": [],
+        "fragment": "a2t-native-system-direct-v1",
+        "module_block_sha256": "1b4a4ac77b1432f2d017712693a1dc1e917d59d1787e55c3131471211879a4ea",
+        "ok": true,
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "target": "direct-layer"
+      },
+      {
+        "baseline_object_identical": true,
+        "cell": "arm",
+        "composed_config_diff_vs_parent": {
+          "anything_else": [],
+          "bookkeeping": [
+            "live_phase_fit.attempt_id",
+            "live_phase_fit.run_id",
+            "what_this_is"
+          ],
+          "experiment_fragment": [
+            "cells",
+            "consumption_module_declaration.block.columns",
+            "consumption_module_declaration.block.components",
+            "consumption_module_declaration.block.module_id",
+            "consumption_module_declaration.block.profile",
+            "consumption_module_declaration.compiles_to",
+            "consumption_module_declaration.proof",
+            "consumption_module_declaration.why_not_native_episode",
+            "date",
+            "experiment_id",
+            "fragment_kind",
+            "generation_budget.definition",
+            "own_null_pair.chain",
+            "own_null_pair.comparator_rows",
+            "own_null_pair.comparator_run_id",
+            "own_null_pair.pass_a_run_id",
+            "own_null_pair.pass_b_run_id",
+            "own_null_pair.request_identical_to",
+            "own_null_pair.roster_receipt",
+            "own_null_pair.smoke_run_id",
+            "own_null_pair.this_cell",
+            "purpose",
+            "stage3_algorithm.note",
+            "stage3_measurement.claims_benefit",
+            "stage3_measurement.expected_effect_pp",
+            "stage3_measurement.measurement_design",
+            "stage3_measurement.note",
+            "stage3_measurement.primary_metric",
+            "stage3_measurement.read_roster",
+            "stage3_measurement.rows",
+            "stage3_measurement.tuning_roster"
+          ],
+          "policy": []
+        },
+        "composed_identical": true,
+        "declared_is_the_all_off_block": true,
+        "differing_policy_paths": [],
+        "direct_parent": "a2t-stage3-aa-paired-400-a-v1",
+        "experiment": "a2t-native-stage3-module-alloff-v1",
+        "lock": null,
+        "module_composed_hash": "b78a4171904e6f6a75afa6985a1f0b7aa28d1a51810162a4bdb67e0828b6ec01",
+        "off_arm": true,
+        "ok": true,
+        "own_composed_hash": "b78a4171904e6f6a75afa6985a1f0b7aa28d1a51810162a4bdb67e0828b6ec01",
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "rev": "working-tree"
+      },
+      {
+        "baseline_object_identical": true,
+        "cell": "smoke",
+        "composed_config_diff_vs_parent": {
+          "anything_else": [],
+          "bookkeeping": [
+            "live_phase_fit.attempt_id",
+            "live_phase_fit.run_id",
+            "what_this_is"
+          ],
+          "experiment_fragment": [
+            "cells",
+            "consumption_module_declaration.block.columns",
+            "consumption_module_declaration.block.components",
+            "consumption_module_declaration.block.module_id",
+            "consumption_module_declaration.block.profile",
+            "consumption_module_declaration.compiles_to",
+            "consumption_module_declaration.proof",
+            "consumption_module_declaration.why_not_native_episode",
+            "date",
+            "experiment_id",
+            "fragment_kind",
+            "generation_budget.definition",
+            "own_null_pair.chain",
+            "own_null_pair.comparator_rows",
+            "own_null_pair.comparator_run_id",
+            "own_null_pair.pass_a_run_id",
+            "own_null_pair.pass_b_run_id",
+            "own_null_pair.request_identical_to",
+            "own_null_pair.roster_receipt",
+            "own_null_pair.smoke_run_id",
+            "own_null_pair.this_cell",
+            "purpose",
+            "stage3_algorithm.note",
+            "stage3_measurement.claims_benefit",
+            "stage3_measurement.expected_effect_pp",
+            "stage3_measurement.measurement_design",
+            "stage3_measurement.note",
+            "stage3_measurement.primary_metric",
+            "stage3_measurement.read_roster",
+            "stage3_measurement.rows",
+            "stage3_measurement.tuning_roster"
+          ],
+          "policy": []
+        },
+        "composed_identical": true,
+        "declared_is_the_all_off_block": true,
+        "differing_policy_paths": [],
+        "direct_parent": "a2t-stage3-aa-paired-400-smoke-4-v1",
+        "experiment": "a2t-native-stage3-module-alloff-smoke-4-v1",
+        "lock": null,
+        "module_composed_hash": "c2d2a606e062caaa5115c95fd15a414a7982f7c898d57d2a5040f2226826b05b",
+        "off_arm": true,
+        "ok": true,
+        "own_composed_hash": "c2d2a606e062caaa5115c95fd15a414a7982f7c898d57d2a5040f2226826b05b",
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "rev": "working-tree"
+      }
+    ]
+  },
+  "no_lock": "Audio2Tool has no locked system (base lock v3 section 4; the harness receipt names no Audio2Tool default plan), so the module's all-off arm is the DIRECT baseline of the shared controller -- a2t-native-system-direct-v1's policy blocks (phase-direct-only-v1 and its one phase_material.direct entry), byte-identical to the sealed direct a2t-native-role-direct-union4000-v1 and to both A2T-AA passes.",
+  "not_registered": "No component-on cell for this carrier (decision 187 keeps the GPU on SLURP; a component turns on per carrier only through its own read, design 2b.3 item 4).",
+  "own_null": "h_A2T 1.625 pp official tool accuracy, 1.375 pp official exact match, parameter-F1 margin 2.23 (owner decision 167, docs/results/2026-09-27-a2t-aa-paired-400-read.md), measured on THESE request bytes: the all-off arm is request-identical to A2T-AA pass A and pass B, so its module null is that null by construction, and the carrier admission gate (design 2b.3) is met by the byte proof without a new flight.",
+  "read_run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-FORM-READ-V1",
+  "stage3_measurement": {
+    "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+      "primary_metric": "a2t-toolcall-official (paper-facing, arXiv:2604.22821 Table 3 calibration) beside a2t-toolcall-v2 / a2t-toolcall / cost",
+      "read_roster": "A2T-PAIRED-400-V1 (docs/receipts/rosters/a2t-paired-400-v1.json)",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+      "primary_metric": "a2t-toolcall-official (paper-facing, arXiv:2604.22821 Table 3 calibration) beside a2t-toolcall-v2 / a2t-toolcall / cost",
+      "read_roster": "A2T-PAIRED-400-V1 (docs/receipts/rosters/a2t-paired-400-v1.json)",
+      "rows": 400,
+      "tuning_roster": "none"
+    }
+  }
+}

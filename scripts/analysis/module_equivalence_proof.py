@@ -58,6 +58,19 @@ Cases:
   the recall k (A2's A/A flew k 60 at w_agree 0, a proven supply no-op). The
   full composed-config diff against the A2 cell is listed and classified
   (policy / the module block itself / bookkeeping / experiment fragment).
+* ``a2t0`` / ``e210`` -- the carrier transfer (direction 205, design 2b.3):
+  the all-off block of the ``audio2tool`` / ``earnings`` profile compiles to
+  that carrier's DIRECT layer (neither carrier has a locked system), whose
+  policy blocks must equal the named direct baseline fragment byte for byte
+  (``a2t-native-system-direct-v1`` / ``e21-native-window-direct-full44-v1``).
+  Each registered all-off cell (arm, smoke) declares the block in its
+  experiment fragment (``consumption_module_declaration``; a direct program
+  carries no ``native_episode``, so the loader-verified slot is unavailable);
+  the block must be the all-off block, compile to the cell's own composed
+  hash, and the cell's composed config must differ from its direct parent
+  cell (the A2T-AA pass A / smoke; the E21 full44 / four-row direct cells) by
+  NO policy leaf -- only fit identity, prose and the experiment fragment's own
+  block, none of which enters a request.
 
     python scripts/analysis/module_equivalence_proof.py --at all
 """
@@ -459,11 +472,100 @@ def run_m6(repo_root: Path = REPO_ROOT) -> dict:
     return {"at": "m6", "results": results, "ok": bool(ok)}
 
 
+#: Carrier transfer: ``{at: {profile, the direct baseline the layer is, {cell key: (all-off cell, direct parent)}}}``.
+ALLOFF_CASES = {
+    "a2t0": {
+        "profile": "audio2tool", "lock_fragment": "a2t-native-system-direct-v1",
+        "cells": {"arm": ("a2t-native-stage3-module-alloff-v1", "a2t-stage3-aa-paired-400-a-v1"),
+                  "smoke": ("a2t-native-stage3-module-alloff-smoke-4-v1", "a2t-stage3-aa-paired-400-smoke-4-v1")},
+    },
+    "e210": {
+        "profile": "earnings", "lock_fragment": "e21-native-window-direct-full44-v1",
+        "cells": {"arm": ("earnings21-native-stage3-module-alloff-v1", "e21-native-window-direct-full44-v1"),
+                  "smoke": ("earnings21-native-stage3-module-alloff-smoke-4-v1",
+                            "e21-native-window-four-row-direct-vs-system-v1")},
+    },
+}
+#: The experiment-fragment key a direct all-off cell declares its block under.
+DECLARATION_KEY = "consumption_module_declaration"
+_ALLOFF_BOOKKEEPING = ("live_phase_fit.", "what_this_is")
+
+
+def alloff_block(profile: str) -> dict:
+    """The all-off block of ``profile``: every catalogued component ``off``, no column, no lock key."""
+
+    return {
+        "module_id": cm.CONSUMPTION_MODULE_ID, "profile": profile,
+        "components": [{"component_id": spec.component_id, "state": "off"} for spec in cm.COMPONENT_CATALOGUE],
+        "columns": [],
+    }
+
+
+def _classify_alloff(paths: list[str], experiment_keys: set[str]) -> dict[str, list[str]]:
+    out: dict[str, list[str]] = {"policy": [], "bookkeeping": [], "experiment_fragment": [], "anything_else": []}
+    for path in paths:
+        top = path.split(".", 1)[0]
+        if top in cm.POLICY_OWNED_KEYS:
+            out["policy"].append(path)
+        elif path.startswith(_ALLOFF_BOOKKEEPING):
+            out["bookkeeping"].append(path)
+        elif top in experiment_keys:
+            out["experiment_fragment"].append(path)
+        else:
+            out["anything_else"].append(path)
+    return out
+
+
+def run_alloff(at: str, repo_root: Path = REPO_ROOT) -> dict:
+    """``a2t0`` / ``e210``: the carrier's all-off arm is its direct baseline's bytes."""
+
+    spec = ALLOFF_CASES[at]
+    hooks = cm.resolve_carrier_hooks(spec["profile"], repo_root=repo_root)
+    block = alloff_block(spec["profile"])
+    composed_policy = cm.compile_module(block, hooks, repo_root=repo_root)
+    lock = _read_json(f"configs/baseline/{spec['lock_fragment']}.json", repo_root)
+    lock_diff = cm.differing_paths(composed_policy.values(), cm.policy_owned_values(lock))
+    results = [{
+        "target": "direct-layer", "fragment": spec["lock_fragment"], "program_id": composed_policy.program_id,
+        "program_ceiling": composed_policy.program_ceiling, "module_block_sha256": composed_policy.config_block_sha256,
+        "differing_policy_paths": lock_diff, "ok": not lock_diff,
+    }]
+    ok = not lock_diff
+    for key, (experiment, parent) in spec["cells"].items():
+        path = repo_root / "configs" / "experiment" / f"{experiment}.json"
+        if not path.is_file():
+            results.append({"cell": key, "experiment": experiment, "registered": False, "ok": False})
+            ok = False
+            continue
+        document = json.loads(path.read_text(encoding="utf-8"))
+        declared = (document.get(DECLARATION_KEY) or {}).get("block")
+        declared_policy = cm.compile_module(declared, hooks, repo_root=repo_root)
+        row = rebuild_and_compose(declared_policy, experiment, repo_root=repo_root)
+        parent_document = json.loads(_fragment_text("experiment", parent, None, repo_root))
+        diff = _classify_alloff(
+            cm.differing_paths(_composed_values(experiment, repo_root), _composed_values(parent, repo_root)),
+            set(document) | set(parent_document),
+        )
+        row.update({
+            "cell": key, "direct_parent": parent, "declared_is_the_all_off_block": declared == block,
+            "off_arm": cm.is_module_off_block(declared, repo_root=repo_root),
+            "composed_config_diff_vs_parent": diff,
+        })
+        row["ok"] = bool(row["composed_identical"] and not row["differing_policy_paths"]
+                         and row["declared_is_the_all_off_block"] and row["off_arm"]
+                         and not diff["policy"] and not diff["anything_else"])
+        ok &= row["ok"]
+        results.append(row)
+    return {"at": at, "profile": spec["profile"], "results": results, "ok": bool(ok)}
+
+
 def run_case(at: str, repo_root: Path = REPO_ROOT) -> dict:
     if at == "m4":
         return run_m4(repo_root)
     if at == "m6":
         return run_m6(repo_root)
+    if at in ALLOFF_CASES:
+        return run_alloff(at, repo_root)
     hooks = carrier_module_hooks(repo_root=repo_root)
     results = []
     ok = True
@@ -492,10 +594,10 @@ def run_case(at: str, repo_root: Path = REPO_ROOT) -> dict:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--at", choices=(*CASES, "m4", "m6", "all"), nargs="+", default=["all"])
+    parser.add_argument("--at", choices=(*CASES, "m4", "m6", *ALLOFF_CASES, "all"), nargs="+", default=["all"])
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     args = parser.parse_args(argv)
-    ats = (*CASES, "m4", "m6") if "all" in args.at else tuple(args.at)
+    ats = (*CASES, "m4", "m6", *ALLOFF_CASES) if "all" in args.at else tuple(args.at)
     reports = [run_case(at, args.repo_root) for at in ats]
     print(json.dumps({"reports": reports, "ok": all(r["ok"] for r in reports)}, indent=2, sort_keys=True))
     return 0 if all(r["ok"] for r in reports) else 1

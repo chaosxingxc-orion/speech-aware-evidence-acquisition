@@ -859,6 +859,21 @@ class ConsumptionModuleRegistry(Registry):
 #: Populated from ``rails/consumption_module.py``.
 CONSUMPTION_MODULES = ConsumptionModuleRegistry("evidence consumption module")
 
+#: The module's carrier PROFILES (owner decision 196; design section 2b.1):
+#: ``{profile: the carrier lock keys whose configs reach that profile's
+#: hooks}``. A block's ``profile`` resolves to
+#: ``rails/adapters/<profile>_module_hooks.py`` only when it is listed here,
+#: and ``rails.consumption_module.carrier_hooks_for_lock_key`` maps a config's
+#: ``carrier_lock_key`` to its profile through this table -- the module file
+#: itself names no carrier. ``earnings22-original`` is deliberately absent: it
+#: has a runtime TaskAdapter but no measured own null and no baseline, so there
+#: is no layer the module could compile onto yet (design section 2b.2).
+CONSUMPTION_MODULE_PROFILES: Mapping[str, tuple[str, ...]] = {
+    "slurp": ("slurp",),
+    "audio2tool": ("audio2tool",),
+    "earnings": ("earnings21-original",),
+}
+
 
 class RepairAlignmentError(CoreError):
     """A substitution-only delivery rule refuses.

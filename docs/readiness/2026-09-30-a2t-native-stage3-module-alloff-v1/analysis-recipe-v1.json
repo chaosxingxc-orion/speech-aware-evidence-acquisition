@@ -1,0 +1,22 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-v1-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "direct_parent": {
+      "experiment": "a2t-stage3-aa-paired-400-a-v1",
+      "role": "the direct cell whose bytes the all-off arm carries; context only"
+    }
+  },
+  "boundary": "Development numbers only (owner decisions 28 and 86). No utterance text, transcript, gold label or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "design": "DESCRIPTIVE form read: request identity against the direct parent's registered bytes, row completeness, the official scorer(s) reported beside, contacts per minute; no verdict, no benefit, no admission.",
+  "own_null": "h_A2T 1.625 pp official tool accuracy, 1.375 pp official exact match, parameter-F1 margin 2.23 (owner decision 167, docs/results/2026-09-27-a2t-aa-paired-400-read.md), measured on THESE request bytes: the all-off arm is request-identical to A2T-AA pass A and pass B, so its module null is that null by construction, and the carrier admission gate (design 2b.3) is met by the byte proof without a new flight.",
+  "read_run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-FORM-READ-V1",
+  "recipe_id": "a2t-native-stage3-module-alloff-v1-form-read-v1",
+  "schema": "saea-analysis-recipe-v1",
+  "scorers": "a2t-toolcall-official (paper-facing, arXiv:2604.22821 Table 3 calibration) beside a2t-toolcall-v2 / a2t-toolcall / cost"
+}

@@ -1,0 +1,132 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-v1-generation-v1",
+      "baseline_fragment": "a2t-native-stage3-module-alloff-baseline-v1",
+      "cell_id": "a2t-native-stage3-module-alloff-v1",
+      "dataset_fragment": "audio2tool-paired-400",
+      "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+      "readiness": {
+        "reason": "Consumption-module all-off arm on audio2tool (owner decision 196, direction 205; design 2b.3 carrier admission gate), registered before contact on 2026-09-30 by scripts/flights/module/register_carrier_module_alloff_cells.py. HELD: decision 187 keeps the GPU on SLURP until the SLURP lock; nothing flies before the owner reopens this carrier and root mints coordination/a2t-native-stage3-module-alloff-v1/root-admission-v1.json. The flip is scripts/flights/module/module_alloff_a2t0_flip.sh. The program declares no supplied first phase, so the re-pin creates no prepared artifact; --allow-output-change is never passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1"
+    }
+  ],
+  "consumption_module_declaration": {
+    "block": {
+      "columns": [],
+      "components": [
+        {
+          "component_id": "agree-vote-seed",
+          "state": "off"
+        },
+        {
+          "component_id": "centroid-boundary-key",
+          "state": "off"
+        },
+        {
+          "component_id": "solver-citation-contract",
+          "state": "off"
+        },
+        {
+          "component_id": "reviewer-g5-repair",
+          "state": "off"
+        },
+        {
+          "component_id": "relisten",
+          "state": "off"
+        },
+        {
+          "component_id": "top2-contrast",
+          "state": "off"
+        },
+        {
+          "component_id": "forced-candidate-list",
+          "state": "off"
+        },
+        {
+          "component_id": "key-source:k6p",
+          "state": "off"
+        },
+        {
+          "component_id": "scope-rule",
+          "state": "off"
+        },
+        {
+          "component_id": "e3-progressive-slots",
+          "state": "off"
+        },
+        {
+          "component_id": "supply-abstain",
+          "state": "off"
+        }
+      ],
+      "module_id": "saea-evidence-consumption-module-v1",
+      "profile": "audio2tool"
+    },
+    "compiles_to": "the audio2tool direct layer = configs/baseline/a2t-native-system-direct-v1.json policy blocks",
+    "proof": "python -B scripts/analysis/module_equivalence_proof.py --at a2t0",
+    "why_not_native_episode": "A direct program carries no native_episode block (the native-episode loader refuses one on any program that is not the native-role episode), so the declaration lives here and is proven by the byte proof rather than verified by the loader."
+  },
+  "date": "2026-09-30",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 400,
+    "planned_speech_audio_seconds": 2761,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, prompt, knowledge, geometry or cap change. A failure in the smoke stops the chain and pass A does not open; a failure in pass A stops the chain and pass B does not open. AT MOST ONE root-diagnosed recovery re-registration per run id, which needs BOTH a new generation attempt id AND a new live_phase_fit run and attempt id (a journaled fit cannot be retried under a spent fit identity); a second failure closes the cell and the fix is proven on a four-row dry run. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18): an INFRASTRUCTURE abort with code and request bytes unchanged takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly under fresh identities. A partial manifest is never scored and never read. If pass A and pass B do not seal on ONE resident session, the pair is not request-identical and the null is not read from it.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 1201,
+    "generation_calls_cap": 400,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 2761
+  },
+  "fragment_kind": "saea-a2t-native-stage3-module-alloff-v1",
+  "generation_budget": {
+    "cap": 400,
+    "definition": "The direct-only phase program makes exactly one contact per row: 400 x 1 = 400; the live phase fit makes 1 + (2 + 1) x 400 = 1201 tokenizer endpoint calls under SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-FIT-V1. Ceilings, not targets; run-cumulative across attempts.",
+    "target": 400
+  },
+  "population": {
+    "count": 400,
+    "dataset_fragment": "audio2tool-paired-400",
+    "decision_population": "A2T-PAIRED-400-V1 (docs/receipts/rosters/a2t-paired-400-v1.json): 50 rows per tier over the eight Audio2Tool tiers, one seeded draw (seed 20260921) by core.roster.freeze_roster from the sample ids of the sealed A2T-ORG1-UNION-4000 -- owner decisions 67 and 71; roster role evaluation, split role discovery; domains smart_home 306, wearables 74, smart_car 20; 2760.438042 s of speech, 1 654-second synthesis-defect row(s) kept because the comparator rows were sealed on exactly these rows. Every row already carries a sealed direct comparator row (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1) whose per-row hashes are frozen beside the roster; no new speech identity; the full 4,000 flies only for an admitted form.",
+    "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "the evidence-consumption module's ALL-OFF arm on audio2tool: every component off, which compiles to the carrier's DIRECT layer. Audio2Tool has no locked system (base lock v3 section 4; the harness receipt names no Audio2Tool default plan), so the module's all-off arm is the DIRECT baseline of the shared controller -- a2t-native-system-direct-v1's policy blocks (phase-direct-only-v1 and its one phase_material.direct entry), byte-identical to the sealed direct a2t-native-role-direct-union4000-v1 and to both A2T-AA passes. It is the carrier admission gate of design section 2b.3: the module-bare arm on the carrier's own roster before any component is turned on there. Own null: h_A2T 1.625 pp official tool accuracy, 1.375 pp official exact match, parameter-F1 margin 2.23 (owner decision 167, docs/results/2026-09-27-a2t-aa-paired-400-read.md), measured on THESE request bytes: the all-off arm is request-identical to A2T-AA pass A and pass B, so its module null is that null by construction, and the carrier admission gate (design 2b.3) is met by the byte proof without a new flight. A FORM proof: it claims no benefit, admits nothing and compares no mechanism; no component-on cell exists for this carrier. Development numbers only (owner decisions 28 and 86).",
+  "service_session": "serving-a2t-native-role-base-np3-max2048-v3",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is the evidence-consumption module with every component off on a carrier with no locked system -- the carrier's direct baseline expressed as a module block, the carrier admission gate of the consumption-module design (section 2b.3). No rollout, no per-sample scoring, no credit assignment, no update operator, no evolving store and no mechanism.",
+    "operators_used": []
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0.0,
+    "measurement_design": "form-proof",
+    "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+    "primary_metric": "a2t-toolcall-official (paper-facing, arXiv:2604.22821 Table 3 calibration) beside a2t-toolcall-v2 / a2t-toolcall / cost",
+    "read_roster": "A2T-PAIRED-400-V1 (docs/receipts/rosters/a2t-paired-400-v1.json)",
+    "rows": 400,
+    "tuning_roster": "none"
+  }
+}
