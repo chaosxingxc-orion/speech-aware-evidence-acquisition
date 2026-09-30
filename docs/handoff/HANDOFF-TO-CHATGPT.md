@@ -1,7 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T02:25:28Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent) · HEAD at writing `11ae9ae9` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T02:47:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+ops agent) · HEAD at writing `6a901ca8` on `master` (plus this refresh commit), tree clean.
+**Since 02:25Z (ops agent), 2026-09-30:** **filler-hold race and fix.** `queue_a2.sh` created `filler.hold` at
+01:59:48Z on `NEXT DONE` alone -- its bare grep for `filler hold removed` also matched `queue_next.sh`'s own
+preamble line -- and `queue_next.sh`'s release step removed that hold with `rm -f` at 02:00:16Z and started the
+filler inline; `queue_a2.sh` then waited for a filler nothing held (all chunks flown; it looped WAIT), and the GPU
+idled about 30 min until the coordinator re-created the hold by hand at 02:31:55Z (filler exited "filler held"
+02:32:49Z). **A2 launched 02:34:33Z** at `310110be` (uptime 7 h 19 min < 12 h, no restart; slurp-np4 ready): smoke
+PASS 02:36:11Z (16 contacts), campaign (in-chain A/A then the A2 arm) `arm-start` 02:36:21Z, `core.flight.cli
+campaign` pid 1849997 under driver pid 1802486 / chain pid 1802436; GPU 93-98 % from 02:41Z. **Fix merged
+`6a901ca8`** (`fable/holdowner` `50071f34`): `queue_lib.sh` `ql_hold_take <owner> [<predecessor>]` /
+`ql_hold_release <owner>` / `ql_hold_owner` (owned hold "<token> <UTC>"; another owner's hold is never overwritten
+or removed; a successor takes it over from its named predecessor before the predecessor's release) and
+`ql_seg_line` (matches a log line's message start, never a quoted phrase); the filler's held line names the owner;
+`queue_rankvis.sh` converted; new `scripts/flights/batch/queue_successor_template.sh` (pattern + safe swap
+procedure); 34 tests pass. **Live queues unchanged.** The running `queue_e5.sh` (pid 1442898) carries the SAME
+self-match against `queue_a2.sh`'s preamble and will repeat the race at `A2 DONE` (it would touch the hold, lose it
+to `queue_a2.sh`'s `rm -f` 60 s later, and wait up to 10 h on a filler that loops WAIT). **Swap pending (coordinator,
+before `A2 DONE`, about 3 h after the 02:36Z launch):** `/home/chao/saea-queue/queue_e5.sh.next` (`bash -n` OK)
+waits for the real `A2 DONE` + `filler hold removed` lines, then `ql_hold_take queue_e5 legacy`; swap per the
+template header (stop SAEA-Queue-E5 while it is still in its step-1 wait, rename, restart the task).
 **Since 02:14Z (records agent):** **`fable/scorerstrat` merged** (`45536524`, `--no-ff`; the branch took master
 first, `81259322`, no conflict; 127 targeted worktree tests passed, 1 skipped; engineering base, harness admission,
 tool catalog, results ledger, derived-media confinement (receipts restored) and Stage-3 effect floor (0 blocking)
