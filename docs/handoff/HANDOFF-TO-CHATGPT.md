@@ -1,7 +1,43 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T03:18:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent) · HEAD at writing `8b2e3ad3` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T04:33:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records agent) · HEAD at writing `6995c365` on `master` (plus this refresh commit), tree clean.
+**Since 04:29Z (records agent), 2026-09-30:** owner-decision registry **row 207** (test-sample allowance v2: add exactly the two zero-contact FIT ids `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1` and `-MILESTONE-01-FIT-V1` to the decision-151 allowance, all other terms unchanged) is now in `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md` between rows 206 and 208, PROPOSED, Ruling `pending`.
+**Since 04:08Z (records agent), 2026-09-30:** **`fable/revisioninstr` merged** (`47d53b7b`, `--no-ff`; worktree merge of master `2230805b`; 9 targeted tests passed; results ledger and engineering base PASS): `docs/results/2026-09-30-slurp-reviewer-revision-decision-instrument-offline.md` (DESCRIPTIVE, zero contacts), the driver `scripts/analysis/slurp_reviewer_revision_instrument.py` and its test. **Coordinator ruling R5** (`826432f0`, appended to the Solver intent-decision design spec; matching verdict clause in the results ledger): the **Solver-node blank is CLOSED under the current evidence kinds** -- across 16 sealed pools the Reviewer's REVISE route reaches 4-11 % of the oracle positives at precision 0.05-0.29 (pooled 0.122 [0.10, 0.15]; standard forms 0.153), converts 0.159 where it reaches them (REV-TFRL-1: 7/31 at rank 2, 0/13 at rank 3), and every confidence proxy scores at or below +0.1 pp per pool; only a perfect flag clears the 0.65 floor (+0.84-1.36 pp). Both R2 bars (conversion >= 0.30, precision >= 0.33) fail, so M-B stage 1 is NOT registered. **Registry** (`0335baef`): row 208 PROPOSED (P-SV-4 = K6p centred-centroid + agreement key as a same-flight Perception column, Fold B, declared +1.1 pp vs floor 0.65, branch `fable/keysource`); row 209 PROPOSED, to be ruled after the A2 and milestone reads (structural ceiling: Fold A on-list recall 92.1 %, rank-2/3 conversion 29.5 %; options A accept ~90 % dev intent as the SLURP ceiling and close Stage 3 on stable replicated test-sample gains, B open a new evidence kind for intent under 205/206, C both -- close SLURP at the measured ceiling and carry the module to Audio2Tool/Earnings (196) while B is explored offline; coordinator recommends C). **GPU queue:** A2 flying (`SAEA-Queue-A2`, seal ~05:40Z) -> E5-0 + test-sample preparations in the serving-restart gap (`SAEA-Queue-E5`) -> filler. **Owner pending:** decision 207 (allowance v2 naming the FIT run ids), the E5-2 gate, decision 208 (P-SV-4 K6p column), decision 209 (after the A2 and milestone reads).
+**Since 04:02Z (merge agent), 2026-09-30:** **`fable/solverdecision` merged** (`be18200c`, `--no-ff`; worktree
+merge of master `bc95d002`; 11 targeted tests passed; results ledger and engineering base PASS):
+`docs/results/2026-09-30-slurp-solver-decision-oracle-offline.md` (DESCRIPTIVE, zero contacts), the design spec
+`docs/superpowers/specs/2026-09-30-solver-intent-decision-mechanism-design.md`, the driver
+`scripts/analysis/slurp_solver_decision_oracle.py` and its test. Reading: the Solver-decision oracle ceiling is
+5.7-7.6 pp (62-82 rows of 1,080 with gold at note rank 2/3 and the pick wrong, seven sealed pools), but the measured
+conversions bind: a perfect decision at the cross-flight conversion 0.085 gives 5.3-7.0 rows (under the 7.02-row
+same-flight floor in every pool); the best offline rule at the Reviewer-routed anchor (0.185 / 0.049) gives at most
++1.32 rows (about 0.12 pp). **Coordinator rulings appended to the spec** (`1dfc6e55`): R1 ranking accepted (M-B
+declared confidence first as a declaration-only instrument; M-D only after M-B stage 1; M-A carries the EFF-1 risk;
+M-C not viable); R2 next step is the offline REV-TFRL-1 revision instrument (dispatched on `fable/revisioninstr`):
+conversion >= 0.30 and REVISE-decision precision >= 0.33 -> register M-B stage 1 on Fold B with a Solver
+answer-contract setting added to the same-flight instrument, else close the Solver-node blank; R3 structural fact:
+following the votes on the 102-115 disagreeing rows would net -61 to -72 rows -- the delivered knowledge favours the
+wrong intent there, so more evidence of the SAME kind cannot fix rank-2/3; a further Solver intent gain needs a
+different evidence kind or the model's own confidence; R4 no cell registered from this design. **GPU queue:** A2
+flying (`SAEA-Queue-A2`) -> E5-0 + test-sample preparations 2/3 in the serving-restart gap (`SAEA-Queue-E5`) ->
+filler. **Owner pending:** decision 207 (allowance v2 naming the FIT run ids), the E5-2 gate, decision 208 (P-SV-4
+K6p column).
+**Since 03:18Z (merge agent), 2026-09-30:** **`fable/recallkey` merged** (`a90a8dec`, `--no-ff`; the worktree was
+already at master; 11 targeted tests passed; results ledger and engineering base PASS):
+`docs/results/2026-09-30-slurp-retrieval-key-recall-offline.md` (DESCRIPTIVE, zero contacts), its driver
+`scripts/analysis/slurp_retrieval_key_recall.py` and test. Conclusion: no key built from the pinned vectors (K1-K8)
+adds more than +0.1 / +0.4 pp (A / B) block presence over centroid + agreement, which already has gold in the block on
+1,048 / 1,080 Fold A rows; 44 of the 76 off-note Fold A rows have gold in the block but not kept by the note. The
+binding constraints are the note's keep rate at block ranks 2-8 and Solver conversion at rank 2/3 -- both RANK
+problems. Rank quality is the retrieval-side lever: K6p (centred centroid + agreement, production admission) lifts
+gold to block rank 1 on +22 (A) / +26 (B) net rows, implied intent about +1.1 pp on both folds. The ceiling note
+carries this as a dated addendum (`22231ca0`; the first 95 % blank is re-pointed from "a new retrieval key" to rank
+quality). **Dispatched:** K6p / `key_source` Perception-branch axis engineering (branch `fable/keysource`; enables a
+same-flight K6p column, a P-SV-4 candidate); Solver decision mechanism design in progress (`fable/solverdecision`).
+**`queue_e5` swap DONE** (02:48Z, coordinator): `queue_e5.sh.next` is live, so the 02:25Z self-match race is closed.
+**GPU queue:** A2 flying (`SAEA-Queue-A2`) -> E5-0 + test-sample preparations 2/3 in the serving-restart gap
+(`SAEA-Queue-E5`) -> filler. **Owner pending:** decision 207 (allowance v2 naming the FIT run ids), the E5-2 gate.
 **Since 03:03Z (records agent), 2026-09-30:** **`fable/blockdepth` merged** (`3336c4ae`, `--no-ff`; the worktree
 took master first, `d375fb21`, no conflict; 10 targeted tests passed; results ledger and engineering base PASS):
 `docs/results/2026-09-30-slurp-perception-block-depth-and-recall-offline.md` (DESCRIPTIVE, zero contacts), its
@@ -23,7 +59,7 @@ COMP-1b 85.65). 95 % needs both on-list recall >= about 97 % (a new retrieval ke
 conversion near 50 % (today 29.5 %; a Solver-side decision mechanism that is not the contrast block). The A2 DEV
 read and the milestone measure where the current set stands, not this ceiling. **GPU queue:** A2 flying since
 02:36Z (`SAEA-Queue-A2`) -> E5-0 + test-sample preparations 2/3 in the serving-restart gap (`SAEA-Queue-E5`; the
-`queue_e5.sh.next` swap before `A2 DONE` is still the coordinator's) -> filler. **Owner pending:** decision 207
+`queue_e5.sh.next` swap was DONE at 02:48Z, correction 04:02Z) -> filler. **Owner pending:** decision 207
 (allowance v2 naming the FIT run ids), the E5-2 gate.
 **Since 02:47Z (merge agent), 2026-09-30:** **`fable/milestonerole` merged** (`91f77e5e`, `--no-ff`; branch
 already held `c1b42549`; branch fix `c4292690` aligned a stale forbidden-role CLI test; 110 targeted tests passed,
@@ -47,7 +83,7 @@ or removed; a successor takes it over from its named predecessor before the pred
 `queue_rankvis.sh` converted; new `scripts/flights/batch/queue_successor_template.sh` (pattern + safe swap
 procedure); 34 tests pass. **Live queues unchanged.** The running `queue_e5.sh` (pid 1442898) carries the SAME
 self-match against `queue_a2.sh`'s preamble and will repeat the race at `A2 DONE` (it would touch the hold, lose it
-to `queue_a2.sh`'s `rm -f` 60 s later, and wait up to 10 h on a filler that loops WAIT). **Swap pending (coordinator,
+to `queue_a2.sh`'s `rm -f` 60 s later, and wait up to 10 h on a filler that loops WAIT). **Swap DONE 02:48Z (was pending: coordinator,
 before `A2 DONE`, about 3 h after the 02:36Z launch):** `/home/chao/saea-queue/queue_e5.sh.next` (`bash -n` OK)
 waits for the real `A2 DONE` + `filler hold removed` lines, then `ql_hold_take queue_e5 legacy`; swap per the
 template header (stop SAEA-Queue-E5 while it is still in its step-1 wait, rename, restart the task).
