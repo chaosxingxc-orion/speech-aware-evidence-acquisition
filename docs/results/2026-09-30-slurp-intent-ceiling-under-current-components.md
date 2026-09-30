@@ -44,3 +44,16 @@ Two blanks, both required:
 
 These are ceilings of the current component set on Fold A, not forecasts. The A2 DEV read and the milestone read
 measure where the current set stands; they do not measure this ceiling. Nothing here is nominated or admitted.
+
+## Addendum 2026-09-30: the first blank re-pointed after the retrieval-key recall read
+
+Source: [RK] `2026-09-30-slurp-retrieval-key-recall-offline.md`. The first blank is re-pointed: no key built from
+the pinned vectors (families K1-K8) adds more than +0.1 / +0.4 pp (A / B) block presence over centroid + agreement,
+which already puts gold in the block on 1,048 / 1,080 Fold A rows [RK] sections 3-4. The binding constraint is the
+Perception note's keep rate for gold at block ranks 2-8: of the 76 Fold A rows without gold on the note, about 44
+have gold in the block [RK] section 3. Downstream of the note, the second binding constraint is Solver conversion at
+rank 2/3 (blank 2 above). Both are RANK problems, not presence problems. Rank quality is therefore the
+retrieval-side lever: K6p (centred centroid + agreement, production admission) lifts gold to block rank 1 on +22 (A)
+/ +26 (B) net rows, for an implied intent of about +1.1 pp on both folds [RK] section 4. It is to be read
+same-flight once a `key_source` Perception-branch axis exists (a P-SV-4 candidate); nothing here is nominated or
+admitted.
