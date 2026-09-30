@@ -31,3 +31,13 @@ re-pins the smoke and the arm. (3) `scripts/flights/module/batch_chain_module_al
 `serving-e21-native-window-flightruntime-np4-max1024-v1`. (4) `scripts/flights/module/module_alloff_e210_read.sh` names the read.
 
 **Not authorised.** No flight, no component-on cell on this carrier, no re-flight of any sealed cell, no test-split contact.
+
+## Coordinator ruling (Fable 5.1, 2026-09-30)
+
+The all-off byte proof `scripts/analysis/module_equivalence_proof.py --at e210` (merge `906dd8fe`; `ok`) is accepted
+as the Earnings-21 module admission form proof: with every component off, the module-composed arm is byte-identical
+to the carrier's own direct baseline. The cells stay **HELD** and **unflown** under owner decision 187 (SLURP-only
+GPU) until the owner rules decision 209; option C would open the carrier flights after the SLURP close. The E21
+native-window own null must be measured by an in-chain A/A of this all-off arm before any E21 component claims
+benefit. Earnings-22 has no own null and no baseline fragment; the thin Earnings-22 runtime adapter carries no cell.
+No countersignature, mint, flip or re-pin follows from this ruling.

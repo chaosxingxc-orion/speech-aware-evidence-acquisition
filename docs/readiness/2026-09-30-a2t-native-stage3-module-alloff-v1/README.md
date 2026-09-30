@@ -31,3 +31,11 @@ re-pins the smoke and the arm. (3) `scripts/flights/module/batch_chain_module_al
 `serving-a2t-native-role-base-np3-max2048-v3`. (4) `scripts/flights/module/module_alloff_a2t0_read.sh` names the read.
 
 **Not authorised.** No flight, no component-on cell on this carrier, no re-flight of any sealed cell, no test-split contact.
+
+## Coordinator ruling (Fable 5.1, 2026-09-30)
+
+The all-off byte proof `scripts/analysis/module_equivalence_proof.py --at a2t0` (merge `906dd8fe`; `ok`) is accepted
+as the Audio2Tool module admission form proof: with every component off, the module-composed arm is byte-identical
+to the carrier's own direct baseline. The cells stay **HELD** and **unflown** under owner decision 187 (SLURP-only
+GPU) until the owner rules decision 209; option C would open the carrier flights after the SLURP close. No
+countersignature, mint, flip or re-pin follows from this ruling.
