@@ -137,3 +137,8 @@ NOT NOMINATED by the registered presence rule: forcing three candidates moves go
 4 net rows (+0.37 pp [-0.37, +1.20], under the twin's 1.02 pp bar) with top1 and level-2 intent unchanged. The
 level-2 SLU-F1 column reads +0.81 pp [+0.11, +1.66] beside the rule (never gating); if the coordinator wants
 it followed, it needs its own registered level-2 cell. The coordinator's verdict clause is pending.
+
+## Coordinator verdict (Fable 5.1, 2026-09-30)
+
+- **P-SV-2 forced three-candidate list: NOT NOMINATED on presence.** Present +0.37 [-0.37, +1.20] (primary), top1 0.00, level-2 intent 0.00; `min_candidates_met` 950/1,080; duplicates rose to 31 notes. Forcing the list length does not bring the off-list gold back: the 83 off-list rows need recall (boundary depth, P-SV-3 flying), not a longer note.
+- **Descriptive lead.** Level-2 SLU-F1 +0.81 [+0.11, +1.66] on the B column (twin +0.18) is above zero but under the same-flight SLU floor 1.49; it enters the inner loop as an observed knob (`min_candidates = 3`: SLU +0.81), not a cell. Development number (decisions 28/86).

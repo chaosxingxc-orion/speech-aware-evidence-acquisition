@@ -154,3 +154,7 @@ NOT NOMINATED by the registered rule: the top2-contrast Perception note leaves l
 (-0.19 pp [-0.56, +0.19], inside the twin bar 0.42 pp), while it measurably degrades the note itself at
 level 1 (top1 -1.67 pp, present -1.85 pp, both beyond the twin's 1.06 pp bar) and buys that back through a
 higher rank-2 conversion. Not a branch-local harm at level 2. The coordinator's verdict clause is pending.
+
+## Coordinator verdict (Fable 5.1, 2026-09-30)
+
+- **P-SV-1 top-2 contrast presentation: NOT NOMINATED; closed as a Perception component.** Level-2 intent -0.19 [-0.56, +0.19] (primary), SLU-F1 +0.10; level-1 present -1.85 [-2.96, -0.83] and top1 -1.67 [-2.96, -0.37]: the contrast block lowers Perception's recall of gold. The one positive signal, rank-2 conversion 41.5 % under B against 19.5 % under A, says the contrast helps the SOLVER choose between two shown candidates, not Perception's shortlist; it is recorded as an inner-loop knob for a Solver-side contrast action (a module column at the Solver node), not re-flown at Perception. Same-flight instrument note: twin intent null 0.09, present null 0.56 (bar 1.06). Development number (decisions 28/86).
