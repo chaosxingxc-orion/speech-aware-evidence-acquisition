@@ -1,7 +1,27 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T22:30:23Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent) · HEAD at writing `310110be` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T00:13:28Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records and read agent) · HEAD at writing `0c0a907c` on `master` (plus this refresh commit), tree clean.
+**Since 22:30Z (records and read agent):** **P-SV read driver merged** (`7d1b44ab`, `fable/psvreaddriver`;
+`psv_read.sh` recipe-driven, level-2 column render + official scoring; 263 worktree tests passed; engineering base,
+harness admission, tool catalog and results ledger gates PASS). **P-SV-1 official read** (seal-only arm; the two
+missing read inputs backfilled model-free: generation manifest `e8e2a60e`, phases `de0d4c86`; inherited cost 8,709
+contacts, 25,428.698 speech s, 67,824,629 / 551,270 tokens, no GPU-h on a seal-only completion; READ row + seal-only
+clause countersigned `440a7140` at 22:59:27Z; read merged `7ffba69c`,
+`docs/results/2026-09-29-slurp-psv1-fold-b-branch-read.md`): level 2 (primary) b-top2contrast minus a-agree intent
+**-0.19 [-0.56, +0.19]**, SLU-F1 guard +0.10 [-0.46, +0.69]; twin bars intent 0.42 / SLU 0.41; level 1 top1 -1.67
+[-2.96, -0.37], present -1.85 [-2.96, -0.83] (twin bar 1.06); rank-2 conversion 41.5 % vs A 19.5 %; 1,035 rendered
+rows -0.19 [-0.58, +0.19], 45 skipped net 0; extra contacts 49.6 % of the flight; reproduces the pre-read exactly.
+Read agent's line: **NOT NOMINATED** (not a branch-local harm) -- coordinator clause pending. **P-SV-2 sealed** at
+`c6e98e6b` (FINALIZED, COMPLETED, clean tree, 8,713 contacts, 1,080 rows, step-done 23:23:39Z; no GPU-h recorded,
+2 h 31 min wall); READ row countersigned `881b1787` (23:49:35Z, before any score); **P-SV-2 read** merged `0c0a907c`
+(`docs/results/2026-09-30-slurp-psv2-fold-b-branch-read.md`): gold-on-list (primary) b-list3 minus a-agree **+0.37
+[-0.37, +1.20]** vs twin present bar 1.02; top1 0.00, level-2 intent 0.00 [-0.37, +0.37]; level-2 official SLU-F1
++0.81 [+0.11, +1.66] beside (never gating; twin +0.18 [-0.35, +0.73]); min_candidates_met 950 / 130; duplicates
+collapsed B 31 vs A 17 / T 25. Read agent's line: **NOT NOMINATED** (presence) -- coordinator clause pending.
+**GPU queue:** `SAEA-Queue-NEXT` P-SV-3 flying (smoke PASS, arm since 23:25:39Z at `c6e98e6b`) -> `SAEA-Queue-A2`
+(A2 at `310110be`, waiting for `NEXT DONE`) -> filler. **Pending owner:** decisions 200 (P-SV-3 column) and 201
+(E5 Whisper route). **Next:** coordinator clauses on P-SV-1 and P-SV-2; P-SV-3 read after its seal.
 **Since 21:05Z (records agent):** **Consumption-module steps 3-5 merged** (`6cc9a3d9`, `fable/module2`; 721 worktree
 tests passed). Step 3: the scope-rule table, built model-free over the R5 roster (TRAIN minus Fold A, Fold B, R01 and
 R01C: 8,554 exemplars; 3,629 phrases at >= 5 occurrences, 2,969 meeting the rule of >= 0.8 untagged; receipt
@@ -447,7 +467,7 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 24. 198: COMP-1 NOT ADMITTED (HARMFUL on the SLU-F1 guard; cause: the Solver citation contract); option B -- COMP-1b (AGREE + centroid key, no citation contract) held on `fable/comp1b`, then A2 = COMP-1b on DEV-2000-ADDED; recorded `f26e3cdb`.
 25. 199: owner directive, empty supply and none slots are first-class outcomes; recorded `f26e3cdb`; module design section 2c `c0067e0e`; offline analysis on `fable/emptysupply`.
 
-**Pending branches (not merged):** `fable/psvreaddriver` only (the P-SV recipe-driven read driver: level-2 column render + official scoring). Merged since the previous list: `fable/repinresume2` (`4b2946f3`), `fable/comp1slu` (`1ab14dfc`), `fable/comp1b` (`c5cb5399`), `fable/emptysupply` (`70b67bbf`), `fable/psv3` (`776e3f84`), `fable/module1` (`fe08c9fc`), `fable/module2` (`6cc9a3d9`), `fable/repinsuperseded` (`6d3d58f1`), `fable/innerloop2` (`0da2d81a`). **Queue order:** `SAEA-Queue-NEXT` P-SV-2 (flying, `c6e98e6b`) -> P-SV-3 -> `SAEA-Queue-A2` (A2, `310110be`) -> filler; the 12-h serving restart rule is in both queues.
+**Pending branches (not merged):** none. Merged since the previous list: `fable/psvreaddriver` (`7d1b44ab`), `fable/psv1read` (`7ffba69c`), `fable/psv2read` (`0c0a907c`), `fable/repinresume2` (`4b2946f3`), `fable/comp1slu` (`1ab14dfc`), `fable/comp1b` (`c5cb5399`), `fable/emptysupply` (`70b67bbf`), `fable/psv3` (`776e3f84`), `fable/module1` (`fe08c9fc`), `fable/module2` (`6cc9a3d9`), `fable/repinsuperseded` (`6d3d58f1`), `fable/innerloop2` (`0da2d81a`). **Queue order:** `SAEA-Queue-NEXT` P-SV-2 (sealed 23:23:39Z) -> P-SV-3 (flying, `c6e98e6b`) -> `SAEA-Queue-A2` (A2, `310110be`) -> filler; the 12-h serving restart rule is in both queues.
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code). The supply-router test failure found during E4 v1 (a bare `object()` double refusing the bolted-on binding) is fixed (`87146390`).
 
