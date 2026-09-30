@@ -1,0 +1,51 @@
+{
+  "cell": "slurp-native-stage3-module-comp1b-dev2000-added-v1",
+  "composed_config_hash": "1f1208d9540051d454a427886d914260aaa20474b8d57cfcfe059bf081ff58eb",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-module-comp1b-dev2000-added-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 44000,
+    "planned_speech_audio_seconds": 32819,
+    "protocol_hash": "3315dcdfe2dfcd26c08f7f90067f7dcaad3bc6a55a5ee35a8dbbeb0a61c41efc",
+    "run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; it measures request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-module-comp1b-dev2000-added-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32819
+  },
+  "plan_kind": "fit",
+  "preparation_base_commit": "aa053a2ea",
+  "prepared_phase_supply": {
+    "expected_output_sha256": "ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08",
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1/phase-supply-v1.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/protocol-registered-v1.json",
+    "sha256": "e9db74a9c1f790b17b042fb8c45e0c1ae2822732d34dec282297fc8236f4f3b4"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1: It measures request envelopes only and reads nothing.",
+  "quality_read_gate": "No task-quality read before BOTH the arm and the A/A manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",
+  "registered_at_utc": "2026-09-30T12:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-module6, branch fable/module6",
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_AWAITING_COORDINATOR_DECISION",
+  "unused_budget_is_not_attempt_authority": true
+}
