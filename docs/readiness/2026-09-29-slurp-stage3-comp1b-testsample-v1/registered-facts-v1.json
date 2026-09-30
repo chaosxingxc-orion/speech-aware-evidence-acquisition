@@ -419,7 +419,31 @@
     "No k, tau, fuse_coverage, w_prior, store, release, snapshot, roster or geometry change. --allow-output-change is never passed.",
     "No utterance text, gold label, transcript or model output is printed or persisted by any read."
   ],
-  "redeclared_from_a2_read": false,
+  "redeclaration": {
+    "a2_read_note": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+    "a2_read_numbers": {
+      "comparator": "in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1",
+      "intent_ci95_pp": [
+        2.58,
+        6.73
+      ],
+      "intent_delta_pp": 4.6,
+      "n": 1000,
+      "slu_f1_ci95_pp": [
+        -1.04,
+        2.09
+      ],
+      "slu_f1_delta_pp": 0.53,
+      "verdict": "REPLICATED on the A2 registered rule (NOMINATED on the coordinator's bar); descriptive development numbers (decisions 28 and 86)"
+    },
+    "a2_read_run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-PAIRED-ANALYSIS-V1",
+    "at_utc": "2026-09-30",
+    "by": "root records act on the coordinator's brief (Fable 5.1), executed by the records and read agent (Claude Opus 5.5)",
+    "from_expected_effect_pp": 3.8,
+    "scope": "Only the canonical stage3_measurement of MILESTONE-01 in this file changes. protocol-registered-v1.json still carries the provisional 3.8 copy, and its bytes are pinned by the four plan documents, so it is left for the flip's re-pin; this file is the canonical block the floor gate and the mint read. The root-admission draft's registered_facts pin is re-hashed by scripts/flights/comp1/comp1b_testsample_mint_receipt.py at mint. No flip, no re-pin, no contact.",
+    "to_expected_effect_pp": 4.6
+  },
+  "redeclared_from_a2_read": true,
   "registered_at_utc": "2026-09-29T23:30:00.000000+00:00",
   "report_form": {
     "claim_wording": "a MILESTONE read: development evidence under owner decision 28 ('dev numbers are not test claims'), never a test claim, never the final read, never publication-grade; it may say the arm held / did not hold its DEV-nominated intent gain on a test sample against the locked system",
@@ -446,8 +470,8 @@
     "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1": {
       "claim": "nominated",
       "claims_benefit": true,
-      "expected_effect_pp": 3.8,
-      "expected_effect_status": "PROVISIONAL: A2's own declared number; root re-declares from the A2 read before the flip",
+      "expected_effect_pp": 4.6,
+      "expected_effect_status": "RE-DECLARED 2026-09-30 from the cell A2 read (owner decision 139: a measured number, not a prior): A2's intent point estimate +4.60 pp against its in-chain A/A on DEV-2000-ADDED; supersedes the provisional 3.8",
       "measurement_design": "cross-flight-with-in-chain-replicate",
       "note": "MILESTONE-01 = COMP-1b on the signed test sample (owner decisions 151 and 202). expected_effect_pp 3.8 is cell A2's own declared number (docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/registered-facts-v1.json: the COMP-1b TRAIN Fold A intent point, docs/results/2026-09-29-slurp-comp1b-fold-a-read.md), carried PROVISIONALLY because the floor gate refuses a placeholder: root RE-DECLARES it from the A2 read (owner decision 139: a measured number, not a prior) before the flip, and the flip refuses while registered-facts' redeclared_from_a2_read is false. The contrast is against MILESTONE-00-PLAN, the LOCKED plan (recall k 8), not A2's in-chain A/A (k 60), so the milestone delta includes the k 8 -> 60 recall change the composed arm carries (the allowance prescribes the locked system as the comparator). The guard is a FALLBACK null (own_null.flag). tuning_roster / read_roster (item D3): the vote pool and centroid key are TRAIN construction artifacts; the arm was SELECTED on DEV-2000-ADDED by cell A2's read; both are disjoint from the sample by the sample's own disjointness proof (docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json, CLEAN); nothing was chosen or tuned on the sample.",
       "own_null": {
