@@ -1,7 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T02:47:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-ops agent) · HEAD at writing `6a901ca8` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T03:03:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge agent) · HEAD at writing `91f77e5e` on `master` (plus this refresh commit), tree clean.
+**Since 02:47Z (merge agent), 2026-09-30:** **`fable/milestonerole` merged** (`91f77e5e`, `--no-ff`; branch
+already held `c1b42549`; branch fix `c4292690` aligned a stale forbidden-role CLI test; 110 targeted tests passed,
+1 skipped; engineering base, harness admission, tool catalog, results ledger and Stage-3 effect floor (0 blocking)
+PASS): the milestone read now accepts the `final-report` split role only under four fail-closed conditions
+(allowance-listed read ids, recipe scorer `slurp-slu-official-test`, `--strata-source scorer`, countersigned READ
+row) and reads delivery gold-free on final-report rosters. Remaining milestone blockers: owner decision 207
+(allowance v2 FIT ids), sample prep 2/3 (the E5 gap after A2), and the A2 read -> re-declaration.
 **Since 02:25Z (ops agent), 2026-09-30:** **filler-hold race and fix.** `queue_a2.sh` created `filler.hold` at
 01:59:48Z on `NEXT DONE` alone -- its bare grep for `filler hold removed` also matched `queue_next.sh`'s own
 preamble line -- and `queue_next.sh`'s release step removed that hold with `rm -f` at 02:00:16Z and started the
