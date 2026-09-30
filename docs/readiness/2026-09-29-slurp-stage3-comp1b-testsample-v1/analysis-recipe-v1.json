@@ -1,0 +1,60 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-test-sample-3010-milestone-01-generation-v1",
+      "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-test-sample-3010-milestone-00-plan-generation-v1",
+      "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "THE COMPARATOR the allowance prescribes and the in-chain replicate the delta is read at",
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    }
+  },
+  "boundary": "A milestone read on the signed test sample. No utterance text, transcript, gold label string or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-READ-V1"
+  },
+  "read_driver": {
+    "command": "bash scripts/flights/comp1/comp1b_testsample_read.sh",
+    "passes": [
+      "vs-aa (gating: arm minus MILESTONE-00-PLAN)"
+    ],
+    "refusal": "the driver refuses before any score is opened unless this READ row is root countersigned",
+    "scorer": "slurp-slu-official-test"
+  },
+  "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-READ-V1",
+  "recipe_id": "slurp-stage3-comp1b-testsample-milestone-read-v1",
+  "registered_at_utc": "2026-09-29T23:30:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260929,
+    "unit": "prompt cluster (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH manifests are COMPLETE at 3,010 rows with this registration's composed config hashes (as re-pinned at the flip), sealed, each with one successful complete official slurp-slu-official-test score, and unless the READ row is root countersigned.",
+    "2. THE DELIVERY CHECK (gold-free): each cell's flown first-phase boundary selections equal its own prepared supply. A mismatch is an engineering defect, is reported, and consumes the milestone (no re-fly).",
+    "3. Primary: intent accuracy paired per recording, prompt-clustered, 10,000 draws, seed 20260929. Guard: official pooled SLU-F1. Apply the protocol's rule at the fallback null h_intent 1.3329 / h_SLU 1.4492 (recording-scaled beside it: 0.664 / 0.7219) against the declared expected_effect_pp.",
+    "4. Intent and SLU reported SEPARATELY, each in both weightings, with per-intent and per-scenario tables and the recording-channel split (headset / far-field).",
+    "5. Entity FP / TP / FN against MILESTONE-00-PLAN with the zero-gold-row emission count.",
+    "6. Write the read under its own id; every number is a MILESTONE development number (owner decisions 28 and 151), never a test claim."
+  ],
+  "title": "Test-sample MILESTONE-01 -- COMP-1b against MILESTONE-00-PLAN (the locked system) on SLURP-TEST-SAMPLE-3010-V1",
+  "weightings": {
+    "driver_gap": "READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned.",
+    "equal_stratum": "1/58 over the intents present in the sample",
+    "natural_mixture": "POST-STRATIFIED: per-intent accuracy weighted by the full-test per-intent shares of the roster receipt docs/receipts/rosters/slurp-test-sample-3010-v1.json (weightings block); the raw roster mean is NOT the natural-mixture number (design note section 5)"
+  }
+}

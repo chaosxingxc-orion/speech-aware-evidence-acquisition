@@ -1,0 +1,47 @@
+# Test-sample milestone: COMP-1b against the locked plan on SLURP-TEST-SAMPLE-3010-V1
+
+Registered before contact 2026-09-29 at study commit `881b1787c` (owner decisions 151 and 202);
+both cells **held** and **blocked** (below). Nothing here authorises a contact, a flip, a mint or a countersignature.
+
+**Authority.** The signed allowance `docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json` (status `authorised`, owner decision 151) names the two read run ids
+used here: `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1` (THE COMPARATOR: the locked v2.0 plan as flown, unchanged) and `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1`
+(one dev-admitted composed arm). Owner decision 202: GO once cell A2 (`slurp-native-stage3-comp1b-dev2000-added-v1`) reads NOMINATED or better.
+Each read run id gets ONE attempt, ever; the milestone number is consumed whatever the outcome.
+
+**What it is.** MILESTONE-01 is cell A2's arm (COMP-1b) with only the roster moved to the signed test sample: the locked v2.0 plan + (1) the agreement term (w_agree 1.0, recall k 60, delivered 8-1-8) with this roster's own vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1 (PENDING) + (2) the centroid boundary key + (3) no citation contract + (4) nothing else. MILESTONE-00-PLAN is the sealed DEV plan arm (the v2.0 lock as flown) with only the roster moved. Proven by `registered-facts-v1.json` (`composed_config_diffs`): each milestone cell differs
+from its DEV source by roster-bound, role-bound (final-report: split role, allowance pin, the TEST scorer sibling
+`slurp-slu-official-test`, the one-attempt failure policy) and bookkeeping paths alone, and the arm-vs-comparator delta on
+the sample equals A2's arm-vs-DEV-plan delta (recall k 8 -> 60, w_agree, agreement table, centroid key). Derived by
+`scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py`.
+
+**What the allowance forbids, so this package does not carry it.** No four-row smoke on the sample (no smoke run id is
+permitted, and a smoke under a read id would consume its one attempt; the form proof is A2's own DEV smoke of the same
+composition plus the model-free `check` at the flip). No direct-baseline read. No recovery or resume.
+
+**Measurement.** `cross-flight-with-in-chain-replicate`, n = 3,010 (682 prompts), intent primary, `expected_effect_pp`
+**3.8** -- A2's own declared number, PROVISIONAL: root re-declares it from the A2 read before the flip
+(`redeclared_from_a2_read` in the facts; the flip refuses while it is false). Guard: official SLU-F1 at a FALLBACK null --
+no own null exists for the sample; the DEV-2000-ADDED own null scaled by sqrt(913 / 682) (prompt level, conservative):
+h_intent 1.3329, h_SLU 1.4492 (recording-scaled 0.664 /
+0.7219). FLAGGED.
+
+**Report form.** Intent and SLU-F1 reported separately, each in the post-stratified natural mixture and equal-stratum
+(58 intents) weightings, per-intent and per-scenario. A milestone read is development evidence under owner decision 28
+("dev numbers are not test claims"): it may say whether COMP-1b held its DEV-nominated intent gain against the locked
+system on a test sample; it is never a test claim, never the final read, never publication-grade.
+
+**Blockers before the flip.**
+
+1. OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).
+2. ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell (core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name ['SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1', 'SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1'] as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.
+3. PREPARATIONS: preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, GPU encoder) and preparation 3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1) have not run; their rows are not countersigned. Then this roster's agreement table must be built model-free (scripts/build_slurp_intent_exemplar_agreement.py against MILESTONE-00-PLAN). Pending pins: ['prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl'].
+4. EXPECTATION: root re-declares expected_effect_pp from the A2 read (registered-facts redeclared_from_a2_read).
+5. READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned.
+
+**Runs.** `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1`; `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1`. READ `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-READ-V1`.
+
+**Declare, mint, flip, queue, read** (after every blocker clears): (1) root countersigns the five DRAFT rows (naming the
+conversational report) and mints `coordination/slurp-stage3-comp1b-testsample-v1/root-admission-v1.json` with `scripts/flights/comp1/comp1b_testsample_mint_receipt.py`;
+(2) `scripts/flights/comp1/comp1b_testsample_flip.sh` re-pins comparator then arm to one HEAD; (3)
+`scripts/flights/comp1/batch_chain_comp1b_testsample.sh` queues the two-cell campaign (no smoke); (4) after both seals
+the READ row is countersigned and `bash scripts/flights/comp1/comp1b_testsample_read.sh` reads it.

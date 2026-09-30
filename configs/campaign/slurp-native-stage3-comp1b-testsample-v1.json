@@ -1,0 +1,13 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-native-stage3-plan-testsample-milestone00-v1",
+      "experiment": "slurp-native-stage3-plan-testsample-milestone00-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-comp1b-testsample-v1",
+      "experiment": "slurp-native-stage3-comp1b-testsample-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

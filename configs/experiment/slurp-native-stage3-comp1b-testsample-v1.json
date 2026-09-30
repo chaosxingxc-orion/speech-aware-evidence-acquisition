@@ -1,0 +1,98 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-test-sample-3010-milestone-01-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-comp1b-testsample-baseline-v1",
+      "cell_id": "slurp-native-stage3-comp1b-testsample-v1",
+      "dataset_fragment": "slurp-speech-native-test-sample-3010",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "MILESTONE-01 registered before contact on 2026-09-29 from cell A2's committed arm (decision 58: script-derived, roster re-target only). HELD until (1) cell A2 reads NOMINATED or better and the coordinator has reported the dev-admitted composed arm to the owner in conversation (decisions 151 and 202), (2) root re-declares expected_effect_pp from the A2 read, (3) a SUCCESSOR allowance names this cell's FIT run id, (4) preparations 2 and 3 of the sample have run, this roster's agreement table is built and every PENDING pin below is real, (5) root countersigns the rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (item E16). --allow-output-change must never be passed.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "PENDING: this roster's own exemplar-intent agreement table (scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell); model-free, but it needs the sample's content-dimension query vectors, which do not exist yet. The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "PENDING: the sample's intent-boundary segment vectors, written by the zero-contact alias of preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, not yet run). The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
+            "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "PENDING: the sample's content-dimension query vectors, written by preparation 3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1, not yet run). The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
+            "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, minted model-free under this run id with core.flight.cli prepare-supply at the flip from the sample's segment vectors, the centroid key file and this roster's agreement table (E16). PENDING until the flip.",
+            "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1"
+    }
+  ],
+  "date": "2026-09-29",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 36.2,
+    "planned_model_calls": 33110,
+    "planned_speech_audio_seconds": 90271,
+    "split_role": "final-report"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
+  "failure_policy": "ONE ATTEMPT, EVER (owner decision 151; allowance milestone_rule; contracts.gate_exposure._ExposureAndCarrierMixin._require_final_report_attempt_budget). Stop and preserve on the first failure. There is NO recovery re-registration, NO resume-recovery (the E10 clause of the source cell does not apply to a final-report read run id: the gate refuses a second attempt of a read run id even as a recovery), no re-score, no re-projection of delivered bytes, no best-of, no row filtering and no roster, role-graph, prompt, knowledge, geometry or cap change. A failed attempt consumes the milestone number; a further milestone needs a fresh run id in a SUCCESSOR allowance under a fresh coordinator report to the owner. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 132440,
+    "generation_calls_cap": 33110,
+    "gpu_hours_fit_inclusive": 36.2,
+    "native_task_contract_calls_cap": 18060,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 90271
+  },
+  "fragment_kind": "saea-slurp-native-default-plan-lock-v1",
+  "generation_budget": {
+    "cap": 33110,
+    "definition": "The role graph is the source cell's, unchanged (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1), so rails.native_episode_config.load_native_episode_config resolves the program ceiling 1 + 2 * (3 + 1 + 1) = 11 contacts per row and 3010 * 11 = 33110 is the exact program maximum. The target is the source cell's own registered per-row rate (5.023) times 3010, an ESTIMATE only; the sample has never been flown.",
+    "target": 15119
+  },
+  "owner_allowance": {
+    "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
+    "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+  },
+  "population": {
+    "count": 3010,
+    "dataset_fragment": "slurp-speech-native-test-sample-3010",
+    "decision_population": "The signed SLURP test SAMPLE SLURP-TEST-SAMPLE-3010-V1 (3,010 recordings, 682 prompts, a prompt-partition of the frozen 13,078-recording test split; roster receipt docs/receipts/rosters/slurp-test-sample-3010-v1.json), authorised for milestone reads by owner decision 151 (allowance docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json). Its audio was previously contact-only for the label-free packet ENCODE+PROMOTE preparation SAEA-SN-TEST-SAMPLE-3010-PREPROCESS (3,010 one-token contacts, owner decision 156). No answer surface of any sample row has been read. The closure roster SLURP-TEST-CLOSURE-10068-V1 stays untouched.",
+    "roster_receipt": "docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+    "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "MILESTONE-01 (allowance docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json, owner decisions 151 and 202): does COMP-1b, admitted-or-nominated on DEV-2000-ADDED by cell A2, hold its intent gain on the signed test sample against MILESTONE-00-PLAN (the locked v2.0 plan on the same 3,010 rows, flown in the same chain before this arm), with official pooled SLU-F1 (slurp-slu-official-test) the non-inferiority guard? COMP-1b on the signed test sample: the locked v2.0 plan (the sealed DEV-2000-ADDED plan arm's bytes, as flown) + (1) the agreement term (w_agree 1.0 over the exemplar-intent vote, recall k 60, delivered 8-1-8) with THIS roster's own vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1 + (2) the centroid boundary key (prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl) + (3) NO citation contract + (4) nothing else -- cell A2's arm bytes with only the roster moved. ONE attempt, ever; the milestone number is consumed whether the arm gains, loses or is neutral. Development evidence under owner decision 28; never a test claim and never the final read. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "TEST-SAMPLE",
+  "stage3_algorithm": {
+    "id": "sealed-credit-system-policy-v1",
+    "note": "MILESTONE-01 composes the SAME two typed, executable consumption actions COMP-1b composed on Fold A and A2 on DEV-2000-ADDED -- a rank weight over a pre-computed vote and a retrieval key file -- each chosen and credited OFFLINE over sealed TRAIN bytes; nothing is chosen, tuned or credited on the sample. Operator context_application. No rollout, per-sample scoring, credit assignment or update of its own.",
+    "operators_used": [
+      "context_application"
+    ]
+  }
+}

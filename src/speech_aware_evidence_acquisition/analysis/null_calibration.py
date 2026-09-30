@@ -35,12 +35,18 @@ def classify_interval(lower: float, upper: float, *, margin: float) -> dict[str,
     }
 
 
-def pooled_f1(
+def pooled_totals(
     rows: Mapping[str, Mapping[str, float]],
     sample_ids: Sequence[str],
     fields: Counts,
-) -> float:
-    """Pool counts over the resampled sequence, preserving repeated IDs."""
+) -> tuple[float, float, float]:
+    """(TP, FP, FN) pooled over the resampled sequence, preserving repeated IDs.
+
+    Shared by :func:`pooled_f1` (pool, then take the F1 of the one total) and the
+    population-weighted post-stratified estimator in ``stage3_paired_read.py``, which needs the
+    three totals BEFORE they are combined into an F1 -- weighting a stratum's TP/FP/FN and then
+    pooling is a different (and correct) number from weighting each stratum's own F1 score.
+    """
     totals = [0.0, 0.0, 0.0]
     for sid, multiplicity in Counter(sample_ids).items():
         for index, names in enumerate(fields):
@@ -51,8 +57,22 @@ def pooled_f1(
                 if not math.isfinite(value) or value < 0:
                     raise ValueError("F1 counts must be finite and nonnegative")
                 totals[index] += multiplicity * value
+    return totals[0], totals[1], totals[2]
+
+
+def f1_of_totals(totals: tuple[float, float, float]) -> float:
+    """The micro-F1 of one (TP, FP, FN) triple -- 0.0 by convention when all three are zero."""
     tp, fp, fn = totals
     return 2 * tp / (2 * tp + fp + fn) if 2 * tp + fp + fn else 0.0
+
+
+def pooled_f1(
+    rows: Mapping[str, Mapping[str, float]],
+    sample_ids: Sequence[str],
+    fields: Counts,
+) -> float:
+    """Pool counts over the resampled sequence, preserving repeated IDs."""
+    return f1_of_totals(pooled_totals(rows, sample_ids, fields))
 
 
 def calibrate_null(
