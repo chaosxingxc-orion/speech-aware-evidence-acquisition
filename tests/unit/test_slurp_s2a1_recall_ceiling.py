@@ -146,3 +146,102 @@ def test_verdict_perfect_ranker_bound():
     assert v["c_ceiling_perfect_ranker_at_conv_uptake"] == pytest.approx(0.47 * 32 / 70, abs=1e-4)
     assert v["reading_a_reachable_perfect_ranker_at_conv_uptake"] is False
     assert "T_perfect_ranker" not in M.verdict(0.1, [0.05, 0.2])
+
+
+# ---------------------------------------------------------------------------- --ranker study (synthetic fixture)
+
+
+def test_ranker_flag_parses_and_routes_outputs():
+    a = M.parse_args(["--data-root", "/d"])
+    assert a.ranker == "trigram-lexicon" and M.output_dir(a) == Path("/d") / M.ANALYSIS_DIR
+    r = M.parse_args(["--data-root", "/d", "--reference-source", "reference"])
+    assert M.output_dir(r) == Path("/d") / M.ANALYSIS_DIR / M.REFERENCE_SUBDIR
+    s = M.parse_args(["--data-root", "/d", "--ranker", "study", "--check"])
+    assert s.ranker == "study" and s.check and M.output_dir(s) == Path("/d") / M.STUDY_DIR
+    assert M.STUDY_DIR.endswith("SAEA-SLURP-S2A-RANKER-STUDY-V1")
+    with pytest.raises(SystemExit):
+        M.parse_args(["--ranker", "study", "--reference-source", "reference"])
+    with pytest.raises(SystemExit):
+        M.parse_args(["--ranker", "bogus"])
+    assert M.GATE_T == pytest.approx(0.7383, abs=1e-4) and round(M.GATE_T * 70 + 0.4999) == 52
+
+
+def test_span_features_modes_and_windows():
+    canon = ["fly", "to", "paris", "now"]
+    ctx = M.span_features(canon, 2, 1, "context")
+    assert "L1=to" in ctx and "R1=now" in ctx and "R1R2=now_</s>" in ctx
+    assert not any(f.startswith(("S=", "w=", "c3=")) for f in ctx)          # context never sees the span
+    sp = M.span_features(canon, 2, 1, "span")
+    assert "S=paris" in sp and not any(f.startswith("L1=") for f in sp)
+    both = M.span_features(canon, 0, 2, "span+context")
+    assert "L1=<s>" in both and "L1F=<s>_fly" in both and "ER1=to_paris" in both
+    with pytest.raises(M.ReadError):
+        M.span_features(canon, 0, 1, "nope")
+    assert (1, 1) not in M.free_windows(canon, {1}) and (2, 2) in M.free_windows(canon, {1})
+    wins, placed, unplaced = M.training_windows(canon, [("place_name", ("paris",)), ("date", ("monday",))])
+    lab = {(i, n): l for i, n, l in wins}
+    assert lab[(2, 1)] == "place_name" and lab[(1, 2)] == M.NONE_LABEL and (placed, unplaced) == (1, 1)
+
+
+def test_aggregate_rank_outcome_and_budget():
+    import numpy as np
+
+    canon = ["a", "b", "a", "c"]
+    wins = [(0, 1), (1, 1), (2, 1), (3, 1)]
+    wmat = np.array([[0.1, 0.0], [0.5, 0.2], [0.9, 0.0], [0.5, 0.4]])
+    tab = M.aggregate_windows(canon, wins, wmat)
+    ai = tab["index"][("a",)]
+    assert tab["starts"][ai] == 0 and tab["mat"][ai, 0] == 0.9     # max over occurrences, earliest start
+    assert M.gold_rank(tab, ai, 0) == 1
+    assert M.gold_rank(tab, tab["index"][("c",)], 0) == 3         # tie with "b" at 0.5 -> later start ranks after
+    out = M.study_outcome(("c",), canon, set(), tab, 0, theta=0.0, k=2)
+    assert out == {"outcome": "not_ranked_top_k", "rank": 3}
+    assert M.study_outcome(("b",), canon, set(), tab, 0, 0.0, 3)["outcome"] == "hit"
+    assert M.study_outcome(("b",), canon, set(), tab, 0, 0.6, 3)["outcome"] == "below_threshold"
+    assert M.study_outcome(("a",), canon, set(), tab, 1, 0.0, 3)["outcome"] == "below_threshold"   # score 0
+    assert M.study_outcome(("z",), canon, set(), tab, 0, 0.0, 3)["outcome"] == "not_in_transcript"
+    assert M.study_outcome(("b",), canon, {1}, tab, 0, 0.0, 3)["outcome"] == "overlaps_draft"
+    vals = np.array([0.9, 0.8, 0.8, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    th = M.theta_for_budget(vals, 0.10)
+    assert 0.8 < th <= 0.9 and ((vals >= th) & (vals > 0)).mean() == 0.10      # exactly the one call at 0.9
+    th2 = M.theta_for_budget(vals, 0.2)                          # a tie at 0.8 cannot be split: both excluded
+    assert ((vals >= th2) & (vals > 0)).mean() <= 0.2 and th2 > 0.8
+    assert M.theta_for_budget(vals, 0.5) == 0.0                  # the budget admits every positive call
+    rows = {"r": {"canon": canon, "covered": set()}}
+    pt = M.read_point({"r": tab}, rows, [("r", ("b",), "t0")], ["r"], {"t0": 0, "t1": 1}, 0.45, 3)
+    assert pt["hits"] == 1 and pt["false_candidate_calls"] == 2 and pt["false_candidate_nonempty"] == 1
+    assert pt["mean_candidates_per_call"] == pytest.approx(3 / 2)
+    fused = M.fuse_tables(tab, tab, 1.0)
+    assert fused["mat"][ai, 0] == pytest.approx(0.81)
+
+
+def test_span_type_model_uses_context_on_unseen_values():
+    cities = ["paris", "rome", "oslo", "lima", "kyiv", "doha", "baku", "riga"]
+    docs = []
+    for c in cities:
+        canon = ["weather", "in", c, "today"]
+        docs.append((canon, M.training_windows(canon, [("place_name", (c,)), ("date", ("today",))])[0]))
+    model = M.SpanTypeModel("lr", "context", ["date", "place_name"], C=10.0).fit(docs)
+    test = ["weather", "in", "zzyzx", "today"]          # a value no TRAIN lexicon holds
+    wins = M.free_windows(test, set())
+    tab = M.aggregate_windows(test, wins, model.score_windows([(test, i, n) for i, n in wins]))
+    gi = tab["index"][("zzyzx",)]
+    assert M.gold_rank(tab, gi, 1) == 1
+    assert model.fit_facts["classes"] == 3 and model.score_windows([]).shape == (0, 2)
+    nb = M.SpanTypeModel("nb", "span", ["date", "place_name", "absent_type"]).fit(docs)
+    assert nb.columns[2] is None and nb.score_windows([(test, 3, 1)])[0, 1] > 0
+    with pytest.raises(M.ReadError):
+        M.SpanTypeModel("svm", "span", ["date"])
+
+
+def test_theta_for_hits_diagnostic():
+    import numpy as np
+
+    canon = ["x", "y", "z"]
+    wins = M.free_windows(canon, set(), 1)
+    tab = M.aggregate_windows(canon, wins, np.array([[0.9], [0.4], [0.2]]))
+    rows = {"r": {"canon": canon, "covered": set()}}
+    targets = [("r", ("x",), "t"), ("r", ("y",), "t"), ("r", ("q",), "t")]
+    assert M.theta_for_hits({"r": tab}, rows, targets, {"t": 0}, 3, 2) == pytest.approx(0.4)
+    assert M.theta_for_hits({"r": tab}, rows, targets, {"t": 0}, 3, 3) is None      # "q" is not in the transcript
+    assert M.theta_for_hits({"r": tab}, rows, targets, {"t": 0}, 1, 2) is None      # "y" ranks 2nd
