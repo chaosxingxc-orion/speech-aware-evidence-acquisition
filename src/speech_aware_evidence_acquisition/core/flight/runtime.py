@@ -2129,8 +2129,15 @@ class FlightRuntime:
             planned_speech_audio_seconds=declaration["planned_speech_audio_seconds"],
             protocol_hash=phash,
             attempt_id=self._attempt_id,
+            # Owner decisions 99/107: a ``final-report`` plan is authorised only
+            # by the committed owner allowance the composed config pins (the
+            # same top-level ``owner_allowance`` that
+            # ``rails.final_report_admission`` reads). An InitVar, so a plan
+            # without one (every train/devel cell) is field- and byte-identical
+            # to before; ``validate`` refuses one declared on a non-final role.
+            owner_allowance=values.get("owner_allowance"),
         )
-        plan.validate()
+        plan.validate(source_root=getattr(self, "_repo_root", None))
         assert_execution_scope(plan.execution_profile)
         return plan
 
