@@ -1,7 +1,30 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T02:14:54Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records and read agent) · HEAD at writing `8bd81c2a` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T02:25:28Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+records agent) · HEAD at writing `11ae9ae9` on `master` (plus this refresh commit), tree clean.
+**Since 02:14Z (records agent):** **`fable/scorerstrat` merged** (`45536524`, `--no-ff`; the branch took master
+first, `81259322`, no conflict; 127 targeted worktree tests passed, 1 skipped; engineering base, harness admission,
+tool catalog, results ledger, derived-media confinement (receipts restored) and Stage-3 effect floor (0 blocking)
+gates PASS). It adds scorer-side, aggregate-only post-stratification: `core/scoring_strata.py`,
+`analysis/stratified_paired.py`, `official_gold_intents` in the official evaluator wrapper, and the read driver's
+`--strata-source scorer` (strata computed inside the official-scoring step; only per-stratum aggregates leave it),
+with the milestone package wiring (registered facts, preregistration, README, READ-row text). Equivalence with the
+driver-side post-stratified weighting is proven by the tests. The open package-mode split-role refusal for the
+milestone read is being fixed on `fable/milestonerole` (not merged). **P-SV-3 coordinator verdict** (`11ae9ae9`):
+**NOT NOMINATED, branch-local harm on presence; the boundary-depth line is closed** (gold-on-list -1.39 [-2.31,
+-0.56] vs twin bar 1.02; absent 90 -> 105; intent 0.00, SLU-F1 +0.01; development number, decisions 28/86). The
+inner-loop run-2 note marks `boundary_depth 8->12` observed and discarded (no loop rerun). **Perception-side
+conclusion (P-SV-1..3):** no change to the Perception note (contrast presentation, forced list length, supply
+depth) moved gold-on-list above its twin, and two of three moved it down; the Perception component list stays
+AGREE + centroid boundary key (both retrieval-side). Remaining intent levers: recall for the 34 off-block rows via
+the retrieval key; the 49 in-block-not-in-note rows via a shorter, better-ranked block (depth 8 -> 6 or 5, offline
+first from the sealed ranks); the Solver-side contrast action (P-SV-1 rank-2 conversion 41.5 % vs 19.5 %) as a
+module column at the Solver node. Same-flight instrument: present null 0.46-0.56, intent null 0.00-0.09.
+**A2 floor correction:** A2's floor is **2.5981 pp at n = 1,000** -- the DEV-2000-ADDED roster is 1,000 rows, so
+the COMP-2 stage-column READ row's 1.5485 bar is right and the "1.10 at n = 2,000" figure in the 00:48Z block below
+is superseded. **GPU queue:** A2 flying (`SAEA-Queue-A2`) -> E5-0 + test-sample preparations 2/3 in the
+serving-restart gap (`SAEA-Queue-E5`) -> filler. **Owner pending:** decision 207 (allowance v2 naming the FIT run
+ids), the E5-2 gate.
 **Since 01:44Z (records and read agent):** **P-SV-3 sealed** at `c6e98e6b` (FINALIZED, COMPLETED, clean tree,
 8,707 contacts, 1,080 rows, 68,259,780 / 559,787 tokens, no GPU-h recorded, 2 h 33 min wall; arm-inspect PASS and
 step-done 01:58:55Z; `NEXT DONE` 01:59:15Z). READ row countersigned `1247cf33` (01:59:51Z, before any score).
@@ -71,7 +94,7 @@ filler proceeds, E5-0 is one-shot), removes the hold and runs the filler. **E5-1
 exist (countersign its READ row first). **GPU queue:** P-SV-3 (flying, `SAEA-Queue-NEXT`) -> A2 (`SAEA-Queue-A2`)
 -> E5-0 + sample prep 2/3 (serving-restart gap, `SAEA-Queue-E5`) -> filler. **Pending branch:** `fable/milestoneprep` (since merged via `fable/poststrat`, `414b77a4`).
 **Since 00:13Z (records agent):** **Owner rulings 200-206 recorded** (`ed575ad7`, registry rows before the
-decision-140 outcome; owner ~23:10Z: 「决策200：同意，决策201：同意，我们调整下课题方向，0906的时候还是聚焦在如何用好主模型，现在调整为如何搭建系统并进行系统级优化，决策202：GO，决策203：好，决策204:同意」
+decision-140 outcome; owner ~23:10Z: "Decision 200: agreed. Decision 201: agreed. We are adjusting the research direction: on 09-06 the focus was still on how to make good use of the main model; it is now adjusted to how to build the system and optimize it at the system level. Decision 202: GO. Decision 203: good. Decision 204: agreed." (translated from Chinese)
 plus the supplement on model-initiated tools): **200** AGREED -- P-SV-3 flies (flying since 23:25Z at `c6e98e6b`);
 **201** option A -- E5-0/E5-1 prepared on `fable/e5prep` as instruments and oracles only; the 09-06 no-transcript
 ruling superseded in scope (transcripts still never enter the intent decision: DEV-1000 -0.90); runtime form per
@@ -244,8 +267,8 @@ tests passed), `fable/comp1slu` (`1ab14dfc`; the COMP-1 SLU-harm attribution, 7 
 P-SV-3 registration, 23 passed), `fable/comp1b` (`c5cb5399`; exposure-ledger conflict kept both sides, 95 passed).
 Gates on master: engineering base, harness admission, tool catalog, finite completion, results ledger and Stage-3
 label PASS; the effect floor check FAILs only on the known comp1dev placeholder (new advisory by design:
-`primary-metric-key-present` on P-SV-3). **Registry row 197** recorded (`98291b6e`; "决策197：同意" -- "Decision 197:
-agreed"). **COMP-1 coordinator verdict: NOT ADMITTED** (HARMFUL on the SLU-F1 guard -2.24 [-3.97, -0.47]; intent
+`primary-metric-key-present` on P-SV-3). **Registry row 197** recorded (`98291b6e`; "Decision 197:
+agreed" (translated from Chinese)). **COMP-1 coordinator verdict: NOT ADMITTED** (HARMFUL on the SLU-F1 guard -2.24 [-3.97, -0.47]; intent
 composition +4.26 [+2.41, +6.11] confirmed; cause = the Solver cited-answer contract, +102 of +114 false positives;
 next COMP-1b under decision 198) in the read note and the results ledger. **COMP-1b and P-SV-3 countersigned and
 minted** (`038ae2ab`, 16:34:28Z): COMP-1b under decision 198 (receipt `coordination/slurp-stage3-comp1b-fold-a-v1/
@@ -270,7 +293,7 @@ Pending branches: none of this refresh's (`fable/readsealonly`, `fable/emptysupp
 NOT ADMITTED** (intent +4.26 [+2.41, +6.11], SLU-F1 -2.24 [-3.97, -0.47], HARMFUL branch). Cause named by the
 attribution `docs/results/2026-09-29-slurp-comp1-slu-harm-attribution.md` (branch `fable/comp1slu`, not yet merged):
 the Solver cited-answer contract, +102 false positives on the 414 zero-gold rows; the unwrap and the supply are
-cleared. Owner adopted option B ("可以", "OK"): **COMP-1b** = AGREE + centroid boundary key WITHOUT the citation
+cleared. Owner adopted option B ("OK", translated from Chinese): **COMP-1b** = AGREE + centroid boundary key WITHOUT the citation
 contract, TRAIN Fold A vs the same in-chain A/A, declared intent +4.26, SLU guard -1.2485, registered and held on
 `fable/comp1b` (cell `slurp-native-stage3-comp1b-fold-a-v1`), flipped/queued after the P-SV flips; then **A2 =
 COMP-1b on DEV-2000-ADDED**. The citation contract leaves the COMP-2 component list (it may return only as its own
