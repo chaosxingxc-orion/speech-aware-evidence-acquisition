@@ -2,9 +2,9 @@
 # Queue RANKVIS (owner decision 171; coordinator ruling 2026-09-28): fly the 119-row RANKVIS conversion probe in
 # the first gap the coordinator opens. It ONLY waits on a marker; it never creates one.
 #   1. wait for /home/chao/saea-queue/rankvis.go (created by the coordinator when the gap is real);
-#   2. hold the filler: create /home/chao/saea-queue/filler.hold, so the filler queue pauses at its next tick.
-#      If a hold is already present it is ANOTHER queue's (SAEA-Queue-AFTER-REVTFRL checks its own hold) and is
-#      left exactly as found -- this queue then neither removes it nor restarts the filler;
+#   2. hold the filler: ql_hold_take queue_rankvis (queue_lib.sh; owned hold since the 2026-09-30 hold race), so
+#      the filler queue pauses at its next tick. If a hold is already present it is ANOTHER owner's and is left
+#      exactly as found -- this queue then neither removes it nor restarts the filler;
 #   3. wait until no generation flight is alive (serving_lib.sh's precise test, as queue_lib does), no serving swap
 #      is pending and no filler_queue.sh is alive; halt on a batch-STOP (never chain onto a STOP) and on a stale
 #      /home/chao/batch-flight-repo.txt override;
@@ -13,7 +13,8 @@
 #   5. run scripts/flights/rankvis/batch_chain_rankvis.sh (flight commit /home/chao/rankvis-flight-commit.txt),
 #      retrying a coarse-pgrep refusal (exit 7) only while no generation flight is alive;
 #   6. require batch-done at that flight commit (a STOP halts here and the filler stays held);
-#   7. remove the hold THIS queue created and restart the filler. The filler has no scheduled task of its own --
+#   7. release the hold THIS queue owns (ql_hold_release queue_rankvis: a successor that took it over is left
+#      alone) and restart the filler only when the release removed it. The filler has no scheduled task of its own --
 #      every queue calls it inline after copying it to ext4 -- so this queue does the same.
 # Run it as SAEA-Queue-RANKVIS from its ext4 copy /home/chao/saea-queue/queue_rankvis.sh (bash reads a script
 # incrementally and the main checkout moves under merges).
@@ -25,8 +26,10 @@ GO=/home/chao/saea-queue/rankvis.go
 HOLD=/home/chao/saea-queue/filler.hold
 CHAIN=$M/scripts/flights/rankvis/batch_chain_rankvis.sh
 CF=/home/chao/rankvis-flight-commit.txt
+QL_HOLD=$HOLD
+ME=queue_rankvis
 OWN_HOLD=0
-release_own_hold () { [ "$OWN_HOLD" = 1 ] && rm -f "$HOLD" && ql_say "filler hold (this queue's) removed"; OWN_HOLD=0; }
+release_own_hold () { local rc=1; [ "$OWN_HOLD" = 1 ] && { rc=0; ql_hold_release "$ME" || rc=$?; }; OWN_HOLD=0; return "$rc"; }
 halt_before_launch () { release_own_hold; ql_halt "$@"; }
 
 RV=$(ql_commit "$CF") || ql_halt 1 "no RANKVIS flight commit in $CF (not flipped)"
@@ -35,10 +38,10 @@ until [ -e "$GO" ]; do sleep 60; done
 ql_say "go marker seen: $(head -1 "$GO" 2>/dev/null | cut -c1-200)"
 
 # 2. hold the filler
-if [ -e "$HOLD" ]; then
-  ql_say "filler hold already present ($(stat -c %y "$HOLD" | cut -c1-19)): another queue's -- left in place, not removed and the filler not restarted by this queue"
+if ql_hold_take "$ME"; then
+  OWN_HOLD=1
 else
-  touch "$HOLD" && OWN_HOLD=1 && ql_say "filler hold created by this queue"
+  ql_say "filler hold owned by $(ql_hold_owner): left in place, not removed and the filler not restarted by this queue"
 fi
 
 # 3. wait for the gap
@@ -83,12 +86,11 @@ grep -q '"short": "rankvis"' /home/chao/batch-queue.json 2>/dev/null || ql_halt 
 ql_say "RANKVIS DONE $(head -1 "$QL_DONE") at ${RV:0:8}"
 
 # 7. release the hold and restart the filler (only when this queue owned the hold)
-if [ "$OWN_HOLD" = 1 ]; then
-  release_own_hold
+if [ "$OWN_HOLD" = 1 ] && release_own_hold; then
   cp "$M/scripts/flights/filler/filler_queue.sh" /home/chao/saea-queue/filler_queue.sh || ql_halt 1 "filler copy failed"
   ql_say "restarting the filler queue inline (copied to ext4 first)"
   rc=0; bash /home/chao/saea-queue/filler_queue.sh >> "$QL_LOG" 2>&1 || rc=$?
   ql_say "filler queue exited $rc; queue complete"
 else
-  ql_say "the filler hold belongs to another queue: left in place, filler not restarted; queue complete"
+  ql_say "the filler hold belongs to another owner ($(ql_hold_owner || echo none)): left in place, filler not restarted; queue complete"
 fi
