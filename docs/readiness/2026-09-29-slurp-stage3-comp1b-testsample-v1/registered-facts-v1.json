@@ -27,7 +27,7 @@
   "blockers_before_the_flip": [
     "OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).",
     "ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell (core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name ['SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1', 'SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1'] as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.",
-    "PREPARATIONS: preparations 2 and 3 of the sample (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1; label-free, owner decision 156) have run and their artifacts are pinned (sample_preparation_pins: 4 pins, verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root). REMAINING: this roster's agreement table, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against MILESTONE-00-PLAN (as the DEV-2000-ADDED table was built against the sealed DEV plan cell), then re-derived with --data-root. Pending pins: ['prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json'].",
+    "PREPARATIONS: preparations 2 and 3 of the sample (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1; label-free, owner decision 156) have run and their artifacts are pinned (sample_preparation_pins: 6 pins, verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root). No sample-preparation pin remains pending (this roster's agreement table and its receipt are pinned from the builder's own receipt, ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1); the only zero pins are each cell's own first-phase supply, minted at the flip (item E16): ['prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json'].",
     "EXPECTATION: CLEARED -- re-declared 3.8 -> 4.6 from the A2 read on 2026-09-30 (registered-facts redeclaration; redeclared_from_a2_read true).",
     "READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned."
   ],
@@ -71,7 +71,7 @@
         "tau": 0.0
       },
       "cell": "slurp-native-stage3-comp1b-testsample-v1",
-      "composed_config_hash": "107351660ab69cb54b381b200b5868f025d75776e4c6b37fa4d75b662efe2407",
+      "composed_config_hash": "9b7cb7d28f3e81dc5daf0730476e59191cf558fc75659e5857827e4d3279d4ae",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-native-stage3-comp1b-testsample-v1",
       "fit_attempt_id": "attempt-slurp-test-sample-3010-milestone-01-fit-v1",
@@ -83,7 +83,7 @@
         "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
       },
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "978bf2e1e26ad3a0793da40aaeabffd85e85b2c0a2aab4ff28f9f901ad7bc8c7",
+      "protocol_hash": "367423eaafb74ca47fee7594cd6a46f90eee9d8dac38415ba1d6df6d4ce24cd2",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
@@ -298,7 +298,7 @@
     },
     "derive_script": {
       "relpath": "scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py",
-      "sha256": "c7e41b80d26f4924ffa315e58a664ff66daba043cadb829aa72d6c5b868559e4"
+      "sha256": "dba8b3e9b9a39a71b4ee8a4966eb21709489287ebe9dfaa42e75ae1a1891be60"
     },
     "plan_vs_dev_plan": {
       "anything_else": [],
@@ -385,7 +385,6 @@
     "28/86": "development numbers only; never a test claim"
   },
   "pending_pins": [
-    "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
     "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json",
     "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json"
   ],
@@ -451,11 +450,19 @@
   },
   "rows": 3010,
   "sample_preparation_pins": {
-    "note": "Every sample-preparation pin the cells carry, read from the preparations' summary receipt and verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root. protocol-registered-v1.json and the plan documents were re-derived with these pins and carry the current stage3_measurement (the redeclaration's note that the protocol kept the provisional copy is superseded by this re-derivation).",
+    "note": "Every sample-preparation pin the cells carry, read from the preparations' summary receipt (the agreement table and its receipt: from the agreement builder's own receipt) and verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root. protocol-registered-v1.json and the plan documents were re-derived with these pins and carry the current stage3_measurement (the redeclaration's note that the protocol kept the provisional copy is superseded by this re-derivation).",
     "pins": [
       {
         "relpath": "preparation-runs/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
         "sha256": "7b73093f76bb99c61a8c68438295a54f8b17072d4abb0c6a9a29e5bbc642b732"
+      },
+      {
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
+        "sha256": "3402e9756ff2b955ad73d51a5ca7c60f11b3f40e0d6a652e34cf353d4a65ac4f"
+      },
+      {
+        "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json",
+        "sha256": "3e2c9018228a449de7665604b1de25525d2e8ff9d37bf78965051829b4784f21"
       },
       {
         "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-ALIAS-V1/query-dimension-alias.json",
@@ -517,5 +524,5 @@
     }
   },
   "study_commit_at_registration": "881b1787c",
-  "the_composition": "MILESTONE-01 is cell A2's arm (COMP-1b) with only the roster moved to the signed test sample: the locked v2.0 plan + (1) the agreement term (w_agree 1.0, recall k 60, delivered 8-1-8) with this roster's own vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1 (PENDING) + (2) the centroid boundary key + (3) no citation contract + (4) nothing else. MILESTONE-00-PLAN is the sealed DEV plan arm (the v2.0 lock as flown) with only the roster moved."
+  "the_composition": "MILESTONE-01 is cell A2's arm (COMP-1b) with only the roster moved to the signed test sample: the locked v2.0 plan + (1) the agreement term (w_agree 1.0, recall k 60, delivered 8-1-8) with this roster's own vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1 + (2) the centroid boundary key + (3) no citation contract + (4) nothing else. MILESTONE-00-PLAN is the sealed DEV plan arm (the v2.0 lock as flown) with only the roster moved."
 }

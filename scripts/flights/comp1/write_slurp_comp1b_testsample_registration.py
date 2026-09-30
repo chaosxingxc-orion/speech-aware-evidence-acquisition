@@ -453,7 +453,9 @@ def main(argv: list[str] | None = None) -> int:
             + ("REMAINING: this roster's agreement table, built model-free by scripts/build_slurp_intent_exemplar_agreement.py "
                "against MILESTONE-00-PLAN (as the DEV-2000-ADDED table was built against the sealed DEV plan cell), then "
                f"re-derived with --data-root. Pending pins: {pending}." if sample_pending else
-               f"No sample-preparation pin remains pending; the only zero pins are each cell's own first-phase supply, "
+               "No sample-preparation pin remains pending (this roster's agreement table and its receipt are pinned from "
+               "the builder's own receipt, ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1); the only "
+               f"zero pins are each cell's own first-phase supply, "
                f"minted at the flip (item E16): {pending}.")
         )
     else:
@@ -527,7 +529,8 @@ def main(argv: list[str] | None = None) -> int:
         "pending_pins": pending,
         "sample_preparation_pins": {
             "pins": [{"relpath": k, "sha256": pinned[k]} for k in sorted(pinned)],
-            "note": ("Every sample-preparation pin the cells carry, read from the preparations' summary receipt and verified "
+            "note": ("Every sample-preparation pin the cells carry, read from the preparations' summary receipt (the "
+                     "agreement table and its receipt: from the agreement builder's own receipt) and verified "
                      f"against the data-root bytes by {DERIVE_SCRIPT} --data-root. protocol-registered-v1.json and the plan "
                      "documents were re-derived with these pins and carry the current stage3_measurement (the redeclaration's "
                      "note that the protocol kept the provisional copy is superseded by this re-derivation).") if pinned else

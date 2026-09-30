@@ -10,7 +10,7 @@
             "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed speech vector against the frozen pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. Built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts; receipt beside the artifact.",
             "kind": "sealed-agreement",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "3402e9756ff2b955ad73d51a5ca7c60f11b3f40e0d6a652e34cf353d4a65ac4f",
             "tool_contact_ledger_row": "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1"
           },
           "dimensions": [
@@ -264,7 +264,7 @@
     {
       "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json",
       "root": "data",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "sha256": "3e2c9018228a449de7665604b1de25525d2e8ff9d37bf78965051829b4784f21"
     },
     {
       "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",

@@ -44,8 +44,12 @@ each artifact the sample preparations (2 and 3, owner decision 156) have produce
 its real sha256 instead: the pin is READ from the preparations' own summary receipt
 (:data:`PREPARATION_SUMMARY`, which names each output's sha256) and VERIFIED by hashing the file
 on the data root; a mismatch, a summary that is not this roster's, or a summary that reads labels
-refuses. An artifact the summary does not name (the agreement table, built later from these
-vectors) stays PENDING.
+refuses. The agreement table, built later from these vectors, is not named by that summary: with
+``--data-root`` it is pinned from ITS OWN receipt (:data:`AGREEMENT_RECEIPT`, written by
+``scripts/build_slurp_intent_exemplar_agreement.py``), which must name this roster's split identity,
+the MILESTONE-00-PLAN cell and run id, 3,010 rows and zero contacts of every kind, and whose declared
+table sha256 must equal the table's bytes; both the table and the receipt are pinned. Until the
+receipt exists both stay PENDING.
 
 Config only: no contact, no ledger row, no receipt, no flip, no media, no gold. The data-root
 read hashes bytes; it opens no vector, no utterance and no label as content.
@@ -111,6 +115,8 @@ SPLIT_ROLE = "final-report"
 SPLIT_ID = "TEST-SAMPLE"
 
 AGREEMENT_RELPATH = "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl"
+AGREEMENT_RECEIPT = "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json"
+AGREEMENT_ARTIFACT_ID = "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1"
 SEGMENT_VECTORS = "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl"
 CONTENT_VECTORS = "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl"
 
@@ -267,6 +273,14 @@ def pend(requirements_reason: str, relpath: str) -> dict:
 def pin_requirement(relpath: str, pins: dict[str, str], provenance: dict | None) -> dict:
     """A readiness requirement: the real, verified pin when the preparations produced it, else PENDING."""
 
+    if relpath == AGREEMENT_RELPATH and relpath in pins:
+        return {"kind": "preparation", "relpath": relpath, "sha256": pins[relpath],
+                "reason": (f"PINNED: this roster's own exemplar-intent agreement table ({AGREEMENT_ARTIFACT_ID}), built "
+                           "model-free (zero model, encoder, server, GPU and network contacts) by "
+                           "scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the "
+                           "DEV-2000-ADDED table was built against the sealed DEV plan cell, and read from its receipt "
+                           f"{AGREEMENT_PROVENANCE['relpath']} (sha256 {AGREEMENT_PROVENANCE['sha256']}); the derive "
+                           "script verified the sha256 against the file bytes on the data root.")}
     if relpath in pins:
         return {"kind": "preparation", "relpath": relpath, "sha256": pins[relpath],
                 "reason": (f"PINNED: {PINNED_WHAT[relpath]}, produced by the label-free sample preparations (owner "
@@ -276,8 +290,42 @@ def pin_requirement(relpath: str, pins: dict[str, str], provenance: dict | None)
     return pend(PENDING_ARTIFACTS[relpath], relpath)
 
 
+def resolve_agreement_pins(data_root: Path | None) -> tuple[dict[str, str], dict | None]:
+    """Real pins for this roster's agreement table and its receipt, read from the receipt and verified.
+
+    Returns ({relpath: sha256}, receipt provenance or None). Without a data root, or before the
+    receipt exists, both pins stay PENDING. Refuses (SystemExit) on any mismatch.
+    """
+
+    if data_root is None:
+        return {}, None
+    receipt_path = data_root / AGREEMENT_RECEIPT
+    if not receipt_path.is_file():
+        return {}, None
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    artifact = receipt.get("artifact") or {}
+    derived = receipt.get("derived_from") or {}
+    contacts = receipt.get("contacts") or {}
+    if receipt.get("schema") != "saea-phase-agreement-receipt-v1" or receipt.get("artifact_id") != AGREEMENT_ARTIFACT_ID:
+        raise SystemExit(f"{AGREEMENT_RECEIPT}: not this roster's agreement receipt (schema / artifact id)")
+    if artifact.get("relpath") != AGREEMENT_RELPATH or artifact.get("rows") != ROWS:
+        raise SystemExit(f"{AGREEMENT_RECEIPT}: the artifact is not the {ROWS}-row table at {AGREEMENT_RELPATH}")
+    if (derived.get("split_identity_hash") != SPLIT_IDENTITY or derived.get("cell") != PLAN_CELL
+            or derived.get("run_id") != PLAN_RUN):
+        raise SystemExit(f"{AGREEMENT_RECEIPT}: not built against MILESTONE-00-PLAN on this roster's split identity")
+    if receipt.get("contact_class") != "model-free" or not contacts or any(v != 0 for v in contacts.values()):
+        raise SystemExit(f"{AGREEMENT_RECEIPT}: not a zero-contact model-free build; refusing")
+    actual = _sha256_file(data_root / AGREEMENT_RELPATH)
+    if artifact.get("sha256") != actual:
+        raise SystemExit(f"{AGREEMENT_RELPATH}: the receipt declares {artifact.get('sha256')}, the file hashes {actual}; refusing")
+    receipt_sha = _sha256_file(receipt_path)
+    return {AGREEMENT_RELPATH: actual, AGREEMENT_RECEIPT: receipt_sha}, {"relpath": AGREEMENT_RECEIPT, "sha256": receipt_sha}
+
+
 #: Real pins resolved in main() (empty = every sample-preparation pin PENDING).
 PINS: dict[str, str] = {}
+#: The agreement table's receipt provenance, when its pins are real (main()).
+AGREEMENT_PROVENANCE: dict[str, str] = {}
 
 
 def retarget_baseline(src: str, out: str, *, pairs, fit_run: str, fit_attempt: str, what_this_is: str) -> dict:
@@ -412,8 +460,12 @@ def main(argv: list[str] | None = None) -> int:
     os.chdir(REPO_ROOT)
     written: list[str] = []
     pins, provenance = resolve_preparation_pins(args.data_root)
+    agreement_pins, agreement_provenance = resolve_agreement_pins(args.data_root)
+    pins = {**pins, **agreement_pins}
     PINS.clear()
     PINS.update(pins)
+    AGREEMENT_PROVENANCE.clear()
+    AGREEMENT_PROVENANCE.update(agreement_provenance or {})
 
     decision_population = (
         f"The signed SLURP test SAMPLE {ROSTER_ID} (3,010 recordings, 682 prompts, a prompt-partition of the frozen "
@@ -537,6 +589,7 @@ def main(argv: list[str] | None = None) -> int:
     wr(CAMPAIGN_PLAN, json.dumps(plan, indent=2, sort_keys=True) + "\n")
     written.append(CAMPAIGN_PLAN)
     print(json.dumps({"written": written, "pinned": pins, "summary_receipt": provenance,
+                      "agreement_receipt": agreement_provenance,
                       "still_pending": sorted(set(PENDING_ARTIFACTS) - set(pins))}, indent=2))
     return 0
 

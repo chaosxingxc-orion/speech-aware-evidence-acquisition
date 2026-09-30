@@ -23,7 +23,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-      "sha256": "ba01603637179c938ef230a06ecd94f925d5756a14e82096c7fe4a91d0225522"
+      "sha256": "605917b748ae5963b05f4cb44886f7a10562d1e3fd0301846b263cec30913176"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/README.md",
@@ -31,7 +31,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/registered-facts-v1.json",
-      "sha256": "72c51d039d28b4c89877a00e4d67e996d3351f7cd86e93afeb8ec63e420beaa3"
+      "sha256": "318f52f69b56d9234f6082fd1a586fdd878bd55a8382c93f24b49adf29a89ec8"
     },
     "registration_base_commit": "881b1787c"
   },
@@ -83,8 +83,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "107351660ab69cb54b381b200b5868f025d75776e4c6b37fa4d75b662efe2407",
-      "protocol": "978bf2e1e26ad3a0793da40aaeabffd85e85b2c0a2aab4ff28f9f901ad7bc8c7"
+      "composed_config": "9b7cb7d28f3e81dc5daf0730476e59191cf558fc75659e5857827e4d3279d4ae",
+      "protocol": "367423eaafb74ca47fee7594cd6a46f90eee9d8dac38415ba1d6df6d4ce24cd2"
     },
     "note": "the values of the fragments exactly as committed at 881b1787c; repin_cell.py recomputes them at the flip",
     "plan": {

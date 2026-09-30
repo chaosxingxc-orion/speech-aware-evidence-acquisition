@@ -1,6 +1,7 @@
 """One four-fragment factory for carrier-scoped shared FlightRuntime workers."""
 from __future__ import annotations
 
+import inspect
 from functools import partial
 from pathlib import Path
 from typing import Mapping
@@ -41,7 +42,13 @@ def build_flight_runtime(
     resolved_lock = lock if lock is not None else load_lock(
         Path(lock_path) if lock_path is not None else umbrella_lock_path(repo_root)
     )
-    adapter = builder(values, resolved_lock, data_root, repo_root, dataset_fragment=dataset)
+    # A builder that declares ``run_id`` receives the flight's own run id: the
+    # SLURP adapter binds a final-report test-sample view to the owner
+    # allowance's permitted run ids. Every other builder keeps its signature.
+    builder_kwargs = {"dataset_fragment": dataset}
+    if "run_id" in inspect.signature(builder).parameters:
+        builder_kwargs["run_id"] = run_id
+    adapter = builder(values, resolved_lock, data_root, repo_root, **builder_kwargs)
     if not isinstance(adapter, TaskAdapter):
         raise CoreError("registered task adapter builder must return TaskAdapter")
     url = urlparse(str(values.get("base_url", "http://127.0.0.1:8080")))

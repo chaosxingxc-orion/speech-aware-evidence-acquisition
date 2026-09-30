@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-comp1b-testsample-v1",
-  "composed_config_hash": "107351660ab69cb54b381b200b5868f025d75776e4c6b37fa4d75b662efe2407",
+  "composed_config_hash": "9b7cb7d28f3e81dc5daf0730476e59191cf558fc75659e5857827e4d3279d4ae",
   "execution_plan": {
     "attempt_id": "attempt-slurp-test-sample-3010-milestone-01-generation-v1",
     "carrier_lock_key": "slurp",
@@ -12,7 +12,7 @@
     "planned_gpu_hours": 36.2,
     "planned_model_calls": 33110,
     "planned_speech_audio_seconds": 90271,
-    "protocol_hash": "978bf2e1e26ad3a0793da40aaeabffd85e85b2c0a2aab4ff28f9f901ad7bc8c7",
+    "protocol_hash": "367423eaafb74ca47fee7594cd6a46f90eee9d8dac38415ba1d6df6d4ce24cd2",
     "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-    "sha256": "ba01603637179c938ef230a06ecd94f925d5756a14e82096c7fe4a91d0225522"
+    "sha256": "605917b748ae5963b05f4cb44886f7a10562d1e3fd0301846b263cec30913176"
   },
   "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1: Read MILESTONE-01 against MILESTONE-00-PLAN flown in the same chain, on the same 3,010 rows. PRIMARY: intent accuracy (scenario_action exact), paired per recording with prompt-clustered bootstrap, 10,000 draws, seed 20260929. GUARD: official pooled SLU-F1 (slurp-slu-official-test) non-inferior at the FALLBACK null h_SLU 1.4492 (h_intent 1.3329; the DEV-2000-ADDED own null scaled by sqrt(913 / 682), flagged). HELD: the intent CI95 lower bound above zero AND the guard holds. NEUTRAL: both metrics non-inferior at the fallback null without a held gain. HARMFUL: a measured loss on either metric (decision 25). Every verdict carries intent and SLU separately, per-intent and per-scenario tables in both weightings (post-stratified natural mixture; equal stratum over 58 intents). The number is a MILESTONE read, development evidence under owner decision 28, never a test claim.",
   "quality_read_gate": "No task-quality read before BOTH manifests are complete and sealed with one successful complete official slurp-slu-official-test score each, and the READ row is root countersigned.",

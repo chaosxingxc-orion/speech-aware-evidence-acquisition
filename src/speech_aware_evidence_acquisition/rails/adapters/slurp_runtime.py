@@ -19,6 +19,9 @@ from ..obs import AudioRef
 from .runtime_view import (
     RuntimeViewError, configured_geometry, load_runtime_view, registered_population_ids,
 )
+from ..final_report_admission import (
+    FinalReportSampleAdmission, assert_test_samples, evaluate_test_sample_admission,
+)
 from .slurp import SlurpAdapter, SlurpSample
 
 
@@ -36,9 +39,14 @@ def _sample_namespace(sample_id: str) -> str:
     return parts[1]
 
 
+def _namespace_label(split_id: str) -> str:
+    return "non-discovery sample" if split_id == "discovery" else "non-devel sample"
+
+
 def _assert_sample_namespaces(
     samples, *, split_id: str, split_role: str,
     registered_population_bound: bool, runtime_split_name: str | None,
+    test_admission: FinalReportSampleAdmission | None = None,
 ) -> None:
     namespaces = {_sample_namespace(sample.sample_id) for sample in samples}
     if len(namespaces) != 1:
@@ -51,9 +59,12 @@ def _assert_sample_namespaces(
             )
         return
     if namespace != "train":
-        label = (
-            "non-discovery sample" if split_id == "discovery" else "non-devel sample"
-        )
+        label = _namespace_label(split_id)
+        if namespace == "test":
+            assert_test_samples(
+                samples, split_role=split_role, admission=test_admission, label=label,
+            )
+            return
         raise RuntimeViewError(f"runtime SLURP view contains a {label}")
     if split_id == "devel" or _REGISTERED_DEV_SPLIT.fullmatch(split_id):
         raise RuntimeViewError("runtime SLURP view contains a non-devel sample")
@@ -69,8 +80,19 @@ def _assert_sample_namespaces(
         )
 
 
-def roster_samples(values, data_root_path, *, limit_sample_ids=None, workers=16):
-    """Build only media-scoped samples, retaining the historical wrapper call shape."""
+def roster_samples(
+    values, data_root_path, *, limit_sample_ids=None, workers=16, test_admission=None,
+):
+    """Build only media-scoped samples, retaining the historical wrapper call shape.
+
+    ``test_admission`` is the result of :func:`evaluate_test_sample_admission`;
+    a refused admission is raised before any media byte is opened.
+    """
+    if test_admission is not None and test_admission.refusal is not None:
+        assert_test_samples(
+            (), split_role="", admission=test_admission,
+            label=_namespace_label(str(values.get("split_id", "devel"))),
+        )
     rows = load_runtime_view(values, data_root_path, sample_ids=limit_sample_ids, workers=workers)
     samples = []
     for item in rows:
@@ -91,6 +113,7 @@ def roster_samples(values, data_root_path, *, limit_sample_ids=None, workers=16)
         split_role=str(plan.get("split_role", "")),
         registered_population_bound=limit_sample_ids is not None,
         runtime_split_name=values.get("split_name"),
+        test_admission=test_admission,
     )
     return samples
 
@@ -127,7 +150,7 @@ class RuntimeSlurpAdapter(SlurpAdapter):
         self, lock, root, *, repo_root, split_id, samples, instruction_text,
         serving_slots=None, serving_slot_tokens=None, serving_max_tokens=None,
         split_role="", registered_population_bound=False, runtime_split_name=None,
-        task_contract_view=SLURP_TASK_CONTRACT_VIEW_LEGACY,
+        task_contract_view=SLURP_TASK_CONTRACT_VIEW_LEGACY, test_admission=None,
     ):
         super().__init__(lock, root, repo_root=repo_root)
         self._split_id = split_id
@@ -151,7 +174,7 @@ class RuntimeSlurpAdapter(SlurpAdapter):
         _assert_sample_namespaces(
             self._samples, split_id=split_id, split_role=split_role,
             registered_population_bound=registered_population_bound,
-            runtime_split_name=runtime_split_name,
+            runtime_split_name=runtime_split_name, test_admission=test_admission,
         )
         if any(
             sample.scenario or sample.action or sample.intent or sample.entities
@@ -195,9 +218,14 @@ class RuntimeSlurpAdapter(SlurpAdapter):
         bind_runtime_material(runtime, values, self._lock, self._root)
 
 
-def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragment):
+def build_runtime_adapter(
+    values, lock, data_root, repo_root, *, dataset_fragment, run_id=None,
+):
     # Validate the selector before resolving instructions, rosters, or media.
     task_contract_view = _configured_task_contract_view(values)
+    # None for every train/devel view; for a slurp:test view, the signed
+    # sample's roster or the named refusal (raised before media is opened).
+    test_admission = evaluate_test_sample_admission(values, repo_root, run_id)
     instruction = (
         resolve_active_task_instruction(values, repo_root, lock, data_root)
         or resolve_task_instruction(values, repo_root, lock, data_root)
@@ -208,6 +236,7 @@ def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragmen
         values, data_root,
         limit_sample_ids=population_ids,
         workers=values.get("runtime_view_workers", 8),
+        test_admission=test_admission,
     )
     return RuntimeSlurpAdapter(
         lock, data_root, repo_root=repo_root, split_id=str(values["split_id"]),
@@ -217,7 +246,7 @@ def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragmen
         split_role=str(values.get("execution_plan", {}).get("split_role", "")),
         registered_population_bound=population_ids is not None,
         runtime_split_name=values.get("split_name"),
-        task_contract_view=task_contract_view,
+        task_contract_view=task_contract_view, test_admission=test_admission,
     )
 
 
