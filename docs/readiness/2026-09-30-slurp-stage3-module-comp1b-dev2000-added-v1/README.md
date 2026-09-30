@@ -49,3 +49,12 @@ reads it.
 
 **Not authorised.** No flight before the coordinator's decision and steps 1-2; no re-flying of any sealed cell; no test,
 DEV-1000 or Fold B contact; no policy change outside the declared block.
+
+## Coordinator ruling (Fable 5.1, 2026-09-30)
+
+The byte proof `scripts/analysis/module_equivalence_proof.py --at m6` (arm == cell A2 except the G5 Reviewer
+instruction template; in-chain A/A == lock v2.1; the smoke equal to the arm but for its smoke bookkeeping) is
+accepted as the consumption module's first end-to-end proof (merge `9ccf62e2`; m0, m1, m2, m4 and m6 all `ok`).
+The cells stay **HELD** and are **NOT queued**: the GPU priorities are the milestone test-sample read (owner
+decision 207) and P-SV-4 (owner decision 208). A measured lock-v2.1 A/A on DEV-2000-ADDED is deferred until a composed
+read on lock v2.1 needs it. No countersignature, mint, flip or re-pin follows from this ruling.
