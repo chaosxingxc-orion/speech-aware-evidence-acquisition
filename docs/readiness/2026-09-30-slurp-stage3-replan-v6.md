@@ -99,6 +99,7 @@ its module null (h_A2T 1.625) is met by the byte proof without a flight. Earning
 is unmeasured. Earnings-22 has no own null and no baseline fragment. Decision 187 reads "SLURP only until the owner
 reopens the other carriers"; 209-C adopts the carry, and the coordinator reads the milestone seal as the point at which
 the E21 all-off A/A may fly. Confirmation is asked as decision 211; component-on cells on any carrier still wait.
+Status (Audio2Tool and Earnings-21 all-off cells): **HELD until SLURP lock (owner 2026-09-30)** -- decision 211.
 
 ## 4. P-SV-4 (the remaining intent item)
 
@@ -129,7 +130,8 @@ floor -- form proposed as decision 213.
    with (c) as the final read: a second read of the same arm on the same rows measures decode variance, not
    replication.
 2. **211 -- the E21 module all-off A/A flies once the milestone seals** (Audio2Tool needs no flight). Recommends
-   **yes**; component-on carrier cells stay closed.
+   **yes**; component-on carrier cells stay closed. **RULED 2026-09-30 (registry row 211): not at the milestone seal --
+   lock SLURP first, then Audio2Tool and E21; decision 187 holds until the lock.**
 3. **212 -- pin a stronger ASR tool for S2b** (a new pinned tool contact class, 0 core contacts) after S1 and S2a.
    Recommends **yes, conditional** on S2a predicting >= 1.5 pp on the contained subset at the measured precision.
 4. **213 -- the P-SV-4 DEV replicate form** (same-flight column on DEV-2000-ADDED, same sign, CI95 excluding zero).
