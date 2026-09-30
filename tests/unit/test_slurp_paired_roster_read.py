@@ -731,7 +731,7 @@ def test_train_roster_refuses_default_dev_and_wrong_scorer(world):
         drv.stage_stop(replace(args, scorer_id="slurp-slu-official"), left, right, roster)
 
 
-@pytest.mark.parametrize("forbidden", ["test", "final-report", "confirmatory"])
+@pytest.mark.parametrize("forbidden", ["test", "confirmatory"])
 def test_cli_rejects_forbidden_split_roles(forbidden, world):
     args = world["args"]
     with pytest.raises(SystemExit):
@@ -742,6 +742,29 @@ def test_cli_rejects_forbidden_split_roles(forbidden, world):
             "--expected-split-role", forbidden,
         ])
 
+
+def test_final_report_role_parses_but_requires_the_test_scorer(world):
+    # 2026-09-29 milestone fix: "final-report" is an accepted CLI role (run_package gates it
+    # further), but this driver's own stage_stop refuses it under any scorer but the TEST one.
+    from dataclasses import replace
+    args = world["args"]
+    parsed = drv.parse_args([
+        "--left-run", args.left.run_id, "--left-attempt", args.left.attempt_id,
+        "--right-run", args.right.run_id, "--right-attempt", args.right.attempt_id,
+        "--analysis-root", str(args.analysis_root), "--data-root", str(args.data_root),
+        "--expected-split-role", "final-report",
+    ])
+    assert parsed.expected_split_role == "final-report"
+    roster = drv.load_roster(args.repo_root, args.roster_relpath, args.cluster_key)
+    roster = replace(roster, document={**roster.document, "split_role": "final-report"})
+    left, right = (drv.load_arm(args.data_root, spec) for spec in (args.left, args.right))
+    for scorer in ("slurp-slu-official", "slurp-slu-official-train"):
+        with pytest.raises(drv.StopStageError, match="TEST official scorer"):
+            drv.stage_stop(
+                replace(args, expected_split_role="final-report", scorer_id=scorer),
+                left, right, roster,
+            )
+    assert not (args.analysis_root / "stop.json").exists()
 
 def test_train_full_read_uses_construction_language(world):
     args = _as_train_world(world)
