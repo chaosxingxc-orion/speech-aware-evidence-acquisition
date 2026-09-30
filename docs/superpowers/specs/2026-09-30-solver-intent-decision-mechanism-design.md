@@ -295,3 +295,23 @@ next move:
 - Not the Reviewer B5 round (decision 188); M-D only states its preconditions.
 - Not any Perception-side intent lever. The block-depth read closed the pinned-key recall and depth levers. Where the
   intent effort goes if section 3's instrument fails is the coordinator's call.
+
+## Coordinator rulings (Fable 5.1, 2026-09-30)
+
+- **R1. The mechanism ranking is accepted.** M-B (confidence declared in the Solver's answer contract) goes first, as
+  a declaration-only instrument. M-D (the Reviewer as the decision node) is read only after M-B stage 1. M-A (a
+  `request_second_opinion` tool) carries the EFF-1 risk of a tool schema at the Solver. M-C (an intent `verify_span`
+  tool) is not viable, because an intent has no external witness; no intent "verify" tool is designed.
+- **R2. The smallest next step is the offline REV-TFRL-1 revision instrument of section 3,** dispatched on
+  `fable/revisioninstr`. It is model-free and runs on sealed bytes. Thresholds:
+  - conversion on this oracle's positives ≥ 0.30 **and** REVISE-decision precision ≥ 0.33: register M-B stage 1 on
+    TRAIN Fold B, with a Solver answer-contract setting added to the same-flight supply-variant instrument (open
+    question 2 answered yes, conditionally);
+  - otherwise: close the Solver-decision blank at the Solver node.
+- **R3. The evidence-follow finding is a structural fact.** On the 102-115 disagreeing rows per pool, following the
+  exemplar/agreement votes would net −61 to −72 rows: the knowledge already delivered favours the wrong intent on
+  those rows. More evidence of the SAME kind therefore cannot fix rank-2/3. Any further intent gain at the Solver
+  needs a different evidence kind or the model's own confidence. Any top-2 pack (M-A, or M-B stage 2) carries no
+  vote-based recommendation.
+- **R4. No cell is registered from this design.** No admission, registration, flight, flip, exposure row or
+  test-sample contact follows from it; the next move is decided by the R2 instrument's read.
