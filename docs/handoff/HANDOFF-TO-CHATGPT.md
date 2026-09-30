@@ -1,7 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T04:02:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge agent) · HEAD at writing `22231ca0` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T04:08:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge agent) · HEAD at writing `1dfc6e55` on `master` (plus this refresh commit), tree clean.
+**Since 04:02Z (merge agent), 2026-09-30:** **`fable/solverdecision` merged** (`be18200c`, `--no-ff`; worktree
+merge of master `bc95d002`; 11 targeted tests passed; results ledger and engineering base PASS):
+`docs/results/2026-09-30-slurp-solver-decision-oracle-offline.md` (DESCRIPTIVE, zero contacts), the design spec
+`docs/superpowers/specs/2026-09-30-solver-intent-decision-mechanism-design.md`, the driver
+`scripts/analysis/slurp_solver_decision_oracle.py` and its test. Reading: the Solver-decision oracle ceiling is
+5.7-7.6 pp (62-82 rows of 1,080 with gold at note rank 2/3 and the pick wrong, seven sealed pools), but the measured
+conversions bind: a perfect decision at the cross-flight conversion 0.085 gives 5.3-7.0 rows (under the 7.02-row
+same-flight floor in every pool); the best offline rule at the Reviewer-routed anchor (0.185 / 0.049) gives at most
++1.32 rows (about 0.12 pp). **Coordinator rulings appended to the spec** (`1dfc6e55`): R1 ranking accepted (M-B
+declared confidence first as a declaration-only instrument; M-D only after M-B stage 1; M-A carries the EFF-1 risk;
+M-C not viable); R2 next step is the offline REV-TFRL-1 revision instrument (dispatched on `fable/revisioninstr`):
+conversion >= 0.30 and REVISE-decision precision >= 0.33 -> register M-B stage 1 on Fold B with a Solver
+answer-contract setting added to the same-flight instrument, else close the Solver-node blank; R3 structural fact:
+following the votes on the 102-115 disagreeing rows would net -61 to -72 rows -- the delivered knowledge favours the
+wrong intent there, so more evidence of the SAME kind cannot fix rank-2/3; a further Solver intent gain needs a
+different evidence kind or the model's own confidence; R4 no cell registered from this design. **GPU queue:** A2
+flying (`SAEA-Queue-A2`) -> E5-0 + test-sample preparations 2/3 in the serving-restart gap (`SAEA-Queue-E5`) ->
+filler. **Owner pending:** decision 207 (allowance v2 naming the FIT run ids), the E5-2 gate, decision 208 (P-SV-4
+K6p column).
 **Since 03:18Z (merge agent), 2026-09-30:** **`fable/recallkey` merged** (`a90a8dec`, `--no-ff`; the worktree was
 already at master; 11 targeted tests passed; results ledger and engineering base PASS):
 `docs/results/2026-09-30-slurp-retrieval-key-recall-offline.md` (DESCRIPTIVE, zero contacts), its driver
