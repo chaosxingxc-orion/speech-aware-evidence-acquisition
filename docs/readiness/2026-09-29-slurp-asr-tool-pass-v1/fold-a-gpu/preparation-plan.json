@@ -1,0 +1,16 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-asr-tool-pass-fold-a-gpu-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 1080,
+    "planned_speech_audio_seconds": 3085,
+    "protocol_hash": "c8733be0ae9c35ffe0bd0b46c73aed9127dee9727924531f603cd37ef529c0a0",
+    "run_id": "SAEA-SLURP-ASR-TOOL-PASS-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  }
+}

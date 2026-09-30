@@ -5,6 +5,7 @@
 #
 #   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1> [--dry-run] [--restart] [--min-host-free-gb 12.0]
 #                   [--margin-gb 0.5] [--wait-timeout 600] [--monitor-delay 20] [--no-restore]
+#                   [--gap-hook <script>]
 #
 # In order:
 #   1. one swap at a time (flock on $SAEA_SWAP_LOCK) and the pending marker $SAEA_SWAP_PENDING, which refuses every
@@ -24,6 +25,10 @@
 #      AFTER the running geometry had been stopped);
 #   5. clean stop of the current session (serving_session.sh stop), its leftover wrapper, port 8080 verified free,
 #      then its Windows tasks stopped;
+#   5b. with --restart --gap-hook <script> only: `bash <script>` runs in the gap, after the stop (port verified
+#      free) and before the start, still under the swap lock and the pending marker (so no CPU sidecar starts);
+#      its exit status is recorded (step gap-hook) and never stops the start (E5-0, owner decision 201:
+#      serving_restart_hook_e5.sh);
 #   6. the target's Windows serving task started through saea_task.ps1 -Start (WSL interop PowerShell), its monitor
 #      task --monitor-delay seconds later;
 #   7. the strict readiness wait (serving_wait_ready.sh --since <this start>);
@@ -51,6 +56,7 @@ MARGIN=0.5
 WAIT=600
 MONITOR_DELAY=20
 RESTORE=1
+GAP_HOOK=
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) DRY=1 ;;
@@ -60,13 +66,18 @@ while [ $# -gt 0 ]; do
     --wait-timeout) WAIT=${2:-}; shift ;;
     --monitor-delay) MONITOR_DELAY=${2:-}; shift ;;
     --no-restore) RESTORE=0 ;;
-    -h|--help) sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --gap-hook) GAP_HOOK=${2:-}; shift ;;
+    -h|--help) sed -n '2,45p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     -*) echo "serving_swap: unknown option $1"; exit 64 ;;
     *) [ -z "$TARGET" ] || { echo "serving_swap: one target only"; exit 64; }; TARGET=$1 ;;
   esac
   shift
 done
 saea_geometry "$TARGET" || { echo "usage: serving_swap.sh <$(echo $SAEA_TARGETS | tr ' ' '|')> [--dry-run] [options]; see --help"; exit 64; }
+if [ -n "$GAP_HOOK" ]; then
+  [ "$RESTART" = 1 ] || { echo "serving_swap: --gap-hook needs --restart"; exit 64; }
+  [ -f "$GAP_HOOK" ] || { echo "serving_swap: --gap-hook script not found: $GAP_HOOK"; exit 64; }
+fi
 
 SS=${SAEA_SERVING_SESSION:-$REPO/scripts/serving_session.sh}
 PS=$(saea_powershell)
@@ -278,6 +289,12 @@ if [ "$CUR" != none ]; then
   if ! stop_geometry "$CUR"; then
     finish failed-stop 11
   fi
+fi
+if [ -n "$GAP_HOOK" ]; then   # step 5b: the restart gap; the hook's status is recorded, never fatal to the start
+  record gap-hook start "$GAP_HOOK (port $SAEA_SERVING_PORT free, swap lock and pending marker held)"
+  bash "$GAP_HOOK" 2>&1 | sed 's/^/    hook: /'
+  GAP_RC=${PIPESTATUS[0]}
+  record gap-hook "exit-$GAP_RC" "$GAP_HOOK"
 fi
 if start_geometry "$TARGET"; then
   finish swapped 0
