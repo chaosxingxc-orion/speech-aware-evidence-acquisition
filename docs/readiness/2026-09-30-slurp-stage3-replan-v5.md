@@ -1,5 +1,7 @@
 # Stage-3 re-plan v5: COMP-1b admitted on DEV, the milestone read, and the rounds after it (2026-09-30)
 
+> **Superseded by v6** (`docs/readiness/2026-09-30-slurp-stage3-replan-v6.md`, after owner decisions 207-209 of 2026-09-30); kept in place as the record.
+
 Author: Fable 5.1 (root coordinator; planning, decomposition, review); written down by the records agent. Supersedes
 `docs/readiness/2026-09-30-slurp-stage3-replan-v4.md` (kept in place as the record). Inputs: the result notes under
 `docs/results/` named beside each number, the consumption-module design
