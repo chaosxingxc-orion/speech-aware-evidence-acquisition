@@ -1,7 +1,45 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T03:03:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-merge agent) · HEAD at writing `91f77e5e` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T04:02:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge agent) · HEAD at writing `22231ca0` on `master` (plus this refresh commit), tree clean.
+**Since 03:18Z (merge agent), 2026-09-30:** **`fable/recallkey` merged** (`a90a8dec`, `--no-ff`; the worktree was
+already at master; 11 targeted tests passed; results ledger and engineering base PASS):
+`docs/results/2026-09-30-slurp-retrieval-key-recall-offline.md` (DESCRIPTIVE, zero contacts), its driver
+`scripts/analysis/slurp_retrieval_key_recall.py` and test. Conclusion: no key built from the pinned vectors (K1-K8)
+adds more than +0.1 / +0.4 pp (A / B) block presence over centroid + agreement, which already has gold in the block on
+1,048 / 1,080 Fold A rows; 44 of the 76 off-note Fold A rows have gold in the block but not kept by the note. The
+binding constraints are the note's keep rate at block ranks 2-8 and Solver conversion at rank 2/3 -- both RANK
+problems. Rank quality is the retrieval-side lever: K6p (centred centroid + agreement, production admission) lifts
+gold to block rank 1 on +22 (A) / +26 (B) net rows, implied intent about +1.1 pp on both folds. The ceiling note
+carries this as a dated addendum (`22231ca0`; the first 95 % blank is re-pointed from "a new retrieval key" to rank
+quality). **Dispatched:** K6p / `key_source` Perception-branch axis engineering (branch `fable/keysource`; enables a
+same-flight K6p column, a P-SV-4 candidate); Solver decision mechanism design in progress (`fable/solverdecision`).
+**`queue_e5` swap DONE** (02:48Z, coordinator): `queue_e5.sh.next` is live, so the 02:25Z self-match race is closed.
+**GPU queue:** A2 flying (`SAEA-Queue-A2`) -> E5-0 + test-sample preparations 2/3 in the serving-restart gap
+(`SAEA-Queue-E5`) -> filler. **Owner pending:** decision 207 (allowance v2 naming the FIT run ids), the E5-2 gate.
+**Since 03:03Z (records agent), 2026-09-30:** **`fable/blockdepth` merged** (`3336c4ae`, `--no-ff`; the worktree
+took master first, `d375fb21`, no conflict; 10 targeted tests passed; results ledger and engineering base PASS):
+`docs/results/2026-09-30-slurp-perception-block-depth-and-recall-offline.md` (DESCRIPTIVE, zero contacts), its
+driver `scripts/analysis/slurp_perception_block_depth_recall.py` and test. **Coordinator amendments** (`a2f6baab`)
+supersede the lever list in the 02:14Z block below: (iii) the Solver-side contrast column is **struck** -- P-SV-1's
+rank-2 conversion 41.5 % vs 19.5 % is a composition artefact (the contrast block reached only the Perception
+request; Solver supply identical to A on 1,080 / 1,080 rows; on the contrast branch's own 82 rank-2 rows both
+Solvers are right 34 times); (ii) a shorter block is **closed in both directions** (depth effect = displacement;
+P(note keeps gold | in block) 96.45 % at depth 8 vs 94.32 % at depth 12; depth 6 predicts at best about +4 presence
+rows, +0.4 pp, under the twin bar; variable depth loses to fixed depth under cross-fit); (i) off-block recall: only
+centroid + agreement (COMP-1b's key) is net positive on both folds (+8 / +12 rows) and reaches 8 of the 34 off-block
+rows; further recall needs a NEW, unpinned retrieval key under its own brief. The module's Perception boundary key
+is confirmed as centroid + agreement (the P-SV cells flew the description key). Ledger: the P-SV-3 row carries the
+coordinator reading. **Ceiling note** (`8b2e3ad3`,
+`docs/results/2026-09-30-slurp-intent-ceiling-under-current-components.md`, DESCRIPTIVE): on Fold A gold is in the
+depth-8 block on 1,040 / 1,080 (96.3 %), on the note on about 92.9 % (96.45 % keep; Fold A measured 995 / 1,080 =
+92.1 %); perfect-Solver ceiling of the current set about 92.1-92.9 %, today's Solver about 85-86 % (AGREE 85.83,
+COMP-1b 85.65). 95 % needs both on-list recall >= about 97 % (a new retrieval key, +4-5 pp) AND rank-2/3
+conversion near 50 % (today 29.5 %; a Solver-side decision mechanism that is not the contrast block). The A2 DEV
+read and the milestone measure where the current set stands, not this ceiling. **GPU queue:** A2 flying since
+02:36Z (`SAEA-Queue-A2`) -> E5-0 + test-sample preparations 2/3 in the serving-restart gap (`SAEA-Queue-E5`; the
+`queue_e5.sh.next` swap was DONE at 02:48Z, correction 04:02Z) -> filler. **Owner pending:** decision 207
+(allowance v2 naming the FIT run ids), the E5-2 gate.
 **Since 02:47Z (merge agent), 2026-09-30:** **`fable/milestonerole` merged** (`91f77e5e`, `--no-ff`; branch
 already held `c1b42549`; branch fix `c4292690` aligned a stale forbidden-role CLI test; 110 targeted tests passed,
 1 skipped; engineering base, harness admission, tool catalog, results ledger and Stage-3 effect floor (0 blocking)
@@ -24,7 +62,7 @@ or removed; a successor takes it over from its named predecessor before the pred
 `queue_rankvis.sh` converted; new `scripts/flights/batch/queue_successor_template.sh` (pattern + safe swap
 procedure); 34 tests pass. **Live queues unchanged.** The running `queue_e5.sh` (pid 1442898) carries the SAME
 self-match against `queue_a2.sh`'s preamble and will repeat the race at `A2 DONE` (it would touch the hold, lose it
-to `queue_a2.sh`'s `rm -f` 60 s later, and wait up to 10 h on a filler that loops WAIT). **Swap pending (coordinator,
+to `queue_a2.sh`'s `rm -f` 60 s later, and wait up to 10 h on a filler that loops WAIT). **Swap DONE 02:48Z (was pending: coordinator,
 before `A2 DONE`, about 3 h after the 02:36Z launch):** `/home/chao/saea-queue/queue_e5.sh.next` (`bash -n` OK)
 waits for the real `A2 DONE` + `filler hold removed` lines, then `ql_hold_take queue_e5 legacy`; swap per the
 template header (stop SAEA-Queue-E5 while it is still in its step-1 wait, rename, restart the task).
