@@ -284,3 +284,64 @@ def test_the_solver_repair_analogue_is_listed_admitted_and_not_armable():
         for name, item in cm.resolve_carrier_hooks(profile).carrier_components.items():
             assert name not in {s.component_id for s in cm.COMPONENT_CATALOGUE}
             assert item["armable"] is False and (_REPO / item["record"]).is_file(), name
+
+
+# ---------------------------------------------------------------------------
+# The per-carrier all-off arms (design 2b.3 admission gate): HELD form proofs, byte-identical to the direct baselines.
+# ---------------------------------------------------------------------------
+
+ALLOFF_CELLS = {
+    "audio2tool": ("a2t-native-stage3-module-alloff-v1", "a2t-native-stage3-module-alloff-smoke-4-v1"),
+    "earnings": ("earnings21-native-stage3-module-alloff-v1", "earnings21-native-stage3-module-alloff-smoke-4-v1"),
+}
+
+
+@pytest.mark.parametrize("at", ["a2t0", "e210"])
+def test_the_all_off_byte_proof_holds(at):
+    import module_equivalence_proof as proof  # noqa: PLC0415
+
+    report = proof.run_case(at)
+    assert report["ok"], report
+    cells = [r for r in report["results"] if "cell" in r]
+    assert {r["cell"] for r in cells} == {"arm", "smoke"}
+    for row in cells:
+        assert row["composed_identical"] and row["differing_policy_paths"] == []
+        assert row["composed_config_diff_vs_parent"]["policy"] == []
+        assert row["composed_config_diff_vs_parent"]["anything_else"] == []
+
+
+@pytest.mark.parametrize("profile", sorted(ALLOFF_CELLS))
+def test_the_all_off_cells_are_held_form_proofs_declaring_the_all_off_block(profile):
+    import module_equivalence_proof as proof  # noqa: PLC0415
+
+    for cell in ALLOFF_CELLS[profile]:
+        document = json.loads((_REPO / "configs/experiment" / f"{cell}.json").read_text(encoding="utf-8"))
+        assert document["cells"][0]["readiness"]["state"] == "held"
+        assert document["stage3_measurement"]["measurement_design"] == "form-proof"
+        assert document["stage3_measurement"]["claims_benefit"] is False
+        assert document["stage3_algorithm"]["id"] == "none"
+        assert document[proof.DECLARATION_KEY]["block"] == proof.alloff_block(profile)
+
+
+def test_no_component_on_cell_is_registered_for_audio2tool_or_earnings():
+    for path in sorted((_REPO / "configs").rglob("*.json")):
+        text = path.read_text(encoding="utf-8")
+        if '"profile": "audio2tool"' not in text and '"profile": "earnings"' not in text:
+            continue
+        document = json.loads(text)
+        blocks = []
+
+        def walk(node):
+            if isinstance(node, dict):
+                if node.get("module_id") == cm.CONSUMPTION_MODULE_ID:
+                    blocks.append(node)
+                for value in node.values():
+                    walk(value)
+            elif isinstance(node, list):
+                for item in node:
+                    walk(item)
+
+        walk(document)
+        for block in blocks:
+            if block.get("profile") in ("audio2tool", "earnings"):
+                assert cm.is_module_off_block(block), path

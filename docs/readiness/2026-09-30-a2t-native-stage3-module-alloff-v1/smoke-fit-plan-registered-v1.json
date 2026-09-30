@@ -1,0 +1,47 @@
+{
+  "attached_generation_run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+  "cell": "a2t-native-stage3-module-alloff-smoke-4-v1",
+  "composed_config_hash": "c2d2a606e062caaa5115c95fd15a414a7982f7c898d57d2a5040f2226826b05b",
+  "contact_cap": 13,
+  "execution_plan": {
+    "attempt_id": "attempt-a2t-native-stage3-module-alloff-smoke-4-v1-fit-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.2,
+    "planned_model_calls": 13,
+    "planned_speech_audio_seconds": 21,
+    "protocol_hash": "41ab6e9db0bda6b64e740681799a72e276d7c4ef1c319a778ed5a7446c0dfd61",
+    "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "c7057020334be227c430d661953fa3ad3b0b044dfbc97c4e186c5777cb6a5baa",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v3",
+  "experiment": "a2t-native-stage3-module-alloff-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 13,
+    "generation_calls_cap": 4,
+    "gpu_hours_fit_inclusive": 0.2,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 21
+  },
+  "max_speech_packets": 1,
+  "plan_kind": "fit",
+  "preparation_base_commit": "60eb5feaa",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-30-a2t-native-stage3-module-alloff-v1/protocol-registered-v1.json",
+    "sha256": "db55cc4b9a122df8f388508de25de4f90e4054adfb4df13a8785da35d9bf8943"
+  },
+  "purpose": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-FIT-V1: the live phase-fit spend identity of SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1; request envelopes only.",
+  "registered_at_utc": "2026-09-30T12:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "scoring": "No fit score.",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-carrierhooks, branch fable/carrierhooks",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

@@ -1,0 +1,22 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-earnings21-native-stage3-module-alloff-v1-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "direct_parent": {
+      "experiment": "e21-native-window-direct-full44-v1",
+      "role": "the direct cell whose bytes the all-off arm carries; context only"
+    }
+  },
+  "boundary": "Development numbers only (owner decisions 28 and 86). No utterance text, transcript, gold label or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "design": "DESCRIPTIVE form read: request identity against the direct parent's registered bytes, row completeness, the official scorer(s) reported beside, contacts per minute; no verdict, no benefit, no admission.",
+  "own_null": "E21's measured own null (WER 0.058, PERSON 0.250, ORG 0.356, numeric 0.157; docs/results/2026-09-27-verdict-reclassification.md) was measured on the pre-FlightRuntime buf90 direct form (SAEA-E21-FULL44-NULL-REPLICATE-V1), NOT on these native-window bytes; the module null on this form is unmeasured until an in-chain A/A of this arm seals (design 2b.3).",
+  "read_run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-FORM-READ-V1",
+  "recipe_id": "earnings21-native-stage3-module-alloff-v1-form-read-v1",
+  "schema": "saea-analysis-recipe-v1",
+  "scorers": "asr-wer-whisper (Whisper-normalised WER) beside conec-entity-wer-official, numeric-value-accuracy-v1, semantic-high-impact-error-rate-v1 and cost"
+}
