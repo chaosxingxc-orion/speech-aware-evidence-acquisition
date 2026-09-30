@@ -118,8 +118,8 @@
       "rejected": 9,
       "instrument": 20,
       "closed_unread": 3,
-      "pending": 12,
-      "rows": 53,
+      "pending": 13,
+      "rows": 54,
       "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used.",
       "reclassification_2026_09_27": "CELL-3's tally moved from rejected to neutral with its adjusted status word (item A6 of the reclassification note)."
     },
@@ -5565,6 +5565,68 @@
       "flown": true,
       "pending": false,
       "provisional": null
+    },
+    {
+      "cell_id": "SLURP-MODULE-COMP1B-DEV2000",
+      "carrier": "SLURP",
+      "layer": "Stage-3 consumption module (held, proof-only)",
+      "title": "MODULE-COMP1B - the evidence-consumption module saea-evidence-consumption-module-v1 (profile slurp) compiled onto lock v2.1 with COMP-1b's two components ON (agree-vote-seed + centroid-boundary-key), against the module's OFF arm (the first lock-v2.1 A/A) on DEV-2000-ADDED; migration step 6 of the consumption-module design",
+      "date": "2026-09-30",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1",
+        "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1",
+        "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-PAIRED-ANALYSIS-V1"
+      ],
+      "verdict_note": null,
+      "receipt": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/",
+      "preregistration": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1-preregistration.md",
+      "status": "PENDING",
+      "status_source": "held, proof-only: registered before contact on 2026-09-30; the byte proof m6 is ok and accepted by the coordinator ruling in the package README as the module's first end-to-end proof; the cells are not queued and not flown, and no verdict note exists",
+      "status_quote": "The cells stay **HELD** and are **NOT queued**: the GPU priorities are the milestone test-sample read (owner decision 207) and P-SV-4 (owner decision 208).",
+      "comparator": {
+        "text": "the module's OFF arm on lock v2.1 (every catalogued component off), the in-chain A/A SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1 flown before the arm in one campaign -- not flown.",
+        "source": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md"
+      },
+      "rule": {
+        "text": "cross-flight-with-in-chain-replicate, n = 1,000, intent primary, claims_benefit true, claim nominated, expected_effect_pp 4.6 (the A2 read's intent point, measured on lock v2.0 bytes), official SLU-F1 the guard at this roster's own null (h_SLU 1.2525, h_intent 1.152) -- registered, not applied: nothing has flown.",
+        "source": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md"
+      },
+      "primary": {
+        "text": "not measured. The model-free byte proof (scripts/analysis/module_equivalence_proof.py --at m0 m6) is ok: the arm's compiled policy blocks equal cell A2's flown arm bytes except the lock-v2.1 Reviewer instruction template, and the A/A equals the lock-v2.1 bytes.",
+        "source": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md"
+      },
+      "margin": {
+        "text": "none measured; the registered bar is about 2.6 pp at n = 1,000.",
+        "source": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md"
+      },
+      "margin_kind": "none - held, not flown",
+      "guards": {
+        "text": "not evaluated.",
+        "source": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md"
+      },
+      "harness_admission": {
+        "module": "the evidence-consumption module saea-evidence-consumption-module-v1 (profile slurp): the composed consumption policy as one block, compiled onto the lock",
+        "carrier": "slurp",
+        "switch": "native_episode.consumption_module (falsifier kind compiles-to-lock, lock v2.1)",
+        "status": "PENDING",
+        "plan_entry": "none - the module is a composition, not a new mechanism; the module cell is registered and HELD, and nothing here enters a plan",
+        "source": "docs/receipts/harness-admission.json"
+      },
+      "citable_sentence": "none",
+      "cost": {
+        "text": "registered ceilings (unconsumed): arm 11,000 and A/A 11,000 calls, each with a 44,000-call fit row; four-row smoke 44 calls with a 176-call fit row; the READ row is model-free (0 calls). About 3.4 GPU-h if flown.",
+        "source": "docs/exposure-ledger.md"
+      },
+      "next_step": {
+        "text": "none queued: the coordinator ruling defers a measured lock-v2.1 A/A on DEV-2000-ADDED until a composed read on lock v2.1 needs it; flying needs the seven DRAFT rows countersigned, the admission receipt minted and the flip script, per the package README.",
+        "source": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md"
+      },
+      "umbrella_values": [],
+      "notes": "Added 2026-09-30 so the harness-admission entry SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1 has its row (results_ledger_check cross-check C). Held, proof-only: the byte proof m6 is ok and accepted by the coordinator ruling (Fable 5.1, 2026-09-30, merge 9ccf62e2); not flown, no number read. The COMP-1b component numbers the module composes are cell A2's (docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md), not this cell's.",
+      "tally": "pending",
+      "flown": false,
+      "pending": true,
+      "provisional": null
     }
   ],
   "operational_recovery": {
@@ -6959,7 +7021,8 @@
       "SLURP-DET",
       "SLURP-ROLL-3",
       "SLURP-AGREE",
-      "A2T-AA"
+      "A2T-AA",
+      "SLURP-MODULE-COMP1B-DEV2000"
     ],
     "algorithm_registry": {
       "text": "Owner decision 101 requires every Stage-3 cell to carry a stage3_algorithm label that resolves in core.base.STAGE3_ALGORITHMS. Two record defects were observed while these rows were written. The first is REPAIRED since: gepa-reflective-pareto-v1 and inference-time-verification-v1 both read status='planned' although CELL-1-GEPA and VERIFY-1 had flown and sealed, and both were corrected to status='base-loop' in commit 8b18f4ef of 2026-09-26 -- a status is a fact about this repository, not a statement of intent. The second stands and is reported rather than repaired: the CELL-1-GEPA verdict states three different label/operator sets for one cell (see that row's notes), and this ledger resolves none of them.",
