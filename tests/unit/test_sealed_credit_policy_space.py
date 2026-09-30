@@ -89,3 +89,16 @@ def test_non_tuning_source_refused():
     with pytest.raises(ps.PolicySpaceError):
         ps.validate_tuning_sources(doc, tuning_pool_labels={"a"})  # "b" is missing
     ps.validate_tuning_sources(doc, tuning_pool_labels={"a", "b"})  # both present: no raise
+
+
+def test_value_status_is_validated(tmp_path):
+    """run 3: optional value-level status must be open / admitted / closed."""
+    doc = _doc()
+    doc["knobs"][0]["values"][0]["status"] = "closed"
+    path = tmp_path / "ps.json"
+    _write(path, doc)
+    assert ps.load_policy_space(path)["knobs"][0]["values"][0]["status"] == "closed"
+    doc["knobs"][0]["values"][0]["status"] = "retired"
+    _write(path, doc)
+    with pytest.raises(ps.PolicySpaceError):
+        ps.load_policy_space(path)

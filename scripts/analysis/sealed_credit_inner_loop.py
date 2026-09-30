@@ -62,6 +62,9 @@ READ_DESIGNS = {
     # run 2: the composed-policy question at the Fold A arm size (COMP-1 / COMP-1b read at
     # n = 1,080 against their in-chain A/A; rule-3 bar 2.5 pp at 1,080).
     "cross-flight-with-in-chain-replicate": ("cross-flight-with-in-chain-replicate", 1080),
+    # run 3: the Perception-branch same-flight design (owner decision 190 puts the same two
+    # per-metric anchors on it as on the supply-variant design).
+    "same-flight-perception-variant": ("same-flight-perception-variant", 1080),
 }
 RECIPE = "sealed-credit-inner-loop-run-1-v1"
 
@@ -130,15 +133,21 @@ def render_report(
     for label, entry in sorted(credit_table["pools"].items()):
         h = entry["headline"]
         lines.append(f"| {label} | {h['kind']} | {h['rows']} | {h['d_ok']} | {h['s1_ok']} |")
-    lines += ["", f"## Top {top_n} candidates (ranked by predicted intent gain)", "",
-              "| rank | knob | value | predicted intent pp | predicted SLU pp | guard | floor | clears floor |",
-              "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+    with_status = any("status" in c for c in ranked)
+    lines += ["", f"## Top {top_n} candidates (ranked by predicted intent gain)", ""]
+    if with_status:
+        lines += ["| rank | knob | value | predicted intent pp | predicted SLU pp | guard | floor | clears floor | status |",
+                  "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
+    else:
+        lines += ["| rank | knob | value | predicted intent pp | predicted SLU pp | guard | floor | clears floor |",
+                  "| --- | --- | --- | --- | --- | --- | --- | --- |"]
     for c in ranked[:top_n]:
-        lines.append(
+        row = (
             f"| {c['rank']} | {c['knob_id']} | {c['value']} | {c['predicted_intent_pp']:.4f} | "
             f"{c['predicted_slu_pp'] if c['predicted_slu_pp'] is not None else 'n/a'} | "
             f"{c['guard_pp']:.4f} | {c['floor_pp']:.4f} | {c['clears_floor']} |"
         )
+        lines.append(row + (f" {c.get('status', 'open')} |" if with_status else ""))
     lines += ["", "## Nomination", ""]
     if nomination["nominated"]:
         top = nomination["candidate"]
@@ -148,6 +157,11 @@ def render_report(
         )
     else:
         lines.append(f"No candidate nominated: {nomination['reason']}.")
+    for c in nomination.get("cleared_but_not_open", []):
+        lines.append(
+            f"Clears the floor but not open ({c['status']}, never nominated): `{c['knob_id']}` = "
+            f"`{c['value']}` (predicted intent {c['predicted_intent_pp']:+.4f} pp)."
+        )
     if compositions:
         lines += ["", "## Composed policies (additive; overlapping rows not de-duplicated)", "",
                   "| id | components | predicted intent pp | predicted SLU pp | guard | floor | guard discarded | clears floor |",

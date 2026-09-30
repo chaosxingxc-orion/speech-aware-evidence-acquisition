@@ -1,0 +1,75 @@
+{
+  "schema": "saea-sealed-credit-compositions-v1",
+  "note": "Run 3 composed-policy question (docs/results/2026-09-30-slurp-sealed-credit-inner-loop-run-3.md): C1 = AGREE + centroid (the admitted COMP-1b, sourced from the A2 DEV read) and its four named extensions, against the DEV cross-flight bar 2.5981 at n = 1,000 and the SLU guard 1.2525.",
+  "compositions": [
+    {
+      "id": "C1-comp1b",
+      "note": "the admitted COMP-1b (A2 DEV read)",
+      "components": [
+        {
+          "knob_id": "perception_seed_agree_centroid",
+          "value": "agree-w1+centroid-key"
+        }
+      ]
+    },
+    {
+      "id": "C1+k6p",
+      "note": "C1 with the centred K6p boundary key (increment measured against cent_agree)",
+      "components": [
+        {
+          "knob_id": "perception_seed_agree_centroid",
+          "value": "agree-w1+centroid-key"
+        },
+        {
+          "knob_id": "key_source",
+          "value": "k6p"
+        }
+      ]
+    },
+    {
+      "id": "C1+scope",
+      "note": "C1 + the scope-rule deliver stage (= the COMP-2 composed contrast by construction)",
+      "components": [
+        {
+          "knob_id": "perception_seed_agree_centroid",
+          "value": "agree-w1+centroid-key"
+        },
+        {
+          "knob_id": "scope_rule",
+          "value": "saea-deliver-scope-rule-v1"
+        }
+      ]
+    },
+    {
+      "id": "C1+k6p+scope",
+      "components": [
+        {
+          "knob_id": "perception_seed_agree_centroid",
+          "value": "agree-w1+centroid-key"
+        },
+        {
+          "knob_id": "key_source",
+          "value": "k6p"
+        },
+        {
+          "knob_id": "scope_rule",
+          "value": "saea-deliver-scope-rule-v1"
+        }
+      ]
+    },
+    {
+      "id": "C1+none",
+      "note": "C1 + the N1 none hint (theta 0.6 declared)",
+      "components": [
+        {
+          "knob_id": "perception_seed_agree_centroid",
+          "value": "agree-w1+centroid-key"
+        },
+        {
+          "knob_id": "none_hint",
+          "value": "n1-entity-free-share-0.6"
+        }
+      ]
+    }
+  ]
+}
