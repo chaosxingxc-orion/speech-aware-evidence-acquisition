@@ -1,0 +1,719 @@
+{
+  "aa_right_rows": {
+    "now_wrong_under_a2": 33,
+    "rows": 769
+  },
+  "boundary": "DEV-2000-ADDED development numbers (owner decisions 28 and 86); never a test claim",
+  "classes": {
+    "catch-all": {
+      "both_wrong_different_intent": 21,
+      "both_wrong_same_intent": 18,
+      "delivered_prepared_a2": 9,
+      "gold_aa_to_wrong": 0,
+      "intent_exact_a2": 1,
+      "intent_exact_aa": 1,
+      "intent_exact_plan": 0,
+      "rows": 40,
+      "wrong_to_gold_vs_aa": 0
+    },
+    "delivered-but-wrong": {
+      "both_wrong_different_intent": 14,
+      "both_wrong_same_intent": 29,
+      "delivered_prepared_a2": 76,
+      "gold_aa_to_wrong": 4,
+      "intent_exact_a2": 36,
+      "intent_exact_aa": 9,
+      "intent_exact_plan": 0,
+      "rows": 83,
+      "wrong_to_gold_vs_aa": 31
+    },
+    "newly-by-agree": {
+      "both_wrong_different_intent": 4,
+      "both_wrong_same_intent": 18,
+      "delivered_prepared_a2": 26,
+      "gold_aa_to_wrong": 0,
+      "intent_exact_a2": 4,
+      "intent_exact_aa": 1,
+      "intent_exact_plan": 0,
+      "rows": 26,
+      "wrong_to_gold_vs_aa": 3
+    },
+    "newly-by-both": {
+      "both_wrong_different_intent": 16,
+      "both_wrong_same_intent": 19,
+      "delivered_prepared_a2": 68,
+      "gold_aa_to_wrong": 0,
+      "intent_exact_a2": 33,
+      "intent_exact_aa": 6,
+      "intent_exact_plan": 0,
+      "rows": 68,
+      "wrong_to_gold_vs_aa": 27
+    },
+    "newly-by-centroid": {
+      "both_wrong_different_intent": 2,
+      "both_wrong_same_intent": 6,
+      "delivered_prepared_a2": 14,
+      "gold_aa_to_wrong": 0,
+      "intent_exact_a2": 7,
+      "intent_exact_aa": 0,
+      "intent_exact_plan": 0,
+      "rows": 15,
+      "wrong_to_gold_vs_aa": 7
+    }
+  },
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "entity_over_emission_zero_gold": {
+    "by_entity_type": {
+      "artist_name": {
+        "a2": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "aa": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "business_name": {
+        "a2": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "aa": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "plan": {
+          "emitted": 2,
+          "rows": 2
+        }
+      },
+      "business_type": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "plan": {
+          "emitted": 0,
+          "rows": 0
+        }
+      },
+      "change_amount": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "color_type": {
+        "a2": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "aa": {
+          "emitted": 4,
+          "rows": 2
+        },
+        "plan": {
+          "emitted": 4,
+          "rows": 2
+        }
+      },
+      "currency_name": {
+        "a2": {
+          "emitted": 8,
+          "rows": 4
+        },
+        "aa": {
+          "emitted": 8,
+          "rows": 4
+        },
+        "plan": {
+          "emitted": 8,
+          "rows": 4
+        }
+      },
+      "date": {
+        "a2": {
+          "emitted": 8,
+          "rows": 8
+        },
+        "aa": {
+          "emitted": 8,
+          "rows": 8
+        },
+        "plan": {
+          "emitted": 5,
+          "rows": 5
+        }
+      },
+      "definition_word": {
+        "a2": {
+          "emitted": 27,
+          "rows": 27
+        },
+        "aa": {
+          "emitted": 23,
+          "rows": 23
+        },
+        "plan": {
+          "emitted": 21,
+          "rows": 21
+        }
+      },
+      "device_type": {
+        "a2": {
+          "emitted": 6,
+          "rows": 6
+        },
+        "aa": {
+          "emitted": 6,
+          "rows": 6
+        },
+        "plan": {
+          "emitted": 5,
+          "rows": 5
+        }
+      },
+      "email_address": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "plan": {
+          "emitted": 2,
+          "rows": 2
+        }
+      },
+      "email_folder": {
+        "a2": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "aa": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "plan": {
+          "emitted": 4,
+          "rows": 4
+        }
+      },
+      "event_name": {
+        "a2": {
+          "emitted": 10,
+          "rows": 10
+        },
+        "aa": {
+          "emitted": 7,
+          "rows": 7
+        },
+        "plan": {
+          "emitted": 7,
+          "rows": 7
+        }
+      },
+      "food_type": {
+        "a2": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "aa": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "plan": {
+          "emitted": 0,
+          "rows": 0
+        }
+      },
+      "game_name": {
+        "a2": {
+          "emitted": 4,
+          "rows": 4
+        },
+        "aa": {
+          "emitted": 4,
+          "rows": 4
+        },
+        "plan": {
+          "emitted": 3,
+          "rows": 3
+        }
+      },
+      "general_frequency": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 5,
+          "rows": 5
+        },
+        "plan": {
+          "emitted": 5,
+          "rows": 5
+        }
+      },
+      "house_place": {
+        "a2": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "aa": {
+          "emitted": 6,
+          "rows": 6
+        },
+        "plan": {
+          "emitted": 6,
+          "rows": 6
+        }
+      },
+      "joke_type": {
+        "a2": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "aa": {
+          "emitted": 6,
+          "rows": 6
+        },
+        "plan": {
+          "emitted": 7,
+          "rows": 7
+        }
+      },
+      "list_name": {
+        "a2": {
+          "emitted": 7,
+          "rows": 7
+        },
+        "aa": {
+          "emitted": 10,
+          "rows": 10
+        },
+        "plan": {
+          "emitted": 10,
+          "rows": 10
+        }
+      },
+      "meal_type": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "plan": {
+          "emitted": 0,
+          "rows": 0
+        }
+      },
+      "media_type": {
+        "a2": {
+          "emitted": 5,
+          "rows": 5
+        },
+        "aa": {
+          "emitted": 5,
+          "rows": 5
+        },
+        "plan": {
+          "emitted": 6,
+          "rows": 6
+        }
+      },
+      "movie_type": {
+        "a2": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "aa": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "music_descriptor": {
+        "a2": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "aa": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "plan": {
+          "emitted": 2,
+          "rows": 2
+        }
+      },
+      "music_genre": {
+        "a2": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "aa": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "news_topic": {
+        "a2": {
+          "emitted": 4,
+          "rows": 4
+        },
+        "aa": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "plan": {
+          "emitted": 4,
+          "rows": 4
+        }
+      },
+      "none": {
+        "a2": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "aa": {
+          "emitted": 6,
+          "rows": 6
+        },
+        "plan": {
+          "emitted": 6,
+          "rows": 6
+        }
+      },
+      "person": {
+        "a2": {
+          "emitted": 15,
+          "rows": 14
+        },
+        "aa": {
+          "emitted": 11,
+          "rows": 11
+        },
+        "plan": {
+          "emitted": 15,
+          "rows": 15
+        }
+      },
+      "personal_info": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "place_name": {
+        "a2": {
+          "emitted": 13,
+          "rows": 12
+        },
+        "aa": {
+          "emitted": 16,
+          "rows": 15
+        },
+        "plan": {
+          "emitted": 14,
+          "rows": 13
+        }
+      },
+      "player_setting": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 5,
+          "rows": 5
+        },
+        "plan": {
+          "emitted": 4,
+          "rows": 4
+        }
+      },
+      "playlist_name": {
+        "a2": {
+          "emitted": 6,
+          "rows": 6
+        },
+        "aa": {
+          "emitted": 6,
+          "rows": 6
+        },
+        "plan": {
+          "emitted": 6,
+          "rows": 6
+        }
+      },
+      "podcast_descriptor": {
+        "a2": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "aa": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "radio_name": {
+        "a2": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "aa": {
+          "emitted": 4,
+          "rows": 4
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "relation": {
+        "a2": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "aa": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "plan": {
+          "emitted": 0,
+          "rows": 0
+        }
+      },
+      "song_name": {
+        "a2": {
+          "emitted": 5,
+          "rows": 5
+        },
+        "aa": {
+          "emitted": 3,
+          "rows": 3
+        },
+        "plan": {
+          "emitted": 4,
+          "rows": 4
+        }
+      },
+      "time": {
+        "a2": {
+          "emitted": 5,
+          "rows": 5
+        },
+        "aa": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "plan": {
+          "emitted": 2,
+          "rows": 2
+        }
+      },
+      "timeofday": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "plan": {
+          "emitted": 2,
+          "rows": 2
+        }
+      },
+      "transport_type": {
+        "a2": {
+          "emitted": 1,
+          "rows": 1
+        },
+        "aa": {
+          "emitted": 0,
+          "rows": 0
+        },
+        "plan": {
+          "emitted": 1,
+          "rows": 1
+        }
+      },
+      "weather_descriptor": {
+        "a2": {
+          "emitted": 2,
+          "rows": 2
+        },
+        "aa": {
+          "emitted": 4,
+          "rows": 4
+        },
+        "plan": {
+          "emitted": 4,
+          "rows": 4
+        }
+      }
+    },
+    "totals": {
+      "a2": {
+        "emitted_on_zero_gold_rows": 160,
+        "fp_on_zero_gold_rows_scores": 160.0,
+        "zero_gold_rows_emitting": 140
+      },
+      "aa": {
+        "emitted_on_zero_gold_rows": 169,
+        "fp_on_zero_gold_rows_scores": 169.0,
+        "zero_gold_rows_emitting": 153
+      },
+      "plan": {
+        "emitted_on_zero_gold_rows": 166,
+        "fp_on_zero_gold_rows_scores": 166.0,
+        "zero_gold_rows_emitting": 152
+      }
+    },
+    "zero_gold_rows": 314
+  },
+  "intent_wrong_rows_under_plan": 232,
+  "membership": {
+    "deriver": "scripts/flights/comp1dev/comp1dev_attribution_classes.py",
+    "deriver_sha256": "f700bdcc4735924fa114fb0265463f172d223a1a1fd46c5827cda355c8114ae2",
+    "file": "docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1/attribution-classes-v1.json",
+    "id_list_hashes": {
+      "agree_newly_delivered_intent_covered": {
+        "match": true,
+        "registered": "2e52c5bd99d2d0190aa8ab0161dce78bf43a8b9a9cc8cca04e0f2d92a4a43beb",
+        "reproduced": "2e52c5bd99d2d0190aa8ab0161dce78bf43a8b9a9cc8cca04e0f2d92a4a43beb",
+        "rows": 9
+      },
+      "catch-all": {
+        "match": true,
+        "registered": "a9aced93a4037ca7c7137aaba29d0173608099e6b904c26361e7c111e143c0d1",
+        "reproduced": "a9aced93a4037ca7c7137aaba29d0173608099e6b904c26361e7c111e143c0d1",
+        "rows": 40
+      },
+      "catch_all_rows_delivered_only_under_the_composition": {
+        "match": true,
+        "registered": "a3c8835084c955141dfca15990c46d635a88afc4fd05c9583424bf782a8a3290",
+        "reproduced": "a3c8835084c955141dfca15990c46d635a88afc4fd05c9583424bf782a8a3290",
+        "rows": 9
+      },
+      "delivered-but-wrong": {
+        "match": true,
+        "registered": "3584ade9c5b40898aea12c9a5eaccda8439b9aaad162a04ec0ae55fd71b93d71",
+        "reproduced": "3584ade9c5b40898aea12c9a5eaccda8439b9aaad162a04ec0ae55fd71b93d71",
+        "rows": 83
+      },
+      "newly-by-agree": {
+        "match": true,
+        "registered": "b60f7aca5640ff59dca2b4fac314c5683ea8c0a6a7cd1cbc588184019c60c436",
+        "reproduced": "b60f7aca5640ff59dca2b4fac314c5683ea8c0a6a7cd1cbc588184019c60c436",
+        "rows": 26
+      },
+      "newly-by-both": {
+        "match": true,
+        "registered": "da008317d678558f2d95e9d251dfba83397b162d8ca1c6049bf1e01d7891eb4a",
+        "reproduced": "da008317d678558f2d95e9d251dfba83397b162d8ca1c6049bf1e01d7891eb4a",
+        "rows": 68
+      },
+      "newly-by-centroid": {
+        "match": true,
+        "registered": "df9252f17319cc130f64169e67b7c198990f8fb9329bb10e14609da35fa083f8",
+        "reproduced": "df9252f17319cc130f64169e67b7c198990f8fb9329bb10e14609da35fa083f8",
+        "rows": 15
+      },
+      "rows_delivered_by_plan_or_a_single_factor_but_not_under_comp1": {
+        "match": true,
+        "registered": "4d80b3c83dc1d09ff458f9de919e06e0719f1d4c1b285d5df6dc87de3c09524e",
+        "reproduced": "4d80b3c83dc1d09ff458f9de919e06e0719f1d4c1b285d5df6dc87de3c09524e",
+        "rows": 8
+      }
+    },
+    "rederived_byte_identical": false,
+    "sha256": "4f129ef4cb3578815a5c3b6965069c2c1d0b91dbf247afc09244376bb1ef9493"
+  },
+  "newly_delivered": {
+    "converted_a2": 44,
+    "converted_aa": 7,
+    "rows": 109,
+    "stay_wrong_a2": 65
+  },
+  "outputs_sha256": {
+    "a2": "25e6dd9dae842c333e692391280ca4845705666f34e87fab9f78296bc776f4e3",
+    "aa": "016b09dcf329178272913a3a6452772c21f724430228dfe1a81693015489f5d9",
+    "plan": "41ebcea4d13ef779e51cdf6c69a4210194c842886db83e892fa7cc43cf053909"
+  },
+  "plan_right_rows": {
+    "now_wrong_under_a2": 33,
+    "now_wrong_under_aa": 16,
+    "rows": 766
+  },
+  "schema": "saea-slurp-a2-attribution-read-v1",
+  "scores_sha256": {
+    "a2": "878babaa69577c5f94bd3f0563e44a6f336535322c6ced3ba757383c872880a9",
+    "aa": "0543d025a5a2cbc4e4bb25688ded294fc48dd8ea0f11fba64c4734fce31ac4c6",
+    "plan": "1ac4402afce13528d1c2debab1a468f5399c85ff3c6dc7883cd4d995bd2a2b75"
+  },
+  "total": {
+    "both_wrong_different_intent": 57,
+    "both_wrong_same_intent": 90,
+    "delivered_prepared_a2": 193,
+    "gold_aa_to_wrong": 4,
+    "intent_exact_a2": 81,
+    "intent_exact_aa": 17,
+    "intent_exact_plan": 0,
+    "rows": 232,
+    "wrong_to_gold_vs_aa": 68
+  }
+}
