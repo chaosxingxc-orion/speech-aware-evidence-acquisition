@@ -190,3 +190,128 @@ python -B scripts/analysis/slurp_a2_read_supplement.py "$SPEECHRL_DATA_DIR" \
 
 Outputs are under `analysis/SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-PAIRED-ANALYSIS-V1/`: `vs-aa/`, `vs-comparator/`
 and `supplement-v1.json`.
+
+## Coordinator verdict (Fable 5.1, 2026-09-30)
+
+- **A2 (COMP-1b = AGREE agreement-weighted Perception supply + centroid boundary key, on DEV-2000-ADDED, n = 1,000): REPLICATED and ADMITTED on the development roster.** Intent +4.60 [+2.58, +6.73] vs the in-chain A/A (floor 2.5981, declared 3.80); official SLU-F1 +0.53 [-1.04, +2.09] (guard -1.2525 held on the CI); the COMP-1 harm pattern is absent (zero-gold emitting rows 153 -> 140). Same sign and overlapping CI with the Fold A read (+3.80 [+1.94, +5.65]). COMP-1b is the first dev-admitted composed arm: it is the consumption module's first component list (`agree-vote-seed` + `centroid-boundary-key`, lock layer v2.0) and it satisfies the condition of owner decision 202 for the test-sample milestone read. Development number (decisions 28/86); absolute level on this roster 81.50 % (A/A 76.90 %).
+- **Outstanding from the recipe:** the per-scenario table (the roster receipt withholds per-row scenario) and the attribution-class table (`comp1dev_attribution_classes.py` re-run) are owed before the milestone flip; neither changes the verdict.
+
+## Attribution classes (supplement, 2026-09-30)
+
+This section closes the open item in sections 5 and 8 (recipe step 5). It is model-free: zero model, server,
+encoder, embedder, tokenizer, scorer, network and GPU contacts. Gold enters only on the scoring side, in two places:
+the bad-case bank (`load_bank`, roster `dev2000-added`) inside the registered derivation, and the sealed per-sample
+tp + fn counts. No id list leaves the process; only counts and hashes are recorded.
+
+**Membership reproduced.** `scripts/analysis/slurp_a2_attribution_read.py` imports
+`scripts/flights/comp1dev/comp1dev_attribution_classes.py` unchanged and re-runs it, writing to a scratch path
+outside the repository. It captures each class's sorted id list by wrapping the module's `id_list_sha256`. Both
+constructor proofs pass on 1,000 of 1,000 rows:
+
+- the plan recomputation equals the A/A supply (`d57ee9d6...`);
+- the composed recomputation equals the A2 arm supply (`ecca16a2...`).
+
+All 8 persisted id-list hashes of the registered file reproduce (`attribution-classes-v1.json`, sha256
+`4f129ef4...9ef4493`):
+
+| list | rows | id_list_sha256 (registered = reproduced) |
+| --- | ---: | --- |
+| delivered-but-wrong | 83 | `3584ade9c5b40898aea12c9a5eaccda8439b9aaad162a04ec0ae55fd71b93d71` |
+| newly-by-both | 68 | `da008317d678558f2d95e9d251dfba83397b162d8ca1c6049bf1e01d7891eb4a` |
+| newly-by-agree | 26 | `b60f7aca5640ff59dca2b4fac314c5683ea8c0a6a7cd1cbc588184019c60c436` |
+| newly-by-centroid | 15 | `df9252f17319cc130f64169e67b7c198990f8fb9329bb10e14609da35fa083f8` |
+| catch-all | 40 | `a9aced93a4037ca7c7137aaba29d0173608099e6b904c26361e7c111e143c0d1` |
+| plan- or single-factor-delivered, not under the composition | 8 | `4d80b3c83dc1d09ff458f9de919e06e0719f1d4c1b285d5df6dc87de3c09524e` |
+| catch-all delivered only under the composition | 9 | `a3c8835084c955141dfca15990c46d635a88afc4fd05c9583424bf782a8a3290` |
+| agree newly delivers an INTENT-COVERED row | 9 | `2e52c5bd99d2d0190aa8ab0161dce78bf43a8b9a9cc8cca04e0f2d92a4a43beb` |
+
+The re-derived document is not byte-identical to the registered file, but it differs in exactly one line: the
+`inputs.registered_facts.sha256` pin.
+
+- The membership was derived against the facts blob of `ca6425bd4` (`f971ba0a...`).
+- `53435a654` and `f22b9b11c` (the A2 supersession note) later edited that file, which now hashes to `b192bc49...`.
+- The `the_composition` block the derivation reads is identical in both versions. Every class count and every hash is
+  unchanged.
+
+**Class outcomes.** The rows are the 232 intent-wrong rows of the sealed DEV plan arm. Intent exact is the official
+`slurp-slu-official` `scenario_action_exact`.
+
+| class | rows | gold delivered (A2 prepared) | intent exact PLAN / A/A / A2 | wrong -> gold vs A/A | gold (A/A) -> wrong | both wrong: same / different |
+| --- | ---: | ---: | --- | ---: | ---: | --- |
+| delivered-but-wrong | 83 | 76 | 0 / 9 / 36 | 31 | 4 | 29 / 14 |
+| newly-by-both | 68 | 68 | 0 / 6 / 33 | 27 | 0 | 19 / 16 |
+| newly-by-agree | 26 | 26 | 0 / 1 / 4 | 3 | 0 | 18 / 4 |
+| newly-by-centroid | 15 | 14 | 0 / 0 / 7 | 7 | 0 | 6 / 2 |
+| catch-all | 40 | 9 | 0 / 1 / 1 | 0 | 0 | 18 / 21 |
+| **total** | **232** | **193** | **0 / 17 / 81** | **68** | **4** | 90 / 57 |
+
+The same classes under COMP-1b on Fold A (191 rows), as intent exact of rows: delivered-but-wrong 35 of 86,
+newly-by-both 30 of 47, newly-by-agree 2 of 23, newly-by-centroid 3 of 8, catch-all 0 of 27.
+
+- **Newly delivered rows: 44 of 109 convert under A2 (40.4 %).** The newly delivered rows are the three `newly-by`
+  classes. On Fold A the rate was 35 of 78 (44.9 %). The A/A already had 7 of the 109 right. 65 of the 109 stay
+  wrong, so delivery is not correctness here either.
+- **Per class, against Fold A:**
+  - newly-by-both converts 33 of 68 (48.5 %); Fold A 30 of 47 (63.8 %).
+  - newly-by-agree converts 4 of 26 (15.4 %); Fold A 2 of 23 (8.7 %). It is again the weakest class: 18 of its 22
+    both-wrong rows keep the A/A's wrong intent.
+  - newly-by-centroid converts 7 of 15 (46.7 %); Fold A 3 of 8.
+- **Delivered-but-wrong converts 36 of 83 (43.4 %).** The A/A has 9, and Fold A was 35 of 86 (40.7 %). These rows
+  were already delivered under the plan, so this gain is not a delivery effect.
+- **Catch-all: 1 of 40**, the same as the A/A. The composition alone delivers gold on 9 of these rows, and none of
+  those converts.
+- **PLAN-right rows now wrong: 33 of 766 under A2.** The A/A has 16, and since it is the same plan flown again,
+  that is the churn floor. All 33 of A2's intent harms against the A/A are rows the A/A had right, and 29 of them
+  lie outside the 232 plan-wrong rows. Inside the classes, 4 rows go gold -> wrong, all in delivered-but-wrong.
+- **Where the class gain comes from.** A2 has 68 wrong -> gold rows inside the classes. 31 are delivered-but-wrong
+  and 37 are newly delivered (27 by both, 3 by agree, 7 by centroid).
+
+**Entity over-emission by entity type (zero-gold rows).** On the 314 rows with no gold entity, every emitted entity
+is a false positive. The per-type counts sum the type label of each emitted entity in the sealed outputs.
+
+- The totals reproduce section 4's FP on zero-gold rows exactly: 169 (A/A), 160 (A2), 166 (plan).
+- Zero-gold rows emitting are 153 (A/A), 140 (A2), 152 (plan).
+- The sealed per-sample scores carry no per-type field. A per-type TP / FN split would need gold per entity, which
+  this read does not open.
+
+| entity type | A/A emitted (rows) | A2 emitted (rows) | plan emitted (rows) | A2 - A/A |
+| --- | --- | --- | --- | ---: |
+| definition_word | 23 (23) | 27 (27) | 21 (21) | +4 |
+| place_name | 16 (15) | 13 (12) | 14 (13) | -3 |
+| person | 11 (11) | 15 (14) | 15 (15) | +4 |
+| list_name | 10 (10) | 7 (7) | 10 (10) | -3 |
+| event_name | 7 (7) | 10 (10) | 7 (7) | +3 |
+| currency_name | 8 (4) | 8 (4) | 8 (4) | 0 |
+| date | 8 (8) | 8 (8) | 5 (5) | 0 |
+| device_type | 6 (6) | 6 (6) | 5 (5) | 0 |
+| playlist_name | 6 (6) | 6 (6) | 6 (6) | 0 |
+| media_type | 5 (5) | 5 (5) | 6 (6) | 0 |
+| house_place | 6 (6) | 3 (3) | 6 (6) | -3 |
+| joke_type | 6 (6) | 3 (3) | 7 (7) | -3 |
+| none | 6 (6) | 3 (3) | 6 (6) | -3 |
+| general_frequency | 5 (5) | 1 (1) | 5 (5) | -4 |
+| player_setting | 5 (5) | 1 (1) | 4 (4) | -4 |
+| song_name | 3 (3) | 5 (5) | 4 (4) | +2 |
+| time | 2 (2) | 5 (5) | 2 (2) | +3 |
+| 21 other types (each <= 4 on every arm) | 36 | 34 | 34 | -2 |
+| **total** | **169** | **160** | **166** | **-9** |
+
+The movement is diffuse: no type moves by more than 4 emitted entities in either direction. It shows nothing like
+COMP-1's concentrated +102 zero-gold FP on Fold A.
+
+**Per scenario.** Still unavailable, for the reason given in section 2: the roster receipt sets
+`stratum_withheld_per_item: true` (`per-scenario-tables.json`, `a2678332...36138`). No aggregate substitute is
+given. A per-intent-family aggregate would need each row's gold intent outside the bank's class predicates, and this
+supplement reads gold only through the registered membership.
+
+**Receipt and reproduce.** The counts-only receipt is
+`docs/results/2026-09-30-slurp-a2-attribution-classes-read-v1.json` (sha256
+`1a2add456f7353c6d4a8f2bd2772bbe0d942f378dd261166c356b993a689605c`). It pins the scores and outputs of all three arms
+and the deriver's own sha256.
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 PYTHONPATH=src python -B scripts/analysis/slurp_a2_attribution_read.py \
+  --repo-root . --data-root "$SPEECHRL_DATA_DIR" \
+  --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json \
+  --scratch <dir outside the repo> --output docs/results/2026-09-30-slurp-a2-attribution-classes-read-v1.json
+```

@@ -124,3 +124,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B scripts/analysis/slurp_comp2_
 The driver refuses to overwrite an existing complete read. The outputs are under
 `analysis/SAEA-SLURP-STAGE3-COMP2-STAGE-COLUMN-DEV2000-READ-V1/`: `columns/`, `scores/`, `render-manifest.json` and
 `report.json`.
+
+## Coordinator verdict (Fable 5.1, 2026-09-30)
+
+- **Scope rule on A2: FAILS Q2, not included in COMP-2.** Stage column vs delivered +0.49 [-0.01, +1.00] (61 rows, 64 entities dropped, 37 spurious) against the 1.5485 bar; replicate +0.73 [+0.25, +1.23]; the Fold A rehearsal's +1.35 shrank on DEV. COMP-2 as declared under decision 203 is therefore COMP-1b alone; the scope rule stays a registered deliver stage (no-harm form step) and re-enters only inside a later composed read, never as its own claim. The none hint triggered on 51 rows (17 with delivered entities): inner-loop knob only.
