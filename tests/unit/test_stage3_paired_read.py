@@ -146,8 +146,9 @@ class World:
         span = core.pooled_f1(table, self.ids, core.MICRO_METRICS["span_f1_micro"])
         intent = sum(r["scenario_action_exact"] for r in rows) / len(rows)
         scores_path = run_dir / f"{run_id}.scores.json"
-        _write(scores_path, {SCORER: {"per_sample": rows, "aggregate": {"official": {
-            "slu_f1": slu, "span_f1": span, "intent_accuracy": intent}}}})
+        _write(scores_path, {SCORER: {"per_sample": rows, "aggregate": {
+            "identity_check": {"passed": True},
+            "official": {"slu_f1": slu, "span_f1": span, "intent_accuracy": intent}}}})
         _write(run_dir / f"{run_id}.outputs.jsonl", "\n".join(
             json.dumps({"sample_id": s, "admitted": True, "text": SENTINEL, "response_text_sha256": "0" * 64})
             for s in self.ids) + "\n")
@@ -773,3 +774,157 @@ def test_proportional_population_weights_make_post_stratified_equal_raw_on_a_dev
     assert table["post_stratified"]["intent"]["delta_pp"] == pytest.approx(table["raw"]["intent"]["delta_pp"])
     assert table["post_stratified"]["slu_f1"]["delta_pp"] == pytest.approx(table["raw"]["slu_f1"]["delta_pp"])
     assert table["natural_mixture"]["selected_weighting"] == "post-stratified"
+
+
+# --------------------------------------------------------------------------
+# --strata-source scorer (coordinator ruling 2026-09-30): aggregate-only post-stratification
+# inside the official-scoring step, equivalent to the gold-bank path
+# --------------------------------------------------------------------------
+
+
+from speech_aware_evidence_acquisition.core import scoring_strata as scs  # noqa: E402
+
+
+def _fake_gold(world: World):
+    """The fake world's gold intent per row -- the SAME strings its bank carries -- handed to the
+    scorer step as its gold binding (a real read uses ``official_gold_intents``)."""
+
+    gold = {s: f"{world.scenario_of(i)}_query" for i, s in enumerate(world.ids)}
+
+    def binding(scorer_id: str, sample_ids):
+        assert scorer_id == SCORER
+        return {s: gold[s] for s in sample_ids}
+
+    return binding
+
+
+def _in_process_scorer(world: World, calls: list):
+    def runner(argv):
+        calls.append(list(argv))
+        args = scs._parser().parse_args(list(argv))
+        try:
+            scs.score_paired_strata(
+                scorer_id=args.scorer_id, left_scores=Path(args.left_scores),
+                right_scores=Path(args.right_scores), roster=Path(args.roster),
+                population_counts=Path(args.population_counts), output=Path(args.output),
+                cluster_key=args.cluster_key, seed=args.seed, draws=args.draws,
+                gold_intents=_fake_gold(world), population_counts_label=args.population_counts_label,
+            )
+        except scs.ScorerStrataError as error:
+            raise drv.Stage3ReadError(f"the scorer's --strata-inside-scorer step refused: {error}")
+
+    return runner
+
+
+def _floored_world(tmp_path: Path) -> tuple[World, str]:
+    world = World(
+        tmp_path, stratum=False, roster_id="SLURP-POSTSTRAT-FAKE-V1", ids=_ids(),
+        scenario_of=lambda i: "small" if i < 3 else "big",
+        left_correct=set(), right_correct={0, 1, 2}, left_delivered=set(), right_delivered=set(),
+        stratification={"floor_driven_utterances": 3, "sample_floor_utterances": 3},
+        split_role="dev", bank_roster="poststrat-fake",
+    )
+    counts_rel = "docs/readiness/unit-poststrat/population-counts-v1.json"
+    _write(world.repo / counts_rel, {"population_counts": {"small_query": 90, "big_query": 10}})
+    return world, counts_rel
+
+
+def _comparable(table: dict) -> dict:
+    return {k: v for k, v in table.items()
+            if k not in ("generated_at_utc", "stratum_source", "scorer_strata_receipt")}
+
+
+def test_scorer_strata_source_reproduces_the_gold_bank_path_exactly(tmp_path: Path, monkeypatch) -> None:
+    """The floored two-stratum fake (raw +25 / post-stratified +90 / equal-stratum +50 pp) read
+    through ``--strata-source scorer`` equals the gold-bank read float for float -- point deltas,
+    CI95s, per-stratum tables, all three weightings -- because both paths call the shared
+    estimators with the same sorted ids, strata, clusters, seed and draws (same bootstrap
+    indices)."""
+
+    world, counts_rel = _floored_world(tmp_path)
+    common = ["--per-scenario", "--population-counts", counts_rel, "--weighting", "post-stratified"]
+    out_bank = tmp_path / "read-bank"
+    assert drv.main(world.argv(out_bank, *common, "--strata-source", "gold-bank",
+                               "--strata-key", "gold_intent", "--gold-bank-roster", "poststrat-fake")) == 0
+    calls: list = []
+    monkeypatch.setattr(drv, "run_scorer_strata", _in_process_scorer(world, calls))
+    out_scorer = tmp_path / "read-scorer"
+    assert drv.main(world.argv(out_scorer, *common, "--strata-source", "scorer")) == 0
+    assert len(calls) == 1 and calls[0][0] == "--strata-inside-scorer"
+
+    bank = json.loads((out_bank / "per-scenario-tables.json").read_text())
+    scorer = json.loads((out_scorer / "per-scenario-tables.json").read_text())
+    assert _comparable(scorer) == _comparable(bank)
+    assert scorer["raw"]["intent"]["delta_pp"] == pytest.approx(25.0)
+    assert scorer["post_stratified"]["intent"]["delta_pp"] == pytest.approx(90.0)
+    assert scorer["equal_scenario"]["intent"]["delta_pp"] == pytest.approx(50.0)
+    assert scorer["natural_mixture"]["intent"]["delta_pp"] == pytest.approx(90.0)
+    assert scorer["stratum_source"]["relpath"] == drv.SCORER_STRATA_FILE
+    verdict = json.loads((out_scorer / "verdict.json").read_text())
+    assert drv.SCORER_STRATA_FILE in verdict["artifact_sha256"]
+
+    receipt = json.loads((out_scorer / drv.SCORER_STRATA_FILE).read_text())
+    assert receipt["schema"] == drv.SCORER_STRATA_SCHEMA
+    assert receipt["strata_count"] == 2
+    counts = receipt["per_stratum"]["small_query"]["counts"]
+    assert counts["left"]["n"] == 3 and counts["left"]["intent_correct"] == 0
+    assert counts["right"]["intent_correct"] == 3 and counts["right"]["tp"] == 6.0
+
+
+def test_scorer_strata_source_writes_no_file_pairing_a_sample_id_with_a_stratum(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    world, counts_rel = _floored_world(tmp_path)
+    monkeypatch.setattr(drv, "run_scorer_strata", _in_process_scorer(world, []))
+    out = tmp_path / "read-scorer"
+    assert drv.main(world.argv(out, "--per-scenario", "--population-counts", counts_rel,
+                               "--weighting", "post-stratified", "--strata-source", "scorer")) == 0
+    strata = ("small_query", "big_query")
+    for path in sorted(p for p in out.rglob("*") if p.is_file()):
+        text = path.read_text(encoding="utf-8", errors="replace")
+        carries_id = any(sample_id in text for sample_id in world.ids)
+        carries_stratum = any(stratum in text for stratum in strata)
+        assert not (carries_id and carries_stratum), path.name
+    receipt_text = (out / drv.SCORER_STRATA_FILE).read_text(encoding="utf-8")
+    assert not any(sample_id in receipt_text for sample_id in world.ids)
+
+
+def test_scorer_strata_source_refuses_without_population_counts(tmp_path: Path, monkeypatch) -> None:
+    world, _ = _floored_world(tmp_path)
+    calls: list = []
+    monkeypatch.setattr(drv, "run_scorer_strata", _in_process_scorer(world, calls))
+    assert drv.main(world.argv(tmp_path / "read", "--per-scenario", "--weighting", "equal-stratum",
+                               "--strata-source", "scorer")) == 1
+    assert calls == []
+
+
+def test_scorer_strata_source_refuses_a_roster_without_a_stratification_block(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    world = World(tmp_path, stratum=False, roster_id="SLURP-DEV-2000-ADDED-V1", split_role="dev",
+                  bank_roster="dev2000-added")
+    counts_rel = "docs/readiness/unit-a2/population-counts-v1.json"
+    _write(world.repo / counts_rel, {"population_counts": {f"{s}_query": 400 for s in SCENARIOS}})
+    monkeypatch.setattr(drv, "run_scorer_strata", _in_process_scorer(world, []))
+    out = tmp_path / "read"
+    assert drv.main(world.argv(out, "--per-scenario", "--population-counts", counts_rel,
+                               "--weighting", "post-stratified", "--strata-source", "scorer")) == 1
+    assert not (out / drv.SCORER_STRATA_FILE).exists()
+
+
+def test_scorer_strata_source_refuses_a_receipt_that_does_not_match_the_read(
+    tmp_path: Path, monkeypatch,
+) -> None:
+    world, counts_rel = _floored_world(tmp_path)
+    inner = _in_process_scorer(world, [])
+
+    def tampering(argv):
+        inner(argv)
+        path = Path(argv[argv.index("--output") + 1])
+        receipt = json.loads(path.read_text())
+        receipt["weightings"]["post_stratified"]["intent"]["delta_pp"] = 12.0
+        path.write_text(json.dumps(receipt), encoding="utf-8")
+
+    monkeypatch.setattr(drv, "run_scorer_strata", tampering)
+    assert drv.main(world.argv(tmp_path / "read", "--per-scenario", "--population-counts", counts_rel,
+                               "--weighting", "post-stratified", "--strata-source", "scorer")) == 1

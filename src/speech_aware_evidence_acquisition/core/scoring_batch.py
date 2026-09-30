@@ -580,7 +580,14 @@ __all__ = [
     "run_official_score_job",
     "run_score_batch",
     "score_complete_derived_copy",
+    "score_paired_strata",
 ]
+
+# The official-scoring path's optional ``--strata-inside-scorer`` mode (coordinator ruling
+# 2026-09-30): post-stratification by gold intent INSIDE the scoring step, aggregates only. It
+# consumes the complete, single-process official score results this module produces (a sealed
+# ``<run>.scores.json`` or a ``score_complete_derived_copy`` result) and never shards or re-scores.
+from .scoring_strata import score_paired_strata  # noqa: E402
 
 
 def score_complete_derived_copy(

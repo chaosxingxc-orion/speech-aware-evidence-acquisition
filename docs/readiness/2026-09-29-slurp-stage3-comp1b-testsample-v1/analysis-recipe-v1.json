@@ -28,7 +28,8 @@
       "vs-aa (gating: arm minus MILESTONE-00-PLAN)"
     ],
     "refusal": "the driver refuses before any score is opened unless this READ row is root countersigned",
-    "scorer": "slurp-slu-official-test"
+    "scorer": "slurp-slu-official-test",
+    "strata_source": "scorer: post-stratification by gold intent INSIDE the official-scoring step (--strata-inside-scorer), aggregates only; see registered-facts-v1.json post_stratification_read"
   },
   "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-READ-V1",
   "recipe_id": "slurp-stage3-comp1b-testsample-milestone-read-v1",
@@ -55,6 +56,7 @@
   "weightings": {
     "driver_gap": "READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned.",
     "equal_stratum": "1/58 over the intents present in the sample",
-    "natural_mixture": "POST-STRATIFIED: per-intent accuracy weighted by the full-test per-intent shares of the roster receipt docs/receipts/rosters/slurp-test-sample-3010-v1.json (weightings block); the raw roster mean is NOT the natural-mixture number (design note section 5)"
+    "natural_mixture": "POST-STRATIFIED: per-intent accuracy weighted by the full-test per-intent shares of the roster receipt docs/receipts/rosters/slurp-test-sample-3010-v1.json (weightings block); the raw roster mean is NOT the natural-mixture number (design note section 5)",
+    "post_stratification": "58 strata carried of 59 counted; intent = sum_h w_h * mean_h, SLU-F1 = F1 of the w_h-weighted per-row-normalised TP/FP/FN totals; computed and bootstrapped (10,000 draws, seed 20260929, prompt clusters within strata) inside the scorer process, which writes one aggregate receipt and never a per-row stratum"
   }
 }
