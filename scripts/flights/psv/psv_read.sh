@@ -1,7 +1,7 @@
 #!/bin/bash
 # The same-flight Perception-branch read of P-SV-1, P-SV-2 or P-SV-3 (owner decision 184).
 #
-#   bash scripts/flights/psv/psv_read.sh psv1|psv2|psv3 [--rescore] [--dry-run]
+#   bash scripts/flights/psv/psv_read.sh psv1|psv2|psv3|psv4 [--rescore] [--dry-run]
 #
 # RECIPE-DRIVEN. The recipe is the registered one for the cell: P-SV-1 reads its SEAL-ONLY completion
 # (owner decision 197; docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1/analysis-recipe-v1.json,
@@ -35,12 +35,13 @@ LOCK=${SAEA_DATASETS_LOCK:-/mnt/d/chao_workspace/exploring-l4-intelligence/docs/
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 source "$MAIN/scripts/flights/batch/read_lib.sh"
-usage() { echo "usage: psv_read.sh psv1|psv2|psv3 [--rescore] [--dry-run]"; exit 2; }
+usage() { echo "usage: psv_read.sh psv1|psv2|psv3|psv4 [--rescore] [--dry-run]"; exit 2; }
 K=$1
 [ -n "$K" ] && shift
 case "$K" in
   psv1) RECIPE=docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1/analysis-recipe-v1.json ;;
   psv2|psv3) RECIPE=docs/readiness/2026-09-29-slurp-stage3-$K-fold-b-v1/analysis-recipe-v1.json ;;
+  psv4) RECIPE=docs/readiness/2026-09-30-slurp-stage3-psv4-fold-b-v1/analysis-recipe-v1.json ;;
   *) usage ;;
 esac
 RESCORE=

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Write the readiness packages of the phase-2 Perception-branch cells P-SV-1, P-SV-2 and P-SV-3 (owner decisions
-184, 186, 188, 190) from the derived fragments and the measured fit numbers -- config and receipt-pinned bytes
+"""Write the readiness packages of the phase-2 Perception-branch cells P-SV-1, P-SV-2, P-SV-3 (owner decisions
+184, 186, 188, 190) and P-SV-4 (2026-09-30, the key_source axis; written with --cells psv4) from the derived fragments and the measured fit numbers -- config and receipt-pinned bytes
 only: no adapter contact, no server, no lock, no model, tokenizer, encoder, embedder or scorer contact. Flips
 nothing, mints nothing.
 
@@ -103,6 +103,26 @@ def flatten(node, prefix: str = "") -> dict:
     else:
         out[prefix[:-1]] = node
     return out
+
+
+def declared(key: str) -> dict:
+    """A cell's declared expectation: P-SV-1..3 0.0 nominated (claims_benefit false); P-SV-4 1.1 pp intent
+    (claims_benefit true, the recall note's implied intent on Fold B)."""
+
+    c = ff.CELLS[key]
+    return {
+        "expected_effect_pp": c.get("expected_effect_pp", 0.0),
+        "claims_benefit": c.get("claims_benefit", False),
+        "primary_metric_key": c.get("primary_metric_key", "intent" if key == "psv1" else "present"),
+    }
+
+
+def intent_primary(key: str) -> bool:
+    return declared(key)["primary_metric_key"] == "intent"
+
+
+def receipt_schema(key: str) -> str:
+    return "saea-perception-branch-arms-v3" if key == "psv4" else "saea-perception-branch-arms-v1"
 
 
 def identities(key: str) -> dict:
@@ -243,6 +263,28 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
         basis = ("the presence gain of a forced three-candidate list and its conversion are UNMEASURED; spec section 6 "
                  "notes only the 270 Fold A rows with lists of one (35) or two (235) can change (row 139: no prior, so "
                  "the declaration is 0.0 nominated with the ceiling beside)")
+    elif key == "psv4":
+        proof = ff.K6P_PROOF
+        ceiling = {
+            "rows": ceiling_rows, "pp": ff.pp(ceiling_rows), "roster": ff.READ_ROSTER,
+            "what": (f"the +{ceiling_rows} net Fold B rows K6p lifts to boundary-block rank 1 over the centroid + "
+                     f"agreement key ({proof['fold_b']['rank1_k6p']} vs {proof['fold_b']['rank1_cent_agree']} of 1,080; "
+                     f"Fold A +22, {proof['fold_a']['rank1_k6p']} vs {proof['fold_a']['rank1_cent_agree']}), an offline "
+                     f"model-free read of sealed vectors ({ff.K6P_NOTE}), reproduced from the two pinned artifacts by "
+                     f"{proof['script']} (proof.json sha256 {proof['sha256'][:8]})"),
+        }
+        basis = (f"implied intent +{c['implied_intent_rows_fold_b']} rows of 1,080 on Fold B (+11.5 on Fold A; +5.0 to "
+                 "+6.6 in each of the four utterance halves), the note's analogue: rows lifted to block rank 1 are "
+                 "assumed to convert like today's rank-1 rows (P-SV-1 a-agree's rank-conditional conversions on Fold B). "
+                 f"expected_effect_pp {c['expected_effect_pp']} = {c['implied_intent_rows_fold_b']} / 1,080 rounded. "
+                 "Presence cost -0.7 / +0.2 pp (Fold A / Fold B); against the description key the P-SV cells fly as A, "
+                 "the presence change is 0 / +14 rows, so the flown A is a stricter comparator than cent_agree on rank "
+                 "and a looser one on presence. Rows lifted may be harder than today's rank-1 rows: the declaration "
+                 "is a registered expectation, never a claim. DISCLOSURE: the key family was chosen offline over the sealed "
+                 "vectors of BOTH folds (15 families compared; K6p carries no tuned parameter beyond the flown weights, and "
+                 "its centring statistics come from the Fold-B-disjoint R01C roster), so TRAIN Fold B is not a clean held-out "
+                 "roster for the key CHOICE; the registered tuning roster stays Fold A, and Fold B is read only through this "
+                 "flight's own same-flight columns")
     else:
         # psv3: 83 = 49 (in block) + 34 (out of block) wrong rows with gold off Perception's list entirely on Fold A
         # (docs/results/2026-09-28-slurp-node-information-gain-ledger.md section 1.4 and section 5 item 1). This
@@ -263,7 +305,7 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
                  "or the presentation it renders from that supply; whether a newly shown item reaches top-1, appears "
                  "on the note's candidate list, or changes the level-2 Solver's answer is UNMEASURED (row 139: no "
                  "prior, so the declaration is 0.0 nominated with the ceiling beside)")
-    if key == "psv1":
+    if intent_primary(key):
         floor_note = (
             f"provisional intent floor {FLOOR_INTENT:.4f} pp ({ANCHOR_INTENT:g} x sqrt({_ANCHOR_N_INTENT} / "
             f"{ff.LEDGER_ROWS}), owner decision 190 anchor for {ff.MEASUREMENT_DESIGN})"
@@ -273,10 +315,17 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
             "primary_metric_key 'present': gold-on-list carries no numeric floor under owner decision 190 (or the "
             "table it superseded); reported, never checked against a bound"
         )
+    d = declared(key)
+    if d["claims_benefit"]:
+        verdict = (f"expected_effect_pp {d['expected_effect_pp']} sits ABOVE this design's {floor_note} (a same-flight "
+                   "column, so the cross-flight floor does not apply), so claims_benefit is true -- at about 1.7 x the "
+                   "floor, knowingly near it (the note's own caveat)")
+    else:
+        verdict = (f"expected_effect_pp 0.0 sits below this design's {floor_note}, so claims_benefit is false")
     note = (
-        f"Phase-2 cell {c['label']} (level 2, K = 3). Expected effect declared from the ledger's measured numbers: "
-        f"ceiling {ceiling['what']}; conversion basis: {basis}. expected_effect_pp 0.0 sits below this design's "
-        f"{floor_note}, so claims_benefit is false; the read's bar is the twin (T) null measured in this "
+        f"Phase-2 cell {c['label']} (level 2, K = 3). Expected effect declared from "
+        f"{'the recall note' if key == 'psv4' else 'the ledger'}'s measured numbers: "
+        f"ceiling {ceiling['what']}; conversion basis: {basis}. {verdict}; the read's bar is the twin (T) null measured in this "
         "flight, per metric |T - A offset| + its CI95 half-width. The delivered row is branch A: delivered intent and "
         "SLU are identical by construction at the request level (reported, never contrasted). Tuning roster TRAIN "
         "Fold A (the node ledger shaped the design), read roster TRAIN Fold B (ruling O2; owner decision 186: "
@@ -287,7 +336,7 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
          "arithmetic": f"intent {ANCHOR_INTENT:g} * sqrt({_ANCHOR_N_INTENT} / 1080) = {FLOOR_INTENT:.4f} pp "
                        f"(primary; owner decision 190 anchor), SLU {ANCHOR_SLU:g} * sqrt({ANCHOR_N} / 1080) = "
                        f"{FLOOR_SLU:.4f} pp (guard reference)"}
-        if key == "psv1" else
+        if intent_primary(key) else
         {"present": None, "intent_accuracy": round(FLOOR_INTENT, 4), "slu_f1": round(FLOOR_SLU, 4),
          "arithmetic": "primary_metric_key 'present' (gold-on-list) carries no numeric floor under owner "
                        "decision 190; intent and SLU are reported beside, never gating this cell"}
@@ -295,9 +344,9 @@ def measurement_blocks(key: str, ids: dict, measure: dict) -> dict:
     return {
         arm["run_id"]: {
             "measurement_design": ff.MEASUREMENT_DESIGN, "rows": arm["rows"], "level": ff.LEVEL,
-            "expected_effect_pp": 0.0, "claims_benefit": False, "claim": "nominated",
+            "expected_effect_pp": d["expected_effect_pp"], "claims_benefit": d["claims_benefit"], "claim": "nominated",
             "primary_metric": c["primary_metric"],
-            "primary_metric_key": "intent" if key == "psv1" else "present",
+            "primary_metric_key": d["primary_metric_key"],
             "aa_arm_id": ff.ARM_T,
             "tuning_roster": ff.TUNING_ROSTER, "read_roster": ff.READ_ROSTER,
             "ceiling": ceiling, "conversion_basis": basis,
@@ -337,6 +386,20 @@ def decision_rule(key: str) -> str:
         "half-width, reported beside the design's own provisional floor per metric (owner decision 190; "
         "stage3_measurement.provisional_floor_pp -- intent {:.4f} pp, SLU {:.4f} pp). ".format(FLOOR_INTENT, FLOOR_SLU)
     )
+    if key == "psv4":
+        # P-SV-1's rule, copied with the axis named (the key_source swap in place of the top-2 contrast block).
+        return common + (
+            f"(2) THE CONTRAST: {b} (key_source K6p: the centred centroid key and the centred Fold B speech queries, "
+            "agreement unchanged) minus A on the level-2 branch Solver column's official intent accuracy (primary). "
+            "NOMINATED iff the intent CI95 lower bound is above zero AND the point delta exceeds the twin's intent bar "
+            "AND the SLU-F1 CI95 lower bound of the same column is not below minus the twin's SLU bar (guard). "
+            "BRANCH-LOCAL HARM iff the intent CI95 upper bound is below zero and the point magnitude exceeds the twin "
+            "bar. Otherwise NOT NOMINATED. Reported beside, never gating: gold-on-list (present) and mean gold rank of "
+            "the B note vs A and T, gold at supplied-block rank 1 (the note's mechanism: +26 rows expected on Fold B), "
+            "the conversion P(correct | gold rank r in the branch note) against the ledger's 97.57 / 26.98 / 12.0 %, "
+            "and the delivered row (identical by construction). A nomination sends the composed policy to a "
+            "full-system cross-flight read against an in-chain A/A; it admits nothing."
+        )
     if key == "psv1":
         return common + (
             f"(2) THE CONTRAST: {b} minus A on the level-2 branch Solver column's official intent accuracy (primary). "
@@ -381,6 +444,8 @@ def main(argv: list[str] | None = None) -> int:
 
 def write_cell(key: str, args, data: Path, measure: dict) -> dict:
     c = ff.CELLS[key]
+    # each cell reads its OWN fit measure (P-SV-4 on: the v2 file carrying the key_source bound)
+    measure = json.loads((data / ff.fit_measure_relpath(key)).read_text(encoding="utf-8"))
     n = ff.names(key, "arm")
     package, prereg = n["package"], n["prereg"]
     ids = identities(key)
@@ -429,6 +494,18 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
                          "'Not checked here: a contrast-pair pool'); the pin enters where the runtime reads it (merge set C "
                          "item 4/6), then the cell is re-derived and re-pinned"),
     } if key == "psv1" else None
+    key_source_pin = {
+        "axis": "key_source (rails/supply_variants.py PerceptionBranchKeySource; refusals 19-20; receipt schema v3)",
+        "block": ff.k6p_key_source(),
+        "key": ff.K6P_KEY, "queries_fold_b": ff.K6P_QUERIES_FOLD_B, "proof": ff.K6P_PROOF, "note": ff.K6P_NOTE,
+        "status": ("PINNED 2026-09-30: both artifacts built model-free (ledger rows "
+                   f"{ff.K6P_KEY['ledger_row']} and {ff.K6P_QUERIES_FOLD_B['ledger_row']}, DRAFT) and proven to reproduce "
+                   "the note's K6p block on both folds (1,080 / 1,080 blocks identical; rank-1 lift +22 / +26). The runtime "
+                   "re-verifies each file's bytes against its sha256 at seed preparation (FlightRuntime._apply_key_source) "
+                   "and flight_registration_check's key-source-unpinned finding checks them at registration. The swap is "
+                   "rendering-only: the branch's seed is built by its own router at prepare-branch-seeds; A and T never "
+                   "see it; the store, its release and snapshot and every delivered body are unchanged."),
+    } if key == "psv4" else None
     facts = {
         "schema": "saea-registered-facts-v1",
         "_note": f"Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block {ff.GATE} and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
@@ -437,7 +514,8 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
             "184": f"register {c['label']} on TRAIN Fold B at level 2, claim nominated (phase 2 of the same-flight instrument)",
             "186": "Fold B is ROLLOUT-exposed while it is the phase-2 read roster; no branch value of a cell read on Fold B is built from Fold B rollouts",
             "188": "B5 (Reviewer top-2 contrast) deferred behind P-SV-1 / P-SV-2",
-            "139": "no prior: the expectation is declared from measured ledger numbers (0.0 nominated, ceiling beside)",
+            "139": ("no prior: the expectation is declared from measured numbers (P-SV-4: the recall note's offline implied intent, 1.1 pp, claims_benefit true)"
+                    if key == "psv4" else "no prior: the expectation is declared from measured ledger numbers (0.0 nominated, ceiling beside)"),
             "28/86": "TRAIN numbers are development numbers, never a test claim",
         },
         "rows": arm["rows"], "stage3_measurement": measurement,
@@ -449,6 +527,8 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
                 ff.ARM_A: "A, delivering, LAST, no axis: AGREE's Perception evidence as flown (intent-boundaries k 60, fuse 8/1/8, rank w_cos 1.0 / w_prior 0.0 / w_agree 1.0 over the Fold B agreement table); continues through Solver/Reviewer/Planner and delivers",
                 c["b_branch"]: ("B, one axis: presentation_id top2-contrast-v1 (rails/perception_presentations.py) -- the same boundary ids as A plus one contrast block for the branch's rank-1/rank-2 pair from the pinned contrast-pair table; renders nothing for a pair under the pool-support floor (ruling O5)"
                                 if key == "psv1" else
+                                "B, one axis: key_source K6p -- the branch's own router recalls the intent-boundaries store with the centred centroid key (facet_source) and the centred Fold B speech queries (query_source), agreement unchanged, w_cos / w_agree 1 / 1 and fuse 8/1/8 as flown; the same store, release, snapshot and delivered bodies as A, a different ranking of which boundary items are shown"
+                                if key == "psv4" else
                                 "B, one axis: response-contract min_candidates 3 (slurp-intent-hypotheses-v1; max_candidates 3) -- the same boundary ids as A, a forced three-candidate hypothesis list"),
                 ff.ARM_T: f"T, replicate_of {ff.ARM_A}: no axis, A's request byte for byte in the same batch -- the read's own null (ruling O6: one twin)",
             },
@@ -461,7 +541,8 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
             },
         },
         "contrast_pair_table": contrast_pin,
-        "fit_measure": {"relpath": ff.FIT_MEASURE, "sha256": sha_file(data / ff.FIT_MEASURE), "tool": FIT_SCRIPT,
+        **({"key_source": key_source_pin} if key_source_pin is not None else {}),
+        "fit_measure": {"relpath": ff.fit_measure_relpath(key), "sha256": sha_file(data / ff.fit_measure_relpath(key)), "tool": FIT_SCRIPT,
                         "summary": {k: measure[k] for k in ("chars_per_token_least_squares", "perception", "fit_estimate",
                                                             "prompt_limit_tokens", "headroom_items", "contrast_allowance_items",
                                                             "max_supplied_items", "estimates", "first_solver_visit_prompt_tokens")}},
@@ -471,6 +552,11 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
         "decision_rule": rule,
         "budget_arithmetic": {"arm_family_budget": caps, "smoke_family_budget": smoke_caps,
                               "note": "the AGREE arithmetic at ceiling 15 with the Fold B audio: generation rows x 15, FIT rows x 15 x 4, speech ceil(audio x 15), GPU hours 12.0 x 15 / 11 = 16.4 (smoke 1.0); native task-contract calls + 4 per row; run-cumulative"},
+        **({"registration_basis": (
+            "coordinator brief 2026-09-30 acting on the recall note's recommendation 2 (register K6p as a rank-quality "
+            "candidate; build the two zero-contact artifacts; a key_source Perception-branch axis for a level-2 same-flight "
+            "column). HELD: the owner / root admission is still required; nothing here authorises a flip or a flight.")}
+           if key == "psv4" else {}),
         "prohibitions": [
             "No test-split, DEV or Fold A contact or read (Fold A is the tuning roster and is not re-flown).",
             "No re-flying of the sealed AGREE arm.", "No second factor: one axis on the B branch, none on A or T.",
@@ -551,7 +637,7 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
         "decision_rule": rule,
         "steps": [
             f"0. Refuse unless the READ row {n['read_run']} is root countersigned.",
-            "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one complete official TRAIN score, the saea-perception-branch-arms-v1 receipt on every row and I7v's Perception path verified by the bundle.",
+            f"1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one complete official TRAIN score, the {receipt_schema(key)} receipt on every row and I7v's Perception path verified by the bundle.",
             f"2. Level 1 (note): per branch gold rank / present / top1 from the sealed note (gold offline); {ff.READ_ANALYSIS} refuses unless branch A reproduces the ledger driver's P-node counting.",
             f"3. Level 2 (answer): render each branch's first-visit Solver answer through the delivered row's normaliser and projection and score it ONCE with {ff.SCORER} (never sharded).",
             "4. Twin null (T vs A), then B vs A under the rule; per-scenario tables in both weightings.",
@@ -630,6 +716,9 @@ def render_docs(key, args, ids, group, measure, fit, rule, fence, caps, smoke_ca
     for index, row in enumerate(group["branches"]):
         role = "delivering (A)" if row.get("deliver") else (f"twin of `{row['replicate_of']}` (T)" if row.get("replicate_of") else "B")
         axis = ", ".join(f"`{k}` {v}" for k, v in row.items() if k in ("presentation_id", "min_candidates", "overrides", "release_swap")) or "none"
+        if row.get("key_source"):
+            swapped = [f for f in ("facet_source", "query_source", "agreement_source") if row["key_source"].get(f)]
+            axis = "`key_source` K6p (" + ", ".join(f"`{f}` {row['key_source'][f]['relpath']} (`{row['key_source'][f]['sha256'][:8]}`)" for f in swapped) + "; agreement unchanged)"
         rows.append(f"| `{row['branch_id']}` | {index} | {role} | {axis} | {row['max_supplied_items']} |")
     fe = group["fit_estimate"]
     ct, v1, cov = ff.CONTRAST_PAIR_TABLE, ff.CONTRAST_PAIR_TABLE_V1, ff.CONTRAST_PAIR_COVERAGE
@@ -672,7 +761,16 @@ def render_docs(key, args, ids, group, measure, fit, rule, fence, caps, smoke_ca
         "Perception supply with the boundary-supply depth raised one step (fuse_coverage.m and fuse_coverage.top_l, "
         "8 -> 12, c unchanged), read primarily on `present` (gold on the branch's list), with official intent "
         f"beside ({ff.NODE_LEDGER}, section 1.4 and section 5 item 1).\n"
-        if key == "psv3" else ""
+        if key == "psv3" else
+        "\n**Purpose (the retrieval-key recall read, 2026-09-30).** No key built from pinned vectors reaches +4 pp "
+        "presence; one key changes rank QUALITY: K6p, the centred centroid + agreement key under production admission, "
+        "lifts gold to boundary-block rank 1 on +22 (Fold A) / +26 (Fold B) rows over the centroid + agreement key, "
+        f"about +1.1 pp implied intent on both folds ({ff.K6P_NOTE}). This cell reads that effect as a same-flight "
+        "level-2 Solver column (the note: a note-only level-1 branch would not show a rank-1 conversion effect), "
+        "through the new key_source Perception-branch axis: B re-keys the boundary retrieval with the two pinned K6p "
+        "artifacts, everything else as A. The same-flight intent floor (0.65 pp at n = 1,080, owner decision 190) makes a "
+        "~1.1 pp effect readable as a column; the cross-flight floor (2.5 pp) would not.\n"
+        if key == "psv4" else ""
     )
     readme = f"""# Cell {c['label']}: phase-2 same-flight Perception branches on TRAIN Fold B (owner decisions 184, 186, 188)
 
@@ -701,8 +799,8 @@ tokens, {measure['perception']['items']['max']} boundary items max, widest item 
 `scripts/checks/flight_registration_check.py` register; the spec's section 4 says `same-flight-perception-branch`,
 and the gate comment flags the reconciliation), level {ff.LEVEL}, claim **`nominated`**, `aa_arm_id` `{ff.ARM_T}`,
 `tuning_roster` `{ff.TUNING_ROSTER}`, `read_roster` `{ff.READ_ROSTER}`. Primary: {c['primary_metric']}.
-Expected effect **0.0** (nominated); ceiling {m['ceiling']['what']}. Conversion basis: {m['conversion_basis']}.
-Provisional floor {(FLOOR_INTENT if key == "psv1" else FLOOR_SLU):.4f} pp ({"intent, primary" if key == "psv1" else "SLU, reference only -- primary_metric_key 'present' has no floor"}, owner decision 190); the bar is the twin null. `variant_cost`: +2 Perception and +2 Solver contacts per
+Expected effect **{m['expected_effect_pp']}** (nominated; `claims_benefit` {str(m['claims_benefit']).lower()}); ceiling {m['ceiling']['what']}. Conversion basis: {m['conversion_basis']}.
+Provisional floor {(FLOOR_INTENT if intent_primary(key) else FLOOR_SLU):.4f} pp ({"intent, primary" if intent_primary(key) else "SLU, reference only -- primary_metric_key 'present' has no floor"}, owner decision 190); the bar is the twin null. `variant_cost`: +2 Perception and +2 Solver contacts per
 row, +{m['variant_cost']['extra_audio_seconds']} speech seconds per flight (2 x row audio per non-A branch).
 
 ## Decision rule (fixed here)
@@ -741,7 +839,7 @@ arm fragments by script (decision 58) under owner decisions 184, 186 and 188. De
 | branches | `{c['b_branch']}` ({', '.join(f'{k} {v}' for k, v in c['b_axis'].items())}), `{ff.ARM_T}` (twin), `{ff.ARM_A}` (delivering) |
 | design / claim | `{ff.MEASUREMENT_DESIGN}` / `nominated` |
 | primary | {c['primary_metric']} |
-| expected effect | 0.0 pp, `claims_benefit` false; ceiling {m['ceiling']['rows']} rows = {m['ceiling']['pp']} pp on Fold A |
+| expected effect | {m['expected_effect_pp']} pp, `claims_benefit` {str(m['claims_benefit']).lower()}; ceiling {m['ceiling']['rows']} rows = {m['ceiling']['pp']} pp on {m['ceiling']['roster']} |
 | rosters | tuning `{ff.TUNING_ROSTER}`; read `{ff.READ_ROSTER}` |
 | runs | `{arm['run_id']}` / `{arm['fit']['run_id']}`; `{smoke['run_id']}` / `{smoke['fit']['run_id']}`; read `{n['read_run']}` |
 | composed config hashes | arm `{arm['composed_config_hash']}`; smoke `{smoke['composed_config_hash']}` |
@@ -781,16 +879,21 @@ def append_ledger(key, args, ids, plan_shas, group, measurement) -> str:
         identity = ids[kind]
         run_id = identity["fit"]["run_id"] if plan == "fit" else identity["run_id"]
         attempt = identity["fit"]["attempt_id"] if plan == "fit" else identity["attempt_id"]
-        declaration = (f"measurement_design {ff.MEASUREMENT_DESIGN}, level 2, claim nominated, claims_benefit false, expected_effect_pp 0.0 "
-                       f"(ceiling {m['ceiling']['rows']} rows = {m['ceiling']['pp']} pp on Fold A), primary_metric_key {'intent' if key == 'psv1' else 'present'}, "
-                       f"provisional floor {(FLOOR_INTENT if key == 'psv1' else FLOOR_SLU):.4f} pp ({'intent, primary' if key == 'psv1' else 'SLU, reference only -- present has no floor'}, owner decision 190), bar = the twin null, "
+        declaration = (f"measurement_design {ff.MEASUREMENT_DESIGN}, level 2, claim nominated, claims_benefit {str(m['claims_benefit']).lower()}, expected_effect_pp {m['expected_effect_pp']} "
+                       f"(ceiling {m['ceiling']['rows']} rows = {m['ceiling']['pp']} pp on {m['ceiling']['roster']}), primary_metric_key {m['primary_metric_key']}, "
+                       f"provisional floor {(FLOOR_INTENT if intent_primary(key) else FLOOR_SLU):.4f} pp ({'intent, primary' if intent_primary(key) else 'SLU, reference only -- present has no floor'}, owner decision 190), bar = the twin null, "
                        f"aa_arm_id {ff.ARM_T}, tuning_roster {ff.TUNING_ROSTER}, read_roster {ff.READ_ROSTER}, variant_cost +2 Perception and +2 Solver contacts per row, rows 1080"
                        if kind == "arm" else f"measurement_design form-proof, claims_benefit false, expected_effect_pp 0.0, rows 4, tuning_roster none, read_roster {ff.READ_ROSTER}")
         placeholder = (
             f" P-SV-1's top2-contrast-v1 branch reads its pinned contrast-pair table ({ff.CONTRAST_PAIR_BUILDER} "
             f"{ff.CONTRAST_PAIR_BUILDER_ARGS}; {ff.CONTRAST_PAIR_TABLE['table_relpath']} sha256 {ff.CONTRAST_PAIR_TABLE['sha256']}, "
             f"ruling {ff.CONTRAST_PAIR_RULING}) through b-top2contrast.contrast_pairs; the runtime verifies its bytes before any contact."
-            if key == "psv1" else ""
+            if key == "psv1" else
+            (f" P-SV-4's b-k6p branch carries key_source (facet_source {ff.K6P_KEY['relpath']} sha256 {ff.K6P_KEY['sha256']}; "
+             f"query_source {ff.K6P_QUERIES_FOLD_B['relpath']} sha256 {ff.K6P_QUERIES_FOLD_B['sha256']}; agreement unchanged), "
+             f"built model-free under {ff.K6P_KEY['ledger_row']} and {ff.K6P_QUERIES_FOLD_B['ledger_row']}; the runtime verifies both "
+             "files' bytes at seed preparation. The b-k6p prepared_seed is minted by prepare-branch-seeds at the flip."
+             if key == "psv4" else "")
         )
         return (
             f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) {args.registered_at[:10]} at study commit {args.study_commit} by the P-SV "

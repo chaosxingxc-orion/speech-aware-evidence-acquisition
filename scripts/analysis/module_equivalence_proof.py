@@ -94,6 +94,9 @@ PSV_TARGETS = {
     "configs/baseline/slurp-native-stage3-psv1-fold-b-smoke-4-baseline-v1.json": cm.TOP2_CONTRAST,
     "configs/baseline/slurp-native-stage3-psv2-fold-b-baseline-v1.json": cm.FORCED_CANDIDATE_LIST,
     "configs/baseline/slurp-native-stage3-psv2-fold-b-smoke-4-baseline-v1.json": cm.FORCED_CANDIDATE_LIST,
+    # P-SV-4 (2026-09-30): the key_source column (key-source:k6p).
+    "configs/baseline/slurp-native-stage3-psv4-fold-b-baseline-v1.json": cm.KEY_SOURCE_K6P,
+    "configs/baseline/slurp-native-stage3-psv4-fold-b-smoke-4-baseline-v1.json": cm.KEY_SOURCE_K6P,
 }
 BRANCH_BLOCK_PATH = ("native_episode", "roles", "perception", "branches")
 AGREE_ARM_EXPERIMENT = "slurp-native-stage3-agree-w1-fold-a-v1"

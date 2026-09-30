@@ -32,6 +32,7 @@ from speech_aware_evidence_acquisition.rails.supply_variants import (  # noqa: E
 
 PSV1 = "configs/baseline/slurp-native-stage3-psv1-fold-b-baseline-v1.json"
 PSV2 = "configs/baseline/slurp-native-stage3-psv2-fold-b-baseline-v1.json"
+PSV4 = "configs/baseline/slurp-native-stage3-psv4-fold-b-baseline-v1.json"
 
 
 def _cell(relpath: str) -> dict:
@@ -51,7 +52,7 @@ def test_at_m4_columns_reproduce_the_flown_psv_branch_blocks():
     report = proof.run_case("m4")
     assert report["ok"], report
     by = {row["baseline"]: row for row in report["results"]}
-    assert len(by) == 4
+    assert len(by) == 6
     for row in by.values():
         assert row["branch_block_identical"] and not row["non_roster_differing_paths"]
         assert (row["program_id"], row["program_ceiling"]) == (
@@ -59,6 +60,7 @@ def test_at_m4_columns_reproduce_the_flown_psv_branch_blocks():
         )
     assert by[PSV1]["component"] == cm.TOP2_CONTRAST
     assert by[PSV2]["component"] == cm.FORCED_CANDIDATE_LIST
+    assert by[PSV4]["component"] == cm.KEY_SOURCE_K6P  # AT-M4 for P-SV-4: the b-k6p block reproduces from the module
 
 
 def test_at_m4_the_compiled_block_parses_under_the_loaders_own_rules():

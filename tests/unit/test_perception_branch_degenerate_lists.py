@@ -36,6 +36,7 @@ from speech_aware_evidence_acquisition.core.flight.resume import read_predecesso
 from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
     parse_perception_branch_note,
     validate_perception_branch_receipt,
 )
@@ -243,7 +244,7 @@ def test_record_constructor_refuses_an_uncollapsed_list():
 def _v2_bundle_fixture():
     row, trace = fixture()
     block = row["native_episode_receipt"]["perception_branches"]
-    block["schema"] = PERCEPTION_BRANCH_RECEIPT_SCHEMA
+    block["schema"] = PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2  # a v2 bundle: rows carry no key_source
     notes = {"B": note("a", "b", "a"), "T": note(), "A": note("a", "b")}
     for index, branch in enumerate(block["branches"]):
         text = notes[branch["branch_id"]]
@@ -367,7 +368,8 @@ def test_replay_rebuilds_a_v1_duplicate_block_under_v2():
         presentation_block_sha256={"perception-branch-presentation:B": block_sha},
     )
     rebuilt = replay_perception_branch_block(block, contacts=contacts)
-    assert rebuilt["schema"] == PERCEPTION_BRANCH_RECEIPT_SCHEMA
+    assert rebuilt["schema"] == PERCEPTION_BRANCH_RECEIPT_SCHEMA  # rebuilt under the current schema
+    assert all(row["key_source"] is None for row in rebuilt["branches"])
     b = rebuilt["branches"][0]
     assert b["note_parse_status"] == "duplicates-collapsed"
     assert b["candidate_intent_ids"] == ["alarm_set"]

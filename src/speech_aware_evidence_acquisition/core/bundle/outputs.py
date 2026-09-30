@@ -1066,7 +1066,7 @@ def _verify_perception_branch_trace_binding(
         refuse("declared branch contact ids disagree with the Perception visit")
 
     from ...rails.native_episode_receipt import (
-        PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+        PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS,
         parse_perception_branch_note,
         validate_perception_branch_receipt,
     )
@@ -1129,7 +1129,7 @@ def _verify_perception_branch_trace_binding(
         # disposition), never merely from the receipt's own say-so. Checked
         # whenever the note IS the response (every live branch so far).
         if (
-            branches.get("schema") == PERCEPTION_BRANCH_RECEIPT_SCHEMA
+            branches.get("schema") in PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS
             and branch_row.get("note_sha256") == branch_row.get("response_text_sha256")
         ):
             status, candidates, raw_count = parse_perception_branch_note(response_text)

@@ -25,7 +25,8 @@ min_candidates branch = A's bound (the response contract changes one bound in th
 the boundary_depth branch (P-SV-3) = the DECLARED new fuse_coverage.top_l (``psv_family.
 BOUNDARY_DEPTH_NEW_TOP_L``, 12) plus the same registered headroom of 2 -- the boundary supply itself is raised, so
 the bound is built from the new declared depth the same way A's bound is built from the measured one, never
-measured (P-SV-3 has never flown). The first Solver visit's realised prompt is reported beside (the level-2
+measured (P-SV-3 has never flown); the key_source branch (P-SV-4) = A's bound (a key swap changes which items are
+recalled, never how many). The first Solver visit's realised prompt is reported beside (the level-2
 branch Solver contact carries a branch note of the same shape in place of A's).
 
 MODEL-FREE: zero model, server, tokenizer, encoder or scorer contacts; the sealed trace is opened read-only.
@@ -115,6 +116,9 @@ def measure(data_root: Path) -> dict:
         # P-SV-3: the branch's own fuse_coverage.m/top_l are raised to ff.BOUNDARY_DEPTH_NEW_TOP_L (a DECLARED
         # target, not a measured one -- this axis has never flown), plus the same registered headroom A/T use.
         "boundary_depth": ff.BOUNDARY_DEPTH_NEW_TOP_L + HEADROOM_ITEMS,
+        # P-SV-4: a key_source branch re-keys WHICH boundary items are recalled, never how many (k, m, c and top_l
+        # are unchanged, so the fuser still stops at top_l 8): A's measured bound applies unchanged.
+        "key_source": a_bound,
     }
     reserve = SLOT_TOKENS // 8
     limit = SLOT_TOKENS - reserve - COMPLETION_CEILING - 2
@@ -157,7 +161,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", default=None)
     args = parser.parse_args(argv)
     result = measure(args.data_root)
-    output = Path(args.output) if args.output else args.data_root / ff.FIT_MEASURE
+    # Default: the v2 file (P-SV-4 on). The v1 file the P-SV-1..3 packages pin is never overwritten by default.
+    output = Path(args.output) if args.output else args.data_root / ff.FIT_MEASURE_V2
     output.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(result, indent=2, sort_keys=True) + "\n"
     output.write_text(text, encoding="utf-8")

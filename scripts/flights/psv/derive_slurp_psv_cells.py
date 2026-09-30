@@ -20,7 +20,9 @@ THREE registered changes to the AGREE bytes, and nothing else moves:
 3. **The branch block** ``native_episode.roles.perception.branches`` (level 2, K = 3, A last): the B branch
    (P-SV-1 ``b-top2contrast``: ``presentation_id`` ``top2-contrast-v1``; P-SV-2 ``b-list3``: ``min_candidates``
    3; P-SV-3 ``b-depth``: ``overrides`` raising the boundary-supply knobs ``fuse_coverage.m`` and
-   ``fuse_coverage.top_l`` together from 8 to 12, c unchanged -- ONE axis, ``knob_overrides()`` below), the twin
+   ``fuse_coverage.top_l`` together from 8 to 12, c unchanged -- ONE axis, ``knob_overrides()`` below; P-SV-4
+   ``b-k6p``: ``key_source`` swapping the boundary ``facet_source`` and ``query_source`` for the K6p centred
+   centroid key and the centred Fold B speech queries, agreement unchanged, ``psv_family.k6p_key_source()``), the twin
    ``t-twin`` (``replicate_of`` ``a-agree``) and the delivering ``a-agree`` (AGREE's Perception evidence as
    flown: w_agree 1.0, k 60, fuse 8/1/8). ``fit_estimate`` and every ``max_supplied_items`` are MEASURED (P-SV-1 /
    P-SV-2) or DECLARED from the new depth (P-SV-3, never flown) on the sealed AGREE arm by
@@ -58,6 +60,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import psv_family as ff  # noqa: E402
 
 FIT_MEASURE_SHA256 = "134f72812823f802ac9d62b616b29536f649bcb83d62aead295891bde9820237"
+# P-SV-4 (2026-09-30): the v2 file psv_fit_measure.py writes beside v1 (v1 is never overwritten); it adds exactly
+# max_supplied_items.key_source / estimates.key_source (= A's bound: a key swap changes which items, never how many).
+FIT_MEASURE_V2_SHA256 = "e67441a97ba4bb75ba7cc5e5bded1e0b97447100dd9a4bc5bcf0f89806e86e5f"
+FIT_MEASURE_SHAS = {ff.FIT_MEASURE: FIT_MEASURE_SHA256, ff.FIT_MEASURE_V2: FIT_MEASURE_V2_SHA256}
 # The previous pin (P-SV-1 / P-SV-2 registration, before the P-SV-3 boundary_depth bound was added to
 # psv_fit_measure.py::measure()): f82f4a6c8e0e0b226e3ab3ae7b07732041112bc119d5a307853aff69db747118. The new file
 # adds exactly two keys (max_supplied_items.boundary_depth, estimates.boundary_depth); every P-SV-1 / P-SV-2 bound
@@ -155,6 +161,13 @@ def branches_block(key: str, measure: dict) -> dict:
         b_row = {
             "branch_id": cell["b_branch"], "max_supplied_items": bounds["boundary_depth"],
             "overrides": knob_overrides(axis["fuse_coverage"]),
+        }
+    elif "key_source" in axis:
+        # P-SV-4: the key_source axis (rails/supply_variants.py PerceptionBranchKeySource) -- the K6p centred key and
+        # the centred Fold B queries swapped into the branch's own router; the agreement pin is kept (null).
+        b_row = {
+            "branch_id": cell["b_branch"], "max_supplied_items": bounds["key_source"],
+            "key_source": ff.k6p_key_source(),
         }
     else:
         raise SystemExit(f"cell {key!r} declares an unrecognised b_axis shape: {sorted(axis)}")
@@ -270,6 +283,13 @@ def derive_baseline(key: str, kind: str, block: dict, spec: dict, filler: dict) 
         raise SystemExit("the AGREE parent's FIT cap is not rows x 11 x 4")
     document["native_contact_fit"]["contact_cap"] = rows * ff.NEW_CEILING * ff.FIT_ENDPOINTS_PER_CONTACT
     retarget_baseline(document, filler, spec)
+    if key == "psv4":
+        # the two K6p artifacts' receipts beside the Fold B receipts (both zero-contact prepared inputs)
+        document["preparation_source_receipts"] = document["preparation_source_receipts"] + [
+            {"relpath": ff.K6P_KEY["receipt_relpath"], "root": "data", "sha256": ff.K6P_KEY["receipt_sha256"]},
+            {"relpath": ff.K6P_QUERIES_FOLD_B["receipt_relpath"], "root": "data",
+             "sha256": ff.K6P_QUERIES_FOLD_B["receipt_sha256"]},
+        ]
     c = ff.CELLS[key]
     axis = ", ".join(f"{k} {v}" for k, v in c["b_axis"].items())
     document["what_this_is"] = (
@@ -401,6 +421,22 @@ def derive_experiment(key: str, kind: str, spec: dict, date: str) -> str:
         "relpath": ff.AGREEMENT["relpath"],
         "sha256": ff.AGREEMENT["sha256"],
     }
+    k6p_requirements = [
+        {
+            "kind": "preparation",
+            "reason": (
+                f"The K6p {what} the b-k6p branch's key_source pins ({ff.K6P_NOTE}): built model-free by {pin['builder']} "
+                "from pinned vectors only with the recall read's own key_construction / centre_keys / centre_queries -- "
+                "zero model, server, encoder, embedder, scorer, network and GPU contacts; the artifact proof "
+                f"({ff.K6P_PROOF['script']}) recomputes the K6p block from it: Fold B gold at block rank 1 "
+                f"{ff.K6P_PROOF['fold_b']['rank1_k6p']} vs {ff.K6P_PROOF['fold_b']['rank1_cent_agree']} under the "
+                f"centroid + agreement key (ledger row {pin['ledger_row']})."
+            ),
+            "relpath": pin["relpath"],
+            "sha256": pin["sha256"],
+        }
+        for what, pin in (("centred centroid key", ff.K6P_KEY), ("centred TRAIN Fold B speech queries", ff.K6P_QUERIES_FOLD_B))
+    ] if key == "psv4" else []
     held = (
         " HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through "
         "scripts/flights/psv/psv_flip.sh), which also mints this cell's own first-phase supply under its own run id "
@@ -420,7 +456,7 @@ def derive_experiment(key: str, kind: str, spec: dict, date: str) -> str:
             "No cross-flight comparator: the read is within this flight (B and T branch columns against the "
             f"delivering A column)." + held
         ),
-        "requirements": [requirement],
+        "requirements": [requirement, *k6p_requirements],
         "state": "held",
     }
     document["stage3_algorithm"] = {"id": "none", "operators_used": [], "note": STAGE3_ALGORITHM_NOTE}
@@ -429,7 +465,8 @@ def derive_experiment(key: str, kind: str, spec: dict, date: str) -> str:
             f"Four-row structural form smoke of cell {c['label']}: that the 15-ceiling pbranch3-l2 program loads, that "
             "the three Perception branches fan out at the one Perception visit and the two non-A branches each take one "
             "first-visit Solver contact, that every branch fits its measured bound, that the perception-branch receipt "
-            "(saea-perception-branch-arms-v1) and invariant I7v's Perception path seal, and that the episode completes. "
+            f"({'saea-perception-branch-arms-v3' if key == 'psv4' else 'saea-perception-branch-arms-v1'}) and invariant "
+            "I7v's Perception path seal, and that the episode completes. "
             "Scored by no one and read by no one: four rows are never evidence of benefit or harm."
         )
         document["failure_policy"] = (
@@ -455,7 +492,8 @@ def derive_experiment(key: str, kind: str, spec: dict, date: str) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
-    parser.add_argument("--date", default=ff.DATE)
+    # Default: each cell's own registration date (psv_family.cell_date: P-SV-1..3 2026-09-29, P-SV-4 2026-09-30).
+    parser.add_argument("--date", default=None)
     parser.add_argument("--data-root", required=True)
     # Default stays "every cell in ff.CELLS" (today psv1,psv2,psv3): unscoped re-runs keep deriving the whole
     # family, byte-identically, for any cell whose inputs have not moved. A caller that wants to touch only ONE
@@ -464,10 +502,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--cells", default=",".join(ff.CELLS))
     args = parser.parse_args(argv)
     check_program_fragments()
-    raw = io.open(os.path.join(args.data_root, ff.FIT_MEASURE), "rb").read()
-    if hashlib.sha256(raw).hexdigest() != FIT_MEASURE_SHA256:
-        raise SystemExit(f"{ff.FIT_MEASURE} does not hash to its registered sha256; re-run psv_fit_measure.py and re-pin")
-    measure = json.loads(raw)
+    measures = {}
+    for relpath, expected_sha in FIT_MEASURE_SHAS.items():
+        path = os.path.join(args.data_root, relpath)
+        if not os.path.isfile(path):
+            continue
+        raw = io.open(path, "rb").read()
+        if hashlib.sha256(raw).hexdigest() != expected_sha:
+            raise SystemExit(f"{relpath} does not hash to its registered sha256; re-run psv_fit_measure.py and re-pin")
+        measures[relpath] = json.loads(raw)
     filler = json.loads(rd(ff.FILLER_C01_BASELINE))
     written, blocks = [], {}
     keys = args.cells.split(",")
@@ -475,13 +518,16 @@ def main(argv: list[str] | None = None) -> int:
     if unknown:
         raise SystemExit(f"--cells names unknown cell(s) {unknown}; known cells are {sorted(ff.CELLS)}")
     for key in keys:
-        block = branches_block(key, measure)
+        fit_relpath = ff.fit_measure_relpath(key)
+        if fit_relpath not in measures:
+            raise SystemExit(f"{fit_relpath} is missing; run psv_fit_measure.py first")
+        block = branches_block(key, measures[fit_relpath])
         blocks[key] = block
         for kind in ("arm", "smoke"):
             spec = roster(kind)
             pinned_block = pin_branch_seed(block, key, kind, args.data_root)
             written.append(derive_baseline(key, kind, pinned_block, spec, filler))
-            written.append(derive_experiment(key, kind, spec, args.date))
+            written.append(derive_experiment(key, kind, spec, args.date or ff.cell_date(key)))
         n = ff.names(key, "arm")
         campaign = {"cells": [{"cell": n["experiment"], "experiment": n["experiment"]}], "schema": "saea-campaign-plan-v1"}
         wr(n["campaign"], json.dumps(campaign, indent=2) + "\n")

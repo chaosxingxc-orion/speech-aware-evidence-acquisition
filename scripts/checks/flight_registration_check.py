@@ -803,8 +803,16 @@ def _check_perception_branch_registration(
     baseline: dict[str, Any] | None,
     floor_gate: Any,
     repo_root: Path,
+    *,
+    data_root: Path | None = None,
 ) -> None:
     """Design section 4 registration fields and gate findings for a Perception-branch cell.
+
+    Fifth finding (2026-09-30, the ``key_source`` axis): ``key-source-unpinned`` -- a B branch's
+    ``key_source`` swaps a pin that is not a well-formed ``{relpath, sha256}``-bearing source,
+    or (when ``data_root`` is given) whose file is missing under the data root or does not hash
+    to its pinned sha256. The runtime refuses the same thing at seed preparation
+    (``FlightRuntime._apply_key_source``); this surfaces it at registration.
 
     A no-op when the declaration is absent or unreadable, when it names a design outside
     :data:`PERCEPTION_VARIANT_INSTRUMENT_DESIGNS`, or when the cell declares no
@@ -917,6 +925,55 @@ def _check_perception_branch_registration(
                     "as its own prepared artifact before this cell may register",
                     report.run_id,
                 ))
+            key_source = row.get("key_source")
+            if key_source is None:
+                continue
+            for problem in _key_source_pin_problems(key_source, data_root):
+                report.findings.append(Finding(
+                    "key-source-unpinned",
+                    f"{report.run_id}: perception branch {row.get('branch_id')!r} key_source "
+                    f"{problem}",
+                    report.run_id,
+                ))
+
+
+#: The three retrieval-key pins a ``key_source`` branch may swap
+#: (``rails.native_episode_receipt.PERCEPTION_BRANCH_KEY_SOURCE_FIELDS``, restated so this
+#: gate imports nothing from the package).
+KEY_SOURCE_FIELDS = ("facet_source", "query_source", "agreement_source")
+
+
+def _key_source_pin_problems(key_source: Any, data_root: Path | None) -> list[str]:
+    """Why a raw ``key_source`` block's pins are not registrable, one line each (``[]`` = fine)."""
+
+    if not isinstance(key_source, dict) or set(key_source) != {"store_id", *KEY_SOURCE_FIELDS}:
+        return ["is not exactly {store_id, facet_source, query_source, agreement_source}"]
+    problems: list[str] = []
+    swapped = 0
+    for name in KEY_SOURCE_FIELDS:
+        pin = key_source.get(name)
+        if pin is None:
+            continue
+        swapped += 1
+        relpath = pin.get("relpath") if isinstance(pin, dict) else None
+        sha = pin.get("sha256") if isinstance(pin, dict) else None
+        if (
+            not isinstance(relpath, str) or not relpath
+            or not isinstance(sha, str) or len(sha) != 64
+            or any(character not in "0123456789abcdef" for character in sha)
+        ):
+            problems.append(f"{name} carries no well-formed pinned {{relpath, sha256}}")
+            continue
+        if data_root is None:
+            continue
+        path = data_root / relpath
+        if not path.is_file():
+            problems.append(f"{name} pin {relpath!r} is missing under the data root")
+        elif _sha256(path) != sha:
+            problems.append(f"{name} pin {relpath!r} does not hash to its pinned sha256 {sha}")
+    if not swapped:
+        problems.append("swaps zero retrieval-key pins")
+    return problems
 
 
 # --------------------------------------------------------------------------
@@ -1382,7 +1439,9 @@ def check_cell(
 ) -> None:
     floor_gate = _floor_gate_module(index.repo_root)
     _check_supply_variant_registration(report, fragment, baseline, floor_gate, index.repo_root)
-    _check_perception_branch_registration(report, fragment, baseline, floor_gate, index.repo_root)
+    _check_perception_branch_registration(
+        report, fragment, baseline, floor_gate, index.repo_root, data_root=data_root,
+    )
     _check_relisten_registration(report, fragment, baseline, floor_gate, index.repo_root)
     # Item D3's roster-split check still runs for a NAMED sealed/flown cell (a resume step
     # re-launching an already-consumed run id, gated the same as any other launch-mode cell --

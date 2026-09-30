@@ -1001,3 +1001,73 @@ def test_a_recovery_package_for_another_cell_does_not_prove_this_resume(world: W
     launch = world.run(cells=[EXPERIMENT])
     assert not launch["passed"]
     assert "resume-replay-unproven" in _kinds(launch)
+
+
+# --------------------------------------------------------------------------
+# key-source-unpinned (2026-09-30, the key_source Perception-branch axis)
+# --------------------------------------------------------------------------
+
+
+def _key_source_branches(world: World, *, write: bool = True, sha: str | None = None,
+                         pin: dict | None = "default") -> dict:
+    block = _three_branches(level=2)
+    b = block["branches"][0]
+    del b["overrides"]
+    relpath = "prepared/SAEA-SLURP-CENTRED-CENTROID-KEY-V1/key-v1.jsonl"
+    if write:
+        (world.data / relpath).parent.mkdir(parents=True, exist_ok=True)
+        (world.data / relpath).write_text("{}\n", encoding="utf-8")
+    actual = hashlib.sha256(b"{}\n").hexdigest()
+    facet = {
+        "kind": "sealed-vectors", "relpath": relpath, "sha256": sha or actual,
+        "tool_contact_ledger_row": "SAEA-SLURP-CENTRED-CENTROID-KEY-BUILD-V1",
+        "embedded_signal": "text: centred centroid key",
+    }
+    if pin != "default":
+        facet = pin
+    b["key_source"] = {"store_id": "intent-boundaries", "facet_source": facet,
+                       "query_source": None, "agreement_source": None}
+    return block
+
+
+def _perception_variant_measurement() -> dict:
+    return {"measurement_design": "same-flight-perception-variant", "expected_effect_pp": 1.0,
+            "claim": "nominated", "aa_arm_id": "T"}
+
+
+def test_a_pinned_present_key_source_raises_no_finding(world: World) -> None:
+    world.measurement = _perception_variant_measurement()
+    world.perception_branches = _key_source_branches(world)
+    assert "key-source-unpinned" not in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+
+def test_key_source_unpinned_when_the_file_is_missing(world: World) -> None:
+    world.measurement = _perception_variant_measurement()
+    world.perception_branches = _key_source_branches(world, write=False)
+    data = world.build().run(cells=[EXPERIMENT])
+    assert "key-source-unpinned" in _kinds(data)
+
+
+def test_key_source_unpinned_when_the_sha_does_not_match(world: World) -> None:
+    world.measurement = _perception_variant_measurement()
+    world.perception_branches = _key_source_branches(world, sha="c" * 64)
+    assert "key-source-unpinned" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+
+@pytest.mark.parametrize("bad", [
+    {"relpath": "prepared/x.jsonl"},
+    {"relpath": "prepared/x.jsonl", "sha256": "not-hex"},
+    {"relpath": "", "sha256": "b" * 64},
+    "prepared/x.jsonl",
+])
+def test_key_source_unpinned_when_the_pin_is_malformed(world: World, bad) -> None:
+    world.measurement = _perception_variant_measurement()
+    world.perception_branches = _key_source_branches(world, pin=bad)
+    assert "key-source-unpinned" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+
+def test_key_source_pin_problems_names_a_zero_swap_and_a_bad_shape() -> None:
+    assert gate._key_source_pin_problems(
+        {"store_id": "s", "facet_source": None, "query_source": None, "agreement_source": None}, None,
+    ) == ["swaps zero retrieval-key pins"]
+    assert gate._key_source_pin_problems({"facet_source": None}, None)

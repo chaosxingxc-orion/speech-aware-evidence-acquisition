@@ -1,6 +1,7 @@
 """Shared identities of the phase-2 Perception-branch cells P-SV-1, P-SV-2 and P-SV-3 (owner decisions 184, 186,
 188; P-SV-3 registered separately on branch fable/psv3, decision 190's `present`-primary framing extended to a
-third axis: the boundary-supply DEPTH itself, fuse_coverage.m/top_l raised together).
+third axis: the boundary-supply DEPTH itself, fuse_coverage.m/top_l raised together) and P-SV-4 (2026-09-30, branch
+fable/keysource: the key_source axis, the K6p centred centroid + agreement key; intent-primary, claims_benefit).
 
 Every cell is the retained AGREE arm (docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1) re-targeted
 from TRAIN Fold A to TRAIN Fold B exactly the way the filler family re-pointed ROLL-2 + AGREE
@@ -101,6 +102,70 @@ GATE = "scripts/checks/stage3_effect_floor_check.py"
 READ_ANALYSIS = "scripts/analysis/slurp_perception_branch_read.py"
 
 FIT_MEASURE = "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v1.json"
+# P-SV-4 (2026-09-30): the fit re-measured with the key_source bound added (psv_fit_measure.py), written to its OWN
+# file so the v1 measure the already-registered P-SV-1..3 packages pin is never overwritten.
+FIT_MEASURE_V2 = "analysis/SAEA-SLURP-STAGE3-PSV-PERCEPTION-FIT-MEASURE-V1/fit-measure-v2.json"
+
+
+def fit_measure_relpath(key: str) -> str:
+    """The fit-measure file a cell's branch bounds come from (P-SV-4 on: v2)."""
+
+    return CELLS[key].get("fit_measure", FIT_MEASURE)
+
+
+# P-SV-4's key_source axis (rails/supply_variants.py PerceptionBranchKeySource; docs/results/2026-09-30-slurp-
+# retrieval-key-recall-offline.md): the K6p centred centroid key and the centred TRAIN Fold B speech queries, both
+# zero-contact prepared artifacts (scripts/build_slurp_centred_centroid_key.py, scripts/build_slurp_centred_query_
+# vectors.py --roster fold-b); the agreement table is UNCHANGED (agreement_source null = keep the cell's own pin).
+K6P_NOTE = "docs/results/2026-09-30-slurp-retrieval-key-recall-offline.md"
+K6P_PROOF = {"script": "scripts/analysis/slurp_k6p_artifact_proof.py",
+             "relpath": "analysis/SAEA-SLURP-K6P-ARTIFACT-PROOF-V1/proof.json",
+             "sha256": "ad34e12fcafb2c762abe8cb4c695932671d4a242875b8ec9e9f7926a8be1db05",
+             "fold_b": {"rank1_k6p": 815, "rank1_cent_agree": 789, "in_block_k6p": 1029, "in_block_cent_agree": 1027},
+             "fold_a": {"rank1_k6p": 845, "rank1_cent_agree": 823, "in_block_k6p": 1040, "in_block_cent_agree": 1048}}
+K6P_KEY = {
+    "relpath": "prepared/SAEA-SLURP-CENTRED-CENTROID-KEY-V1/key-v1.jsonl",
+    "sha256": "98533f8254703d24a033d3f07a11a4fef5e0950fc033fcbee5eb56e200db074c",
+    "receipt_relpath": "prepared/SAEA-SLURP-CENTRED-CENTROID-KEY-V1/receipt.json",
+    "receipt_sha256": "dfded181469703612dcd233a44eea9b7b320b964d165d80ea6a5c106b07ec40d",
+    "ledger_row": "SAEA-SLURP-CENTRED-CENTROID-KEY-BUILD-V1",
+    "builder": "scripts/build_slurp_centred_centroid_key.py",
+}
+K6P_QUERIES_FOLD_B = {
+    "relpath": "prepared/SAEA-SLURP-CENTRED-QUERIES-V1/fold-b/query-vectors-speech-segments.jsonl",
+    "sha256": "6b056fefd042c5b9d7841ecc425d4c875029f8679c2291c3902b406031a9cefb",
+    "receipt_relpath": "prepared/SAEA-SLURP-CENTRED-QUERIES-V1/fold-b/receipt.json",
+    "receipt_sha256": "f2e8d7ce99ac8d4c03b7b0ace9e9501ec708e223da50e9a9c1db29a288218d5e",
+    "ledger_row": "SAEA-SLURP-CENTRED-QUERIES-FOLD-B-BUILD-V1",
+    "builder": "scripts/build_slurp_centred_query_vectors.py --roster fold-b",
+}
+
+
+def k6p_key_source() -> dict:
+    """The b-k6p branch's ``key_source`` block: facet_source and query_source swapped, agreement unchanged."""
+
+    return {
+        "store_id": "intent-boundaries",
+        "facet_source": {
+            "kind": "sealed-vectors", "relpath": K6P_KEY["relpath"], "sha256": K6P_KEY["sha256"],
+            "tool_contact_ledger_row": K6P_KEY["ledger_row"],
+            "embedded_signal": (
+                "text: the CENTRED intent-boundary centroid key (K6p) -- per released intent the raw mean of its "
+                "unit construction-pool utterance vectors minus the construction-pool mean, re-normalised; built "
+                "model-free by scripts/build_slurp_centred_centroid_key.py from pinned vectors only; the key side is "
+                "knowledge text."),
+        },
+        "query_source": {
+            "kind": "sealed-segment-vectors", "relpath": K6P_QUERIES_FOLD_B["relpath"],
+            "sha256": K6P_QUERIES_FOLD_B["sha256"], "tool_contact_ledger_row": K6P_QUERIES_FOLD_B["ledger_row"],
+            "embedded_signal": (
+                "speech: the TRAIN Fold B rows' own sealed full-utterance speech segments in the intent-boundary "
+                "dimension, each unit-normalised and centred by the mean of the pinned R01C construction-roster "
+                "speech queries, re-normalised (scripts/build_slurp_centred_query_vectors.py --roster fold-b); no "
+                "transcript, answer, gold label or future turn enters this query."),
+        },
+        "agreement_source": None,
+    }
 
 # The contrast-pair table top2-contrast-v1 renders from (spec section 5 item 6). Built model-free by
 # scripts/build_slurp_intent_contrast_pairs.py. History: registered as a placeholder at first registration
@@ -271,7 +336,45 @@ CELLS = {
             "branch A in the same flight, and what does the level-2 branch Solver make of the widened supply?"
         ),
     },
+    # P-SV-4 (2026-09-30): the key_source axis. B re-keys the boundary retrieval with K6p (the centred centroid key
+    # + the centred Fold B speech queries; agreement unchanged, w_cos / w_agree 1 / 1 as flown, fuse 8/1/8), a
+    # rank-quality lever: the recall note's implied effect is a RANK effect (gold lifted to block rank 1), so the
+    # primary is the level-2 branch Solver column's official intent, with `present` beside.
+    "psv4": {
+        "label": "P-SV-4",
+        "slug": "psv4-fold-b",
+        "date": "2026-09-30",
+        "run": "SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1",
+        "b_branch": "b-k6p",
+        "b_axis": {"key_source": "k6p (centred centroid key + centred Fold B speech queries; agreement unchanged)"},
+        "fit_measure": FIT_MEASURE_V2,
+        "expected_effect_pp": 1.1,
+        "claims_benefit": True,
+        "primary_metric_key": "intent",
+        "implied_intent_rows_fold_b": 11.6,
+        "rank1_lift_rows_fold_b": 26,
+        "primary_metric": (
+            "official intent accuracy of the level-2 branch Solver column (primary): B (key_source K6p: the centred "
+            "centroid key and the centred Fold B speech queries, agreement unchanged) minus A, with gold-on-list "
+            "(present) and gold rank in the branch note beside; guard SLU-F1 of the same column; the delivered row is "
+            "A and identical by construction at the request level (reported, never contrasted)"
+        ),
+        "ceiling_rows": 26,
+        "question": (
+            "At the one Perception visit of every TRAIN Fold B row, does re-keying the boundary retrieval with K6p (the "
+            "centred centroid key and the centred speech queries, agreement unchanged -- a key_source swap inside the "
+            "branch's own pre-flight router, nothing else) move the level-2 branch Solver column's official intent "
+            "accuracy beyond the in-flight twin's null, read against the delivering branch A (AGREE's Perception "
+            "evidence as flown) in the same flight?"
+        ),
+    },
 }
+
+
+def cell_date(key: str) -> str:
+    """A cell's registration date (package and preregistration paths): P-SV-1..3 2026-09-29, P-SV-4 2026-09-30."""
+
+    return CELLS[key].get("date", DATE)
 
 
 def names(key: str, kind: str) -> dict:
@@ -291,9 +394,9 @@ def names(key: str, kind: str) -> dict:
         "attempt_id": f"attempt-slurp-native-stage3-{slug}{sfx_lower}-generation-v1",
         "fit_attempt_id": f"attempt-slurp-native-stage3-{slug}{sfx_lower}-fit-v1",
         "fragment_kind": f"saea-slurp-native-stage3-{slug}{sfx_lower}-v1",
-        "package": f"docs/readiness/{DATE}-slurp-stage3-{slug}-v1",
+        "package": f"docs/readiness/{cell_date(key)}-slurp-stage3-{slug}-v1",
         "pkg": f"slurp-stage3-{slug}-v1",
-        "prereg": f"docs/readiness/{DATE}-slurp-stage3-{slug}-v1-preregistration.md",
+        "prereg": f"docs/readiness/{cell_date(key)}-slurp-stage3-{slug}-v1-preregistration.md",
         "campaign": f"configs/campaign/slurp-native-stage3-{slug}-v1.json",
         "read_run": f"SAEA-SLURP-STAGE3-{upper}-BRANCH-READ-V1",
         "decision_id": f"slurp-stage3-{slug}-admission-v1",
