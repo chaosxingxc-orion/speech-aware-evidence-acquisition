@@ -6,16 +6,16 @@
       "sha256": "a0d24c1ccdd54ee7ce09752b7506d1b5456d032c41838456a988b59b76ffc247"
     },
     "allowance": {
-      "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
-      "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+      "path": "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
+      "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"
     },
     "analysis_recipe": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/analysis-recipe-v1.json",
-      "sha256": "91cb824735a3ee5b22a905d0b8cf4893bee1c5849d4c81df6249542d4608ed00"
+      "sha256": "0dad4cc0b7938dcc99b2a03d85e7de446e48e087fa10dfece4203ee28084ce35"
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "44ed8f8c18bd0289b1c5ebb858c14cb923e340347a19b334169b62cdda85069b"
+      "sha256": "6a0d2c2fd5ee140ac5ab44cb7f1a23407766499789305713c54977bb4bad5390"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1-preregistration.md",
@@ -23,7 +23,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-      "sha256": "605917b748ae5963b05f4cb44886f7a10562d1e3fd0301846b263cec30913176"
+      "sha256": "a903d62d0dc1609a7fc01a9684f40a77d3965c7ba7e7c7af151c4c1208cd082f"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/README.md",
@@ -31,7 +31,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/registered-facts-v1.json",
-      "sha256": "318f52f69b56d9234f6082fd1a586fdd878bd55a8382c93f24b49adf29a89ec8"
+      "sha256": "fe73fa9f1a8361b74578e5ddfd96904d861904e32cbfc6fd45cdcbef423ac40b"
     },
     "registration_base_commit": "881b1787c"
   },
@@ -83,13 +83,13 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "9b7cb7d28f3e81dc5daf0730476e59191cf558fc75659e5857827e4d3279d4ae",
-      "protocol": "367423eaafb74ca47fee7594cd6a46f90eee9d8dac38415ba1d6df6d4ce24cd2"
+      "composed_config": "21e6b808be316e72f30d7a0008ad176fb2e21e2a76c16773508d366013eb2bc8",
+      "protocol": "ae4db60c457805fd389cf60749bd0d11f9748accdcd7b09c4fdb89c0acbcc4e9"
     },
     "note": "the values of the fragments exactly as committed at 881b1787c; repin_cell.py recomputes them at the flip",
     "plan": {
-      "composed_config": "7f6155ba2ca7959632633fbe9539e035be422bc11c693ae7ad94c3a07cacb513",
-      "protocol": "b233c95bf01cbd41df37a5082417cb9ba91f5670647902b30a452fbf61df5efb"
+      "composed_config": "b7407e15e1a025ba1f8495dda8455520b7debcb6b9326936dd892c6f3a013d58",
+      "protocol": "c7a88191cdc1d5bca1aba91ba5670f6d2147b0d3026fcaca9f030f5c44246f69"
     }
   },
   "schema": "saea-campaign-decision-v1",

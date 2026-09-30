@@ -33,7 +33,7 @@
   },
   "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-READ-V1",
   "recipe_id": "slurp-stage3-comp1b-testsample-milestone-read-v1",
-  "registered_at_utc": "2026-09-29T23:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T23:30:00Z",
   "resampling": {
     "bootstrap_draws": 10000,
     "metrics": [

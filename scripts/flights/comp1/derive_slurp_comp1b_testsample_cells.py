@@ -105,8 +105,13 @@ ROSTER_ID = "SLURP-TEST-SAMPLE-3010-V1"
 ROSTER_RECEIPT = "docs/receipts/rosters/slurp-test-sample-3010-v1.json"
 ROSTER_RECEIPT_SHA256 = "48d9fb336ce99ad1725bf5ca0f74687d37711d685fa9fb4f594b2f1d88344e6d"
 SPLIT_IDENTITY = "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
-ALLOWANCE = "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json"
-ALLOWANCE_SHA256 = "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+# Owner decision 207 (2026-09-30): the cells pin the SIGNED successor allowance v2, which adds the two FIT run ids;
+# every other term is v1's. The sample preparations (2 and 3) ran under v1, so their summary receipt still pins v1's
+# bytes (PREPARATION_ALLOWANCE_SHA256) and is checked against those.
+ALLOWANCE = "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json"
+ALLOWANCE_SHA256 = "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"
+PREPARATION_ALLOWANCE = "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json"
+PREPARATION_ALLOWANCE_SHA256 = "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
 ROWS = 3010
 AUDIO_SECONDS = 8206.436875
 PROMOTION_RECEIPT_SHA256 = "d0a827b62e4c8b00facd753c9fd76cc2f5bcfbb3eea5038ca5c84e75814eaa28"
@@ -200,8 +205,8 @@ def resolve_preparation_pins(data_root: Path | None) -> tuple[dict[str, str], di
         raise SystemExit(f"{PREPARATION_SUMMARY}: not this roster's summary (split identity / rows)")
     if summary.get("reads_labels") is not False:
         raise SystemExit(f"{PREPARATION_SUMMARY}: reads_labels is not false; refusing")
-    if (summary.get("allowance") or {}).get("sha256") != ALLOWANCE_SHA256:
-        raise SystemExit(f"{PREPARATION_SUMMARY}: does not pin the committed allowance bytes")
+    if (summary.get("allowance") or {}).get("sha256") != PREPARATION_ALLOWANCE_SHA256:
+        raise SystemExit(f"{PREPARATION_SUMMARY}: does not pin the v1 allowance bytes the preparations ran under")
     if summary.get("run_ids") != PREPARATION_RUN_IDS:
         raise SystemExit(f"{PREPARATION_SUMMARY}: run ids {summary.get('run_ids')} are not preparations 2 and 3")
     pins: dict[str, str] = {}

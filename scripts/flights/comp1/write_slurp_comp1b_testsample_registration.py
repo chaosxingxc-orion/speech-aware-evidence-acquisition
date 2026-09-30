@@ -70,7 +70,7 @@ A2_ARM_RUN = "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1"
 A2_READ_RUN = "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-PAIRED-ANALYSIS-V1"
 COMP1B_READ_NOTE = "docs/results/2026-09-29-slurp-comp1b-fold-a-read.md"
 DERIVE_SCRIPT = "scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py"
-ALLOWANCE = "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json"
+ALLOWANCE = "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json"  # owner decision 207: the signed successor of the decision-151 allowance v1
 ROSTER_RECEIPT = "docs/receipts/rosters/slurp-test-sample-3010-v1.json"
 DESIGN_NOTE = "docs/readiness/2026-09-27-slurp-test-sample-design-v1.md"
 PREP_NOTE = "docs/readiness/2026-09-27-slurp-test-sample-preparations-v1.md"
@@ -475,11 +475,14 @@ def main(argv: list[str] | None = None) -> int:
         "OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the "
         "dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row "
         "names that report (allowance first_contact_gate).",
-        "ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell "
-        "(core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which "
-        "contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR "
-        f"allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name {fit_not_permitted} "
-        "as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.",
+        ("ALLOWANCE: CLEARED -- owner decision 207 signed the successor allowance "
+         f"{ALLOWANCE} (sha256 {allowance_sha}), which names both FIT run ids as preparation-kind (non-read) run ids; "
+         "both fragments pin its bytes (the v1 file is superseded, never edited)." if not fit_not_permitted else
+         "ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell "
+         "(core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which "
+         "contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR "
+         f"allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name {fit_not_permitted} "
+         "as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required."),
         preparations_blocker,
         expectation_blocker,
         "READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the "
