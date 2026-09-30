@@ -11,18 +11,20 @@
 #   3. merge set C (runtime, runner, bundle, presentations) has landed on master and both cells pass
 #      core.flight.cli check there.
 # --allow-output-change must never be passed.
-#   bash scripts/flights/psv/psv_flip.sh [psv1 psv2 psv3]   (default psv1 psv2 unchanged; name psv3 to include it)
+#   bash scripts/flights/psv/psv_flip.sh [psv1 psv2 psv3 psv4]   (default psv1 psv2 unchanged; name psv3/psv4 to include them)
+# P-SV-4's package is dated 2026-09-30 (the others 2026-09-29); pkg_date below resolves it per cell.
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 PS=$MAIN/scripts/flights/psv
 CELLS=("$@"); [ ${#CELLS[@]} -eq 0 ] && CELLS=(psv1 psv2)
+pkg_date() { case "$1" in psv4) echo 2026-09-30 ;; *) echo 2026-09-29 ;; esac; }
 cd "$MAIN" || exit 1
 for K in "${CELLS[@]}"; do
   if [ ! -f "$DATA/coordination/slurp-stage3-$K-fold-b-v1/root-admission-v1.json" ]; then
     echo "refusing: the $K decision receipt is not minted (scripts/flights/psv/psv_mint_receipt.py $K)"; exit 6
   fi
-  if grep -q "TO-BE-PINNED-AFTER-CONTRAST-PAIR-BUILD" "docs/readiness/2026-09-29-slurp-stage3-$K-fold-b-v1/registered-facts-v1.json"; then
+  if grep -q "TO-BE-PINNED-AFTER-CONTRAST-PAIR-BUILD" "docs/readiness/$(pkg_date "$K")-slurp-stage3-$K-fold-b-v1/registered-facts-v1.json"; then
     echo "refusing: $K still carries the contrast-pair placeholder pin"; exit 6
   fi
   for KIND in smoke arm; do
@@ -35,7 +37,7 @@ CONVERGED=""
 for pass in 1 2 3 4; do
   BEFORE=$(git rev-parse HEAD)
   for K in "${CELLS[@]}"; do
-    RD=docs/readiness/2026-09-29-slurp-stage3-$K-fold-b-v1
+    RD=docs/readiness/$(pkg_date "$K")-slurp-stage3-$K-fold-b-v1
     PSV_CELL=$K PSV_KIND=smoke bash "$SP/repin_loop_generic.sh" "$PS/psv_repin_cell.sh" "$RD" "slurp-native-stage3-$K-fold-b-smoke-4-v1" smoke-generation "/home/chao/$K-smoke-commit.txt" || exit $?
     PSV_CELL=$K PSV_KIND=arm bash "$SP/repin_loop_generic.sh" "$PS/psv_repin_cell.sh" "$RD" "slurp-native-stage3-$K-fold-b-v1" generation "/home/chao/$K-arm-commit.txt" || exit $?
   done

@@ -1,0 +1,51 @@
+{
+  "cell": "slurp-native-stage3-psv4-fold-b-smoke-4-v1",
+  "composed_config_hash": "26c81eee640c432487c43c11da56d605f05c9fb0cb2007d9acdaa32b1344df02",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-psv4-fold-b-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 60,
+    "planned_speech_audio_seconds": 153,
+    "protocol_hash": "464ba89d09ec93dd30e6470ce06e48f6b8eb9843a80e447ae866011a24da4b6c",
+    "run_id": "SAEA-SLURP-STAGE3-PSV4-FOLD-B-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-psv4-fold-b-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 240,
+    "generation_calls_cap": 60,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 40,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 153
+  },
+  "one_factor": "branch b-k6p: key_source k6p (centred centroid key + centred Fold B speech queries; agreement unchanged); the Fold B re-target and the program switch to phase-native-candidates-review-revise-pbranch3-l2-v1 are the instrument's carrier, shared by every branch",
+  "plan_kind": "generation",
+  "preparation_base_commit": "2df3fcf0d3e6797a98dc4b030e3caaf3f1811656",
+  "prepared_phase_supply": {
+    "note": "the first Fold B first-phase supply at w_agree 1.0 on this roster; branch A's router must reproduce it on every row (spec section 3, AT-P6)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-PSV4-FOLD-B-SMOKE-4-V1/phase-supply-v2.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-30-slurp-stage3-psv4-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "61d98b7352d20acc8ec4a98a2be4b754fe20481191cd93ee948cffa07a795235"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-PSV4-FOLD-B-SMOKE-4-V1: structural form proof only: no score and no read.",
+  "quality_read_gate": "No branch column is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-PSV4-FOLD-B-BRANCH-READ-V1 is root countersigned.",
+  "registered_at_utc": "2026-09-30T04:47:31.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-keysource, branch fable/keysource",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
