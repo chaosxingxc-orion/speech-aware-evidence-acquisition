@@ -118,7 +118,12 @@ SCHEMA_VERDICT = "saea-slurp-b6-paired-roster-read-verdict-v1"
 DEFAULT_SCORER = "slurp-slu-official"
 DEFAULT_ROSTER = "docs/receipts/rosters/slurp-dev-2000-added-v1.json"
 DEFAULT_CLUSTER_KEY = "utterance_id"
-ALLOWED_SOURCE_SPLIT_ROLES = ("dev", "discovery")
+#: ``"final-report"`` added by the 2026-09-29 milestone fix: a signed test-sample roster may be
+#: read ONLY under the owner-allowance / recipe-scorer / aggregate-stratification / countersign
+#: conditions ``stage3_paired_read.run_package`` enforces before it ever builds this argv; this
+#: driver's own contribution is the scorer-identity check beside ``stage_stop``'s existing
+#: "discovery requires the TRAIN scorer" block, below.
+ALLOWED_SOURCE_SPLIT_ROLES = ("dev", "discovery", "final-report")
 DEFAULT_SEED = 20260915
 DEFAULT_DRAWS = 10_000
 DEFAULT_TITLE = "SLURP cell B6: DEV-2000-ADDED paired read (direct vs locked v2.0 default plan)"
@@ -501,7 +506,10 @@ def parse_args(argv: Sequence[str] | None = None) -> Args:
     parser.add_argument("--split-identity-hash", default=None)
     parser.add_argument(
         "--expected-split-role", choices=ALLOWED_SOURCE_SPLIT_ROLES, default="dev",
-        help="source roster and manifest role; discovery requires the TRAIN official scorer",
+        help="source roster and manifest role; discovery requires the TRAIN official scorer, "
+             "final-report requires the TEST official scorer (stage3_paired_read.run_package "
+             "gates final-report further: owner allowance, recipe scorer, aggregate "
+             "stratification and countersignature, before this argv is ever built)",
     )
     parser.add_argument(
         "--stage3-algorithm", default=None,
@@ -671,6 +679,11 @@ def stage_stop(args: Args, left: Arm, right: Arm, roster: Roster) -> dict:
             not sid.startswith("slurp:train:") for sid in roster.ids
         ):
             raise StopStageError("discovery source requires SLURP TRAIN sample identities")
+    if args.expected_split_role == "final-report":
+        # Defense in depth beside ``run_package``'s own condition (b): this driver never opens a
+        # final-report roster's scores under any scorer but the TEST official one, whoever calls it.
+        if args.scorer_id != "slurp-slu-official-test":
+            raise StopStageError("final-report source requires the TEST official scorer")
 
     for arm in (left, right):
         _check_attempt_finalized(arm)
