@@ -1,7 +1,7 @@
 """The COMP-1b TEST-SAMPLE milestone registration (owner decisions 151 and 202): model-free proofs.
 
-* the committed package refuses to flip today (FIT run ids not named by allowance v1, pending pins;
-  the expectation is re-declared from the A2 read) -- the preflip gate on the committed tree;
+* the committed package refuses to flip today (only the two FIT run ids not named by allowance v1;
+  every sample pin is real and the expectation is re-declared from the A2 read) -- the preflip gate on the committed tree;
 * the same gate passes on a FAKE tree where every blocker is cleared, and refuses each blocker alone;
 * the two milestone cells pin the committed allowance, name its read run ids, score with the TEST
   sibling and carry no smoke.
@@ -32,32 +32,33 @@ def _experiment(root: Path, cell: str) -> dict:
 
 
 def test_committed_package_is_blocked_on_every_named_blocker():
-    # Current blocker set (2026-09-30): the expectation is re-declared from the A2 read (e36bee27f);
-    # preparations 2 and 3 ran and their four artifacts are pinned (derive --data-root, verified
-    # against the summary receipt); what remains is the allowance v2 naming the FIT run ids (owner
-    # decision 207), this roster's agreement table (not yet built; its pins are the only pending
-    # sample pins), and the owner countersign / read-driver gates named in the facts file.
+    # Current blocker set (2026-09-30, after the agreement table was built): the expectation is
+    # re-declared from the A2 read (e36bee27f); preparations 2 and 3 ran and their four artifacts
+    # are pinned (derive --data-root, verified against the summary receipt); this roster's agreement
+    # table and its receipt are pinned from the builder's own receipt (derive --data-root, verified
+    # against the table bytes). What remains is ONLY the allowance v2 naming the two FIT run ids
+    # (owner decision 207), besides the owner countersign / read-driver gates named in the facts.
     facts = json.loads((REPO / PACKAGE / "registered-facts-v1.json").read_text(encoding="utf-8"))
     assert facts["redeclared_from_a2_read"] is True
     assert facts["redeclaration"]["to_expected_effect_pp"] == pytest.approx(4.6)
     assert facts["stage3_measurement"]["SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1"]["expected_effect_pp"] == pytest.approx(4.6)
+    assert "post_stratification_read" in facts
     found = refusals(REPO, None)
     kinds = {line.split(":", 1)[0] for line in found}
-    assert kinds == {"fit-run-not-permitted", "pending-pin"}
+    assert kinds == {"fit-run-not-permitted"}
+    assert len(found) == 2, found
     fit_runs = {line.split()[1] for line in found if line.startswith("fit-run-not-permitted:")}
     assert fit_runs == {"SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1", "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1"}
     pending = [p for p in facts["pending_pins"] if not p.endswith("/phase-supply-v1.json")]
-    assert pending == ["prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl"]
-    for relpath in pending:
-        assert any(relpath in line for line in found if line.startswith("pending-pin:")), relpath
-    pending_lines = [line for line in found if line.startswith("pending-pin:")]
-    assert all("agreement" in line or "preparation_source_receipts[8]" in line for line in pending_lines), pending_lines
+    assert pending == []
     pinned = {p["relpath"]: p["sha256"] for p in facts["sample_preparation_pins"]["pins"]}
     assert set(pinned) == {
         "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
         "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
         "prepared/SAEA-SLURP-TEST-SAMPLE-3010-ALIAS-V1/query-dimension-alias.json",
         "preparation-runs/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+        "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
+        "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json",
     }
     assert ZERO not in pinned.values()
     for cell in CELLS:

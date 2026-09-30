@@ -17,9 +17,9 @@
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "PENDING: this roster's own exemplar-intent agreement table (scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell); model-free (zero model, encoder, server or GPU contacts); NOT YET BUILT -- it runs only once the MILESTONE-00-PLAN cell pins the sample's real query vectors, which its loaders verify before a number is taken. The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
+            "reason": "PINNED: this roster's own exemplar-intent agreement table (SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1), built model-free (zero model, encoder, server, GPU and network contacts) by scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell, and read from its receipt prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json (sha256 3e2c9018228a449de7665604b1de25525d2e8ff9d37bf78965051829b4784f21); the derive script verified the sha256 against the file bytes on the data root.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "3402e9756ff2b955ad73d51a5ca7c60f11b3f40e0d6a652e34cf353d4a65ac4f"
           },
           {
             "kind": "preparation",
