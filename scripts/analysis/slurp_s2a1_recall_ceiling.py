@@ -44,6 +44,15 @@ scoring side) as a perfect-ASR transcript under the same canonicaliser.  It spli
 source (reference-fitted and Whisper-fitted theta), and writes under ``<analysis dir>/perfect-asr-reference/``.
 The default (Whisper) outputs are unchanged.
 
+Ranker study (``--ranker study``, read ``SAEA-SLURP-S2A-RANKER-STUDY-V1``, owner decision 212 input): every ranker
+family inside the same contract (frozen, TRAIN-built, no gold at runtime, per requested slot type, <= 3 or 5 spans of
+<= 5 tokens, draft overlap removed) on BOTH transcript sources.  Families: the trigram lexicons (S2a.1), span-type
+Naive Bayes and logistic classifiers over hashed span and/or left/right-context n-gram features, and product fusions.
+TRAIN gold minus every Fold A and Fold B utterance BUILDS the classifiers (window labels on the TRAIN reference
+sentences), as it builds the slot store; Fold B alone tunes the abstain threshold (lowest theta whose Fold B
+false-candidate rate is within 2.3 / 5 / 10 %), the LR regularisation and the fusion weights; Fold A is read only.
+Outputs under ``analysis/SAEA-SLURP-S2A-RANKER-STUDY-V1/``; the default read is untouched.
+
 Gold and text discipline: gold enters offline on the scoring side only, through the governed SLURP loader
 (``train``).  The test and devel splits are not read.  No utterance text, transcript, gold value, span or model
 output is printed or persisted: only ids, counts, rates, slot TYPE names and hashes.  Zero model, server,
@@ -813,6 +822,570 @@ def build(args) -> dict:
     }
 
 
+# ---------------------------------------------------------------------------- ranker study (--ranker study)
+#
+# Owner decision 212 input: does ANY ranker inside the tool contract (frozen, TRAIN-built, no gold at runtime, per
+# requested slot type, <= K spans of <= MAX_TOKENS tokens, draft overlap removed) reach contract T >= 0.738 on the
+# 70 not-in-supply items when it reads the SLURP reference transcript (perfect ASR)?  TRAIN gold (minus every Fold A
+# and Fold B utterance) BUILDS the frozen rankers, as it builds the slot store; Fold B tunes (thresholds at a
+# false-candidate budget, LR regularisation, fusion weights); Fold A is read only.
+
+STUDY_READ_ID = "SAEA-SLURP-S2A-RANKER-STUDY-V1"
+STUDY_RECIPE = "slurp-s2a-ranker-study-v1"
+STUDY_DIR = "analysis/" + STUDY_READ_ID
+RANKERS = ("trigram-lexicon", "study")
+FC_BUDGETS = (0.023, 0.05, 0.10)      # false-candidate (non-empty) rate budgets on rows with no MISSING item
+STUDY_KS = (3, 5)                     # the contract (3) and the owner-authorisable top-5
+GATE_T = NET_BAR_ITEMS / UPTAKE_CONV  # 0.7383 = 52 / 70: reading (a) at the CONV uptake
+GATE_ITEMS = 52
+HASH_FEATURES = 2 ** 18
+LR_C_GRID = (0.3, 1.0, 3.0)
+NB_ALPHA = 0.1
+FUSION_W_GRID = (0.0, 0.25, 0.5, 1.0, 2.0, 4.0)
+FUSION_LEX_EPS = 0.05
+TUNE_BUDGET, TUNE_K = 0.05, 3         # the Fold B selection point for C, fusion weights and the winner
+NONE_LABEL = "__none__"
+FEATURE_MODES = ("span", "context", "span+context")
+
+
+def _shape(tok: str) -> str:
+    if tok.isdigit():
+        return "d"
+    return "x" if any(ch.isdigit() for ch in tok) else "a"
+
+
+def span_features(canon: list, start: int, n: int, mode: str) -> list:
+    """Hashed-feature strings of the window ``canon[start:start + n]``.  ``span``: the span's own tokens, first/last
+    token, whole string, shape and character trigrams.  ``context``: left/right context n-grams (two tokens each
+    side, bags of three) and sentence-boundary markers, never the span's own tokens.  ``span+context``: both, plus
+    two boundary-crossing pairs.  The length is always a feature."""
+    if mode not in FEATURE_MODES:
+        raise ReadError(f"unknown feature mode {mode!r}")
+    toks = canon[start:start + n]
+    feats = ["n=%d" % n]
+    if mode in ("span", "span+context"):
+        s = " ".join(toks)
+        feats += ["S=" + s, "F=" + toks[0], "E=" + toks[-1], "shape=" + "".join(_shape(t) for t in toks)]
+        feats += ["w=" + w for w in toks]
+        feats += ["c3=" + g for g in sorted(trigrams(s))]
+    if mode in ("context", "span+context"):
+        end = start + n
+        l1 = canon[start - 1] if start >= 1 else "<s>"
+        l2 = canon[start - 2] if start >= 2 else "<s>"
+        r1 = canon[end] if end < len(canon) else "</s>"
+        r2 = canon[end + 1] if end + 1 < len(canon) else "</s>"
+        feats += ["L1=" + l1, "L2L1=" + l2 + "_" + l1, "R1=" + r1, "R1R2=" + r1 + "_" + r2, "L1R1=" + l1 + "_" + r1]
+        feats += ["Lb=" + w for w in canon[max(0, start - 3):start]]
+        feats += ["Rb=" + w for w in canon[end:end + 3]]
+        if mode == "span+context":
+            feats += ["L1F=" + l1 + "_" + toks[0], "ER1=" + toks[-1] + "_" + r1]
+    return feats
+
+
+def free_windows(canon: list, covered: set, max_tokens: int = MAX_TOKENS) -> list:
+    """Every window (start, n), n <= max_tokens, touching no covered position; ordered by start, then length."""
+    return [(i, n) for i in range(len(canon)) for n in range(1, max_tokens + 1)
+            if i + n <= len(canon) and not any(p in covered for p in range(i, i + n))]
+
+
+def training_windows(canon: list, gold_spans: list, max_tokens: int = MAX_TOKENS) -> tuple:
+    """TRAIN build side: every window of a TRAIN reference sentence labelled with the slot type whose canonical gold
+    value occupies it (every occurrence; the first annotated type wins), else NONE_LABEL.
+    Returns (windows [(start, n, label)], gold values placed, gold values not placed)."""
+    labels, placed, unplaced = {}, 0, 0
+    for t, g in gold_spans:
+        occ = occurrences(tuple(g), canon) if g and len(g) <= max_tokens else []
+        placed += bool(occ)
+        unplaced += not occ
+        for i in occ:
+            labels.setdefault((i, len(g)), t)
+    wins = [(i, n, labels.get((i, n), NONE_LABEL)) for i, n in free_windows(canon, set(), max_tokens)]
+    return wins, placed, unplaced
+
+
+class SpanTypeModel:
+    """A frozen TRAIN-built span-type classifier over hashed features: ``nb`` (multinomial Naive Bayes) or ``lr``
+    (multinomial logistic regression).  Its score for (window, type t) is the posterior P(t | window)."""
+
+    def __init__(self, kind: str, mode: str, types: list, C: float = 1.0, alpha: float = NB_ALPHA,
+                 n_features: int = HASH_FEATURES):
+        if kind not in ("nb", "lr"):
+            raise ReadError(f"unknown classifier kind {kind!r}")
+        self.kind, self.mode, self.types = kind, mode, list(types)
+        self.C, self.alpha, self.n_features = C, alpha, n_features
+
+    def _matrix(self, items):
+        from sklearn.feature_extraction import FeatureHasher
+
+        hasher = FeatureHasher(n_features=self.n_features, input_type="string", alternate_sign=False)
+        return hasher.transform(span_features(c, i, n, self.mode) for c, i, n in items)
+
+    def fit(self, docs: list) -> "SpanTypeModel":
+        import warnings
+
+        from sklearn.exceptions import ConvergenceWarning
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.naive_bayes import MultinomialNB
+
+        X = self._matrix([(c, i, n) for c, ws in docs for i, n, _lab in ws])
+        y = [lab for _c, ws in docs for _i, _n, lab in ws]
+        clf = MultinomialNB(alpha=self.alpha) if self.kind == "nb" else LogisticRegression(C=self.C, max_iter=300,
+                                                                                            tol=1e-4)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", ConvergenceWarning)
+            clf.fit(X, y)
+        self.clf = clf
+        classes = list(clf.classes_)
+        self.columns = [classes.index(t) if t in classes else None for t in self.types]
+        self.fit_facts = {"windows": len(y), "positives": sum(lab != NONE_LABEL for lab in y), "classes": len(classes),
+                          "n_iter": int(max(clf.n_iter_)) if hasattr(clf, "n_iter_") else None}
+        return self
+
+    def score_windows(self, items: list):
+        """items = [(canon, start, n)] -> array [len(items), len(types)] of P(type | window)."""
+        import numpy as np
+
+        out = np.zeros((len(items), len(self.types)))
+        if not items:
+            return out
+        P = self.clf.predict_proba(self._matrix(items))
+        for ti, ci in enumerate(self.columns):
+            if ci is not None:
+                out[:, ti] = P[:, ci]
+        return out
+
+
+def aggregate_windows(canon: list, wins: list, wmat) -> dict:
+    """Window scores -> distinct-span table.  A span's score per type is the max over its free occurrences; its
+    start is the earliest (ranking ties go to the earlier start, then the shorter span, as in ``propose``)."""
+    import numpy as np
+
+    index, spans, starts, rows = {}, [], [], []
+    for w, (i, n) in enumerate(wins):
+        sp = tuple(canon[i:i + n])
+        j = index.get(sp)
+        if j is None:
+            index[sp] = len(spans)
+            spans.append(sp)
+            starts.append(i)
+            rows.append(np.array(wmat[w], dtype=np.float64))
+        else:
+            rows[j] = np.maximum(rows[j], wmat[w])
+    width = wmat.shape[1] if len(getattr(wmat, "shape", ())) == 2 else 0
+    return {"index": index, "starts": np.array(starts, dtype=np.int64),
+            "lens": np.array([len(s) for s in spans], dtype=np.int64),
+            "mat": np.vstack(rows) if rows else np.zeros((0, width))}
+
+
+def gold_rank(table: dict, gi: int, ti: int) -> int:
+    s, st, ln = table["mat"][:, ti], table["starts"], table["lens"]
+    g = s[gi]
+    better = (s > g) | ((s == g) & ((st < st[gi]) | ((st == st[gi]) & (ln < ln[gi]))))
+    return 1 + int(better.sum())
+
+
+def study_outcome(gold: tuple, canon: list, covered: set, table: dict, ti: int, theta: float, k: int,
+                  max_tokens: int = MAX_TOKENS) -> dict:
+    """The ``classify`` stages for any ranker's distinct-span table: hit / not_in_transcript / too_long /
+    overlaps_draft / below_threshold (score < theta or 0) / not_ranked_top_k."""
+    occ = occurrences(gold, canon) if gold else []
+    if not occ:
+        return {"outcome": "not_in_transcript", "rank": None}
+    if len(gold) > max_tokens:
+        return {"outcome": "too_long", "rank": None}
+    if all(any(p in covered for p in range(i, i + len(gold))) for i in occ):
+        return {"outcome": "overlaps_draft", "rank": None}
+    gi = table["index"].get(gold)
+    if gi is None:
+        raise ReadError("an eligible gold span is absent from the ranker table")
+    g = table["mat"][gi, ti]
+    if g <= 0.0 or g < theta:
+        return {"outcome": "below_threshold", "rank": None}
+    rank = gold_rank(table, gi, ti)
+    return {"outcome": "hit" if rank <= k else "not_ranked_top_k", "rank": rank}
+
+
+def call_maxima(tables: dict, ids: list, n_types: int):
+    """Per (row, type) call: the best score of any returnable span (0 when the row has no free span)."""
+    import numpy as np
+
+    out = [tables[s]["mat"].max(axis=0) if tables[s]["mat"].shape[0] else np.zeros(n_types) for s in ids]
+    return np.concatenate(out) if out else np.zeros(0)
+
+
+def theta_for_budget(values, budget: float) -> float:
+    """Lowest threshold whose non-empty rate (score >= theta and > 0) over ``values`` is <= budget."""
+    import numpy as np
+
+    values = np.asarray(values, dtype=np.float64)
+    pos = np.sort(values[values > 0.0])[::-1]
+    m = int(np.floor(budget * len(values) + 1e-9))
+    if m >= len(pos):
+        return 0.0
+    return float(np.nextafter(pos[m], np.inf))
+
+
+def read_point(tables: dict, rows: dict, targets: list, neg_ids: list, type_index: dict, theta: float, k: int) -> dict:
+    """Hits on the target calls (gold type) and the false-candidate rate over every closed type on ``neg_ids``."""
+    import numpy as np
+
+    outs = [study_outcome(g, rows[sid]["canon"], rows[sid]["covered"], tables[sid], type_index[t], theta, k)
+            for sid, g, t in targets]
+    c = Counter(o["outcome"] for o in outs)
+    hits, n = c.get("hit", 0), len(outs)
+    calls = nonempty = cands = 0
+    for sid in neg_ids:
+        m = tables[sid]["mat"]
+        calls += len(type_index)
+        if not m.shape[0]:
+            continue
+        ok = (m >= theta) & (m > 0.0)
+        nonempty += int(ok.any(axis=0).sum())
+        cands += int(np.minimum(ok.sum(axis=0), k).sum())
+    return {"hits": hits, "items": n, "T": round(hits / n, 4) if n else None, "wilson95": wilson(hits, n),
+            "outcomes": {x: c.get(x, 0) for x in MISS_KINDS},
+            "false_candidate_calls": calls, "false_candidate_nonempty": nonempty,
+            "false_candidate_rate": round(nonempty / calls, 4) if calls else None,
+            "mean_candidates_per_call": round(cands / calls, 4) if calls else None,
+            "_outs": outs}
+
+
+def theta_for_hits(tables: dict, rows: dict, targets: list, type_index: dict, k: int, need: int):
+    """Diagnostic (reads the evaluated fold itself, so optimistic): the highest theta at which ``need`` target calls
+    are hits at top-``k``, or None when even no threshold gives fewer hits."""
+    scores = []
+    for sid, g, t in targets:
+        o = study_outcome(g, rows[sid]["canon"], rows[sid]["covered"], tables[sid], type_index[t], 0.0, k)
+        if o["outcome"] == "hit":
+            scores.append(float(tables[sid]["mat"][tables[sid]["index"][g], type_index[t]]))
+    scores.sort(reverse=True)
+    return scores[need - 1] if len(scores) >= need else None
+
+
+def fuse_tables(t1: dict, t2: dict, w: float, eps: float = 0.0) -> dict:
+    """Product fusion on two distinct-span tables of one row (same spans, same order): s1 * (s2 + eps) ** w."""
+    import numpy as np
+
+    if t1["index"] != t2["index"]:
+        raise ReadError("fusion needs tables over the same spans")
+    return {**t1, "mat": t1["mat"] * np.power(t2["mat"] + eps, w)}
+
+
+def build_study(args) -> dict:
+    import time
+
+    import numpy as np
+
+    from speech_aware_evidence_acquisition.data.lock import load_lock
+    from speech_aware_evidence_acquisition.data.slurp import load_slurp_train_material
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import SlotEntity
+
+    t0 = time.time()
+    data_root = Path(args.data_root)
+    E5 = import_path(REPO_ROOT / "scripts/analysis/e5_transcript_consistency_read.py", "e5_transcript_consistency_read")
+    S1 = import_path(REPO_ROOT / "scripts/analysis/slurp_s1_slu_error_taxonomy.py", "slurp_s1_slu_error_taxonomy")
+    NG = import_path(REPO_ROOT / "scripts/analysis/slurp_node_gain_ledger.py", "slurp_node_gain_ledger")
+    HR = import_path(REPO_ROOT / "scripts/analysis/slurp_slu_consumption_headroom.py", "slurp_slu_consumption_headroom")
+    canon = E5.canon_tokens
+
+    tx_a, cat_a = E5.load_catalog(data_root, "fold-a")
+    tx_b, cat_b = E5.load_catalog(data_root, "fold-b")
+    ids_a_cat, ids_b_cat = set(tx_a), set(tx_b)
+    exclude = {utterance_of(s) for s in ids_a_cat | ids_b_cat}
+
+    records = load_train(Path(args.lock), data_root)
+    gold_all = {r.sample_id: {"intent": r.intent, "scenario": r.scenario, "action": r.action,
+                              "entities": tuple(NG.ES.SlotEntity(e.type, e.filler) for e in r.entities)}
+                for r in records}
+    types = sorted({e.type for r in records for e in r.entities})
+    type_index = {t: i for i, t in enumerate(types)}
+    store_ids, store_facts = load_slot_store_sources(data_root)
+    lex_primary, lex_primary_facts = build_lexicon(records, store_ids, exclude, canon)
+    lex_full, lex_full_facts = build_lexicon(records, None, exclude, canon)
+    gold_tuple = {s: tuple(SlotEntity(e.type, e.filler) for e in gold_all[s]["entities"]) for s in gold_all}
+    cont_a = E5.gold_span_containment(sorted(ids_a_cat), gold_tuple, tx_a)
+    cont_b = E5.gold_span_containment(sorted(ids_b_cat), gold_tuple, tx_b)
+    if (cont_a["contained"], cont_a["items"]) != (707, 941) or (cont_b["contained"], cont_b["items"]) != (718, 944):
+        raise ReadError("E5 containment does not reproduce (Fold A 707/941, Fold B 718/944)")
+
+    # TRAIN material: reference sentences for the fold rows (perfect-ASR source, scoring side) and the build docs
+    material = load_slurp_train_material(load_lock(Path(args.lock)), data_root, media_validation_workers=8)
+    sentences, docs, placed, unplaced, build_utts = {}, [], 0, 0, 0
+    for m in material:
+        utt = None
+        for rec in m.recordings:
+            if split_of(rec.sample_id) != "train":
+                raise ReadError("a reference sentence is not a TRAIN record")
+            sentences[rec.sample_id] = m.sentence
+            utt = utterance_of(rec.sample_id)
+        if utt is None or utt in exclude:
+            continue
+        c = canon(m.sentence)
+        wins_m, p, u = training_windows(c, [(e.type, tuple(canon(e.filler))) for e in m.entities])
+        placed, unplaced, build_utts = placed + p, unplaced + u, build_utts + 1
+        docs.append((c, wins_m))
+    ref_a = reference_transcripts(sentences, sorted(ids_a_cat), canon)
+    ref_b = reference_transcripts(sentences, sorted(ids_b_cat), canon)
+    n_material = len(material)
+    del sentences, material
+    build_facts = {"loader": "data.slurp.load_slurp_train_material", "utterances_total": n_material,
+                   "build_utterances": build_utts, "excluded_fold_a_or_b_utterances": len(exclude),
+                   "gold_values_placed": placed, "gold_values_not_placed": unplaced,
+                   "windows": sum(len(w) for _c, w in docs)}
+    print(f"[{time.time() - t0:7.1f}s] loaded; build utterances {build_utts}", flush=True)
+
+    # Fold B (tuning) and Fold A (read) columns, for both transcript sources
+    arm_b = E5.load_arm(data_root, FOLD_B_ARM, ids_b_cat)
+    ids_b = sorted(ids_b_cat)
+    targets_b, miss_rows_b = [], set()
+    for sid in ids_b:
+        states, _ = E5.gold_kinds(gold_tuple[sid], arm_b["pred"][sid])
+        for gi, g in enumerate(gold_tuple[sid]):
+            if states.get(gi, ("MISSING", None))[0] == "MISSING":
+                targets_b.append((sid, tuple(canon(g.filler)), g.type))
+                miss_rows_b.add(sid)
+    neg_b = [s for s in ids_b if s not in miss_rows_b]
+    items, pred_a, ids_a, s1_counts, fold_a_inputs = fold_a_items(data_root, gold_all, S1, NG, HR)
+    if set(ids_a) != ids_a_cat:
+        raise ReadError("COMP-1b Fold A roster is not the transcript catalog roster")
+    nis = [i for i in items if i["supply"] == "none"]
+    targets_a = [(i["sample_id"], tuple(canon(gold_all[i["sample_id"]]["entities"][i["gold_index"]].filler)),
+                  i["type"]) for i in nis]
+    miss_rows_a = {i["sample_id"] for i in items}
+    neg_a = [s for s in ids_a if s not in miss_rows_a]
+    pred_a_tuple = {s: tuple(SlotEntity(e.type, e.filler) for e in pred_a[s]) for s in ids_a}
+    rows = {"reference": {"a": rows_from(ids_a, ref_a, pred_a_tuple, canon),
+                          "b": rows_from(ids_b, ref_b, arm_b["pred"], canon)},
+            "whisper": {"a": rows_from(ids_a, tx_a, pred_a_tuple, canon),
+                        "b": rows_from(ids_b, tx_b, arm_b["pred"], canon)}}
+    del ref_a, ref_b
+    wins = {src: {f: {s: free_windows(r["canon"], r["covered"]) for s, r in rows[src][f].items()} for f in "ab"}
+            for src in rows}
+
+    def tables_from(score_fn) -> dict:
+        """score_fn(list of (canon, start, n)) -> [W, T]; one call per (source, fold)."""
+        out = {}
+        for src in rows:
+            out[src] = {}
+            for f in "ab":
+                flat = []
+                for s in sorted(rows[src][f]):
+                    c = rows[src][f][s]["canon"]
+                    flat.extend((c, i, n) for i, n in wins[src][f][s])
+                M = score_fn(flat)
+                tabs, pos = {}, 0
+                for s in sorted(rows[src][f]):
+                    w = wins[src][f][s]
+                    tabs[s] = aggregate_windows(rows[src][f][s]["canon"], w, M[pos:pos + len(w)])
+                    pos += len(w)
+                out[src][f] = tabs
+        return out
+
+    def lexicon_fn(lex):
+        def fn(flat):
+            strings = [" ".join(c[i:i + n]) for c, i, n in flat]
+            lex.prime(set(strings))
+            idx = np.array([lex._idx[s] for s in strings], dtype=np.int64)
+            M = np.zeros((len(flat), len(types)))
+            for t, ti in type_index.items():
+                if t in lex._table and len(idx):
+                    M[:, ti] = lex._table[t][idx]
+            return M
+        return fn
+
+    def point(tab, src, theta, k):
+        a = read_point(tab[src]["a"], rows[src]["a"], targets_a, neg_a, type_index, theta, k)
+        b = read_point(tab[src]["b"], rows[src]["b"], targets_b, neg_b, type_index, theta, k)
+        return a, b
+
+    def tune_hits(tab, src="reference") -> tuple:
+        theta = theta_for_budget(call_maxima(tab[src]["b"], neg_b, len(types)), TUNE_BUDGET)
+        b = read_point(tab[src]["b"], rows[src]["b"], targets_b, neg_b, type_index, theta, TUNE_K)
+        return b["hits"], b["false_candidate_rate"]
+
+    tsets, fits = {}, {}
+    tsets["lexicon-trigram-primary"] = tables_from(lexicon_fn(lex_primary))
+    tsets["lexicon-trigram-full-train"] = tables_from(lexicon_fn(lex_full))
+
+    # stop check: the S2a.1 no-threshold top-3 lexicon reads reproduce (reference 30 / 43, Whisper 16 / 24)
+    repro = {}
+    for name, want in (("lexicon-trigram-primary", {"reference": 30, "whisper": 16}),
+                       ("lexicon-trigram-full-train", {"reference": 43, "whisper": 24})):
+        got = {src: point(tsets[name], src, 0.0, K)[0]["hits"] for src in ("reference", "whisper")}
+        repro[name] = got
+        if got != want:
+            raise ReadError(f"{name} no-threshold top-3 does not reproduce S2a.1: {got} vs {want}")
+    print(f"[{time.time() - t0:7.1f}s] lexicon tables built; S2a.1 reproduced", flush=True)
+
+    for name, kind, mode in (("nb-span", "nb", "span"), ("nb-span-context", "nb", "span+context")):
+        model = SpanTypeModel(kind, mode, types).fit(docs)
+        tsets[name] = tables_from(model.score_windows)
+        fits[name] = {"kind": kind, "mode": mode, "alpha": NB_ALPHA, **model.fit_facts}
+        print(f"[{time.time() - t0:7.1f}s] fitted {name}", flush=True)
+    for name, mode in (("lr-span", "span"), ("lr-context", "context"), ("lr-span-context", "span+context")):
+        grid, best = [], None
+        for C in LR_C_GRID:
+            model = SpanTypeModel("lr", mode, types, C=C).fit(docs)
+            tab = tables_from(model.score_windows)
+            hits, fc = tune_hits(tab)
+            grid.append({"C": C, "fold_b_hits": hits, "fold_b_fc": fc, **model.fit_facts})
+            if best is None or hits > best[0]:
+                best = (hits, C, tab)
+            print(f"[{time.time() - t0:7.1f}s] fitted {name} C={C}: Fold B hits {hits}", flush=True)
+        tsets[name] = best[2]
+        fits[name] = {"kind": "lr", "mode": mode, "C_grid": grid, "C_chosen": best[1],
+                      "selection": f"Fold B reference hits at FC budget {TUNE_BUDGET}, k {TUNE_K}; ties to the lower C"}
+
+    def fused(base, other, w, eps):
+        return {src: {f: {s: fuse_tables(base[src][f][s], other[src][f][s], w, eps) for s in base[src][f]}
+                      for f in "ab"} for src in base}
+
+    for name, other, eps in (("fusion-lrctx-x-lexicon", "lexicon-trigram-full-train", FUSION_LEX_EPS),
+                             ("fusion-lrctx-x-nbspan", "nb-span", 0.0)):
+        grid, best = [], None
+        for w in FUSION_W_GRID:
+            tab = fused(tsets["lr-span-context"], tsets[other], w, eps)
+            hits, fc = tune_hits(tab)
+            grid.append({"w": w, "fold_b_hits": hits, "fold_b_fc": fc})
+            if best is None or hits > best[0]:
+                best = (hits, w, tab)
+        tsets[name] = best[2]
+        fits[name] = {"form": f"P[lr-span-context] * (s[{other}] + {eps}) ** w", "w_grid": grid, "w_chosen": best[1],
+                      "selection": f"Fold B reference hits at FC budget {TUNE_BUDGET}, k {TUNE_K}; ties to the lower w"}
+        print(f"[{time.time() - t0:7.1f}s] fused {name} w={best[1]}", flush=True)
+
+    # the read: every ranker x source x (no threshold | FC budget fitted on Fold B) x k
+    table, sel_items, gate_fc = {}, {}, {}
+    for name, tab in tsets.items():
+        table[name], gate_fc[name] = {}, {}
+        for src in ("reference", "whisper"):
+            neg_vals = call_maxima(tab[src]["b"], neg_b, len(types))
+            pts = {}
+            for budget in (None,) + FC_BUDGETS:
+                theta = 0.0 if budget is None else theta_for_budget(neg_vals, budget)
+                for k in STUDY_KS:
+                    a, b = point(tab, src, theta, k)
+                    outs = a.pop("_outs")
+                    b.pop("_outs")
+                    per_type = defaultdict(lambda: [0, 0])
+                    for (_sid, _g, t), o in zip(targets_a, outs):
+                        per_type[t][0] += 1
+                        per_type[t][1] += o["outcome"] == "hit"
+                    pts[f"{'none' if budget is None else budget}|k{k}"] = {
+                        "budget": budget, "k": k, "theta": theta, "fold_a_not_in_supply_70": a,
+                        "fold_b_missing": {x: b[x] for x in ("hits", "items", "T", "false_candidate_rate",
+                                                             "mean_candidates_per_call")},
+                        "bound": items_of_80(a["T"]), "clears_gate_0_738": a["T"] >= GATE_T,
+                        "per_type": [[t, v[0], v[1]] for t, v in sorted(per_type.items(),
+                                                                        key=lambda kv: (-kv[1][0], kv[0]))]}
+                    if src == "reference" and budget == TUNE_BUDGET and k == TUNE_K:
+                        sel_items[name] = [{"sample_id": sid, "type": t, **o} for (sid, _g, t), o in zip(targets_a, outs)]
+            table[name][src] = pts
+            gate_fc[name][src] = {}
+            for k in STUDY_KS:
+                th = theta_for_hits(tab[src]["a"], rows[src]["a"], targets_a, type_index, k, GATE_ITEMS)
+                if th is None:
+                    gate_fc[name][src][f"k{k}"] = None
+                    continue
+                g = read_point(tab[src]["a"], rows[src]["a"], targets_a, neg_a, type_index, th, k)
+                gate_fc[name][src][f"k{k}"] = {"theta": th, "hits": g["hits"],
+                                               "fold_a_false_candidate_rate": g["false_candidate_rate"],
+                                               "mean_candidates_per_call": g["mean_candidates_per_call"]}
+    sel_key = f"{TUNE_BUDGET}|k{TUNE_K}"
+    order = list(tsets)   # ties go to the simpler (earlier-built) ranker: a fusion at w = 0 is its base
+    ranking = sorted(tsets, key=lambda n: (-table[n]["reference"][sel_key]["fold_b_missing"]["hits"], order.index(n)))
+    winner = ranking[0]
+    best_any = max(((n, src, key, p["fold_a_not_in_supply_70"]["hits"]) for n in table for src in table[n]
+                    for key, p in table[n][src].items() if p["budget"] is not None),
+                   key=lambda x: (x[3], x[0], x[1], x[2]))
+    print(f"[{time.time() - t0:7.1f}s] read done", flush=True)
+    return {
+        "read_id": STUDY_READ_ID, "recipe": STUDY_RECIPE, "status": "DESCRIPTIVE",
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "contacts": {"model": 0, "server": 0, "tokenizer": 0, "encoder": 0, "embedder": 0, "whisper": 0,
+                     "official_scorer_subprocess": 0, "network": 0, "gpu": 0, "paid_api": 0},
+        "splits_read": ["train"],
+        "contract": {"k": K, "k_variant": 5, "max_tokens": MAX_TOKENS,
+                     "draft": "delivered column; spans touching a canonical occurrence of a delivered value are excluded",
+                     "match": "canonical token tuple equality",
+                     "rank": "score desc, start asc, length asc; a span's score is its best free occurrence's",
+                     "false_candidate_rate": "share of (Fold A row without a MISSING item x closed type) calls with "
+                                             "a non-empty result",
+                     "budgets": list(FC_BUDGETS),
+                     "theta_fit": "lowest theta whose Fold B non-empty rate (rows without a MISSING item, all closed "
+                                  "types) is <= the budget, per ranker and source",
+                     "gate_T": round(GATE_T, 4), "gate_items_of_70": 52},
+        "build": {"train_gold_builds_the_frozen_rankers": True, "fold_a_or_b_utterances_in_build": 0, **build_facts,
+                  "hash_features": HASH_FEATURES, "fits": fits},
+        "catalogs": {"fold-a": cat_a, "fold-b": cat_b},
+        "containment_check": {"fold_a": [cont_a["contained"], cont_a["items"]],
+                              "fold_b": [cont_b["contained"], cont_b["items"]]},
+        "slot_store_v2": store_facts, "lexicons": {"primary": lex_primary_facts, "full_train": lex_full_facts},
+        "fold_b_tuning_arm": {"spec": FOLD_B_ARM, "outputs": arm_b["outputs"], "missing_targets": len(targets_b),
+                              "rows_without_missing": len(neg_b)},
+        "fold_a_arm": fold_a_inputs, "s1_reproduction": s1_counts, "fold_a_rows_without_missing": len(neg_a),
+        "s2a1_reproduction_no_threshold_top3": repro,
+        "rankers": list(tsets), "table": table,
+        "selection": {"point": sel_key, "rule": "highest Fold B reference hits at the selection point; ties to the simpler (earlier-built) ranker",
+                      "order": ranking, "winner": winner},
+        "best_fold_a_at_any_budget": {"ranker": best_any[0], "source": best_any[1], "point": best_any[2],
+                                      "hits": best_any[3], "note": "max over Fold A cells: optimistic, not a selection"},
+        "items_reference_selection_point": sel_items,
+        "gate_false_candidate_rate_needed": {"items": GATE_ITEMS, "by_ranker": gate_fc,
+                                             "note": "diagnostic: the highest theta giving 52 Fold A hits, read on Fold A "
+                                                     "itself (optimistic), and the Fold A false-candidate rate it costs"},
+        "embedding_family": ("not run: the pinned local embedders (qwen3-embedding-0.6b-gguf, lco-embedding-omni-3b-gguf) "
+                             "are served only through llama-server (no in-process binding in the venv); that is a "
+                             "tool-contact class needing an exposure-ledger row and a process beside the live serving "
+                             "session, outside this read's zero-contact scope"),
+        "drivers": {name: [str(p.relative_to(REPO_ROOT)), digest(p)] for name, p in (
+            ("e5_read", REPO_ROOT / "scripts/analysis/e5_transcript_consistency_read.py"),
+            ("s1", REPO_ROOT / "scripts/analysis/slurp_s1_slu_error_taxonomy.py"),
+            ("node_gain_ledger", REPO_ROOT / "scripts/analysis/slurp_node_gain_ledger.py"),
+            ("consumption_headroom", REPO_ROOT / "scripts/analysis/slurp_slu_consumption_headroom.py"))},
+    }
+
+
+def render_study(r: dict) -> str:
+    out = [f"# {STUDY_READ_ID} tables", "", f"Generated `{r['generated_at']}`. DESCRIPTIVE; development numbers "
+           "(decisions 28, 86). Counts, rates and slot TYPE names only.", ""]
+    out += ["## Build", "", "`" + json.dumps({k: v for k, v in r["build"].items() if k != "fits"}, sort_keys=True) + "`",
+            ""]
+    out += [f"- {name}: `{json.dumps(f, sort_keys=True)}`" for name, f in r["build"]["fits"].items()]
+    out += ["", "## Contract T on Fold A's 70 not-in-supply items", ""]
+    rows = []
+    for name, by_src in r["table"].items():
+        for src, pts in by_src.items():
+            for key, p in pts.items():
+                a = p["fold_a_not_in_supply_70"]
+                rows.append([name, src, key, f"{p['theta']:.6g}", a["hits"], a["T"], a["wilson95"],
+                             a["false_candidate_rate"], a["mean_candidates_per_call"], p["fold_b_missing"]["hits"],
+                             p["fold_b_missing"]["false_candidate_rate"], p["bound"]["items_of_80"],
+                             p["bound"]["reaches_27_of_80"], p["bound"]["at_or_below_18_of_80"], p["clears_gate_0_738"]])
+    out += [md_table(["ranker", "source", "budget|k", "theta", "A hits/70", "T", "Wilson95", "A FC rate",
+                      "A cands/call", "B hits", "B FC rate", "items of 80", ">=27/80", "<=18/80", "gate"], rows), ""]
+    sel = r["selection"]["point"]
+    out += [f"## Outcomes (reference, {sel})", "",
+            md_table(["ranker"] + list(MISS_KINDS),
+                     [[n] + [r["table"][n]["reference"][sel]["fold_a_not_in_supply_70"]["outcomes"][m] for m in MISS_KINDS]
+                      for n in r["rankers"]]), ""]
+    w = r["selection"]["winner"]
+    for src in ("reference", "whisper"):
+        out += [f"## Per slot type, winner {w}, {src}, {sel}", "",
+                md_table(["type", "items", "hits"], r["table"][w][src][sel]["per_type"]), ""]
+    gf = r["gate_false_candidate_rate_needed"]["by_ranker"]
+    out += ["## Fold A false-candidate rate needed for 52 / 70 (diagnostic, optimistic)", "",
+            md_table(["ranker", "source", "k", "FC rate", "cands/call"],
+                     [[n, src, k, v["fold_a_false_candidate_rate"] if v else "unreachable",
+                       v["mean_candidates_per_call"] if v else ""]
+                      for n, by in gf.items() for src, ks in by.items() for k, v in ks.items()]), ""]
+    out += ["## Selection", "", f"`{json.dumps(r['selection'])}`", "",
+            f"Best Fold A cell: `{json.dumps(r['best_fold_a_at_any_budget'])}`", "", "## Checks", "",
+            f"S1 `{json.dumps(r['s1_reproduction'])}`; containment `{json.dumps(r['containment_check'])}`; "
+            f"S2a.1 no-threshold top-3 `{json.dumps(r['s2a1_reproduction_no_threshold_top3'], sort_keys=True)}`", ""]
+    return "\n".join(out) + "\n"
+
+
 # ---------------------------------------------------------------------------- rendering
 
 
@@ -890,7 +1463,7 @@ def strip_time(text: str) -> str:
     return re.sub(r'"generated_at": "[^"]*"|Generated `[^`]*`', "", text)
 
 
-def main(argv=None) -> int:
+def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--lock", default=DEFAULT_LOCK)
     parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT)
@@ -898,12 +1471,32 @@ def main(argv=None) -> int:
     parser.add_argument("--reference-source", choices=("whisper", "reference"), default="whisper",
                         help="transcript the tool reads: the pinned E5-0 Whisper catalog (default) or the SLURP "
                              f"reference sentence (perfect-ASR bound; outputs under {ANALYSIS_DIR}/{REFERENCE_SUBDIR})")
+    parser.add_argument("--ranker", choices=RANKERS, default="trigram-lexicon",
+                        help="trigram-lexicon (default): the S2a.1 read; study: the ranker study for owner decision 212 "
+                             "(every ranker family on both transcript sources at FC budgets; outputs under "
+                             f"{STUDY_DIR})")
     args = parser.parse_args(argv)
-    report = build(args)
+    if args.ranker == "study" and args.reference_source != "whisper":
+        parser.error("--ranker study reads both transcript sources; do not pass --reference-source")
+    return args
+
+
+def output_dir(args) -> Path:
+    if args.ranker == "study":
+        return Path(args.data_root) / STUDY_DIR
     out_dir = Path(args.data_root) / ANALYSIS_DIR
-    if args.reference_source == "reference":
-        out_dir = out_dir / REFERENCE_SUBDIR
-    texts = {"report.json": json.dumps(report, indent=2, sort_keys=True) + "\n", "tables.md": render(report)}
+    return out_dir / REFERENCE_SUBDIR if args.reference_source == "reference" else out_dir
+
+
+def main(argv=None) -> int:
+    args = parse_args(argv)
+    if args.ranker == "study":
+        report = build_study(args)
+        texts = {"report.json": json.dumps(report, indent=2, sort_keys=True) + "\n", "tables.md": render_study(report)}
+    else:
+        report = build(args)
+        texts = {"report.json": json.dumps(report, indent=2, sort_keys=True) + "\n", "tables.md": render(report)}
+    out_dir = output_dir(args)
     if args.check:
         bad = [n for n, t in texts.items() if strip_time((out_dir / n).read_text(encoding="utf-8")) != strip_time(t)]
         print("check:", "IDENTICAL apart from generated_at" if not bad else f"DIFFERS in {bad}")
