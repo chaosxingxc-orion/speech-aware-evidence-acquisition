@@ -22,8 +22,8 @@ they are.
 | guard null | FALLBACK (no own null): h_intent 1.3329, h_SLU 1.4492 (DEV-2000-ADDED null x sqrt(913/682)) |
 | smoke | none (the allowance names no smoke run id) |
 | runs | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1`; `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1` |
-| composed config hashes | comparator `4abf91b657898788cb6111a1e4001b5debb032161a92d64dd495310c00416014`; arm `21e6b808be316e72f30d7a0008ad176fb2e21e2a76c16773508d366013eb2bc8` |
-| protocol hashes | comparator `dd6ba1a507cd1b1f0f27587c7668d65c5b3513bf47bf339a60f4183461342a00`; arm `ae4db60c457805fd389cf60749bd0d11f9748accdcd7b09c4fdb89c0acbcc4e9` |
+| composed config hashes | comparator `4abf91b657898788cb6111a1e4001b5debb032161a92d64dd495310c00416014`; arm `10ff1e93ff554dff115b68001a07abbcdfca52d0e0abfa82b755dd890434173e` |
+| protocol hashes | comparator `dd6ba1a507cd1b1f0f27587c7668d65c5b3513bf47bf339a60f4183461342a00`; arm `e701e272b48ce84e79647db233e02a1b6a44678f956bc8d7bf87dd5db051cd4a` |
 
 ## Decision rule (fixed here)
 

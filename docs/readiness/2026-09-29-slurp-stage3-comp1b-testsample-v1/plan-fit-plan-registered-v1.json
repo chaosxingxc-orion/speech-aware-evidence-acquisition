@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-    "sha256": "7f8d0f73f1c1d65d57f6bbbc1abde9786ae4ad58c4d2f303dd1f705cfaf28a1b"
+    "sha256": "ffc2fedb03c6d497eee4b7cb858e7ef08116781064fb178b83d1e5ea6701fcaf"
   },
   "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before BOTH manifests are complete and sealed with one successful complete official slurp-slu-official-test score each, and the READ row is root countersigned.",

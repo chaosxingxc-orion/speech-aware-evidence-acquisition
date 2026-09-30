@@ -16,6 +16,13 @@
         "reason": "MILESTONE-01 registered before contact on 2026-09-29 from cell A2's committed arm (decision 58: script-derived, roster re-target only). HELD until (1) cell A2 reads NOMINATED or better and the coordinator has reported the dev-admitted composed arm to the owner in conversation (decisions 151 and 202), (2) root re-declares expected_effect_pp from the A2 read, (3) a SUCCESSOR allowance names this cell's FIT run id, (4) preparations 2 and 3 of the sample have run, this roster's agreement table is built and every PENDING pin below is real, (5) root countersigns the rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (item E16). --allow-output-change must never be passed.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1b-testsample-milestone-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1b-testsample-v1/root-admission-v1.json",
+            "sha256": "0c0cfe4eedf06dadca33ba50c5df38e38d03b7b902a8f2ed15ce806a4bf114ec",
+            "reason": "Decision slurp-stage3-comp1b-testsample-milestone-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "PINNED: this roster's own exemplar-intent agreement table (SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1), built model-free (zero model, encoder, server, GPU and network contacts) by scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell, and read from its receipt prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json (sha256 3e2c9018228a449de7665604b1de25525d2e8ff9d37bf78965051829b4784f21); the derive script verified the sha256 against the file bytes on the data root.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
@@ -37,10 +44,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, minted model-free under this run id with core.flight.cli prepare-supply at the flip from the sample's segment vectors, the centroid key file and this roster's agreement table (E16). PENDING until the flip.",
             "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "023ff2c30dacee991ce83e5722ca24e8ee537f286e5bfda15e6711709cba1148"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1"
     }
