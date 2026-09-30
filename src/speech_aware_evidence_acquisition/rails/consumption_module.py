@@ -123,6 +123,11 @@ RELISTEN = "relisten"
 SCOPE_RULE = "scope-rule"
 TOP2_CONTRAST = "top2-contrast"
 FORCED_CANDIDATE_LIST = "forced-candidate-list"
+#: 2026-09-30: the centred centroid + agreement retrieval key (K6p; the retrieval-key recall
+#: read of 2026-09-30) as a Perception column: compiles to a B
+#: branch's ``key_source`` axis. ``column`` only until a column read nominates it and an
+#: admitting record exists.
+KEY_SOURCE_K6P = "key-source:k6p"
 #: The Perception components (migration step 4): each compiles to one axis of
 #: a Perception branch -- a B branch in ``column`` state, the delivering
 #: branch A in ``on`` state (ruling R3, admitted only). ``{component id: the
@@ -130,6 +135,7 @@ FORCED_CANDIDATE_LIST = "forced-candidate-list"
 PERCEPTION_AXIS_COMPONENTS: dict[str, tuple[str, ...]] = {
     TOP2_CONTRAST: ("presentation_id", "contrast_pairs"),
     FORCED_CANDIDATE_LIST: ("min_candidates",),
+    KEY_SOURCE_K6P: ("key_source",),
 }
 _COLUMN_REQUIRED = frozenset({"column_id", "toggle", "to", "level"})
 #: ``prepared_seed`` is the receipt of an artifact prepared FROM the compiled
@@ -173,6 +179,13 @@ COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
     ComponentSpec(
         FORCED_CANDIDATE_LIST, "Perception response contract", frozenset({STATE_COLUMN, STATE_ON}),
         frozenset({"min_candidates", "max_supplied_items"}),
+    ),
+    # 2026-09-30: ``column`` only (no delivered-path admission exists); the branch swaps
+    # the first phase's retrieval-key pins inside its own router (rails.supply_variants.
+    # PerceptionBranchKeySource).
+    ComponentSpec(
+        KEY_SOURCE_K6P, "ORG -> Perception seed key (same-flight column)", frozenset({STATE_COLUMN}),
+        frozenset({"key_source", "max_supplied_items"}),
     ),
     # Migration step 3 (owner decision 195 = B): a deterministic deliver
     # stage composed after the carrier's deliver normaliser; zero contacts.
@@ -1044,6 +1057,7 @@ __all__ = [
     "ConsumptionModuleConfigError",
     "EvidenceConsumptionModule",
     "FORCED_CANDIDATE_LIST",
+    "KEY_SOURCE_K6P",
     "PERCEPTION_AXIS_COMPONENTS",
     "TOP2_CONTRAST",
     "NODE_RECEIPT_SCHEMAS",
