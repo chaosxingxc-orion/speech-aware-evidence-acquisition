@@ -1561,11 +1561,67 @@ def validate_supply_variant_receipt(
 #: ``note_parse_status`` (:data:`PERCEPTION_BRANCH_NOTE_PARSE_STATUSES`). v1
 #: receipts (sealed before the fix: the P-SV-1 4-row smoke) stay verifiable
 #: under their own original rule, unchanged.
-PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v2"
+#:
+#: v3 (2026-09-30, the ``key_source`` branch axis): every branch row also
+#: carries ``key_source`` -- ``None`` for A, T and every branch that swaps no
+#: retrieval-key pin; for a key-source B branch, the ``{store_id,
+#: facet_source, query_source, agreement_source}`` pins it swapped (each
+#: ``{relpath, sha256}`` or ``None``, at least one swapped). The note-parse
+#: rule of v2 applies unchanged. A v1 or v2 receipt stays verifiable under its
+#: own rule, unchanged: no sealed P-SV bundle is rewritten.
+PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v3"
+PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2 = "saea-perception-branch-arms-v2"
 PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1 = "saea-perception-branch-arms-v1"
 PERCEPTION_BRANCH_RECEIPT_SCHEMAS = (
-    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA,
 )
+#: The schemas whose rows carry the v2 note-parse fields (v2 and every later one).
+PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS = (
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2, PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+)
+#: The three retrieval-key pins a ``key_source`` branch may swap (v3).
+PERCEPTION_BRANCH_KEY_SOURCE_FIELDS = ("facet_source", "query_source", "agreement_source")
+
+
+def perception_branch_key_source_error(key_source: object) -> str | None:
+    """Why a v3 row's ``key_source`` value is malformed, or ``None`` when it is
+    ``None`` or well formed: exactly ``{store_id, facet_source, query_source,
+    agreement_source}``, a non-empty ``store_id``, each source ``None`` or
+    exactly ``{relpath, sha256}`` (lowercase 64-hex), at least one swapped.
+    Shared by the record constructor and :func:`validate_perception_branch_receipt`.
+    """
+
+    if key_source is None:
+        return None
+    if not isinstance(key_source, Mapping) or set(key_source) != {
+        "store_id", *PERCEPTION_BRANCH_KEY_SOURCE_FIELDS,
+    }:
+        return (
+            "perception branch key_source must be exactly {store_id, facet_source, "
+            "query_source, agreement_source}"
+        )
+    if not isinstance(key_source["store_id"], str) or not key_source["store_id"]:
+        return "perception branch key_source.store_id must be a non-empty string"
+    swapped = 0
+    for field in PERCEPTION_BRANCH_KEY_SOURCE_FIELDS:
+        pin = key_source[field]
+        if pin is None:
+            continue
+        if (
+            not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}
+            or not isinstance(pin["relpath"], str) or not pin["relpath"]
+            or not isinstance(pin["sha256"], str) or len(pin["sha256"]) != 64
+            or any(character not in "0123456789abcdef" for character in pin["sha256"])
+        ):
+            return (
+                f"perception branch key_source.{field} must be None or exactly "
+                "{relpath, sha256} with a lowercase 64-hex sha256"
+            )
+        swapped += 1
+    if not swapped:
+        return "perception branch key_source swaps no retrieval-key pin"
+    return None
 
 #: The closed ``note_parse_status`` vocabulary of a v2 branch row:
 #:
@@ -1716,6 +1772,8 @@ _PERCEPTION_BRANCH_LEVEL2_FIELDS = _PERCEPTION_BRANCH_RECORD_FIELDS | {
 }
 #: Schema v2 adds exactly one field per branch row (the pre-collapse count).
 _PERCEPTION_BRANCH_V2_EXTRA_FIELDS = frozenset({"candidate_intent_ids_raw_count"})
+#: Schema v3 adds exactly one more field per branch row (the key-source axis).
+_PERCEPTION_BRANCH_V3_EXTRA_FIELDS = frozenset({"key_source"})
 _PERCEPTION_BRANCH_LEVELS = (1, 2)
 _PERCEPTION_BRANCH_VISITS = "first"
 
@@ -1795,7 +1853,8 @@ def validate_perception_branch_receipt(
     schema = perception_branches["schema"]
     if schema not in PERCEPTION_BRANCH_RECEIPT_SCHEMAS:
         _raise(error_type, "perception branch receipt has an unregistered schema")
-    is_v2 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA
+    is_v2 = schema in PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS
+    is_v3 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA
     if perception_branches["phase_id"] != phase_id:
         _raise(error_type, "perception branch receipt names another phase")
     if perception_branches["level"] != level:
@@ -1830,6 +1889,8 @@ def validate_perception_branch_receipt(
     )
     if is_v2:
         expected_fields = expected_fields | _PERCEPTION_BRANCH_V2_EXTRA_FIELDS
+    if is_v3:
+        expected_fields = expected_fields | _PERCEPTION_BRANCH_V3_EXTRA_FIELDS
     contact_ids: list[str] = []
     delivering_ids: tuple[str, ...] | None = None
     delivering_request_sha256: str | None = None
@@ -1964,18 +2025,26 @@ def validate_perception_branch_receipt(
                 "perception branch declares min_candidates and must carry a "
                 "min_candidates_met bool",
             )
+        key_source = row.get("key_source") if is_v3 else None
+        key_source_reason = perception_branch_key_source_error(key_source)
+        if key_source_reason is not None:
+            _raise(error_type, key_source_reason)
         if deliver or is_twin:
             if (
                 paths or release_swap is not None or presentation_id is not None
                 or min_candidates is not None or presentation_skip_reason is not None
                 or contrast_block_sha256 is not None or min_candidates_met is not None
+                or key_source is not None
             ):
                 _raise(
                     error_type,
                     "the delivering perception branch (A) and its twin (T) must "
                     "declare no axis",
                 )
-        elif not (paths or release_swap is not None or presentation_id is not None or min_candidates is not None):
+        elif not (
+            paths or release_swap is not None or presentation_id is not None
+            or min_candidates is not None or key_source is not None
+        ):
             _raise(
                 error_type,
                 "a B perception branch must declare exactly one axis category",
@@ -2081,7 +2150,11 @@ __all__ = [
     "validate_supply_variant_receipt",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMAS",
+    "PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS",
+    "PERCEPTION_BRANCH_KEY_SOURCE_FIELDS",
+    "perception_branch_key_source_error",
     "PERCEPTION_BRANCH_NOTE_OK",
     "PERCEPTION_BRANCH_NOTE_DUPLICATES_COLLAPSED",
     "PERCEPTION_BRANCH_NOTE_EMPTY",

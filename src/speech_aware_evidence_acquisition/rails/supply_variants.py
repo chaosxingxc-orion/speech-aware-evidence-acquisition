@@ -73,6 +73,7 @@ ids to be declared, ordered and counted in its own receipt row.
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -84,8 +85,12 @@ from .context_budget import (
 from .errors import RailsError
 from .native_episode_receipt import (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA as _RECEIPT_PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+    PERCEPTION_BRANCH_KEY_SOURCE_FIELDS,
+    PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
     parse_perception_branch_note,
+    perception_branch_key_source_error,
     perception_branch_note_fields_error,
     validate_perception_branch_receipt,
 )
@@ -970,9 +975,25 @@ PERCEPTION_BRANCH_REQUIRED_KEYS = frozenset({"branch_id", "max_supplied_items"})
 #: knob, swap, presentation or contract bound): it is a B branch's own
 #: offline-pinned seed artifact, optional at parse time and required only by
 #: the ``branch-seed-unpinned`` registration gate.
+#: ``key_source`` (2026-09-30, docs/results/2026-09-30-slurp-retrieval-key-
+#: recall-offline.md) is a FIFTH axis category: a rendering-only swap of the
+#: first phase's retrieval-key pins (``facet_source`` / ``query_source`` /
+#: ``agreement_source``) inside the branch's own pre-flight router; see
+#: :class:`PerceptionBranchKeySource`.
 PERCEPTION_BRANCH_OPTIONAL_KEYS = frozenset({
     "deliver", "overrides", "replicate_of", "release_swap",
     "presentation_id", "min_candidates", "prepared_seed", "contrast_pairs",
+    "key_source",
+})
+#: The exact keys one ``key_source`` block carries: the store whose
+#: first-phase ``phase_supply`` the branch re-keys, and one entry per
+#: swappable pin (``None`` = keep the cell's own pin).
+PERCEPTION_BRANCH_KEY_SOURCE_KEYS = frozenset({"store_id", *PERCEPTION_BRANCH_KEY_SOURCE_FIELDS})
+#: The exact keys one swapped source carries: the ``phase_supply`` source
+#: shape itself (``rails.phase_supply._SOURCE_KEYS``), so the branch router
+#: validates it exactly as it validates the cell's own pin.
+PERCEPTION_BRANCH_KEY_SOURCE_PIN_KEYS = frozenset({
+    "kind", "relpath", "sha256", "tool_contact_ledger_row", "embedded_signal",
 })
 
 #: K counts A and T (design section 1): at least A plus its required twin T,
@@ -1003,6 +1024,8 @@ PERCEPTION_BRANCH_RECORD_KEYS = frozenset({
     # skip_reason present) and its own response-contract outcome (None
     # unless the branch declares min_candidates).
     "presentation_skip_reason", "contrast_block_sha256", "min_candidates_met",
+    # Schema v3 (2026-09-30): the branch's swapped retrieval-key pins, or None.
+    "key_source",
 })
 PERCEPTION_BRANCH_LEVEL2_RECORD_KEYS = PERCEPTION_BRANCH_RECORD_KEYS | frozenset({
     "solver_contact_id", "solver_request_sha256", "solver_response_text_sha256",
@@ -1072,6 +1095,126 @@ class PerceptionBranchKnob:
 
 
 @dataclass(frozen=True)
+class PerceptionBranchKeySource:
+    """One B branch's ``key_source`` axis: a swap of the first phase's
+    retrieval-key pins inside the branch's OWN pre-flight router.
+
+    RENDERING-ONLY, exactly like the other four axis categories: the branch's
+    seed (the boundary ids its Perception request is shown) is built by
+    ``core.flight.runtime.FlightRuntime._perception_branch_seeds`` through a
+    one-off router whose ``knowledge_stores.<store_id>.phase_supply.<first
+    phase>`` carries the swapped ``facet_source`` / ``query_source`` /
+    ``agreement_source`` pins; the store, its release, its snapshot and every
+    delivered body are unchanged, and A and T never see the swap (AT-P1/P2).
+
+    Each swapped source is the full ``phase_supply`` source object (``kind``,
+    ``relpath``, ``sha256``, ``tool_contact_ledger_row``, ``embedded_signal``)
+    so the branch router validates it exactly as it validates the cell's own
+    pin (a swapped ``query_source`` must still declare a speech modality). A
+    ``None`` entry keeps the cell's own pin.
+    """
+
+    store_id: str
+    facet_source: Mapping[str, object] | None = None
+    query_source: Mapping[str, object] | None = None
+    agreement_source: Mapping[str, object] | None = None
+
+    def swapped(self) -> dict[str, Mapping[str, object]]:
+        """``{field: source}`` for every swapped field, in the fixed field order."""
+
+        return {
+            field: getattr(self, field)
+            for field in PERCEPTION_BRANCH_KEY_SOURCE_FIELDS
+            if getattr(self, field) is not None
+        }
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "store_id": self.store_id,
+            **{
+                field: (None if getattr(self, field) is None else dict(getattr(self, field)))
+                for field in PERCEPTION_BRANCH_KEY_SOURCE_FIELDS
+            },
+        }
+
+    def receipt_pins(self) -> dict[str, object]:
+        """The receipt's compact form: ``{store_id, <field>: {relpath, sha256} | None}``."""
+
+        return {
+            "store_id": self.store_id,
+            **{
+                field: (
+                    None if getattr(self, field) is None
+                    else {
+                        "relpath": getattr(self, field)["relpath"],
+                        "sha256": getattr(self, field)["sha256"],
+                    }
+                )
+                for field in PERCEPTION_BRANCH_KEY_SOURCE_FIELDS
+            },
+        }
+
+
+def parse_perception_branch_key_source(
+    block: object,
+    *,
+    field: str,
+    declared_stores: Sequence[str] | None = None,
+) -> PerceptionBranchKeySource:
+    """Parse ONE branch's ``key_source`` block, fail-closed, before any contact.
+
+    Refuses: a block that is not exactly ``{store_id, facet_source,
+    query_source, agreement_source}``; an empty or undeclared ``store_id``
+    (when ``declared_stores`` is given); a swapped source that is not exactly
+    the ``phase_supply`` source shape with a non-empty ``relpath`` and a
+    lowercase 64-hex ``sha256``; and a block that swaps ZERO fields (a
+    key-source branch that swaps nothing is a second spelling of A). Whether
+    each swapped FILE exists and hashes to its pin is checked where it is
+    read, at seed preparation (``FlightRuntime._supply_action_router``).
+    """
+
+    if not isinstance(block, Mapping) or set(block) != PERCEPTION_BRANCH_KEY_SOURCE_KEYS:
+        raise PerceptionBranchError(
+            f"{field} must be an object with exactly "
+            f"{sorted(PERCEPTION_BRANCH_KEY_SOURCE_KEYS)}"
+        )
+    store_id = block["store_id"]
+    if not isinstance(store_id, str) or not store_id:
+        raise PerceptionBranchError(f"{field}.store_id must be a non-empty string")
+    if declared_stores is not None and store_id not in set(declared_stores):
+        raise PerceptionBranchError(
+            f"{field}.store_id {store_id!r} is not a store this configuration "
+            f"declares; declared stores are {sorted(set(declared_stores))}"
+        )
+    sources: dict[str, Mapping[str, object] | None] = {}
+    for name in PERCEPTION_BRANCH_KEY_SOURCE_FIELDS:
+        source = block[name]
+        if source is None:
+            sources[name] = None
+            continue
+        if (
+            not isinstance(source, Mapping)
+            or set(source) != PERCEPTION_BRANCH_KEY_SOURCE_PIN_KEYS
+            or any(
+                not isinstance(source[key], str) or not source[key]
+                for key in PERCEPTION_BRANCH_KEY_SOURCE_PIN_KEYS
+            )
+        ):
+            raise PerceptionBranchError(
+                f"{field}.{name} must be null or exactly "
+                f"{sorted(PERCEPTION_BRANCH_KEY_SOURCE_PIN_KEYS)} with non-empty strings"
+            )
+        _sha256_hex(source["sha256"], field=f"{field}.{name}.sha256")
+        sources[name] = {key: source[key] for key in sorted(source)}
+    if all(value is None for value in sources.values()):
+        raise PerceptionBranchError(
+            f"{field} swaps zero retrieval-key pins; a key_source branch must swap at "
+            f"least one of {list(PERCEPTION_BRANCH_KEY_SOURCE_FIELDS)}"
+        )
+    return PerceptionBranchKeySource(store_id=store_id, **sources)
+
+
+@dataclass(frozen=True)
 class PerceptionBranch:
     """One branch of one row's Perception-phase fork (design section 1).
 
@@ -1111,6 +1254,9 @@ class PerceptionBranch:
     # every other branch, including A and T, and for every config written
     # before this table existed.
     contrast_pairs: Mapping[str, str] | None = None
+    # 2026-09-30: the ``key_source`` axis (:class:`PerceptionBranchKeySource`),
+    # ``None`` for A, T and every branch that swaps no retrieval-key pin.
+    key_source: PerceptionBranchKeySource | None = None
 
     @property
     def is_twin(self) -> bool:
@@ -1138,6 +1284,9 @@ class PerceptionBranch:
             ),
             "contrast_pairs": (
                 None if self.contrast_pairs is None else dict(self.contrast_pairs)
+            ),
+            "key_source": (
+                None if self.key_source is None else self.key_source.as_json()
             ),
         }
 
@@ -1354,7 +1503,14 @@ def parse_perception_branches(
         whose ``presentation_id`` differs (including ``None``) and carries
         one anyway, when ``top2_contrast_presentation_id`` is given;
     18. ``contrast_pairs`` on A or its twin T (like ``prepared_seed``,
-        neither may carry a branch-owned pin).
+        neither may carry a branch-owned pin);
+    19. a malformed ``key_source`` block, one naming an undeclared store, or
+        one that swaps zero pins (:func:`parse_perception_branch_key_source`);
+    20. ``key_source`` on A or its twin T (refusals 6/7: neither declares an
+        axis -- AT-P1/P2 hold because A and T never see a swapped key).
+
+    ``key_source`` counts as ONE axis category (refusal 13) however many of
+    its three pins it swaps, exactly as a knob tuple does.
 
     ``delivering_axes_admitted`` (evidence-consumption module, migration
     step 4, coordinator ruling R3) lifts refusal 6 for exactly the named
@@ -1554,7 +1710,19 @@ def parse_perception_branches(
                     "contrast_pairs but its presentation_id is not "
                     f"{top2_contrast_presentation_id!r}"
                 )
-        has_axis = bool(knobs) or release_swap is not None or presentation_id is not None or min_candidates is not None
+        raw_key_source = row.get("key_source")
+        key_source = (
+            None if raw_key_source is None
+            else parse_perception_branch_key_source(
+                raw_key_source,
+                field=f"perception branches.branches[{position}].key_source",
+                declared_stores=declared_stores,
+            )
+        )
+        has_axis = (
+            bool(knobs) or release_swap is not None or presentation_id is not None
+            or min_candidates is not None or key_source is not None
+        )
         if replicate_of is not None and has_axis:
             raise PerceptionBranchError(
                 f"perception branches.branches[{position}] names replicate_of "
@@ -1566,7 +1734,7 @@ def parse_perception_branches(
             "min_candidates": min_candidates is not None,
         }
         if deliver and (
-            bool(knobs) or release_swap is not None
+            bool(knobs) or release_swap is not None or key_source is not None
             or any(present and axis not in admitted_axes for axis, present in delivering_axes.items())
         ):
             raise PerceptionBranchError(
@@ -1593,14 +1761,14 @@ def parse_perception_branches(
         if not deliver and replicate_of is None:
             axis_categories = sum((
                 bool(knobs), release_swap is not None, presentation_id is not None,
-                min_candidates is not None,
+                min_candidates is not None, key_source is not None,
             ))
             if axis_categories != 1:
                 raise PerceptionBranchError(
                     f"perception branches.branches[{position}] must declare "
                     "exactly one axis category (a boundary-supply knob, a "
-                    "release_swap, a presentation_id or a min_candidates) -- "
-                    "one factor per non-A branch"
+                    "release_swap, a presentation_id, a min_candidates or a "
+                    "key_source) -- one factor per non-A branch"
                 )
         branches.append(PerceptionBranch(
             branch_id=branch_id, deliver=deliver, knobs=knobs,
@@ -1611,6 +1779,7 @@ def parse_perception_branches(
             replicate_of=replicate_of, release_swap=release_swap,
             presentation_id=presentation_id, min_candidates=min_candidates,
             prepared_seed=prepared_seed, contrast_pairs=contrast_pairs,
+            key_source=key_source,
         ))
     ids = [branch.branch_id for branch in branches]
     if len(set(ids)) != len(ids):
@@ -1657,6 +1826,9 @@ def parse_perception_branches(
             ),
             branch.presentation_id,
             branch.min_candidates,
+            None if branch.key_source is None else json.dumps(
+                branch.key_source.receipt_pins(), sort_keys=True,
+            ),
         )
         for branch in b_branches
     ]
@@ -1851,7 +2023,13 @@ def perception_branch_record(
         "presentation_skip_reason": presentation_skip_reason,
         "contrast_block_sha256": contrast_block_sha256,
         "min_candidates_met": min_candidates_met,
+        "key_source": (
+            None if branch.key_source is None else branch.key_source.receipt_pins()
+        ),
     }
+    reason = perception_branch_key_source_error(record["key_source"])
+    if reason is not None:
+        raise PerceptionBranchError(f"perception branch {branch.branch_id!r}: {reason}")
     if has_level2:
         record["solver_contact_id"] = _nonempty_str(
             solver_contact_id,
@@ -1929,7 +2107,7 @@ def replay_perception_branch_block(
 
     ``contacts`` maps each agent contact id the row's receipt names to its
     recorded request/response (``core.flight.resume`` builds it from the
-    trace). Every branch row is rebuilt under schema v2:
+    trace). Every branch row is rebuilt under the current schema (v3; a v1/v2 row gains key_source None):
 
     * identity fields (branch id/index, deliver, replicate_of, knobs, swap,
       presentation id, min_candidates, supplied ids, contact id and digests,
@@ -1962,7 +2140,7 @@ def replay_perception_branch_block(
     if not isinstance(block, Mapping):
         raise PerceptionBranchError("perception_branches is not a receipt object")
     schema = block.get("schema")
-    if schema not in (PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA):
+    if schema not in (PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, *PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS):
         raise PerceptionBranchError("perception_branches carries an unregistered schema")
     rows = block.get("branches")
     if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)) or not rows:
@@ -1992,7 +2170,7 @@ def replay_perception_branch_block(
         ).hexdigest() != row.get("note_sha256"):
             raise PerceptionBranchError(f"{what} note does not hash to its recorded response")
         status, candidates, raw_count = parse_perception_branch_note(recorded.text)
-        if schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA and (
+        if schema in PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS and (
             row.get("note_parse_status") != status
             or list(row.get("candidate_intent_ids") or ()) != list(candidates)
             or row.get("candidate_intent_ids_raw_count") != raw_count
@@ -2049,8 +2227,13 @@ def replay_perception_branch_block(
             "presentation_skip_reason": skip_reason,
             "min_candidates_met": min_candidates_met,
         })
+        # A v1/v2 row predates the key_source axis, so it swapped no key:
+        # ``None`` is its exact v3 value. A v3 row keeps its recorded pins.
+        if schema != PERCEPTION_BRANCH_RECEIPT_SCHEMA:
+            new_row["key_source"] = None
         rebuilt.append(new_row)
     result = dict(block)
+    # Every block is rebuilt under the CURRENT schema (v3), as v1 -> v2 was before.
     result["schema"] = PERCEPTION_BRANCH_RECEIPT_SCHEMA
     result["branches"] = rebuilt
     branch_ids = [row.get("branch_id") for row in rebuilt]
@@ -2078,6 +2261,10 @@ __all__ = [
     "PERCEPTION_BRANCH_PRESENTATION_EVIDENCE_PREFIX",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2",
+    "PERCEPTION_BRANCH_KEY_SOURCE_KEYS",
+    "PerceptionBranchKeySource",
+    "parse_perception_branch_key_source",
     "PERCEPTION_BRANCH_RECORD_KEYS",
     "PERCEPTION_BRANCH_REQUIRED_KEYS",
     "PERCEPTION_BRANCH_VISITS",

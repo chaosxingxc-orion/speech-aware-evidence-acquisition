@@ -383,7 +383,8 @@ def _perception_branches_identity(raw_native_episode: object) -> Mapping[str, ob
     Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
     specs/2026-09-28-same-flight-instrument-phase2-perception-variants-
     design.md section 5, "Changes and merge set C", item 4): a branch's axes
-    (knobs, release_swap, presentation_id, min_candidates) already sit inside
+    (knobs, release_swap, presentation_id, min_candidates, contrast_pairs and,
+    since 2026-09-30, key_source with its swapped pins) already sit inside
     ``self._composed.values`` and are therefore already inside
     ``core.preparation.artifact_inputs``'s own ``config_sha256`` -- this is a
     second, EXPLICIT binding of exactly that block, the same reason
@@ -3124,8 +3125,21 @@ class FlightRuntime:
             similarity=similarity,
         )
 
-    def _supply_action_router(self, program, action_id, knobs, *, release_swap=None):
+    def _supply_action_router(
+        self, program, action_id, knobs, *, release_swap=None, key_source=None,
+    ):
         """Build a selection-only action from the already admitted store binding.
+
+        ``key_source`` (``rails.supply_variants.PerceptionBranchKeySource`` or
+        ``None``; the 2026-09-30 Perception-branch axis) swaps the named store's
+        FIRST-phase ``phase_supply`` retrieval-key pins (``facet_source`` /
+        ``query_source`` / ``agreement_source``) in this one-off router's own
+        copy of the composed values. Fail closed BEFORE the binding reloads:
+        the store must declare a first-phase ``phase_supply`` that already
+        carries every swapped field, and every swapped file must exist under
+        the data root and hash to its pin. The released composite snapshot is
+        unchanged by construction, so the snapshot-equality refusal below
+        still holds unmodified.
 
         Coordinator amendment, 2026-09-28 (docs/superpowers/specs/2026-09-27-
         same-flight-supply-variant-instrument-design.md, "Coordinator
@@ -3194,6 +3208,8 @@ class FlightRuntime:
             # collide with itself on reload (the same relpath now named both
             # as the primary and as an alternate of itself).
             store_spec.pop("alternates", None)
+        if key_source is not None:
+            self._apply_key_source(values, program, action_id, key_source)
         try:
             binding = load_knowledge_store_binding(values, data_root=self._data_root)
             if binding is None:
@@ -3249,6 +3265,60 @@ class FlightRuntime:
             return router
         except (KnowledgeStoreError, ValueError) as error:
             raise FlightRuntimeError(f"supply action {action_id!r} is invalid: {error}") from error
+
+    def _apply_key_source(self, values, program, action_id, key_source):
+        """Swap one store's first-phase retrieval-key pins in ``values`` (in
+        place), refusing before any file is opened by a router: an undeclared
+        store, a store with no first-phase ``phase_supply``, a swapped field
+        the cell's own spec does not declare, or a swapped file that is
+        missing or does not hash to its pin (fail closed at seed preparation).
+        """
+
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+
+        stores = values.get("knowledge_stores")
+        store_spec = stores.get(key_source.store_id) if isinstance(stores, Mapping) else None
+        if not isinstance(store_spec, dict):
+            raise FlightRuntimeError(
+                f"supply action {action_id!r} key_source names undeclared store "
+                f"{key_source.store_id!r}"
+            )
+        first_phase = program.phase_names()[0]
+        phase_supply = store_spec.get("phase_supply")
+        spec = phase_supply.get(first_phase) if isinstance(phase_supply, Mapping) else None
+        if not isinstance(spec, dict):
+            raise FlightRuntimeError(
+                f"supply action {action_id!r} key_source names store "
+                f"{key_source.store_id!r}, which declares no phase_supply for the "
+                f"program's first phase {first_phase!r}"
+            )
+        for field, source in key_source.swapped().items():
+            if not isinstance(spec.get(field), Mapping):
+                raise FlightRuntimeError(
+                    f"supply action {action_id!r} key_source swaps {field}, which the "
+                    f"cell's own {key_source.store_id}.phase_supply.{first_phase} does "
+                    "not declare; a key_source swaps a pin, it never adds one"
+                )
+            try:
+                relative = _normalized_relative_path(
+                    str(source["relpath"]), f"key_source {field}",
+                )
+                path = _resolve_confined(
+                    self._data_root, relative, self._data_root, f"key_source {field}",
+                    strict=True,
+                )
+            except Exception as error:  # noqa: BLE001 -- any resolution failure is a refusal
+                raise FlightRuntimeError(
+                    f"supply action {action_id!r} key_source {field} file "
+                    f"{source['relpath']!r} is missing: {error}"
+                ) from error
+            if not path.is_file() or _sha256_file(path) != source["sha256"]:
+                raise FlightRuntimeError(
+                    f"supply action {action_id!r} key_source {field} file "
+                    f"{source['relpath']!r} is missing or does not hash to its pinned "
+                    f"sha256 {source['sha256']}"
+                )
+            spec[field] = dict(source)
 
     def _load_system_policy_catalog(self, program, *, refresh=False):
         if self._composed.values.get("system_episode_policy") is None:
@@ -3486,6 +3556,7 @@ class FlightRuntime:
         def branch_seed(branch):
             route = self._supply_action_router(
                 program, branch.branch_id, branch.knobs, release_swap=branch.release_swap,
+                key_source=getattr(branch, "key_source", None),
             )
             store_bootstrap = getattr(route, "bootstrap_first_phase", None)
             if not callable(store_bootstrap):
@@ -3583,6 +3654,13 @@ class FlightRuntime:
                     else dict(branch.contrast_pairs)
                 ),
             }
+            # 2026-09-30: a key_source branch's swapped pins are an axis of
+            # its seed identity (the seed is computed FROM them). Added only
+            # when declared, so every existing branch's identity -- and every
+            # already-pinned prepared_seed -- is byte-for-byte unchanged.
+            branch_key_source = getattr(branch, "key_source", None)
+            if branch_key_source is not None:
+                axes["key_source"] = branch_key_source.as_json()
             receipts.append({
                 "branch_id": branch.branch_id,
                 "identity_sha256": hashlib.sha256(
