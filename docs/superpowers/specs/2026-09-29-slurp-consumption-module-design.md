@@ -325,6 +325,32 @@ convergence.
    and records. Checks that must pass: `harness_admission_check`, `engineering_base_check`,
    `flight_registration_check`, `stage3_effect_floor_check` (with `primary_metric_key` declared, decision 190),
    `finite_completion_policy_check`, `stage3_algorithm_label_check`, plus `cli check` and the handoff freshness stamp.
+   **Step 6 status (2026-09-30, branch `fable/module6`): DONE, model-free, nothing flown.**
+   - *Harness class (ruling R2).* The ninth switch class `module` (`rails/config_tables.py`:
+     `MODULE_SWITCH_CLASS`, one key `native_episode.consumption_module`). Its OFF arm is the all-off block
+     naming the carrier's CURRENT lock; `scripts/checks/harness_admission_check.py` rule 8 recomputes the
+     licence (falsifier kind `compiles-to-lock`): it compiles the OFF arm, compares it with the named lock
+     version's blocks, requires each named cell to carry those blocks on its own roster, and compiles the ON
+     arm. `docs/receipts/harness-admission.json` carries one PENDING `module` entry (OFF = lock v2.1 all-off,
+     ON = COMP-1b).
+   - *Lock versions (decision 204).* A block may declare `lock: v2.1`; the SLURP hooks build v2.1 as the v2.0
+     layer with only the Reviewer template moved to the G5 bytes (both templates re-hashed). A block with no
+     `lock` key still compiles to v2.0, so A2 and every queued v2.0 cell stay provable. AT-M0 targets v2.1
+     (cell G5's flown hashes) and keeps the v2.0 case beside it.
+   - *Roster pins.* `CarrierHooks.roster_pin_paths` (the sealed per-roster query vectors) are cell identity,
+     never policy: `apply_to` and the loader keep the target's own. A module cell can therefore sit on a roster
+     other than the lock's.
+   - *First module cell.* `slurp-native-stage3-module-comp1b-dev2000-added-v1`, with its smoke and its in-chain
+     A/A `slurp-native-stage3-module-comp1b-aa-dev2000-added-v1` (the module OFF arm on v2.1). Package:
+     `docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/`, all HELD. The AT-M6 proof
+     (`module_equivalence_proof.py --at m6`): the arm's policy blocks equal cell A2's flown bytes except
+     `phase_material.reviewer.instruction_template`, and the A/A equals the lock-v2.1 blocks. The cell need not
+     fly if the byte proof suffices; the coordinator decides.
+   - *What remains after step 6.* (a) Delivered-path Perception axes (ruling R3): these arm only once a
+     component is nominated and a composed read has carried it. `DELIVERED_PATH_ADMISSIONS` is still empty.
+     (b) Re-listen `live` delivery (ruling R4): this needs its own later read. (c) Carrier hook files for
+     Audio2Tool and Earnings (`rails/adapters/<profile>_module_hooks.py`), plus Earnings-22's runtime
+     TaskAdapter registration (section 2b.2). (d) Step 6a, supply abstention. (e) Step 7, the first composed read.
 6a. **Supply abstention, model-free (decision 199, section 2c).** Register the `supply_abstain` block and its receipt
    rows; pin the threshold table fitted offline on construction data (branch fable/emptysupply); add the explicit
    "no entities" option to the Solver contract as a component-owned template. **AT-M5:** with the block absent the
