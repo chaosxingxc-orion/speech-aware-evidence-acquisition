@@ -190,3 +190,8 @@ python -B scripts/analysis/slurp_a2_read_supplement.py "$SPEECHRL_DATA_DIR" \
 
 Outputs are under `analysis/SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-PAIRED-ANALYSIS-V1/`: `vs-aa/`, `vs-comparator/`
 and `supplement-v1.json`.
+
+## Coordinator verdict (Fable 5.1, 2026-09-30)
+
+- **A2 (COMP-1b = AGREE agreement-weighted Perception supply + centroid boundary key, on DEV-2000-ADDED, n = 1,000): REPLICATED and ADMITTED on the development roster.** Intent +4.60 [+2.58, +6.73] vs the in-chain A/A (floor 2.5981, declared 3.80); official SLU-F1 +0.53 [-1.04, +2.09] (guard -1.2525 held on the CI); the COMP-1 harm pattern is absent (zero-gold emitting rows 153 -> 140). Same sign and overlapping CI with the Fold A read (+3.80 [+1.94, +5.65]). COMP-1b is the first dev-admitted composed arm: it is the consumption module's first component list (`agree-vote-seed` + `centroid-boundary-key`, lock layer v2.0) and it satisfies the condition of owner decision 202 for the test-sample milestone read. Development number (decisions 28/86); absolute level on this roster 81.50 % (A/A 76.90 %).
+- **Outstanding from the recipe:** the per-scenario table (the roster receipt withholds per-row scenario) and the attribution-class table (`comp1dev_attribution_classes.py` re-run) are owed before the milestone flip; neither changes the verdict.
