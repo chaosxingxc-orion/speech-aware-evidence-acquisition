@@ -219,3 +219,12 @@ de-duplicated.
    - Below the 0.65 floor: `phase_supply.k`, `release_swap` and `reviewer_revise`.
    - `missing_slot_proposal_tool` is unobserved.
    - Decision needed: none. The loop proposes no other cell.
+
+## Coordinator reading (Fable 5.1, 2026-09-30)
+
+Run 3 confirms the state of the loop: C1 (AGREE + centroid = COMP-1b) is admitted on DEV and is the
+consumption module's first block on lock v2.1; `key_source = k6p` (+1.06 pp implied) is the only open
+same-flight nomination and waits for owner decision 208 (P-SV-4, with the both-folds selection disclosure);
+every other knob is closed or below its floor; no open candidate clears the DEV cross-flight bar 2.5981. The
+`missing_slot_proposal_tool` knob (unobserved here) is routed to owner decision 209 option B per the E5 oracle
+verdict. The loop's status moves from `base-loop` to `converged-under-current-evidence-kinds` pending 209.
