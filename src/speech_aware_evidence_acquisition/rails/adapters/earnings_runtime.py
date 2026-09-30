@@ -53,20 +53,23 @@ def _validate_execution_route(values):
 class Earnings21RuntimeAdapter(Earnings21Adapter):
     """Use pinned config geometry and whole-manifest scoring on the existing loader."""
 
+    #: The carrier and its whole split; a thin derivation (``earnings22_runtime``) overrides both.
+    CARRIER_LOCK_KEY = "earnings21-original"
+    DEFAULT_SPLIT = "discovery"
+
     def __init__(self, values, lock, root, repo_root, *, dataset_fragment):
         super().__init__(lock, root, repo_root=repo_root)
         self._values_hash = content_hash(values)
         self._split_id = values.get("split_name")
         dataset = read_fragment(Path(repo_root), "dataset", dataset_fragment)
-        if (
-            values.get("carrier_lock_key") != "earnings21-original"
-            or dataset.get("carrier_lock_key") != "earnings21-original"
-        ):
-            raise CoreError("E21 runtime adapter requires earnings21-original")
+        carrier = self.CARRIER_LOCK_KEY
+        if values.get("carrier_lock_key") != carrier or dataset.get("carrier_lock_key") != carrier:
+            raise CoreError(f"{self._label()} runtime adapter requires {carrier}")
         if not isinstance(self._split_id, str) or dataset.get("split_name") != self._split_id:
-            raise CoreError("E21 runtime split must exactly match its dataset fragment")
+            raise CoreError(f"{self._label()} runtime split must exactly match its dataset fragment")
         self._verified_subset: VerifiedSplit | None = None
-        if self._split_id != "discovery":
+        if self._split_id != self.DEFAULT_SPLIT:
+            self._refuse_subset_if_unsupported()
             subset = dataset.get("e21_runtime_subset")
             if not isinstance(subset, Mapping):
                 raise CoreError(
@@ -130,7 +133,7 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
         if split_id != self._split_id:
             raise CoreError("E21 runtime split differs from its dataset fragment")
         if self._verified_subset is None:
-            return super().load_split("discovery")
+            return super().load_split(self.DEFAULT_SPLIT)
         full = super().load_split("discovery")
         selected = tuple(
             sample for sample in full if sample.sample_id in set(self._verified_subset.ids)
@@ -138,6 +141,12 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
         if {sample.sample_id for sample in selected} != set(self._verified_subset.ids):
             raise CoreError("E21 runtime subset ids are absent from loaded discovery samples")
         return selected
+
+    def _label(self):
+        return "E21" if self.CARRIER_LOCK_KEY == "earnings21-original" else "E22"
+
+    def _refuse_subset_if_unsupported(self):
+        """E21 carries construction subsets of discovery; a derivation may refuse them."""
 
     def serving_geometry(self):
         return dict(self._geometry)
