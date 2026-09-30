@@ -402,3 +402,52 @@ shown the number.
 - **Q3 (pinned tool).** The study-pinned `.pt` with the existing plumbing; an umbrella `docs/datasets.lock.json` entry is added before E5-0 runs, so the lock stays the single source of dataset/model identity.
 - **Q4 (how E5-0 runs).** As a queue chain step at the 12-h serving restart, scripted and receipted through the batch driver's lease, never by hand.
 - **Q5 (E5-1 timing).** E5-1 reads AGREE, the A/A and E4-1 as soon as E5-0's transcripts exist; COMP-1b is added when sealed. Nothing here admits anything; decision 201 gates E5-0.
+
+## Addendum (2026-09-29): the owner supplement to decision 201 -- tools are called by the model
+
+Owner, 2026-09-29, translated to English (First principle 1; the original-language message is the
+addressable source in the coordinator's brief of 2026-09-29 to the E5 preparation agent): "A tool should
+be invoked by the model on its own initiative, not called by the system by default; otherwise we fall into a
+self-proof trap -- why use an omni agent system at all, rather than an ASR + LLM combination, to do the task!"
+
+This addendum supersedes every sentence above that treats a system-applied transcript check as a runtime
+step. The sections it changes:
+
+**A1. E5-0 and E5-1 are instruments.** The transcript pass (section 2.1) and the offline read (section 2.2)
+are INSTRUMENTS / ORACLES. They bound what a perfect tool call could yield and measure the decision the
+model would have to learn. They are registered as such
+(`docs/readiness/2026-09-29-slurp-asr-tool-pass-v1/README.md`; rows `SAEA-SLURP-ASR-TOOL-PASS-V1`,
+`SAEA-SLURP-ASR-TOOL-PASS-FOLD-B-V1`, `SAEA-SLURP-E5-TRANSCRIPT-CONSISTENCY-READ-V1`).
+
+**A2. No system-applied check is a runtime candidate.** E5-2a (section 2.3: "the winning rule from E5-1 ...
+bound in delivery on the next queued cell") is withdrawn as a runtime form. R-FLAG, R-DROP and R-SWAP stay
+in E5-1 only, as the ORACLE UPPER BOUND of a system-applied check; the section 2.2 "E5-2a gate" is read as
+that bound, and clearing it nominates the E5-2 design below, never a delivery edit. The E5-2b wording
+(section 2.3) that the tool "only proposes" and fires "only on a flagged entity" is replaced by A3: the flag
+is no longer a system trigger.
+
+**A3. The runtime form, E5-2: the core is OFFERED a pinned ASR tool and DECIDES whether to call it.** The
+tool is exposed through the existing native tool-calling path (the featcache llama-server runs with `--jinja`;
+the tool catalog's `saea-tool-live-speech-observation-v1` / `saea-tool-live-speech-span-v1` rows and
+`rails/live_speech_observation.py` are the plumbing to reuse). Two measured lessons bound the offer:
+
+- EFF-1: constant tool schemas rendered to about 13.9k prompt tokens and were HARMFUL; the Reviewer tool was
+  retired after B1-notool read NEUTRAL. The offer must therefore be cheap -- one small schema, not the
+  catalog -- and scoped to the **Solver's slot-value step** (never Perception, never the intent decision).
+- The call returns OBS evidence for the entity the core names; the core keeps answer authority and may
+  ignore it. Transcripts never enter the intent decision or a retrieval key (decision 201's limited
+  exception, coordinator ruling Q1).
+
+The E5-2 read measures three things: the **call rate**; the **precision of the decision** against the E5-1
+tool-call decision oracle (a call on a row the oracle marks helpful is a correct call; the oracle's signal
+AUCs say which model-visible signals the decision should follow); and the **conversion** (the share of
+called entities that end EXACT, and the SLU-F1 delta under the same-flight bar of decision 190). No code for
+E5-2 is written until E5-1 has read; it needs its own design, registration and rows.
+
+**A4. What E5-1 adds for A3.** The E5-1 driver (`scripts/analysis/e5_transcript_consistency_read.py`)
+carries a TOOL-CALL DECISION ORACLE: per row, whether a verifying call WOULD have helped (a delivered value
+the transcript does not contain while the matched gold span is contained), the count of such rows and
+entities (MISSING gold spans the transcript contains are counted separately), the flag precision, and one
+AUC per model-visible signal: the core's own Perception candidate-list length, `note_parse_status`, the
+delivered entity count and types, E4-1's blind / forced-choice disagreement, and the entity-free exemplar
+share (the supply-abstention trigger). This is what the model must learn to act on.

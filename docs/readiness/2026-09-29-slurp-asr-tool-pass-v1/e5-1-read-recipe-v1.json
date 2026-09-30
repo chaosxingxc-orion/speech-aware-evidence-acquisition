@@ -1,0 +1,43 @@
+{
+  "schema": "saea-analysis-recipe-v1",
+  "recipe_id": "slurp-e5-transcript-consistency-read-v1",
+  "read_row": "SAEA-SLURP-E5-TRANSCRIPT-CONSISTENCY-READ-V1",
+  "role": "INSTRUMENT / ORACLE (owner decision 201 and its 2026-09-29 supplement): bounds what a perfect, core-initiated ASR verification call could yield; the rules are oracle bounds of a system-applied check and never delivery candidates",
+  "driver": "scripts/analysis/e5_transcript_consistency_read.py",
+  "inputs": {
+    "transcript_catalogs": {
+      "fold-b": "prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1/fold-b/ (catalog.json pinned by receipt.json; row SAEA-SLURP-ASR-TOOL-PASS-FOLD-B-V1)",
+      "fold-a": "prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1/fold-a/ (catalog.json pinned by receipt.json; row SAEA-SLURP-ASR-TOOL-PASS-V1)"
+    },
+    "tuning_arm_fold_b": "a sealed TRAIN Fold B delivered column named at the tune run (the AGREE arm re-targeted to Fold B: the P-SV-2 a-agree delivered column)",
+    "read_arms_fold_a": {
+      "agree": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1/attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1",
+      "wave_aa": "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1/attempt-slurp-native-stage3-wave1-aa-fold-a-generation-v1",
+      "comp1b": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1 (appended once sealed, label read-fold-a-comp1b)"
+    },
+    "e4": "SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1/attempt-slurp-native-stage3-relisten-fold-a-generation-v1-seal-only (delivered column, relisten-replace-only shadow column, relisten receipts); --expect-e4-broken 63",
+    "gold": "governed TRAIN loader data.slurp.load_slurp_split, offline, scoring side only"
+  },
+  "canonicaliser": "rails.relisten.canonical_value (pinned P2 filler normaliser, then fold_number_words) on both the transcript and the value; word-bounded contiguous containment; near-containment = token edit distance <= 1 on runs of >= 3 tokens (a tuning switch)",
+  "rules": {
+    "R-FLAG": "no change; counts entities the transcript does not support",
+    "R-DROP": "drop an entity the transcript does not support",
+    "R-SWAP": "replace it by the same-token-count transcript n-gram of minimum token edit distance whose character similarity is >= theta; keep it when none qualifies"
+  },
+  "tuning": {"roster": "fold-b", "theta_grid": [0.5, 0.6, 0.7, 0.8, 0.9], "near": [false, true], "criterion": "point official pooled SLU-F1 delta vs the delivered column", "output": "params.json, pinned by sha256 into the read"},
+  "read": {"roster": "fold-a", "theta": ["tuned", 0.6, 0.8]},
+  "statistics": {"metric": "official pooled SLU-F1 (word + char distance TP/FP/FN, in-process official arithmetic; the delivered totals must reproduce the sealed slurp-slu-official-train totals)", "bootstrap": "paired row (cluster) bootstrap", "draws": 10000, "seed": 20260929, "ci": 0.95},
+  "pre_declared": {
+    "precondition": {"gold_span_containment_min": 0.80, "e4_exact_preservation_min": 0.85, "on_failure": "stop the E5 line"},
+    "oracle_bar": {"point_pp_min": 1.49, "ci95_low_above": 0.0, "replicate_same_sign_min_pp": 1.0, "exact_lost_per_net_gained_max": 0.2, "meaning": "NOMINATES a core-initiated tool-call design (E5-2); admits nothing"}
+  },
+  "tool_call_decision_oracle": {
+    "helpful_entity": "the delivered value is not supported by the transcript while its matched gold span is contained",
+    "helpful_row": "any helpful entity",
+    "signals": ["perception_candidate_list_length", "note_parse_status", "delivered_entity_count", "delivered_type:<type>", "e4_relisten_disagreement", "entity_free_exemplar_share"],
+    "statistic": "Mann-Whitney AUC per signal (one-vs-rest per level for a categorical signal)"
+  },
+  "outputs": "analysis/SAEA-SLURP-E5-TRANSCRIPT-CONSISTENCY-READ-V1/<mode>-<roster>/ (report.json, tables.md, content-sha256.json, params.json for tune)",
+  "text_discipline": "ids, counts, rates, pp, AUCs, slot type names, class names and hashes only; no utterance text, transcript, gold value, filler or model output",
+  "contacts": {"model": 0, "tool": 0, "tokenizer": 0, "encoder": 0, "scorer_subprocess": 0, "gpu": 0}
+}
