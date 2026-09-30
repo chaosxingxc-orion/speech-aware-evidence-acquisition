@@ -110,7 +110,7 @@
         "tau": 0.0
       },
       "cell": "slurp-native-stage3-plan-testsample-milestone00-v1",
-      "composed_config_hash": "b7407e15e1a025ba1f8495dda8455520b7debcb6b9326936dd892c6f3a013d58",
+      "composed_config_hash": "4abf91b657898788cb6111a1e4001b5debb032161a92d64dd495310c00416014",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-native-stage3-plan-testsample-milestone00-v1",
       "fit_attempt_id": "attempt-slurp-test-sample-3010-milestone-00-plan-fit-v1",
@@ -122,7 +122,7 @@
         "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"
       },
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "c7a88191cdc1d5bca1aba91ba5670f6d2147b0d3026fcaca9f030f5c44246f69",
+      "protocol_hash": "dd6ba1a507cd1b1f0f27587c7668d65c5b3513bf47bf339a60f4183461342a00",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",

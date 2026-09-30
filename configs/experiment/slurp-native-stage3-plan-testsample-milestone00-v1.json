@@ -16,6 +16,13 @@
         "reason": "MILESTONE-00-PLAN registered before contact on 2026-09-29 from the sealed DEV-2000-ADDED plan arm (decision 58: script-derived, roster re-target only). HELD until (1) owner decision 202's condition holds (cell A2 read NOMINATED or better) and the coordinator has reported it to the owner in conversation (decision 151's first-contact gate), (2) a SUCCESSOR allowance names this cell's FIT run id, (3) preparations 2 and 3 of the sample have run and every PENDING pin below is real, (4) root countersigns the rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready, which also mints this cell's own first-phase supply (item E16). --allow-output-change must never be passed.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-comp1b-testsample-milestone-admission-v1",
+            "relpath": "coordination/slurp-stage3-comp1b-testsample-v1/root-admission-v1.json",
+            "sha256": "0c0cfe4eedf06dadca33ba50c5df38e38d03b7b902a8f2ed15ce806a4bf114ec",
+            "reason": "Decision slurp-stage3-comp1b-testsample-milestone-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "PINNED: the sample's intent-boundary segment vectors (preparation 2's zero-contact alias), produced by the label-free sample preparations (owner decision 156) and read from their summary receipt prepared/slurp-test-sample-3010-preparations-v1/summary-queries.json (sha256 c9ce5f432a58cdb09f92cc442f43b372e04285cca2faf46ff120bab3342d8f6a); the derive script verified the sha256 against the file bytes on the data root.",
             "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
@@ -31,10 +38,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, minted model-free under this run id with core.flight.cli prepare-supply at the flip from the sample's segment vectors and the locked plan's key file (E16). PENDING until the flip.",
             "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "ebabf6eaa3efe6c44c987aa6780056840cccb63cc0208bee8cd5bf1cb0bcbb54"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1"
     }

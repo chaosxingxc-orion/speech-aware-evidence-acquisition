@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-    "sha256": "a903d62d0dc1609a7fc01a9684f40a77d3965c7ba7e7c7af151c4c1208cd082f"
+    "sha256": "7f8d0f73f1c1d65d57f6bbbc1abde9786ae4ad58c4d2f303dd1f705cfaf28a1b"
   },
   "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1: Read MILESTONE-01 against MILESTONE-00-PLAN flown in the same chain, on the same 3,010 rows. PRIMARY: intent accuracy (scenario_action exact), paired per recording with prompt-clustered bootstrap, 10,000 draws, seed 20260929. GUARD: official pooled SLU-F1 (slurp-slu-official-test) non-inferior at the FALLBACK null h_SLU 1.4492 (h_intent 1.3329; the DEV-2000-ADDED own null scaled by sqrt(913 / 682), flagged). HELD: the intent CI95 lower bound above zero AND the guard holds. NEUTRAL: both metrics non-inferior at the fallback null without a held gain. HARMFUL: a measured loss on either metric (decision 25). Every verdict carries intent and SLU separately, per-intent and per-scenario tables in both weightings (post-stratified natural mixture; equal stratum over 58 intents). The number is a MILESTONE read, development evidence under owner decision 28, never a test claim.",
   "quality_read_gate": "No task-quality read before BOTH manifests are complete and sealed with one successful complete official slurp-slu-official-test score each, and the READ row is root countersigned.",
