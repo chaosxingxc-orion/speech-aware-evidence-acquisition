@@ -48,8 +48,13 @@ say "queue start pid $$ dry_run=$DRY once=$ONCE interval=${INTERVAL}s main=$MAIN
 while true; do
   # HOLD switch (coordinator, 2026-09-28): while the hold file exists the filler launches nothing -- it logs
   # "filler held" and exits 0, so a queue that ends in this script hands the card on without flying a chunk.
-  # Checked on every tick, before any decision. Remove the file to release the filler.
-  if [ -e "$HOLD" ]; then say "filler held ($HOLD present); exit 0 before launching anything"; echo "filler held"; exit 0; fi
+  # Checked on every tick, before any decision. The hold is owned (queue_lib.sh ql_hold_take / ql_hold_release, since
+  # the 2026-09-30 hold race): its first word is the owner token, and the held line names it ("legacy" = an empty,
+  # pre-ownership file). Only the owner releases it.
+  if [ -e "$HOLD" ]; then
+    HOLD_OWNER=$(awk 'NR == 1 { print $1 " since " $2; exit }' "$HOLD" 2>/dev/null)
+    say "filler held ($HOLD present, owner ${HOLD_OWNER:-legacy}); exit 0 before launching anything"; echo "filler held"; exit 0
+  fi
   ARGS=(--home "$H" --data-root "$DATA" --main "$MAIN" --state-file "$STATE")
   [ -n "$STATUS_JSON" ] && ARGS+=(--status-json "$STATUS_JSON")
   D=$("$PY" -B "$FD/filler_queue_decide.py" "${ARGS[@]}" 2>&1)
