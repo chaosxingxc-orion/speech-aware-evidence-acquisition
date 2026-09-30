@@ -177,10 +177,18 @@ def _assert_case(at: str) -> dict:
 
 
 def test_at_m0_all_off_compiles_byte_for_byte_to_the_v2_lock():
+    """Migration step 6 (owner decision 204): the CURRENT lock v2.1 (``lock:
+    v2.1`` -> cell G5's flown bytes) first, and the v2.0 case kept beside it
+    (no ``lock`` key -> the v2.0 lock) so A2 and every queued cell stay provable."""
+
     report = _assert_case("m0")
     assert {r["program_id"] for r in report["results"]} == {"phase-native-candidates-review-revise-v1"}
+    by = {r["experiment"]: r for r in report["results"]}
     lock = compose(_REPO, *_cell_fragments(LOCK_EXPERIMENT)).config_hash
-    assert report["results"][0]["module_composed_hash"] == lock
+    assert by[LOCK_EXPERIMENT]["module_composed_hash"] == lock and by[LOCK_EXPERIMENT]["lock"] is None
+    g5 = compose(_REPO, *_cell_fragments("slurp-native-stage3-g5-fold-a-v1")).config_hash
+    assert by["slurp-native-stage3-g5-fold-a-v1"]["module_composed_hash"] == g5
+    assert by["slurp-native-stage3-g5-fold-a-v1"]["lock"] == "v2.1"
 
 
 def test_at_m1_the_agree_component_alone_is_cell_agree():

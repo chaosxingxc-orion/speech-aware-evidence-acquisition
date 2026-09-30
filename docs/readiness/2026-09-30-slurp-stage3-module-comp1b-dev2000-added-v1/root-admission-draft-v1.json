@@ -1,0 +1,123 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/module/module_comp1bdev_mint_receipt.py, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "a2_read": {
+      "path": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+      "sha256": "87eba97d9e21175c126e6365c8b12557be1fe453f55e8b1cc64e581ec5c9ee9c"
+    },
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/analysis-recipe-v1.json",
+      "sha256": "a5874e20d64dcf254e74954ec0cf2b09c9a31804d87f3f3b7e3487a20b153722"
+    },
+    "lock_record": {
+      "path": "docs/results/2026-09-30-slurp-v2-1-lock-v1.md",
+      "sha256": "e346b29fe6bc75a6786fea6ce1dff63f5133533e043bac75cf966cef45044264"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "e3e90ae9ce99dd576878c330dc3c5507ef3e46e639fa5c5a552698fc199e6a31"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/protocol-registered-v1.json",
+      "sha256": "e9db74a9c1f790b17b042fb8c45e0c1ae2822732d34dec282297fc8236f4f3b4"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/registered-facts-v1.json",
+      "sha256": "c6aed5692aa49ec257009f30fef2a45219977e6aee50219429471045f040fe4b"
+    },
+    "registration_base_commit": "aa053a2ea"
+  },
+  "authorization_basis": "Owner decisions 195, 196, 204; the A2 read docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md; decisions 25, 133, 139, 169, 190.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 32819,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 176,
+      "generation_calls_cap": 44,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 24,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 90
+    }
+  },
+  "cell_kind": "Stage-3 composed system-policy arm expressed as a consumption-module block (sealed-credit-system-policy-v1, operator context_application): COMP-1b on lock v2.1 on DEV-2000-ADDED, with the module's OFF arm as its in-chain A/A and a four-row smoke.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim. Development numbers only. claim: nominated.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly the module cell only if the coordinator decides the byte proof is not enough: the smoke, then the in-chain A/A and the module arm in one campaign on DEV-2000-ADDED 1,000; read at intent primary against the declared 4.6 pp with official SLU-F1 the guard at h_SLU 1.2525.",
+  "decision_id": "slurp-stage3-module-comp1b-dev2000-added-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1",
+    "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-FIT-V1",
+    "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1",
+    "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-FIT-V1",
+    "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. Budgets are run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the coordinator decides it, the receipt is minted and the three cells are flipped",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any policy change outside the declared module block"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1000,
+    "fold_b_contact_authorized": false,
+    "roster": "SLURP-DEV-2000-ADDED-V1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "each cell's own, minted at the flip (item E16); not pinned by this receipt"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "aa": {
+      "composed_config": "4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827",
+      "protocol": "85ead97641fb97a8d1775ce8da5f576fb6f00bf6db00d972297dea40c7bab32a"
+    },
+    "arm": {
+      "composed_config": "1f1208d9540051d454a427886d914260aaa20474b8d57cfcfe059bf081ff58eb",
+      "protocol": "3315dcdfe2dfcd26c08f7f90067f7dcaad3bc6a55a5ee35a8dbbeb0a61c41efc"
+    },
+    "note": "the values of the fragments exactly as committed at aa053a2ea; repin_cell.py recomputes them at the flip",
+    "smoke": {
+      "composed_config": "67d8be44ead7d882f4a98da82a200f6cb775c828b500831ba4031c58f6ad3fe4",
+      "protocol": "3e7428d84f16f86dd83ec796a7b6fb68d45540f0b0341f5e0957af62d6cc9067"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

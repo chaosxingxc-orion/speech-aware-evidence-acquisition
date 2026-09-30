@@ -6,7 +6,7 @@
   "schema_history": {
     "saea-harness-admission-v1": "opened 2026-09-08 by docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 9 with one decided entry.",
     "saea-harness-admission-v2": "WAVE W4 (owner Decision 11-B change #6, 2026-09-08) adds, per entry, the config table and key that switch the module, plus the default_plans list the gate's last two rules read. NO verdict, number, status, evidence pin or provisional obligation was changed: v2 only records, for a module already decided, WHERE its one config key lives. Enforced by scripts/checks/harness_admission_check.py. EXTENDED 2026-09-08 on merge, when W4 met master's cross-call dispatcher: the switch vocabulary gains a fifth class, 'run', for a module whose one config key is a per-run driver knob rather than a per-phase table entry. The schema NAME is unchanged and the field 'switch_classes' is the version marker; no verdict, number, status, evidence pin or provisional obligation moved. EXTENDED 2026-09-09 with the first SLURP entry and the first HARMFUL entry: the silence tail on the delivered clip, decided by docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md. NO schema field changed and no existing verdict, number, status, evidence pin or provisional obligation moved. EXTENDED 2026-09-09 with the table's second SLURP entry and second HARMFUL entry: the decode-confidence flag, decided by docs/readiness/2026-09-09-slurp-logprob-judge-probe-v1-verdict.md. It is the first entry whose module NEVER FLEW IN ANY FORM -- its evidence is an offline read of a sealed trace produced by a decoding parameter, not a phase_review that ran -- so it carries the unmet obligation to compose and fly the judges-table key, and a status_basis field naming why HARMFUL rather than NEUTRAL. NO schema field changed and no existing verdict, number, status, evidence pin or provisional obligation moved.",
-    "saea-harness-admission-v3": "Fable E6 (2026-09-16, docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3/5) adds two switch classes so the SLURP v2 base program's M0 (review-loop off), M2 (grouped-Solver sampling) and M1 (exemplar-grounded Solver's train-exemplars store) each have a home before their B0/B1/B2 cells are decided: 'episode', for one dotted path under native_episode on the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS (native_episode.roles.solver, native_episode.review_loop), and 'stores', for a whole named knowledge_stores.<store_id> block. NO verdict, number, status, evidence pin or provisional obligation was changed and NO admission entry was added by this bump: v3 only widens the vocabulary the switch_rule states and scripts/checks/harness_admission_check.py enforces, ahead of the cells that will decide these three modules. EXTENDED 2026-09-17 by Fable E9: the 'stores' class gains a SECOND, explicitly declared arm form, the store RE-PIN ('switch.form': 'repin'), so that a module which REVISES a store the comparator already carries -- cell B4b's module M4b, which re-pins knowledge_stores.slot-contracts from slot-contracts-v1 to slot-contracts-v2 -- can be written honestly instead of being forced into a null OFF arm it never had. The schema NAME is unchanged and 'switch_classes' still names the same seven classes, which is why this is an EXTENSION of v3 rather than a v4, on the convention the v2 entry above set when it added the 'run' class on merge: no class was added, no field of any existing entry changed, and the null form is enforced exactly as before for every entry that declares no form. NO verdict, number, status, evidence pin or provisional obligation moved, and NO admission entry was added by this extension -- the M4b row itself is the coordinator's to write, against the verdict that named this open point. Enforced by scripts/checks/harness_admission_check.py (_check_stores_switch, _check_stores_repin_arms, _check_stores_pin and the plan-arming rule _switch_present) over rails.config_tables.is_stores_repin_arm / stores_pins / stores_arm_matches; the form's own proof node id is tests/unit/test_config_table_module_switches.py::test_the_stores_repin_form_is_one_key. EXTENDED 2026-09-19 by item E13 with the class's sixth key, native_episode.finite_completion_policy, admitted on the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS with its own null arm (the key absent, or its explicit default 'raise') and its own proof. NO schema field changed and no existing verdict, number, status, evidence pin or provisional obligation moved. EXTENDED 2026-09-20 by item E25 with the EIGHTH switch class, 'phase_tools' (one role's toolkit mapping; rails.config_tables.resolve_phase_tools_switch_key / is_phase_tools_null_arm / phase_tools_role_armed), and the FIFTH status, 'RETIRED', for a module whose ON arm a measured cell withdrew: cell B1-notool's module is the removal of the Reviewer's task-contract tool, and the seven existing classes could only write a removal as an entry whose ON arm was the absence of a mapping. The schema NAME is unchanged; 'switch_classes' and 'status_values' are the version markers, on the convention the v2 entry set. NO existing verdict, number, status, evidence pin or provisional obligation moved; the ONE entry written under the new class is the B1-notool row this extension was made for. Enforced by scripts/checks/harness_admission_check.py (_check_phase_tools_switch, the RETIRED branch of _is_blocked, the RETIRED-owes-a-plan rule and the KNOWN_STATUSES validation of status_values); proof node id tests/unit/test_config_table_module_switches.py::test_the_reviewer_toolkit_withdrawal_is_one_phase_tools_key."
+    "saea-harness-admission-v3": "Fable E6 (2026-09-16, docs/superpowers/specs/2026-09-16-slurp-v2-base-program-design.md section 3/5) adds two switch classes so the SLURP v2 base program's M0 (review-loop off), M2 (grouped-Solver sampling) and M1 (exemplar-grounded Solver's train-exemplars store) each have a home before their B0/B1/B2 cells are decided: 'episode', for one dotted path under native_episode on the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS (native_episode.roles.solver, native_episode.review_loop), and 'stores', for a whole named knowledge_stores.<store_id> block. NO verdict, number, status, evidence pin or provisional obligation was changed and NO admission entry was added by this bump: v3 only widens the vocabulary the switch_rule states and scripts/checks/harness_admission_check.py enforces, ahead of the cells that will decide these three modules. EXTENDED 2026-09-17 by Fable E9: the 'stores' class gains a SECOND, explicitly declared arm form, the store RE-PIN ('switch.form': 'repin'), so that a module which REVISES a store the comparator already carries -- cell B4b's module M4b, which re-pins knowledge_stores.slot-contracts from slot-contracts-v1 to slot-contracts-v2 -- can be written honestly instead of being forced into a null OFF arm it never had. The schema NAME is unchanged and 'switch_classes' still names the same seven classes, which is why this is an EXTENSION of v3 rather than a v4, on the convention the v2 entry above set when it added the 'run' class on merge: no class was added, no field of any existing entry changed, and the null form is enforced exactly as before for every entry that declares no form. NO verdict, number, status, evidence pin or provisional obligation moved, and NO admission entry was added by this extension -- the M4b row itself is the coordinator's to write, against the verdict that named this open point. Enforced by scripts/checks/harness_admission_check.py (_check_stores_switch, _check_stores_repin_arms, _check_stores_pin and the plan-arming rule _switch_present) over rails.config_tables.is_stores_repin_arm / stores_pins / stores_arm_matches; the form's own proof node id is tests/unit/test_config_table_module_switches.py::test_the_stores_repin_form_is_one_key. EXTENDED 2026-09-19 by item E13 with the class's sixth key, native_episode.finite_completion_policy, admitted on the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS with its own null arm (the key absent, or its explicit default 'raise') and its own proof. NO schema field changed and no existing verdict, number, status, evidence pin or provisional obligation moved. EXTENDED 2026-09-20 by item E25 with the EIGHTH switch class, 'phase_tools' (one role's toolkit mapping; rails.config_tables.resolve_phase_tools_switch_key / is_phase_tools_null_arm / phase_tools_role_armed), and the FIFTH status, 'RETIRED', for a module whose ON arm a measured cell withdrew: cell B1-notool's module is the removal of the Reviewer's task-contract tool, and the seven existing classes could only write a removal as an entry whose ON arm was the absence of a mapping. The schema NAME is unchanged; 'switch_classes' and 'status_values' are the version markers, on the convention the v2 entry set. NO existing verdict, number, status, evidence pin or provisional obligation moved; the ONE entry written under the new class is the B1-notool row this extension was made for. Enforced by scripts/checks/harness_admission_check.py (_check_phase_tools_switch, the RETIRED branch of _is_blocked, the RETIRED-owes-a-plan rule and the KNOWN_STATUSES validation of status_values); proof node id tests/unit/test_config_table_module_switches.py::test_the_reviewer_toolkit_withdrawal_is_one_phase_tools_key. EXTENDED 2026-09-30 by migration step 6 of the evidence-consumption module (owner decisions 195, 196 and 204; docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md section 3.2, coordinator ruling R2) with the NINTH switch class, 'module': the composed consumption policy as ONE key, native_episode.consumption_module (rails.config_tables.MODULE_SWITCH_CLASS / resolve_module_switch_key / module_block_of). Its OFF arm is NOT the key's absence: it is the module block with every component off and no column, naming its carrier's CURRENT lock (lock v2.1 on SLURP), which compiles byte for byte to that lock's policy blocks -- the in-chain A/A of every composed read. The licence is recomputed by the check, not believed: a 'module' entry owes a falsifier of kind 'compiles-to-lock' naming the lock and registered cells, and scripts/checks/harness_admission_check.py (_check_module_switch) compiles the OFF arm, compares it with the named lock version's blocks and requires each named cell's baseline fragment to carry exactly those blocks on its own roster (the AT-M0 proof), and compiles the ON arm. The schema NAME is unchanged; 'switch_classes' is the version marker, on the v2 convention. NO existing verdict, number, status, evidence pin or provisional obligation moved; the ONE entry written under the new class is PENDING (the module's first end-to-end cell is registered and held; each component's own admission stays in its own entry or registry row)."
   },
   "switch_rule": "Every entry names the ONE config key that switches its module ON and OFF, as {table, key, on, off}. 'table' is one of the four config tables (rails.config_tables.CONFIG_TABLE_NAMES: judges, knowledge_views, observe, toolkits); 'key' is a dotted path that starts with that table and names one of its entry keys, with '<phase>' as the placeholder for a program's phase because a module's admission is about the module and not about one program's phase names; 'off' is the table's null arm, which composes to the same config hash as the table being absent (core.config.drop_null_arms), which is what makes the OFF arm a twin of the pre-table baseline rather than a third cell identity. 'proof' names the test that composes both arms and asserts they differ in exactly that one key. A FIFTH class, 'run', covers a module that is one config key and has no table entry because it is per-run and the four tables are per-phase: 'key' is the FLAT config key the fragment carries, it must be on the closed allowlist rails.config_tables.RUN_LEVEL_SWITCH_KEYS, 'off' is the key absent or the driver's documented default, and the entry owes a 'falsifier' -- kind 'request-bytes-identical' plus the receipt that proved it -- whose MANIFEST.sha256 the check re-verifies. That falsifier is the whole licence for being outside the tables: a module that moves one byte of the request cannot produce one and belongs in a table. A SIXTH class, 'episode', covers a module that changes the per-run native-role-episode graph itself -- how many times a role runs, or how the Solver samples and aggregates -- rather than what a phase observes, is supplied with, is judged by or may call, and does not claim the 'run' class's zero-request-bytes licence either: 'key' is the literal dotted path the fragment carries under native_episode (not 'episode.<key>', exactly as a run-class key is not 'run.<key>'), drawn from the closed allowlist rails.config_tables.EPISODE_LEVEL_SWITCH_KEYS, and 'off' is that key's own null form (rails.config_tables.is_episode_null_arm) rather than one shared null token, because native_episode.roles.solver's historical shape and native_episode.review_loop's 'off' marker are not the same value. Where a module's OFF arm is, today, more than one native_episode leaf that shares no common dotted prefix (the review-loop pairing of max_revisions and the Reviewer/Planner max_iterations) and an optional marker field declares and validates the one-key view against those leaves, the entry's 'proof' test treats the leaves the marker derives from -- and any policy-id/max_contacts consequence of switching it -- as DERIVED, and shows the composed ON/OFF pair differing only in the marker once those derived keys are set aside, exactly as it shows for any other one-key module otherwise. A SEVENTH class, 'stores', covers a module that adds a whole named store to knowledge_stores (a store's own release/snapshot pins plus its own supply, never one entry of the knowledge_views table, which wraps a PHASE's material/supply and not a STORE): 'key' is 'knowledge_stores.<store_id>', 'off' is null -- the named store absent from the knowledge_stores mapping (rails.config_tables.is_stores_null_arm) -- and 'proof' must show the two committed fragments differing in exactly that one top-level knowledge_stores sub-block, once each fragment's own speech-feature identity ids and free-English 'what_this_is'/'what_the_<store>_store_is' prose are set aside as bookkeeping, exactly as the four tables' own proofs already set comparable bookkeeping aside. The 'stores' class has TWO arm forms and an entry DECLARES which one it is in, in the field 'switch.form'. Form one, the default (no 'form' field), is the NULL form just stated: OFF is the named store absent, which is the shape of a module that ADDS a store the comparator does not carry. Form two, 'repin' (added 2026-09-17 by Fable E9 for cell B4b's module M4b, docs/results/2026-09-17-slurp-b4b-slot-store-v2-verdict.md, section 'The harness-admission consequence'), is the shape of a module that REVISES a store the comparator ALREADY carries: such a module moves neither more nor less than that store's two pinned leaves, so its OFF arm is the incumbent's {release, snapshot} pins and its ON arm is the successor's, each pin an object of 'relpath' and 'sha256' and nothing else (rails.config_tables.is_stores_repin_arm). The two arms must DIFFER -- a re-pin that pins the same bytes twice switches nothing -- and every pin whose relpath resolves to a file in this repository is re-hashed by the check, while a pin that resolves to no such file is a SPEECHRL_DATA_DIR relpath, which this model-free check never opens and checks for shape alone. The form is declared and never inferred: an entry whose OFF arm is not the store's absence and which does not say 'repin' is REFUSED, because an OFF arm silently allowed to be anything at all is exactly the loosening the null form exists to prevent. The re-pin form also changes the question a default plan is asked: 'not the null arm' is not enough, the plan must pin exactly the ON arm's release and snapshot bytes, so a plan still carrying the incumbent's pins -- or carrying no such store -- has NOT armed the module. A re-pin entry's 'proof' shows the same one-key property the null form's does, on the two committed fragments, with the pinned store's own derived artifacts (the prepared phase-supply materialized from it) set aside as DERIVED beside the usual bookkeeping, exactly as the episode class's proof sets aside the leaves its marker derives from. An EIGHTH class, 'phase_tools' (added 2026-09-20 by item E25 for cell B1-notool, repair form 0-B, owner decisions 55 and 56), covers ONE ROLE'S TOOLKIT -- the flat phase_tools.<phase> mapping that grants a role tool AUTHORITY -- which is neither the toolkits table (a task type's catalogue selection) nor the episode class (native_episode.tool_schema_rendering decides how a granted toolkit is rendered and leaves authority alone): 'key' is the literal 'phase_tools.<phase id>' (rails.config_tables.resolve_phase_tools_switch_key; no placeholder, because a toolkit's admission is about one role), 'off' is the role's null arm -- null or {}, the role absent from phase_tools, which the runtime reads as no tool authority (rails.config_tables.is_phase_tools_null_arm, core.flight.runtime.tool_free_native_arm) -- and 'on' is the role's non-empty toolkit mapping. The class exists so that a module which WITHDRAWS a toolkit can be written as the RETIREMENT of the toolkit it withdraws, under the status 'RETIRED': ON is the mapping the comparator carried, OFF is its absence, the plan carries OFF, and the check proves the plan does NOT arm the key (RETIRED blocks a module from every plan exactly as HARMFUL does) and that a plan for the carrier EXISTS (a retirement nobody's plan reflects is refused). A module granting a NEW toolkit uses the class the ordinary way: ADMITTED or NEUTRAL, armed in a plan by a non-null phase_tools.<phase> mapping.",
   "default_plans": [
@@ -1418,6 +1418,166 @@
         "what_flew": "Nothing yet: the SLOTFILL arm's baseline fragment is the locked PLAN baseline plus this one key, and its in-chain A/A is the same fragment without it (tests/unit/test_slotfill_config.py).",
         "why_this_class": "dispatch is read flat by the flight runtime and decides how the native role episode is SCHEDULED -- a row's Perception-independent recall computed ahead, the role-input builder off the shared event loop, the loaded heap frozen out of the collector. It is per-RUN, while the four tables are per-PHASE and each of them changes the request the frozen core sees; this one provably changes no request byte, which is both why it has no table entry and why it is allowed to have none."
       }
+    },
+    {
+      "carrier": "slurp",
+      "date": "2026-09-30",
+      "evidence": {
+        "admitting_read_of_the_components": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+        "lock": "docs/results/2026-09-30-slurp-v2-1-lock-v1.md",
+        "registration": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/README.md",
+        "byte_proof": "python -B scripts/analysis/module_equivalence_proof.py --at m0 m6",
+        "status_note": "PENDING: the module is a COMPOSITION, not a new mechanism. Its ON arm here is COMP-1b (agree-vote-seed + centroid-boundary-key), whose components were REPLICATED and ADMITTED on DEV-2000-ADDED by the A2 read (intent +4.60 [+2.58, +6.73], SLU-F1 +0.53 [-1.04, +2.09], lock v2.0 bytes); the module cell compiling it onto lock v2.1 is registered and HELD. Nothing here enters a plan."
+      },
+      "module": "the evidence-consumption module saea-evidence-consumption-module-v1 (profile slurp): the composed consumption policy as one block, compiled onto the lock",
+      "row": "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1",
+      "status": "PENDING",
+      "switch": {
+        "added_by": "migration step 6 of the consumption module, 2026-09-30 (owner decisions 195/196/204; coordinator ruling R2)",
+        "falsifier": {
+          "kind": "compiles-to-lock",
+          "lock": "v2.1",
+          "cells": [
+            "slurp-native-stage3-g5-fold-a-v1",
+            "slurp-native-stage3-g5-fold-a-smoke-4-v1",
+            "slurp-native-stage3-module-comp1b-aa-dev2000-added-v1"
+          ],
+          "note": "The check compiles the OFF arm and requires it to equal lock v2.1's policy blocks, and each named cell to carry exactly those blocks on its own roster: cell G5's arm and smoke flew the lock-v2.1 bytes on TRAIN Fold A (the lock record's own evidence), and the module cell's in-chain A/A carries them on DEV-2000-ADDED."
+        },
+        "key": "native_episode.consumption_module",
+        "off": {
+          "columns": [],
+          "components": [
+            {
+              "component_id": "agree-vote-seed",
+              "state": "off"
+            },
+            {
+              "component_id": "centroid-boundary-key",
+              "state": "off"
+            },
+            {
+              "component_id": "solver-citation-contract",
+              "state": "off"
+            },
+            {
+              "component_id": "reviewer-g5-repair",
+              "state": "off"
+            },
+            {
+              "component_id": "relisten",
+              "state": "off"
+            },
+            {
+              "component_id": "top2-contrast",
+              "state": "off"
+            },
+            {
+              "component_id": "forced-candidate-list",
+              "state": "off"
+            },
+            {
+              "component_id": "key-source:k6p",
+              "state": "off"
+            },
+            {
+              "component_id": "scope-rule",
+              "state": "off"
+            },
+            {
+              "component_id": "e3-progressive-slots",
+              "state": "off"
+            },
+            {
+              "component_id": "supply-abstain",
+              "state": "off"
+            }
+          ],
+          "lock": "v2.1",
+          "module_id": "saea-evidence-consumption-module-v1",
+          "profile": "slurp"
+        },
+        "on": {
+          "columns": [],
+          "components": [
+            {
+              "admitted_by": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+              "component_id": "agree-vote-seed",
+              "params": {
+                "agreement_source": {
+                  "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed speech vector against the frozen pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. Built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts; receipt beside the artifact.",
+                  "kind": "sealed-agreement",
+                  "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
+                  "sha256": "283bd9f58025b98a7c92f3b5f3495fce1e4b352bae52a3fc62bb8781b79e92d8",
+                  "tool_contact_ledger_row": "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1"
+                },
+                "k": 60,
+                "w_agree": 1.0
+              },
+              "record": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+              "state": "on"
+            },
+            {
+              "admitted_by": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+              "component_id": "centroid-boundary-key",
+              "params": {
+                "facet_source": {
+                  "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+                  "kind": "sealed-vectors",
+                  "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+                  "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+                  "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+                }
+              },
+              "record": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+              "state": "on"
+            },
+            {
+              "component_id": "solver-citation-contract",
+              "state": "off"
+            },
+            {
+              "component_id": "reviewer-g5-repair",
+              "state": "off"
+            },
+            {
+              "component_id": "relisten",
+              "state": "off"
+            },
+            {
+              "component_id": "top2-contrast",
+              "state": "off"
+            },
+            {
+              "component_id": "forced-candidate-list",
+              "state": "off"
+            },
+            {
+              "component_id": "key-source:k6p",
+              "state": "off"
+            },
+            {
+              "component_id": "scope-rule",
+              "state": "off"
+            },
+            {
+              "component_id": "e3-progressive-slots",
+              "state": "off"
+            },
+            {
+              "component_id": "supply-abstain",
+              "state": "off"
+            }
+          ],
+          "lock": "v2.1",
+          "module_id": "saea-evidence-consumption-module-v1",
+          "profile": "slurp"
+        },
+        "proof": "tests/unit/test_consumption_module_step6.py::test_the_module_switch_is_one_key_whose_off_arm_compiles_to_the_lock",
+        "table": "module",
+        "what_flew": "Nothing under the module key yet: the module cell and its A/A are registered and held; the byte proof shows the ON arm's policy blocks are cell A2's flown bytes except the lock-v2.1 Reviewer pin.",
+        "why_this_class": "The composed policy is one key whose OFF arm is the LOCK, not the key's absence: every episode-class key's OFF arm is its own null form, while the module's OFF arm is a declared block (every component off) that compiles to the lock the composed read is compared against. It is neither a per-phase table entry nor a run-level scheduler, and it moves request bytes whenever a component is on."
+      }
     }
   ],
   "switch_classes": [
@@ -1428,6 +1588,7 @@
     "run",
     "episode",
     "stores",
-    "phase_tools"
+    "phase_tools",
+    "module"
   ]
 }

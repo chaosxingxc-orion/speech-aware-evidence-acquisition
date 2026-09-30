@@ -25,7 +25,11 @@ blocks and the target's own policy blocks (must be empty).
 
 Cases:
 
-* ``m0`` -- every catalogued component ``off`` -> the v2.0 lock (arm, smoke).
+* ``m0`` -- every catalogued component ``off`` -> the CURRENT lock v2.1 (owner
+  decision 204; migration step 6): ``lock: v2.1`` compiles to the bytes cell G5
+  flew (arm, smoke), which are the v2.0 lock with the Reviewer template moved;
+  and, kept as the second case so A2 and every queued v2.0 cell stay provable,
+  no ``lock`` key -> the v2.0 lock (arm, smoke).
 * ``m1`` -- the AGREE component alone -> cell AGREE (arm, smoke); plus the
   sealed-pool binding: the rebuilt arm's composed hash must equal the
   ``config.config_hash`` its sealed run manifest
@@ -44,6 +48,16 @@ Cases:
   roster pins, not policy: the proof requires the compiled branch block to be
   the cell's own bytes, the program id and ceiling to be the cell's, and every
   other differing policy leaf to be a ``query_source`` leaf.
+* ``m6`` -- migration step 6: the module's first end-to-end cell. Each of the
+  three cells (arm, smoke, in-chain A/A) is compiled from ITS OWN declared
+  ``native_episode.consumption_module`` block and must compose to its own
+  hash; the arm and smoke blocks, compiled onto cell A2's own fragments (A2's
+  roster pins), must differ from A2's policy blocks at EXACTLY the lock-v2.1
+  Reviewer template leaf; the A/A must carry exactly the lock-v2.1 blocks on
+  its roster and differ from A2's A/A at exactly the Reviewer template and
+  the recall k (A2's A/A flew k 60 at w_agree 0, a proven supply no-op). The
+  full composed-config diff against the A2 cell is listed and classified
+  (policy / the module block itself / bookkeeping / experiment fragment).
 
     python scripts/analysis/module_equivalence_proof.py --at all
 """
@@ -165,9 +179,11 @@ def component_entries(repo_root: Path = REPO_ROOT) -> dict[str, dict]:
     }
 
 
-def module_block(armed: tuple[str, ...], repo_root: Path = REPO_ROOT) -> dict:
+def module_block(armed: tuple[str, ...], repo_root: Path = REPO_ROOT, *, lock: str | None = None) -> dict:
     """A block listing EVERY catalogued component: the ``armed`` ones with
-    their flown params, every other one ``off``."""
+    their flown params, every other one ``off``; ``lock`` names a lock
+    version (``None``: no ``lock`` key, the v2.0 layer every pre-step-6 block
+    compiles onto)."""
 
     entries = component_entries(repo_root)
     components = [
@@ -175,15 +191,27 @@ def module_block(armed: tuple[str, ...], repo_root: Path = REPO_ROOT) -> dict:
         else {"component_id": spec.component_id, "state": "off"}
         for spec in cm.COMPONENT_CATALOGUE
     ]
-    return {
+    block = {
         "module_id": cm.CONSUMPTION_MODULE_ID, "profile": "slurp",
         "components": components, "columns": [],
     }
+    if lock is not None:
+        block["lock"] = lock
+    return block
 
 
-CASES: dict[str, list[tuple[tuple[str, ...], tuple[str, ...], str | None]]] = {
-    # at -> [(armed components, target experiments, git rev or None = working tree)]
-    "m0": [((), ("slurp-native-default-plan-lock-v1", "slurp-native-default-plan-lock-smoke-4-v1"), None)],
+#: The v2.1 lock's flown bytes: cell G5 (``docs/results/2026-09-30-slurp-v2-1-lock-v1.md``).
+LOCK_V2_1_TARGETS = ("slurp-native-stage3-g5-fold-a-v1", "slurp-native-stage3-g5-fold-a-smoke-4-v1")
+LOCK_V2_0_TARGETS = ("slurp-native-default-plan-lock-v1", "slurp-native-default-plan-lock-smoke-4-v1")
+
+#: ``(at, armed, target experiments, git rev or None, lock)`` rows are read as
+#: 3-tuples (lock ``None``) or 4-tuples.
+CASES: dict[str, list[tuple]] = {
+    # at -> [(armed components, target experiments, git rev or None = working tree[, lock])]
+    "m0": [
+        ((), LOCK_V2_1_TARGETS, None, "v2.1"),
+        ((), LOCK_V2_0_TARGETS, None),
+    ],
     "m1": [((cm.AGREE_VOTE_SEED,), (AGREE_ARM_EXPERIMENT, "slurp-native-stage3-agree-w1-fold-a-smoke-4-v1"), None)],
     "m2": [
         ((cm.AGREE_VOTE_SEED, cm.CENTROID_BOUNDARY_KEY, cm.SOLVER_CITATION_CONTRACT),
@@ -216,7 +244,7 @@ def _fragment_text(kind: str, name: str, rev: str | None, repo_root: Path) -> st
 
 def rebuild_and_compose(
     composed_policy: cm.ComposedPolicy, experiment: str, *, rev: str | None = None,
-    repo_root: Path = REPO_ROOT,
+    repo_root: Path = REPO_ROOT, declared_block: dict | None = None,
 ) -> dict:
     """Compose the target cell twice through ``core.config.compose`` in a
     scratch ``configs/`` tree -- once with its own baseline bytes, once with
@@ -230,6 +258,10 @@ def rebuild_and_compose(
     texts = {kind: _fragment_text(kind, name, rev, repo_root) for kind, name in names.items()}
     own_baseline = json.loads(texts["baseline"])
     rebuilt = composed_policy.apply_to(own_baseline)
+    if declared_block is not None:
+        # A cell that DECLARES its block (migration step 6) carries the
+        # declaration beside the compiled blocks, exactly as the loader reads it.
+        rebuilt["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY] = copy.deepcopy(declared_block)
     hashes = {}
     with tempfile.TemporaryDirectory() as scratch:
         root = Path(scratch)
@@ -247,6 +279,7 @@ def rebuild_and_compose(
     return {
         "experiment": experiment,
         "rev": rev or "working-tree",
+        "lock": composed_policy.lock_version,
         "program_id": composed_policy.program_id,
         "program_ceiling": composed_policy.program_ceiling,
         "own_composed_hash": hashes["own"],
@@ -254,7 +287,8 @@ def rebuild_and_compose(
         "composed_identical": hashes["own"] == hashes["module"],
         "baseline_object_identical": rebuilt == own_baseline,
         "differing_policy_paths": cm.differing_paths(
-            composed_policy.values(), cm.policy_owned_values(own_baseline),
+            composed_policy.values_on_roster_of(own_baseline),
+            cm.policy_owned_values(own_baseline),
         ),
     }
 
@@ -340,14 +374,102 @@ def run_m4(repo_root: Path = REPO_ROOT) -> dict:
     return {"at": "m4", "results": results, "ok": bool(ok)}
 
 
+#: Migration step 6: ``{key: (module cell, cell A2's counterpart)}``.
+M6_CELLS = {
+    "arm": ("slurp-native-stage3-module-comp1b-dev2000-added-v1", "slurp-native-stage3-comp1b-dev2000-added-v1"),
+    "smoke": ("slurp-native-stage3-module-comp1b-dev2000-added-smoke-4-v1",
+              "slurp-native-stage3-comp1b-dev2000-added-smoke-4-v1"),
+    "aa": ("slurp-native-stage3-module-comp1b-aa-dev2000-added-v1", "slurp-native-stage3-comp1-aa-dev2000-added-v1"),
+}
+REVIEWER_TEMPLATE_LEAF = "phase_material.reviewer.instruction_template"
+BOUNDARY_K_LEAF = "knowledge_stores.intent-boundaries.phase_supply.perception.k"
+#: The expected policy-leaf difference of each module cell from its A2 counterpart.
+M6_EXPECTED_VS_A2 = {"arm": [REVIEWER_TEMPLATE_LEAF], "smoke": [REVIEWER_TEMPLATE_LEAF],
+                     "aa": [BOUNDARY_K_LEAF, REVIEWER_TEMPLATE_LEAF]}
+_M6_BOOKKEEPING = ("native_contact_fit.", "prepared_phase_supply", "preparation_source_receipts", "what_this_is",
+                   "fragment_kind")
+
+
+def _composed_values(experiment: str, repo_root: Path) -> dict:
+    cell = json.loads(_fragment_text("experiment", experiment, None, repo_root))["cells"][0]
+    return compose(repo_root, cell["model_fragment"], cell["dataset_fragment"], cell["baseline_fragment"],
+                   experiment).values
+
+
+def _classify(paths: list[str], experiment_keys: set[str]) -> dict[str, list[str]]:
+    module_prefix = "native_episode." + cm.CONSUMPTION_MODULE_CONFIG_KEY
+    out: dict[str, list[str]] = {"policy": [], "module_block": [], "bookkeeping": [], "experiment_fragment": [],
+                                 "anything_else": []}
+    for path in paths:
+        if path.startswith(module_prefix):
+            out["module_block"].append(path)
+        elif path.split(".", 1)[0] in cm.POLICY_OWNED_KEYS:
+            out["policy"].append(path)
+        elif path.startswith(_M6_BOOKKEEPING):
+            out["bookkeeping"].append(path)
+        elif path.split(".", 1)[0] in experiment_keys:
+            out["experiment_fragment"].append(path)
+        else:
+            out["anything_else"].append(path)
+    return out
+
+
+def run_m6(repo_root: Path = REPO_ROOT) -> dict:
+    """Migration step 6: the module cell's bytes are the admitted A2 bytes
+    except the lock-v2.1 Reviewer pin, and its A/A is lock v2.1."""
+
+    hooks = carrier_module_hooks(repo_root=repo_root)
+    lock_v2_1 = dict(hooks.lock_versions["v2.1"]())
+    results, ok = [], True
+    for key, (experiment, a2_experiment) in M6_CELLS.items():
+        cell = json.loads(_fragment_text("experiment", experiment, None, repo_root))["cells"][0]
+        own = _read_json(f"configs/baseline/{cell['baseline_fragment']}.json", repo_root)
+        block = own["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY]
+        composed_policy = cm.compile_module(block, hooks, repo_root=repo_root)
+        row = rebuild_and_compose(composed_policy, experiment, repo_root=repo_root, declared_block=block)
+        a2_cell = json.loads(_fragment_text("experiment", a2_experiment, None, repo_root))["cells"][0]
+        a2_baseline = _read_json(f"configs/baseline/{a2_cell['baseline_fragment']}.json", repo_root)
+        vs_a2 = cm.differing_paths(composed_policy.values_on_roster_of(a2_baseline),
+                                   cm.policy_owned_values(a2_baseline))
+        mine, theirs = _composed_values(experiment, repo_root), _composed_values(a2_experiment, repo_root)
+        experiment_keys = set(json.loads(_fragment_text("experiment", experiment, None, repo_root)))
+        row.update({
+            "cell": key, "a2_counterpart": a2_experiment, "armed": [d.component_id for d in
+                                                                   cm.parse_consumption_module_block(block).armed()],
+            "module_block_sha256": composed_policy.config_block_sha256,
+            "module_policy_on_a2_roster_differing_paths": vs_a2,
+            "expected_differing_paths": M6_EXPECTED_VS_A2[key],
+            "composed_config_diff_vs_a2": _classify(cm.differing_paths(mine, theirs), experiment_keys),
+            "reviewer_template": {"a2": a2_baseline["phase_material"]["reviewer"]["instruction_template"],
+                                  "module": own["phase_material"]["reviewer"]["instruction_template"]},
+        })
+        row["ok"] = (row["composed_identical"] and not row["differing_policy_paths"]
+                     and vs_a2 == M6_EXPECTED_VS_A2[key]
+                     and row["composed_config_diff_vs_a2"]["policy"] == M6_EXPECTED_VS_A2[key]
+                     and not row["composed_config_diff_vs_a2"]["anything_else"])
+        if key == "aa":
+            row["off_arm"] = cm.is_module_off_block(block)
+            row["lock_v2_1_differing_paths"] = cm.differing_paths(
+                cm._rebind_roster(json.loads(json.dumps(lock_v2_1)), own, hooks.roster_pin_paths),
+                cm.policy_owned_values(own),
+            )
+            row["ok"] &= row["off_arm"] and not row["lock_v2_1_differing_paths"]
+        ok &= row["ok"]
+        results.append(row)
+    return {"at": "m6", "results": results, "ok": bool(ok)}
+
+
 def run_case(at: str, repo_root: Path = REPO_ROOT) -> dict:
     if at == "m4":
         return run_m4(repo_root)
+    if at == "m6":
+        return run_m6(repo_root)
     hooks = carrier_module_hooks(repo_root=repo_root)
     results = []
     ok = True
-    for armed, experiments, rev in CASES[at]:
-        composed_policy = cm.compile_module(module_block(armed, repo_root), hooks, repo_root=repo_root)
+    for armed, experiments, rev, *rest in CASES[at]:
+        lock = rest[0] if rest else None
+        composed_policy = cm.compile_module(module_block(armed, repo_root, lock=lock), hooks, repo_root=repo_root)
         for experiment in experiments:
             row = rebuild_and_compose(composed_policy, experiment, rev=rev, repo_root=repo_root)
             row["armed"] = list(armed)
@@ -370,10 +492,10 @@ def run_case(at: str, repo_root: Path = REPO_ROOT) -> dict:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--at", choices=(*CASES, "m4", "all"), default="all")
+    parser.add_argument("--at", choices=(*CASES, "m4", "m6", "all"), nargs="+", default=["all"])
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     args = parser.parse_args(argv)
-    ats = (*CASES, "m4") if args.at == "all" else (args.at,)
+    ats = (*CASES, "m4", "m6") if "all" in args.at else tuple(args.at)
     reports = [run_case(at, args.repo_root) for at in ats]
     print(json.dumps({"reports": reports, "ok": all(r["ok"] for r in reports)}, indent=2, sort_keys=True))
     return 0 if all(r["ok"] for r in reports) else 1

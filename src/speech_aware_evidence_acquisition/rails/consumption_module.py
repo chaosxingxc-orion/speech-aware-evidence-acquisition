@@ -76,7 +76,10 @@ STATE_COLUMN = "column"
 COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_COLUMN)
 
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
-_BLOCK_OPTIONAL = frozenset({"columns"})
+_BLOCK_OPTIONAL = frozenset({"columns", "lock"})
+#: A lock-version name a block may declare (migration step 6, owner decision
+#: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
+_LOCK_VERSION = re.compile(r"^v[0-9]+\.[0-9]+$")
 _COMPONENT_REQUIRED = frozenset({"component_id", "state"})
 _COMPONENT_OPTIONAL = frozenset({"admitted_by", "record", "params"})
 _PROFILE = re.compile(r"^[a-z][a-z0-9]*$")
@@ -240,6 +243,20 @@ class CarrierHooks:
       normaliser id: that normaliser composed with the stage}, "params": the
       stage's registered pins}}`` for the deterministic deliver stages the
       carrier registers (migration step 3).
+    * ``lock_versions`` -- ``{lock version: a callable returning that lock's
+      POLICY_OWNED_KEYS blocks}`` (migration step 6, owner decision 204): the
+      layers a block may name in its ``lock`` key. ``lock_layer`` stays the
+      layer of a block that names none.
+    * ``current_lock`` -- the carrier's CURRENT lock version: the null arm of
+      every composed read registered from now on, and the lock the harness
+      ``module`` switch class's OFF arm must name.
+    * ``roster_pin_paths`` -- the key paths (from the composed config's top
+      level) of the ROSTER pins inside the policy-owned blocks: the sealed
+      per-roster query vectors a speech-keyed supply reads. They are cell
+      identity, never policy: :meth:`ComposedPolicy.apply_to` keeps the
+      target's own and :func:`verify_declared_module` compares everything
+      else (migration step 6: a module cell on a roster other than the
+      lock's own).
     """
 
     profile: str | None = None
@@ -254,6 +271,9 @@ class CarrierHooks:
     perception_branch_frame: Mapping[str, object] | None = None
     flown_branch_programs: Mapping[tuple[int, int, str | None], str] | None = None
     delivered_path_admissions: Mapping[str, str] | None = None
+    lock_versions: Mapping[str, Callable[[], Mapping[str, object]]] | None = None
+    current_lock: str | None = None
+    roster_pin_paths: tuple[tuple[str, ...], ...] | None = None
 
 
 def resolve_carrier_hooks(profile: str, *, repo_root: Path | None = None) -> CarrierHooks:
@@ -343,6 +363,11 @@ class ConsumptionModuleBlock:
     block_sha256: str
     block_json: str
     columns: tuple[ColumnDecl, ...] = ()
+    #: The lock version the block composes onto (migration step 6, owner
+    #: decision 204), or ``None``: the carrier's ``lock_layer`` -- the layer
+    #: every block written before step 6 compiled onto (the v2.0 lock on the
+    #: first carrier), kept so their bytes and proofs never move.
+    lock: str | None = None
 
     def component(self, component_id: str) -> ComponentDecl | None:
         for decl in self.components:
@@ -420,6 +445,11 @@ def parse_consumption_module_block(
     columns = raw.get("columns", [])
     if not isinstance(columns, list):
         raise ConsumptionModuleConfigError("consumption_module.columns must be a list")
+    lock = raw.get("lock")
+    if "lock" in raw and (not isinstance(lock, str) or _LOCK_VERSION.fullmatch(lock) is None):
+        raise ConsumptionModuleConfigError(
+            f"consumption_module.lock must match {_LOCK_VERSION.pattern}, got {lock!r}"
+        )
     components = raw["components"]
     if not isinstance(components, list):
         raise ConsumptionModuleConfigError("consumption_module.components must be a list")
@@ -491,6 +521,7 @@ def parse_consumption_module_block(
         block_sha256=_sha256_text(_canonical(identity)),
         block_json=block_json,
         columns=column_decls,
+        lock=lock,
     )
 
 
@@ -581,19 +612,53 @@ class ComposedPolicy:
     config_block_sha256: str
     blocks_json: str
     written_paths: tuple[str, ...]
+    #: The lock version the block named (``None``: the carrier's ``lock_layer``).
+    lock_version: str | None = None
+    #: The carrier's roster-pin paths (``CarrierHooks.roster_pin_paths``).
+    roster_paths: tuple[tuple[str, ...], ...] = ()
 
     def values(self) -> dict[str, object]:
         """A fresh copy of the compiled blocks (``POLICY_OWNED_KEYS``)."""
 
         return json.loads(self.blocks_json)
 
+    def values_on_roster_of(self, target: Mapping[str, object]) -> dict[str, object]:
+        """The compiled blocks with every roster pin taken from ``target``
+        (a fragment or composed config): the module's policy on the target's
+        own roster. A roster pin the target does not carry stays the lock's."""
+
+        return _rebind_roster(self.values(), target, self.roster_paths)
+
     def apply_to(self, fragment: Mapping[str, object]) -> dict[str, object]:
         """``fragment`` with its policy-owned keys replaced by the compiled
-        blocks; every other key is carried unchanged."""
+        blocks; every other key -- and every roster pin -- is the
+        fragment's own."""
 
         out = copy.deepcopy(dict(fragment))
-        out.update(self.values())
+        out.update(self.values_on_roster_of(fragment))
         return out
+
+
+def _get_path(node: object, path: Sequence[str]) -> tuple[bool, object]:
+    for key in path:
+        if not isinstance(node, Mapping) or key not in node:
+            return False, None
+        node = node[key]
+    return True, node
+
+
+def _rebind_roster(
+    compiled: dict[str, object], target: Mapping[str, object], paths: Sequence[Sequence[str]],
+) -> dict[str, object]:
+    """``compiled`` with the value at each roster-pin path replaced by
+    ``target``'s, where both carry it (a pin is REPLACED, never added)."""
+
+    for path in paths:
+        found, value = _get_path(target, path)
+        parent_found, parent = _get_path(compiled, path[:-1])
+        if found and parent_found and isinstance(parent, dict) and path[-1] in parent:
+            parent[path[-1]] = copy.deepcopy(value)
+    return compiled
 
 
 def policy_owned_values(values: Mapping[str, object]) -> dict[str, object]:
@@ -690,7 +755,16 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             f"block profile {block.profile!r} does not match the carrier hooks' "
             f"profile {hooks.profile!r}"
         )
-    lock_layer = _require_hook(hooks, "lock_layer", "lock layer")()
+    if block.lock is None:
+        lock_layer = _require_hook(hooks, "lock_layer", "lock layer")()
+    else:
+        versions = dict(_require_hook(hooks, "lock_versions", f"lock {block.lock}"))
+        if block.lock not in versions:
+            raise ConsumptionModuleConfigError(
+                f"lock {block.lock!r} is not a lock version of profile {hooks.profile!r}; "
+                f"known: {sorted(versions)}"
+            )
+        lock_layer = versions[block.lock]()
     if not isinstance(lock_layer, Mapping) or set(lock_layer) != set(POLICY_OWNED_KEYS):
         raise ConsumptionModuleConfigError(
             f"the lock layer must carry exactly {list(POLICY_OWNED_KEYS)}"
@@ -729,6 +803,12 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             writer.set(("native_episode", "deliver_normaliser", "normaliser"),
                        params["deliver_normaliser"], component_id=cid, replace_only=True)
         elif cid == REVIEWER_G5_REPAIR:
+            reviewer = layer["phase_material"].get("reviewer")
+            if isinstance(reviewer, Mapping) and reviewer.get("instruction_template") == params["instruction_template"]:
+                raise ConsumptionModuleConfigError(
+                    f"{cid}: the lock layer already carries this Reviewer template (a lock that "
+                    "took the repair in, e.g. v2.1 = v2.0 + G5, owner decision 204); list it 'off'"
+                )
             writer.set(("phase_material", "reviewer", "instruction_template"),
                        params["instruction_template"], component_id=cid, replace_only=True)
         elif cid == RELISTEN:
@@ -807,6 +887,8 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         config_block_sha256=block.block_sha256,
         blocks_json=_canonical(layer),
         written_paths=tuple(sorted(writer.written)),
+        lock_version=block.lock,
+        roster_paths=tuple(tuple(p) for p in (hooks.roster_pin_paths or ())),
     )
 
 
@@ -939,6 +1021,18 @@ def differing_paths(left: Mapping[str, object], right: Mapping[str, object]) -> 
     return sorted(k for k in set(a) | set(b) if a.get(k, missing) != b.get(k, missing))
 
 
+def is_module_off_block(raw_block: object, *, repo_root: Path | None = None) -> bool:
+    """Whether ``raw_block`` is a well-formed block whose every component is
+    ``off`` and which declares no column: the module's OFF arm (the harness
+    ``module`` switch class, ruling R2), which compiles to its lock layer."""
+
+    try:
+        parsed = parse_consumption_module_block(raw_block, repo_root=repo_root)
+    except ConsumptionModuleConfigError:
+        return False
+    return not parsed.armed() and not parsed.columns
+
+
 def verify_declared_module(
     raw_block: object, values: Mapping[str, object], *, repo_root: Path | None = None,
 ) -> str:
@@ -952,7 +1046,7 @@ def verify_declared_module(
         parsed, resolve_carrier_hooks(parsed.profile, repo_root=repo_root), repo_root=repo_root,
     )
     declared = policy_owned_values(values)
-    diff = differing_paths(composed.values(), declared)
+    diff = differing_paths(composed.values_on_roster_of(values), declared)
     if diff:
         raise ConsumptionModuleConfigError(
             "the config's own policy blocks differ from what its consumption_module "
@@ -1069,6 +1163,7 @@ __all__ = [
     "carrier_hooks_for_lock_key",
     "compile_module",
     "delivered_perception_axes",
+    "is_module_off_block",
     "differing_paths",
     "module_header_receipt",
     "parse_consumption_module_block",

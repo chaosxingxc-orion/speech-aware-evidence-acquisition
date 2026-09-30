@@ -1,0 +1,82 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-module-comp1b-dev2000-added-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-module-comp1b-dev2000-added-baseline-v1",
+      "cell_id": "slurp-native-stage3-module-comp1b-dev2000-added-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "HELD (migration step 6): this cell is the consumption module's first end-to-end proof -- its policy blocks are the compiler's output and are proven equal to cell A2's flown bytes except the lock-v2.1 Reviewer pin -- and the first lock-v2.1 in-chain A/A. It needs to fly only if the coordinator decides the byte proof is not enough. If it flies: root countersigns the DRAFT rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/module/module_comp1bdev_flip.sh), which mints this cell's own first-phase supply (item E16). --allow-output-change must never be passed.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with: THIS roster's own table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against the sealed DEV-2000-ADDED plan cell with the builder, vote store, vote phase and target store of the Fold A table cell AGREE registered, from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,000 rows, every row 20 votes, 0 self-excluded exemplars (the TRAIN-built pool shares no utterance with the roster), 0 rows with no vote, 59 distinct boundary facets ever voted for. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
+            "sha256": "283bd9f58025b98a7c92f3b5f3495fce1e4b352bae52a3fc62bb8781b79e92d8"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed DEV-2000-ADDED speech-query segment vectors, the CENTROID key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's sealed agreement table -- the sources cell A2's arm supply was built from, with zero model, tokenizer, encoder, scorer or server contacts. The lock-v2.1 Reviewer pin never touches the first-phase supply, so the output digest is expected to equal cell A2's arm output ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08; the flip's re-derivation checks this. E16: this cell pins its own. --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1/phase-supply-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1"
+    }
+  ],
+  "date": "2026-09-30",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 32819,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration for this run, and a second failure closes this cell: no third registration, and the fix must be proven on a four-row dry run before another mechanism is admitted. RESUME-RECOVERY CLAUSE (owner decision 22 of 2026-09-18, copied unchanged from cell PLAN's own failure policy): if the abort is an INFRASTRUCTURE failure with code and request bytes unchanged, the one recovery takes the resume-recovery form of harness item E10 -- the same run id, a fresh attempt id, a resume_from declaration naming the predecessor attempt and its trace SHA-256, every COMPLETE row kept without selection under invariant I7r, every partial or unstarted row re-flown in full, no change to the question, roster, comparator, decision rule or caps, and the run-cumulative budget re-checked; otherwise the one recovery is a full re-fly. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 32819
+  },
+  "fragment_kind": "saea-slurp-native-default-plan-lock-v1",
+  "generation_budget": {
+    "cap": 11000,
+    "definition": "The sealed B1-notool base's role graph is unchanged (perception 1, solver 1, reviewer 3, planner 1, max_revisions 1), so rails.native_episode_config.load_native_episode_config resolves the program ceiling 1 + 2 * (3 + 1 + 1) = 11 contacts per row and 1000 * 11 = 11000 is the exact program maximum, not a conservative safety bound. Cell PLAN's own registered rate on TRAIN Fold A (cell B1's realized cost) was 5.023 contacts per row; applied to this roster that projects to about 5023 contacts, an ESTIMATE only -- this roster has not been flown before.",
+    "target": 5023
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev2000-added",
+    "decision_population": "The fresh DEV-2000-ADDED roster (1,000 rows never before flown for generation; the roster's audio was previously contact-only for the model-free speech-query encoding pass that built this cell's own query vectors, docs/receipts/rosters/slurp-dev-2000-added-v1.json). Every row is preserved so the paired contrast against cell B6's direct arm covers the whole roster. TRAIN Fold A/B, DEV-1000 and the test split stay untouched and unread.",
+    "roster_receipt": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Migration step 6 of the evidence-consumption module (owner decisions 195/196/204) on DEV-2000-ADDED 1,000: the module's first end-to-end cell -- COMP-1b (agree-vote-seed + centroid-boundary-key, REPLICATED and ADMITTED on this roster by docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md: intent +4.60 [+2.58, +6.73], SLU-F1 +0.53 [-1.04, +2.09]) expressed as a module block and compiled onto lock v2.1 -- read against its own in-chain A/A slurp-native-stage3-module-comp1b-aa-dev2000-added-v1 (the module's OFF arm on lock v2.1), intent primary, official pooled SLU-F1 (slurp-slu-official, DEV sibling) the non-inferiority guard at h_SLU 1.2525. The evidence-consumption module saea-evidence-consumption-module-v1 (profile slurp) on lock v2.1 (owner decision 204: the v2.0 lock with the Reviewer instruction template moved to the G5 bytes probes/slurp_native_role_reviewer_v1_g5_v1.txt, sha256 724a437d...) with COMP-1b's two components ON -- agree-vote-seed (w_agree 1.0, recall k 60, THIS roster's vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1) and centroid-boundary-key (facet_source SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1) -- and every other catalogued component OFF (no citation contract, no scope rule, no re-listen, no Perception column). Every policy block is written by the module's compiler; the roster pins are DEV-2000-ADDED's own. expected_effect_pp is the A2 read's intent point (owner decision 139: a measured number, not a prior), measured on lock v2.0 bytes; this cell's base is v2.1, whose one moved pin read no harm (docs/results/2026-09-30-slurp-v2-1-lock-v1.md). Development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "DEV-2000-ADDED",
+  "stage3_algorithm": {
+    "id": "sealed-credit-system-policy-v1",
+    "note": "The module composes the SAME two typed, executable consumption actions A2 flew -- a rank weight over a pre-computed vote and a retrieval key file -- each chosen and credited OFFLINE over sealed bytes (CONV, KPROBE) and admitted by the A2 read; the compiler writes them into every row's Perception supply. Operator context_application. No rollout, per-sample scoring, credit assignment or update of its own.",
+    "operators_used": [
+      "context_application"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 """The COMP-1b TEST-SAMPLE milestone registration (owner decisions 151 and 202): model-free proofs.
 
-* the committed package refuses to flip today (expectation not re-declared, FIT run ids not named by
-  allowance v1, pending pins) -- the preflip gate on the committed tree;
+* the committed package refuses to flip today (FIT run ids not named by allowance v1, pending pins;
+  the expectation is re-declared from the A2 read) -- the preflip gate on the committed tree;
 * the same gate passes on a FAKE tree where every blocker is cleared, and refuses each blocker alone;
 * the two milestone cells pin the committed allowance, name its read run ids, score with the TEST
   sibling and carry no smoke.
@@ -32,12 +32,25 @@ def _experiment(root: Path, cell: str) -> dict:
 
 
 def test_committed_package_is_blocked_on_every_named_blocker():
+    # Current blocker set (2026-09-30): the expectation is re-declared from the A2 read (e36bee27f);
+    # what remains is the allowance v2 naming the FIT run ids (owner decision 207), the pending
+    # sample-preparation pins, and the owner countersign / read-driver gates named in the facts file.
+    facts = json.loads((REPO / PACKAGE / "registered-facts-v1.json").read_text(encoding="utf-8"))
+    assert facts["redeclared_from_a2_read"] is True
+    assert facts["redeclaration"]["to_expected_effect_pp"] == pytest.approx(4.6)
+    assert facts["stage3_measurement"]["SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1"]["expected_effect_pp"] == pytest.approx(4.6)
     found = refusals(REPO, None)
     kinds = {line.split(":", 1)[0] for line in found}
-    assert "expectation-not-redeclared" in kinds
-    assert "fit-run-not-permitted" in kinds
-    assert "pending-pin" in kinds
-    assert "allowance-pin-mismatch" not in kinds and "read-run-not-a-read-id" not in kinds
+    assert kinds == {"fit-run-not-permitted", "pending-pin"}
+    fit_runs = {line.split()[1] for line in found if line.startswith("fit-run-not-permitted:")}
+    assert fit_runs == {"SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1", "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1"}
+    pending = [p for p in facts["pending_pins"] if not p.endswith("/phase-supply-v1.json")]
+    assert pending, "the sample-preparation pins are still pending"
+    for relpath in pending:
+        assert any(relpath in line for line in found if line.startswith("pending-pin:")), relpath
+    blockers = " ".join(facts["blockers_before_the_flip"])
+    assert "OWNER GATE" in blockers and "countersignature" in blockers
+    assert "ALLOWANCE" in blockers and "READ DRIVER" in blockers
 
 
 def test_cells_pin_the_allowance_score_with_the_test_sibling_and_carry_no_smoke():

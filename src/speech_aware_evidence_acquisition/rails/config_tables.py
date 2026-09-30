@@ -256,9 +256,27 @@ STORES_SWITCH_CLASS = "stores"
 #: rather than being forced to call the absence of a mapping an ON arm.
 PHASE_TOOLS_SWITCH_CLASS = "phase_tools"
 
+#: The NINTH switch class, added 2026-09-30 by migration step 6 of the
+#: evidence-consumption module (owner decisions 195/196/204; design
+#: ``docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md``
+#: section 3.2 and coordinator ruling R2): the COMPOSED policy as one key,
+#: ``native_episode.consumption_module``. It is not the ``episode`` class:
+#: every episode-class key's OFF arm is that key's own null form (absent, or
+#: its documented default), and the module's OFF arm is not the block's
+#: absence -- it is the block with EVERY component off, which compiles
+#: byte for byte to the carrier's lock layer (the in-chain A/A comparator of
+#: every composed read). So the class's OFF arm is a declared lock, and its
+#: licence is verified rather than believed: the check compiles the OFF arm
+#: (``rails.consumption_module.compile_module``) and requires it to equal the
+#: named lock version's policy blocks, and each cell its falsifier names to
+#: carry exactly those blocks on its own roster -- the AT-M0 proof, made by
+#: the gate itself. Each component's own admission stays in its own entry or
+#: registry row; a ``module`` entry records only the composition.
+MODULE_SWITCH_CLASS = "module"
+
 #: Every switch class a ``docs/receipts/harness-admission.json`` entry may
-#: name: the four config tables, plus ``run``, ``episode``, ``stores`` and
-#: ``phase_tools``.
+#: name: the four config tables, plus ``run``, ``episode``, ``stores``,
+#: ``phase_tools`` and ``module``.
 #: NOT the same tuple as :data:`CONFIG_TABLE_NAMES`, which is the hashing
 #: rule's own list and must keep naming exactly the four tables.
 SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (
@@ -266,7 +284,11 @@ SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (
     EPISODE_SWITCH_CLASS,
     STORES_SWITCH_CLASS,
     PHASE_TOOLS_SWITCH_CLASS,
+    MODULE_SWITCH_CLASS,
 )
+
+#: The ONE key the ``module`` class admits (closed, like every other class).
+MODULE_LEVEL_SWITCH_KEYS = frozenset({"native_episode.consumption_module"})
 
 #: The per-run driver keys the ``run`` class admits.
 #:
@@ -1524,6 +1546,29 @@ def is_stores_null_arm(value: object) -> bool:
     return value is None
 
 
+def resolve_module_switch_key(key: str) -> str:
+    """The ``module``-class switch key a ``switch.key`` declaration names, or a
+    refusal: exactly ``native_episode.consumption_module``
+    (:data:`MODULE_LEVEL_SWITCH_KEYS`)."""
+
+    if not isinstance(key, str) or key not in MODULE_LEVEL_SWITCH_KEYS:
+        raise ConfigTableError(
+            f"module switch key {key!r} is not admitted; the module class is the closed "
+            f"allowlist {sorted(MODULE_LEVEL_SWITCH_KEYS)}"
+        )
+    return key
+
+
+def module_block_of(fragment: Mapping[str, object]) -> object:
+    """The ``native_episode.consumption_module`` block a fragment declares, or
+    ``None`` when it declares none."""
+
+    episode = fragment.get(NATIVE_EPISODE_TOP_LEVEL_KEY)
+    if not isinstance(episode, Mapping):
+        return None
+    return episode.get("consumption_module")
+
+
 def resolve_phase_tools_switch_key(key: str) -> str:
     """The ``phase_tools``-class switch key a ``switch.key`` declaration names,
     or a refusal: exactly ``phase_tools.<phase>``, where ``<phase>`` is the
@@ -1689,6 +1734,8 @@ __all__ = [
     "KNOWLEDGE_STORES_TABLE",
     "KNOWLEDGE_VIEWS_TABLE",
     "LEGACY_OBSERVE_KEYS",
+    "MODULE_LEVEL_SWITCH_KEYS",
+    "MODULE_SWITCH_CLASS",
     "NATIVE_EPISODE_TOP_LEVEL_KEY",
     "NULL_ARMS",
     "OBSERVE_TABLE",
@@ -1718,6 +1765,8 @@ __all__ = [
     "load_knowledge_views_table",
     "load_observe_table",
     "load_toolkits_table",
+    "module_block_of",
+    "resolve_module_switch_key",
     "is_episode_null_arm",
     "is_run_null_arm",
     "is_phase_tools_null_arm",
