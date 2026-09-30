@@ -1,7 +1,79 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-29T22:30:23Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent) · HEAD at writing `310110be` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T00:48:02Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+ops + records agent) · HEAD at writing `cbd0610e` on `master` (plus this refresh commit), tree clean.
+**Since 00:24Z (ops + records agent):** **Umbrella `fable/e5lock` merged** (umbrella master `cbaacc3`, `--no-ff`;
+`docs/datasets.lock.json` gains `whisper-large-v3-openai-pt`, AUXILIARY, plus the 2026-09-29 amendment; `asset_lock.py
+validate` OK 126 assets, `test_asset_lock.py` 8 passed in the worktree, `legacy_asset_resolution_check` PASS; not
+pushed). **`fable/e5prep` merged** (`46685410`; the branch took master first, `d3a96b2c`, one conflict in the E5
+design spec resolved by keeping both addenda, the master addendum and module design 2d governing the E5-2 runtime
+form; 306 worktree tests passed; engineering base, harness admission, tool catalog, results ledger and derived-media
+confinement gates PASS). **E5-0 tool-pass rows root countersigned** (`cbd0610e`, 00:42:15Z, root act delegated under
+decision 201): `SAEA-SLURP-ASR-TOOL-PASS-V1` and `-FOLD-B-V1` -- instrument/oracle pass under 201/206, tool contact
+class speech-tool, kind asr, Fold A's inherited 87 Whisper decodes disclosed; the E5-1 READ row
+`SAEA-SLURP-E5-TRANSCRIPT-CONSISTENCY-READ-V1` stays DRAFT until both catalogs are sealed. `e5_tool_pass.sh --check`
+now refuses only on the live flight (flight.lock, batch driver, `core.flight.cli`) and the serving session on
+port 8080; the lock and ledger refusals are gone. **E5-0 armed:** request file `/home/chao/e5-tool-pass.request`
+(`mode=gpu`); `queue_a2.sh`'s `maybe_restart()` now passes `--gap-hook "$B/serving_restart_hook_e5.sh"` (edited in
+place past the running script's read offset, `.pre-e5hook-20260930T004400Z.bak`; `queue_next.sh` untouched because
+it is executing) -- it will not fire there, since the server restarted 18:50Z and is under 12 h at A2's launch.
+So **`SAEA-Queue-E5`** (`/home/chao/saea-queue/queue_e5.sh`, log `/home/chao/queue-e5.out`, Running since 00:46:50Z)
+waits for `A2 DONE` + `filler hold removed` in `queue-a2.out`, holds the filler, waits for it and for no flight,
+then restarts slurp-np4 UNCONDITIONALLY (uptime logged) with the gap hook `/home/chao/saea-queue/gap_hook_e5_sampleprep.sh`:
+E5-0 (both folds, about 20 min) and then the test-sample preparations 2 and 3 (`prep_test_sample.sh --run --stage
+queries`: the Omni-Embed-Nemotron speech-query encoding and the zero-contact vector export of
+SLURP-TEST-SAMPLE-3010-V1, rows countersigned 2026-09-27 under decision 156; `--check` PASS today; log
+`/home/chao/sample-prep-e5gap.log` with SAMPLE-PREP START / DONE and artifact hashes), then verifies the catalogs
+and receipts under `prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1/{fold-a,fold-b}/`, prints `E5-0 DONE` (or FAILED: the
+filler proceeds, E5-0 is one-shot), removes the hold and runs the filler. **E5-1** runs offline once the catalogs
+exist (countersign its READ row first). **GPU queue:** P-SV-3 (flying, `SAEA-Queue-NEXT`) -> A2 (`SAEA-Queue-A2`)
+-> E5-0 + sample prep 2/3 (serving-restart gap, `SAEA-Queue-E5`) -> filler. **Pending branch:** `fable/milestoneprep`.
+**Since 00:13Z (records agent):** **Owner rulings 200-206 recorded** (`ed575ad7`, registry rows before the
+decision-140 outcome; owner ~23:10Z: 「决策200：同意，决策201：同意，我们调整下课题方向，0906的时候还是聚焦在如何用好主模型，现在调整为如何搭建系统并进行系统级优化，决策202：GO，决策203：好，决策204:同意」
+plus the supplement on model-initiated tools): **200** AGREED -- P-SV-3 flies (flying since 23:25Z at `c6e98e6b`);
+**201** option A -- E5-0/E5-1 prepared on `fable/e5prep` as instruments and oracles only; the 09-06 no-transcript
+ruling superseded in scope (transcripts still never enter the intent decision: DEV-1000 -0.90); runtime form per
+206; **202** GO -- the test-sample milestone read (decision 151 allowance) once A2 reads NOMINATED or better;
+package held on `fable/milestoneprep`, one-shot; **203** good -- COMP-2 = COMP-1b + scope rule (+ optional none
+hint); the scope-rule SLU side is read OFFLINE as a stage column on A2's sealed outputs (0 GPU; script on
+`fable/milestoneprep`); the none hint stays an inner-loop knob (+0.17 predicted); **204** AGREED -- lock v2.1 =
+v2.0 + the G5 Reviewer template (`docs/results/2026-09-30-slurp-v2-1-lock-v1.md`; base/A/A for cells registered
+after A2 seals; A2 and every queued cell stay on v2.0; AT-M0 moves at the next module step; nothing re-registered);
+**205** directive -- research direction = build the system and optimise at system level
+(`docs/readiness/2026-09-29-research-direction-system-level-v1.md`); **206** directive -- tools are
+model-initiated, never system-default (module design section 2d; E5 addendum: E5-2a withdrawn, E5-2 =
+`verify_span(entity_index)` offered at the Solver's slot-value step; three-part gate proposed, owner to confirm;
+deterministic form normalisers are the one flagged class of system-default step). **`fable/tooldecision`
+merged** (`5c2e559f`, docs only). **Coordinator verdicts** (`84cabf93`): **P-SV-1 NOT NOMINATED**, closed as a
+Perception component (present -1.85 [-2.96, -0.83]; the rank-2 conversion 41.5 % vs 19.5 % is kept as a
+Solver-side contrast knob); **P-SV-2 NOT NOMINATED** on presence (+0.37 [-0.37, +1.20]; SLU-F1 +0.81 [+0.11,
++1.66] under the 1.49 floor, kept as the inner-loop knob `min_candidates = 3`). **Re-plan v4**
+(`f3587a6c`, `docs/readiness/2026-09-30-slurp-stage3-replan-v4.md`, supersedes v3): P-SV-3 -> A2 -> scope-rule
+stage column on A2 -> milestone test read (202) -> E5-0 at a serving restart + E5-1 oracle -> E5-2 offer if the
+oracle justifies it -> module step 6 (COMP-1b as the first module block) -> lock v2.1 -> inner-loop run 3;
+boundary recall is the named blank for 95 (P-SV-3 decides depth vs key). **GPU queue:** `SAEA-Queue-NEXT` P-SV-3
+(flying) -> `SAEA-Queue-A2` (A2 at `310110be`) -> filler. **Pending branches:** `fable/e5prep`,
+`fable/milestoneprep` (in progress). **Pending owner:** confirm the E5-2 gate numbers (row 206); nothing else.
+**Since 22:30Z (records and read agent):** **P-SV read driver merged** (`7d1b44ab`, `fable/psvreaddriver`;
+`psv_read.sh` recipe-driven, level-2 column render + official scoring; 263 worktree tests passed; engineering base,
+harness admission, tool catalog and results ledger gates PASS). **P-SV-1 official read** (seal-only arm; the two
+missing read inputs backfilled model-free: generation manifest `e8e2a60e`, phases `de0d4c86`; inherited cost 8,709
+contacts, 25,428.698 speech s, 67,824,629 / 551,270 tokens, no GPU-h on a seal-only completion; READ row + seal-only
+clause countersigned `440a7140` at 22:59:27Z; read merged `7ffba69c`,
+`docs/results/2026-09-29-slurp-psv1-fold-b-branch-read.md`): level 2 (primary) b-top2contrast minus a-agree intent
+**-0.19 [-0.56, +0.19]**, SLU-F1 guard +0.10 [-0.46, +0.69]; twin bars intent 0.42 / SLU 0.41; level 1 top1 -1.67
+[-2.96, -0.37], present -1.85 [-2.96, -0.83] (twin bar 1.06); rank-2 conversion 41.5 % vs A 19.5 %; 1,035 rendered
+rows -0.19 [-0.58, +0.19], 45 skipped net 0; extra contacts 49.6 % of the flight; reproduces the pre-read exactly.
+Read agent's line: **NOT NOMINATED** (not a branch-local harm) -- coordinator clause pending. **P-SV-2 sealed** at
+`c6e98e6b` (FINALIZED, COMPLETED, clean tree, 8,713 contacts, 1,080 rows, step-done 23:23:39Z; no GPU-h recorded,
+2 h 31 min wall); READ row countersigned `881b1787` (23:49:35Z, before any score); **P-SV-2 read** merged `0c0a907c`
+(`docs/results/2026-09-30-slurp-psv2-fold-b-branch-read.md`): gold-on-list (primary) b-list3 minus a-agree **+0.37
+[-0.37, +1.20]** vs twin present bar 1.02; top1 0.00, level-2 intent 0.00 [-0.37, +0.37]; level-2 official SLU-F1
++0.81 [+0.11, +1.66] beside (never gating; twin +0.18 [-0.35, +0.73]); min_candidates_met 950 / 130; duplicates
+collapsed B 31 vs A 17 / T 25. Read agent's line: **NOT NOMINATED** (presence) -- coordinator clause pending.
+**GPU queue:** `SAEA-Queue-NEXT` P-SV-3 flying (smoke PASS, arm since 23:25:39Z at `c6e98e6b`) -> `SAEA-Queue-A2`
+(A2 at `310110be`, waiting for `NEXT DONE`) -> filler. **Pending owner:** decisions 200 (P-SV-3 column) and 201
+(E5 Whisper route). **Next:** coordinator clauses on P-SV-1 and P-SV-2; P-SV-3 read after its seal.
 **Since 21:05Z (records agent):** **Consumption-module steps 3-5 merged** (`6cc9a3d9`, `fable/module2`; 721 worktree
 tests passed). Step 3: the scope-rule table, built model-free over the R5 roster (TRAIN minus Fold A, Fold B, R01 and
 R01C: 8,554 exemplars; 3,629 phrases at >= 5 occurrences, 2,969 meeting the rule of >= 0.8 untagged; receipt
@@ -419,7 +491,7 @@ Yours, unchanged:
 
 Mine: make no cross-flight claim without an in-chain replicate and no benefit claim under 200 rows. Every cell registered from 2026-09-27 carries a `stage3_measurement` block, and `stage3_effect_floor_check.py` enforces it.
 
-**Owner rulings received (decisions 175-199, 2026-09-28 / 29).** None open; 197-199 are listed below.
+**Owner rulings received (decisions 175-206, 2026-09-28 / 29).** Open: only the confirmation of the E5-2 gate numbers proposed under 206.
 
 1. 175: COMP-1 recovers by RESUME; `-REC` superseded unflown; the resume is the flight's one recovery.
 2. 176: `kb_policy` digest lock re-pinned (`cfd34bf5`).
@@ -446,8 +518,15 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 23. 197: P-SV-1 seal-only completion GO; registered and countersigned `a842f670`, flipped to ready `e42e87f3`; the flip was refused on the parent-package residue (cell ready-unconverged), fix on `fable/repinresume2`.
 24. 198: COMP-1 NOT ADMITTED (HARMFUL on the SLU-F1 guard; cause: the Solver citation contract); option B -- COMP-1b (AGREE + centroid key, no citation contract) held on `fable/comp1b`, then A2 = COMP-1b on DEV-2000-ADDED; recorded `f26e3cdb`.
 25. 199: owner directive, empty supply and none slots are first-class outcomes; recorded `f26e3cdb`; module design section 2c `c0067e0e`; offline analysis on `fable/emptysupply`.
+26. 200: AGREED; P-SV-3 flies (since 23:25Z at `c6e98e6b`); recorded `ed575ad7`.
+27. 201: option A; E5-0/E5-1 as instruments and oracles on `fable/e5prep`; the 09-06 no-transcript ruling superseded in scope; runtime form per 206.
+28. 202: GO for the test-sample milestone read once A2 reads NOMINATED or better; package held on `fable/milestoneprep`; one-shot.
+29. 203: COMP-2 = COMP-1b + scope rule; the scope rule read offline as a stage column on A2's sealed outputs (0 GPU); the none hint stays an inner-loop knob.
+30. 204: lock v2.1 = v2.0 + G5 Reviewer template; `docs/results/2026-09-30-slurp-v2-1-lock-v1.md`.
+31. 205: directive, research direction = build the system and optimise at system level; `docs/readiness/2026-09-29-research-direction-system-level-v1.md`.
+32. 206: directive, tools are model-initiated, never system-default; module design 2d, E5 addendum; E5-2 gate proposed, owner to confirm.
 
-**Pending branches (not merged):** `fable/psvreaddriver` only (the P-SV recipe-driven read driver: level-2 column render + official scoring). Merged since the previous list: `fable/repinresume2` (`4b2946f3`), `fable/comp1slu` (`1ab14dfc`), `fable/comp1b` (`c5cb5399`), `fable/emptysupply` (`70b67bbf`), `fable/psv3` (`776e3f84`), `fable/module1` (`fe08c9fc`), `fable/module2` (`6cc9a3d9`), `fable/repinsuperseded` (`6d3d58f1`), `fable/innerloop2` (`0da2d81a`). **Queue order:** `SAEA-Queue-NEXT` P-SV-2 (flying, `c6e98e6b`) -> P-SV-3 -> `SAEA-Queue-A2` (A2, `310110be`) -> filler; the 12-h serving restart rule is in both queues.
+**Pending branches (not merged):** `fable/e5prep` (E5-0 / E5-1 preparation) and `fable/milestoneprep` (test-sample milestone package + the A2 scope-rule stage-column script), both in progress. Merged since the previous list: `fable/tooldecision` (`5c2e559f`), `fable/psvreaddriver` (`7d1b44ab`), `fable/psv1read` (`7ffba69c`), `fable/psv2read` (`0c0a907c`), `fable/repinresume2` (`4b2946f3`), `fable/comp1slu` (`1ab14dfc`), `fable/comp1b` (`c5cb5399`), `fable/emptysupply` (`70b67bbf`), `fable/psv3` (`776e3f84`), `fable/module1` (`fe08c9fc`), `fable/module2` (`6cc9a3d9`), `fable/repinsuperseded` (`6d3d58f1`), `fable/innerloop2` (`0da2d81a`). **Queue order:** `SAEA-Queue-NEXT` P-SV-3 (flying since 23:25Z, `c6e98e6b`) -> `SAEA-Queue-A2` (A2, `310110be`) -> filler; the 12-h serving restart rule is in both queues.
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code). The supply-router test failure found during E4 v1 (a bare `object()` double refusing the bolted-on binding) is fixed (`87146390`).
 
@@ -470,10 +549,16 @@ The wave (W1, W3a, W4 on the shared A/A) flew at `5f8b4c9d`, launched fresh afte
 
 ## 7. My next action
 
-1. Land the P-SV read driver (`fable/psvreaddriver`), countersign the P-SV-1 READ row, then read P-SV-1 (sealed) and P-SV-2 (when sealed) with it under the decision-190 floors; P-SV-3 reads the same way after it seals.
-2. A2 flies after P-SV-3 (`SAEA-Queue-A2`, flight commit `310110be`); countersign its READ row after the seal and read it against its in-chain A/A (declared +3.80 intent, guard h_SLU 1.2525). NOMINATED-or-better there makes AGREE + centroid the module's first composed component list and lets the test-sample milestone (decision 151) be requested.
-3. Consumption-module step 6 (supply abstention, section 2c, AT-M5) and the delivered-path axis rendering follow once the P-SV and A2 reads name the component list.
-4. Decisions 200 (P-SV-3 column) and 201 (E5 Whisper route, limited exception) await the owner.
+1. Read P-SV-3 after its seal with the P-SV read driver under the decision-190 floors (presence primary); it decides
+   whether the boundary-recall gap is depth or key.
+2. A2 flies after P-SV-3 (`SAEA-Queue-A2`, flight commit `310110be`, v2.0 bytes); countersign its READ row after the
+   seal and read it against its in-chain A/A (declared +3.80 intent, guard h_SLU 1.2525); then the scope-rule stage
+   column on its sealed outputs (decision 203, 0 GPU).
+3. On A2 NOMINATED or better: report it to the owner and run the test-sample milestone read (decision 202, one-shot).
+4. E5-0 at a 12-h serving restart, then the E5-1 oracle; E5-2 (the `verify_span` offer) only if the oracle justifies
+   it, under the gate the owner confirms (row 206).
+5. Module step 6 (COMP-1b as the first module block; lock layer to v2.1), then inner-loop run 3. Plan:
+   `docs/readiness/2026-09-30-slurp-stage3-replan-v4.md`.
 
 ## 8. Housekeeping we share
 

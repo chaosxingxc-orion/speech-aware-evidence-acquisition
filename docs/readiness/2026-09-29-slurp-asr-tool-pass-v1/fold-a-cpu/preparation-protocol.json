@@ -1,0 +1,34 @@
+{
+  "artifacts_relpath": "prepared/SAEA-SLURP-ASR-TOOL-PASS-V1/attempt-slurp-asr-tool-pass-fold-a-cpu-v1/observations",
+  "catalog_id": "slurp-train-fold-a-whisper-large-v3-full-utterance-v1-cpu",
+  "checkpoint_receipt": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/runtime-inventory.json",
+    "sha256": "79c79469975a8c014f6fc1b94bb3ab439f9e0cdc877c11378ec33d37170dc697"
+  },
+  "decoding": {
+    "batch_size": 1,
+    "beam_size": 5,
+    "cpu_thread_limits": {
+      "inference_threads": 4,
+      "interop_threads": 1
+    },
+    "cpu_workers": 1,
+    "device": "cpu",
+    "fp16": false,
+    "language": "en",
+    "logprob_threshold": -1.0,
+    "no_speech_threshold": 0.6,
+    "sample_len": 224,
+    "schema": "saea-local-whisper-decode-v1",
+    "task": "transcribe",
+    "temperature": 0,
+    "without_timestamps": true
+  },
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-ASR-TOOL-PASS-V1/attempt-slurp-asr-tool-pass-fold-a-cpu-v1/catalog.json",
+  "schema": "saea-speech-observation-preparation-protocol-v1",
+  "sources": {
+    "relpath": "prepared/SAEA-SLURP-TRAIN-A-LIVE-SPEECH-SOURCES-PREPARE-V1/sources.json",
+    "sha256": "e756e7f7dfb876e856dd0e12691a2e9497260036a1721efb883cd741d4ffd9c3"
+  }
+}

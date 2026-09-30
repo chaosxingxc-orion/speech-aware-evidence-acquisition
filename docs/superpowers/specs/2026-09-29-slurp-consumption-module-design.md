@@ -390,3 +390,75 @@ convergence.
   boundary-recall blank (83 off-list rows, 49 in the block; ledger `:244`).
 - Not any Audio2Tool or Earnings cell: section 2b is the transfer shape only; decision 187 keeps the GPU on SLURP.
 - Not a change to the lock: the lock layer compiles to the existing PLAN bytes and is proven so, not re-decided.
+
+## 2d. Tool use is a model decision (owner directives, 2026-09-29)
+
+**Owner directives (2026-09-29; translated from the owner's Chinese, verbatim text in
+`docs/readiness/2026-09-29-research-direction-system-level-v1.md`).** (1) "We are adjusting the research direction: on
+09-06 the focus was still on how to make good use of the main model; it now becomes how to build the system and
+optimise it at system level." (2) "Tools should be invoked by the model on its own initiative, not called by the
+system by default; otherwise we fall into the self-proof trap -- why would the task not be done by an ASR + LLM
+combination, and why would it need an omni agent system!"
+
+The module OFFERS tools; it never calls a tool on the model's behalf, and no module part may turn a tool output into
+delivered content without a model decision in between. A tool offer is a component like any other in section 1, with
+the states `on` (offered on the delivered path), `off` (not rendered at all) and `column` (offered only in a
+same-flight column, 3.3); `shadow` is not a legal state for an offer, because an offer that the model cannot see is not
+an offer. An offer is scoped to ONE node: the first one, `tool-offer:asr-slot-value`, is rendered only at the Solver's
+slot-value step, which is owner decision 180's thesis in its model-initiated form -- if the core cannot extract a value
+natively, it may call ASR to verify it. The offer is rendered through the existing native tool-calling path
+(llama-server with `--jinja`, the `phase_tools` block of `rails/native_episode_config.py:1316`, `tool_choice` set to
+`auto` only where tools are named, `rails/runner.py:3536`) and its wrapper is registered in the `rails/tools.py`
+catalog through `build_tool_entry` (`:357`), so `tool_catalog_check.py` pins it like every other tool. The offer must
+be minimal, because this study has already measured what a heavy offer costs: rendering a tool schema constantly into
+every role (EFF-1) made the Solver answer with a tool-call-shaped string on 145 of 1,092 contacts and was HARMFUL,
+SLU-F1 -4.39 [-6.69, -2.17] (`docs/results/2026-09-19-slurp-eff1-tool-constant-verdict.md`); the Reviewer's
+task-contract tool was RETIRED (`docs/receipts/harness-admission.json`); and a full native tool catalog renders to
+13,914 tokens (`docs/readiness/2026-09-04-a2t-direct-baseline-calibration-v1-verdict.md:140`). So an offer is one
+tool, a short schema with a closed argument space, present only at its node and absent from every other role's
+request. Each model call through an offer costs one more core contact inside the same ReAct episode, counted into the
+program ceiling like any other contact of section 2.4, which this section extends: the "no tool-level verifier" line
+of 2.4 holds for system-applied verification and is superseded for model-initiated offers once owner rows 201 and 206
+stand.
+
+The model's decision is receipted per row and per offered node as
+`tool_decision: {offered, called, args_hash, result_hash, used_in_answer}`, where `used_in_answer` is computed
+deterministically after delivery (the delivered value at the called index differs from the pre-call draft value, or
+matches the returned span under the E5 canonicaliser) and never read from the model's own claim. The read of any tool
+offer measures three things separately and never pools them: the **call rate** (calls over offered rows), the
+**decision precision and recall** against the offline DECISION ORACLE (the rows where a call would have helped, which
+for the ASR offer is E5-1's set of delivered values that are wrong while the transcript holds the gold span), and the
+**conversion** (delivered values changed from wrong to correct, net of correct values changed to wrong). The
+sealed-credit inner loop (`SEALED_CREDIT_SYSTEM_POLICY_V1`) credits the DECISION node -- when to call -- before it
+credits the tool's quality, which is the offer-level echo of the Reviewer rule "reach before quality": a perfect tool
+that the model never calls at the right rows is worth nothing, and a tool's quality is only readable on rows the
+decision reached.
+
+Deterministic FORM normalisers -- the delivered-row normaliser (row 4) and the do-not-tag scope rule (row 15; its
+bar under registry row 203 as the coordinator numbers it) -- are not tools and stay system steps. They are flagged here
+as the ONE class of system-default action the module takes, and the reason is stated so the class cannot grow: they
+change the FORM of what the core already delivered (projection, casing, scope of tagging), never the EVIDENCE the
+answer rests on, so they cannot turn the system into "a fixed front end plus an LLM". Anything that adds evidence the
+core did not choose to consult -- a transcript, an alignment, a retrieval result -- is an offer or it is nothing. The
+all-off arm offers no tool at all, so its request bytes are the AT-M0 lock bytes unchanged and every A/A comparator of
+section 3.2 stays valid.
+
+| verification route | who decides to verify | what the receipt records | what the read measures | what the oracle is |
+| --- | --- | --- | --- | --- |
+| core-native targeted re-listen v1 (E4-1, `saea-obs-targeted-relisten-v1`) -- CLOSED at SHADOW HARM (replace-only SLU-F1 -4.11 [-5.41, -2.88]) | the system (the stage fired on every delivered entity, at most 3 per row) -- the default-applied pattern this section bars | `saea-relisten-v1`: per-entity blind / confirm contacts, accepted replacement, value hashes | replace-only and replace + drop shadow columns vs the delivered column | the headroom hearing-visible 71 + re-listen-addressable 35 items |
+| E5-2a system-applied transcript check in delivery -- WITHDRAWN as a runtime candidate | the system (a rule applied to every delivered entity) | none at runtime; offline only | R-FLAG / R-DROP / R-SWAP columns on sealed arms (E5-1) | itself: kept only as the UPPER BOUND on what a perfect decision to call could yield |
+| E5-2 ASR tool offer `tool-offer:asr-slot-value` (one tool, `verify_span(entity_index)`, E5 spec addendum) | the model, at the Solver's slot-value step | `tool_decision {offered, called, args_hash, result_hash, used_in_answer}` per row, plus `saea-asr-verify-v1` hashes for each returned span | call rate; decision precision / recall; conversion on called rows; whole-column SLU-F1 guard; intent rows differing = 0 | the E5-1 DECISION ORACLE: delivered value wrong and gold span contained in the pinned transcript (Q1 and not Q2) |
+| future MMS_FA aligner tool (word timing for a named value) | the model, at one declared node | the same `tool_decision` shape plus the alignment artifact hash and the tool-smoke ledger row | same three measures | an offline oracle built from MMS_FA timings on sealed arms before the offer is registered |
+| future speech-embedder tool (LCO-Embedding-Omni; speech-keyed lookup the model requests) | the model, at one declared node | the same `tool_decision` shape plus the query-vector and result-list hashes | same three measures, plus retrieval hit rate on called rows | an offline oracle of rows where the requested lookup returns the gold unit (decision 199's empty result stays legal) |
+
+**Inventory addition (section 1).**
+
+| # | component | where it lives today | status | layer, plane, node | model contacts | measured or declared effect (source) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 20 | `tool-offer:asr-slot-value`: one model-initiated ASR tool, `verify_span(entity_index)`, offered only at the Solver's slot-value step; returns the pinned E5-0 transcript span for that entity or an empty result | `docs/superpowers/specs/2026-09-29-e5-asr-tool-slot-value-verification-design.md` (addendum) and this section only | designed; E5-0/E5-1 oracles pending | C, OBS evidence offered to USE; Solver slot-value step only | +1 core contact per call (the tool round-trip inside the Solver's ReAct episode); 0 when not called; the tool itself is a `speech-tool` catalog read, no live decode | none measured; upper bound = E5-1's oracle, gate in the E5 addendum |
+
+**Carrier mapping addition (section 2b.2).**
+
+| component | SLURP form | Audio2Tool form (tool = intent analogue, parameters = slot analogue) | Earnings-21 / -22 form |
+| --- | --- | --- | --- |
+| model-initiated ASR tool offer (`tool-offer:asr-slot-value`) | `verify_span(entity_index)` at the Solver's slot-value step; span from the full-utterance E5-0 catalog | the same offer at the parameter-filling step, indexed over the draft call's string **parameter values** (enums and numerics stay with `a2t-toolcall`'s own grading); the A2T clip transcript from the same producer | the same offer at the entity / numeric step, indexed over the draft's **numeric and entity values** (E-C3's targets); span cut through MMS_FA timings and `saea-tool-slice-encode-v1` under a declared derived root, because 90-s windows exceed Whisper's 30-s limit |
