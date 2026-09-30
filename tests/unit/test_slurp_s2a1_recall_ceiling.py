@@ -115,6 +115,32 @@ def test_verdict_arithmetic():
     assert M.verdict(0.8, [0.7, 0.9])["reading_a_reachable_at_conv_uptake"] is True
 
 
+def test_perfect_asr_source_split_and_reference_rows():
+    whisper = ["fly", "to", "pari", "on", "monday"]
+    ref = ["fly", "to", "paris", "on", "monday", "at", "a", "b", "c", "d", "e", "f"]
+    entries = [("date", ("monday",), whisper, ref),                         # in both -> in_whisper
+               ("place_name", ("paris",), whisper, ref),                    # (i) ASR miss
+               ("place_name", ("a", "b", "c", "d", "e", "f"), whisper, ref),   # reference only, > 5 tokens
+               ("place_name", ("rome",), whisper, ref),                     # (ii) never spoken verbatim
+               ("date", (), whisper, ref),                                  # empty gold -> neither
+               ("date", ("mon", "day"), whisper, ref)]                      # (ii), but a spacing difference
+    out = M.source_split(entries)
+    assert out["counts"] == {"in_whisper": 1, "in_reference": 1, "in_reference_too_long": 1, "in_neither": 3}
+    assert out["in_neither_contained_ignoring_spaces"] == 1
+    assert out["reference_contained_within_max_tokens"] == 2
+    by = {t["type"]: t for t in out["by_type"]}
+    assert by["place_name"]["items"] == 3 and by["place_name"]["in_reference"] == 1
+    assert by["date"]["in_whisper"] == 1 and by["date"]["in_neither"] == 2
+    rows = M.reference_transcripts({"s1": "Fly to Paris"}, ["s1"], lambda x: x.lower().split())
+    assert rows["s1"]["status"] == "ok" and rows["s1"]["canon"] == ["fly", "to", "paris"]
+    with pytest.raises(M.ReadError):
+        M.reference_transcripts({}, ["s1"], str.split)
+    b = M.items_of_80(0.95)
+    assert b["items_of_80"] == pytest.approx(80 * 0.95 * 32 / 70, abs=0.01)
+    assert b["reaches_27_of_80"] is True and b["T_bar_0_738"] is True
+    assert M.items_of_80(0.4714)["at_or_below_18_of_80"] is True
+
+
 def test_verdict_perfect_ranker_bound():
     v = M.verdict(0.1, [0.05, 0.2], 0.47)
     assert v["c_ceiling_perfect_ranker_at_conv_uptake"] == pytest.approx(0.47 * 32 / 70, abs=1e-4)

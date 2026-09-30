@@ -202,3 +202,154 @@ ranks only.
 - `tables.md`: `de2d509cdf0ff47f46b88604f1d57cb2d63ed7d06e066474888215e1f3aedeea`
 
 A `--check` re-run reported IDENTICAL apart from `generated_at`.
+
+## Addendum: perfect-ASR bound (input to owner decision 212, "pin a stronger ASR")
+
+Date: 2026-09-30. Same read id and recipe, run with the new `--reference-source reference` flag of the same driver.
+Written by Claude Opus 5.5 in worktree `fable/s2a1`. **DESCRIPTIVE; contacts zero of every kind** (no model, Whisper,
+GPU, network or scorer-subprocess contact; CPU only, 1 min 52 s, peak 0.76 GB). The verdict word belongs to the
+coordinator.
+
+**Question.** Of the 35 not-in-Whisper items, how many gold values are in the SLURP reference transcript, which is
+the perfect-ASR bound? And what do T and the c <= T × 0.457 bound become if the tool reads that transcript instead
+of Whisper large-v3?
+
+**Method.**
+
+- **Source.** Each Fold A and Fold B recording gets the SLURP reference `sentence` of its utterance. The sentences
+  come from the governed TRAIN loader `data.slurp.load_slurp_train_material` (11,514 utterances, 50,628 recordings)
+  and enter on the scoring side only. The precedent is the E5 oracle read, which also read references offline. The
+  sentences are held in memory only; no sentence, span or gold value is printed or persisted.
+- **Everything else is unchanged:** the canonicaliser (`rails.relisten.canonical_value`, as in E5 and S2a.1), the
+  5-token span rule, the draft filter, the two lexicons and the Youden-J threshold fit on Fold B. Theta is refitted
+  on the Fold B reference rows: 0.45 primary (TPR 0.5801, FPR 0.0246) and 0.55 full-TRAIN (TPR 0.6906, FPR 0.0428).
+  For sensitivity, T is also read at the Whisper-fitted theta (0.50 / 0.60).
+- **Stop checks, all reproduced.** S1: 189 / 172 / 70. E5 Whisper containment: 707 / 941 and 718 / 944. E5's
+  cross-check: 130 contained MISSING items.
+- **Reference containment of all gold is 911 / 941 = 0.9681 (Fold A) and 909 / 944 = 0.9629 (Fold B).** It is not
+  1.0, because the gold filler is joined from SLURP's annotation tokens while the reference is the sentence text.
+- **Default outputs unchanged.** A `--check` of the default Whisper mode is IDENTICAL apart from `generated_at`, and
+  its hashes are the ones in section 5.
+
+### A.1 The split of the 35 not-in-Whisper items
+
+| kind (of the 70 not-in-supply items) | items |
+| --- | ---: |
+| in the Whisper transcript (the S2a.1 containment) | 35 |
+| **(i) not in Whisper, in the reference within 5 tokens** (an ASR miss a stronger model could recover) | **28** |
+| in the reference only as a span longer than 5 tokens | 0 |
+| **(ii) in neither** (never verbatim in the reference under this canonicaliser) | **7** |
+
+- **Inside (ii).** 5 of the 7 occur in the reference once spaces are ignored. That is a tokenisation or spacing
+  difference between the annotation tokens and the sentence (for example, a split or joined number or time form).
+  An ASR that writes the sentence's form still misses the token-exact match. The other 2 are not present in the
+  sentence in any spacing: they are normalised or derived values.
+- **Across all 189 MISSING items:** 130 are in Whisper, (i) 51, too long 0, and (ii) 8. Of the 8, 6 are
+  spacing-only. Reference containment is 181 / 189 = 0.9577.
+
+**Per slot type** (the 70 items; (i) and (ii) counts; the types not listed have neither):
+
+| type | items | in Whisper | (i) reference only | (ii) neither |
+| --- | ---: | ---: | ---: | ---: |
+| place_name | 13 | 6 | 7 | 0 |
+| business_name | 7 | 2 | 4 | 1 |
+| date | 5 | 3 | 1 | 1 |
+| person | 5 | 2 | 1 | 2 |
+| device_type | 3 | 1 | 2 | 0 |
+| list_name | 3 | 1 | 2 | 0 |
+| food_type | 3 | 2 | 1 | 0 |
+| audiobook_name | 2 | 0 | 2 | 0 |
+| artist_name | 2 | 0 | 1 | 1 |
+| weather_descriptor | 2 | 1 | 1 | 0 |
+| song_name | 1 | 0 | 0 | 1 |
+| timeofday | 1 | 0 | 0 | 1 |
+| currency_name, music_genre, news_topic, podcast_descriptor, podcast_name, transport_name | 6 | 0 | 6 (1 each) | 0 |
+| media_type 4, business_type 3, time 2, and 8 single-item types | 17 | 17 | 0 | 0 |
+| **total** | **70** | **35** | **28** | **7** |
+
+The ASR misses concentrate in names: place_name 7, business_name 4, and the media-title types (audiobook, podcast,
+artist and music) 6. These are the named-entity types the E5 read already flagged as the weakest.
+
+### A.2 T under a perfect ASR (70 not-in-supply items)
+
+Each cell is hits / 70 = T, with the Wilson CI95. The Whisper column repeats section 1.
+
+| setting | Whisper large-v3 (section 1) | perfect ASR, primary lexicon | perfect ASR, full-TRAIN lexicon |
+| --- | --- | --- | --- |
+| **contract: top 3 at the refitted theta** | 6 (primary) / 12 (full) | **10 / 70 = 0.1429 [0.080, 0.243]** (theta 0.45) | **26 / 70 = 0.3714 [0.268, 0.489]** (theta 0.55) |
+| contract at the Whisper-fitted theta | same as above | 10 / 70 = 0.1429 (theta 0.50) | 24 / 70 = 0.3429 (theta 0.60) |
+| top 1 at theta | 3 / 11 | 6 / 70 = 0.0857 | 23 / 70 = 0.3286 |
+| top 3, no threshold | 16 / 24 | 30 / 70 = 0.4286 | 43 / 70 = 0.6143 |
+| **no ranker: every span of at most 5 tokens, draft-filtered (perfect ranker)** | 33 / 70 = 0.4714 | **61 / 70 = 0.8714 [0.773, 0.931]** | same |
+| no ranker: containment within 5 tokens | 35 / 70 = 0.5000 | 63 / 70 = 0.9000 [0.808, 0.951] | same |
+
+**Where the misses are under a perfect ASR (contract).**
+
+| lexicon | not in the transcript | overlaps the draft | below theta | not in the top 3 |
+| --- | ---: | ---: | ---: | ---: |
+| primary | 7 | 2 | 51 | 0 |
+| full TRAIN | 7 | 2 | 33 | 2 |
+
+With no threshold, the full-TRAIN column loses 18 items that are not ranked into the top 3.
+
+**False candidates also rise.** On the 908 rows with no MISSING item, the non-empty rate is 2.56 % (primary) and
+4.39 % (full TRAIN), against 2.30 % and 3.18 % on Whisper.
+
+### A.3 The bound: c <= T × 0.457, against 27 / 80 and 18 / 80
+
+| bound (perfect ASR) | T | c ceiling at CONV uptake 0.457 | items of 80 | reaches 27 / 80 | at or below 18 / 80 |
+| --- | ---: | ---: | ---: | --- | --- |
+| contract, primary lexicon | 0.1429 | 0.0653 | 5.2 | no | yes |
+| contract, full-TRAIN lexicon | 0.3714 | 0.1698 | 13.6 | no | yes |
+| contract, full TRAIN at the Whisper theta | 0.3429 | 0.1568 | 12.5 | no | yes |
+| top 3 without a threshold, full TRAIN | 0.6143 | 0.2808 | 22.5 | no | no |
+| **perfect ranker, draft-filtered** | **0.8714** | **0.3984** | **31.9** | **yes** | no |
+| containment within 5 tokens | 0.9000 | 0.4114 | 32.9 | yes | no |
+
+**The thresholds.** Reading (a) needs T >= 0.7383, which is 52 or more of the 70 items. Reading (b)'s ceiling of
+18 / 80 corresponds to T <= 0.492. Under a perfect ASR, the contract tool needs an uptake of 2.36 (primary) or 0.91
+(full TRAIN) to reach 27 / 80.
+
+### A.4 Verdict for decision 212 (the coordinator's word)
+
+**A stronger ASR is necessary but not sufficient. Under this tool contract there is no path to T >= 0.72 through ASR
+alone.**
+
+- **The ceiling moves.** A perfect ASR lifts the perfect-ranker ceiling from 33 / 70 = 0.47 to 61 / 70 = 0.87,
+  above the 0.738 bar. The Wilson lower bound is 0.773. So a stronger ASR removes the only absolute barrier that
+  section 3 found: 28 of the 35 not-in-Whisper values are ASR misses and are recoverable in principle. Only 7 are
+  not verbatim in the reference, and 5 of those 7 are spacing forms.
+- **The contract tool does not follow the ceiling.** With the reference as its transcript, the contract tool reaches
+  T = 0.14 (primary) or 0.37 (full TRAIN; CI95 upper 0.49). Its c ceiling is 5.2 or 13.6 of 80: under 18 / 80, and
+  far under 27 / 80. Reading (b) is still predicted. The binding stage moves from "not in the transcript" to the
+  ranker: 33 to 51 eligible golds score below theta, because values the supply did not print are by construction
+  far from the TRAIN lexicon.
+- **The joint requirement for a path to (a).** A real ASR must recover at least 19 of the 28 (i) items (52 - 33;
+  68 %). That assumes a perfect ranker. It must also, together with a ranker, lose at most 9 of the 61 eligible
+  values to threshold and ranking, where today's best ranker loses 35 even on perfect text. Even the best no-threshold
+  ranker on perfect text reaches only 43 / 70 = 0.61.
+- **Recommendation.** Decision 212 should not be taken alone on the strength of this tool. A stronger-ASR pin earns
+  its cost only when it is bundled with a ranker redesign, one that is not a nearest-value lexicon match. That
+  redesign can be tested offline on the reference transcript before any ASR is pinned or any contact is spent: this
+  driver's `--reference-source reference` is the bench, and its gate is contract T >= 0.738 on the 70 items. If no
+  ranker clears 0.738 on perfect text, no ASR choice can.
+- **Scope.** These are Fold A construction-roster numbers (70 items; decisions 28 and 86). The 5-of-7 spacing
+  diagnostic is a character-level check and could over-count by matching inside words.
+
+**Reproduce the addendum.**
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 PYTHONPATH=src python -B scripts/analysis/slurp_s2a1_recall_ceiling.py \
+    --data-root "$SPEECHRL_DATA_DIR" --lock /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json \
+    --reference-source reference
+# the same with --check: IDENTICAL apart from generated_at
+```
+
+**Outputs.** Under `$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-S2A1-RECALL-CEILING-V1/perfect-asr-reference/`:
+`report.json`, `tables.md` and `content-sha256.json`. The content hashes, with `generated_at` removed:
+
+- `report.json`: `1147911e0436e2ac9435d1f95e912e077d5b851bfd5a13114f9e4cc5c976ef06`
+- `tables.md`: `62ab68697f8e6dbbdf3791033a92283115febef9da9ef087884383541156cdeb`
+
+A `--check` re-run reported IDENTICAL apart from `generated_at`. The unit test is
+`test_perfect_asr_source_split_and_reference_rows`; the file now has 10 synthetic tests.

@@ -37,6 +37,13 @@ Read (Fold A): the 70 not-in-supply MISSING items of COMP-1b Fold A are re-deriv
 counts reproduce (MISSING 189 on 172 rows; not-in-supply 70).  DEV-2000-ADDED has no E5-0 catalog, so A2's 80
 items are NOT measured (the driver refuses to create one).
 
+Addendum (``--reference-source reference``, owner decision 212 input): the same tool, stop checks and Fold B
+threshold fit, with the SLURP reference sentence (governed ``data.slurp.load_slurp_train_material``, TRAIN only,
+scoring side) as a perfect-ASR transcript under the same canonicaliser.  It splits the not-in-Whisper items into
+(i) contained in the reference within 5 tokens and (ii) contained in neither, re-reads T under the perfect-ASR
+source (reference-fitted and Whisper-fitted theta), and writes under ``<analysis dir>/perfect-asr-reference/``.
+The default (Whisper) outputs are unchanged.
+
 Gold and text discipline: gold enters offline on the scoring side only, through the governed SLURP loader
 (``train``).  The test and devel splits are not read.  No utterance text, transcript, gold value, span or model
 output is printed or persisted: only ids, counts, rates, slot TYPE names and hashes.  Zero model, server,
@@ -70,6 +77,7 @@ DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lo
 DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
 SLOT_STORE_V2 = "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json"
 DEV_CATALOG = "prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1/dev2000-added"
+REFERENCE_SUBDIR = "perfect-asr-reference"   # addendum outputs (--reference-source reference)
 
 K = 3                 # contract: at most three spans
 MAX_TOKENS = 5        # contract: at most five tokens per span
@@ -353,6 +361,23 @@ def build_lexicon(records: list, source_ids: set | None, exclude_utts: set, cano
     return lex, {"records_used": used, "records_dropped_fold_overlap": dropped, **lex.size()}
 
 
+def load_reference_sentences(lock_path: Path, data_root: Path) -> tuple:
+    """recording sample id -> SLURP reference sentence (TRAIN only, governed ``load_slurp_train_material``).
+    Scoring side only; the sentences are never printed or persisted."""
+    from speech_aware_evidence_acquisition.data.lock import load_lock
+    from speech_aware_evidence_acquisition.data.slurp import load_slurp_train_material
+
+    material = load_slurp_train_material(load_lock(lock_path), data_root, media_validation_workers=8)
+    out = {}
+    for m in material:
+        for rec in m.recordings:
+            if split_of(rec.sample_id) != "train":
+                raise ReadError("a reference sentence is not a TRAIN record")
+            out[rec.sample_id] = m.sentence
+    return out, {"loader": "data.slurp.load_slurp_train_material", "utterances": len(material),
+                 "recordings": len(out), "split": "train"}
+
+
 def load_slot_store_sources(data_root: Path) -> tuple:
     path = data_root / SLOT_STORE_V2
     snap = json.loads(path.read_text(encoding="utf-8"))
@@ -551,6 +576,60 @@ def all_windows(rows: dict, max_tokens: int = MAX_TOKENS) -> set:
     return {" ".join(span) for row in rows.values() for _i, span in candidate_spans(row["canon"], set(), max_tokens)}
 
 
+SOURCE_KINDS = ("in_whisper", "in_reference", "in_reference_too_long", "in_neither")
+
+
+def source_split(entries: list, max_tokens: int = MAX_TOKENS) -> dict:
+    """Perfect-ASR split of gold items (addendum).  ``entries`` = [(type, gold tuple, whisper canon, reference
+    canon)].  Each item lands in the first matching kind: ``in_whisper`` (contained in the Whisper transcript,
+    any length -- the S2a.1 containment), ``in_reference`` (i: not in Whisper, contained in the reference
+    transcript within ``max_tokens`` -- an ASR miss a stronger model could recover), ``in_reference_too_long``
+    (contained in the reference only as a span longer than ``max_tokens``), ``in_neither`` (ii: never present
+    verbatim in the reference either -- no ASR recovers it under this contract)."""
+    counts, by_type, ref_within, neither_nospace = Counter(), defaultdict(Counter), 0, 0
+    for t, gold, w_canon, r_canon in entries:
+        in_w = bool(gold) and bool(occurrences(gold, w_canon))
+        in_r = bool(gold) and bool(occurrences(gold, r_canon))
+        ref_within += int(in_r and len(gold) <= max_tokens)
+        if in_w:
+            kind = "in_whisper"
+        elif in_r and len(gold) <= max_tokens:
+            kind = "in_reference"
+        elif in_r:
+            kind = "in_reference_too_long"
+        else:
+            kind = "in_neither"
+            # diagnostic: a (ii) item whose characters occur in the reference once spaces are ignored is a
+            # tokenisation / spacing difference between the annotation tokens and the sentence text
+            neither_nospace += int(bool(gold) and "".join(gold) in "".join(r_canon))
+        counts[kind] += 1
+        by_type[t][kind] += 1
+    n = len(entries)
+    return {"items": n, "counts": {k: counts.get(k, 0) for k in SOURCE_KINDS},
+            "reference_contained_within_max_tokens": ref_within,
+            "reference_contained_within_max_tokens_rate": round(ref_within / n, 4) if n else None,
+            "in_neither_contained_ignoring_spaces": neither_nospace,
+            "by_type": [{"type": t, "items": sum(c.values()), **{k: c.get(k, 0) for k in SOURCE_KINDS}}
+                        for t, c in sorted(by_type.items(), key=lambda kv: (-sum(kv[1].values()), kv[0]))]}
+
+
+def reference_transcripts(sentence_by_sample: dict, ids, canon) -> dict:
+    """Catalog-shaped transcripts from the SLURP reference sentence (the perfect-ASR source); every id must
+    resolve.  The text is held in memory only."""
+    missing = [s for s in ids if s not in sentence_by_sample]
+    if missing:
+        raise ReadError(f"{len(missing)} roster samples have no reference sentence")
+    return {s: {"status": "ok", "text": sentence_by_sample[s], "canon": canon(sentence_by_sample[s])} for s in ids}
+
+
+def items_of_80(T: float) -> dict:
+    """The c <= T x CONV uptake bound in A2 items of 80, against 27 / 80 (reading (a)) and 18 / 80 (reading (b))."""
+    c = T * UPTAKE_CONV
+    return {"T": T, "c_ceiling_at_conv_uptake": round(c, 4), "items_of_80": round(80 * c, 2),
+            "reaches_27_of_80": 80 * c >= 27, "at_or_below_18_of_80": 80 * c <= 18,
+            "T_bar_0_738": T >= NET_BAR_ITEMS / UPTAKE_CONV}
+
+
 def verdict(T: float, T_ci: list, T_free: float | None = None) -> dict:
     """c <= T x uptake (spec section 2).  ``T_free`` is the no-ranker ceiling (every <= 5-token span not
     touching the draft), the bound on T for ANY ranker under this contract and this transcript."""
@@ -576,6 +655,7 @@ def build(args) -> dict:
     from speech_aware_evidence_acquisition.reproduction.slurp_scoring import SlotEntity
 
     data_root = Path(args.data_root)
+    reference = getattr(args, "reference_source", "whisper") == "reference"
     E5 = import_path(REPO_ROOT / "scripts/analysis/e5_transcript_consistency_read.py", "e5_transcript_consistency_read")
     S1 = import_path(REPO_ROOT / "scripts/analysis/slurp_s1_slu_error_taxonomy.py", "slurp_s1_slu_error_taxonomy")
     NG = import_path(REPO_ROOT / "scripts/analysis/slurp_node_gain_ledger.py", "slurp_node_gain_ledger")
@@ -610,14 +690,33 @@ def build(args) -> dict:
     if (cont_a["contained"], cont_a["items"]) != (707, 941) or (cont_b["contained"], cont_b["items"]) != (718, 944):
         raise ReadError("E5 containment does not reproduce (Fold A 707/941, Fold B 718/944)")
 
+    # addendum: the SLURP reference sentence as a perfect-ASR transcript source (scoring side only)
+    ref_block = {}
+    if reference:
+        sentences, ref_facts = load_reference_sentences(Path(args.lock), data_root)
+        src_a = reference_transcripts(sentences, sorted(ids_a_cat), canon)
+        src_b = reference_transcripts(sentences, sorted(ids_b_cat), canon)
+        del sentences
+        rc_a = E5.gold_span_containment(sorted(ids_a_cat), gold_tuple, src_a)
+        rc_b = E5.gold_span_containment(sorted(ids_b_cat), gold_tuple, src_b)
+        ref_block = {"reference_loader": ref_facts,
+                     "reference_containment_all_gold": {"fold_a": [rc_a["contained"], rc_a["items"], rc_a["rate"]],
+                                                        "fold_b": [rc_b["contained"], rc_b["items"], rc_b["rate"]]}}
+    else:
+        src_a, src_b = tx_a, tx_b
+
     # Fold B tuning column (the E5 tuning arm)
     arm_b = E5.load_arm(data_root, FOLD_B_ARM, ids_b_cat)
     ids_b = sorted(ids_b_cat)
-    rows_b = rows_from(ids_b, tx_b, arm_b["pred"], canon)
-    tuning = {}
+    rows_b = rows_from(ids_b, src_b, arm_b["pred"], canon)
+    tuning, tuning_whisper = {}, {}
+    rows_b_w = rows_from(ids_b, tx_b, arm_b["pred"], canon) if reference else None
     for name, lex in (("primary", lex_primary), ("full_train", lex_full)):
         lex.prime(all_windows(rows_b))
         tuning[name] = tune(ids_b, gold_tuple, arm_b["pred"], rows_b, lex, types, canon, E5)
+        if reference:
+            lex.prime(all_windows(rows_b_w))
+            tuning_whisper[name] = tune(ids_b, gold_tuple, arm_b["pred"], rows_b_w, lex, types, canon, E5)
 
     # Fold A read
     items, pred_a, ids_a, s1_counts, fold_a_inputs = fold_a_items(data_root, gold_all, S1, NG, HR)
@@ -626,9 +725,18 @@ def build(args) -> dict:
     for it in items:
         it["filler"] = gold_all[it["sample_id"]]["entities"][it["gold_index"]].filler   # held in memory only
     pred_a_tuple = {s: tuple(SlotEntity(e.type, e.filler) for e in pred_a[s]) for s in ids_a}
-    rows_a = rows_from(ids_a, tx_a, pred_a_tuple, canon)
+    rows_a = rows_from(ids_a, src_a, pred_a_tuple, canon)
     nis = [i for i in items if i["supply"] == "none"]
     missing_rows = {i["sample_id"] for i in items}
+    if reference:
+        rows_a_w = rows_from(ids_a, tx_a, pred_a_tuple, canon)
+
+        def entries(pop):
+            return [(i["type"], tuple(canon(i["filler"])), rows_a_w[i["sample_id"]]["canon"],
+                     rows_a[i["sample_id"]]["canon"]) for i in pop]
+
+        ref_block["split_not_in_supply_70"] = source_split(entries(nis))
+        ref_block["split_all_missing_189"] = source_split(entries(items))
 
     reads = {}
     for name, lex in (("primary", lex_primary), ("full_train", lex_full)):
@@ -652,11 +760,22 @@ def build(args) -> dict:
         t = abl_nis["contract_top3_at_theta"]
         reads[name]["verdict"] = verdict(t["T"], t["wilson95"],
                                          abl_nis["no_ranker_within_5_tokens_draft_filtered"]["T"])
+        if reference:
+            theta_w = tuning_whisper[name]["chosen"]["theta"]
+            abl_w = ablations(nis, rows_a, lex, theta_w, canon)
+            reads[name]["at_whisper_fitted_theta"] = {"theta": theta_w, "not_in_supply_70": abl_w}
+            reads[name]["perfect_asr_bound"] = {
+                "contract_at_reference_fitted_theta": items_of_80(t["T"]),
+                "contract_at_whisper_fitted_theta": items_of_80(abl_w["contract_top3_at_theta"]["T"]),
+                "top3_no_threshold": items_of_80(abl_nis["top3_no_threshold"]["T"]),
+                "perfect_ranker_draft_filtered": items_of_80(abl_nis["no_ranker_within_5_tokens_draft_filtered"]["T"]),
+                "containment_within_5_tokens": items_of_80(abl_nis["no_ranker_containment_within_5_tokens"]["T"])}
     for it in items:
         it.pop("filler", None)
 
     # cross-check with E5 section 4: comp1b MISSING-and-contained items = 130
-    contained_missing = reads["primary"]["all_missing_189"]["containment_any_length"]["hits"]
+    contained_missing = (ref_block["split_all_missing_189"]["counts"]["in_whisper"] if reference
+                         else reads["primary"]["all_missing_189"]["containment_any_length"]["hits"])
 
     return {
         "read_id": READ_ID, "recipe": RECIPE, "status": "DESCRIPTIVE",
@@ -684,6 +803,8 @@ def build(args) -> dict:
         "s1_not_in_supply_by_type": dict(Counter(i["type"] for i in nis).most_common()),
         "e5_crosscheck_missing_contained": {"this_read": contained_missing, "e5_section_4_comp1b": 130},
         "reads": reads,
+        **({"transcript_source": "slurp-reference-sentence (perfect-ASR bound; addendum)",
+            "tuning_whisper": tuning_whisper, "perfect_asr": ref_block} if reference else {}),
         "drivers": {name: [str(p.relative_to(REPO_ROOT)), digest(p)] for name, p in (
             ("e5_read", REPO_ROOT / "scripts/analysis/e5_transcript_consistency_read.py"),
             ("s1", REPO_ROOT / "scripts/analysis/slurp_s1_slu_error_taxonomy.py"),
@@ -740,6 +861,26 @@ def render(r: dict) -> str:
         v = rd["verdict"]
         out += [f"### Verdict arithmetic ({name})", "",
                 md_table(["quantity", "value"], [[k, json.dumps(val)] for k, val in v.items()]), ""]
+    if "perfect_asr" in r:
+        pa = r["perfect_asr"]
+        out += ["## Addendum: perfect-ASR source (SLURP reference sentence)", "",
+                f"Reference containment of all gold: `{json.dumps(pa['reference_containment_all_gold'])}`; "
+                "Whisper-fitted theta: " + ", ".join(f"{k} {v['chosen']['theta']}"
+                                                     for k, v in r["tuning_whisper"].items()), ""]
+        for pop in ("split_not_in_supply_70", "split_all_missing_189"):
+            sp = pa[pop]
+            out += [f"### Source split, {pop}", "",
+                    md_table(["kind", "items"], [[k, v] for k, v in sp["counts"].items()]
+                             + [["reference contained within 5 tokens", sp["reference_contained_within_max_tokens"]],
+                                ["in_neither, contained ignoring spaces", sp["in_neither_contained_ignoring_spaces"]]]),
+                    "",
+                    md_table(["type", "items"] + list(SOURCE_KINDS),
+                             [[t["type"], t["items"]] + [t[k] for k in SOURCE_KINDS] for t in sp["by_type"]]), ""]
+        for name, rd in r["reads"].items():
+            out += [f"### Perfect-ASR bound ({name})", "",
+                    md_table(["setting", "T", "c ceiling at CONV", "items of 80", "reaches 27/80", "at or below 18/80"],
+                             [[k, v["T"], v["c_ceiling_at_conv_uptake"], v["items_of_80"], v["reaches_27_of_80"],
+                               v["at_or_below_18_of_80"]] for k, v in rd["perfect_asr_bound"].items()]), ""]
     out += ["## Checks", "", f"S1 reproduction: `{json.dumps(r['s1_reproduction'])}`; containment "
             f"`{json.dumps(r['containment_check'])}`; E5 cross-check `{json.dumps(r['e5_crosscheck_missing_contained'])}`", ""]
     return "\n".join(out) + "\n"
@@ -754,9 +895,14 @@ def main(argv=None) -> int:
     parser.add_argument("--lock", default=DEFAULT_LOCK)
     parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT)
     parser.add_argument("--check", action="store_true", help="re-derive and compare with the written outputs")
+    parser.add_argument("--reference-source", choices=("whisper", "reference"), default="whisper",
+                        help="transcript the tool reads: the pinned E5-0 Whisper catalog (default) or the SLURP "
+                             f"reference sentence (perfect-ASR bound; outputs under {ANALYSIS_DIR}/{REFERENCE_SUBDIR})")
     args = parser.parse_args(argv)
     report = build(args)
     out_dir = Path(args.data_root) / ANALYSIS_DIR
+    if args.reference_source == "reference":
+        out_dir = out_dir / REFERENCE_SUBDIR
     texts = {"report.json": json.dumps(report, indent=2, sort_keys=True) + "\n", "tables.md": render(report)}
     if args.check:
         bad = [n for n, t in texts.items() if strip_time((out_dir / n).read_text(encoding="utf-8")) != strip_time(t)]
