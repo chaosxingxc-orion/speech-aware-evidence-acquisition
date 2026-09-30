@@ -80,6 +80,40 @@ Read MILESTONE-01 against MILESTONE-00-PLAN flown in the same chain, on the same
 }
 ```
 
+## Post-stratification: inside the official scorer, aggregates only (2026-09-30)
+
+Coordinator ruling 2026-09-30. The roster receipt (`docs/receipts/rosters/slurp-test-sample-3010-v1.json`, decision
+141 item 5) allows gold access as "per-intent aggregate counts only; no label beside a sample id", and the allowance
+(`docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json`) lets gold be read "ONLY by the official scorer,
+after delivery". A per-row gold bank is therefore not a legal stratum channel for this read; the DRAFT row
+`SAEA-SLURP-TEST-SAMPLE-3010-GOLD-BANK-V1` (unmerged branch `fable/samplegoldbank`) is NOT PURSUED.
+
+- **Where.** `scripts/flights/comp1/comp1b_testsample_read.sh` passes `--strata-source scorer --population-counts
+  <package>/population-counts-v1.json --weighting post-stratified`. `scripts/analysis/stage3_paired_read.py` runs the
+  official-scoring step's `--strata-inside-scorer` mode (`src/speech_aware_evidence_acquisition/core/scoring_strata.py`,
+  exported by `core.scoring_batch`) in its own process. That process reads each row's gold intent through the
+  `slurp-slu-official-test` binding (`reproduction.slurp_official_eval.official_gold_intents`), in memory, after both
+  seals; the read process never holds a per-row stratum.
+- **Strata.** Gold intent `scenario_action`: 59 strata in the population counts (full-test recording counts, total
+  13,078, from the roster receipt's `per_intent` table), 58 carried by the sample; general_greet (closure-only) is
+  reported as dropped and the weights are renormalised over the 58.
+- **Formulas.** Post-stratified intent = sum_h w_h * mean_h(scenario_action_exact) per arm, then arm minus
+  MILESTONE-00-PLAN, with w_h = N_h / sum over the 58 carried strata of N_h. Post-stratified SLU-F1 =
+  F1(sum_h w_h*TP_h/n_h, sum_h w_h*FP_h/n_h, sum_h w_h*FN_h/n_h) per arm, then the difference (totals weighted before
+  the F1 formula, never per-stratum F1 scores). Equal stratum = the unweighted mean of the 58 per-stratum deltas. Raw =
+  the roster's own mixture, labelled "not a population estimate", never the natural-mixture slot; it must equal the
+  read driver's own contrast bit for bit or the read refuses.
+- **Resampling.** 10,000 draws, seed 20260929, prompt clusters resampled within gold-intent strata, both arms matched
+  by `sample_id` inside the scorer process, through the same shared estimators (`analysis.stratified_paired`) the
+  gold-bank path uses on TRAIN/DEV rosters -- identical bootstrap indices, identical numbers.
+- **Emitted.** One file, `scorer-strata-aggregate.json` (schema `saea-scorer-strata-aggregate-v1`): per stratum n_h
+  and, per arm, intent-correct, TP, FP, FN totals, the per-stratum deltas and CI95s; the three weighted deltas and
+  CI95s; the population weights; the input hashes; a canonical `receipt_sha256`. The read driver verifies every hash
+  and the seed, draw count and cluster key before reporting.
+- **Never written.** A per-row stratum; any row-level output pairing a sample id or utterance id with a gold field; a
+  gold label beside any id; utterance text, transcripts or model output. The scorer step refuses a roster receipt
+  without a `stratification` block, any per-row output flag, and any receipt whose bytes would carry a roster sample id.
+
 ## Blockers before the flip
 
 1. OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).

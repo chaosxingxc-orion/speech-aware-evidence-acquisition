@@ -32,8 +32,19 @@ unmodified) and runs its five stages exactly, then adds three optional extension
     (``stratum_withheld_per_item`` -- revealing a row's own gold intent would reveal the correct
     intent-classification answer), off the SAME offline gold bank ``--delivery`` already reads
     (``--gold-bank``/``--gold-bank-roster``); a roster that carries neither is reported NOT
-    AVAILABLE, never filled from gold. The file ``per-scenario-tables.json`` is then REPLACED by
-    the available table (schema ``saea-stage3-paired-read-per-scenario-v1``).
+    AVAILABLE, never filled from gold. ``--strata-source scorer`` (coordinator ruling
+    2026-09-30) is the channel for a roster whose gold may be read ONLY by the official scorer
+    after delivery (the signed test sample: "per-intent aggregate counts only; no label beside a
+    sample id"): this process never sees a per-row stratum. It runs the official-scoring step's
+    ``--strata-inside-scorer`` mode (``core.scoring_strata``) in a separate process, which reads
+    gold, stratifies by gold intent, runs the same within-stratum bootstraps through the same
+    shared estimators (``analysis.stratified_paired``) and writes ONE aggregate receipt
+    (``scorer-strata-aggregate.json``: per-stratum n and per-arm intent-correct / TP / FP / FN
+    totals, the weighted deltas, CI95s, a receipt hash); this driver verifies the receipt against
+    the arms, roster and population counts it read, checks the scorer's raw numbers equal its own
+    contrast bit for bit, and reports the three weightings exactly as the gold-bank path would.
+    The file ``per-scenario-tables.json`` is then REPLACED by the available table (schema
+    ``saea-stage3-paired-read-per-scenario-v1``).
 ``--delivery``
     the delivery check and the conversion, counts only: per row and per arm, whether the flown
     Perception consumption records (``<run>.phases.json``, ``consumption.records[].supplied_item_id``)
@@ -116,12 +127,7 @@ def _import_by_path(name: str, path: Path):
 #: The paired roster read, imported unmodified: its stages ARE this driver's core stages.
 CORE = _import_by_path("_saea_stage3_core_paired_roster_read", CORE_PATH)
 
-from speech_aware_evidence_acquisition.analysis.null_calibration import (  # noqa: E402
-    f1_of_totals,
-    pooled_f1,
-    pooled_totals,
-)
-from speech_aware_evidence_acquisition.analysis.paired import resampled_statistic  # noqa: E402
+from speech_aware_evidence_acquisition.analysis import stratified_paired as SP  # noqa: E402
 
 SCHEMA_SCENARIO = "saea-stage3-paired-read-per-scenario-v1"
 SCHEMA_DELIVERY = "saea-stage3-paired-read-delivery-conversion-v1"
@@ -172,6 +178,8 @@ def pct(num: float, den: float) -> float | None:
 
 #: ``--weighting`` legal values (owner: post-stratification of a floored roster, 2026-09-29).
 WEIGHTING_CHOICES = ("raw", "post-stratified", "equal-stratum")
+#: ``--strata-source`` legal values; ``scorer`` added by the coordinator ruling of 2026-09-30.
+STRATA_SOURCES = ("roster-item", "gold-bank", "scorer")
 
 
 @dataclasses.dataclass
@@ -204,6 +212,9 @@ class Extensions:
     #: ``"auto"`` reads the roster receipt's own ``stratification`` block; ``"true"``/``"false"``
     #: force the answer (a synthetic test roster carries no such block at all).
     roster_floored: str = "auto"
+    #: ``--strata-source scorer`` only: the umbrella lock the scorer step loads gold through
+    #: (``None``: the umbrella default, exactly what ``core.driver score`` uses).
+    scorer_lock_path: str | None = None
 
     @property
     def any(self) -> bool:
@@ -228,10 +239,18 @@ def _extension_parser() -> argparse.ArgumentParser:
         help="field naming each row's stratum for --per-scenario (default: stratum)",
     )
     parser.add_argument(
-        "--strata-source", choices=("roster-item", "gold-bank"), default="roster-item",
-        help="where --strata-key is read from: the roster's own items (default; a discovery/TRAIN "
-             "roster only) or the offline gold bank (--gold-bank/--gold-bank-roster) a dev/test "
-             "roster's withheld per-item stratum requires",
+        "--strata-source", choices=STRATA_SOURCES, default="roster-item",
+        help="where the per-row stratum comes from: the roster's own items (default; a "
+             "discovery/TRAIN roster only), the offline gold bank (--gold-bank/--gold-bank-roster; "
+             "a roster whose rows may legally be joined to gold), or 'scorer': the official-"
+             "scoring step's --strata-inside-scorer mode stratifies by gold intent INSIDE the "
+             "scorer process and returns aggregates only (a roster whose gold may be read only "
+             "by the official scorer, e.g. the signed test sample; needs --population-counts)",
+    )
+    parser.add_argument(
+        "--scorer-lock-path", default=None,
+        help="--strata-source scorer: the umbrella lock the scorer step loads gold through "
+             "(default: the umbrella lock core.driver score uses)",
     )
     parser.add_argument(
         "--population-counts", default=None,
@@ -260,13 +279,16 @@ def _interval(result, point: float, seed: int) -> dict:
     return CORE.interval_block(result.replicates, point, seed)
 
 
-def _intent_delta(left: Mapping, right: Mapping, ids: Sequence[str]) -> float:
-    return sum(right[s][INTENT] - left[s][INTENT] for s in ids) / len(ids)
-
-
-def _slu_delta(left: Mapping, right: Mapping, ids: Sequence[str]) -> float:
-    groups = CORE.MICRO_METRICS[SLU]
-    return pooled_f1(right, ids, groups) - pooled_f1(left, ids, groups)
+# The estimators live in ONE shared module (``analysis.stratified_paired``) so the official-scoring
+# step's ``--strata-inside-scorer`` mode (``core.scoring_strata``) computes the SAME numbers from
+# the SAME code; the names below keep this driver's historical private API.
+_intent_delta = SP.intent_delta
+_slu_delta = SP.slu_delta
+_grouped_by_stratum = SP.grouped_by_stratum
+_post_stratified_intent_statistic = SP.post_stratified_intent_statistic
+_post_stratified_intent_level = SP.post_stratified_intent_level
+_post_stratified_slu_statistic = SP.post_stratified_slu_statistic
+_post_stratified_slu_level = SP.post_stratified_slu_level
 
 
 #: ``stratification`` block keys whose positive value proves a roster receipt is FLOORED (at
@@ -300,6 +322,15 @@ def _detect_roster_floored(document: Mapping, override: str) -> bool:
     return bool(strat.get("even_split_intents")) or bool(strat.get("single_prompt_intents_to_closure"))
 
 
+def _population_counts_path(path: str, repo_root: Path | None) -> Path:
+    counts_path = Path(path)
+    if repo_root is not None and not counts_path.is_absolute():
+        counts_path = Path(repo_root) / counts_path
+    if not counts_path.is_file():
+        raise Stage3ReadError(f"--population-counts {path} is not a file")
+    return counts_path
+
+
 def _load_population_weights(
     path: str, strata: Sequence[str], *, repo_root: Path | None = None
 ) -> tuple[dict[str, float], dict]:
@@ -316,115 +347,18 @@ def _load_population_weights(
     rather than silently weighting it zero.
     """
 
-    counts_path = Path(path)
-    if repo_root is not None and not counts_path.is_absolute():
-        counts_path = Path(repo_root) / counts_path
-    if not counts_path.is_file():
-        raise Stage3ReadError(f"--population-counts {path} is not a file")
+    counts_path = _population_counts_path(path, repo_root)
     document = load_json(counts_path)
-    counts = (
-        document.get("population_counts")
-        if isinstance(document, Mapping) and "population_counts" in document
-        else document
-    )
-    if not isinstance(counts, Mapping) or not counts:
-        raise Stage3ReadError(f"--population-counts {path} must carry a non-empty {{stratum: count}} mapping")
-    wanted = sorted(set(strata))
-    missing = [s for s in wanted if s not in counts]
-    if missing:
-        raise Stage3ReadError(
-            f"--population-counts {path} is missing a population count for stratum/strata "
-            f"the roster carries: {missing}"
-        )
-    values: dict[str, float] = {}
-    for stratum in wanted:
-        value = counts[stratum]
-        if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
-            raise Stage3ReadError(f"--population-counts {path}[{stratum!r}] must be a nonnegative number")
-        values[stratum] = float(value)
-    total = sum(values.values())
-    if total <= 0:
-        raise Stage3ReadError(f"--population-counts {path} sums to zero over the roster's own strata")
-    weights = {stratum: values[stratum] / total for stratum in wanted}
+    try:
+        weights = SP.population_weights(document, strata, label=f"--population-counts {path}")
+    except SP.StratifiedPairedError as error:
+        raise Stage3ReadError(str(error)) from error
     return weights, {
         "relpath": path,
         "sha256": digest(counts_path),
-        "strata": wanted,
-        "dropped_strata": sorted(set(counts) - set(wanted)),
+        "strata": sorted(set(strata)),
+        "dropped_strata": SP.dropped_strata(document, strata),
     }
-
-
-def _grouped_by_stratum(resampled: Sequence[str], stratum_of: Callable[[str], str]) -> dict[str, list[str]]:
-    groups: dict[str, list[str]] = defaultdict(list)
-    for sample_id in resampled:
-        groups[stratum_of(sample_id)].append(sample_id)
-    return groups
-
-
-def _post_stratified_intent_statistic(
-    weights: Mapping[str, float], stratum_of: Callable[[str], str], left: Mapping, right: Mapping,
-) -> Callable[[Sequence[str]], float]:
-    def statistic(resampled: Sequence[str]) -> float:
-        groups = _grouped_by_stratum(resampled, stratum_of)
-        return sum(weights[s] * _intent_delta(left, right, members) for s, members in groups.items())
-
-    return statistic
-
-
-def _post_stratified_intent_level(
-    weights: Mapping[str, float], stratum_of: Callable[[str], str], rows: Mapping, ids: Sequence[str],
-) -> float:
-    groups = _grouped_by_stratum(ids, stratum_of)
-    return sum(
-        weights[s] * statistics.fmean(rows[sid][INTENT] for sid in members) for s, members in groups.items()
-    )
-
-
-def _post_stratified_slu_statistic(
-    weights: Mapping[str, float], stratum_of: Callable[[str], str], left: Mapping, right: Mapping, fields,
-) -> Callable[[Sequence[str]], float]:
-    """The formula (owner, 2026-09-29): weight each stratum's TP/FP/FN TOTALS before pooling,
-    never each stratum's own F1 score.
-
-    For arm A and stratum h with population weight ``w_h`` and ``n_h`` resampled rows, form the
-    per-row-normalised, population-weighted contribution ``w_h * TP_h / n_h`` (and the same for
-    FP, FN); summing over strata gives one pooled ``(TP*, FP*, FN*)`` triple per arm, from which
-    the ordinary micro-F1 formula ``2*TP / (2*TP + FP + FN)`` is taken once. The delta is
-    ``F1(right totals) - F1(left totals)``. Dividing by ``n_h`` before applying the population
-    weight is what makes a floored stratum's disproportionate row count cancel out of the
-    estimate; weighting the raw totals directly would still let an over-sampled stratum's
-    absolute count dominate the pooled F1.
-    """
-
-    def statistic(resampled: Sequence[str]) -> float:
-        groups = _grouped_by_stratum(resampled, stratum_of)
-        left_totals = [0.0, 0.0, 0.0]
-        right_totals = [0.0, 0.0, 0.0]
-        for stratum, members in groups.items():
-            weight, n = weights[stratum], len(members)
-            l_triple = pooled_totals(left, members, fields)
-            r_triple = pooled_totals(right, members, fields)
-            for acc, triple in ((left_totals, l_triple), (right_totals, r_triple)):
-                acc[0] += weight * triple[0] / n
-                acc[1] += weight * triple[1] / n
-                acc[2] += weight * triple[2] / n
-        return f1_of_totals(tuple(right_totals)) - f1_of_totals(tuple(left_totals))
-
-    return statistic
-
-
-def _post_stratified_slu_level(
-    weights: Mapping[str, float], stratum_of: Callable[[str], str], rows: Mapping, ids: Sequence[str], fields,
-) -> float:
-    groups = _grouped_by_stratum(ids, stratum_of)
-    totals = [0.0, 0.0, 0.0]
-    for stratum, members in groups.items():
-        weight, n = weights[stratum], len(members)
-        triple = pooled_totals(rows, members, fields)
-        totals[0] += weight * triple[0] / n
-        totals[1] += weight * triple[1] / n
-        totals[2] += weight * triple[2] / n
-    return f1_of_totals(tuple(totals))
 
 
 def _post_stratified_block(
@@ -436,49 +370,245 @@ def _post_stratified_block(
     weights, source = _load_population_weights(
         ext.population_counts, scenarios, repo_root=core_args.repo_root
     )
-    seed, draws = core_args.seed, core_args.draws
-    slu_fields = CORE.MICRO_METRICS[SLU]
-
-    intent_statistic = _post_stratified_intent_statistic(weights, stratum_of, left_rows, right_rows)
-    intent_point = intent_statistic(ids)
-    intent_boot = resampled_statistic(
-        sample_ids=ids, statistic=intent_statistic, seed=seed, n_replicates=draws, ci_level=0.95,
-        strata_of=stratum_of, cluster_of=cluster_of,
-    )
-    slu_statistic = _post_stratified_slu_statistic(weights, stratum_of, left_rows, right_rows, slu_fields)
-    slu_point = slu_statistic(ids)
-    slu_boot = resampled_statistic(
-        sample_ids=ids, statistic=slu_statistic, seed=seed, n_replicates=draws, ci_level=0.95,
-        strata_of=stratum_of, cluster_of=cluster_of,
+    estimates = SP.post_stratified_estimates(
+        left_rows, right_rows, ids, weights=weights, stratum_of=stratum_of, cluster_of=cluster_of,
+        seed=core_args.seed, draws=core_args.draws,
     )
     return {
         "status": "AVAILABLE",
-        "definition": (
-            "population-weighted, post-stratified: intent = sum_h w_h * mean_h(metric) per arm, then "
-            "right - left; pooled SLU-F1 = F1(sum_h w_h * TP_h/n_h, sum_h w_h * FP_h/n_h, "
-            "sum_h w_h * FN_h/n_h) per arm, then right - left -- the per-stratum TP/FP/FN totals are "
-            "weighted and summed BEFORE the F1 formula is applied, never the per-stratum F1 scores "
-            "themselves; w_h is the stratum's population share, renormalised over the strata this "
-            "roster carries"
-        ),
+        "definition": SP.POST_STRATIFIED_DEFINITION,
         "weights_source": source,
         "population_weights": weights,
+        **estimates,
+    }
+
+
+def _raw_block(contrast: dict, floored: bool) -> dict:
+    natural_intent = contrast["per_row"][INTENT]
+    natural_slu = contrast["pooled_micro"][SLU]
+    return {
+        "definition": "pooled over every roster row in its own mixture (no population reweighting)",
+        "label": (
+            "raw roster mean (not a population estimate)" if floored
+            else "raw roster mean (population estimate; the roster is proportional to its population)"
+        ),
         "intent": {
-            "left_pct": 100 * _post_stratified_intent_level(weights, stratum_of, left_rows, ids),
-            "right_pct": 100 * _post_stratified_intent_level(weights, stratum_of, right_rows, ids),
-            "delta_pp": 100 * intent_point,
-            "ci95_pp": _interval(intent_boot, intent_point, seed)["ci95_pp"],
+            "left_pct": natural_intent["left_pct"], "right_pct": natural_intent["right_pct"],
+            "delta_pp": natural_intent["delta_pp"],
+            "ci95_pp": natural_intent["cluster_bootstrap"]["ci95_pp"],
         },
         "slu_f1": {
-            "left_pct": 100 * _post_stratified_slu_level(weights, stratum_of, left_rows, ids, slu_fields),
-            "right_pct": 100 * _post_stratified_slu_level(weights, stratum_of, right_rows, ids, slu_fields),
-            "delta_pp": 100 * slu_point,
-            "ci95_pp": _interval(slu_boot, slu_point, seed)["ci95_pp"],
+            "left_pct": natural_slu["left_pct"], "right_pct": natural_slu["right_pct"],
+            "delta_pp": natural_slu["delta_pp"],
+            "ci95_pp": natural_slu["cluster_bootstrap"]["ci95_pp"],
         },
     }
 
 
+def _assemble_per_scenario(
+    core_args, ext: Extensions, left, right, roster, contrast: dict, *, stratum_source: dict,
+    table: dict, equal: dict, post_stratified: dict, strata_rows: dict, extra: dict | None = None,
+) -> dict:
+    """The per-scenario document, identical in shape whichever channel produced the strata."""
+
+    scenarios = sorted(table)
+    floored = _detect_roster_floored(roster.document, ext.roster_floored)
+    raw = _raw_block(contrast, floored)
+    weighting_blocks = {"raw": raw, "post-stratified": post_stratified, "equal-stratum": equal}
+    if ext.weighting == "raw" and floored:
+        raise Stage3ReadError(
+            "the roster is FLOORED (its stratification block declares a floor); the raw roster "
+            "mean is not a population estimate and may not be labelled natural_mixture -- pass "
+            "--weighting post-stratified (with --population-counts) or --weighting equal-stratum"
+        )
+    if ext.weighting == "post-stratified" and post_stratified.get("status") != "AVAILABLE":
+        raise Stage3ReadError(
+            "--weighting post-stratified needs --population-counts (a receipt-derived "
+            "{stratum: population_count} JSON; see scripts/analysis/build_population_counts.py)"
+        )
+    selected = weighting_blocks[ext.weighting]
+    natural_mixture = {
+        "selected_weighting": ext.weighting,
+        "roster_floored": floored,
+        "intent": selected["intent"],
+        "slu_f1": selected["slu_f1"],
+    }
+    document = {
+        "schema": SCHEMA_SCENARIO,
+        "status": "AVAILABLE",
+        "contacts": dict(CONTACTS_ZERO),
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "stratum_source": stratum_source,
+        "left": left.spec.label,
+        "right": right.spec.label,
+        "sign_convention": f"delta = right({right.spec.label}) minus left({left.spec.label})",
+        "cluster_key": core_args.cluster_key,
+        "seed": core_args.seed,
+        "draws": core_args.draws,
+        "roster_floored": floored,
+        "strata_rows": strata_rows,
+        "per_scenario": table,
+        "raw": raw,
+        "post_stratified": post_stratified,
+        "natural_mixture": natural_mixture,
+        "equal_scenario": {
+            "definition": "the unweighted mean over scenarios of the per-scenario deltas",
+            **equal,
+        },
+        "scenarios_up_down_flat": {
+            kind: [
+                sum(1 for s in scenarios if table[s][kind]["delta_pp"] > 0),
+                sum(1 for s in scenarios if table[s][kind]["delta_pp"] < 0),
+                sum(1 for s in scenarios if table[s][kind]["delta_pp"] == 0),
+            ]
+            for kind in ("intent", "slu_f1")
+        },
+        "driver_sha256": digest(_DRIVER_PATH),
+    }
+    if extra:
+        document.update(extra)
+    return document
+
+
+# --------------------------------------------------------------------------
+# --strata-source scorer: aggregate-only post-stratification inside the official-scoring step
+# --------------------------------------------------------------------------
+
+
+#: The aggregate receipt the scorer step writes into the analysis root (and nothing else).
+SCORER_STRATA_FILE = "scorer-strata-aggregate.json"
+SCORER_STRATA_MODULE = "speech_aware_evidence_acquisition.core.scoring_strata"
+SCORER_STRATA_SCHEMA = "saea-scorer-strata-aggregate-v1"
+
+
+def run_scorer_strata(argv: Sequence[str]) -> None:
+    """Run ``core.scoring_strata --strata-inside-scorer`` in its OWN process.
+
+    Gold is opened only there -- inside the official-scoring step, after delivery (allowance:
+    gold "ONLY by the official scorer, after delivery") -- never in this read process, which
+    receives per-stratum AGGREGATES only. Tests substitute an in-process runner.
+    """
+
+    import os
+    import subprocess
+
+    env = dict(os.environ)
+    env["PYTHONPATH"] = _SRC + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    result = subprocess.run(
+        [sys.executable, "-B", "-m", SCORER_STRATA_MODULE, *argv],
+        env=env, capture_output=True, text=True, check=False,
+    )
+    if result.returncode != 0:
+        tail = (result.stderr or "").strip().splitlines()[-5:]
+        raise Stage3ReadError("the scorer's --strata-inside-scorer step refused: " + " | ".join(tail))
+
+
+def _same(a, b) -> bool:
+    return json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+
+
+def _scorer_per_scenario(core_args, ext: Extensions, left, right, roster, contrast: dict) -> dict:
+    if not ext.population_counts:
+        raise Stage3ReadError(
+            "--strata-source scorer needs --population-counts: the scorer step reports the "
+            "raw, post-stratified and equal-stratum weightings together"
+        )
+    counts_path = _population_counts_path(ext.population_counts, core_args.repo_root)
+    out = core_args.analysis_root / SCORER_STRATA_FILE
+    if out.exists():
+        raise Stage3ReadError(f"{out} already exists; a scorer aggregate receipt is never overwritten")
+    argv = [
+        "--strata-inside-scorer",
+        "--scorer-id", core_args.scorer_id,
+        "--left-scores", str(left.scores_path),
+        "--right-scores", str(right.scores_path),
+        "--roster", str(roster.path),
+        "--population-counts", str(counts_path),
+        "--population-counts-label", ext.population_counts,
+        "--cluster-key", core_args.cluster_key,
+        "--seed", str(core_args.seed),
+        "--draws", str(core_args.draws),
+        "--output", str(out),
+        "--data-root", str(core_args.data_root),
+    ]
+    if ext.scorer_lock_path:
+        argv += ["--lock-path", ext.scorer_lock_path]
+    run_scorer_strata(argv)
+    if not out.is_file():
+        raise Stage3ReadError("the scorer step wrote no aggregate receipt")
+    receipt = load_json(out)
+    problems = []
+    if receipt.get("schema") != SCORER_STRATA_SCHEMA:
+        problems.append("schema")
+    if receipt.get("receipt_sha256") != SP.canonical_digest(receipt, exclude=("receipt_sha256",)):
+        problems.append("receipt_sha256")
+    inputs = receipt.get("inputs") or {}
+    expected = {
+        "scorer_id": core_args.scorer_id, "seed": core_args.seed, "draws": core_args.draws,
+        "cluster_key": core_args.cluster_key,
+    }
+    for key, value in expected.items():
+        if receipt.get(key) != value:
+            problems.append(key)
+    if (inputs.get("left_scores") or {}).get("sha256") != left.scores_sha256:
+        problems.append("left scores sha256")
+    if (inputs.get("right_scores") or {}).get("sha256") != right.scores_sha256:
+        problems.append("right scores sha256")
+    if (inputs.get("roster") or {}).get("sha256") != roster.sha256:
+        problems.append("roster sha256")
+    if (inputs.get("population_counts") or {}).get("sha256") != digest(counts_path):
+        problems.append("population counts sha256")
+    weightings = receipt.get("weightings") or {}
+    per_stratum = receipt.get("per_stratum") or {}
+    if sum(int(row.get("n", 0)) for row in per_stratum.values()) != len(roster.ids):
+        problems.append("per-stratum n does not sum to the roster")
+    # The raw weighting needs no stratum: this process computed it itself (the core contrast). The
+    # scorer's own raw numbers must be the SAME floats -- proof both sides paired the same rows
+    # under the same draws.
+    floored = _detect_roster_floored(roster.document, ext.roster_floored)
+    raw = _raw_block(contrast, floored)
+    for kind in ("intent", "slu_f1"):
+        if not _same((weightings.get("raw") or {}).get(kind), raw[kind]):
+            problems.append(f"raw {kind} differs from the read's own contrast")
+    if problems:
+        raise Stage3ReadError(f"the scorer aggregate receipt does not match this read: {problems}")
+    table = {
+        stratum: {"n": row["n"], "intent": row["intent"], "slu_f1": row["slu_f1"]}
+        for stratum, row in sorted(per_stratum.items())
+    }
+    post = weightings["post_stratified"]
+    post_stratified = {
+        "status": "AVAILABLE",
+        "definition": post["definition"],
+        "weights_source": {
+            "relpath": ext.population_counts,
+            "sha256": digest(counts_path),
+            "strata": sorted(table),
+            "dropped_strata": list(post.get("dropped_strata") or []),
+        },
+        "population_weights": post["population_weights"],
+        "intent": post["intent"],
+        "slu_f1": post["slu_f1"],
+    }
+    equal = {kind: weightings["equal_stratum"][kind] for kind in ("intent", "slu_f1")}
+    return _assemble_per_scenario(
+        core_args, ext, left, right, roster, contrast,
+        stratum_source={
+            "relpath": SCORER_STRATA_FILE,
+            "sha256": digest(out),
+            "field": "scorer:gold intent scenario_action (aggregate-only, --strata-inside-scorer)",
+        },
+        table=table, equal=equal, post_stratified=post_stratified,
+        strata_rows={s: table[s]["n"] for s in sorted(table)},
+        extra={"scorer_strata_receipt": {"relpath": SCORER_STRATA_FILE, "sha256": digest(out),
+                                         "receipt_sha256": receipt["receipt_sha256"]}},
+    )
+
+
 def stage_per_scenario(core_args, ext: Extensions, left, right, roster, contrast: dict) -> dict:
+    if ext.strata_source == "scorer":
+        return _scorer_per_scenario(core_args, ext, left, right, roster, contrast)
     strata_key = ext.strata_key
     ids = list(roster.ids)
     if ext.strata_source == "gold-bank":
@@ -522,142 +652,18 @@ def stage_per_scenario(core_args, ext: Extensions, left, right, roster, contrast
     def scenario_of(sample_id: str) -> str:
         return strata[sample_id]
 
-    by_scenario: dict[str, list[str]] = defaultdict(list)
-    for sample_id in ids:
-        by_scenario[scenario_of(sample_id)].append(sample_id)
-    slu_groups = CORE.MICRO_METRICS[SLU]
-
-    table: dict[str, dict] = {}
-    for scenario in sorted(by_scenario):
-        members = sorted(by_scenario[scenario])
-        l_int = [left_rows[s][INTENT] for s in members]
-        r_int = [right_rows[s][INTENT] for s in members]
-        intent_point = _intent_delta(left_rows, right_rows, members)
-        slu_point = _slu_delta(left_rows, right_rows, members)
-        intent_boot = resampled_statistic(
-            sample_ids=members, statistic=lambda r: _intent_delta(left_rows, right_rows, r),
-            seed=seed, n_replicates=draws, ci_level=0.95, cluster_of=cluster_of,
-        )
-        slu_boot = resampled_statistic(
-            sample_ids=members, statistic=lambda r: _slu_delta(left_rows, right_rows, r),
-            seed=seed, n_replicates=draws, ci_level=0.95, cluster_of=cluster_of,
-        )
-        table[scenario] = {
-            "n": len(members),
-            "intent": {
-                "left_pct": 100 * statistics.fmean(l_int),
-                "right_pct": 100 * statistics.fmean(r_int),
-                "delta_pp": 100 * intent_point,
-                "saves": sum(1 for a, b in zip(l_int, r_int) if b > a),
-                "harms": sum(1 for a, b in zip(l_int, r_int) if b < a),
-                "ci95_pp": _interval(intent_boot, intent_point, seed)["ci95_pp"],
-            },
-            "slu_f1": {
-                "left_pct": 100 * pooled_f1(left_rows, members, slu_groups),
-                "right_pct": 100 * pooled_f1(right_rows, members, slu_groups),
-                "delta_pp": 100 * slu_point,
-                "ci95_pp": _interval(slu_boot, slu_point, seed)["ci95_pp"],
-            },
-        }
-
-    def equal_weight(kind: str) -> Callable[[Sequence[str]], float]:
-        delta = _intent_delta if kind == "intent" else _slu_delta
-
-        def statistic(resampled: Sequence[str]) -> float:
-            groups: dict[str, list[str]] = defaultdict(list)
-            for sample_id in resampled:
-                groups[scenario_of(sample_id)].append(sample_id)
-            return statistics.fmean(delta(left_rows, right_rows, members) for members in groups.values())
-
-        return statistic
-
-    equal: dict[str, dict] = {}
-    for kind in ("intent", "slu_f1"):
-        statistic = equal_weight(kind)
-        point = statistic(ids)
-        boot = resampled_statistic(
-            sample_ids=ids, statistic=statistic, seed=seed, n_replicates=draws, ci_level=0.95,
-            strata_of=scenario_of, cluster_of=cluster_of,
-        )
-        block = _interval(boot, point, seed)
-        block["resampling"] = "paired cluster bootstrap within scenario strata"
-        equal[kind] = {"delta_pp": 100 * point, **block}
-
-    natural_intent = contrast["per_row"][INTENT]
-    natural_slu = contrast["pooled_micro"][SLU]
-    scenarios = sorted(table)
-    floored = _detect_roster_floored(roster.document, ext.roster_floored)
-    raw = {
-        "definition": "pooled over every roster row in its own mixture (no population reweighting)",
-        "label": (
-            "raw roster mean (not a population estimate)" if floored
-            else "raw roster mean (population estimate; the roster is proportional to its population)"
-        ),
-        "intent": {
-            "left_pct": natural_intent["left_pct"], "right_pct": natural_intent["right_pct"],
-            "delta_pp": natural_intent["delta_pp"],
-            "ci95_pp": natural_intent["cluster_bootstrap"]["ci95_pp"],
-        },
-        "slu_f1": {
-            "left_pct": natural_slu["left_pct"], "right_pct": natural_slu["right_pct"],
-            "delta_pp": natural_slu["delta_pp"],
-            "ci95_pp": natural_slu["cluster_bootstrap"]["ci95_pp"],
-        },
-    }
+    table = SP.per_stratum_table(left_rows, right_rows, ids, stratum_of=scenario_of,
+                                 cluster_of=cluster_of, seed=seed, draws=draws)
+    equal = SP.equal_stratum_block(left_rows, right_rows, ids, stratum_of=scenario_of,
+                                   cluster_of=cluster_of, seed=seed, draws=draws)
     post_stratified = _post_stratified_block(
-        core_args, ext, scenarios, scenario_of, cluster_of, left_rows, right_rows, ids,
+        core_args, ext, sorted(table), scenario_of, cluster_of, left_rows, right_rows, ids,
     )
-    weighting_blocks = {"raw": raw, "post-stratified": post_stratified, "equal-stratum": equal}
-    if ext.weighting == "raw" and floored:
-        raise Stage3ReadError(
-            "the roster is FLOORED (its stratification block declares a floor); the raw roster "
-            "mean is not a population estimate and may not be labelled natural_mixture -- pass "
-            "--weighting post-stratified (with --population-counts) or --weighting equal-stratum"
-        )
-    if ext.weighting == "post-stratified" and post_stratified.get("status") != "AVAILABLE":
-        raise Stage3ReadError(
-            "--weighting post-stratified needs --population-counts (a receipt-derived "
-            "{stratum: population_count} JSON; see scripts/analysis/build_population_counts.py)"
-        )
-    selected = weighting_blocks[ext.weighting]
-    natural_mixture = {
-        "selected_weighting": ext.weighting,
-        "roster_floored": floored,
-        "intent": selected["intent"],
-        "slu_f1": selected["slu_f1"],
-    }
-    return {
-        "schema": SCHEMA_SCENARIO,
-        "status": "AVAILABLE",
-        "contacts": dict(CONTACTS_ZERO),
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "stratum_source": stratum_source,
-        "left": left.spec.label,
-        "right": right.spec.label,
-        "sign_convention": f"delta = right({right.spec.label}) minus left({left.spec.label})",
-        "cluster_key": core_args.cluster_key,
-        "seed": seed,
-        "draws": draws,
-        "roster_floored": floored,
-        "strata_rows": {s: len(by_scenario[s]) for s in scenarios},
-        "per_scenario": table,
-        "raw": raw,
-        "post_stratified": post_stratified,
-        "natural_mixture": natural_mixture,
-        "equal_scenario": {
-            "definition": "the unweighted mean over scenarios of the per-scenario deltas",
-            **equal,
-        },
-        "scenarios_up_down_flat": {
-            kind: [
-                sum(1 for s in scenarios if table[s][kind]["delta_pp"] > 0),
-                sum(1 for s in scenarios if table[s][kind]["delta_pp"] < 0),
-                sum(1 for s in scenarios if table[s][kind]["delta_pp"] == 0),
-            ]
-            for kind in ("intent", "slu_f1")
-        },
-        "driver_sha256": digest(_DRIVER_PATH),
-    }
+    return _assemble_per_scenario(
+        core_args, ext, left, right, roster, contrast, stratum_source=stratum_source,
+        table=table, equal=equal, post_stratified=post_stratified,
+        strata_rows={s: table[s]["n"] for s in sorted(table)},
+    )
 
 
 # --------------------------------------------------------------------------
@@ -1088,6 +1094,8 @@ def stage_extended_verdict(core_args, blocks: dict[str, dict]) -> dict:
     efficiency = CORE._require_artifact(root, "efficiency.json")
     names = ["stop.json", "structural.json", "score-contrasts.json", "per-scenario-tables.json",
              "efficiency.json", *[EXTENSION_FILES[k] for k in ("delivery", "frontier") if k in blocks]]
+    if (root / SCORER_STRATA_FILE).is_file():  # --strata-source scorer: the aggregate receipt
+        names.append(SCORER_STRATA_FILE)
     written = {name: digest(root / name) for name in names}
     written["driver.py"] = digest(CORE._DRIVER_PATH)
     written["stage3_driver.py"] = digest(_DRIVER_PATH)
@@ -1290,7 +1298,8 @@ def run_package(argv_rest: list[str], ext_ns: argparse.Namespace) -> dict:
                      gold_bank_sha256=ext_ns.gold_bank_sha256, gold_bank_roster=ext_ns.gold_bank_roster,
                      strata_key=ext_ns.strata_key, strata_source=ext_ns.strata_source,
                      population_counts=ext_ns.population_counts,
-                     weighting=ext_ns.weighting, roster_floored=ext_ns.roster_floored)
+                     weighting=ext_ns.weighting, roster_floored=ext_ns.roster_floored,
+                     scorer_lock_path=ext_ns.scorer_lock_path)
     for name in wanted:
         if name not in passes:
             raise Stage3ReadError(f"unknown pass {name!r}")
@@ -1357,6 +1366,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             population_counts=ext_ns.population_counts,
             weighting=ext_ns.weighting,
             roster_floored=ext_ns.roster_floored,
+            scorer_lock_path=ext_ns.scorer_lock_path,
         )
         run_pair(core_args, ext)
     except (CORE.StopStageError, CORE.ReadDriverError, Stage3ReadError) as error:

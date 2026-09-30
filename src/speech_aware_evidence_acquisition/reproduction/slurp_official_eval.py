@@ -1104,6 +1104,58 @@ def score_slurp_outputs_official_test(
     )
 
 
+#: The registered official SLURP scorer ids ``--strata-inside-scorer`` (``core.scoring_strata``)
+#: may stratify under, and the gold split + held-out flag each one is bound to -- exactly the
+#: bindings of ``score_slurp_outputs_official`` / ``_train`` / ``_test`` above.
+OFFICIAL_GOLD_SPLIT_OF_SCORER: dict[str, tuple[str, bool]] = {
+    "slurp-slu": ("devel", False),
+    "slurp-slu-official": ("devel", False),
+    "slurp-slu-official-train": ("train", False),
+    "slurp-slu-official-test": ("test", True),
+}
+
+
+def official_gold_intents(
+    scorer_id: str,
+    sample_ids: Sequence[str],
+    lock: Mapping[str, object],
+    root: Path,
+) -> dict[str, str]:
+    """``{sample_id: gold intent scenario_action}`` for exactly ``sample_ids``, read through the
+    SAME gold binding the registered official scorer ``scorer_id`` scores against.
+
+    The one gold channel of the official-scoring step's ``--strata-inside-scorer`` mode
+    (coordinator ruling 2026-09-30): the caller keeps the mapping in memory to stratify its
+    aggregates and never persists it. Refuses, before the data root is touched, a scorer id
+    outside :data:`OFFICIAL_GOLD_SPLIT_OF_SCORER` and -- for the test binding -- any id that is
+    not a ``"slurp:test:..."`` row, mirroring :func:`score_slurp_outputs_official_test`.
+    """
+
+    if scorer_id not in OFFICIAL_GOLD_SPLIT_OF_SCORER:
+        raise SlurpOfficialEvalError(
+            f"{scorer_id!r} is not an official SLURP scorer binding; known: "
+            f"{sorted(OFFICIAL_GOLD_SPLIT_OF_SCORER)}"
+        )
+    split_id, allow_heldout = OFFICIAL_GOLD_SPLIT_OF_SCORER[scorer_id]
+    prefix = f"slurp:{split_id}:"
+    for sample_id in sample_ids:
+        if not isinstance(sample_id, str) or not published_sample_key(sample_id).startswith(prefix):
+            raise SlurpOfficialEvalError(
+                f"{scorer_id} scores {split_id!r} rows only; a roster row names another split"
+            )
+    gold_records = load_slurp_split(lock, root, split_id, allow_heldout=allow_heldout)
+    gold_by_id = {record.sample_id: record.intent for record in gold_records}
+    out: dict[str, str] = {}
+    for sample_id in sample_ids:
+        intent = gold_by_id.get(published_sample_key(sample_id))
+        if intent is None:
+            raise SlurpOfficialEvalError(
+                f"a roster row is not part of SLURP split {split_id!r} (gold binding of {scorer_id})"
+            )
+        out[sample_id] = intent
+    return out
+
+
 def score_slurp_outputs_official_projected_v2_train(
     outputs_path: Path,
     lock: Mapping[str, object],
@@ -1508,7 +1560,9 @@ __all__ = [
     "OfficialSluResult",
     "PredictedSlurpSample",
     "SlurpOfficialEvalError",
+    "OFFICIAL_GOLD_SPLIT_OF_SCORER",
     "load_legal_intent_inventory",
+    "official_gold_intents",
     "official_evaluator_python",
     "official_evaluator_root",
     "run_official_evaluate",

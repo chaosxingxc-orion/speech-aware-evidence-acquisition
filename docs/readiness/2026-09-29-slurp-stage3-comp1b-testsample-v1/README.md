@@ -30,6 +30,19 @@ h_intent 1.3329, h_SLU 1.4492 (recording-scaled 0.664 /
 ("dev numbers are not test claims"): it may say whether COMP-1b held its DEV-nominated intent gain against the locked
 system on a test sample; it is never a test claim, never the final read, never publication-grade.
 
+**Post-stratification: inside the official scorer, aggregates only** (coordinator ruling 2026-09-30;
+`registered-facts-v1.json` `post_stratification_read`). The roster receipt allows gold only as per-intent aggregate
+counts (no label beside a sample id) and the allowance lets gold be read only by the official scorer after delivery, so
+no per-row gold bank is used (the DRAFT row `SAEA-SLURP-TEST-SAMPLE-3010-GOLD-BANK-V1`, on the unmerged branch
+`fable/samplegoldbank`, is not pursued). The read (`--strata-source scorer`) runs the official-scoring step's
+`--strata-inside-scorer` mode (`core.scoring_strata`) in its own process: gold intent through the
+`slurp-slu-official-test` binding, in memory; 59 strata counted, 58 carried (general_greet is closure-only, dropped and
+the weights renormalised); intent = sum_h w_h * mean_h, SLU-F1 = F1(sum_h w_h*TP_h/n_h, sum_h w_h*FP_h/n_h,
+sum_h w_h*FN_h/n_h), equal stratum = the mean of the 58 per-stratum deltas; 10,000 draws, seed 20260929, prompt
+clusters resampled within strata. It writes ONE file, `scorer-strata-aggregate.json` (per stratum n_h and per arm
+intent-correct / TP / FP / FN totals; weighted deltas; CI95s; input hashes; receipt hash). Never written: a per-row
+stratum, any row-level output pairing a sample id with a gold field, a gold label beside an id, text or model output.
+
 **Blockers before the flip.**
 
 1. OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).

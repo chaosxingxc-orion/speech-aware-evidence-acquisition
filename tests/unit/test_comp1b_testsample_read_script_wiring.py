@@ -44,12 +44,27 @@ def test_the_milestone_read_script_wires_the_post_stratified_weighting_flags() -
     text = SCRIPT_PATH.read_text(encoding="utf-8")
     assert "--weighting post-stratified" in text
     assert "--population-counts" in text and "population-counts-v1.json" in text
-    assert "--strata-source gold-bank" in text
-    assert "--strata-key gold_intent" in text
-    assert "--gold-bank-roster" in text
+    # coordinator ruling 2026-09-30: post-stratification happens INSIDE the official-scoring step
+    # (aggregates only); the per-row gold-bank channel is not legal on the signed test sample.
+    command = text.split("bash \"$MAIN/scripts/flights/read_paired_cell.sh\"", 1)[1]
+    assert "--strata-source scorer" in command
+    assert "--strata-source gold-bank" not in command
+    assert "--gold-bank-roster" not in command
+    assert "--strata-key" not in command
     # blocker 5's own words: the raw roster mean must never be what this script's read calls
     # natural_mixture on a floored sample.
     assert "raw roster mean" in text or "raw" in text.lower()
+
+
+def test_the_test_sample_roster_declares_the_stratification_block_the_scorer_mode_requires() -> None:
+    """``--strata-inside-scorer`` refuses a roster receipt without a ``stratification`` block;
+    the signed test sample's receipt carries one (read here by key only -- no item is opened)."""
+
+    roster = json.loads(
+        (REPO_ROOT / "docs" / "receipts" / "rosters" / "slurp-test-sample-3010-v1.json").read_text(encoding="utf-8")
+    )
+    assert isinstance(roster.get("stratification"), dict) and roster["stratification"]
+    assert roster.get("stratum_withheld_per_item") is True
 
 
 def test_the_committed_population_counts_file_matches_the_roster_receipts_per_intent_table() -> None:

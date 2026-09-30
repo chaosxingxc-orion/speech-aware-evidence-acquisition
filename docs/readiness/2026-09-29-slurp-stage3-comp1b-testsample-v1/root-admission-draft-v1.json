@@ -11,7 +11,7 @@
     },
     "analysis_recipe": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/analysis-recipe-v1.json",
-      "sha256": "c1742203e8fed0ac6c4c64ebc383128eb980345d78c222c7dc232a58c06a9311"
+      "sha256": "91cb824735a3ee5b22a905d0b8cf4893bee1c5849d4c81df6249542d4608ed00"
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
@@ -31,7 +31,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/registered-facts-v1.json",
-      "sha256": "e35c6040c593810f414af6c40ffa2db1a4d01f73e5b9dc2f2e4f5148ed87ca2b"
+      "sha256": "97e05bbb460db10e29accb9f4ab5dc46c1105e7d83383caa41259bb09330f403"
     },
     "registration_base_commit": "881b1787c"
   },
