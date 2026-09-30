@@ -1,7 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T00:48:02Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-ops + records agent) · HEAD at writing `cbd0610e` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T01:44:00Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+merge agent) · HEAD at writing `414b77a4` on `master` (plus this refresh commit), tree clean.
+**Since 00:48Z (merge agent):** **`fable/poststrat` merged** (`414b77a4`, `--no-ff`; the branch took master first,
+`329f88a9`, one conflict in `docs/exposure-ledger.md` resolved by keeping both appended sections; 115 targeted
+worktree tests passed; engineering base, harness admission, tool catalog, results ledger, Stage-3 effect floor
+(0 blocking), Stage-3 algorithm label, finite-completion policy and derived-media confinement gates PASS). It
+contains `fable/milestoneprep` (`c5c60f00` + `030addb2`) and the post-stratified weighting (`6128435b`).
+**Test-sample milestone package: HELD** (`docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/`,
+MILESTONE-00-PLAN comparator + MILESTONE-01 = COMP-1b on SLURP-TEST-SAMPLE-3010-V1, five DRAFT ledger rows, the
+TEST scorer sibling `slurp-slu-official-test`; one attempt per read run id, ever). Open blockers: (1) owner gate --
+A2 must read NOMINATED or better and be reported to the owner (decisions 151/202); (2) allowance v2 naming the FIT
+run ids (v1 names none; the native contact-fit gate refuses them) -- **owner decision 207 pending**; (3)
+preparations 2/3 (speech-query encoding, query-vector export) queued in the E5 serving-restart gap
+(`SAEA-Queue-E5`), then this roster's agreement table built model-free; (4) the gold-bank strata block for the
+sample is still to be produced (the post-stratified read sources strata from it); (5) `expected_effect_pp` (3.8,
+provisional) re-declared by root from the A2 read before the flip. The former blocker 5 (read driver) is closed:
+**post-stratified weighting landed** in `scripts/analysis/stage3_paired_read.py` (`--weighting
+{raw,post-stratified,equal-stratum}`, strata from roster item or gold bank, within-stratum resampling, SLU-F1
+pooled from weighted TP/FP/FN totals; a floored roster refuses raw as `natural_mixture`), with
+`scripts/analysis/build_population_counts.py` and the committed `population-counts-v1.json`. **COMP-2 stage
+column** (decision 203; `scripts/analysis/slurp_comp2_stage_column_read.py`): the COMP-1b Fold A rehearsal
+(`SAEA-SLURP-COMP2-STAGE-COLUMN-COMP1B-FOLD-A-REHEARSAL-V1`) reads stage vs delivered SLU-F1 **+1.35 [+0.86,
++1.86]** (66 rows, 68 entities; A/A replicate +1.31 [+0.81, +1.85]); FAILS-Q2 on the point leg at Fold A's floor
+(1.49 at n = 1,080); composed stage column vs A/A intent +3.80 [+1.94, +5.65], SLU-F1 +0.75 [-1.04, +2.50]. The bar
+at A2's n = 2,000 is 1.49 * sqrt(1080 / 2000) = **1.10**; note the DRAFT A2 READ row
+(`SAEA-SLURP-STAGE3-COMP2-STAGE-COLUMN-DEV2000-READ-V1`) still states the n = 1,000 form (1.5485) -- root to
+reconcile at countersignature. The READ driver refuses until that row is countersigned after both A2 seals.
+**Pending branches:** none.
 **Since 00:24Z (ops + records agent):** **Umbrella `fable/e5lock` merged** (umbrella master `cbaacc3`, `--no-ff`;
 `docs/datasets.lock.json` gains `whisper-large-v3-openai-pt`, AUXILIARY, plus the 2026-09-29 amendment; `asset_lock.py
 validate` OK 126 assets, `test_asset_lock.py` 8 passed in the worktree, `legacy_asset_resolution_check` PASS; not
@@ -27,7 +53,7 @@ SLURP-TEST-SAMPLE-3010-V1, rows countersigned 2026-09-27 under decision 156; `--
 and receipts under `prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1/{fold-a,fold-b}/`, prints `E5-0 DONE` (or FAILED: the
 filler proceeds, E5-0 is one-shot), removes the hold and runs the filler. **E5-1** runs offline once the catalogs
 exist (countersign its READ row first). **GPU queue:** P-SV-3 (flying, `SAEA-Queue-NEXT`) -> A2 (`SAEA-Queue-A2`)
--> E5-0 + sample prep 2/3 (serving-restart gap, `SAEA-Queue-E5`) -> filler. **Pending branch:** `fable/milestoneprep`.
+-> E5-0 + sample prep 2/3 (serving-restart gap, `SAEA-Queue-E5`) -> filler. **Pending branch:** `fable/milestoneprep` (since merged via `fable/poststrat`, `414b77a4`).
 **Since 00:13Z (records agent):** **Owner rulings 200-206 recorded** (`ed575ad7`, registry rows before the
 decision-140 outcome; owner ~23:10Z: 「决策200：同意，决策201：同意，我们调整下课题方向，0906的时候还是聚焦在如何用好主模型，现在调整为如何搭建系统并进行系统级优化，决策202：GO，决策203：好，决策204:同意」
 plus the supplement on model-initiated tools): **200** AGREED -- P-SV-3 flies (flying since 23:25Z at `c6e98e6b`);
@@ -526,7 +552,7 @@ Mine: make no cross-flight claim without an in-chain replicate and no benefit cl
 31. 205: directive, research direction = build the system and optimise at system level; `docs/readiness/2026-09-29-research-direction-system-level-v1.md`.
 32. 206: directive, tools are model-initiated, never system-default; module design 2d, E5 addendum; E5-2 gate proposed, owner to confirm.
 
-**Pending branches (not merged):** `fable/e5prep` (E5-0 / E5-1 preparation) and `fable/milestoneprep` (test-sample milestone package + the A2 scope-rule stage-column script), both in progress. Merged since the previous list: `fable/tooldecision` (`5c2e559f`), `fable/psvreaddriver` (`7d1b44ab`), `fable/psv1read` (`7ffba69c`), `fable/psv2read` (`0c0a907c`), `fable/repinresume2` (`4b2946f3`), `fable/comp1slu` (`1ab14dfc`), `fable/comp1b` (`c5cb5399`), `fable/emptysupply` (`70b67bbf`), `fable/psv3` (`776e3f84`), `fable/module1` (`fe08c9fc`), `fable/module2` (`6cc9a3d9`), `fable/repinsuperseded` (`6d3d58f1`), `fable/innerloop2` (`0da2d81a`). **Queue order:** `SAEA-Queue-NEXT` P-SV-3 (flying since 23:25Z, `c6e98e6b`) -> `SAEA-Queue-A2` (A2, `310110be`) -> filler; the 12-h serving restart rule is in both queues.
+**Pending branches (not merged):** none. Merged since the previous list: `fable/poststrat` (`414b77a4`, containing `fable/milestoneprep`), `fable/e5prep` (`46685410`), `fable/tooldecision` (`5c2e559f`), `fable/psvreaddriver` (`7d1b44ab`), `fable/psv1read` (`7ffba69c`), `fable/psv2read` (`0c0a907c`), `fable/repinresume2` (`4b2946f3`), `fable/comp1slu` (`1ab14dfc`), `fable/comp1b` (`c5cb5399`), `fable/emptysupply` (`70b67bbf`), `fable/psv3` (`776e3f84`), `fable/module1` (`fe08c9fc`), `fable/module2` (`6cc9a3d9`), `fable/repinsuperseded` (`6d3d58f1`), `fable/innerloop2` (`0da2d81a`). **Queue order:** `SAEA-Queue-NEXT` P-SV-3 (flying since 23:25Z, `c6e98e6b`) -> `SAEA-Queue-A2` (A2, `310110be`) -> filler; the 12-h serving restart rule is in both queues.
 
 **Remaining test failures:** the tests that call a bare `python`, which is not on the WSL PATH (environment, not code). The supply-router test failure found during E4 v1 (a bare `object()` double refusing the bolted-on binding) is fixed (`87146390`).
 
