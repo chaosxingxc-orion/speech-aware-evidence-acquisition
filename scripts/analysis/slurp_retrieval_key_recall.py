@@ -376,6 +376,100 @@ def roster_ids(path: Path) -> list:
     return out
 
 
+# ---------------------------------------------------------------------------
+# K6p construction (shared with scripts/build_slurp_centred_centroid_key.py and
+# scripts/build_slurp_centred_query_vectors.py: the builders call THESE functions)
+
+
+def centre_keys(raw_means, mu_p) -> np.ndarray:
+    """The K6/K6p key: each intent's raw member mean minus the construction-pool mean, re-normalised."""
+
+    return unit_rows(np.asarray(raw_means, dtype=np.float64) - np.asarray(mu_p, dtype=np.float64))
+
+
+def centre_queries(q, mu_q) -> np.ndarray:
+    """The K6/K6p query: each (unit) speech query minus the R01C speech-query mean, re-normalised."""
+
+    return unit_rows(np.asarray(q, dtype=np.float64) - np.asarray(mu_q, dtype=np.float64))
+
+
+def key_construction(root: Path, diag, cbuild, centroid_pin: dict | None = None) -> dict:
+    """Everything the keys are built from, read from pinned bytes only (zero contacts, gold-free):
+    the released 60-way boundary store and its written key; the pinned centroid key (when
+    ``centroid_pin`` is given); the R01-excluded construction pool minus every utterance of TRAIN
+    Fold A, Fold B, R01 and R01C (unit member vectors ``P``, store-property ``labels``); the raw
+    per-intent member means and the pool mean ``mu_p``; and the pinned R01C speech queries ``SQ``
+    with their mean ``mu_q`` (the hub statistics). ``files`` pins every input read."""
+
+    from speech_aware_evidence_acquisition.rails.phase_supply import (
+        load_sealed_segment_vectors, load_sealed_vectors)
+
+    files = {}
+    store = diag.load_boundary(root)
+    intents = list(store["intents"])
+    if len(intents) != 60:
+        raise ReadError("boundary store is not 60-way")
+    idx = {x: i for i, x in enumerate(intents)}
+    written = store["matrix"]
+    centroid = None
+    if centroid_pin is not None:
+        cent_vecs = load_sealed_vectors(root / centroid_pin["relpath"], expected_sha256=centroid_pin["sha256"], dimensions=(IB_DIM,))
+        centroid = unit_rows([cent_vecs[IB_FACET_MARK + x][IB_DIM] for x in intents])
+        files[centroid_pin["relpath"]] = centroid_pin["sha256"]
+
+    # ---- construction pool: R01-excluded pool snapshot minus Fold A / Fold B / R01 / R01C
+    pool = cbuild.pool_labels(root, diag.POOL_M, cbuild.POOL_M_SHA)
+    pool_keyed = diag.load_pool(root, diag.POOL_M, cbuild.POOL_M_SHA)["keyed"]
+    files[diag.POOL_M] = cbuild.POOL_M_SHA
+    excl = {}
+    roster_members = {}
+    for name, rel in ROSTERS.items():
+        ids_r = roster_ids(REPO_ROOT / rel)
+        files["repo:" + rel] = digest(REPO_ROOT / rel)
+        roster_members[name] = {diag.own_key(s) for s in ids_r}
+        excl[name] = sum(1 for f in pool["facets"] if pool_keyed[f] in roster_members[name])
+    all_excl = set().union(*roster_members.values())
+    members = [f for f in pool["facets"] if pool_keyed[f] not in all_excl]
+    vecs = diag.load_pool_vectors(root, set(pool["facets"]))
+    files[diag.POOL_FACETS] = diag.POOL_FACETS_SHA
+    P = unit_rows([vecs[f] for f in members])
+    del vecs
+    labels = np.asarray([idx[pool["labels"][f]] for f in members], dtype=np.int64)
+    per_intent = Counter(labels.tolist())
+    no_member = [intents[j] for j in range(60) if per_intent.get(j, 0) == 0]
+    pool_info = {"snapshot": diag.POOL_M, "snapshot_sha256": cbuild.POOL_M_SHA, "snapshot_utterances": len(pool["facets"]),
+                 "excluded_by_roster": excl, "construction_members": len(members),
+                 "intents_without_member": no_member, "members_min": min(per_intent.values()),
+                 "members_max": max(per_intent.values())}
+    if centroid is not None:
+        # the pinned centroid key must be reproduced from this pool (exact when nothing extra is excluded)
+        recomputed = np.asarray([unit_rows(P[labels == j].mean(axis=0, keepdims=True))[0] if per_intent.get(j) else written[j]
+                                 for j in range(60)])
+        cent_diff = float(np.abs(recomputed - centroid).max())
+        pool_info["recomputed_centroid_max_abs_diff_vs_pinned"] = cent_diff
+        if cent_diff > 1e-9 and sum(excl.values()) == 0:
+            raise ReadError("the construction pool does not reproduce the pinned centroid key")
+    # hub statistics: pinned R01C construction-roster speech queries (gold-free, disjoint from both folds)
+    stats_q = load_sealed_segment_vectors(root / STATS_QUERY[0], expected_sha256=STATS_QUERY[1], dimensions=(IB_DIM,))
+    files[STATS_QUERY[0]] = STATS_QUERY[1]
+    if any(len(v.segments) != 1 for v in stats_q.values()):
+        raise ReadError("a statistics query carries more than one segment")
+    stats_ids = sorted(stats_q)
+    SQ = unit_rows([stats_q[s].segments[0][IB_DIM] for s in stats_ids])
+    del stats_q
+    stats_overlap = {name: sum(1 for s in stats_ids if diag.own_key(s) in roster_members[name]) for name in ("fold_a", "fold_b")}
+    stats_overlap["pool"] = sum(1 for s in stats_ids if diag.own_key(s) in {pool_keyed[f] for f in members})
+    mu_p = P.mean(axis=0)
+    mu_q = SQ.mean(axis=0)
+    raw_means = np.asarray([P[labels == j].mean(axis=0) if per_intent.get(j) else written[j] for j in range(60)])
+    return {
+        "store": store, "intents": intents, "idx": idx, "written": written, "centroid": centroid,
+        "pool": pool, "members": members, "P": P, "labels": labels, "per_intent": per_intent,
+        "roster_members": roster_members, "pool_info": pool_info, "stats_ids": stats_ids, "SQ": SQ,
+        "stats_overlap": stats_overlap, "mu_p": mu_p, "mu_q": mu_q, "raw_means": raw_means, "files": files,
+    }
+
+
 def build(args) -> dict:
     from speech_aware_evidence_acquisition.data.lock import load_lock
     from speech_aware_evidence_acquisition.data.slurp import load_slurp_split
@@ -410,63 +504,17 @@ def build(args) -> dict:
     if sa["rank_weights"] != {"w_agree": 1.0, "w_cos": 1.0, "w_prior": 0.0} or sa["fuse_coverage"] != {"c": 1, "m": 8, "top_l": 8}:
         raise ReadError("the flown boundary spec is not w_cos/w_agree 1/1, m/c/top_l 8/1/8")
 
-    # ---- boundary store, written and centroid keys
-    store = diag.load_boundary(root)
-    intents = list(store["intents"])
-    if len(intents) != 60:
-        raise ReadError("boundary store is not 60-way")
-    idx = {x: i for i, x in enumerate(intents)}
-    written = store["matrix"]
-    cent_vecs = load_sealed_vectors(root / sc["facet_source"]["relpath"], expected_sha256=sc["facet_source"]["sha256"], dimensions=(IB_DIM,))
-    centroid = unit_rows([cent_vecs[IB_FACET_MARK + x][IB_DIM] for x in intents])
+    # ---- boundary store, written and centroid keys; construction pool; hub statistics
+    kc = key_construction(root, diag, cbuild, centroid_pin=sc["facet_source"])
+    store, intents, idx, written = kc["store"], kc["intents"], kc["idx"], kc["written"]
+    centroid = kc["centroid"]
+    files.update(kc["files"])
     files[sa["facet_source"]["relpath"]] = sa["facet_source"]["sha256"]
-    files[sc["facet_source"]["relpath"]] = sc["facet_source"]["sha256"]
-
-    # ---- construction pool: R01-excluded pool snapshot minus Fold A / Fold B / R01 / R01C
-    pool = cbuild.pool_labels(root, diag.POOL_M, cbuild.POOL_M_SHA)
-    pool_keyed = diag.load_pool(root, diag.POOL_M, cbuild.POOL_M_SHA)["keyed"]
-    files[diag.POOL_M] = cbuild.POOL_M_SHA
-    excl = {}
-    roster_members = {}
-    for name, rel in ROSTERS.items():
-        ids_r = roster_ids(REPO_ROOT / rel)
-        files["repo:" + rel] = digest(REPO_ROOT / rel)
-        roster_members[name] = {diag.own_key(s) for s in ids_r}
-        excl[name] = sum(1 for f in pool["facets"] if pool_keyed[f] in roster_members[name])
-    all_excl = set().union(*roster_members.values())
-    members = [f for f in pool["facets"] if pool_keyed[f] not in all_excl]
-    vecs = diag.load_pool_vectors(root, set(pool["facets"]))
-    files[diag.POOL_FACETS] = diag.POOL_FACETS_SHA
-    P = unit_rows([vecs[f] for f in members])
-    del vecs
-    labels = np.asarray([idx[pool["labels"][f]] for f in members], dtype=np.int64)
-    per_intent = Counter(labels.tolist())
-    no_member = [intents[j] for j in range(60) if per_intent.get(j, 0) == 0]
-    # the pinned centroid key must be reproduced from this pool (exact when nothing extra is excluded)
-    recomputed = np.asarray([unit_rows(P[labels == j].mean(axis=0, keepdims=True))[0] if per_intent.get(j) else written[j]
-                             for j in range(60)])
-    cent_diff = float(np.abs(recomputed - centroid).max())
-    pool_info = {"snapshot": diag.POOL_M, "snapshot_sha256": cbuild.POOL_M_SHA, "snapshot_utterances": len(pool["facets"]),
-                 "excluded_by_roster": excl, "construction_members": len(members),
-                 "intents_without_member": no_member, "members_min": min(per_intent.values()),
-                 "members_max": max(per_intent.values()),
-                 "recomputed_centroid_max_abs_diff_vs_pinned": cent_diff}
-    if cent_diff > 1e-9 and sum(excl.values()) == 0:
-        raise ReadError("the construction pool does not reproduce the pinned centroid key")
-    # hub statistics: pinned R01C construction-roster speech queries (gold-free, disjoint from both folds)
-    stats_q = load_sealed_segment_vectors(root / STATS_QUERY[0], expected_sha256=STATS_QUERY[1], dimensions=(IB_DIM,))
-    files[STATS_QUERY[0]] = STATS_QUERY[1]
-    if any(len(v.segments) != 1 for v in stats_q.values()):
-        raise ReadError("a statistics query carries more than one segment")
-    stats_ids = sorted(stats_q)
-    SQ = unit_rows([stats_q[s].segments[0][IB_DIM] for s in stats_ids])
-    del stats_q
-    stats_overlap = {name: sum(1 for s in stats_ids if diag.own_key(s) in roster_members[name]) for name in ("fold_a", "fold_b")}
-    stats_overlap["pool"] = sum(1 for s in stats_ids if diag.own_key(s) in {pool_keyed[f] for f in members})
-    mu_p = P.mean(axis=0)
-    mu_q = SQ.mean(axis=0)
-    raw_means = np.asarray([P[labels == j].mean(axis=0) if per_intent.get(j) else written[j] for j in range(60)])
-    cent_centred = unit_rows(raw_means - mu_p)
+    pool, members, P, labels = kc["pool"], kc["members"], kc["P"], kc["labels"]
+    per_intent, roster_members, pool_info = kc["per_intent"], kc["roster_members"], kc["pool_info"]
+    stats_ids, SQ, stats_overlap = kc["stats_ids"], kc["SQ"], kc["stats_overlap"]
+    mu_p, mu_q, raw_means = kc["mu_p"], kc["mu_q"], kc["raw_means"]
+    cent_centred = centre_keys(raw_means, mu_p)
     csls = {k: csls_penalty(centroid, SQ, k) for k in CSLS_K}
     kb_mu, kb_sd = key_bias(centroid, SQ)
     stats_info = {"relpath": STATS_QUERY[0], "sha256": STATS_QUERY[1], "rows": len(stats_ids), "overlap": stats_overlap,
@@ -616,7 +664,7 @@ def build(args) -> dict:
         o["K5_rrf_cent_agree+nn1"] = rrf([o["cent_agree"], o["nn1"]], intents)
         o["K5_rrf_cent_agree+nn1+K1_p3"] = rrf([o["cent_agree"], o["nn1"], o["K1_p3"]], intents)
         # K6: centred cosine (pool mean off the keys, construction-speech mean off the query)
-        cc = unit_rows(q - mu_q) @ cent_centred.T
+        cc = centre_queries(q, mu_q) @ cent_centred.T
         o["K6_centred"] = order_from_scores(cc, intents, adm_c)
         for w in AGREE_W:
             o[f"K6_centred_agree_w{w}"] = order_from_scores(cc + w * share, intents, adm_c)
