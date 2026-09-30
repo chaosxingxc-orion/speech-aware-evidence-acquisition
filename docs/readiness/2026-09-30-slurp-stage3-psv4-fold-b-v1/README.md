@@ -60,3 +60,22 @@ one-cell arm campaign). (4) `bash scripts/flights/psv/psv_read.sh psv4`.
 endpoints, 47,322 speech seconds, 16.4 GPU hours; smoke
 60 / 240 / 153 / 1.0.
 Expected spend about 8.06 contacts per row (AGREE's 4.06 + 4).
+
+## Coordinator ruling (Fable 5.1, 2026-09-30)
+
+The K6p selection disclosure above is **accepted, with a stated consequence**. The key was chosen
+among the candidate keys of the recall-key note (eight, K1-K8, in
+`docs/results/2026-09-30-slurp-retrieval-key-recall-offline.md`; the disclosure above counts 15
+families across that comparison -- the consequence below holds for either count) using gold-derived
+rank counts on **both** folds. K6p carries no tuned parameter, and its centring statistics come from
+the R01C roster, which is disjoint from both folds; the choice itself, however, saw Fold B. The
+Fold B read therefore carries a **selection bias of unknown size**.
+
+Consequences, binding on this package:
+
+1. P-SV-4 reads with claim ceiling **`nominated`** (unchanged from the registration); no reading of
+   this cell may exceed it.
+2. A NOMINATED verdict does not admit `key-source:k6p` into the module. It requires **replication on
+   a fresh roster (DEV-2000-ADDED)** first -- the standing same-roster-then-fresh rule. Only a
+   replicated nomination lets the `key-source:k6p` component enter the module.
+3. The flip (Sequence step 2) waits for **owner decision 208**; the cell stays HELD until then.
