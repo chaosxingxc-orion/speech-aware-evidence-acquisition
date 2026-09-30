@@ -51,7 +51,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
-from ..core.base import CONSUMPTION_MODULES
+from ..core.base import CONSUMPTION_MODULE_PROFILES, CONSUMPTION_MODULES
 from .errors import RailsError
 
 #: The module id (design "Proposed id"; the carrier enters as ``profile``).
@@ -68,6 +68,15 @@ CONSUMPTION_MODULE_CONFIG_KEY = "consumption_module"
 POLICY_OWNED_KEYS: tuple[str, ...] = (
     "policy", "knowledge_stores", "native_episode", "phase_material",
 )
+#: The keys of a DIRECT lock layer (design 3.2 "bare"; 2b.3 admission gate):
+#: a carrier with no locked system (every carrier but the first) has as its
+#: null arm the direct baseline of the shared controller -- the direct-only
+#: phase program, which declares no ``native_episode`` and no
+#: ``knowledge_stores`` (the loader refuses a ``native_episode`` block on any
+#: program that is not the native-role episode). A direct layer compiles with
+#: every component off; a component that writes into a block the layer does
+#: not carry refuses (the writer finds no such object).
+DIRECT_LAYER_KEYS: tuple[str, ...] = ("policy", "phase_material")
 
 STATE_ON = "on"
 STATE_OFF = "off"
@@ -274,15 +283,69 @@ class CarrierHooks:
     lock_versions: Mapping[str, Callable[[], Mapping[str, object]]] | None = None
     current_lock: str | None = None
     roster_pin_paths: tuple[tuple[str, ...], ...] | None = None
+    #: Design section 2d: ``tool_offer_units(delivered text) -> (context
+    #: label, units, parsed)`` in the ``delivered_units`` shape -- the units a
+    #: model-initiated tool offer (``verify_span(index)``) is indexed over on
+    #: this carrier. ``None``: no offer target on this carrier. The module
+    #: OFFERS; it never calls a tool (owner directive 2026-09-29).
+    tool_offer_units: Callable[..., tuple] | None = None
+    #: The carrier's own component ANALOGUES that are not (yet) catalogue
+    #: components -- ``{carrier component id: {"analogue_of", "plane",
+    #: "status", "record", "armable"}}`` -- so the per-carrier inventory of
+    #: design 2b.2 is data beside the hooks rather than prose. A listed
+    #: analogue is never armable through a block (it is not in the module's
+    #: catalogue, so the parse refuses its id); it names what a later
+    #: registration would compile.
+    carrier_components: Mapping[str, Mapping[str, object]] | None = None
+
+
+@dataclass(frozen=True)
+class DeliveredUnit:
+    """One unit a ``delivered_units`` / ``tool_offer_units`` hook returns on
+    a carrier whose delivered answer has no parser-native unit type: ``type``
+    and ``filler`` are the two attributes the carrier-agnostic consumers read
+    (re-listen targets ``(type, filler)``, as the first carrier's parsed
+    entities carry);
+    ``index`` is the unit's 0-based position in delivery order and ``kind`` a
+    carrier-defined class of the value (e.g. a JSON type, a numeric kind)."""
+
+    type: str
+    filler: str
+    index: int
+    kind: str | None = None
+
+
+def registered_profiles() -> tuple[str, ...]:
+    """The carrier profiles ``core.base.CONSUMPTION_MODULE_PROFILES`` lists."""
+
+    return tuple(sorted(CONSUMPTION_MODULE_PROFILES))
+
+
+def profile_for_carrier_lock_key(carrier_lock_key: object) -> str | None:
+    """The profile whose hooks a config's ``carrier_lock_key`` reaches, or
+    ``None`` (``core.base.CONSUMPTION_MODULE_PROFILES``)."""
+
+    if not isinstance(carrier_lock_key, str):
+        return None
+    for profile, lock_keys in CONSUMPTION_MODULE_PROFILES.items():
+        if carrier_lock_key in lock_keys:
+            return profile
+    return None
 
 
 def resolve_carrier_hooks(profile: str, *, repo_root: Path | None = None) -> CarrierHooks:
     """The hooks of ``profile``, from ``rails/adapters/<profile>_module_hooks.py``
-    (its ``carrier_module_hooks(repo_root=...)``). Refuses a profile with no
+    (its ``carrier_module_hooks(repo_root=...)``). Refuses a profile that
+    ``core.base.CONSUMPTION_MODULE_PROFILES`` does not list, and one with no
     hooks file: a carrier without an adapter cannot carry the module."""
 
     if not isinstance(profile, str) or _PROFILE.fullmatch(profile) is None:
         raise ConsumptionModuleConfigError(f"profile must match {_PROFILE.pattern}, got {profile!r}")
+    if profile not in CONSUMPTION_MODULE_PROFILES:
+        raise ConsumptionModuleConfigError(
+            f"profile {profile!r} has no carrier hooks: it is not a registered profile "
+            f"(core.base.CONSUMPTION_MODULE_PROFILES: {list(registered_profiles())})"
+        )
     try:
         hooks_module = importlib.import_module(
             f"{__package__}.adapters.{profile}_module_hooks"
@@ -302,14 +365,18 @@ def resolve_carrier_hooks(profile: str, *, repo_root: Path | None = None) -> Car
 
 def carrier_hooks_for_lock_key(carrier_lock_key: object) -> CarrierHooks | None:
     """The hooks of the carrier a config declares (``carrier_lock_key``), or
-    ``None`` when that carrier has no hooks file -- the carrier-agnostic
-    rails (the config loader, the runner, re-listen's replay) reach carrier
-    facts through this, never by naming a carrier (migration step 5)."""
+    ``None`` when that carrier reaches no registered profile -- the
+    carrier-agnostic rails (the config loader, the runner, re-listen's
+    replay) reach carrier facts through this, never by naming a carrier
+    (migration step 5). The lock key maps to its profile through
+    ``core.base.CONSUMPTION_MODULE_PROFILES`` (a lock key such as
+    ``<carrier>-original`` is not itself a profile name)."""
 
-    if not isinstance(carrier_lock_key, str) or _PROFILE.fullmatch(carrier_lock_key) is None:
+    profile = profile_for_carrier_lock_key(carrier_lock_key)
+    if profile is None:
         return None
     try:
-        return resolve_carrier_hooks(carrier_lock_key)
+        return resolve_carrier_hooks(profile)
     except ConsumptionModuleConfigError:
         return None
 
@@ -765,22 +832,42 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 f"known: {sorted(versions)}"
             )
         lock_layer = versions[block.lock]()
-    if not isinstance(lock_layer, Mapping) or set(lock_layer) != set(POLICY_OWNED_KEYS):
+    if not isinstance(lock_layer, Mapping) or set(lock_layer) not in (
+        set(POLICY_OWNED_KEYS), set(DIRECT_LAYER_KEYS),
+    ):
         raise ConsumptionModuleConfigError(
-            f"the lock layer must carry exactly {list(POLICY_OWNED_KEYS)}"
+            f"the lock layer must carry exactly {list(POLICY_OWNED_KEYS)} (a system lock) or "
+            f"{list(DIRECT_LAYER_KEYS)} (a direct layer)"
         )
     layer = json.loads(_canonical(dict(lock_layer)))
-    if CONSUMPTION_MODULE_CONFIG_KEY in layer["native_episode"]:
-        raise ConsumptionModuleConfigError("the lock layer must not itself declare a module")
-    if hooks.default_deliver_normaliser is not None:
-        deliver = layer["native_episode"].get("deliver_normaliser")
-        if not isinstance(deliver, Mapping) or deliver.get("normaliser") != hooks.default_deliver_normaliser():
-            raise ConsumptionModuleConfigError(
-                "the lock layer's deliver node is not the carrier's default deliver "
-                f"normaliser {hooks.default_deliver_normaliser()!r}"
-            )
+    direct_layer = "native_episode" not in layer
     lock_program = default_phase_program(str(layer["policy"]))
+    if direct_layer:
+        # Design 3.2 "bare" / 2b.3: the direct baseline of the shared
+        # controller. It carries no episode, so it has no deliver node to
+        # check and no block to declare; a native-role program is refused
+        # here because the loader refuses it without a native_episode block.
+        if lock_program.stop_rule == "native-role-episode":
+            raise ConsumptionModuleConfigError(
+                f"a direct lock layer cannot run the native-role program {layer['policy']!r}"
+            )
+    else:
+        if CONSUMPTION_MODULE_CONFIG_KEY in layer["native_episode"]:
+            raise ConsumptionModuleConfigError("the lock layer must not itself declare a module")
+        if hooks.default_deliver_normaliser is not None:
+            deliver = layer["native_episode"].get("deliver_normaliser")
+            if not isinstance(deliver, Mapping) or deliver.get("normaliser") != hooks.default_deliver_normaliser():
+                raise ConsumptionModuleConfigError(
+                    "the lock layer's deliver node is not the carrier's default deliver "
+                    f"normaliser {hooks.default_deliver_normaliser()!r}"
+                )
     ceiling = lock_program.max_contacts
+    if direct_layer and (block.armed() or block.columns):
+        raise ConsumptionModuleConfigError(
+            f"profile {hooks.profile!r} compiles onto a direct layer ({layer['policy']!r}): "
+            "only the all-off block (the carrier admission gate, design 2b.3) compiles there; "
+            f"armed {[d.component_id for d in block.armed()]} need a locked system layer"
+        )
     writer = _Writer(layer)
     for decl in block.armed():
         cid, params = decl.component_id, decl.params
