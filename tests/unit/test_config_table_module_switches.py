@@ -1696,7 +1696,9 @@ def test_the_reviewer_toolkit_withdrawal_is_one_phase_tools_key():
     )
 
     assert PHASE_TOOLS_SWITCH_CLASS == "phase_tools"
-    assert SWITCH_CLASS_NAMES[-1] == PHASE_TOOLS_SWITCH_CLASS
+    # The eighth class (E25); the ninth, 'module', was appended by migration
+    # step 6 of the consumption module (2026-09-30).
+    assert SWITCH_CLASS_NAMES[7] == PHASE_TOOLS_SWITCH_CLASS
     assert resolve_phase_tools_switch_key("phase_tools.reviewer") == "phase_tools.reviewer"
     for bad in ("phase_tools", "phase_tools.", "phase_tools.<phase>", "toolkits.reviewer",
                 "phase_tools.reviewer.mode", "", None):

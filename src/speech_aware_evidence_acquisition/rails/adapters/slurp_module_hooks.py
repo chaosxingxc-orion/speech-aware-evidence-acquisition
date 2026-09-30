@@ -107,6 +107,29 @@ def slurp_delivered_units(delivered_text: str) -> tuple[str | None, tuple, bool]
 #: layer the module compiles its components onto (ruling R2).
 LOCK_BASELINE_FRAGMENT = "slurp-native-default-plan-lock-baseline-v1"
 
+#: Lock versions a block may name in its ``lock`` key (step 6). v2.1 (decision
+#: 204, docs/results/2026-09-30-slurp-v2-1-lock-v1.md) = v2.0 with ONE pin moved,
+#: the Reviewer template cell G5 flew. No ``lock`` key = v2.0, as before.
+LOCK_V2_0, LOCK_V2_1 = "v2.0", "v2.1"
+#: The CURRENT lock (decision 204): base and A/A bytes of cells registered
+#: after A2 seals, and the harness ``module`` class's OFF arm.
+CURRENT_LOCK = LOCK_V2_1
+#: ``(relpath under configs/, sha256)``: v2.0 / v2.1 Reviewer templates.
+LOCK_V2_0_REVIEWER_TEMPLATE = (
+    "probes/slurp_native_role_reviewer_v1.txt",
+    "dce206a20d361b221ea146dc4ff274ba5e08ce4ab1bfbfece662dc7da5012417",
+)
+LOCK_V2_1_REVIEWER_TEMPLATE = (
+    "probes/slurp_native_role_reviewer_v1_g5_v1.txt",
+    "724a437de1eeb1167d11395ad78605d595e324e682cff552c27cb84caa8cef35",
+)
+#: ROSTER pins inside the policy blocks (step 6): the sealed per-roster
+#: speech-query vectors -- cell identity, never policy.
+ROSTER_PIN_PATHS: tuple[tuple[str, ...], ...] = (
+    ("knowledge_stores", "intent-boundaries", "phase_supply", "perception", "query_source"),
+    ("knowledge_stores", "train-exemplars", "phase_supply", "solver", "query_source"),
+)
+
 #: The decision node's first-phase supply seed: the intent-boundary store's
 #: Perception ``phase_supply`` object (AGREE and the centroid key write here).
 DECISION_SUPPLY_PATH: tuple[str, ...] = (
@@ -169,6 +192,31 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         fragment = read_fragment(root, "baseline", LOCK_BASELINE_FRAGMENT)
         return {key: fragment[key] for key in POLICY_OWNED_KEYS}
 
+    def lock_layer_v2_1() -> Mapping[str, object]:
+        """The v2.0 layer with the Reviewer template moved to the G5 bytes --
+        fail-closed on either template's bytes."""
+
+        import copy  # noqa: PLC0415
+        import hashlib  # noqa: PLC0415
+
+        from ..consumption_module import ConsumptionModuleConfigError  # noqa: PLC0415
+
+        layer = copy.deepcopy(dict(lock_layer()))
+        for relpath, sha256 in (LOCK_V2_0_REVIEWER_TEMPLATE, LOCK_V2_1_REVIEWER_TEMPLATE):
+            path = root / "configs" / relpath
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != sha256:
+                raise ConsumptionModuleConfigError(
+                    f"lock {LOCK_V2_1}: configs/{relpath} is missing or does not hash to {sha256}"
+                )
+        reviewer = layer["phase_material"]["reviewer"]
+        if reviewer.get("instruction_template") != LOCK_V2_0_REVIEWER_TEMPLATE[0]:
+            raise ConsumptionModuleConfigError(
+                f"lock {LOCK_V2_1}: the v2.0 layer's Reviewer template is not "
+                f"{LOCK_V2_0_REVIEWER_TEMPLATE[0]!r}"
+            )
+        reviewer["instruction_template"] = LOCK_V2_1_REVIEWER_TEMPLATE[0]
+        return layer
+
     def deliver_stages() -> Mapping[str, Mapping[str, object]]:
         from .. import delivery_normalisers as dn  # noqa: PLC0415
 
@@ -196,4 +244,7 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         perception_branch_frame=PERCEPTION_BRANCH_FRAME,
         flown_branch_programs=FLOWN_BRANCH_PROGRAMS,
         delivered_path_admissions=DELIVERED_PATH_ADMISSIONS,
+        lock_versions={LOCK_V2_0: lock_layer, LOCK_V2_1: lock_layer_v2_1},
+        current_lock=CURRENT_LOCK,
+        roster_pin_paths=ROSTER_PIN_PATHS,
     )

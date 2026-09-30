@@ -819,7 +819,7 @@ def test_the_v3_schema_still_validates_every_existing_entry():
     assert _committed()["schema"] == "saea-harness-admission-v3"
     assert set(_committed()["switch_classes"]) == {
         "judges", "knowledge_views", "observe", "toolkits", "run", "episode", "stores",
-        "phase_tools",
+        "phase_tools", "module",
     }
     result = hac.evaluate(REPO_ROOT)
     assert result["failures"] == []

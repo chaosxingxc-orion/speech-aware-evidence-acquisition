@@ -102,6 +102,25 @@ checked:
    (``KNOWN_STATUSES``) for the same reason ``switch_classes`` is: a
    receipt naming a status nobody enforces is a receipt nobody is checking.
 
+8. **The composed consumption policy is one ``module`` key, and its OFF arm
+   is the LOCK, proven here.** Added 2026-09-30 by migration step 6 of the
+   evidence-consumption module (owner decisions 195/196/204, coordinator
+   ruling R2). Such an entry declares ``switch.table`` ``"module"``; its key
+   is ``native_episode.consumption_module``
+   (``rails.config_tables.resolve_module_switch_key``). Its OFF arm is a
+   module block whose every component is ``off`` and which declares no
+   column (``rails.consumption_module.is_module_off_block``) and which names
+   its carrier's CURRENT lock version in ``lock``; its ON arm is a block that
+   arms at least one component and compiles. The entry owes a
+   ``switch.falsifier`` of kind ``"compiles-to-lock"`` naming the lock
+   version and one or more registered cells (experiment ids) that carry
+   that lock's bytes; the check COMPILES the OFF arm and requires (a) the
+   compiled policy blocks to equal the named lock version's own, and (b)
+   each named cell's baseline fragment to carry exactly those blocks on its
+   own roster (``ComposedPolicy.values_on_roster_of``) -- the AT-M0 proof,
+   made by the gate rather than believed from a label. A plan arms the key
+   when its fragment declares a block that is not the OFF arm.
+
 A "default plan" is a committed config fragment the receipt itself names in
 ``default_plans`` -- declared, never inferred, because an experimental ON arm
 is a config fragment carrying a table too and reading those as default plans
@@ -128,6 +147,7 @@ from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E40
     CONFIG_TABLE_NAMES,
     EPISODE_SWITCH_CLASS,
     KNOWLEDGE_STORES_TABLE,
+    MODULE_SWITCH_CLASS,
     NULL_ARMS,
     PHASE_TOOLS_SWITCH_CLASS,
     RUN_NULL_ARMS,
@@ -142,8 +162,10 @@ from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E40
     is_run_null_arm,
     is_stores_null_arm,
     is_stores_repin_arm,
+    module_block_of,
     phase_tools_role_armed,
     resolve_episode_switch_key,
+    resolve_module_switch_key,
     resolve_phase_tools_switch_key,
     resolve_run_switch_key,
     resolve_stores_switch_key,
@@ -184,6 +206,10 @@ REQUIRED_RUN_SWITCH_KEYS = ("falsifier",)
 #: The only falsifier kind the ``run`` class accepts. It is not a label: the
 #: check verifies the named receipt's ``MANIFEST.sha256`` before believing it.
 RUN_FALSIFIER_KIND = "request-bytes-identical"
+
+#: The only falsifier kind the ``module`` class accepts (rule 8): the check
+#: compiles the OFF arm itself and compares it with the named lock and cells.
+MODULE_FALSIFIER_KIND = "compiles-to-lock"
 
 MANIFEST_NAME = "MANIFEST.sha256"
 
@@ -242,6 +268,13 @@ def _switch_present(
         return _episode_key_present(fragment, entry_key)
     if table == PHASE_TOOLS_SWITCH_CLASS:
         return phase_tools_role_armed(fragment, entry_key)
+    if table == MODULE_SWITCH_CLASS:
+        from speech_aware_evidence_acquisition.rails.consumption_module import (  # noqa: PLC0415
+            is_module_off_block,
+        )
+
+        block = module_block_of(fragment)
+        return block is not None and not is_module_off_block(block)
     if table == STORES_SWITCH_CLASS:
         store_id = entry_key.split(".", 1)[1]
         if isinstance(switch, Mapping) and switch.get("form") == STORES_REPIN_FORM:
@@ -295,6 +328,8 @@ def _check_switch(entry: Mapping[str, Any], repo_root: Path, where: str) -> list
         return _check_stores_switch(switch, repo_root, where)
     if table == PHASE_TOOLS_SWITCH_CLASS:
         return _check_phase_tools_switch(switch, repo_root, where)
+    if table == MODULE_SWITCH_CLASS:
+        return _check_module_switch(switch, repo_root, where)
     if table not in CONFIG_TABLE_NAMES:
         failures.append(
             f"{where}.switch.table is {table!r}; the switch classes are "
@@ -403,6 +438,92 @@ def _check_phase_tools_switch(
             "grants or withdraws, and the absence of one is never an ON arm"
         )
     failures.extend(_check_proof(switch["proof"], repo_root, where))
+    return failures
+
+
+def _check_module_switch(switch: Mapping[str, Any], repo_root: Path, where: str) -> list[str]:
+    """Rule 8: ``native_episode.consumption_module``, whose OFF arm is the
+    all-off block on the carrier's CURRENT lock and whose licence -- the OFF
+    arm compiles to that lock, and the named cells carry it -- is recomputed
+    here, model-free, from the repository's own fragments."""
+
+    from speech_aware_evidence_acquisition.rails import consumption_module as cm  # noqa: PLC0415
+
+    failures: list[str] = []
+    try:
+        resolve_module_switch_key(switch["key"])
+    except ConfigTableError as error:
+        failures.append(f"{where}.switch.key: {error}")
+    failures.extend(_check_proof(switch["proof"], repo_root, where))
+    off, on = switch["off"], switch["on"]
+    if not cm.is_module_off_block(off, repo_root=repo_root):
+        failures.append(
+            f"{where}.switch.off is not the module's OFF arm: a well-formed block with every "
+            "component 'off' and no column, which compiles to its lock layer"
+        )
+        return failures
+    try:
+        hooks = cm.resolve_carrier_hooks(off["profile"], repo_root=repo_root)
+    except cm.ConsumptionModuleConfigError as error:
+        return failures + [f"{where}.switch.off: {error}"]
+    if off.get("lock") is None or off.get("lock") != hooks.current_lock:
+        failures.append(
+            f"{where}.switch.off names lock {off.get('lock')!r}; the OFF arm of a 'module' "
+            f"entry names its carrier's CURRENT lock ({hooks.current_lock!r}) -- the null "
+            "arm of every composed read registered now"
+        )
+    if not isinstance(on, Mapping) or cm.is_module_off_block(on, repo_root=repo_root):
+        failures.append(f"{where}.switch.on must be a module block that arms at least one component")
+    else:
+        try:
+            on_policy = cm.compile_module(on, hooks, repo_root=repo_root)
+        except cm.ConsumptionModuleConfigError as error:
+            failures.append(f"{where}.switch.on does not compile: {error}")
+        else:
+            if on_policy.lock_version != off.get("lock"):
+                failures.append(
+                    f"{where}.switch.on composes onto lock {on_policy.lock_version!r}; the two "
+                    "arms of one module entry sit on ONE lock"
+                )
+    falsifier = switch.get("falsifier")
+    if not isinstance(falsifier, Mapping) or falsifier.get("kind") != MODULE_FALSIFIER_KIND:
+        failures.append(
+            f"{where}.switch.falsifier must be an object of kind {MODULE_FALSIFIER_KIND!r} naming "
+            "the lock and the registered cells that carry it"
+        )
+        return failures
+    cells = falsifier.get("cells")
+    if falsifier.get("lock") != off.get("lock") or not isinstance(cells, list) or not cells:
+        failures.append(
+            f"{where}.switch.falsifier must name the OFF arm's lock and a non-empty 'cells' list"
+        )
+        return failures
+    try:
+        compiled = cm.compile_module(off, hooks, repo_root=repo_root)
+        lock_blocks = dict((hooks.lock_versions or {})[off["lock"]]())
+    except (cm.ConsumptionModuleConfigError, KeyError) as error:
+        return failures + [f"{where}.switch.off does not compile to a lock: {error}"]
+    diff = cm.differing_paths(compiled.values(), json.loads(json.dumps(lock_blocks)))
+    if diff:
+        failures.append(f"{where}.switch.off compiles to blocks differing from lock {off['lock']} at {diff[:8]}")
+    for experiment in cells:
+        path = repo_root / "configs" / "experiment" / f"{experiment}.json"
+        try:
+            cell = json.loads(path.read_text(encoding="utf-8"))["cells"][0]
+            baseline = json.loads(
+                (repo_root / "configs" / "baseline" / f"{cell['baseline_fragment']}.json").read_text(encoding="utf-8")
+            )
+        except (OSError, UnicodeError, ValueError, KeyError, IndexError, TypeError) as error:
+            failures.append(f"{where}.switch.falsifier.cells: cannot read {experiment}: {error}")
+            continue
+        cell_diff = cm.differing_paths(
+            compiled.values_on_roster_of(baseline), cm.policy_owned_values(baseline)
+        )
+        if cell_diff:
+            failures.append(
+                f"{where}.switch.falsifier.cells: {experiment} does not carry lock {off['lock']}'s "
+                f"policy blocks on its own roster; differs at {cell_diff[:8]}"
+            )
     return failures
 
 
@@ -708,6 +829,8 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
             entry_key = resolve_stores_switch_key(entry["switch"]["key"])
         elif not switch_failures and table == PHASE_TOOLS_SWITCH_CLASS:
             entry_key = resolve_phase_tools_switch_key(entry["switch"]["key"])
+        elif not switch_failures and table == MODULE_SWITCH_CLASS:
+            entry_key = resolve_module_switch_key(entry["switch"]["key"])
 
         carrying = (
             [
