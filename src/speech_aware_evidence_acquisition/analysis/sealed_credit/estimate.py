@@ -301,20 +301,28 @@ def estimate_knob_value(
     source = value_entry["conversion_source"]
     stype = source["type"]
     if stype == "cited":
-        return _from_cited(knob, value, source, data_root if data_root is not None else repo_root)
-    if stype in ("unobserved", "excluded", "credit_table_relisten_reach"):
-        return _unobserved(knob, value, source.get("reason", f"{stype}: no sealed conversion rate"))
-    if stype == "pool_pair_delta":
-        return _from_pool_pair(knob, value, source, pools_by_label, repo_root)
-    if stype == "credit_table_perception_rank":
-        return _bucket_reweight(knob, value, source, pools_by_label, repo_root, credit.perception_rank_conversion)
-    if stype == "credit_table_block_position":
-        return _bucket_reweight(knob, value, source, pools_by_label, repo_root, credit.block_position_conversion)
-    if stype == "credit_table_reviewer_toggle":
-        return _from_toggle(knob, value, source, pools_by_label, repo_root, "reviewer")
-    if stype == "credit_table_normaliser_toggle":
-        return _from_toggle(knob, value, source, pools_by_label, repo_root, "normaliser")
-    raise EstimateError(f"knob {knob['id']!r}: unknown conversion_source.type {stype!r}")
+        result = _from_cited(knob, value, source, data_root if data_root is not None else repo_root)
+    elif stype in ("unobserved", "excluded", "credit_table_relisten_reach"):
+        result = _unobserved(knob, value, source.get("reason", f"{stype}: no sealed conversion rate"))
+    elif stype == "pool_pair_delta":
+        result = _from_pool_pair(knob, value, source, pools_by_label, repo_root)
+    elif stype == "credit_table_perception_rank":
+        result = _bucket_reweight(knob, value, source, pools_by_label, repo_root, credit.perception_rank_conversion)
+    elif stype == "credit_table_block_position":
+        result = _bucket_reweight(knob, value, source, pools_by_label, repo_root, credit.block_position_conversion)
+    elif stype == "credit_table_reviewer_toggle":
+        result = _from_toggle(knob, value, source, pools_by_label, repo_root, "reviewer")
+    elif stype == "credit_table_normaliser_toggle":
+        result = _from_toggle(knob, value, source, pools_by_label, repo_root, "normaliser")
+    else:
+        raise EstimateError(f"knob {knob['id']!r}: unknown conversion_source.type {stype!r}")
+    # Run 3: a declared line status travels with the estimate (absent -> key absent, so a
+    # policy space without statuses yields byte-identical estimates to run 2).
+    if "status" in value_entry:
+        result["status"] = value_entry["status"]
+        if value_entry.get("status_note"):
+            result["status_note"] = value_entry["status_note"]
+    return result
 
 
 def estimate_all(

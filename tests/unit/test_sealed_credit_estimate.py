@@ -148,3 +148,13 @@ def test_cited_json_without_any_intent_is_refused(tmp_path):
         assert False, "expected EstimateError"
     except estimate.EstimateError:
         pass
+
+
+def test_status_travels_with_the_estimate_only_when_declared():
+    """run 3: a declared status (and note) is copied onto the estimate; absent stays absent."""
+    knob = _knob("k.u", "perception_seed", "v", {"type": "unobserved", "reason": "no sealed source"})
+    plain = estimate.estimate_knob_value(knob, knob["values"][0], {}, REPO_ROOT)
+    assert "status" not in plain
+    value = {**knob["values"][0], "status": "closed", "status_note": "line closed"}
+    marked = estimate.estimate_knob_value(knob, value, {}, REPO_ROOT)
+    assert marked["status"] == "closed" and marked["status_note"] == "line closed"

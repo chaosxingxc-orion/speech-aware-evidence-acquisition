@@ -122,3 +122,22 @@ def test_composition_naming_unknown_value_is_refused():
         assert False, "expected AcceptError"
     except accept.AcceptError:
         pass
+
+
+def test_admitted_or_closed_lines_are_never_nominated():
+    """run 3: a value status other than ``open`` keeps the candidate ranked but not nominated."""
+    admitted = {**_estimate("k.admitted", "v", 5.0, 0.0), "status": "admitted"}
+    closed = {**_estimate("k.closed", "v", 4.0, 0.0), "status": "closed"}
+    open_one = {**_estimate("k.open", "v", 1.0, None), "status": "open"}
+    ranked = accept.rank_candidates([admitted, closed, open_one], DESIGN, ROWS, REPO_ROOT)
+    assert [c["knob_id"] for c in ranked] == ["k.admitted", "k.closed", "k.open"]
+    nomination = accept.nominate(ranked)
+    assert nomination["nominated"] is True
+    assert nomination["candidate"]["knob_id"] == "k.open"
+    assert [c["knob_id"] for c in nomination["cleared_but_not_open"]] == ["k.admitted", "k.closed"]
+    none_open = accept.nominate(accept.rank_candidates([admitted], DESIGN, ROWS, REPO_ROOT))
+    assert none_open["nominated"] is False
+    assert none_open["reason"].startswith("no open candidate")
+    # without any status the nomination carries no new key (run 2 bytes unchanged)
+    plain = accept.nominate(accept.rank_candidates([_estimate("k.p", "v", 5.0, 0.0)], DESIGN, ROWS, REPO_ROOT))
+    assert "cleared_but_not_open" not in plain

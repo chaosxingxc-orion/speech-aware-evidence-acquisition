@@ -139,16 +139,28 @@ def nominate(ranked: list[dict[str, Any]]) -> dict[str, Any]:
     """The highest-ranked candidate that is not guard-discarded and clears its
     floor, or ``{"nominated": False, ...}`` when none does."""
 
-    eligible = [c for c in ranked if not c["guard_discarded"] and c["clears_floor"]]
+    clearing = [c for c in ranked if not c["guard_discarded"] and c["clears_floor"]]
+    # Run 3: a candidate whose line is ``admitted`` or ``closed`` (policy-space value status) is
+    # ranked and composed but never nominated; the ones that would have cleared are listed.
+    eligible = [c for c in clearing if c.get("status", "open") == "open"]
+    skipped = [
+        {"knob_id": c["knob_id"], "value": c["value"], "status": c["status"], "rank": c["rank"],
+         "predicted_intent_pp": c["predicted_intent_pp"]}
+        for c in clearing if c.get("status", "open") != "open"
+    ]
+    extra = {"cleared_but_not_open": skipped} if skipped else {}
     if not eligible:
+        if skipped:
+            reason = "no open candidate clears its read design's floor after the SLU guard"
+        elif any(not c["guard_discarded"] for c in ranked):
+            reason = "no candidate clears its read design's floor after the SLU guard"
+        else:
+            reason = "every candidate was discarded by the SLU guard"
         return {
             "nominated": False,
-            "reason": (
-                "no candidate clears its read design's floor after the SLU guard"
-                if any(not c["guard_discarded"] for c in ranked)
-                else "every candidate was discarded by the SLU guard"
-            ),
+            "reason": reason,
             "candidates_considered": len(ranked),
+            **extra,
         }
     top = min(eligible, key=lambda c: c["rank"])
     return {
@@ -156,6 +168,7 @@ def nominate(ranked: list[dict[str, Any]]) -> dict[str, Any]:
         "claim_ceiling": "nominated",
         "candidate": top,
         "candidates_considered": len(ranked),
+        **extra,
     }
 
 
