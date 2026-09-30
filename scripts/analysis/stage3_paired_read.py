@@ -786,13 +786,133 @@ def _transitions(left_rows: Mapping, right_rows: Mapping, members: Sequence[str]
             "right_to_right": counts[(1, 1)], "wrong_to_wrong": counts[(0, 0)]}
 
 
+def _answered_rows(arm, ids: Sequence[str]) -> tuple[int, list[str]]:
+    """Every roster row's own ``admitted`` / ``response_text_sha256`` from the arm's OWN sealed
+    ``<run>.outputs.jsonl`` -- gold-free by construction: this file is the arm's answer
+    bookkeeping, never a gold field. Returns ``(answered_count, missing_ids)``."""
+
+    path = arm.artifact("outputs.jsonl")
+    if not path.exists():
+        raise Stage3ReadError(f"{arm.spec.label}: no sealed outputs {path.name}")
+    rows: dict[str, dict] = {}
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            entry = json.loads(line)
+            rows[str(entry.get("sample_id"))] = entry
+    missing: list[str] = []
+    answered = 0
+    for sample_id in ids:
+        entry = rows.get(sample_id)
+        answer_hash = (entry or {}).get("response_text_sha256")
+        has_answer_hash = isinstance(answer_hash, str) and len(answer_hash) == 64
+        if entry is not None and entry.get("admitted") and has_answer_hash:
+            answered += 1
+        else:
+            missing.append(sample_id)
+    return answered, missing
+
+
+def _stage_delivery_final_report(base: dict, left, right, ids: Sequence[str]) -> dict:
+    """The recipe's step 2 delivery check, GOLD-FREE: each cell's flown first-phase boundary
+    selections and delivered answers, checked against its OWN sealed artefacts only (its own
+    outputs, phases and wire trace against its own sealed generation-manifest cost) -- never
+    against gold, and never against the other arm's gold. A ``final-report`` roster (the signed
+    test sample) allows gold to be read ONLY by the official scorer, after delivery (the owner
+    allowance) and never through a per-row gold bank (coordinator ruling 2026-09-30), so this
+    REPLACES the gold-bank delivery/conversion extension outright for such a roster, rather than
+    reporting it NOT AVAILABLE for want of a ``--gold-bank-roster`` mapping that could never be a
+    legal one here.
+    """
+
+    left_boundary, left_src = _phase_boundaries(left)
+    right_boundary, right_src = _phase_boundaries(right)
+    if left_boundary is None or right_boundary is None:
+        # Same E10e situation stage_delivery's own gold-bank path guards against: see its
+        # docstring note beside _phase_boundaries.
+        return {**base, "status": "NOT_AVAILABLE",
+                "reason": "a seal-only arm's phases.json is a trace replay and carries no "
+                          "consumption custody (core.flight.resume cannot reconstruct it "
+                          "from the predecessor trace)",
+                "phases": {"left": left_src, "right": right_src}}
+    for label, boundary in ((left.spec.label, left_boundary), (right.spec.label, right_boundary)):
+        if sorted(boundary) != sorted(ids):
+            raise Stage3ReadError(f"{label}: the phase artefact's rows are not the roster")
+
+    def _arm_block(arm, boundary: dict[str, dict]) -> dict:
+        answered, missing_answer_ids = _answered_rows(arm, ids)
+        selected = sum(1 for s in ids if any(v == "use" for v in boundary[s].values()))
+        wire = _wire_tokens(arm)
+        totals = wire["totals"]
+        cost = arm.generation_manifest.get("cost") or {}
+        return {
+            "rows": len(ids),
+            "answered_rows": answered,
+            "missing_answer_ids": missing_answer_ids,
+            "boundary_selected_rows": selected,
+            "boundary_items_per_row_histogram": {
+                str(k): v for k, v in sorted(Counter(len(boundary[s]) for s in ids).items())
+            },
+            "contacts": {
+                "sealed_calls_used": int(cost.get("calls_used") or 0),
+                "wire_contacts": totals.get("contacts", 0),
+                "contacts_equal_sealed_calls": totals.get("contacts", 0) == int(cost.get("calls_used", -1)),
+                "prompt_tokens_total_equals_sealed_cost": (
+                    totals.get("prompt_tokens", 0) == int(cost.get("prompt_tokens_total", -1))
+                ),
+            },
+            "answers_source": {
+                "relpath": f"runs/{arm.spec.run_id}/{arm.spec.attempt_id}/{arm.spec.run_id}.outputs.jsonl",
+            },
+        }
+
+    left_block = _arm_block(left, left_boundary)
+    right_block = _arm_block(right, right_boundary)
+    problems: list[str] = []
+    for label, block in ((left.spec.label, left_block), (right.spec.label, right_block)):
+        if block["missing_answer_ids"]:
+            problems.append(f"{label}: {len(block['missing_answer_ids'])} row(s) delivered no answer")
+        if not block["contacts"]["contacts_equal_sealed_calls"]:
+            problems.append(f"{label}: wire contacts do not equal the sealed generation-manifest cost")
+        if not block["contacts"]["prompt_tokens_total_equals_sealed_cost"]:
+            problems.append(f"{label}: wire prompt tokens do not equal the sealed generation-manifest cost")
+    return {
+        **base,
+        "status": "AVAILABLE",
+        "definition": (
+            "gold-free (recipe step 2): each cell's flown first-phase boundary selections and "
+            "delivered answers checked against its OWN sealed artefacts only -- every row "
+            "delivered an answer with its byte hash on record, and the wire contact / prompt "
+            "token counts reconcile with the sealed generation-manifest cost; no gold intent, no "
+            "gold bank, no cross-arm gold comparison. A mismatch is an engineering defect, "
+            "reported here, and consumes the milestone (no re-fly)."
+        ),
+        "gold_bank_extension": {
+            "status": "NOT_APPLICABLE (final-report)",
+            "reason": (
+                "the roster allows gold to be read only by the official scorer, after delivery "
+                "(owner allowance); a per-row gold bank is not a legal channel for a final-report "
+                "roster (coordinator ruling 2026-09-30), so the gold-bank delivery/conversion "
+                "extension never applies here, whatever --gold-bank-roster is passed"
+            ),
+        },
+        "detail": {"left": left_block, "right": right_block},
+        "mismatches": problems,
+        "phases": {"left": left_src, "right": right_src},
+        "driver_sha256": digest(_DRIVER_PATH),
+    }
+
+
 def stage_delivery(core_args, ext: Extensions, left, right, roster) -> dict:
     ids = list(roster.ids)
     roster_id = str(roster.document.get("roster_id") or "")
-    bank_roster = ext.gold_bank_roster or BANK_ROSTER_OF.get(roster_id)
     base = {"schema": SCHEMA_DELIVERY, "contacts": dict(CONTACTS_ZERO),
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "left": left.spec.label, "right": right.spec.label}
+    if roster.document.get("split_role") == "final-report":
+        return _stage_delivery_final_report(base, left, right, ids)
+    bank_roster = ext.gold_bank_roster or BANK_ROSTER_OF.get(roster_id)
     if bank_roster is None:
         return {**base, "status": "NOT_AVAILABLE",
                 "reason": f"no gold-bank roster block is known for roster {roster_id!r}; pass --gold-bank-roster"}
@@ -1039,9 +1159,38 @@ def _render_per_scenario(block: dict) -> list[str]:
     return lines
 
 
+def _render_delivery_gold_free(block: dict) -> list[str]:
+    detail = block["detail"]
+    lines = [
+        block["definition"],
+        "",
+        "| arm | rows | answered | missing answer | boundary selected | wire == sealed calls | tokens == sealed cost |",
+        "| --- | ---: | ---: | ---: | ---: | --- | --- |",
+    ]
+    for label, key in ((block["left"], "left"), (block["right"], "right")):
+        d = detail[key]
+        c = d["contacts"]
+        lines.append(
+            f"| {label} | {d['rows']} | {d['answered_rows']} | {len(d['missing_answer_ids'])} | "
+            f"{d['boundary_selected_rows']} | {c['contacts_equal_sealed_calls']} | "
+            f"{c['prompt_tokens_total_equals_sealed_cost']} |"
+        )
+    lines += [
+        "",
+        f"Gold-bank extension: {block['gold_bank_extension']['status']}. "
+        f"{block['gold_bank_extension']['reason']}",
+    ]
+    if block["mismatches"]:
+        lines += ["", "Mismatches (engineering defects, reported, never re-flown):"]
+        lines += [f"- {m}" for m in block["mismatches"]]
+    return lines
+
+
 def _render_delivery(block: dict) -> list[str]:
     if block.get("status") != "AVAILABLE":
         return [f"{block.get('status')}. {block.get('reason')}"]
+    if "conversion" not in block:
+        return _render_delivery_gold_free(block)
     c = block["conversion"]
     lines = [
         block["definition"] + ".",
@@ -1227,6 +1376,80 @@ def _roster_for(repo_root: Path, manifest: dict) -> str:
     return matches[0][0].relative_to(repo_root).as_posix()
 
 
+#: The recipe's ``read_driver.scorer`` a final-report package must resolve to (condition b).
+FINAL_REPORT_SCORER = "slurp-slu-official-test"
+
+
+def _registered_facts(package: Path) -> tuple[Path, dict]:
+    matches = sorted(package.glob("*registered-facts*.json"))
+    if len(matches) != 1:
+        raise Stage3ReadError(
+            f"{package} carries {len(matches)} usable registered-facts documents; expected exactly one"
+        )
+    return matches[0], load_json(matches[0])
+
+
+def _require_final_report_conditions(
+    repo_root: Path, package: Path, recipe_path: Path, recipe: dict, arm: dict, replicate: dict,
+    ext_ns: argparse.Namespace,
+) -> str:
+    """A roster whose ``split_role`` is ``final-report`` (the signed test sample) is read ONLY when
+    every one of four conditions holds; this refuses BEFORE any score is opened, naming the first
+    missing condition. Condition (d) -- the ledger READ row's root countersignature -- is already
+    checked, unconditionally, before this function is ever reached (the refusal at the very top of
+    :func:`run_package`), so it needs no repeat here. Returns the scorer id to run with (condition
+    (b)'s own resolved value).
+    """
+
+    # (a) the package's OWN registered facts name every milestone read id this recipe's cells use
+    # as USED under a signed owner allowance, AND that allowance's own current bytes still list
+    # every one of them. Neither document is trusted alone: the registered facts could claim an id
+    # the owner never signed, and the allowance's mere existence proves nothing about THIS package
+    # unless the registered facts tie the two together.
+    facts_path, facts = _registered_facts(package)
+    allowance_block = facts.get("allowance") or {}
+    allowance_relpath = allowance_block.get("path")
+    used_ids = set(allowance_block.get("read_run_ids_used") or [])
+    wanted = {run_id for run_id in (arm.get("run_id"), replicate.get("run_id")) if run_id}
+    if not allowance_relpath or not wanted or not wanted <= used_ids:
+        raise Stage3ReadError(
+            f"REFUSED (final-report condition a): {facts_path.name} does not name every milestone "
+            f"read id {sorted(wanted)} as used under a signed owner allowance"
+        )
+    allowance_path = repo_root / allowance_relpath
+    if not allowance_path.is_file():
+        raise Stage3ReadError(
+            f"REFUSED (final-report condition a): owner allowance {allowance_relpath} is not a file"
+        )
+    allowance_doc = load_json(allowance_path)
+    permitted = set(allowance_doc.get("read_run_ids") or []) | set(allowance_doc.get("permitted_run_ids") or [])
+    missing = sorted(wanted - permitted)
+    if missing:
+        raise Stage3ReadError(
+            f"REFUSED (final-report condition a): the owner allowance {allowance_relpath} does not "
+            f"list milestone read id(s) {missing}"
+        )
+
+    # (b) the recipe's own read_driver.scorer resolves to the TEST official scorer -- the recipe,
+    # not this driver, is where that decision is registered and reviewed.
+    scorer_id = (recipe.get("read_driver") or {}).get("scorer")
+    if scorer_id != FINAL_REPORT_SCORER:
+        raise Stage3ReadError(
+            f"REFUSED (final-report condition b): {recipe_path.name}'s read_driver.scorer must "
+            f"resolve to {FINAL_REPORT_SCORER!r} for a final-report read (got {scorer_id!r})"
+        )
+
+    # (c) the read runs the aggregate-only in-scorer stratification (coordinator ruling
+    # 2026-09-30); a per-row gold-bank stratum channel is never legal for this roster.
+    if ext_ns.strata_source != "scorer":
+        raise Stage3ReadError(
+            "REFUSED (final-report condition c): a final-report read needs --strata-source scorer "
+            f"(aggregate-only, inside the official scorer); got {ext_ns.strata_source!r}"
+        )
+
+    return scorer_id
+
+
 def run_package(argv_rest: list[str], ext_ns: argparse.Namespace) -> dict:
     """``--package``: resolve the arms from the analysis recipe, refuse unless the READ row is
     countersigned, and run the gating pass (vs the in-chain A/A) and the context pass."""
@@ -1269,6 +1492,12 @@ def run_package(argv_rest: list[str], ext_ns: argparse.Namespace) -> dict:
     roster_relpath = _roster_for(repo_root, arm_manifest)
     roster_doc = load_json(repo_root / roster_relpath)
     discovery = roster_doc.get("split_role") == "discovery"
+    final_report = roster_doc.get("split_role") == "final-report"
+    scorer_id = "slurp-slu-official-train" if discovery else "slurp-slu-official"
+    if final_report:
+        scorer_id = _require_final_report_conditions(
+            repo_root, package, recipe_path, recipe, arm, replicate, ext_ns
+        )
     resampling = recipe.get("resampling") or {}
     unit = str(resampling.get("unit") or "")
     cluster_key = "sample_id" if "row" in unit else "utterance_id"
@@ -1318,8 +1547,8 @@ def run_package(argv_rest: list[str], ext_ns: argparse.Namespace) -> dict:
             "--left-run", left["run_id"], "--left-attempt", left["attempt_id"], "--left-label", label,
             "--right-run", arm["run_id"], "--right-attempt", arm["attempt_id"],
             "--right-label", f"the arm ({arm['run_id']})",
-            "--scorer-id", "slurp-slu-official-train" if discovery else "slurp-slu-official",
-            "--expected-split-role", "discovery" if discovery else "dev",
+            "--scorer-id", scorer_id,
+            "--expected-split-role", "discovery" if discovery else ("final-report" if final_report else "dev"),
             "--roster", roster_relpath, "--cluster-key", cluster_key,
             "--split-identity-hash", str(roster_doc.get("split_identity_hash")),
             "--repo-root", str(repo_root), "--data-root", str(data_root),

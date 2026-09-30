@@ -23,6 +23,7 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -314,6 +315,57 @@ def test_no_text_is_persisted(world: World) -> None:
         assert "alarm_query" not in path.read_text(encoding="utf-8"), path
 
 
+# --------------------------------------------------------------------------
+# --delivery, gold-free, on a final-report roster (recipe step 2: no gold, no gold bank)
+# --------------------------------------------------------------------------
+
+
+def _final_report_roster(ids: list[str], roster_id: str = "UNIT-FINAL-REPORT") -> SimpleNamespace:
+    return SimpleNamespace(ids=ids, document={"split_role": "final-report", "roster_id": roster_id})
+
+
+def test_delivery_gold_free_on_a_final_report_roster(world: World) -> None:
+    left = core.load_arm(world.data, core.ArmSpec("left", "UNIT-LEFT-V1", "attempt-left"))
+    right = core.load_arm(world.data, core.ArmSpec("right", "UNIT-RIGHT-V1", "attempt-right"))
+    block = drv.stage_delivery(None, drv.Extensions(), left, right, _final_report_roster(world.ids))
+    assert block["status"] == "AVAILABLE"
+    assert block["gold_bank_extension"]["status"] == "NOT_APPLICABLE (final-report)"
+    assert block["mismatches"] == []
+    left_detail, right_detail = block["detail"]["left"], block["detail"]["right"]
+    assert left_detail["rows"] == right_detail["rows"] == 12
+    assert left_detail["answered_rows"] == 12 and left_detail["missing_answer_ids"] == []
+    assert right_detail["answered_rows"] == 12 and right_detail["missing_answer_ids"] == []
+    assert left_detail["boundary_selected_rows"] == 6  # World.LEFT_DELIVERED
+    assert right_detail["boundary_selected_rows"] == 10  # World.RIGHT_DELIVERED
+    assert left_detail["contacts"]["contacts_equal_sealed_calls"]
+    assert right_detail["contacts"]["prompt_tokens_total_equals_sealed_cost"]
+    rendered = "\n".join(drv._render_delivery(block))
+    assert "Gold-bank extension: NOT_APPLICABLE (final-report)" in rendered
+    assert "conversion" not in block  # never the gold-bank shape
+
+
+def test_delivery_gold_free_reports_a_missing_answer_as_a_mismatch(tmp_path: Path) -> None:
+    world = World(tmp_path)
+    left_outputs = world.data / "runs" / "UNIT-LEFT-V1" / "attempt-left" / "UNIT-LEFT-V1.outputs.jsonl"
+    rows = [json.loads(line) for line in left_outputs.read_text(encoding="utf-8").splitlines() if line.strip()]
+    rows[0]["admitted"] = False
+    left_outputs.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+    left = core.load_arm(world.data, core.ArmSpec("left", "UNIT-LEFT-V1", "attempt-left"))
+    right = core.load_arm(world.data, core.ArmSpec("right", "UNIT-RIGHT-V1", "attempt-right"))
+    block = drv.stage_delivery(None, drv.Extensions(), left, right, _final_report_roster(world.ids))
+    assert block["detail"]["left"]["missing_answer_ids"] == [world.ids[0]]
+    assert any("delivered no answer" in m for m in block["mismatches"])
+
+
+def test_delivery_still_gold_bank_on_a_non_final_report_roster(world: World) -> None:
+    # world's default split_role is "discovery": stage_delivery must take the ORIGINAL gold-bank
+    # path, unchanged, whatever the final-report addition does.
+    out = world.tmp / "read"
+    assert drv.main(world.argv(out, "--delivery")) == 0
+    block = json.loads((out / "delivery-conversion.json").read_text())
+    assert "conversion" in block and "gold_bank_extension" not in block
+
+
 def _package(
     world: World, read_notes: str | None, *, resampling_unit: str = "row (paired)",
     arm_extra: dict | None = None, replicate_extra: dict | None = None,
@@ -403,6 +455,156 @@ def test_package_mode_threads_column_flags_into_the_driver_argv(world: World, mo
     aa_call = next(c for c in seen if c.left.run_id == "UNIT-LEFT-V1" and c.right.run_id == "UNIT-RIGHT-V1")
     assert aa_call.left.column == "twin"
     assert aa_call.right.column == "plan"
+
+
+# --------------------------------------------------------------------------
+# final-report role: accepted ONLY under all four conditions (owner allowance naming the milestone
+# read id, the recipe's own read_driver.scorer, --strata-source scorer, root countersignature)
+# --------------------------------------------------------------------------
+
+
+FINAL_REPORT_COUNTERSIGNED = "REGISTERED BEFORE RESULT READING (root countersigned 2026-09-27 by the coordinator)"
+FINAL_REPORT_ALLOWANCE_RELPATH = "docs/receipts/owner/unit-final-report-allowance-v1.json"
+
+
+@pytest.fixture
+def world_final_report(tmp_path: Path) -> World:
+    return World(tmp_path, split_role="final-report")
+
+
+def _final_report_package(
+    world: World, read_notes: str | None, *,
+    recipe_scorer: str = "slurp-slu-official-test",
+    used_ids: list[str] | None = None,
+    allowance_ids: list[str] | None = None,
+    write_allowance: bool = True,
+) -> Path:
+    """A milestone package: analysis recipe (naming the arm and its in-chain A/A only, no
+    comparator), registered facts (the allowance path and the ids it declares used) and a FAKE
+    owner allowance file -- every id is fake, exactly like ``_package``'s own fixtures."""
+
+    package = world.repo / "docs" / "readiness" / "2026-09-27-unit-final-report-v1"
+    _write(package / "analysis-recipe-v1.json", {
+        "recipe_id": "unit-final-report-recipe-v1", "title": "Unit final-report cell",
+        "run_ids": {"read": "UNIT-FR-READ-V1"},
+        "output": {"analysis_root": "analysis/UNIT-FR-READ-V1"},
+        "resampling": {"seed": 7, "bootstrap_draws": 200, "unit": "row (paired)"},
+        "read_driver": {"scorer": recipe_scorer},
+        "arms": {"arm": {"run_id": "UNIT-RIGHT-V1", "attempt_id": "attempt-right"},
+                 "in_chain_replicate": {"run_id": "UNIT-LEFT-V1", "attempt_id": "attempt-left"}},
+    })
+    _write(package / "registered-facts-v1.json", {
+        "allowance": {
+            "path": FINAL_REPORT_ALLOWANCE_RELPATH,
+            "read_run_ids_used": used_ids if used_ids is not None else ["UNIT-RIGHT-V1", "UNIT-LEFT-V1"],
+        },
+    })
+    if write_allowance:
+        _write(world.repo / FINAL_REPORT_ALLOWANCE_RELPATH, {
+            "read_run_ids": allowance_ids if allowance_ids is not None else ["UNIT-RIGHT-V1", "UNIT-LEFT-V1"],
+        })
+    columns = ("date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split",
+               "split role", "split identity hash", "consumed", "calls", "speech audio seconds", "gpu hours",
+               "inherited exposure", "artifacts", "notes")
+    lines = ["# Exposure ledger", "", "| " + " | ".join(columns) + " |", "| " + " | ".join("---" for _ in columns) + " |"]
+    if read_notes is not None:
+        row = {"date": "2026-09-27", "run/experiment id": "UNIT-FR-READ-V1", "execution profile": "model-free-check",
+               "consumed": "no", "notes": read_notes}
+        lines.append("| " + " | ".join(row.get(c, "-") for c in columns) + " |")
+    _write(world.repo / "docs" / "exposure-ledger.md", "\n".join(lines) + "\n")
+    return package
+
+
+def _recording_run_pair(monkeypatch, seen: list) -> None:
+    def _fake(core_args, ext):
+        seen.append(core_args)
+        _write(core_args.analysis_root / "verdict.json", {"extensions": []})
+        return {"extensions": []}
+
+    monkeypatch.setattr(drv, "run_pair", _fake)
+
+
+def test_final_report_condition_a_refuses_an_id_the_allowance_does_not_list(
+    world_final_report: World, monkeypatch,
+) -> None:
+    world = world_final_report
+    out = world.tmp / "pkg-out"
+    package = _final_report_package(world, FINAL_REPORT_COUNTERSIGNED, allowance_ids=["SOME-OTHER-ID"])
+    seen: list = []
+    _recording_run_pair(monkeypatch, seen)
+    argv = _package_argv(world, package, out) + ["--strata-source", "scorer"]
+    assert drv.main(argv) == 1
+    assert seen == []
+
+
+def test_final_report_condition_a_refuses_when_registered_facts_do_not_name_the_id(
+    world_final_report: World, monkeypatch,
+) -> None:
+    world = world_final_report
+    out = world.tmp / "pkg-out"
+    package = _final_report_package(world, FINAL_REPORT_COUNTERSIGNED, used_ids=["UNIT-LEFT-V1"])
+    seen: list = []
+    _recording_run_pair(monkeypatch, seen)
+    argv = _package_argv(world, package, out) + ["--strata-source", "scorer"]
+    assert drv.main(argv) == 1
+    assert seen == []
+
+
+def test_final_report_condition_b_refuses_a_recipe_scorer_that_is_not_official_test(
+    world_final_report: World, monkeypatch,
+) -> None:
+    world = world_final_report
+    out = world.tmp / "pkg-out"
+    package = _final_report_package(world, FINAL_REPORT_COUNTERSIGNED, recipe_scorer="slurp-slu-official")
+    seen: list = []
+    _recording_run_pair(monkeypatch, seen)
+    argv = _package_argv(world, package, out) + ["--strata-source", "scorer"]
+    assert drv.main(argv) == 1
+    assert seen == []
+
+
+def test_final_report_condition_c_refuses_without_strata_source_scorer(
+    world_final_report: World, monkeypatch,
+) -> None:
+    world = world_final_report
+    out = world.tmp / "pkg-out"
+    package = _final_report_package(world, FINAL_REPORT_COUNTERSIGNED)
+    seen: list = []
+    _recording_run_pair(monkeypatch, seen)
+    assert drv.main(_package_argv(world, package, out)) == 1  # default --strata-source is roster-item
+    assert seen == []
+
+
+def test_final_report_condition_d_refuses_without_countersignature(
+    world_final_report: World, monkeypatch,
+) -> None:
+    world = world_final_report
+    out = world.tmp / "pkg-out"
+    package = _final_report_package(
+        world, "REGISTERED BEFORE RESULT READING (DRAFT, root countersignature pending)",
+    )
+    seen: list = []
+    _recording_run_pair(monkeypatch, seen)
+    argv = _package_argv(world, package, out) + ["--strata-source", "scorer"]
+    assert drv.main(argv) == 1
+    assert seen == []
+
+
+def test_final_report_accepted_when_all_four_conditions_hold(
+    world_final_report: World, monkeypatch,
+) -> None:
+    world = world_final_report
+    out = world.tmp / "pkg-out"
+    package = _final_report_package(world, FINAL_REPORT_COUNTERSIGNED)
+    seen: list = []
+    _recording_run_pair(monkeypatch, seen)
+    argv = _package_argv(world, package, out) + ["--strata-source", "scorer"]
+    assert drv.main(argv) == 0
+    assert len(seen) == 1  # the recipe names no comparator: only vs-aa runs
+    core_args = seen[0]
+    assert core_args.scorer_id == "slurp-slu-official-test"
+    assert core_args.expected_split_role == "final-report"
+    assert core_args.left.run_id == "UNIT-LEFT-V1" and core_args.right.run_id == "UNIT-RIGHT-V1"
 
 
 def test_the_wrapper_names_the_package_mode_and_the_countersign_refusal() -> None:
