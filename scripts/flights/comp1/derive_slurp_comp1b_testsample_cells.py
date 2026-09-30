@@ -36,19 +36,28 @@ distinct run id per cell, ``core.preparation_fit.build_native_contact_fit_gate``
 allowance does not name them, so ``contracts.plan.require_owner_split_allowance`` refuses them
 until a SUCCESSOR allowance names them -- the registration package says so in its own words.
 
-PENDING PINS. The sample's speech-query encoding (preparation 2 of 3) and content export
-(preparation 3) have NOT run, so the sample's query vectors, its alias receipt and its agreement
-table do not exist. Every such pin is written as 64 zeros and listed as a readiness requirement
-with a PENDING reason; the cells stay ``held`` and the flip refuses while any zero pin remains.
+PENDING PINS AND SAMPLE-PREPARATION PINS. Every data-root artifact of the sample (its query
+vectors, its alias receipt, preparation 2's encode receipt and this roster's agreement table) is
+written as 64 zeros and listed as a readiness requirement with a PENDING reason until it exists;
+the cells stay ``held`` and the flip refuses while any zero pin remains. With ``--data-root``,
+each artifact the sample preparations (2 and 3, owner decision 156) have produced is pinned to
+its real sha256 instead: the pin is READ from the preparations' own summary receipt
+(:data:`PREPARATION_SUMMARY`, which names each output's sha256) and VERIFIED by hashing the file
+on the data root; a mismatch, a summary that is not this roster's, or a summary that reads labels
+refuses. An artifact the summary does not name (the agreement table, built later from these
+vectors) stays PENDING.
 
-Config only: no contact, no ledger row, no receipt, no flip, no media, no gold.
+Config only: no contact, no ledger row, no receipt, no flip, no media, no gold. The data-root
+read hashes bytes; it opens no vector, no utterance and no label as content.
 
-    python scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --date 2026-09-29
+    python scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --date 2026-09-29 \
+        [--data-root "$SPEECHRL_DATA_DIR"]
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import math
@@ -121,7 +130,8 @@ PENDING_ARTIFACTS = {
     "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl":
         "this roster's own exemplar-intent agreement table (scripts/build_slurp_intent_exemplar_agreement.py "
         "against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan "
-        "cell); model-free, but it needs the sample's content-dimension query vectors, which do not exist yet",
+        "cell); model-free (zero model, encoder, server or GPU contacts); NOT YET BUILT -- it runs only once the "
+        "MILESTONE-00-PLAN cell pins the sample's real query vectors, which its loaders verify before a number is taken",
     "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json":
         "the agreement table's receipt (same builder)",
     SEGMENT_VECTORS:
@@ -136,8 +146,73 @@ PENDING_ARTIFACTS = {
         "preparation 2's alias receipt (not yet run)",
 }
 
+#: The sample preparations' own summary receipt (preparations 2 and 3, owner decision 156): it names
+#: every output's sha256. Maps its ``outputs`` keys to the re-targeted relpaths the cells pin.
+PREPARATION_SUMMARY = "prepared/slurp-test-sample-3010-preparations-v1/summary-queries.json"
+PREPARATION_RUN_IDS = ["SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1", "SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1"]
+SUMMARY_OUTPUTS = {
+    "segments": SEGMENT_VECTORS,
+    "content": CONTENT_VECTORS,
+    "alias_receipt": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-ALIAS-V1/query-dimension-alias.json",
+    "encode_receipt": "preparation-runs/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+}
+#: Short names for the PINNED reasons.
+PINNED_WHAT = {
+    SEGMENT_VECTORS: "the sample's intent-boundary segment vectors (preparation 2's zero-contact alias)",
+    CONTENT_VECTORS: "the sample's content-dimension query vectors (preparation 3)",
+    SUMMARY_OUTPUTS["alias_receipt"]: "preparation 2's alias receipt",
+    SUMMARY_OUTPUTS["encode_receipt"]: "preparation 2's encode receipt",
+}
+
 #: Solver-phase / boundary-phase text fields whose DEV-2000-ADDED wording is re-targeted.
 TEXT_RETARGET = ("DEV-2000-ADDED", "TEST-SAMPLE-3010")
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def resolve_preparation_pins(data_root: Path | None) -> tuple[dict[str, str], dict | None]:
+    """Real pins for the sample-preparation artifacts, read from the summary receipt and verified.
+
+    Returns ({relpath: sha256}, summary provenance or None). Without a data root, or before the
+    summary exists, every pin stays PENDING. Refuses (SystemExit) on any mismatch rather than
+    writing a wrong pin.
+    """
+
+    if data_root is None:
+        return {}, None
+    summary_path = data_root / PREPARATION_SUMMARY
+    if not summary_path.is_file():
+        return {}, None
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    if summary.get("split_identity_hash") != SPLIT_IDENTITY or summary.get("rows") != ROWS:
+        raise SystemExit(f"{PREPARATION_SUMMARY}: not this roster's summary (split identity / rows)")
+    if summary.get("reads_labels") is not False:
+        raise SystemExit(f"{PREPARATION_SUMMARY}: reads_labels is not false; refusing")
+    if (summary.get("allowance") or {}).get("sha256") != ALLOWANCE_SHA256:
+        raise SystemExit(f"{PREPARATION_SUMMARY}: does not pin the committed allowance bytes")
+    if summary.get("run_ids") != PREPARATION_RUN_IDS:
+        raise SystemExit(f"{PREPARATION_SUMMARY}: run ids {summary.get('run_ids')} are not preparations 2 and 3")
+    pins: dict[str, str] = {}
+    outputs = summary.get("outputs") or {}
+    for key, relpath in SUMMARY_OUTPUTS.items():
+        entry = outputs.get(key)
+        if not entry:
+            continue
+        if not str(entry.get("path", "")).replace("\\", "/").endswith("/" + relpath):
+            raise SystemExit(f"{PREPARATION_SUMMARY}: output {key} is {entry.get('path')!r}, not {relpath}")
+        declared = entry.get("sha256")
+        actual = _sha256_file(data_root / relpath)
+        if declared != actual:
+            raise SystemExit(f"{relpath}: the summary receipt declares {declared}, the file hashes {actual}; refusing")
+        pins[relpath] = actual
+    provenance = {"relpath": PREPARATION_SUMMARY, "sha256": _sha256_file(summary_path)}
+    return pins, provenance
 
 
 def rd(path: str) -> str:
@@ -189,6 +264,22 @@ def pend(requirements_reason: str, relpath: str) -> dict:
                       "milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh)."}
 
 
+def pin_requirement(relpath: str, pins: dict[str, str], provenance: dict | None) -> dict:
+    """A readiness requirement: the real, verified pin when the preparations produced it, else PENDING."""
+
+    if relpath in pins:
+        return {"kind": "preparation", "relpath": relpath, "sha256": pins[relpath],
+                "reason": (f"PINNED: {PINNED_WHAT[relpath]}, produced by the label-free sample preparations (owner "
+                           f"decision 156) and read from their summary receipt {provenance['relpath']} (sha256 "
+                           f"{provenance['sha256']}); the derive script verified the sha256 against the file bytes on "
+                           "the data root.")}
+    return pend(PENDING_ARTIFACTS[relpath], relpath)
+
+
+#: Real pins resolved in main() (empty = every sample-preparation pin PENDING).
+PINS: dict[str, str] = {}
+
+
 def retarget_baseline(src: str, out: str, *, pairs, fit_run: str, fit_attempt: str, what_this_is: str) -> dict:
     raw = rd(f"configs/baseline/{src}.json")
     document = json.loads(substitute(raw, ROSTER_SUBSTITUTIONS + pairs))
@@ -210,7 +301,7 @@ def retarget_baseline(src: str, out: str, *, pairs, fit_run: str, fit_attempt: s
             relpath = node.get("relpath")
             if isinstance(relpath, str) and "sha256" in node:
                 if relpath in PENDING_ARTIFACTS:
-                    node["sha256"] = ZERO
+                    node["sha256"] = PINS.get(relpath, ZERO)
                 elif relpath == ROSTER_RECEIPT:
                     node["sha256"] = ROSTER_RECEIPT_SHA256
             for key, value in node.items():
@@ -315,9 +406,14 @@ COMPOSITION = (
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--date", required=True)
+    parser.add_argument("--data-root", type=Path, default=None,
+                        help="pin every sample-preparation artifact the summary receipt names (verified by hashing)")
     args = parser.parse_args(argv)
     os.chdir(REPO_ROOT)
     written: list[str] = []
+    pins, provenance = resolve_preparation_pins(args.data_root)
+    PINS.clear()
+    PINS.update(pins)
 
     decision_population = (
         f"The signed SLURP test SAMPLE {ROSTER_ID} (3,010 recordings, 682 prompts, a prompt-partition of the frozen "
@@ -328,8 +424,8 @@ def main(argv: list[str] | None = None) -> int:
         "surface of any sample row has been read. The closure roster SLURP-TEST-CLOSURE-10068-V1 stays untouched."
     )
     common_requirements = [
-        pend(PENDING_ARTIFACTS[SEGMENT_VECTORS], SEGMENT_VECTORS),
-        pend(PENDING_ARTIFACTS[CONTENT_VECTORS], CONTENT_VECTORS),
+        pin_requirement(SEGMENT_VECTORS, pins, provenance),
+        pin_requirement(CONTENT_VECTORS, pins, provenance),
     ]
 
     # ---- MILESTONE-00-PLAN: the locked v2.0 plan on the sample ---------------------------------
@@ -418,7 +514,7 @@ def main(argv: list[str] | None = None) -> int:
             "and re-pins with scripts/flights/repin_cell.py --set-ready (item E16). --allow-output-change must never "
             "be passed."
         ),
-        requirements=[pend(PENDING_ARTIFACTS[AGREEMENT_RELPATH], AGREEMENT_RELPATH)] + common_requirements + [{
+        requirements=[pin_requirement(AGREEMENT_RELPATH, pins, provenance)] + common_requirements + [{
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, minted model-free under this run id "
                       "with core.flight.cli prepare-supply at the flip from the sample's segment vectors, the "
@@ -440,7 +536,8 @@ def main(argv: list[str] | None = None) -> int:
             "schema": "saea-campaign-plan-v1"}
     wr(CAMPAIGN_PLAN, json.dumps(plan, indent=2, sort_keys=True) + "\n")
     written.append(CAMPAIGN_PLAN)
-    print(json.dumps({"written": written}, indent=2))
+    print(json.dumps({"written": written, "pinned": pins, "summary_receipt": provenance,
+                      "still_pending": sorted(set(PENDING_ARTIFACTS) - set(pins))}, indent=2))
     return 0
 
 

@@ -17,21 +17,21 @@
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "PENDING: this roster's own exemplar-intent agreement table (scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell); model-free, but it needs the sample's content-dimension query vectors, which do not exist yet. The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
+            "reason": "PENDING: this roster's own exemplar-intent agreement table (scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell); model-free (zero model, encoder, server or GPU contacts); NOT YET BUILT -- it runs only once the MILESTONE-00-PLAN cell pins the sample's real query vectors, which its loaders verify before a number is taken. The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
             "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
           },
           {
             "kind": "preparation",
-            "reason": "PENDING: the sample's intent-boundary segment vectors, written by the zero-contact alias of preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, not yet run). The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
+            "reason": "PINNED: the sample's intent-boundary segment vectors (preparation 2's zero-contact alias), produced by the label-free sample preparations (owner decision 156) and read from their summary receipt prepared/slurp-test-sample-3010-preparations-v1/summary-queries.json (sha256 c9ce5f432a58cdb09f92cc442f43b372e04285cca2faf46ff120bab3342d8f6a); the derive script verified the sha256 against the file bytes on the data root.",
             "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "7e26ade08462f6336e2cb5869d89b1c49fb2534e2821b6550b6431aabe21f898"
           },
           {
             "kind": "preparation",
-            "reason": "PENDING: the sample's content-dimension query vectors, written by preparation 3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1, not yet run). The pin is 64 zeros until the artifact exists; the milestone flip refuses while any zero pin remains (scripts/flights/comp1/comp1b_testsample_flip.sh).",
+            "reason": "PINNED: the sample's content-dimension query vectors (preparation 3), produced by the label-free sample preparations (owner decision 156) and read from their summary receipt prepared/slurp-test-sample-3010-preparations-v1/summary-queries.json (sha256 c9ce5f432a58cdb09f92cc442f43b372e04285cca2faf46ff120bab3342d8f6a); the derive script verified the sha256 against the file bytes on the data root.",
             "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "6fa16b47318561a9085cdbd39cb0a43088bff5b2827d07e67262017f9aee5dbc"
           },
           {
             "kind": "preparation",

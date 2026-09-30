@@ -15,7 +15,7 @@
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "ac1dd697056883c155f04bd163d087acd7d9b839a5e3c1a321e02871d9e51849"
+      "sha256": "44ed8f8c18bd0289b1c5ebb858c14cb923e340347a19b334169b62cdda85069b"
     },
     "preregistration": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1-preregistration.md",
@@ -23,7 +23,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-      "sha256": "d9f7acf5bde5e9b5305b339d99d59d2d830d6fc98f57a75b9419b7e07ec5e95c"
+      "sha256": "ba01603637179c938ef230a06ecd94f925d5756a14e82096c7fe4a91d0225522"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/README.md",
@@ -31,7 +31,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/registered-facts-v1.json",
-      "sha256": "97e05bbb460db10e29accb9f4ab5dc46c1105e7d83383caa41259bb09330f403"
+      "sha256": "72c51d039d28b4c89877a00e4d67e996d3351f7cd86e93afeb8ec63e420beaa3"
     },
     "registration_base_commit": "881b1787c"
   },
@@ -52,7 +52,7 @@
   "cell_kind": "Test-sample milestone read (owner decisions 151 and 202): the locked PLAN comparator and one dev-nominated composed arm (COMP-1b), one attempt each.",
   "claim_boundary": "A milestone development read (owner decisions 28, 151). No test claim, no superiority, generalisation, confirmatory or paper-scale claim. claim: nominated.",
   "coordinator": "Fable5.1",
-  "decision": "Fly MILESTONE-00-PLAN then MILESTONE-01 in one campaign on SLURP-TEST-SAMPLE-3010-V1; read at intent primary against expected_effect_pp 3.8 (to be re-declared from the A2 read) with official SLU-F1 the guard at the fallback null.",
+  "decision": "Fly MILESTONE-00-PLAN then MILESTONE-01 in one campaign on SLURP-TEST-SAMPLE-3010-V1; read at intent primary against expected_effect_pp 4.6 with official SLU-F1 the guard at the fallback null.",
   "decision_id": "slurp-stage3-comp1b-testsample-milestone-admission-v1",
   "eligible_run_ids": [
     "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
@@ -83,13 +83,13 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "209503e472a3e7f28ae920503612b9f7ea1890907e6878a44c5edb9679d8849c",
-      "protocol": "21afebbed474cf1cef8d27f9c71ff71302d7ec696682f74e9264bf4bf0bca0ad"
+      "composed_config": "107351660ab69cb54b381b200b5868f025d75776e4c6b37fa4d75b662efe2407",
+      "protocol": "978bf2e1e26ad3a0793da40aaeabffd85e85b2c0a2aab4ff28f9f901ad7bc8c7"
     },
     "note": "the values of the fragments exactly as committed at 881b1787c; repin_cell.py recomputes them at the flip",
     "plan": {
-      "composed_config": "2282f84964b3582cb79df585907ee2cb740399ca4bc3f3dae3b9966ecb557db2",
-      "protocol": "497c68396396254a8593ef956e1188e38f236583441c01d2e7e4aee67a3ff351"
+      "composed_config": "7f6155ba2ca7959632633fbe9539e035be422bc11c693ae7ad94c3a07cacb513",
+      "protocol": "b233c95bf01cbd41df37a5082417cb9ba91f5670647902b30a452fbf61df5efb"
     }
   },
   "schema": "saea-campaign-decision-v1",

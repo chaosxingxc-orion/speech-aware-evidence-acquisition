@@ -27,8 +27,8 @@
   "blockers_before_the_flip": [
     "OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).",
     "ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell (core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name ['SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1', 'SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1'] as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.",
-    "PREPARATIONS: preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, GPU encoder) and preparation 3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1) have not run; their rows are not countersigned. Then this roster's agreement table must be built model-free (scripts/build_slurp_intent_exemplar_agreement.py against MILESTONE-00-PLAN). Pending pins: ['prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl'].",
-    "EXPECTATION: root re-declares expected_effect_pp from the A2 read (registered-facts redeclared_from_a2_read).",
+    "PREPARATIONS: preparations 2 and 3 of the sample (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1; label-free, owner decision 156) have run and their artifacts are pinned (sample_preparation_pins: 4 pins, verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root). REMAINING: this roster's agreement table, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against MILESTONE-00-PLAN (as the DEV-2000-ADDED table was built against the sealed DEV plan cell), then re-derived with --data-root. Pending pins: ['prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json'].",
+    "EXPECTATION: CLEARED -- re-declared 3.8 -> 4.6 from the A2 read on 2026-09-30 (registered-facts redeclaration; redeclared_from_a2_read true).",
     "READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned."
   ],
   "budget_arithmetic": {
@@ -71,7 +71,7 @@
         "tau": 0.0
       },
       "cell": "slurp-native-stage3-comp1b-testsample-v1",
-      "composed_config_hash": "209503e472a3e7f28ae920503612b9f7ea1890907e6878a44c5edb9679d8849c",
+      "composed_config_hash": "107351660ab69cb54b381b200b5868f025d75776e4c6b37fa4d75b662efe2407",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-native-stage3-comp1b-testsample-v1",
       "fit_attempt_id": "attempt-slurp-test-sample-3010-milestone-01-fit-v1",
@@ -83,7 +83,7 @@
         "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
       },
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "21afebbed474cf1cef8d27f9c71ff71302d7ec696682f74e9264bf4bf0bca0ad",
+      "protocol_hash": "978bf2e1e26ad3a0793da40aaeabffd85e85b2c0a2aab4ff28f9f901ad7bc8c7",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
@@ -113,7 +113,7 @@
         "tau": 0.0
       },
       "cell": "slurp-native-stage3-plan-testsample-milestone00-v1",
-      "composed_config_hash": "2282f84964b3582cb79df585907ee2cb740399ca4bc3f3dae3b9966ecb557db2",
+      "composed_config_hash": "7f6155ba2ca7959632633fbe9539e035be422bc11c693ae7ad94c3a07cacb513",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-native-stage3-plan-testsample-milestone00-v1",
       "fit_attempt_id": "attempt-slurp-test-sample-3010-milestone-00-plan-fit-v1",
@@ -125,7 +125,7 @@
         "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
       },
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "497c68396396254a8593ef956e1188e38f236583441c01d2e7e4aee67a3ff351",
+      "protocol_hash": "b233c95bf01cbd41df37a5082417cb9ba91f5670647902b30a452fbf61df5efb",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
@@ -298,7 +298,7 @@
     },
     "derive_script": {
       "relpath": "scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py",
-      "sha256": "3cd9bf21d1582678633914255802257c4b18b17c962874c0423f9576a9a79e73"
+      "sha256": "c7e41b80d26f4924ffa315e58a664ff66daba043cadb829aa72d6c5b868559e4"
     },
     "plan_vs_dev_plan": {
       "anything_else": [],
@@ -387,9 +387,7 @@
   "pending_pins": [
     "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
     "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json",
-    "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json",
-    "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
-    "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl"
+    "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json"
   ],
   "post_stratification_read": {
     "channel": "scripts/flights/comp1/comp1b_testsample_read.sh passes --strata-source scorer --population-counts docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/population-counts-v1.json --weighting post-stratified; scripts/analysis/stage3_paired_read.py runs the official-scoring step's --strata-inside-scorer mode (src/speech_aware_evidence_acquisition/core/scoring_strata.py, exported by core.scoring_batch) in its OWN process; that process reads gold through the slurp-slu-official-test binding (reproduction.slurp_official_eval.official_gold_intents), in memory, after both seals, and the read process never sees a per-row stratum.",
@@ -452,6 +450,27 @@
     "weightings": "natural mixture = post-stratified to full-test per-intent shares (roster receipt weightings), computed INSIDE the official-scoring step, aggregates only (post_stratification_read); equal stratum = 1/58 over the intents present (general_greet is closure-only)"
   },
   "rows": 3010,
+  "sample_preparation_pins": {
+    "note": "Every sample-preparation pin the cells carry, read from the preparations' summary receipt and verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root. protocol-registered-v1.json and the plan documents were re-derived with these pins and carry the current stage3_measurement (the redeclaration's note that the protocol kept the provisional copy is superseded by this re-derivation).",
+    "pins": [
+      {
+        "relpath": "preparation-runs/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
+        "sha256": "7b73093f76bb99c61a8c68438295a54f8b17072d4abb0c6a9a29e5bbc642b732"
+      },
+      {
+        "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-ALIAS-V1/query-dimension-alias.json",
+        "sha256": "ac5c829c55912a844dca0e139721695ae34c7b1a65c92ad2c60be79cfd3f6e11"
+      },
+      {
+        "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "6fa16b47318561a9085cdbd39cb0a43088bff5b2827d07e67262017f9aee5dbc"
+      },
+      {
+        "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
+        "sha256": "7e26ade08462f6336e2cb5869d89b1c49fb2534e2821b6550b6431aabe21f898"
+      }
+    ]
+  },
   "schema": "saea-registered-facts-v1",
   "stage3_measurement": {
     "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1": {

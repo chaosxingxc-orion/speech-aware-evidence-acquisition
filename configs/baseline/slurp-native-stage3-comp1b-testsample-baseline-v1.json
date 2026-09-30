@@ -36,7 +36,7 @@
             "embedded_signal": "speech: complete original TEST-SAMPLE-3010 recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
             "kind": "sealed-segment-vectors",
             "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "7e26ade08462f6336e2cb5869d89b1c49fb2534e2821b6550b6431aabe21f898",
             "tool_contact_ledger_row": "SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1"
           },
           "rank_policy": "saea-rank-wcos-prior-agree-v1",
@@ -108,7 +108,7 @@
             "embedded_signal": "speech: complete original TEST-SAMPLE-3010 recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
             "kind": "sealed-vectors",
             "relpath": "vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "6fa16b47318561a9085cdbd39cb0a43088bff5b2827d07e67262017f9aee5dbc",
             "tool_contact_ledger_row": "SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1"
           },
           "rank_policy": "saea-rank-wcos-prior-agree-v1",
@@ -244,7 +244,7 @@
     {
       "relpath": "preparation-runs/SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1/encode-v1/receipt.json",
       "root": "data",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "sha256": "7b73093f76bb99c61a8c68438295a54f8b17072d4abb0c6a9a29e5bbc642b732"
     },
     {
       "relpath": "preparation-runs/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/encode-v1/receipt.json",
@@ -254,7 +254,7 @@
     {
       "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-ALIAS-V1/query-dimension-alias.json",
       "root": "data",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "sha256": "ac5c829c55912a844dca0e139721695ae34c7b1a65c92ad2c60be79cfd3f6e11"
     },
     {
       "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json",

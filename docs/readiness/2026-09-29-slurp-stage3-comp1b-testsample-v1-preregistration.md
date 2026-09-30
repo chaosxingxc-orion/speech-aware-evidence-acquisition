@@ -22,8 +22,8 @@ they are.
 | guard null | FALLBACK (no own null): h_intent 1.3329, h_SLU 1.4492 (DEV-2000-ADDED null x sqrt(913/682)) |
 | smoke | none (the allowance names no smoke run id) |
 | runs | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1`; `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1` |
-| composed config hashes | comparator `2282f84964b3582cb79df585907ee2cb740399ca4bc3f3dae3b9966ecb557db2`; arm `209503e472a3e7f28ae920503612b9f7ea1890907e6878a44c5edb9679d8849c` |
-| protocol hashes | comparator `497c68396396254a8593ef956e1188e38f236583441c01d2e7e4aee67a3ff351`; arm `21afebbed474cf1cef8d27f9c71ff71302d7ec696682f74e9264bf4bf0bca0ad` |
+| composed config hashes | comparator `7f6155ba2ca7959632633fbe9539e035be422bc11c693ae7ad94c3a07cacb513`; arm `107351660ab69cb54b381b200b5868f025d75776e4c6b37fa4d75b662efe2407` |
+| protocol hashes | comparator `b233c95bf01cbd41df37a5082417cb9ba91f5670647902b30a452fbf61df5efb`; arm `978bf2e1e26ad3a0793da40aaeabffd85e85b2c0a2aab4ff28f9f901ad7bc8c7` |
 
 ## Decision rule (fixed here)
 
@@ -50,8 +50,8 @@ Read MILESTONE-01 against MILESTONE-00-PLAN flown in the same chain, on the same
     "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1": {
       "claim": "nominated",
       "claims_benefit": true,
-      "expected_effect_pp": 3.8,
-      "expected_effect_status": "PROVISIONAL: A2's own declared number; root re-declares from the A2 read before the flip",
+      "expected_effect_pp": 4.6,
+      "expected_effect_status": "RE-DECLARED 2026-09-30 from the cell A2 read (owner decision 139: a measured number, not a prior): A2's intent point estimate +4.60 pp against its in-chain A/A on DEV-2000-ADDED; supersedes the provisional 3.8",
       "measurement_design": "cross-flight-with-in-chain-replicate",
       "note": "MILESTONE-01 = COMP-1b on the signed test sample (owner decisions 151 and 202). expected_effect_pp 3.8 is cell A2's own declared number (docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/registered-facts-v1.json: the COMP-1b TRAIN Fold A intent point, docs/results/2026-09-29-slurp-comp1b-fold-a-read.md), carried PROVISIONALLY because the floor gate refuses a placeholder: root RE-DECLARES it from the A2 read (owner decision 139: a measured number, not a prior) before the flip, and the flip refuses while registered-facts' redeclared_from_a2_read is false. The contrast is against MILESTONE-00-PLAN, the LOCKED plan (recall k 8), not A2's in-chain A/A (k 60), so the milestone delta includes the k 8 -> 60 recall change the composed arm carries (the allowance prescribes the locked system as the comparator). The guard is a FALLBACK null (own_null.flag). tuning_roster / read_roster (item D3): the vote pool and centroid key are TRAIN construction artifacts; the arm was SELECTED on DEV-2000-ADDED by cell A2's read; both are disjoint from the sample by the sample's own disjointness proof (docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json, CLEAN); nothing was chosen or tuned on the sample.",
       "own_null": {
@@ -118,8 +118,8 @@ after delivery". A per-row gold bank is therefore not a legal stratum channel fo
 
 1. OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).
 2. ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell (core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name ['SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1', 'SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1'] as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.
-3. PREPARATIONS: preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, GPU encoder) and preparation 3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1) have not run; their rows are not countersigned. Then this roster's agreement table must be built model-free (scripts/build_slurp_intent_exemplar_agreement.py against MILESTONE-00-PLAN). Pending pins: ['prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-content-v1.jsonl', 'vectors/slurp-test-sample-3010-v1/query-vectors-speech-segments.jsonl'].
-4. EXPECTATION: root re-declares expected_effect_pp from the A2 read (registered-facts redeclared_from_a2_read).
+3. PREPARATIONS: preparations 2 and 3 of the sample (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1; label-free, owner decision 156) have run and their artifacts are pinned (sample_preparation_pins: 4 pins, verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root). REMAINING: this roster's agreement table, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against MILESTONE-00-PLAN (as the DEV-2000-ADDED table was built against the sealed DEV plan cell), then re-derived with --data-root. Pending pins: ['prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json'].
+4. EXPECTATION: CLEARED -- re-declared 3.8 -> 4.6 from the A2 read on 2026-09-30 (registered-facts redeclaration; redeclared_from_a2_read true).
 5. READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned.
 
 ## Prohibitions

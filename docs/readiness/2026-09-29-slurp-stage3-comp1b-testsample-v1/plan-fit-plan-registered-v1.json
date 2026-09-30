@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-plan-testsample-milestone00-v1",
-  "composed_config_hash": "2282f84964b3582cb79df585907ee2cb740399ca4bc3f3dae3b9966ecb557db2",
+  "composed_config_hash": "7f6155ba2ca7959632633fbe9539e035be422bc11c693ae7ad94c3a07cacb513",
   "execution_plan": {
     "attempt_id": "attempt-slurp-test-sample-3010-milestone-00-plan-fit-v1",
     "carrier_lock_key": "slurp",
@@ -12,7 +12,7 @@
     "planned_gpu_hours": 36.2,
     "planned_model_calls": 132440,
     "planned_speech_audio_seconds": 90271,
-    "protocol_hash": "497c68396396254a8593ef956e1188e38f236583441c01d2e7e4aee67a3ff351",
+    "protocol_hash": "b233c95bf01cbd41df37a5082417cb9ba91f5670647902b30a452fbf61df5efb",
     "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-    "sha256": "d9f7acf5bde5e9b5305b339d99d59d2d830d6fc98f57a75b9419b7e07ec5e95c"
+    "sha256": "ba01603637179c938ef230a06ecd94f925d5756a14e82096c7fe4a91d0225522"
   },
   "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before BOTH manifests are complete and sealed with one successful complete official slurp-slu-official-test score each, and the READ row is root countersigned.",

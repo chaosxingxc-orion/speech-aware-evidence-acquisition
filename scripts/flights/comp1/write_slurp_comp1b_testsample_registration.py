@@ -24,6 +24,16 @@ protocol, four plan documents, the analysis recipe, a draft decision receipt, RE
 preregistration) and, with ``--append-ledger``, five DRAFT exposure rows (MILESTONE-00-PLAN, its
 FIT, MILESTONE-01, its FIT, READ) in a new ledger section.
 
+AMENDMENTS CARRIED FORWARD. A re-run of this writer (e.g. after the derive script pins the
+sample-preparation artifacts, ``--data-root``) must not lose what landed in the package after the
+first registration. It reads the COMMITTED package before overwriting it and carries forward,
+verbatim: the expectation re-declaration from the A2 read (``redeclared_from_a2_read`` and the
+``redeclaration`` block, e36bee27f; the arm's ``expected_effect_pp`` / ``expected_effect_status``
+follow it), the post-stratification ruling (``post_stratification_read`` and the report-form
+weightings in the facts, the recipe's ``strata_source`` / ``post_stratification``, and the README /
+preregistration sections, 06c86ff2d). The blockers and the composition wording follow the
+current pin state; ``sample_preparation_pins`` in the facts lists every real sample-preparation pin.
+
 Config and receipt-pinned bytes alone: no contact of any kind, no media, no gold; flips nothing,
 mints nothing, countersigns nothing.
 """
@@ -195,6 +205,29 @@ def composed_of(experiment: str):
     return document, cell, composed
 
 
+def _prior_json(path: str) -> dict:
+    return json.loads(rd(path)) if os.path.isfile(path) else {}
+
+
+def _prior_section(path: str, start: str, end: str) -> str:
+    """The committed text from ``start`` up to (not including) ``end``, or '' when absent."""
+
+    if not os.path.isfile(path):
+        return ""
+    text = rd(path)
+    i = text.find(start)
+    if i < 0:
+        return ""
+    j = text.find(end, i)
+    if j < 0:
+        raise SystemExit(f"{path}: carried section {start!r} has no end marker {end!r}")
+    return text[i:j]
+
+
+def _is_sample_preparation(relpath: str) -> bool:
+    return relpath != ROSTER_RECEIPT and ("TEST-SAMPLE-3010" in relpath or "test-sample-3010" in relpath)
+
+
 def ledger_row(cells: list[str]) -> str:
     return "| " + " | ".join(c.replace("|", "/").replace("\n", " ") for c in cells) + " |"
 
@@ -214,6 +247,16 @@ def main(argv: list[str] | None = None) -> int:
     package = args.package_dir.rstrip("/").replace("\\", "/")
     prereg = package + "-preregistration.md"
     expected = round(args.expected_effect_pp, 2)
+
+    # ---- amendments carried forward from the committed package (see the module docstring) -----
+    prior_facts = _prior_json(package + "/registered-facts-v1.json")
+    prior_recipe = _prior_json(package + "/analysis-recipe-v1.json")
+    redeclaration = prior_facts.get("redeclaration") if prior_facts.get("redeclared_from_a2_read") is True else None
+    if prior_facts.get("redeclared_from_a2_read") is True and not redeclaration:
+        raise SystemExit("the committed facts read redeclared_from_a2_read true without a redeclaration block")
+    readme_post_strat = _prior_section(package + "/README.md", "**Post-stratification: inside the official scorer",
+                                       "**Blockers before the flip.**")
+    prereg_post_strat = _prior_section(prereg, "## Post-stratification: inside the official scorer", "## Blockers before the flip")
 
     # ---- the allowance -----------------------------------------------------------------------
     allowance = json.loads(rd(ALLOWANCE))
@@ -283,7 +326,7 @@ def main(argv: list[str] | None = None) -> int:
             if a["relpath"] == b["relpath"]:
                 if a["sha256"] != b["sha256"] or a.get("root") != b.get("root"):
                     raise SystemExit(f"{key}: an unchanged preparation receipt moved its pin: {a['relpath']}")
-            elif not (a["sha256"] == ZERO or a["relpath"] == ROSTER_RECEIPT):
+            elif not (a["sha256"] == ZERO or a["relpath"] == ROSTER_RECEIPT or _is_sample_preparation(a["relpath"])):
                 raise SystemExit(f"{key}: a re-targeted preparation receipt carries a non-pending pin: {a['relpath']}")
 
     sq_sample = classify(composed["plan"].values, composed["arm"].values)
@@ -327,12 +370,18 @@ def main(argv: list[str] | None = None) -> int:
     a2_declared = a2_facts["stage3_measurement"][A2_ARM_RUN]["expected_effect_pp"]
     if expected != a2_declared:
         raise SystemExit(f"--expected-effect-pp {expected} is not A2's own declared {a2_declared}")
+    arm_expected, arm_expected_status = expected, "PROVISIONAL: A2's own declared number; root re-declares from the A2 read before the flip"
+    if redeclaration:
+        prior_arm = prior_facts["stage3_measurement"][ids["arm"]["run_id"]]
+        if redeclaration.get("from_expected_effect_pp") != expected or prior_arm["expected_effect_pp"] != redeclaration["to_expected_effect_pp"]:
+            raise SystemExit("the committed redeclaration does not match --expected-effect-pp and the committed measurement")
+        arm_expected, arm_expected_status = prior_arm["expected_effect_pp"], prior_arm["expected_effect_status"]
     measurement = {
         ids["arm"]["run_id"]: {
             "claim": "nominated",
             "claims_benefit": True,
-            "expected_effect_pp": expected,
-            "expected_effect_status": "PROVISIONAL: A2's own declared number; root re-declares from the A2 read before the flip",
+            "expected_effect_pp": arm_expected,
+            "expected_effect_status": arm_expected_status,
             "measurement_design": "cross-flight-with-in-chain-replicate",
             "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 (slurp-slu-official-test) the non-inferiority guard (owner decision 133)",
             "primary_metric_key": "intent",
@@ -376,14 +425,50 @@ def main(argv: list[str] | None = None) -> int:
         },
     }
 
+    agreement_pin = composed["arm"].values["knowledge_stores"]["intent-boundaries"]["phase_supply"]["perception"]["agreement_source"]["sha256"]
     composition = (
         "MILESTONE-01 is cell A2's arm (COMP-1b) with only the roster moved to the signed test sample: the locked v2.0 "
         "plan + (1) the agreement term (w_agree 1.0, recall k 60, delivered 8-1-8) with this roster's own vote table "
-        "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1 (PENDING) + (2) the centroid boundary key + (3) no "
+        "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1" + (" (PENDING)" if agreement_pin == ZERO else "")
+        + " + (2) the centroid boundary key + (3) no "
         "citation contract + (4) nothing else. MILESTONE-00-PLAN is the sealed DEV plan arm (the v2.0 lock as flown) "
         "with only the roster moved."
     )
     pending = sorted({r["relpath"] for k in CELLS for r in ids[k]["readiness_requirements"] if r["sha256"] == ZERO})
+    pinned: dict[str, str] = {}
+    for key in CELLS:
+        for r in ids[key]["readiness_requirements"]:
+            if r["sha256"] != ZERO and r["reason"].startswith("PINNED"):
+                pinned[r["relpath"]] = r["sha256"]
+        for r in composed[key].values["preparation_source_receipts"]:
+            if _is_sample_preparation(r["relpath"]) and r["sha256"] != ZERO:
+                pinned[r["relpath"]] = r["sha256"]
+    sample_pending = [p for p in pending if not p.endswith("/phase-supply-v1.json")]
+    if pinned:
+        preparations_blocker = (
+            "PREPARATIONS: preparations 2 and 3 of the sample (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, "
+            "SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1; label-free, owner decision 156) have run and their "
+            f"artifacts are pinned (sample_preparation_pins: {len(pinned)} pins, verified against the data-root bytes by "
+            f"{DERIVE_SCRIPT} --data-root). "
+            + ("REMAINING: this roster's agreement table, built model-free by scripts/build_slurp_intent_exemplar_agreement.py "
+               "against MILESTONE-00-PLAN (as the DEV-2000-ADDED table was built against the sealed DEV plan cell), then "
+               f"re-derived with --data-root. Pending pins: {pending}." if sample_pending else
+               f"No sample-preparation pin remains pending; the only zero pins are each cell's own first-phase supply, "
+               f"minted at the flip (item E16): {pending}.")
+        )
+    else:
+        preparations_blocker = (
+            "PREPARATIONS: preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, GPU encoder) and preparation "
+            "3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1) have not run; their rows are not countersigned. Then this "
+            "roster's agreement table must be built model-free (scripts/build_slurp_intent_exemplar_agreement.py against "
+            f"MILESTONE-00-PLAN). Pending pins: {pending}."
+        )
+    expectation_blocker = (
+        f"EXPECTATION: CLEARED -- re-declared {redeclaration['from_expected_effect_pp']} -> "
+        f"{redeclaration['to_expected_effect_pp']} from the A2 read on {redeclaration['at_utc']} (registered-facts "
+        "redeclaration; redeclared_from_a2_read true)." if redeclaration else
+        "EXPECTATION: root re-declares expected_effect_pp from the A2 read (registered-facts redeclared_from_a2_read)."
+    )
     blockers = [
         "OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the "
         "dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row "
@@ -393,11 +478,8 @@ def main(argv: list[str] | None = None) -> int:
         "contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR "
         f"allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name {fit_not_permitted} "
         "as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.",
-        "PREPARATIONS: preparation 2 (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, GPU encoder) and preparation "
-        "3 (SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1) have not run; their rows are not countersigned. Then this "
-        "roster's agreement table must be built model-free (scripts/build_slurp_intent_exemplar_agreement.py against "
-        f"MILESTONE-00-PLAN). Pending pins: {pending}.",
-        "EXPECTATION: root re-declares expected_effect_pp from the A2 read (registered-facts redeclared_from_a2_read).",
+        preparations_blocker,
+        expectation_blocker,
         "READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the "
         "floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent "
         "accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land "
@@ -412,7 +494,7 @@ def main(argv: list[str] | None = None) -> int:
         ),
         "registered_at_utc": args.registered_at,
         "study_commit_at_registration": args.study_commit,
-        "redeclared_from_a2_read": False,
+        "redeclared_from_a2_read": bool(redeclaration),
         "owner_decisions": {
             "25": "a measured loss on either guard is HARMFUL",
             "28/86": "development numbers only; never a test claim",
@@ -443,6 +525,14 @@ def main(argv: list[str] | None = None) -> int:
                         "experiment_fragment_own_block": list(EXPERIMENT_BLOCK), "composition_factor": list(COMPOSITION_FACTORS)},
         },
         "pending_pins": pending,
+        "sample_preparation_pins": {
+            "pins": [{"relpath": k, "sha256": pinned[k]} for k in sorted(pinned)],
+            "note": ("Every sample-preparation pin the cells carry, read from the preparations' summary receipt and verified "
+                     f"against the data-root bytes by {DERIVE_SCRIPT} --data-root. protocol-registered-v1.json and the plan "
+                     "documents were re-derived with these pins and carry the current stage3_measurement (the redeclaration's "
+                     "note that the protocol kept the provisional copy is superseded by this re-derivation).") if pinned else
+                    "none yet: every sample-preparation pin is PENDING",
+        },
         "blockers_before_the_flip": blockers,
         "budget_arithmetic": {
             "family_budget": caps,
@@ -469,6 +559,12 @@ def main(argv: list[str] | None = None) -> int:
             "No utterance text, gold label, transcript or model output is printed or persisted by any read.",
         ],
     }
+    if redeclaration:
+        facts["redeclaration"] = redeclaration
+    if "post_stratification_read" in prior_facts:
+        facts["post_stratification_read"] = prior_facts["post_stratification_read"]
+    if (prior_facts.get("report_form") or {}).get("weightings"):
+        facts["report_form"]["weightings"] = prior_facts["report_form"]["weightings"]
     facts_sha = wjson(package + "/registered-facts-v1.json", facts)
 
     decision_rule = (
@@ -595,6 +691,10 @@ def main(argv: list[str] | None = None) -> int:
         "output": {"analysis_root": ANALYSIS_ROOT},
         "boundary": "A milestone read on the signed test sample. No utterance text, transcript, gold label string or model output is printed or persisted: ids, counts, rates and hashes only.",
     }
+    if (prior_recipe.get("read_driver") or {}).get("strata_source"):
+        recipe["read_driver"]["strata_source"] = prior_recipe["read_driver"]["strata_source"]
+    if (prior_recipe.get("weightings") or {}).get("post_stratification"):
+        recipe["weightings"]["post_stratification"] = prior_recipe["weightings"]["post_stratification"]
     recipe_sha = wjson(package + "/analysis-recipe-v1.json", recipe)
 
     eligible = [ids["plan"]["run_id"], ids["plan"]["fit_run_id"], ids["arm"]["run_id"], ids["arm"]["fit_run_id"]]
@@ -608,7 +708,7 @@ def main(argv: list[str] | None = None) -> int:
         "coordinator": "Fable5.1",
         "eligible_run_ids": eligible,
         "cell_kind": "Test-sample milestone read (owner decisions 151 and 202): the locked PLAN comparator and one dev-nominated composed arm (COMP-1b), one attempt each.",
-        "decision": f"Fly MILESTONE-00-PLAN then MILESTONE-01 in one campaign on SLURP-TEST-SAMPLE-3010-V1; read at intent primary against expected_effect_pp {expected} (to be re-declared from the A2 read) with official SLU-F1 the guard at the fallback null.",
+        "decision": f"Fly MILESTONE-00-PLAN then MILESTONE-01 in one campaign on SLURP-TEST-SAMPLE-3010-V1; read at intent primary against expected_effect_pp {arm_expected}{'' if redeclaration else ' (to be re-declared from the A2 read)'} with official SLU-F1 the guard at the fallback null.",
         "authorization_basis": "Owner decisions 151 (allowance) and 202 (GO once A2 reads NOMINATED or better); the A2 read; the coordinator's conversational report to the owner (named in the countersignature).",
         "first_contact_report": {"date": None, "arm": None, "note": "root fills this with the conversational report of decision 151 before minting"},
         "antecedents": {
@@ -640,6 +740,12 @@ def main(argv: list[str] | None = None) -> int:
     fence = json.dumps({"stage3_measurement": measurement}, indent=2, ensure_ascii=False, sort_keys=True)
     runs_line = "; ".join(f"`{ids[k]['run_id']}` / `{ids[k]['fit_run_id']}`" for k in ("plan", "arm"))
     blockers_md = "\n".join(f"{i}. {b}" for i, b in enumerate(blockers, 1))
+    measurement_wording = (
+        f"RE-DECLARED {redeclaration['at_utc']} from the cell A2 read (was A2's own declared {redeclaration['from_expected_effect_pp']}; "
+        "`redeclaration` in the facts, owner decision 139: a measured number, not a prior)" if redeclaration else
+        "A2's own declared number, PROVISIONAL: root re-declares it from the A2 read before the flip\n"
+        "(`redeclared_from_a2_read` in the facts; the flip refuses while it is false)"
+    )
     readme = f"""# Test-sample milestone: COMP-1b against the locked plan on SLURP-TEST-SAMPLE-3010-V1
 
 Registered before contact {args.registered_at[:10]} at study commit `{args.study_commit}` (owner decisions 151 and 202);
@@ -661,8 +767,7 @@ permitted, and a smoke under a read id would consume its one attempt; the form p
 composition plus the model-free `check` at the flip). No direct-baseline read. No recovery or resume.
 
 **Measurement.** `cross-flight-with-in-chain-replicate`, n = 3,010 (682 prompts), intent primary, `expected_effect_pp`
-**{expected}** -- A2's own declared number, PROVISIONAL: root re-declares it from the A2 read before the flip
-(`redeclared_from_a2_read` in the facts; the flip refuses while it is false). Guard: official SLU-F1 at a FALLBACK null --
+**{arm_expected}** -- {measurement_wording}. Guard: official SLU-F1 at a FALLBACK null --
 no own null exists for the sample; the DEV-2000-ADDED own null scaled by sqrt(913 / 682) (prompt level, conservative):
 h_intent {own_null['h_intent']}, h_SLU {own_null['h_slu']} (recording-scaled {own_null['h_intent_recording_scaled']} /
 {own_null['h_slu_recording_scaled']}). FLAGGED.
@@ -672,7 +777,7 @@ h_intent {own_null['h_intent']}, h_SLU {own_null['h_slu']} (recording-scaled {ow
 ("dev numbers are not test claims"): it may say whether COMP-1b held its DEV-nominated intent gain against the locked
 system on a test sample; it is never a test claim, never the final read, never publication-grade.
 
-**Blockers before the flip.**
+{readme_post_strat}**Blockers before the flip.**
 
 {blockers_md}
 
@@ -723,7 +828,7 @@ they are.
 {fence}
 ```
 
-## Blockers before the flip
+{prereg_post_strat}## Blockers before the flip
 
 {blockers_md}
 
@@ -819,7 +924,9 @@ they are.
         "fit_run_ids_not_permitted_by_allowance_v1": fit_not_permitted,
         "own_null_fallback": own_null,
         "ledger_rows_appended": appended,
-        "expected_effect_pp": expected,
+        "expected_effect_pp": arm_expected,
+        "sample_preparation_pins": pinned,
+        "pending_pins": pending,
     }, indent=2, sort_keys=True))
     return 0
 
