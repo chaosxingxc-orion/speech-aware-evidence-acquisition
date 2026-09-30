@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-psv4-fold-b-v1",
-  "composed_config_hash": "076a6438eb398f8db639aee0277ace589b95bf8ad9c4a6ebf100c9f24eec5f6c",
+  "composed_config_hash": "e039482f54580660eedba29ad782b4048a5e2ac59662cdf8ff15a1df2a490219",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-psv4-fold-b-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 16.4,
     "planned_model_calls": 16200,
     "planned_speech_audio_seconds": 47322,
-    "protocol_hash": "3dfb949ff7c9b6dd65047ef9e50719629db1494c43fb510478ec9ffe3b5fef01",
+    "protocol_hash": "ab3bb77cad4c119bb9cf85f85ba9a882d7b2929c09deed25a1f6e610fd37d8c2",
     "run_id": "SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-30-slurp-stage3-psv4-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "4c419cfbe9c5510b5a56e1624785ff8dcf52b7ffe8a992995734226d40b64ecf"
+    "sha256": "c248f9a64d86f80ea98ed411be76566b0d9ca812bf25691b786f7da6f83627c9"
   },
   "purpose": "SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1: SAME-FLIGHT PERCEPTION-BRANCH READ (owner decision 184; level 2; claim ceiling 'nominated', ruling O1). Per branch (a-agree delivering, b-k6p, t-twin): the sealed branch note's candidate list gives gold's rank (1/2/3/absent), top1 and present offline (gold enters only offline); the branch's level-2 first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (score_complete_derived_copy); A's column is A's own first Solver answer. Every contrast is a paired ROW bootstrap (cluster key sample_id, 10,000 draws, seed 20260929); the utterance-level number is reported beside and never gates. (1) THE TWIN NULL: T minus A per metric; the bar = |T - A offset| + its CI95 half-width, reported beside the design's own provisional floor per metric (owner decision 190; stage3_measurement.provisional_floor_pp -- intent 0.6500 pp, SLU 1.4900 pp). (2) THE CONTRAST: b-k6p (key_source K6p: the centred centroid key and the centred Fold B speech queries, agreement unchanged) minus A on the level-2 branch Solver column's official intent accuracy (primary). NOMINATED iff the intent CI95 lower bound is above zero AND the point delta exceeds the twin's intent bar AND the SLU-F1 CI95 lower bound of the same column is not below minus the twin's SLU bar (guard). BRANCH-LOCAL HARM iff the intent CI95 upper bound is below zero and the point magnitude exceeds the twin bar. Otherwise NOT NOMINATED. Reported beside, never gating: gold-on-list (present) and mean gold rank of the B note vs A and T, gold at supplied-block rank 1 (the note's mechanism: +26 rows expected on Fold B), the conversion P(correct | gold rank r in the branch note) against the ledger's 97.57 / 26.98 / 12.0 %, and the delivered row (identical by construction). A nomination sends the composed policy to a full-system cross-flight read against an in-chain A/A; it admits nothing.",
   "quality_read_gate": "No branch column is opened before the complete sealed manifest, the ordered outputs, the phase summary and the single complete official TRAIN score of the flight exist AND the READ row SAEA-SLURP-STAGE3-PSV4-FOLD-B-BRANCH-READ-V1 is root countersigned.",

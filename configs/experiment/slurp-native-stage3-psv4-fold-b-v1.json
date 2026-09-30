@@ -17,6 +17,13 @@
         "reason": "Cell P-SV-4 registered before contact on 2026-09-30 from the retained AGREE arm fragments by script (decision 58): Fold A -> Fold B re-target, program switched to phase-native-candidates-review-revise-pbranch3-l2-v1, a level-2 K = 3 Perception branch block (owner decisions 184, 186, 188). No cross-flight comparator: the read is within this flight (B and T branch columns against the delivering A column). HELD: root mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/psv/psv_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 over the whole roster, so there is no earlier digest to reproduce); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-psv4-fold-b-admission-v1",
+            "relpath": "coordination/slurp-stage3-psv4-fold-b-v1/root-admission-v1.json",
+            "sha256": "7a93a352ee8654a63e9104ecb11c3cc6048d35f2a6a020c7c6952e19d907650e",
+            "reason": "Decision slurp-stage3-psv4-fold-b-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The Fold B exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py (DEV parameters, the DEV/Fold A builder) from the committed FILLER BASE cell's pins -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 60 facets reachable; bytes identical to the filler table (docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md; ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1).",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
@@ -33,9 +40,15 @@
             "reason": "The K6p centred TRAIN Fold B speech queries the b-k6p branch's key_source pins (docs/results/2026-09-30-slurp-retrieval-key-recall-offline.md): built model-free by scripts/build_slurp_centred_query_vectors.py --roster fold-b from pinned vectors only with the recall read's own key_construction / centre_keys / centre_queries -- zero model, server, encoder, embedder, scorer, network and GPU contacts; the artifact proof (scripts/analysis/slurp_k6p_artifact_proof.py) recomputes the K6p block from it: Fold B gold at block rank 1 815 vs 789 under the centroid + agreement key (ledger row SAEA-SLURP-CENTRED-QUERIES-FOLD-B-BUILD-V1).",
             "relpath": "prepared/SAEA-SLURP-CENTRED-QUERIES-V1/fold-b/query-vectors-speech-segments.jsonl",
             "sha256": "6b056fefd042c5b9d7841ecc425d4c875029f8679c2291c3902b406031a9cefb"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1/phase-supply-v1.json",
+            "sha256": "deb1d57dc37df4017785d68c309203090adad9b1368d9a3d8d224518b6eb0c87",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1"
     }
