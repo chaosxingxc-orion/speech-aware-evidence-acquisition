@@ -130,6 +130,8 @@ commit `17711e68c`; wave A/A +1.07); `presentation_id = top2-contrast-v1` -0.19 
 `candidate_supply.max_candidates`, `boundary_phase_supply`, `rank_weights.w_agree = 0.0` (circular source),
 `boundary_depth`.
 
+2026-09-30 (coordinator, no loop rerun): `boundary_depth 8->12` observed: present -1.39, intent 0.00 → discarded (P-SV-3 same-flight read; the rank-8 row above is superseded by this line).
+
 Run 1's nomination `phase_supply.k = 10` (+0.48) now sits under the decision-190 intent floor 0.65 and lapses.
 Run 1 re-derived under decision 190 nominates nothing.
 
