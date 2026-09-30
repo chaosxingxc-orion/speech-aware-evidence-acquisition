@@ -1,7 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-09-30T00:23:55Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
-records agent) · HEAD at writing `f3587a6c` on `master` (plus this refresh commit), tree clean.
+Last refreshed: 2026-09-30T00:48:02Z · maintainer: Fable 5.1 (root coordinator; this refresh written by the
+ops + records agent) · HEAD at writing `cbd0610e` on `master` (plus this refresh commit), tree clean.
+**Since 00:24Z (ops + records agent):** **Umbrella `fable/e5lock` merged** (umbrella master `cbaacc3`, `--no-ff`;
+`docs/datasets.lock.json` gains `whisper-large-v3-openai-pt`, AUXILIARY, plus the 2026-09-29 amendment; `asset_lock.py
+validate` OK 126 assets, `test_asset_lock.py` 8 passed in the worktree, `legacy_asset_resolution_check` PASS; not
+pushed). **`fable/e5prep` merged** (`46685410`; the branch took master first, `d3a96b2c`, one conflict in the E5
+design spec resolved by keeping both addenda, the master addendum and module design 2d governing the E5-2 runtime
+form; 306 worktree tests passed; engineering base, harness admission, tool catalog, results ledger and derived-media
+confinement gates PASS). **E5-0 tool-pass rows root countersigned** (`cbd0610e`, 00:42:15Z, root act delegated under
+decision 201): `SAEA-SLURP-ASR-TOOL-PASS-V1` and `-FOLD-B-V1` -- instrument/oracle pass under 201/206, tool contact
+class speech-tool, kind asr, Fold A's inherited 87 Whisper decodes disclosed; the E5-1 READ row
+`SAEA-SLURP-E5-TRANSCRIPT-CONSISTENCY-READ-V1` stays DRAFT until both catalogs are sealed. `e5_tool_pass.sh --check`
+now refuses only on the live flight (flight.lock, batch driver, `core.flight.cli`) and the serving session on
+port 8080; the lock and ledger refusals are gone. **E5-0 armed:** request file `/home/chao/e5-tool-pass.request`
+(`mode=gpu`); `queue_a2.sh`'s `maybe_restart()` now passes `--gap-hook "$B/serving_restart_hook_e5.sh"` (edited in
+place past the running script's read offset, `.pre-e5hook-20260930T004400Z.bak`; `queue_next.sh` untouched because
+it is executing) -- it will not fire there, since the server restarted 18:50Z and is under 12 h at A2's launch.
+So **`SAEA-Queue-E5`** (`/home/chao/saea-queue/queue_e5.sh`, log `/home/chao/queue-e5.out`, Running since 00:46:50Z)
+waits for `A2 DONE` + `filler hold removed` in `queue-a2.out`, holds the filler, waits for it and for no flight,
+then restarts slurp-np4 UNCONDITIONALLY (uptime logged) with the gap hook `/home/chao/saea-queue/gap_hook_e5_sampleprep.sh`:
+E5-0 (both folds, about 20 min) and then the test-sample preparations 2 and 3 (`prep_test_sample.sh --run --stage
+queries`: the Omni-Embed-Nemotron speech-query encoding and the zero-contact vector export of
+SLURP-TEST-SAMPLE-3010-V1, rows countersigned 2026-09-27 under decision 156; `--check` PASS today; log
+`/home/chao/sample-prep-e5gap.log` with SAMPLE-PREP START / DONE and artifact hashes), then verifies the catalogs
+and receipts under `prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1/{fold-a,fold-b}/`, prints `E5-0 DONE` (or FAILED: the
+filler proceeds, E5-0 is one-shot), removes the hold and runs the filler. **E5-1** runs offline once the catalogs
+exist (countersign its READ row first). **GPU queue:** P-SV-3 (flying, `SAEA-Queue-NEXT`) -> A2 (`SAEA-Queue-A2`)
+-> E5-0 + sample prep 2/3 (serving-restart gap, `SAEA-Queue-E5`) -> filler. **Pending branch:** `fable/milestoneprep`.
 **Since 00:13Z (records agent):** **Owner rulings 200-206 recorded** (`ed575ad7`, registry rows before the
 decision-140 outcome; owner ~23:10Z: 「决策200：同意，决策201：同意，我们调整下课题方向，0906的时候还是聚焦在如何用好主模型，现在调整为如何搭建系统并进行系统级优化，决策202：GO，决策203：好，决策204:同意」
 plus the supplement on model-initiated tools): **200** AGREED -- P-SV-3 flies (flying since 23:25Z at `c6e98e6b`);
