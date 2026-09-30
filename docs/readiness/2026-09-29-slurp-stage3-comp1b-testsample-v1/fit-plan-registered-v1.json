@@ -1,18 +1,18 @@
 {
   "cell": "slurp-native-stage3-comp1b-testsample-v1",
-  "composed_config_hash": "9b7cb7d28f3e81dc5daf0730476e59191cf558fc75659e5857827e4d3279d4ae",
+  "composed_config_hash": "21e6b808be316e72f30d7a0008ad176fb2e21e2a76c16773508d366013eb2bc8",
   "execution_plan": {
     "attempt_id": "attempt-slurp-test-sample-3010-milestone-01-fit-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "owner_allowance": {
-      "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
-      "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+      "path": "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
+      "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"
     },
     "planned_gpu_hours": 36.2,
     "planned_model_calls": 132440,
     "planned_speech_audio_seconds": 90271,
-    "protocol_hash": "367423eaafb74ca47fee7594cd6a46f90eee9d8dac38415ba1d6df6d4ce24cd2",
+    "protocol_hash": "ae4db60c457805fd389cf60749bd0d11f9748accdcd7b09c4fdb89c0acbcc4e9",
     "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
@@ -42,11 +42,11 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/protocol-registered-v1.json",
-    "sha256": "605917b748ae5963b05f4cb44886f7a10562d1e3fd0301846b263cec30913176"
+    "sha256": "a903d62d0dc1609a7fc01a9684f40a77d3965c7ba7e7c7af151c4c1208cd082f"
   },
   "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before BOTH manifests are complete and sealed with one successful complete official slurp-slu-official-test score each, and the READ row is root countersigned.",
-  "registered_at_utc": "2026-09-29T23:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T23:30:00Z",
   "schema": "saea-registered-fit-plan-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-milestoneprep, branch fable/milestoneprep",
   "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_OWNER_ALLOWANCE_AND_PREPARATIONS",

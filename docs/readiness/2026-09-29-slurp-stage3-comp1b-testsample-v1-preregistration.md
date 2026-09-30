@@ -22,8 +22,8 @@ they are.
 | guard null | FALLBACK (no own null): h_intent 1.3329, h_SLU 1.4492 (DEV-2000-ADDED null x sqrt(913/682)) |
 | smoke | none (the allowance names no smoke run id) |
 | runs | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1`; `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1` |
-| composed config hashes | comparator `7f6155ba2ca7959632633fbe9539e035be422bc11c693ae7ad94c3a07cacb513`; arm `9b7cb7d28f3e81dc5daf0730476e59191cf558fc75659e5857827e4d3279d4ae` |
-| protocol hashes | comparator `b233c95bf01cbd41df37a5082417cb9ba91f5670647902b30a452fbf61df5efb`; arm `367423eaafb74ca47fee7594cd6a46f90eee9d8dac38415ba1d6df6d4ce24cd2` |
+| composed config hashes | comparator `b7407e15e1a025ba1f8495dda8455520b7debcb6b9326936dd892c6f3a013d58`; arm `21e6b808be316e72f30d7a0008ad176fb2e21e2a76c16773508d366013eb2bc8` |
+| protocol hashes | comparator `c7a88191cdc1d5bca1aba91ba5670f6d2147b0d3026fcaca9f030f5c44246f69`; arm `ae4db60c457805fd389cf60749bd0d11f9748accdcd7b09c4fdb89c0acbcc4e9` |
 
 ## Decision rule (fixed here)
 
@@ -117,7 +117,7 @@ after delivery". A per-row gold bank is therefore not a legal stratum channel fo
 ## Blockers before the flip
 
 1. OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).
-2. ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell (core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name ['SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1', 'SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1'] as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.
+2. ALLOWANCE: CLEARED -- owner decision 207 signed the successor allowance docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json (sha256 be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8), which names both FIT run ids as preparation-kind (non-read) run ids; both fragments pin its bytes (the v1 file is superseded, never edited).
 3. PREPARATIONS: preparations 2 and 3 of the sample (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1; label-free, owner decision 156) have run and their artifacts are pinned (sample_preparation_pins: 6 pins, verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root). No sample-preparation pin remains pending (this roster's agreement table and its receipt are pinned from the builder's own receipt, ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1); the only zero pins are each cell's own first-phase supply, minted at the flip (item E16): ['prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json'].
 4. EXPECTATION: CLEARED -- re-declared 3.8 -> 4.6 from the A2 read on 2026-09-30 (registered-facts redeclaration; redeclared_from_a2_read true).
 5. READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned.

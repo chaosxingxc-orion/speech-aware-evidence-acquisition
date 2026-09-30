@@ -2,22 +2,19 @@
   "_note": "Every model-free fact the COMP-1b test-sample milestone registration rests on, and the CANONICAL stage3_measurement block for MILESTONE-00-PLAN and MILESTONE-01.",
   "allowance": {
     "attempts": "ONE per read run id, ever; no recovery, no resume, no re-score (allowance attempt_budget and milestone_rule)",
-    "fit_run_ids_not_permitted_by_this_allowance": [
-      "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1",
-      "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1"
-    ],
-    "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
+    "fit_run_ids_not_permitted_by_this_allowance": [],
+    "path": "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
     "read_run_ids_used": [
       "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
       "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1"
     ],
-    "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b",
+    "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8",
     "smoke": "NOT REGISTERED: the allowance names no smoke run id, and a smoke under a read run id would consume that read's one attempt. The form proof is cell A2's own four-row smoke (SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-SMOKE-4-V1) of the same composition on DEV-2000-ADDED, plus the model-free core.flight.cli check of both milestone cells at the flip.",
     "status": "authorised"
   },
   "authority_relpaths": [
     "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-    "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
+    "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
     "docs/readiness/2026-09-27-slurp-test-sample-design-v1.md",
     "docs/readiness/2026-09-27-slurp-test-sample-preparations-v1.md",
     "docs/readiness/2026-09-19-slurp-test-split-one-read-protocol-v1-draft.md",
@@ -26,7 +23,7 @@
   ],
   "blockers_before_the_flip": [
     "OWNER GATE (decisions 151 and 202): cell A2 must read NOMINATED or better and the coordinator must report the dev-admitted composed arm to the owner in conversation; the root countersignature of the first milestone row names that report (allowance first_contact_gate).",
-    "ALLOWANCE (v1 names no FIT run id): the native contact-fit gate needs a distinct run id per cell (core.preparation_fit.build_native_contact_fit_gate) and passes it through the same gate touch, which contracts.plan.require_owner_split_allowance refuses for a run id outside permitted_run_ids. A SUCCESSOR allowance (...-slurp-test-sample-allowance-v2.json, the v1 file superseded, never edited) must name ['SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1', 'SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1'] as preparation-kind (non-read) run ids, and both fragments re-pin to its bytes. Owner signature required.",
+    "ALLOWANCE: CLEARED -- owner decision 207 signed the successor allowance docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json (sha256 be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8), which names both FIT run ids as preparation-kind (non-read) run ids; both fragments pin its bytes (the v1 file is superseded, never edited).",
     "PREPARATIONS: preparations 2 and 3 of the sample (SAEA-SLURP-TEST-SAMPLE-3010-SPEECH-QUERY-ENCODING-V1, SAEA-SLURP-TEST-SAMPLE-3010-QUERY-VECTOR-EXPORT-V1; label-free, owner decision 156) have run and their artifacts are pinned (sample_preparation_pins: 6 pins, verified against the data-root bytes by scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py --data-root). No sample-preparation pin remains pending (this roster's agreement table and its receipt are pinned from the builder's own receipt, ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1); the only zero pins are each cell's own first-phase supply, minted at the flip (item E16): ['prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/phase-supply-v1.json', 'prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json'].",
     "EXPECTATION: CLEARED -- re-declared 3.8 -> 4.6 from the A2 read on 2026-09-30 (registered-facts redeclaration; redeclared_from_a2_read true).",
     "READ DRIVER: scripts/analysis/stage3_paired_read.py reports the raw roster mean as 'natural_mixture'; on the floored sample that is NOT the natural-mixture number (design note section 5: post-stratify per-intent accuracy by full-test shares, the roster receipt's weightings block). The post-stratified weighting must land in the read path, with tests on fakes, before the READ row is countersigned."
@@ -71,7 +68,7 @@
         "tau": 0.0
       },
       "cell": "slurp-native-stage3-comp1b-testsample-v1",
-      "composed_config_hash": "9b7cb7d28f3e81dc5daf0730476e59191cf558fc75659e5857827e4d3279d4ae",
+      "composed_config_hash": "21e6b808be316e72f30d7a0008ad176fb2e21e2a76c16773508d366013eb2bc8",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-native-stage3-comp1b-testsample-v1",
       "fit_attempt_id": "attempt-slurp-test-sample-3010-milestone-01-fit-v1",
@@ -79,11 +76,11 @@
       "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "owner_allowance": {
-        "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
-        "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+        "path": "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
+        "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"
       },
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "367423eaafb74ca47fee7594cd6a46f90eee9d8dac38415ba1d6df6d4ce24cd2",
+      "protocol_hash": "ae4db60c457805fd389cf60749bd0d11f9748accdcd7b09c4fdb89c0acbcc4e9",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
@@ -113,7 +110,7 @@
         "tau": 0.0
       },
       "cell": "slurp-native-stage3-plan-testsample-milestone00-v1",
-      "composed_config_hash": "7f6155ba2ca7959632633fbe9539e035be422bc11c693ae7ad94c3a07cacb513",
+      "composed_config_hash": "b7407e15e1a025ba1f8495dda8455520b7debcb6b9326936dd892c6f3a013d58",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-native-stage3-plan-testsample-milestone00-v1",
       "fit_attempt_id": "attempt-slurp-test-sample-3010-milestone-00-plan-fit-v1",
@@ -121,11 +118,11 @@
       "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "owner_allowance": {
-        "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
-        "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+        "path": "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
+        "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"
       },
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "b233c95bf01cbd41df37a5082417cb9ba91f5670647902b30a452fbf61df5efb",
+      "protocol_hash": "c7a88191cdc1d5bca1aba91ba5670f6d2147b0d3026fcaca9f030f5c44246f69",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
@@ -298,7 +295,7 @@
     },
     "derive_script": {
       "relpath": "scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py",
-      "sha256": "dba8b3e9b9a39a71b4ee8a4966eb21709489287ebe9dfaa42e75ae1a1891be60"
+      "sha256": "24f8a98b12672dca6bfed7ddc92aa195d0cb8a20e6d78cfaa99feddf2f82da8c"
     },
     "plan_vs_dev_plan": {
       "anything_else": [],
@@ -441,7 +438,7 @@
     "to_expected_effect_pp": 4.6
   },
   "redeclared_from_a2_read": true,
-  "registered_at_utc": "2026-09-29T23:30:00.000000+00:00",
+  "registered_at_utc": "2026-09-29T23:30:00Z",
   "report_form": {
     "claim_wording": "a MILESTONE read: development evidence under owner decision 28 ('dev numbers are not test claims'), never a test claim, never the final read, never publication-grade; it may say the arm held / did not hold its DEV-nominated intent gain on a test sample against the locked system",
     "headline": "intent accuracy and official pooled SLU-F1, reported SEPARATELY, arm minus MILESTONE-00-PLAN on the same rows",

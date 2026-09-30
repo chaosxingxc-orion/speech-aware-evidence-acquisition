@@ -68,8 +68,8 @@
     "target": 15119
   },
   "owner_allowance": {
-    "path": "docs/receipts/owner/2026-09-27-slurp-test-sample-allowance-v1.json",
-    "sha256": "c2ae2c4eb2142b5aef27d85c04c7dcd55952c105b469fd195592c71cb6bb331b"
+    "path": "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
+    "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"
   },
   "population": {
     "count": 3010,

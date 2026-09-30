@@ -15,7 +15,8 @@ Owner (2026-09-30; the verbatim Chinese text is in registry rows 207-209; Englis
 "Decision 207: agreed; decision 208: agreed; decision 209: I feel the focus now should be slot extraction; go with
 what you recommend."
 
-1. **207 -- the milestone flies under one-shot semantics.** The successor allowance v2 adds exactly the two zero-contact
+1. **207 -- the milestone flies under one-shot semantics.** The successor allowance v2
+   (`docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json`) adds exactly the two zero-contact
    FIT ids (`SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1`, `...-MILESTONE-01-FIT-V1`), every other term
    unchanged; its sha256 is recorded by the signing commit. Package:
    `docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1/` (one attempt per read id, no smoke, no recovery, no
