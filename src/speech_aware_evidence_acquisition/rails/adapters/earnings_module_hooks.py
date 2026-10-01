@@ -6,9 +6,9 @@ and reaches Earnings-21 + ConEC only through this file, beside the Earnings
 runtime adapter. Resolved by profile name
 (``rails.consumption_module.resolve_carrier_hooks("earnings")``); the config
 lock key ``earnings21-original`` maps to it through
-``core.base.CONSUMPTION_MODULE_PROFILES``. Earnings-22 is NOT mapped: it has
-a runtime TaskAdapter (``earnings22_runtime.py``) but no measured own null
-and no baseline to compile onto.
+``core.base.CONSUMPTION_MODULE_PROFILES``. Earnings-22 uses its own thin
+``earnings22_module_hooks`` profile. Neither this carrier's ConEC sources
+nor its component admissions transfer to that profile.
 
 The mapping (design 2b.2): transcription has no closed decision label, so
 there is no Perception decision, contrast or forced-candidate analogue.

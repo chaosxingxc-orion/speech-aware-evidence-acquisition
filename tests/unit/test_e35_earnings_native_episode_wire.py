@@ -7,8 +7,8 @@ encoder, tool, server or network contact.
 Proves, on the carrier-neutral program this item registers
 (``configs/policy/phase-native-review-revise-acquire-v1.json``):
 
-1. the episode runs end to end on FOUR independent units (the item's own
-   four-row smoke scale) with ``carrier_lock_key: "earnings21-original"``;
+1. the episode runs end to end on FOUR synthetic units for each Earnings
+   carrier. This model-free extension supplies no E22 null or flight admission;
 2. the role visit sequence covers every phase the program declares
    (perception, solver, reviewer, planner) and the zero-contact acquisition
    node is armed but never visited when the Planner ACCEPTs immediately --
@@ -34,6 +34,7 @@ from speech_aware_evidence_acquisition.rails import acquisition as acq
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 from speech_aware_evidence_acquisition.rails.delivery_normalisers import (
     DELIVER_NORMALISE_EARNINGS_TEXT_V1,
+    DELIVER_NORMALISE_EARNINGS22_TEXT_V1,
 )
 from speech_aware_evidence_acquisition.rails.native_episode_config import (
     load_native_episode_config,
@@ -54,11 +55,15 @@ PROGRAM_ID = "phase-native-review-revise-acquire-v1"
 #: already-clean text.
 RAW_SOLVER_ANSWER = "Transcript: revenue   grew nine percent\n\nacross every segment"
 HYGIENED_ANSWER = "revenue grew nine percent across every segment"
+NORMALISERS = {
+    "earnings21-original": DELIVER_NORMALISE_EARNINGS_TEXT_V1,
+    "earnings22-original": DELIVER_NORMALISE_EARNINGS22_TEXT_V1,
+}
 
 
-def _values(*, armed: bool) -> dict:
+def _values(*, armed: bool, carrier: str = "earnings21-original") -> dict:
     values: dict = {
-        "carrier_lock_key": "earnings21-original",
+        "carrier_lock_key": carrier,
         "native_episode": {
             "schema": "saea-native-episode-config-v1",
             "episode_id": "e35-earnings-native-window-wire-proof",
@@ -83,7 +88,7 @@ def _values(*, armed: bool) -> dict:
     }
     if armed:
         values["native_episode"]["deliver_normaliser"] = {
-            "normaliser": DELIVER_NORMALISE_EARNINGS_TEXT_V1,
+            "normaliser": NORMALISERS[carrier],
         }
     return values
 
@@ -97,7 +102,7 @@ def _output(key):
     return f"{phase}-analysis:{sample_id}:visit:{visit}"
 
 
-def _run(tmp_path, *, sample_count: int, armed: bool):
+def _run(tmp_path, *, sample_count: int, armed: bool, carrier: str):
     harness = _ActualEpisodeHarness(
         tmp_path,
         sample_count=sample_count,
@@ -107,7 +112,7 @@ def _run(tmp_path, *, sample_count: int, armed: bool):
         arm="speech-feature-query",
     )
     program = default_phase_program(PROGRAM_ID)
-    config = load_native_episode_config(_values(armed=armed), program)
+    config = load_native_episode_config(_values(armed=armed, carrier=carrier), program)
     harness.config = config
     harness.program = program
     harness.repo_root = REPO_ROOT
@@ -116,7 +121,8 @@ def _run(tmp_path, *, sample_count: int, armed: bool):
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
-def test_the_six_node_earnings_episode_runs_end_to_end_on_four_units(tmp_path):
+@pytest.mark.parametrize("carrier", NORMALISERS)
+def test_the_six_node_earnings_episode_runs_end_to_end_on_four_units(tmp_path, carrier):
     # The shared _World fake-transport fixture models exactly two independent
     # synthetic samples per harness instance (test_rails_frozen_core_client._World);
     # every sample is independent within a run (no cross-sample interaction),
@@ -124,7 +130,7 @@ def test_the_six_node_earnings_episode_runs_end_to_end_on_four_units(tmp_path):
     # four-row engineering scale exactly as one four-sample invocation would.
     results = []
     for batch in range(2):
-        harness = _run(tmp_path / f"batch-{batch}", sample_count=2, armed=True)
+        harness = _run(tmp_path / f"batch-{batch}", sample_count=2, armed=True, carrier=carrier)
         try:
             summary = harness.run()
         finally:
@@ -150,14 +156,15 @@ def test_the_six_node_earnings_episode_runs_end_to_end_on_four_units(tmp_path):
         assert result.final_response_text == HYGIENED_ANSWER
         assert result.final_response_text != RAW_SOLVER_ANSWER
         assert receipt["deliver_normaliser"]["normaliser_id"] == (
-            DELIVER_NORMALISE_EARNINGS_TEXT_V1
+            NORMALISERS[carrier]
         )
-        assert receipt["deliver_normaliser"]["carrier_lock_key"] == "earnings21-original"
+        assert receipt["deliver_normaliser"]["carrier_lock_key"] == carrier
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
-def test_the_off_arm_delivers_the_raw_solver_response_and_makes_the_same_requests(tmp_path):
-    off_harness = _run(tmp_path / "off", sample_count=1, armed=False)
+@pytest.mark.parametrize("carrier", NORMALISERS)
+def test_the_off_arm_delivers_the_raw_solver_response_and_makes_the_same_requests(tmp_path, carrier):
+    off_harness = _run(tmp_path / "off", sample_count=1, armed=False, carrier=carrier)
     try:
         off_summary = off_harness.run()
     finally:
@@ -168,7 +175,7 @@ def test_the_off_arm_delivers_the_raw_solver_response_and_makes_the_same_request
         if event == "dispatch"
     ]
 
-    on_harness = _run(tmp_path / "on", sample_count=1, armed=True)
+    on_harness = _run(tmp_path / "on", sample_count=1, armed=True, carrier=carrier)
     try:
         on_summary = on_harness.run()
     finally:

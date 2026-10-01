@@ -700,6 +700,13 @@ def _verify_delivery_normalisation(
             "custody only when a registered, deterministic rule can re-derive it "
             f"({DELIVER_NORMALISER_INVARIANT})"
         ) from error
+    expected_carrier = getattr(normaliser, "carrier_lock_key", None)
+    if (not expected_carrier or row.get("carrier_lock_key") != expected_carrier
+            or block.get("carrier_lock_key") != expected_carrier):
+        raise BundleError(
+            f"{label}: the delivery normaliser, row and receipt must name the same "
+            f"carrier ({DELIVER_NORMALISER_INVARIANT})"
+        )
     try:
         replayed = normaliser(source_text)
         again = normaliser(source_text)

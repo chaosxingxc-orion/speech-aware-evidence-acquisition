@@ -130,9 +130,11 @@ def replay_row(
         "rule_id": receipt["rule_id"],
         "applied": receipt["applied"],
         "changed": bool(outcome.changed),
-        "labels_changed": receipt["labels_changed"],
-        "label_branch": receipt["label_branch"],
-        "fillers_changed": receipt["fillers_changed"],
+        # Transcript hygiene has no SLU label/filler diagnostic. Missing is
+        # not zero, and its unchanged text is not an unparsed SLU answer.
+        "labels_changed": receipt.get("labels_changed"),
+        "label_branch": receipt.get("label_branch"),
+        "fillers_changed": receipt.get("fillers_changed"),
         "already_normalised": _already_normalised(row),
     }
 
@@ -170,6 +172,10 @@ def replay(
     rows = _read_sealed_rows(outputs_path)
     replayed = [replay_row(row, normaliser=normaliser) for row in rows]
 
+    slu_diagnostics = all(
+        row["labels_changed"] is not None and row["fillers_changed"] is not None
+        for row in replayed
+    )
     source_sha256 = sha256_file(outputs_path)
     output_dir.mkdir(parents=True, exist_ok=True)
     text = "\n".join(
@@ -185,10 +191,14 @@ def replay(
         "model_calls": 0,
         "rows": len(replayed),
         "rows_changed": sum(1 for row in replayed if row["changed"]),
-        "rows_label_changed": sum(1 for row in replayed if row["labels_changed"]),
-        "rows_filler_changed": sum(1 for row in replayed if row["fillers_changed"]),
-        "entities_filler_changed": sum(int(row["fillers_changed"]) for row in replayed),
-        "rows_unparsed": sum(1 for row in replayed if not row["applied"]),
+        "rows_label_changed": (sum(1 for row in replayed if row["labels_changed"])
+                               if slu_diagnostics else None),
+        "rows_filler_changed": (sum(1 for row in replayed if row["fillers_changed"])
+                                if slu_diagnostics else None),
+        "entities_filler_changed": (sum(int(row["fillers_changed"]) for row in replayed)
+                                    if slu_diagnostics else None),
+        "rows_unparsed": (sum(1 for row in replayed if not row["applied"])
+                          if slu_diagnostics else None),
         "rows_already_normalised": sum(
             1 for row in replayed if row["already_normalised"]
         ),

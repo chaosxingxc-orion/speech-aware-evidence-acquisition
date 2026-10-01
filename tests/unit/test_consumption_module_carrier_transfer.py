@@ -42,6 +42,11 @@ NONE_MEMBERS = {
         "perception_branch_frame", "flown_branch_programs", "delivered_path_admissions", "lock_versions",
         "current_lock",
     },
+    "earnings22": {
+        "decision_supply_path", "decision_candidates", "max_decision_candidates", "deliver_stages",
+        "perception_branch_frame", "flown_branch_programs", "delivered_path_admissions", "lock_versions",
+        "current_lock",
+    },
 }
 
 
@@ -66,15 +71,15 @@ def _policy(fragment: str) -> dict:
 
 
 def test_every_registered_profile_has_a_hooks_file_naming_itself():
-    assert set(CONSUMPTION_MODULE_PROFILES) == {"slurp", "audio2tool", "earnings"}
+    assert set(CONSUMPTION_MODULE_PROFILES) == {"slurp", "audio2tool", "earnings", "earnings22"}
     for profile, lock_keys in CONSUMPTION_MODULE_PROFILES.items():
         hooks = cm.resolve_carrier_hooks(profile)
         assert hooks.profile == profile
         for key in lock_keys:
             assert cm.carrier_hooks_for_lock_key(key).profile == profile
-    assert cm.carrier_hooks_for_lock_key("earnings22-original") is None
+    assert cm.carrier_hooks_for_lock_key("unknown-carrier") is None
     with pytest.raises(cm.ConsumptionModuleConfigError, match="not a registered profile"):
-        cm.resolve_carrier_hooks("earnings22")
+        cm.resolve_carrier_hooks("unregistered")
 
 
 @pytest.mark.parametrize("profile", sorted(NONE_MEMBERS))
@@ -94,6 +99,7 @@ def test_the_hook_table_is_exactly_the_design_mapping(profile):
                     "a2t-stage3-aa-paired-400-a-baseline-v1")),
     ("earnings", ("e21-native-window-direct-full44-v1", "e21-native-window-direct-sub10-v1",
                   "e21-native-window-direct-four-row-v1")),
+    ("earnings22", ("e22-native-window-direct-base-v1",)),
 ])
 def test_the_all_off_block_compiles_to_the_carriers_direct_baseline(profile, fragments):
     hooks = cm.resolve_carrier_hooks(profile)
@@ -105,7 +111,7 @@ def test_the_all_off_block_compiles_to_the_carriers_direct_baseline(profile, fra
     assert cm.is_module_off_block(_all_off(profile))
 
 
-@pytest.mark.parametrize("profile", ["audio2tool", "earnings"])
+@pytest.mark.parametrize("profile", ["audio2tool", "earnings", "earnings22"])
 def test_a_direct_layer_refuses_every_armed_component_and_every_lock(profile):
     hooks = cm.resolve_carrier_hooks(profile)
     block = _all_off(profile)
@@ -158,6 +164,8 @@ def _proof_path():
     ("earnings", cm.AGREE_VOTE_SEED, "decision_supply_path"),
     ("earnings", cm.CENTROID_BOUNDARY_KEY, "decision_supply_path"),
     ("earnings", cm.SCOPE_RULE, "deliver_stages"),
+    ("earnings22", cm.AGREE_VOTE_SEED, "decision_supply_path"),
+    ("earnings22", cm.SCOPE_RULE, "deliver_stages"),
 ])
 def test_a_none_member_refuses_its_component(profile, component, member):
     hooks = _on_slurp_layer(cm.resolve_carrier_hooks(profile))
@@ -165,7 +173,7 @@ def test_a_none_member_refuses_its_component(profile, component, member):
         cm.compile_module(_armed(profile, {"component_id": component}), hooks)
 
 
-@pytest.mark.parametrize("profile", ["audio2tool", "earnings"])
+@pytest.mark.parametrize("profile", ["audio2tool", "earnings", "earnings22"])
 def test_a_perception_column_is_refused_without_a_branch_frame(profile):
     import module_equivalence_proof as proof  # noqa: PLC0415
 
@@ -344,7 +352,7 @@ def test_omitted_off_components_preserve_direct_policy(profile):
 def test_no_component_on_cell_is_registered_for_audio2tool_or_earnings():
     for path in sorted((_REPO / "configs").rglob("*.json")):
         text = path.read_text(encoding="utf-8")
-        if '"profile": "audio2tool"' not in text and '"profile": "earnings"' not in text:
+        if not any(f'"profile": "{profile}"' in text for profile in ("audio2tool", "earnings", "earnings22")):
             continue
         document = json.loads(text)
         blocks = []
@@ -361,5 +369,5 @@ def test_no_component_on_cell_is_registered_for_audio2tool_or_earnings():
 
         walk(document)
         for block in blocks:
-            if block.get("profile") in ("audio2tool", "earnings"):
+            if block.get("profile") in ("audio2tool", "earnings", "earnings22"):
                 assert cm.is_module_off_block(block), path

@@ -1,0 +1,10 @@
+{
+  "policy": "phase-direct-only-v1",
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_direct_v1.txt",
+      "predecessor_binding": "none"
+    }
+  }
+}

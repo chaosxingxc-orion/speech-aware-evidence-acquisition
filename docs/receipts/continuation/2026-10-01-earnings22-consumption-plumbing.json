@@ -1,0 +1,82 @@
+{
+  "schema": "saea-offline-implementation-receipt-v1",
+  "recorded_at_utc": "2026-10-01T21:57:21Z",
+  "implementation": "earnings22-consumption-plumbing-v1",
+  "base_commit": "7b01e8052e50a36d2ed41c2d0273c99ebb2c3ed6",
+  "worktree": "/home/chao/saea-worktrees/codex-system-text-policy",
+  "branch": "codex/system-text-policy",
+  "scientific_status": "MODEL_FREE_ONLY_NO_E22_ADMISSION",
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "official_score_jobs": 0,
+  "dataset_rows_read": 0,
+  "experiment_mutations": [],
+  "frozen_worker_mutations": [],
+  "tests": [
+    {
+      "scope": "module, Earnings adapters, delivery, native roles and window execution",
+      "passed": 392,
+      "skipped": 3
+    },
+    {
+      "scope": "additional bundle, custody and replay; overlaps prior scope",
+      "passed": 268,
+      "skipped": 3
+    }
+  ],
+  "skip_reason": "Data-dependent sealed SLURP fixtures unavailable with SPEECHRL_DATA_DIR unset",
+  "coverage": {
+    "earnings22_module_hooks_percent": 100,
+    "delivery_replay_percent": 90,
+    "changed_statements": 25,
+    "covered_changed_statements": 25,
+    "whole_repository_claim": false
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "tool_catalog": "PASS",
+    "handoff_freshness": "PASS",
+    "experiment_handoff": {
+      "errors": [],
+      "execution_authority": "NOT_EVALUATED",
+      "launch_allowed": false,
+      "warnings": [
+        "Historical handoff snapshot differs from current HEAD",
+        "Own implementation changes pending commit"
+      ]
+    }
+  },
+  "changed_line_coverage": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/analysis/deliver_normaliser_replay.py",
+      "changed_statements": 1,
+      "covered": 1,
+      "missing": []
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/bundle/outputs.py",
+      "changed_statements": 3,
+      "covered": 3,
+      "missing": []
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/delivery_normalisers.py",
+      "changed_statements": 5,
+      "covered": 5,
+      "missing": []
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/adapters/earnings22_module_hooks.py",
+      "changed_statements": 16,
+      "covered": 16,
+      "missing": []
+    }
+  ],
+  "limitations": [
+    "No E22 own null or scientific flight",
+    "Shared native graph uses fake transport and immediate ACCEPT; acquisition is unvisited",
+    "SLURP optimizer entry remains carrier-specific",
+    "Owner216 and proposer output-budget decisions remain pending"
+  ],
+  "details": "docs/readiness/2026-10-01-earnings22-consumption-plumbing-v1.md"
+}

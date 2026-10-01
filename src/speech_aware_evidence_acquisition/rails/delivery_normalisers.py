@@ -83,6 +83,10 @@ DELIVER_NORMALISE_EARNINGS_TEXT_V1 = "saea-deliver-earnings-text-v1"
 #: edited: an admission receipt and a preregistration quote it.
 DELIVER_NORMALISE_EARNINGS_TEXT_V1_VERSION = "1"
 
+#: Separate carrier identity for the same transcript hygiene, not an E22
+#: measurement or admission. Existing E21 receipts retain their original id.
+DELIVER_NORMALISE_EARNINGS22_TEXT_V1 = "saea-deliver-earnings22-text-v1"
+
 
 def _sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -281,6 +285,13 @@ class EarningsTextDeliveryNormaliser:
             "reason": None,
         }
         return DeliveryNormalisation(text=hygiened, changed=changed, receipt=receipt).validate()
+
+
+class Earnings22TextDeliveryNormaliser(EarningsTextDeliveryNormaliser):
+    """Reuse transcript hygiene with E22 custody; add no sources or scoring rules."""
+
+    id = DELIVER_NORMALISE_EARNINGS22_TEXT_V1
+    carrier_lock_key = "earnings22-original"
 
 
 #: Bumped when the UNWRAP RULE changes, never when this file is merely
@@ -720,6 +731,9 @@ DELIVERY_NORMALISERS.register(
     DELIVER_NORMALISE_EARNINGS_TEXT_V1, EarningsTextDeliveryNormaliser()
 )
 DELIVERY_NORMALISERS.register(
+    DELIVER_NORMALISE_EARNINGS22_TEXT_V1, Earnings22TextDeliveryNormaliser()
+)
+DELIVERY_NORMALISERS.register(
     DELIVER_CITED_ANSWER_V1, CitedAnswerUnwrapDeliveryNormaliser()
 )
 DELIVERY_NORMALISERS.register(
@@ -741,12 +755,14 @@ __all__ = [
     "DELIVER_NORMALISE_V3_VERSION",
     "DELIVER_NORMALISE_EARNINGS_TEXT_V1",
     "DELIVER_NORMALISE_EARNINGS_TEXT_V1_VERSION",
+    "DELIVER_NORMALISE_EARNINGS22_TEXT_V1",
     "DELIVER_CITED_ANSWER_V1",
     "DELIVER_CITED_ANSWER_V1_VERSION",
     "DELIVER_CITED_ANSWER_NORMALISE_V3_V1",
     "DELIVER_CITED_ANSWER_NORMALISE_V3_V1_VERSION",
     "SlurpProjectionV3DeliveryNormaliser",
     "EarningsTextDeliveryNormaliser",
+    "Earnings22TextDeliveryNormaliser",
     "CitedAnswerUnwrapDeliveryNormaliser",
     "CitedAnswerNormaliseV3DeliveryNormaliser",
     "DELIVER_SCOPE_RULE_V1",
