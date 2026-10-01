@@ -18,8 +18,8 @@
             "expected_decision_id": "slurp-system-text-engineering-v1",
             "kind": "decision",
             "reason": "Own narrowly scoped engineering admission.",
-            "relpath": "coordination/slurp-system-text-engineering-v1/root-admission-v1.json",
-            "sha256": "554e63fe95bad4d96420e1537b35d65528b4cba9732bd410bd658757009e317b"
+            "relpath": "coordination/slurp-system-text-engineering-v1/root-admission-v2.json",
+            "sha256": "80cd9b878a7eaa40555d8b13e4d2fdf4c951449ec1febb02d99f32d27eb6cfec"
           },
           {
             "kind": "preparation",
