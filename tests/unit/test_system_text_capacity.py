@@ -42,7 +42,7 @@ def test_fit_uses_lease_and_journals_before_counting(tmp_path, monkeypatch, low_
         _phase_prompt_payloads=lambda *a: {"planner": json.dumps([{"role": "user", "content": "text"}]).encode()},
         _knowledge_store_binding=binding, _composed=SimpleNamespace(config_hash="b" * 64),
         authorize_preparation_contacts=lambda **kw: touched.append("authorized"),
-        speech_packet_bindings=lambda: {"s1": {}})
+        speech_packet_bindings=lambda: {"s1": {"packet_id": "p1", "sha256": "c" * 64}})
     class Client:
         def request_json(self, method, path, payload=None):
             assert touched and "lease" in touched
@@ -61,7 +61,10 @@ def test_fit_uses_lease_and_journals_before_counting(tmp_path, monkeypatch, low_
         return SimpleNamespace(native_tool_schemas=lambda: [])
     monkeypatch.setattr(phase_tools, "build_phase_tools", dispatcher)
     monkeypatch.setattr(resources, "resource_limits", lambda _: None)
-    monkeypatch.setattr(pf, "packet_token_counts", lambda *a, **kw: (10,))
+    packet_counter = pf.packet_token_counts
+    def counts(payload, **kw):
+        return packet_counter(payload, **kw, loader=lambda *a, **k: [SimpleNamespace(chunks=[SimpleNamespace(n_tokens=10)])])
+    monkeypatch.setattr(pf, "packet_token_counts", counts)
     session = SimpleNamespace(host="127.0.0.1", port=1, model_files=[SimpleNamespace(path="decoder", sha256="c" * 64)])
     attach = lambda **kw: (tmp_path, {}, session)
     policy = SimpleNamespace(assert_lease=lambda *a, **kw: touched.append("lease"))

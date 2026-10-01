@@ -76,6 +76,13 @@ def fit_stress(runtime, path, *, policy, contact_cap, attach=None):
                 stream.write(json.dumps({"run_id": context["run_id"], "attempt_id": context["attempt_id"],
                     "method": method, "route": route, "contact": client.counts.total()}, sort_keys=True) + "\n")
                 stream.flush(); os.fsync(stream.fileno())
+            decoder = {f.sha256 for f in session.model_files if "mmproj" not in Path(f.path).name.lower()}
+            if len(decoder) != 1:
+                raise ValueError("Expected one decoder")
+            bindings = runtime.speech_packet_bindings()
+            speech_max = max(sum(packet_token_counts({"speech_feature_parts": [{**descriptor, "role": "query"}]},
+                feature_root=Path(values["speech_feature_root"]), decoder_sha256=next(iter(decoder))))
+                for descriptor in bindings.values())
             client = GuardedTokenizer(_LoopbackPromptAuditClient(host=session.host, port=session.port,
                 timeout_seconds=600), guard=guard, contact_cap=contact_cap, contact_sink=record)
             marker = client.request_json("GET", "/props")["media_marker"]
@@ -87,13 +94,6 @@ def fit_stress(runtime, path, *, policy, contact_cap, attach=None):
             padding_tokens = tokens(" evidence" * 512)
             if padding_tokens < 512:
                 raise ValueError("Synthetic history padding does not cover the declared completion reserve")
-            decoder = {f.sha256 for f in session.model_files if "mmproj" not in Path(f.path).name.lower()}
-            if len(decoder) != 1:
-                raise ValueError("Expected one decoder")
-            bindings = runtime.speech_packet_bindings()
-            speech_max = max(sum(packet_token_counts({"speech_feature_parts": [descriptor]},
-                feature_root=Path(values["speech_feature_root"]), decoder_sha256=next(iter(decoder))))
-                for descriptor in bindings.values())
             rows = []
             for phase, raw in envelopes.items():
                 body = stress_body(json.loads(raw), schemas, selected, 13, 512)
