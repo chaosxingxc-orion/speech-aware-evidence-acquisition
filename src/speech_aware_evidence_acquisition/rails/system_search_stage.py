@@ -84,6 +84,9 @@ def _response_invalid(packet, response, proposal_records):
 
 def validate_stage_registration(d, *, protocol=None):
     """Validate the exact recipe-bound membership; its publisher still needs admission."""
+    if isinstance(d, dict) and d.get("schema") == "saea-system-search-selection-registration-v1":
+        from .system_selection_stage import validate_selection_registration
+        return validate_selection_registration(d, protocol=protocol)
     require(
         isinstance(d, dict)
         and set(d)

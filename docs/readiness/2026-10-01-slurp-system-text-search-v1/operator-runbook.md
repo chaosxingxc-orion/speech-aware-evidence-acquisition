@@ -139,8 +139,8 @@ only objectively invalid imports may be excluded. Copy the registration and
 its evaluation map into the prospective READ recipe. Failure after admission
 never permits a partial-family update. See [update-stage custody](update-stage-custody-v1.md).
 The executable candidate flight registrations and coordinator admissions have
-not yet been materialized. Common-selection membership is a separate remaining
-step when a branch retains fewer than two versions.
+not yet been materialized. Common-selection membership now has its own offline
+freeze described below.
 
 ## Selection and scientific read
 
@@ -156,7 +156,13 @@ from different rounds or expose evaluator selections to the blind proposer.
 See [selection custody](selection-custody-v1.md) for the map, fallback and
 transitive exposure rules.
 
-Reevaluate survivors on the common selection cohort. Record both branches and
+Use `freeze-selection` with all three freshly gated update families and root's
+explicit historical nominee bindings before the common selection cohort. It
+admits one or two retained versions per branch plus seed/A/A, binds unused
+second slots before contact, and preserves all nomination exposure. It does not
+compare different cohorts' scores or automatically nominate the last round.
+See [common-selection registration](common-selection-registration-v1.md).
+Reevaluate the frozen nominees on that common cohort. Record both branches and
 use `freeze-finalists` to bind their exact L/B versions before DEV. Prepare the
 later registration against its create-only `finalists.json`, then run seed/A/A and both finalists on the registered
 1,000 rows. Root reads the entire completed family and reports L-B primarily,

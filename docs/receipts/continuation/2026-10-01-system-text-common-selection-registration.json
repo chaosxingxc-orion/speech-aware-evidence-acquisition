@@ -1,0 +1,66 @@
+{
+  "schema": "saea-offline-implementation-receipt-v1",
+  "recorded_at_utc": "2026-10-01T22:42:15Z",
+  "owner_decision": 214,
+  "source_parent": "963eb8a37052f2b9271d4113653dbcd6443bbe9c",
+  "worktree": "/home/chao/saea-worktrees/codex-system-text-policy",
+  "branch": "codex/system-text-policy",
+  "scope": "Prospective common-selection membership for one or two historical nominees per branch and cumulative nomination exposure through the DEV freeze.",
+  "changes": [
+    "Reverify all three full update families and six branch retention records; nominate explicitly from retained historical versions without comparing different-cohort point estimates.",
+    "Freeze seed/A/A and one or two nominees per branch, with prospective unused-slot records, confined unique run IDs, exact roster and bounded official scoring/trajectory counts.",
+    "Reject post-contact membership changes, missing or modified histories, foreign and duplicate nominees, removed A/A, and unretained versions.",
+    "Validate all three family specification identities before any result source is opened; refuse milestone, DEV, repeated or other-stage inputs.",
+    "Bind selection membership to the exact future READ recipe; no removal of a failed admitted member and no weakening of seal/score/read gates.",
+    "Preserve exposure from all prior own-branch retentions, including losing policies and the initial reference, into final retention and DEV freeze.",
+    "Keep existing TRAIN-only ancestry checks; reject indirect DEV exposure before common-stage registration."
+  ],
+  "source_sha256": {
+    "scripts/system_text_search.py": "9d9d53ef99dfbba7dbcdb9e84cb08455b6a6ed40ae3f7ef3b47e136420f084ca",
+    "src/speech_aware_evidence_acquisition/rails/system_search_archive.py": "9fdbd946580ce1ee7027ea1a1fe797f591b2268a7750118ab80a9789948a793d",
+    "src/speech_aware_evidence_acquisition/rails/system_search_stage.py": "10c5d5e1d558164107d17b1965e9650d1aa5c0277de42188ad611f7f20e64dd1",
+    "src/speech_aware_evidence_acquisition/rails/system_selection_stage.py": "b58a8e352780bd23f6ba700f83fd5d20e378cc6b7489060d4d8662bba35101d5",
+    "tests/unit/test_system_selection_stage.py": "2fcdf109ad08fc888e3de96e61da5c5e59b12b7c3ebbaab3ab90746484f98cdd"
+  },
+  "validation": {
+    "test_selection": "tests/unit/test_system*.py",
+    "passed": 689,
+    "failed": 0,
+    "skipped": 0,
+    "warnings": "Three existing third-party deprecation warnings.",
+    "elapsed_seconds": 65.6,
+    "new_stage_tests_passed": 35,
+    "statement_coverage_percent": {
+      "system_selection_stage": 100,
+      "system_search_stage": 100,
+      "system_search_archive": 99
+    },
+    "checks": {
+      "engineering_base": "PASS",
+      "tool_catalog": "PASS",
+      "git_diff_check": "PASS",
+      "handoff_freshness": "PASS",
+      "experiment_handoff": {
+        "errors": [],
+        "launch_allowed": false,
+        "advisories": [
+          "HEAD differs from historical handoff snapshot",
+          "Isolated worktree contains the reviewed implementation changes"
+        ]
+      }
+    },
+    "execution_environment": "WSL Ubuntu-24.04; synthetic policies and sources; SPEECHRL_DATA_DIR unset; own PYTHONPATH; PYTHONDONTWRITEBYTECODE=1 and python -B."
+  },
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "scientific_result_reads_added": 0,
+  "frozen_worker_changes": 0,
+  "runtime_admission": "none",
+  "remaining": [
+    "Pending owner216 initial A/A scoring-entry recovery and complete initial-family READ.",
+    "Pending proposer output-budget decision and exact live provider/version/isolation admission.",
+    "Actual nominated candidate configurations, own supplies, FIT, exposure registrations and root admissions remain prospective.",
+    "Root must document nominations as sampling choices and perform the registered common-cohort statistical interpretation; this custody command selects no winner.",
+    "The real three-round search, common evaluation, DEV regression and carrier-specific scientific validations remain incomplete."
+  ]
+}

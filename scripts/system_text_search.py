@@ -157,6 +157,13 @@ def main(argv=None):
     stage_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
     stage_cmd.add_argument("--member-bindings", type=Path, required=True)
     stage_cmd.add_argument("--data-root", type=Path, required=True)
+    selection_cmd = commands.add_parser("freeze-selection", help="Bind historical nominees before the common cohort; no dispatch")
+    selection_cmd.add_argument("--protocol", type=Path, required=True)
+    selection_cmd.add_argument("--update-family", type=Path, action="append", required=True,
+                               help="Supply each of the three complete registered update family specifications")
+    selection_cmd.add_argument("--member-bindings", type=Path, required=True)
+    selection_cmd.add_argument("--data-root", type=Path, required=True)
+    selection_cmd.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     retain_cmd = commands.add_parser("retain-feedback", help="Record root-reviewed same-cohort choices; no automatic verdict")
     retain_cmd.add_argument("--stage", choices=("update-1", "update-2", "update-3", "selection"), required=True)
     retain_cmd.add_argument("--branch", choices=("L", "B"), required=True)
@@ -288,6 +295,23 @@ def main(argv=None):
     elif args.command == "freeze-update":
         from speech_aware_evidence_acquisition.rails.system_search_stage import freeze_update_stage
         registration = freeze_update_stage(archive, protocol=read(args.protocol), round_index=args.round,
+            member_bindings=read(args.member_bindings), data_root=args.data_root)
+        print(json.dumps({"registration_sha256": registration["registration_sha256"],
+            "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],
+            "contacts_added": 0, "runtime_admission": "separate-required"}))
+    elif args.command == "freeze-selection":
+        from speech_aware_evidence_acquisition.rails.system_selection_stage import freeze_selection_stage
+        require(len(args.update_family) == 3, "supply three distinct update families")
+        declared = [read(path).get("family_id") for path in args.update_family]
+        require(set(declared) == {"update-1", "update-2", "update-3"},
+                "supply three distinct update families before reading any results")
+        histories = {}
+        for path, expected in zip(args.update_family, declared):
+            feedback = read_family(path, repo_root=args.repo_root)
+            name = feedback.as_json()["family_id"]
+            require(name == expected and name not in histories, "update family changed during read")
+            histories[name] = feedback
+        registration = freeze_selection_stage(archive, protocol=read(args.protocol), update_feedback=histories,
             member_bindings=read(args.member_bindings), data_root=args.data_root)
         print(json.dumps({"registration_sha256": registration["registration_sha256"],
             "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],

@@ -1,27 +1,28 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
-## Current continuation checkpoint: 2026-10-01T22:22:43Z, ChatGPT root
+## Current continuation checkpoint: 2026-10-01T22:42:15Z, ChatGPT root
 
-The owner214 update-family freeze is implemented. It accounts for every spent
-proposal opportunity and permits only objectively invalid pre-contact imports
-to remain outside the prospective family. Both branch parent/A/A pairs stay;
-valid duplicate and no-change proposals stay. Compilations bind exact inputs,
-imports and bundles, later L parents bind the preceding retention, and the
-READ recipe carries the complete frozen membership. L views retain an opaque
-whole-family commitment without exposing B's allocation dispositions.
-See [update-stage custody](../readiness/2026-10-01-slurp-system-text-search-v1/update-stage-custody-v1.md)
-and [validation](../receipts/continuation/2026-10-01-system-text-update-stage-custody.json).
-All 654 related tests pass; the new stage module has 100% statement coverage.
-Evidence is synthetic, with zero added model, scorer or scientific-result reads.
-Actual candidate flight registrations and common-selection membership still
-need prospective preparation and admission.
+The owner214 common-selection connection is implemented. `freeze-selection`
+revalidates all three complete update families and both branches' historical
+retentions, then binds root's explicit one/two nominees per branch plus seed/A/A
+before any common-cohort run. Early survivors remain eligible; different-cohort
+scores are not ranked by this command. Unused second slots are fixed before
+contact, and all nomination exposure reaches final retention and the DEV freeze.
+Metadata checks refuse milestone, DEV, duplicate or wrong-stage inputs before
+opening result sources. The existing TRAIN-only ancestry rule refuses indirect
+DEV exposure before registration. See [common-selection registration](../readiness/2026-10-01-slurp-system-text-search-v1/common-selection-registration-v1.md)
+and [validation](../receipts/continuation/2026-10-01-system-text-common-selection-registration.json).
+All 689 related tests pass; the new module has 100% statement coverage. Evidence
+is synthetic, with zero added model, scorer or scientific-result reads.
 
-The earlier [Earnings-22 consumption plumbing](../readiness/2026-10-01-earnings22-consumption-plumbing-v1.md)
-is integrated and remains model-free: no own null or admitted E22 flight exists.
-Owner216 scoring-entry recovery and the proposer output-budget decision remain
-pending. Preserve the stopped CONTROL2 worker, caches, failed job, generation
-and STOP; no initial-family feedback is readable. Held carriers and closed
-mechanisms gain no execution authority from these offline changes.
+The earlier update-family freeze and Earnings-22 consumption plumbing remain
+integrated. Actual search candidate flight cells, supplies, FIT and admissions
+remain prospective. Owner216 scoring-entry recovery and the proposer output-
+budget decision remain pending; neither is answered by this implementation.
+Preserve the CONTROL2 worker, caches, generation, failed score job and STOP.
+No initial-family feedback is readable. The last compact operational check
+still reports handoff-required with a healthy idle serving session. E22 has
+no own null or admitted GPU flight, and all other carrier holds remain intact.
 
 ## Current continuation checkpoint: 2026-10-01T21:37:35Z, ChatGPT root
 

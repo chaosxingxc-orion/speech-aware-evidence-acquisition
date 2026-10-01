@@ -326,6 +326,11 @@ class SystemSearchArchive:
             require(set(selected_ids) <= {r["bundle_id"] for r in frontier}, "active selection must be non-dominated")
         # Losing and unused same-branch policies influenced selection too.
         ancestry = cumulative_sources([policies[cid] for cid in [*members, aa]])
+        registration = d["read_authority"].get("stage_registration")
+        if stage_name == "selection" and registration is not None:
+            # Nominating a historical survivor inspected every prior branch
+            # retention, including losing or unused policies and earlier cohorts.
+            ancestry = cumulative_sources([], [*ancestry, *registration["cumulative_sources"][branch]])
         ancestry = cumulative_sources([], [*ancestry, {"kind": "feedback", "sha256": content_hash(d["reference"]),
             "sample_ids": d["reference"]["sample_ids"]}])
         record = {"schema": "saea-system-search-retention-v1", "branch": branch, "stage": stage_name,
