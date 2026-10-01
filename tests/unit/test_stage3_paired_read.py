@@ -179,7 +179,14 @@ class World:
                     "sample_id": s, "response_b64": base64.b64encode(json.dumps(wire).encode()).decode()}}))
             trace.append(json.dumps({"channel": "MODEL_REQUEST", "payload": {"text": SENTINEL}}))
         _write(run_dir / f"{run_id}.trace.jsonl", "\n".join(trace) + "\n")
+        prepared_path = self.data / "prepared" / f"{run_id}.json"
+        _write(prepared_path, {"output": {"values": {"perception": {
+            row["sample_id"]: [r["supplied_item_id"] for r in row["consumption"]["records"]]
+            for row in results
+        }}}})
         _write(run_dir / "flight-receipts.json", {"stages": {
+            "preflight": {"prepared_artifacts": [{"key": "prepared_phase_supply",
+                "relpath": str(prepared_path.relative_to(self.data)), "sha256": _sha(prepared_path)}]},
             "seal": {"phases_sha256": _sha(phases_path),
                      "serving_monitor_summary": {"active_seconds": 360.0, "wall_seconds": 400.0}},
             "run_phases": {"wall_seconds": 400.0, "contacts_per_second": 0.06}}})
@@ -327,7 +334,7 @@ def _final_report_roster(ids: list[str], roster_id: str = "UNIT-FINAL-REPORT") -
 def test_delivery_gold_free_on_a_final_report_roster(world: World) -> None:
     left = core.load_arm(world.data, core.ArmSpec("left", "UNIT-LEFT-V1", "attempt-left"))
     right = core.load_arm(world.data, core.ArmSpec("right", "UNIT-RIGHT-V1", "attempt-right"))
-    block = drv.stage_delivery(None, drv.Extensions(), left, right, _final_report_roster(world.ids))
+    block = drv.stage_delivery(SimpleNamespace(data_root=world.data), drv.Extensions(), left, right, _final_report_roster(world.ids))
     assert block["status"] == "AVAILABLE"
     assert block["gold_bank_extension"]["status"] == "NOT_APPLICABLE (final-report)"
     assert block["mismatches"] == []
@@ -337,6 +344,8 @@ def test_delivery_gold_free_on_a_final_report_roster(world: World) -> None:
     assert right_detail["answered_rows"] == 12 and right_detail["missing_answer_ids"] == []
     assert left_detail["boundary_selected_rows"] == 6  # World.LEFT_DELIVERED
     assert right_detail["boundary_selected_rows"] == 10  # World.RIGHT_DELIVERED
+    assert left_detail["prepared_supply"]["rows_flown_set_equals_prepared_set"] == 12
+    assert right_detail["prepared_supply"]["rows_flown_set_equals_prepared_set"] == 12
     assert left_detail["contacts"]["contacts_equal_sealed_calls"]
     assert right_detail["contacts"]["prompt_tokens_total_equals_sealed_cost"]
     rendered = "\n".join(drv._render_delivery(block))
@@ -352,10 +361,50 @@ def test_delivery_gold_free_reports_a_missing_answer_as_a_mismatch(tmp_path: Pat
     left_outputs.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
     left = core.load_arm(world.data, core.ArmSpec("left", "UNIT-LEFT-V1", "attempt-left"))
     right = core.load_arm(world.data, core.ArmSpec("right", "UNIT-RIGHT-V1", "attempt-right"))
-    block = drv.stage_delivery(None, drv.Extensions(), left, right, _final_report_roster(world.ids))
+    block = drv.stage_delivery(SimpleNamespace(data_root=world.data), drv.Extensions(), left, right, _final_report_roster(world.ids))
     assert block["detail"]["left"]["missing_answer_ids"] == [world.ids[0]]
     assert any("delivered no answer" in m for m in block["mismatches"])
 
+
+
+@pytest.mark.parametrize("mode", ["different", "missing-row", "extra-row", "bad-pin", "missing-pin", "duplicate-pin", "escape", "bad-row"])
+def test_final_report_requires_own_prepared_supply(world: World, mode: str) -> None:
+    left = core.load_arm(world.data, core.ArmSpec("left", "UNIT-LEFT-V1", "attempt-left"))
+    right = core.load_arm(world.data, core.ArmSpec("right", "UNIT-RIGHT-V1", "attempt-right"))
+    pins = left.flight_receipts["stages"]["preflight"]["prepared_artifacts"]
+    path = world.data / pins[0]["relpath"]
+    doc = json.loads(path.read_text())
+    values = doc["output"]["values"]["perception"]
+    if mode == "different":
+        values[world.ids[0]] = ["intent-boundary:changed", SENTINEL]
+    elif mode == "missing-row":
+        del values[world.ids[0]]
+    elif mode == "extra-row":
+        values["outside-roster"] = []
+    elif mode == "bad-row":
+        values[world.ids[0]] = "not-a-list"
+    elif mode == "bad-pin":
+        pins[0]["sha256"] = "0" * 64
+    elif mode == "missing-pin":
+        pins.clear()
+    elif mode == "duplicate-pin":
+        pins.append(dict(pins[0]))
+    elif mode == "escape":
+        pins[0]["relpath"] = "../outside.json"
+    if mode in {"different", "missing-row", "extra-row", "bad-row"}:
+        _write(path, doc)
+        pins[0]["sha256"] = _sha(path)
+    args = SimpleNamespace(data_root=world.data)
+    if mode == "different":
+        block = drv.stage_delivery(args, drv.Extensions(), left, right, _final_report_roster(world.ids))
+        assert block["detail"]["left"]["prepared_supply"]["rows_flown_set_equals_prepared_set"] == 11
+        assert any("prepared supply" in item for item in block["mismatches"])
+        assert block["detail"]["right"]["prepared_supply"]["rows_flown_set_equals_prepared_set"] == 12
+        encoded = json.dumps(block)
+        assert "intent-boundary:changed" not in encoded and SENTINEL not in encoded
+    else:
+        with pytest.raises(drv.Stage3ReadError, match="prepared supply"):
+            drv.stage_delivery(args, drv.Extensions(), left, right, _final_report_roster(world.ids))
 
 def test_delivery_still_gold_bank_on_a_non_final_report_roster(world: World) -> None:
     # world's default split_role is "discovery": stage_delivery must take the ORIGINAL gold-bank

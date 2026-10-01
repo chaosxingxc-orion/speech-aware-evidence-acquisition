@@ -814,7 +814,45 @@ def _answered_rows(arm, ids: Sequence[str]) -> tuple[int, list[str]]:
     return answered, missing
 
 
-def _stage_delivery_final_report(base: dict, left, right, ids: Sequence[str]) -> dict:
+def _prepared_boundary_check(data_root: Path, arm, boundary: dict, ids: Sequence[str]) -> dict:
+    """Compare flown boundary identities with this arm's own pinned preparation, without gold."""
+    preflight = ((arm.flight_receipts or {}).get("stages") or {}).get("preflight") or {}
+    pins = [p for p in preflight.get("prepared_artifacts", [])
+            if isinstance(p, dict) and p.get("key") == "prepared_phase_supply"]
+    if len(pins) != 1:
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply requires exactly one preflight pin")
+    pin = pins[0]
+    root = Path(data_root).resolve()
+    relpath = pin.get("relpath")
+    if not isinstance(relpath, str) or not relpath or Path(relpath).is_absolute():
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply path must be relative")
+    path = (root / relpath).resolve()
+    if not path.is_relative_to(root) or not path.is_file():
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply is missing or outside the data root")
+    sha = digest(path)
+    if sha != pin.get("sha256"):
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply does not hash to its preflight pin")
+    try:
+        values = load_json(path)["output"]["values"]["perception"]
+    except (KeyError, TypeError, json.JSONDecodeError) as error:
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply has no perception value map") from error
+    if not isinstance(values, dict) or set(values) != set(ids):
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply rows do not equal the roster")
+    equal = 0
+    for sample_id in ids:
+        row = values[sample_id]
+        if not isinstance(row, list) or any(not isinstance(v, str) for v in row):
+            raise Stage3ReadError(f"{arm.spec.label}: prepared supply has an invalid value list")
+        expected = {bare(v) for v in row if bare(v).startswith(BOUNDARY_PREFIX)}
+        equal += expected == set(boundary[sample_id])
+    if digest(path) != sha:
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply changed during the read")
+    return {"prepared_relpath": relpath, "prepared_sha256": sha,
+            "rows": len(ids), "rows_flown_set_equals_prepared_set": equal,
+            "mismatched_rows": len(ids) - equal}
+
+
+def _stage_delivery_final_report(base: dict, left, right, ids: Sequence[str], data_root: Path) -> dict:
     """The recipe's step 2 delivery check, GOLD-FREE: each cell's flown first-phase boundary
     selections and delivered answers, checked against its OWN sealed artefacts only (its own
     outputs, phases and wire trace against its own sealed generation-manifest cost) -- never
@@ -848,6 +886,7 @@ def _stage_delivery_final_report(base: dict, left, right, ids: Sequence[str]) ->
         cost = arm.generation_manifest.get("cost") or {}
         return {
             "rows": len(ids),
+            "prepared_supply": _prepared_boundary_check(data_root, arm, boundary, ids),
             "answered_rows": answered,
             "missing_answer_ids": missing_answer_ids,
             "boundary_selected_rows": selected,
@@ -871,6 +910,9 @@ def _stage_delivery_final_report(base: dict, left, right, ids: Sequence[str]) ->
     right_block = _arm_block(right, right_boundary)
     problems: list[str] = []
     for label, block in ((left.spec.label, left_block), (right.spec.label, right_block)):
+        if block["prepared_supply"]["mismatched_rows"]:
+            problems.append(f"{label}: {block['prepared_supply']['mismatched_rows']} row(s) "
+                            "differ from the arm's own prepared supply")
         if block["missing_answer_ids"]:
             problems.append(f"{label}: {len(block['missing_answer_ids'])} row(s) delivered no answer")
         if not block["contacts"]["contacts_equal_sealed_calls"]:
@@ -882,7 +924,8 @@ def _stage_delivery_final_report(base: dict, left, right, ids: Sequence[str]) ->
         "status": "AVAILABLE",
         "definition": (
             "gold-free (recipe step 2): each cell's flown first-phase boundary selections and "
-            "delivered answers checked against its OWN sealed artefacts only -- every row "
+            "delivered answers checked against its OWN sealed artefacts only -- boundary sets "
+            "equal the arm's pinned prepared supply row by row, every row "
             "delivered an answer with its byte hash on record, and the wire contact / prompt "
             "token counts reconcile with the sealed generation-manifest cost; no gold intent, no "
             "gold bank, no cross-arm gold comparison. A mismatch is an engineering defect, "
@@ -911,7 +954,7 @@ def stage_delivery(core_args, ext: Extensions, left, right, roster) -> dict:
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
             "left": left.spec.label, "right": right.spec.label}
     if roster.document.get("split_role") == "final-report":
-        return _stage_delivery_final_report(base, left, right, ids)
+        return _stage_delivery_final_report(base, left, right, ids, Path(core_args.data_root))
     bank_roster = ext.gold_bank_roster or BANK_ROSTER_OF.get(roster_id)
     if bank_roster is None:
         return {**base, "status": "NOT_AVAILABLE",

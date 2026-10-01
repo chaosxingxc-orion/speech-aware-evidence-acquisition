@@ -1,0 +1,122 @@
+{
+  "schema": "saea-root-read-qualification-v1",
+  "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-READ-V1",
+  "owner_decision": 213,
+  "prior_full_seal_verification": {
+    "path": "docs/receipts/continuation/2026-10-01-milestone-successor1-pair-complete.json",
+    "sha256": "20d3a72ee6c643c154753fbfcab3531ea84436b0cabd27d7878188c04d664184"
+  },
+  "method": "Revalidate both finalized attempts and unique successful official score batches; stream-hash every current sealed artifact against the manifests whose full verification was recorded in the prior root receipt. No scientific content is parsed or exposed.",
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+      "attempt_id": "attempt-slurp-milestone-successor1-plan-generation-v1",
+      "state": "FINALIZED",
+      "rows": 3010,
+      "manifest_sha256": "1d4fc02bbedbbf6932802eeb7e4aa91dff5a80c614a9ef33f57d06c8429a8898",
+      "score_succeeded": 1,
+      "score_failed": 0,
+      "score_job_count": 1,
+      "score_jobs_sha256": "12eea71fb35b7c1bc8f3755d28ba40161ac218bc88cbf316ae172f35073d09af",
+      "batch_summary_sha256": "00784ac1575675989ebd02092159f2a97455fa280acbb94fd278df9a3d0aa7df",
+      "checked_artifacts": [
+        {
+          "kind": "outputs",
+          "sha256": "cb6edf909d5db3dabe6a1eec6faf851d1d436f755b9270b6c615adb06ec3c0ee",
+          "bytes": 20133092
+        },
+        {
+          "kind": "raw_trace",
+          "sha256": "6b4d63e943ab56f61d2bdb0ce2f587ba918d53ec61f715345a8a03a556988646",
+          "bytes": 1085021200
+        },
+        {
+          "kind": "trace_manifest",
+          "sha256": "e54598cbd67f75e6cb68280ac966a6ee7863c1d9c485c158099fa27a19f244f5",
+          "bytes": 8668704
+        },
+        {
+          "kind": "scores",
+          "sha256": "191989a0755dc2b77eb3f2e0f235ff84abb0498346c20d6459ab9f690cbd7ef6",
+          "bytes": 2303921
+        },
+        {
+          "kind": "session_receipt",
+          "sha256": "3081a4fdc9d97fd9cdb1d0cad8b2ce1e1d4802ddf18a4f4211771b445ec20d16",
+          "bytes": 1569
+        },
+        {
+          "kind": "generation_manifest",
+          "sha256": "9a295792162d249af3b8a21cbad174d6f898dc1a2d772826a70f379b5618877b",
+          "bytes": 148862
+        },
+        {
+          "kind": "phases",
+          "sha256": "c880dd274d9d85db956805c8e2f9eb9f8af07c714fd859dd2fb531f9d763d7c7",
+          "bytes": 349065760
+        },
+        {
+          "kind": "score_ledger_cells",
+          "sha256": "cdcc1d429252878e05645b2c7dfff97d1193bd191b3576419a134f59cdfacd01",
+          "bytes": 857
+        }
+      ]
+    },
+    {
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1",
+      "attempt_id": "attempt-slurp-milestone-successor1-comp1b-generation-v1",
+      "state": "FINALIZED",
+      "rows": 3010,
+      "manifest_sha256": "905a64623ef114945e52e1038b7aa2f0c3b018ba68107f83aa29420c27446b46",
+      "score_succeeded": 1,
+      "score_failed": 0,
+      "score_job_count": 1,
+      "score_jobs_sha256": "6df2d25de96d02ac72d1aca794fdaf3c0c878b7ed231db6336fa19f9e1e8ff3c",
+      "batch_summary_sha256": "93452d52754ebf6eae08f18ca90793d77ba5dff6270a8021c2b1ce5def915a01",
+      "checked_artifacts": [
+        {
+          "kind": "outputs",
+          "sha256": "f331db14b0da2fe5b5823d06475203471ba17cd3b314e838a4a8f20c96bb3803",
+          "bytes": 20035164
+        },
+        {
+          "kind": "raw_trace",
+          "sha256": "ff69a07800f398b176c895dee65c7c40ca6cf522442f82e02db9aca8219e19e8",
+          "bytes": 1120664099
+        },
+        {
+          "kind": "trace_manifest",
+          "sha256": "dfb8481a68fef739f60ae22b25e243357113dfc3fc4d8f103866b6ccb8d78ad2",
+          "bytes": 8623570
+        },
+        {
+          "kind": "scores",
+          "sha256": "fb8102970449ba569810533c5d77ccb71de206411912e1affa40092a47f365c5",
+          "bytes": 2304896
+        },
+        {
+          "kind": "session_receipt",
+          "sha256": "3081a4fdc9d97fd9cdb1d0cad8b2ce1e1d4802ddf18a4f4211771b445ec20d16",
+          "bytes": 1569
+        },
+        {
+          "kind": "generation_manifest",
+          "sha256": "4a30296e8e1e54a8a9d63cfae74fc67751346347f427fb51964e3e10d16af0c5",
+          "bytes": 148899
+        },
+        {
+          "kind": "phases",
+          "sha256": "621c058a2c11d0c6bc873259bd05310d169784b0e1b463a36ebda07de338584e",
+          "bytes": 360096826
+        },
+        {
+          "kind": "score_ledger_cells",
+          "sha256": "92b7e4016d322c9777823a871523d3b9828b8b2de69b36176abe680d9d3546bc",
+          "bytes": 863
+        }
+      ]
+    }
+  ],
+  "optimizer_use": "Forbidden. Independent milestone analysis only.",
+  "qualified_at_utc": "2026-10-01T20:21:02.057519+00:00"
+}

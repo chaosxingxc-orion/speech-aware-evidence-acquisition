@@ -1,0 +1,11 @@
+# Milestone successor 1: read qualification and delivery-check correction
+
+Root qualified the exact owner213 successor pair before reading scientific outputs. The prior full seal verification is preserved in `docs/receipts/continuation/2026-10-01-milestone-successor1-pair-complete.json`. Fresh streamed hashes revalidate both final manifests and every referenced output, trace, trace manifest, score, serving receipt, generation manifest, phase summary and score-ledger artifact. Both attempts remain FINALIZED at 3010 rows, with one successful official score each and no failed jobs. The new qualification receipt records those pins. Hashing does not interpret task content.
+
+The READ row is root countersigned only for the registered original PLAN versus COMP-1b comparison. The old failed comparator is untouched and unread. No test evidence may enter the system-text optimizer, proposer inputs, candidate selection or tuning. No allowance or scientific threshold changes.
+
+Before the first scientific read, inspection found that the shared final-report delivery extension checked answered rows and contact/token reconciliation but did not actually compare flown boundary sets with the arm's own prepared supply, despite recipe step 2. The shared reader now requires exactly one pinned preparation per arm, confined to the data root; exact roster coverage; valid value lists; and unchanged source bytes. It reports aggregate row equality and mismatch counts without exposing item values. A mismatch is an engineering defect, never permission to rerun. Non-final-report delivery and the statistical estimator remain unchanged.
+
+Test-first evidence: nine new or strengthened synthetic assertions failed before the change. After correction, 174 related tests pass (three sealed-data cases deliberately deselected); shared Stage-3 reader statement coverage is 90%. The synthetic cases cover matching own preparations, a changed boundary, missing/extra rows, bad hash, missing/duplicate pins, path escape and malformed rows. Zero model, tokenizer, encoder or official scoring contacts occurred.
+
+The standard registered wrapper will run with at most two CPU analysis workers while the separate CONTROL2 A/A campaign remains live. Scientific interpretation is pending until the complete registered read succeeds. No quality value has been used to design this correction.

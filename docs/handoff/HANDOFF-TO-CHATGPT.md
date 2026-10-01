@@ -1,5 +1,22 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current continuation checkpoint: 2026-10-01T20:25:18.644239+00:00, ChatGPT root
+
+The independent owner213 successor milestone pair passed fresh operational
+qualification: both3010-row attempts remain FINALIZED, with one successful
+official score each; every referenced sealed artifact still matches its pin.
+Root countersigned its exact READ row. Scientific interpretation is pending;
+no milestone quality or task answer has been read or supplied to the optimizer.
+
+The shared final-report reader now enforces the recipe's missing own-preparation
+comparison, with174 related synthetic tests passing and90% reader coverage.
+See [qualification and correction](../readiness/2026-10-01-slurp-milestone-successor1-v1/read-qualification-v1.md).
+The registered analysis will use at most two CPU workers. It changes no statistic,
+threshold, generation byte or official score. The CONTROL2 seed is FINALIZED;
+its A/A remains OPENED. Preserve the frozen worker and its whole-family read gate.
+The pending proposer budget decision and exact provider admission remain open;
+all held proposals and other carrier boundaries remain in force.
+
 ## Current continuation checkpoint: 2026-10-01T20:08:06.330872+00:00, ChatGPT root
 
 The CONTROL2 seed remains FINALIZED with a verified seal,400 rows and one
@@ -92,7 +109,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-01T20:10:39.084202+00:00 · maintainer: ChatGPT root.
+Last refreshed: 2026-10-01T20:25:18.644239+00:00 · maintainer: ChatGPT root.
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
