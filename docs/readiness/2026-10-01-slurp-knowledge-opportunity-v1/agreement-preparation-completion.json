@@ -1,0 +1,95 @@
+{
+  "artifact": {
+    "dimension": "agreement:exemplar-intent",
+    "line_schema": "saea-phase-agreement-v1",
+    "relpath": "prepared/SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1/agreement.jsonl",
+    "rows": 400,
+    "sha256": "5ea6962628beb137f60a7cd87b8e1253070954a093b577a6b5e5b5ffd496d223"
+  },
+  "artifact_id": "SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1",
+  "boundary": "A pre-computed model-free input, never an authorization: it opens no attempt, reserves no contact, admits no mechanism and states no effectiveness claim. No gold label, reference transcript or future turn enters it; the vote key is each pool value's frozen build-time task_target and the query is the row's own sealed speech vector.",
+  "builder_id": "saea-slurp-intent-exemplar-agreement-builder-v1",
+  "builder_sha256": "61808ae88f5db02c205480ea5375459dbe5810a761504249d989241b751e53f3",
+  "contact_class": "model-free",
+  "contacts": {
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0
+  },
+  "derived_from": {
+    "cell": "slurp-knowledge-opportunity-preparation-source-v1",
+    "experiment": "slurp-knowledge-opportunity-preparation-source-v1",
+    "program_id": "phase-native-candidates-review-revise-v1",
+    "run_id": "SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-PREPARATION-SOURCE-V1",
+    "self_exclusion": "sample-id utterance identity (first three fields)",
+    "split_identity_hash": "39c91b9a2b15eb128be2afbed427827de73b0894d2df3dc7227e065b19a43fdf",
+    "target_facet_template": "intent-boundary:{key}",
+    "target_facets": 60,
+    "target_snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+    "target_store": "intent-boundaries",
+    "vote_key": "task_target",
+    "vote_phase": "solver",
+    "vote_snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+    "vote_spec": {
+      "alpha": null,
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "facet_source": {
+        "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "fuse_coverage": {
+        "c": 20,
+        "m": 20,
+        "top_l": 20
+      },
+      "fuse_policy": "saea-fuse-supplyfilter-v1",
+      "k": 20,
+      "phase": "solver",
+      "provider": "kb-facet-v1",
+      "query_source": {
+        "embedded_signal": "speech: complete original SLURP-STAGE3-CONSTRUCTION-R01C recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension. The file is a pure id SELECTION of the sealed R01 content derivative (parent vectors/slurp-stage3-construction-r01-v1/query-vectors-speech-content-v1.jsonl, exposure row SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1): every kept line is the parent's own line bytes. No flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+        "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa",
+        "tool_contact_ledger_row": "SAEA-SLURP-STAGE3-CONSTRUCTION-R01-QUERY-VECTOR-EXPORT-V1"
+      },
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    },
+    "vote_store": "train-exemplars"
+  },
+  "generated_at": "2026-10-01T02:00:51.516665+00:00",
+  "implementation": {
+    "speech_aware_evidence_acquisition.rails.kb_policy": "b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b",
+    "speech_aware_evidence_acquisition.rails.knowledge_provider": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+    "speech_aware_evidence_acquisition.rails.phase_supply": "5cf42534f370b66afdeaf6423cd82b71469b77619e908ba373058d5c33fab49f"
+  },
+  "measured": {
+    "distinct_facets_ever_voted_for": 59,
+    "pool_values_without_a_build_time_target": 0,
+    "roster_rows": 400,
+    "rows_with_a_self_excluded_exemplar": 0,
+    "rows_with_no_vote": 0,
+    "self_excluded_exemplars": 0,
+    "vote_total_histogram": {
+      "20": 400
+    }
+  },
+  "schema": "saea-phase-agreement-receipt-v1"
+}

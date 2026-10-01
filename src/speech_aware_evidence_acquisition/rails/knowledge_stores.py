@@ -578,6 +578,7 @@ def build_knowledge_store_supply(
     from .released_target_index import build_released_target_index
 
     target_indices = {}
+    slot_target_indices = {}
     for store_id in requested:
         index = build_released_target_index(
             binding.store(store_id), data_root=data_root,
@@ -585,6 +586,11 @@ def build_knowledge_store_supply(
         )
         if index is not None:
             target_indices[store_id] = index
+            if index.receipt["relation_policy_id"] == "authored-slot-intent-bindings-v1":
+                slot_target_indices[store_id] = build_released_target_index(
+                    binding.store(store_id), data_root=data_root,
+                    legal_candidate_ids=tuple(legal_candidate_ids or ()), target_axis="slot-type",
+                )
     callbacks, explicit_specs_by_store, specs_by_store, receipts = {}, {}, {}, {}
     context_specs: dict[tuple[str, str], object] = {}
     # S3-4s (owner decision 106, 2026-09-23): a stage3-deltas store's
@@ -1845,6 +1851,7 @@ def build_knowledge_store_supply(
         }
 
     route.target_indices = MappingProxyType(target_indices)
+    route.slot_target_indices = MappingProxyType(slot_target_indices)
     route.specs_by_store = specs_by_store
     route.bootstrap_first_phase = bootstrap_first_phase
     if first_phase_context_specs:

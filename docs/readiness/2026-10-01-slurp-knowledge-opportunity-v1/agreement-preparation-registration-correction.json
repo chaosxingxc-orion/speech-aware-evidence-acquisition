@@ -1,0 +1,27 @@
+{
+  "authority": "Owner explicit implementation plan; source-excluded construction preparation only",
+  "builder": "scripts/build_slurp_intent_exemplar_agreement.py",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "failure_policy": "Preserve and diagnose; no generation or service launch.",
+  "output": "prepared/SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1",
+  "prior_refusal": "Old held R01C skeleton omitted discovery execution_plan and was refused before any table was written. No model/tool/score/service contact. New preparation source explicitly binds discovery role and roster.",
+  "registered_at_utc": "2026-10-01T02:00:16.280817+00:00",
+  "rows": 400,
+  "run_id": "SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "source_cell": "slurp-knowledge-opportunity-preparation-source-v1",
+  "source_experiment": "slurp-knowledge-opportunity-preparation-source-v1",
+  "target_store": "intent-boundaries",
+  "timestamp_note": "Use the original write mtime rather than the manually typed minute label; source registration preceded the builder.",
+  "use": "Exact seeded F1 roster; same unchanged source-excluded exemplar vote channel.",
+  "vote_phase": "solver",
+  "vote_store": "train-exemplars",
+  "workers": 4
+}

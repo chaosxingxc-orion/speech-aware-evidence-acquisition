@@ -5,6 +5,33 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Implementation checkpoint: 2026-10-01T02:06:58.436221+00:00 (ChatGPT root)
+
+The owner explicitly approved implementing the slot-knowledge opportunity plan.
+The [implementation package](../readiness/2026-10-01-slurp-knowledge-opportunity-v1/README.md)
+records the decisions, prepared F1 cells, dependencies and F2/F3 boundaries.
+Code is isolated on `codex/slurp-next-phase`; integrate serially at a run boundary.
+No service, GPU flight, STOP marker, old attempt or task-result read was changed.
+
+Implemented: future-manifest allowance serialization; authored slot target indices;
+reread versus targeted selection; one native Planner lookup per trajectory;
+normalized Reviewer criticism propagated through the existing native graph;
+consumption-module compilation of the opportunity and source-isolated construction
+release; deterministic metadata-only R01C400 preparation. All four arms bind the
+same stores, verified to share zero source utterances with R01C625. A/A share the
+same baseline. The exact 400-row agreement is now built and hash-bound (20 votes per row; zero contacts); own supply, FIT, smoke and admission remain pending. No cell is ready.
+
+The [F0 report](../readiness/2026-10-01-slurp-knowledge-opportunity-v1/failure-report.md)
+and [successor proposal](../readiness/2026-10-01-slurp-knowledge-opportunity-v1/milestone-successor-proposal.json)
+are reviewable. The successor is pending owner authorization, not a signed allowance.
+Do not seal or score the failed comparator. P-SV-4 stays dependent on coordinator disposition.
+
+F2 arithmetic already exists in the finite-action implementation. Its current
+system selector runs before the episode and cannot consume Reviewer state.
+The required post-Reviewer opportunity-selection seam remains conditional on an
+F1-qualified action; do not claim Reviewer-conditioned RL has been implemented or
+validated. F3 and other carriers have no dispatch authority from this package.
+
 ## Operational and research review: 2026-10-01 (ChatGPT root)
 
 The September 27 pause snapshot below is historical. Decisions 207-209 authorised

@@ -3836,6 +3836,12 @@ async def _invoke_native_role_episode(
                 raise RailsRunnerError("one native contact sealed two different citations")
             if not prior_records:
                 citation_records.append(dict(capture.record))
+        if (config.review_handoff == "slot-issues-v1"
+                and request.role_id == config.role("reviewer").phase_id
+                and not completion.tool_calls):
+            from .review_handoff import normalize_review_handoff
+
+            state_content = normalize_review_handoff(completion.text)
         source = seal_phase_response_state(
             phase_name=request.role_id, sample_id=before.sample_id,
             state_content=state_content, raw_response_text=completion.text,

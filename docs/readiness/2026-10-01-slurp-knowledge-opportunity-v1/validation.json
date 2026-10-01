@@ -1,0 +1,60 @@
+{
+  "advisories": [
+    "Stage-3 effect floor: 18 existing advisory findings; new held cells have no exposure row and are not flight-admitted.",
+    "Results ledger: umbrella cross-check unavailable from isolated layout; 181 existing findings reported."
+  ],
+  "checked_at_utc": "2026-10-01T01:56:00Z",
+  "checks": {
+    "derived_media_confinement_check": "BLOCKED: managed worktree is outside adjacent umbrella layout; no datasets lock at inferred path. Not claimed passed.",
+    "engineering_base_check": "PASS",
+    "experiment_handoff_check": "OWNER_DIRECTED_EXECUTION, no errors; launch_allowed=false",
+    "finite_completion_policy_check": "PASS",
+    "harness_admission_check": "PASS",
+    "openjiuwen_native_reuse_check": "PASS",
+    "results_ledger_check": "PASS",
+    "stage3_algorithm_label_check": "PASS",
+    "stage3_effect_floor_check": "PASS",
+    "tool_catalog_check": "PASS"
+  },
+  "dispatch_authority": false,
+  "environment": "WSL Ubuntu-24.04, explicit worktree PYTHONPATH; no editable reinstall",
+  "gpu_contact": false,
+  "preparation": {
+    "agreement": {
+      "configuration_test_after_binding": "PASS",
+      "contacts": 0,
+      "rows": 400,
+      "sha256": "5ea6962628beb137f60a7cd87b8e1253070954a093b577a6b5e5b5ffd496d223",
+      "votes_per_row": 20
+    },
+    "all_knowledge_sources_utterance_disjoint_from_r01c625": true,
+    "repeated_prepare_byte_identical": true,
+    "rows": 400
+  },
+  "schema": "saea-offline-implementation-validation-v1",
+  "scientific_read": false,
+  "source_sha256": {
+    "core/bundle/manifest.py": "d7daa434c42742d9974f4574b4e7fe1b430d4a457830440f9f641ffb38ddd21d",
+    "data/runtime_subset.py": "a74442e13949b4f6b764e89b5ab035da69f82b68adb60e840d11cada07853d41",
+    "rails/consumption_module.py": "1a874e9dd821eea6a25c2268a7da3cf7f7c1abd9f606e5e78ea4958a14e422a6",
+    "rails/knowledge_stores.py": "732c40d03f25c9797794affea1a04d7370d995551d8a2d5466faa75ed2b491af",
+    "rails/knowledge_target_lookup.py": "6f038549ae9a6901a8a56bad3adf63f3577421144f76cbaa53a9ec58baae1a87",
+    "rails/native_episode_config.py": "db0bfa0b61278ec0356321a8ff8cc00a347d479c3b0a7a77c0f949d68ed3bd5c",
+    "rails/native_tool_authority.py": "6c7d1a722625cc87b15f2f90724aef127addeb5a17dab8a7eb92bf808e571132",
+    "rails/phase_tools.py": "189776ffb1afb5b9a2accccced7c1c48532002d96c74587b234e1c17ac098052",
+    "rails/released_target_index.py": "011517c50dfe2cedb7566b5c14e5f1effbeb074c1460dc76a61bce809b951df0",
+    "rails/review_handoff.py": "4aaeac19623a9d199d2e32a031c0b673fd43780b17228ebab188b97127bce553",
+    "rails/runner.py": "ba39a2dcd09a300d3df123f7f942bb4c312b2aaede09028255c7b9dcf94226cf"
+  },
+  "test_environment_note": "A broad test invocation inherited GIT_DIR/GIT_WORK_TREE and a temporary-repository fixture redirected shared core.worktree. That invocation was interrupted; only the exact injected setting was removed. Main and worktree HEADs were unchanged, index empty, main clean. The successful broad suite ran without Git environment overrides. The read-only historical-commit test alone used scoped explicit Git paths.",
+  "tests": {
+    "combined_related_suite": 387,
+    "historical_compile_equivalence_separate": 1,
+    "post_agreement_regression_note": "Repeat of included tests, not added to total_passed.",
+    "post_agreement_regression_passed": 47,
+    "prepared_four_arm_configuration": 1,
+    "total_passed": 389,
+    "warnings": 3
+  },
+  "updated_at_utc": "2026-10-01T02:06:58.436221+00:00"
+}

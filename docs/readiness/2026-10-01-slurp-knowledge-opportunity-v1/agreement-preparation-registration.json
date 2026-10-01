@@ -1,0 +1,26 @@
+{
+  "authority": "Owner explicit implementation plan; source-excluded construction preparation only",
+  "builder": "scripts/build_slurp_intent_exemplar_agreement.py",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "failure_policy": "Preserve and diagnose; no generation or service launch.",
+  "output": "prepared/SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1",
+  "registered_at_utc": "2026-10-01T01:58:40.769468+00:00",
+  "rows": 625,
+  "run_id": "SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "source_cell": "slurp-native-stage3-system-round1-r01c-s1-v1",
+  "source_experiment": "slurp-native-stage3-system-round1-r01c-s1-v1",
+  "target_store": "intent-boundaries",
+  "timestamp_note": "Use the original write mtime rather than the manually typed minute label; source registration preceded the builder.",
+  "use": "Superset of the seeded F1 400; reusable for F2 only after its gate. Source identity does not inherit the old flight authority.",
+  "vote_phase": "solver",
+  "vote_store": "train-exemplars",
+  "workers": 4
+}

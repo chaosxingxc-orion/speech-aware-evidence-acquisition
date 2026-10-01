@@ -598,3 +598,13 @@ def test_only_solver_role_may_declare_a_twin():
     values["native_episode"]["roles"]["reviewer"]["twin"] = "greedy-repeat"
     with pytest.raises(ValueError, match="phase_id and max_iterations"):
         load_native_episode_config(values, program())
+
+
+def test_slot_review_handoff_is_explicit_and_closed():
+    values = config()
+    assert load_native_episode_config(values, program()).review_handoff is None
+    values["native_episode"]["review_handoff"] = "slot-issues-v1"
+    assert load_native_episode_config(values, program()).review_handoff == "slot-issues-v1"
+    values["native_episode"]["review_handoff"] = "infer-answer"
+    with pytest.raises(ValueError, match="review_handoff"):
+        load_native_episode_config(values, program())

@@ -390,7 +390,7 @@ def test_a_declared_block_whose_components_are_not_in_the_config_is_refused():
     values = _lock_values()
     values["native_episode"]["consumption_module"] = _block(cm.AGREE_VOTE_SEED)
     with pytest.raises(ValueError, match="consumption_module is invalid.*differ"):
-        load_native_episode_config(values, rc.default_phase_program(values["policy"]))
+        load_native_episode_config({**values, "carrier_lock_key": "slurp"}, rc.default_phase_program(values["policy"]))
 
 
 def test_a_declared_block_with_an_unknown_component_is_refused_by_the_loader():
@@ -399,7 +399,7 @@ def test_a_declared_block_with_an_unknown_component_is_refused_by_the_loader():
     block["components"].append({"component_id": "made-up", "state": "off"})
     values["native_episode"]["consumption_module"] = block
     with pytest.raises(ValueError, match="consumption_module is invalid"):
-        load_native_episode_config(values, rc.default_phase_program(values["policy"]))
+        load_native_episode_config({**values, "carrier_lock_key": "slurp"}, rc.default_phase_program(values["policy"]))
 
 
 def test_lock_layer_hook_reads_the_lock_fragment():
@@ -417,3 +417,49 @@ def test_the_module_file_defines_no_controller_or_adapter_class():
     )
     assert ebc._classes_with_methods(tree, {"initial_contact", "advance"}) == []
     assert ebc._classes_with_base(tree, "TaskAdapter") == []
+
+
+def test_knowledge_opportunity_compiles_shared_tools_and_preserves_off_bytes():
+    block = _block()
+    before = cm.compile_module(block, carrier_module_hooks()).values()
+    block["components"] = [c for c in block["components"] if c["component_id"] != "knowledge-consumption-opportunity"]
+    block["components"].append({"component_id": "knowledge-consumption-opportunity", "state": "on",
+        "admitted_by": "bounded capability exploration; no effectiveness admission",
+        "record": "docs/handoff/2026-10-01-chatgpt-review-and-next-family-v1.md",
+        "params": {"mode": "targeted", "store_id": "slot-contracts",
+            "reviewer_template": "probes/slurp_native_role_reviewer_slot_issues_v1.txt",
+            "planner_template": "probes/slurp_native_role_planner_slot_lookup_v1.txt"}})
+    compiled = cm.compile_module(block, carrier_module_hooks())
+    values = compiled.values()
+    assert values["knowledge_stores"] == before["knowledge_stores"]
+    assert values["phase_material"]["perception"] == before["phase_material"]["perception"]
+    assert values["phase_material"]["solver"] == before["phase_material"]["solver"]
+    assert values["native_episode"]["review_handoff"] == "slot-issues-v1"
+    assert values["phase_tools"]["planner"]["max_calls_per_sample"] == 1
+    assert values["phase_tools"]["planner"]["knowledge_selection_mode"] == "targeted"
+    assert compiled.program_ceiling == 13
+    load_native_episode_config({**values, "carrier_lock_key": "slurp"}, rc.default_phase_program(values["policy"]))
+    values["phase_tools"]["planner"]["knowledge_selection_mode"] = "reread"
+    with pytest.raises(cm.ConsumptionModuleConfigError, match="differ"):
+        cm.verify_declared_module(block, values)
+
+
+def test_prepared_opportunity_configs_are_matched_and_compiler_verified():
+    directory = _REPO / "configs/baseline"
+    values = {a: json.loads((directory / f"slurp-native-stage3-knowledge-opportunity-{a}-v1.json").read_text()) for a in ("a", "b", "c")}
+    for arm, value in values.items():
+        block = value["native_episode"]["consumption_module"]
+        cm.verify_declared_module(block, value)
+        parsed = load_native_episode_config({**value, "carrier_lock_key": "slurp"}, rc.default_phase_program(value["policy"]))
+        assert parsed.max_contacts == (11 if arm == "a" else 13)
+    assert values["a"]["knowledge_stores"] == values["b"]["knowledge_stores"] == values["c"]["knowledge_stores"]
+    assert values["a"]["phase_material"]["solver"] == values["c"]["phase_material"]["solver"]
+    assert values["a"]["phase_material"]["perception"] == values["c"]["phase_material"]["perception"]
+    assert values["b"]["phase_material"] == values["c"]["phase_material"]
+    assert values["b"]["phase_tools"]["planner"]["knowledge_selection_mode"] == "reread"
+    assert values["c"]["phase_tools"]["planner"]["knowledge_selection_mode"] == "targeted"
+    experiment = json.loads((_REPO / "configs/experiment/slurp-native-stage3-knowledge-opportunity-v1.json").read_text())
+    cells = experiment["cells"]
+    assert cells[0]["baseline_fragment"] == cells[1]["baseline_fragment"]
+    assert all(c["readiness"]["state"] == "held" for c in cells)
+    assert all("campaign" not in c["allowed_execution_stages"] for c in cells)

@@ -1,0 +1,31 @@
+{
+  "binding_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311",
+  "contacts": {
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "roster_sha256": "b2f69f1f4c3fcba4a475b499f1e2b229aaaa7a4559bd415ec82201e41685661d",
+  "schema": "saea-knowledge-opportunity-sources-v1",
+  "stores": {
+    "intent-boundaries": {
+      "overlapping_utterances": 0,
+      "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "source_ids": 2037,
+      "values": 60
+    },
+    "slot-contracts": {
+      "overlapping_utterances": 0,
+      "snapshot_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+      "source_ids": 3162,
+      "values": 54
+    },
+    "train-exemplars": {
+      "overlapping_utterances": 0,
+      "snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "source_ids": 34474,
+      "values": 8554
+    }
+  }
+}

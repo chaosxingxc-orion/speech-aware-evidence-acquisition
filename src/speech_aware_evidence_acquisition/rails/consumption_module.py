@@ -131,6 +131,8 @@ AGREE_VOTE_SEED = "agree-vote-seed"
 CENTROID_BOUNDARY_KEY = "centroid-boundary-key"
 SOLVER_CITATION_CONTRACT = "solver-citation-contract"
 REVIEWER_G5_REPAIR = "reviewer-g5-repair"
+KNOWLEDGE_CONSUMPTION_OPPORTUNITY = "knowledge-consumption-opportunity"
+CONSTRUCTION_STORE_BINDING = "construction-store-binding"
 RELISTEN = "relisten"
 SCOPE_RULE = "scope-rule"
 TOP2_CONTRAST = "top2-contrast"
@@ -156,6 +158,10 @@ _COLUMN_REQUIRED = frozenset({"column_id", "toggle", "to", "level"})
 _COLUMN_OPTIONAL = frozenset({"prepared_seed"})
 
 COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
+    ComponentSpec(KNOWLEDGE_CONSUMPTION_OPPORTUNITY, "SUPPLY/USE, bounded knowledge opportunity",
+        frozenset({STATE_ON}), frozenset({"mode", "store_id", "reviewer_template", "planner_template"})),
+    ComponentSpec(CONSTRUCTION_STORE_BINDING, "ORG, source-isolated construction release",
+        frozenset({STATE_ON}), frozenset({"store_id", "snapshot", "release"})),
     ComponentSpec(
         AGREE_VOTE_SEED, "SUPPLY -> Perception seed", frozenset({STATE_ON}),
         frozenset({"w_agree", "k", "agreement_source"}),
@@ -734,6 +740,10 @@ def policy_owned_values(values: Mapping[str, object]) -> dict[str, object]:
     declares the policy; it is not part of what it compiles to)."""
 
     out = {key: copy.deepcopy(values[key]) for key in POLICY_OWNED_KEYS if key in values}
+    # An optional tool block is owned only when present. Historical OFF blocks
+    # remain the exact four-key layer and do not acquire an empty tool field.
+    if "phase_tools" in values:
+        out["phase_tools"] = copy.deepcopy(values["phase_tools"])
     episode = out.get("native_episode")
     if isinstance(episode, dict):
         episode.pop(CONSUMPTION_MODULE_CONFIG_KEY, None)
@@ -882,6 +892,48 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             else:
                 writer.set((*seed, "facet_source"), params["facet_source"],
                            component_id=cid, replace_only=True)
+        elif cid == CONSTRUCTION_STORE_BINDING:
+            store_id = _require_text(params["store_id"], field="construction store")
+            for field in ("snapshot", "release"):
+                pin = params[field]
+                if (not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}
+                        or not re.fullmatch(r"[0-9a-f]{64}", str(pin["sha256"]))
+                        or not isinstance(pin["relpath"], str)
+                        or not pin["relpath"] or pin["relpath"].startswith("/")
+                        or ".." in pin["relpath"].split("/")):
+                    raise ConsumptionModuleConfigError("construction store requires source pins")
+                writer.set(("knowledge_stores", store_id, field), dict(pin),
+                           component_id=cid, replace_only=True)
+        elif cid == KNOWLEDGE_CONSUMPTION_OPPORTUNITY:
+            if params["mode"] not in {"targeted", "reread"}:
+                raise ConsumptionModuleConfigError("knowledge opportunity mode is invalid")
+            store_id = _require_text(params["store_id"], field="knowledge opportunity store")
+            _node(layer, ("knowledge_stores", store_id), field=cid)
+            for role in ("reviewer", "planner"):
+                template = _require_text(params[role + "_template"], field=role + " template")
+                writer.set(("phase_material", role, "instruction_template"), template,
+                           component_id=cid, replace_only=True)
+            episode = layer["native_episode"]
+            if episode["max_revisions"] != 1:
+                raise ConsumptionModuleConfigError("knowledge opportunity requires one revision")
+            old_iterations = episode["roles"]["planner"]["max_iterations"]
+            if old_iterations != 1:
+                raise ConsumptionModuleConfigError("knowledge opportunity requires default Planner iterations")
+            writer.set(("native_episode", "roles", "planner", "max_iterations"), 2,
+                       component_id=cid, replace_only=True)
+            writer.set(("native_episode", "review_handoff"), "slot-issues-v1",
+                       component_id=cid, replace_only=False)
+            writer.set(("native_episode", "tool_schema_rendering"), "constant",
+                       component_id=cid, replace_only=False)
+            writer.set(("phase_tools",), {"planner": {
+                "mode": "native-tools", "source_authority_role": "planner",
+                "allowed_tools": ["saea-tool-knowledge-target-lookup-v1"],
+                "knowledge_views": ["text"], "knowledge_store_ids": [store_id],
+                "candidate_limit": 2, "knowledge_values_per_candidate": 1,
+                "knowledge_value_limit": 2, "knowledge_target_axis": "slot-type",
+                "knowledge_selection_mode": params["mode"], "max_calls_per_sample": 1,
+            }}, component_id=cid, replace_only=False)
+            ceiling += 2
         elif cid == SOLVER_CITATION_CONTRACT:
             writer.set(("phase_material", "solver", "instruction_template"),
                        params["instruction_template"], component_id=cid, replace_only=True)

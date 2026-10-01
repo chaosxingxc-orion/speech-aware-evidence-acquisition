@@ -293,3 +293,28 @@ def test_snapshot_and_query_state_are_validated():
         _lookup(snapshot=object())
     with pytest.raises(KnowledgeTargetLookupError, match="QueryState"):
         _lookup(query_state=object())
+
+
+def test_reread_returns_only_previously_visible_values_in_bound_order():
+    snapshot = _snapshot()
+    result = lookup_knowledge_targets(snapshot, _query(), ("alpha",),
+        max_values_per_candidate=1, max_total_values=2,
+        already_visible_value_ids=("z-beta-2", "beta-looking-id", "z-alpha-2"),
+        selection_mode="reread")
+    assert result.selected_value_ids == ("z-beta-2", "beta-looking-id")
+    assert result.supply is None
+    assert result.audit["new_value_ids"] == []
+    assert result.audit["selection_mode"] == "reread"
+
+
+def test_reread_empty_does_not_fall_back_to_new_knowledge():
+    result = lookup_knowledge_targets(_snapshot(), _query(), ("alpha",),
+        max_values_per_candidate=1, max_total_values=2, selection_mode="reread")
+    assert result.selected_value_ids == ()
+    assert result.supply is None
+
+
+def test_unknown_selection_mode_is_refused():
+    with pytest.raises(KnowledgeTargetLookupError, match="selection_mode"):
+        lookup_knowledge_targets(_snapshot(), _query(), ("alpha",),
+            max_values_per_candidate=1, max_total_values=2, selection_mode="guess")

@@ -39,7 +39,7 @@ class ReleasedTargetIndex:
 
 
 def build_released_target_index(
-    store: object, *, data_root: Path, legal_candidate_ids: Sequence[str],
+    store: object, *, data_root: Path, legal_candidate_ids: Sequence[str], target_axis: str = "task",
 ) -> ReleasedTargetIndex | None:
     """Rebuild supported legacy stores and bind their explicit target relations.
 
@@ -54,7 +54,11 @@ def build_released_target_index(
         SLOT_CONTRACT_BUILD_POLICY_ID, build_intent_boundary_snapshot,
     )
 
+    if target_axis not in {"task", "slot-type"}:
+        raise RailsError("unknown released target axis")
     snapshot = store.snapshot
+    if target_axis == "slot-type" and snapshot.builder_policy_id != SLOT_CONTRACT_BUILD_POLICY_ID:
+        raise RailsError("slot-type lookup requires a released slot-contract store")
     policy = snapshot.builder_policy_id
     if policy not in {INTENT_BOUNDARY_BUILD_POLICY_ID, SLOT_CONTRACT_BUILD_POLICY_ID}:
         return None
@@ -67,6 +71,13 @@ def build_released_target_index(
             store, data_root=data_root, legal_candidate_ids=legal,
         )
         relation = "authored-slot-intent-bindings-v1"
+        if target_axis == "slot-type":
+            # The verified authored source defines the slot identity. Never
+            # recover it by parsing arbitrary value IDs or model prose.
+            source = _read_released_source(store, data_root)
+            mappings = {row["slot_id"]: (f"slot-contract:{row['slot_id']}",)
+                        for row in source["rows"]}
+            relation = "authored-slot-id-v1"
     else:
         source = _read_released_source(store, data_root)
         if (set(source) != {"schema", "builder_policy_id", "source_split_identity_hash", "rows"}

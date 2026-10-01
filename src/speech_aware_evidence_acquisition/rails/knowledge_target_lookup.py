@@ -152,6 +152,7 @@ def lookup_knowledge_targets(
     max_total_values: int,
     already_visible_value_ids: Sequence[str] = (),
     target_index=None,
+    selection_mode: str = "targeted",
 ) -> KnowledgeTargetSelection:
     """Select new knowledge values for explicit ordered task targets.
 
@@ -160,6 +161,8 @@ def lookup_knowledge_targets(
     replaced by a later value from the same target.
     """
 
+    if selection_mode not in {"targeted", "reread"}:
+        raise KnowledgeTargetLookupError("selection_mode must be targeted or reread")
     if not isinstance(snapshot, KnowledgeSnapshot):
         raise KnowledgeTargetLookupError("snapshot must be a KnowledgeSnapshot")
     if not isinstance(query_state, QueryState):
@@ -191,6 +194,8 @@ def lookup_knowledge_targets(
         max_values_per_candidate=per_candidate_bound,
         max_total_values=total_bound,
     )
+    if selection_mode == "reread":
+        selected_value_ids = visible[:total_bound]
     new_value_ids = tuple(
         value_id for value_id in selected_value_ids if value_id not in visible_set
     )
@@ -218,6 +223,8 @@ def lookup_knowledge_targets(
         "already_visible_selected_value_ids": list(already_visible_selected_value_ids),
         "supply_disposition": disposition,
     }
+    if selection_mode != "targeted":
+        audit["selection_mode"] = selection_mode
     if target_index is not None:
         audit["target_index"] = dict(target_index.receipt)
     audit["selection_sha256"] = content_hash(audit)

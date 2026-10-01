@@ -113,6 +113,7 @@ def load_phase_tool_specs(config, program):
             "knowledge_value_limit",
             "knowledge_store_ids",
             "source_authority_role",
+            "knowledge_target_axis", "knowledge_selection_mode", "max_calls_per_sample",
         }:
             raise PhaseToolError("phase_tools entry has unknown fields")
         mode = entry.get("mode")
@@ -140,6 +141,18 @@ def load_phase_tool_specs(config, program):
                     or len(set(store_ids)) != len(store_ids)):
                 raise PhaseToolError("knowledge_store_ids must be a nonempty unique list")
             store_ids = tuple(store_ids)
+        additions = {}
+        for field, choices in (("knowledge_target_axis", {"task", "slot-type"}),
+                               ("knowledge_selection_mode", {"targeted", "reread"})):
+            if field in entry:
+                if KNOWLEDGE_TARGET_TOOL not in tools or not isinstance(entry[field], str) or entry[field] not in choices:
+                    raise PhaseToolError(f"invalid {field} for target knowledge")
+                additions[field] = entry[field]
+        if "max_calls_per_sample" in entry:
+            cap = entry["max_calls_per_sample"]
+            if mode != "native-tools" or isinstance(cap, bool) or not isinstance(cap, int) or cap != 1:
+                raise PhaseToolError("max_calls_per_sample currently supports exactly one native call")
+            additions["max_calls_per_sample"] = cap
         candidate_limit = entry.get("candidate_limit")
         if set(tools) & {CANDIDATE_CONTRACT_TOOL, KNOWLEDGE_TARGET_TOOL}:
             if (
@@ -190,6 +203,7 @@ def load_phase_tool_specs(config, program):
         if set(tools) & {CANDIDATE_CONTRACT_TOOL, KNOWLEDGE_TARGET_TOOL}:
             specs[phase]["candidate_limit"] = candidate_limit
         specs[phase].update(target_limits)
+        specs[phase].update(additions)
         if candidate_memory and CORRECTIVE_MEMORY_TOOL in tools:
             specs[phase]["candidate_experience_memory"] = True
     stop_rule = getattr(program, "stop_rule", None)
@@ -307,7 +321,7 @@ def _validate_action(action, allowed, views, *, candidate_limit=None, store_ids=
 
 
 def _native_tool_schema(
-    tool_id, views, *, candidate_limit=None, store_ids=None, candidate_memory=False
+    tool_id, views, *, candidate_limit=None, store_ids=None, candidate_memory=False, target_axis="task"
 ):
     descriptions = {
         TASK_CONTRACT_TOOL: "Read the legal task contract.",
@@ -379,6 +393,13 @@ def _native_tool_schema(
             "distinction": {"type": "string", "minLength": 1, "maxLength": 512},
         }
         required = ["span", "representation", "distinction"]
+    if tool_id == KNOWLEDGE_TARGET_TOOL and target_axis == "slot-type":
+        descriptions[tool_id] = (
+            "Read existing slot knowledge for a concrete unresolved type meaning, boundary "
+            "or existence question. candidate_ids are at most two slot type identifiers. "
+            "Empty results are legal. Knowledge explains types and extraction scope; "
+            "it never proves a value was spoken. The Solver owns the final answer."
+        )
     return {
         "type": "function",
         "function": {
@@ -455,6 +476,7 @@ class PhaseToolDispatcher:
         self.trace_sink = trace_sink
         self._lock = Lock()
         self._attempts = set()
+        self._invocation_counts = {}
         self._records = {}
         self._native_rejections = []
         self._native_rejected_batches = set()
@@ -537,6 +559,7 @@ class PhaseToolDispatcher:
                         candidate_limit=spec.get("candidate_limit"),
                         store_ids=spec.get("knowledge_store_ids"),
                         candidate_memory=bool(spec.get("candidate_experience_memory")),
+                        target_axis=spec.get("knowledge_target_axis", "task"),
                     ))
                     seen.add(tool_id)
         return tuple(ordered)
@@ -666,10 +689,18 @@ class PhaseToolDispatcher:
         else:
             key = (context.sample_id, phase)
             duplicate_error = "tool action already attempted for this phase/sample"
+        count_key = (context.sample_id, getattr(context, "execution_unit_id", None), phase)
         with self._lock:
             if key in self._attempts:
                 raise PhaseToolError(duplicate_error)
             self._attempts.add(key)
+            limit = spec.get("max_calls_per_sample")
+            used = self._invocation_counts.get(count_key, 0)
+            exhausted = limit is not None and used >= limit
+            if not exhausted:
+                self._invocation_counts[count_key] = used + 1
+        if exhausted:
+            return self.reject_native_batch(phase, context, call_limit=True)[0]
         tool = resolve_tool(action["tool_id"])
         request = {
             "selection_mode": spec["mode"],
@@ -762,13 +793,18 @@ class PhaseToolDispatcher:
                     value_id[len(prefix):] for value_id in context.query_state.retrieved_value_ids
                     if value_id.startswith(prefix)
                 )
-                target_index = getattr(self.supply_for_store, "target_indices", {}).get(store_id)
+                index_attribute = ("slot_target_indices" if spec.get("knowledge_target_axis") == "slot-type"
+                                   else "target_indices")
+                target_index = getattr(self.supply_for_store, index_attribute, {}).get(store_id)
+                if spec.get("knowledge_target_axis") == "slot-type" and target_index is None:
+                    raise PhaseToolError("slot-type lookup requires an authored slot index")
                 output = tool.call(
                     self.knowledge_stores.snapshot_for(store_id), context.query_state,
                     action["arguments"]["candidate_ids"],
                     max_values_per_candidate=spec["knowledge_values_per_candidate"],
                     max_total_values=spec["knowledge_value_limit"],
                     already_visible_value_ids=visible,
+                    selection_mode=spec.get("knowledge_selection_mode", "targeted"),
                     **({"target_index": target_index} if target_index is not None else {}),
                 )
             elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
@@ -807,7 +843,7 @@ class PhaseToolDispatcher:
             store_receipt = None
             if action["tool_id"] == KNOWLEDGE_TARGET_TOOL:
                 supply, cited, result, store_receipt = self._target_knowledge_result(
-                    output.result, action["arguments"], context
+                    output.result, action["arguments"], context, spec
                 )
             elif action["tool_id"] == PHASE_KNOWLEDGE_TOOL:
                 supply = output.result
@@ -1129,11 +1165,11 @@ class PhaseToolDispatcher:
             "completion": completion,
         }
 
-    def reject_native_batch(self, phase, context):
+    def reject_native_batch(self, phase, context, *, call_limit=False):
         """Reject every returned action before dispatch; execute and count no tool."""
         from .native_tool_authority import (
             MULTIPLE_CALL_REJECTION_SCHEMA, build_native_tool_authority,
-            multiple_call_rejection_result, select_completion_tool_schemas,
+            multiple_call_rejection_result, episode_call_limit_rejection_result, select_completion_tool_schemas,
             validate_native_call_rejection,
         )
 
@@ -1149,7 +1185,8 @@ class PhaseToolDispatcher:
             ),
         )
         calls = completion.tool_calls
-        result = multiple_call_rejection_result(len(calls))
+        result = (episode_call_limit_rejection_result(len(calls)) if call_limit
+                  else multiple_call_rejection_result(len(calls)))
         documents, steps = [], []
         for call in calls:
             document = {
@@ -1264,7 +1301,8 @@ class PhaseToolDispatcher:
         self._emit(context.sample_id, phase, "rejected", document)
         return PhaseToolStep(supply=None, state=artifact)
 
-    def _target_knowledge_result(self, selection, arguments, context):
+    def _target_knowledge_result(self, selection, arguments, context, spec=None):
+        spec = spec or {}
         from .knowledge import assert_knowledge_use_binding
         from .knowledge_target_lookup import KnowledgeTargetSelection
 
@@ -1282,7 +1320,11 @@ class PhaseToolDispatcher:
             or audit.get("selection_sha256") != content_hash(unsigned)
         ):
             raise PhaseToolError("target knowledge selection differs from its source or request")
-        expected_index = getattr(self.supply_for_store, "target_indices", {}).get(store_id)
+        index_attribute = ("slot_target_indices" if spec.get("knowledge_target_axis") == "slot-type"
+                           else "target_indices")
+        expected_index = getattr(self.supply_for_store, index_attribute, {}).get(store_id)
+        if audit.get("selection_mode", "targeted") != spec.get("knowledge_selection_mode", "targeted"):
+            raise PhaseToolError("target knowledge selection mode differs from its configuration")
         expected_receipt = None if expected_index is None else dict(expected_index.receipt)
         if audit.get("target_index") != expected_receipt:
             raise PhaseToolError("target knowledge selection differs from its released index")

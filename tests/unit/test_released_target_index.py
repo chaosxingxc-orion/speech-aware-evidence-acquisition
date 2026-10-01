@@ -133,3 +133,37 @@ def test_native_tool_routes_authored_values_and_records_source(tmp_path):
     assert router.receipt["stores"]["slot-contracts"]["target_index"]["source_sha256"] == (
         binding.store("slot-contracts").source_pin["sha256"]
     )
+
+
+def test_slot_axis_reuses_exact_authored_identity_without_intent_whitelist(tmp_path):
+    store = _binding(tmp_path).store("slot-contracts")
+    index = build_released_target_index(store, data_root=tmp_path,
+                                       legal_candidate_ids=LEGAL, target_axis="slot-type")
+    assert dict(index.mappings) == {"event_time": ("slot-contract:event_time",)}
+    selected = lookup_knowledge_targets(store.snapshot, _query(), ("event_time",),
+        target_index=index, max_values_per_candidate=1, max_total_values=2)
+    assert selected.selected_value_ids == ("slot-contract:event_time",)
+    assert selected.audit["target_index"]["relation_policy_id"] == "authored-slot-id-v1"
+    with pytest.raises(RailsError, match="slot"):
+        build_released_target_index(_binding(tmp_path).store("intent-boundaries"),
+            data_root=tmp_path, legal_candidate_ids=LEGAL, target_axis="slot-type")
+
+
+@pytest.mark.parametrize("mode,expected", [("targeted", 1), ("reread", 0)])
+def test_planner_slot_axis_uses_mode_and_authored_source(tmp_path, mode, expected):
+    binding = _binding(tmp_path)
+    program = default_phase_program("phase-native-candidates-review-revise-v1")
+    router = build_knowledge_store_supply(binding, program=program, data_root=tmp_path,
+        legal_candidate_ids=LEGAL, on_demand_store_ids=binding.store_ids)
+    config = _config("planner")
+    config["phase_tools"]["planner"].update(knowledge_store_ids=["slot-contracts"],
+        knowledge_target_axis="slot-type", knowledge_selection_mode=mode,
+        candidate_limit=2, knowledge_value_limit=2, max_calls_per_sample=1)
+    tool = build_phase_tools(config, program, snapshot=binding.composite_snapshot,
+        knowledge_stores=binding, supply_for_store=router, tool_contact=Custody())
+    args = {"store_id": "slot-contracts", "view": "text", "candidate_ids": ["event_time"],
+            "distinction": "Check the type meaning of the current time field."}
+    step = tool("planner", "planner", _context(tool, binding, args, role="planner"))
+    assert len(step.state.cited_value_ids) == expected
+    assert "slot type identifiers" in tool.native_tool_schemas()[0]["function"]["description"]
+    assert json.loads(step.state.content)["source_authority"]["role_id"] == "planner"

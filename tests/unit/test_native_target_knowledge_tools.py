@@ -384,3 +384,53 @@ def test_target_tool_is_opt_in_and_only_offered_to_analytical_roles():
         assert all(
             not default.for_task(task).may_call(role, TARGET) for role in TOOLKIT_ROLES
         )
+
+
+def test_episode_tool_limit_refuses_second_call_before_custody(tmp_path, monkeypatch):
+    binding = _binding(tmp_path, monkeypatch)
+    config = _config("planner")
+    config["phase_tools"]["planner"]["max_calls_per_sample"] = 1
+    custody = Custody()
+    tool = build_phase_tools(config, NativeRoleProgram(), snapshot=binding.composite_snapshot,
+                            knowledge_stores=binding, tool_contact=custody)
+    first = tool("planner", "planner", _context(tool, binding, _args(), role="planner"))
+    assert first.state.cited_value_ids
+    second = tool("planner", "planner", _context(tool, binding, _args(), role="planner", serial=2))
+    assert second.supply is None
+    assert "limit" in second.state.content
+    assert len(custody.calls) == 1
+
+
+@pytest.mark.parametrize("field,value", [("knowledge_target_axis", "made-up"),
+    ("knowledge_selection_mode", "guess"), ("max_calls_per_sample", True),
+    ("max_calls_per_sample", 0)])
+def test_invalid_lookup_settings_are_refused(field, value):
+    config = _config("planner")
+    config["phase_tools"]["planner"][field] = value
+    with pytest.raises(PhaseToolError):
+        load_phase_tool_specs(config, NativeRoleProgram())
+
+
+@pytest.mark.usefixtures("_spawn_live_matching_process")
+def test_normalized_reviewer_state_reaches_planner_and_revised_solver(tmp_path, monkeypatch):
+    import test_native_episode_runner as episode_runner
+    harness = episode_runner._ActualEpisodeHarness(tmp_path, sample_count=1,
+        max_revisions=1, max_contacts=7, planner_actions=("REVISE", "ACCEPT"))
+    harness.config = replace(harness.config, review_handoff="slot-issues-v1")
+    output = harness._output
+    def with_review(key):
+        if key[1] == "reviewer":
+            return json.dumps({"findings": [{"kind": "boundary", "slot_types": ["event_time"],
+                "draft_fragment": "tomorrow", "reason": "Check extraction scope."}], "checked": []})
+        return output(key)
+    monkeypatch.setattr(harness, "_output", with_review)
+    try:
+        summary = harness.run()
+    finally:
+        harness.close()
+    row = summary.results[0]
+    assert row.final_response_text == f"solver-answer:{row.sample_id}:visit:2"
+    for key in ((row.sample_id, "planner", 1, 1), (row.sample_id, "solver", 2, 1)):
+        rendered = json.dumps(harness.prepared[key]["rendered"])
+        assert "saea-slot-review-handoff-v1" in rendered
+        assert "model-criticism" in rendered

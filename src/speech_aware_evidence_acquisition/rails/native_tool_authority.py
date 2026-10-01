@@ -333,10 +333,20 @@ def multiple_call_rejection_result(count: int) -> dict[str, object]:
     }
 
 
+def episode_call_limit_rejection_result(count: int) -> dict[str, object]:
+    """Return auditable exhausted-budget feedback without executing a tool."""
+    if isinstance(count, bool) or not isinstance(count, int) or count != 1:
+        raise NativeToolAuthorityError("episode limit rejection requires one call")
+    return {"status": "rejected", "error_code": "episode-tool-call-limit",
+            "message": "The episode tool call limit is exhausted. Use existing evidence or accept the current answer.",
+            "tool_call_count": count, "lookup_performed": False}
+
+
 def validate_native_call_rejection(document):
     """Validate one rejected call while retaining the entire original batch."""
     if not isinstance(document, Mapping):
         raise NativeToolAuthorityError("native call rejection must be an object")
+    limit_rejection = isinstance(document.get("result"), Mapping) and document["result"].get("error_code") == "episode-tool-call-limit"
     authority = validate_native_tool_authority(document.get("source_authority"))
     calls = authority["original_assistant_message"].get("tool_calls")
     raw = document.get("native_tool_calls_json")
@@ -348,7 +358,7 @@ def validate_native_call_rejection(document):
         document.get("schema") != MULTIPLE_CALL_REJECTION_SCHEMA
         or document.get("selection_mode") != "native-tools"
         or "tool_invocation" in document
-        or not isinstance(calls, list) or len(calls) < 2
+        or not isinstance(calls, list) or len(calls) < (1 if limit_rejection else 2)
         or not isinstance(raw, str)
         or hashlib.sha256(raw.encode()).hexdigest() != authority["source_tool_calls_sha256"]
         or parsed_calls != calls
@@ -387,7 +397,8 @@ def validate_native_call_rejection(document):
     if len(matches) != 1:
         raise NativeToolAuthorityError("native batch rejection call identity differs")
     call = matches[0]
-    result = multiple_call_rejection_result(len(calls))
+    result = (episode_call_limit_rejection_result(len(calls)) if limit_rejection
+              else multiple_call_rejection_result(len(calls)))
     if (
         document.get("tool_id") != call["function"]["name"]
         or document.get("arguments") != parsed[call["id"]]

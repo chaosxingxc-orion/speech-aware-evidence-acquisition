@@ -704,6 +704,8 @@ class NativeEpisodeConfig:
     # delivered units re-listen targets), or ``None`` when the declared
     # ``carrier_lock_key`` has no hooks file. It renders no request byte.
     carrier_profile: str | None = None
+    # Absent preserves historical raw Reviewer state bytes.
+    review_handoff: str | None = None
 
     @property
     def knowledge_value_rendering(self) -> dict[str, object] | None:
@@ -1178,6 +1180,7 @@ def load_native_episode_config(
         "knowledge_value_rendering",
         "relisten",
         "consumption_module",
+        "review_handoff",
     }
     if (
         not isinstance(raw, Mapping)
@@ -2259,6 +2262,9 @@ def load_native_episode_config(
                     "beside an acquisition policy that re-enters Perception "
                     f"({KIND_SPEECH_REOBSERVE!r})"
                 )
+    review_handoff = raw.get("review_handoff")
+    if review_handoff not in (None, "slot-issues-v1"):
+        raise ValueError("native_episode.review_handoff is invalid")
     return NativeEpisodeConfig(
         raw["episode_id"],
         revisions,
@@ -2291,6 +2297,7 @@ def load_native_episode_config(
         relisten_json,
         consumption_module_json,
         carrier_profile=_carrier_profile(values),
+        review_handoff=review_handoff,
     )
 
 
