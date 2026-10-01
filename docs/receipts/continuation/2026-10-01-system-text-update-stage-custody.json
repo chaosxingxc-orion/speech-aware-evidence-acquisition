@@ -1,0 +1,70 @@
+{
+  "schema": "saea-offline-implementation-receipt-v1",
+  "recorded_at_utc": "2026-10-01T22:22:43Z",
+  "owner_decision": 214,
+  "source_parent": "751d17a4ea863779fea72f2fa86eb3dfcb93b592",
+  "worktree": "/home/chao/saea-worktrees/codex-system-text-policy",
+  "branch": "codex/system-text-policy",
+  "scope": "Freeze complete update-family membership before runs, preserve spent proposal and compiler custody, and bind it to the exact READ recipe.",
+  "changes": [
+    "Freeze all eight prospective slots while excluding only objectively invalid pre-contact imports; always retain both parent/A/A pairs.",
+    "Bind exact response and input hashes in import dispositions and bind successful compilation to its bundle, input, import and configuration.",
+    "Recheck model/session separation, allocation, response fields, parent sets and token limits without granting model or provider admission.",
+    "Reject membership freeze once any prospective run has artifacts, including an excluded run; reject removal of an admitted failed member.",
+    "Require the exact previous learning retention for rounds two and three while retaining the original seed on the blind branch.",
+    "Carry prospective membership through the root-countersigned recipe and complete feedback gate; project blind allocation details out of learning feedback and retention."
+  ],
+  "source_sha256": {
+    "scripts/system_text_search.py": "f2d3bca42bddec95b0c92a80b1adb077b2c5fd4552320d94f3cd2016fa8010f5",
+    "src/speech_aware_evidence_acquisition/rails/system_search_archive.py": "03bc98751c90b4f6e1cbcefc7a2393375af3a89e0c53b9a0c7f16d280f433c74",
+    "src/speech_aware_evidence_acquisition/rails/system_search_protocol.py": "106364bb715e47ee3af172682ccefd4ea32cb3a2c2dd6aca536868547b375461",
+    "src/speech_aware_evidence_acquisition/rails/system_search_stage.py": "871e212e4368734aae96a078b4a9b1a04736b313c91c1b0982048f1a115042fb",
+    "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py": "fde8fbf1a4726dc5605921d33029091dfaf46602eb5188355fd73cda06f29ecb",
+    "tests/unit/test_system_search_stage.py": "6bc0fbbac0dea5e6e1c33f5472e4325c7a3713d7466492463064a772eec8a46a",
+    "tests/unit/test_system_text_search_cli.py": "b6f3b4cec5f8a4b8b0a326ebe48a832ff7c4b54a0260144ee1916ea94cc8465c"
+  },
+  "validation": {
+    "test_selection": "tests/unit/test_system*.py",
+    "passed": 654,
+    "failed": 0,
+    "skipped": 0,
+    "warnings": "Three existing third-party deprecation warnings.",
+    "elapsed_seconds": 57.81,
+    "new_stage_tests_passed": 39,
+    "statement_coverage_percent": {
+      "system_search_stage": 100,
+      "system_search_archive": 99,
+      "system_search_protocol": 100,
+      "system_text_feedback": 99
+    },
+    "checks": {
+      "engineering_base": "PASS",
+      "tool_catalog": "PASS",
+      "git_diff_check": "PASS",
+      "handoff_freshness": "PASS",
+      "experiment_handoff": {
+        "errors": [],
+        "launch_allowed": false,
+        "advisories": [
+          "HEAD differs from historical handoff snapshot",
+          "Isolated worktree contains the reviewed implementation changes"
+        ]
+      }
+    },
+    "execution_environment": "WSL Ubuntu-24.04; synthetic sources; SPEECHRL_DATA_DIR unset; own PYTHONPATH; PYTHONDONTWRITEBYTECODE=1 and python -B."
+  },
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "scientific_result_reads_added": 0,
+  "frozen_worker_changes": 0,
+  "runtime_admission": "none",
+  "remaining": [
+    "Pending owner216 scoring-entry recovery and complete initial-family READ.",
+    "Pending proposer output-budget decision and exact live provider/version/isolation admission.",
+    "Actual update flight configurations, own supplies, FIT, exposure rows and admissions remain prospective work.",
+    "The final composed runtime configuration is separately verified by the existing flight path; this archive command records the coordinator-supplied identity.",
+    "Compiler failures without objectively invalid import evidence remain blocked preparation, not automatic exclusions.",
+    "Common-selection membership with fewer than two retained versions per branch remains separate work.",
+    "The real three-round search, common selection, DEV regression and root scientific interpretation remain incomplete."
+  ]
+}

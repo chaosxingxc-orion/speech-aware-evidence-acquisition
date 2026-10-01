@@ -180,6 +180,15 @@ def _row_cost_and_terminal(manifest):
     return result
 
 
+def learning_read_authority(authority):
+    """Keep a whole-family commitment without disclosing blind allocation outcomes."""
+    projected = dict(authority)
+    registration = projected.pop("stage_registration", None)
+    if registration is not None:
+        projected["stage_registration_sha256"] = content_hash(registration)
+    return projected
+
+
 @dataclass(frozen=True)
 class CompleteSystemFeedback:
     document_json: str
@@ -208,6 +217,8 @@ class CompleteSystemFeedback:
                 # Old multi-metric centering used the entire round too.
                 member.pop("quality", None)
         d["read_gate_family_sha256"] = family_sha
+        if "read_authority" in d:
+            d["read_authority"] = learning_read_authority(d["read_authority"])
         return CompleteSystemFeedback(canonical(d))
 
     @classmethod

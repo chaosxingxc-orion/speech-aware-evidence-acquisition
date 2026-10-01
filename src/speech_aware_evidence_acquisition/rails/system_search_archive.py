@@ -202,6 +202,7 @@ class SystemSearchArchive:
         except (KeyError, TypeError, ValueError) as error:
             result = {"proposal_allocation": [branch, round_index, slot], "errors": [str(error)],
                       "status": "invalid", "metering_complete": False, "activation": "none"}
+            result.update(input_sha256=packet["input_sha256"], receipt_sha256=content_hash(receipt))
             self._write(f"imports/{branch}-{round_index}-{slot}.json", result)
             return result
         # All exact responses, including over-budget and malformed ones, stay recorded.
@@ -219,8 +220,31 @@ class SystemSearchArchive:
                   "status": "invalid" if errors else record["status"],
                   "metering_complete": all(receipt[k] is not None for k in ("input_tokens", "output_tokens")),
                   "activation": "none"}
+        result.update(input_sha256=packet["input_sha256"], receipt_sha256=content_hash(receipt))
         self._write(f"imports/{branch}-{round_index}-{slot}.json", result)
         return result
+
+    def record_compilation(self, *, branch, round_index, slot, bundle, configuration):
+        """Bind a completed compiler output to its spent proposal slot; no admission."""
+        require(branch in {"L", "B"} and round_index in (1, 2, 3) and slot in (1, 2), "invalid compilation allocation")
+        key = f"{branch}-{round_index}-{slot}"
+        packet = json.loads((self.root / f"inputs/{key}.json").read_text())
+        imported = json.loads((self.root / f"imports/{key}.json").read_text())
+        proposal = json.loads((self.root / f"proposals/{key}.json").read_text())
+        require(imported["status"] in {"provisional", "no-change", "duplicate"}, "invalid proposal cannot compile")
+        require(imported["input_sha256"] == packet["input_sha256"]
+                and imported["receipt_sha256"] == content_hash(proposal["receipt"]), "compilation input differs")
+        d = bundle.as_json()
+        require(d["parent_ids"] == proposal["proposal"]["parent_ids"]
+                and any(s["kind"] == "proposal" and s["sha256"] == content_hash(proposal)
+                        for s in d["cumulative_sources"]), "compiled policy lost proposal custody")
+        self.load_policy(bundle.bundle_id)
+        record = {"schema": "saea-system-search-compilation-v1", "allocation": [branch, round_index, slot],
+            "bundle_id": bundle.bundle_id, "input_sha256": packet["input_sha256"],
+            "import_sha256": content_hash(imported), "configuration_sha256": content_hash(configuration),
+            "runtime_admission": "separate-required"}
+        self._write(f"compilations/{key}.json", record)
+        return record
 
     def retain(self, *, branch, cohort_id, measurements, selected_ids):
         require(branch in {"L", "B"} and 0 < len(selected_ids) <= 2 and len(set(selected_ids)) == len(selected_ids),
@@ -243,7 +267,7 @@ class SystemSearchArchive:
         a policy. The first selected ID is the next quality parent/finalist.
         """
         from .system_search_protocol import require_stage_feedback, stage_for
-        from .system_text_feedback import CompleteSystemFeedback
+        from .system_text_feedback import CompleteSystemFeedback, learning_read_authority
         from .system_text_policy import assert_roster_disjoint
 
         require(branch in {"L", "B"} and stage_name in {"update-1", "update-2", "update-3", "selection"},
@@ -306,7 +330,7 @@ class SystemSearchArchive:
             "sample_ids": d["reference"]["sample_ids"]}])
         record = {"schema": "saea-system-search-retention-v1", "branch": branch, "stage": stage_name,
             "protocol_sha256": content_hash(protocol), "feedback_sha256": content_hash(d),
-            "read_authority": d["read_authority"], "cohort_id": content_hash(ids),
+            "read_authority": learning_read_authority(d["read_authority"]), "cohort_id": content_hash(ids),
             "member_bindings": {cid: bindings[cid] for cid in [*members, aa]},
             "measurements": measurements, "frontier": frontier, "active_ids": list(selected_ids),
             "duplicate_bundle_replicates": repeats,

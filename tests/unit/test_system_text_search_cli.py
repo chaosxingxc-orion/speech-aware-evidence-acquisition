@@ -56,7 +56,10 @@ def test_blind_session_import_and_shared_compilation_without_model_contacts(tmp_
     text = (tmp_path / "worker/configs" / result["phase_material"]["reviewer"]["instruction_template"]).read_text()
     assert text == response["changes"]["role_text"]["reviewer"]
     assert '"runtime_admission": "pending"' in capsys.readouterr().out
-    with pytest.raises(FileExistsError):
+    compilation = cli.read(archive / "compilations/B-1-1.json")
+    assert compilation["configuration_sha256"] == cli.content_hash(result)
+    assert compilation["input_sha256"] == packet["input_sha256"]
+    with pytest.raises(PolicyError, match="compilation already exists"):
         cli.main(compile_args)
     # The second blind slot refuses feedback before opening its nonexistent path.
     with pytest.raises(PolicyError, match="blind"):

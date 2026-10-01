@@ -69,7 +69,15 @@ def require_read_registration(spec, *, repo_root):
             and row.get("calls") == "0", "READ registration scope differs")
     require(row.get(gate.ARTIFACTS_COLUMN, "").strip("`") == pin["relpath"],
             "READ registration names another analysis recipe")
-    return {"read_run_id": run_id, "recipe": pin, "ledger_row_sha256": content_hash(row)}
+    authority = {"read_run_id": run_id, "recipe": pin, "ledger_row_sha256": content_hash(row)}
+    if "system_search_stage" in recipe:
+        from speech_aware_evidence_acquisition.rails.system_search_stage import validate_stage_registration
+        registration = validate_stage_registration(recipe["system_search_stage"])
+        require(registration["stage"] == spec["family_id"] and registration["expected_members"] == members
+                and recipe.get("system_search_evaluation") == registration["evaluation"],
+                "READ recipe differs from the prospective frozen stage")
+        authority["stage_registration"] = registration
+    return authority
 
 
 def read_family(path, *, repo_root=None, _seen=()):
@@ -144,6 +152,11 @@ def main(argv=None):
     compile_cmd.add_argument("--protocol", type=Path, required=True)
     compile_cmd.add_argument("--knowledge-link", type=Path,
                              help="JSON data-root pin to a fully generated and released construction link")
+    stage_cmd = commands.add_parser("freeze-update", help="Freeze spent slots and membership before contact; no dispatch")
+    stage_cmd.add_argument("--protocol", type=Path, required=True)
+    stage_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
+    stage_cmd.add_argument("--member-bindings", type=Path, required=True)
+    stage_cmd.add_argument("--data-root", type=Path, required=True)
     retain_cmd = commands.add_parser("retain-feedback", help="Record root-reviewed same-cohort choices; no automatic verdict")
     retain_cmd.add_argument("--stage", choices=("update-1", "update-2", "update-3", "selection"), required=True)
     retain_cmd.add_argument("--branch", choices=("L", "B"), required=True)
@@ -228,6 +241,7 @@ def main(argv=None):
                           "invoked": False, "transport_admission": "separate-required"}))
     elif args.command == "compile-candidate":
         key = f"{args.branch}-{args.round}-{args.slot}"
+        require(not (archive.root / f"compilations/{key}.json").exists(), "candidate compilation already exists")
         result = read(args.archive / "imports" / (key + ".json"))
         require(result["status"] in {"provisional", "no-change", "duplicate"}, "invalid import cannot activate")
         record = read(args.archive / "proposals" / (key + ".json"))
@@ -268,7 +282,16 @@ def main(argv=None):
         compiled.pop("prepared_phase_supply", None)
         write_new(args.output, compiled)
         archive.store_policy(bundle)
+        archive.record_compilation(branch=args.branch, round_index=args.round, slot=args.slot,
+                                   bundle=bundle, configuration=compiled)
         print(json.dumps({"bundle_id": bundle.bundle_id, "runtime_admission": "pending", "contacts_added": 0}))
+    elif args.command == "freeze-update":
+        from speech_aware_evidence_acquisition.rails.system_search_stage import freeze_update_stage
+        registration = freeze_update_stage(archive, protocol=read(args.protocol), round_index=args.round,
+            member_bindings=read(args.member_bindings), data_root=args.data_root)
+        print(json.dumps({"registration_sha256": registration["registration_sha256"],
+            "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],
+            "contacts_added": 0, "runtime_admission": "separate-required"}))
     elif args.command in {"retain-feedback", "freeze-finalists"}:
         protocol = read(args.protocol)
         feedback = read_family(args.family, repo_root=args.repo_root)

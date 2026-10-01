@@ -15,7 +15,14 @@ def require_stage_feedback(protocol, name, feedback):
     d = feedback.as_json()
     require([g["sample_id"] for g in d["feedback"]["groups"]] == stage["sample_ids"],
             "feedback does not use the exact preceding registered cohort")
-    require(set(d["summaries"]) == set(stage["member_slots"]),
+    expected = set(stage["member_slots"])
+    registration = d.get("read_authority", {}).get("stage_registration")
+    if registration is not None:
+        from .system_search_stage import validate_stage_registration
+        validate_stage_registration(registration, protocol=protocol)
+        require(registration["stage"] == name, "feedback stage registration differs")
+        expected = set(registration["expected_members"])
+    require(set(d["summaries"]) == expected,
             "feedback does not contain the registered complete preceding family")
 
 

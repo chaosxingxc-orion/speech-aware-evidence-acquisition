@@ -131,10 +131,16 @@ semantic edit contract and verifies the prepared release. No construction call
 may borrow a task-generation allocation.
 
 Prepare and register each candidate's own supply, FIT, generation and scoring
-identity through the existing flight machinery. Freeze the admitted family,
-including any pre-contact invalid-proposal exclusions. Failure after admission
-never permits a partial-family update. Dynamic round registrations and their
-coordinator admissions have not yet been materialized.
+identity through the existing flight machinery. `compile-candidate` now records
+its proposal/bundle/configuration custody. Use `freeze-update` to account for
+all four spent proposal opportunities and freeze the actual update family
+before any prospective run has artifacts. Both parent/A/A pairs remain;
+only objectively invalid imports may be excluded. Copy the registration and
+its evaluation map into the prospective READ recipe. Failure after admission
+never permits a partial-family update. See [update-stage custody](update-stage-custody-v1.md).
+The executable candidate flight registrations and coordinator admissions have
+not yet been materialized. Common-selection membership is a separate remaining
+step when a branch retains fewer than two versions.
 
 ## Selection and scientific read
 
