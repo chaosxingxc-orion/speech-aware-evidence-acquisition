@@ -5,6 +5,19 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Successor PLAN completed; COMP-1b active: 2026-10-01T08:21Z
+
+Operational metadata confirms PLAN FINALIZED with 3,010 sealed output rows and
+12,305 contacts. Its single official score job succeeded (return code 0; zero
+failed jobs). The campaign independently advanced to COMP-1b, observed OPENED
+with 286 contacts at 08:21Z, on the same frozen worker and serving epoch.
+No answer content or task-quality score was read. The complete-family scientific
+read gate remains closed until COMP-1b also seals and scores, followed by root
+countersignature. P-SV-4, F1 GPU and other carriers retain their existing holds.
+The service is healthy; Windows free memory was 14.36 GiB, above the 10 GiB floor.
+No monitor dispatch, retry, restart or scoring replay occurred.
+Evidence: [operational completion receipt](../receipts/continuation/2026-10-01-milestone-successor1-plan-complete.json).
+
 ## Fresh authorized milestone launched: 2026-10-01T03:13:51Z
 
 Owner decision 213 explicitly authorizes the fresh original PLAN/COMP-1b pair,

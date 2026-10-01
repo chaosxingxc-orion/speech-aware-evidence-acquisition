@@ -1,0 +1,31 @@
+{
+  "actions": "Read-only operational inspection. No dispatch, restart, retry, reseal, scoring replay or active source modification.",
+  "comp1b": {
+    "contacts_observed": 286,
+    "observed_at": "2026-10-01T08:21:37Z",
+    "state": "OPENED"
+  },
+  "frozen_commit": "77a038f038725aee87358f71e8e18f7211a098ae",
+  "observed_at": "2026-10-01T08:24:36.789048+00:00",
+  "owner_decision": 213,
+  "plan": {
+    "attempt_id": "attempt-slurp-milestone-successor1-plan-generation-v1",
+    "batch_summary_sha256": "00784ac1575675989ebd02092159f2a97455fa280acbb94fd278df9a3d0aa7df",
+    "contacts": 12305,
+    "outputs_row_count": 3010,
+    "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+    "score_jobs": 1,
+    "score_returncode": 0,
+    "score_status": "succeeded",
+    "state": "FINALIZED"
+  },
+  "schema": "saea-continuation-operational-checkpoint-v1",
+  "scientific_read": "CLOSED until both members finalize with verified seals and exactly one successful official score each, followed by root READ countersignature. No answers or quality scores read.",
+  "service": {
+    "gpu_memory_mib": 22976,
+    "healthy": true,
+    "sampled_at": "2026-10-01T08:21:37.140808+00:00",
+    "slots_busy": 4,
+    "windows_free_gib": 14.356380462646484
+  }
+}
