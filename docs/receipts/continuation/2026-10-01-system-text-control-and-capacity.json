@@ -1,0 +1,63 @@
+{
+  "schema": "saea-system-text-continuation-v1",
+  "observed_at_utc": "2026-10-01T16:56:56.067115+00:00",
+  "owner_decisions": [
+    214,
+    215
+  ],
+  "engineering": {
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-RECOVERY1-V1",
+    "worker_commit": "3a0e56bf7b16b9a11f4cb81a6bfe797cb1137ac1",
+    "rows": 4,
+    "model_contacts": 28,
+    "knowledge_calls": 0,
+    "planner_action_illegal": 0,
+    "terminal_dispositions": {
+      "revision_limit": 4
+    },
+    "official_score_executions": 0,
+    "attempt_status": "OPENED",
+    "manifest_status": "COMPLETED",
+    "meaning": "Planner control correction exercised on GPU; natural optional knowledge branch not observed. No task-quality evidence."
+  },
+  "capacity": {
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-CAPACITY-CONTROL2-RECOVERY1-FIT-V1",
+    "receipt_relpath": "coordination/slurp-system-text-capacity-recovery1-v1/request-fit-v1.json",
+    "receipt_sha256": "55b2195c1ccbecd3fa00db7a2dbd34fc8da3f7280f7e7b8bcf8d12fd716a4795",
+    "tokenizer_contacts": 68,
+    "generation_contacts": 0,
+    "every_stress_request_fits": false,
+    "worst_required_tokens": 26275,
+    "slot_tokens": 24576,
+    "additional_conservative_reserve": 2048,
+    "scope": "Conservative synthetic envelope, not a demonstrated reachable native request. Cannot infer genuine runtime overflow or scientific harm from this measurement.",
+    "first_failure": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CAPACITY-CONTROL2-FIT-V1",
+      "tokenizer_contacts": 56,
+      "cause": "Missing required query role in packet descriptor; fixed before sole recovery."
+    },
+    "recovery_index": 1,
+    "further_automatic_recovery": false
+  },
+  "initial_pair": {
+    "runs": [
+      "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1",
+      "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1"
+    ],
+    "planned_rows_each": 400,
+    "status": "HELD",
+    "supplies_prepared": true,
+    "generation_contacts": 0,
+    "reason": "Maximum reachable native-request capacity has not been established. Do not use smoke success or synthetic stress failure as that certificate."
+  },
+  "scientific_results_read": false,
+  "milestone_scientific_read": "pending separate exact root gate; never optimizer input",
+  "unchanged": [
+    "serving geometry",
+    "output reserve",
+    "scientific policy",
+    "milestone bytes",
+    "older failed artifacts",
+    "held carrier decisions"
+  ]
+}

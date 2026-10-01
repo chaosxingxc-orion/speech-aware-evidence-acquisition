@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Current continuation checkpoint: 2026-10-01T16:56:56.067115+00:00, ChatGPT root
+
+The Planner exact-text correction completed its sole four-row GPU engineering recovery: 4 terminal rows, 28 model calls, zero `planner_action_illegal`, and zero natural knowledge calls. All rows reached post-revision terminal delivery. This is structural evidence only; the standard engineering worker remains OPENED with a COMPLETED manifest and one prepared scoring specification, not an official finalized/scored research result.
+
+The separate capacity flight failed its first integration attempt after 56 nongenerative contacts (missing query role in packet descriptors). Its sole recovery measured all four conservative stress envelopes in 68 tokenizer contacts; the widest required 26,275 tokens before an additional 2,048 reserve, against 24,576 per slot. This synthetic envelope double-counts conservative history bounds and includes unreachable phase/history combinations, so the result is NOT evidence that a real legal request necessarily overflows. Stop this capacity flight; do not repeat either task or clear its preserved failure lease automatically. The required correction is recorded in [capacity disposition](../readiness/2026-10-01-slurp-system-text-capacity-recovery1-v1/disposition.md).
+
+Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
+
 This is the current entry point. It supersedes pending/running statements in
 the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63b1bb66.md).
 Historical research artifacts, registrations and verdicts remain authoritative
