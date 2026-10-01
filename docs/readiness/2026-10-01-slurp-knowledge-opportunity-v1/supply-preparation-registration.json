@@ -1,0 +1,28 @@
+{
+  "arms": [
+    "a",
+    "aprime",
+    "b",
+    "c"
+  ],
+  "authority": "owner decision 212; explicit implementation and continuation request",
+  "builder": "speech_aware_evidence_acquisition.core.flight.cli prepare-supply",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "dispatch_authority": false,
+  "experiment": "slurp-native-stage3-knowledge-opportunity-v1",
+  "failure_policy": "Preserve differing artifacts and stop; no overwrite or generation. Existing valid bytes are identity-checked only.",
+  "output_pattern": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-{ARM}-V1/phase-supply-v1.json",
+  "registered_at_utc": "2026-10-01T02:14:58.241031+00:00",
+  "rows_per_arm": 400,
+  "scheduling": "Sequential arms, four global CPU workers; no daemon or sidecar; no model service dependency.",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "source_commit": "80780d19e4283052cdad1f97a1b278918ac1ff3b",
+  "workers": 4
+}

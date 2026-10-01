@@ -1,6 +1,6 @@
 # Owner-approved knowledge-consumption continuation
 
-Date: 2026-10-01 UTC. Authority: the owner's explicit "PLEASE IMPLEMENT THIS PLAN" message in the ChatGPT task, following the capability-exploration, slot-knowledge-first and SLURP-closure selections. This English record supplements the numbered registry without allocating or changing another coordinator's decision numbers.
+Date: 2026-10-01 UTC. Authority: the owner's explicit "PLEASE IMPLEMENT THIS PLAN" message in the ChatGPT task, following the capability-exploration, slot-knowledge-first and SLURP-closure selections. This English rendering is recorded in numbered registry decision 212 on the isolated branch, for coordinator serial integration. It supersedes no historical ruling; a number collision at integration must be resolved without changing the decision content.
 
 - Implement a bounded capability exploration of existing slot-contracts v2. Freeze knowledge content, ASR, retriever and intent mechanism. Do not reopen closed rule-card, citation, relistening or Whisper lines.
 - Use four independent complete-system arms, A / request-identical A-prime / reread B / targeted C, on a seed-20261001 subset of 400 out of R01C625. Use the same source-excluded knowledge release in every arm. Never select rows using task outcomes.
