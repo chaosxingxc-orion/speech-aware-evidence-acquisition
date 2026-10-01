@@ -833,15 +833,22 @@ def _prepared_boundary_check(data_root: Path, arm, boundary: dict, ids: Sequence
     if sha != pin.get("sha256"):
         raise Stage3ReadError(f"{arm.spec.label}: prepared supply does not hash to its preflight pin")
     try:
-        values = load_json(path)["output"]["values"]["perception"]
+        phases = load_json(path)["output"]["values"]
     except (KeyError, TypeError, json.JSONDecodeError) as error:
         raise Stage3ReadError(f"{arm.spec.label}: prepared supply has no perception value map") from error
-    if not isinstance(values, dict) or set(values) != set(ids):
-        raise Stage3ReadError(f"{arm.spec.label}: prepared supply rows do not equal the roster")
+    if not isinstance(phases, dict) or set(phases) - {"perception"}:
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply has invalid phases")
+    values = phases.get("perception", {})
+    if not isinstance(values, dict) or set(values) - set(ids):
+        raise Stage3ReadError(f"{arm.spec.label}: prepared supply rows are outside the roster")
     equal = 0
     for sample_id in ids:
-        row = values[sample_id]
-        if not isinstance(row, list) or any(not isinstance(v, str) for v in row):
+        # Runtime _load_phase_supply_seed accepts sparse maps. The runner's
+        # per-sample bootstrap defaults an absent row to no values; it does
+        # not infer unknown content or refill it from another preparation.
+        row = values.get(sample_id, [])
+        if (not isinstance(row, list) or any(not isinstance(v, str) for v in row)
+                or len(row) != len(set(row))):
             raise Stage3ReadError(f"{arm.spec.label}: prepared supply has an invalid value list")
         expected = {bare(v) for v in row if bare(v).startswith(BOUNDARY_PREFIX)}
         equal += expected == set(boundary[sample_id])
@@ -849,6 +856,7 @@ def _prepared_boundary_check(data_root: Path, arm, boundary: dict, ids: Sequence
         raise Stage3ReadError(f"{arm.spec.label}: prepared supply changed during the read")
     return {"prepared_relpath": relpath, "prepared_sha256": sha,
             "rows": len(ids), "rows_flown_set_equals_prepared_set": equal,
+              "omitted_rows_with_empty_default": len(set(ids) - set(values)),
             "mismatched_rows": len(ids) - equal}
 
 

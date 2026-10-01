@@ -306,6 +306,10 @@ def test_the_all_off_byte_proof_holds(at):
     assert {r["cell"] for r in cells} == {"arm", "smoke"}
     for row in cells:
         assert row["composed_identical"] and row["differing_policy_paths"] == []
+        assert row["canonical_alloff_policy_differences"] == []
+        # Old immutable declarations may omit components introduced later;
+        # their absence must compile to OFF, not invalidate a byte proof.
+        assert row["omitted_components_default_off"]
         assert row["composed_config_diff_vs_parent"]["policy"] == []
         assert row["composed_config_diff_vs_parent"]["anything_else"] == []
 
@@ -320,7 +324,21 @@ def test_the_all_off_cells_are_held_form_proofs_declaring_the_all_off_block(prof
         assert document["stage3_measurement"]["measurement_design"] == "form-proof"
         assert document["stage3_measurement"]["claims_benefit"] is False
         assert document["stage3_algorithm"]["id"] == "none"
-        assert document[proof.DECLARATION_KEY]["block"] == proof.alloff_block(profile)
+        block = document[proof.DECLARATION_KEY]["block"]
+        assert cm.is_module_off_block(block)
+        hooks = cm.resolve_carrier_hooks(profile)
+        assert cm.compile_module(block, hooks).values() == cm.compile_module(proof.alloff_block(profile), hooks).values()
+
+
+@pytest.mark.parametrize("profile", sorted(ALLOFF_CELLS))
+def test_omitted_off_components_preserve_direct_policy(profile):
+    hooks = cm.resolve_carrier_hooks(profile)
+    canonical = _all_off(profile)
+    expected = cm.compile_module(canonical, hooks).values()
+    for declarations in ([], canonical["components"][:1], list(reversed(canonical["components"]))):
+        block = {**canonical, "components": declarations}
+        assert cm.is_module_off_block(block)
+        assert cm.compile_module(block, hooks).values() == expected
 
 
 def test_no_component_on_cell_is_registered_for_audio2tool_or_earnings():

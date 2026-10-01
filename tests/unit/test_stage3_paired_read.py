@@ -367,7 +367,7 @@ def test_delivery_gold_free_reports_a_missing_answer_as_a_mismatch(tmp_path: Pat
 
 
 
-@pytest.mark.parametrize("mode", ["different", "missing-row", "extra-row", "bad-pin", "missing-pin", "duplicate-pin", "escape", "bad-row"])
+@pytest.mark.parametrize("mode", ["different", "missing-row", "extra-row", "bad-pin", "missing-pin", "duplicate-pin", "escape", "bad-row", "duplicate-value", "extra-phase", "bad-phases"])
 def test_final_report_requires_own_prepared_supply(world: World, mode: str) -> None:
     left = core.load_arm(world.data, core.ArmSpec("left", "UNIT-LEFT-V1", "attempt-left"))
     right = core.load_arm(world.data, core.ArmSpec("right", "UNIT-RIGHT-V1", "attempt-right"))
@@ -383,6 +383,12 @@ def test_final_report_requires_own_prepared_supply(world: World, mode: str) -> N
         values["outside-roster"] = []
     elif mode == "bad-row":
         values[world.ids[0]] = "not-a-list"
+    elif mode == "duplicate-value":
+        values[world.ids[0]] *= 2
+    elif mode == "extra-phase":
+        doc["output"]["values"]["solver"] = {}
+    elif mode == "bad-phases":
+        doc["output"]["values"] = []
     elif mode == "bad-pin":
         pins[0]["sha256"] = "0" * 64
     elif mode == "missing-pin":
@@ -391,11 +397,11 @@ def test_final_report_requires_own_prepared_supply(world: World, mode: str) -> N
         pins.append(dict(pins[0]))
     elif mode == "escape":
         pins[0]["relpath"] = "../outside.json"
-    if mode in {"different", "missing-row", "extra-row", "bad-row"}:
+    if mode in {"different", "missing-row", "extra-row", "bad-row", "duplicate-value", "extra-phase", "bad-phases"}:
         _write(path, doc)
         pins[0]["sha256"] = _sha(path)
     args = SimpleNamespace(data_root=world.data)
-    if mode == "different":
+    if mode in {"different", "missing-row"}:
         block = drv.stage_delivery(args, drv.Extensions(), left, right, _final_report_roster(world.ids))
         assert block["detail"]["left"]["prepared_supply"]["rows_flown_set_equals_prepared_set"] == 11
         assert any("prepared supply" in item for item in block["mismatches"])
@@ -405,6 +411,37 @@ def test_final_report_requires_own_prepared_supply(world: World, mode: str) -> N
     else:
         with pytest.raises(drv.Stage3ReadError, match="prepared supply"):
             drv.stage_delivery(args, drv.Extensions(), left, right, _final_report_roster(world.ids))
+
+
+@pytest.mark.parametrize("mode", ["missing-row", "empty-row", "empty-phase", "missing-phase"])
+def test_prepared_supply_sparse_rows_are_empty_not_unknown(world: World, mode: str) -> None:
+    """Match runtime sparse bootstrap semantics without hiding a flown nonempty set."""
+    left = core.load_arm(world.data, core.ArmSpec("left", "UNIT-LEFT-V1", "attempt-left"))
+    pin = left.flight_receipts["stages"]["preflight"]["prepared_artifacts"][0]
+    path = world.data / pin["relpath"]
+    doc = json.loads(path.read_text())
+    values = doc["output"]["values"]["perception"]
+    boundary = {sid: {drv.bare(value): "use" for value in row
+                      if drv.bare(value).startswith(drv.BOUNDARY_PREFIX)}
+                for sid, row in values.items()}
+    if mode in {"missing-row", "empty-row"}:
+        values.pop(world.ids[0])
+        if mode == "empty-row":
+            values[world.ids[0]] = []
+        boundary[world.ids[0]] = {}
+    else:
+        doc["output"]["values"] = {"perception": {}} if mode == "empty-phase" else {}
+        boundary = {sid: {} for sid in world.ids}
+    _write(path, doc)
+    pin["sha256"] = _sha(path)
+    report = drv._prepared_boundary_check(world.data, left, boundary, world.ids)
+    assert report["rows_flown_set_equals_prepared_set"] == len(world.ids)
+    assert report["mismatched_rows"] == 0
+    expected_omitted = {"missing-row": 1, "empty-row": 0,
+                        "empty-phase": len(world.ids), "missing-phase": len(world.ids)}[mode]
+    assert report["omitted_rows_with_empty_default"] == expected_omitted
+    boundary[world.ids[0]] = {"intent-boundary:unexpected": "use"}
+    assert drv._prepared_boundary_check(world.data, left, boundary, world.ids)["mismatched_rows"] == 1
 
 def test_delivery_still_gold_bank_on_a_non_final_report_roster(world: World) -> None:
     # world's default split_role is "discovery": stage_delivery must take the ORIGINAL gold-bank

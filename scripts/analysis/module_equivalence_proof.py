@@ -549,10 +549,17 @@ def run_alloff(at: str, repo_root: Path = REPO_ROOT) -> dict:
         row.update({
             "cell": key, "direct_parent": parent, "declared_is_the_all_off_block": declared == block,
             "off_arm": cm.is_module_off_block(declared, repo_root=repo_root),
+              # The catalogue can grow after an immutable OFF cell is registered.
+              # Compare compiled policy, retaining declaration inequality as evidence.
+              "canonical_alloff_policy_differences": cm.differing_paths(
+                  declared_policy.values(), composed_policy.values()),
+              "omitted_components_default_off": sorted(
+                  {item.component_id for item in cm.COMPONENT_CATALOGUE}
+                  - {item["component_id"] for item in declared["components"]}),
             "composed_config_diff_vs_parent": diff,
         })
         row["ok"] = bool(row["composed_identical"] and not row["differing_policy_paths"]
-                         and row["declared_is_the_all_off_block"] and row["off_arm"]
+                           and not row["canonical_alloff_policy_differences"] and row["off_arm"]
                          and not diff["policy"] and not diff["anything_else"])
         ok &= row["ok"]
         results.append(row)
