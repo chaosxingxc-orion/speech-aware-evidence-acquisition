@@ -1,9 +1,9 @@
 {
   "cell": "slurp-native-stage3-system-text-smoke-4-v1",
-  "composed_config_hash": "336a97e5f64ff24079c505c8d3e7ad5217f08ab7debd847dcd9839bfe959939c",
+  "composed_config_hash": "ca0c1b94fdb74a67d57a768a179b28833b304a0a6725ae8444f68e484a59f5cf",
   "decision_receipt": {
-    "relpath": "coordination/slurp-system-text-engineering-v1/root-admission-v1.json",
-    "sha256": "554e63fe95bad4d96420e1537b35d65528b4cba9732bd410bd658757009e317b"
+    "relpath": "coordination/slurp-system-text-engineering-v1/root-admission-v2.json",
+    "sha256": "80cd9b878a7eaa40555d8b13e4d2fdf4c951449ec1febb02d99f32d27eb6cfec"
   },
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-system-text-smoke-4-fit-v1",
@@ -12,7 +12,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 208,
     "planned_speech_audio_seconds": 1500,
-    "protocol_hash": "5f66122005f4e56801c78fcbef9c3e038738f97ac368a4e874babccadde7fa83",
+    "protocol_hash": "13bad44b914bf8dbf5748709543627d2f21c3c0625b1c5e0c841188866edf606",
     "run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "ac6c778dcfe9ee4504c32d89c00dd1aaacfae694e7dd481b63d6fba01fa624c3",

@@ -1,0 +1,19 @@
+{
+  "schema": "saea-precontact-refusal-v1",
+  "at_utc": "2026-10-01T15:39:25.445237+00:00",
+  "failed_driver_epoch": "2026-10-01T15:36:00Z",
+  "frozen_source": "b5305a95ba55a0cdacf9bb4b0da5d7595f8e0f2b",
+  "root_cause": "Root wrote saea-root-admission-v1 where the worker requires saea-campaign-decision-v1. Registration presence check passed; lease readiness rejected it.",
+  "attempts_created": false,
+  "generation_contacts": 0,
+  "fit_contacts": 0,
+  "remedy": "Supersede admission as v2; verify exact runtime declared_readiness before dispatch. Administrative config/protocol identities and own supply are re-pinned. Science, selected supply output, roster and both run/attempt identities unchanged; neither attempt has opened. Preserve the old worker, original admission, driver epoch and STOP as evidence. This is pre-contact admission correction, not a generation attempt recovery.",
+  "preparation": {
+    "rebuilt": false,
+    "pin": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-V1/phase-supply-v2.json",
+      "sha256": "44ee49985e35a1b7c8947358bdc02b25f517b94866e2cbbbdd93b0aaa0fe4698"
+    }
+  },
+  "runtime_readiness": "ready"
+}
