@@ -138,14 +138,21 @@ coordinator admissions have not yet been materialized.
 
 ## Selection and scientific read
 
-Keep all candidates and failures. `SystemSearchArchive.retain` requires one
-common cohort, true non-dominance, and at most two active versions per branch;
-its result is explicitly search-only. Apply the preregistered tie-break and
-intent protection from `analysis-recipe-v1.json`. Do not mix point estimates
-from different rounds. The blind proposer must not see evaluator selections.
+Keep all candidates and failures. Use `retain-feedback` with a complete family,
+protocol, stage, branch and ordered `--selected-id` values. Bind every bundle,
+run and runtime configuration in the prospective READ recipe's
+`system_search_evaluation` map. This entry derives measurements from verified
+feedback; the legacy hand-entered `SystemSearchArchive.retain` record cannot
+authorize a later parent. Apply the preregistered tie-break and own-A/A intent
+protection before recording the choice. Root's statistical report remains
+required; the custody command computes no verdict. Do not mix point estimates
+from different rounds or expose evaluator selections to the blind proposer.
+See [selection custody](selection-custody-v1.md) for the map, fallback and
+transitive exposure rules.
 
-Reevaluate survivors on the common selection cohort. Freeze the chosen L/B
-versions before DEV, then run seed/A/A and both finalists on the registered
+Reevaluate survivors on the common selection cohort. Record both branches and
+use `freeze-finalists` to bind their exact L/B versions before DEV. Prepare the
+later registration against its create-only `finalists.json`, then run seed/A/A and both finalists on the registered
 1,000 rows. Root reads the entire completed family and reports L-B primarily,
 L-seed secondarily, uncertainty, strata, reliability and actual costs. No
 automatic extra samples, adoption, new allowance or recursive-improvement claim

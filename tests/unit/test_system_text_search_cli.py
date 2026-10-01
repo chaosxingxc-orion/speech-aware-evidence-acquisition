@@ -236,3 +236,123 @@ def test_future_family_recipe_must_name_its_own_stage(tmp_path):
     spec["family_id"] = "update-2"
     with pytest.raises(PolicyError, match="family identity"):
         cli.require_read_registration(spec, repo_root=tmp_path)
+
+
+def test_retention_cli_reverifies_family_and_reads_its_pinned_policy_map(tmp_path, monkeypatch):
+    from test_system_search_selection import selection_fixture
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+    from speech_aware_evidence_acquisition.rails.system_text_policy import canonical
+    import hashlib
+    archive, protocol, value, evaluation = selection_fixture(tmp_path)
+    recipe = tmp_path / "recipe.json"
+    write(recipe, {"system_search_evaluation": evaluation})
+    d = value.as_json()
+    d["read_authority"]["recipe"] = {"relpath": "recipe.json", "sha256": hashlib.sha256(recipe.read_bytes()).hexdigest()}
+    value = cli.CompleteSystemFeedback(canonical(d))
+    calls = []
+    def qualified(path, *, repo_root):
+        calls.append((path, repo_root))
+        return value
+    monkeypatch.setattr(cli, "read_family", qualified)
+    selected = evaluation["member_bindings"]["L-candidate-1"]["bundle_id"]
+    args = ["--archive", str(archive.root), "retain-feedback", "--protocol", write(tmp_path / "protocol.json", protocol),
+        "--family", "synthetic-complete-family", "--repo-root", str(tmp_path), "--stage", "update-1",
+        "--branch", "L", "--selected-id", selected]
+    cli.main(args)
+    assert len(calls) == 1
+    record = cli.read(archive.root / "retentions/update-1/L.json")
+    assert record["active_ids"] == [selected]
+    assert record["feedback_sha256"] == content_hash(value.as_json())
+    # A changed registration cannot populate the other branch's retention.
+    recipe.write_text(recipe.read_text() + " ")
+    args[args.index("L")] = "B"
+    with pytest.raises(PolicyError, match="hash"):
+        cli.main(args)
+    assert not (archive.root / "retentions/update-1/B.json").exists()
+
+
+@pytest.mark.parametrize("command", ["retain-feedback", "freeze-finalists"])
+def test_selection_cli_refuses_unqualified_family_before_publishing(tmp_path, monkeypatch, command):
+    def unqualified(*args, **kwargs):
+        raise PolicyError("Synthetic complete-family seal is missing.")
+    monkeypatch.setattr(cli, "read_family", unqualified)
+    args = ["--archive", str(tmp_path / "archive"), command, "--protocol", write(tmp_path / "p.json", {}),
+            "--family", "unsigned-family", "--repo-root", str(tmp_path)]
+    if command == "retain-feedback":
+        args += ["--stage", "update-1", "--branch", "L", "--selected-id", "a" * 64]
+    with pytest.raises(PolicyError, match="seal"):
+        cli.main(args)
+    assert not (tmp_path / "archive").exists()
+
+
+def test_later_learning_input_cannot_choose_unrecorded_parent(tmp_path, monkeypatch):
+    from test_system_search_selection import selection_fixture, retain
+    archive, protocol, value, evaluation = selection_fixture(tmp_path)
+    monkeypatch.setattr(cli, "read_family", lambda *_: value)
+    args = ["--archive", str(archive.root), "proposal-input", "--branch", "L", "--round", "2", "--slot", "1",
+        "--seed-id", protocol["seed_bundle"]["bundle_id"], "--parent-id", evaluation["member_bindings"]["L-candidate-1"]["bundle_id"],
+        "--model-version", "GPT6-fixture-pinned", "--session-id", "fresh-learning-fixture",
+        "--protocol", write(tmp_path / "protocol.json", protocol), "--family", "synthetic-family"]
+    for cid in ("L-parent", "L-parent-aa", "L-candidate-1", "L-candidate-2"):
+        args += ["--learning-member", cid]
+    with pytest.raises(PolicyError, match="selection"):
+        cli.main(args)
+    assert not (archive.root / "inputs").exists()
+    record = retain(archive, protocol, value, evaluation)
+    cli.main(args)
+    packet = cli.read(archive.root / "inputs/L-2-1.json")
+    assert packet["selection"] == record
+    assert "B-candidate" not in json.dumps(packet)
+
+
+def test_learning_input_cannot_hide_a_losing_own_branch_member(tmp_path, monkeypatch):
+    from test_system_search_selection import selection_fixture, retain
+    archive, protocol, value, evaluation = selection_fixture(tmp_path)
+    record = retain(archive, protocol, value, evaluation)
+    monkeypatch.setattr(cli, "read_family", lambda *_: value)
+    args = ["--archive", str(archive.root), "proposal-input", "--branch", "L", "--round", "2", "--slot", "1",
+        "--seed-id", protocol["seed_bundle"]["bundle_id"], "--parent-id", record["active_ids"][0],
+        "--model-version", "GPT6-fixture-pinned", "--session-id", "fresh-learning-fixture",
+        "--protocol", write(tmp_path / "protocol.json", protocol), "--family", "synthetic-family",
+        "--learning-member", "L-parent", "--learning-member", "L-parent-aa"]
+    with pytest.raises(PolicyError, match="every learning"):
+        cli.main(args)
+    assert not (archive.root / "inputs").exists()
+
+
+def test_common_selection_cli_freezes_exact_two_branch_choices(tmp_path, monkeypatch):
+    from test_system_search_selection import selection_fixture
+    from speech_aware_evidence_acquisition.rails.system_text_policy import canonical
+    import hashlib
+    archive, protocol, value, evaluation = selection_fixture(tmp_path, "selection")
+    recipe = tmp_path / "recipe.json"
+    write(recipe, {"system_search_evaluation": evaluation})
+    d = value.as_json()
+    d["read_authority"]["recipe"] = {"relpath": "recipe.json", "sha256": hashlib.sha256(recipe.read_bytes()).hexdigest()}
+    value = cli.CompleteSystemFeedback(canonical(d))
+    monkeypatch.setattr(cli, "read_family", lambda *a, **kw: value)
+    prefix = ["--archive", str(archive.root)]
+    common = ["--protocol", write(tmp_path / "protocol.json", protocol), "--family", "qualified-selection",
+              "--repo-root", str(tmp_path)]
+    for branch in ("L", "B"):
+        cli.main(prefix + ["retain-feedback", *common, "--stage", "selection", "--branch", branch,
+            "--selected-id", evaluation["member_bindings"][branch + "-1"]["bundle_id"]])
+    cli.main(prefix + ["freeze-finalists", *common])
+    assert cli.read(archive.root / "finalists.json")["runtime_admission"] == "separate-required"
+
+
+def test_retention_cli_rejects_unregistered_policy_map(tmp_path, monkeypatch):
+    from test_system_search_selection import selection_fixture
+    from speech_aware_evidence_acquisition.rails.system_text_policy import canonical
+    import hashlib
+    archive, protocol, value, _ = selection_fixture(tmp_path)
+    recipe = tmp_path / "recipe.json"
+    write(recipe, {"not-a-policy-binding": {}})
+    d = value.as_json()
+    d["read_authority"]["recipe"] = {"relpath": "recipe.json", "sha256": hashlib.sha256(recipe.read_bytes()).hexdigest()}
+    monkeypatch.setattr(cli, "read_family", lambda *a, **kw: cli.CompleteSystemFeedback(canonical(d)))
+    with pytest.raises(PolicyError, match="registered policy"):
+        cli.main(["--archive", str(archive.root), "retain-feedback", "--stage", "update-1", "--branch", "L",
+            "--selected-id", protocol["seed_bundle"]["bundle_id"], "--protocol", write(tmp_path / "p.json", protocol),
+            "--family", "qualified-family", "--repo-root", str(tmp_path)])
+    assert not (archive.root / "retentions").exists()

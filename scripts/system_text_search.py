@@ -90,6 +90,13 @@ def read_family(path, *, repo_root=None, _seen=()):
     return CompleteSystemFeedback(canonical({**feedback.as_json(), "read_authority": authority}))
 
 
+def require_learning_members(feedback, member_ids):
+    expected = {cid for cid in feedback.as_json()["summaries"]
+                if cid.startswith("L-") or cid in {"seed", "seed-aa"}}
+    require(len(member_ids) == len(set(member_ids)) and set(member_ids) == expected,
+            "include every learning-branch member, including the comparator and A/A")
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path, required=True)
@@ -137,6 +144,18 @@ def main(argv=None):
     compile_cmd.add_argument("--protocol", type=Path, required=True)
     compile_cmd.add_argument("--knowledge-link", type=Path,
                              help="JSON data-root pin to a fully generated and released construction link")
+    retain_cmd = commands.add_parser("retain-feedback", help="Record root-reviewed same-cohort choices; no automatic verdict")
+    retain_cmd.add_argument("--stage", choices=("update-1", "update-2", "update-3", "selection"), required=True)
+    retain_cmd.add_argument("--branch", choices=("L", "B"), required=True)
+    retain_cmd.add_argument("--selected-id", action="append", required=True,
+                            help="Quality parent first, then at most one complementary survivor")
+    retain_cmd.add_argument("--retain-parent", action="store_true",
+                            help="Record root's no-qualified-candidate fallback to the measured parent")
+    freeze_cmd = commands.add_parser("freeze-finalists", help="Freeze both common-selection choices before DEV")
+    for command in (retain_cmd, freeze_cmd):
+        command.add_argument("--protocol", type=Path, required=True)
+        command.add_argument("--family", type=Path, required=True)
+        command.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args(argv)
     archive = SystemSearchArchive(args.archive)
     if args.command == "import-seed":
@@ -155,8 +174,12 @@ def main(argv=None):
         require(protocol.get("seed_bundle", {}).get("bundle_id") == args.seed_id,
                 "proposal seed differs from the registered starting system")
         feedback = read_family(args.family) if args.family else None
+        selection = None
         if feedback is not None:
             require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
+            require_learning_members(feedback, args.learning_member)
+            selection = archive.learning_selection(protocol=protocol, round_index=args.round, feedback=feedback,
+                parent_id=args.parent_id, complementary_ids=args.complementary_id)
             feedback = feedback.learning_view(args.learning_member)
         packet = proposal_input(branch=args.branch, round_index=args.round, slot=args.slot,
             seed=archive.load_policy(args.seed_id), parent=archive.load_policy(args.parent_id),
@@ -165,6 +188,8 @@ def main(argv=None):
             feedback=feedback, complementary=[archive.load_policy(b) for b in args.complementary_id])
         if args.branch == "L":
             packet["learning_history"] = archive.learning_history(before_round=args.round)
+            if selection is not None:
+                packet["selection"] = selection
         packet["protocol_sha256"] = content_hash(protocol)
         packet["input_sha256"] = content_hash({k: v for k, v in packet.items() if k != "input_sha256"})
         archive.store_input(packet)
@@ -187,6 +212,11 @@ def main(argv=None):
             require(args.family and args.learning_member, "revalidate the complete family before packaging feedback")
             feedback = read_family(args.family)
             require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
+            require_learning_members(feedback, args.learning_member)
+            selection = archive.learning_selection(protocol=protocol, round_index=args.round, feedback=feedback,
+                parent_id=packet["parent_bundle_id"],
+                complementary_ids=[content_hash(p) for p in packet["complementary_policies"]])
+            require(packet.get("selection") == selection, "selection differs from the preregistered proposal input")
             require(feedback.learning_view(args.learning_member).as_json() == packet["feedback"],
                     "feedback differs from the preregistered proposal input")
         require(not (args.archive / "capsules" / (key + ".json")).exists(), "capsule already exists")
@@ -213,7 +243,6 @@ def main(argv=None):
         if args.knowledge_link:
             require(bool({"construction_instruction", "slot_value_edits"}.intersection(proposal.as_json()["changes"])),
                     "a knowledge replacement must be proposed, not added during compilation")
-            from speech_aware_evidence_acquisition.rails.system_text_policy import _read_pin
             construction_pin = read(args.knowledge_link)
             link = json.loads(_read_pin(construction_pin, args.data_root))
             knowledge = link["knowledge"]
@@ -240,6 +269,21 @@ def main(argv=None):
         write_new(args.output, compiled)
         archive.store_policy(bundle)
         print(json.dumps({"bundle_id": bundle.bundle_id, "runtime_admission": "pending", "contacts_added": 0}))
+    elif args.command in {"retain-feedback", "freeze-finalists"}:
+        protocol = read(args.protocol)
+        feedback = read_family(args.family, repo_root=args.repo_root)
+        # The policy/run/config mapping must be part of the exact READ recipe,
+        # frozen with the family before contact, never a post-hoc command input.
+        recipe = json.loads(_read_pin(feedback.as_json()["read_authority"]["recipe"], args.repo_root))
+        require("system_search_evaluation" in recipe, "READ recipe lacks the registered policy evaluation binding")
+        if args.command == "retain-feedback":
+            record = archive.retain_feedback(protocol=protocol, stage_name=args.stage, feedback=feedback,
+                evaluation=recipe["system_search_evaluation"], branch=args.branch,
+                selected_ids=args.selected_id, retain_parent=args.retain_parent)
+            print(json.dumps({"selection_sha256": record["selection_sha256"], "status": record["status"], "contacts_added": 0}))
+        else:
+            record = archive.freeze_finalists(protocol=protocol, feedback=feedback)
+            print(json.dumps({"freeze_sha256": record["freeze_sha256"], "status": record["status"], "contacts_added": 0}))
 
 
 if __name__ == "__main__":

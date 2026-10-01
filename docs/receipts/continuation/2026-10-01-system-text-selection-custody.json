@@ -1,0 +1,43 @@
+{
+  "schema": "saea-offline-implementation-receipt-v1",
+  "recorded_at_utc": "2026-10-01T21:37:35Z",
+  "owner_decision": 214,
+  "source_parent": "5073e971fc8db093eb85676469db4bb0021a623c",
+  "worktree": "/home/chao/saea-worktrees/codex-system-text-policy",
+  "branch": "codex/system-text-policy",
+  "scope": "Complete-family feedback to same-cohort retention, later learning-parent custody and common-cohort finalist freeze.",
+  "changes": [
+    "Reverify the whole family and the exact READ recipe before deriving selection measurements.",
+    "Bind every member to its registered bundle, actual run and frozen configuration identity.",
+    "Keep own-branch frontier and repeated-bundle evidence; require an explicit measured-parent fallback when root finds no qualified candidate.",
+    "Require every learning member, comparator and A/A in later proposal feedback; refuse arbitrary replacement parents or unretained complementary policies.",
+    "Preserve losing-policy, selection-cohort and frozen-reference exposure through later proposals and the pre-DEV freeze.",
+    "Fix a loop-variable shadowing error that hashed an old history record instead of the current proposal record."
+  ],
+  "validation": {
+    "test_selection": "tests/unit/test_system*.py",
+    "passed": 615,
+    "failed": 0,
+    "warnings": "Three existing third-party deprecation warnings.",
+    "elapsed_seconds": 56.09,
+    "coverage_percent": {"system_search_archive": 99, "system_proposer_capsule": 99, "system_text_search_cli": 91},
+    "checks": {
+      "engineering_base": "PASS", "tool_catalog": "PASS", "git_diff_check": "PASS", "handoff_freshness": "PASS",
+      "experiment_handoff": {"errors": [], "launch_allowed": false,
+        "advisories": ["HEAD differs from the historical handoff snapshot", "Isolated worktree has the pending implementation changes"]}
+    },
+    "execution_environment": "WSL Ubuntu-24.04; synthetic sources; SPEECHRL_DATA_DIR unset; PYTHONPATH=src; PYTHONDONTWRITEBYTECODE=1 and python -B."
+  },
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "scientific_result_reads_added": 0,
+  "frozen_worker_changes": 0,
+  "runtime_admission": "none",
+  "remaining": [
+    "Pending owner216 scoring-entry recovery and complete initial-family READ.",
+    "Pending proposer budget decision, exact provider/version admission and enforceable isolation.",
+    "Future round registrations must prospectively pin policy/run/config maps and all admitted members.",
+    "Root must perform the registered own-A/A guard and tie-break analysis; the new custody commands calculate no scientific verdict.",
+    "The real three-round optimization, common selection and DEV sequence are not complete."
+  ]
+}

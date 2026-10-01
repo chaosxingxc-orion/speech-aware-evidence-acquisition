@@ -23,7 +23,7 @@ from .system_text_policy import PolicyError, canonical, require, sha, _pin, vali
 COMMON_FIELDS = frozenset({"schema", "branch", "round", "slot", "seed_bundle_id", "parent_bundle_id",
     "parent_policy", "model_version", "session_id", "input_token_cap", "output_token_cap", "context",
     "tool_access", "instructions", "input_sha256", "protocol_sha256"})
-LEARNING_FIELDS = frozenset({"feedback", "complementary_policies", "learning_history"})
+LEARNING_FIELDS = frozenset({"feedback", "complementary_policies", "learning_history", "selection"})
 MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
@@ -92,6 +92,15 @@ def input_references(packet):
         if policy["construction_receipt"] is not None:
             add("data", policy["construction_receipt"], "construction-receipt")
     if branch == "L":
+        selection = packet.get("selection")
+        if selection is not None:
+            require(selection.get("selection_sha256") == content_hash({k: v for k, v in selection.items() if k != "selection_sha256"})
+                    and selection["branch"] == "L" and selection["stage"] == f"update-{packet['round'] - 1}"
+                    and selection["protocol_sha256"] == packet["protocol_sha256"]
+                    and selection["active_ids"][0] == packet["parent_bundle_id"], "selection identity differs from learning input")
+            require(all(_own_candidate(r["candidate_id"]) for r in selection["measurements"])
+                    and all(_own_candidate(cid) for cid in selection["member_bindings"]), "selection contains another branch")
+            validate_sources(selection["cumulative_sources"])
         require("feedback" in packet, "learning input requires verified complete feedback")
         feedback = packet["feedback"]
         require(feedback["summaries"] and all(_own_candidate(c) for c in feedback["summaries"]),

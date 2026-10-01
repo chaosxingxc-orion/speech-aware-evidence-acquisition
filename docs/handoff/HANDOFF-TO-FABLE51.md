@@ -1,5 +1,25 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Current continuation checkpoint: 2026-10-01T21:37:35Z, ChatGPT root
+
+The owner214 offline selection connection is implemented. `retain-feedback`
+derives same-cohort measurements from the reverified complete family and the
+exact READ recipe's prospective bundle/run/config map. Later L inputs require
+the recorded parent and every own-branch member; blind inputs receive no
+selection. `freeze-finalists` binds both common-selection choices and cumulative
+exposure before DEV, without dispatch or adoption. Root still performs the
+registered statistical guard and tie-break analysis. See
+[selection custody](../readiness/2026-10-01-slurp-system-text-search-v1/selection-custody-v1.md)
+and [validation](../receipts/continuation/2026-10-01-system-text-selection-custody.json).
+The related615 tests pass; archive/capsule coverage is99%, CLI91%. All evidence
+is synthetic; no model, scorer or scientific-result read was added.
+
+The initial A/A scoring-entry recovery remains pending owner216; preserve its
+stopped worker, caches, generation, failed job and STOP. Proposer output-budget
+decision and exact provider admission also remain pending. The independent
+milestone interpretation below is unchanged and remains outside optimizer input.
+This implementation grants no authority to any held carrier or proposal.
+
 ## Current continuation checkpoint: 2026-10-01T21:18:32+00:00, ChatGPT root
 
 The independent owner213 milestone has now been scientifically read under its exact

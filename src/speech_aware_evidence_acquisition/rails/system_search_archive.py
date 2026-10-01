@@ -15,8 +15,10 @@ OBJECTIVES = {"slu_f1": 1, "intent": 1, "model_calls": -1, "tool_calls": -1}
 def proposal_sources(packet, record):
     """Retain everything the proposer could inspect, including unused parents."""
     sources = []
-    for record in packet.get("learning_history", []):
-        sources.extend(record["cumulative_sources"])
+    for historical in packet.get("learning_history", []):
+        sources.extend(historical["cumulative_sources"])
+    if packet.get("selection") is not None:
+        sources.extend(packet["selection"]["cumulative_sources"])
     for policy in [packet["parent_policy"], *packet.get("complementary_policies", [])]:
         sources.extend(policy["cumulative_sources"])
     if "feedback" in packet:
@@ -229,4 +231,138 @@ class SystemSearchArchive:
         record = {"branch": branch, "cohort_id": cohort_id, "measurements": measurements,
                   "frontier": frontier, "active_ids": selected_ids, "status": "search-only-not-adopted"}
         self._write(f"selections/{branch}-{content_hash(cohort_id)}.json", record)
+        return record
+
+    def retain_feedback(self, *, protocol, stage_name, feedback, evaluation, branch, selected_ids,
+                        retain_parent=False):
+        """Record root's choice using verified official measurements, never manual scores.
+
+        The CLI binds evaluation to the countersigned READ recipe. Root applies
+        its registered own-A/A protection and tie-breaks before calling this
+        method. This custody layer does not invent a statistical guard or adopt
+        a policy. The first selected ID is the next quality parent/finalist.
+        """
+        from .system_search_protocol import require_stage_feedback, stage_for
+        from .system_text_feedback import CompleteSystemFeedback
+        from .system_text_policy import assert_roster_disjoint
+
+        require(branch in {"L", "B"} and stage_name in {"update-1", "update-2", "update-3", "selection"},
+                "selection requires a registered TRAIN update or common selection stage")
+        require(isinstance(feedback, CompleteSystemFeedback), "complete verified feedback is required")
+        require_stage_feedback(protocol, stage_name, feedback)
+        d = feedback.as_json()
+        require(d["family_id"] == stage_name and bool(d.get("read_authority")), "selection family/read authority differs")
+        require(set(evaluation) == {"schema", "stage", "protocol_sha256", "member_bindings"}
+                and evaluation["schema"] == "saea-system-search-evaluation-binding-v1"
+                and evaluation["stage"] == stage_name
+                and evaluation["protocol_sha256"] == content_hash(protocol), "selection protocol binding differs")
+        bindings = evaluation["member_bindings"]
+        require(set(bindings) == set(d["summaries"]), "selection must bind every admitted member")
+        sources = d["feedback"]["sources"]
+        require(len(sources) == len(bindings) and {s["candidate_id"] for s in sources} == set(bindings),
+                "selection source family differs")
+        ids = stage_for(protocol, stage_name)["sample_ids"]
+        policies = {}
+        for source in sources:
+            cid = source["candidate_id"]
+            binding = bindings[cid]
+            require(set(binding) == {"bundle_id", "run_id", "config_hash"}
+                    and all(binding[key] == source[key] for key in ("run_id", "config_hash")),
+                    "measured run/config differs from preregistered policy binding")
+            sha(binding["config_hash"])
+            policies[cid] = self.load_policy(binding["bundle_id"])
+            assert_roster_disjoint(policies[cid].as_json()["cumulative_sources"], ids)
+        seed_id = protocol["seed_bundle"]["bundle_id"]
+        pairs = [("seed", "seed-aa")] if stage_name == "selection" else [
+            (b + "-parent", b + "-parent-aa") for b in ("L", "B")]
+        for parent, aa in pairs:
+            require(bindings[parent]["bundle_id"] == bindings[aa]["bundle_id"], "same-chain A/A policy differs")
+        seed_member = "seed" if stage_name == "selection" else "B-parent"
+        require(bindings[seed_member]["bundle_id"] == seed_id, "blind evaluation parent must remain the frozen seed")
+        parent = "seed" if stage_name == "selection" else branch + "-parent"
+        aa = "seed-aa" if stage_name == "selection" else branch + "-parent-aa"
+        members = [parent, *sorted(cid for cid in bindings if cid.startswith(branch + "-") and cid not in {parent, aa})]
+        all_measurements = [{"candidate_id": cid, "bundle_id": bindings[cid]["bundle_id"],
+            "cohort_id": content_hash(ids), **{k: d["summaries"][cid][k] for k in OBJECTIVES}}
+            for cid in members]
+        # A repeated identical bundle is a replicate, not another selectable
+        # policy. Use the designated comparator first, then fixed slot order;
+        # preserve all repeats without choosing their most favorable draw.
+        measurements, repeats, seen = [], [], set()
+        for row in all_measurements:
+            (repeats if row["bundle_id"] in seen else measurements).append(row)
+            seen.add(row["bundle_id"])
+        frontier = pareto_frontier(measurements)
+        require(0 < len(selected_ids) <= 2 and len(set(selected_ids)) == len(selected_ids),
+                "retain at most two distinct active search candidates")
+        require(type(retain_parent) is bool, "parent fallback must be explicit")
+        if retain_parent:
+            require(selected_ids == [bindings[parent]["bundle_id"]], "fallback must keep only the measured parent")
+        else:
+            require(set(selected_ids) <= {r["bundle_id"] for r in frontier}, "active selection must be non-dominated")
+        # Losing and unused same-branch policies influenced selection too.
+        ancestry = cumulative_sources([policies[cid] for cid in [*members, aa]])
+        ancestry = cumulative_sources([], [*ancestry, {"kind": "feedback", "sha256": content_hash(d["reference"]),
+            "sample_ids": d["reference"]["sample_ids"]}])
+        record = {"schema": "saea-system-search-retention-v1", "branch": branch, "stage": stage_name,
+            "protocol_sha256": content_hash(protocol), "feedback_sha256": content_hash(d),
+            "read_authority": d["read_authority"], "cohort_id": content_hash(ids),
+            "member_bindings": {cid: bindings[cid] for cid in [*members, aa]},
+            "measurements": measurements, "frontier": frontier, "active_ids": list(selected_ids),
+            "duplicate_bundle_replicates": repeats,
+            "same_chain_aa": {"candidate_id": aa, **d["summaries"][aa]},
+            "parent_fallback": retain_parent, "status": "search-only-not-adopted",
+            "statistical_review": "Root applies the registered own-A/A guard and tie-breaks; no automatic verdict."}
+        ancestry.append({"kind": "selection", "sha256": content_hash(record), "sample_ids": list(ids)})
+        record["cumulative_sources"] = cumulative_sources([], ancestry)
+        record["selection_sha256"] = content_hash(record)
+        self._write(f"retentions/{stage_name}/{branch}.json", record)
+        return record
+
+    def _selection(self, *, protocol, stage_name, feedback, branch):
+        require(stage_name in {"update-1", "update-2", "update-3", "selection"} and branch in {"L", "B"},
+                "invalid selection identity")
+        path = self.root / f"retentions/{stage_name}/{branch}.json"
+        require(path.exists(), "complete same-stage selection is missing")
+        record = json.loads(path.read_text())
+        require(record.get("selection_sha256") == content_hash({k: v for k, v in record.items() if k != "selection_sha256"})
+                and (record["stage"], record["branch"]) == (stage_name, branch), "selection identity changed")
+        require(record["protocol_sha256"] == content_hash(protocol)
+                and record["feedback_sha256"] == content_hash(feedback.as_json()), "selection protocol/feedback changed")
+        for identity in record["active_ids"]:
+            self.load_policy(identity)
+        return record
+
+    def learning_selection(self, *, protocol, round_index, feedback, parent_id, complementary_ids):
+        """Bind later L inputs to the earlier recorded choice; never call for B."""
+        require(round_index in (1, 2, 3), "invalid learning round")
+        if round_index == 1:
+            require(parent_id == protocol["seed_bundle"]["bundle_id"] and not complementary_ids,
+                    "first learning round must use the frozen seed")
+            return None
+        record = self._selection(protocol=protocol, stage_name=f"update-{round_index - 1}", feedback=feedback, branch="L")
+        require(parent_id == record["active_ids"][0], "learning parent differs from recorded selection")
+        require(len(complementary_ids) == len(set(complementary_ids))
+                and set(complementary_ids) <= set(record["active_ids"][1:]), "complementary policy was not retained")
+        return record
+
+    def freeze_finalists(self, *, protocol, feedback):
+        """Freeze common-cohort choices and all selection exposure before DEV."""
+        from .system_search_protocol import require_stage_feedback, stage_for
+        from .system_text_policy import assert_roster_disjoint
+        require_stage_feedback(protocol, "selection", feedback)
+        selections = {b: self._selection(protocol=protocol, stage_name="selection", feedback=feedback, branch=b)
+                      for b in ("L", "B")}
+        sources = cumulative_sources([], [s for r in selections.values() for s in r["cumulative_sources"]])
+        assert_roster_disjoint(sources, stage_for(protocol, "dev")["sample_ids"])
+        seed_id = protocol["seed_bundle"]["bundle_id"]
+        record = {"schema": "saea-system-search-finalists-v1", "protocol_sha256": content_hash(protocol),
+            "feedback_sha256": content_hash(feedback.as_json()),
+            "selections": {b: r["selection_sha256"] for b, r in selections.items()},
+            "members": {"seed": seed_id, "seed-aa": seed_id,
+                        **{b + "-frozen": r["active_ids"][0] for b, r in selections.items()}},
+            "dev_roster_sha256": content_hash(stage_for(protocol, "dev")["sample_ids"]),
+            "cumulative_sources": sources, "status": "frozen-for-dev-not-adopted", "runtime_admission": "separate-required"}
+        record["freeze_sha256"] = content_hash(record)
+        self._write("finalists.json", record)
         return record
