@@ -1,0 +1,74 @@
+{
+  "allowance": "docs/receipts/owner/2026-10-01-slurp-test-sample-successor1-allowance-v1.json",
+  "campaign_pid_observed": 1322,
+  "campaign_started_at": "2026-10-01T03:13:51Z",
+  "checks": {
+    "derived_media_confinement": "PASS; new output archived separately; historical receipt restored byte-for-byte",
+    "effect_floor": "PASS with 18 historical advisories",
+    "engineering_base": "PASS",
+    "finite_completion": "PASS",
+    "harness": "PASS",
+    "openjiuwen_reuse": "PASS all six proofs",
+    "preflight_both_cells": "PASS; correct source, 3010 rows, own prepared artifacts identity/seed valid; not actual full FIT",
+    "registration": "PASS both members, zero blocking, inherited tuning-roster advisory",
+    "results_ledger": "PASS with 181 historical findings",
+    "serializer_and_configuration_tests": 11,
+    "stage3_algorithm": "PASS",
+    "tool_catalog": "PASS"
+  },
+  "custody_reconciliation": "coordination/slurp-milestone-successor1-v1/stale-custody-reconciliation.json",
+  "driver_pid_observed": 1232,
+  "driver_started_at": "2026-10-01T03:13:48Z",
+  "frozen_commit": "77a038f038725aee87358f71e8e18f7211a098ae",
+  "frozen_worker": "/home/chao/saea-worktrees/fable-testsampleruntime",
+  "generation_order": [
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1"
+  ],
+  "held": [
+    "F1 GPU until full registration/FIT/smoke/admission and sequencing",
+    "P-SV-4 pending coordinator disposition",
+    "Audio2Tool and E21 under decision211"
+  ],
+  "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+  "no_auto_retry": true,
+  "operational_status": {
+    "attempt_state": null,
+    "completed_steps": [],
+    "current_step": {
+      "cell": "slurp-milestone-successor1-comp1b-v1",
+      "order": 1,
+      "short": "milestone-successor1"
+    },
+    "handoff_required": false,
+    "ignored_incomplete_tail": false,
+    "manifest_status": null,
+    "reason": null,
+    "state": "running",
+    "status_parse_error": null,
+    "telemetry": {
+      "age_seconds": 10.412,
+      "gpu_memory_used_mib": 22954.0,
+      "gpu_power_watts": 6.39,
+      "gpu_utilization_percent": 0.0,
+      "sampled_at": 1790824629.7238739,
+      "server_ok": true,
+      "service_requests_total": 0,
+      "slots_busy": 0,
+      "slots_total": 4,
+      "warnings": []
+    }
+  },
+  "owner_decision": 213,
+  "queue_handover": "coordination/slurp-milestone-successor1-v1/queue-handover.json",
+  "read_gate": "Both independent verified seals plus exactly one official score each; root countersigned fresh READ row. No quality read yet.",
+  "recorded_at": "2026-10-01T03:17:20.139975+00:00",
+  "reuse_basis": "Clean completed implementation checkout; previous commit is in main history; no process used it; detached for this flight. Old failed worker at 4f536851 remains untouched.",
+  "reused_checkout_previous_commit": "bd41ba7e774d7789a0b903818f46972390d0d0ee",
+  "rows_per_member": 3010,
+  "schema": "saea-successor-launch-receipt-v1",
+  "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "session_started_at": "2026-10-01T03:10:56.492238+00:00",
+  "windows_free_gib_observed": 22.19,
+  "windows_task": "SAEA-Batch-Driver"
+}

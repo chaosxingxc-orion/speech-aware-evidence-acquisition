@@ -5,12 +5,42 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Fresh authorized milestone launched: 2026-10-01T03:13:51Z
+
+Owner decision 213 explicitly authorizes the fresh original PLAN/COMP-1b pair,
+3010 complete trajectories per member, 6020 total. ChatGPT root implemented the
+successor and coordinates this flight. The failure snapshot below is historical.
+The shared baseline, role graph, knowledge, roster, model, output cap, thresholds
+and analysis method are unchanged; F1 opportunity tools remain disabled here.
+
+Code and registration are merged to main. The worker is frozen at
+`77a038f038725aee87358f71e8e18f7211a098ae` in the reused, clean, completed WSL checkout
+`/home/chao/saea-worktrees/fable-testsampleruntime`. Its previous commit is preserved
+in history. The old failed worker at `4f536851` and all old attempt bytes stay
+unchanged, unread and unscored. Old lock/control files and serving-epoch files were
+archived with hashes after PID/socket quiescence, solely for this authorized new dispatch.
+
+Windows task `SAEA-Batch-Driver` independently owns the campaign; the live driver
+started 03:13:48Z and the campaign 03:13:51Z. PLAN is first, COMP-1b second, with no
+smoke. Both operational preflights and the whole-campaign registration gate passed;
+actual full-request FIT is still a runtime prerequisite, not proven by the rough
+preflight token estimate. The freshly loaded standard decoder-only session started
+03:10:56Z (`--no-mmproj`, 4 x 24576 context, max512); 10-second monitoring is live.
+Latest inspected Windows reserve was 22.19 GiB. No model-quality outputs were read.
+
+Use [the launch receipt](../receipts/continuation/2026-10-01-milestone-successor1-launch.json)
+and current process/attempt metadata. Inspect both members, not only the outer
+COMP-1b queue row. Any attempt failure stops this successor; no automatic recovery,
+reseal, retry or scoring replay. Root reads only after both verified seals and one
+official score per member, then countersigns the new READ row. P-SV-4 and other
+carriers remain held. F1 has four own supplies ready but its GPU work is not queued.
+
 ## Implementation checkpoint: 2026-10-01T02:32:12.261686+00:00 (ChatGPT root)
 
 The owner explicitly approved implementing the slot-knowledge opportunity plan.
 The [implementation package](../readiness/2026-10-01-slurp-knowledge-opportunity-v1/README.md)
 records the decisions, prepared F1 cells, dependencies and F2/F3 boundaries.
-Code is isolated on `codex/slurp-next-phase`; integrate serially at a run boundary.
+Code was integrated serially to main; the running worker remains frozen separately.
 No service, GPU flight, STOP marker, old attempt or task-result read was changed.
 
 Implemented: future-manifest allowance serialization; authored slot target indices;
