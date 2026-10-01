@@ -1,5 +1,31 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current continuation checkpoint: 2026-10-01T23:04:46Z, ChatGPT root
+
+Owner214's update-1, update-2, update-3 and common-selection cohorts now have
+exact 400-row native runtime views. The existing subset builder supports
+registered nonzero offsets while preserving the historical default bytes.
+The native loader verified both full TRAIN parents and all four selected views
+against actual audio hashes, duration and sample rate with four workers. Source
+pins, ordered rosters, seed ancestry and zero seed-source overlap are recorded
+in [runtime preparation](../readiness/2026-10-01-slurp-system-text-search-v1/runtime-views-v1.md).
+These are the already registered 1,600 inputs, not extra sampling.
+
+The current CONTROL-V2 seed has an original parent. `import-seed` now verifies
+that parent through the same archive before storing the corrected seed; missing
+parents or dropped exposure fail closed. The related797 tests pass, with99%
+statement coverage for the preparation command. See
+[validation](../receipts/continuation/2026-10-01-system-text-runtime-views.json).
+The two historical frozen capacity-label findings remain unchanged and are not
+waived. No model, scorer or scientific-result read was added.
+
+Owner216 scoring-entry recovery and the proposer output-budget decision remain
+pending. Preserve CONTROL2's worker, caches, all generation/scoring bytes and
+STOP. Initial feedback is still unreadable. At22:55:47Z the driver still needed
+handoff; the serving session was healthy and idle, Windows had17.67GiB free.
+Actual candidate TRAIN supply/FIT and flight registrations remain prospective;
+metadata preparation grants no runtime authority or release of held carriers.
+
 ## Current continuation checkpoint: 2026-10-01T22:42:15Z, ChatGPT root
 
 The owner214 common-selection connection is implemented. `freeze-selection`
@@ -201,7 +227,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-01T22:42:15Z · maintainer: ChatGPT root.
+Last refreshed: 2026-10-01T23:04:46Z · maintainer: ChatGPT root.
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

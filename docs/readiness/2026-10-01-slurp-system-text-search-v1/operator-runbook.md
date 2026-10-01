@@ -59,8 +59,11 @@ called. Use the corrected seed in `protocol-control-v2.json`; the original
 ## Initial feedback and each update
 
 Import the prepared seed with `import-seed --bundle <data-root seed-policy.json>`
-and an archive outside Git. The bundle identity in `protocol.json` is the seed
-identity, not a scientific winner.
+and an archive outside Git. For the current CONTROL-V2 seed, import the original
+seed first and the corrected seed second: the importer verifies its recorded
+parent chain and refuses dropped cumulative exposure. Use the corrected seed ID
+from `protocol-control-v2.json`, not an older seed or a scientific winner.
+See [runtime views and seed ancestry](runtime-views-v1.md) for the exact files.
 
 Register the complete family and exact member-to-run bindings before generation.
 A family specification has exactly `family_id`, `expected_members`, `bindings`,
@@ -139,8 +142,11 @@ only objectively invalid imports may be excluded. Copy the registration and
 its evaluation map into the prospective READ recipe. Failure after admission
 never permits a partial-family update. See [update-stage custody](update-stage-custody-v1.md).
 The executable candidate flight registrations and coordinator admissions have
-not yet been materialized. Common-selection membership now has its own offline
-freeze described below.
+not yet been materialized. The exact TRAIN dataset fragments for all three
+updates and common selection are now prepared and verified with the existing
+native loader; their [receipt](runtime-views-v1.json) is metadata evidence only.
+Bind each actual member's own TRAIN supplies and FIT before admission.
+Common-selection membership has its own offline freeze described below.
 
 ## Selection and scientific read
 

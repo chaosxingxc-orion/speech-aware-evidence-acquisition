@@ -179,7 +179,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     archive = SystemSearchArchive(args.archive)
     if args.command == "import-seed":
-        bundle = SystemTextPolicyBundle.from_json(read(args.bundle))
+        document = read(args.bundle)
+        parents = [archive.load_policy(identity) for identity in document.get("parent_ids", [])]
+        bundle = SystemTextPolicyBundle.from_json(document, parents=parents)
         print(json.dumps({"bundle_id": archive.store_policy(bundle)}))
     elif args.command == "feedback":
         value = read_family(args.family)

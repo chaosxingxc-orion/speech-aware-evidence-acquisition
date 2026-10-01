@@ -1,0 +1,142 @@
+{
+  "contacts": {
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "limits": "Metadata and TRAIN media verification only. No task answers or quality read. Recheck cumulative sources, own supply, FIT and admission for every future candidate.",
+  "no_runtime_authority": true,
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v2.json",
+    "sha256": "b4ebf8662f1bce1f60dc347d87291c3fac6e53605f1096b88365c361cd7670f8"
+  },
+  "schema": "saea-system-text-runtime-views-v1",
+  "seed_ancestry": [
+    {
+      "bundle_id": "9bb4e33feb372b21fab3b139aa246c060e9d12f292ff74952c5b0b6c122195ca",
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SEARCH-V1/seed-policy.json",
+      "sha256": "8f0b1d1b648f9fe24f602e997b516145a7a376ad2734653f25407a35fd4655aa"
+    }
+  ],
+  "seed_bundle": {
+    "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SEARCH-CONTROL-V2/seed-policy.json",
+    "sha256": "caf7f06ef1047fbf6103de8395da7c09e787f32a203aeb230cb211eabd236235"
+  },
+  "stages": [
+    {
+      "audio_seconds_total": 1133.6675,
+      "count": 400,
+      "native_media_verification": "PASS",
+      "parent_runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+        "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+      },
+      "roster_sha256": "eb58ca76cc3b1ea111afb61590ae381f9e69879c48b1adff13366203909c7ab5",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-update-1-400-v1.json",
+        "sha256": "4163468a511ea20208fb84307f46cba5b7cf0f9c1fc4d5352d2ad194ee4937c7"
+      },
+      "runtime_view_sha256": "1674fc95ecee2fb7b13ee0832a69aafe88022d18f0dd4cad0fae550b36396340",
+      "seed_source_overlap_utterances": 0,
+      "slice_start": 0,
+      "source_binding_sha256": "0b0fba92c6018ea3d213d380a7a4509453ad62c91431fa00b2227a72605c5477",
+      "source_roster": {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+      },
+      "split_identity_hash": "b6aff98ec3674ac42fd0dce87f8635036bca6e52a23d84ee331f6a0c886cfd83",
+      "stage": "update-1",
+      "subset_receipt": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-update-1-400-v1.json",
+        "sha256": "82c80efca9dc9caf44342c05f24b8f799ef3bbde53bf72fa4862f519faadd8e5"
+      }
+    },
+    {
+      "audio_seconds_total": 1159.3476875,
+      "count": 400,
+      "native_media_verification": "PASS",
+      "parent_runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+        "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+      },
+      "roster_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+        "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+      },
+      "runtime_view_sha256": "ac85a8cce62a5e7d92b5943ad2f9ab59d741c54b7b50e3efc4a17aef20ea98c0",
+      "seed_source_overlap_utterances": 0,
+      "slice_start": 400,
+      "source_binding_sha256": "699ca3fd8a04d6e49674ad65ae7a1d3c660fb100645c611a136cc9a5f1115a46",
+      "source_roster": {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+      },
+      "split_identity_hash": "643e845970aeac0a5ab6093b52fc6577b328a4a0aeef3a7c1056ee64a8980e04",
+      "stage": "update-2",
+      "subset_receipt": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-update-2-400-v1.json",
+        "sha256": "ca3ec9d7cb1269018c7e01b5812a3a74474db9ea177c7512b0e6ab5df8f619d5"
+      }
+    },
+    {
+      "audio_seconds_total": 1186.239375,
+      "count": 400,
+      "native_media_verification": "PASS",
+      "parent_runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-evo-fold-b-1080.json",
+        "sha256": "1d30c501612686004936b5dd295885d9452175e6449b4a66187c08227a322cea"
+      },
+      "roster_sha256": "ada3e97d87017cadd3d05cb2cf3ed149ffa1af38f395c42987dbef917cc14dea",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-update-3-400-v1.json",
+        "sha256": "1e25defe0ab41a6fe080443ceddaf71d691b3d8d514c3ed700e5b3750b184843"
+      },
+      "runtime_view_sha256": "17ad15e044c74503e771b0c09cdfc89dcfb2736c881d998a83ad0a46f12a5de9",
+      "seed_source_overlap_utterances": 0,
+      "slice_start": 0,
+      "source_binding_sha256": "3d523a39e268590c91aa29c71319e08261bbd77dc74286570f3fdf4aa1320684",
+      "source_roster": {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+      },
+      "split_identity_hash": "d93537b48e837dd872695b3ba93f21047f40f008b07fbdfb7c1e6735c21a7d0a",
+      "stage": "update-3",
+      "subset_receipt": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-update-3-400-v1.json",
+        "sha256": "71a98d59b80c7e88ca3495a0bd6898fe143c319e3e2c5696bb1ec83e34e496d4"
+      }
+    },
+    {
+      "audio_seconds_total": 1155.5011875,
+      "count": 400,
+      "native_media_verification": "PASS",
+      "parent_runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-evo-fold-b-1080.json",
+        "sha256": "1d30c501612686004936b5dd295885d9452175e6449b4a66187c08227a322cea"
+      },
+      "roster_sha256": "4806dd648886702c623a0ced21a874a88f6b50ecb83e3807754b5465dc3269a4",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-selection-400-v1.json",
+        "sha256": "10ed68bdb8505bbd570e7cb4df7f144e0d79856b6cecb6dc75ff6939245043e6"
+      },
+      "runtime_view_sha256": "546a460e3afc200cbe3586ce3963bd214dc59e74b75d3c7daee28c156d297e90",
+      "seed_source_overlap_utterances": 0,
+      "slice_start": 400,
+      "source_binding_sha256": "a0f32e4f9c0b85e150a982d4b0d4a4b42e467738a47f42de72608d4392c6453d",
+      "source_roster": {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+      },
+      "split_identity_hash": "f5b714cc4b0ffc351d67ad96025a2faac19f69c29f5b4924612f5ed139fafc60",
+      "stage": "selection",
+      "subset_receipt": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-selection-400-v1.json",
+        "sha256": "687c17ab0bbcd1dfd8e493e1d0562bb2c5e0d66cee94dc9c10e3abe56f80e041"
+      }
+    }
+  ],
+  "workers": 4
+}

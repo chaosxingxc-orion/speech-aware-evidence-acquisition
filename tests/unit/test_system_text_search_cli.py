@@ -18,6 +18,26 @@ def write(path, data):
     return str(path)
 
 
+def test_import_corrected_seed_keeps_and_verifies_ancestry(tmp_path):
+    from speech_aware_evidence_acquisition.rails.system_search_archive import SystemSearchArchive
+    archive = tmp_path / "archive"
+    prefix = ["--archive", str(archive), "import-seed", "--bundle"]
+    parent = SystemTextPolicyBundle.from_json(seed_document())
+    child = parent.as_json()
+    child["parent_ids"] = [parent.bundle_id]
+    child["role_text"]["planner"] += " Return one exact legal control token."
+    child_path = write(tmp_path / "child.json", child)
+    with pytest.raises((ValueError, FileNotFoundError)):
+        cli.main(prefix + [child_path])
+    cli.main(prefix + [write(tmp_path / "parent.json", parent.as_json())])
+    cli.main(prefix + [child_path])
+    loaded = SystemSearchArchive(archive).load_policy(cli.content_hash(child))
+    assert loaded.as_json() == child
+    child["cumulative_sources"] = []
+    with pytest.raises(PolicyError, match="ancestry"):
+        cli.main(prefix + [write(tmp_path / "shrunk.json", child)])
+
+
 def test_blind_session_import_and_shared_compilation_without_model_contacts(tmp_path, monkeypatch, capsys):
     archive = tmp_path / "archive"
     prefix = ["--archive", str(archive)]

@@ -1,0 +1,62 @@
+{
+  "schema": "saea-system-text-runtime-preparation-validation-v1",
+  "owner_decision": 214,
+  "base_commit": "01cdf4d98023ace7f0336608f12760da9e54a6c0",
+  "implementation_worktree": "/home/chao/saea-worktrees/codex-system-text-policy",
+  "runtime_preparation": "docs/readiness/2026-10-01-slurp-system-text-search-v1/runtime-views-v1.json",
+  "stages": ["update-1", "update-2", "update-3", "selection"],
+  "distinct_registered_inputs": 1600,
+  "parent_views_verified": 2,
+  "selected_views_verified": 4,
+  "verification": "Existing native loader checked live TRAIN media hashes, duration and sample rate with four workers. All selected lists exactly match the protocol order. Pinned seed and full ancestor chain are validated; cumulative seed-source overlap is zero.",
+  "default_subset_compatibility": "The already registered R01C400 runtime view and receipt are reproduced identically. Only nonzero offsets use the v2 subset receipt.",
+  "seed_import_correction": "Import the original seed first, then CONTROL-V2. Resolve parents through the same archive and reject missing or reduced ancestry before storing the child.",
+  "tests": {
+    "scope": "All tests/unit/test_system*.py plus runtime_subset, data_slurp, core_roster and runtime_population_selection",
+    "passed": 797,
+    "failed": 0,
+    "skipped": 0,
+    "warnings": 3,
+    "warning_scope": "Existing dependency deprecations",
+    "seconds": 67.76,
+    "statement_coverage_percent": {
+      "prepare_system_text_runtime_views": 99,
+      "runtime_subset": 92,
+      "system_text_search_cli": 92
+    },
+    "coverage_evidence": "/tmp/saea-runtime-final.coverage"
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "tool_catalog": "PASS",
+    "finite_completion_policy": "PASS",
+    "handoff_freshness": "PASS",
+    "experiment_handoff": "No errors; historical snapshot and local-edit warnings only, execution authority not evaluated",
+    "stage3_algorithm_label": "Existing two frozen native-capacity fragments still fail for empty operators_used. Unchanged and not waived; previously recorded in the proposer isolation/responses receipts.",
+    "diff_whitespace": "PASS"
+  },
+  "last_operational_check": {
+    "observed_at": "2026-10-01T22:55:47Z",
+    "driver_state": "handoff-required",
+    "aa_attempt_state": "OPENED",
+    "manifest_flag": "COMPLETED",
+    "manifest_flag_is_scored_completion": false,
+    "server_ok": true,
+    "telemetry_age_seconds": 4.52,
+    "slots_busy": 0,
+    "slots_total": 4,
+    "gpu_memory_mib": 22976,
+    "gpu_utilization_percent": 0,
+    "windows_free_gib": 17.67,
+    "disposition": "Known pending owner216 wait; no new failure or runtime action. Preserve worker, caches, all generation/scoring bytes and STOP."
+  },
+  "contacts_added": {"model": 0, "tool": 0, "scorer": 0, "gpu": 0},
+  "scientific_result_reads_added": 0,
+  "runtime_authority_added": false,
+  "remaining": [
+    "Owner216 scoring-entry recovery decision and complete initial-family READ gate",
+    "Proposer output-budget decision, exact provider admission and isolated L/B sessions",
+    "Actual candidate TRAIN query/agreement and own supply bindings, FIT and full flight registration",
+    "Fresh candidate cumulative-source checks and coordinator admission"
+  ]
+}
