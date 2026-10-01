@@ -2405,7 +2405,8 @@
   ],
   "restriction": "Analysis-side join keys only; no label, transcript or task output. Stratification must use the authorized official-scoring side after full-family completion. The construction subset is not a fresh population-representative evaluation.",
   "roster_id": "STAGE3-KNOWLEDGE-OPPORTUNITY-R01C400",
-  "schema": "saea-gold-free-analysis-roster-v1",
+  "roster_role": "construction",
+  "schema": "saea-roster-receipt-v1",
   "selection_receipt": "docs/receipts/rosters/slurp-knowledge-opportunity-r01c400-v1.json",
   "source": {
     "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
