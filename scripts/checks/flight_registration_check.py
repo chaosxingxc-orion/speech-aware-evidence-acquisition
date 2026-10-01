@@ -1699,7 +1699,21 @@ def evaluate(
         registered = registered or date_in(entry.fragment.get("date"))
         report.registration_date = registered.isoformat() if registered else None
         report.consumed_by = consumption(data_root, run_id, rows)
-        check_cell(report, cell, entry.fragment, entry.baseline, ledger, data_root, index, receipt_cache)
+        baseline = entry.baseline
+        if baseline is None and cell.get("baseline_fragment") is not None:
+            # A multi-member family may intentionally use different policy bundles.
+            # Resolve this member's baseline instead of silently omitting every
+            # member's FIT and native-tool registration requirements.
+            name = cell["baseline_fragment"]
+            if not isinstance(name, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name) is None:
+                raise FlightRegistrationCheckError("cell baseline must be a plain fragment name")
+            try:
+                baseline = json.loads((repo_root / BASELINE_DIR / f"{name}.json").read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                raise FlightRegistrationCheckError(f"cannot read baseline {name}: {error}") from error
+            if not isinstance(baseline, dict):
+                raise FlightRegistrationCheckError(f"baseline {name} must be an object")
+        check_cell(report, cell, entry.fragment, baseline, ledger, data_root, index, receipt_cache)
 
         if report.consumed_by is not None:
             report.severity = "advisory"

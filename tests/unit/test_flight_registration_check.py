@@ -213,6 +213,23 @@ def test_a_complete_registration_passes_both_modes(world: World) -> None:
     assert arm["package"] == f"docs/readiness/{PACKAGE}"
 
 
+def test_multi_cell_family_checks_each_members_own_fit_identity(world: World) -> None:
+    del world.rows[SMOKE_FIT]
+    world.build()
+    path = world.repo / "configs/experiment" / f"{EXPERIMENT}.json"
+    fragment = json.loads(path.read_text())
+    sibling = json.loads((world.repo / "configs/experiment" / f"{SMOKE}.json").read_text())
+    fragment["cells"].append(sibling["cells"][0])
+    _write(path, fragment)
+    report = world.run(cells=[f"{EXPERIMENT}:{EXPERIMENT}", f"{EXPERIMENT}:{SMOKE}"])
+    arm = next(c for c in report["cells"] if c["cell_id"] == EXPERIMENT)
+    other = next(c for c in report["cells"] if c["cell_id"] == SMOKE)
+    assert arm["run_ids"]["native_contact_fit"] == FIT
+    assert other["run_ids"]["native_contact_fit"] == SMOKE_FIT
+    assert any(f["kind"] == "missing-row" and f["run_id"] == SMOKE_FIT for f in other["findings"])
+    assert not report["passed"]
+
+
 def test_a_draft_flight_row_is_refused(world: World) -> None:
     world.rows[FIT] = _row(FIT, DRAFT)
     data = world.build().run(cells=[EXPERIMENT])

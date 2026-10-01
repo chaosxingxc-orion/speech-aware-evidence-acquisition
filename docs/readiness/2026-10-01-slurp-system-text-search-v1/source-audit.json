@@ -1,0 +1,51 @@
+{
+  "binding_sha256": "36c01efe79c12581ca17238dc17e66a290aaeec04f6c28d06f1deec146d07311",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "rosters": {
+    "dev": {
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+    },
+    "fold_a": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "fold_b": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+    },
+    "r01c": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    }
+  },
+  "seed_bundle": {
+    "bundle_id": "9bb4e33feb372b21fab3b139aa246c060e9d12f292ff74952c5b0b6c122195ca",
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SEARCH-V1/seed-policy.json",
+    "sha256": "8f0b1d1b648f9fe24f602e997b516145a7a376ad2734653f25407a35fd4655aa"
+  },
+  "stores": {
+    "intent-boundaries": {
+      "overlapping_utterances": 0,
+      "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+      "source_count": 2037,
+      "values": 60
+    },
+    "slot-contracts": {
+      "overlapping_utterances": 0,
+      "snapshot_sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec",
+      "source_count": 3162,
+      "values": 54
+    },
+    "train-exemplars": {
+      "overlapping_utterances": 0,
+      "snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "source_count": 34474,
+      "values": 8554
+    }
+  }
+}

@@ -168,6 +168,23 @@ def _register(record: Stage3Algorithm) -> Stage3Algorithm:
     return record
 
 
+SYSTEM_TEXT_BLACK_BOX_V1 = _register(
+    Stage3Algorithm(
+        id="system-text-black-box-v1",
+        family="black-box-text-policy-optimization",
+        display_name="Whole-system reward-guided joint text-policy iteration",
+        citation="docs/readiness/2026-10-01-slurp-system-text-search-v1/README.md",
+        operators=("rollout", "scoring", "credit_assignment", "update", "selection", "context_application"),
+        status="planned",
+        what_it_changes=(
+            "Joint English knowledge-construction, supplied knowledge and role-consumption policies. "
+            "Complete-system official feedback guides bounded external text updates against a feedback-blind "
+            "search. Relative returns describe whole trajectories, not node causal effects or policy gradients; "
+            "no parameter training, invented action probabilities or PPO/GRPO claim."
+        ),
+    )
+)
+
 TFGRPO_SEMANTIC_ADVANTAGE_V1 = _register(
     Stage3Algorithm(
         id="tfgrpo-semantic-advantage-v1",

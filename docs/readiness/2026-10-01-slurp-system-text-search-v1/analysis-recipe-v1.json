@@ -1,0 +1,39 @@
+{
+  "schema": "saea-system-text-analysis-recipe-v1",
+  "recipe_id": "slurp-system-text-three-update-analysis-v1",
+  "registered_at_utc": "2026-10-01T14:40:00Z",
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-READ-V1",
+  "initial_members": {
+    "seed": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-V1",
+    "seed-aa": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-V1"
+  },
+  "scope": "Historically exposed development research. No milestone, test or complementary-test feedback.",
+  "endpoint": "Official pooled SLU-F1; do not average per-row F1 as its substitute.",
+  "primary_final_contrast": "Frozen L minus frozen B on the entire registered DEV roster",
+  "secondary_final_contrast": "Frozen L minus frozen seed on that same roster",
+  "guards": ["intent accuracy", "reliable completion", "actual model/tool contact counts and available token/time telemetry"],
+  "resampling": {"seed": 20261001, "bootstrap_draws": 10000, "unit": "paired utterance; keep all recording variants together", "confidence": 0.95},
+  "report_views": ["official aggregate", "natural mixture", "equal-stratum", "per-scenario counts", "same-chain A/A", "quality-cost frontier"],
+  "reference": "Freeze F_ref once from the initial seed official aggregate, on the zero-to-one scale.",
+  "search_selection": {
+    "status": "Sampling choice only, never scientific adoption",
+    "active_cap_per_branch": 2,
+    "frontier": "Keep all non-dominated measurements on one exact common cohort; quality and intent higher, actual model/tool contacts lower.",
+    "quality_parent": "Among non-dominated candidates passing the own-A/A intent protection, prefer highest official SLU-F1, then intent, then fewer model contacts, then fewer tool contacts, then lexical bundle ID. If none qualifies, keep the parent.",
+    "complementary_survivor": "If available, keep a distinct non-dominated lower-cost candidate; tie-break by SLU-F1, intent, then lexical bundle ID. Retention is capped at two; preserve the full frontier in history.",
+    "blind_rule": "Keep blind proposals independent of every evaluator selection; expose no result or selected parent to B. B evaluation parent remains the seed in all three rounds.",
+    "finalists": "Choose L and B on the common TRAIN selection roster before any DEV result read, with identical quality/intent/cost tie-breaks. Retain all tested candidates and costs in the report."
+  },
+  "read_gate": [
+    "Freeze the complete admitted member-to-run mapping and any pre-contact invalid-proposal exclusions before each stage.",
+    "Require every admitted member FINALIZED, its exact roster and verified seal, and one unique complete official score. A manifest status alone is insufficient.",
+    "Stop on a failed admitted family. Do not convert post-contact failures into exclusions, fabricate feedback, retry automatically or substitute partial rows.",
+    "Countersign the stage-specific READ entry only after the complete-family gate. Root performs scientific interpretation.",
+    "Project L's own branch only after the whole stage is qualified. Recompute relative feedback inside L; never leak B scores through normalization.",
+    "Track feedback, proposal, knowledge construction, unused complementary inputs and selection exposure transitively. Reject future evaluation overlap at utterance level."
+  ],
+  "adoption": "Require confidence intervals, intent protection, replication and the existing Stage-3 measurement floor. Point-estimate search retention is not adoption. Report uncertainty instead of extending the sample.",
+  "final_verdicts": ["combination effective", "feedback learning effective", "insufficient evidence", "no effective solution found"],
+  "claims_not_supported": ["PPO or GRPO", "parameter training", "node-level causal credit", "three independent search replications", "general recursive self-improvement"],
+  "execution_admission": "pending; this recipe is not a generation, scorer replay or scientific-read receipt"
+}

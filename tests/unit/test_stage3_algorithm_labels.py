@@ -40,6 +40,7 @@ EXPECTED_IDS = {
     "none",
     "sealed-credit-system-policy-v1",
     "shared-rollout",
+    "system-text-black-box-v1",
     "tfgrpo-semantic-advantage-v1",
     "tfgrpo-system-memory-disjoint-v1",
 }

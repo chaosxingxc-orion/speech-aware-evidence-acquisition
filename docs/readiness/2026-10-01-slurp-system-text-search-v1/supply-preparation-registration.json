@@ -1,0 +1,15 @@
+{
+  "schema": "saea-model-free-preparation-registration-v1",
+  "registered_at_utc": "2026-10-01T14:33:08Z",
+  "authority": "Owner decision 214 and the explicit system-text implementation request",
+  "experiment": "slurp-native-stage3-system-text-initial-v1",
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SUPPLY-PREPARE-V1",
+  "arms": ["seed", "seed-aa"],
+  "rows_per_arm": 400,
+  "builder": "core.flight.repin.ensure_artifact_pinned with the shared model-free preparation implementation",
+  "workers": 1,
+  "contacts": {"model": 0, "tool": 0, "tokenizer": 0, "encoder": 0, "scorer": 0, "gpu": 0},
+  "output_pattern": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED[-AA]-V1/phase-supply-vN.json",
+  "failure_policy": "Preserve every existing artifact; require identical selected output when a metadata re-pin needs a successor artifact. Refuse changed output. Do not set ready or dispatch.",
+  "dispatch_authority": false
+}

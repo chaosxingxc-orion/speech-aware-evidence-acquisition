@@ -125,6 +125,7 @@ class ComponentSpec:
     states: frozenset[str]
     params: frozenset[str]
     pending: str | None = None
+    optional_params: frozenset[str] = frozenset()
 
 
 AGREE_VOTE_SEED = "agree-vote-seed"
@@ -159,7 +160,8 @@ _COLUMN_OPTIONAL = frozenset({"prepared_seed"})
 
 COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
     ComponentSpec(KNOWLEDGE_CONSUMPTION_OPPORTUNITY, "SUPPLY/USE, bounded knowledge opportunity",
-        frozenset({STATE_ON}), frozenset({"mode", "store_id", "reviewer_template", "planner_template"})),
+        frozenset({STATE_ON}), frozenset({"mode", "store_id", "reviewer_template", "planner_template"}),
+        optional_params=frozenset({"solver_template", "value_limit", "knowledge_binding"})),
     ComponentSpec(CONSTRUCTION_STORE_BINDING, "ORG, source-isolated construction release",
         frozenset({STATE_ON}), frozenset({"store_id", "snapshot", "release"})),
     ComponentSpec(
@@ -572,7 +574,7 @@ def parse_consumption_module_block(
         params = entry.get("params", {})
         if not isinstance(params, Mapping):
             raise ConsumptionModuleConfigError(f"{field}.params must be an object")
-        if armed and set(params) != spec.params:
+        if armed and (not spec.params <= set(params) or set(params) - spec.params - spec.optional_params):
             raise ConsumptionModuleConfigError(
                 f"{field}.params of {component_id!r} must carry exactly "
                 f"{sorted(spec.params)}, got {sorted(params)}"
@@ -913,6 +915,24 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 template = _require_text(params[role + "_template"], field=role + " template")
                 writer.set(("phase_material", role, "instruction_template"), template,
                            component_id=cid, replace_only=True)
+            if "solver_template" in params:
+                template = _require_text(params["solver_template"], field="solver template")
+                writer.set(("phase_material", "solver", "instruction_template"), template,
+                           component_id=cid, replace_only=True)
+            if "knowledge_binding" in params:
+                binding = params["knowledge_binding"]
+                if not isinstance(binding, Mapping) or set(binding) != {"snapshot", "release"}:
+                    raise ConsumptionModuleConfigError("knowledge binding needs snapshot and release")
+                for key, pin in binding.items():
+                    normalized = _pin(pin, field="knowledge binding " + key)
+                    if (normalized["relpath"].startswith("/") or "\\" in normalized["relpath"]
+                            or ":" in normalized["relpath"] or ".." in normalized["relpath"].split("/")):
+                        raise ConsumptionModuleConfigError("knowledge binding must stay under data root")
+                    writer.set(("knowledge_stores", store_id, key), normalized,
+                               component_id=cid, replace_only=True)
+            value_limit = params.get("value_limit", 2)
+            if type(value_limit) is not int or not 1 <= value_limit <= 2:
+                raise ConsumptionModuleConfigError("knowledge opportunity permits one or two values")
             episode = layer["native_episode"]
             if episode["max_revisions"] != 1:
                 raise ConsumptionModuleConfigError("knowledge opportunity requires one revision")
@@ -930,7 +950,7 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 "allowed_tools": ["saea-tool-knowledge-target-lookup-v1"],
                 "knowledge_views": ["text"], "knowledge_store_ids": [store_id],
                 "candidate_limit": 2, "knowledge_values_per_candidate": 1,
-                "knowledge_value_limit": 2, "knowledge_target_axis": "slot-type",
+                "knowledge_value_limit": value_limit, "knowledge_target_axis": "slot-type",
                 "knowledge_selection_mode": params["mode"], "max_calls_per_sample": 1,
             }}, component_id=cid, replace_only=False)
             ceiling += 2

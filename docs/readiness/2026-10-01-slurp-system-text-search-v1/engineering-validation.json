@@ -1,0 +1,48 @@
+{
+  "schema": "saea-system-text-engineering-validation-v1",
+  "observed_at_utc": "2026-10-01T15:03:00Z",
+  "branch": "codex/system-text-policy",
+  "base_commit": "afce16557514f5ab188073745d6bc1baab8c15cc",
+  "contacts_added": {"proposer": 0, "construction": 0, "generation": 0, "fit": 0, "scorer": 0},
+  "tests": {
+    "broader_related_run_passed": 338,
+    "final_new_modules_and_registration_run_passed": 114,
+    "counts_overlap": true,
+    "final_new_core_coverage_percent": 97,
+    "covered_statements": 552,
+    "total_statements": 567,
+    "ruff": "PASS",
+    "coverage_method": "python -m coverage run -m pytest; pytest-cov is not installed and was not installed for this work"
+  },
+  "gates_passed": [
+    "engineering_base_check", "harness_admission_check", "tool_catalog_check",
+    "stage3_algorithm_label_check", "finite_completion_policy_check",
+    "stage3_effect_floor_check", "results_ledger_check",
+    "openjiuwen_native_reuse_check", "derived_media_confinement_check"
+  ],
+  "gate_caveats": [
+    "Effect-floor check retains 18 historical advisories and zero blockers.",
+    "Results-ledger check retains 181 historical findings; umbrella publication cross-check is unavailable from this WSL worktree.",
+    "Whole-tree flight registration has pre-existing historical blockers; unrelated old cells were not changed.",
+    "The new two-member launch gate correctly refuses HELD cells, DRAFT generation/FIT rows and absent coordinator admission receipts. Both members' own FIT identities are now checked.",
+    "Historical tuning/read-roster disclosure is still an advisory gap and must be resolved before launch without claiming fresh validation."
+  ],
+  "model_free_preparation": {
+    "source_audit": "source-audit.json",
+    "supply_registration": "supply-preparation-registration.json",
+    "current_verification": "supply-v2-warm-verification.json",
+    "old_supply_versions_preserved": true,
+    "equal_selected_output": true,
+    "own_fit_and_generation_identities": true,
+    "draft_plan_hashes_match_current_composition": true
+  },
+  "remaining": [
+    "Coordinator serial integration and actual worker freeze",
+    "Historical tuning/read-roster declaration and final contact/read registrations",
+    "Isolated proposer transport with enforced file allowlist, pinned actual GPT6 version and metering",
+    "Real worst-legal-request FIT and separately registered four-row engineering proof",
+    "All initial feedback, three update rounds, common selection and DEV generation/scoring/read gates",
+    "Root final scientific analysis and adoption decision"
+  ],
+  "scientific_claim": "None. No new search trajectories or learned-system measurements exist yet."
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "saea-supply-warm-verification-v1",
+  "arms": [
+    {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-V1",
+      "verified": true,
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-V1/phase-supply-v1.json",
+        "sha256": "0ca736f9f76bceb413d742137a3d51de17394bddbdb7509a87d4f0414f303149"
+      }
+    },
+    {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-V1",
+      "verified": true,
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-V1/phase-supply-v1.json",
+        "sha256": "0ca736f9f76bceb413d742137a3d51de17394bddbdb7509a87d4f0414f303149"
+      }
+    }
+  ],
+  "contacts": 0
+}

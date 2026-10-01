@@ -1,0 +1,34 @@
+{
+  "admission": "Pending serial integration, four-row engineering proof, worst-case real FIT and coordinator countersignature. No generation from this draft.",
+  "cell": "slurp-native-stage3-system-text-initial-seed-aa-v1",
+  "composed_config_hash": "f2cb1cdae93bac9f6d44f846bcbb88f0a3d15547d277d0c9ed889958ab9cee63",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 20800,
+    "planned_speech_audio_seconds": 22685,
+    "protocol_hash": "b903bdaa87e51dae4210895bcb656d8adc7217daa807151e8489dfbfb0c58833",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "39c91b9a2b15eb128be2afbed427827de73b0894d2df3dc7227e065b19a43fdf",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-initial-v1",
+  "frozen_worker_commit": null,
+  "plan_kind": "fit",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-V1/phase-supply-v2.json",
+    "sha256": "ef97770c7d546681e7958901927bfaf5b54080a1e8df710247fca99ca9220ce0"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol.json",
+    "sha256": "5f98a61d86eef168bf5d21a3543e24f732cb6dc1061ef060ece105c3cc2508a1"
+  },
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_branch": "codex/system-text-policy",
+  "status": "HELD_DRAFT_BEFORE_CONTACT"
+}

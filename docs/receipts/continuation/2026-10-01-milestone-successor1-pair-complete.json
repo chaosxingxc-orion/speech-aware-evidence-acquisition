@@ -1,0 +1,46 @@
+{
+  "schema": "saea-continuation-operational-checkpoint-v1",
+  "observed_at": "2026-10-01T15:02:54.084886+00:00",
+  "owner_decision": 213,
+  "frozen_worker_commit": "77a038f038725aee87358f71e8e18f7211a098ae",
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+      "attempt_id": "attempt-slurp-milestone-successor1-plan-generation-v1",
+      "state": "FINALIZED",
+      "outputs_rows": 3010,
+      "seal_verified": true,
+      "manifest_sha256": "1d4fc02bbedbbf6932802eeb7e4aa91dff5a80c614a9ef33f57d06c8429a8898",
+      "score_jobs": 1,
+      "score_jobs_sha256": "12eea71fb35b7c1bc8f3755d28ba40161ac218bc88cbf316ae172f35073d09af",
+      "job_metadata": {
+        "job_id": "attempt-slurp-milestone-successor1-plan-generation-v1"
+      },
+      "contacts_previously_observed": 12305,
+      "score_succeeded": 1,
+      "score_failed": 0,
+      "batch_summary_sha256": "00784ac1575675989ebd02092159f2a97455fa280acbb94fd278df9a3d0aa7df"
+    },
+    {
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1",
+      "attempt_id": "attempt-slurp-milestone-successor1-comp1b-generation-v1",
+      "state": "FINALIZED",
+      "outputs_rows": 3010,
+      "seal_verified": true,
+      "manifest_sha256": "905a64623ef114945e52e1038b7aa2f0c3b018ba68107f83aa29420c27446b46",
+      "score_jobs": 1,
+      "score_jobs_sha256": "6df2d25de96d02ac72d1aca794fdaf3c0c878b7ed231db6336fa19f9e1e8ff3c",
+      "job_metadata": {
+        "job_id": "attempt-slurp-milestone-successor1-comp1b-generation-v1"
+      },
+      "contacts_previously_observed": 12214,
+      "score_succeeded": 1,
+      "score_failed": 0,
+      "batch_summary_sha256": "93452d52754ebf6eae08f18ca90793d77ba5dff6270a8021c2b1ce5def915a01"
+    }
+  ],
+  "scientific_read": "Complete-member operational prerequisites verified. Root READ countersignature and separate scientific interpretation remain pending. No task answers or quality values were emitted or interpreted.",
+  "optimizer_use": "Forbidden. No milestone evidence enters the system-text optimizer.",
+  "actions": "Read-only verification with frozen worker code. No dispatch, restart, reseal, retry, scoring replay, queue or STOP change.",
+  "old_failed_attempt": "Unchanged and unread."
+}

@@ -5,7 +5,40 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
-## Successor PLAN completed; COMP-1b active: 2026-10-01T08:21Z
+## Current checkpoint: 2026-10-01T15:03Z, ChatGPT root
+
+The owner approved joint whole-system text-policy optimization, recorded as
+decision 214 in the isolated `codex/system-text-policy` branch. The implementation
+package is [here](../readiness/2026-10-01-slurp-system-text-search-v1/README.md),
+with an [operator runbook](../readiness/2026-10-01-slurp-system-text-search-v1/operator-runbook.md).
+This replaces the finite-action F2/F3 design for the new sequence. It jointly
+edits knowledge construction, value content, supply and role consumption text,
+with complete-system feedback and a feedback-blind branch over three updates.
+The 16,800-trajectory sequence has not run. No component ablation is a promotion
+prerequisite. No model weights, answering authority or shared execution path change.
+
+Engineering and model-free preparation are committed on the isolated branch for
+coordinator serial integration; the shared active checkout and frozen worker
+were not modified. The initial seed/A/A supplies are individually prepared and
+warm-verified with equal scientific content. Generation/FIT rows remain DRAFT,
+both initial cells HELD. Real capacity and four-row engineering evidence,
+historical tuning/read-roster disclosure, actual isolated proposer transport and
+version pinning, and coordinator admission remain outstanding. Do not dispatch
+from a draft, copy old admission receipts or infer completed trajectories from
+prepared value counts. The final focused regression has 114 passing tests and
+97% coverage over the five new core modules; broader related tests also passed.
+
+The independent successor milestone pair is now operationally complete. Both
+PLAN and COMP-1b are independently FINALIZED with verified seals, 3,010 rows
+each, and exactly one successful official score job each. The
+[pair completion receipt](../receipts/continuation/2026-10-01-milestone-successor1-pair-complete.json)
+records hashes and operational evidence. Root READ countersignature and separate
+scientific interpretation remain pending. No test answers or quality values
+were interpreted or supplied to the text optimizer. Old failed bytes remain
+unchanged and unread. No dispatch, retry, reseal, scoring replay, queue or STOP
+action occurred. P-SV-4, other carriers and older held proposals retain their holds.
+
+## Historical checkpoint: successor PLAN completed; COMP-1b active, 2026-10-01T08:21Z
 
 Operational metadata confirms PLAN FINALIZED with 3,010 sealed output rows and
 12,305 contacts. Its single official score job succeeded (return code 0; zero
