@@ -1,5 +1,44 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current continuation checkpoint: 2026-10-01T21:04:31.407855+00:00, ChatGPT root
+
+The independent owner213 milestone has now been scientifically read under its exact
+root-countersigned READ. The registered criterion is met (protocol label HELD):
+post-stratified intent +5.80 pp, CI95 [4.04, 7.42]; official SLU-F1 +0.79 pp,
+CI95 [-0.44, 2.02], passing the registered non-inferiority guard but not establishing
+a slot gain. Both 3,010-row members remain finalized with one official score each.
+See the [complete report](../results/2026-10-01-slurp-milestone-successor1-read.md)
+and [read receipt](../receipts/continuation/2026-10-01-milestone-successor1-scientific-read.json).
+Do not put this independent milestone feedback into the system-text optimizer.
+No automatic adoption, SLURP lock or release of another held carrier follows.
+
+The CONTROL2 initial family STOPPED at20:48:19Z. Seed is FINALIZED with400 rows
+and one successful official score. A/A generated400 rows but its scoring worker
+failed BEFORE official evaluation at the E0/D3 gate: six Python bytecode caches
+appeared beside frozen scoring sources. Its attempt remains OPENED; the generation
+manifest's COMPLETED flag is not a scored completion. The producing process is
+unestablished. The worker already uses -B and PYTHONDONTWRITEBYTECODE=1.
+Preserve the failed worker, caches, scoring batch, generation and STOP unchanged.
+No initial-family quality or optimizer feedback has been read.
+
+[Proposed owner216](../readiness/2026-10-01-slurp-system-text-initial-control2-v1/score-entry-failure.md)
+requests one scoring-entry recovery of the existing complete A/A, without new
+generation, from a clean checkout of the identical953f9b598 commit. Its original
+E0/D3 gate passes with zero contacts, but authorization is PENDING. The owner has
+been asked; do not infer approval from owner215 or perform automatic recovery.
+Current read-only inspection confirms the driver needs handoff and the service is
+healthy and idle. This intentional wait and already reported failure need no repeat
+notification. The initial READ remains unsigned until the entire family qualifies.
+
+The sparse prepared-supply read correction now follows the actual frozen runtime's
+empty default while still rejecting any prepared/flown mismatch. The same change
+set repairs semantic all-off equivalence for historical Audio2Tool/E21 module
+profiles; immutable profiles and runtime behavior are unchanged. Validation:
+270 related tests passed,2 data-dependent tests skipped;91% combined coverage.
+E22 still has no admitted consumption profile or own null. Exact proposer/version
+admission and the pending output-budget decision remain unresolved. Retain all
+hard bounds, closed lines, P-SV-4/Audio2Tool/E21 holds and proposal isolation gates.
+
 ## Current continuation checkpoint: 2026-10-01T20:25:18.644239+00:00, ChatGPT root
 
 The independent owner213 successor milestone pair passed fresh operational
@@ -109,7 +148,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-01T20:25:18.644239+00:00 · maintainer: ChatGPT root.
+Last refreshed: 2026-10-01T21:06:55+00:00 · maintainer: ChatGPT root.
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

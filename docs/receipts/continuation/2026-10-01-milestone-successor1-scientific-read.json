@@ -1,0 +1,68 @@
+{
+  "automatic_adoption": false,
+  "completed_at_utc": "2026-10-01T20:53:35.447070+00:00",
+  "completion_directory": "analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-READ-V1/completion-v1/vs-aa",
+  "diagnostic_sha256": "c38d354a482c291747fd6e95a309628566a315ece330df8a9900dac966e5e9b8",
+  "new_bootstrap_draws": 0,
+  "new_files": {
+    "README.md": "b09fcbc6494472590809d000d7e3188075d9acb75279dcc82cb80aa5b72fbdef",
+    "frontier.json": "6459f057a171b3452e456fbc89dd03b5a9e5d5f17642e933ff2811f8eef6a187",
+    "stage3_paired_read.corrected.py": "da9485fca9b52ccad58caf388dda183e947636d1febba5514a452669be83b40d",
+    "verdict.json": "c4b0d676c85e74fa7083d83a1e6e0b150ba4aabb5f9773971bc05716cb830503"
+  },
+  "new_generation_contacts": 0,
+  "new_gold_stratification": false,
+  "new_official_score_jobs": 0,
+  "operator_script_sha256": "75afb5a139f8345d0534b037db061beeb1b5d68b14e22b47751b6798dc6a78f7",
+  "optimizer_use": "Forbidden: independent milestone only.",
+  "original_directory": "analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-READ-V1/vs-aa",
+  "original_files_preserved_and_copied": {
+    "efficiency.json": {
+      "bytes": 2896,
+      "sha256": "fb88ec1e77a80c61bef9e3df983051ab299be0b7073216f1adaa6e9956ff7e7d"
+    },
+    "entity-counts.json": {
+      "bytes": 1722,
+      "sha256": "ceb824ab98d61fc513f5ff4749304abaa921a9b30efbc3ad37d687ae5f424e98"
+    },
+    "per-scenario-tables.json": {
+      "bytes": 40774,
+      "sha256": "92822c3e836c5d5adeca3b9ddd1ac054680e7e06cbe62faea1e20b6c01f63011"
+    },
+    "score-contrasts.json": {
+      "bytes": 9603,
+      "sha256": "f1d2b7173b52efa9e41cd64e5ee30b589c46413643dec33c021fd9d0c4d002aa"
+    },
+    "scorer-strata-aggregate.json": {
+      "bytes": 59236,
+      "sha256": "ccc153fd5655a4fd49a3d484736af9a05e636c7dfe4ba956a03ae60ffda9ad2e"
+    },
+    "slurp_paired_roster_read.py": {
+      "bytes": 63526,
+      "sha256": "5c95a2e3627573bda69c10dff1158c0e1c5172b2da8d4fbdcc86ec87ff3161bc"
+    },
+    "stage3_paired_read.py": {
+      "bytes": 85680,
+      "sha256": "67aa05630761abe342e77b7d9a70084b384f6b015bad32b9adf1fdd167593d86"
+    },
+    "stop.json": {
+      "bytes": 2276,
+      "sha256": "d4e386d3080350811b91d27775ed126d0c69cfd02adf4563837888915b12b51b"
+    },
+    "structural.json": {
+      "bytes": 2221,
+      "sha256": "12b121709090645a65aa4ebd9c668099ee6f36f1b75eb511741e36fcd1587466"
+    }
+  },
+  "protocol_result": "HELD",
+  "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-READ-V1",
+  "reader_sha256": "da9485fca9b52ccad58caf388dda183e947636d1febba5514a452669be83b40d",
+  "recipe_sha256": "ebb4031de9e26e511b6bfba7ab8a6e9ea20d1c035f88807f28dd6d68feaea76b",
+  "schema": "saea-registered-analysis-extension-completion-v1",
+  "scientific_report": "docs/results/2026-10-01-slurp-milestone-successor1-read.md",
+  "scientific_report_sha256": "ec16ec12c67701d5384b53708b759a467e40b7b2ede8d621171b7baeb3028281",
+  "supplemental_artifact_pins": {
+    "analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-READ-V1/completion-v1/completion-receipt.json": "9083ad265cd53cf5b0e83caf88258d73388d097105cf5b83f61d3ce45266e4f4",
+    "analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-READ-V1/completion-v1/vs-aa/delivery-conversion.json": "a4dbb0e9329312bd450757b9d9e6893d9ba1d949cc3047d962b30c4307f39bf5"
+  }
+}

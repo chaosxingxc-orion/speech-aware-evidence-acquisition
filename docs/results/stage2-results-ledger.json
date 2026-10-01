@@ -111,7 +111,7 @@
       "comparator_locked_at": "intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06)",
       "own_null_measured": "MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188",
       "own_null_source": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-verdict.md",
-      "cells_flown": 46,
+      "cells_flown": 47,
       "admitted": 2,
       "aligned": 0,
       "neutral": 7,
@@ -119,7 +119,7 @@
       "instrument": 20,
       "closed_unread": 3,
       "pending": 13,
-      "rows": 54,
+      "rows": 55,
       "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used.",
       "reclassification_2026_09_27": "CELL-3's tally moved from rejected to neutral with its adjusted status word (item A6 of the reclassification note)."
     },
@@ -5626,6 +5626,61 @@
       "tally": "pending",
       "flown": false,
       "pending": true,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-MILESTONE-SUCCESSOR1",
+      "carrier": "SLURP",
+      "layer": "Stage-3 independent development milestone",
+      "title": "Original COMP-1b against original PLAN on the owner213 signed sample",
+      "date": "2026-10-01",
+      "run_ids": [
+        "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+        "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1",
+        "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-READ-V1"
+      ],
+      "verdict_note": "docs/results/2026-10-01-slurp-milestone-successor1-read.md",
+      "receipt": "docs/receipts/continuation/2026-10-01-milestone-successor1-scientific-read.json",
+      "preregistration": "docs/readiness/2026-10-01-slurp-milestone-successor1-v1/protocol-registered-v1.json",
+      "status": "HELD",
+      "status_source": "h1",
+      "status_quote": "# HELD under the registered milestone criterion: COMP-1b intent gain retained; slot gain unproven",
+      "comparator": {
+        "text": "Original PLAN, same chain and3010 rows; composition comparator, not a bare-core control.",
+        "source": "docs/results/2026-10-01-slurp-milestone-successor1-read.md"
+      },
+      "rule": {
+        "text": "Intent CI95 lower >0; official SLU-F1 non-inferior at the registered fallback h=1.4492pp.",
+        "source": "docs/results/2026-10-01-slurp-milestone-successor1-read.md"
+      },
+      "primary": {
+        "text": "Post-stratified intent +5.8030pp [4.0389,7.4243]; SLU-F1 +0.7945pp [-0.4448,2.0180]. Equal-stratum +3.0220/+0.9122pp.",
+        "source": "docs/results/2026-10-01-slurp-milestone-successor1-read.md"
+      },
+      "margin": {
+        "text": "Fallback SLURP DEV own null scaled to682 clusters: h_SLU1.4492pp, h_intent1.3329pp; sample own null not measured. Recording-scaled optimistic bounds0.7219/0.664 reported separately.",
+        "source": "docs/results/2026-10-01-slurp-milestone-successor1-read.md"
+      },
+      "margin_kind": "registered same-carrier fallback; not a measured sample own null",
+      "guards": {
+        "text": "Both3010-row sealed/finalized members, one successful official score each; all prepared/flown supply sets equal; SLU non-inferiority passes.",
+        "source": "docs/results/2026-10-01-slurp-milestone-successor1-read.md"
+      },
+      "harness_admission": null,
+      "citable_sentence": "none; development milestone only",
+      "cost": {
+        "text": "12305 ->12214 contacts;4.6854 ->4.9392 active GPU hours.",
+        "source": "docs/results/2026-10-01-slurp-milestone-successor1-read.md"
+      },
+      "next_step": {
+        "text": "Retain intent evidence; no slot-gain, learning or carrier-release claim. Exclude milestone from owner214 optimization.",
+        "source": "docs/results/2026-10-01-slurp-milestone-successor1-read.md"
+      },
+      "umbrella_values": [],
+      "notes": "Root complete-family read; original partial analysis preserved and missing report extensions completed without statistical rerun. The protocol HELD verdict does not itself confer formal harness adoption, so its adoption tally is none.",
+      "tally": "none",
+      "flown": true,
+      "pending": false,
       "provisional": null
     }
   ],

@@ -1,0 +1,83 @@
+{
+  "cache_files": [
+    {
+      "bytes": 803,
+      "modified_at_utc": "2026-10-01T19:56:29.330197+00:00",
+      "path": "src/speech_aware_evidence_acquisition/scoring/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "8f2e428d6afe148ced3237c5f724d0da66ed4eb41ba47dedc176fb9382e1b207"
+    },
+    {
+      "bytes": 2870,
+      "modified_at_utc": "2026-10-01T19:56:29.330197+00:00",
+      "path": "src/speech_aware_evidence_acquisition/scoring/__pycache__/entity.cpython-312.pyc",
+      "sha256": "024e086fd77a5cc0e2158c5d3ea2128d6c631ad9f35681daabc72f465f246db5"
+    },
+    {
+      "bytes": 3418,
+      "modified_at_utc": "2026-10-01T19:56:29.334197+00:00",
+      "path": "src/speech_aware_evidence_acquisition/scoring/__pycache__/normalize.cpython-312.pyc",
+      "sha256": "9298e41b9b73019f1f5c8c768d3f2590deecd5ccf1eee3c56c6d4717bcfa8bb9"
+    },
+    {
+      "bytes": 2349,
+      "modified_at_utc": "2026-10-01T19:56:29.334197+00:00",
+      "path": "src/speech_aware_evidence_acquisition/scoring/__pycache__/qa.cpython-312.pyc",
+      "sha256": "4c94894d6eb30846d8fd35d5d532c582f45f3533b0fdd1342add5f6f258980b8"
+    },
+    {
+      "bytes": 3235,
+      "modified_at_utc": "2026-10-01T19:56:29.334197+00:00",
+      "path": "src/speech_aware_evidence_acquisition/scoring/__pycache__/transitions.cpython-312.pyc",
+      "sha256": "dcdc4ee198271f697e4b2baafecfbd022c229cc34303e20d9d22a35f6d47d54d"
+    },
+    {
+      "bytes": 4485,
+      "modified_at_utc": "2026-10-01T19:56:29.334197+00:00",
+      "path": "src/speech_aware_evidence_acquisition/scoring/__pycache__/wer.cpython-312.pyc",
+      "sha256": "16a21fd9ab1b97f69870e6fba7bc1358ee8e1b727ac6383caa2bc79a60f91611"
+    }
+  ],
+  "cache_producer": "Not established. Do not attribute from timestamps alone.",
+  "campaign_exit_at_utc": "2026-10-01T20:48:14Z",
+  "clean_successor_source": {
+    "bytecode_caches": 0,
+    "commit": "953f9b598adba1df7c424c755993713087428823",
+    "e0_d3_gate": "PASS",
+    "model_contacts": 0,
+    "official_evaluations": 0,
+    "path": "/home/chao/saea-worktrees/codex-system-text-score-entry-recovery1"
+  },
+  "disposition": "Owner216 proposed, pending. No retry, scorer replay, STOP reconciliation, source mutation or partial-family quality read.",
+  "failure": "E0/D3 GateClosed: bytecode cache beside frozen scoring sources; official evaluation was not entered.",
+  "frozen_commit": "953f9b598adba1df7c424c755993713087428823",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-control2-generation-v1",
+      "calls": 2790,
+      "flight_receipts_sha256": "de5feb0003c30acf4a26def445a8b593f0f3b848ff860ae8ab5f8aad65309942",
+      "manifest_sha256": "9d062d3a11b8d219ed6eea74f9ec2b88235a2ab7c962ae77f2cd89470ddef03b",
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1",
+      "score_entry_error": null,
+      "score_jobs_failed": 0,
+      "score_jobs_succeeded": 1,
+      "state": "FINALIZED"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1",
+      "calls": 2792,
+      "flight_receipts_sha256": "cd746fb119f4265109bc741801b55876751378f0122559a1a4a549faa5a81be6",
+      "manifest_sha256": "0d8c6573ac7dedc5f80fa70d022bed765311b459a1f7fb1cd235e5be6eb293da",
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1",
+      "score_entry_error": "official scorer exited with status 1",
+      "score_jobs_failed": 1,
+      "score_jobs_succeeded": 0,
+      "state": "OPENED"
+    }
+  ],
+  "observed_at_utc": "2026-10-01T20:56:21.418921+00:00",
+  "optimizer_feedback_opened": false,
+  "schema": "saea-scoring-entry-failure-v1",
+  "stop_at_utc": "2026-10-01T20:48:19Z"
+}
