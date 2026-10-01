@@ -25,6 +25,13 @@ null until the isolated transport is established. The packet's declared
 `manifest-only` access is a requirement, not evidence that a process sandbox
 has already enforced it. No current chat may stand in for the blind proposer.
 
+The [proposer isolation implementation and audit](proposer-isolation-v1.md) adds
+`proposal-capsule`, an artifact-only broker, exact outbound attestation and
+one-shot transport custody. The tested installed-client profile still injects
+undeclared context/tool declarations and is not admitted. No live proposer was
+called. Use the corrected seed in `protocol-control-v2.json`; the original
+`protocol.json` is the preserved pre-correction registration.
+
 ## Serial integration and admission
 
 1. Review and serially merge this branch through the coordinator. Preserve the
@@ -82,6 +89,15 @@ with `import-response`. Required receipt fields are `raw_response`, `session_id`
 for genuinely unavailable token counts. Invalid, over-budget, wrong-session,
 duplicate and no-change responses remain recorded and consume their allocation.
 Never call again to obtain a more convenient proposal.
+
+Before invocation, `proposal-capsule` packages the exact saved input with its
+registered knowledge and evidence. L requires the family specification and
+learning-member list again, so saved feedback cannot bypass the complete-family
+reader. B refuses those arguments before opening them. The command writes
+`capsules/<branch>-<round>-<slot>.json` outside Git and adds no contacts. Packaging
+alone does not admit a transport; the real provider path must preserve and attest
+every request, enforce the complete conversation budget and expose only the
+artifact broker. The current host audit deliberately uses a synthetic endpoint.
 
 Use `compile-candidate` with the same protocol, seed configuration, parent
 archive, exact next-round evaluation roster, data root and isolated staging

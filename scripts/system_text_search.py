@@ -68,6 +68,14 @@ def main(argv=None):
     response.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
     response.add_argument("--slot", type=int, choices=(1, 2), required=True)
     response.add_argument("--receipt", type=Path, required=True)
+    capsule_cmd = commands.add_parser("proposal-capsule", help="Snapshot registered English inputs; no model call")
+    capsule_cmd.add_argument("--branch", choices=("L", "B"), required=True)
+    capsule_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
+    capsule_cmd.add_argument("--slot", type=int, choices=(1, 2), required=True)
+    capsule_cmd.add_argument("--protocol", type=Path, required=True)
+    capsule_cmd.add_argument("--data-root", type=Path, required=True)
+    capsule_cmd.add_argument("--family", type=Path)
+    capsule_cmd.add_argument("--learning-member", action="append", default=[])
     compile_cmd = commands.add_parser("compile-candidate")
     compile_cmd.add_argument("--branch", choices=("L", "B"), required=True)
     compile_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
@@ -96,6 +104,8 @@ def main(argv=None):
         protocol = read(args.protocol)
         require(protocol["proposer_exact_version"] == args.model_version,
                 "pin the actual proposer version in the protocol before exporting model input")
+        require(protocol.get("seed_bundle", {}).get("bundle_id") == args.seed_id,
+                "proposal seed differs from the registered starting system")
         feedback = read_family(args.family) if args.family else None
         if feedback is not None:
             require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
@@ -114,6 +124,28 @@ def main(argv=None):
     elif args.command == "import-response":
         print(json.dumps(archive.import_response(branch=args.branch, round_index=args.round,
             slot=args.slot, receipt=read(args.receipt))))
+    elif args.command == "proposal-capsule":
+        from speech_aware_evidence_acquisition.rails.system_proposer_capsule import ProposerCapsule
+        require(not (args.branch == "B" and (args.family or args.learning_member)),
+                "blind capsule cannot open feedback sources")
+        key = f"{args.branch}-{args.round}-{args.slot}"
+        packet = read(args.archive / "inputs" / (key + ".json"))
+        protocol = read(args.protocol)
+        require(packet["protocol_sha256"] == content_hash(protocol)
+                and protocol["proposer_exact_version"] == packet["model_version"], "proposal protocol/model changed")
+        require(protocol.get("seed_bundle", {}).get("bundle_id") == packet["seed_bundle_id"],
+                "capsule seed differs from the registered starting system")
+        if args.branch == "L":
+            require(args.family and args.learning_member, "revalidate the complete family before packaging feedback")
+            feedback = read_family(args.family)
+            require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
+            require(feedback.learning_view(args.learning_member).as_json() == packet["feedback"],
+                    "feedback differs from the preregistered proposal input")
+        capsule = ProposerCapsule.from_packet(packet, roots={"data": args.data_root, "archive": args.archive})
+        document = capsule.as_json()
+        archive._write(f"capsules/{key}.json", document)
+        print(json.dumps({"capsule_sha256": content_hash(document), "artifacts": len(document["artifacts"]),
+                          "invoked": False, "transport_admission": "separate-required"}))
     elif args.command == "compile-candidate":
         key = f"{args.branch}-{args.round}-{args.slot}"
         result = read(args.archive / "imports" / (key + ".json"))

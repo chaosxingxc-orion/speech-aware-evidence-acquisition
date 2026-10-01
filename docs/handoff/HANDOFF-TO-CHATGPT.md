@@ -1,5 +1,30 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current continuation checkpoint: 2026-10-01T19:04:25.2694296Z, ChatGPT root
+
+The CONTROL2 initial seed/A/A campaign remains RUNNING on frozen worker953f9b598
+(driver epoch18:27:40Z). The seed is OPENED with1469 attributed model contacts;
+A/A remains NOT_OPENED in sequence. Contacts are not completed rows. Service
+health and fresh telemetry are confirmed, with16.40GiB Windows free memory.
+No task answers, quality values or milestone outputs were read. Preserve the
+active worker, queue, geometry and read gate.
+
+The [proposer isolation package](../readiness/2026-10-01-slurp-system-text-search-v1/proposer-isolation-v1.md)
+adds a typed artifact allowlist, paged English evidence broker, complete-family
+revalidation, exact outbound attestation and one-shot session/response custody.
+The related83 tests pass; capsule coverage is99%. Its synthetic installed-client
+audit used one local fixture request and zero external model/proposal contacts.
+The tested Codex0.159.2 profile adds a skill catalog and extra tool declarations,
+and omits the requested output cap. It is NOT admitted as an isolated proposer.
+This is a context-contract finding, not evidence of a forbidden file read.
+The real proposer adapter/version and complete feedback remain pending.
+
+The broader label gate reports two pre-existing empty operator declarations in
+the frozen native capacity registrations. Their bytes were preserved; no gate
+was bypassed. Other listed checks pass with existing advisories. See the
+[English receipt](../receipts/continuation/2026-10-01-system-text-proposer-isolation.json).
+This offline work changes no scientific policy, runtime control or held line.
+
 ## Current continuation checkpoint: 2026-10-01T18:32:52.532449+00:00, ChatGPT root
 
 The initial system-text seed/A/A pair is now RUNNING under owner214/215. Windows
@@ -42,7 +67,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-01T18:32:52.532449+00:00 · maintainer: ChatGPT root.
+Last refreshed: 2026-10-01T19:04:25.2694296Z · maintainer: ChatGPT root.
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,87 @@
+{
+  "schema": "saea-system-text-proposer-isolation-continuation-v1",
+  "recorded_at_utc": "2026-10-01T19:04:25.2694296Z",
+  "author": "ChatGPT root",
+  "owner_decisions": [
+    214,
+    215
+  ],
+  "status": "offline-boundary-implemented-real-transport-not-admitted",
+  "client_audit": {
+    "relpath": "coordination/system-text-proposer-isolation-v1/synthetic-client-proof-1/report.json",
+    "sha256": "702633ad33240044c68a1ce62bb979fb3dfe1adb64b527d78ee540ffcb5ce289",
+    "summary": {
+      "actual_outbound_matches_registered_request": false,
+      "authorization_header_present": false,
+      "binary_sha256": "34549ded6e2aee87c911c62d025e52e26c488683d0f489cd68f756baef1a6df6",
+      "error_type": null,
+      "external_model_contacts": 0,
+      "fixture_only": true,
+      "raw_evidence_directory": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\system-text-proposer-isolation-v1\\synthetic-client-proof-1",
+      "request_file_sha256": "054da72ff06fd311d2a53364ce022a463a02766e7c1d55b7cb4f14e8a1c5b6dd",
+      "requests": 1,
+      "research_proposals": 0,
+      "schema": "saea-proposer-client-synthetic-audit-v1",
+      "transport_admission": "withheld-pending-compatible-enforced-adapter"
+    }
+  },
+  "implemented": [
+    "typed artifact allowlist",
+    "English hash-bound snapshots",
+    "blind feedback/history refusal before read",
+    "own-branch history custody",
+    "opaque-ID paged artifact broker",
+    "exact outbound request attestation",
+    "one-shot allocation and fresh-session custody",
+    "existing CLI complete-family revalidation"
+  ],
+  "validation": {
+    "related_tests_passed": 83,
+    "capsule_statement_coverage_percent": 99,
+    "checks_passed": [
+      "engineering_base_check",
+      "harness_admission_check",
+      "results_ledger_check",
+      "tool_catalog_check",
+      "experiment_handoff_check",
+      "openjiuwen_native_reuse_check",
+      "derived_media_confinement_check",
+      "finite_completion_policy_check",
+      "stage3_effect_floor_check",
+      "handoff_freshness_check"
+    ],
+    "existing_failure": {
+      "check": "stage3_algorithm_label_check",
+      "findings": [
+        "configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json: empty operators_used with system-text-black-box-v1",
+        "configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json: empty operators_used with system-text-black-box-v1"
+      ],
+      "disposition": "Both frozen capacity registrations predate this change. Preserve their bytes; no gate bypass or relabeling in place. A superseding metadata disposition remains required."
+    },
+    "advisories": "Existing ledger/measurement/handoff advisories remain; passing exit codes do not erase those findings."
+  },
+  "runtime_checkpoint": {
+    "driver_epoch": "2026-10-01T18:27:40Z",
+    "worker_commit": "953f9b598adba1df7c424c755993713087428823",
+    "seed_state": "OPENED",
+    "seed_contacts": 1469,
+    "aa_state": "NOT_OPENED",
+    "contacts_are_not_completed_rows": true,
+    "service_healthy": true,
+    "telemetry_age_seconds": 5.392,
+    "gpu_memory_used_mib": 22976,
+    "windows_free_gib": 16.4,
+    "stop_present": false
+  },
+  "external_proposer_contacts": 0,
+  "construction_contacts": 0,
+  "scientific_results_read": false,
+  "pending": [
+    "complete initial seed/A/A family and exact root READ",
+    "compatible subscription-backed proposer egress with model/version and limits pinned",
+    "lossless indexing if actual feedback exceeds capsule packaging limits",
+    "registered proposal and construction contacts before updates"
+  ],
+  "mutated_runtime_controls": false,
+  "new_owner_decision_required": false
+}
