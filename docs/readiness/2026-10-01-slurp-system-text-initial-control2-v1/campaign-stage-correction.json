@@ -1,0 +1,66 @@
+{
+  "campaign_parser_passed": true,
+  "contacts": 0,
+  "failed_commit": "6f6807176f1e3a45d98835fa48e531fd23323efe",
+  "failed_driver_epoch": "2026-10-01T18:22:01Z",
+  "member_count": 2,
+  "preparation_reports": [
+    {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v3.json",
+        "sha256": "2c346670ee7f8ccd22de5fb90d4a98832c3f19c701fbc8259617ff8dfa556567"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v2.json",
+        "sha256": "d17e1a7636dbae41a2f782521fcd726eb82159933ee4114de5bc81651b7aabdf"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 398
+        },
+        "old": {
+          "facets": 0,
+          "values": 398
+        }
+      }
+    },
+    {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v3.json",
+        "sha256": "b4704f1279c93868eeb0578a1c08e6b59b9c3bdfd09d1a9f45004909e28199d9"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v2.json",
+        "sha256": "051ffb60b15b79a9d0e47a1b16cd6163315ba5dbfe09d5db9213659496b7adec"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 398
+        },
+        "old": {
+          "facets": 0,
+          "values": 398
+        }
+      }
+    }
+  ],
+  "root_cause": "Initial cells inherited worker-only allowed_execution_stages from the engineering scaffold. The full campaign parser refused before runtime creation, lease acquisition, attempts or contacts.",
+  "schema": "saea-zero-contact-campaign-stage-correction-v1",
+  "scope": "Add campaign mode already authorized by owner214/215; preserve scientific settings, budgets and all failed driver records."
+}

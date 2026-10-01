@@ -423,7 +423,7 @@
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
   "what_this_is": "HELD control-corrected common seed for whole-system text search. Initial seed/A-A only; no policy updates or proposal contacts.",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v2.json",
-    "sha256": "d17e1a7636dbae41a2f782521fcd726eb82159933ee4114de5bc81651b7aabdf"
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v3.json",
+    "sha256": "2c346670ee7f8ccd22de5fb90d4a98832c3f19c701fbc8259617ff8dfa556567"
   }
 }

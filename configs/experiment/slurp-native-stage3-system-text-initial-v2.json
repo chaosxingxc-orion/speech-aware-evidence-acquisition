@@ -4,7 +4,8 @@
       "allowed_execution_stages": [
         "check",
         "prepare-supply",
-        "worker"
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-control2-generation-v1",
       "baseline_fragment": "slurp-native-stage3-system-text-initial-seed-v2",
@@ -17,8 +18,8 @@
           {
             "kind": "preparation",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v2.json",
-            "sha256": "d17e1a7636dbae41a2f782521fcd726eb82159933ee4114de5bc81651b7aabdf"
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v3.json",
+            "sha256": "2c346670ee7f8ccd22de5fb90d4a98832c3f19c701fbc8259617ff8dfa556567"
           },
           {
             "expected_decision_id": "slurp-system-text-initial-control2-v1",
@@ -35,7 +36,8 @@
       "allowed_execution_stages": [
         "check",
         "prepare-supply",
-        "worker"
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1",
       "baseline_fragment": "slurp-native-stage3-system-text-initial-seed-aa-v2",
@@ -48,8 +50,8 @@
           {
             "kind": "preparation",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v2.json",
-            "sha256": "051ffb60b15b79a9d0e47a1b16cd6163315ba5dbfe09d5db9213659496b7adec"
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v3.json",
+            "sha256": "b4704f1279c93868eeb0578a1c08e6b59b9c3bdfd09d1a9f45004909e28199d9"
           },
           {
             "expected_decision_id": "slurp-system-text-initial-control2-v1",

@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-system-text-initial-seed-aa-v2",
-  "composed_config_hash": "8adb897558d0778ad4eadc155ed2300629265102c11286c4cb7268c27b8f44ac",
+  "composed_config_hash": "93dc0d30357a8cb18caed59b4b100bdd1e7a923c01b22bc83bda25d69f8e56ef",
   "decision_receipt": {
     "relpath": "coordination/slurp-system-text-initial-control2-v1/root-admission-v1.json",
     "sha256": "ab630f529285f01c7546d46e22d7b02442c41d74cd2877098d6c82c3e79dd74b"
@@ -12,7 +12,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 20800,
     "planned_speech_audio_seconds": 22685,
-    "protocol_hash": "c235068bd01cb65a7ad696d74f5d6b0c1a058bd6d2b3015e1d764684d2a306db",
+    "protocol_hash": "1e733e14856d51d316d3d06b4e6a38ea0de3d58c5473923e0a2ca23b536ed694",
     "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "39c91b9a2b15eb128be2afbed427827de73b0894d2df3dc7227e065b19a43fdf",
@@ -22,8 +22,8 @@
   "experiment": "slurp-native-stage3-system-text-initial-v2",
   "plan_kind": "fit",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v2.json",
-    "sha256": "051ffb60b15b79a9d0e47a1b16cd6163315ba5dbfe09d5db9213659496b7adec"
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v3.json",
+    "sha256": "b4704f1279c93868eeb0578a1c08e6b59b9c3bdfd09d1a9f45004909e28199d9"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v2.json",
