@@ -5,13 +5,13 @@ import json
 from pathlib import Path
 from speech_aware_evidence_acquisition.core.flight.campaign import load_campaign_cells, declared_readiness
 from speech_aware_evidence_acquisition.core.flight.factory import build_flight_runtime
-from speech_aware_evidence_acquisition.core.flight.coordinator import coordinate_fit
+from speech_aware_evidence_acquisition.core.flight.lease import WorkerExecutionPolicy
 from speech_aware_evidence_acquisition.analysis.system_text_capacity import fit_stress
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for key in ("repo-root", "data-root", "runtime-root", "lock-path", "experiment", "output"):
+    for key in ("repo-root", "data-root", "runtime-root", "lock-path", "experiment", "output", "lease-token-file", "expected-session-id"):
         parser.add_argument("--" + key, required=True)
     args = parser.parse_args()
     repo, data = Path(args.repo_root), Path(args.data_root)
@@ -31,10 +31,10 @@ def main():
     output = Path(args.output)
     if not output.resolve().is_relative_to(data.resolve()) or output.exists():
         raise ValueError("Use a new output under the data root")
-    result = coordinate_fit(runtime, repo_root=repo, data_root=data, runtime_root=Path(args.runtime_root),
-        output=output, owner="chatgpt-root-system-text-capacity", expected_session_id=
-        "serving-slurp-native-candidate-five-train-a-np4-v1", contact_cap=2048,
-        model_fragment=cell.document["model_fragment"], fit_runner=fit_stress, hold_wrapper_foreground=False)
+    token = json.loads(Path(args.lease_token_file).read_text())
+    policy = WorkerExecutionPolicy(args.expected_session_id, token["token"])
+    policy.assert_lease(data, run_id=cell.run_id, attempt_id=cell.attempt_id)
+    result = fit_stress(runtime, output, policy=policy, contact_cap=2048)
     print(json.dumps(result, sort_keys=True))
     measured = json.loads(output.read_text())["output"]
     print(json.dumps(measured, sort_keys=True))
