@@ -63,13 +63,14 @@ def test_blind_session_import_and_shared_compilation_without_model_contacts(tmp_
         cli.main(args + ["--family", str(tmp_path / "not-present.json")])
 
 
-def test_read_family_refuses_partial_spec_and_cycles(tmp_path):
+def test_read_family_refuses_partial_spec_and_cycles(tmp_path, monkeypatch):
     bad = tmp_path / "family.json"
     write(bad, {"bindings": []})
     with pytest.raises(PolicyError, match="fields"):
         cli.read_family(bad)
+    monkeypatch.setattr(cli, "require_read_registration", lambda *a, **k: {})
     write(bad, {"family_id": "fixture", "bindings": [], "expected_members": {},
-                "initial_reference_member": None, "reference_family": str(bad)})
+                "initial_reference_member": None, "reference_family": str(bad), "read_registration": {}})
     with pytest.raises(PolicyError, match="cyclic"):
         cli.read_family(bad)
 
@@ -138,3 +139,100 @@ def test_cli_refuses_a_different_seed_even_when_packet_hash_matches(tmp_path, co
         args += ["--data-root", str(roots["data"])]
     with pytest.raises(PolicyError, match="seed"):
         cli.main(args)
+
+
+def read_fixture(tmp_path, *, notes="ROOT COUNTERSIGNED after complete-family qualification."):
+    import hashlib
+    recipe_path = tmp_path / "docs/readiness/fixture/analysis-recipe.json"
+    recipe_path.parent.mkdir(parents=True)
+    recipe = {"read_run_id": "FIXTURE-READ", "initial_members": {"seed": "RUN-A", "seed-aa": "RUN-B"}}
+    write(recipe_path, recipe)
+    relpath = str(recipe_path.relative_to(tmp_path))
+    row = ["FIXTURE-READ", "model-free-check", "discovery", "0", relpath, notes]
+    header = "| run/experiment id | execution profile | split role | calls | artifacts | notes |\n|---|---|---|---|---|---|\n"
+    ledger = tmp_path / "docs/exposure-ledger.md"
+    ledger.write_text(header + "| " + " | ".join(row) + " |\n")
+    spec = {"family_id": "initial", "bindings": [], "expected_members": recipe["initial_members"],
+            "initial_reference_member": "seed", "reference_family": None,
+            "read_registration": {"relpath": relpath, "sha256": hashlib.sha256(recipe_path.read_bytes()).hexdigest()}}
+    return spec, ledger, recipe_path
+
+
+@pytest.mark.parametrize("fault", ["unsigned", "pending", "other-read", "duplicate", "recipe-pin", "members", "artifact", "profile", "split", "contacts", "missing"])
+def test_read_authority_refuses_before_any_feedback_or_reference_read(tmp_path, monkeypatch, fault):
+    spec, ledger, recipe = read_fixture(tmp_path)
+    text = ledger.read_text()
+    if fault == "unsigned": text = text.replace("ROOT COUNTERSIGNED", "DRAFT")
+    elif fault == "pending": text = text.replace("after complete-family qualification.", "but countersignature pending.")
+    elif fault == "other-read": text = text.replace("FIXTURE-READ", "OTHER-READ")
+    elif fault == "duplicate": text += text.splitlines()[-1] + "\n"
+    elif fault == "recipe-pin": recipe.write_text(recipe.read_text() + " ")
+    elif fault == "members": spec["expected_members"] = {"seed": "OTHER-RUN", "seed-aa": "RUN-B"}
+    elif fault == "artifact": text = text.replace(spec["read_registration"]["relpath"], "docs/readiness/other.json")
+    elif fault == "profile": text = text.replace("model-free-check", "bounded-discovery-probe")
+    elif fault == "split": text = text.replace("discovery", "final-report")
+    elif fault == "contacts": text = text.replace("| 0 |", "| 1 |")
+    elif fault == "missing": spec.pop("read_registration")
+    ledger.write_text(text)
+    # Even an earlier valid family's scores must not be opened by an unsigned read.
+    spec["reference_family"] = str(tmp_path / "MUST-NOT-OPEN.json")
+    path = tmp_path / "family.json"
+    write(path, spec)
+    monkeypatch.setattr(cli.CompleteSystemFeedback, "from_family", lambda *a, **k: pytest.fail("feedback read before authority"))
+    with pytest.raises(PolicyError):
+        cli.read_family(path, repo_root=tmp_path)
+
+
+def test_exact_signed_read_reaches_existing_complete_family_reader_and_records_authority(tmp_path, monkeypatch):
+    spec, ledger, recipe = read_fixture(tmp_path)
+    from speech_aware_evidence_acquisition.rails.system_text_policy import canonical
+    calls = []
+    def read_complete(bindings, **kwargs):
+        calls.append(kwargs)
+        return cli.CompleteSystemFeedback(canonical({"family_id": "initial", "verified_fixture": True}))
+    monkeypatch.setattr(cli.CompleteSystemFeedback, "from_family", read_complete)
+    path = tmp_path / "family.json"
+    write(path, spec)
+    result = cli.read_family(path, repo_root=tmp_path).as_json()
+    assert calls[0]["expected_members"] == spec["expected_members"]
+    assert result["read_authority"]["read_run_id"] == "FIXTURE-READ"
+    assert result["read_authority"]["recipe"] == spec["read_registration"]
+    assert len(result["read_authority"]["ledger_row_sha256"]) == 64
+
+
+def test_authority_change_during_read_cannot_publish_feedback(tmp_path, monkeypatch):
+    spec, ledger, _ = read_fixture(tmp_path)
+    from speech_aware_evidence_acquisition.rails.system_text_policy import canonical
+    def changed(*args, **kwargs):
+        ledger.write_text(ledger.read_text().replace("after complete-family qualification.", "with amended scope."))
+        return cli.CompleteSystemFeedback(canonical({"family_id": "initial"}))
+    monkeypatch.setattr(cli.CompleteSystemFeedback, "from_family", changed)
+    path = tmp_path / "family.json"
+    write(path, spec)
+    with pytest.raises(PolicyError, match="authority changed"):
+        cli.read_family(path, repo_root=tmp_path)
+
+
+def test_signed_row_does_not_replace_the_full_seal_and_scoring_gate(tmp_path, monkeypatch):
+    spec, _, _ = read_fixture(tmp_path)
+    def unsealed(*args, **kwargs):
+        raise PolicyError("Synthetic A/A member is not finalized.")
+    monkeypatch.setattr(cli.CompleteSystemFeedback, "from_family", unsealed)
+    path = tmp_path / "family.json"
+    write(path, spec)
+    with pytest.raises(PolicyError, match="not finalized"):
+        cli.read_family(path, repo_root=tmp_path)
+
+
+def test_future_family_recipe_must_name_its_own_stage(tmp_path):
+    import hashlib
+    spec, _, path = read_fixture(tmp_path)
+    spec["family_id"] = "update-1"
+    with pytest.raises(PolicyError, match="another stage"):
+        cli.require_read_registration(spec, repo_root=tmp_path)
+    write(path, {"read_run_id": "FIXTURE-READ", "family_id": "update-1", "expected_members": spec["expected_members"]})
+    spec["read_registration"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert cli.require_read_registration(spec, repo_root=tmp_path)["read_run_id"] == "FIXTURE-READ"
+    spec["family_id"] = "update-2"
+    with pytest.raises(PolicyError, match="family identity"):
+        cli.require_read_registration(spec, repo_root=tmp_path)

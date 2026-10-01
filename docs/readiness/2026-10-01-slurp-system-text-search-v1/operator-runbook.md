@@ -64,11 +64,20 @@ identity, not a scientific winner.
 
 Register the complete family and exact member-to-run bindings before generation.
 A family specification has exactly `family_id`, `expected_members`, `bindings`,
-`initial_reference_member` and `reference_family`. Initial feedback references
+`initial_reference_member`, `reference_family` and `read_registration`. The last
+field is a repository-relative `{relpath, sha256}` pin to that family's analysis
+recipe. Its exact READ row must be uniquely registered and root countersigned
+before any score or earlier feedback source is opened. Initial feedback references
 the initial seed; later feedback points to that original family rather than
 re-estimating F_ref. Use the shared reward-source binding schema for each member.
 The reader revalidates every attempt, seal and unique complete official score
 before opening outcomes. Countersign the family-specific READ record first.
+The initial recipe's `initial_members` must match the complete run mapping;
+future recipes declare `family_id` and `expected_members`. The CLI reuses the
+standard flight-registration ledger parser and signature predicate. It records
+the recipe pin and READ-row hash in feedback and refuses an authority change
+during export. This check never creates a countersignature or substitutes for
+finalization, verified seals and exactly one successful complete official score.
 
 Use `feedback --family <spec> --output <new-feedback-file>` only after that read
 gate. It retains every registered row, terminal disposition, official counts,

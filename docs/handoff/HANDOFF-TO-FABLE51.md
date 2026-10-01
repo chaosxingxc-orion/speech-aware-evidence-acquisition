@@ -1,31 +1,29 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
-## Current continuation checkpoint: 2026-10-01T19:57:32.143048+00:00, ChatGPT root
+## Current continuation checkpoint: 2026-10-01T20:08:06.330872+00:00, ChatGPT root
 
-The CONTROL2 initial seed is FINALIZED:400 rows, verified seal, one successful
-complete official score job and zero failed jobs. A/A remains OPENED with774
-attributed model contacts and is running in the same frozen campaign953f9b598
-(driver epoch18:27:40Z). Contacts are not completed rows. The live campaign PID
-142044 was revalidated; STOP is absent and service telemetry is fresh. Windows
-free memory was15.15GiB at19:51:58Z. No task quality or milestone outcome was read.
-The complete-family READ row remains pending until A/A also qualifies.
+The CONTROL2 seed remains FINALIZED with a verified seal,400 rows and one
+successful official score. A/A is OPENED with1207 attributed model contacts;
+PID142044 was revalidated against the exact frozen953f9b598 campaign command.
+Windows has14.98GiB free. Contacts do not establish completed rows. No scientific
+quality or independent milestone outcome was read; preserve the live worker and
+whole-family READ boundary.
 
-The [feedback volume and cost correction](../readiness/2026-10-01-slurp-system-text-search-v1/complete-feedback-streaming-v1.md)
-removes the actual251MiB seed trace's packaging blocker through lossless,
-hash-verified chunk storage. It preserves the same proposer inputs and page
-interface. A260MiB synthetic proof reconstructs every byte and measures1.79MiB
-peak Python traced memory for packaging only. The cost reader now joins the
-production response record identity, counts failed contacts and keeps unknown
-usage explicit. The related569 tests pass; both changed modules have99%
-statement coverage. Seven broader checks pass with existing advisories. The
-known frozen native-capacity algorithm annotations remain unchanged and unwaived.
-See [English evidence](../receipts/continuation/2026-10-01-system-text-feedback-streaming.json).
+The [READ-registration correction](../readiness/2026-10-01-slurp-system-text-search-v1/read-registration-v1.md)
+now binds feedback export to the exact analysis recipe, candidate/run family and
+unique root-countersigned ledger row BEFORE any result or earlier-family read.
+It reuses the standard registration parser and leaves all existing seal/scoring
+checks intact. The current unsigned CONTROL2 READ correctly refuses in a real
+metadata-only proof. The related210 tests pass, including21 CLI tests; CLI
+statement coverage is89%. See the
+[English receipt](../receipts/continuation/2026-10-01-system-text-read-registration.json).
 
-This offline correction adds zero research/proposer/model contacts. The frozen
-worker, queue and scientific policy are unchanged. Preserve the root READ gate;
-use the existing saved-score adapter after that gate, without replaying scoring.
-Exact proposer admission and the owner's pending budget-profile decision remain
-required; retain hard bounds until answered. All other research holds remain.
+The prior large-trace and cost-identity corrections are integrated at f18c6b071.
+No countersignature, proposal, model/scorer call, queue or frozen source changed
+in this correction. After the whole initial family completes, root still must
+countersign, derive saved-score envelopes without scoring again, and export the
+complete feedback. Exact proposer/provider admission and the owner's pending
+budget-profile decision remain required. Keep hard bounds and all other holds.
 
 ## Current continuation checkpoint: 2026-10-01T19:04:25.2694296Z, ChatGPT root
 

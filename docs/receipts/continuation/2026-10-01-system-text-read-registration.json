@@ -1,0 +1,62 @@
+{
+  "schema": "saea-system-text-read-registration-proof-v1",
+  "created_at": "2026-10-01T20:10:39.084202+00:00",
+  "parent_commit": "f18c6b0711341f49c633b1ba5e2a98f2aee7487f",
+  "source_sha256": {
+    "scripts/system_text_search.py": "a87f9071f9a26451e2572a9c85eefdb219bed1edaf669fc748ba7db9f09a3d65",
+    "tests/unit/test_system_text_search_cli.py": "93edbf698b0bafcf5884300812553ba12c13266dd42972d6cffe9aa473196720"
+  },
+  "tests_passed": 210,
+  "cli_tests_passed": 21,
+  "cli_coverage": {
+    "covered_lines": 163,
+    "num_statements": 183,
+    "percent_covered": 89.07103825136612,
+    "percent_covered_display": "89",
+    "missing_lines": 20,
+    "excluded_lines": 0,
+    "percent_statements_covered": 89.07103825136612,
+    "percent_statements_covered_display": "89"
+  },
+  "real_proof": "Current unsigned initial READ refuses before task/reference reads. No signature or ledger mutation.",
+  "scientific_results_read": false,
+  "runtime_changes": false,
+  "external_model_or_scorer_calls": 0,
+  "scientific_policy_changes": false,
+  "evidence": [
+    {
+      "relpath": "coordination/system-text-read-registration-v1/junit.xml",
+      "sha256": "6c0e97d5410e8446573b78d2553dff055db08350535a858ce3cea7147e56329f"
+    },
+    {
+      "relpath": "coordination/system-text-read-registration-v1/coverage.json",
+      "sha256": "dc0cb62e84a59b7c9ac7b4b634d06a28e8384401fec2ddac6899ebca0dc36e6e"
+    },
+    {
+      "relpath": "coordination/system-text-read-registration-v1/pytest.log",
+      "sha256": "d336e0421e85a98b7ed3dbaff8e8cf373ea426098d1a9f4fb61945a12d71e115"
+    },
+    {
+      "relpath": "coordination/system-text-read-registration-v1/current-unsigned-read-proof.json",
+      "sha256": "c1ae0dc04a8c5dc298b36a39f59e6bdafe8e68d8cc95bd1db26016723c689b76"
+    },
+    {
+      "relpath": "coordination/system-text-read-registration-v1/gates.json",
+      "sha256": "dd460e014caff35b494d06c2710eecd591905ab5dd6b28f339d1d3fd26eb71d4"
+    }
+  ],
+  "checks": [
+    {
+      "check": "engineering_base_check",
+      "exit_code": 0
+    },
+    {
+      "check": "experiment_handoff_check",
+      "exit_code": 0
+    },
+    {
+      "check": "handoff_freshness_check",
+      "exit_code": 0
+    }
+  ]
+}

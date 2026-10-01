@@ -5,7 +5,10 @@ No command starts a server, dispatches a flight, invokes a proposer or scores.
 Each scientific source read still requires its registered complete-family gate.
 """
 import argparse
+import importlib.util
 import json
+import sys
+from functools import lru_cache
 from pathlib import Path
 
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
@@ -15,6 +18,7 @@ from speech_aware_evidence_acquisition.rails.system_search_protocol import stage
 from speech_aware_evidence_acquisition.rails.system_text_policy import (
     SystemTextPolicyBundle, apply_text_proposal, assert_roster_disjoint,
     compile_system_text_policy, TextPolicyUpdateProposal, require,
+    canonical, _read_pin,
 )
 
 
@@ -29,17 +33,61 @@ def write_new(path, document):
         stream.write(json.dumps(document, sort_keys=True, ensure_ascii=True, indent=2) + "\n")
 
 
-def read_family(path, *, _seen=()):
+@lru_cache(maxsize=1)
+def registration_gate():
+    """Reuse the same ledger and countersignature predicates as Stage-3 reads."""
+    path = Path(__file__).resolve().parent / "checks/flight_registration_check.py"
+    spec = importlib.util.spec_from_file_location("_saea_system_text_read_registration", path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def require_read_registration(spec, *, repo_root):
+    """Refuse before any score/reference read; never countersign on the caller's behalf."""
+    pin = spec["read_registration"]
+    recipe = json.loads(_read_pin(pin, repo_root))
+    gate = registration_gate()
+    run_id = gate.read_run_id_of(recipe)
+    require(run_id, "analysis recipe must declare its exact READ run ID")
+    members = recipe.get("expected_members", recipe.get("initial_members"))
+    require(isinstance(members, dict) and members and members == spec["expected_members"],
+            "READ recipe differs from the complete registered family")
+    if "initial_members" in recipe:
+        require(spec["family_id"] == "initial" and recipe["initial_members"] == members,
+                "initial READ cannot authorize another stage")
+    else:
+        require(recipe.get("family_id") == spec["family_id"], "READ recipe family identity differs")
+    require(recipe.get("run_ids", {}).get("read", run_id) == run_id, "READ identifiers disagree")
+    rows = gate.parse_ledger(Path(repo_root), gate.EXPOSURE_LEDGER).get(run_id, [])
+    require(len(rows) == 1, "READ registration is missing or duplicated")
+    row = rows[0]
+    require(gate.is_countersigned(row) and not gate.PENDING.search(gate.row_text(row)),
+            "READ row is not unambiguously root countersigned")
+    require(row.get("execution profile") == "model-free-check" and row.get("split role") == "discovery"
+            and row.get("calls") == "0", "READ registration scope differs")
+    require(row.get(gate.ARTIFACTS_COLUMN, "").strip("`") == pin["relpath"],
+            "READ registration names another analysis recipe")
+    return {"read_run_id": run_id, "recipe": pin, "ledger_row_sha256": content_hash(row)}
+
+
+def read_family(path, *, repo_root=None, _seen=()):
     """Reverify saved sources instead of treating a cached feedback JSON as authority."""
     path = Path(path).resolve()
     require(path not in _seen and len(_seen) < 4, "cyclic feedback reference")
     spec = read(path)
-    require(set(spec) == {"family_id", "expected_members", "bindings", "initial_reference_member", "reference_family"},
+    require(set(spec) == {"family_id", "expected_members", "bindings", "initial_reference_member", "reference_family",
+                         "read_registration"},
             "family specification fields differ")
-    reference = (read_family(spec["reference_family"], _seen=(*_seen, path))
+    repo_root = Path(repo_root) if repo_root is not None else Path(__file__).resolve().parents[1]
+    authority = require_read_registration(spec, repo_root=repo_root)
+    reference = (read_family(spec["reference_family"], repo_root=repo_root, _seen=(*_seen, path))
                  if spec["reference_family"] is not None else None)
-    return CompleteSystemFeedback.from_family(spec["bindings"], expected_members=spec["expected_members"],
+    feedback = CompleteSystemFeedback.from_family(spec["bindings"], expected_members=spec["expected_members"],
         family_id=spec["family_id"], initial_reference_member=spec["initial_reference_member"], reference=reference)
+    require(require_read_registration(spec, repo_root=repo_root) == authority, "READ authority changed during export")
+    return CompleteSystemFeedback(canonical({**feedback.as_json(), "read_authority": authority}))
 
 
 def main(argv=None):
