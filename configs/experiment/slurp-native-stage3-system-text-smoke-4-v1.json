@@ -1,0 +1,92 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-system-text-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-system-text-smoke-4-v1",
+      "cell_id": "slurp-native-stage3-system-text-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-knowledge-opportunity-r01c400-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Root admission under owner decision214 and direct owner launch instruction. Four-row engineering only, not a benefit experiment.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-system-text-engineering-v1",
+            "kind": "decision",
+            "reason": "Own narrowly scoped engineering admission.",
+            "relpath": "coordination/slurp-system-text-engineering-v1/root-admission-v1.json",
+            "sha256": "554e63fe95bad4d96420e1537b35d65528b4cba9732bd410bd658757009e317b"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-V1/phase-supply-v2.json",
+            "sha256": "44ee49985e35a1b7c8947358bdc02b25f517b94866e2cbbbdd93b0aaa0fe4698"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-10-01",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-V1",
+  "family_budget": {
+    "complete_system_trajectories": 4,
+    "generation_calls_cap": 52,
+    "knowledge_tool_calls_cap": 4,
+    "official_complete_scoring_jobs": 0
+  },
+  "population": {
+    "count": 4,
+    "roster_receipt": "docs/readiness/2026-10-01-slurp-system-text-engineering-v1/roster.json",
+    "split_identity_hash": "ac6c778dcfe9ee4504c32d89c00dd1aaacfae694e7dd481b63d6fba01fa624c3"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-knowledge-opportunity-r01c400-v1",
+      "ids": [
+        "slurp:train:003095:audio-1488984987",
+        "slurp:train:009985:audio-1495369790",
+        "slurp:train:001391:audio-1492780719",
+        "slurp:train:011850:audio-1490199766"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "STAGE3-KNOWLEDGE-OPPORTUNITY-R01C400",
+  "stage3_algorithm": {
+    "id": "system-text-black-box-v1",
+    "note": "Engineering only. Never read terminal feedback or update any policy from these four trajectories.",
+    "operators_used": [
+      "rollout"
+    ]
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Historically exposed R01C construction rows. No effectiveness or quality read; inherited configuration selection is disclosed.",
+    "primary_metric": "SLU field reserved for compatibility; no quality read in engineering proof",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SYSTEM-TEXT-ENGINEERING-4-V1",
+    "rows": 4,
+    "tuning_roster": [
+      "SLURP-EVO-FOLD-A-V2",
+      "SLURP-EVO-FOLD-B-V2",
+      "SLURP-DEV-2000-ADDED-V1"
+    ]
+  }
+}

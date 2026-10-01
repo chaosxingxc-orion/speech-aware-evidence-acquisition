@@ -5,6 +5,17 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Launch preparation: 2026-10-01T15:36Z, ChatGPT root
+
+Owner decision215 directs prompt launch of the already authorized decision214
+work. Root has prepared an isolated, separately registered four-row engineering
+worker and native actual-request FIT. Its own admission and plans are in
+[the engineering package](../readiness/2026-10-01-slurp-system-text-engineering-v1/README.md).
+The shared driver has an engineering-only boundary; no campaign or scoring is
+started by that step. Initial400 seed/A/A, proposers and all search candidates
+remain held until their remaining checks. The independent milestone worker and
+all failed bytes are untouched. No test quality values enter this work.
+
 ## Current checkpoint: 2026-10-01T15:03Z, ChatGPT root
 
 The owner approved joint whole-system text-policy optimization, recorded as

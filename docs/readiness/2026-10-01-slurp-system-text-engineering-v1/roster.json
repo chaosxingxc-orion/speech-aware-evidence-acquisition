@@ -1,0 +1,13 @@
+{
+  "ids": [
+    "slurp:train:003095:audio-1488984987",
+    "slurp:train:009985:audio-1495369790",
+    "slurp:train:001391:audio-1492780719",
+    "slurp:train:011850:audio-1490199766"
+  ],
+  "parent_receipt": "docs/receipts/rosters/slurp-knowledge-opportunity-r01c400-v1.json",
+  "roster_id": "SLURP-SYSTEM-TEXT-ENGINEERING-4-V1",
+  "schema": "saea-engineering-roster-v1",
+  "selection": "First four of the already registered stable-hash-ordered R01C400 roster, seed20261001. No outcome-based selection.",
+  "split_identity_hash": "ac6c778dcfe9ee4504c32d89c00dd1aaacfae694e7dd481b63d6fba01fa624c3"
+}

@@ -4,7 +4,7 @@
 # pinned batch flight worktree, checks structure between steps, and STOPS on the first failure (no automatic
 # recovery: the one-recovery rule needs a named root cause). Runs as a Windows Scheduled Task (SAEA-Batch-Driver).
 #
-# Queue step fields: order, short, kind (cell|resume|seal-only), experiment, cell, smoke_experiment (or null), smoke_cell,
+# Queue step fields: order, short, kind (cell|resume|seal-only|engineering), experiment, cell, smoke_experiment (or null), smoke_cell,
 #   campaign_plan (repo-relative), run_id, fit_run_id, gen_attempt_id, smoke_run_id, smoke_attempt_id,
 #   expected_rows, contacts_per_row, ceiling_per_row, notool (true|false), owner.
 #   kind seal-only (2026-09-29, COMP-1 seal-only completion): a resume cell whose declared resume_from
@@ -16,6 +16,9 @@
 #   prelaunch is unchanged: it still requires the resident session idle and healthy (the resident SLURP
 #   np4 satisfies it; the seal-only step itself never touches the session).
 #   Optional smoke_notool overrides notool for a smoke with different tool authority.
+#   kind engineering runs only its registered four-row smoke through the same worker and
+#   structural inspector. It never starts a campaign or a scoring job. Arm identifiers
+#   must equal the smoke identifiers, and campaign_plan must be absent.
 #   result_kind defaults to task-answer; artifact requires zero scoring jobs and
 #   verified finalized artifact bytes. smoke_result_kind defaults to result_kind.
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
@@ -143,6 +146,12 @@ for ((i=0; i<N; i++)); do
   case "$smoke_result_kind" in task-answer|artifact) ;; *) stop "invalid smoke_result_kind on step $order" ;; esac
   if grep -q "\"step-done\".*\"short\":\"$short\"" "$STATUS" 2>/dev/null; then log "step-skip-done" "{\"step\":$order,\"short\":\"$short\"}"; continue; fi
   log "step-start" "{\"step\":$order,\"short\":\"$short\",\"kind\":\"$kind\",\"cell\":\"$cell\"}"
+  case "$kind" in cell|resume|seal-only|engineering) ;; *) stop "invalid kind on step $order" ;; esac
+  if [ "$kind" = "engineering" ]; then
+    [ "$rows" = "4" ] && [ "$sexp" = "$exp" ] && [ "$scell" = "$cell" ] && \
+      [ "$srun" = "$run" ] && [ "$satt" = "$gatt" ] || stop "engineering step $order must bind one identical four-row smoke"
+    { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "engineering step $order cannot declare a campaign_plan"
+  fi
   if [ "$kind" = "seal-only" ]; then
     { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "seal-only step $order declares a smoke; a seal-only completion flies nothing"
     { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "seal-only step $order declares a campaign_plan; it runs core.flight.cli seal-only on --cell"
@@ -158,6 +167,10 @@ for ((i=0; i<N; i++)); do
     log "smoke-inspect" "$out"
     [ $rc -eq 0 ] || stop "smoke structural check failed on step $order"
     sleep 10
+  fi
+  if [ "$kind" = "engineering" ]; then
+    log "step-done" "{\"step\":$order,\"short\":\"$short\",\"engineering_only\":true}"
+    continue
   fi
   LOGF=/home/chao/batch-campaign-$order-$short-$(date -u +%Y%m%dT%H%M%SZ).log
   log "arm-start" "{\"step\":$order,\"log\":\"$LOGF\"}"
