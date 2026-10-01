@@ -48,8 +48,10 @@ def fit_stress(runtime, path, *, policy, contact_cap, attach=None):
     store = binding.store("slot-contracts")
     visible = [binding.model_evidence_block("slot-contracts", local_evidence_id=v.value_id,
                 content=v.content)["text"] for v in store.snapshot.values]
+    def reject_tool_contact(*args, **kwargs):
+        raise ValueError("Capacity rehearsal must never execute a tool")
     dispatcher = build_phase_tools(values, program, snapshot=binding.composite_snapshot,
-                                   knowledge_stores=binding)
+                                   knowledge_stores=binding, tool_contact=reject_tool_contact)
     schemas = dispatcher.native_tool_schemas()
     inputs = {"schema": "saea-system-text-capacity-input-v1", "config_hash": runtime._composed.config_hash,
         "source_commit": require_clean_study_repo(runtime._repo_root),

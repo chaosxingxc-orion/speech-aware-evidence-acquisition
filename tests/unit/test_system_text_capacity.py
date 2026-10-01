@@ -55,7 +55,11 @@ def test_fit_uses_lease_and_journals_before_counting(tmp_path, monkeypatch, low_
             return {"tokens": [0] * count}
     monkeypatch.setattr(driver, "_LoopbackPromptAuditClient", lambda **kw: Client())
     monkeypatch.setattr(controllers, "default_phase_program", lambda _: None)
-    monkeypatch.setattr(phase_tools, "build_phase_tools", lambda *a, **kw: SimpleNamespace(native_tool_schemas=lambda: []))
+    def dispatcher(*a, **kw):
+        with pytest.raises(ValueError, match="never execute"):
+            kw["tool_contact"]()
+        return SimpleNamespace(native_tool_schemas=lambda: [])
+    monkeypatch.setattr(phase_tools, "build_phase_tools", dispatcher)
     monkeypatch.setattr(resources, "resource_limits", lambda _: None)
     monkeypatch.setattr(pf, "packet_token_counts", lambda *a, **kw: (10,))
     session = SimpleNamespace(host="127.0.0.1", port=1, model_files=[SimpleNamespace(path="decoder", sha256="c" * 64)])
