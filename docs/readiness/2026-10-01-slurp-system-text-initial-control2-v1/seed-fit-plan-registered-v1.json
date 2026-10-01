@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-system-text-initial-seed-v2",
-  "composed_config_hash": "1354227d8872d54efd008f70425b57a519c9c9f15629e4497422f6b724d192bb",
+  "composed_config_hash": "04189f8e6d2fdcb62c3be4ddaadf17cf979dfce233a97be4fbe1d7c49b52df55",
   "decision_receipt": {
     "relpath": "coordination/slurp-system-text-initial-control2-v1/root-admission-v1.json",
     "sha256": "ab630f529285f01c7546d46e22d7b02442c41d74cd2877098d6c82c3e79dd74b"
@@ -12,7 +12,7 @@
     "planned_gpu_hours": 12.0,
     "planned_model_calls": 20800,
     "planned_speech_audio_seconds": 22685,
-    "protocol_hash": "0419ce12ca4e06026be5b31ff86e4355684f13512614ce6685d1a76b369b3ca3",
+    "protocol_hash": "ff98e2ad8658397e880d098bcf883d818270513ebb07f1c10a1ab2dafb6949db",
     "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "39c91b9a2b15eb128be2afbed427827de73b0894d2df3dc7227e065b19a43fdf",
@@ -22,8 +22,8 @@
   "experiment": "slurp-native-stage3-system-text-initial-v2",
   "plan_kind": "fit",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v1.json",
-    "sha256": "960be77afaea946a0f6da449e4f31ba07a47a6eed2b456fdfe05eba436081d7b"
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v2.json",
+    "sha256": "d17e1a7636dbae41a2f782521fcd726eb82159933ee4114de5bc81651b7aabdf"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v2.json",

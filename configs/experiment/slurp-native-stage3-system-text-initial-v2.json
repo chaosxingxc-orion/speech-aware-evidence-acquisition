@@ -17,8 +17,8 @@
           {
             "kind": "preparation",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v1.json",
-            "sha256": "960be77afaea946a0f6da449e4f31ba07a47a6eed2b456fdfe05eba436081d7b"
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/phase-supply-v2.json",
+            "sha256": "d17e1a7636dbae41a2f782521fcd726eb82159933ee4114de5bc81651b7aabdf"
           },
           {
             "expected_decision_id": "slurp-system-text-initial-control2-v1",
@@ -48,8 +48,8 @@
           {
             "kind": "preparation",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v1.json",
-            "sha256": "21eb43c5c5ce7803b3ff37ed9e16ddaf99ca4fff19c782fcdb0a323600c98213"
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v2.json",
+            "sha256": "051ffb60b15b79a9d0e47a1b16cd6163315ba5dbfe09d5db9213659496b7adec"
           },
           {
             "expected_decision_id": "slurp-system-text-initial-control2-v1",
