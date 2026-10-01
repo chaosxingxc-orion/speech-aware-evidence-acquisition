@@ -1,23 +1,38 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
-## Current continuation checkpoint: 2026-10-01T17:41:38.824860+00:00, ChatGPT root
+## Current continuation checkpoint: 2026-10-01T18:32:52.532449+00:00, ChatGPT root
 
-The production-native graph now passes a model-free four-path proof: decline,
-empty lookup, two-value acquisition, and acquisition followed by Solver revision
-and final delivery (22 synthetic completions, three local lookups, zero model or
-tokenizer contacts). Negative-path testing found and repaired a source-custody
-defect for schema-invalid tool arguments. The refused call now produces a validated,
-source-bound rejection observation without running a tool. 151 focused unit tests,
-three local graph integration tests and the native reuse gate pass.
+The initial system-text seed/A/A pair is now RUNNING under owner214/215. Windows
+`SAEA-Batch-Driver` epoch `2026-10-01T18:27:40Z` started the two-member campaign
+at18:27:43Z on frozen `/home/chao/saea-worktrees/codex-system-text-initial-control2-v2`
+at `953f9b598adba1df7c424c755993713087428823`. The seed attempt is OPENED with
+157 recorded model contacts and 157 actual-request FIT receipts at this checkpoint;
+its request-identical A/A is waiting. Each member has400 registered rows. Contact
+counts are not completed-row counts. The service is healthy and Windows retains
+16.91GiB free; revalidate live resources before any action.
 
-The [new receipt](../receipts/continuation/2026-10-01-native-graph-rehearsal.json)
-and [proof note](../readiness/2026-10-01-slurp-system-text-capacity-recovery1-v1/native-graph-proof.md)
-are structural evidence only. A maximum-legal-request capacity measurement and
-initial CONTROL2 registration/admission remain pending; the 800-row seed/A/A pair
-is HELD. No research score or milestone answer was read. Frozen workers and queue
-controls are unchanged. This fix is committed on the isolated implementation branch
-for serial integration; historical checkpoints below retain their own scope.
+The native-graph capacity sole recovery PASSED:44 reachable request bodies,
+297 nongenerative endpoints, zero generation; maximum requirement17179 tokens
+includes the512-token answer reserve, leaving5349 after another2048-token margin.
+This is empirical stress evidence, not an exhaustive bound over future text;
+separate per-contact runtime FIT remains mandatory. The first native capacity
+attempt's141-contact socket failure is preserved. Fresh audit connections fixed
+that client-lifecycle issue without retrying endpoints.
 
+The18:22Z driver stopped before any attempt/contact because the initial cells
+inherited worker-only stages. Root corrected the authorized campaign declaration,
+verified both runtime preflights and all registration hashes, and archived the
+exact quiescent STOP/logs before the new launch. This is not monitor permission
+to reconcile controls. Old workers and prepared supplies remain immutable.
+
+See [launch evidence](../receipts/continuation/2026-10-01-system-text-initial-control2-launch.json)
+and [initial registration](../readiness/2026-10-01-slurp-system-text-initial-control2-v1/README.md).
+The READ row `SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1` remains pending:
+qualify BOTH members, verified seals and one official complete score each before
+root countersignature or any feedback read. No task quality or milestone output
+was read. The optimizer's exact proposer version and enforceable L/B isolation
+remain required before proposals; all update candidates and other held lines stay
+held. Keep30-minute read-only monitoring and10-second resource telemetry.
 
 ## Current continuation checkpoint: 2026-10-01T16:56:56.067115+00:00, ChatGPT root
 

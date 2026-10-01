@@ -1,0 +1,106 @@
+{
+  "campaign_started_at": "2026-10-01T18:27:43Z",
+  "capacity": {
+    "all_fit": true,
+    "first_native_capacity_failure": {
+      "cause": "Broken pipe after a long local graph walk with an idle audit connection; sole recovery uses fresh connections per endpoint and no retry.",
+      "contacts": 141
+    },
+    "generation_contacts": 0,
+    "max_required_tokens": 17179,
+    "min_margin_after_extra_2048": 5349,
+    "nongenerative_contacts": 297,
+    "receipt_relpath": "coordination/slurp-system-text-native-capacity-recovery1-v1/request-fit-v1.json",
+    "receipt_sha256": "58dab43c45ee5ae74e423ac3aa7eb180f0632798b2a9c81e1add18963048ed97",
+    "requests": 44,
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-NATIVE-CAPACITY-RECOVERY1-FIT-V1",
+    "scope": "Reachable graph stress with measured longest tool values, not an exhaustive bound over arbitrary future text. Exact native per-contact FIT remains mandatory.",
+    "selected_slots": [
+      [
+        782,
+        "date",
+        "slot-contract:date"
+      ],
+      [
+        753,
+        "time",
+        "slot-contract:time"
+      ]
+    ]
+  },
+  "driver_epoch": "2026-10-01T18:27:40Z",
+  "health": {
+    "gpu_used_mib": 22976.0,
+    "gpu_utilization_percent": 97.0,
+    "sampled_at": "2026-10-01T18:32:48.108084+00:00",
+    "server_ok": true,
+    "slots": {
+      "busy": 4,
+      "idle": 0,
+      "total": 4
+    },
+    "stop_absent": true,
+    "telemetry_age_seconds": 4.46,
+    "windows_free_gib": 16.913043975830078
+  },
+  "members": [
+    {
+      "actual_request_fit_receipts": 157,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-control2-generation-v1",
+      "attempt_state": "OPENED",
+      "completed_rows": "not inferred from contacts or service totals",
+      "expected_rows": 400,
+      "fit_attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-control2-fit-v1",
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-FIT-V1",
+      "official_score_jobs": 0,
+      "recorded_model_contacts": 157,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1"
+    },
+    {
+      "actual_request_fit_receipts": 0,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1",
+      "attempt_state": "NOT_OPENED",
+      "completed_rows": "not inferred from contacts or service totals",
+      "expected_rows": 400,
+      "fit_attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-fit-v1",
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-FIT-V1",
+      "official_score_jobs": 0,
+      "recorded_model_contacts": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1"
+    }
+  ],
+  "next": "Finish complete initial family. Establish exact proposer version and enforceable L/B isolation before any proposal. Preserve milestone separation and all other held work.",
+  "observed_at_utc": "2026-10-01T18:32:52.532449+00:00",
+  "owner_decisions": [
+    214,
+    215
+  ],
+  "precontact_incident": {
+    "attempts_opened": 0,
+    "contacts": 0,
+    "correction": "Declare the already authorized campaign stage; verify both members and all four registration plans; preserve every previous prepared version.",
+    "disposition_relpath": "coordination/slurp-system-text-initial-control2-v1/precontact-stage-disposition/disposition.json",
+    "disposition_sha256": "7f50ba9acb3f24819fd69e422786ce408e1bd96b31fb468f28c8933060dc3972",
+    "driver_epoch": "2026-10-01T18:22:01Z",
+    "root_cause": "Inherited worker-only stages omitted campaign mode.",
+    "worker_commit": "6f6807176f1e3a45d98835fa48e531fd23323efe"
+  },
+  "read_gate": {
+    "countersigned": false,
+    "requires": "Both members FINALIZED, verified seals, one complete successful official score each, then root countersignature.",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1"
+  },
+  "registration": {
+    "admission_relpath": "coordination/slurp-system-text-initial-control2-v1/root-admission-v1.json",
+    "admission_sha256": "ab630f529285f01c7546d46e22d7b02442c41d74cd2877098d6c82c3e79dd74b",
+    "both_runtime_preflights_passed": true,
+    "campaign_parser_passed": true,
+    "historical_tuning_advisories": "Disclosed development exposure under owner214, not independent validation.",
+    "whole_family_registration_passed": true
+  },
+  "schema": "saea-system-text-initial-launch-v1",
+  "scientific_results_read": false,
+  "windows_task": "SAEA-Batch-Driver",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-initial-control2-v2",
+  "worker_commit": "953f9b598adba1df7c424c755993713087428823"
+}
