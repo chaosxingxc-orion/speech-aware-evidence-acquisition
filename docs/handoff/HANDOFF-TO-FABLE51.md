@@ -1,6 +1,6 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
-## Current continuation checkpoint: 2026-10-01T21:04:31.407855+00:00, ChatGPT root
+## Current continuation checkpoint: 2026-10-01T21:18:32+00:00, ChatGPT root
 
 The independent owner213 milestone has now been scientifically read under its exact
 root-countersigned READ. The registered criterion is met (protocol label HELD):
@@ -29,6 +29,15 @@ been asked; do not infer approval from owner215 or perform automatic recovery.
 Current read-only inspection confirms the driver needs handoff and the service is
 healthy and idle. This intentional wait and already reported failure need no repeat
 notification. The initial READ remains unsigned until the entire family qualifies.
+
+The shared native reward-link/group-feedback path now supports the official
+Audio2Tool numeric view through the same verified bundle and saved-score custody.
+Synthetic end-to-end tests preserve tool/parameter tradeoffs, empty/unparsed cases
+and multi-tool applicability;240 tests pass,one external-clone check skips,91%
+reader coverage. See [portability evidence](../readiness/2026-10-01-system-feedback-carrier-portability-v1.md).
+The current SLURP search entry still refuses other carriers. This is a library
+connection, not a carrier read, policy adoption, GPU launch or complete portability
+claim; E22's profile/null and cross-carrier text-policy registration remain missing.
 
 The sparse prepared-supply read correction now follows the actual frozen runtime's
 empty default while still rejecting any prepared/flown mismatch. The same change

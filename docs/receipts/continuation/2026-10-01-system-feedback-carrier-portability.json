@@ -1,0 +1,55 @@
+{
+  "schema": "saea-offline-engineering-evidence-v1",
+  "observed_at_utc": "2026-10-01T21:18:32+00:00",
+  "base_commit": "814f56fbc04e8d8eaf2766be65cc3f709da110b1",
+  "scope": "Shared official Audio2Tool numeric feedback; SLURP search authority unchanged",
+  "source_sha256": {
+    "src/speech_aware_evidence_acquisition/rails/reward_links.py": "6efde6ad8bfba2c5b464d4c961136c41e2f64afa6a7589e7589f9e9dfc8b1bb2",
+    "src/speech_aware_evidence_acquisition/rails/group_relative_feedback.py": "71a6633ce6af348d2be16bea9eeb484a86bba99cf161ab973cc8d1c2b09a3550",
+    "tests/unit/test_reward_links.py": "128ad14f99f1098b9a4eadcc5b0c61d089f952450490b6e40c1b96ad298c044f",
+    "tests/unit/test_audio2tool_reward_feedback.py": "4570829ad6715c63cb047e8f1c820f45c46cde6ecea0c5c6ba7341f3200f778c",
+    "docs/readiness/2026-10-01-system-feedback-carrier-portability-v1.md": "a1a2e368af6882ff86c72c214d045c139c06ca9dedce54143c185d5e93e050e4"
+  },
+  "verification": {
+    "passed": 240,
+    "skipped": 1,
+    "skip_reason": "external pinned Audio2Tool clone not exposed to the synthetic test environment",
+    "coverage_percent": 91,
+    "gates": [
+      "engineering_base_check",
+      "tool_catalog_check",
+      "derived_media_confinement_check"
+    ],
+    "tests": [
+      "test_audio2tool_reward_feedback",
+      "test_reward_links",
+      "test_reward_link_io",
+      "test_group_relative_feedback",
+      "test_system_text_feedback",
+      "test_system_text_search_cli",
+      "test_audio2tool_official_scorer",
+      "test_audio2tool_runtime_adapter",
+      "test_audio2tool_native_episode_integration",
+      "test_earnings_runtime_adapter",
+      "test_earnings22_runtime_adapter"
+    ]
+  },
+  "production_contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tool": 0,
+    "tokenizer": 0,
+    "network": 0
+  },
+  "synthetic_official_scoring_only": true,
+  "real_task_outputs_or_labels_read": false,
+  "queue_changed": false,
+  "frozen_sources_changed": false,
+  "carrier_admission": false,
+  "held_experiments_released": false,
+  "derived_media_proof": {
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-feedback-carrier-portability-v1/derived-media-proof/derived-media-confinement.json": "dd94d4fed38b4b7a40fd17fb85586da7a500ab6bfe5f058aa5250b06e88c0d96",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-feedback-carrier-portability-v1/derived-media-proof/MANIFEST.sha256": "3839170dfe4ca983a7273671a12abab1cc7d537833cdd237494bd62b1db38ee0"
+  },
+  "historical_gate_receipt_preserved": true
+}

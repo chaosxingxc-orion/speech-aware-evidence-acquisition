@@ -15,7 +15,7 @@ from pathlib import Path
 from ..core.preparation import hash_stable_file, prepare_artifact
 from .hashing import content_hash
 from .reward_link_io import read_verified_reward_link_artifact
-from .reward_links import SLURP_NATIVE_FIELDS
+from .reward_links import SLURP_NATIVE_FIELDS, RewardLinkError, audio2tool_native_counts
 
 GROUP_FEEDBACK_SCHEMA = "saea-group-relative-quality-feedback-v1"
 
@@ -53,6 +53,22 @@ def _advantages(vectors):
 
 def _native_quality(carrier, counts):
     """Use sample-native statistics; cohort pooled micro F1 remains an evaluator."""
+    if carrier == "audio2tool":
+        try:
+            values = audio2tool_native_counts(counts)
+        except RewardLinkError as error:
+            raise GroupFeedbackError(str(error)) from error
+        quality = {key: values[key] for key in (
+            "tool_correct", "exact_match", "param_exact_match", "param_precision",
+            "param_recall", "param_f1", "parsed",
+        )}
+        # The official scorer stores zeroes for inapplicable multi-tool fields.
+        # Keep applicability/counts in native_counts, not as a false quality loss.
+        if values["is_multi_tool"]:
+            quality.update({key: values[key] for key in (
+                "multi_tool_all_match", "multi_tool_recall", "multi_tool_precision", "multi_tool_f1",
+            )})
+        return quality
     if carrier == "slurp":
         if set(counts) != set(SLURP_NATIVE_FIELDS):
             raise GroupFeedbackError("SLURP feedback requires all native sufficient counts")

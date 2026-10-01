@@ -148,8 +148,10 @@ def test_changed_link_order_or_feedback_is_rejected(completed_source):
         bad.validate()
 
 
-def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
-    """Build complete schema-bound synthetic SLURP phases with overlapping IDs."""
+def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False,
+                  carrier="slurp", sample_ids=None, scorer=None, score_function=None,
+                  response_text=None, run_id="SAEA-SYNTHETIC-SLURP"):
+    """Build synthetic role traces; optional carriers reuse the same custody path."""
     from speech_aware_evidence_acquisition.contracts import ExecutionPlan, TraceRecord
     from speech_aware_evidence_acquisition.core.attempts import AttemptStore
     from speech_aware_evidence_acquisition.core.config import protocol_hash
@@ -176,11 +178,12 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
     from speech_aware_evidence_acquisition.rails.reward_links import SLURP_NATIVE_FIELDS
 
     _, _, _, seed_bundle, _ = completed_source
-    root = tmp_path / "slurp-synthetic"
+    root = tmp_path / (carrier + "-synthetic")
     root.mkdir()
-    ids = ("slurp:train:1", "slurp:train:10")
-    run_id, attempt_id = "SAEA-SYNTHETIC-SLURP", "synthetic-attempt"
-    split_hash = split_identity_hash(prefixed("slurp", ids))
+    ids = sample_ids or ("slurp:train:1", "slurp:train:10")
+    scorer = scorer or "slurp-slu-official-train"
+    attempt_id = "synthetic-attempt"
+    split_hash = split_identity_hash(prefixed(carrier, ids))
     stages = ([("perception", 0), ("solver", 0), ("reviewer", 0),
                ("reviewer", 1), ("planner", 0), ("solver", 1),
                ("reviewer", 2), ("reviewer", 3), ("planner", 1)]
@@ -190,12 +193,12 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
     protocol = protocol_hash(config_hash, "bare-core", split_hash)
     plan = ExecutionPlan(
         run_id=run_id, attempt_id=attempt_id, execution_profile="bounded-discovery-probe",
-        carrier_lock_key="slurp", split_role="discovery", split_identity_hash=split_hash,
+        carrier_lock_key=carrier, split_role="discovery", split_identity_hash=split_hash,
         planned_model_calls=call_count + 1, planned_gpu_hours=1, planned_speech_audio_seconds=60,
         protocol_hash=protocol,
     )
     handle = AttemptStore(root / "attempts").open_attempt(
-        run_id, attempt_id, carrier_lock_key="slurp", reserved_calls=call_count + 1, reserved_audio_seconds=60,
+        run_id, attempt_id, carrier_lock_key=carrier, reserved_calls=call_count + 1, reserved_audio_seconds=60,
     )
     documents, outputs, hashes = [], [], {}
 
@@ -307,6 +310,8 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
             rid = f"opaque-{index}-{phase}" + (f"-{iteration}" if iteration is not None else "")
             cid = f"synthetic-program:{phase}:" + (f"{iteration}:" if iteration is not None else "") + sid
             text = f"synthetic-answer-{index}-{phase}" + (f"-{iteration}" if iteration is not None else "")
+            if response_text is not None:
+                text = response_text(sid, phase, iteration)
             text_hash = hashlib.sha256(text.encode()).hexdigest()
             is_native_role = native_framework and mode == "native"
             is_native_reviewer = is_native_role and phase == "reviewer"
@@ -340,7 +345,7 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
                     messages=framework_messages, local_tool_result_ids=local_ids,
                 )
                 payload = {
-                    "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
+                    "sample_id": sid, "request_id": rid, "carrier_lock_key": carrier,
                     "task_instruction": system,
                     "speech_feature_parts": [{
                         "packet_id": f"synthetic-query-packet-{index}",
@@ -367,7 +372,7 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
                 }
             else:
                 payload = {
-                    "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
+                    "sample_id": sid, "request_id": rid, "carrier_lock_key": carrier,
                     "history": [{"role": "control", "contact_id": cid}],
                 }
             wire_hash = content_hash({"wire": text})
@@ -449,7 +454,7 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
             if phase == "revise" or (mode == "native" and phase == "solver" and iteration == 1):
                 selected_hash, selected_contact_id = text_hash, cid
                 outputs.append({
-                    "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
+                    "sample_id": sid, "request_id": rid, "carrier_lock_key": carrier,
                     "arm": "bare-core", "text": text, "admitted": True,
                     "request_sha256": content_hash(payload), "response_sha256": wire_hash,
                     "response_text_sha256": text_hash,
@@ -505,10 +510,10 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
     manifest.update(
         run_id=run_id, exposure_run_id=run_id, protocol_hash=protocol,
         plan=vars(plan), config={"config_hash": config_hash, "fragments": {}},
-        split={"carrier_lock_key": "slurp", "ids": list(ids), "count": 2,
+        split={"carrier_lock_key": carrier, "ids": list(ids), "count": len(ids),
                "name": "synthetic-construction", "role": "discovery", "identity_hash": split_hash},
         attempt={"run_id": run_id, "attempt_id": attempt_id, "state_path": str(handle.path)},
-        scorers=["slurp-slu-official-train"], scores=None,
+        scorers=[scorer], scores=None,
     )
     manifest["cost"]["calls_used"] = call_count
     for key, path in files.items():
@@ -523,25 +528,30 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
         for index, sid in enumerate(ids)
     ]
     score = root / "score.json"
+    scored = (score_function(files["outputs"]) if score_function is not None else
+              {"aggregate": {"port_micro": {"samples": 2}}, "per_sample": per_sample})
     score.write_text(json.dumps({
         "manifest": str(path), "verified": True,
-        "scores": {"slurp-slu-official-train": {
-            "aggregate": {"port_micro": {"samples": 2}}, "per_sample": per_sample,
-        }},
+        "scores": {scorer: scored},
     }))
     ref = write_complete_score_receipt(
         root / "receipt.json", job_id="synthetic-slurp-score", result_path=score,
         source=capture_score_source(bundle), verified_bundle=bundle,
     )
     roster = freeze_roster(
-        carrier_lock_key="slurp", candidates=[RosterItem(sid, "synthetic") for sid in ids],
-        per_stratum=2, seed=3, split_role="discovery",
+        carrier_lock_key=carrier, candidates=[RosterItem(sid, "synthetic") for sid in ids],
+        per_stratum=len(ids), seed=3, split_role="discovery",
         roster_id="synthetic-slurp-train", roster_role="construction",
     )
     roster_path = root / "roster.json"
     write_roster(roster, roster_path)
-    projection = RewardProjection("slurp-native-v1", "slurp-slu-official-train",
-                                  ("port_micro.samples",), SLURP_NATIVE_FIELDS)
+    if carrier == "audio2tool":
+        from speech_aware_evidence_acquisition.rails.reward_links import A2T_NATIVE_FIELDS
+        projection = RewardProjection("synthetic-a2t-official-v1", scorer,
+                                      ("samples", "tool_accuracy", "exact_match", "param_f1"), A2T_NATIVE_FIELDS)
+    else:
+        projection = RewardProjection("slurp-native-v1", scorer,
+                                      ("port_micro.samples",), SLURP_NATIVE_FIELDS)
     return path, ref, roster_path, projection, per_sample
 
 

@@ -33,6 +33,24 @@ SLURP_NATIVE_FIELDS = (
     "slu_f1_word_tp", "slu_f1_word_fp", "slu_f1_word_fn",
     "slu_f1_char_tp", "slu_f1_char_fp", "slu_f1_char_fn",
 )
+A2T_NATIVE_FIELDS = (
+    "tool_correct", "exact_match", "param_exact_match",
+    "param_precision", "param_recall", "param_f1",
+    "param_correct_keys", "param_predicted_keys", "param_gold_keys", "parsed",
+    "is_multi_tool", "num_expected_tools", "multi_tool_all_match",
+    "multi_tool_recall", "multi_tool_precision", "multi_tool_f1",
+)
+_A2T_FLAGS = frozenset({"tool_correct", "exact_match", "param_exact_match", "parsed",
+                        "is_multi_tool", "multi_tool_all_match"})
+_A2T_COUNTS = frozenset({"param_correct_keys", "param_predicted_keys", "param_gold_keys",
+                         "num_expected_tools"})
+_A2T_RATES = frozenset(A2T_NATIVE_FIELDS) - _A2T_FLAGS - _A2T_COUNTS
+_A2T_AGGREGATES = frozenset({
+    "samples", "tool_accuracy", "exact_match", "param_exact_match", "param_precision",
+    "param_recall", "param_f1", "param_precision_micro", "param_recall_micro",
+    "param_f1_micro", "param_correct_keys", "param_predicted_keys", "param_gold_keys",
+    "parse_rate", "parse_failures", "multi_tool_samples",
+})
 _SLURP_AGGREGATES = frozenset(
     "port_micro." + field for field in (
         "samples", "slu_f1", "slu_f1_precision", "slu_f1_recall",
@@ -41,6 +59,8 @@ _SLURP_AGGREGATES = frozenset(
     )
 )
 _NATIVE_PROJECTIONS = {
+    "a2t-toolcall-official": (_A2T_AGGREGATES, frozenset(A2T_NATIVE_FIELDS),
+                              frozenset(A2T_NATIVE_FIELDS)),
     "asr-wer": (frozenset({"mean_wer", "samples"}), _ASR_ROWS, _ASR_ROWS),
     "asr-wer-whisper": (
         frozenset({"corpus_wer", "substitutions", "deletions", "insertions",
@@ -86,12 +106,14 @@ def _fields(value, field):
     return result
 
 
-def _numeric_path(value, field):
+def _numeric_path(value, field, *, allow_boolean=False):
     current = value
     for part in field.split("."):
         if not isinstance(current, Mapping) or part not in current:
             raise RewardLinkError(f"native score field {field!r} is missing")
         current = current[part]
+    if isinstance(current, bool) and allow_boolean:
+        current = int(current)  # Only named official boolean metrics permit this conversion.
     if isinstance(current, bool) or not isinstance(current, (int, float)):
         raise RewardLinkError(f"native score field {field!r} must be numeric")
     if not math.isfinite(current) or current < 0:
@@ -99,6 +121,26 @@ def _numeric_path(value, field):
     if field in SLURP_NATIVE_FIELDS[:3] and current not in (0, 1):
         raise RewardLinkError(f"intent correctness field {field!r} must be zero or one")
     return current
+
+
+def audio2tool_native_counts(counts):
+    """Validate the official saved numeric view without loading targets or rescoring."""
+    if not isinstance(counts, Mapping) or set(counts) != set(A2T_NATIVE_FIELDS):
+        raise RewardLinkError("Audio2Tool feedback requires all official native fields")
+    values = {field: _numeric_path(counts, field, allow_boolean=field in _A2T_FLAGS)
+              for field in A2T_NATIVE_FIELDS}
+    if any(values[k] not in (0, 1) for k in _A2T_FLAGS):
+        raise RewardLinkError("official correctness and applicability flags must be binary")
+    if any(values[k] > 1 for k in _A2T_RATES):
+        raise RewardLinkError("official quality rates must be on the zero-to-one scale")
+    if any(not float(values[k]).is_integer() for k in _A2T_COUNTS):
+        raise RewardLinkError("official parameter and tool counts must be integers")
+    if (values["num_expected_tools"] < 1
+            or values["is_multi_tool"] != int(values["num_expected_tools"] > 1)
+            or values["param_correct_keys"] > min(values["param_predicted_keys"], values["param_gold_keys"])
+            or values["exact_match"] != values["tool_correct"] * values["param_exact_match"]):
+        raise RewardLinkError("official native counts have inconsistent identities")
+    return values
 
 
 @dataclass(frozen=True)
@@ -523,12 +565,17 @@ def _score_vector(receipt, projection, sample_ids):
         by_id[sample] = row
     if set(by_id) != sample_ids:
         raise RewardLinkError("native scores do not exactly cover construction membership")
+    per_sample = {
+        sample: {field: _numeric_path(row, field, allow_boolean=(
+            projection.scorer == "a2t-toolcall-official" and field in _A2T_FLAGS))
+            for field in projection.per_sample_fields}
+        for sample, row in by_id.items()
+    }
+    if projection.scorer == "a2t-toolcall-official":
+        per_sample = {sample: audio2tool_native_counts(row) for sample, row in per_sample.items()}
     return {
         "aggregate": {field: _numeric_path(aggregate, field) for field in projection.aggregate_fields},
-        "per_sample": {
-            sample: {field: _numeric_path(row, field) for field in projection.per_sample_fields}
-            for sample, row in by_id.items()
-        },
+        "per_sample": per_sample,
     }, digest
 
 
@@ -556,6 +603,11 @@ def build_reward_links(manifest_path, score_receipt: SavedScoreReceiptRef,
             raise RewardLinkError("SLURP construction requires TRAIN sample identities")
         if projection.scorer not in {"slurp-slu-official-train", "slurp-slu-train"}:
             raise RewardLinkError("SLURP construction requires its TRAIN scorer")
+    elif carrier == "audio2tool":
+        if (projection.scorer != "a2t-toolcall-official"
+                or bundle.manifest["plan"]["split_role"] != "discovery"
+                or roster["split_role"] != "discovery"):
+            raise RewardLinkError("Audio2Tool feedback requires its official scorer and discovery construction")
     elif carrier not in {"earnings21-original", "earnings22-original"} or projection.scorer not in {
         "asr-wer", "asr-wer-whisper",
     }:
