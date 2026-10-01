@@ -5,7 +5,7 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
-## Implementation checkpoint: 2026-10-01T02:06:58.436221+00:00 (ChatGPT root)
+## Implementation checkpoint: 2026-10-01T02:32:12.261686+00:00 (ChatGPT root)
 
 The owner explicitly approved implementing the slot-knowledge opportunity plan.
 The [implementation package](../readiness/2026-10-01-slurp-knowledge-opportunity-v1/README.md)
@@ -18,12 +18,11 @@ reread versus targeted selection; one native Planner lookup per trajectory;
 normalized Reviewer criticism propagated through the existing native graph;
 consumption-module compilation of the opportunity and source-isolated construction
 release; deterministic metadata-only R01C400 preparation. All four arms bind the
-same stores, verified to share zero source utterances with R01C625. A/A share the
-same baseline. The exact 400-row agreement is now built and hash-bound (20 votes per row; zero contacts); own supply, FIT, smoke and admission remain pending. No cell is ready.
+same stores, verified to share zero source utterances with R01C625. A/A have request-identical baselines and separate preparation ownership. The exact 400-row agreement is now built and hash-bound (20 votes per row; zero contacts); all four own supplies are now pinned and warm-verified with equal selection outputs; FIT, smoke and admission remain pending. No F1 cell is ready.
 
 The [F0 report](../readiness/2026-10-01-slurp-knowledge-opportunity-v1/failure-report.md)
 and [successor proposal](../readiness/2026-10-01-slurp-knowledge-opportunity-v1/milestone-successor-proposal.json)
-are reviewable. The successor is pending owner authorization, not a signed allowance.
+are reviewable. Owner decision 213 explicitly authorizes the fresh 6020-trajectory original PLAN/COMP-1b pair. The signed successor allowance is docs/receipts/owner/2026-10-01-slurp-test-sample-successor1-allowance-v1.json. The successor registration and launch gates are being prepared; no dispatch yet.
 Do not seal or score the failed comparator. P-SV-4 stays dependent on coordinator disposition.
 
 F2 arithmetic already exists in the finite-action implementation. Its current

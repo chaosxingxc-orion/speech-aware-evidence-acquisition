@@ -1,0 +1,50 @@
+{
+  "arms": [
+    {
+      "config_hash": "15bbe942ebed2978817ab12e52e9719ae83d9a60556c3e84b8aa03750a3c21e9",
+      "protocol_hash": "81b21f6dd4b1cbb9da07c87e2a14d10bd3f9cf03056880faa0f181fd642c9729",
+      "receipt": {
+        "cache": "warm",
+        "contact_class": "model-free",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-A-V1/phase-supply-v2.json",
+        "sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-A-V1"
+    },
+    {
+      "config_hash": "7ce8303f740598dcdbddac4abb320b0bf660afa3dfa1b376321d8368d9717695",
+      "protocol_hash": "a80a3db54e2f408bf3829b4a8c1c181d0d16a2ffaab0fa1d7dc91241031aaa21",
+      "receipt": {
+        "cache": "warm",
+        "contact_class": "model-free",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-APRIME-V1/phase-supply-v2.json",
+        "sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-APRIME-V1"
+    },
+    {
+      "config_hash": "36781e37fdad0ebf457bdc0548249d9b554c6374872b0f36636f8ee413cd631f",
+      "protocol_hash": "128ced9e40b8ccfd4f7c63f8306bd4f8ec51665ead11ba45675a558b53e33ccc",
+      "receipt": {
+        "cache": "warm",
+        "contact_class": "model-free",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-B-V1/phase-supply-v2.json",
+        "sha256": "199d124ded57c500bbc3a0ba3149b33853a65681e641adc157a51443e2ac7eaa"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-B-V1"
+    },
+    {
+      "config_hash": "02db0f446a498a325ce8393faf9cb389bf74c9d22a2cb5a87c0c8380619d56d6",
+      "protocol_hash": "b0b584276c06522c755c0241c56b3b93e2d0c24c23a3c91decedf5bffb780e8d",
+      "receipt": {
+        "cache": "warm",
+        "contact_class": "model-free",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-C-V1/phase-supply-v1.json",
+        "sha256": "7363ddc7f2ce48dd7def3e94b291a1d1ac42c066a2345827dfd58a34c35103b1"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-C-V1"
+    }
+  ],
+  "contacts": 0,
+  "schema": "saea-family-warm-supply-verification-v1"
+}

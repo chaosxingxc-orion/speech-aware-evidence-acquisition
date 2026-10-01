@@ -1,0 +1,9 @@
+{
+  "contacts": 0,
+  "generation_authority": false,
+  "prior_artifacts": "Preserve A, A-prime and B phase-supply-v1.json. The shared re-pin helper may mint v2 but must prove byte-identical selection output; allow_output_change=False. C has no earlier artifact.",
+  "reason": "A-prime requires an independent baseline fragment solely to bind its own prepared artifact. Request parameters are identical to A; the shared experiment cell identity changes.",
+  "registered_at_utc": "2026-10-01T02:20:51.418783+00:00",
+  "schema": "saea-preparation-binding-amendment-v1",
+  "tool": "core.flight.repin.ensure_artifact_pinned with default_prepare_supply"
+}

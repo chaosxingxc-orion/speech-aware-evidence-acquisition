@@ -100,12 +100,14 @@ def prepare(repo, data_root):
         fragment["native_episode"]["consumption_module"] = current
         fragment["what_this_is"] = f"HELD F1 arm {arm.upper()}; shared complete-system execution. Agreement is source-bound; own supply, fit and registration remain pending. A-prime uses arm A byte-identically."
         write_identical(baseline_dir / f"{STEM}-{arm}-v1.json", fragment)
+    write_identical(baseline_dir / f"{STEM}-aprime-v1.json",
+        json.loads((baseline_dir / f"{STEM}-a-v1.json").read_text()))
     cells=[]
     for arm in ("a", "aprime", "b", "c"):
         rid=f"SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-{arm.upper()}-V1"
         cells.append({"cell_id": f"{STEM}-{arm}-v1", "run_id": rid,
             "attempt_id": f"attempt-{STEM}-{arm}-v1",
-            "baseline_fragment": f"{STEM}-{'a' if arm=='aprime' else arm}-v1",
+            "baseline_fragment": f"{STEM}-{arm}-v1",
             "dataset_fragment": "slurp-speech-native-knowledge-opportunity-r01c400-v1",
             "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
             "allowed_execution_stages": ["check", "prepare-supply"],

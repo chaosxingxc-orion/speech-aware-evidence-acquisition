@@ -1,0 +1,53 @@
+{
+  "all_four_first_phase_outputs_identical": true,
+  "arms": {
+    "a": {
+      "file_sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a",
+      "output_sha256": "c063bbc7806d7792525d603f8242809426fb99605f8c20624af79828ae25633d",
+      "phases": {
+        "perception": {
+          "nonempty_rows": 398,
+          "rows": 398,
+          "selected_values": 3184
+        }
+      }
+    },
+    "aprime": {
+      "file_sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a",
+      "output_sha256": "c063bbc7806d7792525d603f8242809426fb99605f8c20624af79828ae25633d",
+      "phases": {
+        "perception": {
+          "nonempty_rows": 398,
+          "rows": 398,
+          "selected_values": 3184
+        }
+      }
+    },
+    "b": {
+      "file_sha256": "199d124ded57c500bbc3a0ba3149b33853a65681e641adc157a51443e2ac7eaa",
+      "output_sha256": "c063bbc7806d7792525d603f8242809426fb99605f8c20624af79828ae25633d",
+      "phases": {
+        "perception": {
+          "nonempty_rows": 398,
+          "rows": 398,
+          "selected_values": 3184
+        }
+      }
+    },
+    "c": {
+      "file_sha256": "7363ddc7f2ce48dd7def3e94b291a1d1ac42c066a2345827dfd58a34c35103b1",
+      "output_sha256": "c063bbc7806d7792525d603f8242809426fb99605f8c20624af79828ae25633d",
+      "phases": {
+        "perception": {
+          "nonempty_rows": 398,
+          "rows": 398,
+          "selected_values": 3184
+        }
+      }
+    }
+  },
+  "checked_at_utc": "2026-10-01T02:24:29.017992+00:00",
+  "contacts": 0,
+  "meaning": "Preprocessing equality only; no task-quality result or runtime FIT evidence.",
+  "schema": "saea-family-supply-output-equality-v1"
+}

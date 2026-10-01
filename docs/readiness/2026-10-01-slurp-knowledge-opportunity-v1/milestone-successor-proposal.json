@@ -1,8 +1,10 @@
 {
+  "authorization_receipt": "docs/receipts/owner/2026-10-01-slurp-test-sample-successor1-allowance-v1.json",
   "budget_basis": "Carry the original per-arm ceilings forward under new named allowances; ceilings are not targets. No automatic retry allowance.",
   "comparison": "Fresh original PLAN comparator against fresh original COMP-1b treatment; both 3010 rows. Preserve their original scientific settings; do not substitute the new F1 mechanism.",
   "dependent_queue": "P-SV-4 remains held until coordinator explicitly disposes of the failed predecessor and records its release. This proposal does not release it.",
   "dispatch_authority": false,
+  "dispatch_note": "Owner authorization recorded; launch still requires completed registration, admission, preparation and fresh service gates.",
   "fit_endpoint_cap_per_arm": 132440,
   "fit_endpoint_cap_total": 264880,
   "generation_cap_per_arm": 33110,
@@ -35,7 +37,7 @@
   ],
   "schema": "saea-milestone-successor-proposal-v1",
   "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
-  "status": "pending-owner",
+  "status": "owner-authorised-under-decision-213",
   "superseded_allowance": {
     "path": "docs/receipts/owner/2026-09-30-slurp-test-sample-allowance-v2.json",
     "sha256": "be2bfa5a612d30cf46a2356efa5e8cf5a54707370b4f57378a278bb835fd0ed8"

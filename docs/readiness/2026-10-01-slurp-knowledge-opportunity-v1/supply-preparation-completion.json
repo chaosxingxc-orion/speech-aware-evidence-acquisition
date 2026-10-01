@@ -1,0 +1,114 @@
+{
+  "arms": [
+    {
+      "report": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-A-V1/phase-supply-v2.json",
+          "sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a"
+        },
+        "old_pin": {
+          "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-A-V1/phase-supply-v1.json",
+          "sha256": "52e9d40a8ccc7858f7d97eed4f3680c5ea716e2bc7e552b7da53794b3d460db1"
+        },
+        "readiness_requirement": {
+          "appended": 1,
+          "kept": 0,
+          "updated": 0
+        },
+        "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+        "rebuilt": true,
+        "row_counts": {
+          "new": {
+            "facets": 0,
+            "values": 398
+          },
+          "old": {
+            "facets": 0,
+            "values": 398
+          }
+        }
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-A-V1"
+    },
+    {
+      "report": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-APRIME-V1/phase-supply-v2.json",
+          "sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a"
+        },
+        "old_pin": {
+          "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-APRIME-V1/phase-supply-v1.json",
+          "sha256": "52e9d40a8ccc7858f7d97eed4f3680c5ea716e2bc7e552b7da53794b3d460db1"
+        },
+        "readiness_requirement": {
+          "appended": 1,
+          "kept": 0,
+          "updated": 0
+        },
+        "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+        "rebuilt": true,
+        "row_counts": {
+          "new": {
+            "facets": 0,
+            "values": 398
+          },
+          "old": {
+            "facets": 0,
+            "values": 398
+          }
+        }
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-APRIME-V1"
+    },
+    {
+      "report": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-B-V1/phase-supply-v2.json",
+          "sha256": "199d124ded57c500bbc3a0ba3149b33853a65681e641adc157a51443e2ac7eaa"
+        },
+        "old_pin": {
+          "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-B-V1/phase-supply-v1.json",
+          "sha256": "c3c917e02f3bf3d416dd8eb20b1896b11b3c5c396dc55f6d04023a628635f041"
+        },
+        "readiness_requirement": {
+          "appended": 1,
+          "kept": 0,
+          "updated": 0
+        },
+        "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+        "rebuilt": true,
+        "row_counts": {
+          "new": {
+            "facets": 0,
+            "values": 398
+          },
+          "old": {
+            "facets": 0,
+            "values": 398
+          }
+        }
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-B-V1"
+    },
+    {
+      "report": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-C-V1/phase-supply-v1.json",
+          "sha256": "7363ddc7f2ce48dd7def3e94b291a1d1ac42c066a2345827dfd58a34c35103b1"
+        },
+        "old_pin": null,
+        "readiness_requirement": {
+          "appended": 1,
+          "kept": 0,
+          "updated": 0
+        },
+        "reason": "no prepared_phase_supply pin is currently configured",
+        "rebuilt": true,
+        "row_counts": null
+      },
+      "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-C-V1"
+    }
+  ],
+  "contacts": 0,
+  "schema": "saea-family-supply-completion-v1"
+}

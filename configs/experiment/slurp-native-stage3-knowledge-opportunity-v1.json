@@ -12,7 +12,14 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Owner-approved offline implementation. No dispatch: milestone disposition, own supply, full request fit, smoke4, exposure and fresh service binding remain required.",
-        "requirements": [],
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-A-V1/phase-supply-v2.json",
+            "sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
         "state": "held"
       },
       "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-A-V1"
@@ -23,13 +30,20 @@
         "prepare-supply"
       ],
       "attempt_id": "attempt-slurp-native-stage3-knowledge-opportunity-aprime-v1",
-      "baseline_fragment": "slurp-native-stage3-knowledge-opportunity-a-v1",
+      "baseline_fragment": "slurp-native-stage3-knowledge-opportunity-aprime-v1",
       "cell_id": "slurp-native-stage3-knowledge-opportunity-aprime-v1",
       "dataset_fragment": "slurp-speech-native-knowledge-opportunity-r01c400-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Owner-approved offline implementation. No dispatch: milestone disposition, own supply, full request fit, smoke4, exposure and fresh service binding remain required.",
-        "requirements": [],
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-APRIME-V1/phase-supply-v2.json",
+            "sha256": "ca756bee5a92bd664e65412fb7c40d671ac51b3c69012e026216eecf437b775a",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
         "state": "held"
       },
       "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-APRIME-V1"
@@ -46,7 +60,14 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Owner-approved offline implementation. No dispatch: milestone disposition, own supply, full request fit, smoke4, exposure and fresh service binding remain required.",
-        "requirements": [],
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-B-V1/phase-supply-v2.json",
+            "sha256": "199d124ded57c500bbc3a0ba3149b33853a65681e641adc157a51443e2ac7eaa",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
         "state": "held"
       },
       "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-B-V1"
@@ -63,7 +84,14 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Owner-approved offline implementation. No dispatch: milestone disposition, own supply, full request fit, smoke4, exposure and fresh service binding remain required.",
-        "requirements": [],
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-C-V1/phase-supply-v1.json",
+            "sha256": "7363ddc7f2ce48dd7def3e94b291a1d1ac42c066a2345827dfd58a34c35103b1",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
         "state": "held"
       },
       "run_id": "SAEA-SLURP-STAGE3-KNOWLEDGE-OPPORTUNITY-C-V1"

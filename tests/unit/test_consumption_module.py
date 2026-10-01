@@ -460,6 +460,8 @@ def test_prepared_opportunity_configs_are_matched_and_compiler_verified():
     assert values["c"]["phase_tools"]["planner"]["knowledge_selection_mode"] == "targeted"
     experiment = json.loads((_REPO / "configs/experiment/slurp-native-stage3-knowledge-opportunity-v1.json").read_text())
     cells = experiment["cells"]
-    assert cells[0]["baseline_fragment"] == cells[1]["baseline_fragment"]
+    assert cells[0]["baseline_fragment"] != cells[1]["baseline_fragment"]
+    twin = json.loads((directory / (cells[1]["baseline_fragment"] + ".json")).read_text())
+    assert {k:v for k,v in values["a"].items() if k != "prepared_phase_supply"} == {k:v for k,v in twin.items() if k != "prepared_phase_supply"}
     assert all(c["readiness"]["state"] == "held" for c in cells)
     assert all("campaign" not in c["allowed_execution_stages"] for c in cells)
