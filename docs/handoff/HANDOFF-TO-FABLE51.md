@@ -1,5 +1,27 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Current continuation checkpoint: 2026-10-01T23:42:22Z, ChatGPT root
+
+Owner214's four exact TRAIN400 cohorts now have source-excluded agreement inputs
+and first-phase supply proofs prepared and warm-verified through the shared
+FlightRuntime. The candidate compiler requires an exact cohort binding, preserves
+current policy/knowledge/intent ranking, and removes inherited R01C supply/FIT
+identities. The older full-fold votes use a different exemplar snapshot and
+were not reused. See [input binding](../readiness/2026-10-01-slurp-system-text-search-v1/cohort-input-binding-v1.md)
+and [validation](../receipts/continuation/2026-10-01-system-text-cohort-inputs.json).
+The related585 tests pass; the new binder has100% statement coverage. All work
+was model-free over the already registered1,600 inputs. These HELD proof cells
+are not actual candidate admissions and are not effectiveness evidence.
+
+Owner216 scoring-entry recovery and the proposer output-budget decision remain
+pending. Both CONTROL2 members retain the recorded manifest and flight-receipt
+hashes; seed is FINALIZED with one successful official score, A/A is OPENED
+with one failed score and no successful score. Initial feedback remains
+unreadable. Preserve frozen sources, caches, generations, scorer bytes and STOP.
+No queue, service, scientific policy or held-carrier status was changed.
+The two pre-existing frozen capacity-label findings remain unmodified and not
+waived. No model, construction, FIT, scorer or scientific-result read was added.
+
 ## Current continuation checkpoint: 2026-10-01T23:04:46Z, ChatGPT root
 
 Owner214's update-1, update-2, update-3 and common-selection cohorts now have

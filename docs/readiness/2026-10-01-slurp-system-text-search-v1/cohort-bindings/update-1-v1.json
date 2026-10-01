@@ -1,0 +1,16 @@
+{
+  "agreement_receipt": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-1-AGREEMENT-V1/receipt.json",
+    "sha256": "65b3a27dc1a28374e54a6712acfac5ec6aa6dc4e76b7af19810a652c5fe2ac46"
+  },
+  "bootstrap_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-common-fold-a-v1.json",
+    "sha256": "abc7a02676f7368a52a7e908ee7b50b794932059f09126c0f8a144d4e36cc85b"
+  },
+  "runtime_view": {
+    "relpath": "configs/dataset/slurp-speech-native-system-text-update-1-400-v1.json",
+    "sha256": "4163468a511ea20208fb84307f46cba5b7cf0f9c1fc4d5352d2ad194ee4937c7"
+  },
+  "schema": "saea-system-text-cohort-binding-v1",
+  "stage": "update-1"
+}

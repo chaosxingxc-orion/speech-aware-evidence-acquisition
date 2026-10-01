@@ -70,9 +70,22 @@ def test_blind_session_import_and_shared_compilation_without_model_contacts(tmp_
         "--seed-config", str(ROOT / BASE), "--repo-root", str(ROOT), "--staging-root", str(tmp_path / "worker"),
         "--evaluation-roster", write(tmp_path / "roster.json", {"items": [{"sample_id": "slurp:train:held"}]}),
         "--data-root", str(tmp_path), "--output", str(output), "--protocol", protocol]
+    with pytest.raises(PolicyError, match="cohort binding"):
+        cli.main(compile_args)
+    assert not output.exists() and not (tmp_path / "worker").exists()
+    def bind_cohort(compiled, binding, **context):
+        assert binding == {"fixture": "registered-inputs"}
+        assert context["stage"] == "update-1" and context["protocol"] == cli.read(protocol)
+        assert context["repo_root"] == ROOT and context["data_root"] == tmp_path
+        compiled.pop("native_contact_fit", None)
+        compiled["preparation_source_receipts"] = []
+        return compiled
+    monkeypatch.setattr("speech_aware_evidence_acquisition.rails.system_text_cohort.bind_system_text_cohort", bind_cohort)
+    compile_args += ["--cohort-binding", write(tmp_path / "cohort.json", {"fixture": "registered-inputs"})]
     cli.main(compile_args)
     result = cli.read(output)
-    assert "prepared_phase_supply" not in result
+    assert "prepared_phase_supply" not in result and "native_contact_fit" not in result
+    assert result["preparation_source_receipts"] == []
     text = (tmp_path / "worker/configs" / result["phase_material"]["reviewer"]["instruction_template"]).read_text()
     assert text == response["changes"]["role_text"]["reviewer"]
     assert '"runtime_admission": "pending"' in capsys.readouterr().out

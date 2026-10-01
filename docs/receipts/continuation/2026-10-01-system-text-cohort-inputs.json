@@ -1,0 +1,194 @@
+{
+  "authority": "Owner214 offline engineering; no generation or recovery authority",
+  "checks": {
+    "engineering_base": "PASS",
+    "experiment_handoff": "OWNER_DIRECTED_EXECUTION; historical snapshot and local working-tree warnings; no launch authority",
+    "finite_completion": "PASS",
+    "git_diff_check": "PASS",
+    "handoff_freshness": "PASS",
+    "harness_admission": "PASS",
+    "new_module_ruff": "PASS",
+    "openjiuwen_native_reuse": "PASS; six deterministic synthetic proofs",
+    "results_ledger": "PASS",
+    "stage3_algorithm_label": "KNOWN FAILURE: same two historical frozen capacity cells; not modified or waived",
+    "tool_catalog": "PASS"
+  },
+  "contacts_added": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "official_scorer": 0,
+    "paid_api": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "entries": [
+    {
+      "agreement_artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-1-AGREEMENT-V1/agreement.jsonl",
+        "sha256": "b79d739f16dd8e3ad6f8eeee3cf1694d9e53387b534e2f26a90ea9069e36c079"
+      },
+      "agreement_receipt": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-1-AGREEMENT-V1/receipt.json",
+        "sha256": "65b3a27dc1a28374e54a6712acfac5ec6aa6dc4e76b7af19810a652c5fe2ac46"
+      },
+      "cohort_binding": {
+        "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/cohort-bindings/update-1-v1.json",
+        "sha256": "33a68e54bf8cca07d5527a3f64ddc25379580bf335ac9d6c43d83ec8e18d5b4b"
+      },
+      "rows": 400,
+      "seed_input_proof_config": {
+        "relpath": "configs/baseline/slurp-system-text-update-1-seed-input-proof-v1.json",
+        "sha256": "6203ae4633a21445404d61121d4f424ea0b62b346fa38f1bd3dd4dbb17211b7e"
+      },
+      "split_identity_hash": "b6aff98ec3674ac42fd0dce87f8635036bca6e52a23d84ee331f6a0c886cfd83",
+      "stage": "update-1"
+    },
+    {
+      "agreement_artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1/agreement.jsonl",
+        "sha256": "3e65820a9dd2ccac36dfe4aaa190bd019946b49a656df830eb856ad03591d031"
+      },
+      "agreement_receipt": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1/receipt.json",
+        "sha256": "570c7a5cea16eee2219ea41d7ce46221a01e6640f8e31cd7070e6dae1747c465"
+      },
+      "cohort_binding": {
+        "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/cohort-bindings/update-2-v1.json",
+        "sha256": "624053c9089e005d77eca2d65d44f3dabd190da4eeac9dafdca4050b304ee3f7"
+      },
+      "rows": 400,
+      "seed_input_proof_config": {
+        "relpath": "configs/baseline/slurp-system-text-update-2-seed-input-proof-v1.json",
+        "sha256": "ff90ddb1f0547b5db71d99acff1b1f435ff3421cdc64f816c190db31cf96ec80"
+      },
+      "split_identity_hash": "643e845970aeac0a5ab6093b52fc6577b328a4a0aeef3a7c1056ee64a8980e04",
+      "stage": "update-2"
+    },
+    {
+      "agreement_artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-3-AGREEMENT-V1/agreement.jsonl",
+        "sha256": "48f66cf82be4ea779f7224593a30465b32c602083d2d7d92206766ededdb8a8b"
+      },
+      "agreement_receipt": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-3-AGREEMENT-V1/receipt.json",
+        "sha256": "5ef959f48566a7eeac937a6a4d37654073cfe8680c81a501ce2ec0ea255eb730"
+      },
+      "cohort_binding": {
+        "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/cohort-bindings/update-3-v1.json",
+        "sha256": "4dceb9894c8c8d58df38459356c73ad0278a94ee9d25308a59878fd7f7573023"
+      },
+      "rows": 400,
+      "seed_input_proof_config": {
+        "relpath": "configs/baseline/slurp-system-text-update-3-seed-input-proof-v1.json",
+        "sha256": "0b8123c431c2d0678455d2759a650cde5996ab63825eccd8d8dde5e2149668ba"
+      },
+      "split_identity_hash": "d93537b48e837dd872695b3ba93f21047f40f008b07fbdfb7c1e6735c21a7d0a",
+      "stage": "update-3"
+    },
+    {
+      "agreement_artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SELECTION-AGREEMENT-V1/agreement.jsonl",
+        "sha256": "9e7f9abe0fa3affd86d06ae4e48c2532256bd524ef2fed24aebcdfcdcb3ac345"
+      },
+      "agreement_receipt": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SELECTION-AGREEMENT-V1/receipt.json",
+        "sha256": "63f291dcbfa1415f23fac447a4de7c09f6a57bc319553770f0f844bb880458dd"
+      },
+      "cohort_binding": {
+        "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/cohort-bindings/selection-v1.json",
+        "sha256": "52539afc634385715b9f1f4613c34d4f0327359be0b8bcf82c9db6a9fa8a8d8c"
+      },
+      "rows": 400,
+      "seed_input_proof_config": {
+        "relpath": "configs/baseline/slurp-system-text-selection-seed-input-proof-v1.json",
+        "sha256": "31347fbfb540a245115d4a230eb755fd0c5028ee23e6c3cb54832088a7d44c3d"
+      },
+      "split_identity_hash": "f5b714cc4b0ffc351d67ad96025a2faac19f69c29f5b4924612f5ed139fafc60",
+      "stage": "selection"
+    }
+  ],
+  "implementation": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_cohort.py",
+      "sha256": "2efae63507e21ab6fd5c515fd2329dbc3725a9e9ac66b8cf5ff630e03d93c6f4"
+    },
+    {
+      "relpath": "scripts/system_text_search.py",
+      "sha256": "fb1fc7b59bd0376a8d6740999fcf1f1911c00cf45aa367b06843a8ec4c088940"
+    },
+    {
+      "relpath": "tests/unit/test_system_text_cohort.py",
+      "sha256": "5bc5e9ffbd57be5fa889767f7c89c4bf014dde1fec8eb8ea064c123dc179e07f"
+    },
+    {
+      "relpath": "tests/unit/test_system_text_search_cli.py",
+      "sha256": "63bd8b8ba93a63963626090e6bebb26bc352b358fdb982a460c5fd372ea6005b"
+    }
+  ],
+  "native_reuse_proof": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/native-reuse-cohort-v1.json",
+    "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+  },
+  "operational_snapshot": {
+    "aa_official_score_jobs": {
+      "failed": 1,
+      "succeeded": 0
+    },
+    "both_member_manifest_and_flight_receipt_hashes_unchanged": true,
+    "driver": "handoff-required; same CONTROL2 epoch",
+    "gpu_memory_used_mib": 22976,
+    "gpu_utilization_percent": 0,
+    "interpretation": "Expected owner-decision hold; no new operational incident.",
+    "observed_at_utc": "2026-10-01T23:43:13Z",
+    "seed_official_score_jobs": {
+      "failed": 0,
+      "succeeded": 1
+    },
+    "server_ok": true,
+    "slots_busy": 0,
+    "slots_total": 4,
+    "stop_unchanged": true,
+    "telemetry_age_seconds": 4.549,
+    "windows_free_gib": 17.33
+  },
+  "pending": [
+    "Owner216 scoring-entry recovery",
+    "Proposer output-budget decision and exact provider admission",
+    "Complete initial-family feedback",
+    "Actual candidate construction/proposal, own supplies/FIT and flight admission"
+  ],
+  "preserved": [
+    "CONTROL2 frozen worker and caches",
+    "Both complete CONTROL2 generations and all scoring bytes",
+    "STOP and queue",
+    "Independent milestone isolation",
+    "All held carriers"
+  ],
+  "recorded_at_utc": "2026-10-01T23:42:22Z",
+  "schema": "saea-system-text-cohort-inputs-validation-v1",
+  "scientific_outputs_opened": false,
+  "setup_refusal": {
+    "attempts_opened": 0,
+    "correction": "Declare discovery in new preparation experiment; existing population and loader gates unchanged",
+    "mode": "model-free agreement preparation",
+    "outputs_at_refusal": 0,
+    "reason": "Missing split_id selected devel default and refused explicit TRAIN samples before artifact creation"
+  },
+  "starting_commit": "8ed9c0a27969ca081eebb687ab334400ba26ac26",
+  "status": "MODEL-FREE INPUT COMPATIBILITY COMPLETE; FUTURE FLIGHTS HELD",
+  "supply_proof": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/cohort-supply-proof-v1.json",
+    "sha256": "2e99a10bfe0ce70d64e00c8d9db15d96a0f5a83b3da221bdd10702b4dc118bc7"
+  },
+  "tests": {
+    "coverage_file": "/tmp/saea-cohort-binding.coverage",
+    "elapsed_seconds": 45.44,
+    "failed": 0,
+    "new_binder_statement_coverage_percent": 100,
+    "passed": 585,
+    "skipped": 0,
+    "warnings": 9
+  }
+}

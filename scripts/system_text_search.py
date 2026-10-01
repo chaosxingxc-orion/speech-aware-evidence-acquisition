@@ -150,6 +150,8 @@ def main(argv=None):
     compile_cmd.add_argument("--output", type=Path, required=True)
     compile_cmd.add_argument("--data-root", type=Path, required=True)
     compile_cmd.add_argument("--protocol", type=Path, required=True)
+    compile_cmd.add_argument("--cohort-binding", type=Path,
+                             help="Pinned exact-cohort query, agreement and runtime inputs; required before compilation")
     compile_cmd.add_argument("--knowledge-link", type=Path,
                              help="JSON data-root pin to a fully generated and released construction link")
     stage_cmd = commands.add_parser("freeze-update", help="Freeze spent slots and membership before contact; no dispatch")
@@ -249,6 +251,7 @@ def main(argv=None):
         print(json.dumps({"capsule_sha256": content_hash(document), "artifacts": len(document["artifacts"]),
                           "invoked": False, "transport_admission": "separate-required"}))
     elif args.command == "compile-candidate":
+        require(args.cohort_binding is not None, "candidate compilation requires an exact cohort binding")
         key = f"{args.branch}-{args.round}-{args.slot}"
         require(not (archive.root / f"compilations/{key}.json").exists(), "candidate compilation already exists")
         result = read(args.archive / "imports" / (key + ".json"))
@@ -287,6 +290,9 @@ def main(argv=None):
         assert_roster_disjoint(bundle.as_json()["cumulative_sources"], [r["sample_id"] for r in roster["items"]])
         compiled = compile_system_text_policy(read(args.seed_config), bundle, repo_root=args.repo_root,
                                               output_root=args.staging_root, data_root=args.data_root)
+        from speech_aware_evidence_acquisition.rails.system_text_cohort import bind_system_text_cohort
+        compiled = bind_system_text_cohort(compiled, read(args.cohort_binding), protocol=protocol,
+            stage=f"update-{args.round}", repo_root=args.repo_root, data_root=args.data_root)
         # A new candidate always needs its own prepared supply and admission.
         compiled.pop("prepared_phase_supply", None)
         write_new(args.output, compiled)

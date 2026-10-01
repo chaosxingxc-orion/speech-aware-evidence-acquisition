@@ -1,0 +1,89 @@
+{
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "finished_at_utc": "2026-10-01T23:34:36.741893+00:00",
+  "proofs": [
+    {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-1-SUPPLY-PROOF-V1/phase-supply.json",
+        "sha256": "b499c2d8ee5e76277e4f3ba0596db41d51902136387564b88345cfff88787322"
+      },
+      "prepared_identity": "PASS",
+      "result_keys": [
+        "cache",
+        "contact_class",
+        "path",
+        "sha256"
+      ],
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-1-SUPPLY-PROOF-V1",
+      "split_identity_hash": "b6aff98ec3674ac42fd0dce87f8635036bca6e52a23d84ee331f6a0c886cfd83",
+      "stage": "update-1",
+      "warm_verification": "PASS"
+    },
+    {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-SUPPLY-PROOF-V1/phase-supply.json",
+        "sha256": "8329bdf96fc80acf4a60016bb2e5f92ae633e4d5b61d3ea5caed9b9cdaeb8563"
+      },
+      "prepared_identity": "PASS",
+      "result_keys": [
+        "cache",
+        "contact_class",
+        "path",
+        "sha256"
+      ],
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-SUPPLY-PROOF-V1",
+      "split_identity_hash": "643e845970aeac0a5ab6093b52fc6577b328a4a0aeef3a7c1056ee64a8980e04",
+      "stage": "update-2",
+      "warm_verification": "PASS"
+    },
+    {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-3-SUPPLY-PROOF-V1/phase-supply.json",
+        "sha256": "875d5b46a8c9b954054e1ee6c475f2f1f7a06f740555310356524ff0d013109a"
+      },
+      "prepared_identity": "PASS",
+      "result_keys": [
+        "cache",
+        "contact_class",
+        "path",
+        "sha256"
+      ],
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-3-SUPPLY-PROOF-V1",
+      "split_identity_hash": "d93537b48e837dd872695b3ba93f21047f40f008b07fbdfb7c1e6735c21a7d0a",
+      "stage": "update-3",
+      "warm_verification": "PASS"
+    },
+    {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SELECTION-SUPPLY-PROOF-V1/phase-supply.json",
+        "sha256": "11900774b171c04665cb1dbab2438e2ebede92b8e6de2c8680f1351da7c5a6c0"
+      },
+      "prepared_identity": "PASS",
+      "result_keys": [
+        "cache",
+        "contact_class",
+        "path",
+        "sha256"
+      ],
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-SELECTION-SUPPLY-PROOF-V1",
+      "split_identity_hash": "f5b714cc4b0ffc351d67ad96025a2faac19f69c29f5b4924612f5ed139fafc60",
+      "stage": "selection",
+      "warm_verification": "PASS"
+    }
+  ],
+  "registration_sha256": "12883a3d5e105d715f5a44106f1661a423b751f0f7d964784dd9cc2b936770c5",
+  "schema": "saea-system-text-cohort-supply-proof-v1",
+  "status": "MODEL-FREE INPUT COMPATIBILITY ONLY; NOT FIT, GENERATION OR EFFECTIVENESS"
+}

@@ -125,8 +125,13 @@ The subscription profile's lack of a server output cap is an explicit pending
 owner question; do not omit the cap or call a paid endpoint as a workaround.
 
 Use `compile-candidate` with the same protocol, seed configuration, parent
-archive, exact next-round evaluation roster, data root and isolated staging
-directory. It refuses cumulative source overlap and undeclared edits. A change
+archive, exact next-round evaluation roster, data root, isolated staging
+directory and required `--cohort-binding`. Use the matching pinned
+`cohort-bindings/update-N-v1.json`. This replaces the seed's old R01C input
+bindings while preserving the compiled policy; it refuses missing query rows
+and wrong vote pools, and removes inherited supply/FIT identities. See
+[the exact input contract](cohort-input-binding-v1.md).
+Compilation also refuses cumulative source overlap and undeclared edits. A change
 to construction instructions or values requires a separately registered actual
 construction generation and a verified release link. The construction reader
 joins each output to its own request instruction and sample, applies the existing

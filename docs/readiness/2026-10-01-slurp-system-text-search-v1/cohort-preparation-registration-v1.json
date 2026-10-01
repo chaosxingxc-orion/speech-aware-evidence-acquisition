@@ -1,0 +1,89 @@
+{
+  "authority": "Owner214 offline preparation; no generation authority",
+  "builder": "scripts/build_slurp_intent_exemplar_agreement.py",
+  "contacts": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "entries": [
+    {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-common-fold-a-v1.json",
+        "sha256": "abc7a02676f7368a52a7e908ee7b50b794932059f09126c0f8a144d4e36cc85b"
+      },
+      "output": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-1-AGREEMENT-V1",
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-1-AGREEMENT-V1",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-update-1-400-v1.json",
+        "sha256": "4163468a511ea20208fb84307f46cba5b7cf0f9c1fc4d5352d2ad194ee4937c7"
+      },
+      "source_cell": "slurp-system-text-update-1-agreement-source-v1",
+      "split_identity_hash": "b6aff98ec3674ac42fd0dce87f8635036bca6e52a23d84ee331f6a0c886cfd83",
+      "stage": "update-1"
+    },
+    {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-common-fold-a-v1.json",
+        "sha256": "abc7a02676f7368a52a7e908ee7b50b794932059f09126c0f8a144d4e36cc85b"
+      },
+      "output": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1",
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+        "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+      },
+      "source_cell": "slurp-system-text-update-2-agreement-source-v1",
+      "split_identity_hash": "643e845970aeac0a5ab6093b52fc6577b328a4a0aeef3a7c1056ee64a8980e04",
+      "stage": "update-2"
+    },
+    {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-common-fold-b-v1.json",
+        "sha256": "1b3b701d27bf06c70ca8ae4138c31c91962248fcf61c33be8b398c4d3e66d308"
+      },
+      "output": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-3-AGREEMENT-V1",
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-3-AGREEMENT-V1",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-update-3-400-v1.json",
+        "sha256": "1e25defe0ab41a6fe080443ceddaf71d691b3d8d514c3ed700e5b3750b184843"
+      },
+      "source_cell": "slurp-system-text-update-3-agreement-source-v1",
+      "split_identity_hash": "d93537b48e837dd872695b3ba93f21047f40f008b07fbdfb7c1e6735c21a7d0a",
+      "stage": "update-3"
+    },
+    {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-common-fold-b-v1.json",
+        "sha256": "1b3b701d27bf06c70ca8ae4138c31c91962248fcf61c33be8b398c4d3e66d308"
+      },
+      "output": "prepared/SAEA-SLURP-SYSTEM-TEXT-SELECTION-AGREEMENT-V1",
+      "rows": 400,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-SELECTION-AGREEMENT-V1",
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-selection-400-v1.json",
+        "sha256": "10ed68bdb8505bbd570e7cb4df7f144e0d79856b6cecb6dc75ff6939245043e6"
+      },
+      "source_cell": "slurp-system-text-selection-agreement-source-v1",
+      "split_identity_hash": "f5b714cc4b0ffc351d67ad96025a2faac19f69c29f5b4924612f5ed139fafc60",
+      "stage": "selection"
+    }
+  ],
+  "failure_policy": "Preserve and diagnose; refuse any existing output directory; no automatic generation or service action.",
+  "registered_at_utc": "2026-10-01T23:13:55.156968+00:00",
+  "schema": "saea-system-text-agreement-preparation-registration-v1",
+  "source_experiment": "slurp-system-text-cohort-preparation-v1",
+  "target_snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe",
+  "target_store": "intent-boundaries",
+  "vote_phase": "solver",
+  "vote_snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+  "vote_store": "train-exemplars",
+  "workers": 4
+}
