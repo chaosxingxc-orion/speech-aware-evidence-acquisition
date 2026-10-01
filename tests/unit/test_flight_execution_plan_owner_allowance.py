@@ -168,3 +168,36 @@ def test_non_final_report_plan_declaring_an_allowance_is_refused(tmp_path):
             CARRIER,
             DEV_IDENTITY,
         )
+
+
+@pytest.mark.parametrize("role", ["final-report", "discovery"])
+def test_manifest_retains_allowance_and_validates_round_trip(tmp_path, monkeypatch, role):
+    from datetime import datetime, timezone
+    from speech_aware_evidence_acquisition.core.bundle import manifest as module
+
+    digest = _write_allowance(tmp_path)
+    allowance = {"path": ALLOWANCE_RELPATH, "sha256": digest}
+    plan = _runtime(tmp_path)._build_execution_plan(
+        _values(role, "bounded-discovery-probe", allowance if role == "final-report" else None),
+        CARRIER, IDENTITY if role == "final-report" else DEV_IDENTITY,
+    )
+    monkeypatch.setattr(module, "_resolve_study_commit", lambda *args: ("a" * 40, []))
+    composed = SimpleNamespace(values={}, fragments={}, config_hash=CONFIG_HASH)
+    split = SimpleNamespace(split_role=role, carrier_lock_key=CARRIER,
+                            identity_hash=plan.split_identity_hash, ids=())
+    doc = module._manifest_document(
+        repo_root=tmp_path, data_root=tmp_path / "data", composed=composed, plan=plan,
+        verified_split=split, session_receipt_path=None, run_dir=tmp_path / "run",
+        status="ABORTED", failure_reason="synthetic custody test", result=None,
+        now=lambda: datetime.now(timezone.utc),
+    )
+    expected = asdict(plan)
+    if role == "final-report":
+        expected["owner_allowance"] = allowance
+    assert doc["plan"] == expected
+    restored = ExecutionPlan(**doc["plan"])
+    restored.validate(source_root=tmp_path)
+    if role == "final-report":
+        (tmp_path / ALLOWANCE_RELPATH).write_text("{}")
+        with pytest.raises(ExecutionScopeError, match="not the pinned"):
+            restored.validate(source_root=tmp_path)

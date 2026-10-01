@@ -262,6 +262,13 @@ def _manifest_document(
             "planned_speech_audio_seconds": plan.planned_speech_audio_seconds,
             "protocol_hash": plan.protocol_hash,
             "attempt_id": plan.attempt_id,
+            # The allowance is an InitVar and is absent from dataclasses.asdict.
+            # Preserve its source binding for independent seal verification;
+            # omit it entirely for historical discovery/dev manifests.
+            **({"owner_allowance": {
+                "path": plan.owner_allowance.path,
+                "sha256": plan.owner_allowance.sha256,
+            }} if plan.owner_allowance is not None else {}),
         },
         "exposure_run_id": plan.run_id,
         "split": {
