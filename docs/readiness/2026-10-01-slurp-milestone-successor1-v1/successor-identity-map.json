@@ -1,0 +1,18 @@
+{
+  "dispatch_authority": false,
+  "generation_rows": 6020,
+  "owner_decision": 213,
+  "replacements": {
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-FIT-V1": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-FIT-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-FIT-V1": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-FIT-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1",
+    "attempt-slurp-test-sample-3010-milestone-00-plan-fit-v1": "attempt-slurp-milestone-successor1-plan-fit-v1",
+    "attempt-slurp-test-sample-3010-milestone-00-plan-generation-v1": "attempt-slurp-milestone-successor1-plan-generation-v1",
+    "attempt-slurp-test-sample-3010-milestone-01-fit-v1": "attempt-slurp-milestone-successor1-comp1b-fit-v1",
+    "attempt-slurp-test-sample-3010-milestone-01-generation-v1": "attempt-slurp-milestone-successor1-comp1b-generation-v1",
+    "docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1": "docs/readiness/2026-10-01-slurp-milestone-successor1-v1",
+    "slurp-native-stage3-comp1b-testsample-v1": "slurp-milestone-successor1-comp1b-v1",
+    "slurp-native-stage3-plan-testsample-milestone00-v1": "slurp-milestone-successor1-plan-v1"
+  }
+}

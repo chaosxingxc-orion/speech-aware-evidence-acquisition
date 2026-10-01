@@ -1,0 +1,343 @@
+{
+  "authority": "owner decisions 151 and 202 (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md); allowance docs/receipts/owner/2026-10-01-slurp-test-sample-successor1-allowance-v1.json; design docs/readiness/2026-09-27-slurp-test-sample-design-v1.md; one-read protocol docs/readiness/2026-09-19-slurp-test-split-one-read-protocol-v1-draft.md; cell A2 docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1; the instrument docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "blockers_before_the_flip": [
+    "Own supply warm verification, root admission, clean frozen source and standard launch checks."
+  ],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-milestone-successor1-comp1b-generation-v1",
+      "cell": "slurp-milestone-successor1-comp1b-v1",
+      "composed_config_hash": "3904c32043caddb6d8e6c5a62ac51d7f7debb8e4d442fbdb8367e852241987f9",
+      "experiment": "slurp-milestone-successor1-comp1b-v1",
+      "fit_attempt_id": "attempt-slurp-milestone-successor1-comp1b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-FIT-V1",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "43e8f4f6ff4b266bbfc53e424ff2c05c7266307fbab3492c95920e00938b186a",
+      "rows": 3010,
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1",
+      "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
+    },
+    "plan": {
+      "attempt_id": "attempt-slurp-milestone-successor1-plan-generation-v1",
+      "cell": "slurp-milestone-successor1-plan-v1",
+      "composed_config_hash": "7f60574ee8d9038c42dabd140ff5b3ce89cbbfcae68246f074ac7325b3e10757",
+      "experiment": "slurp-milestone-successor1-plan-v1",
+      "fit_attempt_id": "attempt-slurp-milestone-successor1-plan-fit-v1",
+      "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-FIT-V1",
+      "policy": "phase-native-candidates-review-revise-v1",
+      "protocol_hash": "00d8cbc16a79722166d2cd72182cb0728215418bc65d0339baa8d40a26f29702",
+      "rows": 3010,
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+      "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9"
+    }
+  },
+  "decision_rule_fixed_here": "Read MILESTONE-SUCCESSOR1-COMP1B against MILESTONE-SUCCESSOR1-PLAN flown in the same chain, on the same 3,010 rows. PRIMARY: intent accuracy (scenario_action exact), paired per recording with prompt-clustered bootstrap, 10,000 draws, seed 20260929. GUARD: official pooled SLU-F1 (slurp-slu-official-test) non-inferior at the FALLBACK null h_SLU 1.4492 (h_intent 1.3329; the DEV-2000-ADDED own null scaled by sqrt(913 / 682), flagged). HELD: the intent CI95 lower bound above zero AND the guard holds. NEUTRAL: both metrics non-inferior at the fallback null without a held gain. HARMFUL: a measured loss on either metric (decision 25). Every verdict carries intent and SLU separately, per-intent and per-scenario tables in both weightings (post-stratified natural mixture; equal stratum over 58 intents). The number is a MILESTONE read, development evidence under owner decision 28, never a test claim.",
+  "development_numbers_only": "Every number is a milestone development number (owner decisions 28, 86, 151); never a test claim and never the final read.",
+  "failure_policy": "ONE ATTEMPT, EVER (owner decision 151; allowance milestone_rule; contracts.gate_exposure._ExposureAndCarrierMixin._require_final_report_attempt_budget). Stop and preserve on the first failure. There is NO recovery re-registration, NO resume-recovery (the E10 clause of the source cell does not apply to a final-report read run id: the gate refuses a second attempt of a read run id even as a recovery), no re-score, no re-projection of delivered bytes, no best-of, no row filtering and no roster, role-graph, prompt, knowledge, geometry or cap change. A failed attempt consumes the milestone number; a further milestone needs a fresh run id in a SUCCESSOR allowance under a fresh coordinator report to the owner. A partial manifest is never scored and never read.",
+  "model_free_proofs_landed_before_contact": {
+    "composed_config_diffs": {
+      "arm_vs_a2_arm": {
+        "anything_else": [],
+        "bookkeeping": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "composition_factor": [],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "purpose",
+          "stage3_algorithm.note"
+        ],
+        "role_bound": [
+          "execution_plan.split_role",
+          "failure_policy",
+          "owner_allowance.path",
+          "owner_allowance.sha256",
+          "scorers",
+          "split_role"
+        ],
+        "roster_bound": [
+          "audio_seconds_total",
+          "count",
+          "d1_manifest_sha256",
+          "d1_media_supplement",
+          "d1_media_supplement_sha256",
+          "execution_plan.planned_gpu_hours",
+          "execution_plan.planned_model_calls",
+          "execution_plan.planned_speech_audio_seconds",
+          "family_budget.fit_endpoint_calls_cap",
+          "family_budget.generation_calls_cap",
+          "family_budget.gpu_hours_fit_inclusive",
+          "family_budget.native_task_contract_calls_cap",
+          "family_budget.repeated_speech_audio_seconds_cap",
+          "generation_budget.cap",
+          "generation_budget.definition",
+          "generation_budget.target",
+          "items",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+          "native_contact_fit.contact_cap",
+          "population.count",
+          "population.dataset_fragment",
+          "population.decision_population",
+          "population.roster_receipt",
+          "population.split_identity_hash",
+          "preparation_source_receipts",
+          "runtime_view_sha256",
+          "seed",
+          "source_binding_sha256",
+          "speech_packet_promotion_receipt",
+          "speech_packet_promotion_receipt_sha256",
+          "split_id",
+          "split_identity_hash",
+          "split_name",
+          "what_the_train_exemplars_store_is"
+        ]
+      },
+      "classes": {
+        "bookkeeping": [
+          "native_contact_fit.run_id",
+          "native_contact_fit.attempt_id",
+          "prepared_phase_supply.",
+          "what_this_is",
+          "service_session",
+          "generation_budget.definition",
+          "population.decision_population"
+        ],
+        "composition_factor": [
+          "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source."
+        ],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "purpose",
+          "stage3_algorithm."
+        ],
+        "role_bound": [
+          "split_role",
+          "execution_plan.split_role",
+          "owner_allowance.",
+          "scorers",
+          "failure_policy"
+        ],
+        "roster_bound": [
+          "audio_seconds_total",
+          "count",
+          "d1_manifest_sha256",
+          "d1_media_supplement",
+          "d1_media_supplement_sha256",
+          "items",
+          "runtime_view_sha256",
+          "seed",
+          "source_binding_sha256",
+          "split_id",
+          "split_identity_hash",
+          "split_name",
+          "population.",
+          "speech_packet_promotion_receipt",
+          "speech_packet_promotion_receipt_sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row",
+          "preparation_source_receipts",
+          "execution_plan.planned_gpu_hours",
+          "execution_plan.planned_model_calls",
+          "execution_plan.planned_speech_audio_seconds",
+          "family_budget.",
+          "generation_budget.",
+          "native_contact_fit.contact_cap",
+          "what_the_train_exemplars_store_is"
+        ]
+      },
+      "composition_square": {
+        "a2_arm_vs_dev_plan": [
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.kind",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.tool_contact_ledger_row",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree"
+        ],
+        "arm_vs_plan_on_sample": [
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.kind",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.facet_source.tool_contact_ledger_row",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.k",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.rank_weights.w_agree"
+        ],
+        "commutes": true,
+        "note": "the agreement table's pin is roster-bound by construction (each roster votes with its own table); every other factor value is equal on the two rosters",
+        "roster_bound_within_the_factor": [
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source.tool_contact_ledger_row"
+        ]
+      },
+      "derive_script": {
+        "relpath": "scripts/flights/comp1/derive_slurp_comp1b_testsample_cells.py",
+        "sha256": "24f8a98b12672dca6bfed7ddc92aa195d0cb8a20e6d78cfaa99feddf2f82da8c"
+      },
+      "plan_vs_dev_plan": {
+        "anything_else": [],
+        "bookkeeping": [
+          "native_contact_fit.attempt_id",
+          "native_contact_fit.run_id",
+          "prepared_phase_supply.relpath",
+          "prepared_phase_supply.sha256",
+          "what_this_is"
+        ],
+        "composition_factor": [],
+        "experiment_fragment_own_block": [
+          "cells",
+          "date",
+          "experiment_id",
+          "purpose",
+          "stage3_algorithm.id",
+          "stage3_algorithm.note",
+          "stage3_algorithm.operators_used"
+        ],
+        "role_bound": [
+          "execution_plan.split_role",
+          "failure_policy",
+          "owner_allowance.path",
+          "owner_allowance.sha256",
+          "scorers",
+          "split_role"
+        ],
+        "roster_bound": [
+          "audio_seconds_total",
+          "count",
+          "d1_manifest_sha256",
+          "d1_media_supplement",
+          "d1_media_supplement_sha256",
+          "execution_plan.planned_gpu_hours",
+          "execution_plan.planned_model_calls",
+          "execution_plan.planned_speech_audio_seconds",
+          "family_budget.fit_endpoint_calls_cap",
+          "family_budget.generation_calls_cap",
+          "family_budget.gpu_hours_fit_inclusive",
+          "family_budget.native_task_contract_calls_cap",
+          "family_budget.repeated_speech_audio_seconds_cap",
+          "generation_budget.cap",
+          "generation_budget.definition",
+          "generation_budget.target",
+          "items",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.embedded_signal",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.relpath",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.sha256",
+          "knowledge_stores.intent-boundaries.phase_supply.perception.query_source.tool_contact_ledger_row",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.embedded_signal",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.relpath",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.sha256",
+          "knowledge_stores.train-exemplars.phase_supply.solver.query_source.tool_contact_ledger_row",
+          "native_contact_fit.contact_cap",
+          "population.count",
+          "population.dataset_fragment",
+          "population.decision_population",
+          "population.roster_receipt",
+          "population.split_identity_hash",
+          "preparation_source_receipts",
+          "runtime_view_sha256",
+          "seed",
+          "source_binding_sha256",
+          "speech_packet_promotion_receipt",
+          "speech_packet_promotion_receipt_sha256",
+          "split_id",
+          "split_identity_hash",
+          "split_name",
+          "what_the_train_exemplars_store_is"
+        ]
+      }
+    }
+  },
+  "one_shot_semantics": "ONE per read run id, ever; no recovery, no resume, no re-score (allowance attempt_budget and milestone_rule)",
+  "prohibitions": [
+    "No contact before every blocker above is cleared, root countersigns the rows, mints the decision receipt and both cells are flipped in one converged cycle.",
+    "ONE attempt per read run id, ever: no re-fly, no recovery, no resume, no re-score, no re-projection, no best-of, no tuning on the sample.",
+    "No smoke on the sample; no direct-baseline read; no closure-roster or FULL-test contact.",
+    "No k, tau, fuse_coverage, w_prior, store, release, snapshot, roster or geometry change. --allow-output-change is never passed.",
+    "No utterance text, gold label, transcript or model output is printed or persisted by any read."
+  ],
+  "protocol_id": "slurp-stage3-comp1b-testsample-milestone-protocol-v1",
+  "registered_at_utc": "2026-10-01T02:45:00Z",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /mnt/c/Users/35686/.codex/worktrees/slurp-next-phase/speech-aware-evidence-acquisition, branch codex/slurp-next-phase",
+  "stage3_measurement": {
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1": {
+      "claim": "nominated",
+      "claims_benefit": true,
+      "expected_effect_pp": 4.6,
+      "expected_effect_status": "RE-DECLARED 2026-09-30 from the cell A2 read (owner decision 139: a measured number, not a prior): A2's intent point estimate +4.60 pp against its in-chain A/A on DEV-2000-ADDED; supersedes the provisional 3.8",
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "MILESTONE-SUCCESSOR1-COMP1B = COMP-1b on the signed test sample (owner decisions 151 and 202). expected_effect_pp 3.8 is cell A2's own declared number (docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1/registered-facts-v1.json: the COMP-1b TRAIN Fold A intent point, docs/results/2026-09-29-slurp-comp1b-fold-a-read.md), carried PROVISIONALLY because the floor gate refuses a placeholder: root RE-DECLARES it from the A2 read (owner decision 139: a measured number, not a prior) before the flip, and the flip refuses while registered-facts' redeclared_from_a2_read is false. The contrast is against MILESTONE-SUCCESSOR1-PLAN, the LOCKED plan (recall k 8), not A2's in-chain A/A (k 60), so the milestone delta includes the k 8 -> 60 recall change the composed arm carries (the allowance prescribes the locked system as the comparator). The guard is a FALLBACK null (own_null.flag). tuning_roster / read_roster (item D3): the vote pool and centroid key are TRAIN construction artifacts; the arm was SELECTED on DEV-2000-ADDED by cell A2's read; both are disjoint from the sample by the sample's own disjointness proof (docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json, CLEAN); nothing was chosen or tuned on the sample.",
+      "own_null": {
+        "flag": "NO OWN NULL EXISTS FOR SLURP-TEST-SAMPLE-3010-V1 (no A/A pair has flown on it, and the allowance names no second PLAN read id that could measure one). Declared guard = the DEV-2000-ADDED own null scaled by sqrt(913 / 682) at the PROMPT level (rho = 1, conservative: every recording of a prompt moves together; design note section 4 'Sample paired h 1.33'). The recording-level scaling sqrt(1000 / 3010) is given beside it and is the OPTIMISTIC bound; the read reports both.",
+        "h_intent": 1.3329,
+        "h_intent_recording_scaled": 0.664,
+        "h_slu": 1.4492,
+        "h_slu_recording_scaled": 0.7219,
+        "kind": "FALLBACK-SCALED-NOT-MEASURED",
+        "n": 3010,
+        "n_prompts": 682,
+        "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, row 'cross-flight A/A, DEV-2000-ADDED' (the B6 pair); scaling: docs/readiness/2026-09-27-slurp-test-sample-design-v1.md section 4"
+      },
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 (slurp-slu-official-test) the non-inferiority guard (owner decision 133)",
+      "primary_metric_key": "intent",
+      "read_roster": "SLURP-TEST-SAMPLE-3010-V1",
+      "replicate_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+      "roster": "TEST-SAMPLE (SLURP-TEST-SAMPLE-3010-V1, split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9), 3,010 recordings / 682 prompts",
+      "rows": 3010,
+      "tuning_roster": [
+        "slurp-train-construction-pool-agree-kprobe-r01-excluded",
+        "SLURP-DEV-2000-ADDED-V1"
+      ]
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1": {
+      "claim": "nominated",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "MILESTONE-SUCCESSOR1-PLAN is the INSTRUMENT, not a claim: the locked v2.0 plan exactly as flown on DEV-2000-ADDED, re-targeted to the sample, flown in the same chain before MILESTONE-SUCCESSOR1-COMP1B. The allowance makes it THE comparator of every milestone arm; its own number is the locked system's sample read.",
+      "primary_metric": "intent accuracy (scenario_action exact), official pooled SLU-F1 the guard",
+      "primary_metric_key": "intent",
+      "read_roster": "SLURP-TEST-SAMPLE-3010-V1",
+      "replicate_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1",
+      "rows": 3010,
+      "tuning_roster": "none"
+    }
+  },
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_OWNER_ALLOWANCE_AND_PREPARATIONS",
+  "study_commit_at_registration": "66527e60a6a12f2346bc400c4a1b43e51f26cabb",
+  "successor_authority": {
+    "allowance": "docs/receipts/owner/2026-10-01-slurp-test-sample-successor1-allowance-v1.json",
+    "owner_decision": 213,
+    "prior_attempt": "ABORTED; preserve unread and unscored; no resume"
+  },
+  "the_composition": "MILESTONE-SUCCESSOR1-COMP1B is cell A2's arm (COMP-1b) with only the roster moved to the signed test sample: the locked v2.0 plan + (1) the agreement term (w_agree 1.0, recall k 60, delivered 8-1-8) with this roster's own vote table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1 + (2) the centroid boundary key + (3) no citation contract + (4) nothing else. MILESTONE-SUCCESSOR1-PLAN is the sealed DEV plan arm (the v2.0 lock as flown) with only the roster moved.",
+  "the_question": "Does COMP-1b, nominated or admitted on DEV-2000-ADDED by cell A2, hold its intent gain against the locked v2.0 plan on the signed test sample, with official SLU-F1 non-inferior?"
+}

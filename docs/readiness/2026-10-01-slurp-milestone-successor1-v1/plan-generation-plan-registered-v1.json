@@ -1,0 +1,54 @@
+{
+  "cell": "slurp-milestone-successor1-plan-v1",
+  "composed_config_hash": "7f60574ee8d9038c42dabd140ff5b3ce89cbbfcae68246f074ac7325b3e10757",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-milestone-successor1-plan-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "owner_allowance": {
+      "path": "docs/receipts/owner/2026-10-01-slurp-test-sample-successor1-allowance-v1.json",
+      "sha256": "9073ac919264a28a81c9d87a0d7e142d2a911cda2df8c07f57a67c745a3fb1c7"
+    },
+    "planned_gpu_hours": 36.2,
+    "planned_model_calls": 33110,
+    "planned_speech_audio_seconds": 90271,
+    "protocol_hash": "00d8cbc16a79722166d2cd72182cb0728215418bc65d0339baa8d40a26f29702",
+    "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
+    "split_role": "final-report",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared FlightRuntime campaign, PLAN then COMP-1b. FIT spends only its own explicitly authorized successor identity. No smoke or historical attempt reuse.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-milestone-successor1-plan-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 132440,
+    "generation_calls_cap": 33110,
+    "gpu_hours_fit_inclusive": 36.2,
+    "native_task_contract_calls_cap": 18060,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 90271
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "66527e60a6a12f2346bc400c4a1b43e51f26cabb",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1/phase-supply-v2.json",
+    "sha256": "95523b058f40304f87c26c8f2bda593d55e1ed01dbf3354526069afa61a477ea"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-01-slurp-milestone-successor1-v1/protocol-registered-v1.json",
+    "sha256": "d5eb18b9d4515de04f84f4264b7f389245769cdcd44111932e5784696f324eb0"
+  },
+  "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1: THE COMPARATOR and in-chain replicate: the locked system's own sample read.",
+  "quality_read_gate": "No task-quality read before BOTH manifests are complete and sealed with one successful complete official slurp-slu-official-test score each, and the READ row is root countersigned.",
+  "registered_at_utc": "2026-10-01T02:45:00Z",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /mnt/c/Users/35686/.codex/worktrees/slurp-next-phase/speech-aware-evidence-acquisition, branch codex/slurp-next-phase",
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_OWNER_ALLOWANCE_AND_PREPARATIONS",
+  "unused_budget_is_not_attempt_authority": true
+}

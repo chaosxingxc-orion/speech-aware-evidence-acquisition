@@ -1,0 +1,9 @@
+{
+  "status": "registered-before-model-free-preparation",
+  "owner_decision": 213,
+  "rows_per_arm": 3010,
+  "model_contacts": 0,
+  "encoding_contacts": 0,
+  "selection_must_equal_original": true,
+  "old_outputs_read": false
+}

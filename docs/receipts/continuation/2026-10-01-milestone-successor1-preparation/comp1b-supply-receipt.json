@@ -1,0 +1,27 @@
+{
+  "rebuilt": true,
+  "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+  "old_pin": {
+    "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1/phase-supply-v1.json",
+    "sha256": "023ff2c30dacee991ce83e5722ca24e8ee537f286e5bfda15e6711709cba1148"
+  },
+  "new_pin": {
+    "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1/phase-supply-v1.json",
+    "sha256": "035708a90e0aaffd4dbbcfe6b274cf99c29f198d4fbc0f06c801978f45c0e01f"
+  },
+  "row_counts": {
+    "old": {
+      "facets": 0,
+      "values": 3009
+    },
+    "new": {
+      "facets": 0,
+      "values": 3009
+    }
+  },
+  "readiness_requirement": {
+    "updated": 1,
+    "appended": 0,
+    "kept": 3
+  }
+}

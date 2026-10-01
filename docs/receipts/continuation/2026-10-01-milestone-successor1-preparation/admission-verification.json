@@ -1,0 +1,10 @@
+{
+  "recorded_at": "2026-10-01T02:58:00.617563+00:00",
+  "receipt": "coordination/slurp-milestone-successor1-v1/root-admission-v1.json",
+  "receipt_sha256": "58ead746becf5b5cb7af3e26b82845d323fa1527902ba4ee8d7c4045eaee41b7",
+  "tests_passed": 10,
+  "four_exact_allowance_identities": "PASS",
+  "preflip": "PASS",
+  "gpu_contacts": 0,
+  "scientific_settings_unchanged": true
+}
