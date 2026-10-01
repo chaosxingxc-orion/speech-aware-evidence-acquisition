@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "exact frozen source and roster",
+    "Worker-only OPENED attempt with verified COMPLETED manifest; never claim scientific finalization",
+    "four output rows",
+    "contact and tool budget",
+    "actual-request FIT receipts",
+    "zero official scoring jobs"
+  ],
+  "limitations": "Natural model choices cannot guarantee every optional branch occurs. Unit fixtures cover decline, empty lookup, actual expansion and post-revision terminal delivery; maximum-legal-context real tokenizer proof remains a separate prerequisite for initial400 admission.",
+  "members": [
+    "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-RECOVERY1-V1"
+  ],
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-RECOVERY1-STRUCTURE-V1",
+  "schema": "saea-engineering-read-recipe-v1",
+  "scope": "Operational metadata only; no terminal answers, official quality scoring, efficacy, harm or policy-update feedback."
+}

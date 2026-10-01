@@ -1,0 +1,18 @@
+{
+  "changed_surface": "Planner final exact-token protocol only; parser unchanged",
+  "parents": [
+    "9bb4e33feb372b21fab3b139aa246c060e9d12f292ff74952c5b0b6c122195ca"
+  ],
+  "predecessor_run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-V1",
+  "recovery_index": 1,
+  "sampling_or_policy_update": false,
+  "schema": "saea-system-text-control-correction-v1",
+  "seed_bundle": {
+    "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SEARCH-CONTROL-V2/seed-policy.json",
+    "sha256": "caf7f06ef1047fbf6103de8395da7c09e787f32a203aeb230cb211eabd236235"
+  },
+  "supersedes_bundle_id": "9bb4e33feb372b21fab3b139aa246c060e9d12f292ff74952c5b0b6c122195ca",
+  "symmetry": "This seed is the common successor for initial/A-A and both L/B branches before any proposal. Old scientific cells stay held.",
+  "task_quality_read": false
+}

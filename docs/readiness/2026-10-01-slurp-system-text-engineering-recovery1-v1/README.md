@@ -1,0 +1,7 @@
+# Planner contract: sole engineering recovery
+
+The owner requested continuation after the reported Planner format defect. Decisions214/215 cover completion of the approved implementation. This is recovery index1 of the failed four-row engineering family, not an independent scientific experiment or a renamed extra retry. A second engineering failure stops this flight; no automatic repeat. Preserve the original run, worker, outputs, prepared scoring specification and all contacts unchanged.
+
+Only the Planner exact-text instruction changes. Its parser, tool interface, knowledge, role graph, output authority, roster, budgets and serving geometry stay fixed. The new immutable policy records the old seed as its parent. The same corrected seed must be used by initial/A-A and both L/B branches. No engineering task answers, quality, scores or rewards enter feedback.
+
+Own generation52, actual-request FIT208 and at most4 knowledge calls are registered. Native optional branches remain model-initiated; offline fixtures cover decline, empty result, nonempty lookup and post-revision delivery. Natural four-row choices cannot guarantee all optional branches. Maximum-legal-context FIT remains a separate bulk-admission prerequisite. This engineering-only worker never runs the official scorer, though the standard lifecycle emits a prepared score-job specification and leaves its attempt OPENED. No scientific FINALIZED claim is made.
