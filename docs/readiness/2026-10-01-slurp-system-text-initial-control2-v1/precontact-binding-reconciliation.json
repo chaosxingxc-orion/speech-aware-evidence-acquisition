@@ -1,0 +1,46 @@
+{
+  "changes": [
+    {
+      "config": "0aa6b743b22caa02c00a5118d0d8fd3535668dbeb569a0c907557f528b154966",
+      "old": {
+        "config": "04189f8e6d2fdcb62c3be4ddaadf17cf979dfce233a97be4fbe1d7c49b52df55",
+        "protocol": "ff98e2ad8658397e880d098bcf883d818270513ebb07f1c10a1ab2dafb6949db"
+      },
+      "protocol": "fa82967fb16b71495609e1db1a77fc2454c97e5a92ab88afc258069c0a7952f5",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1"
+    },
+    {
+      "config": "0aa6b743b22caa02c00a5118d0d8fd3535668dbeb569a0c907557f528b154966",
+      "old": {
+        "config": "04189f8e6d2fdcb62c3be4ddaadf17cf979dfce233a97be4fbe1d7c49b52df55",
+        "protocol": "ff98e2ad8658397e880d098bcf883d818270513ebb07f1c10a1ab2dafb6949db"
+      },
+      "protocol": "fa82967fb16b71495609e1db1a77fc2454c97e5a92ab88afc258069c0a7952f5",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-FIT-V1"
+    },
+    {
+      "config": "8adb897558d0778ad4eadc155ed2300629265102c11286c4cb7268c27b8f44ac",
+      "old": {
+        "config": "8adb897558d0778ad4eadc155ed2300629265102c11286c4cb7268c27b8f44ac",
+        "protocol": "c235068bd01cb65a7ad696d74f5d6b0c1a058bd6d2b3015e1d764684d2a306db"
+      },
+      "protocol": "c235068bd01cb65a7ad696d74f5d6b0c1a058bd6d2b3015e1d764684d2a306db",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1"
+    },
+    {
+      "config": "8adb897558d0778ad4eadc155ed2300629265102c11286c4cb7268c27b8f44ac",
+      "old": {
+        "config": "8adb897558d0778ad4eadc155ed2300629265102c11286c4cb7268c27b8f44ac",
+        "protocol": "c235068bd01cb65a7ad696d74f5d6b0c1a058bd6d2b3015e1d764684d2a306db"
+      },
+      "protocol": "c235068bd01cb65a7ad696d74f5d6b0c1a058bd6d2b3015e1d764684d2a306db",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-FIT-V1"
+    }
+  ],
+  "model_contacts": 0,
+  "old_worker_commit": "c4be41e2b6520fc5638428c4fa30605a2e06662e",
+  "reason": "The shared repin loop computed the first cell identity before finishing the second cell readiness edit in the shared experiment fragment. Its FIT ledger notes were not in the generation run-id rewrite set. Reconcile all four never-contacted rows to the clean frozen runtime preflight after both supplies are pinned.",
+  "schema": "saea-precontact-binding-reconciliation-v1",
+  "scope": "Only unflown registration metadata. Original prepared v1 bytes are preserved. No scientific setting or budget change.",
+  "verified_preflight_commit": "1d4a3cb5b76a4ec07ac76e04080fac4c139558e2"
+}
