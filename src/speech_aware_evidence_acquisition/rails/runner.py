@@ -4835,7 +4835,7 @@ async def _invoke_native_role_episode(
 
     def ability_for(role, schema):
         function = schema["function"]
-        async def invoke(**arguments):
+        async def execute_arguments(arguments, *, invalid_arguments=False):
             def execute(_slot_id):
                 if not pending or pending["phase_id"] != role.phase_id:
                     raise RailsRunnerError("tool has no pending completion for this role")
@@ -4855,6 +4855,15 @@ async def _invoke_native_role_episode(
                     prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
                     core_completions=(completion,),
                 )
+                if invalid_arguments:
+                    steps = binding.tools_for_phase.reject_native_batch(
+                        role.phase_id, staged, invalid_arguments=True,
+                    )
+                    step, = steps
+                    message = native_tool_result_message(json.loads(step.state.content))
+                    settle(rejected_steps=steps)
+                    visits[role.phase_id]["local_ids"].append(step.state.state_id)
+                    return message["content"]
                 step = binding.tools_for_phase(role.phase_id, role.phase_id, staged)
                 if step is None:
                     raise RailsRunnerError("analytical action has no counted observation")
@@ -4867,11 +4876,17 @@ async def _invoke_native_role_episode(
             if run_local is not None:
                 return await run_local(lambda: execute(None))
             return await run_contact(execute)
+        async def invoke(**arguments):
+            return await execute_arguments(arguments)
+
+        async def invalid_arguments(arguments):
+            return await execute_arguments(arguments, invalid_arguments=True)
+
         return NativeSourceFunction(
             card=ToolCard(id=function["name"], name=function["name"],
                           description=function.get("description", ""),
                           input_params=function["parameters"]),
-            func=invoke,
+            func=invoke, invalid_arguments=invalid_arguments,
         )
 
     schema_by_name = {}

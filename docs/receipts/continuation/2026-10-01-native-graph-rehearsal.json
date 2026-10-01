@@ -1,0 +1,70 @@
+{
+  "schema": "saea-continuation-native-graph-proof-v1",
+  "observed_at": "2026-10-01T17:41:38.824860+00:00",
+  "owner_decisions": [
+    214,
+    215
+  ],
+  "scope": "Model-free production-native graph proof and invalid-tool-argument custody repair",
+  "proofs": [
+    {
+      "directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/native-graph-integration-v3",
+      "files": {
+        "receipt.json": "bbcf0629e9510c629309e554ea49c5471cba4a8ec3cefd39da3c1aa210aac7eb",
+        "requests.jsonl": "52ead9aaa2f06dad5d81f647391db0e23f7aa4bac799d694c4edb130c6c8a990"
+      },
+      "metadata": {
+        "terminal_rows": 4,
+        "synthetic_completions": 22,
+        "synthetic_tool_calls": 3,
+        "capacity_verified": false,
+        "generation_contacts": 0,
+        "tokenizer_contacts": 0
+      }
+    },
+    {
+      "directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/native-graph-integration-v3-malformed-control",
+      "files": {
+        "receipt.json": "d18263aa593baa33918b21543978a32a7e95880cbbc1427ab2791958a5e12c0b",
+        "requests.jsonl": "dbb5f532d256b41cc90f89899ba895fe53ae32519b7bc09e56e1d51993d4e009"
+      },
+      "metadata": {
+        "terminal_rows": 4,
+        "synthetic_completions": 16,
+        "synthetic_tool_calls": 0,
+        "capacity_verified": false,
+        "generation_contacts": 0,
+        "tokenizer_contacts": 0
+      }
+    },
+    {
+      "directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/native-graph-integration-v3-rejected-tool",
+      "files": {
+        "receipt.json": "d182b6b49889157f132356a6b81433c4c2b11565fc31f36e6576a0075929bdef",
+        "requests.jsonl": "bc4f11dd16b112fe958abfb03131442754a363993fd0f3a04ff736e6adf07027"
+      },
+      "metadata": {
+        "terminal_rows": 4,
+        "synthetic_completions": 20,
+        "synthetic_tool_calls": 0,
+        "capacity_verified": false,
+        "generation_contacts": 0,
+        "tokenizer_contacts": 0
+      }
+    }
+  ],
+  "focused_unit_tests_passed": 151,
+  "local_integration_tests_passed": 3,
+  "official_score_jobs": 0,
+  "scientific_results_read": false,
+  "capacity_verified": false,
+  "initial_seed_pair": "HELD",
+  "source_worktree": "/home/chao/saea-worktrees/codex-system-text-policy",
+  "frozen_workers_changed": false,
+  "defect": "Schema refusal occurred before a source-bound tool observation; the next native completion failed custody validation.",
+  "fix": "Bind a validated schema-refusal observation to its original assistant call without executing the tool. Preserve subsequent Planner and Solver authority.",
+  "remaining": [
+    "Measure reachable full native requests with the longest released legal tool values, full completion reserve and roster speech bound under a separately registered FIT plan.",
+    "Complete initial CONTROL2 generation/FIT/READ registration, serial integration and coordinator admission before launching the 800-row pair."
+  ]
+}

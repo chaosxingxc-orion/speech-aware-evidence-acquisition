@@ -324,7 +324,9 @@ def _validate_bound_result_group(group):
     if schemas == {rejection}:
         if (
             not isinstance(source_calls, list)
-            or len(source_calls) < 2
+            # Each observation has already validated its rejection cause:
+            # schema and episode-budget rejections cover one original call.
+            or len(source_calls) < 1
             or calls != source_calls
             or len({call["id"] for call in calls}) != len(calls)
         ):

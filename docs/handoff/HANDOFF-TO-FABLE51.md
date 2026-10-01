@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Current continuation checkpoint: 2026-10-01T17:41:38.824860+00:00, ChatGPT root
+
+The production-native graph now passes a model-free four-path proof: decline,
+empty lookup, two-value acquisition, and acquisition followed by Solver revision
+and final delivery (22 synthetic completions, three local lookups, zero model or
+tokenizer contacts). Negative-path testing found and repaired a source-custody
+defect for schema-invalid tool arguments. The refused call now produces a validated,
+source-bound rejection observation without running a tool. 151 focused unit tests,
+three local graph integration tests and the native reuse gate pass.
+
+The [new receipt](../receipts/continuation/2026-10-01-native-graph-rehearsal.json)
+and [proof note](../readiness/2026-10-01-slurp-system-text-capacity-recovery1-v1/native-graph-proof.md)
+are structural evidence only. A maximum-legal-request capacity measurement and
+initial CONTROL2 registration/admission remain pending; the 800-row seed/A/A pair
+is HELD. No research score or milestone answer was read. Frozen workers and queue
+controls are unchanged. This fix is committed on the isolated implementation branch
+for serial integration; historical checkpoints below retain their own scope.
+
+
 ## Current continuation checkpoint: 2026-10-01T16:56:56.067115+00:00, ChatGPT root
 
 The Planner exact-text correction completed its sole four-row GPU engineering recovery: 4 terminal rows, 28 model calls, zero `planner_action_illegal`, and zero natural knowledge calls. All rows reached post-revision terminal delivery. This is structural evidence only; the standard engineering worker remains OPENED with a COMPLETED manifest and one prepared scoring specification, not an official finalized/scored research result.

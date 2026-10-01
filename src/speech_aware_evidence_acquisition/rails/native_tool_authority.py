@@ -342,11 +342,21 @@ def episode_call_limit_rejection_result(count: int) -> dict[str, object]:
             "tool_call_count": count, "lookup_performed": False}
 
 
+def invalid_arguments_rejection_result(count: int) -> dict[str, object]:
+    """Describe a schema-refused call; no tool or evidence was produced."""
+    if isinstance(count, bool) or not isinstance(count, int) or count != 1:
+        raise NativeToolAuthorityError("argument rejection requires one call")
+    return {"status": "rejected", "error_code": "invalid-tool-arguments",
+            "message": "No tool was executed. Use arguments matching the advertised schema or provide the required final report.",
+            "tool_call_count": count, "lookup_performed": False}
+
+
 def validate_native_call_rejection(document):
     """Validate one rejected call while retaining the entire original batch."""
     if not isinstance(document, Mapping):
         raise NativeToolAuthorityError("native call rejection must be an object")
     limit_rejection = isinstance(document.get("result"), Mapping) and document["result"].get("error_code") == "episode-tool-call-limit"
+    argument_rejection = isinstance(document.get("result"), Mapping) and document["result"].get("error_code") == "invalid-tool-arguments"
     authority = validate_native_tool_authority(document.get("source_authority"))
     calls = authority["original_assistant_message"].get("tool_calls")
     raw = document.get("native_tool_calls_json")
@@ -358,7 +368,7 @@ def validate_native_call_rejection(document):
         document.get("schema") != MULTIPLE_CALL_REJECTION_SCHEMA
         or document.get("selection_mode") != "native-tools"
         or "tool_invocation" in document
-        or not isinstance(calls, list) or len(calls) < (1 if limit_rejection else 2)
+        or not isinstance(calls, list) or len(calls) < (1 if limit_rejection or argument_rejection else 2)
         or not isinstance(raw, str)
         or hashlib.sha256(raw.encode()).hexdigest() != authority["source_tool_calls_sha256"]
         or parsed_calls != calls
@@ -397,7 +407,16 @@ def validate_native_call_rejection(document):
     if len(matches) != 1:
         raise NativeToolAuthorityError("native batch rejection call identity differs")
     call = matches[0]
-    result = (episode_call_limit_rejection_result(len(calls)) if limit_rejection
+    if argument_rejection:
+        from jsonschema.validators import validator_for
+        schema = next(s["function"]["parameters"] for s in authority["selected_tool_schemas"]
+                      if s["function"]["name"] == call["function"]["name"])
+        validator = validator_for(schema)
+        validator.check_schema(schema)
+        if validator(schema).is_valid(parsed[call["id"]]):
+            raise NativeToolAuthorityError("argument rejection claims a schema-valid call")
+    result = (invalid_arguments_rejection_result(len(calls)) if argument_rejection else
+              episode_call_limit_rejection_result(len(calls)) if limit_rejection
               else multiple_call_rejection_result(len(calls)))
     if (
         document.get("tool_id") != call["function"]["name"]

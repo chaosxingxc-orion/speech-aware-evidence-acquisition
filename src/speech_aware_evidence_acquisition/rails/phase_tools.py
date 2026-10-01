@@ -1165,11 +1165,11 @@ class PhaseToolDispatcher:
             "completion": completion,
         }
 
-    def reject_native_batch(self, phase, context, *, call_limit=False):
+    def reject_native_batch(self, phase, context, *, call_limit=False, invalid_arguments=False):
         """Reject every returned action before dispatch; execute and count no tool."""
         from .native_tool_authority import (
             MULTIPLE_CALL_REJECTION_SCHEMA, build_native_tool_authority,
-            multiple_call_rejection_result, episode_call_limit_rejection_result, select_completion_tool_schemas,
+            multiple_call_rejection_result, episode_call_limit_rejection_result, invalid_arguments_rejection_result, select_completion_tool_schemas,
             validate_native_call_rejection,
         )
 
@@ -1185,7 +1185,10 @@ class PhaseToolDispatcher:
             ),
         )
         calls = completion.tool_calls
-        result = (episode_call_limit_rejection_result(len(calls)) if call_limit
+        if call_limit and invalid_arguments:
+            raise PhaseToolError("one rejection must name one cause")
+        result = (invalid_arguments_rejection_result(len(calls)) if invalid_arguments else
+                  episode_call_limit_rejection_result(len(calls)) if call_limit
                   else multiple_call_rejection_result(len(calls)))
         documents, steps = [], []
         for call in calls:

@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current continuation checkpoint: 2026-10-01T17:41:38.824860+00:00, ChatGPT root
+
+The production-native graph now passes a model-free four-path proof: decline,
+empty lookup, two-value acquisition, and acquisition followed by Solver revision
+and final delivery (22 synthetic completions, three local lookups, zero model or
+tokenizer contacts). Negative-path testing found and repaired a source-custody
+defect for schema-invalid tool arguments. The refused call now produces a validated,
+source-bound rejection observation without running a tool. 151 focused unit tests,
+three local graph integration tests and the native reuse gate pass.
+
+The [new receipt](../receipts/continuation/2026-10-01-native-graph-rehearsal.json)
+and [proof note](../readiness/2026-10-01-slurp-system-text-capacity-recovery1-v1/native-graph-proof.md)
+are structural evidence only. A maximum-legal-request capacity measurement and
+initial CONTROL2 registration/admission remain pending; the 800-row seed/A/A pair
+is HELD. No research score or milestone answer was read. Frozen workers and queue
+controls are unchanged. This fix is committed on the isolated implementation branch
+for serial integration; historical checkpoints below retain their own scope.
+
+
 ## Current continuation checkpoint: 2026-10-01T16:56:56.067115+00:00, ChatGPT root
 
 The Planner exact-text correction completed its sole four-row GPU engineering recovery: 4 terminal rows, 28 model calls, zero `planner_action_illegal`, and zero natural knowledge calls. All rows reached post-revision terminal delivery. This is structural evidence only; the standard engineering worker remains OPENED with a COMPLETED manifest and one prepared scoring specification, not an official finalized/scored research result.
@@ -8,9 +27,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-01T16:56:56.067115+00:00 · maintainer: ChatGPT root for the current
-implementation checkpoint in isolated branch `codex/system-text-policy`, based
-on `afce16557514f5ab188073745d6bc1baab8c15cc`; coordinator serial integration pending.
+Last refreshed: 2026-10-01T17:41:38.824860+00:00 · maintainer: ChatGPT root.
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
@@ -19,8 +36,9 @@ and [runbook](../readiness/2026-10-01-slurp-system-text-search-v1/operator-runbo
 describe the code, prospective rosters, three feedback updates, blind search
 control, source boundaries and remaining admissions. Policy/feedback/proposal/
 archive interfaces and shared consumption compilation are implemented. Initial
-seed/A/A supplies are prepared and warm-verified. The new campaign remains HELD:
-no proposal, construction, FIT, engineering or generation model contact has run.
+seed/A/A supplies are prepared and warm-verified. The scientific search campaign remains HELD. Separate engineering and capacity
+contacts are documented in the newer checkpoints above; no initial800 or update
+candidate generation has run.
 Real capacity/engineering evidence, isolated proposer transport/version pinning,
 historical tuning/read-roster disclosure and serial integration remain pending.
 The focused regression passed 114 tests; the five new modules measured 97% coverage.

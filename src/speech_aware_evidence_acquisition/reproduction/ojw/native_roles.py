@@ -209,7 +209,7 @@ class NativeSourceFunction(Tool):
     dispatcher still verifies source hashes, role authority and task semantics.
     """
 
-    def __init__(self, *, card, func):
+    def __init__(self, *, card, func, invalid_arguments=None):
         from jsonschema.validators import validator_for
 
         super().__init__(card)
@@ -219,11 +219,20 @@ class NativeSourceFunction(Tool):
         validator.check_schema(card.input_params)
         self._validator = validator(card.input_params)
         self._source_handler = func
+        if invalid_arguments is not None and not inspect.iscoroutinefunction(invalid_arguments):
+            raise ValueError("invalid argument observation handler must be async")
+        self._invalid_arguments = invalid_arguments
 
     async def invoke(self, inputs: Input, **kwargs) -> Output:
         # Never honor formatting/coercion skips: source identity requires the
         # unchanged validated dict and ordered arrays, including uniqueness.
-        self._validator.validate(inputs)
+        from jsonschema.exceptions import ValidationError
+        try:
+            self._validator.validate(inputs)
+        except ValidationError:
+            if self._invalid_arguments is None:
+                raise
+            return await self._invalid_arguments(inputs)
         return await self._source_handler(**inputs)
 
     async def stream(self, inputs: Input, **kwargs):
