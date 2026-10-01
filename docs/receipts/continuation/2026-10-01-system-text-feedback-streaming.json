@@ -1,0 +1,85 @@
+{
+  "schema": "saea-system-text-feedback-streaming-proof-v1",
+  "created_at": "2026-10-01T19:59:50.911322+00:00",
+  "parent_commit": "db8ece985d7fbc28badc630dd1bec8bb35d17849",
+  "source_sha256": {
+    "src/speech_aware_evidence_acquisition/rails/system_proposer_capsule.py": "455cc40a656b012f9b8c1f758f93d9084e602d76be9e2c58c59b4f4f05e7cc4c",
+    "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py": "224e5dbde23671344abb8aa544d01af13c7790ba2c09df5ccb49ad7205f09507",
+    "scripts/system_text_search.py": "8b63fd55bac712fc26417a5e6159fdcd58e19170562457f8ffebd031c8de7daf",
+    "tests/unit/test_system_proposer_paging.py": "960a626145891c03622fc11a9c56c671ee74cd1c201bba5aed2a477a0178c832",
+    "tests/unit/test_system_proposer_capsule.py": "4052006005df9637e64ee39c51902885a97f28202eb1c9facecde1bc5228a4c9",
+    "tests/unit/test_system_text_feedback.py": "0a2c3a5a285ef5389a98f110fb9cca6c60c74b65cff29f4c389432f89e85d029"
+  },
+  "trigger": {
+    "initial_seed_trace_bytes": 262916398,
+    "original_artifact_limit_bytes": 134217728,
+    "observation": "Filesystem metadata only; no answers or quality values read."
+  },
+  "scope": [
+    "Lossless chunk-backed proposer capsule in the existing interface",
+    "Streaming cost attribution joined to production response record IDs"
+  ],
+  "validation": {
+    "tests_passed": 569,
+    "coverage": {
+      "covered_lines": 450,
+      "num_statements": 453,
+      "percent_covered": 99.33774834437087,
+      "percent_covered_display": "99",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 99.33774834437087,
+      "percent_statements_covered_display": "99"
+    },
+    "broader_checks_passed": 7,
+    "prior_algorithm_annotation_findings": "Two frozen native-capacity empty operator declarations remain unchanged and unwaived."
+  },
+  "scientific_results_read": false,
+  "research_proposals": 0,
+  "external_model_contacts": 0,
+  "runtime_changes": false,
+  "scientific_policy_changes": false,
+  "pending": [
+    "Whole initial-family completion and exact READ countersignature",
+    "Owner budget-profile decision and compatible exact-model proposer admission",
+    "Registered L/B proposal and construction allocations"
+  ],
+  "evidence": [
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/junit.xml",
+      "sha256": "647efc011ddc9ac38167d2a3fb58e58dd7bbd2d119db5a7cb5b662a820bac5df"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/coverage.json",
+      "sha256": "a0c4ac006f2f448fb762601acfcea1a42d03b0566ab92c417fa9d622d75d00c4"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/pytest.log",
+      "sha256": "d879111ae401d0380fa063e2e64ff41d3371ad2101feeef6cbfdddd7295ff64d"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/pytest-command-error.log",
+      "sha256": "22f7dcbd13f0355ba4463c81ad2fe74988043cedf0b4b25569ba8e6002954640"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/synthetic_volume_proof.py",
+      "sha256": "156dd2a6a6bb1f2455b14536afaa3ccd5b09511f8648453390b35899436c3e3d"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/volume-proof.json",
+      "sha256": "8bcbf9c8f89dc757df5580c0355226993a422a0346d00424daee00a63223de58"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/operational-checkpoint.json",
+      "sha256": "e61b66b52123664caa3a063c1814af9736c41547f4aa400486a6a6d76a226071"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/seed-operational-verification.json",
+      "sha256": "481d4f5518b86bc727586812054eba01537300300fc9fab13adccc6baf5405bc"
+    },
+    {
+      "relpath": "coordination/system-text-feedback-streaming-v1/gates/summary.json",
+      "sha256": "3c80d3767846a7f7474609f7eb8386c6721c946fcc42d26fc096181848602246"
+    }
+  ]
+}

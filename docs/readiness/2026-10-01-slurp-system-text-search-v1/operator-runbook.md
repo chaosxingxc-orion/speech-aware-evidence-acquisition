@@ -99,6 +99,12 @@ alone does not admit a transport; the real provider path must preserve and attes
 every request, enforce the complete conversation budget and expose only the
 artifact broker. The current host audit deliberately uses a synthetic endpoint.
 
+Capsules now use lossless, hash-verified chunk storage under
+`capsule-material/<branch>/<allocation>/` in that external archive. Large traces
+are never clipped to the former in-memory artifact limit. Keep the complete
+cache with its capsule; pages verify their stored bytes at access time. See
+[the volume and cost-reader correction](complete-feedback-streaming-v1.md).
+
 The [bounded Responses transport](responses-transport-v1.md) now supplies an
 actual HTTP/SSE and artifact-continuation implementation, proved on loopback.
 It retains the hard output bound and requires a model-free input meter plus a

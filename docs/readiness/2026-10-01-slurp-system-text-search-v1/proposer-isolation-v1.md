@@ -45,12 +45,14 @@ No live transport is supplied by this implementation. Its callback is tested wit
 synthetic responses only. Provider compatibility, contact registration, token
 accounting and output-limit enforcement remain prerequisites, not assumed facts.
 
-Packaging currently caps one artifact at128MiB and a capsule at256MiB. These are
-memory bounds, not scientific budgets. An oversized complete trace requires a
-lossless, hash-bound indexed representation before admission; silently clipping
-it or choosing a favorable subset is forbidden. Initial feedback is indexed
-rather than inserted wholesale into the first context. Actual token limits must
-cover the full proposer conversation, including tool responses, before admission.
+The original in-memory path caps one artifact at128MiB and a capsule at256MiB.
+The [streaming successor](complete-feedback-streaming-v1.md) adds lossless,
+hash-bound chunk storage and is now the CLI default. Both paths expose identical
+model inputs and pages. These are packaging choices, not scientific budgets;
+silently clipping traces or selecting favorable cases is forbidden. Initial
+feedback is indexed rather than inserted wholesale into the first context.
+Actual token limits must cover the full proposer conversation, including tool
+responses, before admission.
 
 ## Installed-client result
 

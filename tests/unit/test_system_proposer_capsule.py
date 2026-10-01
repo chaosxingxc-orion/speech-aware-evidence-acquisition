@@ -231,7 +231,8 @@ def test_complete_learning_traces_are_typed_pins_and_absolute_escape_is_denied(t
         ProposerCapsule.from_packet(packet, roots=roots)
 
 
-def test_archived_learning_inputs_expand_only_earlier_registered_evidence(tmp_path):
+@pytest.mark.parametrize("disk_backed", [False, True])
+def test_archived_learning_inputs_expand_only_earlier_registered_evidence(tmp_path, disk_backed):
     packet, roots = fixture(tmp_path, "L")
     archive = roots["archive"]
     entries = {"input": packet, "response": {"raw_response": "Invalid historical proposal."}, "import": {"status": "invalid"}}
@@ -245,7 +246,8 @@ def test_archived_learning_inputs_expand_only_earlier_registered_evidence(tmp_pa
     packet["round"] = 2
     packet["learning_history"] = [record]
     reseal(packet)
-    capsule = ProposerCapsule.from_packet(packet, roots=roots)
+    capsule = ProposerCapsule.from_packet(packet, roots=roots,
+        cache_root=tmp_path / "cache" if disk_backed else None)
     assert {"history-input", "history-response", "history-import"} <= {a["kind"] for a in capsule.as_json()["artifacts"]}
     record["input"]["relpath"] = "inputs/B-1-1.json"
     reseal(packet)

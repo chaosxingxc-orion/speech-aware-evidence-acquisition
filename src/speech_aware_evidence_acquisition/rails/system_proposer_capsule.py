@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import io
 import json
+import shutil
 import stat
 from pathlib import Path
 
@@ -25,6 +27,7 @@ LEARNING_FIELDS = frozenset({"feedback", "complementary_policies", "learning_his
 MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
+CACHE_CHARS = 256 * 1024
 BROKER_TOOL = {
     "type": "function", "name": "read_artifact",
     "description": "Read a character page from one registered English artifact by ID. No paths or network access.",
@@ -118,7 +121,7 @@ def input_references(packet):
     return copy.deepcopy(references)
 
 
-def _read_registered(reference, roots):
+def _registered_path(reference, roots):
     root = Path(roots[reference["root"]]).resolve(strict=True)
     pin = reference["pin"]
     path = Path(pin["path"]) if "path" in pin else root / pin["relpath"]
@@ -132,59 +135,150 @@ def _read_registered(reference, roots):
     require(path.resolve(strict=True).is_relative_to(root), "artifact link escaped its registered root")
     info = path.stat()
     require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1, "artifact must be a regular non-linked file")
-    require(info.st_size <= MAX_ARTIFACT_BYTES, "artifact exceeds packaging size limit")
+    return path
+
+
+def _read_registered(reference, roots, *, byte_limit=None):
+    path = _registered_path(reference, roots)
+    pin = reference["pin"]
+    limit = MAX_ARTIFACT_BYTES if byte_limit is None else byte_limit
+    require(path.stat().st_size <= limit, "artifact exceeds packaging size limit")
     # Read once and retain immutable bytes. Matching a prepublished hash also
     # rejects substitution during the filesystem checks; the model never opens it.
     with path.open("rb") as stream:
-        raw = stream.read(MAX_ARTIFACT_BYTES + 1)
-    require(len(raw) <= MAX_ARTIFACT_BYTES and hashlib.sha256(raw).hexdigest() == pin["sha256"],
+        raw = stream.read(limit + 1)
+    require(len(raw) <= limit and hashlib.sha256(raw).hexdigest() == pin["sha256"],
             "artifact hash or size differs")
     return raw
 
 
+def _cache_artifact(stream, cache_root, *, kind, source, expected_sha256, expected_bytes):
+    """Copy complete UTF-8 text in bounded chunks, preserving all original bytes."""
+    require(shutil.disk_usage(cache_root).free >= expected_bytes + 1024 ** 3,
+            "insufficient disk space for a complete artifact cache")
+    identity = content_hash({"sha256": expected_sha256, "kind": kind, "source": source})
+    folder = cache_root / identity
+    folder.mkdir()
+    digest, chunks, characters, byte_count = hashlib.sha256(), [], 0, 0
+    while True:
+        try:
+            text = stream.read(CACHE_CHARS)
+        except UnicodeError as error:
+            raise PolicyError("artifact is not UTF-8 text") from error
+        if not text:
+            break
+        reject_non_latin_scripts(text)
+        raw = text.encode("utf-8")
+        byte_count += len(raw)
+        require(byte_count <= expected_bytes, "artifact size changed during packaging")
+        digest.update(raw)
+        relpath = f"{identity}/{len(chunks):06d}.txt"
+        with (cache_root / relpath).open("xb") as target:
+            target.write(raw)
+        chunks.append({"relpath": relpath, "sha256": hashlib.sha256(raw).hexdigest(),
+                       "offset": characters, "characters": len(text)})
+        characters += len(text)
+    require(byte_count == expected_bytes and digest.hexdigest() == expected_sha256, "artifact hash or size differs")
+    return {"artifact_id": identity, "kind": kind, "source": source,
+            "sha256": expected_sha256, "characters": characters,
+            "storage": {"schema": "saea-proposer-text-chunks-v1", "root": str(cache_root), "chunks": chunks}}
+
+
+def _cached_page(artifact, offset, limit):
+    storage = artifact["storage"]
+    end = min(offset + limit, artifact["characters"])
+    result = []
+    while offset < end:
+        index = offset // CACHE_CHARS
+        require(index < len(storage["chunks"]), "artifact chunk index is incomplete")
+        chunk = storage["chunks"][index]
+        require(chunk["offset"] == index * CACHE_CHARS
+                and 0 < chunk["characters"] <= CACHE_CHARS, "artifact chunk layout differs")
+        raw = _read_registered({"root": "cache", "pin": {k: chunk[k] for k in ("relpath", "sha256")}},
+                               {"cache": storage["root"]}, byte_limit=CACHE_CHARS * 4)
+        text = raw.decode("utf-8")
+        require(len(text) == chunk["characters"], "artifact chunk character count differs")
+        start = offset - chunk["offset"]
+        piece = text[start:start + end - offset]
+        require(bool(piece), "artifact chunk does not cover the requested page")
+        result.append(piece)
+        offset += len(piece)
+    return "".join(result)
+
+
 class ProposerCapsule:
-    """Immutable in-memory evidence; the broker has no filesystem operations."""
+    """Immutable English evidence with either memory or hash-verified chunk storage.
+
+    The broker accepts artifact IDs and character pages only. Cache paths and
+    chunk indexes are host custody metadata and never enter the model context.
+    """
     def __init__(self, packet, artifacts):
         self._packet = canonical(packet)
         self._artifacts = dict(artifacts)
         self.access_log = []
 
     @classmethod
-    def from_packet(cls, packet, *, roots):
-        references = input_references(packet)
+    def from_packet(cls, packet, *, roots, cache_root=None):
+        input_references(packet)
+        if cache_root is not None:
+            cache_root = Path(cache_root).absolute()
+            require(cache_root.resolve() == cache_root, "cache path cannot contain links")
+            cache_root.mkdir(parents=True, exist_ok=False)
         artifacts = {}
         total = 0
+        visited = set()
 
         def append(raw, kind, source):
             nonlocal total
+            digest = hashlib.sha256(raw).hexdigest()
+            identity = content_hash({"sha256": digest, "kind": kind, "source": source})
+            if identity in artifacts:
+                return
+            if cache_root is not None:
+                artifacts[identity] = _cache_artifact(io.StringIO(raw.decode("utf-8")), cache_root,
+                    kind=kind, source=source, expected_sha256=digest, expected_bytes=len(raw))
+                return
             text = raw.decode("utf-8")
             reject_non_latin_scripts(text)
             total += len(raw)
             require(total <= MAX_CAPSULE_BYTES, "capsule exceeds packaging size limit")
-            digest = hashlib.sha256(raw).hexdigest()
-            identity = content_hash({"sha256": digest, "kind": kind, "source": source})
             artifacts[identity] = {"artifact_id": identity, "kind": kind, "source": source,
                                    "sha256": digest, "characters": len(text), "text": text}
 
-        for reference in references:
-            raw = _read_registered(reference, roots)
-            append(raw, reference["kind"], reference["pin"])
-            if reference["kind"] == "history-input":
-                prior = json.loads(raw)
-                require(prior["branch"] == "L" and prior["round"] < packet["round"]
-                        and prior["model_version"] == packet["model_version"], "history branch/round/model differs")
-                # Reopen exactly the archived earlier packet's own complete indexes.
-                # Never recurse into arbitrary pointers in a model response.
-                previous = cls.from_packet(prior, roots=roots)
-                for item in previous._artifacts.values():
-                    append(item["text"].encode(), item["kind"], item["source"])
-        for field, kind in (("feedback", "complete-feedback"), ("learning_history", "complete-history-index")):
-            if field in packet:
-                append(canonical(packet[field]).encode(), kind, {"packet_field": field})
+        def expand(current):
+            references = input_references(current)
+            if current["input_sha256"] in visited:
+                return
+            visited.add(current["input_sha256"])
+            for reference in references:
+                kind, source = reference["kind"], reference["pin"]
+                identity = content_hash({"sha256": source["sha256"], "kind": kind, "source": source})
+                raw = None
+                if identity not in artifacts:
+                    if cache_root is not None and kind != "history-input":
+                        path = _registered_path(reference, roots)
+                        size = path.stat().st_size
+                        with path.open("r", encoding="utf-8", newline="") as stream:
+                            artifacts[identity] = _cache_artifact(stream, cache_root, kind=kind, source=source,
+                                expected_sha256=source["sha256"], expected_bytes=size)
+                    else:
+                        raw = _read_registered(reference, roots)
+                        append(raw, kind, source)
+                if kind == "history-input":
+                    prior = json.loads(raw if raw is not None else _read_registered(reference, roots))
+                    require(prior["branch"] == "L" and prior["round"] < current["round"]
+                            and prior["model_version"] == current["model_version"], "history branch/round/model differs")
+                    # Reopen only typed pins from a verified earlier input packet.
+                    expand(prior)
+            for field, kind in (("feedback", "complete-feedback"), ("learning_history", "complete-history-index")):
+                if field in current:
+                    append(canonical(current[field]).encode(), kind, {"packet_field": field})
+        expand(packet)
         return cls(packet, artifacts)
 
     def as_json(self):
-        return {"schema": "saea-proposer-capsule-v1", "packet": json.loads(self._packet),
+        paged = any("storage" in artifact for artifact in self._artifacts.values())
+        return {"schema": "saea-proposer-capsule-v2" if paged else "saea-proposer-capsule-v1", "packet": json.loads(self._packet),
                 "artifacts": copy.deepcopy(list(self._artifacts.values()))}
 
     def initial_input(self):
@@ -195,7 +289,7 @@ class ProposerCapsule:
             packet.pop(field, None)
         return {"schema": "saea-proposer-initial-view-v1", "packet": packet,
                 "packet_projection": "feedback-and-history-in-complete-indexed-artifacts",
-                "artifacts": [{k: v for k, v in a.items() if k != "text"} for a in self._artifacts.values()],
+                "artifacts": [{k: v for k, v in a.items() if k not in {"text", "storage"}} for a in self._artifacts.values()],
                 "omissions": []}
 
     def read_artifact(self, arguments):
@@ -209,7 +303,8 @@ class ProposerCapsule:
                 "invalid artifact page")
         artifact = self._artifacts[identity]
         require(offset <= artifact["characters"], "artifact offset is outside the document")
-        text = artifact["text"][offset:offset + limit]
+        text = (_cached_page(artifact, offset, limit) if "storage" in artifact
+                else artifact["text"][offset:offset + limit])
         result = {"artifact_id": identity, "sha256": artifact["sha256"], "offset": offset,
                   "next_offset": offset + len(text), "eof": offset + len(text) == artifact["characters"], "text": text}
         entry.update(status="supplied", response_sha256=content_hash(result), characters=len(text))

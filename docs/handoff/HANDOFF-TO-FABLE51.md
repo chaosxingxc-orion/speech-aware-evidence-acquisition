@@ -1,34 +1,31 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
-## Current continuation checkpoint: 2026-10-01T19:33:12.990372+00:00, ChatGPT root
+## Current continuation checkpoint: 2026-10-01T19:57:32.143048+00:00, ChatGPT root
 
-The CONTROL2 initial seed/A/A campaign remains RUNNING on frozen worker953f9b598
-(driver epoch18:27:40Z). Seed is OPENED with2650 attributed model contacts; A/A
-is NOT_OPENED and waiting in sequence. Contact counts are not completed rows.
-The service is healthy with fresh telemetry; Windows has16.48GiB free. No task
-answers, quality values, or milestone outcomes were read. Preserve the active
-worker, serving geometry, queue and complete-family READ boundary.
+The CONTROL2 initial seed is FINALIZED:400 rows, verified seal, one successful
+complete official score job and zero failed jobs. A/A remains OPENED with774
+attributed model contacts and is running in the same frozen campaign953f9b598
+(driver epoch18:27:40Z). Contacts are not completed rows. The live campaign PID
+142044 was revalidated; STOP is absent and service telemetry is fresh. Windows
+free memory was15.15GiB at19:51:58Z. No task quality or milestone outcome was read.
+The complete-family READ row remains pending until A/A also qualifies.
 
-The [bounded proposer Responses transport](../readiness/2026-10-01-slurp-system-text-search-v1/responses-transport-v1.md)
-now executes real HTTP/SSE and manifest-only artifact continuations. The related
-127 tests pass (44 transport tests,100% transport statement coverage). A saved
-loopback wire proof covers request -> artifact -> proposal with zero external
-model contacts, zero real proposals and no account credential access. Unknown
-tools, changed context/model, missing metering, exhaustion and failures stop the
-allocation without retries. Unmetered contacts are reported as unknown, not0.
-See [source/test/wire evidence](../receipts/continuation/2026-10-01-system-text-proposer-responses.json).
+The [feedback volume and cost correction](../readiness/2026-10-01-slurp-system-text-search-v1/complete-feedback-streaming-v1.md)
+removes the actual251MiB seed trace's packaging blocker through lossless,
+hash-verified chunk storage. It preserves the same proposer inputs and page
+interface. A260MiB synthetic proof reconstructs every byte and measures1.79MiB
+peak Python traced memory for packaging only. The cost reader now joins the
+production response record identity, counts failed contacts and keeps unknown
+usage explicit. The related569 tests pass; both changed modules have99%
+statement coverage. Seven broader checks pass with existing advisories. The
+known frozen native-capacity algorithm annotations remain unchanged and unwaived.
+See [English evidence](../receipts/continuation/2026-10-01-system-text-feedback-streaming.json).
 
-This is not live proposer admission. Exact model/provider authentication, a
-registered input meter and contact allocation, complete initial feedback and
-live registration integration remain pending. The documented ChatGPT-plan route
-cannot enforce max_output_tokens; root asked the owner about a common measured
-subscription profile. Until an answer is recorded, retain the existing hard
-bounds. No paid route, silent budget change or proposal contact is authorized
-by this implementation. The earlier Codex extra-context audit remains valid.
-
-Seven broader checks pass with existing advisories. The algorithm-label gate
-still reports the two previously documented frozen native-capacity annotations;
-they were not rewritten or waived. Other held research lines stay held.
+This offline correction adds zero research/proposer/model contacts. The frozen
+worker, queue and scientific policy are unchanged. Preserve the root READ gate;
+use the existing saved-score adapter after that gate, without replaying scoring.
+Exact proposer admission and the owner's pending budget-profile decision remain
+required; retain hard bounds until answered. All other research holds remain.
 
 ## Current continuation checkpoint: 2026-10-01T19:04:25.2694296Z, ChatGPT root
 

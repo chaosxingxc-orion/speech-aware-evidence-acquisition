@@ -83,42 +83,100 @@ def preflight_family(bindings, expected_members):
     return manifests
 
 
+def _pinned_rows(pin, label):
+    """Verify before parsing, then verify again while streaming the pinned bytes."""
+    path = Path(pin["path"])
+    require(path.is_absolute(), "feedback source path must be absolute")
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    require(digest.hexdigest() == pin["sha256"], f"{label} bytes changed")
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for line in stream:
+            digest.update(line)
+            if line.strip():
+                row = json.loads(line)
+                require(isinstance(row, dict), f"{label} row is not an object")
+                yield row
+    require(digest.hexdigest() == pin["sha256"], f"{label} bytes changed during read")
+
+
 def _row_cost_and_terminal(manifest):
-    """Use attributed role/tool records, including failed contacts; never service totals."""
-    # The caller already verified this bundle via reward links. Reopen its pinned
-    # output/trace bytes here so this view cannot silently substitute loose files.
-    raw = Path(manifest["raw_trace"]["path"]).read_bytes()
-    require(hashlib.sha256(raw).hexdigest() == manifest["raw_trace"]["sha256"], "trace bytes changed")
-    out = Path(manifest["outputs"]["path"]).read_bytes()
-    require(hashlib.sha256(out).hexdigest() == manifest["outputs"]["sha256"], "terminal bytes changed")
-    outputs = {r["sample_id"]: r for r in map(json.loads, out.splitlines()) if r}
-    records = [json.loads(line) for line in raw.splitlines() if line]
-    result = {}
-    for sid, output in outputs.items():
+    """Stream attributed costs, including failed contacts, without retaining answers.
+
+    The production adapter binds MODEL_RESPONSE by its record_id suffix, not a
+    request_id field in the response payload. Keep only compact identity/usage
+    indexes, so out-of-order records do not lose usage or require the full trace.
+    """
+    result, requests, responses, tool_contacts = {}, {}, {}, {}
+    for output in _pinned_rows(manifest["outputs"], "terminal"):
+        sid = output["sample_id"]
+        require(sid not in result, "duplicate terminal sample identity")
         receipt = output.get("native_episode_receipt")
         require(isinstance(receipt, dict), "complete system terminal receipt is missing")
         terminal = validate_native_episode_delivery_receipt(receipt, error_type=PolicyError)
-        requests = {r["payload"]["payload"]["request_id"]: r for r in records
-                    if r["channel"] == "MODEL_REQUEST" and r["payload"].get("payload", {}).get("sample_id") == sid}
-        require(bool(requests), "terminal row has no attributed model requests")
         role_counts = {}
         for visit in receipt["role_visits"]:
             contacts = visit.get("execution_receipt", {}).get("contacts", [])
             role_counts[visit["role_id"]] = role_counts.get(visit["role_id"], 0) + len(contacts)
-        tools = [r for r in records if r["payload"].get("use_sample_id") == sid
-                 and isinstance(r["payload"].get("use_tool_invocation"), dict)]
-        usage = [r["payload"].get("usage", {}) for r in records
-                 if r["channel"] == "MODEL_RESPONSE" and r["payload"].get("request_id") in requests]
-        tokens = {}
-        for key in ("prompt_tokens", "completion_tokens"):
-            tokens[key] = (sum(u[key] for u in usage) if len(usage) == len(requests)
-                           and all(type(u.get(key)) is int and u[key] >= 0 for u in usage) else None)
-        result[sid] = {"model_calls": len(requests), "tool_calls": len(tools), "role_contacts": role_counts,
-                       **tokens, "delivery_kind": terminal.kind,
+        result[sid] = {"model_calls": 0, "tool_calls": 0, "role_contacts": role_counts,
+                       "tool_events": dict.fromkeys(("attempt", "result", "failed", "rejected"), 0),
+                       "delivery_kind": terminal.kind,
                        "reliable_completion": terminal.kind in {"accepted", "terminal"},
                        "abstained": terminal.kind in {"abstention", "context-abstention"},
                        "trace": manifest["raw_trace"], "terminal_output": manifest["outputs"],
                        "omissions": [], "wall_time_seconds": None}
+        tool_contacts[sid] = set()
+
+    for record in _pinned_rows(manifest["raw_trace"], "trace"):
+        payload, record_id = record["payload"], record["record_id"]
+        if record["channel"] == "MODEL_REQUEST":
+            request = payload.get("payload", {})
+            sid = request.get("sample_id")
+            if sid is None:
+                continue  # Derived stitching records are not extra model calls.
+            require(sid in result, "trace request is outside the terminal cohort")
+            identity = request.get("request_id")
+            require(isinstance(identity, str) and record_id == identity + "/request", "request trace identity differs")
+            require(identity not in requests, "duplicate model request identity")
+            requests[identity] = sid
+            result[sid]["model_calls"] += 1
+        elif record["channel"] == "MODEL_RESPONSE":
+            require(record_id.endswith("/response"), "response trace identity differs")
+            identity = record_id.removesuffix("/response")
+            require(payload.get("request_id", identity) == identity, "response request identity differs")
+            require(identity not in responses, "duplicate model response identity")
+            usage = payload.get("usage", {})
+            responses[identity] = usage if isinstance(usage, dict) else {}
+        else:
+            for axis in ("use", "obs"):
+                sid = payload.get(axis + "_sample_id")
+                if sid not in result:
+                    continue
+                events = result[sid]["tool_events"]
+                for part in record_id.split("/"):
+                    if part.startswith("tool-") and part[5:] in events:
+                        events[part[5:]] += 1
+                invocation = payload.get(axis + "_tool_invocation")
+                if isinstance(invocation, dict):
+                    identity = (axis, invocation.get("request_id"), invocation.get("tool_call_id"))
+                    require(all(isinstance(value, str) and value for value in identity), "tool contact identity missing")
+                    tool_contacts[sid].add(identity)
+
+    usages = {sid: [] for sid in result}
+    for identity, sid in requests.items():
+        if identity in responses:
+            usages[sid].append(responses[identity])
+    for sid, row in result.items():
+        require(row["model_calls"] > 0, "terminal row has no attributed model requests")
+        usage = usages[sid]
+        row["missing_model_responses"] = row["model_calls"] - len(usage)
+        row["tool_calls"] = len(tool_contacts[sid])
+        for key in ("prompt_tokens", "completion_tokens"):
+            row[key] = (sum(u[key] for u in usage) if len(usage) == row["model_calls"]
+                        and all(type(u.get(key)) is int and u[key] >= 0 for u in usage) else None)
     return result
 
 

@@ -141,7 +141,9 @@ def main(argv=None):
             require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
             require(feedback.learning_view(args.learning_member).as_json() == packet["feedback"],
                     "feedback differs from the preregistered proposal input")
-        capsule = ProposerCapsule.from_packet(packet, roots={"data": args.data_root, "archive": args.archive})
+        require(not (args.archive / "capsules" / (key + ".json")).exists(), "capsule already exists")
+        capsule = ProposerCapsule.from_packet(packet, roots={"data": args.data_root, "archive": args.archive},
+            cache_root=args.archive / "capsule-material" / args.branch / key)
         document = capsule.as_json()
         archive._write(f"capsules/{key}.json", document)
         print(json.dumps({"capsule_sha256": content_hash(document), "artifacts": len(document["artifacts"]),

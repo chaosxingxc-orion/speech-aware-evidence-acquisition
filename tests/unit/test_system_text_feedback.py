@@ -115,6 +115,67 @@ def test_actual_role_tool_and_terminal_records_determine_cost(tmp_path):
         _row_cost_and_terminal(manifest)
 
 
+def _cost_fixture(tmp_path, mutate=None):
+    import hashlib
+    from test_native_episode_diagnostics import _fixture
+    _, _, output, trace = _fixture()
+    records = []
+    for key, value in trace.items():
+        channel = "MODEL_REQUEST" if key.endswith("/request") else "MODEL_RESPONSE" if key.endswith("/response") else "USE"
+        if channel == "MODEL_RESPONSE":
+            value["usage"] = {"prompt_tokens": 11, "completion_tokens": 3}
+            assert "request_id" not in value  # The production adapter uses record_id.
+        records.append({"channel": channel, "record_id": key, "payload": value})
+    outputs = [output]
+    if mutate:
+        mutate(records, outputs)
+    def save(name, rows):
+        path = tmp_path / name
+        path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+        return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    return {"raw_trace": save("trace.jsonl", records), "outputs": save("outputs.jsonl", outputs)}, output["sample_id"]
+
+
+def test_cost_joins_production_response_record_ids_even_out_of_order(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.rails.system_text_feedback import _row_cost_and_terminal
+    manifest, sid = _cost_fixture(tmp_path, lambda records, _outputs: records.reverse())
+    def refuse_bulk(_path):
+        pytest.fail("Complete trace/output files must be streamed.")
+    monkeypatch.setattr(Path, "read_bytes", refuse_bulk)
+    row = _row_cost_and_terminal(manifest)[sid]
+    assert row["model_calls"] == 5
+    assert row["prompt_tokens"] == 55 and row["completion_tokens"] == 15
+    assert row["missing_model_responses"] == 0
+    assert row["tool_events"] == {"attempt": 1, "result": 1, "failed": 0, "rejected": 0}
+
+
+def test_failed_contacts_remain_counted_and_usage_unknown(tmp_path):
+    from speech_aware_evidence_acquisition.rails.system_text_feedback import _row_cost_and_terminal
+    def mutate(records, outputs):
+        records.append({"channel": "MODEL_REQUEST", "record_id": "failed/request", "payload": {
+            "payload": {"request_id": "failed", "sample_id": outputs[0]["sample_id"]}}})
+        records.append({"channel": "USE", "record_id": "s1/native-policy/reviewer/tool-failed/failed",
+                        "payload": {"use_sample_id": outputs[0]["sample_id"]}})
+    manifest, sid = _cost_fixture(tmp_path, mutate)
+    row = _row_cost_and_terminal(manifest)[sid]
+    assert row["model_calls"] == 6 and row["missing_model_responses"] == 1
+    assert row["prompt_tokens"] is None and row["completion_tokens"] is None
+    assert row["tool_events"]["failed"] == 1
+
+
+@pytest.mark.parametrize("kind", ["output", "request", "response"])
+def test_duplicate_cost_identity_is_not_silently_collapsed(tmp_path, kind):
+    from speech_aware_evidence_acquisition.rails.system_text_feedback import _row_cost_and_terminal
+    def mutate(records, outputs):
+        if kind == "output":
+            outputs.append(outputs[0])
+        else:
+            records.append(next(r for r in records if r["channel"] == "MODEL_" + kind.upper()))
+    manifest, _ = _cost_fixture(tmp_path, mutate)
+    with pytest.raises(PolicyError, match="duplicate"):
+        _row_cost_and_terminal(manifest)
+
+
 def test_full_family_pools_official_feedback_and_freezes_reference(monkeypatch, tmp_path):
     import hashlib
     from types import SimpleNamespace
