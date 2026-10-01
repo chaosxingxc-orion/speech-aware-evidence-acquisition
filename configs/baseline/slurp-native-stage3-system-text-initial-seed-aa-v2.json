@@ -407,6 +407,10 @@
       "sha256": "e259ea1a80799bac906942bc1eb7d0a42443064a3696f35cc94507d5209634e9"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v1.json",
+    "sha256": "21eb43c5c5ce7803b3ff37ed9e16ddaf99ca4fff19c782fcdb0a323600c98213"
+  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -421,9 +425,5 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
-  "what_this_is": "HELD control-corrected common seed for whole-system text search. Initial seed/A-A only; no policy updates or proposal contacts.",
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/phase-supply-v1.json",
-    "sha256": "21eb43c5c5ce7803b3ff37ed9e16ddaf99ca4fff19c782fcdb0a323600c98213"
-  }
+  "what_this_is": "HELD control-corrected common seed for whole-system text search. Initial seed/A-A only; no policy updates or proposal contacts."
 }
