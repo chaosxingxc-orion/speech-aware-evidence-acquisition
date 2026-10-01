@@ -1,0 +1,6 @@
+{
+  "run_ids": {
+    "read": "SAEA-SLURP-SYSTEM-TEXT-CAPACITY-STRUCTURE-V1"
+  },
+  "scope": "Only non-generative token counts, hashes, context limits and structural pass/fail."
+}

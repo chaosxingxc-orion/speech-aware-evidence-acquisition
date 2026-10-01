@@ -1,0 +1,7 @@
+# Corrected seed context stress
+
+Owner214/215 require real capacity proof. This separate FIT uses the existing coordinator, root lease, exposure gate, serving identity, resource guard and guarded tokenizer. It runs as a Windows-owned WSL background task. It has zero generation and scoring authority and reads no task outcomes.
+
+Render the shared phase envelopes over the entire fixed R01C400 roster. Include both longest slot knowledge values by live tokenizer count, all13 permitted model-response history slots padded to at least512 measured tokens each, full512 output reserve, the maximum measured speech packet over the entire roster, native tool schemas and an additional2048-token structural allowance for handoff/limits/tool metadata. Measure all four role envelopes; never truncate them to pass. Preserve hashes and counts. Maximum slot24,576, standard resident four-slot decoder-only geometry.
+
+This is a conservative measured stress proof of the new branch materials, not an exhaustive claim about all possible tokenizations of arbitrary future natural language. The shared phase envelope chooses its coarse static maximum by bytes. Every actual immutable request still passes native_contact_fit before generation; no estimate replaces that enforcement. If the stress proof fails, keep initial generation HELD and report the named capacity issue. No automatic repeat or geometry adjustment.
