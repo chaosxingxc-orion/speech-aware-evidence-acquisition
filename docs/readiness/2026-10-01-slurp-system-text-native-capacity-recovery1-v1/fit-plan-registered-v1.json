@@ -1,0 +1,26 @@
+{
+  "cell": "slurp-native-stage3-system-text-native-capacity-recovery1-v1",
+  "composed_config_hash": "2085f5ea62bc730822c64cc16eda6ae02b778c46928ab23f5e14f20474487511",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-system-text-native-capacity-recovery1-v1/root-admission-v1.json",
+    "sha256": "01bbeb50621b3441288ed3c0d0daf4d9bd11f07376b14aa91c424bf95d83d0ab"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-system-text-native-capacity-recovery1-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 2048,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "6531c38e8e630b944e22299bb7a2d8f53aa15d84df450d0c9f5eee7ef925c222",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-NATIVE-CAPACITY-RECOVERY1-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "39c91b9a2b15eb128be2afbed427827de73b0894d2df3dc7227e065b19a43fdf",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-native-capacity-recovery1-v1",
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-NATIVE-CAPACITY-RECOVERY1-STRUCTURE-V1",
+  "schema": "saea-registered-capacity-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT"
+}

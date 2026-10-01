@@ -8,6 +8,25 @@ from pathlib import Path
 from .native_graph_rehearsal import FourPathResponder, rehearse_native_graph
 
 
+class FreshAuditConnections:
+    """Do not reuse an HTTP socket across the long model-free graph walk.
+
+    Create one shared-client instance per endpoint and close it afterward.
+    A failed endpoint propagates immediately; no request is retried.
+    """
+    def __init__(self, factory):
+        self.factory = factory
+
+    def request_json(self, method, route, payload=None):
+        client = self.factory()
+        try:
+            return client.request_json(method, route, payload)
+        finally:
+            connection = getattr(getattr(client, "local", None), "connection", None)
+            if connection is not None:
+                connection.close()
+
+
 def bounded_response_texts(tokens, *, targets, intents):
     """Fill legal role fields, never exceeding the registered 512-token output."""
     if len(targets) != 2 or len(intents) != 3:
@@ -124,8 +143,9 @@ def fit_native_graph(runtime, path, *, policy, graph_factory, contact_cap=2048):
                     "method": method, "route": route, "contact": client.counts.total()}, sort_keys=True) + "\n")
                 stream.flush()
                 os.fsync(stream.fileno())
-            client = GuardedTokenizer(_LoopbackPromptAuditClient(host=session.host, port=session.port,
-                timeout_seconds=600), guard=guard, contact_cap=contact_cap, contact_sink=record)
+            client = GuardedTokenizer(FreshAuditConnections(lambda: _LoopbackPromptAuditClient(
+                host=session.host, port=session.port, timeout_seconds=600)),
+                guard=guard, contact_cap=contact_cap, contact_sink=record)
             marker = client.request_json("GET", "/props")["media_marker"]
             def tokens(text):
                 return len(client.request_json("POST", "/tokenize", {"content": text,

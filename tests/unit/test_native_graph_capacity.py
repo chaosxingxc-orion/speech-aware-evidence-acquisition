@@ -3,6 +3,7 @@ import json
 import pytest
 from speech_aware_evidence_acquisition.analysis.native_graph_capacity import (
     bounded_response_texts, measure_captured_requests,
+    FreshAuditConnections,
 )
 from speech_aware_evidence_acquisition.rails.review_handoff import normalize_review_handoff
 
@@ -37,3 +38,25 @@ def test_capacity_measures_exact_body_and_reserves_once(monkeypatch):
     with pytest.raises(ValueError, match="completion"):
         measure_captured_requests(None, [{"request": {**body, "max_tokens": 256}, "sample_id": "s"}],
                                   media_marker="MEDIA", speech_max=195)
+
+
+def test_each_endpoint_uses_a_fresh_connection_and_never_retries_failure():
+    made, closed = [], []
+    class Client:
+        def __init__(self):
+            from types import SimpleNamespace
+            self.local = SimpleNamespace(connection=SimpleNamespace(close=lambda: closed.append(self)))
+            self.called = False
+            made.append(self)
+        def request_json(self, method, route, payload=None):
+            assert not self.called
+            self.called = True
+            if route == "/failure":
+                raise BrokenPipeError("synthetic closed socket")
+            return {"ok": True}
+    adapter = FreshAuditConnections(Client)
+    assert adapter.request_json("POST", "/tokenize") == {"ok": True}
+    assert adapter.request_json("POST", "/apply-template") == {"ok": True}
+    with pytest.raises(BrokenPipeError):
+        adapter.request_json("POST", "/failure")
+    assert len(made) == len(closed) == 3
