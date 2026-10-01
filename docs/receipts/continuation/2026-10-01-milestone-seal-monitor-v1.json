@@ -1,0 +1,76 @@
+{
+  "schema": "saea-operational-monitor-checkpoint-v1",
+  "generated_at": "2026-10-01T01:05:53.318767+00:00",
+  "source_checkout_commit": "000da6bee27fc0533bb07c32b528706c54863504",
+  "frozen_flight_commit": "4f536851",
+  "operation": "read-only-metadata-inspection",
+  "scientific_outputs_read": false,
+  "official_scorer_invoked": false,
+  "generation_or_service_mutated": false,
+  "observation_window_utc": "2026-10-01T00:53Z--00:57Z",
+  "campaign_members": [
+    {
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1",
+      "attempt_state": "ABORTED",
+      "output_record_lines": 3010,
+      "model_contacts": 12343,
+      "written_manifest_status": "COMPLETED",
+      "seal_valid": false,
+      "official_score_jobs": 0,
+      "reason": "manifest ExecutionPlan omitted owner_allowance; final-report validation failed"
+    },
+    {
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-01-V1",
+      "generation_attempt_present": false,
+      "official_score_jobs": 0
+    }
+  ],
+  "dependent_queue": "P-SV-4 halted on batch-STOP at 2026-09-30T18:02:44Z; not launched",
+  "live_inspection": {
+    "experiment_process_present": false,
+    "server_process_present": false,
+    "gpu_memory_used_mib": 0,
+    "gpu_utilization_percent": 0,
+    "windows_free_gib": 43.18
+  },
+  "policy": "No automatic recovery, reseal, rescore, partial scientific read, STOP removal or successor dispatch. The final-report protocol takes precedence over ordinary recovery policy.",
+  "report": "docs/handoff/2026-10-01-chatgpt-review-and-next-family-v1.md",
+  "evidence": [
+    {
+      "path": "/home/chao/batch-queue.json",
+      "sha256": "67a7e4403d8d6b60bdfd82b918d3520b90b753742f510528e8a18dc8a1defc34"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "6523ad3aa71295ec0f438056ac2c04ddc2dc83733a8b87d9b13ce1206f6f2725"
+    },
+    {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "b3f079c5c7f8797683103b1f3b13dbdea6dff620d06d92b1b45a6d9275e29b2c"
+    },
+    {
+      "path": "/home/chao/queue-milestone.out",
+      "sha256": "8bf09b22793a09db0801cc21c1ecd0b899b1fdb5be8d4d882788ecd10baba93a"
+    },
+    {
+      "path": "/home/chao/queue-psv4.out",
+      "sha256": "3fea8589cb5033db1b4e6dda8f4528753e52c7e49436baee4b0b94f761fa24e7"
+    },
+    {
+      "path": "/home/chao/batch-campaign-1-comp1bts-20260930T131036Z.log",
+      "sha256": "f01d83524549f318549193fa89379fe1af464703987b5fa2dd46dd80344a7313"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/attempt-slurp-test-sample-3010-milestone-00-plan-generation-v1.json",
+      "sha256": "4fb2c4ab5ac43f05a790602c14c03225af6097de18453f95a7b5e2332ea915d4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1/attempt-slurp-test-sample-3010-milestone-00-plan-generation-v1/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-00-PLAN-V1.run-manifest.json",
+      "sha256": "696fd47a00a52e0ad000486598e2884ce2acbfb2ecbd94910ffdaad5e22d4ef9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session-stop.json",
+      "sha256": "4c1d7d50c7e6911059eff813ceea50790e891f564b4ce52a693962168b0963aa"
+    }
+  ]
+}

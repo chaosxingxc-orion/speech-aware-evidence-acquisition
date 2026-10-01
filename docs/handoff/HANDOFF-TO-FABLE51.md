@@ -5,6 +5,29 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Operational and research review: 2026-10-01 (ChatGPT root)
+
+The September 27 pause snapshot below is historical. Decisions 207-209 authorised
+subsequent work. The September 30 milestone campaign now requires coordinator
+attention: MILESTONE-00-PLAN is ABORTED at seal after 3,010 output records and
+12,343 contacts because the serialized plan omitted owner_allowance. Its written
+COMPLETED manifest flag is not a valid seal; no official score job exists.
+MILESTONE-01 is unstarted, and the P-SV-4 queue halted on the resulting STOP.
+The inference process is gone (stop receipt 2026-10-01T00:51:02Z); live inspection
+found GPU memory 0 MiB and Windows free memory above 43 GiB. This is not evidence
+of a GPU OOM. The final-report one-shot protocol forbids ordinary retry/reseal;
+preserve all bytes and obtain an explicit disposition before any successor.
+No task-quality results from this campaign were read, and no GPU action was taken.
+
+The [root review and proposed next family](2026-10-01-chatgpt-review-and-next-family-v1.md)
+separates the admitted COMP-1b intent gain from unproven slot and automatic-policy
+gains. It proposes grounding-aware slot attribution, one conditional information-gain
+capability question, and complete-trajectory policy learning only after useful
+actions exist. It is a proposal, not registration or launch authority. Other GPU
+carriers remain held until SLURP closure under decision 211. Scientific results
+are cited from Fable's registered reports, not independently re-scored here.
+Operational evidence: docs/receipts/continuation/2026-10-01-milestone-seal-monitor-v1.json.
+
 ## Operational checkpoint: 2026-09-27 15:25Z
 
 Follow-up at 16:32Z: the current coordinator started the independent Windows task
