@@ -1,0 +1,99 @@
+{
+  "actual": {
+    "audio_seconds": 46.84175,
+    "calls": 16
+  },
+  "actual_request_fit_receipts": 16,
+  "attempt_id": "attempt-slurp-native-stage3-system-text-smoke-4-generation-v1",
+  "attempt_state": "OPENED",
+  "driver_done_at": "2026-10-01T15:43:24Z",
+  "driver_epoch": "2026-10-01T15:41:53Z",
+  "fit_endpoint_journal_rows": 64,
+  "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-FIT-V1",
+  "frozen_commit": "1d9b69c018400504e6426ca104ee15d6f4f2611c",
+  "held": [
+    "Initial seed/A/A400 pending engineering and maximum-legal-request proof",
+    "Proposer model/version and L/B isolation pending before proposals",
+    "P-SV-4",
+    "Audio2Tool",
+    "E21",
+    "Older F1 cells"
+  ],
+  "observed_at_utc": "2026-10-01T15:49:51.281806+00:00",
+  "owner_decisions": [
+    214,
+    215
+  ],
+  "precontact_refusal": {
+    "archive": "/home/chao/batch-archives/system-text-precontact-refusal-20261001T154140Z",
+    "attempts_created": false,
+    "corrected_by": "Superseding v2 receipt validated with actual declared_readiness before dispatch",
+    "driver_epoch": "2026-10-01T15:36:00Z",
+    "generation_contacts": 0,
+    "named_cause": "Invalid admission schema tag"
+  },
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-V1",
+  "runtime_shape_issue": {
+    "disposition": "Engineering acceptance withheld despite batch structural PASS. Do not dispatch initial400 or score/read this four-row proof. Preserve bytes; correct the explicit control-output contract and prove it offline before a separately registered successor engineering run.",
+    "identified_shape": "Two action hashes equal the exact bytes of the JSON object with action ACCEPT, which the exact-text parser rejects. Another recorded structural prefix is a JSON REVISE object with arguments. No semantic task answers, gold or rewards were inspected.",
+    "knowledge_tool_calls": 0,
+    "named_component": "Seed Planner role text references an unspecified registered action format; it does not explicitly require the existing exact-token protocol.",
+    "parser_contract": "exact-text",
+    "planner_action_illegal_rows": 4
+  },
+  "schema": "saea-system-text-engineering-launch-v1",
+  "score_jobs": {
+    "executed_official_jobs": 0,
+    "note": "The shared worker emits its standard score-job specification during seal. Engineering mode never executes it. FlightQueue scores only its explicitly selected flights; do not include this engineering run in any scoring campaign.",
+    "prepared_job_records": 1
+  },
+  "structural_inspection": {
+    "actual": {
+      "audio_seconds": 46.84175,
+      "calls": 16
+    },
+    "attempt_id": "attempt-slurp-native-stage3-system-text-smoke-4-generation-v1",
+    "attempt_state": "OPENED",
+    "contacts_per_row_hist": {},
+    "cost": {
+      "audio_seconds_used": 46.84175,
+      "calls_used": 16,
+      "completion_tokens_total": 1540,
+      "prompt_tokens_total": 138154,
+      "tool_calls": 0
+    },
+    "dirt": [],
+    "dispositions": {
+      "planner_action_illegal": 4
+    },
+    "distinct": 4,
+    "expected_score_jobs": null,
+    "fails": [],
+    "manifest_status": "COMPLETED",
+    "mode": "smoke",
+    "pass": true,
+    "requests": 16,
+    "requests_with_tool_schemas": 16,
+    "result_kind": "task-answer",
+    "rows": 4,
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-V1",
+    "score_jobs": 1,
+    "sha256_outputs": "182daae3ec11c1f1b4afa05c7646ef5295d5a4da4bab9e0476f4e96a5c27fe29",
+    "sha256_run-manifest": "387f1aa50949e0503ade73e5cf60631d47d4f05e8372cd46ba84ec688953394b",
+    "study_commit": "1d9b69c018400504e6426ca104ee15d6f4f2611c"
+  },
+  "task_quality_read": false,
+  "telemetry": {
+    "at": "2026-10-01T15:49:43.702310+00:00",
+    "host_free_gib": 22.159744262695312,
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  },
+  "test_feedback_read": false,
+  "windows_task": "SAEA-Batch-Driver",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-engineering-flight-v2"
+}

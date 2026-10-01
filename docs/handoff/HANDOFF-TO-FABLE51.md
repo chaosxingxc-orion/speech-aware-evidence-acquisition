@@ -5,6 +5,36 @@ the [preserved earlier handoff](archive/2026-09-25-HANDOFF-TO-FABLE51-through-63
 Historical research artifacts, registrations and verdicts remain authoritative
 for their own flights. Do not interpret old plans as permission to restart them.
 
+## Current engineering checkpoint: 2026-10-01T15:50Z, ChatGPT root
+
+Owner215's launch direction was executed. The Windows-owned SAEA-Batch-Driver
+epoch15:41:53Z ran four complete engineering trajectories (16 model contacts),
+ending15:43:24Z. All16 actual requests have FIT receipts. The immutable worker is
+`/home/chao/saea-worktrees/codex-system-text-engineering-flight-v2` at
+`1d9b69c018400504e6426ca104ee15d6f4f2611c`. See the
+[operational receipt](../receipts/continuation/2026-10-01-system-text-engineering-launch.json).
+
+Engineering acceptance is withheld: all4 rows carry planner_action_illegal and
+no knowledge call occurred. The native parser expects exact-text; the recorded
+control-output hashes/prefixes show JSON action objects. The seed role text
+refers to a registered format without spelling out the exact-token contract.
+This is a named control-format defect, not a task-quality finding. Keep initial
+seed/A/A400 and every update held until an explicit protocol correction, offline
+proof, separately registered successor engineering proof and maximum-legal
+request FIT. Do not retry the existing attempt, reseal it or score it.
+
+The standard worker left the attempt OPENED after generation and prepared one
+score-job specification; the engineering-only driver ran no official scorer.
+That is not a finalized scientific run. No task answers, gold, scores or rewards
+were inspected. Structural completion alone is not acceptance of the new path.
+
+The earlier15:36Z driver was refused before any attempt or contact because root
+used the wrong admission schema. Preserve its old frozen worker, v1 receipt,
+logs and archived STOP. The successor receipt passed runtime readiness and clean
+preflight. Current service idleness after engineering is intentional. The new
+implementation was serially merged; proposer version/isolation remain pending.
+The independent milestone remains separately sealed and unread scientifically.
+
 ## Launch preparation: 2026-10-01T15:36Z, ChatGPT root
 
 Owner decision215 directs prompt launch of the already authorized decision214

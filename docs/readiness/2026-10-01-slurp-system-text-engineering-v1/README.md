@@ -9,3 +9,9 @@ The real native FIT gate checks each actual request, including any returned know
 ## Dispatch verification
 
 The shared batch driver now accepts an engineering-only step. It requires one identical four-row smoke identity and an absent campaign plan, and ends after the shared structural inspector. Four isolated tests execute the real batch loop against fake worker/inspector boundaries: the valid step invokes no campaign, and wrong row count, campaign declaration or mismatched identity stops before the worker. All four pass. The exact generation/FIT registration passes with one advisory: inherited historical tuning-disjointness metadata is not fully machine-resolved. This four-row proof has no scientific read and cannot produce a benefit claim.
+
+## Actual run: control-format defect, acceptance withheld
+
+The Windows-owned task generated four rows at16 model contacts on the frozen v2 worker, with16 native request-fit receipts. Structural inspection passed but every row emitted an illegal Planner action; no knowledge tool was called. The parser is exact-text, while the control-output metadata includes JSON action objects. The seed Planner instruction references a registered format without spelling it out. Preserve these bytes; do not score, read quality or retry them. Correct the control-format instruction and prove the fixed interface offline before a separately registered engineering successor and the required worst-legal-context capacity proof. The initial400/A/A remains HELD.
+
+The shared worker wrote one standard score-job specification but this engineering queue executed zero official scores. The attempt remains OPENED under worker-only lifecycle; COMPLETED manifest status does not mean scientifically FINALIZED. Do not include this run in any later scorer batch.
