@@ -1,0 +1,6 @@
+{
+  "run_ids": {
+    "read": "SAEA-SLURP-SYSTEM-TEXT-NATIVE-CAPACITY-STRUCTURE-V1"
+  },
+  "scope": "Operational token counts, request hashes and structural branch receipts only. No generated task answer, gold, score or reward."
+}
