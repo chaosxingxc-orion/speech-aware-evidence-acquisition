@@ -1,5 +1,35 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current continuation checkpoint: 2026-10-01T19:33:12.990372+00:00, ChatGPT root
+
+The CONTROL2 initial seed/A/A campaign remains RUNNING on frozen worker953f9b598
+(driver epoch18:27:40Z). Seed is OPENED with2650 attributed model contacts; A/A
+is NOT_OPENED and waiting in sequence. Contact counts are not completed rows.
+The service is healthy with fresh telemetry; Windows has16.48GiB free. No task
+answers, quality values, or milestone outcomes were read. Preserve the active
+worker, serving geometry, queue and complete-family READ boundary.
+
+The [bounded proposer Responses transport](../readiness/2026-10-01-slurp-system-text-search-v1/responses-transport-v1.md)
+now executes real HTTP/SSE and manifest-only artifact continuations. The related
+127 tests pass (44 transport tests,100% transport statement coverage). A saved
+loopback wire proof covers request -> artifact -> proposal with zero external
+model contacts, zero real proposals and no account credential access. Unknown
+tools, changed context/model, missing metering, exhaustion and failures stop the
+allocation without retries. Unmetered contacts are reported as unknown, not0.
+See [source/test/wire evidence](../receipts/continuation/2026-10-01-system-text-proposer-responses.json).
+
+This is not live proposer admission. Exact model/provider authentication, a
+registered input meter and contact allocation, complete initial feedback and
+live registration integration remain pending. The documented ChatGPT-plan route
+cannot enforce max_output_tokens; root asked the owner about a common measured
+subscription profile. Until an answer is recorded, retain the existing hard
+bounds. No paid route, silent budget change or proposal contact is authorized
+by this implementation. The earlier Codex extra-context audit remains valid.
+
+Seven broader checks pass with existing advisories. The algorithm-label gate
+still reports the two previously documented frozen native-capacity annotations;
+they were not rewritten or waived. Other held research lines stay held.
+
 ## Current continuation checkpoint: 2026-10-01T19:04:25.2694296Z, ChatGPT root
 
 The CONTROL2 initial seed/A/A campaign remains RUNNING on frozen worker953f9b598
@@ -67,7 +97,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-01T19:04:25.2694296Z · maintainer: ChatGPT root.
+Last refreshed: 2026-10-01T19:33:12.990372+00:00 · maintainer: ChatGPT root.
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

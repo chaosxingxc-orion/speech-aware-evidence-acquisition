@@ -99,6 +99,13 @@ alone does not admit a transport; the real provider path must preserve and attes
 every request, enforce the complete conversation budget and expose only the
 artifact broker. The current host audit deliberately uses a synthetic endpoint.
 
+The [bounded Responses transport](responses-transport-v1.md) now supplies an
+actual HTTP/SSE and artifact-continuation implementation, proved on loopback.
+It retains the hard output bound and requires a model-free input meter plus a
+pre-contact registration callback. No compatible live provider is yet admitted.
+The subscription profile's lack of a server output cap is an explicit pending
+owner question; do not omit the cap or call a paid endpoint as a workaround.
+
 Use `compile-candidate` with the same protocol, seed configuration, parent
 archive, exact next-round evaluation roster, data root and isolated staging
 directory. It refuses cumulative source overlap and undeclared edits. A change

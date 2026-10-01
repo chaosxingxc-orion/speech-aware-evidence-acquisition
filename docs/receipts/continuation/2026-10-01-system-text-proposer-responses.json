@@ -1,0 +1,145 @@
+{
+  "schema": "saea-system-text-proposer-responses-proof-v1",
+  "created_at": "2026-10-01T19:31:40.033955+00:00",
+  "parent_commit": "333b3f5d2e945a8653fe915ab12c444293375f9b",
+  "source_sha256": {
+    "src/speech_aware_evidence_acquisition/rails/system_proposer_responses.py": "a1eb40ad9f92814b468f95faf510332311f47d9755a2bdfe693b2011f6ebc4c6",
+    "tests/unit/test_system_proposer_responses.py": "5c21f0297b24b50bdcecaed28d1cc610860b9809459a69f0a3bf746eab177547"
+  },
+  "proof": "production HTTP/SSE client and artifact broker over an unauthenticated literal-loopback fixture",
+  "fixture_http_requests": 2,
+  "external_model_contacts": 0,
+  "real_proposals": 0,
+  "account_credentials_read": false,
+  "live_provider_admission": "not-established",
+  "policy_changes": "none; hard token bounds retained pending owner decision",
+  "tests": {
+    "related_passed": 127,
+    "new_transport_passed": 44,
+    "transport_statement_coverage_percent": 100,
+    "full_suite_junit": "coordination/system-text-proposer-responses-v1/junit-20261001T1934.xml",
+    "wire_proof_junit": "coordination/system-text-proposer-responses-v1/wire-proof-junit-20261001T1938.xml",
+    "evidence_names_are_run_labels": "Use the embedded JUnit timestamps and this created_at as observation times.",
+    "initial_test_harness_setup_failure": "A missing parent directory for the optional evidence path caused89 setup errors and35 passes; no model contacts. Evidence retained in junit-20261001T1925.xml. Tests then ran in a fresh native temporary directory."
+  },
+  "gates": "coordination/system-text-proposer-responses-v1/gates-20261001T1934/summary.json",
+  "known_gate_failure": [
+    "frozen native-capacity-v1 and native-capacity-recovery1-v1 declare empty operators_used for system-text-black-box-v1; unchanged, not waived"
+  ],
+  "wire_evidence": [
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/admitted-contacts.json",
+      "sha256": "ccc4cfb868f627e359432253efefa9eb77425b8a2ec096bed0337898193acc7d"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/B-1-1/artifact-access.json",
+      "sha256": "ac0b7c864902c1a71c86a1a0c9646e731de474f4fb65f50eb8a34cb10d5d7c33"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/B-1-1/outcome.json",
+      "sha256": "ba1a360222462854b38f2b25a0696666c66da67eee27bdca9ba4485395188c0a"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/B-1-1/receipt.json",
+      "sha256": "63b651678268dda1622befa50b8fdefa5260641b3e507a5f7b9a7630f539ae1e"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/B-1-1/request.json",
+      "sha256": "4dd344c6c2d4f222c8a4f7726779b61f220ea5ffcb0bb4af708546b10591f914"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/B-1-1/reservation.json",
+      "sha256": "128d6243c9c8d240fe49d89f3c704e203afe0193b2ee4a5addc57e834e9dce86"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/B-1-1/transport-response.json",
+      "sha256": "52e712815d1f91e6dccdfbe4b1f1712ef240a766d304a73535c5c711cb9547eb"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/model.json",
+      "sha256": "2bc9b1f64394ce9f943cad5d06b3cef32c4be8b09f0ad4b44396e0e2dbb7d473"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/dispatch/sessions/8f62d41d870a57a0911c9ce76621e032be47b9e9e1f89b3796a0c37ac6b9a9f9.json",
+      "sha256": "3633a69e66d95cb8462827bf6b45e612d36906bb0e47bb746afc0623fdb1095a"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-001/events.jsonl",
+      "sha256": "28410d30800142f18e9bf7aa26238b2e0ac9c0599abbe52fc05defd1bebef6b6"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-001/request.json",
+      "sha256": "4dd344c6c2d4f222c8a4f7726779b61f220ea5ffcb0bb4af708546b10591f914"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-001/reservation.json",
+      "sha256": "7a27191a957670d05d066d80d3f499f8dc9f4c63da938d1dec8e251e05e77697"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-001/response.sse",
+      "sha256": "67c128ea44696b907dba517f7271e76145f1f988484e217050006245cd6338b3"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-001/usage.json",
+      "sha256": "2cae6321d247dd2c98a091b3358c12493be0c3a889ccfd93b91e2441335ccf49"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-002/events.jsonl",
+      "sha256": "0fc53403530cd0fcf2d814870bea8c777e4608de2f531141861c6df28490ece7"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-002/request.json",
+      "sha256": "ebfdd0c889cd4e44a55c219cb2d4e21df86e0fb98094b21cf284e51b9428a35e"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-002/reservation.json",
+      "sha256": "91e9d36ac3dd02e5fc953f08ed4f036d9b2e79b6a31417e4e8246920ef811f8d"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-002/response.sse",
+      "sha256": "f1b52e188e6f5569ded5883643dbaeebef48fe381d0a687a665ba02b28d6e059"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/contact-002/usage.json",
+      "sha256": "7dc976c1cb100d47b4d95f311e840cd43f62bb1e71ad2422e7ba57c1a8dcb80e"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/transport/outcome.json",
+      "sha256": "f8457641cc699887a10a133ac7e77f6ed20ab4e44a74a39d69202a76095a266b"
+    },
+    {
+      "relpath": "coordination/system-text-proposer-responses-v1/socket-proof-1/wire-requests.json",
+      "sha256": "2aa8b34fe5f0e8d77fc9dbe04b64b084024701815d9645041d48305c528985a8"
+    }
+  ],
+  "provider_documentation": "https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations",
+  "remaining": [
+    "exact proposer model and compatible zero-paid-spend authenticated provider admission",
+    "registered model-free full-request token meter and contact cap",
+    "initial complete-family READ gate",
+    "owner disposition of the subscription-route hard-output-cap incompatibility",
+    "live registration adapter before any real proposal; no dispatch CLI enabled"
+  ],
+  "operational_checkpoint": {
+    "observed_at": "2026-10-01T19:33:12.990372+00:00",
+    "driver_epoch": "2026-10-01T18:27:40Z",
+    "worker_commit": "953f9b598adba1df7c424c755993713087428823",
+    "seed_attempt_state": "OPENED",
+    "seed_model_contacts": 2650,
+    "aa_attempt_state": "NOT_OPENED",
+    "service_ok": true,
+    "windows_free_gib": 16.48,
+    "partial_results_read": false,
+    "runtime_controls_changed": false
+  },
+  "additional_checks": {
+    "handoff_freshness": "PASS",
+    "openjiuwen_native_reuse": {
+      "status": "PASS",
+      "proofs": 6,
+      "relpath": "coordination/system-text-proposer-responses-v1/openjiuwen-proof.json",
+      "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+    },
+    "diff_whitespace": "PASS"
+  }
+}
