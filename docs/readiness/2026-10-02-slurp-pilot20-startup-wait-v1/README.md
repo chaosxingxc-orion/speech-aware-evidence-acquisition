@@ -1,6 +1,8 @@
 # Owner220 pilot: precontact startup refusal and proposed bounded waiting
 
-Status: **Owner221 approves the8GiB resource amendment. Exact STOP disposition/continuation remains PENDING.**
+Status: **Owner221 APPROVES the8GiB resource amendment and the exact seven-member continuation.**
+
+The human explicitly approved the concrete STOP disposition after all tests and frozen checks. Preserve historical pending statements below as the preparation history; the current [owner receipt](../../receipts/owner/2026-10-02-decision221-memory-amendment.json) supersedes them. Fresh live checks and exact control custody still precede dispatch.
 
 ## Observed incident
 

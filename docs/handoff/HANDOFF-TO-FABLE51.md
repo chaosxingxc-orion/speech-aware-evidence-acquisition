@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner221 exact continuation approved: 2026-10-02T14:06:43.841920+00:00
+
+The human explicitly approves the prepared STOP disposition and continuation of the seven never-started20-row members. The8GiB resource amendment was already approved. See [owner221 receipt](../receipts/owner/2026-10-02-decision221-memory-amendment.json). Prepared worker62b487e9b passed seven clean model-free checks; no scientific source/config change except operational process-memory policy. Revalidate live state and preserve exact controls before root dispatch. First L-parent must not be replayed/scored again; all eight still form the unsigned READ family. This receipt grants no automatic response to another failure. Monitoring remains read-only.
+
 ## Owner221 continuation preparation verified: 2026-10-02T14:03:47.642725+00:00
 
 All seven remaining20-row members pass clean frozen model-free checks on /home/chao/saea-worktrees/codex-system-text-pilot20-memory-owner221-v1 at62b487e9be02b6c9e63379957f2275a640646ddc. Registration has0 blocking findings and7 unchanged historical tuning-alias advisories. Every remaining attempt is absent. Relative to original4101a4925, the only source/config change is the operational process guard; model-facing runtime, controller, scorer and all configs are byte-identical. See [readiness receipt](../receipts/continuation/2026-10-02-pilot20-owner221-ready.json).
