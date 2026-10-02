@@ -1,0 +1,97 @@
+{
+  "schema": "saea-system-text-compact-feedback-evidence-v1",
+  "at_utc": "2026-10-02T04:13:10.798049+00:00",
+  "owner_scope": [
+    214,
+    215,
+    217
+  ],
+  "implementation_status": "offline-verified-pending-serial-integration",
+  "worker_base_commit": "af5dd89e984a2b04b39bf693328ac26a4696d668",
+  "view_profile": "compact-feedback-v1",
+  "legacy_default": "full-index-v1",
+  "source_files": {
+    "src/speech_aware_evidence_acquisition/rails/system_proposer_views.py": "d2858a1ce3f8a6308232dbd1a7b05bf9c95c76202cb2929b94223df9debc7b5a",
+    "src/speech_aware_evidence_acquisition/rails/system_proposer_capsule.py": "5a4a1a508988c9475b12e88765ce39962a88c64759be73536f04ea9a25a9fb36",
+    "src/speech_aware_evidence_acquisition/rails/system_proposer_responses.py": "f9ec0d0b7de78b7168005125ab8e43508c3491a67b14a6f51be9766c4ababc74",
+    "scripts/flights/system_text_proposer_round.py": "4c5a1cce04b1b0ce82b09ef2bfb7a6504fc9039523e486b6ab936c7e3f0d73e0",
+    "scripts/system_text_search.py": "1fa6a76d221e510e258e08c5010e04cf0db03951a7e7bef1941b6725e998a112",
+    "tests/unit/test_system_proposer_views.py": "426671bc7cfcc0e2712d9cf5398f68defd59add5334b408e1a99d30d87b6bd27",
+    "tests/unit/test_system_proposer_round.py": "1f71b4b3bbf4389f57a3b35d2622cc80f413ed0715236ae933120712788b3962",
+    "tests/unit/test_system_text_search_cli.py": "3699acdfb30fba75cbc5c2a3123cd26a337ccde58747a0b22dce7ae84339cee8"
+  },
+  "validation": {
+    "related_tests_passed": 259,
+    "statement_coverage_percent": {
+      "views": 98,
+      "capsule": 98,
+      "responses": 90,
+      "combined": 95
+    },
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "new_model_contacts": 0,
+    "new_scorer_contacts": 0,
+    "new_tokenizer_contacts": 0
+  },
+  "offline_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-compact-feedback-engineering-v1/refined-v3/report.json",
+    "sha256": "7d013f7f0d6a362a9071c18cf356d18abbded46f88a4efc5996ad9f42c6e40e2",
+    "legacy_and_one_page_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-compact-feedback-engineering-v1/refined-v3/legacy-and-one-page-proof.json",
+    "legacy_and_one_page_sha256": "63e0ff854981b2f99e49e3c9547fc149418b6b082d2056d5461e76cded4d38b0",
+    "initial_family_only": true,
+    "all_cases_indexed": 400,
+    "briefs_fit_one_page": 384,
+    "maximum_brief_characters": 2090,
+    "initial_request_bounds": {
+      "L": 17044,
+      "B": 14538
+    },
+    "one_page_next_request_bound": 20662,
+    "one_page_remaining_input_scenario": 28366,
+    "largest_brief_two_page_third_request_bound": 21420,
+    "two_page_remaining_input_scenario": 21374,
+    "universal_multiturn_fit_established": false,
+    "new_provider_usage_measured": false,
+    "old_failed_allocations_remain_spent": true
+  },
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T04:07:33Z",
+    "worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+    "campaign_pid": 243879,
+    "live_identity_verified": true,
+    "L-parent": {
+      "state": "FINALIZED",
+      "rows": 400,
+      "actual_model_contacts": 2793,
+      "seal_verified": true,
+      "manifest_sha256": "fdd9f5c28e9f292107c64c120f75b500f1733d0d5077ea2e1353dd40c513dd68",
+      "successful_score_jobs": 1,
+      "failed_score_jobs": 0
+    },
+    "L-parent-AA": {
+      "state": "OPENED",
+      "actual_model_contacts": 317
+    },
+    "B-parent": "NOT_STARTED",
+    "B-parent-AA": "NOT_STARTED",
+    "B-candidate-2": "NOT_STARTED",
+    "STOP": false,
+    "server_ok": true,
+    "telemetry_age_seconds": 5.394,
+    "gpu_used_mib": 22976,
+    "gpu_utilization_percent": 93,
+    "windows_free_gib": 11.92,
+    "scientific_interpretation_performed": false
+  },
+  "next_admission_requirements": [
+    "Complete all five update1 members, verified seals, exactly one successful official score each and exact root READ before feedback/selection.",
+    "Revalidate actual next-round capsule and request sizes under unchanged cumulative budget; one offline scenario is not universal fit.",
+    "Pin the same profile and proposer version for both branches with enforced blind isolation."
+  ],
+  "new_proposal_admission": false,
+  "gpu_dispatch": false,
+  "frozen_worker_modified": false,
+  "read_countersigned": false,
+  "report": "docs/readiness/2026-10-02-system-text-compact-feedback-v1.md"
+}

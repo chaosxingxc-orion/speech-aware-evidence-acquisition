@@ -30,6 +30,7 @@ MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
 CACHE_CHARS = 256 * 1024
+VIEW_PROFILES = ("full-index-v1", "compact-feedback-v1")
 BROKER_TOOL = {
     "type": "function", "name": "read_artifact",
     "description": "Read a character page from one registered English artifact by ID. No paths or network access.",
@@ -235,13 +236,27 @@ class ProposerCapsule:
     The broker accepts artifact IDs and character pages only. Cache paths and
     chunk indexes are host custody metadata and never enter the model context.
     """
-    def __init__(self, packet, artifacts):
+    def __init__(self, packet, artifacts, *, view_profile="full-index-v1"):
+        require(view_profile in VIEW_PROFILES, "unknown capsule view profile")
         self._packet = canonical(packet)
         self._artifacts = dict(artifacts)
+        self.view_profile = view_profile
         self.access_log = []
 
     @classmethod
-    def from_packet(cls, packet, *, roots, cache_root=None):
+    def from_json(cls, document):
+        require(document["schema"] in {"saea-proposer-capsule-v1", "saea-proposer-capsule-v2", "saea-proposer-capsule-v3"},
+                "unknown capsule schema")
+        profile = document.get("view_profile", "full-index-v1")
+        require((document["schema"] == "saea-proposer-capsule-v3") == (profile == "compact-feedback-v1"),
+                "capsule profile/schema differ")
+        ids = [a["artifact_id"] for a in document["artifacts"]]
+        require(len(ids) == len(set(ids)), "duplicate capsule artifact")
+        return cls(document["packet"], {a["artifact_id"]: a for a in document["artifacts"]}, view_profile=profile)
+
+    @classmethod
+    def from_packet(cls, packet, *, roots, cache_root=None, view_profile="full-index-v1"):
+        require(view_profile in VIEW_PROFILES, "unknown capsule view profile")
         input_references(packet)
         if cache_root is not None:
             cache_root = Path(cache_root).absolute()
@@ -256,17 +271,18 @@ class ProposerCapsule:
             digest = hashlib.sha256(raw).hexdigest()
             identity = content_hash({"sha256": digest, "kind": kind, "source": source})
             if identity in artifacts:
-                return
+                return identity
             if cache_root is not None:
                 artifacts[identity] = _cache_artifact(io.StringIO(raw.decode("utf-8")), cache_root,
                     kind=kind, source=source, expected_sha256=digest, expected_bytes=len(raw))
-                return
+                return identity
             text = raw.decode("utf-8")
             reject_non_latin_scripts(text)
             total += len(raw)
             require(total <= MAX_CAPSULE_BYTES, "capsule exceeds packaging size limit")
             artifacts[identity] = {"artifact_id": identity, "kind": kind, "source": source,
                                    "sha256": digest, "characters": len(text), "text": text}
+            return identity
 
         def expand(current):
             references = input_references(current)
@@ -328,12 +344,27 @@ class ProposerCapsule:
                     "release": policy["knowledge"]["release"], "base_rows_sha256": contract["base_rows_sha256"]})
         expand(packet)
         append(canonical(packet).encode(), "complete-proposal-packet", {"input_sha256": packet["input_sha256"]})
-        return cls(packet, artifacts)
+        if view_profile == "compact-feedback-v1":
+            from .system_proposer_views import build_feedback_views
+            build_feedback_views(packet, artifacts, cls._page, append)
+            catalogue = {"schema": "saea-proposer-artifact-catalog-v1",
+                         "artifacts": [{k: v for k, v in a.items() if k not in {"text", "storage"}}
+                                       for a in artifacts.values()], "omissions": []}
+            append(canonical(catalogue).encode(), "artifact-catalog", {"input_sha256": packet["input_sha256"]})
+        return cls(packet, artifacts, view_profile=view_profile)
+
+    @staticmethod
+    def _page(artifact, offset, limit):
+        return (_cached_page(artifact, offset, limit) if "storage" in artifact
+                else artifact["text"][offset:offset + limit])
 
     def as_json(self):
         paged = any("storage" in artifact for artifact in self._artifacts.values())
-        return {"schema": "saea-proposer-capsule-v2" if paged else "saea-proposer-capsule-v1", "packet": json.loads(self._packet),
-                "artifacts": copy.deepcopy(list(self._artifacts.values()))}
+        result = {"schema": "saea-proposer-capsule-v2" if paged else "saea-proposer-capsule-v1", "packet": json.loads(self._packet),
+                  "artifacts": copy.deepcopy(list(self._artifacts.values()))}
+        if self.view_profile != "full-index-v1":
+            result.update(schema="saea-proposer-capsule-v3", view_profile=self.view_profile)
+        return result
 
     def initial_input(self):
         packet = json.loads(self._packet)
@@ -373,6 +404,41 @@ class ProposerCapsule:
             result["feedback_summary"] = {"family_id": full["feedback"].get("family_id"),
                 "summaries": full["feedback"]["summaries"],
                 "detail": "All trajectories, counts and failures remain in the complete-feedback and trace artifacts; inspect evidence before attributing a change."}
+        if self.view_profile == "compact-feedback-v1":
+            from .system_proposer_views import reference
+            result["schema"] = "saea-proposer-initial-view-v2"
+            for policy in [packet["parent_policy"], *packet.get("complementary_policies", [])]:
+                for key in tuple(policy):
+                    if key not in {"construction_instruction", "role_text", "supply"}:
+                        policy.pop(key)
+            packet.pop("complementary_policies", None)
+            if full.get("complementary_policies"):
+                packet["complementary_policy_ids"] = [content_hash(p) for p in full["complementary_policies"]]
+            result.pop("source_index")
+            current = {a["kind"]: a for a in self._artifacts.values()
+                       if a["source"] == {"input_sha256": full["input_sha256"]}}
+            catalogue = current["artifact-catalog"]
+            result["artifact_catalog"] = reference(catalogue)
+            policies = [full["parent_policy"], *full.get("complementary_policies", [])]
+            snapshots = [p["knowledge"]["snapshot"] for p in policies]
+            releases = [p["knowledge"]["release"] for p in policies]
+            construction = []
+            for a in self._artifacts.values():
+                if a["kind"] == "knowledge-release" and a["source"] in releases:
+                    release = json.loads(self._page(a, 0, a["characters"]))
+                    if "source" in release:
+                        construction.append(release["source"])
+            result["artifacts"] = [reference(a) for a in self._artifacts.values()
+                if (a["kind"] == "knowledge-snapshot" and a["source"] in snapshots)
+                or (a["kind"] == "knowledge-construction-source" and a["source"] in construction)
+                or (a["kind"] == "slot-value-edit-context" and a["source"].get("release") in releases)]
+            result["complete_packet"] = reference(current["complete-proposal-packet"])
+            if "feedback" in full:
+                a = current["feedback-overview"]
+                result["feedback_overview"] = json.loads(self._page(a, 0, a["characters"]))
+            result["packet_projection"] = "compact-editable-text-and-complete-catalog"
+            result["omissions"] = ["Full policies, construction custody, cumulative sources, selection, history and unabridged feedback remain in the complete packet and artifact catalogue."]
+            result["reading_budget"] = "Each read consumes another contact and repeats context. Prefer one complete brief when its declared size fits2048 characters; otherwise use small pages, at most2048. Briefs link to detail and original-source ranges. Finish within the same cumulative budget; indexed evidence grants no extra contacts."
         return result
 
     def read_artifact(self, arguments):
@@ -382,18 +448,19 @@ class ProposerCapsule:
                 "artifact request fields differ")
         identity, offset, limit = (arguments[k] for k in ("artifact_id", "offset", "limit"))
         require(isinstance(identity, str) and identity in self._artifacts, "artifact is not registered")
-        require(type(offset) is int and offset >= 0 and type(limit) is int and 1 <= limit <= MAX_PAGE_CHARACTERS,
+        page_limit = 2048 if self.view_profile == "compact-feedback-v1" else MAX_PAGE_CHARACTERS
+        require(type(offset) is int and offset >= 0 and type(limit) is int and 1 <= limit <= page_limit,
                 "invalid artifact page")
         artifact = self._artifacts[identity]
         require(offset <= artifact["characters"], "artifact offset is outside the document")
-        text = (_cached_page(artifact, offset, limit) if "storage" in artifact
-                else artifact["text"][offset:offset + limit])
+        text = self._page(artifact, offset, limit)
         result = {"artifact_id": identity, "sha256": artifact["sha256"], "offset": offset,
                   "next_offset": offset + len(text), "eof": offset + len(text) == artifact["characters"], "text": text}
         entry.update(status="supplied", response_sha256=content_hash(result), characters=len(text))
         return result
 
-    def request(self, *, remaining_output=None):
+    def request(self, *, remaining_output=None, remaining_input=None, history=None,
+                remaining_contacts=4, previous_input_tokens=0):
         """Canonical request contract, not a promise of provider compatibility.
 
         Owner217 admits a separately pinned subscription acceptance budget. It
@@ -416,6 +483,40 @@ class ProposerCapsule:
             result["tools"] = [{"type": "namespace", "name": "artifacts",
                                 "description": "Only the registered artifact reader is available.",
                                 "tools": [copy.deepcopy(BROKER_TOOL)]}]
+        if self.view_profile == "compact-feedback-v1":
+            input_left = packet["input_token_cap"] if remaining_input is None else remaining_input
+            require(type(input_left) is int and 0 < input_left <= packet["input_token_cap"], "invalid remaining input budget")
+            result["instructions"] += (
+                f" The remaining cumulative input acceptance budget is {input_left} tokens, including this request and all future repeated context. "
+                "Use small indexed pages; a further read may exhaust the budget. Submit one proposal when the current evidence is sufficient; do not invent unread evidence."
+            )
+            tool = result["tools"][0]
+            if tool["type"] == "namespace":
+                tool = tool["tools"][0]
+            tool["parameters"]["properties"]["limit"]["maximum"] = 2048
+        if history is not None:
+            result["input"] = copy.deepcopy(history)
+        if self.view_profile == "compact-feedback-v1":
+            require(type(remaining_contacts) is int and 1 <= remaining_contacts <= 4
+                    and type(previous_input_tokens) is int and previous_input_tokens >= 0,
+                    "invalid compact continuation budget")
+            base = result["instructions"]
+            bound = 0
+            # This profile retains owner217's serialized-byte meter. Include the
+            # notice itself and converge only its decimal width, never discount
+            # history using an assumed tokenizer or previous usage.
+            for _ in range(8):
+                result["instructions"] = base + (
+                    f" Current full-request conservative bound: {bound} tokens (UTF-8 bytes plus4096), against the remaining input budget above. "
+                    f"Contacts left including this one: {remaining_contacts}; the previous contact actually used {previous_input_tokens} input tokens. "
+                    "A tool request requires another full repeated-context call after this response's usage is deducted. If that is unlikely to fit, finish the proposal now, including no change when evidence is insufficient."
+                )
+                measured = len(canonical(result).encode("utf-8")) + 4096
+                if measured == bound:
+                    break
+                bound = measured
+            else:
+                raise PolicyError("compact request bound did not converge")
         return result
 
 

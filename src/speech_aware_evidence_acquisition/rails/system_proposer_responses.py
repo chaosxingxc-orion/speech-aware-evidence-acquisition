@@ -252,6 +252,7 @@ class ResponsesProposer:
     def __call__(self, initial):
         self.audit_dir.mkdir(parents=True, exist_ok=False)
         total_input, total_output = 0, 0
+        previous_input = 0
         attempted, metered = 0, 0
         seen_calls = set()
 
@@ -274,13 +275,16 @@ class ResponsesProposer:
             for number in range(1, self.contact_cap + 1):
                 remaining = packet["output_token_cap"] - total_output
                 require(remaining > 0, "proposal output budget exhausted")
-                request = {**self.capsule.request(remaining_output=remaining), "input": copy.deepcopy(history)}
+                contract = self.capsule.request(remaining_output=remaining,
+                    remaining_input=packet["input_token_cap"] - total_input, history=history,
+                    remaining_contacts=self.contact_cap - number + 1, previous_input_tokens=previous_input)
+                request = copy.deepcopy(contract)
                 counted = self.input_counter(copy.deepcopy(request))
                 require(type(counted) is int and counted >= 0
                         and total_input + counted <= packet["input_token_cap"], "proposal input budget exhausted or unknown")
                 contact = self.audit_dir / f"contact-{number:03d}"
                 contact.mkdir()
-                evidence = {**attest_outbound(request, {**self.capsule.request(remaining_output=remaining), "input": history}),
+                evidence = {**attest_outbound(request, {**contract, "input": history}),
                     "contact": number, "input_token_bound": counted, "remaining_output_tokens": remaining,
                     "session_id": packet["session_id"], "proposal_input_sha256": packet["input_sha256"],
                     "budget_profile": packet.get("budget_profile", HARD_BUDGET),
@@ -317,6 +321,7 @@ class ResponsesProposer:
                 require(isinstance(usage, dict) and all(type(usage.get(k)) is int and usage[k] >= 0
                         for k in ("input_tokens", "output_tokens")), "provider token metering unavailable")
                 total_input += usage["input_tokens"]
+                previous_input = usage["input_tokens"]
                 total_output += usage["output_tokens"]
                 metered += 1
                 write(contact / "usage.json", {"reported": usage, "cumulative_input_tokens": total_input,

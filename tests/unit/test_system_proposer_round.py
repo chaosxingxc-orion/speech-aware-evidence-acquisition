@@ -75,6 +75,18 @@ def test_existing_first_round_registration_remains_compatible(tmp_path):
     assert len(runner.load_members(r)[0]) == 4
 
 
+def test_compact_profile_requires_matching_transport_admission(tmp_path):
+    r = registration(tmp_path)
+    r["capsule_view_profile"] = "compact-feedback-v1"
+    with pytest.raises(PolicyError, match="profile.*admission"):
+        runner.load_members(r)
+    admission = runner.read_pin(r["provider_admission"])
+    admission["capsule_view_profile"] = "compact-feedback-v1"
+    r["provider_admission"] = pin(Path(r["provider_admission"]["path"]), admission)
+    with pytest.raises(PolicyError, match="same admitted.*profile"):
+        runner.load_members(r)
+
+
 @pytest.mark.parametrize("declared", [0, 4, True, "2", 1, 3])
 def test_round_mismatch_or_undeclared_round_refuses_before_transport(tmp_path, declared):
     r = registration(tmp_path, 2)

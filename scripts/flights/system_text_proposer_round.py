@@ -63,6 +63,9 @@ def load_members(registration):
     admission = read_pin(r["provider_admission"])
     protocol = read_pin(r["protocol"])
     require(admission["protocol_sha256"] == content_hash(protocol), "provider protocol differs")
+    profile = r.get("capsule_view_profile", "full-index-v1")
+    require(profile == admission.get("capsule_view_profile", "full-index-v1"),
+            "capsule view profile requires provider admission")
     require(digest(r["ledger"]["path"]) == r["ledger"]["sha256"], "contact ledger changed")
     ledger = _parse_ledger_tables(Path(r["ledger"]["path"]).read_text())
     jobs, keys = [], set()
@@ -102,7 +105,8 @@ def load_members(registration):
                 and int(rows[0]["calls"]) == plan.planned_model_calls
                 and "REGISTERED BEFORE" in rows[0].get("notes", ""),
                 "proposal contact preregistration missing or changed")
-        capsule = ProposerCapsule(packet, {a["artifact_id"]: a for a in document["artifacts"]})
+        capsule = ProposerCapsule.from_json(document)
+        require(capsule.view_profile == profile, "both branches require the same admitted capsule view profile")
         request = capsule.request()
         require(content_hash(request) == member["request_sha256"], "actual initial request differs")
         require(request_bound(request) <= packet["input_token_cap"], "initial input does not fit")

@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Compact proposer feedback: 2026-10-02T04:13:10.798049+00:00, ChatGPT root
+
+The prospective `compact-feedback-v1` profile preserves every own-branch sample and original source behind an auditable index, with outcome coverage, paired briefs and explicit omissions. B receives no feedback. Both branches require the same separately admitted profile; old requests remain canonically unchanged. The 259 related tests pass, with95% combined scoped coverage and passing Ruff/engineering-base checks. No new model, tokenizer or scorer contact was added. See [readiness and limits](../readiness/2026-10-02-system-text-compact-feedback-v1.md).
+
+The already authorized initial400 family supplied only an offline size proof:384 briefs fit one2048-character page. One complete-brief scenario fits, but the largest brief's two-page scenario still exceeds the third-request bound by46. This is not universal capacity or new provider usage. Keep the unchanged cumulative budget, meter actual requests, preserve all spent round-one slots and admit exact round-two capsules only after update1's complete-family READ. No new proposer or GPU launch follows from this implementation.
+
+At04:07:33Z, update1 L-parent was FINALIZED with400 rows, verified seal and one successful official score/zero failures after2793 contacts. L-parent-AA was OPENED with317 contacts; the three B members had not started. Worker2f07dd3d6 and its live process identity remain frozen, STOP is absent, service is healthy and Windows free memory is11.92GiB. Contacts are not completed rows. Whole-family READ stays unsigned; no current quality result was interpreted. All held carriers remain held.
+
 ## Later-round proposer readiness: 2026-10-02T03:32:11.530406+00:00, ChatGPT root
 
 The offline launcher now binds membership, failed-slot dispositions and archive imports to each explicitly registered round1-3. Later L inputs also bind their preceding complete-family feedback to the recorded parent selection; B isolation and the existing exporter READ gate remain intact. The test-first defect is reproduced and243 related tests pass, with94% launcher statement coverage and passing Ruff/engineering-base checks. See [readiness and residual budget diagnosis](../readiness/2026-10-02-system-text-proposer-later-rounds-v1.md). No model, tokenizer or scorer contact was added.

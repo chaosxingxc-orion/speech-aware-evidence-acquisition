@@ -111,7 +111,8 @@ def test_read_family_refuses_partial_spec_and_cycles(tmp_path, monkeypatch):
         cli.read_family(bad)
 
 
-def test_blind_capsule_cli_exports_immutable_allowlist_and_refuses_feedback(tmp_path, capsys):
+@pytest.mark.parametrize("profile", ["full-index-v1", "compact-feedback-v1"])
+def test_blind_capsule_cli_exports_immutable_allowlist_and_refuses_feedback(tmp_path, capsys, profile):
     from test_system_proposer_capsule import fixture, reseal
     from speech_aware_evidence_acquisition.rails.hashing import content_hash
     from speech_aware_evidence_acquisition.rails.system_search_archive import SystemSearchArchive
@@ -122,19 +123,20 @@ def test_blind_capsule_cli_exports_immutable_allowlist_and_refuses_feedback(tmp_
     archive = SystemSearchArchive(roots["archive"])
     archive.store_input(packet)
     args = ["--archive", str(roots["archive"]), "proposal-capsule", "--branch", "B", "--round", "1", "--slot", "1",
-            "--protocol", write(tmp_path / "protocol.json", protocol), "--data-root", str(roots["data"])]
+            "--protocol", write(tmp_path / "protocol.json", protocol), "--data-root", str(roots["data"]), "--view-profile", profile]
     with pytest.raises(PolicyError, match="blind"):
         cli.main(args + ["--family", str(tmp_path / "never-open.json")])
     cli.main(args)
     saved = cli.read(roots["archive"] / "capsules/B-1-1.json")
-    assert len(saved["artifacts"]) == 3
+    assert len(saved["artifacts"]) == (3 if profile == "full-index-v1" else 4)
     assert saved["packet"]["input_sha256"] == packet["input_sha256"]
     assert '"invoked": false' in capsys.readouterr().out
     with pytest.raises(PolicyError, match="exists"):
         cli.main(args)
 
 
-def test_learning_capsule_cli_requalifies_family_before_any_artifact_read(tmp_path, monkeypatch):
+@pytest.mark.parametrize("profile", ["full-index-v1", "compact-feedback-v1"])
+def test_learning_capsule_cli_requalifies_family_before_any_artifact_read(tmp_path, monkeypatch, profile):
     from test_system_proposer_capsule import fixture, reseal
     from speech_aware_evidence_acquisition.rails.hashing import content_hash
     from speech_aware_evidence_acquisition.rails.system_search_archive import SystemSearchArchive
@@ -144,7 +146,7 @@ def test_learning_capsule_cli_requalifies_family_before_any_artifact_read(tmp_pa
     reseal(packet)
     SystemSearchArchive(roots["archive"]).store_input(packet)
     args = ["--archive", str(roots["archive"]), "proposal-capsule", "--branch", "L", "--round", "1", "--slot", "1",
-            "--protocol", write(tmp_path / "protocol.json", protocol), "--data-root", str(roots["data"])]
+            "--protocol", write(tmp_path / "protocol.json", protocol), "--data-root", str(roots["data"]), "--view-profile", profile]
     with pytest.raises(PolicyError, match="complete family"):
         cli.main(args)
     def unqualified(_path):
@@ -198,17 +200,28 @@ def read_fixture(tmp_path, *, notes="ROOT COUNTERSIGNED after complete-family qu
 def test_read_authority_refuses_before_any_feedback_or_reference_read(tmp_path, monkeypatch, fault):
     spec, ledger, recipe = read_fixture(tmp_path)
     text = ledger.read_text()
-    if fault == "unsigned": text = text.replace("ROOT COUNTERSIGNED", "DRAFT")
-    elif fault == "pending": text = text.replace("after complete-family qualification.", "but countersignature pending.")
-    elif fault == "other-read": text = text.replace("FIXTURE-READ", "OTHER-READ")
-    elif fault == "duplicate": text += text.splitlines()[-1] + "\n"
-    elif fault == "recipe-pin": recipe.write_text(recipe.read_text() + " ")
-    elif fault == "members": spec["expected_members"] = {"seed": "OTHER-RUN", "seed-aa": "RUN-B"}
-    elif fault == "artifact": text = text.replace(spec["read_registration"]["relpath"], "docs/readiness/other.json")
-    elif fault == "profile": text = text.replace("model-free-check", "bounded-discovery-probe")
-    elif fault == "split": text = text.replace("discovery", "final-report")
-    elif fault == "contacts": text = text.replace("| 0 |", "| 1 |")
-    elif fault == "missing": spec.pop("read_registration")
+    if fault == "unsigned":
+        text = text.replace("ROOT COUNTERSIGNED", "DRAFT")
+    elif fault == "pending":
+        text = text.replace("after complete-family qualification.", "but countersignature pending.")
+    elif fault == "other-read":
+        text = text.replace("FIXTURE-READ", "OTHER-READ")
+    elif fault == "duplicate":
+        text += text.splitlines()[-1] + "\n"
+    elif fault == "recipe-pin":
+        recipe.write_text(recipe.read_text() + " ")
+    elif fault == "members":
+        spec["expected_members"] = {"seed": "OTHER-RUN", "seed-aa": "RUN-B"}
+    elif fault == "artifact":
+        text = text.replace(spec["read_registration"]["relpath"], "docs/readiness/other.json")
+    elif fault == "profile":
+        text = text.replace("model-free-check", "bounded-discovery-probe")
+    elif fault == "split":
+        text = text.replace("discovery", "final-report")
+    elif fault == "contacts":
+        text = text.replace("| 0 |", "| 1 |")
+    elif fault == "missing":
+        spec.pop("read_registration")
     ledger.write_text(text)
     # Even an earlier valid family's scores must not be opened by an unsigned read.
     spec["reference_family"] = str(tmp_path / "MUST-NOT-OPEN.json")
