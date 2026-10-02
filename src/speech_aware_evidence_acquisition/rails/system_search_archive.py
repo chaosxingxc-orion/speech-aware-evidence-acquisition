@@ -375,11 +375,12 @@ class SystemSearchArchive:
                 and set(complementary_ids) <= set(record["active_ids"][1:]), "complementary policy was not retained")
         return record
 
-    def freeze_finalists(self, *, protocol, feedback):
-        """Freeze common-cohort choices and all selection exposure before DEV."""
+    def finalists_document(self, *, protocol, feedback):
+        """Reconstruct common-cohort choices and exposure without publishing or choosing."""
         from .system_search_protocol import require_stage_feedback, stage_for
         from .system_text_policy import assert_roster_disjoint
         require_stage_feedback(protocol, "selection", feedback)
+        require(feedback.as_json()["family_id"] == "selection", "finalists require the common selection family")
         selections = {b: self._selection(protocol=protocol, stage_name="selection", feedback=feedback, branch=b)
                       for b in ("L", "B")}
         sources = cumulative_sources([], [s for r in selections.values() for s in r["cumulative_sources"]])
@@ -393,5 +394,10 @@ class SystemSearchArchive:
             "dev_roster_sha256": content_hash(stage_for(protocol, "dev")["sample_ids"]),
             "cumulative_sources": sources, "status": "frozen-for-dev-not-adopted", "runtime_admission": "separate-required"}
         record["freeze_sha256"] = content_hash(record)
+        return record
+
+    def freeze_finalists(self, *, protocol, feedback):
+        """Freeze common-cohort choices and all selection exposure before DEV."""
+        record = self.finalists_document(protocol=protocol, feedback=feedback)
         self._write("finalists.json", record)
         return record

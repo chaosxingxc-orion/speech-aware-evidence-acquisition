@@ -178,7 +178,14 @@ def main(argv=None):
     retain_cmd.add_argument("--retain-parent", action="store_true",
                             help="Record root's no-qualified-candidate fallback to the measured parent")
     freeze_cmd = commands.add_parser("freeze-finalists", help="Freeze both common-selection choices before DEV")
-    for command in (retain_cmd, freeze_cmd):
+    dev_cmd = commands.add_parser("freeze-dev", help="Bind four frozen finalists to the registered DEV cohort; no dispatch")
+    dev_cmd.add_argument("--member-bindings", type=Path, required=True)
+    dev_cmd.add_argument("--data-root", type=Path, required=True)
+    dev_compile = commands.add_parser("compile-dev-member", help="Compile one frozen endpoint system; no proposal or dispatch")
+    dev_compile.add_argument("--member", choices=("seed", "seed-aa", "L-frozen", "B-frozen"), required=True)
+    for option in ("seed-config", "cohort-binding", "staging-root", "data-root", "output"):
+        dev_compile.add_argument("--" + option, type=Path, required=True)
+    for command in (retain_cmd, freeze_cmd, dev_cmd, dev_compile):
         command.add_argument("--protocol", type=Path, required=True)
         command.add_argument("--family", type=Path, required=True)
         command.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
@@ -333,6 +340,23 @@ def main(argv=None):
             require(name == expected and name not in histories, "update family changed during read")
             histories[name] = feedback
         registration = freeze_selection_stage(archive, protocol=read(args.protocol), update_feedback=histories,
+            member_bindings=read(args.member_bindings), data_root=args.data_root)
+        print(json.dumps({"registration_sha256": registration["registration_sha256"],
+            "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],
+            "contacts_added": 0, "runtime_admission": "separate-required"}))
+    elif args.command in {"freeze-dev", "compile-dev-member"}:
+        from speech_aware_evidence_acquisition.rails.system_dev_stage import freeze_dev_stage, compile_dev_member
+        require(read(args.family).get("family_id") == "selection", "DEV freeze requires the common selection family")
+        feedback = read_family(args.family, repo_root=args.repo_root)
+        if args.command == "compile-dev-member":
+            compiled = compile_dev_member(archive, protocol=read(args.protocol), selection_feedback=feedback,
+                member=args.member, baseline=read(args.seed_config), cohort_binding=read(args.cohort_binding),
+                repo_root=args.repo_root, staging_root=args.staging_root, data_root=args.data_root)
+            write_new(args.output, compiled)
+            print(json.dumps({"member": args.member, "configuration_sha256": content_hash(compiled),
+                "contacts_added": 0, "runtime_admission": "separate-required"}))
+            return
+        registration = freeze_dev_stage(archive, protocol=read(args.protocol), selection_feedback=feedback,
             member_bindings=read(args.member_bindings), data_root=args.data_root)
         print(json.dumps({"registration_sha256": registration["registration_sha256"],
             "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],

@@ -1,4 +1,4 @@
-"""Bind a compiled policy to registered TRAIN inputs without changing its science."""
+"""Bind a compiled policy to registered TRAIN or DEV inputs without changing its science."""
 
 import copy
 import json
@@ -46,12 +46,13 @@ def bind_system_text_cohort(
         }
         and binding["schema"] == "saea-system-text-cohort-binding-v1"
         and binding["stage"] == stage
-        and stage in {"update-1", "update-2", "update-3", "selection"},
+        and stage in {"update-1", "update-2", "update-3", "selection", "dev"},
         "cohort binding fields or stage differ",
     )
     stages = [s for s in protocol["stages"] if s["stage"] == stage]
     require(len(stages) == 1, "cohort stage is missing or duplicated")
     registered = stages[0]
+    partition = "devel" if stage == "dev" else "train"
     view = json.loads(_read_pin(binding["runtime_view"], repo_root))
     ids = [row["sample_id"] for row in view["items"]]
     require(
@@ -59,11 +60,11 @@ def bind_system_text_cohort(
         and content_hash(ids) == registered["roster_sha256"]
         and len(ids) == len(set(ids)) == view["count"]
         and bool(ids)
-        and all(s.startswith("slurp:train:") for s in ids)
-        and view["split_role"] == "discovery"
+        and all(s.startswith(f"slurp:{partition}:") for s in ids)
+        and view["split_role"] == ("dev" if stage == "dev" else "discovery")
         and view["runtime_view_sha256"]
         == content_hash({k: v for k, v in view.items() if k != "runtime_view_sha256"}),
-        "runtime view differs from the exact registered TRAIN cohort",
+        "runtime view differs from the exact registered cohort partition or membership",
     )
     bootstrap = json.loads(_read_pin(binding["bootstrap_baseline"], repo_root))
     receipt = json.loads(_read_pin(binding["agreement_receipt"], data_root))
@@ -117,6 +118,12 @@ def bind_system_text_cohort(
         set(agreement) == set(ids), "agreement rows differ from the complete cohort"
     )
     result = copy.deepcopy(compiled)
+    if stage == "dev":
+        # Same pinned official evaluator, bound explicitly to the DEV partition.
+        # This mapping is coordinator plumbing, not a proposer-editable scorer.
+        require(result["scorers"] == ["slurp-slu-official-train", "cost"],
+                "DEV requires the unchanged official seed scoring configuration")
+        result["scorers"] = ["slurp-slu-official", "cost"]
     sources = list(result.get("preparation_source_receipts", []))
     sources.extend(bootstrap.get("preparation_source_receipts", []))
     for name, phase in (

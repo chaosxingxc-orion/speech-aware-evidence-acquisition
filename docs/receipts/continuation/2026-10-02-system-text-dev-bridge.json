@@ -1,0 +1,91 @@
+{
+  "schema": "saea-system-text-dev-bridge-evidence-v1",
+  "at_utc": "2026-10-02T04:29:41.348647+00:00",
+  "owner_scope": [
+    214
+  ],
+  "worker_base_commit": "116a50c6347e1321e813ea083b4eb136a24343b0",
+  "implementation_status": "offline-verified-pending-serial-integration",
+  "commands": [
+    "compile-dev-member",
+    "freeze-dev"
+  ],
+  "runtime_admission": "separate-required",
+  "source_files": {
+    "scripts/system_text_search.py": "db23da96924f803cd417ca6235b669bcf28bcb98ee0ce9d64ed1c6ed205c0520",
+    "src/speech_aware_evidence_acquisition/rails/system_dev_stage.py": "8402890b5dcfc8d4e45dde9c48314621f056fbcace1092c5eb4e387bd3f3267d",
+    "src/speech_aware_evidence_acquisition/rails/system_search_archive.py": "a7a35f53c1eab1552973d52e4f7bb3df0950df8195f3547d6abe83587d4800f5",
+    "src/speech_aware_evidence_acquisition/rails/system_search_stage.py": "1d056ca1756a994802e8117937236152752cc618739037a07841a8bbf0c7ee84",
+    "src/speech_aware_evidence_acquisition/rails/system_text_cohort.py": "4d6c558d0c05c4faa720e08d9c428da5bec9c7724210ea6c9fe5189d89f046c4",
+    "tests/unit/test_system_dev_stage.py": "c5e1b6c38cbe4bc4ff3a43f9251d21caf6f20e5e077d9131b7857789417e0688",
+    "tests/unit/test_system_text_cohort.py": "9d10269aeb20d9ac8e0d81313c4819fe6bb5b27c4cd3f0cbef4508f1e67410f2"
+  },
+  "validation": {
+    "initial_red_cases": 24,
+    "tests_passed": 218,
+    "statement_coverage_percent": {
+      "dev_bridge": 100,
+      "cohort": 100,
+      "archive": 99,
+      "combined": 99
+    },
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "model_contacts_added": 0,
+    "tokenizer_contacts_added": 0,
+    "scorer_contacts_added": 0
+  },
+  "registered_endpoint": {
+    "members": [
+      "seed",
+      "seed-aa",
+      "L-frozen",
+      "B-frozen"
+    ],
+    "rows_each": 1000,
+    "trajectory_cap": 4000,
+    "official_score_jobs_cap": 4,
+    "new_search_or_candidate": false,
+    "test_partition_allowed": false,
+    "dev_learning_feedback_allowed": false
+  },
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T04:27:36Z",
+    "campaign_pid": 243879,
+    "live_identity_verified": true,
+    "worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+    "L-parent": {
+      "state": "FINALIZED",
+      "successful_score_jobs": 1,
+      "failed_score_jobs": 0,
+      "actual_model_contacts": 2793
+    },
+    "L-parent-AA": {
+      "state": "OPENED",
+      "actual_model_contacts": 1233
+    },
+    "B-parent": "NOT_STARTED",
+    "B-parent-AA": "NOT_STARTED",
+    "B-candidate-2": "NOT_STARTED",
+    "STOP": false,
+    "server_ok": true,
+    "telemetry_age_seconds": 3.703,
+    "gpu_used_mib": 22976,
+    "gpu_utilization_percent": 84,
+    "windows_free_gib": 12.05,
+    "scientific_read_performed": false
+  },
+  "remaining_requirements": [
+    "Complete three updates and common selection with exact full-family READ gates.",
+    "Compile actual frozen finalists and bind their registered DEV inputs, own supplies, full-request capacity and runtime admission.",
+    "Integrate the separately registered final DEV analysis; keep all DEV feedback outside the optimizer.",
+    "Complete the planned SLURP science and carrier-specific execution checks without releasing held GPU carriers."
+  ],
+  "real_finalists_compiled": false,
+  "real_dev_registration_published": false,
+  "gpu_dispatch": false,
+  "read_countersigned": false,
+  "active_worker_modified": false,
+  "report": "docs/readiness/2026-10-02-system-text-dev-bridge-v1.md"
+}
