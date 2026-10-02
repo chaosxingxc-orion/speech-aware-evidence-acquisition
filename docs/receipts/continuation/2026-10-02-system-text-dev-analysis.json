@@ -1,0 +1,96 @@
+{
+  "schema": "saea-system-text-dev-analysis-evidence-v1",
+  "at_utc": "2026-10-02T04:53:15.626701+00:00",
+  "owner_scope": [
+    214
+  ],
+  "worker_base_commit": "dd063ce8d6f378a7133f597bf6fe424d1aea6b63",
+  "implementation_status": "offline-verified-pending-serial-integration",
+  "source_files": {
+    "scripts/analysis/system_text_dev_read.py": "12a0873ab9e53187550381bfc47147a73ee818bba5a132d62fb1227a6057d9dd",
+    "scripts/system_text_search.py": "400d00d27b7d84a0f786cb1417ea9534286909b2128bffc253253c83832af2db",
+    "src/speech_aware_evidence_acquisition/rails/system_search_archive.py": "6dec6a2f7dfc46981300cc2ad2770fd6cded8e0931609693bef11b610e48a331",
+    "tests/unit/test_system_text_dev_read.py": "c590196694cf7a3b2020dff3762444413533bf0ec6d8ba6020edb2fcae665529"
+  },
+  "validation": {
+    "tests_passed": 181,
+    "new_tests": 23,
+    "initial_red_cases": 20,
+    "additional_frontier_red_cases": 1,
+    "statement_coverage_percent": {
+      "dev_read": 99,
+      "archive": 98,
+      "combined": 99
+    },
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "model_contacts_added": 0,
+    "tokenizer_contacts_added": 0,
+    "scorer_contacts_added": 0,
+    "synthetic_integration": "Real standard paired analysis on four synthetic 1000-row endpoint systems. Seal/score verification hooks and native terminal extraction are stubbed in this integration; separate refusal/order tests cover their invocation and existing modules retain their tests."
+  },
+  "features": [
+    "Four-member operational preflight before any pair analysis",
+    "All verified seals before all complete score receipt verification",
+    "Exact frozen DEV registration, policy/config/cohort, attempt, READ and resampling bindings",
+    "Shared official pooled-count/paired/bootstrap analysis with natural-mixture and equal-stratum views",
+    "Separate attributed execution summaries with unknown token usage preserved",
+    "Same-cohort descriptive non-dominance preserving A/A as a distinct measurement",
+    "DEV report outside optimizer archives; TRAIN-only learning reader unchanged"
+  ],
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T04:51:51.985929+00:00",
+    "members": {
+      "l-parent": {
+        "state": "FINALIZED",
+        "model_contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "rows": 400,
+        "scores": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      "l-parent-aa": {
+        "state": "OPENED",
+        "model_contacts": 2226
+      },
+      "b-parent": {
+        "state": "NOT_STARTED",
+        "model_contacts": null
+      },
+      "b-parent-aa": {
+        "state": "NOT_STARTED",
+        "model_contacts": null
+      },
+      "b-candidate-2": {
+        "state": "NOT_STARTED",
+        "model_contacts": null
+      }
+    },
+    "STOP": false,
+    "live_process_identity": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "frozen_worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+    "server_ok": true,
+    "telemetry_age_seconds": 3.363,
+    "gpu_memory_mib": 22976,
+    "gpu_utilization_percent": 51,
+    "windows_free_gib": 11.91,
+    "current_scientific_read_performed": false
+  },
+  "real_dev_results_read": false,
+  "real_read_registration_written": false,
+  "read_countersigned": false,
+  "active_worker_modified": false,
+  "gpu_dispatch": false,
+  "remaining_requirements": [
+    "Finish the admitted update1 whole family before its exact root READ.",
+    "Complete the remaining registered updates and common selection with isolated proposals.",
+    "Freeze actual endpoint winners; prepare own DEV supplies, full-request capacity and exact runtime admission.",
+    "Register the final DEV recipe and original attempts before execution; bind completed artifacts and countersign its exact READ only after all four qualify.",
+    "Root interprets final official system effects and null calibration; do not feed DEV or milestone outcomes to the optimizer."
+  ],
+  "report": "docs/readiness/2026-10-02-system-text-dev-analysis-v1.md"
+}

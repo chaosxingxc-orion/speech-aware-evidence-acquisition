@@ -32,11 +32,11 @@ def proposal_sources(packet, record):
     return sources
 
 
-def pareto_frontier(rows):
-    """Preserve every truly non-dominated measured candidate, including ties."""
+def pareto_frontier(rows, *, identity_key="bundle_id"):
+    """Preserve non-dominated measurements, including ties and explicit replicate identities."""
     require(bool(rows) and len({r["cohort_id"] for r in rows}) == 1,
             "frontier requires a single common cohort")
-    require(len({r["bundle_id"] for r in rows}) == len(rows), "duplicate measured candidate")
+    require(len({r[identity_key] for r in rows}) == len(rows), "duplicate measured candidate")
     for row in rows:
         for key in OBJECTIVES:
             value = row[key]

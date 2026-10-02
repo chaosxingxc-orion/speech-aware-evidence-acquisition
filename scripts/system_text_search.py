@@ -44,8 +44,10 @@ def registration_gate():
     return module
 
 
-def require_read_registration(spec, *, repo_root):
+def require_read_registration(spec, *, repo_root, expected_split_role="discovery"):
     """Refuse before any score/reference read; never countersign on the caller's behalf."""
+    require(expected_split_role in {"discovery", "dev"}, "unsupported READ scope")
+    require(expected_split_role != "dev" or spec["family_id"] == "dev", "DEV READ scope needs the endpoint family")
     pin = spec["read_registration"]
     recipe = json.loads(_read_pin(pin, repo_root))
     gate = registration_gate()
@@ -65,7 +67,7 @@ def require_read_registration(spec, *, repo_root):
     row = rows[0]
     require(gate.is_countersigned(row) and not gate.PENDING.search(gate.row_text(row)),
             "READ row is not unambiguously root countersigned")
-    require(row.get("execution profile") == "model-free-check" and row.get("split role") == "discovery"
+    require(row.get("execution profile") == "model-free-check" and row.get("split role") == expected_split_role
             and row.get("calls") == "0", "READ registration scope differs")
     require(row.get(gate.ARTIFACTS_COLUMN, "").strip("`") == pin["relpath"],
             "READ registration names another analysis recipe")
