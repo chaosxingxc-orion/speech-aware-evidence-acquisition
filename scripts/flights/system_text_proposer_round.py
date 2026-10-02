@@ -54,6 +54,10 @@ def load_members(registration):
     require(r["schema"] == "saea-system-text-proposer-round-registration-v1"
             and r["status"] == "root-admitted" and r["owner_decision"] == 217,
             "round admission required")
+    # Older admitted registrations covered round one and omitted this field.
+    # Later rounds must name their allocation explicitly, never infer it from a key.
+    round_index = r.get("round_index", 1)
+    require(type(round_index) is int and round_index in (1, 2, 3), "invalid registered round")
     owner = read_pin(r["owner_receipt"])
     require(owner["decisions"]["217"]["status"] == "approved", "owner217 is not approved")
     admission = read_pin(r["provider_admission"])
@@ -66,6 +70,19 @@ def load_members(registration):
         document = read_pin(member["capsule"])
         packet = document["packet"]
         input_references(packet)
+        require(type(packet["round"]) is int and packet["round"] == round_index,
+                "proposal differs from the registered round")
+        if packet["branch"] == "L" and round_index > 1:
+            # The offline exporter verifies complete seals/scores and the exact
+            # root READ before packaging. Keep that preceding-family commitment
+            # joined to the selection; a round-one packet cannot advance a round.
+            selection = packet.get("selection")
+            feedback = packet["feedback"]
+            require(isinstance(selection, dict)
+                    and feedback.get("family_id") == f"update-{round_index - 1}"
+                    and bool(feedback.get("read_gate_family_sha256"))
+                    and selection.get("feedback_sha256") == feedback["read_gate_family_sha256"],
+                    "preceding complete-family feedback and selection binding required")
         key = f"{packet['branch']}-{packet['round']}-{packet['slot']}"
         require(key == member["key"] and key not in keys, "duplicate or wrong proposal allocation")
         keys.add(key)
@@ -90,14 +107,15 @@ def load_members(registration):
         require(content_hash(request) == member["request_sha256"], "actual initial request differs")
         require(request_bound(request) <= packet["input_token_cap"], "initial input does not fit")
         jobs.append((member, capsule, plan))
-    require(keys == {"L-1-1", "L-1-2", "B-1-1", "B-1-2"}, "first round membership differs")
+    require(keys == {f"{branch}-{round_index}-{slot}" for branch in ("L", "B") for slot in (1, 2)},
+            "registered round membership differs")
     closed = r.get("closed_allocations", {})
     require(set(closed) <= keys, "unknown closed allocation")
     for key, evidence in closed.items():
         outcome = read_pin(evidence["outcome"])
         imported = read_pin(evidence["import"])
         require(outcome["status"] == "failed" and imported["status"] == "invalid"
-                and imported["proposal_allocation"] == [key[0], 1, int(key[-1])],
+                and imported["proposal_allocation"] == [key[0], round_index, int(key[-1])],
                 "closed allocation must retain failed transport and invalid import")
     jobs = [job for job in jobs if job[0]["key"] not in closed]
     require(jobs, "no unconsumed proposal allocations")
@@ -148,8 +166,9 @@ def main():
                 admission=admission, timeout=300), audit_dir=output / "transport" / key,
                 input_counter=request_bound, before_contact=before_contact, contact_cap=protocol["proposal_contact_cap"])
             receipt = ProposalDispatch(Path(r["archive"]) / "dispatch", capsule).run(transport)
-            imported = archive.import_response(branch=capsule.as_json()["packet"]["branch"], round_index=1,
-                slot=capsule.as_json()["packet"]["slot"], receipt=receipt)
+            packet = capsule.as_json()["packet"]
+            imported = archive.import_response(branch=packet["branch"], round_index=packet["round"],
+                slot=packet["slot"], receipt=receipt)
             outcomes.append({"key": key, "status": imported["status"], "activation": "none"})
         except Exception as error:
             outcomes.append({"key": key, "status": "failed", "error_type": type(error).__name__, "retry_permitted": False})

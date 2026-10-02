@@ -1,5 +1,4 @@
-"""Offline first-round admission checks; no credentials or provider requests."""
-import copy
+"""Offline round admission and dispatch checks; no credentials or provider requests."""
 import hashlib
 import importlib.util
 import json
@@ -23,18 +22,30 @@ def pin(path, document):
     return {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()}
 
 
-def registration(tmp_path):
+def registration(tmp_path, round_index=1):
     protocol = {"proposer_exact_version": "gpt-6-sol", "proposal_input_token_cap": 32768,
                 "proposal_output_token_cap": 4096, "proposal_contact_cap": 4}
     r = {"schema": "saea-system-text-proposer-round-registration-v1", "status": "root-admitted", "owner_decision": 217,
+         "round_index": round_index,
          "owner_receipt": pin(tmp_path / "owner.json", {"decisions": {"217": {"status": "approved"}}}),
          "protocol": pin(tmp_path / "protocol.json", protocol), "members": [],
          "provider_admission": pin(tmp_path / "admission.json", {"protocol_sha256": content_hash(protocol)})}
     rows = ["| run/experiment id | execution profile | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | notes |", "|---|---|---|---|---|---|---|---|---|---|"]
     for branch, slot in [("L", 1), ("B", 1), ("L", 2), ("B", 2)]:
-        key = f"{branch}-1-{slot}"; folder = tmp_path / key; folder.mkdir()
+        key = f"{branch}-{round_index}-{slot}"
+        folder = tmp_path / key
+        folder.mkdir()
         packet, roots = fixture(folder, branch)
-        packet.update(slot=slot, session_id=key, protocol_sha256=content_hash(protocol)); reseal(packet)
+        packet.update(round=round_index, slot=slot, session_id=key, protocol_sha256=content_hash(protocol))
+        if branch == "L" and round_index > 1:
+            packet["feedback"].update(family_id=f"update-{round_index - 1}", read_gate_family_sha256="f" * 64)
+            selection = {"branch": "L", "stage": f"update-{round_index - 1}",
+                         "protocol_sha256": content_hash(protocol), "active_ids": [packet["parent_bundle_id"]],
+                         "feedback_sha256": "f" * 64, "measurements": [], "member_bindings": {},
+                         "cumulative_sources": []}
+            selection["selection_sha256"] = content_hash(selection)
+            packet["selection"] = selection
+        reseal(packet)
         capsule = ProposerCapsule.from_packet(packet, roots=roots)
         run = f"SAEA-SLURP-PROPOSER-{key}"
         member = {"key": key, "capsule": pin(folder / "capsule.json", capsule.as_json()),
@@ -44,15 +55,110 @@ def registration(tmp_path):
                   "planned_gpu_hours": 1.0, "planned_speech_audio_seconds": 1, "protocol_hash": content_hash(protocol)}}
         r["members"].append(member)
         rows.append(f"| {run} | bounded-discovery-probe | slurp TRAIN | discovery | {packet['input_sha256']} | no | 4 | 1 | 1.0 | REGISTERED BEFORE contact |")
-    p = tmp_path / "ledger.md"; p.write_text("\n".join(rows))
+    p = tmp_path / "ledger.md"
+    p.write_text("\n".join(rows))
     r["ledger"] = {"path": str(p), "sha256": runner.digest(p)}
     return r
 
 
-def test_exact_four_inputs_pass_without_contact(tmp_path):
-    jobs, _, _ = runner.load_members(registration(tmp_path))
+@pytest.mark.parametrize("round_index", [1, 2, 3])
+def test_exact_four_inputs_pass_without_contact(tmp_path, round_index):
+    jobs, _, _ = runner.load_members(registration(tmp_path, round_index))
     assert len(jobs) == 4
     assert all(runner.request_bound(c.request()) < 32768 for _, c, _ in jobs)
+    assert {c.as_json()["packet"]["round"] for _, c, _ in jobs} == {round_index}
+
+
+def test_existing_first_round_registration_remains_compatible(tmp_path):
+    r = registration(tmp_path)
+    del r["round_index"]
+    assert len(runner.load_members(r)[0]) == 4
+
+
+@pytest.mark.parametrize("declared", [0, 4, True, "2", 1, 3])
+def test_round_mismatch_or_undeclared_round_refuses_before_transport(tmp_path, declared):
+    r = registration(tmp_path, 2)
+    r["round_index"] = declared
+    with pytest.raises(PolicyError, match="round"):
+        runner.load_members(r)
+
+
+@pytest.mark.parametrize("round_index", [2, 3])
+def test_closed_allocation_cannot_borrow_another_rounds_failure(tmp_path, round_index):
+    r = registration(tmp_path, round_index)
+    key = f"L-{round_index}-1"
+    evidence = {"outcome": pin(tmp_path / "failed.json", {"status": "failed"}),
+                "import": pin(tmp_path / "invalid.json", {"status": "invalid", "proposal_allocation": ["L", round_index, 1]})}
+    r["closed_allocations"] = {key: evidence}
+    jobs, _, _ = runner.load_members(r)
+    assert key not in [member["key"] for member, _, _ in jobs]
+    evidence["import"] = pin(tmp_path / "wrong-round.json", {"status": "invalid", "proposal_allocation": ["L", 1, 1]})
+    with pytest.raises(PolicyError, match="closed allocation"):
+        runner.load_members(r)
+
+
+@pytest.mark.parametrize("mutation", ["missing-selection", "old-feedback", "different-feedback"])
+def test_later_round_cannot_skip_the_preceding_selection_binding(tmp_path, mutation):
+    r = registration(tmp_path, 2)
+    member = r["members"][0]
+    document = runner.read_pin(member["capsule"])
+    packet = document["packet"]
+    if mutation == "missing-selection":
+        del packet["selection"]
+    elif mutation == "old-feedback":
+        packet["feedback"]["family_id"] = "initial"
+    else:
+        packet["feedback"]["read_gate_family_sha256"] = "e" * 64
+    reseal(packet)
+    capsule = ProposerCapsule(packet, {a["artifact_id"]: a for a in document["artifacts"]})
+    member["input"] = pin(Path(member["input"]["path"]), packet)
+    member["capsule"] = pin(Path(member["capsule"]["path"]), capsule.as_json())
+    member["request_sha256"] = content_hash(capsule.request())
+    member["execution_plan"]["split_identity_hash"] = packet["input_sha256"]
+    ledger = Path(r["ledger"]["path"])
+    rows = ledger.read_text().splitlines()
+    rows[2] = rows[2].replace(rows[2].split("|")[5].strip(), packet["input_sha256"])
+    ledger.write_text("\n".join(rows))
+    r["ledger"]["sha256"] = runner.digest(ledger)
+    with pytest.raises(PolicyError, match="preceding"):
+        runner.load_members(r)
+
+
+@pytest.mark.parametrize("round_index", [2, 3])
+def test_later_round_dispatch_imports_its_own_allocation(tmp_path, monkeypatch, round_index):
+    r = registration(tmp_path, round_index)
+    r.update(source_root=str(tmp_path), source_commit="fixture-commit", source_pins={}, auth={},
+             archive=str(tmp_path / "archive"), output_root=str(tmp_path / "execution"))
+    r["provider_admission"] = pin(tmp_path / "admission.json", {
+        "protocol_sha256": runner.read_pin(r["provider_admission"])["protocol_sha256"], "endpoint": "fixture-only"})
+    archive = runner.SystemSearchArchive(r["archive"])
+    for member in r["members"]:
+        archive.store_input(runner.read_pin(member["input"]))
+    path = tmp_path / "registration.json"
+    registered = pin(path, r)
+    monkeypatch.setattr(runner.sys, "argv", ["proposer_round", str(path), "--sha256", registered["sha256"]])
+    monkeypatch.setattr(runner.sys, "dont_write_bytecode", True)
+    monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
+    monkeypatch.setattr(runner, "assert_wsl_execution_environment", lambda: None)
+    monkeypatch.setattr(runner.subprocess, "check_output", lambda command, **kw: "" if "status" in command else "fixture-commit\n")
+    monkeypatch.setattr(runner, "SubscriptionBearer", lambda **kw: lambda: "fixture-no-token")
+    monkeypatch.setattr(runner, "ResponsesHTTP", lambda *args, **kw: None)
+
+    def fake_transport(capsule, client, **options):
+        def receive(request):
+            packet = capsule.as_json()["packet"]
+            options["before_contact"]({"contact": 1, "proposal_input_sha256": packet["input_sha256"]})
+            return {"raw_response": json.dumps(capsule.initial_input()["response_contract"]["example"]),
+                    "model_version": packet["model_version"], "input_tokens": 100, "output_tokens": 10}
+        return receive
+
+    monkeypatch.setattr(runner, "ResponsesProposer", fake_transport)
+    assert runner.main() == 0
+    for member in r["members"]:
+        result = json.loads((archive.root / "imports" / (member["key"] + ".json")).read_text())
+        assert result["proposal_allocation"] == [member["key"][0], round_index, int(member["key"][-1])]
+        assert result["status"] == "no-change"
+    assert not list((archive.root / "imports").glob("*-1-*.json"))
 
 
 def test_closed_failed_slot_is_not_replaced_or_reexecuted(tmp_path):
@@ -78,7 +184,8 @@ def test_changed_registration_never_reaches_transport(tmp_path, mutation):
     elif mutation == "membership":
         r["members"].pop()
     else:
-        protocol = json.loads(Path(r["protocol"]["path"]).read_text()); protocol["proposer_exact_version"] = "changed"
+        protocol = json.loads(Path(r["protocol"]["path"]).read_text())
+        protocol["proposer_exact_version"] = "changed"
         r["protocol"] = pin(Path(r["protocol"]["path"]), protocol)
     with pytest.raises(PolicyError):
         runner.load_members(r)

@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Later-round proposer readiness: 2026-10-02T03:32:11.530406+00:00, ChatGPT root
+
+The offline launcher now binds membership, failed-slot dispositions and archive imports to each explicitly registered round1-3. Later L inputs also bind their preceding complete-family feedback to the recorded parent selection; B isolation and the existing exporter READ gate remain intact. The test-first defect is reproduced and243 related tests pass, with94% launcher statement coverage and passing Ruff/engineering-base checks. See [readiness and residual budget diagnosis](../readiness/2026-10-02-system-text-proposer-later-rounds-v1.md). No model, tokenizer or scorer contact was added.
+
+Round-two admission is still pending, not implied by this repair. The prior L-1-2 budget failure is preserved: with21374 input tokens remaining, the third-request bound is44859; even a hypothetical one-character second page is28573 because earlier material is repeated. Verify compact multi-turn feedback packaging within the existing allocations before the next proposer launch. Do not retry or replace a spent round-one slot.
+
+At03:29:29Z the frozen update1 worker2f07dd3d6 remained live: L-parent OPENED with1592 actual model contacts, other four members NOT_STARTED, STOP absent, Windows free13.23GiB. Contacts are not completed rows. The whole-family READ remains unsigned and no scientific output was read. Running sources, queue and held carriers were unchanged.
+
 ## Offline native-branch repair: 2026-10-02T03:13:30Z, ChatGPT root
 
 The actual Earnings21/Earnings22 runtime-adapter and window paths now have a synthetic proof of ACCEPT, revision, nonempty/empty acquisition, exhaustion and abstention through the shared FlightRuntime/OpenJiuwen executor. It reproduced an empty-Solver sealing failure, missing refused-contact accounting and the wrong canonical abstention derivation. The prospective repair preserves raw response custody, the existing finite-completion policy and strict refusal. The 490 related tests, including 20 new tests, pass; all 18 changed executable lines are covered. See [engineering evidence](../readiness/2026-10-02-earnings-native-branches-v1.md). No model, tokenizer, scorer or scientific-result contact was added.

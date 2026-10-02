@@ -1,0 +1,66 @@
+{
+  "schema": "saea-system-text-proposer-later-rounds-evidence-v1",
+  "at_utc": "2026-10-02T03:32:11.530406+00:00",
+  "implementation_status": "offline-verified-pending-serial-integration",
+  "owner_scope": [
+    214,
+    215,
+    217
+  ],
+  "worker_base_commit": "0bf03267f62f555524a0e9a3344ca5a0d859ce16",
+  "changes": [
+    "Bind launcher membership and closed allocations to an explicitly registered round from one through three.",
+    "Import each response into its exact packet allocation instead of hardcoding round one.",
+    "Require later learning inputs to retain the preceding complete-family and parent-selection commitment."
+  ],
+  "validation": {
+    "red_phase": {
+      "failed": 9,
+      "passed": 14
+    },
+    "related_tests_passed": 243,
+    "launcher_statement_coverage_percent": 94,
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "external_contacts_added": 0
+  },
+  "source_files": {
+    "scripts/flights/system_text_proposer_round.py": "1effd93c7f5ddf13904619f0e0f4b31daade1992e18b04652bfed94b9666d9ed",
+    "tests/unit/test_system_proposer_round.py": "e4054757fff6f67fbeb918a1af5de252b34dae8a8e55bac0d29aa9c32e5aaf16"
+  },
+  "budget_diagnosis": {
+    "allocation": "L-1-2",
+    "input_sha256": "4f169d492c2df68e07499582ff315c5d0a9874df3d320abb67c1384b22185b0a",
+    "observed_input_tokens": 11394,
+    "observed_output_tokens": 129,
+    "remaining_input_budget": 21374,
+    "third_request_original_13500_character_page_bound": 44859,
+    "third_request_counterfactual_one_character_page_bound": 28573,
+    "source": "speechrl-data/coordination/system-text-proposer-round1-owner217-slot2-v1/execution/transport/L-1-2",
+    "interpretation": "The original failed allocation remains invalid. Even a one-character second page would not fit after the observed first read; reducing only the second page is insufficient. No actual token overrun is asserted. The old response history and complete sources remain unchanged."
+  },
+  "next_admission_requirements": [
+    "Verify bounded multi-turn feedback packaging before any new proposal allocation.",
+    "Wait for all five update1 members, exact seals and unique official scores, then root READ before feedback or selection.",
+    "Preserve equal registered branch allocations, exact proposer version, original failed slots and blind isolation."
+  ],
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T03:29:29Z",
+    "worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+    "driver_pid": 243879,
+    "driver_process_identity_verified": true,
+    "first_member_state": "OPENED",
+    "first_member_actual_model_contacts": 1592,
+    "remaining_four_members": "NOT_STARTED",
+    "STOP": false,
+    "gpu_used_mib": 22976,
+    "gpu_utilization_percent": 92,
+    "windows_free_gib": 13.23,
+    "scientific_read_performed": false
+  },
+  "new_proposal_admission": false,
+  "gpu_dispatch": false,
+  "frozen_worker_modified": false,
+  "read_countersigned": false,
+  "report": "docs/readiness/2026-10-02-system-text-proposer-later-rounds-v1.md"
+}
