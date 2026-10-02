@@ -61,5 +61,6 @@
   "runtime_model_facing_source_changes": false,
   "new_reader": "Exact fixed400 first20, all four members, original attempts, verified seals and one successful official score each. No blind proposer feedback. Original owner220 and formal readers retain scope.",
   "clean_frozen_checks": "pending",
-  "historical_checks": "Two pre-existing algorithm-label findings in older capacity cells are unchanged; no frozen sources were repaired."
+  "historical_checks": "Two pre-existing algorithm-label findings in older capacity cells are unchanged; no frozen sources were repaired.",
+  "precontact_metadata_correction": "The first clean check refused an ambiguous ledger carrier label (current400 first20 did not name slurp). No attempt or contact occurred, no STOP exists. Clarify these nine new rows to slurp current400 first20; preserve all configs, prepared artifacts and experiment identities. The first check worker remains untouched."
 }
