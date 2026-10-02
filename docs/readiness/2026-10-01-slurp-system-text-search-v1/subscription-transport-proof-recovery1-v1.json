@@ -1,0 +1,95 @@
+{
+  "schema": "saea-system-text-subscription-transport-proof-v1",
+  "registered_at_utc": "2026-10-02T01:08:04.831819+00:00",
+  "status": "root-admitted-one-synthetic-contact",
+  "owner_receipt": {
+    "relpath": "docs/receipts/owner/2026-10-02-decisions216-217.json",
+    "sha256": "5f0651d05562c4b7c2d106cc957e2dbb5c079a1b77e91bb3967fd2411feef8e9"
+  },
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-TRANSPORT-PROOF-RECOVERY1-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "9acde742f66ca10af77df73a685cab312af576e6ac7db4844c54d59dee00b089",
+    "planned_model_calls": 1,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 1,
+    "protocol_hash": "87a56c8cbc6d75f056fbd9ad8738b013563a453e4589af94c27b8956564791a0",
+    "attempt_id": "attempt-system-text-subscription-transport-proof-recovery1-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "request": {
+    "model": "gpt-6-astra",
+    "instructions": "Synthetic engineering connection proof only. Use English. Return exactly SAEA_SUBSCRIPTION_OK, without tools or reasoning text. The output acceptance budget is 4096 tokens including reasoning. No task data or research proposal is requested.",
+    "input": [
+      {
+        "role": "user",
+        "content": "Confirm the isolated subscription transport with the registered acknowledgement."
+      }
+    ],
+    "tools": [
+      {
+        "type": "namespace",
+        "name": "artifacts",
+        "description": "Only the registered artifact reader is available.",
+        "tools": [
+          {
+            "type": "function",
+            "name": "read_artifact",
+            "description": "Read a character page from one registered English artifact by ID. No paths or network access.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 16384
+                }
+              },
+              "required": [
+                "artifact_id",
+                "offset",
+                "limit"
+              ],
+              "additionalProperties": false
+            }
+          }
+        ]
+      }
+    ],
+    "tool_choice": "auto",
+    "parallel_tool_calls": false,
+    "store": false,
+    "stream": true
+  },
+  "search_protocol": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v3-owner217.json",
+    "sha256": "af67e4574a0125d45abf71425dc35e34813719de3c04c6ac3cb3b8089b905201"
+  },
+  "model_version": "gpt-6-astra",
+  "sdk_commit": "f723814abdccec135b519c451fb6e1992ee5e933",
+  "scope": "One separately registered successor synthetic connection proof. Same exact synthetic English request, no research proposal or dataset input. Original attempt is immutable; maximum one successor. No paid API, GPU or official scorer.",
+  "input_acceptance_limit": 32768,
+  "output_acceptance_limit": 4096,
+  "retry_permitted": false,
+  "paid_api_spend": 0,
+  "adapter": {
+    "relpath": "scripts/auth/system_text_subscription_login.mjs",
+    "sha256": "93c7f5475333787f5fa706db284bf25d7ce95db1fc038b8d82b69d195c34d7f3"
+  },
+  "supersedes_failed_entry": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/subscription-transport-proof-v1.json",
+    "sha256": "5a49eaf96e65e3854f115ce96bcc05e16ff9c7724910369408eb391baf01dee0"
+  },
+  "disposition": "Root reviewed one engineering recovery under the standing one-recovery registration rule. The first proof failed in the local MIME gate after HTTP200; that process did not capture header/body details, so the actual MIME is unknown. Pinned official SDK responses.ts explicitly permits absent Content-Type with strict completed-SSE validation. Two new failing synthetic tests reproduce the missing-header refusal and missing failure evidence; all56 transport/budget/auth tests pass after correction. This second proof checks the corrected gate and captures actual metadata. Stop on another failure; no proposal replacement, automatic retry or task generation.",
+  "evidence_limit": "The first proof has no retained response body or usage. Do not claim it was no-contact or reconstruct its output. Preserve its started/request/empty-stream/finished files."
+}

@@ -79,6 +79,23 @@ def reply(*records):
     return 200, {"Content-Type": "text/event-stream"}, sse(records)
 
 
+def test_direct_route_without_content_type_still_requires_sse_completion():
+    with server([(200, {}, sse([completed()]))]) as (endpoint, _):
+        client = ResponsesHTTP(endpoint, fixture_only=True)
+        assert list(client.events({"model": "gpt-6-sol"}))[0]["type"] == "response.completed"
+        assert client.last_response_metadata == {"status": 200, "content_type": ""}
+
+
+def test_invalid_mime_retains_bounded_body_and_metadata():
+    raw = io.BytesIO()
+    with server([(200, {"Content-Type": "text/html"}, b"synthetic proxy response")]) as (endpoint, _):
+        client = ResponsesHTTP(endpoint, fixture_only=True)
+        with pytest.raises(PolicyError, match="not SSE"):
+            list(client.events({"model": "gpt-6-sol"}, raw_sink=raw))
+        assert client.last_response_metadata == {"status": 200, "content_type": "text/html"}
+    assert raw.getvalue() == b"synthetic proxy response"
+
+
 def test_full_local_http_broker_continuation_and_dispatch(tmp_path):
     # The whole path uses the production transport and an actual loopback socket.
     capsule, transport, admission = setup(tmp_path, "http://127.0.0.1:1/v1/responses")

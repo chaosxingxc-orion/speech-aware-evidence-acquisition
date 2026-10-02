@@ -106,6 +106,8 @@ class ResponsesHTTP:
         self.endpoint, self.parsed, self.bearer = endpoint, parsed, bearer
         self.admission = copy.deepcopy(admission)
         self.timeout = timeout
+        self.fixture_only = fixture_only
+        self.last_response_metadata = None
 
     def events(self, request, *, raw_sink=None):
         if self.admission is not None:
@@ -124,9 +126,21 @@ class ResponsesHTTP:
             connection.request("POST", self.parsed.path, body=canonical(request).encode("utf-8"), headers=headers)
             headers.clear()
             response = connection.getresponse()
-            require(response.status == 200, f"HTTP request failed with status {response.status}")
-            require(response.getheader("Content-Type", "").split(";")[0].strip() == "text/event-stream",
-                    "HTTP response is not SSE")
+            content_type = response.getheader("Content-Type", "").split(";")[0].strip().lower()
+            self.last_response_metadata = {"status": response.status, "content_type": content_type}
+            # The pinned official subscription SDK documents valid SSE without
+            # Content-Type. Event parsing and completed/usage gates still apply.
+            missing_allowed = (self.fixture_only or (self.admission is not None
+                               and self.admission.get("provider_profile") == "chatgpt-plan-preview"))
+            mime_ok = content_type == "text/event-stream" or (not content_type and missing_allowed)
+            if response.status != 200 or not mime_ok:
+                body = response.read(MAX_STREAM_BYTES + 1)
+                if raw_sink is not None:
+                    raw_sink.write(body[:MAX_STREAM_BYTES])
+                    raw_sink.flush()
+                require(len(body) <= MAX_STREAM_BYTES, "HTTP error body exceeds evidence bound")
+                require(response.status == 200, f"HTTP request failed with status {response.status}")
+                raise PolicyError("HTTP response is not SSE")
             yield from parse_sse(response, raw_sink=raw_sink)
         except (OSError, http.client.HTTPException) as error:
             # Do not copy exception bodies, account identifiers or headers to logs.
@@ -247,6 +261,8 @@ class ResponsesProposer:
                                     break
                     finally:
                         iterator.close()
+                        if self.client.last_response_metadata is not None:
+                            write(contact / "http-response.json", self.client.last_response_metadata)
                 require(isinstance(final, dict), "stream ended without completion")
                 require(final.get("status") == "completed" and final.get("model") == packet["model_version"],
                         "completion status or model differs")
