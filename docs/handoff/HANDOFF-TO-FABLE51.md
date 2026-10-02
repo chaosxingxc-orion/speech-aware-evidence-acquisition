@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner221 seven-member continuation launched: 2026-10-02T14:11:47.729989+00:00
+
+Root executed the explicitly approved continuation via Windows SAEA-Batch-Driver epoch14:08:49Z, L-parent-aa campaign14:09:16Z. Actual worker PID330124 and generation contacts are verified on frozen /home/chao/saea-worktrees/codex-system-text-pilot20-memory-owner221-v1 at62b487e9be02b6c9e63379957f2275a640646ddc. The three prestart samples passed; startup15.66GiB and latest observed running free memory13.76GiB. Explicit policy8GiB running/12.5GiB startup is live. See [launch and control custody](../receipts/continuation/2026-10-02-pilot20-owner221-launch.json).
+
+First L-parent remains FINALIZED20 rows with one successful official score and is excluded from the continuation queue; six further siblings follow the current A/A, each20 rows. All eight still form the unsigned READ family. No quality read, first-member replay, new candidate, model-facing code change or400-row expansion occurred. Original4101a4925 worker, STOP and controls are preserved in the approved transition archive. Owner221 is fully approved and must not be asked again. A later failure still has no automatic recovery. Monitoring only revalidates operational metadata and stays quiet while healthy.
+
 ## Owner221 exact continuation approved: 2026-10-02T14:06:43.841920+00:00
 
 The human explicitly approves the prepared STOP disposition and continuation of the seven never-started20-row members. The8GiB resource amendment was already approved. See [owner221 receipt](../receipts/owner/2026-10-02-decision221-memory-amendment.json). Prepared worker62b487e9b passed seven clean model-free checks; no scientific source/config change except operational process-memory policy. Revalidate live state and preserve exact controls before root dispatch. First L-parent must not be replayed/scored again; all eight still form the unsigned READ family. This receipt grants no automatic response to another failure. Monitoring remains read-only.
