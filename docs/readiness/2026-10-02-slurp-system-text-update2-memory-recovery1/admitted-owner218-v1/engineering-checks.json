@@ -1,0 +1,14 @@
+{
+  "engineering_base": "PASS",
+  "harness_admission": "PASS",
+  "eight_member_registration": "PASS; four pre-existing roster-convention advisories per member remain",
+  "finite_completion": "PASS",
+  "stage3_algorithm_label": {
+    "status": "PRE_EXISTING_GLOBAL_FAILURE",
+    "files": [
+      "slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+      "slurp-native-stage3-system-text-native-capacity-v1.json"
+    ],
+    "reason": "Two historical capacity-only cells have empty operators_used; neither is a member of this recovery, and their bytes are unchanged. All eight recovery members declare rollout/scoring. Frozen historical cells were not rewritten."
+  }
+}

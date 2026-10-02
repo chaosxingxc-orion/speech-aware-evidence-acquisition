@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner218 authorized recovery preparation: 2026-10-02T12:00:56.548106+00:00, ChatGPT root
+
+Owner218 explicitly approved the one zero-contact UPDATE2 entry recovery and sequential eight-member execution. The original attempt and incident controls are archived; the abandoned attempt is ABORTED with zero contacts. The separately prepared successor is now registered and ready, with unchanged400-row policies and seven untouched sibling identities. Whole-family READ remains unsigned. Final clean frozen checks, resource revalidation and authorized stale-control reconciliation still precede launch. See the [owner receipt](../receipts/owner/2026-10-02-decision218-and-iteration-amendment.json) and [recovery package](../readiness/2026-10-02-slurp-system-text-update2-memory-recovery1/README.md).
+
+The owner also requested first-round root-cause analysis and permits suitable additional iterations beyond three. Analyze only qualified TRAIN feedback and preserve L/B isolation. Register any bounded extension prospectively; no extra contacts or carrier release is implied by this checkpoint.
+
 ## HELD UPDATE2 successor preparation: 2026-10-02T11:38:15.757367+00:00, ChatGPT root
 
 The first successor supply is warm-verified with exact400-output equality. Its plans, eight-member registration and READ recipe are validated drafts only; no live archive, exposure, queue, STOP, lease or attempt was changed. Owner218 remains pending. See [preparation and remaining admissions](../readiness/2026-10-02-slurp-system-text-update2-memory-recovery1/README.md) and [structured receipt](../receipts/continuation/2026-10-02-system-text-update2-held-successor-preparation.json).

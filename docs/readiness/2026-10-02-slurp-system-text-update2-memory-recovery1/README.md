@@ -1,6 +1,8 @@
 # UPDATE2 startup memory failure and proposed bounded recovery
 
-Status: **HELD. Owner decision 218 is proposed, not granted.**
+Status: **Owner218 APPROVED on 2026-10-02; exact recovery admitted subject to final frozen checks.**
+
+The English [owner receipt](../../receipts/owner/2026-10-02-decision218-and-iteration-amendment.json) supersedes the historical pending statements below. The original zero-contact attempt is archived and explicitly ABORTED; STOP and lease remain until final control installation. Published owner218 plans, registration and recipe are separate successors. All eight members remain required, and scientific READ stays unsigned. The additional owner permission allows prospectively registered extra optimization rounds; it does not change this frozen family.
 
 ## Preserved incident
 

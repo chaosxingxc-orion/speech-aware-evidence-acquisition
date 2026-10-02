@@ -1,0 +1,19 @@
+{
+  "decisions": {
+    "218": {
+      "scope": "Exactly one zero-contact UPDATE2 L-parent entry recovery and the original eight-member sequential execution,400 trajectories each. Preserve original worker, attempt, caches, logs and failed control bytes. Explicitly abort the abandoned zero-contact entry after archiving it, reconcile only its verified stale lease and STOP, register the one successor attempt, retain seven original unstarted attempts. Unchanged policies, roster, geometry, budgets, candidates and whole-manifest official scoring. Enforce14.5GiB startup and10GiB running floors; stop on another failure. No automatic retry, new proposals, score replay or partial-family read.",
+      "status": "approved",
+      "successor_attempt_id": "attempt-slurp-native-stage3-system-text-update2-l-parent-generation-recovery1-v1"
+    }
+  },
+  "monitor_dispatch_authority": false,
+  "owner_statement_english": "Decision 218: agreed. Analyze the root causes in the first experiment round and locate causes of performance decline and opportunities for system-level optimization.",
+  "recorded_at_utc": "2026-10-02T11:58:12.510104+00:00",
+  "root_diagnostic_scope": "Analyze the already-qualified complete UPDATE1 TRAIN family, proposal attrition, exact policy edits and saved full trajectories. Preserve L/B feedback isolation and exclude milestone/test feedback.",
+  "schema": "saea-owner-decision-supplement-v1",
+  "source": "Explicit human messages in the current root conversation on 2026-10-02; originals remain addressable there. English translations preserve both new instructions.",
+  "subsequent_owner_amendment": {
+    "implementation": "Treat three rounds as the first review checkpoint. Register any bounded extension prospectively with matched L/B opportunities, fresh cumulative-source-eligible rosters and stopping rules before contacts. Do not alter the frozen UPDATE2 family, silently recycle invalid slots, pool dissimilar protocols, inspect held results or spend against an unregistered extension.",
+    "statement_english": "The total optimization iterations need not be three; you may appropriately increase the number of rounds."
+  }
+}

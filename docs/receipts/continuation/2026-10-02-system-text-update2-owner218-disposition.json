@@ -1,0 +1,79 @@
+{
+  "controls_disposition": "Preserved now; stale STOP and lease remain in place until final frozen admission and fresh process revalidation.",
+  "new_contacts": 0,
+  "old_attempt_after": {
+    "actual": {
+      "audio_seconds": 0.0,
+      "calls": 0
+    },
+    "attempt_id": "attempt-slurp-native-stage3-system-text-update2-l-parent-generation-v1",
+    "carrier_lock_key": "slurp",
+    "failure_reason": "Owner218 approved disposition: abandoned zero-contact entry stopped for host-memory floor violation at2026-10-02T10:27:53Z; preserved before transition. No generation or score occurred; one separately registered recovery1 attempt only.",
+    "reserved": {
+      "audio_seconds": 30000.0,
+      "calls": 5200
+    },
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+    "schema": "saea-attempt-v1",
+    "state": "ABORTED"
+  },
+  "old_attempt_after_sha256": "b118b4f6b85877b7fb7d4048034f35b8f41fa1ba921366217e80f3654815c1ca",
+  "owner_receipt": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision218-and-iteration-amendment.json",
+    "sha256": "83ad37b67617750ca8b9d6de5fc3002ef2d78f9d91d0514c6649d2657443938d"
+  },
+  "preserved": [
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/00-slurp-native-stage3-system-text-update2-l-parent-v1.json",
+      "original": "/home/chao/saea-worktrees/codex-system-text-policy/configs/baseline/slurp-native-stage3-system-text-update2-l-parent-v1.json",
+      "sha256": "695044ea69a8a381d72ba14f56d7f9665d317cadd97215982c4eb61bab22d946"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/01-slurp-native-stage3-system-text-update2-l-parent-v1.json",
+      "original": "/home/chao/saea-worktrees/codex-system-text-policy/configs/experiment/slurp-native-stage3-system-text-update2-l-parent-v1.json",
+      "sha256": "6cb51968556dad22cb790e326537eb09bc9f310b665a258bf30d21349b07a37c"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/02-attempt-slurp-native-stage3-system-text-update2-l-parent-generation-v1.json",
+      "original": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/attempt-slurp-native-stage3-system-text-update2-l-parent-generation-v1.json",
+      "sha256": "a075b84a06b20afb209501f0a60712765158af4b62473924af5ab40a95345d07"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/03-flight.lock",
+      "original": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/locks/flight.lock",
+      "sha256": "cf5250917b149b271e7a23205ef18d05cad51f945ecf85ad7e9a5fc16b926c4b"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/04-batch-STOP",
+      "original": "/home/chao/batch-STOP",
+      "sha256": "0114d989da298f97ad69e816e80c5233f04059c9cc9e8daa7ffdd0d5158e2742"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/05-batch-queue.json",
+      "original": "/home/chao/batch-queue.json",
+      "sha256": "5d16ff8b098048dc61ef318a47a1e26d098db8dd7cd6541b068c23e295bfe81c"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/06-batch-status.jsonl",
+      "original": "/home/chao/batch-status.jsonl",
+      "sha256": "e04a7227f9811a26dbfa21618ac3f67484efd44bfe4b2b0b0c9e101b81e2541c"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/07-batch-flight-repo.txt",
+      "original": "/home/chao/batch-flight-repo.txt",
+      "sha256": "2c183ff628a89fd5ed85e06117d75b8dee8ecf47706a37a0e406f297cf5f52a8"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/08-batch-flight-commit.txt",
+      "original": "/home/chao/batch-flight-commit.txt",
+      "sha256": "0676b4d21ff8fb50ed4a26fcf97e600a248a6b2738e6d916e96eba574c19083c"
+    },
+    {
+      "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-memory-recovery1/incident-archive/09-batch-campaign-1-system-text-update2-20261002T102438Z.log",
+      "original": "/home/chao/batch-campaign-1-system-text-update2-20261002T102438Z.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "recorded_at_utc": "2026-10-02T11:58:12.510104+00:00",
+  "schema": "saea-authorized-zero-contact-entry-disposition-v1"
+}
