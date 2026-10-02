@@ -1,0 +1,26 @@
+{
+  "automatic_failure_recovery": false,
+  "decision_id": 225,
+  "expected_members": {
+    "B-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1",
+    "B-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1",
+    "B-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1",
+    "B-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1"
+  },
+  "family_id": "fixed400-context20-recovery1-v1",
+  "old_generation_or_score_replay_allowed": false,
+  "pool_sample_ids_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "prefix_sample_ids_sha256": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "preserve_previous_family": true,
+  "previous_family_id": "fixed400-context20-v1",
+  "proposal": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/proposal.json",
+    "sha256": "36a0c64a35681ba994f8ce7995ce4d872ce14a78b121a13d1f81f744c714c4dd"
+  },
+  "read_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1",
+  "rows_per_member": 20,
+  "schema": "saea-fixed400-seed-binding-recovery-authority-v1",
+  "source": "Prospective scope serialization only. The existing owner225 question has no reply. This is not a human ruling or READ countersignature.",
+  "status": "pending-owner",
+  "trajectory_cap": 80
+}

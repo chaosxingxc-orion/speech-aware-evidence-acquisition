@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-02T18:48:12.845278+00:00",
+  "checks": {
+    "current400_roster_reused": true,
+    "engineering_base_check": "PASS",
+    "experiment_handoff_check": {
+      "errors": [],
+      "execution_authority": "NOT_EVALUATED",
+      "launch_allowed": false
+    },
+    "git_diff_check": "PASS",
+    "handoff_freshness_check": "PASS",
+    "harness_admission_check": "PASS",
+    "new_data_or_knowledge_preparation": false,
+    "ruff": "PASS"
+  },
+  "contacts_added": 0,
+  "coverage": {
+    "context_reader_percent": 100,
+    "shared_analysis_cli_percent": 89.58333333333333
+  },
+  "draft_pins": {
+    "authority": {
+      "relpath": "docs/readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/recovery-authority-draft-v1.json",
+      "sha256": "c2f2ebdc1581bfee419b8755a7688a7519f1468fd8bf105cf5cc716d5322141f"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/analysis-recipe-draft-v1.json",
+      "sha256": "e1f1d11d4a8b04ca89fc51a7909d59ec855a7506167d43fcf26ad470128b5e65"
+    },
+    "registration": {
+      "relpath": "docs/readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/comparison-registration-draft-v1.json",
+      "sha256": "8209ba741d26ced1162dd2f5819777729c5b8f444df1277dd2b4aba60d3c41f3"
+    },
+    "supplement": {
+      "relpath": "docs/readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/analysis-supplement-draft-v1.json",
+      "sha256": "ab063b6bdbcfaf32279d19acd195751f0dc2f322db4cba0cf0aea651c65c2504"
+    }
+  },
+  "pending_draft_refusal": "exact approved owner225 recovery authority is required",
+  "remaining": "Owner225 reply, exact execution/exposure/READ registration after admission, real FIT/engineering and the four complete operational results. Reader tests do not establish scientific benefit or execution permission.",
+  "schema": "saea-recovery-reader-offline-validation-v1",
+  "scientific_results_read": false,
+  "tests_passed": 76
+}

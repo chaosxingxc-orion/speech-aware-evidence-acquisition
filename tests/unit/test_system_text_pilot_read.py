@@ -321,7 +321,7 @@ def test_cli_unsigned_read_refuses_before_opening_any_member(tmp_path, monkeypat
     assert not output.exists()
 
 
-def cli_fixture(tmp_path, monkeypatch):
+def cli_fixture(tmp_path, monkeypatch, fixture_factory=None):
     import importlib.util
 
     spec = importlib.util.spec_from_file_location(
@@ -331,7 +331,9 @@ def cli_fixture(tmp_path, monkeypatch):
     )
     cli = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(cli)
-    d, recipe, registration, owner, authority, roster, supplement = fixture(tmp_path)
+    d, recipe, registration, owner, authority, roster, supplement = (
+        fixture_factory or fixture
+    )(tmp_path)
     repo, data = tmp_path / "repo", tmp_path / "data"
     repo.mkdir()
 

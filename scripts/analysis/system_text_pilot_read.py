@@ -56,7 +56,7 @@ def load_documents(recipe_pin, supplement_pin, root):
         supplement.get("schema")
         == (
             "saea-context-analysis-supplement-v1"
-            if recipe.get("family_id") == context.FAMILY
+            if recipe.get("family_id") in context.READ_IDS
             else "saea-pilot-analysis-supplement-v1"
         )
         and supplement.get("recipe") == recipe_pin,
@@ -150,13 +150,24 @@ def run(
         "read_registration": recipe_pin,
     }
     authority = CLI.require_read_registration(family, repo_root=repo_root)
-    is_context = recipe.get("family_id") == context.FAMILY
+    is_context = recipe.get("family_id") in context.READ_IDS
     validate = (
         context.validate_registration if is_context else validate_pilot_registration
     )
     evidence_reader = context.read_evidence if is_context else read_pilot_evidence
     analyzer = context.analyze if is_context else analyze_pilot
-    validate(recipe, registration, owner, authority)
+    recovery_pin = supplement.get("recovery_owner_decision")
+    recovery_kwargs = {}
+    if recipe.get("family_id") == context.RECOVERY_FAMILY:
+        require(
+            isinstance(recovery_pin, dict)
+            and recovery_pin == registration.get("recovery_owner_decision"),
+            "recovery decision pin differs or is absent",
+        )
+    if recovery_pin is not None:
+        require(is_context, "recovery authority belongs only to its context family")
+        recovery_kwargs = {"recovery": json.loads(_read_pin(recovery_pin, repo_root))}
+    validate(recipe, registration, owner, authority, **recovery_kwargs)
     if is_context:
         require(
             learning_amendment_pin is None, "context comparison has no proposer export"
@@ -243,6 +254,7 @@ def run(
         registration=registration,
         owner=owner,
         authority=authority,
+        **recovery_kwargs,
     )
     report = analyzer(
         evidence,
@@ -256,6 +268,8 @@ def run(
         "root READ changed during pilot analysis",
     )
     load_documents(recipe_pin, supplement_pin, repo_root)
+    if recovery_pin is not None:
+        _read_pin(recovery_pin, repo_root)
     if is_context:
         _read_pin(owner["fixed_roster"], repo_root)
     for source in (recipe["analysis_roster"], supplement["stratum_metadata"]):
@@ -284,6 +298,8 @@ def run(
         "reader": pin(__file__),
         "analyzer": pin(Path(sys.modules[analyzer.__module__].__file__)),
     }
+    if recovery_pin is not None:
+        report["source_pins"]["recovery_authority"] = recovery_pin
     CLI.write_new(output / "family.json", {**family, "bindings": bindings})
     CLI.write_new(output / "evidence.json", evidence.as_json())
     if learning is not None:

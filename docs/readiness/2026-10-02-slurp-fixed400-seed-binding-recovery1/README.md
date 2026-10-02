@@ -53,3 +53,30 @@ The original unstarted candidate identities and frozen files remain unchanged.
 After approval, register the new exact comparison family and READ, bind both
 candidates to it in a fresh worker, and preserve the abandoned family unsigned.
 Do not use the old malformed comparators as learning feedback or overwrite them.
+
+## Exact recovery family reader, prepared before approval
+
+The existing shared analysis CLI now recognizes only the original context family
+and the exact proposed recovery1 family. The recovery path additionally requires
+the separately pinned, approved owner225 scope and its own root READ. New seed/A/A
+identities are mandatory; the two original never-started candidate identities are
+retained. The receipt names the same fixed400 prefix,80-trajectory cap and old-byte
+preservation. It confers no retry, score replay, larger-panel or optimizer-export
+authority. The shared complete-family seal and unique official-job checks remain.
+
+[Draft authority](recovery-authority-draft-v1.json),
+[draft registration](comparison-registration-draft-v1.json),
+[draft analysis recipe](analysis-recipe-draft-v1.json) and
+[draft supplement](analysis-supplement-draft-v1.json) are dependency-pinned and
+explicitly pending. The actual pending document is rejected before sources open.
+After the owner reply, supersede it with an exact owner receipt; recompute all
+execution hashes after admission, re-pin the draft chain into the final
+registration and register the new READ unsigned. Do not activate these drafts or
+borrow the old READ. No old scientific output was opened to prepare this reader.
+
+Seventy-six synthetic tests pass. They cover the normal pilot and original
+context path, recovery acceptance, missing approval, old comparator/READ mixing,
+missing A/A, failed scoring, unfinished seals, changed roster/pins, and zero saved
+score access until the whole family qualifies. Context-reader statement coverage
+is100%; the shared CLI is90%. [Validation](reader-validation-v1.json). These tests
+verify engineering and custody; they provide no task-quality evidence.

@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Exact recovery analysis prepared; owner225 still pending, 2026-10-02T18:50:05.511680+00:00
+
+The shared root analysis CLI now supports the exact proposed recovery1 family with its own READ and separately pinned owner225 authority. It requires new seed/A/A plus the two original unstarted candidates and rejects the pending draft, old-family mixing, incomplete seals and failed/duplicate official jobs before saved scores. All76 synthetic pilot/context/recovery tests pass; context reader100% and shared CLI90% statement coverage. [Draft registration chain and evidence](../readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/README.md).
+
+No scientific results, model/tokenizer/scorer contacts, attempts or queue controls changed. The same current400 and first20 remain fixed; no data/knowledge/proposal rebuild. Draft identities must be re-pinned after actual admission. Owner225 has no recorded approval: do not dispatch, countersign READ, reconcile STOP or substitute old malformed baseline results. Corrected-seed actual capacity/engineering and the four-member20 comparison remain the next dependent work. Other carriers and closed lines retain their holds.
+
 ## Fixed400 recovery prepared offline, 2026-10-02T18:35:03.146039+00:00
 
 Five prospective corrected-seed configurations are HELD with actual policy bindings. Shared-runtime warm checks pass for seed, A/A and four-row engineering. Seed/A/A knowledge supply content matches the existing first20 byte-for-byte; no data, knowledge, query/vote or speech packet rebuild. The separate capacity launcher now accepts the exact297-endpoint ceiling, preserving normal plan/exposure gates. [Prepared identities, draft plans and validation](../readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/README.md).
@@ -631,7 +637,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T18:35:03.146039+00:00
+Last refreshed: 2026-10-02T18:50:05.511680+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
