@@ -1,0 +1,79 @@
+{
+  "schema": "saea-system-text-proposer-reasoning-disposition-v1",
+  "recorded_at_utc": "2026-10-02T02:12:59.781827+00:00",
+  "owner_decisions": [
+    214,
+    215,
+    217
+  ],
+  "task": "SAEA-System-Text-Proposer-Remaining-Owner217",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-proposer-round1-remaining-v2",
+  "source_commit": "26b961dcdc47036ce594293b7842cbdc2879e9ef",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/registration.json",
+    "sha256": "9dda1500faa1f57035dd0e9c34328098758fbef5f8636392635eb2ff4842d249"
+  },
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/execution/started.json",
+    "sha256": "65d8e291645c97a8a861a73fa54930ee9f0ff2ea2e1144e861da7351a3b58808"
+  },
+  "finished": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/execution/finished.json",
+    "sha256": "956147856d9791067f4e06e6afef499101d99cd519a2100d960bdc629bee84de"
+  },
+  "failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/execution/transport/B-1-1/outcome.json",
+    "sha256": "8cee3ff116002f565c007ee3f304a5613ad440793a40523c5de403419cf337d0"
+  },
+  "retained_complete_stream": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/execution/transport/B-1-1/contact-001/response.sse",
+    "sha256": "a134a87c6ecf80c9a52e49ddbc3831824defdf2679a4d11ee6dbf418997fa68b"
+  },
+  "usage": {
+    "input_tokens": 3191,
+    "output_tokens": 849,
+    "complete": true
+  },
+  "cause": "The completed reasoning item omitted its optional status field. The consumer incorrectly required completed status on every whole output_item.done event. The response itself completed with exact model identity and metered usage. No authentication, remote generation or quality failure is inferred.",
+  "correction": "Accept omitted status only for a reasoning item with an identity/type-matched added/done sequence and a completed response. Preserve opaque reasoning bytes. Keep explicit unfinished/null statuses, changed item types, gaps, duplicated identities and incomplete responses rejected. No text delta is promoted.",
+  "offline_evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/offline-reasoning-custody-proof.json",
+      "sha256": "f9c15c1a35f931813f8a1d038f6690f141f6b802637d69ab663b6a16b83a58c5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/four-row-offline-proof.txt",
+      "sha256": "5311e105cfd4fcb77216dd1e88eb7c4fce91319e93f4d7e99fb7366ff606068b"
+    }
+  ],
+  "test_summary": "87 related tests pass, including four local HTTP/SSE cases: complete reasoning/message, reasoning/tool continuation, incomplete response refusal and metered over-budget refusal. These fixtures add zero remote/model/scorer contacts and do not establish task quality.",
+  "closed_allocations": {
+    "L-1-1": {
+      "outcome": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/dispatch/L-1-1/outcome.json",
+        "sha256": "82591a6f6bf0b2ade0a9055d6237b1b2e73db1287e088f133ef43cedd618f596"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/L-1-1.json",
+        "sha256": "4ef74025de645a693ab038e82a7769d13838d8e918de292763d2765476e7f692"
+      }
+    },
+    "B-1-1": {
+      "outcome": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/dispatch/B-1-1/outcome.json",
+        "sha256": "82591a6f6bf0b2ade0a9055d6237b1b2e73db1287e088f133ef43cedd618f596"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/B-1-1.json",
+        "sha256": "865975cf71f3dad222390ad6c235816e01d3d95c4b364824c0fa97533d454b74"
+      }
+    }
+  },
+  "failed_response_disposition": "Both slot1 opportunities remain INVALID and spent, without replacement. B-1-1 has no accepted proposal text in its archive receipt; the complete remote stream remains separately hash-bound. Offline parsing is transport proof only and never salvages or activates that candidate. Keep all original outcomes and frozen workers immutable.",
+  "remaining_original_allocations": [
+    "L-1-2",
+    "B-1-2"
+  ],
+  "continuation_scope": "Only the original unused slot2 identities, unchanged frozen input capsules/model/protocol/budgets, may continue after separate clean-worker admission. This is not recovery or replacement of either failed slot. Preserve the two operational failures in final search-budget and attrition reporting. Stop on any transport failure. No GPU dispatch, old STOP clearance, new candidate allowance or third synthetic provider proof.",
+  "scientific_limits": "Initial feedback remains valid. No optimized candidate has been adopted and no feedback-learning benefit has been established."
+}

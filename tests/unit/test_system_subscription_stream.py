@@ -46,3 +46,39 @@ def test_hard_profile_cannot_reconstruct_empty_aggregate():
     events = stream()
     with pytest.raises(PolicyError):
         completed_stream_output(events[-1]["response"], events, subscription=False)
+
+
+def reasoning_stream():
+    events = stream()
+    for event in events:
+        if "output_index" in event:
+            event["output_index"] = 1
+    reasoning = {"id": "rs_one", "type": "reasoning", "summary": [],
+                 "content": [], "encrypted_content": "synthetic-opaque-state"}
+    events[1:1] = [
+        {"type": "response.output_item.added", "output_index": 0, "item": copy.deepcopy(reasoning)},
+        {"type": "response.output_item.done", "output_index": 0, "item": copy.deepcopy(reasoning)},
+    ]
+    return events
+
+
+def test_completed_reasoning_without_optional_status_keeps_opaque_state():
+    events = reasoning_stream()
+    original = copy.deepcopy(events)
+    result = completed_stream_output(events[-1]["response"], events, subscription=True)
+    assert result["output"] == [events[2]["item"], events[4]["item"]]
+    assert "status" not in result["output"][0]
+    assert events == original
+
+
+@pytest.mark.parametrize("case", ["reasoning_in_progress", "reasoning_incomplete", "reasoning_null", "message_missing_status", "type_changed", "done_before_created"])
+def test_optional_reasoning_status_does_not_relax_item_custody(case):
+    events = reasoning_stream()
+    if case == "reasoning_in_progress": events[2]["item"]["status"] = "in_progress"
+    elif case == "reasoning_incomplete": events[2]["item"]["status"] = "incomplete"
+    elif case == "reasoning_null": events[2]["item"]["status"] = None
+    elif case == "message_missing_status": del events[4]["item"]["status"]
+    elif case == "type_changed": events[2]["item"]["type"] = "message"; events[2]["item"]["status"] = "completed"
+    else: events.insert(3, events.pop(0))
+    with pytest.raises(PolicyError):
+        completed_stream_output(events[-1]["response"], events, subscription=True)

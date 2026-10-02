@@ -53,6 +53,42 @@ def test_subscription_complete_item_stream_without_mime_or_aggregate(tmp_path):
     assert (tmp_path / "transport/contact-001/response.sse").read_bytes() == sse(events)
 
 
+@pytest.mark.parametrize("case", ["complete", "tool_continuation", "incomplete", "over_budget"])
+def test_four_row_reasoning_transport_proof(tmp_path, case):
+    """Four local synthetic paths, with no provider or research-model contacts."""
+    from test_system_subscription_stream import reasoning_stream
+    from test_system_proposer_responses import sse
+    capsule, transport = setup(tmp_path, "http://127.0.0.1:1/v1/responses")
+    events = reasoning_stream()
+    events[-1]["response"].update(model="gpt-6-sol", usage={"input_tokens": 100, "output_tokens": 10})
+    if case == "tool_continuation":
+        identity = capsule.initial_input()["artifacts"][0]["artifact_id"]
+        item = call(identity, id="fc_one", namespace="artifacts", status="completed")
+        events[3]["item"] = {**item, "status": "in_progress", "arguments": ""}
+        events[4]["item"] = item
+    elif case == "incomplete":
+        events[-1]["response"]["status"] = "incomplete"
+    elif case == "over_budget":
+        events[-1]["response"]["usage"]["output_tokens"] = 4097
+    replies = [(200, {}, sse(events))]
+    if case == "tool_continuation": replies.append(reply(completed()))
+    with server(replies) as (endpoint, requests):
+        transport.client = ResponsesHTTP(endpoint, fixture_only=True)
+        dispatch = ProposalDispatch(tmp_path / "dispatch", capsule)
+        if case in {"incomplete", "over_budget"}:
+            with pytest.raises(PolicyError): dispatch.run(transport)
+        else:
+            result = dispatch.run(transport)
+            assert result["raw_response"] == ('{"changes":{}}' if case == "tool_continuation" else "Synthetic complete answer")
+        assert len(requests) == (2 if case == "tool_continuation" else 1)
+        if case == "tool_continuation":
+            assert requests[1]["body"]["input"][1] == events[2]["item"]
+            assert "status" not in requests[1]["body"]["input"][1]
+            assert capsule.access_log[0]["status"] == "supplied"
+        with pytest.raises(PolicyError, match="consumed"): dispatch.run(transport)
+    assert (tmp_path / "transport/contact-001/response.sse").read_bytes() == sse(events)
+
+
 @pytest.mark.parametrize("usage", [None, {"input_tokens": 100, "output_tokens": 4097}])
 def test_subscription_rejected_output_consumes_slot_and_preserves_usage(tmp_path, usage):
     with server([reply(completed(usage=usage))]) as (endpoint, requests):

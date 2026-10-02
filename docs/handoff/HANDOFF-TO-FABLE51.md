@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Proposal transport checkpoint: 2026-10-02T02:12:59.781827+00:00, ChatGPT root
+
+The Windows-owned remaining-slot task started at02:02:08Z and stopped at02:02:43Z on B-1-1. Authentication succeeded and one complete GPT-6-Astra response was metered at3191 input/849 output tokens. A completed reasoning item omitted its optional status; the consumer mistakenly rejected it. The original worker26b961dcd and complete response bytes are preserved. B-1-1 is INVALID and spent, as is L-1-1; neither may be retried, replaced or salvaged from offline parsing.
+
+The type-aware completion correction passes87 related tests and a four-case local HTTP/SSE proof, with zero new remote contacts. See [reasoning disposition](../receipts/continuation/2026-10-02-proposer-reasoning-disposition.json). Only original unused L-1-2 and B-1-2 remain eligible through a separately admitted clean worker with unchanged capsules/model/budgets. This is not a retry of failed slot1. Record operational attrition in all later comparisons; do not claim two successful candidates per branch or equal realized compute. No local GPU search generation has started; the old batch STOP and held carriers remain unchanged. Root must record any actual slot2 launch separately.
+
+
 ## Background proposer correction: 2026-10-02T02:00:02.054766+00:00, ChatGPT root
 
 The first registered round launcher started at01:45:07Z and stopped in L-1-1 with an own-app SDK directory lookup failure. Windows packaged-app AppData virtualization made the logical sign-in directory unavailable to the scheduled WSL child. Preserve its worker64d54a84e, response-free unmetered reservation and failed outcome. L-1-1 is now recorded INVALID with unknown usage and consumes its original proposal slot; it must never be replaced or retried.

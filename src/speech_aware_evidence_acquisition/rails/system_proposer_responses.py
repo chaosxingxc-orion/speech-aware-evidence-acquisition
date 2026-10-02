@@ -161,14 +161,21 @@ def completed_stream_output(response, events, *, subscription=False):
             require(isinstance(created, str) and created, "missing streamed response identity")
         elif kind in {"response.output_item.added", "response.output_item.done"}:
             index, item = event.get("output_index"), event.get("item")
-            require(type(index) is int and index >= 0 and isinstance(item, dict)
-                    and isinstance(item.get("id"), str) and item["id"], "invalid streamed item identity")
+            require(created is not None and type(index) is int and index >= 0 and isinstance(item, dict)
+                    and isinstance(item.get("id"), str) and item["id"]
+                    and isinstance(item.get("type"), str), "invalid streamed item identity")
             if kind.endswith(".added"):
-                require(index not in added and item["id"] not in added.values(), "duplicate streamed item")
-                added[index] = item["id"]
+                require(index not in added and item["id"] not in {identity[0] for identity in added.values()},
+                        "duplicate streamed item")
+                added[index] = (item["id"], item["type"])
             else:
-                require(index not in done and added.get(index) == item["id"]
-                        and item.get("status") == "completed", "streamed item is not a completed registered item")
+                # ReasoningItem.status is optional. The whole output_item.done
+                # event and final response completion establish custody; do not
+                # invent a status, discard opaque state, or accept unfinished items.
+                complete = (item.get("status") == "completed"
+                            or (item["type"] == "reasoning" and "status" not in item))
+                require(index not in done and added.get(index) == (item["id"], item["type"])
+                        and complete, "streamed item is not a completed registered item")
                 done[index] = item
     if created is not None:
         require(created == response.get("id"), "completion belongs to another response")
