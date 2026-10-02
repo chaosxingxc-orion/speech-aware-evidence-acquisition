@@ -1,0 +1,17 @@
+{
+  "checks": [
+    {
+      "script": "openjiuwen_native_reuse_check.py",
+      "exit_code": 0,
+      "stdout": "2026-10-02 05:34:37 | common | default_trace_id | INFO | Registered connector pool type: default\n2026-10-02 05:34:37 | common | default_trace_id | INFO | Registered connector pool type: httpx\n2026-10-02 05:34:37 | common | default_trace_id | INFO | Registered query expression support for milvus\n2026-10-02 05:34:37 | common | default_trace_id | INFO | Registered query expression support for chroma\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ExcelParser for .xlsx\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ExcelParser for .csv\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ExcelParser for .tsv\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser TxtMdParser for .txt\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser TxtMdParser for .md\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser TxtMdParser for .markdown\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser HTMLFileParser for .htm\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser HTMLFileParser for .html\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser JSONParser for .json\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser PDFParser for .pdf\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser WordParser for .docx\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ImageParser for .png\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ImageParser for .jpg\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ImageParser for .jpeg\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ImageParser for .webp\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ImageParser for .gif\n2026-10-02 05:34:38 | common | default_trace_id | INFO | Registered parser ImageParser for .jfif\n{\"proofs\": {\"advertised_tool_round_trip\": true, \"before_tool_call_rail_rejection\": true, \"global_fallback_is_not_authority\": true, \"max_iterations\": true, \"per_agent_visibility\": true, \"workflow_reviewer_then_solver\": true}, \"result_path\": \"/home/chao/saea-worktrees/codex-system-text-policy/docs/readiness/2026-10-02-slot-review-contract-correction-v1/openjiuwen-reuse.json\", \"result_sha256\": \"635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464\"}\n",
+      "stderr": ""
+    },
+    {
+      "script": "derived_media_confinement_check.py",
+      "exit_code": 0,
+      "stdout": "slurp-speech-native-dev1000-tail2s       PASS  roots=1  binds=True\naudio2tool-calibration-400-tail2s        PASS  roots=1  binds=True\naudio2tool-calibration-400-16k           PASS  roots=1  binds=True\naudio2tool-calibration-400-16k-tail2s    PASS  roots=1  binds=True\nslurp-speech-native-dev1000              PASS  roots=0  binds=True\nreceipt docs/readiness/2026-10-02-slot-review-contract-correction-v1/derived-media/derived-media-confinement.json: PASS\n",
+      "stderr": ""
+    }
+  ],
+  "contact_count": 0
+}

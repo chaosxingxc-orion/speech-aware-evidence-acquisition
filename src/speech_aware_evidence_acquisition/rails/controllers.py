@@ -1399,6 +1399,7 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 
 
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
+    "phase-native-slot-review-contract-v1": "phase-native-slot-review-contract-v1.json",
     "phase-audio2tool-native-candidate-recovery-tools-v1": (
         "phase-audio2tool-native-candidate-recovery-tools-v1.json"
     ),
@@ -2191,6 +2192,11 @@ def register_phase_programs_v1() -> None:
                 default_phase_program("phase-task-tools-solve-revise-v1")
             ),
         )
+    if "phase-native-slot-review-contract-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-slot-review-contract-v1",
+            default_controller_factory(default_phase_program("phase-native-slot-review-contract-v1")),
+        )
     unregistered = set(_PROGRAM_CONFIG_FILENAMES) - set(AGENT_CONTROLLERS.names())
     if unregistered:
         raise RailsControllersError(
@@ -2386,6 +2392,10 @@ def register_response_formats_v1() -> None:
     re-entrancy discipline as :func:`register_phase_programs_v1`)."""
 
     registered = RESPONSE_FORMATS.names()
+    if "saea-slot-review-handoff-v1" not in registered:
+        from .review_handoff import slot_review_response_format
+
+        RESPONSE_FORMATS.register("saea-slot-review-handoff-v1", slot_review_response_format)
     # Each id is a literal inside its own ``register`` call so the
     # engineering-base gate can read the registered name set from source
     # without importing the package.

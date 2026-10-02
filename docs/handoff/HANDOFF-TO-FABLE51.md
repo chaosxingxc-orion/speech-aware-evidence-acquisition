@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner219 approved Reviewer contract correction: ChatGPT root, 2026-10-02
+
+The human explicitly approved the separately described uniform Reviewer response contract correction and execution. See [exact owner219 scope](../receipts/owner/2026-10-02-decision219-reviewer-contract.json). Offline tests231/231 pass, scoped coverage91%. Real engineering/FIT, new immutable identities, current admission and sequential GPU launch remain pending; monitoring still never dispatches. Owner218 is no longer pending. The new common contract supersedes the unlaunched same-contract recovery only through prospective records, not changes to frozen bytes. [Root diagnosis](../results/2026-10-02-slurp-system-text-update1-root-diagnosis.md) is root-only and not proposer input.
+
+## Root diagnostic hold: 2026-10-02T12:31:56.228512+00:00, ChatGPT root
+
+Owner218 is approved, registered and serially integrated at ebe5c5b46. All eight clean frozen model-free checks passed, but no recovery launched. Root subsequently verified that all3987 completed UPDATE1 Reviewer outputs failed the strict handoff; the registered UPDATE2 configuration retains that defect. Dispatch is WITHHELD for the separately proposed uniform Reviewer contract correction. Keep the existing STOP/lease/queue and all frozen workers. Do not treat earlier ready/check-passed records as permission to launch. See [root diagnostic evidence](../receipts/continuation/2026-10-02-system-text-update1-root-diagnosis.json) and [reviewable prospective correction](../readiness/2026-10-02-slot-review-contract-correction-v1/proposal.json). No new model/tokenizer/scorer contacts occurred. Root combined L/B diagnosis is not proposer input; monitoring must not read task quality. Extra rounds are owner-permitted but require prospective bounded registration.
+
 ## Owner218 authorized recovery preparation: 2026-10-02T12:00:56.548106+00:00, ChatGPT root
 
 Owner218 explicitly approved the one zero-contact UPDATE2 entry recovery and sequential eight-member execution. The original attempt and incident controls are archived; the abandoned attempt is ABORTED with zero contacts. The separately prepared successor is now registered and ready, with unchanged400-row policies and seven untouched sibling identities. Whole-family READ remains unsigned. Final clean frozen checks, resource revalidation and authorized stale-control reconciliation still precede launch. See the [owner receipt](../receipts/owner/2026-10-02-decision218-and-iteration-amendment.json) and [recovery package](../readiness/2026-10-02-slurp-system-text-update2-memory-recovery1/README.md).

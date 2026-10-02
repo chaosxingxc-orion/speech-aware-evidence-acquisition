@@ -1,0 +1,17 @@
+{
+  "tests_passed": 231,
+  "tests_failed": 0,
+  "coverage": {
+    "review_handoff": 91,
+    "consumption_module": 91
+  },
+  "grammar_converter": {
+    "path": "/home/chao/llama.cpp-featcache/examples/json_schema_to_grammar.py",
+    "sha256": "ee451dc460aa31185226e58988626f64e75ab735169fa3e484fcf16889475ae3",
+    "grammar_sha256": "a351057d58faaf21ad3194a135a70c274d3d226205046ee868d3539be25022bb",
+    "bytes": 1353
+  },
+  "synthetic_native_wire_test": true,
+  "actual_gpu_grammar_and_engineering": "PENDING",
+  "new_contacts": 0
+}

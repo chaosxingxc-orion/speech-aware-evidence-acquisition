@@ -1,0 +1,14 @@
+{
+  "schema": "saea-owner-decision-supplement-v1",
+  "recorded_at_utc": "2026-10-02T12:34:36.832863+00:00",
+  "decision_id": 219,
+  "status": "approved",
+  "source": "Explicit human reply in this root conversation to the Reviewer contract correction proposal on2026-10-02. Original response remains addressable in the conversation.",
+  "owner_statement_english": "Agree to the correction and execution (recommended).",
+  "approved_proposal": {
+    "relpath": "docs/readiness/2026-10-02-slot-review-contract-correction-v1/proposal.json",
+    "sha256": "5be9208a39efee73c16df6b377c3f36583771665dd5d4cd218acc5eddb219abd"
+  },
+  "scope": "Register new four-row engineering and real maximum-request capacity checks. After acceptance, uniformly apply the strict Reviewer handoff output contract to all eight UPDATE2 members,400 rows each. Retain original candidates, rosters, knowledge, role text and budgets; use new full policy/config/run/attempt identities. Preserve old artifacts. Execute sequentially under218 memory guards. This is a common protocol correction, not a learned improvement or an added proposal.",
+  "monitor_dispatch_authority": false
+}

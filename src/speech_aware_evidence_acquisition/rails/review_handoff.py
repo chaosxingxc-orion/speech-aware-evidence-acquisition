@@ -47,3 +47,36 @@ def normalize_review_handoff(raw: str) -> str:
     except (ValueError, TypeError):
         pass
     return json.dumps(result, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+
+
+def slot_review_response_format(_lock, _root):
+    """Constrain newly registered Reviewer requests to the existing handoff contract.
+
+    The strict consumer remains authoritative. This does not reparse, repair or
+    replace any historical response. Empty findings and checked lists are legal.
+    """
+    def text(limit, *, empty=False):
+        spec = {"type": "string", "maxLength": limit}
+        if not empty:
+            spec["minLength"] = 1
+        return spec
+
+    finding = {
+        "type": "object", "additionalProperties": False,
+        "required": ["kind", "slot_types", "draft_fragment", "reason"],
+        "properties": {
+            "kind": {"type": "string", "enum": ["type-meaning", "boundary", "existence"]},
+            "slot_types": {"type": "array", "minItems": 1, "maxItems": 2, "items": text(128)},
+            "draft_fragment": text(256, empty=True),
+            "reason": text(512),
+        },
+    }
+    return {"type": "json_schema", "json_schema": {
+        "name": "saea_slot_review_handoff_v1", "strict": True,
+        "schema": {"type": "object", "additionalProperties": False,
+                   "required": ["findings", "checked"],
+                   "properties": {
+                       "findings": {"type": "array", "maxItems": 4, "items": finding},
+                       "checked": {"type": "array", "maxItems": 8, "items": text(256)},
+                   }},
+    }}

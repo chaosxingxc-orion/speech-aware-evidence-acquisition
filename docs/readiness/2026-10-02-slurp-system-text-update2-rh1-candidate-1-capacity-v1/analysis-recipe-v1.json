@@ -1,0 +1,6 @@
+{
+  "run_ids": {
+    "read": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-CANDIDATE-1-CAPACITY-STRUCTURE-V1"
+  },
+  "scope": "Operational request/grammar/tokenizer counts, hashes and synthetic graph structure only. No answers, labels or quality; no model generation."
+}

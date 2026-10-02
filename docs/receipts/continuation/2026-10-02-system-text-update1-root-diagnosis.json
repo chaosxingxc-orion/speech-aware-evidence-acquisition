@@ -1,0 +1,67 @@
+{
+  "schema": "saea-root-diagnostic-receipt-v1",
+  "observed_at_utc": "2026-10-02T12:31:56.228512+00:00",
+  "read_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1",
+  "scope": "Root-only post hoc descriptive diagnosis of fully qualified UPDATE1. No scorer replay, no new reference-label read, no node-level causal score, no sealed-byte rewrite, no L/B proposer feedback transfer. Fence removal is diagnostic only; original runtime remains invalid.",
+  "source_pins": [
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/B-candidate-2-review-format-index.json",
+      "sha256": "2b90458877b0f32b3f1fceed798611e7a6464d1ab59a6db8d2226cbc2a6d9d4e"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/B-parent-aa-paired-all400.json",
+      "sha256": "6e0f32202d7142dcbfe592e6d470189dc24f3c062abeac86286e1377ec5860c2"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/B-parent-aa-review-format-index.json",
+      "sha256": "070a8739da92d18a2851c3670513cbfa70224fc24ed59629835f9249c6d444e0"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/B-parent-paired-all400.json",
+      "sha256": "adb6ff7b7ed5d17412e16b28a9ad6c87e93e218430973695f20915dc237d55f5"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/B-parent-review-format-index.json",
+      "sha256": "037b9b14cece0a2b3d07e949daa2ab32726772aceefcbb149977c649f9cd7c24"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/L-parent-aa-review-format-index.json",
+      "sha256": "8828bcd7f334965de1f06e947e5555ca827e02d9a6f206e20972dc855740b902"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/L-parent-review-format-index.json",
+      "sha256": "c66a6c3db016b58e87bd2d65f65caf52329df0008d876357abeef268df6fc7c3"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/diagnosis-statistics.json",
+      "sha256": "2976fc06db5ba81c0375e1ba7a89e1f34fc397d906cce0199fc007476d6f2a68"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/revision-alignment.json",
+      "sha256": "ad14adc5db5c663562edb373ff7c849234714bc75febe92ec8c27d89b87f4b8e"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/state-index.json",
+      "sha256": "8b20873536f56cf87fd33e7a23e8b89d773712fa80a832070fe269c549664358"
+    },
+    {
+      "path": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-diagnosis-v1/trajectory-summary.json",
+      "sha256": "7cd4217ba6f1ba0839050a818fd4b278a08acefb607cfef0870809c471b6bc51"
+    }
+  ],
+  "aggregate": {
+    "rows": 2000,
+    "raw_reviewer_responses": 3990,
+    "completed_reviewer_responses": 3987,
+    "invalid_normalized_reviews": 3987,
+    "planner_revise": 3982,
+    "planner_accept": 5,
+    "knowledge_tool_calls": 0
+  },
+  "disposition": "Withhold the admitted but unlaunched same-contract owner218 UPDATE2 recovery after discovering a common handoff defect. Preserve STOP, lease and queue. Prepare prospective uniform contract correction; do not silently alter the frozen family.",
+  "proposal": "docs/readiness/2026-10-02-slot-review-contract-correction-v1/proposal.json",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "new_tokenizer_contacts": 0,
+  "future_proposer_export": false
+}

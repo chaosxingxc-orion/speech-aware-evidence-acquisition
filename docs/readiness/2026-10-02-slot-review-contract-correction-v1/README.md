@@ -1,0 +1,11 @@
+# Approved Reviewer contract correction: owner219
+
+The owner approved the adjacent exact proposal after root diagnosed all3987 completed UPDATE1 Reviewer handoffs as invalid. See the [owner receipt](../../receipts/owner/2026-10-02-decision219-reviewer-contract.json) and [root report](../../results/2026-10-02-slurp-system-text-update1-root-diagnosis.md).
+
+Implement the new output contract through the existing program, material and transport path. Preserve the strict normalizer and original requests. Empty findings are legal; valid structure is not a correctness verdict. The opt-in currently supports only the uncited13-contact phase shape. Omission preserves historical compilation. No existing frozen config was edited.
+
+Validation:231 related tests pass; changed handoff and consumption modules have91% coverage. Ruff, engineering-base, harness admission and finite-completion gates pass. The actual shared OpenJiuwen native transport is tested with synthetic replies. The registered local llama.cpp Python converter generates1353 grammar bytes (SHA256 a351057d58faaf21ad3194a135a70c274d3d226205046ee868d3539be25022bb); this is not GPU validation. Additional OpenJiuwen reuse and derived-media confinement checks pass after supplying the documented output and absolute PYTHONPATH arguments. Earlier invocation errors are preserved as check evidence, not experimental failures.
+
+Before bulk contacts, register fresh identities for four engineering rows and three full-request capacity configurations. Bind a prospective common protocol transition; preserve all cumulative exposure and original proposal slots. Only after successful engineering acceptance and capacity may the same eight400-row members run sequentially with memory guards. Read the full corrected family once all eight are complete and scored; never merge old/new protocol scores into a common frontier. Stop on failure without automatic recovery.
+
+Three rounds are the first optimization checkpoint. Additional iterations are owner-permitted but require prospectively registered matched L/B opportunities, an audited eligible roster and finite budgets/stopping rules. Do not infer new data authority or reusable proposal slots.

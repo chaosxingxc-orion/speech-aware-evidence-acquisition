@@ -1,0 +1,97 @@
+{
+  "common_contract_change_only": true,
+  "new_search_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/review-contract-owner219",
+  "new_seed_config": "configs/baseline/slurp-native-stage3-system-text-review-contract-seed-v1.json",
+  "new_seed_config_sha256": "c9d3b296414551ce9efc8ba0f51c92ba969c3e57c57ff5eb99ec36d6a8d66a1f",
+  "no_new_proposer_or_construction_contacts": true,
+  "old_search_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217",
+  "owner": 219,
+  "schema": "saea-system-text-protocol-transition-v1",
+  "transitions": [
+    {
+      "cumulative_sources_preserved": true,
+      "knowledge_unchanged": true,
+      "new_bundle_id": "767f9f41d936b6d65b65afea824db26651e317e0c54453b76bba82ca971a78c6",
+      "new_policy_pin": {
+        "relpath": "system-text-search/review-contract-owner219/policies/767f9f41d936b6d65b65afea824db26651e317e0c54453b76bba82ca971a78c6.json",
+        "sha256": "e5a7364cd5fd812728b88a6af53311a0fca90aa0379145ed1f6a43174c46ee3d"
+      },
+      "old_bundle_id": "2d18e6e9a4a5b236bb6da35d90e95078e65be6a1ee3a45187396f1ecbc94daa5",
+      "old_policy_pin": {
+        "relpath": "system-text-search/control2-owner217/policies/2d18e6e9a4a5b236bb6da35d90e95078e65be6a1ee3a45187396f1ecbc94daa5.json",
+        "sha256": "8402b1e2c3270de20e0fb3b86a4cb2febbb04a17d1191eb3d257d5c63bdd4def"
+      },
+      "optimizer_experience_preserved": true,
+      "role_text_unchanged": true,
+      "root_reason": "Approved common protocol rebase, not a proposal or learned edit; old ancestry remains in immutable source policy and this transition."
+    },
+    {
+      "cumulative_sources_preserved": true,
+      "knowledge_unchanged": true,
+      "new_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "new_policy_pin": {
+        "relpath": "system-text-search/review-contract-owner219/policies/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15.json",
+        "sha256": "163cb9e12a4a72f2c29ae49da01b70534994ef2497635e1bf7912c6ee8587ff0"
+      },
+      "old_bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "old_policy_pin": {
+        "relpath": "system-text-search/control2-owner217/policies/6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b.json",
+        "sha256": "df15e7629279717f58434294224054755a611b555084469082202bf1d7894001"
+      },
+      "optimizer_experience_preserved": true,
+      "role_text_unchanged": true,
+      "root_reason": "Approved common protocol rebase, not a proposal or learned edit; old ancestry remains in immutable source policy and this transition."
+    },
+    {
+      "cumulative_sources_preserved": true,
+      "knowledge_unchanged": true,
+      "new_bundle_id": "37eea777ae1ef99549ed5df1b584ac168b32c00064e5b4b5879c39c502995f10",
+      "new_policy_pin": {
+        "relpath": "system-text-search/review-contract-owner219/policies/37eea777ae1ef99549ed5df1b584ac168b32c00064e5b4b5879c39c502995f10.json",
+        "sha256": "8deb52f05664aa3b0d0a750341e18d65b6060afcafc12ed8c8f93e27cc55d195"
+      },
+      "old_bundle_id": "9652aa381a37280d5e5231e2875f89a95bf9c7587e1cd997dce924b9abe730b6",
+      "old_policy_pin": {
+        "relpath": "system-text-search/control2-owner217/policies/9652aa381a37280d5e5231e2875f89a95bf9c7587e1cd997dce924b9abe730b6.json",
+        "sha256": "6363ee558a5fca33eb3f04d2d3ba4aea904e46c73b656cf5f88fc1a86964d38a"
+      },
+      "optimizer_experience_preserved": true,
+      "role_text_unchanged": true,
+      "root_reason": "Approved common protocol rebase, not a proposal or learned edit; old ancestry remains in immutable source policy and this transition."
+    },
+    {
+      "cumulative_sources_preserved": true,
+      "knowledge_unchanged": true,
+      "new_bundle_id": "4550f67593474d5e7edd219af0334dd3c8168ff9c91e70faa61e4a7e8709e4ed",
+      "new_policy_pin": {
+        "relpath": "system-text-search/review-contract-owner219/policies/4550f67593474d5e7edd219af0334dd3c8168ff9c91e70faa61e4a7e8709e4ed.json",
+        "sha256": "0524eacddf5cb5654c83e00e46832a404b80166bf26538f1e0c234fc4505e639"
+      },
+      "old_bundle_id": "ef50b59dd95fc48238e62115e211fe3890c5e9e50c05b36002959db7cdba637e",
+      "old_policy_pin": {
+        "relpath": "system-text-search/control2-owner217/policies/ef50b59dd95fc48238e62115e211fe3890c5e9e50c05b36002959db7cdba637e.json",
+        "sha256": "ba7943e02c3efc8ee1bb4bf912e149cee322dd5f435aa1620958f750e8b1ca2e"
+      },
+      "optimizer_experience_preserved": true,
+      "role_text_unchanged": true,
+      "root_reason": "Approved common protocol rebase, not a proposal or learned edit; old ancestry remains in immutable source policy and this transition."
+    },
+    {
+      "cumulative_sources_preserved": true,
+      "knowledge_unchanged": true,
+      "new_bundle_id": "89005f93af708f05249e9addf803875009639934dff586805b12ba31e7ec8ec8",
+      "new_policy_pin": {
+        "relpath": "system-text-search/review-contract-owner219/policies/89005f93af708f05249e9addf803875009639934dff586805b12ba31e7ec8ec8.json",
+        "sha256": "5e4477bd51778922fe3e612a285d44e668e89d51733875d1ffaa3be15e7832f6"
+      },
+      "old_bundle_id": "fa7e7b9e46db4d43ab246b5761576e4e3046854b1168c3fbaedca58b5794dfea",
+      "old_policy_pin": {
+        "relpath": "system-text-search/control2-owner217/policies/fa7e7b9e46db4d43ab246b5761576e4e3046854b1168c3fbaedca58b5794dfea.json",
+        "sha256": "ba9d6ba98905d3b1ec81dd2b71c5483c6a41ced0b7526410e3e2e22f4f0b617d"
+      },
+      "optimizer_experience_preserved": true,
+      "role_text_unchanged": true,
+      "root_reason": "Approved common protocol rebase, not a proposal or learned edit; old ancestry remains in immutable source policy and this transition."
+    }
+  ]
+}

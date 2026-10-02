@@ -1,0 +1,83 @@
+{
+  "schema": "saea-prospective-review-contract-correction-v1",
+  "status": "PROPOSED_NOT_ADMITTED",
+  "prepared_at_utc": "2026-10-02T12:31:56.228512+00:00",
+  "authority_boundary": "Owner218 authorizes same-policy entry recovery. This separately recorded proposal changes the common model-facing Reviewer response contract; owner acceptance and exact prospective registration are required before contacts.",
+  "reason": "All3987 completed Reviewer responses in the qualified UPDATE1 family failed the strict handoff. The unchanged UPDATE2 family would repeat that common defect.",
+  "old_stage_disposition": "Retain every original UPDATE2 proposal, supply, registration, frozen worker and incident byte. Keep the zero-contact original attempt ABORTED under218. Do not open its registered successor or seven siblings; prospectively supersede the entire unflown family without reading or excluding a result.",
+  "edit": {
+    "component": "knowledge-consumption-opportunity",
+    "parameter": "reviewer_response_format_id",
+    "value": "saea-slot-review-handoff-v1",
+    "program": "phase-native-slot-review-contract-v1",
+    "scope": "Apply the same contract to parents, A/A and all four existing candidates. Preserve their Solver, Reviewer and Planner text, knowledge, tools, row lists, branch allocation and budgets. Bind new seed/bundle/config identities and carry cumulative provenance; never reuse old identity for changed requests."
+  },
+  "engineering": {
+    "rows": 4,
+    "purpose": "Interface validity only; no quality scoring or learning. Use an independently registered eligible engineering roster. Cover native refusal, empty and nonempty tool results and post-revision delivery with existing synthetic graph proofs; actual Omni proof must report which branches occur. Do not force a scientific tool call to satisfy a quota.",
+    "model_contact_cap": 52,
+    "maximum_legal_request_fit": "Register separately for all three distinct request configurations, including maximum legal review, tool payload and revision context,512 output allowance and existing2048 reserve. No estimate-only admission. Native tokenizer endpoints retain their own plans.",
+    "acceptance": [
+      "All completed Reviewer responses validate under the unchanged strict handoff. No fenced or extra-field repair.",
+      "Every row completes through the shared executor with legal Planner routes, bounded tools and Omni final-answer authority.",
+      "Raw-to-normalized handoff and post-tool delivery remain auditable; zero observed calls do not prove the knowledge mechanism.",
+      "Stop on failure; preserve bytes; no automatic retry, reseal, scorer replay or expanded smoke."
+    ]
+  },
+  "scientific_family": {
+    "stage": "update-2-review-contract-v1",
+    "cohort": "Unchanged current UPDATE2 TRAIN400, revalidated against cumulative sources",
+    "members": [
+      {
+        "member_id": "L-parent",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      },
+      {
+        "member_id": "L-parent-aa",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      },
+      {
+        "member_id": "L-candidate-1",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      },
+      {
+        "member_id": "L-candidate-2",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      },
+      {
+        "member_id": "B-parent",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      },
+      {
+        "member_id": "B-parent-aa",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      },
+      {
+        "member_id": "B-candidate-1",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      },
+      {
+        "member_id": "B-candidate-2",
+        "rows": 400,
+        "source": "Existing original UPDATE2 member, no replacement proposal"
+      }
+    ],
+    "total_rows": 3200,
+    "generation_cap_per_member": 5200,
+    "fit_cap_per_member": 20800,
+    "execution": "Eight sequential one-member Windows-owned campaign processes, existing shared runtime/scorer,14.5GiB startup/10GiB running memory guards,one generator/one scorer. Reconcile only exact stale controls under an explicit receipt after final admission.",
+    "read": "All eight independently FINALIZED, verified seals, exactly one successful official score each, exact successor family READ. No partial feedback or comparison pooling across old/new response contracts."
+  },
+  "search_isolation": "Do not export this root combined L/B diagnosis to a proposer. Future L diagnostic projections may use only qualified L evidence. B receives no score, trajectory, winner or failure history. A common engineering contract correction is recorded symmetrically as a new protocol epoch, not as a learned L improvement.",
+  "iteration_amendment": "Three rounds are the first checkpoint, not a hard total. Register each bounded extension before contacts with matched L/B opportunities and evaluation budgets, an eligible cumulative-source-disjoint roster, a common selection stage and stopping rules. Stop repeated same-mechanism sampling if no viable new hypothesis, no eligible data, an unresolved interface failure or repeated no-change/no-progress remains. Do not recycle invalid proposal slots. Added rounds are within-sequence optimization, not independent replications.",
+  "dispatch_authority": false,
+  "contact_count": 0,
+  "raw_results_modified": false
+}

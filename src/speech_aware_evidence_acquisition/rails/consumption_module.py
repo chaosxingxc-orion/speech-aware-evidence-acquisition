@@ -161,7 +161,8 @@ _COLUMN_OPTIONAL = frozenset({"prepared_seed"})
 COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
     ComponentSpec(KNOWLEDGE_CONSUMPTION_OPPORTUNITY, "SUPPLY/USE, bounded knowledge opportunity",
         frozenset({STATE_ON}), frozenset({"mode", "store_id", "reviewer_template", "planner_template"}),
-        optional_params=frozenset({"solver_template", "value_limit", "knowledge_binding"})),
+        optional_params=frozenset({"solver_template", "value_limit", "knowledge_binding",
+                                   "reviewer_response_format_id"})),
     ComponentSpec(CONSTRUCTION_STORE_BINDING, "ORG, source-isolated construction release",
         frozenset({STATE_ON}), frozenset({"store_id", "snapshot", "release"})),
     ComponentSpec(
@@ -915,6 +916,12 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 template = _require_text(params[role + "_template"], field=role + " template")
                 writer.set(("phase_material", role, "instruction_template"), template,
                            component_id=cid, replace_only=True)
+            if "reviewer_response_format_id" in params:
+                reviewer_contract = params["reviewer_response_format_id"]
+                if reviewer_contract != "saea-slot-review-handoff-v1":
+                    raise ConsumptionModuleConfigError("unregistered Reviewer handoff contract")
+                writer.set(("phase_material", "reviewer", "response_format_id"), reviewer_contract,
+                           component_id=cid, replace_only=True)
             if "solver_template" in params:
                 template = _require_text(params["solver_template"], field="solver template")
                 writer.set(("phase_material", "solver", "instruction_template"), template,
@@ -1012,6 +1019,15 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         }
     )
     program_id = flown.get((ceiling, contract))
+    reviewer_material = layer["phase_material"].get("reviewer")
+    reviewer_contract = (reviewer_material.get("response_format_id")
+                         if isinstance(reviewer_material, Mapping) else None)
+    if reviewer_contract == "saea-slot-review-handoff-v1":
+        if ceiling != 13 or contract is not None or level is not None:
+            raise ConsumptionModuleConfigError(
+                "Reviewer handoff contract requires the registered uncited 13-contact phase shape"
+            )
+        program_id = "phase-native-slot-review-contract-v1"
     if program_id is None:
         if contract is not None:
             raise ConsumptionModuleConfigError(
