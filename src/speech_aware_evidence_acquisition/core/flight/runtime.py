@@ -11137,14 +11137,23 @@ class FlightRuntime:
                         error_type=FlightRuntimeError,
                     )
                 if delivery.kind == "abstention":
-                    from ..delivery import native_abstention_records
+                    from ..delivery import (
+                        native_abstention_records, native_seal_refusal_abstention_records,
+                    )
 
                     if sources[0].final_response_text != "":
                         raise FlightRuntimeError("native abstention must deliver empty text")
-                    derived_id, request_document, response_document = native_abstention_records(
-                        sample_id=sample_id, source_contact=contact,
-                        finish_reason=delivery.terminal_disposition["finish_reason"],
-                    )
+                    disposition = delivery.terminal_disposition
+                    if disposition["reason"] == "seal_refusal":
+                        derived_id, request_document, response_document = native_seal_refusal_abstention_records(
+                            sample_id=sample_id, source_contact=contact,
+                            seal_refusal=disposition["seal_refusal"],
+                        )
+                    else:
+                        derived_id, request_document, response_document = native_abstention_records(
+                            sample_id=sample_id, source_contact=contact,
+                            finish_reason=disposition["finish_reason"],
+                        )
                     derived_output_fields = {
                         "request_id": derived_id,
                         "request_sha256": request_document["payload_sha256"],

@@ -1,0 +1,50 @@
+{
+  "schema": "saea-engineering-continuation-v1",
+  "recorded_at": "2026-10-02T03:13:30Z",
+  "author": "ChatGPT root",
+  "kind": "offline-native-branch-and-terminal-custody-repair",
+  "base_commit": "9b89fa287d075edcd32787fb9aee2eb14f27dead",
+  "report": "docs/readiness/2026-10-02-earnings-native-branches-v1.md",
+  "new_test": "tests/unit/test_earnings_native_branch_integration.py",
+  "carrier_profiles": [
+    "earnings21-original",
+    "earnings22-original"
+  ],
+  "new_test_count": 20,
+  "completed_synthetic_window_trajectories": 36,
+  "expected_strict_refusals": 2,
+  "validation": {
+    "execution_regression_passed": 359,
+    "custody_scope_feedback_regression_passed": 131,
+    "changed_executable_lines": 18,
+    "changed_executable_lines_covered": 18,
+    "engineering_base": "PASS",
+    "openjiuwen_native_reuse": "PASS",
+    "finite_completion_policy": "PASS",
+    "changed_file_ruff": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0
+  },
+  "scientific_results_read": false,
+  "active_worker_unchanged": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-update1-flight-v1",
+    "commit": "2f07dd3d6f52eee79d24243c40a0dff195260816"
+  },
+  "dispatch_authority_added": false,
+  "limitations": [
+    "Synthetic dataset loading, knowledge, speech and model responses; no acoustic or effectiveness evidence.",
+    "Changed-line coverage does not claim whole-module or whole-repository coverage.",
+    "The new system-text search remains registered for SLURP only.",
+    "Held carriers and exact complete-family read gates remain unchanged."
+  ],
+  "file_sha256": {
+    "src/speech_aware_evidence_acquisition/rails/runner.py": "138b72f339c8bc65b994dabf6d5f491b0e7d41b77cd8d51aee763074472ac195",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "8fae1683633468d8e46ad4935c0abf158bff7cce4eedaabd33405d5b5f9b9158",
+    "tests/unit/test_earnings_native_branch_integration.py": "af3b468ba5e1540ed79c815bc00849a407e8226c088e50bd27aac12d3d40480f"
+  }
+}

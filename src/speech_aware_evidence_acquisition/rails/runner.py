@@ -3795,7 +3795,32 @@ async def _invoke_native_role_episode(
             )
         if before is None or plan is None or request.context.agent_contact_id != plan.contact_id:
             raise RailsRunnerError("native completion lost its actual speech contact")
+        # Count every actual completion before interpreting or sealing its text.
+        # A contract refusal still spent this contact, although its answer must
+        # never enter the pending/completed delivery state below.
+        slot_id = visits[request.role_id]["slot_id"]
+        visits[request.role_id]["model_contacts"] += 1
+        state.contacts.append(AgentContactRecord(
+            plan=plan, query_state_sha256=before.query_state.content_hash(),
+            speech_packet_sha256=before.query_state.speech_packet_sha256,
+            slot_id=slot_id, response_sha256=completion.response_text_sha256,
+        ))
+        state.response_sha256s.append(completion.response_text_sha256)
         state_content, cited_value_ids = completion.text, ()
+        empty_solver_completion = (
+            request.role_id == config.role("solver").phase_id
+            and not completion.tool_calls and not completion.text.strip()
+        )
+        if empty_solver_completion:
+            if completion.finish_reason == "stop":
+                # A source-bound empty answer is a completion-contract refusal,
+                # not an infrastructure failure. The existing finite-completion
+                # policy decides whether to retain the prior Solver or abstain;
+                # strict configurations still raise. Never fabricate answer text.
+                refusal = RailsRunnerError("Solver completion contains no answer text")
+                refusal.seal_refusal_completion = completion
+                refusal.seal_refusal_role_id = request.role_id
+                raise refusal
         citation = citation_contacts.get(plan.contact_id)
         if citation is not None:
             # Gap G1 plumbing (``rails.solver_citation``): the sealed state is
@@ -3842,6 +3867,10 @@ async def _invoke_native_role_episode(
             from .review_handoff import normalize_review_handoff
 
             state_content = normalize_review_handoff(completion.text)
+        if empty_solver_completion:
+            # Preserve the raw empty response hash while allowing the later wire
+            # projection to apply its existing non-stop completion disposition.
+            state_content = '{"schema":"saea-empty-phase-response-v1","response_text":""}'
         source = seal_phase_response_state(
             phase_name=request.role_id, sample_id=before.sample_id,
             state_content=state_content, raw_response_text=completion.text,
@@ -3895,14 +3924,6 @@ async def _invoke_native_role_episode(
                 record["role_kind"]
             ).as_json()
             knowledge_index_records.append(row)
-        slot_id = visits[request.role_id]["slot_id"]
-        visits[request.role_id]["model_contacts"] += 1
-        state.contacts.append(AgentContactRecord(
-            plan=plan, query_state_sha256=before.query_state.content_hash(),
-            speech_packet_sha256=before.query_state.speech_packet_sha256,
-            slot_id=slot_id, response_sha256=completion.response_text_sha256,
-        ))
-        state.response_sha256s.append(completion.response_text_sha256)
         completed[completion.agent_contact_id] = completion
         pending.update(
             completion=completion, source=source, context=before, plan=plan,

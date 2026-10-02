@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Offline native-branch repair: 2026-10-02T03:13:30Z, ChatGPT root
+
+The actual Earnings21/Earnings22 runtime-adapter and window paths now have a synthetic proof of ACCEPT, revision, nonempty/empty acquisition, exhaustion and abstention through the shared FlightRuntime/OpenJiuwen executor. It reproduced an empty-Solver sealing failure, missing refused-contact accounting and the wrong canonical abstention derivation. The prospective repair preserves raw response custody, the existing finite-completion policy and strict refusal. The 490 related tests, including 20 new tests, pass; all 18 changed executable lines are covered. See [engineering evidence](../readiness/2026-10-02-earnings-native-branches-v1.md). No model, tokenizer, scorer or scientific-result contact was added.
+
+The active SLURP update1 worker at2f07dd3d6 remains frozen and unchanged. At03:10:23Z L-parent was OPENED with781 actual model contacts; the other four original members had not started, STOP was absent and Windows free memory was13.30GiB. Contacts are not completed-row counts. The five-member READ stays unsigned until complete-family finalization/scoring. This repair does not authorize retries, in-flight executor replacement or held-carrier launches. The new system-text search remains SLURP-registered; cross-carrier optimization still needs its own source/metric/admission bindings.
+
 ## Update1 launched: 2026-10-02T02:54:34.214252+00:00, ChatGPT root
 
 Windows task SAEA-Batch-Driver launched the original five-member update1 family at02:50:09Z (campaign02:50:12Z), frozen worker `/home/chao/saea-worktrees/codex-system-text-update1-flight-v1` at2f07dd3d6f52eee79d24243c40a0dff195260816. L-parent is OPENED with62 recorded model contacts at this checkpoint; L-parent-AA, B-parent, B-parent-AA and B-candidate-2 are queued. This is operational execution, not a quality result. Inspect all five, not only the outer queue representative.
