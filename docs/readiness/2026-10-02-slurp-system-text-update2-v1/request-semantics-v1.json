@@ -1,0 +1,15 @@
+{
+  "schema": "saea-system-text-request-semantics-v1",
+  "projection": "Hash actual role text bytes instead of content-addressed paths; omit only FIT identity and descriptive what_this_is.",
+  "members": {
+    "L-parent": "b72fe61f27673d93db13efed2f4629d47f5416b96e72cf55107a889326075c6b",
+    "L-parent-aa": "b72fe61f27673d93db13efed2f4629d47f5416b96e72cf55107a889326075c6b",
+    "L-candidate-1": "b72fe61f27673d93db13efed2f4629d47f5416b96e72cf55107a889326075c6b",
+    "L-candidate-2": "b72fe61f27673d93db13efed2f4629d47f5416b96e72cf55107a889326075c6b",
+    "B-parent": "b72fe61f27673d93db13efed2f4629d47f5416b96e72cf55107a889326075c6b",
+    "B-parent-aa": "b72fe61f27673d93db13efed2f4629d47f5416b96e72cf55107a889326075c6b",
+    "B-candidate-1": "8cdc7f98c03023d84eac42085671e60db74d908c65ab6184732be42f1d7a1733",
+    "B-candidate-2": "1a59dbc37ba6283532e199ac93991a848da15fdf01ec768f305c5c21c1d01882"
+  },
+  "distinct_request_configurations": 3
+}

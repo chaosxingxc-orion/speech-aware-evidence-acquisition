@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round-two proposals complete: 2026-10-02T09:31:50.787952+00:00, ChatGPT root
+
+All four original allocations completed with full metering, six provider contacts,17303 input and2639 output tokens. L-2-1/L-2-2 choose no-change; B-2-1/B-2-2 propose Solver-text revisions. All four compile with cumulative-source isolation against update2. No construction call is required. See [completion and immutable custody](../receipts/continuation/2026-10-02-system-text-round2-proposer-complete.json).
+
+No-change slots stay spent and evaluated. The exact prospective eight-member family contains both parent/A/A pairs and all four candidates,3200 full trajectories. It remains HELD for own supplies, three distinct request-semantics capacity proofs, family registration and root admission. No new GPU generation or scorer started. No efficacy or feedback-learning gain is claimed; other carrier holds remain.
+
 ## Original round-two proposer launch: 2026-10-02T09:19:03.795666+00:00, ChatGPT root
 
 Windows task SAEA-System-Text-Proposer-Round2-Owner217 started the four original L-2-1/B-2-1/L-2-2/B-2-2 allocations at09:16:28Z. Process298440 started09:16:43.969382Z on frozen70c75b98a89a37be695dbf3c5f9e2c53aa7b8b86; first check saw one preregistered contact. See [launch identity](../receipts/continuation/2026-10-02-system-text-round2-proposer-launch.json) and its pinned registration. Revalidate live identity; this is a launch observation, not completion.
@@ -441,7 +447,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T09:19:03.795666+00:00
+Last refreshed: 2026-10-02T09:31:50.787952+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

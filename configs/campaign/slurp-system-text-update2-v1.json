@@ -1,0 +1,37 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-native-stage3-system-text-update2-l-parent-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-l-parent-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-update2-l-parent-aa-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-l-parent-aa-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-update2-l-candidate-1-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-l-candidate-1-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-update2-l-candidate-2-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-l-candidate-2-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-update2-b-parent-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-b-parent-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-update2-b-parent-aa-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-b-parent-aa-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-update2-b-candidate-1-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-b-candidate-1-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-update2-b-candidate-2-v1",
+      "experiment": "slurp-native-stage3-system-text-update2-b-candidate-2-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

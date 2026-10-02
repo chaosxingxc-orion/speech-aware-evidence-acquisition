@@ -11,7 +11,7 @@
       "dataset_fragment": "slurp-speech-native-system-text-update-2-400-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Prospective fixed blind-branch seed/A/A only. Await complete update1 READ, remaining update2 proposals, exact complete-family registration, own supply preparation, actual full-request FIT, frozen-worker source validation and fresh root admission. No execution authority or parent selection from this preparation.",
+        "reason": "Original registered update2 full-system member. Await own supply, exact family freeze, maximum-request FIT and root admission. No generation authority from compilation.",
         "requirements": [],
         "state": "held"
       },
@@ -450,7 +450,7 @@
   "split_id": "SLURP-SYSTEM-TEXT-UPDATE-2-400-V1",
   "stage3_algorithm": {
     "id": "system-text-black-box-v1",
-    "note": "Prospective fixed seed/A/A of the feedback-blind branch in update2. No update1 or other branch outcome was read or used to select this fixed system.",
+    "note": "Original update2 full-system comparison. Both no-change learning proposals retain their original evaluation slots; no replacement or outcome-based exclusion.",
     "operators_used": [
       "rollout",
       "scoring"

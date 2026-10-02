@@ -1,0 +1,56 @@
+{
+  "contacts_added": 0,
+  "members": [
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update2-l-parent-v1",
+      "member": "L-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1"
+    },
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update2-l-parent-aa-v1",
+      "member": "L-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1"
+    },
+    {
+      "bundle_id": "2d18e6e9a4a5b236bb6da35d90e95078e65be6a1ee3a45187396f1ecbc94daa5",
+      "experiment": "slurp-native-stage3-system-text-update2-l-candidate-1-v1",
+      "member": "L-candidate-1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1"
+    },
+    {
+      "bundle_id": "fa7e7b9e46db4d43ab246b5761576e4e3046854b1168c3fbaedca58b5794dfea",
+      "experiment": "slurp-native-stage3-system-text-update2-l-candidate-2-v1",
+      "member": "L-candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1"
+    },
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update2-b-parent-v1",
+      "member": "B-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1"
+    },
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update2-b-parent-aa-v1",
+      "member": "B-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1"
+    },
+    {
+      "bundle_id": "9652aa381a37280d5e5231e2875f89a95bf9c7587e1cd997dce924b9abe730b6",
+      "experiment": "slurp-native-stage3-system-text-update2-b-candidate-1-v1",
+      "member": "B-candidate-1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1"
+    },
+    {
+      "bundle_id": "ef50b59dd95fc48238e62115e211fe3890c5e9e50c05b36002959db7cdba637e",
+      "experiment": "slurp-native-stage3-system-text-update2-b-candidate-2-v1",
+      "member": "B-candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-2-V1"
+    }
+  ],
+  "schema": "saea-system-text-prospective-members-v1",
+  "status": "HELD",
+  "trajectory_cap": 3200
+}

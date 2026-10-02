@@ -1,0 +1,110 @@
+{
+  "finished": {
+    "relpath": "coordination/system-text-proposer-round2-owner217-v1/execution/finished.json",
+    "sha256": "fb09114ce50382ce232074229ef5fedbd16164ee80bef3b2f913d5b02b046d46"
+  },
+  "finished_at": "2026-10-02T09:19:48.638402+00:00",
+  "input_tokens": 17303,
+  "knowledge_construction_contacts": 0,
+  "model_version": "gpt-6-astra",
+  "notes": [
+    "Both learning proposals explicitly choose no-change after the indexed summary; do not claim they inspected individual trajectories.",
+    "Both blind proposals change only Solver consumption text. No efficacy inference before evaluation.",
+    "All four are valid and remain in the original eight-member update2 family. Compilation verifies exact cohort and cumulative utterance disjointness.",
+    "Two pre-publication compiler invocations refused incorrect roster/seed CLI selections. No compilation was published and no contact occurred until the registered inputs were selected."
+  ],
+  "observed_at": "2026-10-02T09:31:50.787952+00:00",
+  "original_slots_consumed": 4,
+  "outcomes": [
+    {
+      "changes": [],
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/L-2-1.json",
+        "sha256": "83f92b97d933f69a7f8d835f636d8de0d60c37d7cc5092039976e347585d0163"
+      },
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/L-2-1.json",
+        "sha256": "2c45aea2ae40409c18b96ab80a64958751e819eb0dd859134460b024b034c4f2"
+      },
+      "input_tokens": 3052,
+      "key": "L-2-1",
+      "output_tokens": 362,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/L-2-1.json",
+        "sha256": "3d6fa2d2055f1eb684b66f356199660b4d487aef69deee22b26f09fc8a027aa7"
+      },
+      "status": "no-change"
+    },
+    {
+      "changes": [],
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/L-2-2.json",
+        "sha256": "9b3f6e97f02670b4f7e2236193d62dd2262a8e6d48add80c9261bb79c0df6883"
+      },
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/L-2-2.json",
+        "sha256": "03e3cbc75e4ad7aadfdfc5f96cefc8941ed1a37f69befdb27a50a3beba3a3ac5"
+      },
+      "input_tokens": 3039,
+      "key": "L-2-2",
+      "output_tokens": 399,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/L-2-2.json",
+        "sha256": "27b32eee41b42bd2fd1b2772f25d9a2936b05b296f30ce045254bc4197159b04"
+      },
+      "status": "no-change"
+    },
+    {
+      "changes": [
+        "role_text"
+      ],
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/B-2-1.json",
+        "sha256": "975983ea7b52c3617552f6a6a6603714d98cfb46ce3d8c262513221758eaeebe"
+      },
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/B-2-1.json",
+        "sha256": "80b8e0936b3c1beb6d1f56b719ef3f9b540c0e8c105eaa59c725168841a1f6f0"
+      },
+      "input_tokens": 5600,
+      "key": "B-2-1",
+      "output_tokens": 930,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/B-2-1.json",
+        "sha256": "b418c0b20616109e13d4c03d8a5dd4a31e3d70b6b64dc3d289f27a8a2b051590"
+      },
+      "status": "provisional"
+    },
+    {
+      "changes": [
+        "role_text"
+      ],
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/B-2-2.json",
+        "sha256": "f141f8734012922635e07ec24b7748e774bb5225976e788dfabbab5646cc0706"
+      },
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/B-2-2.json",
+        "sha256": "d6cf0e46ac4ec320ea023ce4c56dd9914a08bd39886b120e6ed067b01aa2b31e"
+      },
+      "input_tokens": 5612,
+      "key": "B-2-2",
+      "output_tokens": 948,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/B-2-2.json",
+        "sha256": "cfa9c763515aec4021fa4abf7a8ddfb89428a2c5388af23ef628ab5d77743d52"
+      },
+      "status": "provisional"
+    }
+  ],
+  "output_tokens": 2639,
+  "owner_decisions": [
+    214,
+    215,
+    217
+  ],
+  "provider_contacts": 6,
+  "replacement_contacts": 0,
+  "runtime_admission": "pending",
+  "schema": "saea-system-text-round2-proposer-complete-v1"
+}
