@@ -1,0 +1,58 @@
+{
+  "at_utc": "2026-10-02T14:03:47.642725+00:00",
+  "cache_audit": {
+    "gguf_file_mappings": 2,
+    "large_cache_attribution": "Weight-backed OS page cache; do not equate cache with an active orphan worker. No claim about exact resident fraction.",
+    "lazy_knowledge_rewrite_deferred": "The14.5MiB source snapshots do not warrant changing this frozen scientific runtime to address tens of GiB of file cache.",
+    "phase_supply_bytes": 24419,
+    "server_extra_prompt_cache_ram": 0,
+    "snapshot_bytes": [
+      509316,
+      723611,
+      13924980
+    ]
+  },
+  "consecutive_start_samples": 3,
+  "continuation_approved": false,
+  "frozen_worker": {
+    "clean": true,
+    "commit": "62b487e9be02b6c9e63379957f2275a640646ddc",
+    "path": "/home/chao/saea-worktrees/codex-system-text-pilot20-memory-owner221-v1"
+  },
+  "live_control_hashes_unchanged": true,
+  "model_contacts": 0,
+  "partial_task_quality_read": false,
+  "precontact_wait_limit_seconds": 600,
+  "registration": {
+    "blocking": 0,
+    "evidence": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/owner221-preparation-v1/registration.out",
+      "sha256": "2a76648f9732029993c6d8836be4e308ae7df6a4cfbc255470d4641f052211f0"
+    },
+    "exit_code": 0,
+    "historical_tuning_alias_advisories": 7
+  },
+  "remaining_attempts_absent": true,
+  "remaining_queue": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-policy/docs/readiness/2026-10-02-slurp-pilot20-startup-wait-v1/remaining-seven-queue-v1.json",
+    "sha256": "01c739af57aca84a5ce98f14bddbec2002db6a424ab29d89781ea63831686ad7"
+  },
+  "resource_amendment_approved": true,
+  "runtime_floor_gib": 8,
+  "schema": "saea-owner221-memory-continuation-preparation-v1",
+  "scientific_source_comparison": {
+    "base_commit": "4101a4925e604d48921bac7d8e995216282264de",
+    "changed_src_or_config_paths": [
+      "src/speech_aware_evidence_acquisition/core/flight/process_guard.py"
+    ],
+    "controller_runtime_scorer_and_all_configs_identical": true
+  },
+  "score_jobs": 0,
+  "seven_frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/owner221-preparation-v1/frozen-checks.json",
+    "sha256": "2b657a63e74b2e054c3f667e8699c6cdbe268ec4bef5041a70c5407214051e1f"
+  },
+  "startup_gib": 12.5,
+  "status": "READY_FOR_EXACT_OWNER_STOP_DISPOSITION",
+  "tokenizer_contacts": 0
+}

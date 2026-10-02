@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner221 continuation preparation verified: 2026-10-02T14:03:47.642725+00:00
+
+All seven remaining20-row members pass clean frozen model-free checks on /home/chao/saea-worktrees/codex-system-text-pilot20-memory-owner221-v1 at62b487e9be02b6c9e63379957f2275a640646ddc. Registration has0 blocking findings and7 unchanged historical tuning-alias advisories. Every remaining attempt is absent. Relative to original4101a4925, the only source/config change is the operational process guard; model-facing runtime, controller, scorer and all configs are byte-identical. See [readiness receipt](../receipts/continuation/2026-10-02-pilot20-owner221-ready.json).
+
+Owner221 already approves8GiB Windows reserve and disk-backed on-demand loading. The prepared queue uses8GiB running/12.5GiB startup and bounded stable-memory waiting. The exact13:35:56Z STOP disposition/remaining-seven continuation remains pending. Actual STOP, queue, status and source pins are hash-unchanged; do not dispatch automatically. First L-parent stays FINALIZED; full-family READ stays unsigned. Knowledge snapshots total14.5MiB and model weights already have file-backed mappings with extra RAM prompt caching disabled, so no speculative knowledge-storage rewrite is inserted into this comparison.
+
 ## Owner221 memory amendment and stopped pilot: 2026-10-02T13:57:48.127231+00:00
 
 The20-row pilot stopped13:35:56Z before its second worker was created. The first L-parent independently FINALIZED20 rows with a verified seal and one official score; seven siblings have no attempts. Its running observations stayed above10GiB. Second-member startup observed14.075386GiB below the then-required14.5GiB and exited125. Windows free memory later recovered15.7933GiB; no live campaign/scorer remained. Do not attribute the fluctuation to a residual task without evidence. Read [operational evidence](../receipts/continuation/2026-10-02-pilot20-precontact-memory-stop.json). No partial scientific feedback was read.

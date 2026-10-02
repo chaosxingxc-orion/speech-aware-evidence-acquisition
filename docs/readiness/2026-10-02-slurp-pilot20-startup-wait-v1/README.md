@@ -36,3 +36,9 @@ The live decoder process explicitly uses `--cache-ram 0` and `--no-cache-idle-sl
 The new observer, actual batch-shell routing and original process supervisor pass74 tests, with95% scoped statement coverage (observer97%, process guard94%). Tests cover the exact14.08GiB-to-ready transition, consecutive-sample resets, bounded expiry, STOP preservation, malformed/stale observations,8GiB acceptance versus7.99GiB refusal, unchanged default10GiB behavior, owned-child termination and no retry. The prior test failures demonstrated the missing waiting path and refusal of the newly approved8GiB policy before implementation. Engineering-base, lint and shell checks are rerun after final edits; no model or scorer is involved.
 
 The prospective unsigned READ row's split role is corrected from construction to discovery to match TRAIN evaluation in the shared read gate. Its root signature is still absent. This clerical correction does not grant reading permission or optimizer exposure; the original frozen row is preserved.
+
+## Exact clean preparation
+
+All seven clean frozen model-free checks pass on `62b487e9be02b6c9e63379957f2275a640646ddc`; registration has zero blocking findings and seven historical tuning-alias advisories. Every unstarted attempt is absent and original live control hashes are unchanged. Runtime/controller/scorer and configs are byte-identical to the first member. The only changed source file is the operational process guard. The [final preparation receipt](../../receipts/continuation/2026-10-02-pilot20-owner221-ready.json) binds the frozen source and logs. This does not dispose of the STOP or grant automatic launch.
+
+The three knowledge snapshots total15157907 bytes (about14.5MiB); their eager parser is not evidence for tens of GiB of memory use. Preserve this scientific runtime now and prioritize local file-backed weights, bounded per-member lifetime and explicit resource headroom. A speculative indexed-store rewrite is deferred.
