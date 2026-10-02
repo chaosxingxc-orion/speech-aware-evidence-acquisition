@@ -9,11 +9,15 @@ from speech_aware_evidence_acquisition.core.flight.lease import WorkerExecutionP
 from speech_aware_evidence_acquisition.analysis.native_graph_capacity import fit_native_graph
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ("repo-root", "data-root", "runtime-root", "lock-path", "experiment", "output", "lease-token-file", "expected-session-id", "graph-experiment"):
         parser.add_argument("--" + key, required=True)
-    args = parser.parse_args()
+    parser.add_argument("--contact-cap", type=int, default=2048,
+                        help="Exact separately registered tokenizer endpoint ceiling.")
+    args = parser.parse_args(argv)
+    if args.contact_cap < 1:
+        parser.error("--contact-cap must be positive")
     repo, data = Path(args.repo_root), Path(args.data_root)
     cells = load_campaign_cells(repo, args.experiment)
     if len(cells) != 1:
@@ -43,7 +47,7 @@ def main():
             dataset=source.document["dataset_fragment"], baseline=source.document["baseline_fragment"],
             experiment=args.graph_experiment, run_id=source.run_id, attempt_id=source.attempt_id,
             runtime_root=Path(args.runtime_root), lock_path=Path(args.lock_path), campaign_active=False)
-    result = fit_native_graph(runtime, output, policy=policy, graph_factory=graph_factory, contact_cap=2048)
+    result = fit_native_graph(runtime, output, policy=policy, graph_factory=graph_factory, contact_cap=args.contact_cap)
     print(json.dumps(result, sort_keys=True))
     measured = json.loads(output.read_text())["output"]
     print(json.dumps(measured, sort_keys=True))

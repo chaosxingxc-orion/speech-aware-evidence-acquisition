@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Fixed400 recovery prepared offline, 2026-10-02T18:35:03.146039+00:00
+
+Five prospective corrected-seed configurations are HELD with actual policy bindings. Shared-runtime warm checks pass for seed, A/A and four-row engineering. Seed/A/A knowledge supply content matches the existing first20 byte-for-byte; no data, knowledge, query/vote or speech packet rebuild. The separate capacity launcher now accepts the exact297-endpoint ceiling, preserving normal plan/exposure gates. [Prepared identities, draft plans and validation](../readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/README.md).
+
+Offline regression151 pass/one existing optional smoke skip; extended CLI six tests pass,87% statement coverage; lint/base/harness pass. All five named launch checks correctly refuse HELD/missing registration. No new model, tokenizer, scorer or proposer contacts, attempts, official scores, queue/control edits or quality reads. The old incident controls remain byte-identical. Service healthy idle, Windows free18.71GiB at this check; expected idleness is not an outage.
+
+Owner225 remains PENDING, already asked. Explicit ruling, new exact family/exposure admission, clean frozen checks and real corrected-seed capacity/engineering are still required. The original two candidate identities have never started; preserve them and both old malformed comparators. Continue only the proposed four-member20 comparison if approved, not eight full400 groups. All other holds remain.
+
 ## Fixed400 comparison stopped: seed bundle binding defect, 2026-10-02T18:11:12.161360+00:00
 
 Root set a boundary STOP at17:57:30Z after operational metadata showed all20 seed rows ended with planner_action_illegal. The A/A finished17:59:05Z with the same20-row control defect; the driver stopped17:59:26Z before creating either candidate attempt. Both completed comparators have80 contacts and one official score each, but this is an incomplete and incorrectly bound comparison, not scientific evidence. All quality remains unread and the READ is unsigned. [Incident and exact custody](../receipts/continuation/2026-10-02-fixed400-context20-seed-binding-stop.json).
@@ -623,7 +631,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T16:33:56.281090+00:00
+Last refreshed: 2026-10-02T18:35:03.146039+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

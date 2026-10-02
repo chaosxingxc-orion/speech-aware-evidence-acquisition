@@ -1,0 +1,91 @@
+{
+  "at": "2026-10-02T18:35:03.146039+00:00",
+  "checks": {
+    "all_actual_role_bindings": "PASS",
+    "engineering_base": "PASS",
+    "experiment_handoff": "No errors; execution authority not evaluated and launch_allowed false",
+    "finite_completion_policy": "PASS",
+    "git_diff_check": "PASS",
+    "handoff_freshness": "PASS",
+    "harness_admission": "PASS",
+    "prepared_receipt_warm_checks": 3,
+    "ruff": "PASS"
+  },
+  "data_knowledge_query_vote_audio_rebuilt": false,
+  "dispatch_authority": false,
+  "generation_tokenizer_scorer_contacts_added": 0,
+  "launch_gate": {
+    "cells": [
+      {
+        "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-v1",
+        "findings": [
+          "not-ready",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "missing-row",
+          "missing-row",
+          "no-package"
+        ],
+        "state": "held"
+      },
+      {
+        "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-v1",
+        "findings": [
+          "not-ready",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "missing-row",
+          "missing-row",
+          "no-package"
+        ],
+        "state": "held"
+      },
+      {
+        "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-v1",
+        "findings": [
+          "not-ready",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "tuning-roster-unverified",
+          "missing-row",
+          "missing-row",
+          "no-package"
+        ],
+        "state": "held"
+      },
+      {
+        "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-capacity-recovery1-v1",
+        "findings": [
+          "not-ready",
+          "missing-row",
+          "no-package"
+        ],
+        "state": "held"
+      },
+      {
+        "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-graph-recovery1-v1",
+        "findings": [
+          "not-ready",
+          "missing-row",
+          "no-package"
+        ],
+        "state": "held"
+      }
+    ],
+    "expected_refusal": true
+  },
+  "owner225_status": "PENDING",
+  "remaining": "Owner225 ruling, exact new family and exposure registration/admission, frozen worker checks, corrected seed297-endpoint actual capacity and four-row engineering, then only the proposed80-trajectory comparison. No dispatch authority is implied by this proof.",
+  "schema": "saea-held-preparation-validation-v1",
+  "seed_and_aa_supply_output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+  "tests": {
+    "capacity_cli_passed_after_final_test_extension": 6,
+    "coverage_capacity_cli_statement_percent": 86.95652173913044,
+    "regression_passed": 151,
+    "regression_skipped": 1
+  }
+}

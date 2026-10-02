@@ -1,0 +1,156 @@
+{
+  "at": "2026-10-02T18:19:50.067919+00:00",
+  "candidate_disposition": "Original never-started candidate run/attempt/baseline identities remain unchanged. Rebind their prospective mutable registration and exact new family READ only after approval; do not alter original frozen checkout or any outputs.",
+  "contacts_added": 0,
+  "control_mutations": false,
+  "data_rebuilt": false,
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-v1.json",
+        "sha256": "cd0c68d10d6286910b7b7477245e967b8eb43369151289f702ae6a874e282b48"
+      },
+      "binding_verification": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "20ed3b54da59b69144787d343c75720f265ee87e63bfb5cf62105d3070b216a4",
+      "contact_cap": 260,
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-v1.json",
+        "sha256": "4683ce771aab5841313f1bb901d0ba9b36bd19e07c651bfa0efbc47169df974e"
+      },
+      "prepared_supply": {
+        "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "90ef0a930df44f9843d82423a7b5d9d095232afe5d7dcfdb0609443958df4241"
+      },
+      "readiness": "held",
+      "role": "seed",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-v1.json",
+        "sha256": "7c91a025b645044a9a0449880e0c1f2644ec48458f3bd2785dea4bf59ad3e0b3"
+      },
+      "binding_verification": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "edf443fa63be2d234847a666bfd8ea2e84cdce2c5997288784825103474d266e",
+      "contact_cap": 260,
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-v1.json",
+        "sha256": "996a877a150df13822714ec8199307a4c90cd65d646a113cb4b5a638b86c6648"
+      },
+      "prepared_supply": {
+        "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "2665e2c723bb4f024d3bd268c426108baedfe269ca48a4134801c86ba256b506"
+      },
+      "readiness": "held",
+      "role": "seed-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-v1.json",
+        "sha256": "cecd175f8a6570ee45d54e91c581cac4d32be0978a569901142f5302539e837d"
+      },
+      "binding_verification": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "c1a74683fccec92188c1d20db9ff4e6d3c890d4884715fea094ec5ea400c7104",
+      "contact_cap": 52,
+      "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-v1.json",
+        "sha256": "ce3612dbad01f48f265d0a09efcb7e164ff8ac0f93fa7b4648a8c84e19bec3b1"
+      },
+      "prepared_supply": {
+        "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "a56678fa7b40a5e18d90973f12093fa71722aa65f5cbb936cec365e7975ce473"
+      },
+      "readiness": "held",
+      "role": "engineering",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-seed-binding-capacity-recovery1-fit-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-seed-binding-capacity-recovery1-v1.json",
+        "sha256": "62c926464fd2319eadb303856671105d22cef9a8c203052f4ce68a9b9d598f7a"
+      },
+      "binding_verification": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "519f1f75842f9707a28f3b3d9dd1960b2f00429589a426cb4220a215eeb1681f",
+      "contact_cap": 297,
+      "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-capacity-recovery1-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-seed-binding-capacity-recovery1-v1.json",
+        "sha256": "208e6cb8824c7b22b1da606ba5738e0fe72fd3e71ff72aa86301d4cda684f6ae"
+      },
+      "readiness": "held",
+      "role": "capacity",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-CAPACITY-RECOVERY1-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-seed-binding-graph-recovery1-graph-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-seed-binding-graph-recovery1-v1.json",
+        "sha256": "62c926464fd2319eadb303856671105d22cef9a8c203052f4ce68a9b9d598f7a"
+      },
+      "binding_verification": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "7879bd2690af8c5b8d9442833d8152e41a2ff11f919375269d88cfa33098403a",
+      "contact_cap": 0,
+      "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-graph-recovery1-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-seed-binding-graph-recovery1-v1.json",
+        "sha256": "a6e30391f1620685aaa1494f07f9ba18f68992e8105cdb4f17fa7d87cf4b826a"
+      },
+      "readiness": "held",
+      "role": "graph",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-GRAPH-RECOVERY1-V1"
+    }
+  ],
+  "owner225_status": "PENDING",
+  "schema": "saea-fixed400-recovery-held-members-v1"
+}

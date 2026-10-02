@@ -1,0 +1,127 @@
+{
+  "at": "2026-10-02T18:31:40.697904+00:00",
+  "dispatch_authority": false,
+  "no_attempt_or_contact_opened": true,
+  "owner225_status": "PENDING",
+  "plans": [
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 260,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "48d38f1f1e268a9347a4b50fb72f199202ba1c06b4ee535c0740986a0ffacea4",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-v1",
+      "role": "seed",
+      "sample_count": 20,
+      "status": "DRAFT-NOT-AUTHORIZED",
+      "warm_prepared_receipt": {
+        "cache": "warm",
+        "contact_class": "model-free",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "90ef0a930df44f9843d82423a7b5d9d095232afe5d7dcfdb0609443958df4241"
+      }
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 260,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "4f803bcd2b66201a240e4e236d3b1a4a31eae733b28453c519f8159e76fe36c7",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-v1",
+      "role": "seed-aa",
+      "sample_count": 20,
+      "status": "DRAFT-NOT-AUTHORIZED",
+      "warm_prepared_receipt": {
+        "cache": "warm",
+        "contact_class": "model-free",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "2665e2c723bb4f024d3bd268c426108baedfe269ca48a4134801c86ba256b506"
+      }
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 52,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "0df33f1f312d3d5ad3b2c1a6a76a2064ade4651545b8906e564a5ad9f3b75123",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-v1",
+      "role": "engineering",
+      "sample_count": 4,
+      "status": "DRAFT-NOT-AUTHORIZED",
+      "warm_prepared_receipt": {
+        "cache": "warm",
+        "contact_class": "model-free",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "a56678fa7b40a5e18d90973f12093fa71722aa65f5cbb936cec365e7975ce473"
+      }
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-seed-binding-capacity-recovery1-fit-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 297,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "13dadb3ca84e2ec2429769bae99605ab2b83bac8f328136c39fcd2a8f8a5a4f2",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-CAPACITY-RECOVERY1-FIT-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-capacity-recovery1-v1",
+      "role": "capacity",
+      "sample_count": 20,
+      "status": "DRAFT-NOT-AUTHORIZED"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-seed-binding-graph-recovery1-graph-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 297,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "c70877da5d701b4574f5712f76f14b4ca61053dc12ac466689a494e504108ace",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-GRAPH-RECOVERY1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-system-text-fixed400-seed-binding-graph-recovery1-v1",
+      "role": "graph",
+      "sample_count": 4,
+      "status": "DRAFT-NOT-AUTHORIZED"
+    }
+  ],
+  "schema": "saea-prospective-recovery-plans-v1"
+}
