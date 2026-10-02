@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update2 precontact preparation correction: 2026-10-02T10:11:28.508721+00:00, ChatGPT root
+
+A model-free frozen preflight refused L-parent before any attempt/contact: allowed_execution_stages was changed after supply preparation. Root used the existing tested repin utility to rebuild eight new own supply versions with exact output equality. All original supplies, frozen e56ff4019 and failed check remain immutable. No generation/scorer/proposal retry occurred. See [correction, successor registration and pending final checks](../readiness/2026-10-02-slurp-system-text-update2-flight-v2/README.md).
+
+The eight-member3200-trajectory design, policy bundles, original proposal allocations, cohort and budgets are unchanged. The create-only successor stage changes only prospective config hashes; original stage retained. Three current capacity proofs remain applicable because no model-facing text, knowledge or runtime code changed. READ remains unsigned. Final frozen preflight and live resource checks still precede dispatch; no queue was changed.
+
 ## Update2 capacity and admission: 2026-10-02T09:54:34.346945+00:00, ChatGPT root
 
 All three exact request configurations pass132 native request measurements and891 guarded tokenizer endpoints, zero task-generation/scorer contacts. Maximum required17152 includes the full512 completion allowance; remaining margin5376 after the additional2048 reserve. See [capacity evidence](../receipts/continuation/2026-10-02-system-text-update2-capacity-complete.json). Existing real CONTROL2 branch proof is reused because only Solver text changes; current synthetic graph proof covers refusal, empty/nonempty lookup and revised delivery. Every real request still needs exact FIT.
@@ -453,7 +459,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T09:54:34.346945+00:00
+Last refreshed: 2026-10-02T10:11:28.508721+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

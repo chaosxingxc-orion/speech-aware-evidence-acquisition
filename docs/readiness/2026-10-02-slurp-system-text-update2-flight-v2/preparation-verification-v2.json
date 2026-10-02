@@ -1,0 +1,21 @@
+{
+  "advisory_cells": [
+    "slurp-native-stage3-system-text-update2-l-parent-v1",
+    "slurp-native-stage3-system-text-update2-l-parent-aa-v1",
+    "slurp-native-stage3-system-text-update2-l-candidate-1-v1",
+    "slurp-native-stage3-system-text-update2-l-candidate-2-v1",
+    "slurp-native-stage3-system-text-update2-b-parent-v1",
+    "slurp-native-stage3-system-text-update2-b-parent-aa-v1",
+    "slurp-native-stage3-system-text-update2-b-candidate-1-v1",
+    "slurp-native-stage3-system-text-update2-b-candidate-2-v1"
+  ],
+  "at_utc": "2026-10-02T10:15:19.338934+00:00",
+  "blocking_cells": [],
+  "member_count": 8,
+  "model_contacts": 0,
+  "prepared_artifacts_current": true,
+  "registration_passed": true,
+  "schema": "saea-update2-final-preparation-verification-v1",
+  "scorer_contacts": 0,
+  "source": "shared assert_prepared_artifacts_current after final legal-stage and admission pins; frozen preflight still required"
+}

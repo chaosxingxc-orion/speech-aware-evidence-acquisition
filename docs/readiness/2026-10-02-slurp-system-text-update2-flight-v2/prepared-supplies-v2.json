@@ -1,0 +1,38 @@
+{
+  "members": {
+    "B-candidate-1": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1/phase-supply-v2.json",
+      "sha256": "532694f776c3dabdb139eda8110d903114f74291a6d824a681b25153d663ded2"
+    },
+    "B-candidate-2": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-2-V1/phase-supply-v2.json",
+      "sha256": "e9e280dd9958c79ccafc93789f6aaa2769a24162f8f4eab053f384c7b09694bc"
+    },
+    "B-parent": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1/phase-supply-v2.json",
+      "sha256": "66ff9a2aade99fc213d5eb035f76b741f13aa07cf85e75338eb926268ffee8ee"
+    },
+    "B-parent-aa": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1/phase-supply-v2.json",
+      "sha256": "45577981870feed92a8eec30cfa417362c8bbb3e96749f12b41f99f59e8f0ac6"
+    },
+    "L-candidate-1": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1/phase-supply-v2.json",
+      "sha256": "a8232a638dc3840e9718e24d723f6a4b545843e3fbc778ffe08edec205be3179"
+    },
+    "L-candidate-2": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1/phase-supply-v2.json",
+      "sha256": "31169381bd511a529a6b602e98a50ad5a6eafa95f3305bf2c53e7e1a6f6c4b71"
+    },
+    "L-parent": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v2.json",
+      "sha256": "630fdc3789cd48da7b906e674e6814c8a308bf44b4612e47772b650adc439c44"
+    },
+    "L-parent-aa": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1/phase-supply-v2.json",
+      "sha256": "4e60cdede936b3f2b020aed9b00a35a9f6209588579e9166e57f4dc3d4fbd755"
+    }
+  },
+  "output_equivalence": "Existing reviewed repin utility requires exact old/new output equality; original bytes retained.",
+  "schema": "saea-system-text-prepared-supplies-v2"
+}

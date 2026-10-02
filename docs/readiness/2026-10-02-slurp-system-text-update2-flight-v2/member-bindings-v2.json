@@ -1,0 +1,42 @@
+{
+  "B-candidate-1": {
+    "bundle_id": "9652aa381a37280d5e5231e2875f89a95bf9c7587e1cd997dce924b9abe730b6",
+    "config_hash": "bf8fb6a9480b4f842d66a3d0d862573ca64056a5b60cf96e2c204183b4cea766",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1"
+  },
+  "B-candidate-2": {
+    "bundle_id": "ef50b59dd95fc48238e62115e211fe3890c5e9e50c05b36002959db7cdba637e",
+    "config_hash": "a684f0cd553e89a47238e1485431e22f80379bf49f148e96948e1e0d8f64f689",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-2-V1"
+  },
+  "B-parent": {
+    "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+    "config_hash": "6d876d8ab786105a43f840e3bd0c3c396de1a1f9eafd114647987532ea82f8cf",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1"
+  },
+  "B-parent-aa": {
+    "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+    "config_hash": "8885d651d1a275be196d22c096022e27bbd2688c95e555d0a90ef54265d70740",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1"
+  },
+  "L-candidate-1": {
+    "bundle_id": "2d18e6e9a4a5b236bb6da35d90e95078e65be6a1ee3a45187396f1ecbc94daa5",
+    "config_hash": "7587a1414cb2c5f3aabc0808e5b8a853605f40a340832eb4204bc9015e47cff8",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1"
+  },
+  "L-candidate-2": {
+    "bundle_id": "fa7e7b9e46db4d43ab246b5761576e4e3046854b1168c3fbaedca58b5794dfea",
+    "config_hash": "b9bfa617b4585411612113b19ed2e934dfeb0a564a28a498eb91108979240cb0",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1"
+  },
+  "L-parent": {
+    "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+    "config_hash": "088a95c114aa293807b2b09e5c3a9b2848e30d227e7eea7238e085b53482c872",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1"
+  },
+  "L-parent-aa": {
+    "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+    "config_hash": "95b0e94e14d869ed46d5de14271719228e6b974add1f3e5adafdbeaf2f69cc9c",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1"
+  }
+}

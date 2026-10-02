@@ -1,0 +1,253 @@
+{
+  "all_supply_outputs_equal": true,
+  "at_utc": "2026-10-02T10:11:28.508721+00:00",
+  "attempts_opened": 0,
+  "authority": [
+    214,
+    215,
+    217
+  ],
+  "existing_utility_tests_passed": 41,
+  "failed_preflight": {
+    "relpath": "coordination/slurp-system-text-update2-v1/l-parent-preflight-v1.json",
+    "sha256": "cc86ef233e07bbbbd98e963d7015506bfbf85deeaf522b406652883cee061fdf"
+  },
+  "generation_contacts": 0,
+  "implementation_changes": false,
+  "new_stage": {
+    "relpath": "system-text-search/control2-owner217/stages/update-2-precontact-v2.json",
+    "sha256": "5f3cff794a4175a9b90bd14a5b1d03097ec6ebba21908830f5615410fb873479"
+  },
+  "old_commit": "e56ff40199c0e85fc265daded888e946e43b3498",
+  "old_frozen_worker": "/home/chao/saea-worktrees/codex-system-text-update2-flight-v1",
+  "old_stage": {
+    "relpath": "system-text-search/control2-owner217/stages/update-2.json",
+    "sha256": "cd62b95a8325bbb0041f44df560d7fdf6daf33b4eb6bb47df020e16975f3e706"
+  },
+  "repins": {
+    "B-candidate-1": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1/phase-supply-v2.json",
+        "sha256": "532694f776c3dabdb139eda8110d903114f74291a6d824a681b25153d663ded2"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1/phase-supply-v1.json",
+        "sha256": "5ecd32da7bd5daddcf6756a3c6f548b9ea95a2350c67789f0785f9c08c01183a"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    },
+    "B-candidate-2": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-2-V1/phase-supply-v2.json",
+        "sha256": "e9e280dd9958c79ccafc93789f6aaa2769a24162f8f4eab053f384c7b09694bc"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-2-V1/phase-supply-v1.json",
+        "sha256": "065849b3f09e1d34aa794127a988897a9c66022fc041a879dc841fe499ea9c23"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    },
+    "B-parent": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1/phase-supply-v2.json",
+        "sha256": "66ff9a2aade99fc213d5eb035f76b741f13aa07cf85e75338eb926268ffee8ee"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1/phase-supply-v1.json",
+        "sha256": "3aede6d483cd66273350cfe76777e184b3baf507741d3d3c94a27e5b7264291b"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    },
+    "B-parent-aa": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1/phase-supply-v2.json",
+        "sha256": "45577981870feed92a8eec30cfa417362c8bbb3e96749f12b41f99f59e8f0ac6"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1/phase-supply-v1.json",
+        "sha256": "204ccb4ef6e38c5421782861d3659505c950398be89fd1cdbeccaaf144c3e8dd"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    },
+    "L-candidate-1": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1/phase-supply-v2.json",
+        "sha256": "a8232a638dc3840e9718e24d723f6a4b545843e3fbc778ffe08edec205be3179"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1/phase-supply-v1.json",
+        "sha256": "6e9770186efa18d975b3034f5732c91f4d0a4873122596efd74b89eed2698d5e"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    },
+    "L-candidate-2": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1/phase-supply-v2.json",
+        "sha256": "31169381bd511a529a6b602e98a50ad5a6eafa95f3305bf2c53e7e1a6f6c4b71"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1/phase-supply-v1.json",
+        "sha256": "dc57ed68414225e1dd15df4420008a83b7187bc4dc776e0f666edf7fd1412df9"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    },
+    "L-parent": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v2.json",
+        "sha256": "630fdc3789cd48da7b906e674e6814c8a308bf44b4612e47772b650adc439c44"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v1.json",
+        "sha256": "3d2d7e988cc2f5d4600a0690374e305384e0a3d979c26ed3ed3936ea365a95ae"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    },
+    "L-parent-aa": {
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1/phase-supply-v2.json",
+        "sha256": "4e60cdede936b3f2b020aed9b00a35a9f6209588579e9166e57f4dc3d4fbd755"
+      },
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1/phase-supply-v1.json",
+        "sha256": "8ef3c2a5b2173356aea6a1616f4fe6fbc5c56d00e18e007209404a41a5b9d6d5"
+      },
+      "readiness_requirement": {
+        "appended": 0,
+        "kept": 0,
+        "updated": 1
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 400
+        },
+        "old": {
+          "facets": 0,
+          "values": 400
+        }
+      }
+    }
+  },
+  "root_cause": "allowed_execution_stages changed from check/prepare-supply to include worker/campaign after supply production; readiness is normalized out but the legal-stage field is correctly identity-bound.",
+  "schema": "saea-system-text-precontact-identity-correction-v1",
+  "scorer_contacts": 0,
+  "stage_diff": "Only prospective composed config hashes and their enclosing registration digest. Identical policies, allocations, runs, membership, cohort, budgets and scientific recipe.",
+  "superseding_admission": {
+    "relpath": "coordination/slurp-system-text-update2-v1/root-admission-precontact-v2.json",
+    "sha256": "14acac54979190063c8f244dc1ef54f209c196d1eb07bc1e694e2ecb0af09c23"
+  }
+}

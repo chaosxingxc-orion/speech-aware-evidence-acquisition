@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update2 precontact preparation correction: 2026-10-02T10:11:28.508721+00:00, ChatGPT root
+
+A model-free frozen preflight refused L-parent before any attempt/contact: allowed_execution_stages was changed after supply preparation. Root used the existing tested repin utility to rebuild eight new own supply versions with exact output equality. All original supplies, frozen e56ff4019 and failed check remain immutable. No generation/scorer/proposal retry occurred. See [correction, successor registration and pending final checks](../readiness/2026-10-02-slurp-system-text-update2-flight-v2/README.md).
+
+The eight-member3200-trajectory design, policy bundles, original proposal allocations, cohort and budgets are unchanged. The create-only successor stage changes only prospective config hashes; original stage retained. Three current capacity proofs remain applicable because no model-facing text, knowledge or runtime code changed. READ remains unsigned. Final frozen preflight and live resource checks still precede dispatch; no queue was changed.
+
 ## Update2 capacity and admission: 2026-10-02T09:54:34.346945+00:00, ChatGPT root
 
 All three exact request configurations pass132 native request measurements and891 guarded tokenizer endpoints, zero task-generation/scorer contacts. Maximum required17152 includes the full512 completion allowance; remaining margin5376 after the additional2048 reserve. See [capacity evidence](../receipts/continuation/2026-10-02-system-text-update2-capacity-complete.json). Existing real CONTROL2 branch proof is reused because only Solver text changes; current synthetic graph proof covers refusal, empty/nonempty lookup and revised delivery. Every real request still needs exact FIT.

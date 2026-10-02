@@ -18,14 +18,14 @@
           {
             "kind": "preparation",
             "reason": "Own shared-runtime model-free first-phase supply.",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1/phase-supply-v1.json",
-            "sha256": "dc57ed68414225e1dd15df4420008a83b7187bc4dc776e0f666edf7fd1412df9"
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1/phase-supply-v2.json",
+            "sha256": "31169381bd511a529a6b602e98a50ad5a6eafa95f3305bf2c53e7e1a6f6c4b71"
           },
           {
-            "expected_decision_id": "slurp-system-text-update2-v1",
+            "expected_decision_id": "slurp-system-text-update2-precontact-v2",
             "kind": "decision",
-            "relpath": "coordination/slurp-system-text-update2-v1/root-admission-v1.json",
-            "sha256": "5f7dfe5ab9debc7ee556bfc1955d398070196211f07c5f362a934a3107800fa2"
+            "relpath": "coordination/slurp-system-text-update2-v1/root-admission-precontact-v2.json",
+            "sha256": "14acac54979190063c8f244dc1ef54f209c196d1eb07bc1e694e2ecb0af09c23"
           }
         ],
         "state": "ready"

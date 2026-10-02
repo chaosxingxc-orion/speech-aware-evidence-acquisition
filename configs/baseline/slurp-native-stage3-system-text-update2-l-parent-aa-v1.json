@@ -442,10 +442,6 @@
       "sha256": "570c7a5cea16eee2219ea41d7ce46221a01e6640f8e31cd7070e6dae1747c465"
     }
   ],
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1/phase-supply-v1.json",
-    "sha256": "8ef3c2a5b2173356aea6a1616f4fe6fbc5c56d00e18e007209404a41a5b9d6d5"
-  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -460,5 +456,9 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
-  "what_this_is": "Original registered update2 full-system member. Await own supply, exact family freeze, maximum-request FIT and root admission. No generation authority from compilation."
+  "what_this_is": "Original registered update2 full-system member. Await own supply, exact family freeze, maximum-request FIT and root admission. No generation authority from compilation.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1/phase-supply-v2.json",
+    "sha256": "4e60cdede936b3f2b020aed9b00a35a9f6209588579e9166e57f4dc3d4fbd755"
+  }
 }
