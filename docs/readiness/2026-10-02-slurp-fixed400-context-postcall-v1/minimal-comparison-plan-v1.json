@@ -1,0 +1,59 @@
+{
+  "all_cases_included": true,
+  "analysis": [
+    "pooled official SLU-F1",
+    "intent protection and same-chain A/A uncertainty",
+    "reliable terminal completion",
+    "natural-mixture and equal-stratum summaries",
+    "strict role-output and Reviewer identifier validity",
+    "actual authorized tools versus textual tool markers",
+    "revision/change/repair/damage associations and attributed cost"
+  ],
+  "automatic_expansion": false,
+  "automatic_failure_recovery": false,
+  "claims_benefit": false,
+  "claims_feedback_learning_advantage": false,
+  "complete_system_trajectory_cap": 80,
+  "data": "Reuse existing current400 first20 with existing query/vote/packet and knowledge bytes",
+  "family_id": "fixed400-context20-v1",
+  "generation_contacts_cap": 1040,
+  "independent_validation": false,
+  "knowledge_calls_cap": 80,
+  "learning_boundary": "Root combined and B outcomes are not sent to feedback-blind proposers. This configuration comparison cannot establish L-over-B reinforcement benefit. Preserve spent no-change L slots. Register future learning inputs and allocation prospectively.",
+  "members": [
+    {
+      "id": "B-parent",
+      "policy": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "purpose": "same-chain seed comparator"
+    },
+    {
+      "id": "B-parent-aa",
+      "policy": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "purpose": "request-equivalent same-chain repeat"
+    },
+    {
+      "id": "B-candidate-1",
+      "policy": "fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452",
+      "purpose": "Planner text candidate from spent B-3-1 allocation"
+    },
+    {
+      "id": "B-candidate-2",
+      "policy": "97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294",
+      "purpose": "Solver text candidate from spent B-3-2 allocation"
+    }
+  ],
+  "native_fit_endpoint_cap": 4160,
+  "next_scale": "Root reviews the complete panel before reusing a larger20/50/100/200/400 prefix. Keep each policy evaluation complete; never splice a400-row result across policies.",
+  "official_complete_scores_cap": 4,
+  "owner_decisions": [
+    214,
+    218,
+    222,
+    223,
+    224
+  ],
+  "read_requirement": "All four independently FINALIZED, verified seals, exactly one successful official score each, no failed scoring job, then exact root READ. Read all cases; no cherry-picking by tool usage or prior correctness.",
+  "rows_per_member": 20,
+  "schema": "saea-fixed400-minimal-comparison-plan-v1",
+  "status": "HELD until candidate engineering acceptance and exact full-family runtime/READ registration"
+}

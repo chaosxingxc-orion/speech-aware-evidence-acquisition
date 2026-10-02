@@ -13,6 +13,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from speech_aware_evidence_acquisition.analysis import system_text_context as context
+from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.analysis.system_text_pilot import (
     analyze_pilot,
     read_pilot_evidence,
@@ -51,7 +53,12 @@ def load_documents(recipe_pin, supplement_pin, root):
     recipe = json.loads(_read_pin(recipe_pin, root))
     supplement = json.loads(_read_pin(supplement_pin, root))
     require(
-        supplement.get("schema") == "saea-pilot-analysis-supplement-v1"
+        supplement.get("schema")
+        == (
+            "saea-context-analysis-supplement-v1"
+            if recipe.get("family_id") == context.FAMILY
+            else "saea-pilot-analysis-supplement-v1"
+        )
         and supplement.get("recipe") == recipe_pin,
         "analysis supplement names another recipe",
     )
@@ -143,7 +150,24 @@ def run(
         "read_registration": recipe_pin,
     }
     authority = CLI.require_read_registration(family, repo_root=repo_root)
-    validate_pilot_registration(recipe, registration, owner, authority)
+    is_context = recipe.get("family_id") == context.FAMILY
+    validate = (
+        context.validate_registration if is_context else validate_pilot_registration
+    )
+    evidence_reader = context.read_evidence if is_context else read_pilot_evidence
+    analyzer = context.analyze if is_context else analyze_pilot
+    validate(recipe, registration, owner, authority)
+    if is_context:
+        require(
+            learning_amendment_pin is None, "context comparison has no proposer export"
+        )
+        pool = json.loads(_read_pin(owner["fixed_roster"], repo_root))["sample_ids"]
+        require(
+            len(pool) == len(set(pool)) == 400
+            and content_hash(pool) == owner["sample_ids_sha256"]
+            and recipe["sample_ids"] == pool[:20],
+            "context roster must be the first twenty of the pinned owner224 pool",
+        )
     roster_path = repo_root / recipe["analysis_roster"]["relpath"]
     roster = json.loads(_read_pin(recipe["analysis_roster"], repo_root))
     require(
@@ -169,7 +193,7 @@ def run(
     ]
     require(
         all(v.attempt_state == "FINALIZED" for v in verified),
-        "all eight pilot seals must verify",
+        "every registered member seal must verify",
     )
     metadata_source = json.loads(_read_pin(supplement["stratum_metadata"], repo_root))
     items = metadata_source["items"]
@@ -213,14 +237,14 @@ def run(
         bindings.append(
             {"candidate_id": cid, "config": config, "artifact": pin(artifact)}
         )
-    evidence = read_pilot_evidence(
+    evidence = evidence_reader(
         bindings,
         recipe=recipe,
         registration=registration,
         owner=owner,
         authority=authority,
     )
-    report = analyze_pilot(
+    report = analyzer(
         evidence,
         recipe=recipe,
         registration=registration,
@@ -232,6 +256,8 @@ def run(
         "root READ changed during pilot analysis",
     )
     load_documents(recipe_pin, supplement_pin, repo_root)
+    if is_context:
+        _read_pin(owner["fixed_roster"], repo_root)
     for source in (recipe["analysis_roster"], supplement["stratum_metadata"]):
         _read_pin(source, repo_root)
     require(
@@ -256,7 +282,7 @@ def run(
         "supplement": supplement_pin,
         "job_metadata": metadata_pins,
         "reader": pin(__file__),
-        "analyzer": pin(Path(sys.modules[analyze_pilot.__module__].__file__)),
+        "analyzer": pin(Path(sys.modules[analyzer.__module__].__file__)),
     }
     CLI.write_new(output / "family.json", {**family, "bindings": bindings})
     CLI.write_new(output / "evidence.json", evidence.as_json())

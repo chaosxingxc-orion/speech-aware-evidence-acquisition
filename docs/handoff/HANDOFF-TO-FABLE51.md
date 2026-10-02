@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Context engineering passed; minimal comparison registered: 2026-10-02T17:35:02.013509+00:00
+
+Windows driver17:10:07Z completed17:13:18Z on frozen7ba7f5fdb. Both new candidate engineering members delivered four rows;22/28 generation contacts and matching actual FIT receipts,200 tokenizer endpoints total. All14 raw Reviewer handoffs and14 Solver task JSON replies pass structural contracts; all8 deliveries retain native Solver custody. No official scores or task-quality read. OPENED engineering attempts are intentional. [Engineering receipt](../receipts/continuation/2026-10-02-fixed400-context-engineering-complete.json).
+
+The reduced [fixed400-context20 comparison](../readiness/2026-10-02-slurp-fixed400-context20-v1/README.md) registers only seed/A/A/two changed policies,4x20=80 complete trajectories on the same current400 first20. Prepared identity caches reuse unchanged audio, packets, query/vote and knowledge bytes. No new data or knowledge construction, no no-change duplicates and no automatic8x400. The exact owner224 reader reuses shared full-family custody and statistics; full READ remains unsigned. Clean frozen checks and actual Windows launch remain pending here. Combined/B results never reach blind proposers; no L-over-B claim or automatic growth. No owner response is pending. Floors8GiB/12.5GiB, closed lines and other-carrier holds remain.
+
 ## Fixed400 capacity passed and engineering registered: 2026-10-02T17:06:27.511410+00:00
 
 All three registered native-graph capacities completed17:01:45Z on frozen9ec4dcb07:891 tokenizer endpoints total,132 requests measured,zero generation/scorer contacts. Minimum margins after full output and structural reserves are5560/5399/5546 tokens. [Capacity receipt](../receipts/continuation/2026-10-02-fixed400-context-capacity-complete.json).

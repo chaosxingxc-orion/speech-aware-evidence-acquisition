@@ -1,0 +1,207 @@
+{
+  "schema": "saea-fixed400-context-engineering-complete-v1",
+  "at_utc": "2026-10-02T17:19:19.662775+00:00",
+  "owner_decisions": [
+    214,
+    215,
+    223,
+    224
+  ],
+  "driver_epoch": "2026-10-02T17:10:07Z",
+  "driver_end": "2026-10-02T17:13:18Z",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-context-engineering-v1",
+  "source_commit": "7ba7f5fdb33ff836960fdf0fca8fe80f8b88fd61",
+  "members": [
+    {
+      "role": "planner",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-context-planner-smoke-4-generation-v1",
+      "rows": 4,
+      "model_contacts": 22,
+      "reviewer_statuses": {
+        "valid": 6
+      },
+      "reviewer_responses": [
+        {
+          "response_sha256": "e42c2c0e8220ccfef51b9828dd1cc0f58fd8acf34bfcd084494e7f8be3f16010",
+          "status": "valid",
+          "findings": 0,
+          "checked": 8
+        },
+        {
+          "response_sha256": "09ab55e2f0fcdea7eb9216a09d42264be16c8cd55c87042cdb4b8144e7ad5c96",
+          "status": "valid",
+          "findings": 0,
+          "checked": 4
+        },
+        {
+          "response_sha256": "573a276625722de9f99c6f06186d6634ac19f802344e88bb064c0302733eb5fa",
+          "status": "valid",
+          "findings": 0,
+          "checked": 6
+        },
+        {
+          "response_sha256": "a69f12c2263cff8c6e2d172859faee8f9cbf03bb379afc66883c716b00866c43",
+          "status": "valid",
+          "findings": 0,
+          "checked": 6
+        },
+        {
+          "response_sha256": "f37af84f814128401023362110f0749941072b7fc8f4b2d83e9461cdf4499dce",
+          "status": "valid",
+          "findings": 1,
+          "checked": 8
+        },
+        {
+          "response_sha256": "e8d40cdd0fdea3d9ea715fd6678d7c1f6b37c4e40d4c430a8362f8305665e770",
+          "status": "valid",
+          "findings": 1,
+          "checked": 8
+        }
+      ],
+      "planner_actions": {
+        "ACCEPT": 2,
+        "REVISE": 4
+      },
+      "solver_strict_task_json": {
+        "valid": 6
+      },
+      "native_solver_custody": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "actual_tool_calls": 0,
+      "official_score_batch_exists": false,
+      "artifacts": [
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-planner-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1.outputs.jsonl",
+          "sha256": "5a95c979fc84e916cdb9382d32e10dbbf7d0a6b919472a87c0f8f096482f2a1d"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-planner-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1.trace.jsonl",
+          "sha256": "0a577987fb5a2e9167e73a0b137a1fd1879cd21c9aa613d41b48085acbd4a280"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-planner-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1.phases.json",
+          "sha256": "8b39e2709894b6970a118f2a3a4fdcc072ce552b53917db01fdb10b195be65de"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-planner-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1.run-manifest.json",
+          "sha256": "879bee901d694b4e0ccb82a6918894e49f3606e3fa49aad53891b6072033f914"
+        }
+      ],
+      "delivery_kinds": {
+        "accepted": 2,
+        "terminal": 2
+      },
+      "acceptance": "PASS: structural only; no task-quality judgment"
+    },
+    {
+      "role": "solver",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-context-solver-smoke-4-generation-v1",
+      "rows": 4,
+      "model_contacts": 28,
+      "reviewer_statuses": {
+        "valid": 8
+      },
+      "reviewer_responses": [
+        {
+          "response_sha256": "0e35d9eca4548f8165f0e50eb49e7dd68594b7f18092cfcc9632f485ff88b047",
+          "status": "valid",
+          "findings": 0,
+          "checked": 4
+        },
+        {
+          "response_sha256": "f8124ac1f39a6ab6e8f5ae527e4bb972dbcd94e4327df3f020d2dc048ee79431",
+          "status": "valid",
+          "findings": 0,
+          "checked": 4
+        },
+        {
+          "response_sha256": "cfa041d1c41fa4eb3ae9b3c635d67bc9bbed59f5b46d7b63de56a6da5d8bb8fd",
+          "status": "valid",
+          "findings": 4,
+          "checked": 8
+        },
+        {
+          "response_sha256": "f025c56bc5baeb2695ab1df809d0764fb42e5cd647148bcc331fa2f4d5e7c6ff",
+          "status": "valid",
+          "findings": 4,
+          "checked": 8
+        },
+        {
+          "response_sha256": "b1f98c233b3da12597f23ccc85ffc5fc51190080ab7903d18696ec91431668df",
+          "status": "valid",
+          "findings": 4,
+          "checked": 8
+        },
+        {
+          "response_sha256": "c20a1bbcc9c3d31b53d5ed6670480afd798619ea608c12e3c1bbdc603284b51f",
+          "status": "valid",
+          "findings": 4,
+          "checked": 8
+        },
+        {
+          "response_sha256": "c41933d1ef872d1b75cbbc352c95adb2d4109a7b46af41ad74005694fbc7ccb1",
+          "status": "valid",
+          "findings": 2,
+          "checked": 8
+        },
+        {
+          "response_sha256": "9670fc606addb2a52228e251809bbfd4dc746354a7fe4d43b81f5482a330734d",
+          "status": "valid",
+          "findings": 2,
+          "checked": 8
+        }
+      ],
+      "planner_actions": {
+        "REVISE": 7,
+        "ACCEPT": 1
+      },
+      "solver_strict_task_json": {
+        "valid": 8
+      },
+      "native_solver_custody": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "actual_tool_calls": 0,
+      "official_score_batch_exists": false,
+      "artifacts": [
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-solver-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1.outputs.jsonl",
+          "sha256": "406480e11a2077ac44a9cf99b58ee098f9a5754a3ac30f5b03083df4afc31388"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-solver-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1.trace.jsonl",
+          "sha256": "f08950fc9060f8fe8a59ebd9bab1d9e9f7879cebb0f01ae92e1914822c148cd8"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-solver-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1.phases.json",
+          "sha256": "f6117d6b9f4182a86a9d2faba0bd40de35b066f7c3f7dfbbafed0d25f95269f3"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-context-solver-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1.run-manifest.json",
+          "sha256": "f7e4b9137832cb05cabe2992569b6c17cb08ab1b508796af891702084599e245"
+        }
+      ],
+      "delivery_kinds": {
+        "accepted": 1,
+        "terminal": 3
+      },
+      "acceptance": "PASS: structural only; no task-quality judgment"
+    }
+  ],
+  "rows_total": 8,
+  "generation_contacts": 50,
+  "actual_request_fit_receipts": 50,
+  "tokenizer_endpoints": 200,
+  "official_scores": 0,
+  "task_quality_read": false,
+  "notes": "Both OPENED attempts, completed generation manifests and one prepared score specification per member are the intended engineering lifecycle. No reseal or official scoring. Zero natural tool uptake; separately measured synthetic capacity covers maximum legal return and all four graph paths. Four-row engineering proves no quality improvement. Reuse current400 bytes and register only necessary comparison members."
+}

@@ -84,7 +84,7 @@ def analyze_update(feedback, *, protocol, recipe, roster):
     return report
 
 
-def _describe_complete_cohort(d, *, ids, bindings, recipe, roster):
+def _describe_complete_cohort(d, *, ids, bindings, recipe, roster, branch_names=("L", "B")):
     """Shared statistics only; callers enforce their separate admission and READ gates."""
     stage_name = d["family_id"]
     resampling = recipe["resampling"]
@@ -235,8 +235,9 @@ def _describe_complete_cohort(d, *, ids, bindings, recipe, roster):
         }
         for cid in bindings
     }
+    require(branch_names in (("L", "B"), ("B",)), "invalid descriptive branch scope")
     branches = {}
-    for branch in ("L", "B"):
+    for branch in branch_names:
         parent, aa = branch + "-parent", branch + "-parent-aa"
         candidates = sorted(
             cid

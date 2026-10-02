@@ -200,6 +200,14 @@ def validate_pilot_registration(recipe, registration, owner, authority):
 def read_pilot_evidence(bindings, *, recipe, registration, owner, authority):
     """Call only after the shared ledger gate has freshly verified root authority."""
     validate_pilot_registration(recipe, registration, owner, authority)
+    return _read_complete_evidence(bindings, recipe=recipe, registration=registration,
+                                  authority=authority, family=FAMILY, schema=SCHEMA,
+                                  evidence_type=CompleteSystemPilotEvidence)
+
+
+def _read_complete_evidence(bindings, *, recipe, registration, authority,
+                            family, schema, evidence_type):
+    """Shared closed-family read; each public caller enforces its own scope first."""
     metadata = preflight_family(bindings, recipe["expected_members"])
     ids = recipe["sample_ids"]
     for binding, (manifest, _) in zip(bindings, metadata, strict=True):
@@ -234,11 +242,11 @@ def read_pilot_evidence(bindings, *, recipe, registration, owner, authority):
             for key in ("quality", "utility", "relative_return"):
                 member.pop(key, None)
             member["execution"] = rows[member["candidate_id"]][group["sample_id"]]
-    return CompleteSystemPilotEvidence(
+    return evidence_type(
         canonical(
             {
-                "schema": SCHEMA,
-                "family_id": FAMILY,
+                "schema": schema,
+                "family_id": family,
                 "read_authority": authority,
                 "registration_sha256": registration["registration_sha256"],
                 "summaries": summaries,
@@ -296,6 +304,12 @@ def analyze_pilot(evidence, *, recipe, registration, roster, supplement):
         "No benefit, harm, no-harm, learned-policy adoption, node causal credit or automatic expansion. "
         "Root reviews all successes, failures, unchanged cases and damaged answers; no proposer receives this report.",
     )
+    _attach_answer_changes(report, d, recipe["sample_ids"], MEMBERS)
+    return report
+
+
+def _attach_answer_changes(report, d, ids, members):
+    """Describe complete-system associations; never infer local causal repair."""
     counts = {
         cid: {
             g["sample_id"]: next(
@@ -303,14 +317,14 @@ def analyze_pilot(evidence, *, recipe, registration, roster, supplement):
             )
             for g in d["feedback"]["groups"]
         }
-        for cid in MEMBERS
+        for cid in members
     }
     for branch in report["branches"].values():
         for contrast in branch["comparisons"].values():
             changes = {
                 k: [] for k in ("repaired", "damaged", "both_correct", "both_incorrect")
             }
-            for sid in recipe["sample_ids"]:
+            for sid in ids:
                 correct = []
                 for cid in (contrast["left"], contrast["right"]):
                     c = counts[cid][sid]
@@ -341,4 +355,3 @@ def analyze_pilot(evidence, *, recipe, registration, roster, supplement):
         branch["replicate_policy"] = (
             "A/A is a separate descriptive measurement; no pilot policy is selected."
         )
-    return report

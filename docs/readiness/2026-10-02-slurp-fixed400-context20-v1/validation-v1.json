@@ -1,0 +1,65 @@
+{
+  "schema": "saea-context20-model-free-validation-v1",
+  "tests": {
+    "count": 142,
+    "passed": true,
+    "scoped_new_reader_coverage_percent": 100,
+    "post_refactor_recheck": {
+      "passed": 52
+    }
+  },
+  "offline_gates": [
+    {
+      "check": "engineering_base_check.py",
+      "exit_code": 0
+    },
+    {
+      "check": "harness_admission_check.py",
+      "exit_code": 0
+    },
+    {
+      "check": "results_ledger_check.py",
+      "exit_code": 0
+    },
+    {
+      "check": "tool_catalog_check.py",
+      "exit_code": 0
+    },
+    {
+      "check": "experiment_handoff_check.py",
+      "exit_code": 0
+    },
+    {
+      "check": "openjiuwen_native_reuse_check.py",
+      "exit_code": 0,
+      "note": "Passed after providing the required output argument or absolute PYTHONPATH; initial invocations added no model/scorer contacts."
+    },
+    {
+      "check": "derived_media_confinement_check.py",
+      "exit_code": 0,
+      "note": "Passed after providing the required output argument or absolute PYTHONPATH; initial invocations added no model/scorer contacts."
+    },
+    {
+      "check": "finite_completion_policy_check.py",
+      "exit_code": 0
+    },
+    {
+      "check": "handoff_freshness_check.py",
+      "exit_code": 0
+    }
+  ],
+  "ruff": "PASS",
+  "registration_gate": {
+    "blocking": 0,
+    "advisory_findings": 16,
+    "note": "Historical tuning-roster alias/disjointness advisories. Owner224 explicitly admits retained TRAIN optimization exposure; no independent validation claim. Runtime knowledge-source exclusion remains enforced."
+  },
+  "native_reuse": {
+    "path": "/tmp/saea-context20-native-reuse.json",
+    "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+  },
+  "runtime_model_facing_source_changes": false,
+  "new_reader": "Exact fixed400 first20, all four members, original attempts, verified seals and one successful official score each. No blind proposer feedback. Original owner220 and formal readers retain scope.",
+  "clean_frozen_checks": "pending",
+  "historical_checks": "Two pre-existing algorithm-label findings in older capacity cells are unchanged; no frozen sources were repaired."
+}
