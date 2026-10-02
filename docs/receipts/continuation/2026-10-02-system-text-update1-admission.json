@@ -1,0 +1,33 @@
+{
+  "admitted_members": 5,
+  "capacity": [
+    {
+      "max_required_tokens": 17277,
+      "min_margin_after_extra_reserve": 5251,
+      "policy": "parent",
+      "relpath": "coordination/slurp-system-text-update1-parent-capacity-v1/request-fit-v1.json",
+      "requests": 44,
+      "sha256": "5e096cfd24e5bd732a891d6803ae517d52eb9cccf3b671e0a4a788061a44434e",
+      "tokenizer_endpoints": 297
+    },
+    {
+      "max_required_tokens": 17250,
+      "min_margin_after_extra_reserve": 5278,
+      "policy": "candidate",
+      "relpath": "coordination/slurp-system-text-update1-candidate-capacity-v1/request-fit-v1.json",
+      "requests": 44,
+      "sha256": "77ff8d111ef7413769611b595fa31a14467b674f2674cdda3c5122ef8e34148e",
+      "tokenizer_endpoints": 297
+    }
+  ],
+  "finished_at": "2026-10-02T02:42:04Z",
+  "generation_contacts": 0,
+  "official_score_jobs_cap": 5,
+  "proposal_replacements": 0,
+  "schema": "saea-update1-capacity-complete-v1",
+  "scientific_reads": 0,
+  "stage_registration_sha256": "210e832d969fb7165ec0afbf873b580977d5be90b56e4cd242df24af7801c151",
+  "task": "SAEA-SystemText-Update1-Capacity",
+  "trajectory_cap": 2000,
+  "worker_commit": "34af001bc6769a498ff93b7e0c8dfae01d13ade7"
+}

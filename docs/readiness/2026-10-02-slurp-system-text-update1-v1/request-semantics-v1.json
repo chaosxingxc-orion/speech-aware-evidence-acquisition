@@ -1,0 +1,38 @@
+{
+  "schema": "saea-system-text-request-semantics-proof-v1",
+  "members": [
+    {
+      "member": "L-parent",
+      "semantic_hash": "4757cd45c95ba32871ddf69c678c4eaf722932d20a6ba16833a4674fcf41c795",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b"
+    },
+    {
+      "member": "L-parent-aa",
+      "semantic_hash": "4757cd45c95ba32871ddf69c678c4eaf722932d20a6ba16833a4674fcf41c795",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b"
+    },
+    {
+      "member": "B-parent",
+      "semantic_hash": "4757cd45c95ba32871ddf69c678c4eaf722932d20a6ba16833a4674fcf41c795",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b"
+    },
+    {
+      "member": "B-parent-aa",
+      "semantic_hash": "4757cd45c95ba32871ddf69c678c4eaf722932d20a6ba16833a4674fcf41c795",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b"
+    },
+    {
+      "member": "B-candidate-2",
+      "semantic_hash": "2e0f8b48b8e17913ec4b3943aa0f7258c464e2155aa338baa7a17d519d6f4d9c",
+      "bundle_id": "6e6f8ede28096805a99e7af6a5fb6a4368c0c35fe1f4e2ba7c19291f6d1a0fd6"
+    }
+  ],
+  "parent_pairs_request_identical": true,
+  "candidate_matches_exact_compilation": true,
+  "excluded_operational_fields": [
+    "what_this_is",
+    "native_contact_fit",
+    "prepared_phase_supply"
+  ],
+  "no_model_contacts": true
+}

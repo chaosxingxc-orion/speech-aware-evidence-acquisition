@@ -13,16 +13,22 @@
       "dataset_fragment": "slurp-speech-native-system-text-update-1-400-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Own supply, capacity, family registration and coordinator admission pending.",
+        "reason": "Root admits the registered update1 family after both exact native capacity proofs. Preserve actual per-contact FIT and the complete-family read gate.",
         "requirements": [
           {
             "kind": "preparation",
             "reason": "Own model-free first-phase supply through shared FlightRuntime.",
             "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-AA-V1/phase-supply-v1.json",
             "sha256": "16946e38ecc62a43ccaf5e2dbadcd42162060663840c8398ce5a6e45ffde6ea7"
+          },
+          {
+            "expected_decision_id": "slurp-system-text-update1-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-system-text-update1-v1/root-admission-v1.json",
+            "sha256": "616a930b7c70606ae8496b7084a0352ad945637e25fc308672cb6028d28482c4"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-AA-V1"
     }

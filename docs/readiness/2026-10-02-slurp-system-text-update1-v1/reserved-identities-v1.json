@@ -1,0 +1,45 @@
+{
+  "status": "PROSPECTIVE; final admission hashes and immutable archive freeze pending",
+  "members": {
+    "L-parent": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-V1",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "config_hash": null
+    },
+    "L-parent-aa": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-AA-V1",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "config_hash": null
+    },
+    "L-candidate-1": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-CANDIDATE-1-V1",
+      "bundle_id": null,
+      "config_hash": null
+    },
+    "L-candidate-2": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-CANDIDATE-2-V1",
+      "bundle_id": null,
+      "config_hash": null
+    },
+    "B-parent": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-V1",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "config_hash": null
+    },
+    "B-parent-aa": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-AA-V1",
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "config_hash": null
+    },
+    "B-candidate-1": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-CANDIDATE-1-V1",
+      "bundle_id": null,
+      "config_hash": null
+    },
+    "B-candidate-2": {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-CANDIDATE-2-V1",
+      "bundle_id": "6e6f8ede28096805a99e7af6a5fb6a4368c0c35fe1f4e2ba7c19291f6d1a0fd6",
+      "config_hash": null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "saea-update1-capacity-launch-v1",
+  "observed_at": "2026-10-02T02:40:00.301560+00:00",
+  "windows_task": "SAEA-SystemText-Update1-Capacity",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-update1-capacity-v2",
+  "commit": "34af001bc6769a498ff93b7e0c8dfae01d13ade7",
+  "registered_allocations": [
+    "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-PARENT-CAPACITY-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-CANDIDATE-CAPACITY-FIT-V1"
+  ],
+  "scope": "Sequential native graph FIT only; no generated task answer or official score.",
+  "precontact_disposition": "First clean-worker check refused the upper-case SLURP carrier metadata before any attempt/contact. The ledger now uses the exact lock key slurp; both checks pass. No scientific configuration changed.",
+  "stop_preserved": true,
+  "status": "WINDOWS TASK DISPATCHED; results pending"
+}

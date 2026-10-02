@@ -1,0 +1,25 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-stage3-system-text-update1-l-parent-v1",
+      "cell": "slurp-native-stage3-system-text-update1-l-parent-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-update1-l-parent-aa-v1",
+      "cell": "slurp-native-stage3-system-text-update1-l-parent-aa-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-update1-b-parent-v1",
+      "cell": "slurp-native-stage3-system-text-update1-b-parent-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-update1-b-parent-aa-v1",
+      "cell": "slurp-native-stage3-system-text-update1-b-parent-aa-v1"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-update1-b-candidate-2-v1",
+      "cell": "slurp-native-stage3-system-text-update1-b-candidate-2-v1"
+    }
+  ]
+}

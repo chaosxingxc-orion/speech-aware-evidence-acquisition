@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update1 capacity and family admission: 2026-10-02T02:45:18.123833+00:00, ChatGPT root
+
+The Windows-owned capacity chain finished02:42:04Z with both configurations passing44 native request measurements each,297 tokenizer endpoints each and zero generation contacts. Minimum margins after full output plus extra2048 reserve are5251/5278 tokens. Exact5-member/2000-trajectory registration is frozen at archive stages/update-1.json (210e832d969fb7165ec0afbf873b580977d5be90b56e4cd242df24af7801c151). Both parent/A/A pairs remain request-identical; B-candidate-2 matches the exact compiler output. Three invalid candidates remain excluded without replacement.
+
+Generation/FIT rows and root admission are complete; READ stays unsigned. Registration passes with historical tuning-roster advisories; cumulative-source disjointness passed. Actual launch worker and queue installation are next, not yet asserted here. Preserve the old STOP until root archives the exact completed initial-family controls under the new admission. No retry or scorer replay is authorized. See [admission](../receipts/continuation/2026-10-02-system-text-update1-admission.json) and [package](../readiness/2026-10-02-slurp-system-text-update1-v1/README.md).
+
 ## Update1 flight preparation: 2026-10-02T02:35:12.174199+00:00, ChatGPT root
 
 Five original update1 cells and own400-row supplies are prepared model-free. The roster is the exact registered first400 TRAIN Fold A. Both parent/A/A pairs remain, with B-candidate-2; three invalid proposal slots will be prospectively excluded with no replacement. Two separately registered native capacity allocations cover parent and candidate policy texts. Their registration, base, tool, completion and measurement checks pass. No new local GPU contact has occurred yet. Formal generation stays HELD pending capacity, complete immutable family registration and admission. Old STOP and failed sources remain unchanged. At02:34Z serving was healthy idle and Windows free20.83GiB.
