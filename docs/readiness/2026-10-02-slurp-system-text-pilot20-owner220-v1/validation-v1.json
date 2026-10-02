@@ -1,0 +1,27 @@
+{
+  "capacity_acceptance": {
+    "relpath": "docs/receipts/continuation/2026-10-02-reviewer-contract-capacity-complete.json",
+    "sha256": "5c8b0692054f2c88ef968a537f2ddc3711210bfe5b2bb575da400f3172284e90"
+  },
+  "engineering_acceptance": {
+    "relpath": "docs/receipts/continuation/2026-10-02-reviewer-contract-engineering-complete.json",
+    "sha256": "65bd2cb48ada825026a995dc89cf7637d59935bf1d64e4958dbc89340b8b105f"
+  },
+  "global_algorithm_label_check": "Two unchanged historical capacity fragments have empty operators_used at6c9b5829b and current HEAD. Preserve frozen history; all new pilot members explicitly declare rollout/scoring. Not a fully green global check.",
+  "passed": [
+    "engineering-base",
+    "harness-admission",
+    "finite-completion"
+  ],
+  "related_unit_tests": 27,
+  "roster": "Fixed first20 of existing update2 sorted400, no labels or outcomes used. Cumulative source disjointness verified for each bundle.",
+  "runtime_checks": "Exact frozen checks and full flight registration still required before launch.",
+  "whole_family_registration": {
+    "advisories": 8,
+    "blocking": 0,
+    "description": "All eight historical tuning-roster alias advisories remain disclosed. Exact cumulative source-disjointness is separately verified; pilot is not independent validation.",
+    "pass": true,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/whole-family-registration.out",
+    "sha256": "47cf30193044026a7d38fa1b54f2be44be0462b8dd58fa40a38c13abe2f11ee8"
+  }
+}

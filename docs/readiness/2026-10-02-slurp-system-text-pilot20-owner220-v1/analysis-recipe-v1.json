@@ -1,4 +1,8 @@
 {
+  "analysis_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+    "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+  },
   "authority": [
     219,
     220
@@ -15,6 +19,10 @@
   },
   "family_id": "pilot20-owner220",
   "next_step": "Root evaluates engineering reliability, repair/damage patterns, intent, A/A variation and uncertainty. No automatic dispatch or pass threshold; discuss whether to diagnose, stop, repeat on a preregistered disjoint small panel or progress to medium size. Any data-dependent selection exposes these20 inputs and must be recorded; do not count them as independent confirmation.",
+  "pilot_registration": {
+    "relpath": "docs/readiness/2026-10-02-slurp-system-text-pilot20-owner220-v1/pilot-registration-v1.json",
+    "sha256": "ebfd2e6901161b80425a0e0c4c0556fa49b798767a42277599fe32032e206ce1"
+  },
   "predeclared_limits": "All20 included; no selection of only tool calls or past errors. No causal claim from trajectory associations. No policy or prompt update or proposal input in this pilot. Keep formal200/400-row evidence gates unchanged.",
   "primary": "Descriptive official pooled SLU-F1; report paired changes, uncertainty and each branch own A/A. No superiority or stable-benefit claim.",
   "read_gate": "All eight exact members independently FINALIZED, seals verified, all20 rows, one successful official score each, no failed job, then exact root READ countersignature. No partial-family read.",

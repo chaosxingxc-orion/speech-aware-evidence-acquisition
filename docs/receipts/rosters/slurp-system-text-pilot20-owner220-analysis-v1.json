@@ -1,0 +1,151 @@
+{
+  "carrier_lock_key": "slurp",
+  "count": 20,
+  "items": [
+    {
+      "audio_seconds": 2.17575,
+      "headset": false,
+      "sample_id": "slurp:train:005407:audio-1502374837",
+      "utterance_id": "slurp:train:005407"
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "headset": false,
+      "sample_id": "slurp:train:003560:audio-1501686037",
+      "utterance_id": "slurp:train:003560"
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "headset": false,
+      "sample_id": "slurp:train:005513:audio-1494513310",
+      "utterance_id": "slurp:train:005513"
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "headset": false,
+      "sample_id": "slurp:train:011838:audio-1490369500",
+      "utterance_id": "slurp:train:011838"
+    },
+    {
+      "audio_seconds": 1.728,
+      "headset": true,
+      "sample_id": "slurp:train:000244:audio-1497883990-headset",
+      "utterance_id": "slurp:train:000244"
+    },
+    {
+      "audio_seconds": 4.032,
+      "headset": true,
+      "sample_id": "slurp:train:009411:audio-1497030307-headset",
+      "utterance_id": "slurp:train:009411"
+    },
+    {
+      "audio_seconds": 2.624,
+      "headset": true,
+      "sample_id": "slurp:train:015179:audio-1498569151-headset",
+      "utterance_id": "slurp:train:015179"
+    },
+    {
+      "audio_seconds": 3.264,
+      "headset": true,
+      "sample_id": "slurp:train:013565:audio-1501765573-headset",
+      "utterance_id": "slurp:train:013565"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "sample_id": "slurp:train:010065:audio-1501756518",
+      "utterance_id": "slurp:train:010065"
+    },
+    {
+      "audio_seconds": 1.279875,
+      "headset": false,
+      "sample_id": "slurp:train:004087:audio-1490199961",
+      "utterance_id": "slurp:train:004087"
+    },
+    {
+      "audio_seconds": 2.432,
+      "headset": true,
+      "sample_id": "slurp:train:013560:audio-1490291477-headset",
+      "utterance_id": "slurp:train:013560"
+    },
+    {
+      "audio_seconds": 4.48,
+      "headset": true,
+      "sample_id": "slurp:train:014610:audio-1502218659-headset",
+      "utterance_id": "slurp:train:014610"
+    },
+    {
+      "audio_seconds": 3.3915625,
+      "headset": false,
+      "sample_id": "slurp:train:014741:audio-1497882505",
+      "utterance_id": "slurp:train:014741"
+    },
+    {
+      "audio_seconds": 1.984,
+      "headset": true,
+      "sample_id": "slurp:train:000081:audio-1501753218-headset",
+      "utterance_id": "slurp:train:000081"
+    },
+    {
+      "audio_seconds": 1.4718125,
+      "headset": false,
+      "sample_id": "slurp:train:006032:audio--1504195204",
+      "utterance_id": "slurp:train:006032"
+    },
+    {
+      "audio_seconds": 3.648,
+      "headset": true,
+      "sample_id": "slurp:train:016836:audio-1490705489-headset",
+      "utterance_id": "slurp:train:016836"
+    },
+    {
+      "audio_seconds": 2.112,
+      "headset": true,
+      "sample_id": "slurp:train:004499:audio--1504194378-headset",
+      "utterance_id": "slurp:train:004499"
+    },
+    {
+      "audio_seconds": 2.88,
+      "headset": true,
+      "sample_id": "slurp:train:011479:audio-1502216306-headset",
+      "utterance_id": "slurp:train:011479"
+    },
+    {
+      "audio_seconds": 3.392,
+      "headset": true,
+      "sample_id": "slurp:train:010006:audio-1499693788-headset",
+      "utterance_id": "slurp:train:010006"
+    },
+    {
+      "audio_seconds": 3.8395,
+      "headset": false,
+      "sample_id": "slurp:train:010537:audio-1490183278",
+      "utterance_id": "slurp:train:010537"
+    }
+  ],
+  "protocol": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision220-small-pilot-first.json",
+    "sha256": "69e70e2015f51bfa24845f3fbc68580f98a58007bf5c13ef92835676c8d44ab4"
+  },
+  "restriction": "Identity-only analysis join for owner22020-row complete-family exploratory read. No labels, transcripts or scores. No proposer feedback or formal efficacy claim. Runtime remains discovery and label-free.",
+  "roster_id": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+  "roster_role": "construction",
+  "runtime_view": {
+    "relpath": "configs/dataset/slurp-speech-native-system-text-pilot20-owner220-v1.json",
+    "sha256": "138a727592e6e9d376a3a629227cec37bb0c85988e4b127e7838cc0eac63acff"
+  },
+  "schema": "saea-roster-receipt-v1",
+  "selection_pin": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-v1.json",
+    "sha256": "bf72abff34fe726b023c5172c4944f9c029fbd0a0de6313bb7873f06abf110f9"
+  },
+  "selection_receipt": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-v1.json",
+  "source": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+  },
+  "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+  "split_role": "discovery",
+  "stage": "pilot20-owner220",
+  "stratum_withheld_per_item": true
+}
