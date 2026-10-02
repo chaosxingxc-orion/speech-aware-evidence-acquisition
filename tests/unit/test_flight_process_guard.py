@@ -153,8 +153,8 @@ def test_existing_receipt_cannot_be_overwritten(tmp_path):
 @pytest.mark.parametrize(
     "changes",
     [
-        dict(start_gib=9),
-        dict(floor_gib=9.9),
+        dict(start_gib=7),
+        dict(floor_gib=7.9),
         dict(start_gib=True),
         dict(interval_seconds=0),
         dict(interval_seconds=11),
@@ -379,3 +379,25 @@ def test_invalid_command_never_creates_receipt(tmp_path, cmd):
     with pytest.raises(FlightProcessGuardError):
         run_guarded(cmd, tmp_path / "guard", POLICY)
     assert not (tmp_path / "guard").exists()
+
+
+@pytest.mark.parametrize(
+    "running,expected", [(8.0, "completed"), (7.99, "resource-stop")]
+)
+def test_owner_eight_gib_floor_is_explicit_and_enforced(tmp_path, running, expected):
+    policy = MemoryPolicy(
+        start_gib=12.5,
+        floor_gib=8,
+        interval_seconds=0.02,
+        read_timeout_seconds=0.1,
+        stop_grace_seconds=0.1,
+    )
+    readings = iter([14.08, running])
+    result = run_guarded(
+        command("import time;time.sleep(.1)"),
+        tmp_path / "guard",
+        policy,
+        host_reader=lambda: {"host_free_gb": next(readings, running)},
+    )
+    assert result.status == expected
+    assert MemoryPolicy(start_gib=14.5).floor_gib == 10

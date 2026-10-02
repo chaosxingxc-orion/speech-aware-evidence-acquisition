@@ -1,0 +1,47 @@
+{
+  "construction_calls": 0,
+  "decision_id": 221,
+  "if_authorized": "Revalidate zero attempts for every remaining member, verify completed first-member seal and unique successful score operationally, require unchanged frozen source and pinned prepared supplies, preserve current controls, install exact remaining queue and launch via Windows SAEA-Batch-Driver. Stop on any further failure without an automatic retry.",
+  "member_identity_change": false,
+  "memory_authority": "Direct owner instruction: retain about8GiB for Windows; keep file caches locally and load on demand.",
+  "memory_policy": {
+    "below_8_gib": "stop",
+    "consecutive_start_samples": 3,
+    "existing_or_new_STOP": "stop",
+    "interval_seconds": 10,
+    "precontact_wait_limit_seconds": 600,
+    "running_floor_gib": 8,
+    "startup_gib": 12.5,
+    "unknown_reading": "stop",
+    "wait_expiry": "stop"
+  },
+  "new_proposals": 0,
+  "not_authorized_by_proposal": [
+    "STOP clearing",
+    "task dispatch",
+    "first-member replay",
+    "scoring replay",
+    "partial-family read",
+    "new candidates",
+    "400-row expansion",
+    "cache flush",
+    "host-setting change"
+  ],
+  "operations": "The main batch observer runs before prelaunch and starts no worker. A separate clean worker incorporates the explicit8GiB operational floor; controller, model requests, prepared artifacts and scorer source bytes remain identical. Recheck service, process absence, preparation and registration after waiting. The one-shot process guard rechecks startup before spawn.",
+  "original_queue_sha256": "edef030df8cbf117728371118382b3615101db9998c60831af537e8c01d86452",
+  "queue": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-policy/docs/readiness/2026-10-02-slurp-pilot20-startup-wait-v1/remaining-seven-queue-v1.json",
+    "sha256": "01c739af57aca84a5ce98f14bddbec2002db6a424ab29d89781ea63831686ad7"
+  },
+  "remaining_generation_cap": 1820,
+  "remaining_native_fit_cap": 7280,
+  "remaining_official_scores": 7,
+  "remaining_trajectories": 140,
+  "request": "Authorize one exact STOP disposition and continuation of only the seven never-started20-row members, using the newly owner-approved8GiB runtime floor and12.5GiB startup reserve plus bounded waiting. Preserve the completed L-parent and every original artifact.",
+  "required_worker_preparation": "Freeze a separate clean checkout containing only the tested operational memory change relative to4101a4925e604d48921bac7d8e995216282264de; preserve the original worker. Bind the exact commit in a superseding preparation receipt before launch. Verify all seven remaining prepared supplies without model contacts.",
+  "schema": "saea-pilot-precontact-continuation-proposal-v1",
+  "science_or_runtime_request_change": false,
+  "status": "MEMORY_AMENDMENT_APPROVED_CONTINUATION_PENDING",
+  "why_owner": "The latest direct instruction approves8GiB memory reserve and disk-backed on-demand caching. It does not explicitly dispose of the new13:35:56Z STOP. Owner220 excludes automatic failure recovery; only that narrow continuation disposition remains pending.",
+  "worker_commit": null
+}

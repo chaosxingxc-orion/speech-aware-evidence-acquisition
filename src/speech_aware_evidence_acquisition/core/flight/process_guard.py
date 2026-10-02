@@ -46,13 +46,13 @@ class MemoryPolicy:
 
     def __post_init__(self):
         if not all(_finite(v) for v in asdict(self).values()) or not (
-            self.start_gib >= self.floor_gib >= 10
+            self.start_gib >= self.floor_gib >= 8
             and 0 < self.interval_seconds <= 10
             and 0 < self.read_timeout_seconds <= 15
             and 0 < self.stop_grace_seconds <= 30
         ):
             raise FlightProcessGuardError(
-                "invalid flight memory policy or floor below 10 GiB"
+                "invalid flight memory policy or floor below owner-authorized 8 GiB"
             )
 
 

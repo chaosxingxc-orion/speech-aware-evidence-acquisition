@@ -24,6 +24,9 @@
 #   Optional process_start_gib and process_floor_gib opt one ordinary member into
 #   the shared owned-process memory supervisor; both are required, with no smoke
 #   or campaign_plan. Its exact experiment must contain one ready cell.
+#   Optional paired process_start_wait_seconds/process_start_stable_samples wait
+#   before prelaunch for stable memory. The observer starts no worker and never
+#   retries a failed process. The original guard still checks the startup floor.
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
@@ -143,6 +146,7 @@ for ((i=0; i<N; i++)); do
   gatt=$(field $i gen_attempt_id); srun=$(field $i smoke_run_id); satt=$(field $i smoke_attempt_id)
   rows=$(field $i expected_rows); ceil=$(field $i ceiling_per_row); notool=$(field $i notool); owner=$(field $i owner)
   process_start=$(field $i process_start_gib); process_floor=$(field $i process_floor_gib)
+  process_wait=$(field $i process_start_wait_seconds); process_stable=$(field $i process_start_stable_samples)
   [ "$notool" = "true" ] && nt=1 || nt=0
   result_kind=$(field $i result_kind); result_kind=${result_kind:-task-answer}
   smoke_result_kind=$(field $i smoke_result_kind); smoke_result_kind=${smoke_result_kind:-$result_kind}
@@ -166,6 +170,16 @@ for ((i=0; i<N; i++)); do
     case "$kind" in cell|resume) ;; *) stop "step $order process guard requires an ordinary campaign member" ;; esac
     { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "step $order process guard refuses a multi-member campaign_plan"
     { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "step $order process guard cannot leave a separate smoke unsupervised"
+  fi
+  if [ -n "$process_wait" ] || [ -n "$process_stable" ]; then
+    [ -n "$process_start" ] && [ -n "$process_floor" ] && [ -n "$process_wait" ] && [ -n "$process_stable" ] || stop "step $order needs complete guarded memory-wait policy"
+    WAIT_DIR="$DATA/coordination/start-memory-wait/step-$order-$short-$(date -u +%Y%m%dT%H%M%SZ)"
+    log "memory-wait-start" "{\"step\":$order,\"receipt_dir\":\"$WAIT_DIR\"}"
+    out=$($PY -B "$SP/wait_for_start_memory.py" --data-root "$DATA" --receipt-dir "$WAIT_DIR" \
+      --stop-marker "$STOP" --start-gib "$process_start" --floor-gib "$process_floor" --wait-seconds "$process_wait" \
+      --stable-samples "$process_stable" 2>&1); rc=$?
+    [ $rc -eq 0 ] || stop "precontact memory wait refused step $order (exit $rc): $out"
+    log "memory-wait-ok" "$out"
   fi
   prelaunch $order
   if [ -n "$sexp" ] && [ "$sexp" != "None" ]; then

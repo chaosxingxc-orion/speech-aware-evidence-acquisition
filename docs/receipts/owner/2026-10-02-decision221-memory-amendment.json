@@ -1,0 +1,16 @@
+{
+  "approved_scope": {
+    "cache_policy": "Persist prepared files and knowledge locally; use file-backed demand loading and bounded per-worker material lifetime. Preserve hashes and evidence. Do not convert this to recurrent global cache flushing or host-setting changes.",
+    "implementation_start_gib": 12.5,
+    "start_headroom_gib": 4.5,
+    "windows_running_floor_gib": 8
+  },
+  "decision_id": 221,
+  "old_artifacts": "Old workers, thresholds in historical receipts and completed first-member artifacts remain immutable. Old default10GiB policies continue unless explicitly overridden.",
+  "owner_statement_english": "Keeping about8GB of memory for Windows is enough. Keep file caches locally and load them on demand.",
+  "pending_scope": "The exact STOP disposition and remaining-seven-member continuation described in docs/readiness/2026-10-02-slurp-pilot20-startup-wait-v1/proposal.json is not yet explicitly approved. No control reconciliation or dispatch has occurred.",
+  "recorded_at_utc": "2026-10-02T13:56:51.107327+00:00",
+  "schema": "saea-owner-decision-supplement-v1",
+  "source": "Direct human message in the current root conversation on2026-10-02, after the20-row pilot precontact refusal was explained. Original message remains addressable in this conversation.",
+  "status": "resource_amendment_approved_continuation_pending"
+}

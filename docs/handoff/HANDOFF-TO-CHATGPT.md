@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner221 memory amendment and stopped pilot: 2026-10-02T13:57:48.127231+00:00
+
+The20-row pilot stopped13:35:56Z before its second worker was created. The first L-parent independently FINALIZED20 rows with a verified seal and one official score; seven siblings have no attempts. Its running observations stayed above10GiB. Second-member startup observed14.075386GiB below the then-required14.5GiB and exited125. Windows free memory later recovered15.7933GiB; no live campaign/scorer remained. Do not attribute the fluctuation to a residual task without evidence. Read [operational evidence](../receipts/continuation/2026-10-02-pilot20-precontact-memory-stop.json). No partial scientific feedback was read.
+
+The human now explicitly approves about8GiB free for Windows and local disk-backed on-demand cache loading (owner221). The tested prospective queue uses8GiB running/12.5GiB startup with up to600 seconds for three consecutive10-second observations before normal prelaunch. It never retries a worker, weakens unknown-reading refusal, flushes cache or changes host settings. The current live service already disables an extra RAM prompt cache; local weights have file-backed mappings. A future lazy knowledge snapshot still requires equivalence tests. Original4101a4925 worker and all incident controls remain preserved.
+
+Only the exact STOP disposition and continuation of seven untouched members remains PENDING;8GiB itself is approved and must not be asked again. See [concrete proposal and test evidence](../readiness/2026-10-02-slurp-pilot20-startup-wait-v1/README.md). Prepare a new clean operational worker without model-facing source changes before any approved dispatch. All eight original members remain required for the unsigned READ; no first-member replay, partial read, new proposal or400-row expansion. The prospective READ role correction to discovery is clerical, not a countersignature. Other holds remain unchanged.
+
 ## Owner220 twenty-row pilot launched: 2026-10-02T13:31:40.645930+00:00
 
 Root launched exactly8x20 complete-system trajectories through SAEA-Batch-Driver at13:26:23Z, first member at13:26:27Z. Frozen worker /home/chao/saea-worktrees/codex-system-text-pilot20-owner220-flight-v1 at4101a4925e604d48921bac7d8e995216282264de. All eight clean frozen checks and whole-family registration passed. First L-parent has actual generation contacts; current attempt states are pinned in the [launch receipt](../receipts/continuation/2026-10-02-system-text-pilot20-owner220-launch.json). Contacts are not completed rows; revalidate every member rather than using this snapshot.

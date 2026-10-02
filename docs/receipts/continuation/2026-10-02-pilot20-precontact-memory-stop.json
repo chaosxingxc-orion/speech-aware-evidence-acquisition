@@ -1,0 +1,215 @@
+{
+  "continuation_authorized": false,
+  "control_copies": {
+    "batch-STOP": {
+      "original": {
+        "path": "/home/chao/batch-STOP",
+        "sha256": "cbec68521bd27860592c59102551335091120c7c2e385a826a876bc0ea3d6b7a"
+      },
+      "preserved_copy": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/start-refusal-20261002T133556Z/batch-STOP",
+        "sha256": "cbec68521bd27860592c59102551335091120c7c2e385a826a876bc0ea3d6b7a"
+      }
+    },
+    "batch-flight-commit.txt": {
+      "original": {
+        "path": "/home/chao/batch-flight-commit.txt",
+        "sha256": "1956128461728787401bdfa488a948d627addcd6e13c282688e49885f5a0452e"
+      },
+      "preserved_copy": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/start-refusal-20261002T133556Z/batch-flight-commit.txt",
+        "sha256": "1956128461728787401bdfa488a948d627addcd6e13c282688e49885f5a0452e"
+      }
+    },
+    "batch-flight-repo.txt": {
+      "original": {
+        "path": "/home/chao/batch-flight-repo.txt",
+        "sha256": "1733ba19490bd80c04eb4818dcee6279e55b36d25e73a085c95b18e3c9800b74"
+      },
+      "preserved_copy": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/start-refusal-20261002T133556Z/batch-flight-repo.txt",
+        "sha256": "1733ba19490bd80c04eb4818dcee6279e55b36d25e73a085c95b18e3c9800b74"
+      }
+    },
+    "batch-queue.json": {
+      "original": {
+        "path": "/home/chao/batch-queue.json",
+        "sha256": "edef030df8cbf117728371118382b3615101db9998c60831af537e8c01d86452"
+      },
+      "preserved_copy": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/start-refusal-20261002T133556Z/batch-queue.json",
+        "sha256": "edef030df8cbf117728371118382b3615101db9998c60831af537e8c01d86452"
+      }
+    },
+    "batch-status.jsonl": {
+      "original": {
+        "path": "/home/chao/batch-status.jsonl",
+        "sha256": "b808dfdd8528489512fab344fa230fd460820c4143c28204a01b9673fd21593a"
+      },
+      "preserved_copy": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-pilot20-owner220-v1/start-refusal-20261002T133556Z/batch-status.jsonl",
+        "sha256": "b808dfdd8528489512fab344fa230fd460820c4143c28204a01b9673fd21593a"
+      }
+    }
+  },
+  "driver_epoch": "2026-10-02T13:26:23Z",
+  "first_member_finished_at_utc": "2026-10-02T13:35:30Z",
+  "first_member_minimum_sampled_running_free_gib": 13.638629913330078,
+  "first_member_rows": 20,
+  "first_member_verified_finalized": true,
+  "frozen_source": {
+    "commit": "4101a4925e604d48921bac7d8e995216282264de",
+    "path": "/home/chao/saea-worktrees/codex-system-text-pilot20-owner220-flight-v1"
+  },
+  "guard_evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-2-system-text-pilot20-owner220-l-parent-aa-20261002T133554Z/events.jsonl",
+      "sha256": "e45b086129e909c0ba9861a4fccee68c4bfe6e464e53006339c47a0e1493fd3d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-2-system-text-pilot20-owner220-l-parent-aa-20261002T133554Z/finished.json",
+      "sha256": "0bad355e649f2f3fbb8a559b9718d288fca926a2fbe4a8701500e76ebbb0a850"
+    }
+  ],
+  "guard_finished": {
+    "command": [
+      "/home/chao/.venvs/speechrl/bin/python",
+      "-B",
+      "-m",
+      "speech_aware_evidence_acquisition.core.flight.cli",
+      "campaign",
+      "--repo-root",
+      "/home/chao/saea-worktrees/codex-system-text-pilot20-owner220-flight-v1",
+      "--data-root",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "--runtime-root",
+      "/home/chao",
+      "--lock-path",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "--experiment",
+      "slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-v1",
+      "--owner",
+      "chatgpt-root-owner220-pilot20",
+      "--expected-session-id",
+      "serving-slurp-native-candidate-five-train-a-np4-v1"
+    ],
+    "exit_code": 125,
+    "identity": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1",
+      "repo_root": "/home/chao/saea-worktrees/codex-system-text-pilot20-owner220-flight-v1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1",
+      "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "study_head": "4101a4925e604d48921bac7d8e995216282264de"
+    },
+    "pid": null,
+    "policy": {
+      "floor_gib": 10.0,
+      "interval_seconds": 5.0,
+      "read_timeout_seconds": 10.0,
+      "start_gib": 14.5,
+      "stop_grace_seconds": 5.0
+    },
+    "schema": "saea-flight-process-memory-guard-v1",
+    "status": "start-refused",
+    "worker_returncode": null
+  },
+  "members": [
+    {
+      "actual": {
+        "audio_seconds": 328.43287500000037,
+        "calls": 125
+      },
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1",
+      "attempt_state": "FINALIZED",
+      "manifest_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1.run-manifest.json",
+        "sha256": "4fe0a3884335b5722e7a886dc83e9ea1b2ad38f020fa699eaafb6057a66de4b0"
+      },
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "official_job_specifications": 1,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1",
+      "attempt_state": "NOT_STARTED",
+      "manifest_pin": null,
+      "manifest_rows": null,
+      "manifest_status": null,
+      "official_job_specifications": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1",
+      "attempt_state": "NOT_STARTED",
+      "manifest_pin": null,
+      "manifest_rows": null,
+      "manifest_status": null,
+      "official_job_specifications": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1",
+      "attempt_state": "NOT_STARTED",
+      "manifest_pin": null,
+      "manifest_rows": null,
+      "manifest_status": null,
+      "official_job_specifications": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1",
+      "attempt_state": "NOT_STARTED",
+      "manifest_pin": null,
+      "manifest_rows": null,
+      "manifest_status": null,
+      "official_job_specifications": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1",
+      "attempt_state": "NOT_STARTED",
+      "manifest_pin": null,
+      "manifest_rows": null,
+      "manifest_status": null,
+      "official_job_specifications": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1",
+      "attempt_state": "NOT_STARTED",
+      "manifest_pin": null,
+      "manifest_rows": null,
+      "manifest_status": null,
+      "official_job_specifications": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1",
+      "attempt_state": "NOT_STARTED",
+      "manifest_pin": null,
+      "manifest_rows": null,
+      "manifest_status": null,
+      "official_job_specifications": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1"
+    }
+  ],
+  "no_live_campaign_or_scorer_observed": true,
+  "observed_at_utc": "2026-10-02T13:50:36.916331+00:00",
+  "partial_quality_read": false,
+  "preservation": "Original worker, all artifacts, controls and guard logs remain unchanged. Copies do not remove or clear live controls.",
+  "proposed_owner_decision": 221,
+  "read_countersigned": false,
+  "root_cause": "The batch advances after a fixed20-second sleep. Its next precontact guard takes one14.075386GiB reading below the14.5GiB startup requirement and exits125, causing a queue STOP. No second worker or attempt was created. Available memory later exceeded the startup line. The underlying Windows/WSL reclamation contribution is not established.",
+  "running_floor_violation_observed": false,
+  "schema": "saea-pilot-precontact-start-refusal-v1",
+  "stop_at_utc": "2026-10-02T13:35:56Z",
+  "windows_free_at_133956Z_gib": 15.7933
+}

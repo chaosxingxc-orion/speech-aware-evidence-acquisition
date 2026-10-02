@@ -9,7 +9,7 @@ import sys
 import pytest
 
 
-def run_batch_fixture(tmp_path, worker_exit, changes=None):
+def run_batch_fixture(tmp_path, worker_exit, changes=None, wait_exit=0):
     driver = (
         Path(__file__).resolve().parents[2] / "scripts/flights/batch/batch_driver.sh"
     )
@@ -48,6 +48,9 @@ def run_batch_fixture(tmp_path, worker_exit, changes=None):
     (tmp_path / "batch_inspect.py").write_text(
         'print(\'{"structural_check":"PASS"}\')\n'
     )
+    (tmp_path / "wait_for_start_memory.py").write_text(
+        "import os,sys,json\nwith open(os.environ['WAITS'],'a') as f:f.write(json.dumps(sys.argv[1:])+'\\n')\nraise SystemExit(int(os.environ['WAIT_EXIT']))\n"
+    )
     prefix = r"""
 N=2
 field() { "$PY" -c 'import json,os,sys; v=json.load(open(os.environ["QUEUE"]))[int(sys.argv[1])].get(sys.argv[2]); print("" if v is None else str(v).lower() if isinstance(v,bool) else v)' "$1" "$2"; }
@@ -70,6 +73,9 @@ sleep() { :; }
         LOCK="lock",
         DISPATCHES=str(tmp_path / "dispatches"),
         WORKER_EXIT=str(worker_exit),
+        WAIT_EXIT=str(wait_exit),
+        WAITS=str(tmp_path / "waits"),
+        STOP=str(tmp_path / "STOP"),
     )
     result = subprocess.run(
         ["bash"],
@@ -142,3 +148,43 @@ def test_existing_plan_route_keeps_original_cli_arguments(tmp_path):
             tmp_path / "plans/registered.json"
         )
         assert "--experiment" not in args and "--start-gib" not in args
+
+
+@pytest.mark.parametrize("wait_exit", [0, 125])
+def test_memory_wait_is_before_prelaunch_and_never_retries_worker(tmp_path, wait_exit):
+    result, dispatches = run_batch_fixture(
+        tmp_path,
+        0,
+        {"process_start_wait_seconds": 600, "process_start_stable_samples": 3},
+        wait_exit=wait_exit,
+    )
+    waits = [json.loads(x) for x in (tmp_path / "waits").read_text().splitlines()]
+    assert len(waits) == (1 if wait_exit else 2)
+    assert all(x[x.index("--start-gib") + 1] == "14.5" for x in waits)
+    assert all(x[x.index("--stable-samples") + 1] == "3" for x in waits)
+    assert len(dispatches) == (0 if wait_exit else 2)
+    assert result.returncode == (9 if wait_exit else 0)
+    status = (tmp_path / "status").read_text()
+    if wait_exit:
+        assert "test-prelaunch" not in status
+    else:
+        assert status.index("memory-wait-ok") < status.index("test-prelaunch")
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"process_start_wait_seconds": 600},
+        {"process_start_stable_samples": 3},
+        {
+            "process_start_wait_seconds": 600,
+            "process_start_stable_samples": 3,
+            "process_start_gib": None,
+            "process_floor_gib": None,
+            "campaign_plan": "plans/old.json",
+        },
+    ],
+)
+def test_incomplete_wait_policy_never_dispatches(tmp_path, changes):
+    result, dispatches = run_batch_fixture(tmp_path, 0, changes)
+    assert result.returncode == 9 and dispatches == []

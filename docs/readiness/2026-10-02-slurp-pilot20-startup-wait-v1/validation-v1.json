@@ -1,0 +1,25 @@
+{
+  "at_utc": "2026-10-02T13:57:48.127231+00:00",
+  "coverage": {
+    "combined_percent": 95,
+    "observer_percent": 97,
+    "process_guard_percent": 94
+  },
+  "implementation": {
+    "scripts/flights/batch/batch_driver.sh": "e013bbf9076969458ff02c661b82ce7b39fcdbd98d6eab53717ab98819b7e3a7",
+    "scripts/flights/batch/wait_for_start_memory.py": "9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c",
+    "src/speech_aware_evidence_acquisition/core/flight/process_guard.py": "6939881f2351d470f0860ae82f7ce3a72ed7a2276a252bce7be0fd7f6359ef28"
+  },
+  "live_controls_mutated": false,
+  "model_contacts": 0,
+  "remaining_prelaunch_requirements": [
+    "clean separately frozen source",
+    "seven model-free prepared checks",
+    "exact owner STOP disposition",
+    "fresh resource and serving checks"
+  ],
+  "schema": "saea-model-free-memory-wait-validation-v1",
+  "score_jobs": 0,
+  "tests_passed": 74,
+  "tokenizer_contacts": 0
+}
