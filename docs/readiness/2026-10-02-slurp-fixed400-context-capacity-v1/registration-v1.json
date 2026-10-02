@@ -1,0 +1,53 @@
+{
+  "cohort_binding": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/cohort-prefix20-v1.json",
+    "sha256": "1e27d2685d8dd608296ece6ffc37b5f4827f1304cb8ffa8cbd2aa4a6382ee425"
+  },
+  "generation_calls": 0,
+  "max_tokenizer_endpoints": 6144,
+  "members": [
+    {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-context20-parent-v1.json",
+        "sha256": "0ea63c4f80bfa504ef7e377583b30867cb35ab1f15e4685bee080813ff3276e5"
+      },
+      "config_hash": "1536a557887b731da4dfa397c3a7bc1ba9b656614ac491f8e886d5b6459abe70",
+      "decision": "slurp-system-text-context20-parent-capacity-v1",
+      "experiment": "slurp-native-stage3-system-text-context20-parent-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-context20-parent-graph-v1",
+      "role": "parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT20-PARENT-CAPACITY-FIT-V1"
+    },
+    {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-context20-planner-v1.json",
+        "sha256": "5abcff87915a0840dd7cbe88fb9535241eaaaf7a50ead3830f39d590f451f0b0"
+      },
+      "config_hash": "5cc820529dc2a61dbf7562f4575fe05bde188b83ed6a6443863dad266f7e0066",
+      "decision": "slurp-system-text-context20-planner-capacity-v1",
+      "experiment": "slurp-native-stage3-system-text-context20-planner-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-context20-planner-graph-v1",
+      "role": "planner",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT20-PLANNER-CAPACITY-FIT-V1"
+    },
+    {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-context20-solver-v1.json",
+        "sha256": "062d1c17b6509580c9ce47c487f0d93bafb6f9a00ffa45d21369f32b8af68891"
+      },
+      "config_hash": "b3f2b429127c216b78317a12ba6c6ef920fff346426b8d3e113f062f25076eeb",
+      "decision": "slurp-system-text-context20-solver-capacity-v1",
+      "experiment": "slurp-native-stage3-system-text-context20-solver-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-context20-solver-graph-v1",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT20-SOLVER-CAPACITY-FIT-V1"
+    }
+  ],
+  "new_data_or_knowledge": false,
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision224-fixed400-context-postcall.json",
+    "sha256": "1ec142d3893025a5f8daef70367604c5ab3bc7e683fde5351e169364a426bdf7"
+  },
+  "schema": "saea-fixed400-context-capacity-registration-v1",
+  "status": "Registered; clean frozen checks and Windows dispatch pending"
+}

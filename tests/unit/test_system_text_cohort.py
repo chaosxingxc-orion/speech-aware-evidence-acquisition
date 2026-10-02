@@ -200,60 +200,103 @@ def test_bootstrap_intent_ranker_is_not_copied_into_current_policy(case):
     assert actual["rank_weights"] == original["rank_weights"]
 
 
-@pytest.mark.parametrize("partition,role,scorer", [
-    ("devel", "dev", "slurp-slu-official-train"),
-    ("test", "dev", "slurp-slu-official-train"),
-    ("train", "dev", "slurp-slu-official-train"),
-    ("devel", "discovery", "slurp-slu-official-train"),
-    ("devel", "dev", "slurp-slu-official-test"),
-])
-def test_dev_cohort_uses_only_registered_devel_inputs_without_changing_policy(case, partition, role, scorer):
+@pytest.mark.parametrize(
+    "partition,role,scorer",
+    [
+        ("devel", "dev", "slurp-slu-official-train"),
+        ("test", "dev", "slurp-slu-official-train"),
+        ("train", "dev", "slurp-slu-official-train"),
+        ("devel", "discovery", "slurp-slu-official-train"),
+        ("devel", "dev", "slurp-slu-official-test"),
+    ],
+)
+def test_dev_cohort_uses_only_registered_devel_inputs_without_changing_policy(
+    case, partition, role, scorer
+):
     base, binding, protocol, repo, data, receipt = case
     view = json.loads((repo / "view.json").read_text())
-    ids = [row["sample_id"].replace(":train:", f":{partition}:") for row in view["items"]]
+    ids = [
+        row["sample_id"].replace(":train:", f":{partition}:") for row in view["items"]
+    ]
     view["items"] = [{"sample_id": s} for s in ids]
     view["split_role"] = role
     base["scorers"] = [scorer, "cost"]
     view.pop("runtime_view_sha256")
     view["runtime_view_sha256"] = content_hash(view)
     binding.update(stage="dev", runtime_view=save(repo, "dev-view.json", view))
-    protocol["stages"] = [{"stage": "dev", "sample_ids": ids, "roster_sha256": content_hash(ids)}]
+    protocol["stages"] = [
+        {"stage": "dev", "sample_ids": ids, "roster_sha256": content_hash(ids)}
+    ]
     bootstrap = json.loads((repo / "bootstrap.json").read_text())
-    for name, phase in (("train-exemplars", "solver"), ("intent-boundaries", "perception")):
-        query = bootstrap["knowledge_stores"][name]["phase_supply"][phase]["query_source"]
+    for name, phase in (
+        ("train-exemplars", "solver"),
+        ("intent-boundaries", "perception"),
+    ):
+        query = bootstrap["knowledge_stores"][name]["phase_supply"][phase][
+            "query_source"
+        ]
         query.update(save(data, f"dev-{name}.jsonl", [{"id": s} for s in ids], True))
     binding["bootstrap_baseline"] = save(repo, "dev-bootstrap.json", bootstrap)
     receipt["derived_from"]["vote_spec"]["query_source"] = copy.deepcopy(
-        bootstrap["knowledge_stores"]["train-exemplars"]["phase_supply"]["solver"]["query_source"])
-    agreement = [json.loads(line) for line in (data / "agreement.jsonl").read_text().splitlines()]
+        bootstrap["knowledge_stores"]["train-exemplars"]["phase_supply"]["solver"][
+            "query_source"
+        ]
+    )
+    agreement = [
+        json.loads(line) for line in (data / "agreement.jsonl").read_text().splitlines()
+    ]
     for row, identity in zip(agreement, ids, strict=True):
         row["id"] = identity
     receipt["artifact"].update(save(data, "dev-agreement.jsonl", agreement, True))
     binding["agreement_receipt"] = save(data, "dev-receipt.json", receipt)
-    kwargs = dict(protocol=protocol, stage="dev", repo_root=repo, data_root=data, module_repo_root=ROOT)
+    kwargs = dict(
+        protocol=protocol,
+        stage="dev",
+        repo_root=repo,
+        data_root=data,
+        module_repo_root=ROOT,
+    )
     before = copy.deepcopy(base)
     if partition != "devel" or role != "dev" or scorer != "slurp-slu-official-train":
         with pytest.raises(PolicyError, match="cohort|scoring"):
             bind_system_text_cohort(base, binding, **kwargs)
         return
     from test_system_text_policy import seed_document
-    from speech_aware_evidence_acquisition.rails.system_text_policy import SystemTextPolicyBundle, compile_system_text_policy
+    from speech_aware_evidence_acquisition.rails.system_text_policy import (
+        SystemTextPolicyBundle,
+        compile_system_text_policy,
+    )
+
     document = seed_document()
     document["seed_config_sha256"] = content_hash(base)
-    document["role_text"] = {r: (ROOT / "configs" / base["phase_material"][r]["instruction_template"]).read_text()
-                             for r in ("solver", "reviewer", "planner")}
+    document["role_text"] = {
+        r: (
+            ROOT / "configs" / base["phase_material"][r]["instruction_template"]
+        ).read_text()
+        for r in ("solver", "reviewer", "planner")
+    }
     bundle = SystemTextPolicyBundle.from_json(document)
     # Real shared compiler and real cohort binding; synthetic query/artifact bytes.
-    compiled = compile_system_text_policy(base, bundle, repo_root=ROOT, output_root=repo / "worker")
+    compiled = compile_system_text_policy(
+        base, bundle, repo_root=ROOT, output_root=repo / "worker"
+    )
     result = bind_system_text_cohort(compiled, binding, **kwargs)
     replica = bind_system_text_cohort(
-        compile_system_text_policy(base, bundle, repo_root=ROOT, output_root=repo / "worker"), binding, **kwargs)
+        compile_system_text_policy(
+            base, bundle, repo_root=ROOT, output_root=repo / "worker"
+        ),
+        binding,
+        **kwargs,
+    )
     assert result == replica
     assert base == before
     for key in ("policy", "phase_material", "phase_tools", "serving_slot_tokens"):
         assert result[key] == compiled[key]
     assert result["scorers"] == ["slurp-slu-official", "cost"]
-    assert result["knowledge_stores"]["slot-contracts"] == base["knowledge_stores"]["slot-contracts"]
+    assert (
+        result["knowledge_stores"]["slot-contracts"]
+        == base["knowledge_stores"]["slot-contracts"]
+    )
     assert "prepared_phase_supply" not in result and "native_contact_fit" not in result
 
 
@@ -361,3 +404,152 @@ def test_refuse_validly_hashed_but_wrong_runtime_inputs(case, mutation):
         ]
     with pytest.raises((PolicyError, ValueError)):
         bind(case)
+
+
+def fixed_pool_case(case):
+    """Reuse the owner's pinned400 inputs instead of creating new vote bytes."""
+    from test_system_optimization import fixture as optimization_fixture
+
+    base, binding, _, repo, data, receipt = case
+    protocol, ids = optimization_fixture(repo)
+    full = json.loads((repo / "view.json").read_text())
+    full.update(split_role="discovery", split_identity_hash="4" * 64)
+    full["runtime_view_sha256"] = content_hash(full)
+    full_pin = save(repo, "view.json", full)
+    owner_path = (
+        "docs/receipts/owner/2026-10-02-decision224-fixed400-context-postcall.json"
+    )
+    owner = json.loads((repo / owner_path).read_text())
+    owner["fixed_runtime_view"] = full_pin
+    owner_pin = save(repo, owner_path, owner)
+    plan = json.loads((repo / "plan.json").read_text())
+    plan.update(owner=owner_pin, source_runtime_view=full_pin)
+    protocol["optimization_panel"]["plan"] = save(repo, "plan.json", plan)
+    protocol["stages"][0]["roster_sha256"] = content_hash(ids[:20])
+    view = {
+        "items": full["items"][:20],
+        "count": 20,
+        "split_role": "discovery",
+        "split_identity_hash": "2" * 64,
+    }
+    view["runtime_view_sha256"] = content_hash(view)
+    bootstrap = json.loads((repo / "bootstrap.json").read_text())
+    for name, phase in (
+        ("train-exemplars", "solver"),
+        ("intent-boundaries", "perception"),
+    ):
+        query = bootstrap["knowledge_stores"][name]["phase_supply"][phase][
+            "query_source"
+        ]
+        query.update(
+            save(data, f"{name}-full400.jsonl", [{"id": sid} for sid in ids], True)
+        )
+    receipt["derived_from"]["split_identity_hash"] = full["split_identity_hash"]
+    receipt["derived_from"]["vote_spec"]["query_source"] = copy.deepcopy(
+        bootstrap["knowledge_stores"]["train-exemplars"]["phase_supply"]["solver"][
+            "query_source"
+        ]
+    )
+    row = json.loads((data / "agreement.jsonl").read_text().splitlines()[0])
+    receipt["artifact"].update(
+        save(
+            data, "agreement-full400.jsonl", [{**row, "id": sid} for sid in ids], True
+        ),
+        rows=400,
+    )
+    binding.update(
+        stage="update-3",
+        runtime_view=save(repo, "prefix20.json", view),
+        bootstrap_baseline=save(repo, "bootstrap-full400.json", bootstrap),
+        agreement_receipt=save(data, "full400-receipt.json", receipt),
+    )
+    return base, binding, protocol, repo, data, receipt
+
+
+def bind_prefix(case):
+    base, binding, protocol, repo, data, _ = case
+    return bind_system_text_cohort(
+        base,
+        binding,
+        protocol=protocol,
+        stage="update-3",
+        repo_root=repo,
+        data_root=data,
+        module_repo_root=ROOT,
+    )
+
+
+def test_fixed_prefix_reuses_full_pool_agreement_without_rebuilding(case):
+    c = fixed_pool_case(case)
+    base, _, _, repo, data, _ = c
+    before = {
+        str(p): p.read_bytes()
+        for root in (repo, data)
+        for p in root.rglob("*")
+        if p.is_file()
+    }
+    result = bind_prefix(c)
+    agreement = result["knowledge_stores"]["intent-boundaries"]["phase_supply"][
+        "perception"
+    ]["agreement_source"]
+    assert agreement["relpath"] == "agreement-full400.jsonl"
+    assert result["phase_material"] == base["phase_material"]
+    assert {
+        str(p): p.read_bytes()
+        for root in (repo, data)
+        for p in root.rglob("*")
+        if p.is_file()
+    } == before
+    pins = result["preparation_source_receipts"]
+    assert any(
+        p.get("relpath") == "plan.json" and p["root"] == "repository" for p in pins
+    )
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "no-scope",
+        "other-pool",
+        "missing-row",
+        "duplicate-row",
+        "wrong-prefix",
+        "wrong-identity",
+    ],
+)
+def test_prefix_reuse_never_admits_arbitrary_supersets(case, fault):
+    c = fixed_pool_case(case)
+    _, binding, protocol, repo, data, receipt = c
+    if fault == "no-scope":
+        protocol.pop("optimization_panel")
+    elif fault == "wrong-prefix":
+        view = json.loads((repo / "prefix20.json").read_text())
+        view["items"].reverse()
+        view["runtime_view_sha256"] = content_hash(
+            {k: v for k, v in view.items() if k != "runtime_view_sha256"}
+        )
+        binding["runtime_view"] = save(repo, "prefix20.json", view)
+        protocol["stages"][0].update(
+            sample_ids=[r["sample_id"] for r in view["items"]],
+            roster_sha256=content_hash([r["sample_id"] for r in view["items"]]),
+        )
+    elif fault == "wrong-identity":
+        receipt["derived_from"]["split_identity_hash"] = "f" * 64
+        binding["agreement_receipt"] = save(data, "full400-receipt.json", receipt)
+    else:
+        rows = [
+            json.loads(line)
+            for line in (data / "agreement-full400.jsonl").read_text().splitlines()
+        ]
+        if fault == "other-pool":
+            rows[-1]["id"] = "slurp:train:999999:audio"
+        elif fault == "missing-row":
+            rows.pop()
+        else:
+            rows[-1] = rows[-2]
+        receipt["artifact"].update(save(data, "agreement-full400.jsonl", rows, True))
+        binding["agreement_receipt"] = save(data, "full400-receipt.json", receipt)
+    from speech_aware_evidence_acquisition.rails.phase_supply import PhaseSupplyError
+
+    with pytest.raises((PolicyError, PhaseSupplyError)):
+        bind_prefix(c)

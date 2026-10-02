@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Fixed400 candidates compiled and reuse verified: 2026-10-02T16:52:22.683680+00:00
+
+Owner224 scoped prefix reuse passes96 tests and100% cohort coverage. Both B third-allocation proposals are compiled with unchanged knowledge/supply, query/vote bytes, speech packets, tools and scorer; only Planner or Solver role text differs. L no-change allocations stay spent. No new data or knowledge is prepared. [Compilation and capacity registration](../readiness/2026-10-02-slurp-fixed400-context-capacity-v1/README.md).
+
+Three separately registered nongenerative capacity cells use the current first20 and existing four-row graph. Clean frozen checks/Windows dispatch remain pending at this checkpoint; no new tokenizer, generation, scorer or construction contacts. Follow with separately registered real engineering and the minimum four-member20 family (seed/A/A/two changed policies), not eight400. Whole-family READ and retained optimization exposure remain mandatory. No new owner decision is pending.
+
 ## Fixed400 context proposal round complete: 2026-10-02T16:33:56.281090+00:00
 
 The four original third proposal slots finished2026-10-02T16:29:59.879058+00:00 on frozen44ca35190, six registered contacts, no transport failure, complete usage accounting. L-3-1 and L-3-2 are no-change; neither inspected an indexed trajectory, relying on aggregate/overview evidence. B-3-1 proposes Planner-only routing clarification and B-3-2 Solver-only evidence/revision text. Neither is activated or scientifically validated. [Completion and source custody](../receipts/continuation/2026-10-02-fixed400-context-proposer-complete.json).

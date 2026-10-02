@@ -1,0 +1,50 @@
+{
+  "candidate_status": "Compiled only; no scientific performance evidence or runtime admission",
+  "contacts_added": {
+    "construction": 0,
+    "generation": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "members": {
+    "planner": {
+      "bundle_id": "fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452",
+      "changed_role_text": [
+        "planner"
+      ],
+      "compilation_sha256": "6e88978eea5eaafde50481c0438cacbb8251abd079c15e2af67914e02489f850",
+      "same_knowledge_and_supply": true,
+      "same_query_votes_packets_tools_scorer": true
+    },
+    "solver": {
+      "bundle_id": "97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294",
+      "changed_role_text": [
+        "solver"
+      ],
+      "compilation_sha256": "7a49a40517649f2b273b5e65f0db1aec611935dce3f042c3bd421d220e7825fe",
+      "same_knowledge_and_supply": true,
+      "same_query_votes_packets_tools_scorer": true
+    }
+  },
+  "next": "Run the three newly registered native-graph capacities on a clean frozen worker; then separately registered real engineering and minimal four-member20 comparison. No automatic8x400.",
+  "observed_at": "2026-10-02T16:52:22.683680+00:00",
+  "owner_decision": 224,
+  "preserved_no_change_allocations": [
+    "L-3-1",
+    "L-3-2"
+  ],
+  "reuse_tests": {
+    "cohort_statement_coverage_percent": 100,
+    "passed": 96,
+    "refusals": [
+      "missing exact owner scope",
+      "foreign agreement row",
+      "missing row",
+      "duplicate row",
+      "wrong prefix order",
+      "wrong split identity"
+    ]
+  },
+  "roster": "Existing first20 of existing UPDATE2 TRAIN400; reused optimization exposure, not independent validation",
+  "schema": "saea-fixed400-context-compilation-evidence-v1"
+}

@@ -66,6 +66,35 @@ def bind_system_text_cohort(
         == content_hash({k: v for k, v in view.items() if k != "runtime_view_sha256"}),
         "runtime view differs from the exact registered cohort partition or membership",
     )
+    # Owner224 reuses the exact frozen400 vote/query bytes for registered
+    # optimization prefixes. Every other cohort still needs exact-size custody.
+    from .system_optimization import load_optimization_panel, assert_policy_roster
+
+    panel = load_optimization_panel(protocol, stage, repo_root=repo_root)
+    agreement_view, agreement_ids, panel_sources = view, ids, []
+    if panel is not None:
+        plan, agreement_ids = panel
+        assert_policy_roster(
+            [], ids, protocol=protocol, stage=stage, repo_root=repo_root
+        )
+        agreement_view = json.loads(_read_pin(plan["source_runtime_view"], repo_root))
+        require(
+            agreement_view.get("split_role") == "discovery"
+            and agreement_view.get("runtime_view_sha256")
+            == content_hash(
+                {k: v for k, v in agreement_view.items() if k != "runtime_view_sha256"}
+            ),
+            "fixed pool runtime identity differs",
+        )
+        panel_sources = [
+            {"root": "repository", **pin}
+            for pin in (
+                protocol["optimization_panel"]["plan"],
+                plan["owner"],
+                plan["source_roster"],
+                plan["source_runtime_view"],
+            )
+        ]
     bootstrap = json.loads(_read_pin(binding["bootstrap_baseline"], repo_root))
     receipt = json.loads(_read_pin(binding["agreement_receipt"], data_root))
     stores = compiled["knowledge_stores"]
@@ -95,7 +124,7 @@ def bind_system_text_cohort(
         receipt.get("schema") == "saea-phase-agreement-receipt-v1"
         and {"model", "encoder", "gpu", "scorer"} <= set(receipt.get("contacts", {}))
         and all(type(v) is int and v == 0 for v in receipt["contacts"].values())
-        and derived["split_identity_hash"] == view["split_identity_hash"]
+        and derived["split_identity_hash"] == agreement_view["split_identity_hash"]
         and derived["vote_store"] == "train-exemplars"
         and derived["vote_phase"] == "solver"
         and derived["target_store"] == "intent-boundaries"
@@ -104,7 +133,7 @@ def bind_system_text_cohort(
         and derived["target_snapshot_sha256"]
         == stores["intent-boundaries"]["snapshot"]["sha256"]
         and derived["vote_spec"] == bootstrap_vote
-        and artifact["rows"] == len(ids)
+        and artifact["rows"] == len(agreement_ids)
         and artifact["dimension"] == "agreement:exemplar-intent",
         "agreement receipt does not bind this cohort and frozen vote pool",
     )
@@ -115,16 +144,19 @@ def bind_system_text_cohort(
         dimension=artifact["dimension"],
     )
     require(
-        set(agreement) == set(ids), "agreement rows differ from the complete cohort"
+        set(agreement) == set(agreement_ids),
+        "agreement rows differ from the complete cohort",
     )
     result = copy.deepcopy(compiled)
     if stage == "dev":
         # Same pinned official evaluator, bound explicitly to the DEV partition.
         # This mapping is coordinator plumbing, not a proposer-editable scorer.
-        require(result["scorers"] == ["slurp-slu-official-train", "cost"],
-                "DEV requires the unchanged official seed scoring configuration")
+        require(
+            result["scorers"] == ["slurp-slu-official-train", "cost"],
+            "DEV requires the unchanged official seed scoring configuration",
+        )
         result["scorers"] = ["slurp-slu-official", "cost"]
-    sources = list(result.get("preparation_source_receipts", []))
+    sources = list(result.get("preparation_source_receipts", [])) + panel_sources
     sources.extend(bootstrap.get("preparation_source_receipts", []))
     for name, phase in (
         ("train-exemplars", "solver"),
