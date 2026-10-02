@@ -1,0 +1,141 @@
+{
+  "schema": "saea-system-text-proposer-round1-closure-v1",
+  "recorded_at_utc": "2026-10-02T02:21:23.659938+00:00",
+  "owner_decisions": [
+    214,
+    215,
+    217
+  ],
+  "proposer_exact_version": "gpt-6-astra",
+  "proposal_opportunities_spent": 4,
+  "additional_opportunities": 0,
+  "retries_or_replacements": 0,
+  "allocations": {
+    "L-1-1": {
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/registration.json",
+        "sha256": "8cc61294266089638ad796d39de152f43438205edf2e62da1288dc74f13b0afb"
+      },
+      "started": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/execution/started.json",
+        "sha256": "4f7e95b50de6216c99f3ef9e112015ed67fbacfa84cf6545f2fd3a29e0d8acab"
+      },
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/execution/finished.json",
+        "sha256": "8721f9afa3d91b4d4d574c8ce74a7eb42bce302546209164aae385d1de8344b0"
+      },
+      "transport": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/execution/transport/L-1-1/outcome.json",
+        "sha256": "e793a2c4da21c0f2206c8e55c60163de796fec323ef1e7ef401c87fe88af528b"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/L-1-1.json",
+        "sha256": "4ef74025de645a693ab038e82a7769d13838d8e918de292763d2765476e7f692"
+      },
+      "status": "invalid"
+    },
+    "B-1-1": {
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/registration.json",
+        "sha256": "9dda1500faa1f57035dd0e9c34328098758fbef5f8636392635eb2ff4842d249"
+      },
+      "started": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/execution/started.json",
+        "sha256": "65d8e291645c97a8a861a73fa54930ee9f0ff2ea2e1144e861da7351a3b58808"
+      },
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/execution/finished.json",
+        "sha256": "956147856d9791067f4e06e6afef499101d99cd519a2100d960bdc629bee84de"
+      },
+      "transport": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-remaining-v2/execution/transport/B-1-1/outcome.json",
+        "sha256": "8cee3ff116002f565c007ee3f304a5613ad440793a40523c5de403419cf337d0"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/B-1-1.json",
+        "sha256": "865975cf71f3dad222390ad6c235816e01d3d95c4b364824c0fa97533d454b74"
+      },
+      "status": "invalid"
+    },
+    "L-1-2": {
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-slot2-v1/registration.json",
+        "sha256": "613d8dfcbd2b3bcd73ba3cb95935f3fbecf4195dfa2c528392f2980f447ba61c"
+      },
+      "started": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-slot2-v1/execution/started.json",
+        "sha256": "a76024e7b0daea7eff980ecb47b360395a237eb21ea570afe288e1a88791edb4"
+      },
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-slot2-v1/execution/finished.json",
+        "sha256": "ab75a5114650495b7c012baec35530c4caa17cc78d4dab4ca9ae0e9a324015e4"
+      },
+      "transport": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-slot2-v1/execution/transport/L-1-2/outcome.json",
+        "sha256": "0a9a244dedbaf54fdffda253b0471ed61fbd5e2d2ceaa894fe77b98e44bafd98"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/L-1-2.json",
+        "sha256": "e7da7e7c847c1f1aa7849adfd38cf8f4e7a079512e2e001f7e93bbf04068dadb"
+      },
+      "status": "invalid"
+    },
+    "B-1-2": {
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-blind-slot2-v1/registration.json",
+        "sha256": "dad8855035c8fda80989d74c7ef7116f1f8965bc74815c76b4b0982d09ed7f90"
+      },
+      "started": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-blind-slot2-v1/execution/started.json",
+        "sha256": "0a26f6e78cf9cc88b11ed94fd209e204cbcce6ad2f93ac2667a3ef164fcb2a9c"
+      },
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-blind-slot2-v1/execution/finished.json",
+        "sha256": "40b5a11dcbd44ebc98944509f12f95d048f54fdd5133b7bf4a58e444df486a0e"
+      },
+      "transport": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-blind-slot2-v1/execution/transport/B-1-2/outcome.json",
+        "sha256": "d2436d7e6d56e21a9cfe3dc10d3dd6adddd7f71cf7700a500c8c2901fbfdba14"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/B-1-2.json",
+        "sha256": "095e8484f8b906f9dc031f64a6f17476a058875bcf62d029c0dc0a99c2be05f1"
+      },
+      "status": "provisional"
+    }
+  },
+  "dispositions": {
+    "L-1-1": "INVALID: own-app source directory unavailable to first background launcher; one unmetered reservation; no accepted proposal.",
+    "B-1-1": "INVALID: completed reasoning item optional status misclassified by old consumer; complete raw stream preserved; 3191/849 metered tokens; no salvage.",
+    "L-1-2": "INVALID: two completed material reads, then conservative full-request input bound refused before contact3; actual observed11394/129 tokens; no final proposal; no cap increase.",
+    "B-1-2": "PROVISIONAL and compiled: one complete response,3189/890 tokens, no material tool calls, no feedback supplied. Only Solver role text is edited; no claim of benefit."
+  },
+  "metering": {
+    "completed_metered_contacts": 4,
+    "observed_input_tokens": 17774,
+    "observed_output_tokens": 1868,
+    "unmetered_reservations": 1,
+    "sequence_metering_complete": false,
+    "paid_api_spend": 0,
+    "equal_realized_compute_claim": false
+  },
+  "compiled_candidate": {
+    "allocation": "B-1-2",
+    "bundle_id": "6e6f8ede28096805a99e7af6a5fb6a4368c0c35fe1f4e2ba7c19291f6d1a0fd6",
+    "compilation": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/compilations/B-1-2.json",
+      "sha256": "5ae8281836c2acbc125e59eaf91240521466690270737e5d2c134c39ba188de7"
+    },
+    "configuration": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/compiled-configs/B-1-2.json",
+      "sha256": "eae9c800bbdbd273a9d0ee51d26d75709327cbf20cb0957fbe6d6915bc9c7d6e"
+    },
+    "runtime_admission": "pending",
+    "next_roster": "update-1: registered first400 of TRAIN Fold A",
+    "source_isolation": "Full cumulative knowledge/proposal ancestry verified against the exact evaluation roster by the shared compiler. No milestone/test feedback.",
+    "scope": "Solver text only. Knowledge content, supply, Reviewer/Planner text, intent vote mechanism, core, tools and scorer unchanged."
+  },
+  "next_steps": "Freeze the prospective five-member update1 family: both L and B parent/A/A pairs plus B-candidate-2; retain all three invalid candidate identities as exclusions before any flight artifacts. Prepare each own supply, capacity/FIT, generation/scoring plans and exact READ recipe through the shared FlightRuntime; serial admission precedes Windows-owned GPU launch. No partial-family feedback or new proposals before complete update1 read.",
+  "holds": "No new local GPU search generation, construction or scoring launched. The old batch STOP and all failed workers remain unchanged. Other carrier holds remain unchanged. Both initial400 members and owner216/217 status remain complete/approved.",
+  "claim_limits": "This completes original first-round proposal acquisition and one model-free compilation, not system evaluation or reinforcement benefit. L has no new candidate this round. Operational attrition must be included in reporting."
+}

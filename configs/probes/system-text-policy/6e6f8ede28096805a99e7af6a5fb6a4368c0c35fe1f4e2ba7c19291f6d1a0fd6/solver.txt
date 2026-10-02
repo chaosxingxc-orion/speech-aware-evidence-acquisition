@@ -1,0 +1,12 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Before answering, compare the candidate intents against the request expressed in the current speech. Distinguish the requested action from entities merely mentioned as its objects or context. Check the proposed intent and entity interpretation together: do not choose an intent solely because a mentioned value resembles a knowledge example, and do not add an entity solely because it would fit a candidate intent. Where candidate interpretations differ, use the expressed request and the available slot meanings to resolve the distinction; do not invent an unspoken fact to make an interpretation fit.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. Do not invent a missing value from knowledge, a slot name, or a candidate distinction. Knowledge associations describe observed uses, not required or exhaustive slot lists. If no entity is expressed, return an empty entities array.
+
+Before emitting the JSON, check each proposed entity separately for speech support, semantic type, and extraction boundary. Also check whether any supported mention was omitted. Knowledge can clarify how to interpret a mention, but cannot establish that it was spoken. Keep these checks internal; do not include them in the answer.
+
+On a revision, reconsider your answer using the same original Perception candidates and the intervening Reviewer/Planner evidence. Treat Reviewer criticism as a model judgment to assess against the speech and supplied knowledge, not as proof of an error. A lookup result may clarify a type or boundary without requiring an answer change. You may keep a supported answer. Do not call analytical tools or add an explanation outside the task JSON.

@@ -1,5 +1,14 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## First-round proposal acquisition complete: 2026-10-02T02:21:23.659938+00:00, ChatGPT root
+
+Owner216's scoring recovery and initial-family READ are complete. Owner217's own-app subscription is connected. All four original update1 proposal opportunities are now spent, with no replacements. L-1-1 and B-1-1 are INVALID after preserved transport failures; L-1-2 is INVALID after two metered artifact reads reached the conservative cumulative input bound before contact3. B-1-2 completed at02:17:34Z and is PROVISIONAL, with one response and3189/890 tokens. The four metered contacts total17774 input/1868 output tokens; the earlier L-1-1 reservation remains unmetered, so sequence-wide cost equality is not claimed. No more round1 proposer contacts are authorized by these allocations.
+
+Root compiled B-1-2 through the shared compiler against the exact update1 TRAIN400 roster with cumulative source isolation. Its bundle is6e6f8ede28096805a99e7af6a5fb6a4368c0c35fe1f4e2ba7c19291f6d1a0fd6. It edits only Solver text; it has no system score or adopted status. External archive: speechrl-data/system-text-search/control2-owner217; compiled-configs/B-1-2.json and compilations/B-1-2.json. See [complete proposal/compilation custody](../receipts/continuation/2026-10-02-system-text-round1-proposals-complete.json).
+
+Next: register all eight prospective identities and exclude the three objectively invalid candidates before any flight artifacts. The complete admitted update1 family retains both parent/A/A pairs and B-candidate-2 (five400-row members,2000 trajectories). Prepare own supplies, real capacity/FIT, plans and exact READ recipe; coordinator admission and Windows-owned launch remain pending. No local GPU search run was launched by proposal completion. The old STOP is preserved. At02:17Z the service was healthy idle with fresh telemetry, GPU22976MiB and Windows free21.02GiB. Do not notify unchanged idle/known failures, replay old tasks or send new proposals. Milestone feedback and other held carriers remain outside this search.
+
+
 ## Proposal transport checkpoint: 2026-10-02T02:12:59.781827+00:00, ChatGPT root
 
 The Windows-owned remaining-slot task started at02:02:08Z and stopped at02:02:43Z on B-1-1. Authentication succeeded and one complete GPT-6-Astra response was metered at3191 input/849 output tokens. A completed reasoning item omitted its optional status; the consumer mistakenly rejected it. The original worker26b961dcd and complete response bytes are preserved. B-1-1 is INVALID and spent, as is L-1-1; neither may be retried, replaced or salvaged from offline parsing.
