@@ -1,0 +1,9 @@
+{
+  "failure": "WITHHOLD bulk admission; preserve every original byte. No parser repair or repeated engineering contact.",
+  "required_rows": 4,
+  "run_ids": {
+    "arm": "SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1",
+    "read": "SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-STRUCTURE-V1"
+  },
+  "scope": "Operational controls only. Require all completed raw Reviewer responses to pass the unchanged normalizer. Inspect legal Planner actions, actual calls, finite terminal custody and native Solver final-answer authority. No task answers, labels, official score or optimization feedback."
+}

@@ -408,6 +408,10 @@
       "sha256": "e259ea1a80799bac906942bc1eb7d0a42443064a3696f35cc94507d5209634e9"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "bfd97bc90e0a351110865371ddb2c4cfa63f442ebe064af581d3593d9ad09c1a"
+  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"

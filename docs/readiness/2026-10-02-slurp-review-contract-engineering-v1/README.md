@@ -1,0 +1,3 @@
+# Owner219 four-row Reviewer contract proof
+
+Use the registered shared worker only,52 generation/208 native FIT contacts maximum. Four historical TRAIN engineering rows are source-disjoint from seed knowledge. Keep all roles and limits unchanged except the new common Reviewer response contract. Validate raw-to-normalized handoff without reading task quality. Natural model decisions need not exercise every optional tool path; the existing synthetic full graph and separately registered real request FIT cover refusal, empty/nonempty results and post-revision delivery. No official score, feedback update or benefit claim. Stop after the boundary; a prepared score-job specification or OPENED worker attempt is expected and not scientific finalization.

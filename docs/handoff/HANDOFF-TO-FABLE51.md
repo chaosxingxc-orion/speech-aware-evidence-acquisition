@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner219 capacity launch and engineering registration: 2026-10-02T12:51:31.019284+00:00
+
+Windows task SAEA-SystemText-ReviewerContract-Capacity is dispatched on frozen /home/chao/saea-worktrees/codex-system-text-review-contract-capacity-v1 at37236d36b. All three frozen model-free checks passed; actual capacity completion remains pending. Only the exact abandoned218 lease was archived/removed under219; original STOP and queue remain preserved. Four-row Reviewer contract engineering is registered for52 model/208 FIT contacts, not launched. New UPDATE2-RH1 eight-member3200-row family remains HELD until real engineering/FIT acceptance, exact family registration and admission. No new proposals, construction, scientific feedback or bulk generation. See docs/readiness/2026-10-02-slurp-review-contract-engineering-v1/README.md.
+
 ## Owner219 approved Reviewer contract correction: ChatGPT root, 2026-10-02
 
 The human explicitly approved the separately described uniform Reviewer response contract correction and execution. See [exact owner219 scope](../receipts/owner/2026-10-02-decision219-reviewer-contract.json). Offline tests231/231 pass, scoped coverage91%. Real engineering/FIT, new immutable identities, current admission and sequential GPU launch remain pending; monitoring still never dispatches. Owner218 is no longer pending. The new common contract supersedes the unlaunched same-contract recovery only through prospective records, not changes to frozen bytes. [Root diagnosis](../results/2026-10-02-slurp-system-text-update1-root-diagnosis.md) is root-only and not proposer input.

@@ -1,0 +1,30 @@
+{
+  "cell": "slurp-native-stage3-system-text-review-contract-smoke-4-v1",
+  "composed_config_hash": "db0e5a4ae273fd77e16331262053bdfd114b946e24af2b58cdd6953cf186e9d1",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-system-text-review-contract-engineering-v1/root-admission-v1.json",
+    "sha256": "e639de467e04b5236e89e255381b848abd65b368916e2e8b0764fa810ebddff6"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-review-contract-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "a32c49bd37bf1adbaf857f18bc44c0617a60c0bc661516309f79b098f257bb76",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ac6c778dcfe9ee4504c32d89c00dd1aaacfae694e7dd481b63d6fba01fa624c3",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-review-contract-smoke-4-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "bfd97bc90e0a351110865371ddb2c4cfa63f442ebe064af581d3593d9ad09c1a"
+  },
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-STRUCTURE-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner219"
+}
