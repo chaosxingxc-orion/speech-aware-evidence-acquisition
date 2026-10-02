@@ -1,0 +1,101 @@
+{
+  "schema": "saea-system-text-update-analysis-evidence-v1",
+  "at_utc": "2026-10-02T06:20:40.236976+00:00",
+  "owner_scope": [
+    214
+  ],
+  "worker_base_commit": "9a6e5a10ee3cc586e390e8ff0160fa1b031d2eff",
+  "implementation_status": "offline-verified-ready-for-serial-integration",
+  "source_files": {
+    "src/speech_aware_evidence_acquisition/analysis/system_text_update.py": "a1a51f89e3425a9d6869c503ddaf6b71875cfe2c18ba6052c5551e2eee9af2e5",
+    "scripts/analysis/system_text_update_read.py": "c903f3fdcfac71e294d4261ad7a8f3291b1756af57520e44a7aeec897b72087f",
+    "tests/unit/test_system_text_update_read.py": "39f38e7588fee1cfe8a63a9c46b47b759392c47b1687a63dc7e619430dc6e3aa",
+    "docs/readiness/2026-10-02-system-text-update-analysis-v1.md": "635c370d8063167982f0fe1b87d0dfaf111efa9ebc62112f5044e4ed4e4ce791"
+  },
+  "validation": {
+    "tests_passed": 135,
+    "new_cases": 25,
+    "analysis_statement_coverage_percent": 100,
+    "cli_statement_coverage_percent": 99,
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "fixtures": "Synthetic complete TRAIN feedback, source roster and qualified-family operator seam; related tests cover shared custody and READ refusals.",
+    "model_contacts_added": 0,
+    "tokenizer_contacts_added": 0,
+    "scorer_contacts_added": 0,
+    "current_family_scientific_reads_added": 0
+  },
+  "implementation": "Fresh complete-family READ gate, exact registered protocol/roster/resampling, pooled official-count identity, within-branch A/A and candidate contrasts, unknown cost preservation, full same-cohort frontier, root-only create-once report.",
+  "non_authority": "No countersignature, selection, archive mutation, altered measurement criterion, dispatch, retry or scientific adoption.",
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T06:16:28.210321+00:00",
+    "members": [
+      {
+        "member": "L-PARENT",
+        "state": "FINALIZED",
+        "contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "L-PARENT-AA",
+        "state": "FINALIZED",
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "B-PARENT",
+        "state": "FINALIZED",
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "B-PARENT-AA",
+        "state": "OPENED",
+        "contacts": 58,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-CANDIDATE-2",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      }
+    ],
+    "stop": false,
+    "process": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "frozen_worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+    "frozen_worker_clean": true,
+    "windows_free_gib": 10.71
+  }
+}
