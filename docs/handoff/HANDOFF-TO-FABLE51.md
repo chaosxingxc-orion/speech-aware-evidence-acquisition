@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Prospective update2 blind baselines: 2026-10-02T06:34:39.762311+00:00, ChatGPT root
+
+The fixed B seed/A/A fragments for update2 are compiled against the exact registered TRAIN Fold A positions401-800. Verified seed ancestry is disjoint, both request semantics match, and all contact modes are refused by their HELD cells. The36 shared policy/cohort/protocol tests and engineering-base checks pass. See [prepared scope and remaining gates](../readiness/2026-10-02-slurp-system-text-update2-v1/README.md).
+
+This is metadata-only preparation of protocol-fixed baselines. No L parent or candidate was selected, no proposal slot spent, and no exposure, FIT, scorer or model contact added. Own supplies and actual family/FIT/admission remain pending. Windows free10.78GiB at06:33Z; heavier preparation was not started alongside the current campaign.
+
+At06:33:28Z L-parent, L-parent-AA and B-parent remained FINALIZED with400 rows and one successful official score each, zero failures. B-parent-AA was OPENED with826 contacts; B-candidate-2 was NOT_STARTED. The frozen2f07dd3d6 process was live and STOP absent. Contacts are not rows. The current five-member READ remains unsigned; active sources, queue and all held-carrier boundaries remain unchanged.
+
 ## Complete-update analysis entry: 2026-10-02T06:20:40.236976+00:00, ChatGPT root
 
 The root reporting entry now reuses the complete-family reader and paired statistics to calculate each branch's own A/A, candidate-minus-parent/A/A intervals, exact official pooled metrics, strata, costs and full same-cohort frontier. It fills the gap before manual retain-feedback selection without selecting or granting READ. All 135 related tests pass, including 25 new cases across updates1-3; scoped statement coverage is100% analysis /99% CLI. See [operator contract and limits](../readiness/2026-10-02-system-text-update-analysis-v1.md).

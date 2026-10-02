@@ -1,0 +1,83 @@
+{
+  "checks": {
+    "all_contact_modes_refused": true,
+    "effect_floor_check": "PASS; 18 historical advisories; prospective cells have no exposure rows",
+    "engineering_base": "PASS",
+    "exact_cohort": true,
+    "same_request_semantics": true,
+    "unit_tests": 36
+  },
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "operational_checkpoint": {
+    "checked_at": "2026-10-02T06:33:28.005009+00:00",
+    "live_campaign_cmd": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "members": [
+      {
+        "contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "member": "l-parent",
+        "rows": 400,
+        "score_jobs": {
+          "failed": 0,
+          "job_count": 1,
+          "succeeded": 1
+        },
+        "state": "FINALIZED"
+      },
+      {
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "member": "l-parent-aa",
+        "rows": 400,
+        "score_jobs": {
+          "failed": 0,
+          "job_count": 1,
+          "succeeded": 1
+        },
+        "state": "FINALIZED"
+      },
+      {
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "member": "b-parent",
+        "rows": 400,
+        "score_jobs": {
+          "failed": 0,
+          "job_count": 1,
+          "succeeded": 1
+        },
+        "state": "FINALIZED"
+      },
+      {
+        "contacts": 826,
+        "member": "b-parent-aa",
+        "state": "OPENED"
+      },
+      {
+        "member": "b-candidate-2",
+        "state": "NOT_STARTED"
+      }
+    ],
+    "stop": false
+  },
+  "package": "docs/readiness/2026-10-02-slurp-system-text-update2-v1",
+  "pending": [
+    "own supply preparation",
+    "complete update1 READ",
+    "update2 proposal and family freeze",
+    "real full-request FIT",
+    "root admission"
+  ],
+  "prospective_bindings": "docs/readiness/2026-10-02-slurp-system-text-update2-v1/prospective-fixed-baselines-v1.json",
+  "recorded_at": "2026-10-02T06:34:39.762311+00:00",
+  "schema": "saea-system-text-update2-fixed-preparation-v1",
+  "scope": "Two fixed blind seed/A/A config pairs only; no full-family freeze or runtime admission.",
+  "source_commit": "25212702fe1dd12ace0b441cc5c12aff1cb05a7b",
+  "status": "HELD",
+  "windows_free_gib": 10.78
+}

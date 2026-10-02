@@ -1,0 +1,74 @@
+{
+  "checks": {
+    "cumulative_source_overlap": 0,
+    "exact_registered_roster": true,
+    "foreign_prepared_supply_absent": true,
+    "generation_mode_refused_by_cell": true,
+    "same_request_semantics": true,
+    "seed_ancestry_and_release_verified": true
+  },
+  "cohort_binding": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/cohort-bindings/update-2-v1.json",
+    "sha256": "624053c9089e005d77eca2d65d44f3dabd190da4eeac9dafdca4050b304ee3f7"
+  },
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "members": {
+    "b-parent": {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-update2-b-parent-v1.json",
+        "sha256": "7123558f34d44a526c1c0f366117826a0636b483c001b9a95a7001669959d991"
+      },
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-update2-b-parent-v1.json",
+        "sha256": "084afd98429e6140ea20cce8a4018ac9d6dc74a6f501002691f47cb1891bfaa8"
+      },
+      "request_semantics_sha256": "e37554bc5cbaa3ee841e032bd6123723538c3fbb0bd273ceb2790ee055f38d08",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1"
+    },
+    "b-parent-aa": {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-update2-b-parent-aa-v1.json",
+        "sha256": "44a64d2e47945d66734bdbc3965e184092d10d653b4d7350f4c65e3aa73ece4c"
+      },
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-update2-b-parent-aa-v1.json",
+        "sha256": "248250d54dcbd6ffc8c446399ec6d5cf44136117d271733fcba05b51bd515b42"
+      },
+      "request_semantics_sha256": "e37554bc5cbaa3ee841e032bd6123723538c3fbb0bd273ceb2790ee055f38d08",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1"
+    }
+  },
+  "no_runtime_authority": true,
+  "pending": [
+    "complete-update1-read",
+    "remaining-update2-proposals-and-family-freeze",
+    "own-supply-preparation",
+    "actual-full-request-fit",
+    "runtime-admission"
+  ],
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v3-owner217.json",
+    "sha256": "af67e4574a0125d45abf71425dc35e34813719de3c04c6ac3cb3b8089b905201"
+  },
+  "recorded_at": "2026-10-02T06:31:02.516782+00:00",
+  "roster_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "rows_per_member": 400,
+  "schema": "saea-system-text-prospective-fixed-baselines-v1",
+  "scientific_interpretation": "None. Preparing fixed blind baselines does not select a learning parent, spend a proposal slot or grant any held carrier execution authority.",
+  "seed_bundle": {
+    "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-SEARCH-CONTROL-V2/seed-policy.json",
+    "sha256": "caf7f06ef1047fbf6103de8395da7c09e787f32a203aeb230cb211eabd236235"
+  },
+  "source_commit": "25212702fe1dd12ace0b441cc5c12aff1cb05a7b",
+  "split_identity_hash": "643e845970aeac0a5ab6093b52fc6577b328a4a0aeef3a7c1056ee64a8980e04",
+  "stage": "update-2",
+  "status": "HELD"
+}

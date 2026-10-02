@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Prospective update2 blind baselines: 2026-10-02T06:34:39.762311+00:00, ChatGPT root
+
+The fixed B seed/A/A fragments for update2 are compiled against the exact registered TRAIN Fold A positions401-800. Verified seed ancestry is disjoint, both request semantics match, and all contact modes are refused by their HELD cells. The36 shared policy/cohort/protocol tests and engineering-base checks pass. See [prepared scope and remaining gates](../readiness/2026-10-02-slurp-system-text-update2-v1/README.md).
+
+This is metadata-only preparation of protocol-fixed baselines. No L parent or candidate was selected, no proposal slot spent, and no exposure, FIT, scorer or model contact added. Own supplies and actual family/FIT/admission remain pending. Windows free10.78GiB at06:33Z; heavier preparation was not started alongside the current campaign.
+
+At06:33:28Z L-parent, L-parent-AA and B-parent remained FINALIZED with400 rows and one successful official score each, zero failures. B-parent-AA was OPENED with826 contacts; B-candidate-2 was NOT_STARTED. The frozen2f07dd3d6 process was live and STOP absent. Contacts are not rows. The current five-member READ remains unsigned; active sources, queue and all held-carrier boundaries remain unchanged.
+
 ## Complete-update analysis entry: 2026-10-02T06:20:40.236976+00:00, ChatGPT root
 
 The root reporting entry now reuses the complete-family reader and paired statistics to calculate each branch's own A/A, candidate-minus-parent/A/A intervals, exact official pooled metrics, strata, costs and full same-cohort frontier. It fills the gap before manual retain-feedback selection without selecting or granting READ. All 135 related tests pass, including 25 new cases across updates1-3; scoped statement coverage is100% analysis /99% CLI. See [operator contract and limits](../readiness/2026-10-02-system-text-update-analysis-v1.md).
@@ -387,7 +395,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T06:20:40.236976+00:00
+Last refreshed: 2026-10-02T06:34:39.762311+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
