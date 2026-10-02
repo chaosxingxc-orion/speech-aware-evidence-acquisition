@@ -1,0 +1,6 @@
+{
+  "run_ids": {
+    "read": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-PARENT-CAPACITY-STRUCTURE-V1"
+  },
+  "scope": "Operational token counts, request hashes and synthetic structural receipts only. No task quality read."
+}

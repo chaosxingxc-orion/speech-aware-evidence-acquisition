@@ -1,0 +1,41 @@
+{
+  "schema": "saea-update1-preparation-v1",
+  "contacts_added": 0,
+  "members": [
+    {
+      "member": "L-parent",
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-V1/phase-supply-v1.json",
+        "sha256": "a4f479eaa77609c0fdf89feaca1b38f766524cb31534e5a6b8311d4039c863d9"
+      }
+    },
+    {
+      "member": "L-parent-aa",
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-AA-V1/phase-supply-v1.json",
+        "sha256": "2c76ad5431da3d1e926f433704e982294be163112370c9a930f45c7b295b48b1"
+      }
+    },
+    {
+      "member": "B-parent",
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-V1/phase-supply-v1.json",
+        "sha256": "105779594f4a13006197007a6f43559497fed345a25300c2d78f6a145dd21f26"
+      }
+    },
+    {
+      "member": "B-parent-aa",
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-AA-V1/phase-supply-v1.json",
+        "sha256": "16946e38ecc62a43ccaf5e2dbadcd42162060663840c8398ce5a6e45ffde6ea7"
+      }
+    },
+    {
+      "member": "B-candidate-2",
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-CANDIDATE-2-V1/phase-supply-v1.json",
+        "sha256": "e14ef8b2844d30d7b20c921b5caa582c885f202a480330aeb2288c20bdfefa1a"
+      }
+    }
+  ]
+}

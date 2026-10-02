@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update1 flight preparation: 2026-10-02T02:35:12.174199+00:00, ChatGPT root
+
+Five original update1 cells and own400-row supplies are prepared model-free. The roster is the exact registered first400 TRAIN Fold A. Both parent/A/A pairs remain, with B-candidate-2; three invalid proposal slots will be prospectively excluded with no replacement. Two separately registered native capacity allocations cover parent and candidate policy texts. Their registration, base, tool, completion and measurement checks pass. No new local GPU contact has occurred yet. Formal generation stays HELD pending capacity, complete immutable family registration and admission. Old STOP and failed sources remain unchanged. At02:34Z serving was healthy idle and Windows free20.83GiB.
+
 ## First-round proposal acquisition complete: 2026-10-02T02:21:23.659938+00:00, ChatGPT root
 
 Owner216's scoring recovery and initial-family READ are complete. Owner217's own-app subscription is connected. All four original update1 proposal opportunities are now spent, with no replacements. L-1-1 and B-1-1 are INVALID after preserved transport failures; L-1-2 is INVALID after two metered artifact reads reached the conservative cumulative input bound before contact3. B-1-2 completed at02:17:34Z and is PROVISIONAL, with one response and3189/890 tokens. The four metered contacts total17774 input/1868 output tokens; the earlier L-1-1 reservation remains unmetered, so sequence-wide cost equality is not claimed. No more round1 proposer contacts are authorized by these allocations.

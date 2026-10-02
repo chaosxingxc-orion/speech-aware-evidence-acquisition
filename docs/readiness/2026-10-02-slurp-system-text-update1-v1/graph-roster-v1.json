@@ -1,0 +1,11 @@
+{
+  "count": 4,
+  "sample_ids": [
+    "slurp:train:015833:audio-1497436826",
+    "slurp:train:000455:audio-1501692237-headset",
+    "slurp:train:000879:audio-1502100214",
+    "slurp:train:010165:audio-1502101086"
+  ],
+  "scope": "Model-free structural replay; never read task feedback.",
+  "split_identity_hash": "0c5da5dd033602561e6b3cba3b817f98bc201adb3cae39e1fd5049655265132e"
+}

@@ -1,0 +1,56 @@
+{
+  "capacity": [
+    {
+      "decision": "coordination/slurp-system-text-update1-parent-capacity-v1/root-admission-v1.json",
+      "decision_sha256": "e20610d5f5fe8cd79399a7458bfc59f7a7222b914457ab22c4a70d96d0fe5e30",
+      "experiment": "slurp-native-stage3-system-text-update1-parent-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-update1-parent-graph-v1",
+      "name": "parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-PARENT-CAPACITY-FIT-V1"
+    },
+    {
+      "decision": "coordination/slurp-system-text-update1-candidate-capacity-v1/root-admission-v1.json",
+      "decision_sha256": "0a273e7ebdf9fb6d1a53af90decfcbacab9a699c7661cf9afca90d557ab9e9e1",
+      "experiment": "slurp-native-stage3-system-text-update1-candidate-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-update1-candidate-graph-v1",
+      "name": "candidate",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-CANDIDATE-CAPACITY-FIT-V1"
+    }
+  ],
+  "generation": [
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update1-l-parent-v1",
+      "member": "L-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-V1"
+    },
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update1-l-parent-aa-v1",
+      "member": "L-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-AA-V1"
+    },
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update1-b-parent-v1",
+      "member": "B-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-V1"
+    },
+    {
+      "bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "experiment": "slurp-native-stage3-system-text-update1-b-parent-aa-v1",
+      "member": "B-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-AA-V1"
+    },
+    {
+      "bundle_id": "6e6f8ede28096805a99e7af6a5fb6a4368c0c35fe1f4e2ba7c19291f6d1a0fd6",
+      "experiment": "slurp-native-stage3-system-text-update1-b-candidate-2-v1",
+      "member": "B-candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-CANDIDATE-2-V1"
+    }
+  ],
+  "no_contacts_added": true,
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1",
+  "schema": "saea-system-text-flight-preparation-v1",
+  "split_identity_hash": "b6aff98ec3674ac42fd0dce87f8635036bca6e52a23d84ee331f6a0c886cfd83"
+}
