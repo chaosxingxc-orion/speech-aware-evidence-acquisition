@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Fixed400 capacity passed and engineering registered: 2026-10-02T17:06:27.511410+00:00
+
+All three registered native-graph capacities completed17:01:45Z on frozen9ec4dcb07:891 tokenizer endpoints total,132 requests measured,zero generation/scorer contacts. Minimum margins after full output and structural reserves are5560/5399/5546 tokens. [Capacity receipt](../receipts/continuation/2026-10-02-fixed400-context-capacity-complete.json).
+
+Two new four-row engineering identities are prepared/registered for the Planner and Solver text candidates, using the same current400 first4 and unchanged knowledge/queries/votes/packets. Clean frozen checks and actual Windows dispatch are pending here. [Engineering package](../readiness/2026-10-02-slurp-fixed400-context-engineering-v1/README.md). No task-quality read, new selection, old result replay, or automatic8x400. Following structural acceptance, prepare only the necessary four-member20 comparison. No owner question is pending; other-carrier holds and no-automatic-recovery rules remain.
+
 ## Fixed400 candidates compiled and reuse verified: 2026-10-02T16:52:22.683680+00:00
 
 Owner224 scoped prefix reuse passes96 tests and100% cohort coverage. Both B third-allocation proposals are compiled with unchanged knowledge/supply, query/vote bytes, speech packets, tools and scorer; only Planner or Solver role text differs. L no-change allocations stay spent. No new data or knowledge is prepared. [Compilation and capacity registration](../readiness/2026-10-02-slurp-fixed400-context-capacity-v1/README.md).

@@ -1,0 +1,32 @@
+{
+  "capacity_acceptance": {
+    "relpath": "docs/receipts/continuation/2026-10-02-fixed400-context-capacity-complete.json",
+    "sha256": "ba19e90867c3e32340cc47a1804fd0106e7b827faffe2a626274bfa949459b77"
+  },
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-context-planner-smoke-4-generation-v1",
+      "config_hash": "5dc6bfab9e927c76e6989450c1d28a9c609c431f0650445b687babef95e8b338",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "d67345fc31a3603a61dd683275e78ed58ff88af3323d22c9d8c6a2cf75ab2232"
+      },
+      "role": "planner",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-context-solver-smoke-4-generation-v1",
+      "config_hash": "9cdf24431e85afd71259813a2fe7c559ef047fdea6554b98304898497358e592",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "f6684330b249602edd3e5a74368331943027474c2467cfacd93382646c2d32e0"
+      },
+      "role": "solver",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1"
+    }
+  ],
+  "official_scoring_jobs": 0,
+  "schema": "saea-context-engineering-registration-v1",
+  "status": "Registered; exact clean frozen checks and current admission precede dispatch",
+  "task_quality_read": false
+}

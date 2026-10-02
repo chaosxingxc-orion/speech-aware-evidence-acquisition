@@ -1,0 +1,46 @@
+{
+  "data_or_knowledge_rebuilt": false,
+  "finished_at": "2026-10-02T17:01:45Z",
+  "generation_contacts": 0,
+  "members": {
+    "parent": {
+      "all_fit": true,
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_tokens": 5560,
+      "receipt": {
+        "relpath": "coordination/slurp-system-text-context20-parent-capacity-v1/request-fit-v1.json",
+        "sha256": "c4f8fe0a64385e8f513acb63519999d2c0c00e3f6c7b3ee8c0beaa2f77189963"
+      }
+    },
+    "planner": {
+      "all_fit": true,
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_tokens": 5399,
+      "receipt": {
+        "relpath": "coordination/slurp-system-text-context20-planner-capacity-v1/request-fit-v1.json",
+        "sha256": "d53a46a5ba7cf0a524e9d413466c0eb657573b36bf608071b80310b9c8268ae3"
+      }
+    },
+    "solver": {
+      "all_fit": true,
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_tokens": 5546,
+      "receipt": {
+        "relpath": "coordination/slurp-system-text-context20-solver-capacity-v1/request-fit-v1.json",
+        "sha256": "e44a970c228e08aba5a561eb402899b319ccbc3245c0d391dee9242025cb00d2"
+      }
+    }
+  },
+  "observed_at": "2026-10-02T17:05:32.247390+00:00",
+  "official_scorer_contacts": 0,
+  "schema": "saea-fixed400-context-capacity-complete-v1",
+  "scope": "Actual production native graphs with maximum legal knowledge return and512 output reserve plus2048 structural reserve. Runtime request FIT remains mandatory.",
+  "source_commit": "9ec4dcb07",
+  "started_at": "2026-10-02T16:58:17Z",
+  "tokenizer_contacts": 891,
+  "windows_task": "SAEA-SystemText-Fixed400-Context-Capacity",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-context20-capacity-v1"
+}

@@ -1,0 +1,29 @@
+{
+  "automatic_recovery": false,
+  "max_generation_contacts": 104,
+  "max_native_fit_endpoints": 416,
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-context-planner-smoke-4-generation-v1",
+      "experiment": "slurp-native-stage3-system-text-context-planner-smoke-4-v1",
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-FIT-V1",
+      "role": "planner",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-context-solver-smoke-4-generation-v1",
+      "experiment": "slurp-native-stage3-system-text-context-solver-smoke-4-v1",
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-FIT-V1",
+      "role": "solver",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-SOLVER-SMOKE-4-V1"
+    }
+  ],
+  "new_data_or_knowledge": false,
+  "official_score_jobs": 0,
+  "same_existing400_data": true,
+  "schema": "saea-context-engineering-preparation-v1",
+  "status": "HELD before capacity/registration/admission",
+  "task_quality_read": false
+}

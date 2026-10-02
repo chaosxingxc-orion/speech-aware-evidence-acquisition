@@ -1,0 +1,11 @@
+{
+  "allowed_read": "Structural role/control and terminal custody only. No task answers for quality, official scoring or reward learning.",
+  "expected_rows": 4,
+  "generation_contact_cap": 52,
+  "run_ids": {
+    "generation": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-V1",
+    "read": "SAEA-SLURP-SYSTEM-TEXT-CONTEXT-PLANNER-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "score_jobs": 0
+}
