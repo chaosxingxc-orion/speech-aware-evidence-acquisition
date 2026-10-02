@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Audio2Tool dispatch and terminal custody: 2026-10-02T07:35:26.895598+00:00, ChatGPT root
+
+The real Audio2Tool runtime adapter now has a synthetic integration proof through FlightRuntime dispatch, OpenJiuwen, canonical delivery and trace verification. Nine routes cover revision, nonempty/empty acquisition, exhaustion and abstention, with an independent second sample in each. All57 related tests pass; no production code changed. See [proof and exact synthetic limits](../readiness/2026-10-02-audio2tool-native-branches-v1.md).
+
+This proves18 synthetic trajectories, not a GPU flight, full admission/sealing/scoring or quality. No external model/tokenizer/scorer or research-result contact was added. Audio2Tool/Earnings still need exact carrier bindings, capacity, A/A, metric rules and admission; the text-policy search remains SLURP-specific.
+
+At07:33:51Z all four update1 parents/replicates were FINALIZED with400 rows and one successful official score each, zero failures. B-candidate-2 was OPENED with501 contacts; STOP absent, service healthy, Windows free10.77GiB. Contacts are not rows. Frozen2f07dd3d6, queue and held-carrier boundaries remain unchanged. The five-member READ stays unsigned and no next-round parent was selected.
+
 ## Analysis roster joins: 2026-10-02T07:04:38.345074+00:00, ChatGPT root
 
 The four exact TRAIN400 update/selection cohorts now have analysis-only joins for the shared reward-link reader. Stable-hash selection, original source/runtime pins, ordered split identities and zero pairwise utterance overlap all verify. Items contain only identity, duration and headset metadata. Original rosters/roles, frozen recipe and model-facing inputs are unchanged. See [bindings and remaining gates](../readiness/2026-10-02-system-text-analysis-roster-joins-v1.md).
@@ -409,7 +417,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T07:04:38.345074+00:00
+Last refreshed: 2026-10-02T07:35:26.895598+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

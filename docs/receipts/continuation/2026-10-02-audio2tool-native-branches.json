@@ -1,0 +1,45 @@
+{
+  "active_worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+  "carrier": "audio2tool",
+  "contacts": {
+    "external_model": 0,
+    "official_scorer": 0,
+    "tokenizer": 0
+  },
+  "created_at_utc": "2026-10-02T07:35:26.895598+00:00",
+  "focused_cases": 9,
+  "not_established": [
+    "real flight admission",
+    "manifest seal/finalization",
+    "official scoring",
+    "capacity",
+    "task quality",
+    "cross-carrier text-search admission"
+  ],
+  "production_source_changes": false,
+  "readiness": "docs/readiness/2026-10-02-audio2tool-native-branches-v1.md",
+  "real_components": [
+    "Audio2ToolRuntimeAdapter",
+    "FlightRuntime native dispatch",
+    "OpenJiuwen executor",
+    "acquisition binding",
+    "canonical output construction",
+    "output-to-trace verification"
+  ],
+  "related_tests_passed": 57,
+  "research_quality_reads": 0,
+  "schema": "saea-offline-native-branch-proof-v1",
+  "synthetic_complete_trajectories": 18,
+  "synthetic_seams": [
+    "dataset loader",
+    "speech bytes",
+    "released knowledge",
+    "model replies",
+    "capacity admission",
+    "FlightRuntime factory/binding harness"
+  ],
+  "test": {
+    "relpath": "tests/unit/test_audio2tool_native_branch_integration.py",
+    "sha256": "e5e7be5688cd6f56f854dc14eedde5871fabe5e6e7229428ec5c79b96d5a3846"
+  }
+}
