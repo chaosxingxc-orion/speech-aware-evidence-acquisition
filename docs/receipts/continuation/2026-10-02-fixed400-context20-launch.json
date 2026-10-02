@@ -1,0 +1,84 @@
+{
+  "schema": "saea-fixed400-context20-launch-v1",
+  "at_utc": "2026-10-02T17:49:26.730413+00:00",
+  "owner_decisions": [
+    214,
+    215,
+    218,
+    222,
+    223,
+    224
+  ],
+  "windows_task": "SAEA-Batch-Driver",
+  "driver_epoch": "2026-10-02T17:45:15Z",
+  "campaign_started": "2026-10-02T17:45:40Z",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-fixed400-context20-v2",
+  "worker_commit": "c33fc23e9f1bcfe7846d4b00368d281289cedc46",
+  "observed_driver_pid": 350559,
+  "observed_worker_pid": 350724,
+  "pid_note": "Observed live during launch; always revalidate, never use as future process authority.",
+  "control_custody": {
+    "relpath": "coordination/slurp-system-text-fixed400-context20-v1/launch-control.json",
+    "sha256": "64f9eb0668ffa416244e1da87540620710928316fa99d736abe5b2e73a485b76"
+  },
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-generation-v1",
+      "state": "OPENED",
+      "actual_model_calls": 80,
+      "check": {
+        "relpath": "coordination/slurp-system-text-fixed400-context20-v1/seed-frozen-v2-check.out",
+        "sha256": "f1c1d26d200582c09182ce51f006e0dccbf4536611d46eb56fc2445c6f6ad6f4"
+      }
+    },
+    {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-generation-v1",
+      "state": "ABSENT",
+      "actual_model_calls": 0,
+      "check": {
+        "relpath": "coordination/slurp-system-text-fixed400-context20-v1/seed-aa-frozen-v2-check.out",
+        "sha256": "3a29375238f4f48cea0e9d8cc1b69e9c24d40833dcce5448d8ba3200e7b0a9bc"
+      }
+    },
+    {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-planner-generation-v1",
+      "state": "ABSENT",
+      "actual_model_calls": 0,
+      "check": {
+        "relpath": "coordination/slurp-system-text-fixed400-context20-v1/planner-frozen-v2-check.out",
+        "sha256": "43ee0f996257f3540aba647f1488373af5097c16f957fd43c6183c30c568d1b1"
+      }
+    },
+    {
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-solver-generation-v1",
+      "state": "ABSENT",
+      "actual_model_calls": 0,
+      "check": {
+        "relpath": "coordination/slurp-system-text-fixed400-context20-v1/solver-frozen-v2-check.out",
+        "sha256": "9ad32b35df6dd106dafa5135d0599a077134a15aec2158e50e131f7841969a92"
+      }
+    }
+  ],
+  "trajectory_cap": 80,
+  "rows_per_member": 20,
+  "shared_prepared_output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+  "seed_aa_semantics": "Baseline dictionaries exactly equal after excluding only run-local FIT/prepared identities.",
+  "no_new_dataset_or_knowledge_construction": true,
+  "scientific_read": "Unsigned; no partial task-quality read. Require all four finalized verified seals and one successful official score each.",
+  "resources": {
+    "windows_free_gib": 16.85,
+    "observed_at": "2026-10-02T17:47:50Z",
+    "running_floor_gib": 8,
+    "startup_gib": 12.5,
+    "telemetry_age_seconds": 9.756,
+    "server_ok": true,
+    "gpu_memory_mib": 22976,
+    "gpu_utilization_percent": 86,
+    "slots_busy": 4
+  },
+  "limitations": "20-row retained-exposure optimization only, no formal benefit or L-over-B learning claim. No automatic expansion, recovery, retry, score replay or old held-carrier release."
+}

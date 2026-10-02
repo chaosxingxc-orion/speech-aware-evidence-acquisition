@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Minimal fixed400 comparison running: 2026-10-02T17:49:26.730413+00:00
+
+Root launched the four-member20 comparison through Windows SAEA-Batch-Driver at17:45:15Z; the first campaign began17:45:40Z. Live worker PID350724 and actual generation contacts were verified on frozen `/home/chao/saea-worktrees/codex-system-text-fixed400-context20-v2` at `c33fc23e9f1bcfe7846d4b00368d281289cedc46`. All four clean preflights and whole-family registration passed. [Launch evidence and control custody](../receipts/continuation/2026-10-02-fixed400-context20-launch.json). The earlier model-free metadata refusal was corrected before any attempt; no flight STOP or recovery occurred.
+
+Run only seed, its A/A, Planner-text and Solver-text candidates:80 trajectories on the same current400 first20, with one official complete score per member. All prepared supply outputs have the same hash; seed/A/A semantic baselines match. No data, knowledge, vector, packet or vote rebuild and no automatic8x400. Full READ remains unsigned and task quality unread until all four qualify. The first seed is running; later members are not inferred from its progress.
+
+At17:47:50Z Windows free memory was16.85GiB; live telemetry was fresh and healthy, GPU86%, four slots busy. Floors remain8GiB running/12.5GiB startup. Expected progress needs no monitoring notification. Do not retry, reseal, replay scores or clear STOP. Root/B outcomes stay out of blind proposal inputs; this reduced comparison establishes no feedback-learning superiority. Other carriers remain held. No owner decision is pending.
+
 ## Context engineering passed; minimal comparison registered: 2026-10-02T17:35:02.013509+00:00
 
 Windows driver17:10:07Z completed17:13:18Z on frozen7ba7f5fdb. Both new candidate engineering members delivered four rows;22/28 generation contacts and matching actual FIT receipts,200 tokenizer endpoints total. All14 raw Reviewer handoffs and14 Solver task JSON replies pass structural contracts; all8 deliveries retain native Solver custody. No official scores or task-quality read. OPENED engineering attempts are intentional. [Engineering receipt](../receipts/continuation/2026-10-02-fixed400-context-engineering-complete.json).
