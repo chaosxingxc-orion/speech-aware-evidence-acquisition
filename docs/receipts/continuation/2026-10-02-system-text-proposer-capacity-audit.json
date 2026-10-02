@@ -1,0 +1,112 @@
+{
+  "schema": "saea-system-text-proposer-capacity-evidence-v1",
+  "at_utc": "2026-10-02T05:14:26.258124+00:00",
+  "owner_scope": [
+    214,
+    217
+  ],
+  "worker_base_commit": "5d147070ac29722bc47794745f04be50a551b1f1",
+  "implementation_status": "offline-verified-ready-for-serial-integration",
+  "source_files": {
+    "src/speech_aware_evidence_acquisition/rails/system_proposer_capacity.py": "bbaa965b4807eb2f8f5b303e3950aaafad9c455d1f89e5c026ae8b86c7c3db51",
+    "scripts/checks/system_text_proposer_capacity_check.py": "7781ab1b18001c2c4c8bfa2c0810666cf1ecc28e9ac2c8e1d8f7f3ae2de2f4a8",
+    "tests/unit/test_system_proposer_capacity.py": "66f34e431ac6d0670cdf0fbb8a14be3ffc22e6f161eeb96f3c62611082025327",
+    "docs/readiness/2026-10-02-system-text-proposer-capacity-audit-v1.md": "b28951db0549c5bea963152055f9e3f10bc271d5b5d81eebb258c241868c7310"
+  },
+  "validation": {
+    "tests_passed": 168,
+    "new_tests": 28,
+    "initial_red": "Import failed before the audit module existed.",
+    "statement_coverage_percent": {
+      "audit": 100,
+      "cli": 97,
+      "combined": 99
+    },
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "request_equivalence": "Production loopback HTTP/SSE; four branch/profile combinations and three-request subscription path.",
+    "model_contacts_added": 0,
+    "tokenizer_contacts_added": 0,
+    "scorer_contacts_added": 0
+  },
+  "actual_size_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-capacity-engineering-v1/summary.json",
+    "sha256": "f67cd29cd5004c98de62a879cff5e1308999c69ed6538a1619a243cc32812f3d"
+  },
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T05:09:34.852858+00:00",
+    "members": [
+      {
+        "member": "L-PARENT",
+        "state": "FINALIZED",
+        "contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "L-PARENT-AA",
+        "state": "FINALIZED",
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "B-PARENT",
+        "state": "OPENED",
+        "contacts": 58,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-PARENT-AA",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-CANDIDATE-2",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      }
+    ],
+    "stop": false,
+    "process": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "windows_free_gib": 11.55,
+    "frozen_worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816"
+  },
+  "limits": [
+    "Only explicit assumed continuations are covered; no new provider usage or universal fit claim.",
+    "Original request transport, budget, spent opportunities and scientific boundaries remain unchanged.",
+    "Update1 remains live and its whole-family READ is unsigned; no current quality or answer read.",
+    "Exact next-round capsules and admissions remain pending. No held carrier is released."
+  ]
+}

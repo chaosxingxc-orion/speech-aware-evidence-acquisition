@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Offline proposer capacity audit: 2026-10-02T05:14:26.258124+00:00, ChatGPT root
+
+The prospective checker now reconstructs explicit tool continuations with the production request builder, output validator and artifact broker. It retains whole reasoning/history, checks cumulative remaining budgets, and reports hashes/margins without contacts or dispatch authority. The168 related tests pass, with99% combined scoped coverage; real local HTTP/SSE fixtures establish request equality. See [readiness and limits](../readiness/2026-10-02-system-text-proposer-capacity-audit-v1.md).
+
+Only the previously root-READ initial400 family supplied actual-size evidence. The prior two-page path is reproduced exactly and still misses the third-request allowance by46; a separate one-complete-brief scenario fits. Usage is explicitly assumed, not newly measured. This is a reusable check, not a universal capacity promise, retry or budget change. All spent round-one slots remain spent. Exact round-two capsules need the complete update1 READ and their own isolation/version/admission.
+
+At05:09:34Z both L-parent and L-parent-AA were FINALIZED with400 rows and one successful official score each, zero failed score jobs. B-parent was OPENED with58 contacts; B-parent-AA and B-candidate-2 were NOT_STARTED. STOP absent; live process identity remains the frozen2f07dd3d6 campaign. Windows free11.55GiB. Contacts are not completed rows. The five-member READ remains unsigned; no current quality result or answer was read. Running sources and queue remain unchanged.
+
 ## Frozen DEV analysis: 2026-10-02T04:53:15.626701+00:00, ChatGPT root
 
 The offline endpoint now gates all four exact frozen DEV systems before reusing the standard paired reader. It refuses incomplete families, changed scope/configuration, duplicate/failed scores and unsigned READ; all seals and complete score receipts are verified. Five prescribed diagnostic/primary pairs include the seed/A/A null and L-minus-B. Native role/tool costs preserve missing usage, and same-cohort non-dominance retains A/A independently. The181 related tests pass with99% combined scoped coverage. See [analysis readiness and limitations](../readiness/2026-10-02-system-text-dev-analysis-v1.md).
@@ -347,7 +355,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T04:53:15.626701+00:00
+Last refreshed: 2026-10-02T05:14:26.258124+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
