@@ -1,0 +1,30 @@
+{
+  "schema": "saea-system-text-provider-admission-v1",
+  "status": "admitted",
+  "recorded_at_utc": "2026-10-02T01:40:24.140300+00:00",
+  "owner_decision": 217,
+  "endpoint": "https://api.openai.com/v1/responses",
+  "provider_profile": "chatgpt-plan-preview",
+  "budget_profile": "subscription-metered-reject-v1",
+  "output_cap_enforcement": "metered-reject-after-completion",
+  "paid_api_spend": 0,
+  "model_version": "gpt-6-astra",
+  "protocol_sha256": "d1160e9b68bb94b310c053c0074f8c6c1289046823821702fbb5d09986dffa21",
+  "input_meter": "serialized UTF-8 request bytes plus 4096 framing reserve; check every provider-reported input count independently; reject any underestimated or unmetered proposal without replacement",
+  "input_token_limit": 32768,
+  "output_token_acceptance_limit": 4096,
+  "contact_cap": 4,
+  "auth": "Own SAEA System Text Research subscription grant; owner completed sign-in; private DPAPI store; no third-party app credentials or paid API key",
+  "isolation": "Fresh complete request per proposal, store=false, no conversation ID, only the pinned artifact namespace. No chat history, host tools, skills or workspace contents are added. Provider-internal behavior is not claimed to be inspectable.",
+  "completed_stream_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-subscription-transport-proof-recovery1-v1/response.sse",
+    "sha256": "81734f6ab9676d065ffef90db17351418b7c59314eaf596b8820b53ba966bc60"
+  },
+  "offline_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-subscription-transport-proof-recovery1-v1/offline-complete-stream-validation.json",
+    "sha256": "a5098bbeaa2963ebb3b6c414e8936d2ee3976583fc2c9b2b9a68acd21cdee7ff"
+  },
+  "prior_outcome_disposition": "Keep both synthetic proof finished records failed. The second already contains one complete correct acknowledgement with model identity and 220/10 token usage. Admit the corrected consumer on retained completed bytes plus offline negative and end-to-end tests, not on a third model request. No synthetic proof retry, reseal, score or rewriting occurs. Any real proposal transport failure consumes that allocation and stops the launcher; no replacement.",
+  "scope": "The separately registered first round only. This admission dispatches no GPU generation, construction or scoring and grants no new scientific read.",
+  "sha256": "76b0fddebc12d4fcc72ce13d80dfc7e311ba78b5f047074051096c1b66d8ff82"
+}

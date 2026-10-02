@@ -1,0 +1,110 @@
+{
+  "schema": "saea-owner216-217-continuation-v1",
+  "observed_at_utc": "2026-10-02T01:15:49.312574+00:00",
+  "owner_decisions": "docs/receipts/owner/2026-10-02-decisions216-217.json",
+  "owner216": {
+    "finished_at_utc": "2026-10-02T00:36:58.852174+00:00",
+    "job_count": 1,
+    "succeeded": 1,
+    "failed": 0,
+    "preserved_evidence_unchanged": true,
+    "new_generation_contacts": 0,
+    "batch_summary": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-batch-entry-recovery1/batch-summary.json",
+    "retry_permitted": false
+  },
+  "initial_family_qualified": "docs/receipts/continuation/2026-10-02-system-text-initial-family-qualified.json",
+  "feedback": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/complete-feedback.json",
+    "sha256": "b7b996de0ebd10f95a33e1ad32fd441cea245be6aa44619194feb13b143e3337"
+  },
+  "scientific_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/read-v1/report.json",
+    "sha256": "10dce8a87f0627c79928bdcffb21345d39d92dd166180f6910bfab0221a00ccb"
+  },
+  "interpretation": "Initial seed and same-policy replicate only; no system optimization or feedback-learning benefit established. The frozen initial reference is0.5966805915811396.",
+  "feedback_adapter_fix": "Replay the existing registered deterministic delivery normalizer using the sealed raw contact, and map terminal runtime custody to that same original contact without changing delivered outputs, source hashes or official scores. Forged custody is rejected.",
+  "owner217": {
+    "status": "approved; budget and own-app auth implemented; real proposals not launched",
+    "budget_profile": "subscription-metered-reject-v1",
+    "model_version": "gpt-6-astra",
+    "input_limit": 32768,
+    "output_acceptance_limit": 4096,
+    "candidate_contact_cap": 4,
+    "server_hard_output_cap": false,
+    "actual_equal_compute_claim": false,
+    "sdk_commit": "f723814abdccec135b519c451fb6e1992ee5e933",
+    "credential_store": "Own SAEA app only, Windows DPAPI encryption, never copied from another app. User completed separate sign-in. No token or identity in research records.",
+    "proof_attempts": 2,
+    "first_proof": "HTTP200 rejected by MIME gate; original response body/usage not captured. Preserve incomplete evidence; do not claim zero contact.",
+    "second_proof": {
+      "status": "failed",
+      "error_type": "PolicyError",
+      "reason": "completion has no output",
+      "model_contacts_reserved": 1,
+      "proposal_contacts": 0,
+      "retry_permitted": false,
+      "finished_at_utc": "2026-10-02T01:08:57.749921+00:00"
+    },
+    "offline_complete_stream_validation": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-subscription-transport-proof-recovery1-v1/offline-complete-stream-validation.json",
+      "sha256": "a5098bbeaa2963ebb3b6c414e8936d2ee3976583fc2c9b2b9a68acd21cdee7ff"
+    },
+    "actual_second_contact_usage": {
+      "input_tokens": 220,
+      "output_tokens": 10
+    },
+    "third_connection_probe": false,
+    "proposal_contacts": 0,
+    "paid_api_spend": 0
+  },
+  "runtime": {
+    "continuation_state": "handoff-required from preserved old campaign STOP, despite recovered A/A FINALIZED",
+    "server_ok": true,
+    "gpu_memory_mib": 22976,
+    "slots_busy": 0,
+    "slots_total": 4,
+    "windows_free_gib": 18.02,
+    "queue_modified": false,
+    "stop_cleared": false
+  },
+  "remaining": [
+    "Root disposition/admission of the repaired transport based on complete retained synthetic bytes and negative tests; original failed proof outcomes remain immutable.",
+    "Complete isolated L/B packet and capsule preparation, pre-register all candidate contacts before dispatch.",
+    "Compile each received candidate, verify cumulative-source separation, prepare its own knowledge/supply/FIT and freeze the full update family before GPU generation."
+  ],
+  "held_carriers": [
+    "P-SV-4",
+    "Audio2Tool",
+    "E21"
+  ],
+  "validation": {
+    "selected_unit_suite_before_stream_fix": 382,
+    "transport_budget_auth_stream_suite": 68,
+    "new_model_calls_in_feedback_export": 0,
+    "new_scorer_calls_in_feedback_export": 0
+  },
+  "proposal_preflight": {
+    "timestamp_utc": "2026-10-02T01:41:54.999235+00:00",
+    "registered_members": 4,
+    "provider_admission": "docs/readiness/2026-10-01-slurp-system-text-search-v1/provider-admission-owner217-v1.json",
+    "contacts_added": 0,
+    "initial_input_bounds": {
+      "L": 19461,
+      "B": 16067
+    },
+    "full_provenance": "complete-proposal-packet artifact, exact raw feedback and release-bound construction sources retained",
+    "packaging_repairs": [
+      "semantic snapshot hash versus raw file hash",
+      "bounded first view with full source lists indexed",
+      "explicit response format and release-bound slot edit contract"
+    ]
+  },
+  "latest_validation": {
+    "system_tests_passed": 761,
+    "system_test_files": 48,
+    "engineering_base": "PASS",
+    "derived_media_confinement": "PASS; rerun receipt preserved outside repo, original historical receipt restored",
+    "proposer_preflight_unit_tests": 6,
+    "historical_findings": "Two already recorded frozen capacity cells lack operators_used. Their bytes were not edited and the check was not waived."
+  }
+}

@@ -1,5 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner217 proposal admission checkpoint: 2026-10-02T01:41:54.999235+00:00, ChatGPT root
+
+Owner216 is complete and both initial400 members remain FINALIZED with verified seals and one successful official score each. The initial READ and descriptive report are complete. Owner217 is approved; own-app subscription login is connected and GPT-6-Astra is pinned. The corrected consumer verified the retained completed synthetic response offline; both original synthetic failure records remain immutable and no third connection proof was sent. The [provider admission](../readiness/2026-10-01-slurp-system-text-search-v1/provider-admission-owner217-v1.json) records the exact disposition and limits.
+
+The [first-round proposal registration](../readiness/2026-10-01-slurp-system-text-search-v1/proposer-round1-owner217-v1.json) pins L-1-1, B-1-1, L-1-2 and B-1-2 before any proposal contact. Each gets at most4 contacts, input32768 cumulative and output4096 metered acceptance. The first-request conservative bounds are19461 for L and16067 for B. No hard provider cap or equal actual compute is claimed. All four preserve separate fresh sessions and only a hash-bound artifact reader; B has no feedback or shared-chat input. Full provenance is indexed rather than pasted into the initial request. The same explicit output contract and release-bound knowledge editing context are supplied to both branches. Original oversized capsules and failed caches remain preserved. Packaging added zero model contacts.
+
+The registered launcher consumes the existing ProposalDispatch and ResponsesProposer, preserves actual requests/events/usage, imports exact responses without repair, and stops on any transport failure without retry/replacement. Candidate proposals do not dispatch local GPU generation, construction or scoring. The old batch STOP remains intact and must not be replayed. Frozen worker and Windows task admission are recorded separately after final checks; root must not claim launched until that receipt exists. Other carriers and old cells retain their holds.
+
+## Current continuation checkpoint: 2026-10-02T01:15:49.312574+00:00, ChatGPT root
+
+Owner216 and217 are explicitly approved in the [English owner receipt](../receipts/owner/2026-10-02-decisions216-217.json), superseding older pending snapshots below. Owner216's single A/A scoring-entry recovery succeeded at00:36:58Z via Windows task SAEA-System-Text-Score-Entry-Recovery1 from clean identical commit953f9b598. Both initial CONTROL2 members are now FINALIZED,400 rows each, verified seals and exactly one successful official score each. The failed A/A entry remains preserved. No new generation, reseal, source/cache edit or STOP clearance occurred. Root countersigned INITIAL-CONTROL2-READ at00:41:31Z after the complete-family gate.
+
+Initial feedback was exported in full after a source-verified delivery-normalization compatibility repair. F_ref is frozen at0.5966805915811396. Seed/A/A SLU-F1 is59.6681%/59.2141%; intent76.50%/76.50%; A/A delta -0.4540pp CI95[-2.1971,1.2405]. Both have zero actual knowledge calls. The [full report](../results/2026-10-02-slurp-system-text-initial-feedback.md) includes all18 scenario strata and equal-scenario macro views. This is initial feedback, not optimization evidence. Milestone feedback stays excluded.
+
+Owner217's uniform subscription acceptance budget is implemented: input32768, output4096 across at most4 contacts per proposal, same L/B allocations, metered overrun/unavailable usage consumes the slot and is rejected. Do not claim a provider hard output cap or equal actual compute. The user completed own-app subscription sign-in; credentials are DPAPI-encrypted outside the repo and never logged. Pin GPT-6-Astra for the sequence. Protocol successor: [control-v3-owner217](../readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v3-owner217.json).
+
+Two separately registered synthetic transport proofs were attempted. The first failed the local MIME check after HTTP200 without preserving body/usage. The sole recovery captured a complete headerless SSE response and correct acknowledgement,220 input/10 output tokens, but the original client rejected an empty final output array. Preserve both failed outcomes. The repaired reader verifies completed item identity/index custody and reconciles that already complete stream offline, at zero further contacts; all68 related tests pass. No third probe or real proposal was launched. Root must record the repaired transport disposition and admit exact candidate contacts before any proposal; the monitor must not infer launch authority from the offline proof.
+
+See [execution evidence](../receipts/continuation/2026-10-02-owner216-217-execution.json). The original batch queue remains STOPPED from its preserved failure and should not be replayed. Serving is healthy idle at4x24576, GPU22976MiB; Windows free18.02GiB at the latest check. No held carrier, old F1 cell or failed milestone receives new authority. All future generation/scoring uses independent Windows-owned WSL background tasks; monitoring remains30 minutes, read-only and quiet on unchanged state.
+
 ## Current continuation checkpoint: 2026-10-01T23:42:22Z, ChatGPT root
 
 Owner214's four exact TRAIN400 cohorts now have source-excluded agreement inputs
@@ -249,7 +269,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-01T23:42:22Z · maintainer: ChatGPT root.
+Last refreshed: 2026-10-02T01:42:42.024797+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

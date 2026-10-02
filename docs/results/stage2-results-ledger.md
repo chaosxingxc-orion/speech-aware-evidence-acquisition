@@ -1875,3 +1875,8 @@ Model-free read SAEA-SLURP-S2A-RANKER-STUDY-V1 (driver scripts/analysis/slurp_s2
 ## 2026-10-01: SLURP successor1 milestone — HELD by the registered intent/SLU rule
 
 Root read both complete3010-row members under owner213. Natural-mixture intent +5.80pp CI95[4.04,7.42]; official SLU-F1 +0.79pp [-0.44,2.02], passing the registered fallback non-inferiority margin1.4492pp. Equal-stratum intent +3.02pp [1.03,4.82], SLU +0.91pp [-0.38,2.42]. No reliable slot gain, new text-learning effect, final-test or paper claim. Cost increased in prompt tokens and GPU time. Both own prepared/flown supply checks are3010/3010. Original statistics were preserved; only missing report extensions were completed after a sparse-map reader correction. [Full report and both stratum views](2026-10-01-slurp-milestone-successor1-read.md). Milestone feedback is excluded from owner214 optimization; no other carrier is released.
+
+
+## 2026-10-02: initial system-text seed/A/A feedback — DESCRIPTIVE
+
+Owner216 recovered the single failed A/A scoring entry without regeneration; both400-row members now FINALIZED with one successful official score each. Root countersigned the exact initial READ. Seed/A/A official SLU-F1 is59.6681%/59.2141%, intent76.50%/76.50%. A/A minus seed SLU-F1 -0.4540pp, paired utterance-cluster CI95[-2.1971,1.2405]; intent0.00pp[-2.00,2.00]. Frozen F_ref0.5966805915811396. All800 trajectories remain in feedback; both runs have zero actual knowledge calls. This establishes initial feedback, not an optimized configuration or feedback-learning gain. [Full18-scenario report and both weightings](2026-10-02-slurp-system-text-initial-feedback.md). Milestone outcomes are excluded.

@@ -1,0 +1,118 @@
+{
+  "schema": "saea-system-text-proposer-round-readiness-v1",
+  "recorded_at_utc": "2026-10-02T01:40:24.140300+00:00",
+  "provider_admission": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/provider-admission-owner217-v1.json",
+    "sha256": "50fe997c2e0458296c87f6255114e4888997d704b9175feebf6d8b4ed36fe8e7"
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v3-owner217.json",
+    "sha256": "af67e4574a0125d45abf71425dc35e34813719de3c04c6ac3cb3b8089b905201"
+  },
+  "members": [
+    {
+      "key": "L-1-1",
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-1-1-bounded-view-v3.json",
+        "sha256": "3f27b302557421c51aea50553869280a05628945ae65b4389880aa4bb95657ac"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-1-1.json",
+        "sha256": "5bc7479593fc59bc1aaa275befc062e7359dc92f7f22dc8102de42d3364e76ca"
+      },
+      "request_sha256": "8631d97e3a8b7e02a45f17aa70042cf90a7e1ec6fa725f9c9fe603655ad3449b",
+      "initial_input_bound": 19461,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-1-1-OWNER217-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "b34ad55069ff079903a3d99335a83d06596d5767ec249223b7134a7a4c8a7e59",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "d1160e9b68bb94b310c053c0074f8c6c1289046823821702fbb5d09986dffa21",
+        "attempt_id": "attempt-system-text-proposer-l-1-1-owner217-v1"
+      }
+    },
+    {
+      "key": "B-1-1",
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-1-1-bounded-view-v3.json",
+        "sha256": "eee6fa297d97293d989c023f557ae4e3a8df4314ce9d634ea2885d2394c04647"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-1-1.json",
+        "sha256": "1362eb6c083d2ffd7554dda283af99e8b888ec16ed83b175ccf9e888f1a1a1d6"
+      },
+      "request_sha256": "108cd2fd5fc157dc6f55d7ac5f0878b5adb946e511572f613b5d7bd92beadb63",
+      "initial_input_bound": 16067,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-1-1-OWNER217-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "6e551cbf261013678e6501d03e68e57b37395b45008f19b5a7294671711fe740",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "d1160e9b68bb94b310c053c0074f8c6c1289046823821702fbb5d09986dffa21",
+        "attempt_id": "attempt-system-text-proposer-b-1-1-owner217-v1"
+      }
+    },
+    {
+      "key": "L-1-2",
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-1-2-bounded-view-v3.json",
+        "sha256": "0da017d399cb13905aa05aebd7afbff4345470db433d5428925e4aa95f03437a"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-1-2.json",
+        "sha256": "2d3e1ec556b5a6f32009b003f3fcc47201269ac5d71683d14ba680a992a6f640"
+      },
+      "request_sha256": "df7df62509c34f60d86335b057d57af1f2920928957bcc8e5d9fd71f28a5d0d8",
+      "initial_input_bound": 19461,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-1-2-OWNER217-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "4f169d492c2df68e07499582ff315c5d0a9874df3d320abb67c1384b22185b0a",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "d1160e9b68bb94b310c053c0074f8c6c1289046823821702fbb5d09986dffa21",
+        "attempt_id": "attempt-system-text-proposer-l-1-2-owner217-v1"
+      }
+    },
+    {
+      "key": "B-1-2",
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-1-2-bounded-view-v3.json",
+        "sha256": "184baa5cde32046edd5defad40202ce39244a79df59b3fdfc8c113b8be9bc54b"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-1-2.json",
+        "sha256": "08334da234988c9267eab85a20b769be770f933a9f16d6dcdb8127394bde9e86"
+      },
+      "request_sha256": "491e4edd7c40c52b273f8eac739fff30acd2afd14cc440e11caf6bf48c4a6de6",
+      "initial_input_bound": 16067,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-1-2-OWNER217-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "4ce5624cc26405ff3a44cdd4d6896657f021f82f5c49da7c0fb89e6ae1346736",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "d1160e9b68bb94b310c053c0074f8c6c1289046823821702fbb5d09986dffa21",
+        "attempt_id": "attempt-system-text-proposer-b-1-2-owner217-v1"
+      }
+    }
+  ],
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217",
+  "status": "inputs-and-provider-admitted; frozen-worker-and-background-task-pending",
+  "sources_preserved": "Original knowledge, failed packaging caches, oversized preflight capsules, two synthetic proof failures, old scoring failure and STOP remain unchanged. All packaging and capsule revisions added zero model contacts. Full provenance remains indexed; both branches receive the same response contract.",
+  "no_model_contacts_yet": true
+}

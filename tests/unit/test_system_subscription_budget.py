@@ -39,6 +39,20 @@ def test_subscription_preserves_isolation_and_omits_unsupported_limit(tmp_path, 
     assert len(wire["input"]) == 1
 
 
+def test_subscription_complete_item_stream_without_mime_or_aggregate(tmp_path):
+    from test_system_subscription_stream import stream
+    from test_system_proposer_responses import sse
+    events = stream()
+    events[-1]["response"]["model"] = "gpt-6-sol"
+    events[-1]["response"]["usage"]["input_tokens"] = 100
+    with server([(200, {}, sse(events))]) as (endpoint, requests):
+        capsule, transport = setup(tmp_path, endpoint)
+        receipt = ProposalDispatch(tmp_path / "dispatch", capsule).run(transport)
+    assert receipt["raw_response"] == "Synthetic complete answer"
+    assert receipt["output_tokens"] == 10 and len(requests) == 1
+    assert (tmp_path / "transport/contact-001/response.sse").read_bytes() == sse(events)
+
+
 @pytest.mark.parametrize("usage", [None, {"input_tokens": 100, "output_tokens": 4097}])
 def test_subscription_rejected_output_consumes_slot_and_preserves_usage(tmp_path, usage):
     with server([reply(completed(usage=usage))]) as (endpoint, requests):

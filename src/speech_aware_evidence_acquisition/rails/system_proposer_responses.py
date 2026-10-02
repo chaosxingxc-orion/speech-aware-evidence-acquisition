@@ -149,6 +149,43 @@ class ResponsesHTTP:
             connection.close()
 
 
+def completed_stream_output(response, events, *, subscription=False):
+    """Reconcile whole completed items; never promote text deltas into answers."""
+    require(isinstance(response, dict) and response.get("status") == "completed", "incomplete response")
+    created, added, done = None, {}, {}
+    for event in events:
+        kind = event["type"]
+        if kind == "response.created":
+            require(created is None, "multiple response identities in stream")
+            created = event.get("response", {}).get("id")
+            require(isinstance(created, str) and created, "missing streamed response identity")
+        elif kind in {"response.output_item.added", "response.output_item.done"}:
+            index, item = event.get("output_index"), event.get("item")
+            require(type(index) is int and index >= 0 and isinstance(item, dict)
+                    and isinstance(item.get("id"), str) and item["id"], "invalid streamed item identity")
+            if kind.endswith(".added"):
+                require(index not in added and item["id"] not in added.values(), "duplicate streamed item")
+                added[index] = item["id"]
+            else:
+                require(index not in done and added.get(index) == item["id"]
+                        and item.get("status") == "completed", "streamed item is not a completed registered item")
+                done[index] = item
+    if created is not None:
+        require(created == response.get("id"), "completion belongs to another response")
+    aggregate = response.get("output")
+    if done:
+        require(created is not None and set(done) == set(added) == set(range(len(done))),
+                "streamed item sequence is incomplete")
+        output = [done[index] for index in range(len(done))]
+        if aggregate:
+            require(aggregate == output, "stream and aggregate outputs disagree")
+        else:
+            require(subscription and aggregate == [], "omitted aggregate is not admitted")
+        return {**copy.deepcopy(response), "output": copy.deepcopy(output)}
+    require(isinstance(aggregate, list) and aggregate and not added, "completion has no complete output")
+    return copy.deepcopy(response)
+
+
 def _output(response, seen_calls, *, subscription=False):
     """Validate model-owned continuation items; never accept new tool declarations."""
     output = response.get("output")
@@ -246,6 +283,7 @@ class ResponsesProposer:
                 self.before_contact(copy.deepcopy(evidence))
                 attempted += 1
                 final = None
+                custody_events = []
                 with (contact / "response.sse").open("xb") as raw_stream:
                     iterator = self.client.events(copy.deepcopy(request), raw_sink=raw_stream)
                     try:
@@ -254,6 +292,8 @@ class ResponsesProposer:
                                 # Save exact parsed event content before inspecting results.
                                 events.write(canonical(event) + "\n")
                                 events.flush()
+                                if event["type"] in {"response.created", "response.output_item.added", "response.output_item.done"}:
+                                    custody_events.append(event)
                                 require(event["type"] not in {"error", "response.failed", "response.incomplete"},
                                         "provider failed or incomplete; no retry permitted")
                                 if event["type"] == "response.completed":
@@ -276,6 +316,8 @@ class ResponsesProposer:
                                                "cumulative_output_tokens": total_output})
                 require(usage["input_tokens"] <= counted and total_input <= packet["input_token_cap"]
                         and usage["output_tokens"] <= remaining, "provider exceeded the registered token bound")
+                final = completed_stream_output(final, custody_events,
+                    subscription=packet.get("budget_profile") == SUBSCRIPTION_BUDGET)
                 calls, text = _output(final, seen_calls, subscription=packet.get("budget_profile") == SUBSCRIPTION_BUDGET)
                 if not calls:
                     require(bool(text.strip()), "completion has no proposal text")

@@ -127,7 +127,7 @@ def test_blind_capsule_cli_exports_immutable_allowlist_and_refuses_feedback(tmp_
         cli.main(args + ["--family", str(tmp_path / "never-open.json")])
     cli.main(args)
     saved = cli.read(roots["archive"] / "capsules/B-1-1.json")
-    assert len(saved["artifacts"]) == 2
+    assert len(saved["artifacts"]) == 3
     assert saved["packet"]["input_sha256"] == packet["input_sha256"]
     assert '"invoked": false' in capsys.readouterr().out
     with pytest.raises(PolicyError, match="exists"):

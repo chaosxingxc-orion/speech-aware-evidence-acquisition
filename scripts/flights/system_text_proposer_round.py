@@ -1,0 +1,151 @@
+"""Run a registered round through the existing isolated proposer, without GPU dispatch."""
+from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan, assert_wsl_execution_environment
+from speech_aware_evidence_acquisition.contracts.ledger import _parse_ledger_tables
+from speech_aware_evidence_acquisition.rails.hashing import content_hash
+from speech_aware_evidence_acquisition.rails.system_proposer_capsule import ProposerCapsule, ProposalDispatch, input_references
+from speech_aware_evidence_acquisition.rails.system_proposer_responses import ResponsesHTTP, ResponsesProposer
+from speech_aware_evidence_acquisition.rails.system_search_archive import SystemSearchArchive
+from speech_aware_evidence_acquisition.rails.system_subscription_auth import SubscriptionBearer
+from speech_aware_evidence_acquisition.rails.system_text_policy import canonical, require
+
+
+def digest(path):
+    with Path(path).open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def read_pin(pin):
+    raw = Path(pin["path"]).read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == pin["sha256"], "registered file changed")
+    return json.loads(raw)
+
+
+def write_once(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("x", encoding="utf-8") as stream:
+        stream.write(canonical(value) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def request_bound(request):
+    """Conservative byte-level text bound plus the registered framing reserve.
+
+    Count the entire serialized request, including tools and repeated history.
+    Provider usage is independently checked; a violation rejects the proposal.
+    This is an admission bound, not a claim to expose the private tokenizer.
+    """
+    return len(canonical(request).encode("utf-8")) + 4096
+
+
+def load_members(registration):
+    r = registration
+    require(r["schema"] == "saea-system-text-proposer-round-registration-v1"
+            and r["status"] == "root-admitted" and r["owner_decision"] == 217,
+            "round admission required")
+    owner = read_pin(r["owner_receipt"])
+    require(owner["decisions"]["217"]["status"] == "approved", "owner217 is not approved")
+    admission = read_pin(r["provider_admission"])
+    protocol = read_pin(r["protocol"])
+    require(admission["protocol_sha256"] == content_hash(protocol), "provider protocol differs")
+    require(digest(r["ledger"]["path"]) == r["ledger"]["sha256"], "contact ledger changed")
+    ledger = _parse_ledger_tables(Path(r["ledger"]["path"]).read_text())
+    jobs, keys = [], set()
+    for member in r["members"]:
+        document = read_pin(member["capsule"])
+        packet = document["packet"]
+        input_references(packet)
+        key = f"{packet['branch']}-{packet['round']}-{packet['slot']}"
+        require(key == member["key"] and key not in keys, "duplicate or wrong proposal allocation")
+        keys.add(key)
+        require(packet["protocol_sha256"] == content_hash(protocol)
+                and packet["model_version"] == protocol["proposer_exact_version"]
+                and packet["input_token_cap"] == protocol["proposal_input_token_cap"]
+                and packet["output_token_cap"] == protocol["proposal_output_token_cap"],
+                "proposal protocol/model/budgets differ")
+        require(read_pin(member["input"]) == packet, "capsule input differs from immutable archive input")
+        plan = ExecutionPlan(**member["execution_plan"]).validate()
+        require(plan.protocol_hash == content_hash(protocol) and plan.split_identity_hash == packet["input_sha256"]
+                and plan.split_role == "discovery" and plan.planned_model_calls == protocol["proposal_contact_cap"],
+                "proposal execution plan differs")
+        rows = [row for row in ledger if row.get("run/experiment id") == plan.run_id]
+        require(len(rows) == 1 and rows[0]["consumed"] == "no"
+                and rows[0]["split identity hash"] == packet["input_sha256"]
+                and int(rows[0]["calls"]) == plan.planned_model_calls
+                and "REGISTERED BEFORE" in rows[0].get("notes", ""),
+                "proposal contact preregistration missing or changed")
+        capsule = ProposerCapsule(packet, {a["artifact_id"]: a for a in document["artifacts"]})
+        request = capsule.request()
+        require(content_hash(request) == member["request_sha256"], "actual initial request differs")
+        require(request_bound(request) <= packet["input_token_cap"], "initial input does not fit")
+        jobs.append((member, capsule, plan))
+    require(keys == {"L-1-1", "L-1-2", "B-1-1", "B-1-2"}, "first round membership differs")
+    return jobs, admission, protocol
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("registration", type=Path)
+    parser.add_argument("--sha256", required=True)
+    parser.add_argument("--check-only", action="store_true")
+    args = parser.parse_args()
+    r = read_pin({"path": str(args.registration), "sha256": args.sha256})
+    require(sys.dont_write_bytecode and os.environ.get("PYTHONDONTWRITEBYTECODE") == "1", "disable bytecode writing")
+    assert_wsl_execution_environment()
+    root = Path(r["source_root"])
+    require(not subprocess.check_output(["git", "-C", str(root), "status", "--porcelain"], text=True).strip(), "worker must be clean")
+    require(subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip() == r["source_commit"], "worker commit differs")
+    for relative, expected in r["source_pins"].items():
+        require(digest(root / relative) == expected, "admitted proposer source changed")
+    jobs, admission, protocol = load_members(r)
+    if args.check_only:
+        print(canonical({"preflight": "PASS", "members": len(jobs), "contacts_added": 0,
+                         "request_bounds": {m["key"]: request_bound(c.request()) for m, c, _ in jobs}}))
+        return 0
+    output = Path(r["output_root"])
+    output.mkdir(parents=True, exist_ok=False)
+    write_once(output / "started.json", {"at_utc": datetime.now(timezone.utc).isoformat(), "pid": os.getpid(),
+        "registration_sha256": args.sha256, "retry_permitted": False})
+    bearer = SubscriptionBearer(**r["auth"])
+    archive = SystemSearchArchive(r["archive"])
+    outcomes = []
+    for member, capsule, plan in jobs:
+        key = member["key"]
+        try:
+            def before_contact(evidence):
+                require(1 <= evidence["contact"] <= plan.planned_model_calls
+                        and evidence["proposal_input_sha256"] == plan.split_identity_hash,
+                        "unregistered contact")
+                write_once(output / "contacts" / key / f"{evidence['contact']:03d}.json", {
+                    "at_utc": datetime.now(timezone.utc).isoformat(), "execution_plan": member["execution_plan"],
+                    "registration_sha256": args.sha256, "reservation": evidence})
+            transport = ResponsesProposer(capsule, ResponsesHTTP(admission["endpoint"], bearer=bearer,
+                admission=admission, timeout=300), audit_dir=output / "transport" / key,
+                input_counter=request_bound, before_contact=before_contact, contact_cap=protocol["proposal_contact_cap"])
+            receipt = ProposalDispatch(Path(r["archive"]) / "dispatch", capsule).run(transport)
+            imported = archive.import_response(branch=capsule.as_json()["packet"]["branch"], round_index=1,
+                slot=capsule.as_json()["packet"]["slot"], receipt=receipt)
+            outcomes.append({"key": key, "status": imported["status"], "activation": "none"})
+        except Exception as error:
+            outcomes.append({"key": key, "status": "failed", "error_type": type(error).__name__, "retry_permitted": False})
+            break
+    write_once(output / "finished.json", {"at_utc": datetime.now(timezone.utc).isoformat(),
+        "outcomes": outcomes, "stopped_on_transport_failure": len(outcomes) < len(jobs) or outcomes[-1]["status"] == "failed",
+        "gpu_dispatch": False, "paid_api_spend": 0})
+    print(canonical(outcomes))
+    return 1 if any(o["status"] == "failed" for o in outcomes) else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -7,7 +7,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.system_search_archive import proposal_input
-from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyError, SystemTextPolicyBundle
+from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyError, SystemTextPolicyBundle, TextPolicyUpdateProposal
 from speech_aware_evidence_acquisition.rails.system_proposer_capsule import (
     ProposerCapsule, ProposalDispatch, attest_outbound, input_references,
 )
@@ -39,11 +39,50 @@ def reseal(packet):
     packet["input_sha256"] = content_hash({k: v for k, v in packet.items() if k != "input_sha256"})
 
 
+@pytest.mark.parametrize("paged", [False, True])
+def test_released_snapshot_keeps_semantic_pin_and_exact_file_bytes(tmp_path, paged):
+    from test_rails_runner import _knowledge_snapshot
+    packet, roots = fixture(tmp_path)
+    snapshot = _knowledge_snapshot()
+    raw = json.dumps(snapshot.frozen_json(), indent=2).encode()
+    (roots["data"] / "snapshot.json").write_bytes(raw)
+    packet["parent_policy"]["knowledge"]["snapshot"]["sha256"] = snapshot.content_hash()
+    packet["parent_bundle_id"] = packet["seed_bundle_id"] = content_hash(packet["parent_policy"])
+    reseal(packet)
+    capsule = ProposerCapsule.from_packet(packet, roots=roots,
+        cache_root=tmp_path / "cache" if paged else None)
+    artifact = next(a for a in capsule.as_json()["artifacts"] if a["kind"] == "knowledge-snapshot")
+    assert artifact["source"]["sha256"] == snapshot.content_hash()
+    assert artifact["sha256"] == hashlib.sha256(raw).hexdigest()
+    page = capsule.read_artifact({"artifact_id": artifact["artifact_id"], "offset": 0, "limit": 16384})
+    assert page["text"].encode() == raw
+
+
+@pytest.mark.parametrize("mutation", ["body", "claim", "extra"])
+def test_snapshot_semantic_pin_does_not_accept_tampering(tmp_path, mutation):
+    from test_rails_runner import _knowledge_snapshot
+    packet, roots = fixture(tmp_path)
+    snapshot = _knowledge_snapshot()
+    document = snapshot.frozen_json()
+    packet["parent_policy"]["knowledge"]["snapshot"]["sha256"] = snapshot.content_hash()
+    packet["parent_bundle_id"] = packet["seed_bundle_id"] = content_hash(packet["parent_policy"])
+    reseal(packet)
+    if mutation == "body":
+        document["builder_policy_id"] = "changed"
+    elif mutation == "claim":
+        document["snapshot_sha256"] = "0" * 64
+    else:
+        document["unregistered"] = "extra context"
+    (roots["data"] / "snapshot.json").write_text(json.dumps(document))
+    with pytest.raises(PolicyError, match="snapshot|hash"):
+        ProposerCapsule.from_packet(packet, roots=roots, cache_root=tmp_path / "cache")
+
+
 def test_blind_capsule_snapshots_only_registered_knowledge(tmp_path):
     packet, roots = fixture(tmp_path)
     capsule = ProposerCapsule.from_packet(packet, roots=roots)
     document = capsule.as_json()
-    assert len(document["artifacts"]) == 2
+    assert len(document["artifacts"]) == 3
     identity = document["artifacts"][0]["artifact_id"]
     (roots["data"] / "snapshot.json").write_text("Changed after packaging.")
     page = capsule.read_artifact({"artifact_id": identity, "offset": 0, "limit": 4096})
@@ -103,6 +142,52 @@ def test_learning_feedback_index_retains_all_cases_and_separates_context(tmp_pat
     assert json.loads(full["text"]) == packet["feedback"]
     assert initial["packet"]["input_sha256"] == packet["input_sha256"]
     assert initial["omissions"] == []
+
+
+def test_large_ancestry_is_indexed_without_loss_or_blind_feedback(tmp_path):
+    packet, roots = fixture(tmp_path)
+    ids = [f"slurp:train:{i}" for i in range(20000)]
+    packet["parent_policy"]["cumulative_sources"] = [{"kind": "knowledge", "sha256": "a" * 64, "sample_ids": ids}]
+    packet["parent_bundle_id"] = packet["seed_bundle_id"] = content_hash(packet["parent_policy"])
+    reseal(packet)
+    capsule = ProposerCapsule.from_packet(packet, roots=roots, cache_root=tmp_path / "cache")
+    initial = capsule.initial_input()
+    assert len(json.dumps(capsule.request())) < 16000
+    assert "feedback_summary" not in initial
+    reference = next(a for a in initial["artifacts"] if a["kind"] == "complete-proposal-packet")
+    full = "".join(capsule.read_artifact({"artifact_id": reference["artifact_id"], "offset": offset, "limit": 16384})["text"]
+                   for offset in range(0, reference["characters"], 16384))
+    assert json.loads(full) == packet
+    assert initial["source_index"][0]["sources"][0]["sample_count"] == 20000
+    assert initial["response_contract"]["example"]["parent_ids"] == [packet["parent_bundle_id"]]
+    assert TextPolicyUpdateProposal.from_json(initial["response_contract"]["example"])
+
+
+@pytest.mark.parametrize("tamper", [False, True])
+def test_construction_source_is_release_bound_and_ancestry_checked(tmp_path, tamper):
+    from test_semantic_knowledge_edits import rows
+    packet, roots = fixture(tmp_path)
+    source = {"schema": "saea-authored-semantic-knowledge-source-v1", "builder_policy_id": "fixture",
+              "source_split_identity_hash": "b" * 64, "rows": rows()}
+    raw = json.dumps(source).encode()
+    (roots["data"] / "construction.json").write_bytes(raw)
+    release = {"schema": "saea-knowledge-store-release-v1", "builder_policy_id": "fixture",
+        "source_split_identity_hash": "b" * 64, "snapshot_sha256": packet["parent_policy"]["knowledge"]["snapshot"]["sha256"],
+        "source": {"relpath": "construction.json", "sha256": hashlib.sha256(raw).hexdigest()}}
+    raw = json.dumps(release).encode()
+    (roots["data"] / "release.json").write_bytes(raw)
+    packet["parent_policy"]["knowledge"]["release"]["sha256"] = hashlib.sha256(raw).hexdigest()
+    packet["parent_policy"]["cumulative_sources"] = [{"kind": "knowledge", "sha256": "b" * 64,
+        "sample_ids": [] if tamper else ["slurp:train:base"]}]
+    packet["parent_bundle_id"] = packet["seed_bundle_id"] = content_hash(packet["parent_policy"])
+    reseal(packet)
+    if tamper:
+        with pytest.raises(PolicyError, match="ancestry"):
+            ProposerCapsule.from_packet(packet, roots=roots)
+    else:
+        capsule = ProposerCapsule.from_packet(packet, roots=roots)
+        contract = next(a for a in capsule.as_json()["artifacts"] if a["kind"] == "slot-value-edit-context")
+        assert json.loads(contract["text"])["base_rows_sha256"] == content_hash(rows())
 
 
 @pytest.mark.parametrize("mutation", [

@@ -160,8 +160,18 @@ def _read_registered(reference, roots, *, byte_limit=None):
     # rejects substitution during the filesystem checks; the model never opens it.
     with path.open("rb") as stream:
         raw = stream.read(limit + 1)
-    require(len(raw) <= limit and hashlib.sha256(raw).hexdigest() == pin["sha256"],
-            "artifact hash or size differs")
+    require(len(raw) <= limit, "artifact hash or size differs")
+    if hashlib.sha256(raw).hexdigest() != pin["sha256"]:
+        # Released knowledge pins name the canonical snapshot body, excluding
+        # its self-hash. Preserve the complete original file separately below.
+        require(reference.get("kind") == "knowledge-snapshot", "artifact hash or size differs")
+        from .knowledge import KnowledgeSnapshot
+        from .errors import RailsError
+        try:
+            snapshot = KnowledgeSnapshot.from_frozen_json(json.loads(raw))
+        except (RailsError, ValueError, KeyError, TypeError) as error:
+            raise PolicyError("knowledge snapshot hash or schema differs") from error
+        require(snapshot.content_hash() == pin["sha256"], "knowledge snapshot pin differs")
     return raw
 
 
@@ -268,7 +278,7 @@ class ProposerCapsule:
                 identity = content_hash({"sha256": source["sha256"], "kind": kind, "source": source})
                 raw = None
                 if identity not in artifacts:
-                    if cache_root is not None and kind != "history-input":
+                    if cache_root is not None and kind not in {"history-input", "knowledge-snapshot"}:
                         path = _registered_path(reference, roots)
                         size = path.stat().st_size
                         with path.open("r", encoding="utf-8", newline="") as stream:
@@ -286,7 +296,38 @@ class ProposerCapsule:
             for field, kind in (("feedback", "complete-feedback"), ("learning_history", "complete-history-index")):
                 if field in current:
                     append(canonical(current[field]).encode(), kind, {"packet_field": field})
+            for policy in [current["parent_policy"], *current.get("complementary_policies", [])]:
+                release_ref = {"root": "data", "pin": policy["knowledge"]["release"], "kind": "knowledge-release"}
+                release = json.loads(_read_registered(release_ref, roots))
+                if release.get("schema") != "saea-knowledge-store-release-v1":
+                    continue  # Legacy raw-hash fixtures carry no construction grant.
+                require(release.get("snapshot_sha256") == policy["knowledge"]["snapshot"]["sha256"],
+                        "construction release and snapshot differ")
+                _pin(release["source"])
+                raw = _read_registered({"root": "data", "pin": release["source"],
+                                        "kind": "knowledge-construction-source"}, roots)
+                source = json.loads(raw)
+                require(source.get("schema") == "saea-authored-semantic-knowledge-source-v1"
+                        and source.get("builder_policy_id") == release.get("builder_policy_id")
+                        and source.get("source_split_identity_hash") == release.get("source_split_identity_hash"),
+                        "construction source identity differs from release")
+                rows = source["rows"]
+                ids = {sid for row in rows for sid in row["source_support"]["source_sample_ids"]}
+                ancestry = {sid for record in policy["cumulative_sources"] for sid in record["sample_ids"]}
+                require(ids and ids <= ancestry and all(s.startswith("slurp:train:") for s in ids),
+                        "construction source exceeds registered TRAIN ancestry")
+                from .semantic_knowledge_edits import slot_value_edit_contract, VALUE_FIELDS
+                groups = {"released-knowledge": sorted(ids)}
+                if "feedback" in current:
+                    groups["complete-feedback"] = sorted(g["sample_id"] for g in current["feedback"]["feedback"]["groups"])
+                contract = slot_value_edit_contract(rows, slot_ids=[row["slot_id"] for row in rows],
+                    fields=sorted(VALUE_FIELDS), evidence_groups=groups,
+                    max_edits=len(rows) * len(VALUE_FIELDS), max_field_chars=32768)
+                append(raw, "knowledge-construction-source", release["source"])
+                append(canonical(contract).encode(), "slot-value-edit-context", {
+                    "release": policy["knowledge"]["release"], "base_rows_sha256": contract["base_rows_sha256"]})
         expand(packet)
+        append(canonical(packet).encode(), "complete-proposal-packet", {"input_sha256": packet["input_sha256"]})
         return cls(packet, artifacts)
 
     def as_json(self):
@@ -300,10 +341,39 @@ class ProposerCapsule:
         # Preserve its original identity, while explicitly identifying this projection.
         for field in ("feedback", "learning_history"):
             packet.pop(field, None)
-        return {"schema": "saea-proposer-initial-view-v1", "packet": packet,
-                "packet_projection": "feedback-and-history-in-complete-indexed-artifacts",
+        source_index = []
+        for policy in [packet["parent_policy"], *packet.get("complementary_policies", [])]:
+            identity = content_hash(policy)
+            sources = policy.pop("cumulative_sources")
+            source_index.append({"bundle_id": identity, "sources": [
+                {"kind": source["kind"], "sha256": source["sha256"],
+                 "sample_count": len(source["sample_ids"]), "sample_ids_sha256": content_hash(source["sample_ids"])}
+                for source in sources]})
+        packet.pop("selection", None)
+        result = {"schema": "saea-proposer-initial-view-v1", "packet": packet,
+                "packet_projection": "feedback-history-selection-and-cumulative-source-lists-in-complete-indexed-artifacts",
+                "source_index": source_index,
                 "artifacts": [{k: v for k, v in a.items() if k not in {"text", "storage"}} for a in self._artifacts.values()],
                 "omissions": []}
+        result["response_contract"] = {
+            "format": "Return one JSON object with exactly the example's top-level fields. No Markdown fences.",
+            "example": {"schema": "saea-text-policy-update-proposal-v1", "branch": packet["branch"],
+                "round": packet["round"], "slot": packet["slot"], "parent_ids": [packet["parent_bundle_id"]],
+                "changes": {}, "rationale": "Explain the joint revision or why no revision is proposed.",
+                "hypotheses": [], "evidence": []},
+            "editable_changes": {
+                "role_text": "Object with any of solver, reviewer, planner; each value is replacement English text, at most 32768 characters.",
+                "supply": "Object with exactly mode (targeted or reread) and value_limit (integer 1 or 2).",
+                "construction_instruction": "Replacement English instruction, at most 32768 characters. Requires separately generated and released knowledge before system evaluation.",
+                "slot_value_edits": "Existing saea-slot-value-edits-v1 object: schema, base_rows_sha256, edits. Use the indexed construction context for exact base and field hashes. Requires registered construction/release; never invent hashes."},
+            "slot_edit_fields": "Each edit has exactly slot_id, field, previous_value_sha256, replacement, evidence_group_ids. Read these identities from slot-value-edit-context. extraction_cues, admissible_formats and limitations use nonempty string lists; missing_behavior and ambiguity_behavior use text. Keep slot IDs and intent bindings unchanged.",
+            "rules": "Keep the parent's scientific boundaries and control syntax. Use only registered parent IDs. Joint edits are allowed. Invalid, duplicate and no-change proposals consume the allocation; no replacement. Final answer authority stays with Omni. Do not include sample answers in runtime texts."}
+        full = json.loads(self._packet)
+        if "feedback" in full:
+            result["feedback_summary"] = {"family_id": full["feedback"].get("family_id"),
+                "summaries": full["feedback"]["summaries"],
+                "detail": "All trajectories, counts and failures remain in the complete-feedback and trace artifacts; inspect evidence before attributing a change."}
+        return result
 
     def read_artifact(self, arguments):
         entry = {"arguments": copy.deepcopy(arguments), "status": "denied"}

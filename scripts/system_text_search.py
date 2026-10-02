@@ -137,6 +137,8 @@ def main(argv=None):
     capsule_cmd.add_argument("--slot", type=int, choices=(1, 2), required=True)
     capsule_cmd.add_argument("--protocol", type=Path, required=True)
     capsule_cmd.add_argument("--data-root", type=Path, required=True)
+    capsule_cmd.add_argument("--cache-name", help="New cache directory for an offline packaging correction; never overwrite a prior cache")
+    capsule_cmd.add_argument("--capsule-name", help="Create a separately named offline packaging revision; proposal allocation is unchanged")
     capsule_cmd.add_argument("--family", type=Path)
     capsule_cmd.add_argument("--learning-member", action="append", default=[])
     compile_cmd = commands.add_parser("compile-candidate")
@@ -245,11 +247,18 @@ def main(argv=None):
             require(packet.get("selection") == selection, "selection differs from the preregistered proposal input")
             require(feedback.learning_view(args.learning_member).as_json() == packet["feedback"],
                     "feedback differs from the preregistered proposal input")
-        require(not (args.archive / "capsules" / (key + ".json")).exists(), "capsule already exists")
+        capsule_name = args.capsule_name or key
+        require(capsule_name.startswith(key) and all(c.isascii() and (c.isalnum() or c in "-_") for c in capsule_name),
+                "invalid capsule name")
+        require(not (args.archive / "capsules" / (capsule_name + ".json")).exists(), "capsule already exists")
+        cache_name = args.cache_name or key
+        require(cache_name.startswith(key) and Path(cache_name).name == cache_name
+                and all(c.isascii() and (c.isalnum() or c in "-_") for c in cache_name),
+                "invalid capsule cache name")
         capsule = ProposerCapsule.from_packet(packet, roots={"data": args.data_root, "archive": args.archive},
-            cache_root=args.archive / "capsule-material" / args.branch / key)
+            cache_root=args.archive / "capsule-material" / args.branch / cache_name)
         document = capsule.as_json()
-        archive._write(f"capsules/{key}.json", document)
+        archive._write(f"capsules/{capsule_name}.json", document)
         print(json.dumps({"capsule_sha256": content_hash(document), "artifacts": len(document["artifacts"]),
                           "invoked": False, "transport_admission": "separate-required"}))
     elif args.command == "compile-candidate":
