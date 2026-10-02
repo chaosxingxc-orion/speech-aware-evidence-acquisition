@@ -1,0 +1,75 @@
+{
+  "at": "2026-10-02T18:08:08.936499+00:00",
+  "candidate_attempts": "Both absent; neither candidate generated or scored.",
+  "driver_terminal_event": {
+    "at": "2026-10-02T17:59:26Z",
+    "detail": "precontact memory wait refused step 3 (exit 125): {\"elapsed_seconds\": 0.000891051022335887, \"exit_code\": 125, \"interval_seconds\": 10, \"observer_sha256\": \"9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c\", \"running_floor_gib\": 8.0, \"schema\": \"saea-precontact-memory-wait-v1\", \"stable_samples\": 3, \"start_gib\": 12.5, \"status\": \"stop-present\", \"stop_marker\": \"/home/chao/batch-STOP\", \"wait_seconds\": 600.0, \"worker_started\": false}",
+    "event": "STOP"
+  },
+  "frozen_commit": "c33fc23e9f1bcfe7846d4b00368d281289cedc46",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-fixed400-context20-v2",
+  "incident_id": "fixed400-context20-seed-bundle-mismatch",
+  "members": [
+    {
+      "actual": {
+        "audio_seconds": 213.23774999999986,
+        "calls": 80
+      },
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-generation-v1",
+      "attempt_state": "FINALIZED",
+      "dispositions": {
+        "planner_action_illegal": 20
+      },
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-V1",
+      "score_jobs": 1,
+      "sha256_outputs": "cccc31abfc5025cea0571c93a8beb71ce86ca53d28025fbd3f0f07548be8aa44",
+      "sha256_run-manifest": "84bf7c59760d1ad9b53d274d8d3718b1ac5d1a8992d2468388f8ba40b48762f6",
+      "sha256_scores": "dd0b90842d22dcc6ba4b9e4a81e008e3fde4b8b3db25cd84e639e38b9aabf5f9",
+      "study_commit": "c33fc23e9f1bcfe7846d4b00368d281289cedc46"
+    },
+    {
+      "actual": {
+        "audio_seconds": 213.23774999999986,
+        "calls": 80
+      },
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-generation-v1",
+      "attempt_state": "FINALIZED",
+      "dispositions": {
+        "planner_action_illegal": 20
+      },
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-V1",
+      "score_jobs": 1,
+      "sha256_outputs": "3baf59542e3193df59eafc496d5e941bd5bdbc48f5e5614b4218d2a57a13f12b",
+      "sha256_run-manifest": "fe1acad34db64e76f53b57f21866ec9b025ac1460bbee544a6d7118374f89679",
+      "sha256_scores": "5d1ca35b587b1e5b9759b988d567565eb9880f4a2816f3114625e387b7cd25c2",
+      "study_commit": "c33fc23e9f1bcfe7846d4b00368d281289cedc46"
+    }
+  ],
+  "preservation": "Retain source checkout, two finalized attempts, generation outputs, official scores, queue, logs and STOP. No in-place repair.",
+  "recovery_status": "PENDING exact owner disposition after offline preparation",
+  "responsibility": "Root preparation and admission verification defect; not evidence that the Omni model or text-policy learning is ineffective.",
+  "root_boundary_stop": {
+    "at": "2026-10-02T17:57:30.498992+00:00",
+    "commit": "c33fc23e9f1bcfe7846d4b00368d281289cedc46",
+    "driver_cmdline": "bash /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh ",
+    "driver_pid": 350559,
+    "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-fixed400-context20-v2",
+    "mode": "stop-next-dispatch-current-member-not-killed",
+    "queue_sha256": "b5df75a28157074b9613d3f1629aaf5553653ab5eee0b5a81022c5d6a61f387c",
+    "reason": "baseline-control2-template-binding-mismatch",
+    "recovery_authorized": false,
+    "schema": "saea-root-boundary-stop-v1",
+    "stop_sha256": "af7862b157187d8371d0f144a53391d489754023adb52729bb7db5cd490619c9",
+    "task_quality_read": false
+  },
+  "root_cause": "The preparation path rebound an uncompiled seed baseline while registration declared the CONTROL2 seed policy. Candidates used compiled policy role texts. Baseline/A/A equality did not establish equality to the declared seed bundle.",
+  "schema": "saea-system-text-binding-incident-v1",
+  "science": "Family incomplete and declared comparator inconsistent. READ remains unsigned; no task quality or partial feedback read. No efficacy inference, adoption, optimizer export or rescore.",
+  "source_pins": {
+    "/home/chao/batch-STOP": "2f206b16fb4907af176ca315a2b5c2ab2af94b53e90367eb6dbf7aad0331c610",
+    "/home/chao/batch-queue.json": "b5df75a28157074b9613d3f1629aaf5553653ab5eee0b5a81022c5d6a61f387c",
+    "/home/chao/batch-status.jsonl": "6f214842c167995375215f7556a30b0756cfa39c7eeb6aeecef89629b6906b5e"
+  }
+}

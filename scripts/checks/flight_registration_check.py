@@ -1455,6 +1455,30 @@ def _check_resume_replay_proof(
         ))
 
 
+def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_root):
+    """Bind fixed-pool comparison roles to the policy declared by its registration."""
+    from speech_aware_evidence_acquisition.rails.system_text_policy import (
+        _read_pin, require, verify_system_text_binding,
+    )
+    fixed = str(recipe.get("family_id", "")).startswith("fixed400-context")
+    if not fixed and "system_text_policy_binding" not in cell:
+        return
+    try:
+        binding = cell.get("system_text_policy_binding")
+        require(binding is not None, "declared system text policy binding is missing")
+        if fixed:
+            registration = json.loads(_read_pin(recipe["pilot_registration"], repo_root))
+            members = [m for m in registration["member_bindings"].values()
+                       if m["run_id"] == report.run_id]
+            require(len(members) == 1 and members[0]["bundle_id"] == binding["bundle_id"],
+                    "cell policy differs from the registered comparison member")
+        verify_system_text_binding(baseline, binding, repo_root=repo_root, data_root=data_root)
+    except (ValueError, TypeError, KeyError, OSError) as error:
+        report.findings.append(Finding(
+            "system-text-policy-binding", f"{report.run_id}: {error}", report.run_id
+        ))
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -1550,6 +1574,8 @@ def check_cell(
             "no-analysis-recipe", f"{report.recipe} is unreadable: {error}", report.run_id
         ))
         return
+    if isinstance(recipe, dict):
+        _check_system_text_binding(report, cell, baseline, recipe, index.repo_root, data_root)
     read_run_id = read_run_id_of(recipe) if isinstance(recipe, dict) else None
     if read_run_id is None:
         report.findings.append(Finding(

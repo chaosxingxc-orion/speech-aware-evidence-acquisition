@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-02T18:08:08.936499+00:00",
+  "authorization_requested": true,
+  "cause": "Restore actual seed role text to the already registered CONTROL2 policy, not a new optimized candidate.",
+  "contacts_before_authorization": 0,
+  "decision_id": 225,
+  "proof": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/offline-proof.json",
+    "sha256": "1aef1618f7f4e104b1201d1602fbdd4f2d53c713b913de745f42918510b29084"
+  },
+  "runtime_policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/control2-owner217/policies/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15.json",
+      "sha256": "a6ae71e6139f9a0a80ba401afcb3e1485924959536f08d3b6977381c9f762cca"
+    },
+    "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "schema": "saea-owner-recovery-proposal-v1",
+  "scope": {
+    "candidate_policy_ids": [
+      "fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452",
+      "97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294"
+    ],
+    "capacity": "One fresh corrected seed full legal graph capacity; maximum297 tokenizer endpoints, no generation or scorer. Candidate capacity/engineering already passed and their bytes stay fixed.",
+    "comparison": "One corrected four-member comparison: two NEW seed/A/A20 attempts and the two previously unstarted candidate20 identities;80 complete trajectories maximum,1040 generation contacts,4160 runtime FIT endpoints,80 knowledge calls,four complete official scores.",
+    "engineering": "One fresh separately registered four-row corrected seed through shared executor; zero official scoring and structural-only read. Maximum52 generation contacts and208 runtime FIT tokenizer endpoints.",
+    "further_failure": "Stop. No second recovery, automatic retry, automatic scaling or replacement of spent proposal allocations.",
+    "new_seed_run_ids": [
+      "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1",
+      "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1"
+    ],
+    "pool": "Same UPDATE2 fixed400 first20; no data/knowledge/query/vote/audio rebuild",
+    "read": "New exact full-family READ registration and root countersignature only after four independent valid seals and exactly one successful official score each, zero failed jobs. Old incomplete-family READ remains unsigned.",
+    "sequence": "After explicit owner approval, bind fresh identities, freeze a clean worker, verify warm prepared reuse, run registered actual FIT and4-row engineering, review structure, then dispatch the exact four-member comparison. No scientific or candidate changes.",
+    "stop_disposition": "Archive the exact current STOP/queue/status/source pins only after fresh checks and explicit approval; never overwrite or score old outputs."
+  },
+  "status": "PENDING"
+}

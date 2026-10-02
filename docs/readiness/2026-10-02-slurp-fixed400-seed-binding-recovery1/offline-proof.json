@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-02T18:08:08.936499+00:00",
+  "bound_seed": {
+    "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "role_sha256": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    }
+  },
+  "candidate_checks": {
+    "planner": {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-context20-planner-v1.json",
+        "sha256": "cc80f87d720579edb1f8c181fd6a7c1403ce755f920a38b3e8bcac4e65d3f14f"
+      },
+      "generation_attempt_absent": true,
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/control2-owner217/policies/fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452.json",
+          "sha256": "7d7dffc7c2220f2be96ce8a7b748d43066ad6b9852ae166e76decd86b23951b3"
+        },
+        "bundle_id": "fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "verification": {
+        "bundle_id": "fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452",
+        "role_sha256": {
+          "planner": "04e85c08be9f210a391b0425dbde7a7e73c08be954f9fd5e8d332203b086bf33",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      }
+    },
+    "solver": {
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-context20-solver-v1.json",
+        "sha256": "efbd30512a78e917528d94f4193ac4404dbb002dacba240f436e020e91f9123a"
+      },
+      "generation_attempt_absent": true,
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/control2-owner217/policies/97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294.json",
+          "sha256": "167eb836d2ebb5b689bef1005b3ae36be31a5a27061cb2efe9322c619cf8c7b2"
+        },
+        "bundle_id": "97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "verification": {
+        "bundle_id": "97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "d194cffa8e72a87dc3f39aab6225a4efeda345a8e56c51df09e86eed4c2c9848"
+        }
+      }
+    }
+  },
+  "contacts_added": 0,
+  "corrected_baseline": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/compiled-seed-baseline.json",
+    "sha256": "62c926464fd2319eadb303856671105d22cef9a8c203052f4ce68a9b9d598f7a"
+  },
+  "knowledge_query_vote_identity_unchanged": true,
+  "limitation": "No new actual request FIT or engineering generation; neither this proof nor compiled files authorize recovery.",
+  "original_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-context20-seed-v1.json",
+    "sha256": "18ff79587d2d0b4b93de3120ebab0f5cdd86bb9477a21066ca4e7e6c15c18ddc"
+  },
+  "role_comparison": {
+    "planner": {
+      "bytes_equal": false,
+      "new_sha256": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "new_template": "probes/system-text-policy/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15/planner.txt",
+      "old_sha256": "7901263df494bc77be9c03f6f1b0db330faae86f904f0e901a18b9891df0c171",
+      "old_template": "probes/slurp_native_role_planner_slot_lookup_v1.txt"
+    },
+    "reviewer": {
+      "bytes_equal": true,
+      "new_sha256": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "new_template": "probes/system-text-policy/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15/reviewer.txt",
+      "old_sha256": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "old_template": "probes/slurp_native_role_reviewer_slot_issues_v1.txt"
+    },
+    "solver": {
+      "bytes_equal": true,
+      "new_sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd",
+      "new_template": "probes/system-text-policy/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15/solver.txt",
+      "old_sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd",
+      "old_template": "probes/slurp_native_role_solver_v2.txt"
+    }
+  },
+  "schema": "saea-system-text-seed-binding-proof-v1",
+  "tools_scorer_parser_geometry_unchanged": true
+}

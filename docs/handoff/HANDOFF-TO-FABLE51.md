@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Fixed400 comparison stopped: seed bundle binding defect, 2026-10-02T18:11:12.161360+00:00
+
+Root set a boundary STOP at17:57:30Z after operational metadata showed all20 seed rows ended with planner_action_illegal. The A/A finished17:59:05Z with the same20-row control defect; the driver stopped17:59:26Z before creating either candidate attempt. Both completed comparators have80 contacts and one official score each, but this is an incomplete and incorrectly bound comparison, not scientific evidence. All quality remains unread and the READ is unsigned. [Incident and exact custody](../receipts/continuation/2026-10-02-fixed400-context20-seed-binding-stop.json).
+
+Root preparation reused an uncompiled seed baseline: its actual Planner template lacks the CONTROL2 exact-token paragraph already present in the declared immutable seed and both candidates. Solver/Reviewer bytes match. Candidate engineering passed, but it did not validate the comparator. Seed/A/A mutual equality was insufficient. This is our assembly/admission defect; do not attribute it to model quality or failure of learning.
+
+The corrected seed is compiled and verified offline against its archived policy, with unchanged knowledge, queries, votes, speech, tools, parser, scorer and geometry. The shared prelaunch gate now checks actual role bytes against the pinned policy and registered member identity.175 tests pass, one optional materialized-data smoke skips; policy coverage97%, new verifier100%; lint/base/harness pass. [Concrete recovery proposal and proof](../readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/README.md).
+
+Owner225 is PENDING: request one fresh corrected-seed capacity/four-row engineering, then two new seed/A/A20 attempts plus the two never-started candidate20 identities,80 total comparison trajectories on the same current400 first20. Preserve old outputs/scores/source/STOP; no rescore, partial read, new proposals or data rebuild. No dispatch or STOP reconciliation before the explicit ruling. Another failure stops this recovery. At18:10Z the service was healthy idle, fresh telemetry, GPU22976MiB/0%, Windows free18.47GiB; expected idleness is not an outage. Other holds remain unchanged.
+
 ## Minimal fixed400 comparison running: 2026-10-02T17:49:26.730413+00:00
 
 Root launched the four-member20 comparison through Windows SAEA-Batch-Driver at17:45:15Z; the first campaign began17:45:40Z. Live worker PID350724 and actual generation contacts were verified on frozen `/home/chao/saea-worktrees/codex-system-text-fixed400-context20-v2` at `c33fc23e9f1bcfe7846d4b00368d281289cedc46`. All four clean preflights and whole-family registration passed. [Launch evidence and control custody](../receipts/continuation/2026-10-02-fixed400-context20-launch.json). The earlier model-free metadata refusal was corrected before any attempt; no flight STOP or recovery occurred.

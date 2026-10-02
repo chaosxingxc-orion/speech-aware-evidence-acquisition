@@ -285,3 +285,58 @@ def compile_system_text_policy(baseline, bundle, *, repo_root, output_root, enab
             with path.open("xb") as stream:
                 stream.write(raw)
     return result
+
+
+def verify_system_text_binding(baseline, binding, *, repo_root, data_root):
+    """Verify the actual role inputs against a pinned complete policy, before contact.
+
+    This reads policy metadata and role templates only, never feedback or task
+    outputs. It grants no execution or recovery authority. A seed must use the
+    same compiler as a candidate; matching two stale baseline copies is not proof.
+    """
+    require(isinstance(binding, dict) and set(binding) == {"schema", "bundle_id", "bundle"}
+            and binding["schema"] == "saea-system-text-role-binding-v1",
+            "system text binding fields differ")
+    require(isinstance(baseline, dict), "bound baseline must be an object")
+    sha(binding["bundle_id"])
+    document = json.loads(_read_pin(binding["bundle"], data_root))
+    require(content_hash(document) == binding["bundle_id"], "bound policy identity differs")
+    from .system_search_archive import SystemSearchArchive
+    policy_path = Path(data_root) / binding["bundle"]["relpath"]
+    require(policy_path.parent.name == "policies"
+            and policy_path.name == binding["bundle_id"] + ".json",
+            "bound policy must name its immutable archive identity")
+    bundle = SystemSearchArchive(policy_path.parent.parent).load_policy(binding["bundle_id"])
+    require(bundle.as_json() == document, "bound policy changed during verification")
+    role_hashes = {}
+    for role, text in document["role_text"].items():
+        material = baseline.get("phase_material", {}).get(role, {})
+        relative = f"probes/system-text-policy/{bundle.bundle_id}/{role}.txt"
+        require(material.get("instruction_template") == relative,
+                f"{role} role template does not bind the declared policy")
+        role_path = (Path(repo_root) / "configs" / relative).resolve()
+        require(role_path.is_relative_to(Path(repo_root).resolve()),
+                "role template escaped repository")
+        raw = role_path.read_bytes()
+        require(raw == text.encode("utf-8"), f"{role} role bytes differ from declared policy")
+        role_hashes[role] = hashlib.sha256(raw).hexdigest()
+    from .consumption_module import ConsumptionModuleConfigError, verify_declared_module
+    block = baseline.get("native_episode", {}).get("consumption_module", {})
+    try:
+        verify_declared_module(block, baseline, repo_root=Path(repo_root))
+    except ConsumptionModuleConfigError as error:
+        raise PolicyError(str(error)) from error
+    components = [c for c in block.get("components", [])
+                  if c.get("component_id") == "knowledge-consumption-opportunity"]
+    require(len(components) == 1 and components[0].get("state") == "on",
+            "bound knowledge opportunity is missing")
+    params = components[0]["params"]
+    require(all(params.get(role + "_template")
+                == baseline["phase_material"][role]["instruction_template"]
+                for role in role_hashes), "module and effective role templates differ")
+    require(all(params.get(k) == v for k, v in document["supply"].items()),
+            "bound supply configuration differs")
+    store = baseline.get("knowledge_stores", {}).get(params["store_id"], {})
+    require(all(store.get(k) == v for k, v in document["knowledge"].items()),
+            "bound knowledge configuration differs")
+    return {"bundle_id": bundle.bundle_id, "role_sha256": role_hashes}

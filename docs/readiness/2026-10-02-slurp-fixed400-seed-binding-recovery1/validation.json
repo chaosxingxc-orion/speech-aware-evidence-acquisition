@@ -1,0 +1,21 @@
+{
+  "schema": "saea-offline-binding-validation-v1",
+  "at": "2026-10-02T18:11:12.161360+00:00",
+  "tests": {
+    "passed": 175,
+    "skipped": 1,
+    "skip_reason": "Existing optional whole-repository materialized-data smoke is skipped with SPEECHRL_DATA_DIR unset; no experiment output or scorer is read by the test run."
+  },
+  "coverage": {
+    "policy_module_percent": 96.98275862068965,
+    "new_binding_function_statement_percent": 100,
+    "new_function_missing_lines": []
+  },
+  "checks": {
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS"
+  },
+  "proof": "Legacy seed pointer is rejected before contact; corrected compiled seed and both original candidates match archived policy bytes. Gate checks registered member identity and hashes, not merely seed/A/A mutual equality.",
+  "not_proven": "Actual corrected-seed FIT and four-row generation remain pending explicit recovery approval. No quality claim or new model contact."
+}
