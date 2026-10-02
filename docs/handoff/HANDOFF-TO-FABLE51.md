@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update1 launched: 2026-10-02T02:54:34.214252+00:00, ChatGPT root
+
+Windows task SAEA-Batch-Driver launched the original five-member update1 family at02:50:09Z (campaign02:50:12Z), frozen worker `/home/chao/saea-worktrees/codex-system-text-update1-flight-v1` at2f07dd3d6f52eee79d24243c40a0dff195260816. L-parent is OPENED with62 recorded model contacts at this checkpoint; L-parent-AA, B-parent, B-parent-AA and B-candidate-2 are queued. This is operational execution, not a quality result. Inspect all five, not only the outer queue representative.
+
+Each member has400 trajectories and one official complete score allocation; the whole family has2000 trajectories. Exact own supplies, immutable membership, both native capacity proofs and all five frozen preflights pass. Root archived and hash-verified the seven old completed initial-family control files, including the historical STOP, in `/home/chao/batch-archives/initial-control2-before-update1-20261002T0249Z`; no old worker, cache, output or score was modified. This root reconciliation is not monitor authority for future controls.
+
+The exact READ `SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1` stays unsigned. Stop the family on failure; no automatic retry, replay, post-contact exclusion or partial read. Future L feedback uses its own branch after the complete-family gate; B stays blind. All other held carriers remain held. Monitoring remains30 minutes and script-only. See [launch evidence](../receipts/continuation/2026-10-02-system-text-update1-launch.json).
+
 ## Update1 capacity and family admission: 2026-10-02T02:45:18.123833+00:00, ChatGPT root
 
 The Windows-owned capacity chain finished02:42:04Z with both configurations passing44 native request measurements each,297 tokenizer endpoints each and zero generation contacts. Minimum margins after full output plus extra2048 reserve are5251/5278 tokens. Exact5-member/2000-trajectory registration is frozen at archive stages/update-1.json (210e832d969fb7165ec0afbf873b580977d5be90b56e4cd242df24af7801c151). Both parent/A/A pairs remain request-identical; B-candidate-2 matches the exact compiler output. Three invalid candidates remain excluded without replacement.
