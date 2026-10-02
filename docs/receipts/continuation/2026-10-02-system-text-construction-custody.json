@@ -1,0 +1,98 @@
+{
+  "schema": "saea-system-text-construction-custody-evidence-v1",
+  "at_utc": "2026-10-02T05:28:45.934006+00:00",
+  "owner_scope": [
+    214
+  ],
+  "worker_base_commit": "3b73c46d588c4da4fcb9e2a3a676ff8a40c2ab2e",
+  "implementation_status": "offline-verified-ready-for-serial-integration",
+  "source_files": {
+    "src/speech_aware_evidence_acquisition/rails/system_text_construction.py": "a7df9b1dc86dc3249fe73ba7e3b7c7d4d8e833fdeb40508d5057e5c104e63a8b",
+    "tests/unit/test_system_text_construction.py": "3ac33b0651b10c40fddbe8fa58b6c3cdcc1fc74011cdf825c75f2947287e96ba",
+    "docs/readiness/2026-10-02-system-text-construction-custody-v1.md": "3a004e31be787d0566668f34434ae9c5c82673d91d85e5c26e866094b71078e3"
+  },
+  "validation": {
+    "tests_passed": 203,
+    "new_cases": 18,
+    "red_cases": 4,
+    "statement_coverage_percent": 100,
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "real_components": "FrozenCoreClient, speech-feature payload serialization, trace sink, raw-trace verifier, semantic materializer and release preparation.",
+    "test_doubles": "In-process synthetic transport and verified-bundle lifecycle. No live construction or fresh full bundle-finalization claim.",
+    "model_contacts_added": 0,
+    "tokenizer_contacts_added": 0,
+    "scorer_contacts_added": 0
+  },
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T05:27:07.005364+00:00",
+    "members": [
+      {
+        "member": "L-PARENT",
+        "state": "FINALIZED",
+        "contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "L-PARENT-AA",
+        "state": "FINALIZED",
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "B-PARENT",
+        "state": "OPENED",
+        "contacts": 845,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-PARENT-AA",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-CANDIDATE-2",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      }
+    ],
+    "stop": false,
+    "process": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "windows_free_gib": 11.39,
+    "frozen_worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816"
+  },
+  "boundary": "Update1 remains live; complete-family READ unsigned; no partial quality or answer read; no held carrier release."
+}

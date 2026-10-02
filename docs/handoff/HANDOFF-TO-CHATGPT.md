@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Construction instruction custody: 2026-10-02T05:28:45.934006+00:00, ChatGPT root
+
+The prospective knowledge-construction join now recognizes the exact current CONTROL instruction emitted by the shared phase/client path. It refuses an overridden top-level instruction, old state mention, stale control hash, wrong carrier, duplicate output/request or actual generating sample omitted from cumulative evidence. Legacy requests without history retain the top-level route. The203 related tests pass, including18 new cases and100% scoped coverage. See [proof and limitations](../readiness/2026-10-02-system-text-construction-custody-v1.md).
+
+This is offline engineering with a real client/trace/materialization/release path and synthetic transport/verified-bundle lifecycle. It does not claim a live construction flight, new bundle finalization or efficacy. No model/tokenizer/scorer contact was added. Actual future construction still needs its own source/budget/capacity registration and admission; no spent slot is replaced.
+
+At05:27:07Z the frozen update1 process was live: both L-parent and L-parent-AA FINALIZED with400 rows and one successful official score each, zero failed jobs; B-parent OPENED with845 contacts; B-parent-AA and B-candidate-2 NOT_STARTED. STOP absent and Windows free11.39GiB. Contacts are not completed rows. The whole-family READ stays unsigned. Active worker2f07dd3d6, queue, old outputs and all held carriers remain unchanged.
+
 ## Offline proposer capacity audit: 2026-10-02T05:14:26.258124+00:00, ChatGPT root
 
 The prospective checker now reconstructs explicit tool continuations with the production request builder, output validator and artifact broker. It retains whole reasoning/history, checks cumulative remaining budgets, and reports hashes/margins without contacts or dispatch authority. The168 related tests pass, with99% combined scoped coverage; real local HTTP/SSE fixtures establish request equality. See [readiness and limits](../readiness/2026-10-02-system-text-proposer-capacity-audit-v1.md).
@@ -355,7 +363,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T05:14:26.258124+00:00
+Last refreshed: 2026-10-02T05:28:45.934006+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -4,12 +4,43 @@ No model is invoked here. A construction instruction is not an outcome: its
 exact text must occur in the sealed generator request and its actual output must
 materialize the released authored rows. Completion alone never proves that join.
 """
+import hashlib
 import json
 from pathlib import Path
 
 from .hashing import content_hash
 from .semantic_knowledge_edits import apply_slot_value_edits, PROPOSAL_SCHEMA
-from .system_text_policy import _read_pin, require
+from .system_text_policy import _read_pin, require, sha
+
+
+def _require_executed_instruction(record, *, sample_id, instruction, arm):
+    """Bind the current request's instruction, never a historical mention of it."""
+    # VerifiedBundle.trace_records contains the validated trace payload, with
+    # its outer channel/record_id already consumed by the shared verifier.
+    require(isinstance(arm, str) and record.get("arm") == arm and "tool_id" not in record,
+            "construction source is not the registered model request")
+    sha(record.get("payload_sha256"))
+    request = record.get("payload", {})
+    require(request.get("sample_id") == sample_id and request.get("carrier_lock_key") == "slurp",
+            "construction request sample or carrier differs")
+    history = request.get("history", [])
+    require(isinstance(history, list) and all(isinstance(item, dict) for item in history),
+            "construction request history differs from the shared client")
+    if not history:
+        require(request.get("task_instruction") == instruction,
+                "new construction instruction was not executed in the sealed generator request")
+        return
+    # FrozenCoreClient puts the current PhaseMaterial instruction in the final
+    # CONTROL item. The top-level task contract is a different prompt component.
+    control = history[-1]
+    require(set(control) == {"turn", "role", "contact_id", "content", "content_sha256"}
+            and control["role"] == "control"
+            and all(item.get("role") == "agent_state" for item in history[:-1])
+            and type(control["turn"]) is int and control["turn"] == len(history)
+            and isinstance(control["contact_id"], str) and bool(control["contact_id"].strip())
+            and control["content"] == instruction
+            and control["content_sha256"] == hashlib.sha256(instruction.encode("utf-8")).hexdigest(),
+            "new construction instruction was not executed in the current sealed control request")
 
 
 def materialize_slot_construction(*, base_rows, contract, generation_pin, instruction, data_root):
@@ -19,16 +50,25 @@ def materialize_slot_construction(*, base_rows, contract, generation_pin, instru
     manifest = bundle.manifest
     require(manifest.get("status") == "COMPLETED" and bundle.attempt_state == "FINALIZED"
             and manifest.get("result_kind") == "artifact"
-            and manifest.get("plan", {}).get("split_role") == "discovery",
+            and manifest.get("plan", {}).get("split_role") == "discovery"
+            and manifest.get("plan", {}).get("carrier_lock_key") == "slurp",
             "construction requires a finalized registered discovery artifact generation")
     require(bundle.outputs_rows and all(r["sample_id"].startswith("slurp:train:") for r in bundle.outputs_rows),
             "construction generation must retain TRAIN source identities")
+    sample_ids = [r["sample_id"] for r in bundle.outputs_rows]
+    request_ids = [r.get("request_id") for r in bundle.outputs_rows]
+    require(len(set(sample_ids)) == len(sample_ids)
+            and all(isinstance(identity, str) and identity for identity in request_ids)
+            and len(set(request_ids)) == len(request_ids), "construction output identities must be unique")
+    groups = contract.get("evidence_groups", {})
+    require(isinstance(groups, dict) and all(isinstance(ids, list) for ids in groups.values())
+            and set(sample_ids) <= {sid for ids in groups.values() for sid in ids},
+            "actual construction source is absent from cumulative evidence groups")
     edits = []
     for output in bundle.outputs_rows:
-        request = bundle.trace_records.get(str(output.get("request_id")) + "/request", {}).get("payload", {})
-        require(request.get("task_instruction") == instruction
-                and request.get("sample_id") == output["sample_id"],
-                "new construction instruction was not executed in the sealed generator request")
+        record = bundle.trace_records.get(output["request_id"] + "/request", {})
+        _require_executed_instruction(record, sample_id=output["sample_id"], instruction=instruction,
+                                      arm=manifest.get("arm"))
         proposal = json.loads(output["text"])
         require(set(proposal) == {"schema", "base_rows_sha256", "edits"}
                 and proposal["schema"] == PROPOSAL_SCHEMA
