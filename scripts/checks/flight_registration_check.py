@@ -64,7 +64,10 @@ abort -- a four-row smoke cannot see seal-time checks on kept rows):
 
 * Whole-tree mode (no ``--cell``): every cell of ``configs/experiment/*.json`` whose
   ``readiness.state`` is ``ready`` (``--include-held`` adds ``held`` cells as a PREVIEW, never
-  blocking). A cell whose generation run id is already CONSUMED -- a non-empty
+  blocking). A cell declaring ``attempt_id`` is historical only when its own attempt record
+  or non-empty ``runs/<run id>/<attempt id>/`` / ``prepared/<run id>/<attempt id>/`` exists.
+  Another attempt, a run-level receipt or a consumed ledger row never waives a new attempt.
+  For legacy cells without ``attempt_id``, a generation run id is already CONSUMED by a non-empty
   ``runs/<run id>/`` or ``attempts/<run id>/`` on the data root, a ``prepared/<run id>/attempt*``
   FIT receipt directory, or a ledger row whose ``consumed`` column reads ``yes`` -- is
   HISTORICAL: its findings are reported and never block (this repository never rewrites sealed
@@ -75,9 +78,10 @@ abort -- a four-row smoke cannot see seal-time checks on kept rows):
   it does not fail the tree, and it still cannot pass the launch gate below.
 * Launch mode (``--cell [EXPERIMENT:]CELL``, repeatable, and ``--campaign-plan PATH``, which
   adds every cell of that plan): every named cell is gated whatever its registration date. A
-  named cell that is not ``ready`` is refused (``not-ready``); a named cell whose run id is
-  already consumed is reported and passes (a resume step re-enters a consumed run id under the
-  one-recovery rule, and the runtime's own gate judges it). This is the mode
+  named unflown cell that is not ``ready`` is refused (``not-ready``). Historical cells are
+  reported only under the attempt-aware rule above; a new recovery attempt receives full
+  launch checks even when its run id was consumed. The runtime separately enforces attempt
+  lifecycle and recovery authority. This is the mode
   ``scripts/flights/batch/batch_driver.sh`` runs in ``prelaunch`` for every queue step.
 
 Exit 0 when no blocking finding remains (advisory lines are still printed); exit 1 on a
@@ -376,8 +380,32 @@ def fit_run_ids(fragment: dict[str, Any], baseline: dict[str, Any] | None) -> di
     return out
 
 
-def consumption(data_root: Path, run_id: str, rows: list[dict[str, str]]) -> str | None:
-    """Why ``run_id`` counts as already flown, or ``None``."""
+def consumption(
+    data_root: Path, run_id: str, rows: list[dict[str, str]], *, attempt_id: str | None = None,
+) -> str | None:
+    """Identify historical evidence for this attempt, or legacy run-only cells.
+
+    A new attempt sharing a run id must not inherit a predecessor's waiver.
+    Historical classification does not establish completion, sealing or score validity.
+    """
+
+    if attempt_id is not None:
+        if not isinstance(attempt_id, str) or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", attempt_id) is None:
+            raise FlightRegistrationCheckError("attempt_id must be a plain non-empty identifier")
+        record = data_root / "attempts" / run_id / f"{attempt_id}.json"
+        if record.is_file():
+            try:
+                payload = json.loads(record.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                raise FlightRegistrationCheckError(f"cannot read attempt record {record}: {error}") from error
+            if not isinstance(payload, dict) or payload.get("run_id") != run_id or payload.get("attempt_id") != attempt_id:
+                raise FlightRegistrationCheckError(f"attempt record identity mismatch: {record}")
+            return f"attempts/{run_id}/{attempt_id}.json"
+        for kind in ("runs", "prepared"):
+            path = data_root / kind / run_id / attempt_id
+            if path.is_dir() and any(path.iterdir()):
+                return f"{kind}/{run_id}/{attempt_id}"
+        return None
 
     for kind in ("runs", "attempts"):
         path = data_root / kind / run_id
@@ -1698,7 +1726,7 @@ def evaluate(
         registered = next((date_in(row.get(DATE_COLUMN)) for row in rows if date_in(row.get(DATE_COLUMN))), None)
         registered = registered or date_in(entry.fragment.get("date"))
         report.registration_date = registered.isoformat() if registered else None
-        report.consumed_by = consumption(data_root, run_id, rows)
+        report.consumed_by = consumption(data_root, run_id, rows, attempt_id=cell.get("attempt_id"))
         baseline = entry.baseline
         if baseline is None and cell.get("baseline_fragment") is not None:
             # A multi-member family may intentionally use different policy bundles.

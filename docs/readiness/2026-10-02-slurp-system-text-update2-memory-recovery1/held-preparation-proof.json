@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-02T11:22:07.244837+00:00",
+  "status": "MODEL-FREE HELD PREPARATION ONLY",
+  "new_attempt_opened": false,
+  "contacts": 0,
+  "result": {
+    "rebuilt": true,
+    "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+    "old_pin": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v2.json",
+      "sha256": "630fdc3789cd48da7b906e674e6814c8a308bf44b4612e47772b650adc439c44"
+    },
+    "new_pin": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v3.json",
+      "sha256": "1f58a3252ff62986e7ba29c81048df801bc32941af2e5e1c18806c9010094e1c"
+    },
+    "row_counts": {
+      "old": {
+        "facets": 0,
+        "values": 400
+      },
+      "new": {
+        "facets": 0,
+        "values": 400
+      }
+    },
+    "readiness_requirement": {
+      "updated": 1,
+      "appended": 0,
+      "kept": 0
+    }
+  }
+}

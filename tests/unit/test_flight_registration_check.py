@@ -1088,3 +1088,92 @@ def test_key_source_pin_problems_names_a_zero_swap_and_a_bad_shape() -> None:
         {"store_id": "s", "facet_source": None, "query_source": None, "agreement_source": None}, None,
     ) == ["swaps zero retrieval-key pins"]
     assert gate._key_source_pin_problems({"facet_source": None}, None)
+
+
+# A successor attempt cannot inherit the historical waiver of its predecessor.
+RECOVERY_ATTEMPT = "attempt-proof-fold-a-generation-recovery1-v1"
+
+
+def _declare_recovery(world: World) -> None:
+    path = world.repo / "configs/experiment" / f"{EXPERIMENT}.json"
+    fragment = json.loads(path.read_text())
+    fragment["cells"][0]["attempt_id"] = RECOVERY_ATTEMPT
+    _write(path, fragment)
+
+
+@pytest.mark.parametrize("old_evidence", ["run", "attempt", "prepared", "ledger"])
+@pytest.mark.parametrize("state", ["ready", "held"])
+def test_successor_attempt_does_not_inherit_run_level_history(
+    world: World, old_evidence: str, state: str,
+) -> None:
+    world.states[EXPERIMENT] = state
+    world.rows[RUN] = _row(RUN, DRAFT, consumed="yes" if old_evidence == "ledger" else "no")
+    world.build()
+    _declare_recovery(world)
+    if old_evidence == "run":
+        _write(world.data / "runs" / RUN / "attempt-original/session-attach.json", {})
+    elif old_evidence == "attempt":
+        _write(world.data / "attempts" / RUN / "attempt-original.json", {"state": "OPENED"})
+    elif old_evidence == "prepared":
+        _write(world.data / "prepared" / RUN / "attempt-original/fit.json", {})
+    report = world.run(cells=[EXPERIMENT])
+    cell = report["cells"][0]
+    assert cell["consumed_by"] is None
+    assert cell["severity"] == "blocking"
+    assert not report["passed"]
+    assert "row-not-countersigned" in _kinds(report)
+    if state == "held":
+        assert "not-ready" in _kinds(report)
+    tree = world.run(include_held=True)
+    entry = next(c for c in tree["cells"] if c["cell_id"] == EXPERIMENT)
+    assert entry["consumed_by"] is None
+    assert entry["severity"] == ("advisory" if state == "held" else "blocking")
+
+
+@pytest.mark.parametrize("own_evidence", ["attempt", "run", "prepared"])
+def test_exact_attempt_evidence_still_receives_historical_reporting(
+    world: World, own_evidence: str,
+) -> None:
+    world.rows[RUN] = _row(RUN, DRAFT)
+    world.build()
+    _declare_recovery(world)
+    if own_evidence == "attempt":
+        relpath = f"attempts/{RUN}/{RECOVERY_ATTEMPT}.json"
+        _write(world.data / relpath, {"run_id": RUN, "attempt_id": RECOVERY_ATTEMPT, "state": "OPENED"})
+    else:
+        relpath = f"{('runs' if own_evidence == 'run' else 'prepared')}/{RUN}/{RECOVERY_ATTEMPT}"
+        _write(world.data / relpath / "receipt.json", {})
+    report = world.run(cells=[EXPERIMENT])
+    assert report["passed"]
+    assert report["cells"][0]["consumed_by"] == relpath
+    assert "row-not-countersigned" in _kinds(report)
+
+
+def test_registered_successor_is_checked_and_can_pass_without_historical_waiver(world: World) -> None:
+    world.build()
+    _declare_recovery(world)
+    _write(world.data / "runs" / RUN / "attempt-original/session-attach.json", {})
+    report = world.run(cells=[EXPERIMENT])
+    assert report["passed"]
+    assert report["cells"][0]["consumed_by"] is None
+    assert report["cells"][0]["severity"] == "blocking"
+
+
+@pytest.mark.parametrize("payload", ["not json", {}, {"run_id": "ANOTHER", "attempt_id": RECOVERY_ATTEMPT}])
+def test_malformed_or_mismatched_attempt_record_never_grants_history(world: World, payload) -> None:
+    world.build()
+    _declare_recovery(world)
+    _write(world.data / "attempts" / RUN / f"{RECOVERY_ATTEMPT}.json", payload)
+    with pytest.raises(gate.FlightRegistrationCheckError, match="attempt"):
+        world.run(cells=[EXPERIMENT])
+
+
+@pytest.mark.parametrize("attempt", ["", "../elsewhere", "/absolute", 123])
+def test_invalid_attempt_identity_cannot_select_historical_artifacts(world: World, attempt) -> None:
+    world.build()
+    path = world.repo / "configs/experiment" / f"{EXPERIMENT}.json"
+    fragment = json.loads(path.read_text())
+    fragment["cells"][0]["attempt_id"] = attempt
+    _write(path, fragment)
+    with pytest.raises(gate.FlightRegistrationCheckError, match="attempt"):
+        world.run(cells=[EXPERIMENT])

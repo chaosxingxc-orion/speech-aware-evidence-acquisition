@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-02T11:25:49.229574+00:00",
+  "warm_verification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v3.json",
+    "sha256": "1f58a3252ff62986e7ba29c81048df801bc32941af2e5e1c18806c9010094e1c",
+    "cache": "warm",
+    "contact_class": "model-free"
+  },
+  "readiness": "held",
+  "controls_and_original_fragments_unchanged": true,
+  "new_attempt_absent": true
+}

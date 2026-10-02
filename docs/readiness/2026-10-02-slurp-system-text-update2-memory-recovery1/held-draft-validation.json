@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-02T11:24:31.987398+00:00",
+  "status": "HELD MODEL-FREE PREPARATION COMPLETE",
+  "identity": {
+    "experiment": "slurp-native-stage3-system-text-update2-l-parent-recovery1-v1",
+    "cell_id": "slurp-native-stage3-system-text-update2-l-parent-recovery1-v1",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+    "attempt_id": "attempt-slurp-native-stage3-system-text-update2-l-parent-generation-recovery1-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "dataset_fragment": "slurp-speech-native-system-text-update-2-400-v1",
+    "baseline_fragment": "slurp-native-stage3-system-text-update2-l-parent-recovery1-v1",
+    "carrier_lock_key": "slurp",
+    "arm": "speech-feature-query-native-tools",
+    "split_identity_hash": "643e845970aeac0a5ab6093b52fc6577b328a4a0aeef3a7c1056ee64a8980e04",
+    "config_hash": "f14314ae656a8b4c831ece192bf3f7b82a9d2234430734f22c36c8c7355e455f",
+    "protocol_hash": "8551959a6c745f749b176029bdcc92e9897de3ac24dd8e346af091658206171e",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v3.json",
+      "sha256": "1f58a3252ff62986e7ba29c81048df801bc32941af2e5e1c18806c9010094e1c"
+    },
+    "perception_branch_seed_pin": null,
+    "has_perception_branch_group": false
+  },
+  "generation_plan_valid": true,
+  "fit_plan_valid": true,
+  "whole_family_schema_valid": true,
+  "whole_family_members_unchanged": true,
+  "candidate_allocations_unchanged": true,
+  "no_new_exclusions": true,
+  "all_budgets_unchanged": true,
+  "guard_refusal": "-: error: registered cell is not ready: Proposed owner218 recovery; no launch until explicit owner ruling, exact failed-entry disposition, successor registration and root admission. Model-free supply preparation only at this checkpoint.",
+  "guard_receipt_not_created": true,
+  "successor_attempt_absent": true,
+  "old_artifact_control_hashes_unchanged": true,
+  "pending": [
+    "owner218 explicit ruling",
+    "original zero-contact attempt disposition",
+    "exact stale controls reconciliation under ruling",
+    "runtime registration and root admission",
+    "frozen worker and final runtime preflight"
+  ],
+  "model_tokenizer_scorer_contacts": 0
+}

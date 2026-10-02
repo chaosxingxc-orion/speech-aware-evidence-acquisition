@@ -1,0 +1,53 @@
+{
+  "schema": "saea-system-text-update2-held-successor-preparation-v1",
+  "recorded_at": "2026-10-02T11:38:15.757367+00:00",
+  "status": "HELD pending owner218; no dispatch",
+  "attempt_id": "attempt-slurp-native-stage3-system-text-update2-l-parent-generation-recovery1-v1",
+  "prepared_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1/phase-supply-v3.json",
+    "sha256": "1f58a3252ff62986e7ba29c81048df801bc32941af2e5e1c18806c9010094e1c"
+  },
+  "supply_output_equality": true,
+  "warm_verified": true,
+  "drafts_only": [
+    "l-parent-generation-plan-draft.json",
+    "l-parent-fit-plan-draft.json",
+    "stage-registration-draft.json",
+    "analysis-recipe-draft.json"
+  ],
+  "preserved_science": {
+    "members": 8,
+    "rows_per_member": 400,
+    "total_rows": 3200,
+    "replacement_proposals": 0
+  },
+  "registration_gate": {
+    "before": "incorrect historical advisory from predecessor run directory",
+    "after": "unflown successor blocked on HELD",
+    "new_regression_cases": 19,
+    "related_tests_passed": 139,
+    "optional_test_skipped": 1,
+    "registration_statement_coverage_percent": 84
+  },
+  "model_tokenizer_scorer_contacts": 0,
+  "partial_scientific_feedback_reads": 0,
+  "live_control_changes": false,
+  "new_attempt_opened": false,
+  "runtime_admission": false,
+  "pending": [
+    "explicit owner218 ruling",
+    "abandoned entry and exact stale controls disposition",
+    "successor exposure and family/READ registration",
+    "root admission",
+    "frozen source and final live preflight"
+  ],
+  "readiness": "docs/readiness/2026-10-02-slurp-system-text-update2-memory-recovery1/README.md",
+  "evidence": {
+    "held-warm-verification.json": "78ed5e214ba3fa42e636025d5b6592f1a474e88d428606386e5e29df1051f27b",
+    "stage-registration-draft.json": "4e1e68092968593e31efca94c6a209f0f0921b41146dfe79bc1122b2fbc255cf",
+    "registration-gate-before.json": "bfd10fe0dd2de5b19d3d328f54d42f58d748f68483fc7973af13c81dfd7b63b3",
+    "held-draft-validation.json": "44a052229d1c691c91921ca4dc10ca7c52fc975423bd2c5bbf5dbfba6aed1432",
+    "analysis-recipe-draft.json": "59f8cd01a3b87cf99167566376244876117f4c58efa0174c010d115fd9132ade",
+    "registration-gate-after.json": "4b612d6eeba0df57d3fccaf3162523a2f1aa82e90d9c37ef657de1cf7615da85"
+  }
+}

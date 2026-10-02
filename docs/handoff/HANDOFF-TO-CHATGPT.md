@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## HELD UPDATE2 successor preparation: 2026-10-02T11:38:15.757367+00:00, ChatGPT root
+
+The first successor supply is warm-verified with exact400-output equality. Its plans, eight-member registration and READ recipe are validated drafts only; no live archive, exposure, queue, STOP, lease or attempt was changed. Owner218 remains pending. See [preparation and remaining admissions](../readiness/2026-10-02-slurp-system-text-update2-memory-recovery1/README.md) and [structured receipt](../receipts/continuation/2026-10-02-system-text-update2-held-successor-preparation.json).
+
+The actual registration check previously misclassified this unstarted recovery as historical because of the predecessor's run directory. The shared fix uses exact attempt custody;19 new regression cases reproduce the defect,139 related tests pass and registration coverage is84%. The real HELD successor now blocks, and the process guard refuses before child/receipt/attempt creation. Four existing roster-convention advisories remain disclosed. This proof is not launch admission or scientific evidence.
+
+At11:36Z the service remains healthy idle with four idle slots, GPU22976MiB/0%, fresh telemetry and unchanged20749 service requests (not row counts). L-parent remains OPENED with zero contacts, seven other attempts absent, STOP preserved. Windows free30.92GiB at11:30Z after the owner-requested cache release. The known15.4MiB blocked diagnostic is not a large residual experiment. No task-quality read, new model/tokenizer/scorer contact, candidate replacement or carrier release occurred.
+
 ## Owner-requested cache audit and release: 2026-10-02T11:14:58.404102+00:00, ChatGPT root
 
 The host-memory audit found no large residual experiment. About27GiB was Linux file cache within the29.5GiB WSL working set. One targeted read-only GGUF cache-release request reduced WSL residency to12.47GiB and raised Windows free memory from14.39 to31.18GiB. Service identity, GPU allocation, health and request count stayed unchanged; exact STOP/queue/lease/status/source-pin hashes are preserved. See [audit, operation and limits](../readiness/2026-10-02-owner-requested-idle-cache-release-v1.md).

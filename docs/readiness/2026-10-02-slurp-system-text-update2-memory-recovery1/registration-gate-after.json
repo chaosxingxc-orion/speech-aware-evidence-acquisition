@@ -1,0 +1,89 @@
+{
+  "schema": "saea-flight-registration-check-v1",
+  "mode": "launch",
+  "strict_from": "2026-09-26",
+  "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "cells": [
+    {
+      "experiment": "slurp-native-stage3-system-text-update2-l-parent-recovery1-v1",
+      "cell_id": "slurp-native-stage3-system-text-update2-l-parent-recovery1-v1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+      "state": "held",
+      "named": true,
+      "consumed_by": null,
+      "registration_date": "2026-10-02",
+      "severity": "blocking",
+      "scope_note": "launch gate: named cell, ready and unflown",
+      "run_ids": {
+        "generation": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+        "native_contact_fit": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-FIT-V1"
+      },
+      "package": "docs/readiness/2026-10-02-slurp-system-text-update2-flight-v2",
+      "recipe": "docs/readiness/2026-10-02-slurp-system-text-update2-flight-v2/analysis-recipe-v2.json",
+      "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-READ-V1",
+      "read_row_countersigned": false,
+      "receipts": {
+        "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1": "coordination/slurp-system-text-update2-v1/root-admission-precontact-v2.json",
+        "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-FIT-V1": "coordination/slurp-system-text-update2-v1/root-admission-precontact-v2.json"
+      },
+      "findings": [
+        {
+          "kind": "not-ready",
+          "message": "readiness.state is 'held', not 'ready'",
+          "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+          "severity": null
+        },
+        {
+          "kind": "tuning-roster-unverified",
+          "message": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1: no roster receipt under docs/receipts/rosters/ proves tuning_roster 'SLURP-STAGE3-CONSTRUCTION-R01C' disjoint from read_roster 'SLURP-SYSTEM-TEXT-UPDATE-2-400-V1' (no receipt found for one of them, or its disjointness_proof says nothing about the other) -- reported, not blocked, until a receipt settles it",
+          "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+          "severity": "advisory"
+        },
+        {
+          "kind": "tuning-roster-unverified",
+          "message": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1: no roster receipt under docs/receipts/rosters/ proves tuning_roster 'SLURP-EVO-FOLD-A-V2' disjoint from read_roster 'SLURP-SYSTEM-TEXT-UPDATE-2-400-V1' (no receipt found for one of them, or its disjointness_proof says nothing about the other) -- reported, not blocked, until a receipt settles it",
+          "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+          "severity": "advisory"
+        },
+        {
+          "kind": "tuning-roster-unverified",
+          "message": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1: no roster receipt under docs/receipts/rosters/ proves tuning_roster 'SLURP-EVO-FOLD-B-V2' disjoint from read_roster 'SLURP-SYSTEM-TEXT-UPDATE-2-400-V1' (no receipt found for one of them, or its disjointness_proof says nothing about the other) -- reported, not blocked, until a receipt settles it",
+          "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+          "severity": "advisory"
+        },
+        {
+          "kind": "tuning-roster-unverified",
+          "message": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1: no roster receipt under docs/receipts/rosters/ proves tuning_roster 'SLURP-DEV-2000-ADDED-V1' disjoint from read_roster 'SLURP-SYSTEM-TEXT-UPDATE-2-400-V1' (no receipt found for one of them, or its disjointness_proof says nothing about the other) -- reported, not blocked, until a receipt settles it",
+          "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+          "severity": "advisory"
+        }
+      ],
+      "supply_variant": null,
+      "perception_branch": null,
+      "relisten": null,
+      "roster_split": {
+        "tuning_roster": [
+          "SLURP-STAGE3-CONSTRUCTION-R01C",
+          "SLURP-EVO-FOLD-A-V2",
+          "SLURP-EVO-FOLD-B-V2",
+          "SLURP-DEV-2000-ADDED-V1"
+        ],
+        "read_roster": "SLURP-SYSTEM-TEXT-UPDATE-2-400-V1"
+      },
+      "resume_replay_proof": null
+    }
+  ],
+  "blocking_cells": [
+    "slurp-native-stage3-system-text-update2-l-parent-recovery1-v1"
+  ],
+  "advisory_cells": [],
+  "passed": false,
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "server": 0,
+    "network": 0
+  }
+}
