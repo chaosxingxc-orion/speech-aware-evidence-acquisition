@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Shared-runtime construction proof: 2026-10-02T06:04:03.644468+00:00, ChatGPT root
+
+The offline knowledge-construction proof now executes the actual FlightRuntime phase scheduler and OpenJiuwen before real output sealing/finalization and semantic release. Five new cases verify valid edits, no-change exposure retention and refusal of invalid artifacts before publication. All 374 related tests pass, with100% construction /97% policy scoped coverage. No production code changed. See [proof and exact synthetic seams](../readiness/2026-10-02-system-text-construction-runtime-v1.md).
+
+This closes the preceding integration proof's phase-scheduler gap. It is synthetic local-transport engineering, not a live construction flight, new capacity evidence or efficacy. Actual future builds still need exact source/budget/FIT/admission. Zero model/tokenizer/scorer contacts were added; no spent slot was replaced.
+
+At06:02:34Z both L-parent members were FINALIZED with400 rows and one successful official score each, zero failures. B-parent was OPENED with2352 contacts; B-parent-AA and B-candidate-2 were NOT_STARTED. STOP absent, frozen campaign process live, worker2f07dd3d6 clean. Windows free11.15GiB at approximately06:03Z. Contacts are not rows. Whole-family READ remains unsigned and no current quality or answer was read. Active sources, queues and held-carrier boundaries remain unchanged.
+
 ## Finalized construction integration: 2026-10-02T05:45:18.873375+00:00, ChatGPT root
 
 The offline client-to-manifest-to-finalization-to-semantic-release-to-policy-compiler join now has a proof with real custody and finalization, removing the preceding join test's simulated-bundle gap. It rejects premature consumption, artifact mutation, duplicate finalization and omitted cumulative sources before candidate publication. All 262 related tests pass, including six new integration cases; scoped coverage is 100% construction / 97% policy. No production code changed. See [proof and precise limits](../readiness/2026-10-02-system-text-construction-integration-v1.md).
@@ -371,7 +379,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T05:45:18.873375+00:00
+Last refreshed: 2026-10-02T06:04:03.644468+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

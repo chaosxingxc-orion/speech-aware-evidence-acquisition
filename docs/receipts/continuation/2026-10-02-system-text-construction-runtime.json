@@ -1,0 +1,101 @@
+{
+  "schema": "saea-system-text-construction-runtime-evidence-v1",
+  "at_utc": "2026-10-02T06:04:03.644468+00:00",
+  "owner_scope": [
+    214
+  ],
+  "worker_base_commit": "5a0e54a8ad7e47b67c5324bbb4fc6afbf5f51b7b",
+  "implementation_status": "offline-verified-ready-for-serial-integration",
+  "source_files": {
+    "tests/unit/test_system_text_construction_runtime.py": "6771ffc41b8e568554e2ef822250f34d3ff0babf1dde312023a4b49f85189507",
+    "docs/readiness/2026-10-02-system-text-construction-runtime-v1.md": "83dc6b3112ab24efba78644a7391571295ce2ef3b9b1012cb56a1f2b6d33d23d"
+  },
+  "validation": {
+    "tests_passed": 374,
+    "new_integration_cases": 5,
+    "construction_statement_coverage_percent": 100,
+    "policy_statement_coverage_percent": 97,
+    "combined_statement_coverage_percent": 98,
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "production_source_changed": false,
+    "real_components": "FlightRuntime, configured phase material, phase program, EvidenceAgentController, OpenJiuwen, FrozenCoreClient, payload binding, trace/attempt custody, canonical output, manifest verification/finalization, slot materialization and semantic release.",
+    "test_doubles": "Synthetic carrier adapter/data/feature packet, hardware gate, serving lifecycle/runtime receipt, packet promotion and local model transport. No phase-runner or custody/release replacement.",
+    "model_contacts_added": 0,
+    "tokenizer_contacts_added": 0,
+    "scorer_contacts_added": 0
+  },
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T06:02:34.038997+00:00",
+    "members": [
+      {
+        "member": "L-PARENT",
+        "state": "FINALIZED",
+        "contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "L-PARENT-AA",
+        "state": "FINALIZED",
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "B-PARENT",
+        "state": "OPENED",
+        "contacts": 2352,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-PARENT-AA",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-CANDIDATE-2",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      }
+    ],
+    "stop": false,
+    "process": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "frozen_worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+    "frozen_worker_clean": true,
+    "windows_free_gib": 11.15,
+    "windows_memory_observed_at": "2026-10-02T06:03Z"
+  },
+  "boundary": "Active update1 remains frozen and unread until the complete-family gate; no new dispatch, retry or spent-slot replacement."
+}
