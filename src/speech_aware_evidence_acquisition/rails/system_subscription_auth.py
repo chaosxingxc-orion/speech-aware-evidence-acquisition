@@ -12,9 +12,10 @@ from .system_text_policy import PolicyError, require
 class SubscriptionBearer:
     """Keep tokens inside host processes; never serialize them into experiment logs."""
 
-    def __init__(self, *, node, script_windows, script_local, script_sha256):
+    def __init__(self, *, node, script_windows, script_local, script_sha256, app_root_windows=None):
         self.node, self.script_windows = str(node), str(script_windows)
         self.script_local, self.script_sha256 = Path(script_local), script_sha256
+        self.app_root_windows = app_root_windows
 
     def __call__(self):
         require(hashlib.sha256(self.script_local.read_bytes()).hexdigest() == self.script_sha256,
@@ -28,7 +29,10 @@ class SubscriptionBearer:
         if not names:
             env["WSLENV"] = env.get("WSLENV", "") + ":SAEA_AUTH_INTERNAL_PIPE"
         try:
-            result = subprocess.run([self.node, self.script_windows, "credential-pipe"],
+            command = [self.node, self.script_windows, "credential-pipe"]
+            if self.app_root_windows is not None:
+                command.append(self.app_root_windows)
+            result = subprocess.run(command,
                 input=b"", stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env,
                 timeout=90, check=False)
         except (OSError, subprocess.SubprocessError):

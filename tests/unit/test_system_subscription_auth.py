@@ -43,3 +43,15 @@ def test_adapter_pin_precedes_process(tmp_path, monkeypatch):
     monkeypatch.setattr("subprocess.run", lambda *a, **k: pytest.fail("must not start"))
     with pytest.raises(PolicyError, match="changed"):
         auth()
+
+
+def test_physical_own_app_directory_is_an_explicit_nonsecret_argument(tmp_path, monkeypatch):
+    auth = adapter(tmp_path)
+    auth.app_root_windows = "C:/registered/saea-system-proposer"
+    seen = []
+    def run(args, **kwargs):
+        seen.append(args)
+        return SimpleNamespace(returncode=0, stdout=b"synthetic-own-token", stderr=b"")
+    monkeypatch.setattr("subprocess.run", run)
+    assert auth() == "synthetic-own-token"
+    assert seen == [["node.exe", "C:/auth.mjs", "credential-pipe", auth.app_root_windows]]

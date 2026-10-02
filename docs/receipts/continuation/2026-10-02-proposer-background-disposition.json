@@ -1,0 +1,49 @@
+{
+  "schema": "saea-system-text-proposer-background-disposition-v1",
+  "recorded_at_utc": "2026-10-02T02:00:02.054766+00:00",
+  "owner_decision": 217,
+  "first_task": "SAEA-System-Text-Proposer-Round1-Owner217",
+  "source_commit": "64d54a84eb8d08fa623daddeb47278751febfb44",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/execution/started.json",
+    "sha256": "4f7e95b50de6216c99f3ef9e112015ed67fbacfa84cf6545f2fd3a29e0d8acab"
+  },
+  "finished": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/execution/finished.json",
+    "sha256": "8721f9afa3d91b4d4d574c8ce74a7eb42bce302546209164aae385d1de8344b0"
+  },
+  "failure": "L-1-1 stopped at the own-app SDK source check before a completed provider response. The background process could not see the logical AppData SDK directory. Windows file-handle resolution established the packaged application physical directory. The original transport retained one unmetered reservation and no HTTP metadata/response bytes; do not rewrite its counters or infer task quality.",
+  "closed_allocations": {
+    "L-1-1": {
+      "outcome": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/dispatch/L-1-1/outcome.json",
+        "sha256": "82591a6f6bf0b2ade0a9055d6237b1b2e73db1287e088f133ef43cedd618f596"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/L-1-1.json",
+        "sha256": "4ef74025de645a693ab038e82a7769d13838d8e918de292763d2765476e7f692"
+      }
+    }
+  },
+  "slot_disposition": "Consume and reject L-1-1 under owner217. Never retry or replace it. B-1-1, L-1-2 and B-1-2 have no prior dispatch reservation and may use only their original registered slots.",
+  "root_cause_evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/background-auth-proof.json",
+      "sha256": "3928276a4b35575308619876838fba3f5058518425cbd0c666181f315e5aa8da"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/background-source-proof2.json",
+      "sha256": "8ccb811401187062ced49a230d54a68cfa0ba34e78c8502a7e15e3b5fd21dce8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/background-source-proof6.json",
+      "sha256": "df101c7b1419f8c3940ac4afc96f0c8332890b9d71560cbd84ddf3cb1a3bd15c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round1-owner217-v1/background-auth-proof2.json",
+      "sha256": "91df5281e4bcd30eb3e367d26801d7fbc34b9d08b11f1ff1071344935b4edb06"
+    }
+  ],
+  "correction": "Supply the handle-resolved physical directory of this research program as an explicit registered argument. It is the same own-app store created during sign-in; no other application credentials are read or copied. Keep DPAPI CurrentUser encryption. Check credential readiness before any future proposal allocation and retain a safe failure reason.",
+  "remaining_task": "Separate clean frozen successor launcher, with L-1-1 explicitly closed by the pinned failed outcome and invalid archive import. No new candidate allowance, no third synthetic Responses request, no GPU dispatch or STOP clearance."
+}

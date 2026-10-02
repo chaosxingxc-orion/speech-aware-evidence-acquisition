@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Background proposer correction: 2026-10-02T02:00:02.054766+00:00, ChatGPT root
+
+The first registered round launcher started at01:45:07Z and stopped in L-1-1 with an own-app SDK directory lookup failure. Windows packaged-app AppData virtualization made the logical sign-in directory unavailable to the scheduled WSL child. Preserve its worker64d54a84e, response-free unmetered reservation and failed outcome. L-1-1 is now recorded INVALID with unknown usage and consumes its original proposal slot; it must never be replaced or retried.
+
+The same-background model-free source proof now verifies the pinned SDK at the handle-resolved physical research-app directory, and the private credential proof succeeds without logging secrets or sending model requests. See the [failure disposition](../receipts/continuation/2026-10-02-proposer-background-disposition.json). The remaining three original slots B-1-1, L-1-2 and B-1-2 are eligible only through a separately frozen launcher that checks credential readiness before allocation and explicitly excludes the closed L-1-1. All scientific inputs, model, budgets and proposal identities remain unchanged. Record its actual start separately; do not replay the first task or clear the old GPU batch STOP.
+
 ## Owner217 proposal admission checkpoint: 2026-10-02T01:41:54.999235+00:00, ChatGPT root
 
 Owner216 is complete and both initial400 members remain FINALIZED with verified seals and one successful official score each. The initial READ and descriptive report are complete. Owner217 is approved; own-app subscription login is connected and GPT-6-Astra is pinned. The corrected consumer verified the retained completed synthetic response offline; both original synthetic failure records remain immutable and no third connection proof was sent. The [provider admission](../readiness/2026-10-01-slurp-system-text-search-v1/provider-admission-owner217-v1.json) records the exact disposition and limits.
@@ -269,7 +275,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T01:42:42.024797+00:00
+Last refreshed: 2026-10-02T02:00:02.054766+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

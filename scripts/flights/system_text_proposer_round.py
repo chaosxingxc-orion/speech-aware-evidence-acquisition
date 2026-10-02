@@ -91,6 +91,16 @@ def load_members(registration):
         require(request_bound(request) <= packet["input_token_cap"], "initial input does not fit")
         jobs.append((member, capsule, plan))
     require(keys == {"L-1-1", "L-1-2", "B-1-1", "B-1-2"}, "first round membership differs")
+    closed = r.get("closed_allocations", {})
+    require(set(closed) <= keys, "unknown closed allocation")
+    for key, evidence in closed.items():
+        outcome = read_pin(evidence["outcome"])
+        imported = read_pin(evidence["import"])
+        require(outcome["status"] == "failed" and imported["status"] == "invalid"
+                and imported["proposal_allocation"] == [key[0], 1, int(key[-1])],
+                "closed allocation must retain failed transport and invalid import")
+    jobs = [job for job in jobs if job[0]["key"] not in closed]
+    require(jobs, "no unconsumed proposal allocations")
     return jobs, admission, protocol
 
 
@@ -113,11 +123,15 @@ def main():
         print(canonical({"preflight": "PASS", "members": len(jobs), "contacts_added": 0,
                          "request_bounds": {m["key"]: request_bound(c.request()) for m, c, _ in jobs}}))
         return 0
+    # Check the background process's credential path before consuming a slot.
+    # This may renew the own-app grant; it makes no proposal/model request.
+    bearer = SubscriptionBearer(**r["auth"])
+    ready_token = bearer()
+    del ready_token
     output = Path(r["output_root"])
     output.mkdir(parents=True, exist_ok=False)
     write_once(output / "started.json", {"at_utc": datetime.now(timezone.utc).isoformat(), "pid": os.getpid(),
         "registration_sha256": args.sha256, "retry_permitted": False})
-    bearer = SubscriptionBearer(**r["auth"])
     archive = SystemSearchArchive(r["archive"])
     outcomes = []
     for member, capsule, plan in jobs:

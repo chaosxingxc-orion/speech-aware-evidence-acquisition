@@ -55,6 +55,18 @@ def test_exact_four_inputs_pass_without_contact(tmp_path):
     assert all(runner.request_bound(c.request()) < 32768 for _, c, _ in jobs)
 
 
+def test_closed_failed_slot_is_not_replaced_or_reexecuted(tmp_path):
+    r = registration(tmp_path)
+    r["closed_allocations"] = {"L-1-1": {
+        "outcome": pin(tmp_path / "failed.json", {"status": "failed"}),
+        "import": pin(tmp_path / "invalid.json", {"status": "invalid", "proposal_allocation": ["L", 1, 1]})}}
+    jobs, _, _ = runner.load_members(r)
+    assert [member["key"] for member, _, _ in jobs] == ["B-1-1", "L-1-2", "B-1-2"]
+    r["closed_allocations"]["L-1-1"]["outcome"] = pin(tmp_path / "success.json", {"status": "received"})
+    with pytest.raises(PolicyError, match="closed allocation"):
+        runner.load_members(r)
+
+
 @pytest.mark.parametrize("mutation", ["capsule", "ledger", "model", "request", "membership"])
 def test_changed_registration_never_reaches_transport(tmp_path, mutation):
     r = registration(tmp_path)

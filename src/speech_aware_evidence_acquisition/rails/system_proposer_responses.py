@@ -334,6 +334,7 @@ class ResponsesProposer:
                 history.append({"type": "function_call_output", "call_id": tool["call_id"], "output": canonical(supplied)})
         except Exception as error:
             write(self.audit_dir / "outcome.json", {"status": "failed", "error_type": type(error).__name__,
+                "failure_reason": str(error) if isinstance(error, PolicyError) else None,
                 "observed_input_tokens": total_input, "observed_output_tokens": total_output,
                 "attempted_contacts": attempted, "unmetered_contacts": attempted - metered,
                 "usage_complete": attempted == metered, "activation": "none", "retry_permitted": False})
