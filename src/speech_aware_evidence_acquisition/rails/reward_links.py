@@ -336,12 +336,13 @@ def _native_contact_roles(assigned, contacts):
     return roles, requests
 
 
-def _validate_actions(assigned, contacts, outputs, delivery_contacts=None):
+def _validate_actions(assigned, contacts, outputs, delivery_contacts=None, abstentions=None):
     """Cross-check typed phase identities before crediting any action."""
     phases, native_phases, runtime, latest = {}, {}, {}, {}
     native_roles, native_requests = _native_contact_roles(assigned, contacts)
     successful_responses = {(sample, digest) for sample, _, digest in contacts}
     delivery_contacts = delivery_contacts or {}
+    abstentions = abstentions or {}
 
     def phase_responses(sample, phase):
         key = (sample, phase)
@@ -378,8 +379,10 @@ def _validate_actions(assigned, contacts, outputs, delivery_contacts=None):
             in native_roles for contact in rows if isinstance(contact, Mapping)
         )
         eligible = set()
+        runtime_requests = set()
         for contact in rows:
             matches, digest = contact_requests(sample, contact)
+            runtime_requests.update(matches)
             if digest == contact_final_hash:
                 eligible.update(matches)
             # Shared phase materials name contacts as program:phase:sample.
@@ -401,7 +404,16 @@ def _validate_actions(assigned, contacts, outputs, delivery_contacts=None):
                     phases[key] = digest
         if delivery_contact:
             eligible &= {delivery_contact[1]}
-        if not eligible:
+        abstained = sample in abstentions and final_hash == hashlib.sha256(b"").hexdigest()
+        if abstained:
+            if (runtime_requests != abstentions[sample] or any(
+                    wave.get("selected_final_contact_id") is not None
+                    for wave in payload.get("use_waves", []))):
+                raise RewardLinkError("abstention runtime differs from its complete unselected contacts")
+            # Empty delivery is a deterministic terminal disposition, not a
+            # successful model response or credit for the rejected completion.
+            eligible.clear()
+        elif not eligible:
             raise RewardLinkError("phase final response is absent from its successful contacts")
         for wave in payload.get("use_waves", []):
             plans, hashes = wave.get("contact_plans", []), wave.get("response_sha256s", [])
@@ -504,6 +516,54 @@ def _validate_actions(assigned, contacts, outputs, delivery_contacts=None):
                 raise RewardLinkError("credited final output differs from the terminal phase")
 
 
+def _native_abstention(output, documents, requests, response_payloads, contacts):
+    """Verify empty delivery against the shared derivation and exact model custody."""
+    from ..core.delivery import native_abstention_records, native_seal_refusal_abstention_records
+    from .native_episode_receipt import validate_native_episode_delivery_receipt
+
+    receipt = _mapping(output.get("native_episode_receipt"), "native abstention receipt")
+    delivery = validate_native_episode_delivery_receipt(receipt, error_type=RewardLinkError)
+    if delivery.kind != "abstention":
+        raise RewardLinkError("derived final output is not a native abstention")
+    disposition = delivery.terminal_disposition
+    if disposition["reason"] == "finite_completion":
+        derived_id, derived_request, derived_response = native_abstention_records(
+            sample_id=output["sample_id"], source_contact=delivery.final_contact,
+            finish_reason=disposition["finish_reason"])
+    else:
+        derived_id, derived_request, derived_response = native_seal_refusal_abstention_records(
+            sample_id=output["sample_id"], source_contact=delivery.final_contact,
+            seal_refusal=disposition["seal_refusal"])
+    expected = {derived_id + "/request": derived_request, derived_id + "/response": derived_response}
+    records = [row for row in documents if row["record_id"] in expected]
+    if (output["request_id"] != derived_id or output.get("text") != ""
+            or len(records) != 2 or {r["record_id"] for r in records} != set(expected)
+            or any(r["channel"] != "TOOL" or r["payload"] != expected[r["record_id"]] for r in records)
+            or any(output.get(k) != derived_response[k] for k in (
+                "request_sha256", "response_sha256", "response_text_sha256"))):
+        raise RewardLinkError("native abstention differs from its exact empty derivation")
+    bound = set()
+    role_records = {row["record_id"]: row["payload"] for row in documents if row["channel"] == "USE"}
+    visits = [*receipt["role_visits"], receipt["interrupted_role"]]
+    for visit in visits:
+        for contact in visit["execution_receipt"]["contacts"]:
+            rid = contact["request_id"]
+            request = requests.get(rid)
+            response = response_payloads.get(rid, {})
+            key = (output["sample_id"], contact["agent_contact_id"], contact["response_text_sha256"])
+            role = role_records.get(rid + "/native-role-contact", {})
+            if (request is None or request["sample"] != output["sample_id"]
+                    or content_hash(request["payload"]) != contact["request_sha256"]
+                    or any(response.get(k) != contact[k] for k in ("response_sha256", "response_text_sha256"))
+                    or rid not in contacts.get(key, ())
+                    or role.get("use_role_id") != visit["role_id"]):
+                raise RewardLinkError("native abstention receipt differs from its exact model contacts")
+            bound.add(rid)
+    if bound != {rid for rid, value in requests.items() if value["sample"] == output["sample_id"]}:
+        raise RewardLinkError("native abstention receipt omits model contacts")
+    return bound
+
+
 def _trace(bundle, sample_ids, raw):
     """Associate opaque requests and existing phase namespaces by exact identity."""
     from ..core.bundle import BundleError
@@ -515,8 +575,13 @@ def _trace(bundle, sample_ids, raw):
                          for r in documents if r["channel"] == "MODEL_RESPONSE"}
     contact_outputs = []
     delivery_contacts = {}
+    abstentions = {}
     for output in bundle.outputs_rows:
         request = requests.get(output["request_id"])
+        if request is None or output.get("native_episode_receipt", {}).get("abstention_receipt"):
+            abstentions[output["sample_id"]] = _native_abstention(
+                output, documents, requests, response_payloads, contacts)
+            continue
         if request is None or request["sample"] != output["sample_id"]:
             raise RewardLinkError("final output does not name its sample's exact request")
         contact_output = output
@@ -567,7 +632,7 @@ def _trace(bundle, sample_ids, raw):
             "event_sha256": TraceRecord(axis, record_id, payload).content_hash(),
             "tool_manifest_identity": _manifest_identities(payload),
         })
-    _validate_actions(assigned, contacts, contact_outputs, delivery_contacts)
+    _validate_actions(assigned, contacts, contact_outputs, delivery_contacts, abstentions)
     actions = {sample: [row for row in rows if row["axis"] in _ACTION_AXES]
                for sample, rows in events.items()}
     return events, actions

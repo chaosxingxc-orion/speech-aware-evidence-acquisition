@@ -7028,6 +7028,22 @@
           }
         ]
       }
+    },
+    {
+      "date": "2026-10-02",
+      "cell_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1",
+      "status": "NO_QUALIFIED_REPLACEMENT",
+      "source": "docs/results/2026-10-02-slurp-system-text-update1-feedback.md",
+      "source_sha256": "69a3ca6bc87b9c0e106bae041beacf1f27b4fe34d8f0482adc0bbfd7a33f2544",
+      "receipt": "docs/receipts/continuation/2026-10-02-system-text-update1-scientific-read.json",
+      "meaning": "No qualified replacement in update1; retain the designated seed in L and B. Feedback-learning efficacy remains unresolved.",
+      "run_ids": [
+        "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-CANDIDATE-2-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-B-PARENT-AA-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-AA-V1"
+      ]
     }
   ],
   "stage3_measurement_instrument": {

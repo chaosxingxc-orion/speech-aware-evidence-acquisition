@@ -150,7 +150,7 @@ def test_changed_link_order_or_feedback_is_rejected(completed_source):
 
 def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False,
                   carrier="slurp", sample_ids=None, scorer=None, score_function=None,
-                  response_text=None, run_id="SAEA-SYNTHETIC-SLURP"):
+                  response_text=None, run_id="SAEA-SYNTHETIC-SLURP", trace_transform=None):
     """Build synthetic role traces; optional carriers reuse the same custody path."""
     from speech_aware_evidence_acquisition.contracts import ExecutionPlan, TraceRecord
     from speech_aware_evidence_acquisition.core.attempts import AttemptStore
@@ -498,6 +498,13 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False,
             })
     # A global event must stay source-bound without being assigned to either row.
     emit("TOOL", "global/tool-registry", {"tool_manifest_sha256": "b" * 64})
+    if trace_transform is not None:
+        rows, outputs = trace_transform([json.loads(row) for row in documents], outputs)
+        documents = [TraceRecord(row["channel"], row["record_id"], row["payload"]).serialize()
+                     for row in rows]
+        hashes = {row["record_id"]: TraceRecord(
+            row["channel"], row["record_id"], row["payload"]).content_hash() for row in rows}
+        call_count = sum(row["channel"] == "MODEL_REQUEST" for row in rows)
     files = {
         "outputs": root / "outputs.jsonl",
         "raw_trace": root / "trace.jsonl",

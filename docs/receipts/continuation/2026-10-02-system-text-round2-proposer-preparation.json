@@ -1,0 +1,134 @@
+{
+  "schema": "saea-system-text-proposer-offline-admission-v1",
+  "round_index": 2,
+  "recorded_at_utc": "2026-10-02T09:11:53.339813+00:00",
+  "owner_decisions": [
+    214,
+    215,
+    217
+  ],
+  "status": "prepared-for-exact-background-launch",
+  "members": {
+    "L-2-1": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-2-1.json",
+        "sha256": "896130ec84295e6edd6cf77c262e0ad977e9d2ef93ed285a256f249e2abc775a"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-2-1.json",
+        "sha256": "c290af772d72d41efe11bc88b0fa02612b3cf6aa8cba765f2f542b7e09d73222"
+      },
+      "input_sha256": "72da3cc68eea896e84297c27829c48bb7618a3fcbf7be78214f26671c5366d99",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          17224,
+          20675
+        ],
+        "margins": [
+          15544,
+          7691
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round2-owner217-v1/L-2-1-capacity-report.json",
+          "sha256": "71dbd8b62cf75d026a7ce185c9588051178b53f93d7b74ec86fc51d752ff7571"
+        }
+      },
+      "source_overlap": 0
+    },
+    "L-2-2": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-2-2.json",
+        "sha256": "2c1c71c125006c0353fac119ba04fd731b9bed3dc442860d4fc384112d0a825b"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-2-2.json",
+        "sha256": "c21619ffaf0870996afe912680d8988029ba8d38dc6325e7513eccbd7973cf28"
+      },
+      "input_sha256": "9a92fb5e592faa35f070d5cc7c940aa8c8803ac7d9910a4d49d98e1cf9b1f502",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          17224,
+          20699
+        ],
+        "margins": [
+          15544,
+          7667
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round2-owner217-v1/L-2-2-capacity-report.json",
+          "sha256": "db76c47e89e2c1621f565d569f0c24bc7750c60f73b0b42078ef8be3643460c9"
+        }
+      },
+      "source_overlap": 0
+    },
+    "B-2-1": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-2-1.json",
+        "sha256": "167b2061e445a181002f3f7cfcf0eeff3fd95a8ec6a591c890deec2edaf3fbba"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-2-1.json",
+        "sha256": "6c1ca7d0f78c49ec0178ac6f9e1e5a85a110b9346407d1289b2097c49f7d951a"
+      },
+      "input_sha256": "dc9a6a78eadc10b16fafcfc282f80c606387016d57584d8bda7d568b3617b7ed",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          14553,
+          17620
+        ],
+        "margins": [
+          18215,
+          10746
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round2-owner217-v1/B-2-1-capacity-report.json",
+          "sha256": "ccea49011011a98b73eab2aee20bc33b1dc4d8ae5f3e53ae29256ebf0ca40fa8"
+        }
+      },
+      "source_overlap": 0
+    },
+    "B-2-2": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-2-2.json",
+        "sha256": "452feb10c2dbfcca8ccf217c8903d6111eac3a4aa0817a27c07df971238e93e5"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-2-2.json",
+        "sha256": "430158e781f2a3478f4b3761e0bb7820f19ceaa91572c5cfb2a106291f797d71"
+      },
+      "input_sha256": "98018eb18211f3df6b71e3365152919597f10d7fc1102ff15930fc05c87f2e9e",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          14553,
+          17620
+        ],
+        "margins": [
+          18215,
+          10746
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round2-owner217-v1/B-2-2-capacity-report.json",
+          "sha256": "b060471d02b524f1fa236105bc216bf9dbc69b67a8754e0f7913f3953b60fe16"
+        }
+      },
+      "source_overlap": 0
+    }
+  },
+  "model_version": "gpt-6-astra",
+  "retentions": {
+    "L": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/retentions/update-1/L.json",
+      "sha256": "78f9fd061d5768379887265f87abec8fdae1d8a43b0d79e72576d1e247144199"
+    },
+    "B": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/retentions/update-1/B.json",
+      "sha256": "b49a959bacc8bb68f564e92a0f77ffbb4e1e8b0457e0cf025f8314976246a3f4"
+    }
+  },
+  "contacts_added": 0,
+  "limits": "Only initial request and one enumerated page continuation fit under assumed4402/65 usage; actual runtime checks every cumulative bound. No total compute equality or guaranteed completion. No B feedback exposure. Invalid proposals consume their original slots."
+}

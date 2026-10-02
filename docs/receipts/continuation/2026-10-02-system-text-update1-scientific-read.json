@@ -1,0 +1,28 @@
+{
+  "schema": "saea-system-text-root-scientific-read-v1",
+  "recorded_at_utc": "2026-10-02T09:04:21.478543+00:00",
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1",
+  "family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-abstention-reader-v2/family.json",
+    "sha256": "0c04ff2842b0f3923e03eef0f66c234ddb4c4f26d19152ee695802a2ab154001"
+  },
+  "report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-root-report-v1/report.json",
+    "sha256": "3c519071b197babb6e92b58b8bbe3055657bb5414aafbedd6606a51f6ea18a0c"
+  },
+  "root_verdict": "No qualified replacement in update1; retain the designated seed in L and B. Feedback-learning efficacy remains unresolved.",
+  "branch_disposition": {
+    "L": "No admitted new candidate; retain parent.",
+    "B": "Candidate2 loses official SLU-F1 and does not establish intent non-inferiority; retain parent only."
+  },
+  "scientific_report": {
+    "relpath": "docs/results/2026-10-02-slurp-system-text-update1-feedback.md",
+    "sha256": "69a3ca6bc87b9c0e106bae041beacf1f27b4fe34d8f0482adc0bbfd7a33f2544"
+  },
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "next": "Original round-two allocations only, exact isolated capsules, unchanged budgets and complete-family admission. Other carrier holds unchanged."
+}

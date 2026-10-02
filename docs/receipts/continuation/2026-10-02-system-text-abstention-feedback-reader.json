@@ -1,0 +1,37 @@
+{
+  "schema": "saea-reader-compatibility-proof-v1",
+  "recorded_at_utc": "2026-10-02T08:58:29.067509+00:00",
+  "scope": "Post-READ feedback derivation only; no generation, scoring, resealing or original artifact mutation.",
+  "failure": "The reward reader required every delivered output to name a MODEL_REQUEST. A verified native no-Solver abstention instead names its canonical deterministic TOOL derivation.",
+  "original_failed_derivation": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1; preserve its first saved-score envelope; no reward-link artifact or complete family was published.",
+  "root_read": "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1",
+  "fix": "Recompute the shared finite/seal-refusal empty derivation, bind every receipt contact to its exact same-sample model request/response and require complete contact coverage. Validate unselected terminal runtime contacts. Retain actual empty delivery and native score counts without assigning the rejected response final-answer credit.",
+  "implementation": {
+    "relpath": "src/speech_aware_evidence_acquisition/rails/reward_links.py",
+    "sha256": "19d668c04078417bae019a476b308ed2433caca81c4bf622e35a5cf57d1128d3"
+  },
+  "verification": {
+    "red": "Two positive verified-bundle abstention tests reproduced the exact missing-request error;16 negative custody cases passed.",
+    "green": {
+      "related_tests": 187,
+      "new_tests": 20,
+      "reward_reader_statement_coverage_percent": 87,
+      "engineering_base": "PASS",
+      "diff_check": "PASS"
+    },
+    "actual_family_links": {
+      "members": 5,
+      "rows_per_member": 400,
+      "total": 2000,
+      "directory": "analysis/SAEA-SLURP-SYSTEM-TEXT-UPDATE1-READ-V1-abstention-reader-v2"
+    },
+    "role_custody": "Two additional adversarial tests first reproduced forged visit-role acceptance. Exact native-role contact binding now rejects both; actual400-row candidate trace revalidated unchanged."
+  },
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "frozen_worker": "2f07dd3d6f52eee79d24243c40a0dff195260816 unchanged",
+  "interpretation": "Complete-family analysis follows; this engineering record makes no quality or policy-selection claim."
+}

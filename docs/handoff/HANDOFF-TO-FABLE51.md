@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update1 scientific read and seed retention: 2026-10-02T09:07:39.097864+00:00, ChatGPT root
+
+Root completed the exact five-member TRAIN READ. The only admitted new candidate B-candidate-2 loses2.3330pp official SLU-F1 against its parent, CI95[-4.5327,-0.1700], and does not prove intent non-inferiority at its own1.0000pp null margin. Both branches retain the designated seed; no favorable A/A draw is selected. L has no new evaluated candidate because its two original proposal slots were invalid. All three invalid round-one allocations remain spent. Feedback-learning efficacy remains unresolved. See [full18-stratum report](../results/2026-10-02-slurp-system-text-update1-feedback.md) and [READ evidence](../receipts/continuation/2026-10-02-system-text-update1-scientific-read.json).
+
+All2000 trajectories remain in feedback, including native abstention. The [shared reader repair](../readiness/2026-10-02-system-text-abstention-feedback-reader-v1.md) passes187 related tests with87% scoped coverage; it changed no original generation, seal or score. Each member has one successful official score, zero failed jobs. All five runs have zero actual knowledge-tool calls. Most episodes exhausted the revision allowance with a delivered Solver result. The brief9.97GiB Windows free-memory sample at08:29:32Z recovered; preserve the limitation.
+
+Round-two input/capsule preparation follows the existing protocol: L receives only its own complete feedback/history; B starts from the fixed seed without outcome or selection feedback. Both original two-slot allocations, exact gpt-6-astra subscription admission, cumulative source isolation, full output reserve and budgets remain unchanged. Actual round-two capacity, admission and dispatch remain pending. No new model/tokenizer/scorer contact, scorer replay, generation retry, milestone feedback or held-carrier release occurred.
+
 ## Update1 complete-family READ: 2026-10-02T08:34:12.692293+00:00, ChatGPT root
 
 All five update1 members are independently FINALIZED with verified seals,400 rows and exactly one successful official score each; zero failed jobs. Root has countersigned the exact UPDATE1-READ row after checking the entire family. See [operational qualification](../receipts/continuation/2026-10-02-system-text-update1-complete.json). Scientific interpretation and next-round selection are the next steps; no quality conclusion is implied by completion.
