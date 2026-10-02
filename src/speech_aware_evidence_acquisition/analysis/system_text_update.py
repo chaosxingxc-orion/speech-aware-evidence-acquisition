@@ -12,6 +12,7 @@ from .paired import resampled_statistic
 from ..rails.hashing import content_hash
 from ..rails.system_search_archive import OBJECTIVES, pareto_frontier
 from ..rails.system_search_protocol import require_stage_feedback, stage_for
+from ..rails.system_search_stage import recipe_family_identity
 from ..rails.system_text_feedback import CompleteSystemFeedback
 from ..rails.system_text_policy import require
 
@@ -34,10 +35,11 @@ def analyze_update(feedback, *, protocol, recipe, roster):
         "analysis needs an authorized TRAIN update",
     )
     require_stage_feedback(protocol, stage_name, feedback)
+    family, members = recipe_family_identity(recipe)
     evaluation = recipe["system_search_evaluation"]
     bindings = evaluation["member_bindings"]
     require(
-        recipe["family_id"] == stage_name
+        family == stage_name
         and evaluation["stage"] == stage_name
         and evaluation["schema"] == "saea-system-search-evaluation-binding-v1"
         and evaluation["protocol_sha256"] == content_hash(protocol),
@@ -45,7 +47,7 @@ def analyze_update(feedback, *, protocol, recipe, roster):
     )
     require(
         set(bindings) == set(d["summaries"])
-        and recipe["expected_members"]
+        and members
         == {cid: b["run_id"] for cid, b in bindings.items()},
         "analysis member identity differs",
     )

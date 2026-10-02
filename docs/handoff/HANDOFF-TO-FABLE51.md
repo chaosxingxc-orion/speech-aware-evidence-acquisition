@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Frozen recipe reader compatibility: 2026-10-02T06:52:02.500899+00:00, ChatGPT root
+
+A real-registration test reproduced the update1 recipe spelling mismatch: frozen stage/members versus reader family_id/expected_members. A shared resolver now verifies the embedded immutable registration and rejects conflicting aliases without rewriting recipe bytes. All248 related tests pass, including15 new cases; combined scoped coverage is96%. See [defect, proof and remaining gates](../readiness/2026-10-02-system-text-recipe-identity-v1.md).
+
+The actual unsigned READ still refuses before any task/quality source. No model, tokenizer or scorer contact was added. At06:50:50Z three parents/replicates were FINALIZED with400 rows and one successful score each, zero failures; B-parent-AA had1571 contacts and B-candidate-2 had not started. Frozen2f07dd3d6 process live, STOP absent, Windows free10.67GiB. Contacts are not rows. No partial feedback, parent selection, queue mutation or held-carrier release occurred. Additional supply preparation waits for resource headroom.
+
 ## Prospective update2 blind baselines: 2026-10-02T06:34:39.762311+00:00, ChatGPT root
 
 The fixed B seed/A/A fragments for update2 are compiled against the exact registered TRAIN Fold A positions401-800. Verified seed ancestry is disjoint, both request semantics match, and all contact modes are refused by their HELD cells. The36 shared policy/cohort/protocol tests and engineering-base checks pass. See [prepared scope and remaining gates](../readiness/2026-10-02-slurp-system-text-update2-v1/README.md).

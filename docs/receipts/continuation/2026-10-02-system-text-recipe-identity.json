@@ -1,0 +1,91 @@
+{
+  "actual_unsigned_gate": {
+    "actual_gate_result": "READ row is not unambiguously root countersigned",
+    "actual_recipe_sha256": "fc25d98b2930cb11b29639558c743821660a7fdf234e96b46244b24bd975aad2",
+    "contacts_added": 0,
+    "recipe_unchanged": true,
+    "task_or_quality_sources_opened": 0
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "ruff": "PASS"
+  },
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "defect": "Frozen update recipe uses stage/members; reader and analysis assumed family_id/expected_members.",
+  "operational_checkpoint": {
+    "checked_at": "2026-10-02T06:50:50.709523+00:00",
+    "live_campaign_cmd": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "members": [
+      {
+        "contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "member": "l-parent",
+        "rows": 400,
+        "score_jobs": {
+          "failed": 0,
+          "job_count": 1,
+          "succeeded": 1
+        },
+        "state": "FINALIZED"
+      },
+      {
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "member": "l-parent-aa",
+        "rows": 400,
+        "score_jobs": {
+          "failed": 0,
+          "job_count": 1,
+          "succeeded": 1
+        },
+        "state": "FINALIZED"
+      },
+      {
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "member": "b-parent",
+        "rows": 400,
+        "score_jobs": {
+          "failed": 0,
+          "job_count": 1,
+          "succeeded": 1
+        },
+        "state": "FINALIZED"
+      },
+      {
+        "contacts": 1571,
+        "member": "b-parent-aa",
+        "state": "OPENED"
+      },
+      {
+        "member": "b-candidate-2",
+        "state": "NOT_STARTED"
+      }
+    ],
+    "stop": false
+  },
+  "readiness": "docs/readiness/2026-10-02-system-text-recipe-identity-v1.md",
+  "recorded_at": "2026-10-02T06:52:02.500899+00:00",
+  "runtime_authority": false,
+  "schema": "saea-system-text-recipe-identity-proof-v1",
+  "scientific_results_read": false,
+  "source_commit": "6e25713d1a83c2049a19c43d00f65c71bbf2d9b2",
+  "tests": {
+    "initial_failures": 3,
+    "new_cases": 15,
+    "related_passed": 248,
+    "scoped_statement_coverage_percent": {
+      "combined": 96,
+      "lifecycle_cli": 93,
+      "stage_identity": 100,
+      "update_analysis": 100
+    }
+  },
+  "windows_free_gib": 10.67
+}

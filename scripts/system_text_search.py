@@ -15,6 +15,7 @@ from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.system_search_archive import SystemSearchArchive, proposal_input, proposal_sources
 from speech_aware_evidence_acquisition.rails.system_text_feedback import CompleteSystemFeedback
 from speech_aware_evidence_acquisition.rails.system_search_protocol import stage_for, require_stage_feedback
+from speech_aware_evidence_acquisition.rails.system_search_stage import recipe_family_identity
 from speech_aware_evidence_acquisition.rails.system_text_policy import (
     SystemTextPolicyBundle, apply_text_proposal, assert_roster_disjoint,
     compile_system_text_policy, TextPolicyUpdateProposal, require,
@@ -53,14 +54,14 @@ def require_read_registration(spec, *, repo_root, expected_split_role="discovery
     gate = registration_gate()
     run_id = gate.read_run_id_of(recipe)
     require(run_id, "analysis recipe must declare its exact READ run ID")
-    members = recipe.get("expected_members", recipe.get("initial_members"))
+    family, members = recipe_family_identity(recipe)
     require(isinstance(members, dict) and members and members == spec["expected_members"],
             "READ recipe differs from the complete registered family")
     if "initial_members" in recipe:
         require(spec["family_id"] == "initial" and recipe["initial_members"] == members,
                 "initial READ cannot authorize another stage")
     else:
-        require(recipe.get("family_id") == spec["family_id"], "READ recipe family identity differs")
+        require(family == spec["family_id"], "READ recipe family identity differs")
     require(recipe.get("run_ids", {}).get("read", run_id) == run_id, "READ identifiers disagree")
     rows = gate.parse_ledger(Path(repo_root), gate.EXPOSURE_LEDGER).get(run_id, [])
     require(len(rows) == 1, "READ registration is missing or duplicated")

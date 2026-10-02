@@ -23,6 +23,40 @@ SLOTS = [
 PARENTS = {f"{b}-{m}" for b in ("L", "B") for m in ("parent", "parent-aa")}
 
 
+def recipe_family_identity(recipe):
+    """Resolve frozen recipe spellings without rewriting or weakening their pins.
+
+    The admitted update recipe uses stage/members with an embedded immutable
+    registration; earlier readers used family_id/expected_members. Accept the
+    former only when all redundant identities and the evaluation binding agree.
+    """
+    if "stage" in recipe or "members" in recipe:
+        require(
+            recipe.get("schema") == "saea-system-text-analysis-recipe-v1"
+            and {"stage", "members", "system_search_stage", "system_search_evaluation"}
+            <= set(recipe)
+            and "initial_members" not in recipe,
+            "nested analysis recipe identity is incomplete or ambiguous",
+        )
+        registration = validate_stage_registration(recipe["system_search_stage"])
+        family, members = registration["stage"], registration["expected_members"]
+        require(
+            recipe["stage"] == family and recipe["members"] == members
+            and recipe["system_search_evaluation"] == registration["evaluation"],
+            "nested analysis recipe differs from its frozen registration",
+        )
+    else:
+        members = recipe.get("expected_members", recipe.get("initial_members"))
+        family = "initial" if "initial_members" in recipe else recipe.get("family_id")
+    require(
+        ("family_id" not in recipe or recipe["family_id"] == family)
+        and ("expected_members" not in recipe or recipe["expected_members"] == members)
+        and ("initial_members" not in recipe or recipe["initial_members"] == members),
+        "analysis recipe identity aliases disagree",
+    )
+    return family, members
+
+
 def _response_invalid(packet, response, proposal_records):
     """Recheck objective input/response faults; do not exclude a valid losing proposal."""
     try:
