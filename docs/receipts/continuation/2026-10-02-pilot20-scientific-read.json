@@ -1,0 +1,51 @@
+{
+  "schema": "saea-pilot-scientific-read-v1",
+  "recorded_at_utc": "2026-10-02T15:16:23.620053+00:00",
+  "status": "EXPLORATORY-LEARNING-FEEDBACK-NO-ADOPTION",
+  "read_authority": {
+    "ledger_row_sha256": "006db75168d39ed51f20a25969759f80d6473d13cadc2fc605e9495eb79734be",
+    "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-02-slurp-system-text-pilot20-owner220-v1/analysis-recipe-v1.json",
+      "sha256": "c8f2ebd69027d2a88f24a488cd986790bdb009fdd3292dbcb3eb90a4adaf93bc"
+    }
+  },
+  "owner_learning_decision": 222,
+  "complete_members": 8,
+  "rows_per_member": 20,
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "artifacts": {
+    "family.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1/family.json",
+      "sha256": "532cb9ea3f5b87c7806e5809debc9ccbe2796ab5519a85fede5941ffbc226ced"
+    },
+    "report.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1/report.json",
+      "sha256": "fdfc8ac51b06f1d79c0a2d4eab85298fdc1a3a51a1cee08b74a8062be1eaa542"
+    },
+    "evidence.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1/evidence.json",
+      "sha256": "d97f28f87cfa4d9ceb18b54508595346a59c456c4654c49e64a014b377e32482"
+    },
+    "learning-feedback.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1/learning-feedback.json",
+      "sha256": "78942f6eef0378a7afe3d34b5425e39be7a773e9493c709d3aa1c7c67ab1d531"
+    },
+    "root-role-diagnosis.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1/root-role-diagnosis.json",
+      "sha256": "83d9995b780de4fd14083480ba21b959167fb334531f0bab36949437da480357"
+    },
+    "root-role-opportunity-audit.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1/root-role-opportunity-audit.json",
+      "sha256": "aab8970574494b02b7e1267677ba28ce2ed7ba44a1aa4210e28d9b82c033f1c6"
+    }
+  },
+  "report": "docs/results/2026-10-02-slurp-pilot20-root-feedback.md",
+  "proposer_input": "Only the separately verified L projection; never root combined diagnosis or B feedback.",
+  "next_contacts_started": false,
+  "automatic_expansion": false
+}

@@ -1884,3 +1884,7 @@ Owner216 recovered the single failed A/A scoring entry without regeneration; bot
 ## 2026-10-02: system-text update1 — NO QUALIFIED REPLACEMENT
 
 All five400-row members are FINALIZED with verified seals and one successful official score each. Root completed the exact READ. The only admitted new candidate (B-candidate-2, Solver text) loses2.3330pp official SLU-F1 versus its parent, CI95[-4.5327,-0.1700], and fails intent non-inferiority at its own1.0000pp null margin. L's two proposal slots and B's first slot remain invalid/spent, so feedback-learning efficacy is unresolved. Both branches retain the designated seed, not a favorable A/A draw. All2000 trajectories remain in feedback; actual knowledge calls are zero. [Full report, own A/A and all18 strata](2026-10-02-slurp-system-text-update1-feedback.md). No adoption, extra sampling or milestone feedback.
+
+## 2026-10-02: complete owner220 pilot; owner222 learning feedback
+
+All eight20-row members finalized, sealed and officially scored once; root READ complete. The [exploratory report](2026-10-02-slurp-pilot20-root-feedback.md) includes all official metrics,13 strata, both weightings and own A/A uncertainty. Status: learning feedback, no stable efficacy/adoption or automatic expansion. Syntax is fixed; semantic criticism, intermediate Solver output and absent lookup remain optimization targets. Only separate L feedback enters the proposer.

@@ -1,0 +1,21 @@
+{
+  "schema": "saea-owner-decision-supplement-v1",
+  "decision_id": 223,
+  "status": "approved",
+  "recorded_at_utc": "2026-10-02T15:18:55.087429+00:00",
+  "source": "Direct human instruction in this root conversation after owner222; original message remains addressable.",
+  "owner_statement_english": "Good. After optimizing away most of the issues, you may expand samples through50,100,200,400 to discover problems and repair the solutions.",
+  "scope": "Continue the authorized small-panel learning loop. First resolve the dominant observed engineering and consumption defects. Then progressively use50,100,200,400 complete-system inputs per member to discover remaining problems, improve text/knowledge combinations, and test whether improvement transfers.",
+  "stage_ladder": [
+    20,
+    50,
+    100,
+    200,
+    400
+  ],
+  "progression": "Root reviews each complete stage before choosing the next scale. Register exact cohorts, candidate quotas, full-system member identities, reference/A/A, costs and READ before contact. Expansion is authorized within this ladder after review, not a fixed automatic queue. Stay at the current scale when important unresolved defects or observed regressions merit repair.",
+  "learning": "Small stages may supply complete L-only learning feedback. Keep blind branch isolated and cumulative exposure; fixed later validation panels exclude learning exposures. No result is promised.",
+  "claims": "Learning/search decisions are distinct from formal efficacy/adoption. Retain existing scientific measurement and replication rules. The200-row level does not waive the400-row paired effectiveness requirement.",
+  "bounds": "No paid API, arbitrary code evolution, changed scorer, second answering model, reused spent proposals, test feedback, automatic failure recovery or other-carrier release. Register bounded extra proposal allocations prospectively.",
+  "supersedes": "The blanket medium-scale hold is replaced by reviewed progressive scaling within this scope; previously held400-row identities are not automatically activated."
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "saea-owner-decision-supplement-v1",
+  "decision_id": 224,
+  "status": "approved",
+  "recorded_at_utc": "2026-10-02T15:31:26.021602+00:00",
+  "source": "Two consecutive direct human instructions in this root conversation on 2026-10-02, after owner223; original messages remain addressable in the conversation.",
+  "owner_statements_english": [
+    "The focus should be context engineering and postprocessing optimization. We previously appeared to have evidence that knowledge supply was provisionally abundant. In rails, it seemed that we mainly used plugins before calls and did not explore many plugins after calls.",
+    "Note that there is no need to prepare the experimental data again. We should settle on a solution quickly using the current 400-example dataset. Eight groups of 400 are already substantial in an agentic system."
+  ],
+  "interpretation": "Prioritize context organization, role handoff and post-call handling while keeping the current knowledge assets fixed for the next repair cycle. Audit the existing post-call paths instead of assuming none exist. Reuse the current UPDATE2 400-input roster and existing prepared data.",
+  "fixed_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-update-2-400-v1.json",
+    "sha256": "ca3ec9d7cb1269018c7e01b5812a3a74474db9ea177c7512b0e6ab5df8f619d5"
+  },
+  "fixed_runtime_view": {
+    "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+    "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+  },
+  "sample_ids_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "progressive_sizes": [
+    20,
+    50,
+    100,
+    200,
+    400
+  ],
+  "supersedes": "For this optimization sequence, supersede the owner222/223 requirement for a new disjoint next learning panel and the proposed move to the UPDATE3 Fold B panel. Use nested prefixes of the same already prepared 400 inputs. Preserve all historical records and their hashes.",
+  "learning_purpose": "Reuse after feedback is explicitly optimization/training exposure, not independent validation. Preserve every direct and indirect feedback/proposal/selection exposure. Keep runtime gold and sample-answer lookup prohibited; keep original runtime knowledge construction sources disjoint.",
+  "cost_discipline": "Reuse immutable audio, packet caches, released knowledge and qualified historical diagnostics. Do not rebuild the dataset or automatically repeat all eight full400 groups after every repair. Register only informative changed candidates and necessary comparisons prospectively. Do not replay official scores or silently merge trajectories from different policies, rosters or attempts.",
+  "comparison_scope": "Retain the registered blind branch and matched proposal/evaluation budgets when claiming an L-versus-B feedback-learning advantage. A smaller engineering/optimization comparison does not establish that claim and does not count as the original eight-member comparison.",
+  "post_call_scope": "Use shared rails. Preserve raw replies and trace post-call flags/normalization. Semantic answer revision belongs to Omni through its existing bounded Solver revision, not to a second answering model or arbitrary code evolution. Closed mechanisms and test outcomes remain excluded.",
+  "execution": "This planning amendment is not a completed candidate, an automatic failure recovery, a score replay, or admission for any old held run. No new model contacts occurred while recording it."
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "saea-offline-plan-validation-v1",
+  "recorded_at_utc": "2026-10-02T15:40:23.619764+00:00",
+  "source_pins_verified": 4,
+  "source_rows": 400,
+  "existing_pilot_prefix_matches": true,
+  "nested_sizes_verified": [
+    20,
+    50,
+    100,
+    200,
+    400
+  ],
+  "data_rebuilt": false,
+  "raw_evidence_hashes_verified": 6,
+  "engineering_base_check": "PASS",
+  "results_ledger_check": "PASS with disclosed existing advisories",
+  "baseline_advisory_count": 182,
+  "worktree_advisory_count": 183,
+  "checkout_location_advisories": [
+    "results ledger check: finding: cross-check D: the umbrella page published-baselines.md is not reachable from this checkout, so the headline comparison was skipped"
+  ],
+  "new_nonlocation_advisories": [],
+  "contacts_added": 0,
+  "runtime_candidate_ready": false
+}

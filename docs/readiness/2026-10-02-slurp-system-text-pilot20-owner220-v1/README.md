@@ -1,5 +1,9 @@
 # Owner220: small complete-system pilot before medium-scale evaluation
 
+## Current planning amendment: owner224
+
+Use the already prepared UPDATE2 400-input pool and its nested20/50/100/200/400 prefixes for learning and repairs. Do not create a fresh next panel or rebuild data. Earlier disjoint-next-panel suggestions below are superseded for optimization only; cumulative exposure and independent-validation boundaries remain. Prioritize context organization and post-call handoff while keeping the current knowledge assets fixed. Do not automatically rerun all eight full400 groups after each change. The [fixed-pool plan](../2026-10-02-slurp-fixed400-context-postcall-v1/README.md) binds the unchanged data and records remaining implementation.
+
 ## Owner222 amendment: use the small pilot to learn
 
 The human explicitly corrects the earlier no-learning restriction: use small complete-system batches as learning feedback and work toward positive system outcomes. See [owner222](../../receipts/owner/2026-10-02-decision222-small-panel-learning.json). The signed whole-family read is still required. The full root report keeps both branches; its separate exploratory learning projection contains all four L members and all20 cases, attributed trajectories, official counts, successes, failures and damage. It freezes the original initial referenceF1 and recomputes relative returns within L only. B remains feedback-blind. Small-panel learning and provisional search decisions do not need a formal400-row effectiveness claim.
