@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Original round-two proposer launch: 2026-10-02T09:19:03.795666+00:00, ChatGPT root
+
+Windows task SAEA-System-Text-Proposer-Round2-Owner217 started the four original L-2-1/B-2-1/L-2-2/B-2-2 allocations at09:16:28Z. Process298440 started09:16:43.969382Z on frozen70c75b98a89a37be695dbf3c5f9e2c53aa7b8b86; first check saw one preregistered contact. See [launch identity](../receipts/continuation/2026-10-02-system-text-round2-proposer-launch.json) and its pinned registration. Revalidate live identity; this is a launch observation, not completion.
+
+Both branches use compact-feedback-v1 and gpt-6-astra with unchanged32768 cumulative input/4096 metered output acceptance/four-contact limits. Actual initial bounds17224(L)/14553(B); one audited page continuation fits under explicitly assumed usage, not a promise of completion. All cumulative input sources are disjoint from the registered update2 cohort. L has only its own complete update1 feedback and history; B's six artifacts contain no feedback, outcomes or history. Windows free15.94GiB at launch. No new local GPU generation or scorer launched.
+
+On proposal failure, preserve the original slot, stop and record the exact disposition; no automatic retry/replacement. Valid new candidates still need compilation, actual generated knowledge when edited, own supplies, maximum-request FIT, exact family registration and root admission before GPU dispatch. The three invalid round-one slots remain spent.
+
 ## Update1 scientific read and seed retention: 2026-10-02T09:07:39.097864+00:00, ChatGPT root
 
 Root completed the exact five-member TRAIN READ. The only admitted new candidate B-candidate-2 loses2.3330pp official SLU-F1 against its parent, CI95[-4.5327,-0.1700], and does not prove intent non-inferiority at its own1.0000pp null margin. Both branches retain the designated seed; no favorable A/A draw is selected. L has no new evaluated candidate because its two original proposal slots were invalid. All three invalid round-one allocations remain spent. Feedback-learning efficacy remains unresolved. See [full18-stratum report](../results/2026-10-02-slurp-system-text-update1-feedback.md) and [READ evidence](../receipts/continuation/2026-10-02-system-text-update1-scientific-read.json).
@@ -433,7 +441,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T09:14:08.532206+00:00
+Last refreshed: 2026-10-02T09:19:03.795666+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

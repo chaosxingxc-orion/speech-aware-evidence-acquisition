@@ -1,0 +1,39 @@
+{
+  "schema": "saea-system-text-proposer-launch-v1",
+  "recorded_at_utc": "2026-10-02T09:19:03.795666+00:00",
+  "round_index": 2,
+  "owner_decisions": [
+    214,
+    215,
+    217
+  ],
+  "windows_task": "SAEA-System-Text-Proposer-Round2-Owner217",
+  "windows_launch_at_utc": "2026-10-02T09:16:28.4414722Z",
+  "windows_free_gib_at_launch": 15.94,
+  "started": {
+    "at_utc": "2026-10-02T09:16:43.969382+00:00",
+    "pid": 298440,
+    "registration_sha256": "73b54f5b041b8d08df93a5857e0aa1ce664341e2be1695a4be4fc9ab2536028a",
+    "retry_permitted": false
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round2-owner217-v1/registration.json",
+    "sha256": "73b54f5b041b8d08df93a5857e0aa1ce664341e2be1695a4be4fc9ab2536028a"
+  },
+  "frozen_worker": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-proposer-round2-v1",
+    "commit": "70c75b98a89a37be695dbf3c5f9e2c53aa7b8b86"
+  },
+  "members": [
+    "L-2-1",
+    "B-2-1",
+    "L-2-2",
+    "B-2-2"
+  ],
+  "capacity_and_isolation": "docs/receipts/continuation/2026-10-02-system-text-round2-proposer-preparation.json",
+  "contacts_observed_at_first_check": 1,
+  "gpu_dispatch": false,
+  "claim": "Launch only; not completed proposals or system improvement. Final outcomes and contacts must be read from exact operational receipts.",
+  "failure_policy": "Stop on a failed proposal; preserve allocation and evidence. No automatic retry, replacement or slot salvage.",
+  "holds": "Other carrier holds and closed research lines remain unchanged."
+}
