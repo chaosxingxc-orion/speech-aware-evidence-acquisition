@@ -1,0 +1,30 @@
+{
+  "schema": "saea-model-free-pilot-reader-validation-v1",
+  "recorded_at_utc": "2026-10-02T14:51:24.222380+00:00",
+  "owner_decisions": [
+    220,
+    222
+  ],
+  "tests": {
+    "passed": 203,
+    "scoped_statement_coverage_percent": 97,
+    "scope": [
+      "pilot reader and projection",
+      "shared official counts and attributed costs",
+      "shared paired statistics",
+      "proposal input/capsule isolation",
+      "cumulative source retention",
+      "formal-stage rejection"
+    ]
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "ruff": "PASS",
+    "actual_unsigned_READ_refusal": "PASS before member/result reads and without output creation"
+  },
+  "boundaries": "Only the new owner222 projection can turn complete pilot evidence into L-only exploratory learning feedback. All20 cases and4 L members retained, initial referenceF1 frozen, B summaries/traces excluded. Ordinary400-row source reading and formal-stage admission remain separate.",
+  "runtime_changes": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "read_at_this_checkpoint": false
+}

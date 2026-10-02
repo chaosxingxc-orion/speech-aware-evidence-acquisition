@@ -199,6 +199,8 @@ class CompleteSystemFeedback:
     def learning_view(self, candidate_ids):
         """Project own-branch evidence after the entire round passes its read gate."""
         d = self.as_json()
+        require(d.get("schema") != "saea-complete-system-pilot-evidence-v1",
+                "pilot evidence is not optimizer feedback")
         require(len(candidate_ids) >= 2 and len(set(candidate_ids)) == len(candidate_ids)
                 and set(candidate_ids) <= set(d["summaries"])
                 and all(cid.startswith("L-") or cid in {"seed", "seed-aa"} for cid in candidate_ids),
@@ -224,6 +226,9 @@ class CompleteSystemFeedback:
     @classmethod
     def from_family(cls, bindings, *, expected_members, family_id, reference=None, initial_reference_member=None):
         metadata = preflight_family(bindings, expected_members)
+        require(all(manifest.get("split", {}).get("count", 0) >= 400
+                    for manifest, _ in metadata),
+                "system search feedback requires at least 400 rows before any task-result read")
         from ..core.bundle.verify import verify_bundle
         for binding in bindings:
             verified = verify_bundle(Path(binding["config"]["manifest"]["path"]))
@@ -231,24 +236,7 @@ class CompleteSystemFeedback:
         grouped = build_group_relative_feedback(bindings)
         require(grouped["carrier_lock_key"] == "slurp" and len(grouped["groups"]) >= 400,
                 "system search feedback requires the entire registered cohort of at least 400 rows")
-        by_candidate, summaries = {}, {}
-        for binding, (manifest, job) in zip(bindings, metadata, strict=True):
-            cid = binding["candidate_id"]
-            require(binding["config"]["projection"]["scorer"] == "slurp-slu-official-train",
-                    "system updates require the official TRAIN scorer")
-            receipt = _absolute_json(binding["config"]["complete_score_receipt"])
-            require(receipt["job_id"] == job["job_id"], "official score identity differs from sole job")
-            score = _absolute_json(receipt["score_result"])["scores"]["slurp-slu-official-train"]
-            aggregate = score["aggregate"]
-            require(aggregate["identity_check"]["passed"] is True, "official sufficient-count identity failed")
-            rows = _row_cost_and_terminal(manifest)
-            require(set(rows) == {g["sample_id"] for g in grouped["groups"]}, "terminal cohort differs")
-            by_candidate[cid] = rows
-            summaries[cid] = {"slu_f1": aggregate["official"]["slu_f1"],
-                              "intent": aggregate["port_micro"]["intent_accuracy"],
-                              "model_calls": sum(r["model_calls"] for r in rows.values()),
-                              "tool_calls": sum(r["tool_calls"] for r in rows.values()),
-                              "reliable_completion_rate": sum(r["reliable_completion"] for r in rows.values()) / len(rows)}
+        by_candidate, summaries = _official_family_rows(bindings, metadata, grouped)
         if reference is None:
             require(initial_reference_member in summaries, "initial reference member must be preregistered")
             reference = {"family_id": family_id, "candidate_id": initial_reference_member,
@@ -270,3 +258,26 @@ class CompleteSystemFeedback:
                   "interpretation": "Whole-system realized return; no node causal credit or policy gradient.",
                   "model_contacts_added": 0, "scorer_contacts_added": 0}
         return cls(canonical(result))
+
+
+def _official_family_rows(bindings, metadata, grouped):
+    """Read common official counts and attributed costs after every seal passes."""
+    by_candidate, summaries = {}, {}
+    for binding, (manifest, job) in zip(bindings, metadata, strict=True):
+        cid = binding["candidate_id"]
+        require(binding["config"]["projection"]["scorer"] == "slurp-slu-official-train",
+                "system updates require the official TRAIN scorer")
+        receipt = _absolute_json(binding["config"]["complete_score_receipt"])
+        require(receipt["job_id"] == job["job_id"], "official score identity differs from sole job")
+        score = _absolute_json(receipt["score_result"])["scores"]["slurp-slu-official-train"]
+        aggregate = score["aggregate"]
+        require(aggregate["identity_check"]["passed"] is True, "official sufficient-count identity failed")
+        rows = _row_cost_and_terminal(manifest)
+        require(set(rows) == {g["sample_id"] for g in grouped["groups"]}, "terminal cohort differs")
+        by_candidate[cid] = rows
+        summaries[cid] = {"slu_f1": aggregate["official"]["slu_f1"],
+                          "intent": aggregate["port_micro"]["intent_accuracy"],
+                          "model_calls": sum(r["model_calls"] for r in rows.values()),
+                          "tool_calls": sum(r["tool_calls"] for r in rows.values()),
+                          "reliable_completion_rate": sum(r["reliable_completion"] for r in rows.values()) / len(rows)}
+    return by_candidate, summaries

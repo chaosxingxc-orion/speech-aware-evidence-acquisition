@@ -1,0 +1,233 @@
+{
+  "schema": "saea-complete-pilot-operational-qualification-v1",
+  "observed_at_utc": "2026-10-02T14:49:48.266688+00:00",
+  "family_id": "pilot20-owner220",
+  "members": [
+    {
+      "member": "B-candidate-1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1.run-manifest.json",
+        "sha256": "da948dccb419290c62d4fefcb8e0be9cd055c0af01da67f5eb3640dcfc26617a"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1.json",
+        "sha256": "43b7fe065bd4d4f5722165da39ac9df91e578bec5d390186a843bf292c244995"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1/score-jobs.jsonl",
+        "sha256": "89b5396b4071c301033e38eeff5ac73f116a53e5f984132fcd230890d58a90d4"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1/score-batch/batch-summary.json",
+        "sha256": "58835c897ce520bfce96c6409bc67e12df6bbcfe5cf4b14c1e9e076ffb49460a"
+      },
+      "frozen_worker_commit": "62b487e9be02b6c9e63379957f2275a640646ddc"
+    },
+    {
+      "member": "B-candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1.run-manifest.json",
+        "sha256": "ab812ed2569dd73114b57d17b83cea7f1792a80434b8b328aeeac7fcd2bdb082"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1.json",
+        "sha256": "4c0258ecea3835f240af87a7fae89ce8d2b89db4ab62cd42dabe0af5378a1868"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1/score-jobs.jsonl",
+        "sha256": "78d97d2ada26c3a1b447d4bf7fde23f73ae8dd33ac46546324471b787ab2c012"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1/score-batch/batch-summary.json",
+        "sha256": "302768c8266c5f2829062c653f5f7107f38d2de2b30bff4c8aadce17d3c334b7"
+      },
+      "frozen_worker_commit": "62b487e9be02b6c9e63379957f2275a640646ddc"
+    },
+    {
+      "member": "B-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1.run-manifest.json",
+        "sha256": "18926f0547d59e28b02f3d156680469c80f6ed3622ce7884a37b4194a6d1db55"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1.json",
+        "sha256": "c1cc638464725fb1147858802e319ea3c12dec107e6b43f60d63c9c0ee079cd6"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1/score-jobs.jsonl",
+        "sha256": "17e4f44217a2683882b2a994fbc2c335e479e1895c0443f53299c441a520bcdd"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1/score-batch/batch-summary.json",
+        "sha256": "f4b228ee63001c0a75a5be0ce0238597561c3a7717932513d91074cdf4d0a78d"
+      },
+      "frozen_worker_commit": "62b487e9be02b6c9e63379957f2275a640646ddc"
+    },
+    {
+      "member": "B-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1.run-manifest.json",
+        "sha256": "e8330affceaba5f6b76078fb12ecdb94ea508897a686268139e090d66e276782"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1.json",
+        "sha256": "474dd776846f2b2f14fc9eef10b4aa301cbcf075f2a1a79331856483190e438d"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1/score-jobs.jsonl",
+        "sha256": "2d514dbce2f9120106feeca46993bde3fbfcc892f0ee7d5d60a3db84ab824054"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1/score-batch/batch-summary.json",
+        "sha256": "2d86b6f0a6ac393bf2366884a2814063de7c7042bcf9de432ee267fae9cb3e2a"
+      },
+      "frozen_worker_commit": "62b487e9be02b6c9e63379957f2275a640646ddc"
+    },
+    {
+      "member": "L-candidate-1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1.run-manifest.json",
+        "sha256": "0517b236f4b0440dde10452f00cd9d6d4782eb8b54a2a91f06c5a4a75d452d60"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1.json",
+        "sha256": "ece5fbe642048d8ea38b419526eda26ab1129f7f8d01678c8aebb7d33c513bd7"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1/score-jobs.jsonl",
+        "sha256": "e0aaef11cdf42eab0d112fb855a2dcf0da824ae6f3c66790824b1832ed625996"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1/score-batch/batch-summary.json",
+        "sha256": "9eb17c697a23c1a8099050e24f818f12c2d6b9aa9c5efca75e00a72651f39446"
+      },
+      "frozen_worker_commit": "62b487e9be02b6c9e63379957f2275a640646ddc"
+    },
+    {
+      "member": "L-candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1.run-manifest.json",
+        "sha256": "29b343e5f79ef4403ec54dc7d4bb7321a8443570c1f6ac64aca6968ebc9ed338"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1.json",
+        "sha256": "107f2d80c204d10591c95f5beed733ba29aac5fc700b7b202982c2d2fbb31ad7"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1/score-jobs.jsonl",
+        "sha256": "bd0ff61dcb71efff52ba72aabdb380125c5aa8a07e5b844d44dd7d796b9d936b"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1/score-batch/batch-summary.json",
+        "sha256": "a782f61ed89d4600e83e46facf45c8f6fe6e5f50bb40a458d386377d5eed7d7f"
+      },
+      "frozen_worker_commit": "62b487e9be02b6c9e63379957f2275a640646ddc"
+    },
+    {
+      "member": "L-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1.run-manifest.json",
+        "sha256": "4fe0a3884335b5722e7a886dc83e9ea1b2ad38f020fa699eaafb6057a66de4b0"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1.json",
+        "sha256": "db16210b7c188da734489a051d3ed682ebf3cbd2bff06ba9c2843c2015fe901c"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1/score-jobs.jsonl",
+        "sha256": "5282eb803aec0f0a9ee5068df37d30e08c0c42d82cae76d91c2db88a11b5758f"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1/score-batch/batch-summary.json",
+        "sha256": "ffc59bf21f7703bf6c562c1d75346521f5c0aa784cb3ecbfba51599dc82f74f7"
+      },
+      "frozen_worker_commit": "4101a4925e604d48921bac7d8e995216282264de"
+    },
+    {
+      "member": "L-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "seal_verified": true,
+      "successful_official_score_jobs": 1,
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1.run-manifest.json",
+        "sha256": "07c77dd2e00e7b60b0e7be91dae2e8f55adf71fbef4d6e399152d2a64915e55f"
+      },
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1.json",
+        "sha256": "a32ad975ed404aa73a9dcad55770adf4b0d7e82a9013e5f2369265bb39839f70"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1/score-jobs.jsonl",
+        "sha256": "b4faae68b2328f18f8d9d5547fbb9d3c08230b75578bcb2add450ec9aa4e46d1"
+      },
+      "score_batch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1/score-batch/batch-summary.json",
+        "sha256": "5ff7e138da960b49433ec58a9e9e627995478cb5e959f953b7257ac86145e554"
+      },
+      "frozen_worker_commit": "62b487e9be02b6c9e63379957f2275a640646ddc"
+    }
+  ],
+  "completed_trajectories": 160,
+  "driver_done_utc": "2026-10-02T14:47:15Z",
+  "stop_present": false,
+  "root_read": "pending exact countersignature",
+  "task_quality_read": false,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0
+  },
+  "owner222": "The human now permits isolated L-only learning feedback after the complete-family read; no B feedback or formal adoption."
+}

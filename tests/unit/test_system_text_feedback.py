@@ -193,7 +193,7 @@ def test_full_family_pools_official_feedback_and_freezes_reference(monkeypatch, 
         receipt.write_text(json.dumps({"job_id": cid, "score_result": pin(score)}))
         bindings.append({"candidate_id": cid, "config": {"manifest": {"path": "/fake/" + cid},
             "projection": {"scorer": "slurp-slu-official-train"}, "complete_score_receipt": pin(receipt)}})
-        metadata.append(({}, {"job_id": cid}))
+        metadata.append(({"split": {"count": 400}}, {"job_id": cid}))
     def grouped(_):
         return {"carrier_lock_key": "slurp", "sources": [{"candidate_id": b["candidate_id"]} for b in bindings],
                 "groups": [{"sample_id": sid, "members": [{"candidate_id": cid,
@@ -219,3 +219,11 @@ def test_full_family_pools_official_feedback_and_freezes_reference(monkeypatch, 
     monkeypatch.setattr(sf, "build_group_relative_feedback", lambda *a: pytest.fail("read before all seals verified"))
     with pytest.raises(PolicyError, match="bad seal"):
         sf.CompleteSystemFeedback.from_family(bindings, expected_members={}, family_id="initial", initial_reference_member="seed")
+
+
+def test_search_reader_rejects_tiny_family_before_any_quality(monkeypatch):
+    from speech_aware_evidence_acquisition.rails import system_text_feedback as sf
+    monkeypatch.setattr(sf, "preflight_family", lambda *a: [({"split": {"count": 20}}, {})])
+    monkeypatch.setattr(sf, "build_group_relative_feedback", lambda *a: pytest.fail("tiny quality read"))
+    with pytest.raises(PolicyError, match="before any task-result"):
+        sf.CompleteSystemFeedback.from_family([], expected_members={}, family_id="initial")

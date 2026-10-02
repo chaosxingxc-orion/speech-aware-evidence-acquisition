@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner222 learning amendment and completed pilot: 2026-10-02T14:51:24.222380+00:00
+
+The human explicitly permits the20-row pilot as learning feedback. [Owner222](../receipts/owner/2026-10-02-decision222-small-panel-learning.json) supersedes220's no-learning clause. Keep the complete-family gate, L/B isolation, all cases, cumulative exposure, disjoint prospective next panels and formal claim floors. Root-only combined analysis must never be sent to either proposer. A separate L-only projection uses the existing capsule and proposal interfaces; small-batch learning does not require a400-row effectiveness claim.
+
+All8 pilot members independently FINALIZED20 rows with verified seals and one successful official score each, zero failed jobs,160 trajectories total. Driver finished14:47:15Z; STOP absent. First worker4101a4925 and continuation worker62b487e9b remain frozen. See [operational qualification](../receipts/continuation/2026-10-02-pilot20-owner220-family-qualified.json). Root countersigned the exact pilot READ after verification; scientific reading and L-only projection have not yet occurred at this checkpoint. Monitoring never countersigns or reads quality. Expected idle serving is not an outage.
+
+The exact exploratory reader and222 projection pass203 model-free tests with97% scoped coverage; engineering-base/lint pass. Actual unsigned production READ refused before sources, as intended. [Validation](../readiness/2026-10-02-slurp-system-text-pilot20-owner220-v1/reader-validation-v1.json). Reuse official saved counts, paired utterance resampling and full trajectory indexes; no model/scorer replay or frozen runtime change. Running memory floor remains owner221's8GiB, startup12.5GiB. Medium-scale and other-carrier holds remain.
+
 ## Owner221 seven-member continuation launched: 2026-10-02T14:11:47.729989+00:00
 
 Root executed the explicitly approved continuation via Windows SAEA-Batch-Driver epoch14:08:49Z, L-parent-aa campaign14:09:16Z. Actual worker PID330124 and generation contacts are verified on frozen /home/chao/saea-worktrees/codex-system-text-pilot20-memory-owner221-v1 at62b487e9be02b6c9e63379957f2275a640646ddc. The three prestart samples passed; startup15.66GiB and latest observed running free memory13.76GiB. Explicit policy8GiB running/12.5GiB startup is live. See [launch and control custody](../receipts/continuation/2026-10-02-pilot20-owner221-launch.json).

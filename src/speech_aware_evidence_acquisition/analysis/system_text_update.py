@@ -77,6 +77,16 @@ def analyze_update(feedback, *, protocol, recipe, roster):
         bindings["B-parent"]["bundle_id"] == protocol["seed_bundle"]["bundle_id"],
         "blind parent differs from seed",
     )
+    ids = stage_for(protocol, stage_name)["sample_ids"]
+    require(len(ids) >= 400, "system search analysis requires at least 400 rows")
+    report = _describe_complete_cohort(d, ids=ids, bindings=bindings, recipe=recipe, roster=roster)
+    report["protocol_sha256"] = content_hash(protocol)
+    return report
+
+
+def _describe_complete_cohort(d, *, ids, bindings, recipe, roster):
+    """Shared statistics only; callers enforce their separate admission and READ gates."""
+    stage_name = d["family_id"]
     resampling = recipe["resampling"]
     require(
         set(resampling) == {"bootstrap_draws", "confidence", "seed", "unit"}
@@ -88,14 +98,12 @@ def analyze_update(feedback, *, protocol, recipe, roster):
         and resampling["bootstrap_draws"] > 0,
         "registered paired resampling differs",
     )
-    ids = stage_for(protocol, stage_name)["sample_ids"]
-    require(
-        len(ids) >= 400
-        and len(set(ids)) == len(ids)
-        and set(roster) == set(ids)
-        and all(s.startswith("slurp:train:") for s in ids),
-        "complete TRAIN metadata roster differs",
-    )
+    require(ids and len(set(ids)) == len(ids) and set(roster) == set(ids)
+            and all(s.startswith("slurp:train:") for s in ids),
+            "complete TRAIN metadata roster differs")
+    groups = d["feedback"]["groups"]
+    require([g["sample_id"] for g in groups] == ids,
+            "complete ordered cohort differs or contains duplicates")
     cluster_strata = {}
     for sid in ids:
         row = roster[sid]
@@ -288,7 +296,6 @@ def analyze_update(feedback, *, protocol, recipe, roster):
         "family_id": stage_name,
         "read_authority": d["read_authority"],
         "feedback_sha256": content_hash(d),
-        "protocol_sha256": content_hash(protocol),
         "sample_count": len(ids),
         "cluster_count": len(cluster_strata),
         "resampling": resampling,

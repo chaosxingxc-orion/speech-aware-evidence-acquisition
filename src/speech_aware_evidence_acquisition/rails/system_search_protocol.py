@@ -13,6 +13,10 @@ def stage_for(protocol, name):
 def require_stage_feedback(protocol, name, feedback):
     stage = stage_for(protocol, name)
     d = feedback.as_json()
+    require(d.get("schema") != "saea-exploratory-system-feedback-v1",
+            "exploratory learning feedback is not a formal registered-stage result")
+    require(d.get("schema") != "saea-complete-system-pilot-evidence-v1",
+            "pilot evidence is not optimizer feedback")
     require([g["sample_id"] for g in d["feedback"]["groups"]] == stage["sample_ids"],
             "feedback does not use the exact preceding registered cohort")
     expected = set(stage["member_slots"])

@@ -1,0 +1,19 @@
+{
+  "schema": "saea-owner-decision-supplement-v1",
+  "decision_id": 222,
+  "status": "approved",
+  "recorded_at_utc": "2026-10-02T14:37:26.607355+00:00",
+  "source": "Direct human instruction in this root conversation on2026-10-02 after the pilot diagnostic reader was prepared; original message remains addressable in the conversation.",
+  "owner_statement_english": "You can use this as learning feedback. We at least need to make sure learning can produce positive results.",
+  "supersedes": "The owner220 prohibition on using the exact complete20-row pilot as learning feedback. Preserve owner220 all-family READ, fixed cohorts, one-shot attempts, blind isolation and formal claim boundaries.",
+  "family_id": "pilot20-owner220",
+  "allow_learning_feedback": true,
+  "recipient_branch": "L",
+  "complete_family_required": true,
+  "formal_adoption": false,
+  "automatic_expansion": false,
+  "scope": "After all8 complete and root READ qualifies, export all20 inputs and all4 learning-branch members with complete source-indexed trajectories, successes, failures, unchanged and damaged cases. Keep B feedback and combined root conclusions out of the L proposer; B remains feedback-blind. Use the registered initial referenceF1 for update utility. Small-panel feedback may guide text/knowledge revisions and provisional search choices; it is not a400-row update or evidence of stable benefit.",
+  "implementation": "Separate optimization from confirmatory measurement. Produce a gated L-only exploratory feedback projection through the existing proposer/capsule path. Prospectively register each next small-panel roster, candidate quota, model/version, actual capacity and complete-system evaluation before contacts. Preserve prior spent proposal slots; do not retroactively replace failed/no-change proposals.",
+  "validation": "Judge updated policies on a prospectively fixed disjoint small panel and retain the matched parent/A/A and blind comparison. Record cumulative direct and indirect exposure. Do not select only improved examples or repeatedly sample until positive. Diagnose nonpositive changes and stop or change the mechanism when evidence warrants it.",
+  "bounds": "No guarantee that each update improves. Positive full-system outcomes are the research objective, never an assumed result. Existing holds on medium-scale GPU, other carriers, paid API spend and automatic failure recovery remain."
+}
