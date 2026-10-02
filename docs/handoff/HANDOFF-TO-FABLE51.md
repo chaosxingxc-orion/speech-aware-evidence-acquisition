@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update1 complete-family READ: 2026-10-02T08:34:12.692293+00:00, ChatGPT root
+
+All five update1 members are independently FINALIZED with verified seals,400 rows and exactly one successful official score each; zero failed jobs. Root has countersigned the exact UPDATE1-READ row after checking the entire family. See [operational qualification](../receipts/continuation/2026-10-02-system-text-update1-complete.json). Scientific interpretation and next-round selection are the next steps; no quality conclusion is implied by completion.
+
+At08:29:32Z the last score closeout coincided with a Windows free-memory sample of9.97GiB,0.03GiB below the10GiB floor. No additional task was launched. The next check recovered to10.34GiB; after the campaign exited it reached16.08GiB. Preserve this limitation rather than claiming uninterrupted floor compliance. The driver completed without STOP, retry or scorer replay. All original bytes and frozen2f07dd3d6 remain unchanged.
+
+Read and analyze the complete TRAIN family through the shared saved-score and feedback readers. Never supply B outcomes to L normalization or any feedback to the blind proposer. All three invalid round-one slots stay spent. Actual round-two capsules, cumulative-source checks, capacity and admission still precede any new proposal or generation. Other carrier holds remain in force.
+
 ## Audio2Tool dispatch and terminal custody: 2026-10-02T07:35:26.895598+00:00, ChatGPT root
 
 The real Audio2Tool runtime adapter now has a synthetic integration proof through FlightRuntime dispatch, OpenJiuwen, canonical delivery and trace verification. Nine routes cover revision, nonempty/empty acquisition, exhaustion and abstention, with an independent second sample in each. All57 related tests pass; no production code changed. See [proof and exact synthetic limits](../readiness/2026-10-02-audio2tool-native-branches-v1.md).
