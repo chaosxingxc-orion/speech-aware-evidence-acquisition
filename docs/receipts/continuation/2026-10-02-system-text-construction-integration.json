@@ -1,0 +1,99 @@
+{
+  "schema": "saea-system-text-construction-integration-evidence-v1",
+  "at_utc": "2026-10-02T05:45:18.873375+00:00",
+  "owner_scope": [
+    214
+  ],
+  "worker_base_commit": "aaece8e8e388772690412bb60d58cd6cdde8d369",
+  "implementation_status": "offline-verified-ready-for-serial-integration",
+  "source_files": {
+    "tests/unit/test_system_text_construction_integration.py": "883a726b1ab2065bb326bba07b7c4f91dd7168a4a1af9ff2ebb446ac96fce9ba",
+    "docs/readiness/2026-10-02-system-text-construction-integration-v1.md": "4d478d94df3f76a05302560d987206babf1f22731df309085f0d65a48602d2e4"
+  },
+  "validation": {
+    "tests_passed": 262,
+    "new_integration_cases": 6,
+    "construction_statement_coverage_percent": 100,
+    "policy_statement_coverage_percent": 97,
+    "combined_statement_coverage_percent": 98,
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "production_source_changed": false,
+    "real_components": "FrozenCoreClient, durable attempt store, trace sink, manifest builder/verifier, artifact finalizer, semantic materializer/release/store loader, whole-policy compiler.",
+    "test_doubles": "Synthetic transport and hardware gate; synthetic Git/config/data fixtures. The new test directly constructs a canonical output row from client timing and does not execute the phase scheduler.",
+    "model_contacts_added": 0,
+    "tokenizer_contacts_added": 0,
+    "scorer_contacts_added": 0
+  },
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-02T05:43:57.709568+00:00",
+    "members": [
+      {
+        "member": "L-PARENT",
+        "state": "FINALIZED",
+        "contacts": 2793,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "L-PARENT-AA",
+        "state": "FINALIZED",
+        "contacts": 2797,
+        "manifest_status": "COMPLETED",
+        "manifest_rows": 400,
+        "score": {
+          "job_count": 1,
+          "succeeded": 1,
+          "failed": 0
+        }
+      },
+      {
+        "member": "B-PARENT",
+        "state": "OPENED",
+        "contacts": 1585,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-PARENT-AA",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      },
+      {
+        "member": "B-CANDIDATE-2",
+        "state": "NOT_STARTED",
+        "contacts": null,
+        "manifest_status": null,
+        "manifest_rows": null,
+        "score": {
+          "job_count": null,
+          "succeeded": null,
+          "failed": null
+        }
+      }
+    ],
+    "stop": false,
+    "process": "/home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /home/chao/saea-worktrees/codex-system-text-update1-flight-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --campaign-plan /home/chao/saea-worktrees/codex-system-text-update1-flight-v1/configs/campaign/slurp-system-text-update1-v1.json --owner chatgpt-root-system-text-update1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 ",
+    "frozen_worker_commit": "2f07dd3d6f52eee79d24243c40a0dff195260816",
+    "windows_free_gib": 11.45
+  },
+  "boundary": "Active update1 remains frozen and unread until the complete-family gate; no new dispatch or retry."
+}

@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Finalized construction integration: 2026-10-02T05:45:18.873375+00:00, ChatGPT root
+
+The offline client-to-manifest-to-finalization-to-semantic-release-to-policy-compiler join now has a proof with real custody and finalization, removing the preceding join test's simulated-bundle gap. It rejects premature consumption, artifact mutation, duplicate finalization and omitted cumulative sources before candidate publication. All 262 related tests pass, including six new integration cases; scoped coverage is 100% construction / 97% policy. No production code changed. See [proof and precise limits](../readiness/2026-10-02-system-text-construction-integration-v1.md).
+
+This is synthetic local-transport engineering, not a live construction flight or a new phase-scheduler proof. Actual future builds still need exact source/budget/FIT/admission. No model, tokenizer or scorer contact was added and no spent slot was replaced.
+
+At 05:43:57Z both L-parent members remained FINALIZED with 400 rows, one successful official score each and zero failed jobs. B-parent was OPENED with 1,585 contacts; B-parent-AA and B-candidate-2 were NOT_STARTED. STOP absent, frozen campaign process live, Windows free 11.45 GiB. Contacts are not row counts. Update1 worker 2f07dd3d6, queue and held carriers remain unchanged; the whole-family READ stays unsigned.
+
 ## Construction instruction custody: 2026-10-02T05:28:45.934006+00:00, ChatGPT root
 
 The prospective knowledge-construction join now recognizes the exact current CONTROL instruction emitted by the shared phase/client path. It refuses an overridden top-level instruction, old state mention, stale control hash, wrong carrier, duplicate output/request or actual generating sample omitted from cumulative evidence. Legacy requests without history retain the top-level route. The203 related tests pass, including18 new cases and100% scoped coverage. See [proof and limitations](../readiness/2026-10-02-system-text-construction-custody-v1.md).
