@@ -442,6 +442,10 @@
       "sha256": "570c7a5cea16eee2219ea41d7ce46221a01e6640f8e31cd7070e6dae1747c465"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1/phase-supply-v1.json",
+    "sha256": "5ecd32da7bd5daddcf6756a3c6f548b9ea95a2350c67789f0785f9c08c01183a"
+  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"

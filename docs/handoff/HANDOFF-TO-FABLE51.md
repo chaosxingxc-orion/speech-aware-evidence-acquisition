@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update2 capacity and admission: 2026-10-02T09:54:34.346945+00:00, ChatGPT root
+
+All three exact request configurations pass132 native request measurements and891 guarded tokenizer endpoints, zero task-generation/scorer contacts. Maximum required17152 includes the full512 completion allowance; remaining margin5376 after the additional2048 reserve. See [capacity evidence](../receipts/continuation/2026-10-02-system-text-update2-capacity-complete.json). Existing real CONTROL2 branch proof is reused because only Solver text changes; current synthetic graph proof covers refusal, empty/nonempty lookup and revised delivery. Every real request still needs exact FIT.
+
+The original eight-member update2 family is frozen at registration b1f9d59813eef80e518fd350c3213c4398c6f16f416a6ee3819fb60ac19e9d20:400 trajectories each,3200 total. All own supplies are warm-verified and all generation/FIT rows countersigned. Both no-change L proposals remain included. [Registration and read gate](../readiness/2026-10-02-slurp-system-text-update2-v1/README.md). Root READ remains unsigned; all eight must FINALIZE/seal/score once. No GPU generation launched at this checkpoint. Frozen launch source, live resource/preflight checks and serial queue installation remain. Other holds and old failed bytes stay unchanged.
+
 ## Round-two proposals complete: 2026-10-02T09:31:50.787952+00:00, ChatGPT root
 
 All four original allocations completed with full metering, six provider contacts,17303 input and2639 output tokens. L-2-1/L-2-2 choose no-change; B-2-1/B-2-2 propose Solver-text revisions. All four compile with cumulative-source isolation against update2. No construction call is required. See [completion and immutable custody](../receipts/continuation/2026-10-02-system-text-round2-proposer-complete.json).

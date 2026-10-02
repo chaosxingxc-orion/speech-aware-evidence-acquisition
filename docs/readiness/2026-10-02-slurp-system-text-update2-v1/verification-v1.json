@@ -1,0 +1,33 @@
+{
+  "schema": "saea-system-text-update2-verification-v1",
+  "at_utc": "2026-10-02T09:55:50.332635+00:00",
+  "unit_tests": {
+    "passed": 75,
+    "suites": [
+      "system_text_policy",
+      "system_text_cohort",
+      "system_search_stage",
+      "system_search_protocol"
+    ]
+  },
+  "engineering_base": "PASS",
+  "family_registration": {
+    "blocking": 0,
+    "advisories": 8,
+    "advisory": "Historical tuning roster not independently verified by generic gate; exact protocol cumulative ancestry and cohort disjointness separately pass compiler and immutable stage freezer. No independent validation claim."
+  },
+  "finite_completion_policy": "PASS",
+  "effect_floor": {
+    "blocking": 0,
+    "historical_advisories": 18
+  },
+  "algorithm_label_global": {
+    "status": "FAIL with two pre-existing capacity-only empty-operator records",
+    "files": [
+      "configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+      "configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json"
+    ],
+    "disposition": "Preserve previously frozen source identities. All new update2 cells explicitly carry registered system-text-black-box-v1 with nonempty operators. These two findings do not concern new family membership or runtime policy."
+  },
+  "new_generation_or_score_contacts": 0
+}

@@ -1,0 +1,42 @@
+{
+  "actual_per_contact_fit_required": true,
+  "capacity": [
+    {
+      "max_required_tokens": 17152,
+      "min_margin_after_extra_reserve": 5376,
+      "policy": "parent",
+      "relpath": "coordination/slurp-system-text-update2-parent-capacity-v1/request-fit-v1.json",
+      "requests": 44,
+      "sha256": "04297b0272f88a8a5b1f7bf8af40e70d39e95fa6872aed698cd8614eedb74908",
+      "tokenizer_endpoints": 297
+    },
+    {
+      "max_required_tokens": 17152,
+      "min_margin_after_extra_reserve": 5376,
+      "policy": "candidate-1",
+      "relpath": "coordination/slurp-system-text-update2-candidate-1-capacity-v1/request-fit-v1.json",
+      "requests": 44,
+      "sha256": "e3f3f910677c504ba7ffde980554c3cdd127e1268dfe1d2b7111e501e2e77612",
+      "tokenizer_endpoints": 297
+    },
+    {
+      "max_required_tokens": 17152,
+      "min_margin_after_extra_reserve": 5376,
+      "policy": "candidate-2",
+      "relpath": "coordination/slurp-system-text-update2-candidate-2-capacity-v1/request-fit-v1.json",
+      "requests": 44,
+      "sha256": "990279b5c58e8ebabb45ba50159a0b1c28dba42eacc817b105f051f0043ce2ed",
+      "tokenizer_endpoints": 297
+    }
+  ],
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-update2-capacity-v1",
+  "generation_contacts": 0,
+  "observed_at": "2026-10-02T09:51:56.928629+00:00",
+  "official_score_contacts": 0,
+  "schema": "saea-system-text-update2-capacity-complete-v1",
+  "scientific_read_countersigned": false,
+  "task_quality_read": false,
+  "total_tokenizer_endpoints": 891,
+  "windows_task": "SAEA-SystemText-Update2-Capacity",
+  "worker_commit": "2288783830cd820507aee1c7b450b87ee4fc0ac6"
+}

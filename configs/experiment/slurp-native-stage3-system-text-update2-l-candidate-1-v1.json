@@ -3,7 +3,9 @@
     {
       "allowed_execution_stages": [
         "check",
-        "prepare-supply"
+        "prepare-supply",
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-native-stage3-system-text-update2-l-candidate-1-generation-v1",
       "baseline_fragment": "slurp-native-stage3-system-text-update2-l-candidate-1-v1",
@@ -11,9 +13,22 @@
       "dataset_fragment": "slurp-speech-native-system-text-update-2-400-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Original registered update2 full-system member. Await own supply, exact family freeze, maximum-request FIT and root admission. No generation authority from compilation.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root admits exact original update2 complete family after three measured native capacity proofs. Preserve per-contact FIT and complete-family READ.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Own shared-runtime model-free first-phase supply.",
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1/phase-supply-v1.json",
+            "sha256": "6e9770186efa18d975b3034f5732c91f4d0a4873122596efd74b89eed2698d5e"
+          },
+          {
+            "expected_decision_id": "slurp-system-text-update2-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-system-text-update2-v1/root-admission-v1.json",
+            "sha256": "5f7dfe5ab9debc7ee556bfc1955d398070196211f07c5f362a934a3107800fa2"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1"
     }
