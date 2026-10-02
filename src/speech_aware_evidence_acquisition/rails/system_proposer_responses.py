@@ -17,7 +17,7 @@ from urllib.parse import urlsplit
 
 from .hashing import content_hash
 from .prepared_feedback import reject_non_latin_scripts
-from .system_proposer_capsule import attest_outbound
+from .system_proposer_capsule import attest_outbound, HARD_BUDGET, SUBSCRIPTION_BUDGET
 from .system_text_policy import PolicyError, canonical, require, sha
 
 MAX_STREAM_BYTES = 8 * 1024 * 1024
@@ -72,8 +72,8 @@ class ResponsesHTTP:
     """One HTTP POST, no redirects/proxies/retries, and no credential persistence.
 
     Live admissions are caller-verified, hash-pinned research records, not model
-    text. No live provider is admitted by this module. In particular the current
-    ChatGPT-plan profile does not support max_output_tokens and is refused.
+    text. No live provider is admitted by this module. The ChatGPT-plan profile
+    requires owner217's metered acceptance budget and a separate provider admission.
     """
     def __init__(self, endpoint, *, fixture_only=False, bearer=None, admission=None, timeout=60):
         parsed = urlsplit(endpoint)
@@ -89,10 +89,16 @@ class ResponsesHTTP:
             require(isinstance(admission, dict), "live transport requires separately verified admission")
             require(admission.get("sha256") == content_hash({k: v for k, v in admission.items() if k != "sha256"}),
                     "transport admission fingerprint differs")
+            hard = (admission.get("output_cap_enforcement") == "provider-hard-limit"
+                    and admission.get("provider_profile") != "chatgpt-plan-preview"
+                    and admission.get("budget_profile", HARD_BUDGET) == HARD_BUDGET)
+            subscription = (admission.get("provider_profile") == "chatgpt-plan-preview"
+                    and admission.get("output_cap_enforcement") == "metered-reject-after-completion"
+                    and admission.get("budget_profile") == SUBSCRIPTION_BUDGET
+                    and admission.get("owner_decision") == 217)
             require(admission.get("status") == "admitted" and admission.get("endpoint") == endpoint
                     and admission.get("paid_api_spend") == 0
-                    and admission.get("output_cap_enforcement") == "provider-hard-limit"
-                    and admission.get("provider_profile") != "chatgpt-plan-preview"
+                    and (hard or subscription)
                     and callable(bearer), "transport admission is incompatible")
             sha(admission.get("protocol_sha256"))
             require(parsed.scheme == "https" and parsed.hostname == "api.openai.com" and parsed.port in (None, 443),
@@ -129,7 +135,7 @@ class ResponsesHTTP:
             connection.close()
 
 
-def _output(response, seen_calls):
+def _output(response, seen_calls, *, subscription=False):
     """Validate model-owned continuation items; never accept new tool declarations."""
     output = response.get("output")
     require(isinstance(output, list) and output, "completion has no output")
@@ -140,7 +146,11 @@ def _output(response, seen_calls):
         require(item.get("status") in (None, "completed"), "unfinished output item")
         kind = item.get("type")
         if kind == "function_call":
-            require(not set(item) - {"id", "type", "call_id", "name", "arguments", "status"}, "extra call fields")
+            allowed = {"id", "type", "call_id", "name", "arguments", "status"}
+            if subscription:
+                allowed.add("namespace")
+                require(item.get("namespace") in (None, "artifacts"), "unregistered tool namespace")
+            require(not set(item) - allowed, "extra call fields")
             require(item.get("name") == "read_artifact", "unregistered tool request")
             identity = item.get("call_id")
             require(isinstance(identity, str) and identity and identity not in seen_calls, "duplicate or empty tool call")
@@ -200,19 +210,23 @@ class ResponsesProposer:
             if self.client.admission is not None:
                 require(self.client.admission["protocol_sha256"] == packet.get("protocol_sha256"),
                         "provider and proposal protocols differ")
+                require(self.client.admission.get("budget_profile", HARD_BUDGET)
+                        == packet.get("budget_profile", HARD_BUDGET), "provider and proposal budget profiles differ")
             history = copy.deepcopy(expected["input"])
             for number in range(1, self.contact_cap + 1):
                 remaining = packet["output_token_cap"] - total_output
                 require(remaining > 0, "proposal output budget exhausted")
-                request = {**copy.deepcopy(expected), "input": copy.deepcopy(history), "max_output_tokens": remaining}
+                request = {**self.capsule.request(remaining_output=remaining), "input": copy.deepcopy(history)}
                 counted = self.input_counter(copy.deepcopy(request))
                 require(type(counted) is int and counted >= 0
                         and total_input + counted <= packet["input_token_cap"], "proposal input budget exhausted or unknown")
                 contact = self.audit_dir / f"contact-{number:03d}"
                 contact.mkdir()
-                evidence = {**attest_outbound(request, {**expected, "input": history, "max_output_tokens": remaining}),
+                evidence = {**attest_outbound(request, {**self.capsule.request(remaining_output=remaining), "input": history}),
                     "contact": number, "input_token_bound": counted, "remaining_output_tokens": remaining,
-                    "session_id": packet["session_id"], "proposal_input_sha256": packet["input_sha256"]}
+                    "session_id": packet["session_id"], "proposal_input_sha256": packet["input_sha256"],
+                    "budget_profile": packet.get("budget_profile", HARD_BUDGET),
+                    "provider_hard_output_cap": packet.get("budget_profile", HARD_BUDGET) == HARD_BUDGET}
                 write(contact / "request.json", request)
                 write(contact / "reservation.json", evidence)
                 self.before_contact(copy.deepcopy(evidence))
@@ -246,7 +260,7 @@ class ResponsesProposer:
                                                "cumulative_output_tokens": total_output})
                 require(usage["input_tokens"] <= counted and total_input <= packet["input_token_cap"]
                         and usage["output_tokens"] <= remaining, "provider exceeded the registered token bound")
-                calls, text = _output(final, seen_calls)
+                calls, text = _output(final, seen_calls, subscription=packet.get("budget_profile") == SUBSCRIPTION_BUDGET)
                 if not calls:
                     require(bool(text.strip()), "completion has no proposal text")
                     result = {"raw_response": text, "model_version": packet["model_version"],

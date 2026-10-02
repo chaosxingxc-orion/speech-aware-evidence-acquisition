@@ -336,11 +336,12 @@ def _native_contact_roles(assigned, contacts):
     return roles, requests
 
 
-def _validate_actions(assigned, contacts, outputs):
+def _validate_actions(assigned, contacts, outputs, delivery_contacts=None):
     """Cross-check typed phase identities before crediting any action."""
     phases, native_phases, runtime, latest = {}, {}, {}, {}
     native_roles, native_requests = _native_contact_roles(assigned, contacts)
     successful_responses = {(sample, digest) for sample, _, digest in contacts}
+    delivery_contacts = delivery_contacts or {}
 
     def phase_responses(sample, phase):
         key = (sample, phase)
@@ -370,6 +371,8 @@ def _validate_actions(assigned, contacts, outputs):
         if not isinstance(rows, list) or not rows:
             raise RewardLinkError("runtime USE requires successful contacts")
         final_hash = _sha(payload.get("use_final_response_sha256"), "phase final response")
+        delivery_contact = delivery_contacts.get((sample, final_hash))
+        contact_final_hash = delivery_contact[0] if delivery_contact else final_hash
         native_runtime = any(
             (sample, contact.get("plan", {}).get("contact_id"), contact.get("response_sha256"))
             in native_roles for contact in rows if isinstance(contact, Mapping)
@@ -377,7 +380,7 @@ def _validate_actions(assigned, contacts, outputs):
         eligible = set()
         for contact in rows:
             matches, digest = contact_requests(sample, contact)
-            if digest == final_hash:
+            if digest == contact_final_hash:
                 eligible.update(matches)
             # Shared phase materials name contacts as program:phase:sample.
             # Continuous programs have one runtime-use record for all phases.
@@ -396,6 +399,8 @@ def _validate_actions(assigned, contacts, outputs):
                     if key in phases and phases[key] != digest:
                         raise RewardLinkError("phase has conflicting successful contacts")
                     phases[key] = digest
+        if delivery_contact:
+            eligible &= {delivery_contact[1]}
         if not eligible:
             raise RewardLinkError("phase final response is absent from its successful contacts")
         for wave in payload.get("use_waves", []):
@@ -407,7 +412,7 @@ def _validate_actions(assigned, contacts, outputs):
         waves = payload.get("use_waves", [])
         selected = waves[-1].get("selected_final_contact_id") if waves else None
         if selected is not None:
-            eligible &= contacts.get((sample, selected, final_hash), set())
+            eligible &= contacts.get((sample, selected, contact_final_hash), set())
             if not eligible:
                 raise RewardLinkError("selected final contact differs from the runtime answer")
         if "use_runtime_trace_sha256" in payload:
@@ -421,7 +426,7 @@ def _validate_actions(assigned, contacts, outputs):
             if content_hash(document) != payload["use_runtime_trace_sha256"]:
                 raise RewardLinkError("runtime USE document hash differs")
         runtime[head] = payload
-        latest[sample] = (final_hash, eligible)
+        latest[sample] = (contact_final_hash, eligible)
 
     for sample, row in assigned:
         if row["channel"] != "ORG":
@@ -501,14 +506,37 @@ def _validate_actions(assigned, contacts, outputs):
 
 def _trace(bundle, sample_ids, raw):
     """Associate opaque requests and existing phase namespaces by exact identity."""
+    from ..core.bundle import BundleError
+    from ..core.bundle.outputs import _delivery_normalisation_receipt, _verify_delivery_normalisation
+
     documents = [json.loads(line) for line in raw.decode("utf-8").split("\n") if line]
     requests, responses, contacts = _model_index(documents, sample_ids)
+    response_payloads = {r["record_id"].removesuffix("/response"): r["payload"]
+                         for r in documents if r["channel"] == "MODEL_RESPONSE"}
+    contact_outputs = []
+    delivery_contacts = {}
     for output in bundle.outputs_rows:
         request = requests.get(output["request_id"])
         if request is None or request["sample"] != output["sample_id"]:
             raise RewardLinkError("final output does not name its sample's exact request")
-        if responses.get(output["request_id"]) != output["response_text_sha256"]:
+        contact_output = output
+        try:
+            normalisation = _delivery_normalisation_receipt(output)
+            if normalisation is not None:
+                payload = response_payloads.get(output["request_id"], {})
+                if payload.get("response_sha256") != output["response_sha256"]:
+                    raise RewardLinkError("delivery normalisation differs from its wire response")
+                _verify_delivery_normalisation(output, normalisation, payload)
+                # Attribute the model contact using its original response; keep
+                # the actual delivered answer and official reward unchanged.
+                contact_output = {**output, "response_text_sha256": normalisation["input_sha256"]}
+                delivery_contacts[(output["sample_id"], output["response_text_sha256"])] = (
+                    normalisation["input_sha256"], output["request_id"])
+        except BundleError as error:
+            raise RewardLinkError(str(error)) from error
+        if responses.get(output["request_id"]) != contact_output["response_text_sha256"]:
             raise RewardLinkError("final output does not name its exact normalized response")
+        contact_outputs.append(contact_output)
     events = {sample: [] for sample in sample_ids}
     assigned = []
     for row in documents:
@@ -539,7 +567,7 @@ def _trace(bundle, sample_ids, raw):
             "event_sha256": TraceRecord(axis, record_id, payload).content_hash(),
             "tool_manifest_identity": _manifest_identities(payload),
         })
-    _validate_actions(assigned, contacts, bundle.outputs_rows)
+    _validate_actions(assigned, contacts, contact_outputs, delivery_contacts)
     actions = {sample: [row for row in rows if row["axis"] in _ACTION_AXES]
                for sample, rows in events.items()}
     return events, actions

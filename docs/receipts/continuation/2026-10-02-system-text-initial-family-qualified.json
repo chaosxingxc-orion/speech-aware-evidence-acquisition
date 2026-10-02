@@ -1,0 +1,47 @@
+{
+  "schema": "saea-complete-family-qualification-v1",
+  "observed_at_utc": "2026-10-02T00:41:31.642219+00:00",
+  "owner216_recovery": {
+    "finished_at_utc": "2026-10-02T00:36:58.852174+00:00",
+    "job_count": 1,
+    "succeeded": 1,
+    "failed": 0,
+    "preserved_evidence_unchanged": true,
+    "new_generation_contacts": 0,
+    "batch_summary": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-batch-entry-recovery1/batch-summary.json",
+    "retry_permitted": false
+  },
+  "members": [
+    {
+      "candidate_id": "seed",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-control2-generation-v1",
+      "state": "FINALIZED",
+      "rows": 400,
+      "verified_seal": true,
+      "successful_official_scores": 1,
+      "failed_entry_workers": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1.run-manifest.json",
+        "sha256": "9d062d3a11b8d219ed6eea74f9ec2b88235a2ab7c962ae77f2cd89470ddef03b"
+      }
+    },
+    {
+      "candidate_id": "seed-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1",
+      "state": "FINALIZED",
+      "rows": 400,
+      "verified_seal": true,
+      "successful_official_scores": 1,
+      "failed_entry_workers": 1,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.run-manifest.json",
+        "sha256": "9eeaa8b03ffe74baf9292295e0a7e5ffa19a6208417a4992500d4755bb814950"
+      }
+    }
+  ],
+  "scientific_results_read": false,
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1",
+  "read_disposition": "Root countersignature admitted after full-family metadata and seal verification."
+}

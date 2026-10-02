@@ -24,6 +24,8 @@ COMMON_FIELDS = frozenset({"schema", "branch", "round", "slot", "seed_bundle_id"
     "parent_policy", "model_version", "session_id", "input_token_cap", "output_token_cap", "context",
     "tool_access", "instructions", "input_sha256", "protocol_sha256"})
 LEARNING_FIELDS = frozenset({"feedback", "complementary_policies", "learning_history", "selection"})
+HARD_BUDGET = "provider-hard-limit"
+SUBSCRIPTION_BUDGET = "subscription-metered-reject-v1"
 MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
@@ -56,8 +58,10 @@ def input_references(packet):
     branch = packet.get("branch")
     require(branch in {"L", "B"} and packet.get("round") in (1, 2, 3) and packet.get("slot") in (1, 2),
             "invalid proposal allocation")
-    require(not set(packet) - COMMON_FIELDS - (LEARNING_FIELDS if branch == "L" else frozenset()),
+    require(not set(packet) - COMMON_FIELDS - {"budget_profile"} - (LEARNING_FIELDS if branch == "L" else frozenset()),
             "blind or undeclared input fields")
+    require(packet.get("budget_profile", HARD_BUDGET) in (HARD_BUDGET, SUBSCRIPTION_BUDGET),
+            "undeclared proposal budget profile")
     require(COMMON_FIELDS - {"protocol_sha256"} <= set(packet), "missing input fields")
     require(packet["schema"] == "saea-text-policy-proposer-input-v1"
             and packet["context"] == "fresh-isolated-no-shared-history"
@@ -319,17 +323,30 @@ class ProposerCapsule:
         entry.update(status="supplied", response_sha256=content_hash(result), characters=len(text))
         return result
 
-    def request(self):
+    def request(self, *, remaining_output=None):
         """Canonical request contract, not a promise of provider compatibility.
 
-        A provider that cannot enforce the registered output cap or faithfully
-        preserve this context must not be admitted by a transport adapter.
+        Owner217 admits a separately pinned subscription acceptance budget. It
+        must never be represented as a server-enforced generation limit.
         """
         packet = json.loads(self._packet)
-        return {"model": packet["model_version"], "instructions": PROPOSER_INSTRUCTIONS,
+        remaining = packet["output_token_cap"] if remaining_output is None else remaining_output
+        require(type(remaining) is int and 0 < remaining <= packet["output_token_cap"], "invalid remaining output budget")
+        result = {"model": packet["model_version"], "instructions": PROPOSER_INSTRUCTIONS,
                 "input": [{"role": "user", "content": canonical(self.initial_input())}],
                 "tools": [copy.deepcopy(BROKER_TOOL)], "tool_choice": "auto", "parallel_tool_calls": False,
-                "max_output_tokens": packet["output_token_cap"], "store": False, "stream": True}
+                "max_output_tokens": remaining, "store": False, "stream": True}
+        if packet.get("budget_profile") == SUBSCRIPTION_BUDGET:
+            result.pop("max_output_tokens")
+            result["instructions"] += (
+                f" The remaining output acceptance budget is {remaining} tokens across this proposal, "
+                "including reasoning and tool turns. Aim to stay within it. An over-budget or unmetered "
+                "proposal is rejected and consumes its opportunity; this is not a server-enforced cap."
+            )
+            result["tools"] = [{"type": "namespace", "name": "artifacts",
+                                "description": "Only the registered artifact reader is available.",
+                                "tools": [copy.deepcopy(BROKER_TOOL)]}]
+        return result
 
 
 def attest_outbound(actual, expected):
@@ -376,6 +393,15 @@ class ProposalDispatch:
             except FileExistsError:
                 require(json.loads(model_path.read_text())["model_version"] == packet["model_version"],
                         "one search sequence cannot mix proposer models")
+            budget = {"profile": packet.get("budget_profile", HARD_BUDGET),
+                      "input_token_cap": packet["input_token_cap"], "output_token_cap": packet["output_token_cap"]}
+            budget_path = self.root / "budget.json"
+            try:
+                with budget_path.open("x", encoding="utf-8") as stream:
+                    stream.write(canonical(budget))
+            except FileExistsError:
+                require(json.loads(budget_path.read_text()) == budget,
+                        "one search sequence cannot mix proposal budget profiles or limits")
             sessions = self.root / "sessions"
             sessions.mkdir(exist_ok=True)
             try:

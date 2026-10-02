@@ -215,6 +215,8 @@ def main(argv=None):
             if selection is not None:
                 packet["selection"] = selection
         packet["protocol_sha256"] = content_hash(protocol)
+        if "proposal_budget_profile" in protocol:
+            packet["budget_profile"] = protocol["proposal_budget_profile"]
         packet["input_sha256"] = content_hash({k: v for k, v in packet.items() if k != "input_sha256"})
         archive.store_input(packet)
         print(json.dumps({"input_sha256": packet["input_sha256"], "invoked": False}))
