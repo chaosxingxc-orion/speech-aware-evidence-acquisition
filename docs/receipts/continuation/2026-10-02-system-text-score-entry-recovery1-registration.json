@@ -1,0 +1,53 @@
+{
+  "schema": "saea-score-entry-recovery-registration-v1",
+  "registered_at_utc": "2026-10-02T00:34:23.791033+00:00",
+  "owner_decision": 216,
+  "owner_receipt": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-policy/docs/receipts/owner/2026-10-02-decisions216-217.json",
+    "sha256": "5f0651d05562c4b7c2d106cc957e2dbb5c079a1b77e91bb3967fd2411feef8e9"
+  },
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1",
+  "attempt_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1",
+  "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.run-manifest.json",
+  "unscored_manifest_sha256": "0d8c6573ac7dedc5f80fa70d022bed765311b459a1f7fb1cd235e5be6eb293da",
+  "flight_receipts": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/flight-receipts.json",
+  "source_root": "/home/chao/saea-worktrees/codex-system-text-score-entry-recovery1",
+  "source_commit": "953f9b598adba1df7c424c755993713087428823",
+  "lock_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+  "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-batch-entry-recovery1",
+  "max_official_score_jobs": 1,
+  "new_generation_contacts": 0,
+  "preserved_pins": {
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/.flight-receipts.json.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/.score-batch.score-batch.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/flight-receipts.json": "cd746fb119f4265109bc741801b55876751378f0122559a1a4a549faa5a81be6",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1-attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1.session-attach-receipt.json": "31947500333c32974704cc8db3e0f7270094914b8d3bc456c28f55cf43c259ec",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.generation-manifest.json": "0d8c6573ac7dedc5f80fa70d022bed765311b459a1f7fb1cd235e5be6eb293da",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.outputs.jsonl": "961b7d9488d33c320c7153ad0f12a2dcd7125eab148d9ef187bece64f11aa9e2",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.phases.json": "d6cda4c09f7d632b6e7ac4d52f4ce0ef27978cdbcdf99f6e88889380c01c677c",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.trace-manifest.json": "9c6813a48189143a128dc43939b986ecaef772da8f7799d93497ba218f0d1abf",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.trace.jsonl": "f33acd42d1ca0cf75bc27a1fa6ca9eb4194df12b3f6ba25c39697a015ed8dcbc",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-jobs.jsonl": "54f6d3dd16da04f8b03fb68ac88749c348b406c23475da095f66afd204e49b69",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-ledger-cells.json": "000b3b4ada4ede3d1382a4d900201a803fa513ca86b3d904f4cce3a64ef67f16",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-batch/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1.stderr.log": "078b1f6395149e41d7019b6c8bb7e5994a78104a01c98bc26b4e615ce7236a1f",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-batch/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/score-batch/batch-summary.json": "7f865f2bd40f5a5e666c20cf6b558015fe40695528d9abd72881c3504e5c92dc",
+    "/home/chao/saea-worktrees/codex-system-text-initial-control2-v2/src/speech_aware_evidence_acquisition/scoring/__pycache__/transitions.cpython-312.pyc": "dcdc4ee198271f697e4b2baafecfbd022c229cc34303e20d9d22a35f6d47d54d",
+    "/home/chao/saea-worktrees/codex-system-text-initial-control2-v2/src/speech_aware_evidence_acquisition/scoring/__pycache__/__init__.cpython-312.pyc": "8f2e428d6afe148ced3237c5f724d0da66ed4eb41ba47dedc176fb9382e1b207",
+    "/home/chao/saea-worktrees/codex-system-text-initial-control2-v2/src/speech_aware_evidence_acquisition/scoring/__pycache__/entity.cpython-312.pyc": "024e086fd77a5cc0e2158c5d3ea2128d6c631ad9f35681daabc72f465f246db5",
+    "/home/chao/saea-worktrees/codex-system-text-initial-control2-v2/src/speech_aware_evidence_acquisition/scoring/__pycache__/qa.cpython-312.pyc": "4c94894d6eb30846d8fd35d5d532c582f45f3533b0fdd1342add5f6f258980b8",
+    "/home/chao/saea-worktrees/codex-system-text-initial-control2-v2/src/speech_aware_evidence_acquisition/scoring/__pycache__/wer.cpython-312.pyc": "16a21fd9ab1b97f69870e6fba7bc1358ee8e1b727ac6383caa2bc79a60f91611",
+    "/home/chao/saea-worktrees/codex-system-text-initial-control2-v2/src/speech_aware_evidence_acquisition/scoring/__pycache__/normalize.cpython-312.pyc": "9298e41b9b73019f1f5c8c768d3f2590deecd5ccf1eee3c56c6d4717bcfa8bb9",
+    "/home/chao/batch-STOP": "564a1d199f698abf4b2782ccc8b1cad4a9d29a61b574e4f86149a043eba9b7dc"
+  },
+  "prior_official_evaluation_entered": false,
+  "attempts_after_further_failure": 0,
+  "preflight": {
+    "full_generation_seal": "PASS",
+    "e0_d3": "PASS",
+    "rows": 400,
+    "live_scorers": 0,
+    "windows_free_gib": 16.08
+  }
+}

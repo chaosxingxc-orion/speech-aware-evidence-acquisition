@@ -1,0 +1,24 @@
+{
+  "schema": "saea-owner-decision-supplement-v1",
+  "recorded_at_utc": "2026-10-02T00:34:23.791033+00:00",
+  "owner_statement_english": "Decision 216: agreed; decision item 217: agreed.",
+  "source": "Explicit human reply in the current ChatGPT conversation after the two concrete decision options; source remains addressable in that conversation.",
+  "decisions": {
+    "216": {
+      "status": "approved",
+      "scope": "Exactly one scoring-entry recovery of the existing complete CONTROL2 initial A/A400 from a clean checkout of the identical generation commit; unchanged whole-manifest official finalization; one exclusive successor scoring directory. Preserve all original failed evidence and immutable generation bytes. No generation, reseal, policy, roster, metric or scorer changes. Stop on another failure. Read only after complete-family qualification and root countersignature.",
+      "source_commit": "953f9b598adba1df7c424c755993713087428823"
+    },
+    "217": {
+      "status": "approved",
+      "scope": "Admit a uniform subscription proposal-budget profile for both L and B: equal bounded input and target output, same candidate and contact allocation, actual usage retained; an over-budget or unmetered proposal consumes its opportunity and is rejected without replacement. Do not claim a server-enforced output cap or equal realized compute. Exact provider/model version, enforceable isolated sessions, artifact-only access and contact registration remain required. Paid API spending stays zero; do not borrow other applications credentials or use the current chat as a blind proposer.",
+      "input_token_limit": 32768,
+      "output_token_acceptance_limit": 4096
+    }
+  },
+  "supersedes_pending_only": [
+    "Proposed decision216 in the 2026-10-01 score-entry failure report",
+    "Pending subscription proposer output-budget choice"
+  ],
+  "monitor_dispatch_authority": false
+}
