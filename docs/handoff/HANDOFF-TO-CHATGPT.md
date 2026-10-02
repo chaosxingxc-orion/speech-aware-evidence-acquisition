@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner220 twenty-row pilot launched: 2026-10-02T13:31:40.645930+00:00
+
+Root launched exactly8x20 complete-system trajectories through SAEA-Batch-Driver at13:26:23Z, first member at13:26:27Z. Frozen worker /home/chao/saea-worktrees/codex-system-text-pilot20-owner220-flight-v1 at4101a4925e604d48921bac7d8e995216282264de. All eight clean frozen checks and whole-family registration passed. First L-parent has actual generation contacts; current attempt states are pinned in the [launch receipt](../receipts/continuation/2026-10-02-system-text-pilot20-owner220-launch.json). Contacts are not completed rows; revalidate every member rather than using this snapshot.
+
+The sequential queue includes14.5GiB startup/10GiB running memory guards and no400-row continuation. The guard observed16.33GiB free at startup and about14.29GiB during the first member. Service telemetry is fresh/healthy, STOP absent. The pilot READ remains unsigned; no partial scientific feedback was read. After all eight qualify, root may read exploratory feasibility and engineering signals under220, with no stable-benefit or adoption claim. Keep blind proposal isolation and record cumulative exposure before later selection or tuning.
+
+Owner219 four-row engineering completed with4 native Solver deliveries and7/7 valid raw Reviewer handoffs; zero natural knowledge calls, no quality read. All three capacity checks pass891 tokenizer endpoints and132 request measurements with full output allowance. These fixes do not prove quality benefit. All400-row UPDATE2-RH1 work remains HELD; other carrier holds are unchanged.
+
 ## Owner220 small-pilot-first amendment: 2026-10-02T13:11:53.148335+00:00
 
 The human explicitly asks for10/20-row groups to resolve engineering losses and establish preliminary feasibility before medium-scale experiments. Root registers20 per each of the original eight members,160 total; all400-row UPDATE2-RH1 work stays HELD. No bulk queue is authorized by a favorable tiny-sample point estimate. The exact whole-family score/read gate, A/A, exposure accounting and formal benefit floor remain. See [owner scope](../receipts/owner/2026-10-02-decision220-small-pilot-first.json) and [pilot preparation](../readiness/2026-10-02-slurp-system-text-pilot20-owner220-v1/README.md).
@@ -511,7 +519,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T13:11:53.148335+00:00
+Last refreshed: 2026-10-02T13:31:40.645930+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
