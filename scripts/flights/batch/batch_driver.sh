@@ -21,6 +21,9 @@
 #   must equal the smoke identifiers, and campaign_plan must be absent.
 #   result_kind defaults to task-answer; artifact requires zero scoring jobs and
 #   verified finalized artifact bytes. smoke_result_kind defaults to result_kind.
+#   Optional process_start_gib and process_floor_gib opt one ordinary member into
+#   the shared owned-process memory supervisor; both are required, with no smoke
+#   or campaign_plan. Its exact experiment must contain one ready cell.
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
@@ -139,6 +142,7 @@ for ((i=0; i<N; i++)); do
   sexp=$(field $i smoke_experiment); scell=$(field $i smoke_cell); plan=$(field $i campaign_plan); run=$(field $i run_id)
   gatt=$(field $i gen_attempt_id); srun=$(field $i smoke_run_id); satt=$(field $i smoke_attempt_id)
   rows=$(field $i expected_rows); ceil=$(field $i ceiling_per_row); notool=$(field $i notool); owner=$(field $i owner)
+  process_start=$(field $i process_start_gib); process_floor=$(field $i process_floor_gib)
   [ "$notool" = "true" ] && nt=1 || nt=0
   result_kind=$(field $i result_kind); result_kind=${result_kind:-task-answer}
   smoke_result_kind=$(field $i smoke_result_kind); smoke_result_kind=${smoke_result_kind:-$result_kind}
@@ -156,6 +160,12 @@ for ((i=0; i<N; i++)); do
     { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "seal-only step $order declares a smoke; a seal-only completion flies nothing"
     { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "seal-only step $order declares a campaign_plan; it runs core.flight.cli seal-only on --cell"
     [ "$(resume_gate_declared "$REPO" "$exp" "$cell")" = "yes" ] || stop "seal-only step $order: $exp:$cell declares no resume_from"
+  fi
+  if [ -n "$process_start" ] || [ -n "$process_floor" ]; then
+    [ -n "$process_start" ] && [ -n "$process_floor" ] || stop "step $order needs both process memory floors"
+    case "$kind" in cell|resume) ;; *) stop "step $order process guard requires an ordinary campaign member" ;; esac
+    { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "step $order process guard refuses a multi-member campaign_plan"
+    { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "step $order process guard cannot leave a separate smoke unsupervised"
   fi
   prelaunch $order
   if [ -n "$sexp" ] && [ "$sexp" != "None" ]; then
@@ -178,10 +188,18 @@ for ((i=0; i<N; i++)); do
     $PY -B -m speech_aware_evidence_acquisition.core.flight.cli seal-only \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --experiment "$exp" --cell "$cell" > "$LOGF" 2>&1
-  else
+  elif [ -n "$process_start" ]; then
+    GUARD_DIR="$DATA/coordination/process-guard/$(basename "$LOGF" .log)"
+    $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard \
+      --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
+      --experiment "$exp" --owner "$owner" --expected-session-id "$SESSION" \
+      --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
+  elif [ -n "$plan" ] && [ "$plan" != "None" ]; then
     $PY -B -m speech_aware_evidence_acquisition.core.flight.cli campaign \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --campaign-plan "$REPO/$plan" --owner "$owner" --expected-session-id "$SESSION" > "$LOGF" 2>&1
+  else
+    stop "single-member step $order requires declared process memory floors"
   fi
   rc=$?
   log "arm-exit" "{\"step\":$order,\"rc\":$rc}"

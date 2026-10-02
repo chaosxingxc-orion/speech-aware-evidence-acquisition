@@ -1,5 +1,17 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner-requested cache audit and release: 2026-10-02T11:14:58.404102+00:00, ChatGPT root
+
+The host-memory audit found no large residual experiment. About27GiB was Linux file cache within the29.5GiB WSL working set. One targeted read-only GGUF cache-release request reduced WSL residency to12.47GiB and raised Windows free memory from14.39 to31.18GiB. Service identity, GPU allocation, health and request count stayed unchanged; exact STOP/queue/lease/status/source-pin hashes are preserved. See [audit, operation and limits](../readiness/2026-10-02-owner-requested-idle-cache-release-v1.md).
+
+A prior global-sync diagnostic blocked before cache release; its owned PID310214 has termination signals pending and only15.4MiB RSS at11:13Z. Do not repeat global sync, flush caches periodically or restart the service. The eight-runtime retention defect is separate and still covered by the tested sequential supervisor. Owner218 remains pending; freeing cache grants no recovery/dispatch authority. No research output, quality feedback, model/tokenizer/scorer contact or held-carrier release occurred. This improvement has been reported; do not notify unchanged healthy idleness.
+
+## UPDATE2 process containment proof: 2026-10-02T11:03:39.341044+00:00, ChatGPT root
+
+The shared one-member memory supervisor and batch route pass194 related tests,94% scoped coverage, lint, shell syntax and engineering-base checks. The original CLI/controller/scorer remain unchanged. A synthetic process proof also catches surviving scoring descendants after leader exit. See [engineering evidence and limitations](../readiness/2026-10-02-flight-process-memory-guard-v1.md).
+
+The preserved v1 queue now has a separate proposed v2 adding14.5GiB startup/10GiB running thresholds. Missing or stale readings stop only the owned process group. This sampled guard is not a full-generation memory guarantee and grants no recovery. Owner218 remains pending; the actual queue, STOP, stale lease, OPENED zero-contact attempt and frozen046f6b337 worker are unchanged. At11:01Z Windows free14.195GiB; service healthy idle; seven other attempts absent. No model/tokenizer/scorer contact, partial feedback or new scientific result. Complete-family READ and other carrier holds remain unchanged.
+
 ## Update2 startup resource stop: 2026-10-02T10:31:10.057547+00:00, ChatGPT root
 
 Driver epoch 2026-10-02T10:24:34Z and campaign10:24:39Z reached Windows free memory8.33GiB, then7.77GiB, below the10GiB floor. Root terminated only its revalidated campaign process305642; the driver recorded STOP at10:27:53Z. Memory recovered13.59GiB. See [exact operational evidence](../receipts/continuation/2026-10-02-system-text-update2-startup-memory-stop.json).

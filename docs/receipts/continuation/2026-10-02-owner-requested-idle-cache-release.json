@@ -1,0 +1,84 @@
+{
+  "schema": "saea-owner-requested-idle-cache-release-summary-v1",
+  "recorded_at": "2026-10-02T11:14:58.404102+00:00",
+  "authority": "Owner requested inspecting possible residual memory use and freeing unnecessary memory in this conversation; this is not approval of recovery decision 218.",
+  "finding": "No large residual experiment process. Linux file page cache, including the mapped GGUF, accounted for most WSL physical residency.",
+  "before": {
+    "windows_total_gib": 63.435,
+    "windows_free_gib": 14.393,
+    "wsl_windows_working_set_gib": 29.278,
+    "linux_cached_gib": 27.016342163085938,
+    "largest_task": "Resident llama-server, approximately 2.49 GiB RSS"
+  },
+  "after": {
+    "AtUtc": "2026-10-02T11:13:11.2662201Z",
+    "WindowsFreeGiB": 31.182,
+    "WslWorkingSetGiB": 12.467
+  },
+  "linux_after": {
+    "MemFree_gib": 28.70130157470703,
+    "MemAvailable_gib": 39.74271774291992,
+    "Cached_gib": 9.898601531982422,
+    "Dirty_gib": 0.000125885009765625,
+    "Writeback_gib": 0.0,
+    "AnonPages_gib": 2.249523162841797
+  },
+  "successful_operation": "One read-only POSIX_FADV_DONTNEED request for the mapped GGUF file, preserving file size/inode/mtime, service PID/start/argv, GPU session and exact STOP/queue/status/lease/control hashes.",
+  "failed_diagnostic": "Global sync blocked in super_lock before any drop_caches write. SIGTERM then SIGKILL were requested for this owned helper only. At 11:13Z it still awaited the kernel lock with about 15.4 MiB RSS. No repeat global sync or cache-drop invocation was started.",
+  "preservation": {
+    "at": "2026-10-02T11:13:11.103213+00:00",
+    "control_hashes_unchanged": true,
+    "server_identity_unchanged": true,
+    "blocked_diagnostic_helper": {
+      "Name": "python",
+      "State": "D (disk sleep)",
+      "VmRSS": "15744 kB",
+      "SigPnd": "0000000000000100",
+      "ShdPnd": "0000000000004000"
+    }
+  },
+  "limits": [
+    "Resident service stayed healthy/idle with the same GPU allocation and request count.",
+    "No persistent host setting, restart, task dispatch, attempt recovery or scientific data read.",
+    "This is a one-time idle diagnostic; never add cache flushing to routine monitoring.",
+    "The separate eight-runtime material-retention defect still requires sequential containment and exact owner 218 disposition."
+  ],
+  "sources": [
+    "https://docs.kernel.org/admin-guide/sysctl/vm.html#drop-caches",
+    "https://man7.org/linux/man-pages/man2/posix_fadvise.2.html"
+  ],
+  "evidence": {
+    "before.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/before.json",
+      "sha256": "7590805779b25934dae2eba3eb30f259def4db64d8596ddbc466d9aaebb9f45b"
+    },
+    "sync-cancellation.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/sync-cancellation.json",
+      "sha256": "d16e387db481d7e3d2da58a9b9cbec706062e79f13e94fac2f6554d8574aa7d4"
+    },
+    "sync-helper-final-disposition.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/sync-helper-final-disposition.json",
+      "sha256": "534a0e3fb6ab4f69af7eb922bec8480adbc70b115994323da95777b3cdd6a0fa"
+    },
+    "targeted-release-before.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/targeted-release-before.json",
+      "sha256": "bf9655e09fa33bdaf1fa599d690ffe54ac73bace4f4325c655ec57add74cb0b3"
+    },
+    "targeted-release-after.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/targeted-release-after.json",
+      "sha256": "9d462e3bfe00a70906fcf02df5e0374c836cfa3068bca075fc08c1934d8f449a"
+    },
+    "after-windows-first.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/after-windows-first.json",
+      "sha256": "eef7d97ef64bb1eef6ba43107dbb37ec26d6aa17efe07d567054a522bd379b8f"
+    },
+    "after-windows-final.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/after-windows-final.json",
+      "sha256": "bd7dfc65552336c7820b1732359c128ec4000c6a2688cf0e41f50c5013a0c218"
+    },
+    "final-custody-check.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-02-owner-requested-idle-cache-release-v1/final-custody-check.json",
+      "sha256": "a8fc53c11578fdadaffa86ba249b1de593456c17adc38036b208003905b4a91a"
+    }
+  }
+}

@@ -27,3 +27,7 @@ Before dispatch, root must publish the successor first-member preparation/config
 ## Why a new ruling is needed
 
 Decision 215 explicitly excludes retrying a failed attempt. Decision 216 covered only the earlier initial A/A scoring-entry incident; decision 217 covered subscription proposer admission. Neither authorizes this newly opened generation attempt's recovery. Offline diagnosis and preparation are authorized; dispatch remains held for this distinct ruling.
+
+## Tested shared process guard (offline only)
+
+The [shared memory supervisor](../2026-10-02-flight-process-memory-guard-v1.md) now passes 194 related tests with 94% scoped coverage. It routes one ready cell through the existing campaign CLI, rejects combined plans and stops only its own process group on a failed resource observation. The reviewable queue is now `proposed-sequential-queue-v2.json`; v1 is retained. V2 adds a 14.5 GiB startup threshold and the 10 GiB running floor without changing any member, row or contact budget. This is sampled operational containment, not proof of a full generation/scoring memory ceiling. It is not installed. Owner 218, exact successor registration, fresh frozen source and live admission remain pending.
