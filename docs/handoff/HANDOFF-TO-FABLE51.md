@@ -1,5 +1,21 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Current direction: fixed400 context/post-call optimization, 2026-10-02T15:33:24.536408+00:00
+
+[Owner224](../receipts/owner/2026-10-02-decision224-fixed400-context-postcall.json) explicitly directs reuse of the current prepared UPDATE2 400-input pool. Owner223 permits reviewed20/50/100/200/400 scaling;224 makes these nested prefixes of that same pool and supersedes prior disjoint-next-panel suggestions for optimization. The existing pilot is exactly its first20. Keep cumulative learning exposure, runtime gold exclusion and separate independent-confirmation claims. Do not rebuild data, move the next optimization panel to Fold B, or automatically repeat eight full400 groups. [Pinned plan and rails audit](../readiness/2026-10-02-slurp-fixed400-context-postcall-v1/README.md).
+
+Prioritize context organization, role authority, post-call validation/handoff and existing bounded Omni revision; freeze current knowledge assets for the next repair cycle. Rails already has Reviewer normalization, optional record-only phase criticism and a final delivery normalizer. Recorded criticism is not proof that the next role consumed it. Root pilot READ and L-only feedback export are complete; no benefit/adoption has been established. Combined root/B findings remain excluded from proposer inputs.
+
+All eight pilot members remain qualified20-row results,160 trajectories; final driver ended14:47:15Z. Completed bytes and official scores must not be replayed. No new proposer, generation, tokenizer or scorer contacts are created by this direction change. Next engineering work must explicitly admit repeated TRAIN optimization exposure and bridge qualified exploratory L feedback to the existing isolated proposer; do not disable formal disjointness globally. Prepare only changed candidates and necessary controls; a reduced repair comparison does not by itself establish L-versus-B learning superiority. Expected idle service is not an outage. Running floor8GiB/startup12.5GiB, closed routes and other-carrier holds remain.
+
+## Complete pilot read and owner222 learning feedback: 2026-10-02T15:16:23.620053+00:00
+
+Root read the exact eight-member20-row family after qualification/countersignature and exported L-only feedback for all20 inputs and4 L members. The [root report](../results/2026-10-02-slurp-pilot20-root-feedback.md) retains official metrics, A/A uncertainty, all13 strata and costs. The [scientific receipt](../receipts/continuation/2026-10-02-pilot20-scientific-read.json) pins external evidence. No rescoring or new generation occurred. Combined root/B findings must never reach a proposer.
+
+All289 Reviewer replies pass syntax, but17/339 findings have non-slot identifiers. Of289 Solver replies,27 fail strict task JSON and24 contain non-executed tool-call text. Only Planner has auto tool authority;289 contacts made zero actual lookups. These are learning targets, not causal quality claims. No-change L proposals do not demonstrate learning benefit. Owner222 allows small-panel feedback; do not reinstate the superseded no-learning clause or ask again.
+
+Next prepare unused third proposal slots with an exact owner222 binding, L/B isolation and a disjoint prospective20-row panel. No next proposal/GPU contact yet. Expected idle serving is not an outage. Floors8GiB running/12.5GiB startup and existing other-carrier/medium-scale holds remain.
+
 ## Owner222 learning amendment and completed pilot: 2026-10-02T14:51:24.222380+00:00
 
 The human explicitly permits the20-row pilot as learning feedback. [Owner222](../receipts/owner/2026-10-02-decision222-small-panel-learning.json) supersedes220's no-learning clause. Keep the complete-family gate, L/B isolation, all cases, cumulative exposure, disjoint prospective next panels and formal claim floors. Root-only combined analysis must never be sent to either proposer. A separate L-only projection uses the existing capsule and proposal interfaces; small-batch learning does not require a400-row effectiveness claim.

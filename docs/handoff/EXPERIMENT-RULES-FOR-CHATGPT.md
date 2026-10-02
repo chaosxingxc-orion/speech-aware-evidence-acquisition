@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Current scoped owner amendments (2026-10-02)
+
+The later explicit rulings supersede the conflicting historical clauses below only in their stated scope. Owner222 permits complete small-panel L-only learning feedback after the exact family READ; it supersedes A4's blanket ban on policy updates for that learning sequence, not formal efficacy floors. Owner223 permits reviewed20/50/100/200/400 growth. Owner224 keeps that growth inside the same already prepared UPDATE2 400-input optimization pool; repeated TRAIN feedback/proposal/selection exposure is retained and labeled optimization, not independent evaluation. Do not silently discard provenance or disable runtime knowledge/gold and formal DEV/test isolation. Keep the current knowledge assets fixed for the next context/post-call repair cycle. Owner221 sets the explicit running Windows floor to8GiB and the current startup threshold to12.5GiB. Historical frozen receipts are unchanged.
+
+See the exact [owner224 receipt](../receipts/owner/2026-10-02-decision224-fixed400-context-postcall.json), [owner222 receipt](../receipts/owner/2026-10-02-decision222-small-panel-learning.json), and [fixed-pool plan](../readiness/2026-10-02-slurp-fixed400-context-postcall-v1/README.md). No amendment authorizes automatic recovery, scorer replay, partial-family reading, a runtime answer library, or held-carrier release.
+
 Written 2026-09-27 under owner decision 166 ("state our experiment rules explicitly to him in the handoff
 document"). Binding for every cell either side registers from 2026-09-27. Where this file and the owner-decision
 registry (`docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`) disagree, the registry wins; the
