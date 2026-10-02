@@ -1,0 +1,56 @@
+{
+  "at_utc": "2026-10-02T10:36:58.595867+00:00",
+  "mode": "model-free single-member preflight",
+  "member": "B-candidate-2",
+  "worker_commit": "046f6b33784071e8e80197c0c46167c966ded99b",
+  "passed": true,
+  "peak_rss_kib": 2242436,
+  "peak_rss_gib": 2.1385536193847656,
+  "windows_min_free_gib": 14.396,
+  "windows_samples": [
+    {
+      "AtUtc": "2026-10-02T10:33:11.5181619Z",
+      "FreeGiB": 14.423
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:16.7137460Z",
+      "FreeGiB": 14.428
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:21.8214941Z",
+      "FreeGiB": 14.434
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:26.9653317Z",
+      "FreeGiB": 14.415
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:32.1076378Z",
+      "FreeGiB": 14.407
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:37.2235872Z",
+      "FreeGiB": 14.396
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:42.3627244Z",
+      "FreeGiB": 14.409
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:47.5025179Z",
+      "FreeGiB": 14.425
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:52.6380613Z",
+      "FreeGiB": 14.428
+    },
+    {
+      "AtUtc": "2026-10-02T10:33:57.7735663Z",
+      "FreeGiB": 14.419
+    }
+  ],
+  "task_contacts": 0,
+  "tokenizer_contacts": 0,
+  "official_score_jobs": 0,
+  "limits": "This establishes isolated preflight memory, not the full generation/scoring peak. Retain the 10 GiB operating floor and revalidate before every step; no runtime launch is authorized by this check."
+}

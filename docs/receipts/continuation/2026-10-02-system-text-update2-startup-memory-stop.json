@@ -1,0 +1,117 @@
+{
+  "argv": [
+    "/home/chao/.venvs/speechrl/bin/python",
+    "-B",
+    "-m",
+    "speech_aware_evidence_acquisition.core.flight.cli",
+    "campaign",
+    "--repo-root",
+    "/home/chao/saea-worktrees/codex-system-text-update2-flight-v2",
+    "--data-root",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+    "--runtime-root",
+    "/home/chao",
+    "--lock-path",
+    "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "--campaign-plan",
+    "/home/chao/saea-worktrees/codex-system-text-update2-flight-v2/configs/campaign/slurp-system-text-update2-v1.json",
+    "--owner",
+    "chatgpt-root-system-text-update2",
+    "--expected-session-id",
+    "serving-slurp-native-candidate-five-train-a-np4-v1",
+    ""
+  ],
+  "at_utc": "2026-10-02T10:27:53.284576+00:00",
+  "campaign_epoch": "2026-10-02T10:24:39Z",
+  "driver_STOP": "2026-10-02T10:27:53Z arm failed on step 1 (campaign rc 143, inspect rc 3); see /home/chao/batch-campaign-1-system-text-update2-20261002T102438Z.log\n",
+  "driver_epoch": "2026-10-02T10:24:34Z",
+  "frozen_preflights": "All eight passed independently; aggregate campaign startup subsequently exceeded host floor.",
+  "generation_contacts": 0,
+  "lease_preserved": true,
+  "members": [
+    {
+      "actual": {
+        "audio_seconds": 0.0,
+        "calls": 0
+      },
+      "member": "L-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+      "state": "OPENED"
+    },
+    {
+      "actual": null,
+      "member": "L-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1",
+      "state": "NOT_STARTED"
+    },
+    {
+      "actual": null,
+      "member": "L-candidate-1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1",
+      "state": "NOT_STARTED"
+    },
+    {
+      "actual": null,
+      "member": "L-candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1",
+      "state": "NOT_STARTED"
+    },
+    {
+      "actual": null,
+      "member": "B-parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1",
+      "state": "NOT_STARTED"
+    },
+    {
+      "actual": null,
+      "member": "B-parent-aa",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1",
+      "state": "NOT_STARTED"
+    },
+    {
+      "actual": null,
+      "member": "B-candidate-1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1",
+      "state": "NOT_STARTED"
+    },
+    {
+      "actual": null,
+      "member": "B-candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-2-V1",
+      "state": "NOT_STARTED"
+    }
+  ],
+  "native_fit_attempts": 0,
+  "next_step": "Investigate aggregate retained material. Prepare the original eight members as separately owned sequential processes using the same shared campaign runner; no scientific, candidate, roster, budget or scoring changes. First attempt OPENED with zero contacts still requires an explicit recovery disposition; no restart or STOP reconciliation now.",
+  "observed_after_stop_at_utc": "2026-10-02T10:31:10.057547+00:00",
+  "official_score_jobs": 0,
+  "pending_owner_decision": 218,
+  "pid": 305642,
+  "process_memory_lines": [
+    "VmSize:\t11722616 kB",
+    "VmHWM:\t11586408 kB",
+    "VmRSS:\t10226212 kB",
+    "RssAnon:\t10206628 kB"
+  ],
+  "proposed_disposition": "docs/readiness/2026-10-02-slurp-system-text-update2-memory-recovery1/README.md",
+  "reason": "Stop only the owned UPDATE2 campaign startup process after observed Windows free memory below the 10 GiB floor; preserve all bytes and let the driver record the failure. No automatic restart.",
+  "recovery_authorized": false,
+  "root_read_signed": false,
+  "run_file_inventory": [
+    {
+      "bytes": 3058,
+      "name": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1-attempt-slurp-native-stage3-system-text-update2-l-parent-generation-v1.session-attach-receipt.json"
+    }
+  ],
+  "schema": "saea-system-text-update2-startup-resource-stop-v1",
+  "single_member_model_free_peak_rss_gib": 2.1385536193847656,
+  "single_member_windows_min_free_gib": 14.396,
+  "task_outputs_read": false,
+  "windows_free_after_stop_gib": 13.59,
+  "windows_memory": {
+    "AtUtc": "2026-10-02T10:27:51.2456629Z",
+    "DriverState": "Running",
+    "FreeGiB": 7.77
+  },
+  "worker_commit": "046f6b33784071e8e80197c0c46167c966ded99b"
+}

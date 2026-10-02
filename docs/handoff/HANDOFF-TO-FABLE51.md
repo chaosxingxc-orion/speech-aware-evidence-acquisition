@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update2 startup resource stop: 2026-10-02T10:31:10.057547+00:00, ChatGPT root
+
+Driver epoch 2026-10-02T10:24:34Z and campaign10:24:39Z reached Windows free memory8.33GiB, then7.77GiB, below the10GiB floor. Root terminated only its revalidated campaign process305642; the driver recorded STOP at10:27:53Z. Memory recovered13.59GiB. See [exact operational evidence](../receipts/continuation/2026-10-02-system-text-update2-startup-memory-stop.json).
+
+L-parent is OPENED with zero calls/audio; seven other generation attempts and all native FIT attempts did not start. No task output, official score or quality feedback exists/read. The OPENED attempt, stale lease, STOP, logs, eight supplies and frozen046f6b337 remain preserved. The earlier eight independent frozen preflights passed but did not establish aggregate startup memory safety. No automatic recovery or control reconciliation is authorized.
+
+The shared entry retains eight materialized runtimes. A single-member model-free proof passes with2.14GiB peak RSS and14.396GiB minimum sampled Windows free memory. Root prepared [the exact sequential process queue and proposed owner218 recovery](../readiness/2026-10-02-slurp-system-text-update2-memory-recovery1/README.md). Approval remains pending; neither the queue nor recovery was installed. This is an operational containment proposal, not a scientific or budget change. No replacement proposal or exclusion. UPDATE2-READ remains unsigned; all eight original members and exact complete-family gate remain required. Other holds remain unchanged.
+
 ## Update2 precontact preparation correction: 2026-10-02T10:11:28.508721+00:00, ChatGPT root
 
 A model-free frozen preflight refused L-parent before any attempt/contact: allowed_execution_stages was changed after supply preparation. Root used the existing tested repin utility to rebuild eight new own supply versions with exact output equality. All original supplies, frozen e56ff4019 and failed check remain immutable. No generation/scorer/proposal retry occurred. See [correction, successor registration and pending final checks](../readiness/2026-10-02-slurp-system-text-update2-flight-v2/README.md).
