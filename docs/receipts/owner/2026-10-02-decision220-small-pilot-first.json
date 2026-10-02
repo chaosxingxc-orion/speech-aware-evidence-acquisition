@@ -1,0 +1,26 @@
+{
+  "automatic_failure_recovery": false,
+  "budget": {
+    "generation_contacts_cap": 2080,
+    "members": 8,
+    "native_tokenizer_contacts_cap": 8320,
+    "new_construction_calls": 0,
+    "new_proposals": 0,
+    "official_scoring_jobs": 8,
+    "rows_per_member": 20,
+    "system_trajectories": 160
+  },
+  "decision_id": 220,
+  "implementation": "Keep the approved four-row Reviewer contract proof. Replace the next unlaunched400-row dispatch with an eight-member20-row exploratory pilot. Retain original two L and two B proposals, branch parent/A/A pairs and uniform owner219 correction. Read all160 complete trajectories only after the complete-family gate. Permit descriptive quality diagnostics and an expansion decision; do not claim reliable benefit, harm, no-harm or learned-policy adoption from20 rows. No automatic full-size dispatch.",
+  "isolation": "Keep blind proposer blind. No pilot feedback goes to a proposer in this registration. If later candidate or protocol changes use pilot feedback, append all pilot exposures and exclude those utterances from subsequent independent validation. Never treat historical or selected cohorts as unseen validation.",
+  "measurement_amendment": "Narrow prospective exception to EXPERIMENT-RULES A4: this exact20-row TRAIN pilot may be officially scored and read for provisional feasibility/engineering diagnosis. Formal benefit floors and the four-row no-quality rule remain unchanged. This pilot is neither the registered400-row update2 nor a substitute for its evidence.",
+  "monitor_dispatch_authority": false,
+  "owner_statements_english": [
+    "You may first run small experiments to ensure benefits are attainable and stable, then expand gradually; for example use10 or20 samples per group before a full set.",
+    "Yes, mainly because there have been many engineering losses. First establish the effectiveness of improvements, then conduct medium-scale experiments."
+  ],
+  "recorded_at_utc": "2026-10-02T13:06:36.120375+00:00",
+  "schema": "saea-owner-decision-supplement-v1",
+  "source": "Two direct human instructions in the current root conversation on2026-10-02. Original messages remain addressable in this conversation.",
+  "status": "approved"
+}

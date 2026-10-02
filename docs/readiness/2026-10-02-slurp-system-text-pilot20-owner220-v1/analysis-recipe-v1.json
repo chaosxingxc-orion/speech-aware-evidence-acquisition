@@ -1,0 +1,58 @@
+{
+  "authority": [
+    219,
+    220
+  ],
+  "expected_members": {
+    "B-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1",
+    "B-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1",
+    "B-parent": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1",
+    "B-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1",
+    "L-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1",
+    "L-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1",
+    "L-parent": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1",
+    "L-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1"
+  },
+  "family_id": "pilot20-owner220",
+  "next_step": "Root evaluates engineering reliability, repair/damage patterns, intent, A/A variation and uncertainty. No automatic dispatch or pass threshold; discuss whether to diagnose, stop, repeat on a preregistered disjoint small panel or progress to medium size. Any data-dependent selection exposes these20 inputs and must be recorded; do not count them as independent confirmation.",
+  "predeclared_limits": "All20 included; no selection of only tool calls or past errors. No causal claim from trajectory associations. No policy or prompt update or proposal input in this pilot. Keep formal200/400-row evidence gates unchanged.",
+  "primary": "Descriptive official pooled SLU-F1; report paired changes, uncertainty and each branch own A/A. No superiority or stable-benefit claim.",
+  "read_gate": "All eight exact members independently FINALIZED, seals verified, all20 rows, one successful official score each, no failed job, then exact root READ countersignature. No partial-family read.",
+  "recipe_id": "slurp-system-text-pilot20-owner220-v1",
+  "required_rows_per_member": 20,
+  "run_ids": {
+    "read": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "schema": "saea-system-text-analysis-recipe-v1",
+  "secondary": [
+    "intent",
+    "reliable completion",
+    "actual role and tool costs",
+    "valid Reviewer handoff",
+    "legal Planner decisions",
+    "correct repairs and damage",
+    "natural-mixture and equal-stratum descriptions with support counts"
+  ]
+}

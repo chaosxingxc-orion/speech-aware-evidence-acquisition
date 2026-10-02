@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-10-02T13:10:01.310550+00:00",
+  "schema": "saea-capacity-acceptance-v1",
+  "owner": 219,
+  "frozen_commit": "37236d36b",
+  "configurations": [
+    {
+      "request_semantics": "parent",
+      "receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-rh1-parent-capacity-v1/request-fit-v1.json",
+      "sha256": "7c8230128ccc0931171ac095e6db3aa3e9650eba4c93196954edaf0c92899873",
+      "tokenizer_contacts": 297,
+      "generation_contacts": 0,
+      "measured_requests": 44,
+      "all_fit": true,
+      "max_required_tokens": 17047,
+      "min_margin_after_reserve": 5481
+    },
+    {
+      "request_semantics": "candidate-1",
+      "receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-rh1-candidate-1-capacity-v1/request-fit-v1.json",
+      "sha256": "5007fde11bcdeb60e8486dbb607773cb4b91c2f7f74a53c2f284e104d0fd369f",
+      "tokenizer_contacts": 297,
+      "generation_contacts": 0,
+      "measured_requests": 44,
+      "all_fit": true,
+      "max_required_tokens": 17047,
+      "min_margin_after_reserve": 5481
+    },
+    {
+      "request_semantics": "candidate-2",
+      "receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-update2-rh1-candidate-2-capacity-v1/request-fit-v1.json",
+      "sha256": "504bb6c4dd05396451209eb1926f2466c11d0bb23009572fde2eea58c02db729",
+      "tokenizer_contacts": 297,
+      "generation_contacts": 0,
+      "measured_requests": 44,
+      "all_fit": true,
+      "max_required_tokens": 17047,
+      "min_margin_after_reserve": 5481
+    }
+  ],
+  "generation_contacts": 0,
+  "scope": "Synthetic reachable graph stress over measured longest legal knowledge and completed role responses; not exhaustive arbitrary future text. Exact FIT remains required per real request."
+}

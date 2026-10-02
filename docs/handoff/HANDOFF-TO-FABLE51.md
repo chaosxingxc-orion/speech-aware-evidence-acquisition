@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner220 small-pilot-first amendment: 2026-10-02T13:11:53.148335+00:00
+
+The human explicitly asks for10/20-row groups to resolve engineering losses and establish preliminary feasibility before medium-scale experiments. Root registers20 per each of the original eight members,160 total; all400-row UPDATE2-RH1 work stays HELD. No bulk queue is authorized by a favorable tiny-sample point estimate. The exact whole-family score/read gate, A/A, exposure accounting and formal benefit floor remain. See [owner scope](../receipts/owner/2026-10-02-decision220-small-pilot-first.json) and [pilot preparation](../readiness/2026-10-02-slurp-system-text-pilot20-owner220-v1/README.md).
+
+All three owner219 capacity checks passed891 tokenizer endpoints and zero generation calls. Four-row engineering completed13:04:14Z after25 generation calls,7/7 valid Reviewer handoffs, legal Planner controls and4 Solver deliveries; no official score or quality read. Its frozen6c9b5829b remains immutable. Only the abandoned218 controls were archived/reconciled under explicit authority. Pilot preparation and exact admission remain pending; monitoring never dispatches or reads task quality.
+
 ## Owner219 capacity launch and engineering registration: 2026-10-02T12:51:31.019284+00:00
 
 Windows task SAEA-SystemText-ReviewerContract-Capacity is dispatched on frozen /home/chao/saea-worktrees/codex-system-text-review-contract-capacity-v1 at37236d36b. All three frozen model-free checks passed; actual capacity completion remains pending. Only the exact abandoned218 lease was archived/removed under219; original STOP and queue remain preserved. Four-row Reviewer contract engineering is registered for52 model/208 FIT contacts, not launched. New UPDATE2-RH1 eight-member3200-row family remains HELD until real engineering/FIT acceptance, exact family registration and admission. No new proposals, construction, scientific feedback or bulk generation. See docs/readiness/2026-10-02-slurp-review-contract-engineering-v1/README.md.

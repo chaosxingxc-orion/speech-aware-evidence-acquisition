@@ -1,0 +1,99 @@
+{
+  "schema": "saea-reviewer-contract-engineering-acceptance-v1",
+  "at_utc": "2026-10-02T13:10:01.269798+00:00",
+  "owner": 219,
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1",
+  "source_commit": "6c9b5829b777bfc51985a1c9e5dc1c2b6d8159c7",
+  "rows": 4,
+  "generation_contacts": 25,
+  "reviewer_responses": [
+    {
+      "request_id": "flight-0011",
+      "response_sha256": "b8dbcdb8fa6912acfc228e74b5f434d044954f2fae409944438e884f8a7466a7",
+      "raw_sha256": "36d27cb75f8cb9a760c91d705bda5248356f05d2f7a0cdf45c53229652006939",
+      "status": "valid",
+      "findings": 4,
+      "checked": 8,
+      "starts_with_fence": false
+    },
+    {
+      "request_id": "flight-0020",
+      "response_sha256": "b19ebfca254e9ee2f4c859a73a484827c428122c5cc18166c3cf94bbc6040341",
+      "raw_sha256": "36d27cb75f8cb9a760c91d705bda5248356f05d2f7a0cdf45c53229652006939",
+      "status": "valid",
+      "findings": 4,
+      "checked": 8,
+      "starts_with_fence": false
+    },
+    {
+      "request_id": "flight-0007",
+      "response_sha256": "e06de82810f11197d58b5a7cfeddb686bd00489ef9b036180c9c59171fc49dba",
+      "raw_sha256": "5e410b5fbdfdee9a80e3581ad72ff3ae7e25b07898d08bbe979787baa1df4d3b",
+      "status": "valid",
+      "findings": 1,
+      "checked": 2,
+      "starts_with_fence": false
+    },
+    {
+      "request_id": "flight-0009",
+      "response_sha256": "3c87047dbc422a0b7799be42eb038b7ba181371c018d905c79fba063dbcba8c8",
+      "raw_sha256": "c76587b29526b93a6374944e1d34b12a196ad30b1713353479663459f1d3e15b",
+      "status": "valid",
+      "findings": 1,
+      "checked": 4,
+      "starts_with_fence": false
+    },
+    {
+      "request_id": "flight-0016",
+      "response_sha256": "516760c1011d523d238087ec690c8bd6149a662b303e3ecfcfafe145a280f472",
+      "raw_sha256": "43beaf0c27b75414919354b89733f80c5d8a3c5fc5923c1bcec6b8dffa713f98",
+      "status": "valid",
+      "findings": 1,
+      "checked": 4,
+      "starts_with_fence": false
+    },
+    {
+      "request_id": "flight-0012",
+      "response_sha256": "6aba36769e2aa0cdb89c74893d9e7750cd3b80fde0c63b066e60e7fddb3d7f7b",
+      "raw_sha256": "fc21e22489c6ad1874997064b66b5023d4f23cbbf4fa74b0e9a417360ca1b4ec",
+      "status": "valid",
+      "findings": 4,
+      "checked": 8,
+      "starts_with_fence": false
+    },
+    {
+      "request_id": "flight-0023",
+      "response_sha256": "bc09fd40f11f333754b0c6275c196e20d20dad4c8ee8f8e9541b1c387815ab31",
+      "raw_sha256": "ffb642b74dd666306f29e82fae840cab3f324b6c4abb8aa03d8a39c78e94b576",
+      "status": "valid",
+      "findings": 4,
+      "checked": 8,
+      "starts_with_fence": false
+    }
+  ],
+  "planner_actions": {
+    "REVISE": 6,
+    "ACCEPT": 1
+  },
+  "actual_tool_calls": 0,
+  "acceptance": "PASS: all raw Reviewer responses normalize valid without repair, Planner actions legal, four complete deliveries retain native Solver custody.",
+  "limitations": "No task quality read, official score, benefit judgment or policy update. Zero natural tool uptake in four rows. Separate synthetic graph proofs establish refusal, empty/nonempty lookup and terminal delivery reachability; capacity is measured separately. Worker OPENED and one prepared score specification are intentional, not official scoring.",
+  "artifacts": [
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-review-contract-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1.outputs.jsonl",
+      "sha256": "f23fd5e499391dfda384b3fc253add564366596c1277af92203a05517050c5ac"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-review-contract-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1.trace.jsonl",
+      "sha256": "96407bd14cd4be7216bd0c4813e00d75d7106b9822a300ac1949a0cc28bfe03c"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-review-contract-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1.phases.json",
+      "sha256": "95c648ea3a2e0dadf2cb76697a888ef18ec7d5b23e0804470907ae8630e2d849"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-review-contract-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-REVIEW-CONTRACT-SMOKE-4-V1.run-manifest.json",
+      "sha256": "0d2956c15127662646e0c294c84fb9bd22b1e19ceff53a629551bf005aa76c27"
+    }
+  ]
+}

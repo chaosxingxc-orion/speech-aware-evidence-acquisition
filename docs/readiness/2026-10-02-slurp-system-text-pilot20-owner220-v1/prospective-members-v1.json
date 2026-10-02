@@ -1,0 +1,96 @@
+{
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-l-parent-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-PARENT-V1",
+      "member": "L-parent",
+      "original_bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-l-parent-v1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-PARENT-AA-V1",
+      "member": "L-parent-aa",
+      "original_bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-PARENT-AA-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-l-parent-aa-v1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1",
+      "bundle_id": "767f9f41d936b6d65b65afea824db26651e317e0c54453b76bba82ca971a78c6",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-CANDIDATE-1-V1",
+      "member": "L-candidate-1",
+      "original_bundle_id": "2d18e6e9a4a5b236bb6da35d90e95078e65be6a1ee3a45187396f1ecbc94daa5",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-1-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-l-candidate-1-v1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1",
+      "bundle_id": "89005f93af708f05249e9addf803875009639934dff586805b12ba31e7ec8ec8",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-CANDIDATE-2-V1",
+      "member": "L-candidate-2",
+      "original_bundle_id": "fa7e7b9e46db4d43ab246b5761576e4e3046854b1168c3fbaedca58b5794dfea",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-L-CANDIDATE-2-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-l-candidate-2-v1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-b-parent-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-B-PARENT-V1",
+      "member": "B-parent",
+      "original_bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-b-parent-v1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-B-PARENT-AA-V1",
+      "member": "B-parent-aa",
+      "original_bundle_id": "6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-PARENT-AA-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-b-parent-aa-v1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1",
+      "bundle_id": "37eea777ae1ef99549ed5df1b584ac168b32c00064e5b4b5879c39c502995f10",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-B-CANDIDATE-1-V1",
+      "member": "B-candidate-1",
+      "original_bundle_id": "9652aa381a37280d5e5231e2875f89a95bf9c7587e1cd997dce924b9abe730b6",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-1-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-b-candidate-1-v1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1",
+      "bundle_id": "4550f67593474d5e7edd219af0334dd3c8168ff9c91e70faa61e4a7e8709e4ed",
+      "experiment": "slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-v1",
+      "held400_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-B-CANDIDATE-2-V1",
+      "member": "B-candidate-2",
+      "original_bundle_id": "ef50b59dd95fc48238e62115e211fe3890c5e9e50c05b36002959db7cdba637e",
+      "original_run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-B-CANDIDATE-2-V1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1",
+      "source_experiment": "slurp-native-stage3-system-text-update2-rh1-b-candidate-2-v1"
+    }
+  ],
+  "roster": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-v1.json",
+  "rows_per_member": 20,
+  "status": "HELD",
+  "trajectory_cap": 160
+}
