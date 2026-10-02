@@ -1,0 +1,65 @@
+{
+  "checks": [
+    "registered stable-hash selection reproduced",
+    "all source, selection and runtime-view file hashes verified",
+    "exact ordered 400-row membership and split identity verified by shared roster reader",
+    "four cohorts mutually disjoint by sample identity",
+    "metadata-only item whitelist; no stratum, label, transcript, task output or score",
+    "original roles and bytes unchanged; no new contact/read authority",
+    "all four exact TRAIN cohorts have 400 distinct utterances and zero pairwise utterance overlap"
+  ],
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "created_at_utc": "2026-10-02T07:03:01.727768+00:00",
+  "outputs": [
+    {
+      "count": 400,
+      "roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-update-1-400-analysis-v1.json",
+        "sha256": "105e4cc113d510de4ac790d8571545c59f7d7b0dd29031ea1dede7a0f621dfad"
+      },
+      "split_identity_hash": "b6aff98ec3674ac42fd0dce87f8635036bca6e52a23d84ee331f6a0c886cfd83",
+      "stage": "update-1"
+    },
+    {
+      "count": 400,
+      "roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-update-2-400-analysis-v1.json",
+        "sha256": "f60f2f2d39c6867d4b09a13892880e6f88331dba4c98f9a336f31109606fa542"
+      },
+      "split_identity_hash": "643e845970aeac0a5ab6093b52fc6577b328a4a0aeef3a7c1056ee64a8980e04",
+      "stage": "update-2"
+    },
+    {
+      "count": 400,
+      "roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-update-3-400-analysis-v1.json",
+        "sha256": "8a42e217a550618e97110a33457dfad38900193c912628670ef9cfd714f27631"
+      },
+      "split_identity_hash": "d93537b48e837dd872695b3ba93f21047f40f008b07fbdfb7c1e6735c21a7d0a",
+      "stage": "update-3"
+    },
+    {
+      "count": 400,
+      "roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-selection-400-analysis-v1.json",
+        "sha256": "bd0a62f9163b07e898983382b8802f3ce6d4bf367ce5b133746feba90bcfcf44"
+      },
+      "split_identity_hash": "f5b714cc4b0ffc351d67ad96025a2faac19f69c29f5b4924612f5ed139fafc60",
+      "stage": "selection"
+    }
+  ],
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v3-owner217.json",
+    "sha256": "af67e4574a0125d45abf71425dc35e34813719de3c04c6ac3cb3b8089b905201"
+  },
+  "remaining_gates": "Each actual family needs complete finalization, verified seals, unique official scores, exact root READ and current cumulative-source checks before feedback. No current family quality has been read.",
+  "runtime_views": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/runtime-views-v1.json",
+    "sha256": "e2638088e7cf8ef334a8bf76fcb354752a3484ead01e64bf2e2f95224dfe7479"
+  },
+  "schema": "saea-system-text-analysis-roster-joins-v1"
+}

@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Analysis roster joins: 2026-10-02T07:04:38.345074+00:00, ChatGPT root
+
+The four exact TRAIN400 update/selection cohorts now have analysis-only joins for the shared reward-link reader. Stable-hash selection, original source/runtime pins, ordered split identities and zero pairwise utterance overlap all verify. Items contain only identity, duration and headset metadata. Original rosters/roles, frozen recipe and model-facing inputs are unchanged. See [bindings and remaining gates](../readiness/2026-10-02-system-text-analysis-roster-joins-v1.md).
+
+This closes a concrete post-score input gap without task/quality reads or model/tokenizer/scorer contacts. Construction role denotes the owner214 optimization exposure only; no runtime targets or construction contact is authorized. All five current members still require complete finalization/scoring and the exact root READ before feedback. Selection must not feed further proposals; B remains blind.
+
+At approximately07:04Z the first three members were FINALIZED with400 rows and one successful score each, zero failures; B-parent-AA was OPENED with2110 contacts and B-candidate-2 had not started. Frozen2f07dd3d6 process live, STOP absent, most recent Windows free10.75GiB. Contacts are not rows. Further supply preparation waits for headroom. No queue mutation or held-carrier release occurred.
+
 ## Frozen recipe reader compatibility: 2026-10-02T06:52:02.500899+00:00, ChatGPT root
 
 A real-registration test reproduced the update1 recipe spelling mismatch: frozen stage/members versus reader family_id/expected_members. A shared resolver now verifies the embedded immutable registration and rejects conflicting aliases without rewriting recipe bytes. All248 related tests pass, including15 new cases; combined scoped coverage is96%. See [defect, proof and remaining gates](../readiness/2026-10-02-system-text-recipe-identity-v1.md).

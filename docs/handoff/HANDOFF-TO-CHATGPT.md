@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Analysis roster joins: 2026-10-02T07:04:38.345074+00:00, ChatGPT root
+
+The four exact TRAIN400 update/selection cohorts now have analysis-only joins for the shared reward-link reader. Stable-hash selection, original source/runtime pins, ordered split identities and zero pairwise utterance overlap all verify. Items contain only identity, duration and headset metadata. Original rosters/roles, frozen recipe and model-facing inputs are unchanged. See [bindings and remaining gates](../readiness/2026-10-02-system-text-analysis-roster-joins-v1.md).
+
+This closes a concrete post-score input gap without task/quality reads or model/tokenizer/scorer contacts. Construction role denotes the owner214 optimization exposure only; no runtime targets or construction contact is authorized. All five current members still require complete finalization/scoring and the exact root READ before feedback. Selection must not feed further proposals; B remains blind.
+
+At approximately07:04Z the first three members were FINALIZED with400 rows and one successful score each, zero failures; B-parent-AA was OPENED with2110 contacts and B-candidate-2 had not started. Frozen2f07dd3d6 process live, STOP absent, most recent Windows free10.75GiB. Contacts are not rows. Further supply preparation waits for headroom. No queue mutation or held-carrier release occurred.
+
 ## Frozen recipe reader compatibility: 2026-10-02T06:52:02.500899+00:00, ChatGPT root
 
 A real-registration test reproduced the update1 recipe spelling mismatch: frozen stage/members versus reader family_id/expected_members. A shared resolver now verifies the embedded immutable registration and rejects conflicting aliases without rewriting recipe bytes. All248 related tests pass, including15 new cases; combined scoped coverage is96%. See [defect, proof and remaining gates](../readiness/2026-10-02-system-text-recipe-identity-v1.md).
@@ -401,7 +409,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T06:52:02.500899+00:00
+Last refreshed: 2026-10-02T07:04:38.345074+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
