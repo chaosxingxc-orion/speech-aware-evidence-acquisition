@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Fixed400 context proposal round complete: 2026-10-02T16:33:56.281090+00:00
+
+The four original third proposal slots finished2026-10-02T16:29:59.879058+00:00 on frozen44ca35190, six registered contacts, no transport failure, complete usage accounting. L-3-1 and L-3-2 are no-change; neither inspected an indexed trajectory, relying on aggregate/overview evidence. B-3-1 proposes Planner-only routing clarification and B-3-2 Solver-only evidence/revision text. Neither is activated or scientifically validated. [Completion and source custody](../receipts/continuation/2026-10-02-fixed400-context-proposer-complete.json).
+
+Preserve the spent no-change allocations; do not replace them with extra generation. Next compile the two legal changed candidates and necessary controls on the existing first20/current400 assets, with fresh actual capacity/engineering and exact family registration before GPU. No dataset/knowledge rebuild or automatic8x400. The cohort binder currently requires an exact-size agreement artifact: add a scoped proof for using the already frozen full400 agreement/query source on a registered prefix, rather than recomputing votes. Formal DEV/test rules stay strict. Later learning needs concrete own-branch trajectory evidence presented within budget, because aggregate-only consumption has not produced an update; root combined/B observations are not L or B input. Expected idle GPU is not an outage; no owner question is pending.
+
+## Fixed400 context proposals running: 2026-10-02T16:29:22.368027+00:00
+
+Root launched Windows task SAEA-System-Text-Proposer-Round3-Owner224 at2026-10-02T16:27:09.899355+00:00, verified live PID342904 and actual registered contacts. Frozen worker/home/chao/saea-worktrees/codex-system-text-proposer-round3-owner224-v1 at44ca3519039b3133ba134c080652727981285d47 passed exact four-member preflight. [Launch custody](../receipts/continuation/2026-10-02-fixed400-context-proposer-launch.json). Engineering and records are serially integrated into main44ca35190.
+
+Only the original four unused third proposal allocations are running, same pinned GPT-6-Astra subscription,32768 cumulative input/4096 metered-output acceptance/4 contacts per slot. Context text only; L gets all own pilot cases and retained L history, B no feedback/history. No new data, knowledge construction, GPU generation or scorer contact. Current400 and its nested prefixes remain fixed; do not replay old8x400. After responses, compile legal candidates and register minimal necessary controls/comparisons. Model-facing changes still require actual capacity/engineering before GPU. No automatic proposer failure recovery, replacement or held-carrier release. Monitor operational receipts only; expected idle GPU during proposal preparation is not an outage.
+
 ## Fixed400 proposal bridge verified: 2026-10-02T16:23:46.350372+00:00
 
 Owner224's current400 pool and frozen knowledge are now enforced in the existing exporter/compiler/proposer paths. A typed owner222 pilot transition re-verifies the exact complete family and exports all20 L cases only. Formal400/DEV/test gates stay unchanged. Only role/context text is editable; an out-of-scope proposal is invalid and consumes its original allocation. No global provenance reset or new data preparation occurred.
@@ -575,7 +587,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T16:23:46.350372+00:00
+Last refreshed: 2026-10-02T16:33:56.281090+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

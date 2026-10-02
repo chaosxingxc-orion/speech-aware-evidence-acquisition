@@ -1,0 +1,42 @@
+{
+  "schema": "saea-system-text-proposer-launch-v1",
+  "recorded_at_utc": "2026-10-02T16:29:22.368027+00:00",
+  "status": "RUNNING",
+  "windows_task": "SAEA-System-Text-Proposer-Round3-Owner224",
+  "started": {
+    "at_utc": "2026-10-02T16:27:09.899355+00:00",
+    "pid": 342904,
+    "registration_sha256": "d5f37106162e8330a8420bc6493110db54980d6c7786ab9e62ab3c69ef403fa6",
+    "retry_permitted": false
+  },
+  "source_root": "/home/chao/saea-worktrees/codex-system-text-proposer-round3-owner224-v1",
+  "source_commit": "44ca3519039b3133ba134c080652727981285d47",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round3-owner224-v1/registration.json",
+    "sha256": "d5f37106162e8330a8420bc6493110db54980d6c7786ab9e62ab3c69ef403fa6"
+  },
+  "started_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-round3-owner224-v1/started.json",
+    "sha256": "1f73a58c1cee12e36f7c3ff447f8193008e4b7a8dba310e8564c0fcfafacb357"
+  },
+  "live_process_verified": true,
+  "contact_receipts_observed": [
+    "contacts/B-3-1/001.json",
+    "contacts/B-3-1/002.json",
+    "contacts/B-3-2/001.json",
+    "contacts/B-3-2/002.json",
+    "contacts/L-3-1/001.json",
+    "contacts/L-3-2/001.json"
+  ],
+  "scope": "Original four unused round3 proposal opportunities only. Shared context-only scope; L receives its qualified pilot feedback; B remains blind. No task answering, GPU launch, scoring or dataset preparation.",
+  "fixed_pool": {
+    "rows": 400,
+    "next_prefix": 20,
+    "data_rebuilt": false,
+    "knowledge_rebuilt": false
+  },
+  "new_gpu_contacts": 0,
+  "new_scorer_contacts": 0,
+  "recovery": "No automatic retry or replacement. Preserve failed contact and spent allocation if transport stops.",
+  "next": "Import all proposer dispositions, compile only legal changes, register the smallest needed full-system comparison with controls on the same pool; real FIT/engineering before GPU."
+}

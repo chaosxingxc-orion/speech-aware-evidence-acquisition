@@ -1,0 +1,131 @@
+{
+  "schema": "saea-system-text-proposer-completion-v1",
+  "recorded_at_utc": "2026-10-02T16:33:56.281090+00:00",
+  "status": "COMPLETE-NO-GPU-ADOPTION",
+  "finished": {
+    "at_utc": "2026-10-02T16:29:59.879058+00:00",
+    "gpu_dispatch": false,
+    "outcomes": [
+      {
+        "activation": "none",
+        "key": "L-3-1",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-3-1",
+        "status": "provisional"
+      },
+      {
+        "activation": "none",
+        "key": "L-3-2",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-3-2",
+        "status": "provisional"
+      }
+    ],
+    "paid_api_spend": 0,
+    "stopped_on_transport_failure": false
+  },
+  "finished_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-round3-owner224-v1/finished.json",
+    "sha256": "0144aec9270eb58178edeed020436f9370c5052fb129007fa0b721713fdf6061"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round3-owner224-v1/registration.json",
+    "sha256": "d5f37106162e8330a8420bc6493110db54980d6c7786ab9e62ab3c69ef403fa6"
+  },
+  "items": [
+    {
+      "allocation": "L-3-1",
+      "status": "no-change",
+      "contacts": 1,
+      "input_tokens": 3313,
+      "output_tokens": 421,
+      "changed_roles": [],
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/L-3-1.json",
+        "sha256": "ad2a5e0cf894e6c4c630de6286a427c1a9a5c02af44889ae2ff339a375a194fa"
+      },
+      "proposal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/proposals/L-3-1.json",
+        "sha256": "3e118187f7f7751dbb27cf8a52b763980441987b698cfc106a0ba65fb989ff29"
+      },
+      "activation": "none"
+    },
+    {
+      "allocation": "B-3-1",
+      "status": "provisional",
+      "contacts": 2,
+      "input_tokens": 5504,
+      "output_tokens": 1031,
+      "changed_roles": [
+        "planner"
+      ],
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/B-3-1.json",
+        "sha256": "74661715c2f87b0b9ad58a542bd4366ed1999762b069d800a1cd4b3e794d50e0"
+      },
+      "proposal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/proposals/B-3-1.json",
+        "sha256": "d2c0448d4db30dd6b67914d43bb59e0be30e19c1a42de049c2008928531d6755"
+      },
+      "activation": "none"
+    },
+    {
+      "allocation": "L-3-2",
+      "status": "no-change",
+      "contacts": 1,
+      "input_tokens": 3332,
+      "output_tokens": 469,
+      "changed_roles": [],
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/L-3-2.json",
+        "sha256": "42c5d185ad053a97a5bdfda57be02c856ccb5428d8826754ef987174b63be908"
+      },
+      "proposal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/proposals/L-3-2.json",
+        "sha256": "a3e52f7877fdeb26295ccd29176cec4c5a8d05eec8988f7b00ab5356e58ddd02"
+      },
+      "activation": "none"
+    },
+    {
+      "allocation": "B-3-2",
+      "status": "provisional",
+      "contacts": 2,
+      "input_tokens": 5491,
+      "output_tokens": 932,
+      "changed_roles": [
+        "solver"
+      ],
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/B-3-2.json",
+        "sha256": "4ed6a0f25d6c4b67007484e1a1d67a45a6151faacd700c8c44ecd1a116244387"
+      },
+      "proposal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/proposals/B-3-2.json",
+        "sha256": "572ebbf70ad61c9e1ef98a0baa4db524d973bb56cf69b4e1b7ad9ef2c29be39c"
+      },
+      "activation": "none"
+    }
+  ],
+  "contacts_total": 6,
+  "input_tokens_total": 17640,
+  "output_tokens_total": 2853,
+  "source_root": "/home/chao/saea-worktrees/codex-system-text-proposer-round3-owner224-v1",
+  "source_commit": "44ca3519039b3133ba134c080652727981285d47",
+  "data_rebuilt": false,
+  "model_for_task_contacts": 0,
+  "scorer_contacts": 0,
+  "interpretation": "L offered no change twice after reading only supplied summaries, with no artifact-tool continuation. This is a proposer feedback-consumption limitation, not a demonstrated absence of actionable system defects. Preserve both spent allocations; do not silently rerun or replace. B offered two provisional context candidates, Planner-only and Solver-only. They require complete-system evaluation; no quality improvement or learned-policy benefit is established.",
+  "next": [
+    "Compile the two legal B candidates against existing fixed400/first20 assets and register necessary controls only.",
+    "Reuse original400 query/vote artifacts by an explicitly checked prefix binding; do not recompute them just because the helper historically requires an exact-cohort agreement receipt.",
+    "Retain no-change L dispositions; no redundant candidate reruns or automatic8x400.",
+    "For a later prospectively registered learning iteration, test a budgeted balanced presentation of concrete own-branch trajectory evidence; preserve blind isolation and all failed/no-change history."
+  ],
+  "automatic_recovery": false
+}
