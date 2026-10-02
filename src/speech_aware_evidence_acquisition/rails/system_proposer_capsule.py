@@ -59,7 +59,7 @@ def input_references(packet):
     branch = packet.get("branch")
     require(branch in {"L", "B"} and packet.get("round") in (1, 2, 3) and packet.get("slot") in (1, 2),
             "invalid proposal allocation")
-    require(not set(packet) - COMMON_FIELDS - {"budget_profile"} - (LEARNING_FIELDS if branch == "L" else frozenset()),
+    require(not set(packet) - COMMON_FIELDS - {"budget_profile", "optimization_scope"} - (LEARNING_FIELDS if branch == "L" else frozenset()),
             "blind or undeclared input fields")
     require(packet.get("budget_profile", HARD_BUDGET) in (HARD_BUDGET, SUBSCRIPTION_BUDGET),
             "undeclared proposal budget profile")
@@ -70,6 +70,9 @@ def input_references(packet):
     require(packet["model_version"] and packet["session_id"], "pin the proposer identity")
     require(all(type(packet[k]) is int and packet[k] > 0 for k in ("input_token_cap", "output_token_cap")),
             "pin proposal token limits")
+    if "optimization_scope" in packet:
+        from .system_optimization import require_optimization_scope
+        require_optimization_scope(packet)
     parent = packet["parent_policy"]
     require(content_hash(parent) == packet["parent_bundle_id"], "parent identity differs")
     if branch == "B":
@@ -98,7 +101,11 @@ def input_references(packet):
             add("data", policy["construction_receipt"], "construction-receipt")
     if branch == "L":
         selection = packet.get("selection")
-        if selection is not None:
+        from .system_optimization import SELECTION_SCHEMA, require_exploratory_packet
+        if (packet.get("feedback", {}).get("schema") == "saea-exploratory-system-feedback-v1"
+                or (selection or {}).get("schema") == SELECTION_SCHEMA):
+            require_exploratory_packet(packet)
+        elif selection is not None:
             require(selection.get("selection_sha256") == content_hash({k: v for k, v in selection.items() if k != "selection_sha256"})
                     and selection["branch"] == "L" and selection["stage"] == f"update-{packet['round'] - 1}"
                     and selection["protocol_sha256"] == packet["protocol_sha256"]
@@ -399,6 +406,14 @@ class ProposerCapsule:
                 "slot_value_edits": "Existing saea-slot-value-edits-v1 object: schema, base_rows_sha256, edits. Use the indexed construction context for exact base and field hashes. Requires registered construction/release; never invent hashes."},
             "slot_edit_fields": "Each edit has exactly slot_id, field, previous_value_sha256, replacement, evidence_group_ids. Read these identities from slot-value-edit-context. extraction_cues, admissible_formats and limitations use nonempty string lists; missing_behavior and ambiguity_behavior use text. Keep slot IDs and intent bindings unchanged.",
             "rules": "Keep the parent's scientific boundaries and control syntax. Use only registered parent IDs. Joint edits are allowed. Invalid, duplicate and no-change proposals consume the allocation; no replacement. Final answer authority stays with Omni. Do not include sample answers in runtime texts."}
+        if "optimization_scope" in packet:
+            contract = result["response_contract"]
+            contract["editable_changes"] = {"role_text": contract["editable_changes"]["role_text"]}
+            contract.pop("slot_edit_fields")
+            contract["rules"] += (
+                " This cycle keeps knowledge, construction, supply and executable code frozen. "
+                "Revise only role/context text; evaluate on the same reused optimization pool. "
+                "This is optimization feedback, not independent validation.")
         full = json.loads(self._packet)
         if "feedback" in full:
             result["feedback_summary"] = {"family_id": full["feedback"].get("family_id"),

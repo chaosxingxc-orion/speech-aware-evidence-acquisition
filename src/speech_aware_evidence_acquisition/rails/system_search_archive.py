@@ -213,6 +213,14 @@ class SystemSearchArchive:
                 errors.append(f"{field} exceeds frozen limit or is malformed")
         proposal = record["proposal"]
         if proposal is not None:
+            if "optimization_scope" in packet:
+                from .system_optimization import require_optimization_scope
+                try:
+                    require_optimization_scope(packet)
+                    require(set(proposal["changes"]) <= set(packet["optimization_scope"]["editable"]),
+                            "proposal changes exceed the frozen optimization scope")
+                except ValueError as error:
+                    errors.append(str(error))
             allowed = {packet["parent_bundle_id"]} | {content_hash(p) for p in packet.get("complementary_policies", [])}
             if not set(proposal["parent_ids"]) <= allowed or proposal["parent_ids"][0] != packet["parent_bundle_id"]:
                 errors.append("proposal parents differ from frozen input")

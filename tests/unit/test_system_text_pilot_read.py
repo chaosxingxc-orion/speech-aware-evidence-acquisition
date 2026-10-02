@@ -599,7 +599,7 @@ def test_learning_projection_uses_existing_proposer_capsule_and_exposure_account
         SystemTextPolicyBundle,
     )
 
-    d, recipe, _, _, _, _, _ = fixture(tmp_path)
+    d, recipe, registration, _, _, _, _ = fixture(tmp_path)
     _, reference, _, _ = update_fixture(tmp_path)
     amendment = {
         "decision_id": 222,
@@ -627,6 +627,15 @@ def test_learning_projection_uses_existing_proposer_capsule_and_exposure_account
         input_token_cap=32768,
         output_token_cap=4096,
     )
+    from speech_aware_evidence_acquisition.rails.system_optimization import exploratory_selection
+    protocol = {"exploratory_learning": {"relpath": "binding.json", "sha256": "b" * 64}}
+    for member in registration["member_bindings"].values():
+        member["bundle_id"] = seed.bundle_id
+    packet["protocol_sha256"] = content_hash(protocol)
+    packet["selection"] = exploratory_selection(feedback, registration=registration,
+        binding={"next_round": 3, "parent_id": seed.bundle_id, "complementary_ids": []},
+        protocol=protocol, parents=[seed.as_json()])
+    packet["input_sha256"] = content_hash({k: v for k, v in packet.items() if k != "input_sha256"})
     capsule = ProposerCapsule.from_packet(packet, roots=roots)
     assert capsule.as_json()["packet"]["branch"] == "L"
     assert "B-parent" not in json.dumps(packet) and "B-candidate" not in json.dumps(

@@ -1,0 +1,66 @@
+{
+  "schema": "saea-fixed400-proposer-bridge-validation-v1",
+  "recorded_at_utc": "2026-10-02T16:23:46.350372+00:00",
+  "status": "OFFLINE-PASS-PROPOSER-LAUNCH-PENDING",
+  "tests": {
+    "passed": 270,
+    "failed": 0,
+    "scoped_statement_coverage_percent": 98,
+    "optimization_module_coverage_percent": 99
+  },
+  "fresh_real_pilot_projection": {
+    "fresh_family_verified": true,
+    "feedback_sha256": "271edb83c128ddddc6c43b8cb1ddfb551d555e6d90f6591e16a8cb37bf36fd3f",
+    "selection_sha256": "c948a82148b53f48c0ce0b12edb9a1364bbff5eec7dc57b1955d38d940b5b256",
+    "members": [
+      "L-candidate-1",
+      "L-candidate-2",
+      "L-parent",
+      "L-parent-aa"
+    ],
+    "rows": 20,
+    "contacts_added": 0
+  },
+  "checks": {
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "experiment_handoff": "PASS",
+    "finite_completion_policy": "PASS",
+    "results_ledger": "PASS with183 existing worktree advisories;182 main advisories plus inaccessible umbrella comparison",
+    "stage3_algorithm_label": "Two identical pre-existing failures on both main and this checkout: native-capacity-v1 and native-capacity-recovery1-v1 have empty operators_used. Frozen cells preserved; not caused by this change."
+  },
+  "real_capsules": {
+    "L_members": 4,
+    "L_rows": 20,
+    "L_artifacts_each": 124,
+    "B_artifacts_each": 6,
+    "initial_request_bounds": {
+      "L": 17925,
+      "B": 14083
+    },
+    "one_page_request_bounds": {
+      "L": 21110,
+      "B": 17150
+    },
+    "input_cap": 32768,
+    "usage": "capacity continuation uses stated assumed usage, not measured provider tokens"
+  },
+  "limits": [
+    "Formal400-row readers and DEV/test disjointness remain unchanged.",
+    "Fixed-pool optimization retains feedback/proposal/selection ancestry while refusing knowledge/construction overlap.",
+    "All four inputs expose only role_text editing; out-of-scope responses consume allocation as invalid.",
+    "Real proposals, candidate compilation, next comparison admission, actual FIT and GPU generation remain pending."
+  ],
+  "new_data": {
+    "rosters_redrawn": 0,
+    "media_encoded": 0,
+    "knowledge_rebuilt": 0
+  },
+  "new_contacts": {
+    "proposer": 0,
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  }
+}

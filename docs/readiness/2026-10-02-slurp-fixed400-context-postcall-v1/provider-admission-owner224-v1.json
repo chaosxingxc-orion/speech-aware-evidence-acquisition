@@ -1,0 +1,133 @@
+{
+  "schema": "saea-system-text-provider-admission-v1",
+  "status": "admitted",
+  "recorded_at_utc": "2026-10-02T16:21:19.740308+00:00",
+  "owner_decision": 217,
+  "endpoint": "https://api.openai.com/v1/responses",
+  "provider_profile": "chatgpt-plan-preview",
+  "budget_profile": "subscription-metered-reject-v1",
+  "output_cap_enforcement": "metered-reject-after-completion",
+  "paid_api_spend": 0,
+  "model_version": "gpt-6-astra",
+  "protocol_sha256": "e40d7fb316fa4c9ceb019e2af50230448a9773b7ed765700f7d7247f0418fffe",
+  "input_meter": "serialized UTF-8 request bytes plus 4096 framing reserve; check every provider-reported input count independently; reject any underestimated or unmetered proposal without replacement",
+  "input_token_limit": 32768,
+  "output_token_acceptance_limit": 4096,
+  "contact_cap": 4,
+  "auth": "Own SAEA System Text Research subscription grant; owner completed sign-in; private DPAPI store; no third-party app credentials or paid API key",
+  "isolation": "Fresh complete request per proposal, store=false, no conversation ID, only the pinned artifact namespace. No chat history, host tools, skills or workspace contents are added. Provider-internal behavior is not claimed to be inspectable.",
+  "completed_stream_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-subscription-transport-proof-recovery1-v1/response.sse",
+    "sha256": "81734f6ab9676d065ffef90db17351418b7c59314eaf596b8820b53ba966bc60"
+  },
+  "offline_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-subscription-transport-proof-recovery1-v1/offline-complete-stream-validation.json",
+    "sha256": "a5098bbeaa2963ebb3b6c414e8936d2ee3976583fc2c9b2b9a68acd21cdee7ff"
+  },
+  "prior_outcome_disposition": "Keep both synthetic proof finished records failed. The second already contains one complete correct acknowledgement with model identity and 220/10 token usage. Admit the corrected consumer on retained completed bytes plus offline negative and end-to-end tests, not on a third model request. No synthetic proof retry, reseal, score or rewriting occurs. Any real proposal transport failure consumes that allocation and stops the launcher; no replacement.",
+  "scope": "The four originally unused third allocations L-3-1, L-3-2, B-3-1, B-3-2 under owner222/224. Context text only; fixed knowledge and supply. No GPU or scorer authority.",
+  "capsule_view_profile": "compact-feedback-v1",
+  "capacity_evidence": {
+    "L-3-1": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-3-1.json",
+        "sha256": "443abbc47217f2b663cb5f0298ad31c56eebd0f2c35345c4c5d56dbce379f754"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-3-1-owner224-v1.json",
+        "sha256": "71e6e2927e574dc5458255e6cfbae6e77c8494a790b038367695bf3936967eda"
+      },
+      "input_sha256": "99926f7647b163716bb8e3e73e5ddb72189217ac51aca914c8d99f4c74587338",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          17925,
+          21110
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round3-owner224-v1/L-3-1-capacity-report.json",
+          "sha256": "908c1e94a6b8d4cf746c361ea063d33c8f1dcad3ba900c06b3930316892185a6"
+        }
+      },
+      "purpose": "reused-optimization-panel",
+      "independent_validation": false
+    },
+    "B-3-1": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-3-1.json",
+        "sha256": "09a5dd3a7a7466fb06f0a263c3254537c89564ee6c7290ceaebeda77ade8c57f"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-3-1-owner224-v1.json",
+        "sha256": "d8614f099b26432a07e46a1224d67e84d2d200fa6ee54389e93ae7f007296a40"
+      },
+      "input_sha256": "70aaf3a66f4bfb4abac658dfb6a88e45ef246f3ecbc77e7ba198f471848abe5a",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          14083,
+          17150
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round3-owner224-v1/B-3-1-capacity-report.json",
+          "sha256": "e362e7a098c26569f13572d97180dfec422a5d002fcc8f48af7f5b0aa77cd25a"
+        }
+      },
+      "purpose": "reused-optimization-panel",
+      "independent_validation": false
+    },
+    "L-3-2": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-3-2.json",
+        "sha256": "a8ff052774610a8c61e2d45b4f427e20901f2484518abbcd5e57e0a204f8ed21"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-3-2-owner224-v1.json",
+        "sha256": "8d040568efbc555c7edfffb48782a0970cc35f844f58e6eb21f03c43fd2d767b"
+      },
+      "input_sha256": "be2201df03c6307cfdc4b6535c8333a5b45204d8f9f2e366fb370d4cf441d46d",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          17925,
+          21110
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round3-owner224-v1/L-3-2-capacity-report.json",
+          "sha256": "06b2bf18af9d4ead852f381367e132903061f17bbaa99f820449f4277dea8fb8"
+        }
+      },
+      "purpose": "reused-optimization-panel",
+      "independent_validation": false
+    },
+    "B-3-2": {
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-3-2.json",
+        "sha256": "db812c1a6bf874a0f5398d18d5240b57ac6cf2df4c6fd6c9c93b3f701f3f7c1e"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-3-2-owner224-v1.json",
+        "sha256": "007ca5c585a4ae425ba2b96ff7e5abd2a306a235bb047e094d632a097fc1c0e2"
+      },
+      "input_sha256": "d61a089bcb82da556c009dc4c41f0c04959d2f25c3880d9414f4e11983e9c9d4",
+      "capacity": {
+        "status": "covered_requests_fit",
+        "bounds": [
+          14083,
+          17150
+        ],
+        "report": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-round3-owner224-v1/B-3-2-capacity-report.json",
+          "sha256": "e1dcb0d53fd11d0e5fbdd7ed67c86f37a1c5ceb05792e096963a03ebe2754b8a"
+        }
+      },
+      "purpose": "reused-optimization-panel",
+      "independent_validation": false
+    }
+  },
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-02-slurp-system-text-update2-v1/provider-admission-owner217-v1.json",
+    "sha256": "9d0efaf6a4d5f66be2cb9399bb22ab553fef87d844ad6fc0a6731e19a36a2f6d"
+  },
+  "sha256": "fbc22563b0c5a671648714b7e0ff5c0e81516bdaf814dd641dbfec07fde79d31"
+}

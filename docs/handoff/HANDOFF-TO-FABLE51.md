@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Fixed400 proposal bridge verified: 2026-10-02T16:23:46.350372+00:00
+
+Owner224's current400 pool and frozen knowledge are now enforced in the existing exporter/compiler/proposer paths. A typed owner222 pilot transition re-verifies the exact complete family and exports all20 L cases only. Formal400/DEV/test gates stay unchanged. Only role/context text is editable; an out-of-scope proposal is invalid and consumes its original allocation. No global provenance reset or new data preparation occurred.
+
+The four original unused third proposal slots have immutable input packets and compact capsules in the existing control2-owner217 archive. Real initial request bounds are17925(L)/14083(B) within32768; one-page scenarios21110/17150 also fit under declared assumed usage. Actual provider tokens remain runtime-metered.270 tests pass; scoped coverage98%, new module99%; base/harness/finite-completion checks pass. Two old capacity-cell algorithm-label findings reproduce on main and are left unchanged. [Readiness and evidence](../readiness/2026-10-02-slurp-fixed400-context-postcall-v1/README.md).
+
+Proposal background dispatch is pending at this checkpoint; no new model/tokenizer/scorer contacts. GPU service remains healthy idle, STOP absent, Windows free20.49GiB at16:14Z. No automatic8x400 repeat: register changed candidates and necessary controls on the existing nested prefixes after responses. No new owner decision is needed for this already approved scope. Other-carrier holds and recovery boundaries remain.
+
 ## Current direction: fixed400 context/post-call optimization, 2026-10-02T15:33:24.536408+00:00
 
 [Owner224](../receipts/owner/2026-10-02-decision224-fixed400-context-postcall.json) explicitly directs reuse of the current prepared UPDATE2 400-input pool. Owner223 permits reviewed20/50/100/200/400 scaling;224 makes these nested prefixes of that same pool and supersedes prior disjoint-next-panel suggestions for optimization. The existing pilot is exactly its first20. Keep cumulative learning exposure, runtime gold exclusion and separate independent-confirmation claims. Do not rebuild data, move the next optimization panel to Fold B, or automatically repeat eight full400 groups. [Pinned plan and rails audit](../readiness/2026-10-02-slurp-fixed400-context-postcall-v1/README.md).

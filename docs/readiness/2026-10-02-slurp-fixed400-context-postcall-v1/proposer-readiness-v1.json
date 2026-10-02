@@ -1,0 +1,115 @@
+{
+  "schema": "saea-system-text-proposer-round-readiness-v1",
+  "recorded_at_utc": "2026-10-02T16:21:19.740923+00:00",
+  "status": "OFFLINE-VERIFIED-BACKGROUND-LAUNCH-PENDING",
+  "provider_admission": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/provider-admission-owner224-v1.json",
+    "sha256": "9eb6b502195dc9c4d2b0e2ee79bf562204f1e353a06bb0448d85628805bc0d66"
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/protocol-context-v1.json",
+    "sha256": "2d7f8221dfb638e938222989ec598e5e1f7fe0a655eacb7e29d97f6d71f78440"
+  },
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217",
+  "members": [
+    {
+      "key": "L-3-1",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-3-1.json",
+        "sha256": "443abbc47217f2b663cb5f0298ad31c56eebd0f2c35345c4c5d56dbce379f754"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-3-1-owner224-v1.json",
+        "sha256": "71e6e2927e574dc5458255e6cfbae6e77c8494a790b038367695bf3936967eda"
+      },
+      "request_sha256": "a5f283646b72c7ae26dc76297c2b227b2eb82539fef2a79d7c6f0fc5573543d5",
+      "initial_input_bound": 17925,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-3-1-OWNER224-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "99926f7647b163716bb8e3e73e5ddb72189217ac51aca914c8d99f4c74587338",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "e40d7fb316fa4c9ceb019e2af50230448a9773b7ed765700f7d7247f0418fffe"
+      }
+    },
+    {
+      "key": "B-3-1",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-3-1.json",
+        "sha256": "09a5dd3a7a7466fb06f0a263c3254537c89564ee6c7290ceaebeda77ade8c57f"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-3-1-owner224-v1.json",
+        "sha256": "d8614f099b26432a07e46a1224d67e84d2d200fa6ee54389e93ae7f007296a40"
+      },
+      "request_sha256": "22e563f28d20589fe5653b09dbff35e894ad80fb8b58f03d205609dc90bf1ac6",
+      "initial_input_bound": 14083,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-3-1-OWNER224-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "70aaf3a66f4bfb4abac658dfb6a88e45ef246f3ecbc77e7ba198f471848abe5a",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "e40d7fb316fa4c9ceb019e2af50230448a9773b7ed765700f7d7247f0418fffe"
+      }
+    },
+    {
+      "key": "L-3-2",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-3-2.json",
+        "sha256": "a8ff052774610a8c61e2d45b4f427e20901f2484518abbcd5e57e0a204f8ed21"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-3-2-owner224-v1.json",
+        "sha256": "8d040568efbc555c7edfffb48782a0970cc35f844f58e6eb21f03c43fd2d767b"
+      },
+      "request_sha256": "b7f6ca0325d3d76d5faea466d6b9f7709798cd32e3ad5a5bf13a0bc3625bef53",
+      "initial_input_bound": 17925,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-3-2-OWNER224-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "be2201df03c6307cfdc4b6535c8333a5b45204d8f9f2e366fb370d4cf441d46d",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "e40d7fb316fa4c9ceb019e2af50230448a9773b7ed765700f7d7247f0418fffe"
+      }
+    },
+    {
+      "key": "B-3-2",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-3-2.json",
+        "sha256": "db812c1a6bf874a0f5398d18d5240b57ac6cf2df4c6fd6c9c93b3f701f3f7c1e"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-3-2-owner224-v1.json",
+        "sha256": "007ca5c585a4ae425ba2b96ff7e5abd2a306a235bb047e094d632a097fc1c0e2"
+      },
+      "request_sha256": "f27be19e85b2f6b665a1d6ce0c42dae619c852ea0e4c348bb04b6fa95c602d6e",
+      "initial_input_bound": 14083,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-3-2-OWNER224-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "d61a089bcb82da556c009dc4c41f0c04959d2f25c3880d9414f4e11983e9c9d4",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "e40d7fb316fa4c9ceb019e2af50230448a9773b7ed765700f7d7247f0418fffe"
+      }
+    }
+  ],
+  "source_data_rebuilt": false,
+  "new_contacts": 0,
+  "read_note": "All eight pilot seals/scores and the exact root READ were reverified before each L export and capsule. Only four L members enter L; B has no feedback/history/selection. Historical proposal ancestry is retained. No effect claim."
+}

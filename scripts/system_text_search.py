@@ -17,7 +17,7 @@ from speech_aware_evidence_acquisition.rails.system_text_feedback import Complet
 from speech_aware_evidence_acquisition.rails.system_search_protocol import stage_for, require_stage_feedback
 from speech_aware_evidence_acquisition.rails.system_search_stage import recipe_family_identity
 from speech_aware_evidence_acquisition.rails.system_text_policy import (
-    SystemTextPolicyBundle, apply_text_proposal, assert_roster_disjoint,
+    SystemTextPolicyBundle, apply_text_proposal,
     compile_system_text_policy, TextPolicyUpdateProposal, require,
     canonical, _read_pin,
 )
@@ -99,6 +99,67 @@ def read_family(path, *, repo_root=None, _seen=()):
         family_id=spec["family_id"], initial_reference_member=spec["initial_reference_member"], reference=reference)
     require(require_read_registration(spec, repo_root=repo_root) == authority, "READ authority changed during export")
     return CompleteSystemFeedback(canonical({**feedback.as_json(), "read_authority": authority}))
+
+
+def read_pilot_learning(protocol, *, round_index, family_path, repo_root, archive,
+                        parent_id, complementary_ids):
+    """Reverify the full pilot, then expose only its authorized L projection."""
+    from speech_aware_evidence_acquisition.analysis.system_text_pilot import read_pilot_evidence
+    from speech_aware_evidence_acquisition.rails.system_text_feedback import _absolute_json
+    from speech_aware_evidence_acquisition.rails.system_optimization import (
+        PILOT, exploratory_selection, load_optimization_panel,
+    )
+    pin = protocol["exploratory_learning"]
+    binding = json.loads(_read_pin(pin, repo_root))
+    require(set(binding) == {"schema", "family", "analysis_supplement", "owner_learning",
+            "reference_family", "next_round", "parent_id", "complementary_ids",
+            "optimization_plan", "expected_projection_sha256"}
+            and binding["schema"] == "saea-exploratory-learning-binding-v1"
+            and type(round_index) is int and round_index == binding["next_round"] == 3
+            and parent_id == binding["parent_id"]
+            and list(complementary_ids) == binding["complementary_ids"],
+            "exploratory parent, allocation or binding differs")
+    panel = load_optimization_panel(protocol, f"update-{round_index}", repo_root=repo_root)
+    require(panel is not None and binding["optimization_plan"] == protocol["optimization_panel"]["plan"],
+            "exploratory learning needs the exact fixed optimization panel")
+    require(Path(family_path).resolve() == Path(binding["family"]["path"]).resolve(),
+            "exploratory family path differs")
+    spec = _absolute_json(binding["family"])
+    # Check the reference pin before opening either family's scientific results.
+    _absolute_json(binding["reference_family"])
+    require(spec["family_id"] == PILOT, "exploratory family differs")
+    recipe = json.loads(_read_pin(spec["read_registration"], repo_root))
+    supplement = json.loads(_read_pin(binding["analysis_supplement"], repo_root))
+    require(supplement.get("schema") == "saea-pilot-analysis-supplement-v1"
+            and supplement.get("recipe") == spec["read_registration"], "pilot supplement differs")
+    owner = json.loads(_read_pin(supplement["owner_decision"], repo_root))
+    amendment = json.loads(_read_pin(binding["owner_learning"], repo_root))
+    registration = json.loads(_read_pin(recipe["pilot_registration"], repo_root))
+    authority = require_read_registration(spec, repo_root=repo_root)
+    evidence = read_pilot_evidence(spec["bindings"], recipe=recipe, registration=registration,
+        owner=owner, authority=authority)
+    reference = read_family(binding["reference_family"]["path"], repo_root=repo_root)
+    projected = evidence.learning_projection(amendment=amendment, reference=reference)
+    require(content_hash(projected.as_json()) == binding["expected_projection_sha256"],
+            "pilot learning projection differs from its pinned source")
+    require(require_read_registration(spec, repo_root=repo_root) == authority,
+            "pilot READ authority changed during export")
+    require(json.loads(_read_pin(pin, repo_root)) == binding
+            and _absolute_json(binding["family"]) == spec,
+            "pilot binding changed during export")
+    document = projected.as_json()
+    document["interpretation"] = (
+        "Exploratory twenty-input full-system learning feedback under owner222/224. "
+        "Use all successes, failures, unchanged cases and damaged answers. "
+        "Continue on the pinned reused optimization panel; retain cumulative exposure. "
+        "Freeze knowledge and supply; revise role/context text only. "
+        "No independent-validation claim, formal adoption, node causal credit, "
+        "policy gradient or guaranteed improvement.")
+    feedback = CompleteSystemFeedback(canonical(document))
+    parents = [archive.load_policy(b).as_json() for b in [parent_id, *complementary_ids]]
+    selection = exploratory_selection(feedback, registration=registration, binding=binding,
+        protocol=protocol, parents=parents)
+    return feedback, selection
 
 
 def require_learning_members(feedback, member_ids):
@@ -192,6 +253,8 @@ def main(argv=None):
         command.add_argument("--protocol", type=Path, required=True)
         command.add_argument("--family", type=Path, required=True)
         command.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
+    for command in (packet, capsule_cmd):
+        command.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args(argv)
     archive = SystemSearchArchive(args.archive)
     if args.command == "import-seed":
@@ -211,9 +274,14 @@ def main(argv=None):
                 "pin the actual proposer version in the protocol before exporting model input")
         require(protocol.get("seed_bundle", {}).get("bundle_id") == args.seed_id,
                 "proposal seed differs from the registered starting system")
-        feedback = read_family(args.family) if args.family else None
-        selection = None
-        if feedback is not None:
+        feedback, selection = None, None
+        if args.family and protocol.get("exploratory_learning"):
+            feedback, selection = read_pilot_learning(protocol, round_index=args.round,
+                family_path=args.family, repo_root=args.repo_root, archive=archive,
+                parent_id=args.parent_id, complementary_ids=args.complementary_id)
+            require_learning_members(feedback, args.learning_member)
+        elif args.family:
+            feedback = read_family(args.family)
             require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
             require_learning_members(feedback, args.learning_member)
             selection = archive.learning_selection(protocol=protocol, round_index=args.round, feedback=feedback,
@@ -228,6 +296,10 @@ def main(argv=None):
             packet["learning_history"] = archive.learning_history(before_round=args.round)
             if selection is not None:
                 packet["selection"] = selection
+        from speech_aware_evidence_acquisition.rails.system_optimization import load_optimization_panel
+        if load_optimization_panel(protocol, f"update-{args.round}", repo_root=args.repo_root) is not None:
+            packet["optimization_scope"] = {"purpose": "reused-optimization-panel", "editable": ["role_text"],
+                "plan_sha256": protocol["optimization_panel"]["plan"]["sha256"]}
         packet["protocol_sha256"] = content_hash(protocol)
         if "proposal_budget_profile" in protocol:
             packet["budget_profile"] = protocol["proposal_budget_profile"]
@@ -250,14 +322,21 @@ def main(argv=None):
                 "capsule seed differs from the registered starting system")
         if args.branch == "L":
             require(args.family and args.learning_member, "revalidate the complete family before packaging feedback")
-            feedback = read_family(args.family)
-            require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
-            require_learning_members(feedback, args.learning_member)
-            selection = archive.learning_selection(protocol=protocol, round_index=args.round, feedback=feedback,
-                parent_id=packet["parent_bundle_id"],
-                complementary_ids=[content_hash(p) for p in packet["complementary_policies"]])
+            complementary = [content_hash(p) for p in packet["complementary_policies"]]
+            if protocol.get("exploratory_learning"):
+                feedback, selection = read_pilot_learning(protocol, round_index=args.round,
+                    family_path=args.family, repo_root=args.repo_root, archive=archive,
+                    parent_id=packet["parent_bundle_id"], complementary_ids=complementary)
+                require_learning_members(feedback, args.learning_member)
+            else:
+                feedback = read_family(args.family)
+                require_stage_feedback(protocol, "initial" if args.round == 1 else f"update-{args.round - 1}", feedback)
+                require_learning_members(feedback, args.learning_member)
+                selection = archive.learning_selection(protocol=protocol, round_index=args.round, feedback=feedback,
+                    parent_id=packet["parent_bundle_id"], complementary_ids=complementary)
+                feedback = feedback.learning_view(args.learning_member)
             require(packet.get("selection") == selection, "selection differs from the preregistered proposal input")
-            require(feedback.learning_view(args.learning_member).as_json() == packet["feedback"],
+            require(feedback.as_json() == packet["feedback"],
                     "feedback differs from the preregistered proposal input")
         capsule_name = args.capsule_name or key
         require(capsule_name.startswith(key) and all(c.isascii() and (c.isalnum() or c in "-_") for c in capsule_name),
@@ -286,6 +365,11 @@ def main(argv=None):
         require(packet["input_sha256"] == content_hash({k: v for k, v in packet.items() if k != "input_sha256"})
                 and record["receipt"]["input_sha256"] == packet["input_sha256"], "proposal input changed")
         proposal = TextPolicyUpdateProposal.from_json(record["proposal"])
+        from speech_aware_evidence_acquisition.rails.system_optimization import (
+            assert_policy_roster, require_context_only_changes,
+        )
+        require_context_only_changes(proposal.as_json()["changes"], protocol=protocol,
+            stage=f"update-{args.round}", repo_root=args.repo_root)
         parents = [archive.load_policy(b) for b in proposal.as_json()["parent_ids"]]
         sources = proposal_sources(packet, record)
         knowledge, construction_pin = None, None
@@ -310,7 +394,8 @@ def main(argv=None):
         roster = read(args.evaluation_roster)
         require([r["sample_id"] for r in roster["items"]] == stage_for(protocol, f"update-{args.round}")["sample_ids"],
                 "candidate evaluation roster differs from its registered round")
-        assert_roster_disjoint(bundle.as_json()["cumulative_sources"], [r["sample_id"] for r in roster["items"]])
+        assert_policy_roster(bundle.as_json()["cumulative_sources"], [r["sample_id"] for r in roster["items"]],
+            protocol=protocol, stage=f"update-{args.round}", repo_root=args.repo_root)
         compiled = compile_system_text_policy(read(args.seed_config), bundle, repo_root=args.repo_root,
                                               output_root=args.staging_root, data_root=args.data_root)
         from speech_aware_evidence_acquisition.rails.system_text_cohort import bind_system_text_cohort

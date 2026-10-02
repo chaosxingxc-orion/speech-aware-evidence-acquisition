@@ -32,3 +32,14 @@ Previously sealed outputs and official score receipts remain reusable evidence, 
 ## Status
 
 Data identity and nesting are verified offline. The model-facing correction, exploratory-proposer binding and explicit repeated-optimization admission still need implementation/verification. No candidate is dispatched by this plan and no new model, tokenizer or scorer contact occurred while preparing it. See the root pilot report for complete metrics and limitations; the primary next target is a usable context/post-call learning loop on the existing data.
+
+
+## Fixed-pool feedback bridge and isolated proposal inputs
+
+The existing exporter now re-verifies all eight pilot sources and the exact root READ before deriving the complete L-only projection. The original reference F1 and cumulative exposure remain bound. A typed exploratory selection replaces only this transition's old previous400-row/disjoint-stage assumption. Formal readers and DEV/test admission are unchanged.
+
+The context cycle permits role text edits only. Knowledge, construction and supply stay fixed in the proposer contract, response importer and compiler. An out-of-scope response is archived as invalid, spends its existing allocation and cannot activate or earn a replacement. Both branches get the same scope. Feedback/proposal/selection overlap is admitted only for the pinned current400 pool and exact registered nested prefix; runtime knowledge/construction overlap still refuses.
+
+All four unused third-allocation input packets and compact capsules are materialized in the original archive. L gets all20 cases and4 own members plus retained L history; B has6 frozen knowledge/construction artifacts with no feedback, history or selection. L has124 indexed artifacts. This preparation did not contact a model or regenerate data. See [prospective protocol](protocol-context-v1.json), [source binding](exploratory-learning-v1.json), [proposal readiness](proposer-readiness-v1.json), [provider admission](provider-admission-owner224-v1.json) and [validation](bridge-validation-v1.json).
+
+The next registration covers proposal contacts only, not GPU generation. Existing stage freezing still describes the historical full family; prospectively register the minimum needed complete-system comparison after the candidate responses. Do not invoke the old eight400 queue. Reuse the existing runtime view, speech packets and knowledge bytes. Scope-protected compiler output still requires its own capacity/engineering and launch admission.

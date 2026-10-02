@@ -49,6 +49,24 @@ def request_bound(request):
     return len(canonical(request).encode("utf-8")) + 4096
 
 
+def require_feedback_transition(packet, *, protocol, round_index):
+    """Distinguish the exact exploratory allowance from formal round progression."""
+    from speech_aware_evidence_acquisition.rails.system_optimization import (
+        require_exploratory_packet, require_optimization_scope,
+    )
+    require_optimization_scope(packet, protocol=protocol)
+    if packet["branch"] == "L" and round_index > 1:
+        if protocol.get("exploratory_learning"):
+            require_exploratory_packet(packet, protocol=protocol)
+        else:
+            selection, feedback = packet.get("selection"), packet["feedback"]
+            require(isinstance(selection, dict)
+                    and feedback.get("family_id") == f"update-{round_index - 1}"
+                    and bool(feedback.get("read_gate_family_sha256"))
+                    and selection.get("feedback_sha256") == feedback["read_gate_family_sha256"],
+                    "preceding complete-family feedback and selection binding required")
+
+
 def load_members(registration):
     r = registration
     require(r["schema"] == "saea-system-text-proposer-round-registration-v1"
@@ -75,17 +93,7 @@ def load_members(registration):
         input_references(packet)
         require(type(packet["round"]) is int and packet["round"] == round_index,
                 "proposal differs from the registered round")
-        if packet["branch"] == "L" and round_index > 1:
-            # The offline exporter verifies complete seals/scores and the exact
-            # root READ before packaging. Keep that preceding-family commitment
-            # joined to the selection; a round-one packet cannot advance a round.
-            selection = packet.get("selection")
-            feedback = packet["feedback"]
-            require(isinstance(selection, dict)
-                    and feedback.get("family_id") == f"update-{round_index - 1}"
-                    and bool(feedback.get("read_gate_family_sha256"))
-                    and selection.get("feedback_sha256") == feedback["read_gate_family_sha256"],
-                    "preceding complete-family feedback and selection binding required")
+        require_feedback_transition(packet, protocol=protocol, round_index=round_index)
         key = f"{packet['branch']}-{packet['round']}-{packet['slot']}"
         require(key == member["key"] and key not in keys, "duplicate or wrong proposal allocation")
         keys.add(key)
