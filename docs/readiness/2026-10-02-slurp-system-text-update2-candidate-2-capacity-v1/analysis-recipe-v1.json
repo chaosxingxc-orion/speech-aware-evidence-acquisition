@@ -1,0 +1,6 @@
+{
+  "run_ids": {
+    "read": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-CANDIDATE-2-CAPACITY-STRUCTURE-V1"
+  },
+  "scope": "Operational tokenizer counts, request hashes and synthetic structural receipts only; no task answers or quality."
+}

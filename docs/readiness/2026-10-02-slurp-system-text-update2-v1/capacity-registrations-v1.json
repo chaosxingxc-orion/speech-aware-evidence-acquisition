@@ -1,0 +1,42 @@
+{
+  "contacts_added": 0,
+  "members": [
+    {
+      "decision": {
+        "expected_decision_id": "slurp-system-text-update2-parent-capacity-v1",
+        "kind": "decision",
+        "relpath": "coordination/slurp-system-text-update2-parent-capacity-v1/root-admission-v1.json",
+        "sha256": "4f17326e4e43ba272318d59168bc0ef2610bea3fc808f18ac69a0a4174e6da7f"
+      },
+      "experiment": "slurp-native-stage3-system-text-update2-parent-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-update2-parent-graph-v1",
+      "name": "parent",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-PARENT-CAPACITY-FIT-V1"
+    },
+    {
+      "decision": {
+        "expected_decision_id": "slurp-system-text-update2-candidate-1-capacity-v1",
+        "kind": "decision",
+        "relpath": "coordination/slurp-system-text-update2-candidate-1-capacity-v1/root-admission-v1.json",
+        "sha256": "e06e4b7987c5ce3d629ff69cfc6bc35b496499498a826e7fba137b92bd77fd6c"
+      },
+      "experiment": "slurp-native-stage3-system-text-update2-candidate-1-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-update2-candidate-1-graph-v1",
+      "name": "candidate-1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-CANDIDATE-1-CAPACITY-FIT-V1"
+    },
+    {
+      "decision": {
+        "expected_decision_id": "slurp-system-text-update2-candidate-2-capacity-v1",
+        "kind": "decision",
+        "relpath": "coordination/slurp-system-text-update2-candidate-2-capacity-v1/root-admission-v1.json",
+        "sha256": "c5552d1547b69087f183eed54bc124da98387eca29ef318a043334894c47eb57"
+      },
+      "experiment": "slurp-native-stage3-system-text-update2-candidate-2-capacity-v1",
+      "graph_experiment": "slurp-native-stage3-system-text-update2-candidate-2-graph-v1",
+      "name": "candidate-2",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-UPDATE2-CANDIDATE-2-CAPACITY-FIT-V1"
+    }
+  ],
+  "schema": "saea-system-text-capacity-registrations-v1"
+}

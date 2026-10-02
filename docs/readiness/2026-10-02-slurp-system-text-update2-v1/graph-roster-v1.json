@@ -1,0 +1,11 @@
+{
+  "count": 4,
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "scope": "Model-free structural replay only; no task feedback.",
+  "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+}
