@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Extra5 engineering accepted; exact8x20 registered, 2026-10-03T07:24:37.479069+00:00
+
+All three structural workers completed07:21:57Z: parent19, candidate1 22 and candidate2 25 model contacts, twelve outputs total. All18 Reviewer handoffs were valid/visible; every terminal answer has native Omni custody through the existing normalizer. Candidate2 retains two non-strict raw Solver replies in seven visits; this is an observed format defect, not a quality read or silent repair. No official scorer ran. [Evidence](../receipts/continuation/2026-10-03-extra5-engineering-complete.json).
+
+Root227 admits the exact next eight-member20 panel after capacity/engineering acceptance; all own supplies and immutable proposal/policy identities are registered in [the package](../readiness/2026-10-03-slurp-fixed400-round5-n20-v1/README.md). No generation launched yet; clean frozen preflights and serial driver transition are next. The exact READ remains unsigned. Retain both L no-change slots, known candidate format defects and all20 spent proposal allocations. No scale increase, new assets or efficacy claim.
+
 ## Extra5 structural engineering launched, 2026-10-03T07:18:40.466639+00:00
 
 Windows SAEA-Batch-Driver epoch2026-10-03T07:17:22Z runs three separately registered four-row structural proofs from frozenb04c9aab9 at `/home/chao/saea-worktrees/codex-system-text-extra5-engineering-v1`. All three actual frozen preflights passed; parent worker is OPENED and executing. Startup Windows free14.31GiB. [Launch custody](../receipts/continuation/2026-10-03-extra5-engineering-launch.json). Old completed controls were archived as a normal transition with no STOP present; this grants monitor no control authority.

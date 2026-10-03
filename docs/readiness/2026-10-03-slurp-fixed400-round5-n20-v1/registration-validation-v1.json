@@ -1,0 +1,13 @@
+{
+  "recorded_at_utc": "2026-10-03T07:25:14.222732+00:00",
+  "checks": {
+    "flight_registration": "PASS eight named cells, zero blocking, eight advisory tuning-roster-unverified findings",
+    "exact_panel_definition_and_scope": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "diff_check": "PASS"
+  },
+  "contacts_added": 0,
+  "runtime_preflight": "Pending actual clean frozen checkout",
+  "analysis_read": "Unsigned"
+}

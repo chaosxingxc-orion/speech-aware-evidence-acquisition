@@ -1,0 +1,208 @@
+{
+  "commit": "b04c9aab9f41374760618a41795283fc500f35e2",
+  "driver_completed_at": "2026-10-03T07:21:57Z",
+  "members": [
+    {
+      "artifacts": [
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1.generation-manifest.json",
+          "sha256": "8d5ea2bcb50d68846c7bea31d76e92006962876f9c9cfd58514e1de34b22f36f"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1.outputs.jsonl",
+          "sha256": "4468d153e162db98734831eda1762bfc80920d0d2ebcd29c75815eb93cc0d7f7"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1.phases.json",
+          "sha256": "9bdb7cee22aa868cd9d9fb822deb254040cd962b26d75f6d1262f3f6d0701be5"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1.run-manifest.json",
+          "sha256": "8d5ea2bcb50d68846c7bea31d76e92006962876f9c9cfd58514e1de34b22f36f"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1.trace-manifest.json",
+          "sha256": "0076f0b5a5ff4c17599aa6fb3b36f468b197cc42e9c10c411321938083ac1ba4"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1.trace.jsonl",
+          "sha256": "88e20410a7c8fba782eeae91eaf6718ec0c3dabab6d078d036ccabb65ba4dc89"
+        }
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1",
+      "counts": {
+        "normalizer_changed_rows": 1,
+        "perception_visits": 4,
+        "planner_accepted_rows": 3,
+        "planner_visits": 5,
+        "reviewer_valid": 5,
+        "reviewer_visits": 5,
+        "revision_limit_deliver_latest_rows": 1,
+        "solver_strict_json": 5,
+        "solver_visits": 5
+      },
+      "model_contacts": 19,
+      "native_omni_terminal_custody": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "official_scorer_entered": false,
+      "planner_actions": {
+        "ACCEPT": 3,
+        "REVISE": 2
+      },
+      "reviewer_handoffs_visible": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1",
+      "structural_pass": true,
+      "task_quality_read": false
+    },
+    {
+      "artifacts": [
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1.generation-manifest.json",
+          "sha256": "453e08d9cd32643e8d30073afb185ee6d543f6a8687576d99ab73c02960a37b5"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1.outputs.jsonl",
+          "sha256": "01fdde912b80c25d1c5ad153367f3ddf7f2b8946579bd681a699372c1e8a753f"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1.phases.json",
+          "sha256": "340f8180e76ea94ae79b5e390e5d782a9bc3a144d6266b11b2fa83eb6ac15a50"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1.run-manifest.json",
+          "sha256": "453e08d9cd32643e8d30073afb185ee6d543f6a8687576d99ab73c02960a37b5"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1.trace-manifest.json",
+          "sha256": "160e0510223eec23a3557447d1e371b6489b13d976dbaa936667d3e21f7d4654"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1.trace.jsonl",
+          "sha256": "55d94d5591aae5f1394223fc41d56669ad77bb91c747d6f9692e78e4eae5ced7"
+        }
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1",
+      "counts": {
+        "normalizer_changed_rows": 0,
+        "perception_visits": 4,
+        "planner_accepted_rows": 3,
+        "planner_visits": 6,
+        "reviewer_valid": 6,
+        "reviewer_visits": 6,
+        "revision_limit_deliver_latest_rows": 1,
+        "solver_strict_json": 6,
+        "solver_visits": 6
+      },
+      "model_contacts": 22,
+      "native_omni_terminal_custody": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "official_scorer_entered": false,
+      "planner_actions": {
+        "ACCEPT": 3,
+        "REVISE": 3
+      },
+      "reviewer_handoffs_visible": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1",
+      "structural_pass": true,
+      "task_quality_read": false
+    },
+    {
+      "artifacts": [
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1.generation-manifest.json",
+          "sha256": "be11bbc873a3038df880799850e60f69355a21e766dc521cb06fc79112849fda"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1.outputs.jsonl",
+          "sha256": "fe92e5454e5792ae05e05fafa8c51a8fa51617021ae7e9605d20a58ac267368d"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1.phases.json",
+          "sha256": "b425613b472c5d73da23a32cbfdc1ba4d96d59301f05fce52ea4e9a3b700e843"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1.run-manifest.json",
+          "sha256": "be11bbc873a3038df880799850e60f69355a21e766dc521cb06fc79112849fda"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1.trace-manifest.json",
+          "sha256": "2b817928314331bbe88ce3761b3d45a643a54297ecab2b55cf28287152d95503"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1.trace.jsonl",
+          "sha256": "67a2e3e855528144dc5e4634a50745a6e2e2115baf8ce15b4a355fbf24182ea6"
+        }
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1",
+      "counts": {
+        "normalizer_changed_rows": 1,
+        "perception_visits": 4,
+        "planner_accepted_rows": 2,
+        "planner_visits": 7,
+        "reviewer_valid": 7,
+        "reviewer_visits": 7,
+        "revision_limit_deliver_latest_rows": 2,
+        "solver_non_strict_json": 2,
+        "solver_strict_json": 5,
+        "solver_visits": 7
+      },
+      "model_contacts": 25,
+      "native_omni_terminal_custody": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "official_scorer_entered": false,
+      "planner_actions": {
+        "ACCEPT": 2,
+        "REVISE": 5
+      },
+      "reviewer_handoffs_visible": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1",
+      "structural_pass": true,
+      "task_quality_read": false
+    }
+  ],
+  "model_contacts": 66,
+  "next": "Register exact8x20 family; no scale increase or efficacy claim.",
+  "official_scorer_contacts": 0,
+  "owner_decision": 227,
+  "read_boundary": "Control format, handoff visibility, raw task shape and native Omni delivery custody only. No task labels/quality/reward.",
+  "recorded_at_utc": "2026-10-03T07:22:23.396769+00:00",
+  "schema": "saea-extra5-engineering-structural-acceptance-v1",
+  "total_rows": 12,
+  "worker": "/home/chao/saea-worktrees/codex-system-text-extra5-engineering-v1"
+}

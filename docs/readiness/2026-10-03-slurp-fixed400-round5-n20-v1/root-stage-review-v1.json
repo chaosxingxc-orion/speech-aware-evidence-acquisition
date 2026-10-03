@@ -1,0 +1,15 @@
+{
+  "family_id": "fixed400-text-round5-n20-v1",
+  "member_bindings_sha256": "21ba5a480985dad0c68662c6bb0f6849cf7aa6cfab8a07635cffdfe11ab6cdb8",
+  "pool_sample_ids_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "prior_complete_read_ids": [
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1"
+  ],
+  "proposal_protocol_sha256": "9be8b36d4c3100cd61fa1c61b85dbeb8d5afd37a07e11d61dcef7a5df282a2af",
+  "rationale": "Remain at20 after earlier complete root read found no stable benefit. Evaluate the exact spent round5 proposals once, preserving both L no-change identities and both blind Solver hypotheses. Three distinct policies now pass actual capacity and structural engineering. Candidate2 retains two raw non-strict task JSON replies in seven Solver visits, handled by the existing normalizer; measure this known defect without silently editing its proposal. No knowledge rebuild, scale increase, replacement allocation, formal adoption or learning claim. Complete all eight before scientific read; export only qualified L evidence for prospective learning.",
+  "recorded_at_utc": "2026-10-03T07:23:27.076497+00:00",
+  "reviewer": "ChatGPT root",
+  "rows_per_member": 20,
+  "schema": "saea-fixed400-panel-stage-review-v1",
+  "status": "completed"
+}
