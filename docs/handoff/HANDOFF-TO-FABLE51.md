@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Both role-context structural proofs accepted, 2026-10-03T13:43:33.585350+00:00
+
+Both four-row workers completed normally at 2026-10-03T13:42:56Z on frozen 4ab00128df468ce7c49a857beb8aeda0aca5c1c0. [Complete acceptance](../receipts/continuation/2026-10-03-context-matrix-structural-complete.json) preserves 50 model contacts, 200 actual FIT endpoints, exact original request/body/layout joins, valid visible Reviewer handoffs and eight Omni terminal deliveries. All eight original sample timing records are complete; node measurements retain exact source coverage. No task quality or official score was read.
+
+These are structural proofs with inherited cache state, not a controlled speedup or quality result. Compare all-sample mean, first admitted sample and remaining-sample mean alongside official quality and reliable delivery in the next separately admitted matrix. Do not force common role prompts, permanent role slots or cache-hit thresholds. Cache reuse remains diagnostic; independent node contexts and explicit handoffs are retained.
+
+Windows task exited normally; owned workers exited, STOP and flight lease are absent, and frozen source is clean. Engineering attempts remain intentionally OPENED with completed generations and prepared scoring specifications only; never score, reseal or retry them. Root works directly without subagents. Next 8x20 remains HELD pending exact root review and registration; learning HELD, heartbeat PAUSED, human review before 8x400.
+
 ## Two role-context structural proofs launched, 2026-10-03T13:37:44.108852+00:00
 
 Root launched the exact two4-row workers through Windows SAEA-Batch-Driver,epoch2026-10-03T13:37:07Z,on frozen4ab00128df468ce7c49a857beb8aeda0aca5c1c0. [Launch evidence](../receipts/continuation/2026-10-03-context-matrix-structural-launch.json) binds clean source,registration/runtime/warm composition checks,original role text hashes,actual executor roster and normal completed-control archive. Maximum104 model contacts/416 actual FIT endpoints,zero official scoring. Service/cache settings and independent role texts remain fixed;the comparison varies content placement with exact role routing. Original sample timing is now recorded,not reconstructed from contact sums.

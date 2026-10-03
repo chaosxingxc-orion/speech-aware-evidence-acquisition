@@ -1,0 +1,311 @@
+{
+  "at_utc": "2026-10-03T13:43:33.585350+00:00",
+  "closure_verification": {
+    "relpath": "coordination/context-matrix-structural-owner227-v1/closure-checks-v1.json",
+    "results_ledger_advisories": "202, byte-identical to preclosure checkout; no new finding",
+    "sha256": "6b1f5ab9d4e524de821c7b18e70c96d5bb0a6d8433292c8b0aa6199236dbf36d"
+  },
+  "commit": "4ab00128df468ce7c49a857beb8aeda0aca5c1c0",
+  "driver_completed_at": "2026-10-03T13:42:56Z",
+  "heartbeat": "PAUSED",
+  "intentional_lifecycle": "OPENED engineering attempts; COMPLETED generation with prepared score specifications only. Never score,reseal or retry.",
+  "learning": "HELD",
+  "measurement_limits": "Four rows per configuration with inherited cache state, no controlled quality or speedup conclusion. First admitted sample is not a guaranteed cold start and the remaining samples are not guaranteed warm.",
+  "members": [
+    {
+      "actual_request_fit_receipts": 25,
+      "attempt": {
+        "relpath": "attempts/SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1/attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-generation-v1.json",
+        "sha256": "3824522d384333ddf3635e3134c92f86ad4e9343028e505672ae4b04da8e89f2"
+      },
+      "label": "legacy-role",
+      "model_contacts": 25,
+      "omni_terminal_deliveries": 4,
+      "original_sample_timings": 4,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1",
+      "sample_timing": {
+        "admission_wait": {
+          "count": 4,
+          "mean_seconds": 0.37279876075,
+          "p50_seconds": 0.4945571315,
+          "p95_seconds": 0.502010576
+        },
+        "after_first_slot_count_admissions": {
+          "count": 0,
+          "mean_seconds": null,
+          "p50_seconds": null,
+          "p95_seconds": null
+        },
+        "all_samples": {
+          "count": 4,
+          "mean_seconds": 69.3914440505,
+          "p50_seconds": 72.7184634555,
+          "p95_seconds": 81.875904503
+        },
+        "available": true,
+        "batch_dispatch_wall_seconds": 82.373464249,
+        "batch_dispatch_wall_seconds_per_sample": 20.59336606225,
+        "cold_start_limit": "First slot-count admissions are a diagnostic group, not a proven cold wave; the remaining samples are not guaranteed warm. No slow-sample trimming.",
+        "completed_samples": 4,
+        "content_sha256": "2bde05c9327b45dfe9d537eddaaaa8278023f73ef559e451c54e1d690af2956b",
+        "eligible_for_efficiency_comparison": true,
+        "excluding_first": {
+          "count": 3,
+          "mean_seconds": 75.77094380466667,
+          "p50_seconds": 76.824499196,
+          "p95_seconds": 81.875904503
+        },
+        "failed_samples": 0,
+        "first_admitted_sample": {
+          "admission_index": 0,
+          "admission_wait_seconds": 7.0204e-05,
+          "elapsed_seconds": 50.252944788,
+          "error_type": null,
+          "sample_id": "slurp:train:003560:audio-1501686037",
+          "status": "completed",
+          "timing_record_sha256": "ac4b7470cd8d88f68fd2f75fbb258ce11207914983a69e58e90d68a91faed282"
+        },
+        "first_sample_rule": "First admitted roster member, regardless of finish order; exclude exactly this member from the separately reported remaining-sample mean.",
+        "first_slot_count_admissions": {
+          "count": 4,
+          "mean_seconds": 69.3914440505,
+          "p50_seconds": 72.7184634555,
+          "p95_seconds": 81.875904503
+        },
+        "quality_constraint": "Executor completion does not establish answer correctness or reliability. Compare official task quality and delivery reliability alongside latency; cache reuse is diagnostic only.",
+        "queue_depth": 16,
+        "samples": [
+          {
+            "admission_index": 0,
+            "admission_wait_seconds": 7.0204e-05,
+            "elapsed_seconds": 50.252944788,
+            "error_type": null,
+            "sample_id": "slurp:train:003560:audio-1501686037",
+            "status": "completed",
+            "timing_record_sha256": "ac4b7470cd8d88f68fd2f75fbb258ce11207914983a69e58e90d68a91faed282"
+          },
+          {
+            "admission_index": 1,
+            "admission_wait_seconds": 0.491554517,
+            "elapsed_seconds": 68.612427715,
+            "error_type": null,
+            "sample_id": "slurp:train:005407:audio-1502374837",
+            "status": "completed",
+            "timing_record_sha256": "d12e5a96f540ee7d7f1207d1eff1988ca2a85a874b2defd8a40581fc65b4f2c4"
+          },
+          {
+            "admission_index": 2,
+            "admission_wait_seconds": 0.497559746,
+            "elapsed_seconds": 81.875904503,
+            "error_type": null,
+            "sample_id": "slurp:train:005513:audio-1494513310",
+            "status": "completed",
+            "timing_record_sha256": "30892f9bece12132ec636aef7ca9f9ca878411f5ce717ad0f0fb28255394a3d1"
+          },
+          {
+            "admission_index": 3,
+            "admission_wait_seconds": 0.502010576,
+            "elapsed_seconds": 76.824499196,
+            "error_type": null,
+            "sample_id": "slurp:train:011838:audio-1490369500",
+            "status": "completed",
+            "timing_record_sha256": "73eb8d1a2a0b3b479ffb590b9e571d9fe195a0665ddd84ef851435fd77cce268"
+          }
+        ],
+        "schema": "saea-system-sample-timing-v1",
+        "slot_count": 4,
+        "timing_scope": "Monotonic admission-to-settled-workflow wall time includes internal model/tool waits, FIT and cleanup. Pre-admission wait is separate. Roster preparation, final persistence and official scoring are excluded. Batch wall per sample measures throughput, not individual latency."
+      },
+      "tokenizer_endpoints": 100,
+      "valid_visible_reviewer_handoffs": 7
+    },
+    {
+      "actual_request_fit_receipts": 25,
+      "attempt": {
+        "relpath": "attempts/SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1/attempt-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-generation-v1.json",
+        "sha256": "e1f3187537bb436a0402a48a40a7573d7a89fb3fb60b77e4f1301b5419e3d854"
+      },
+      "label": "before-speech-role",
+      "model_contacts": 25,
+      "omni_terminal_deliveries": 4,
+      "original_sample_timings": 4,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1",
+      "sample_timing": {
+        "admission_wait": {
+          "count": 4,
+          "mean_seconds": 0.339422773,
+          "p50_seconds": 0.4502125575,
+          "p95_seconds": 0.457209046
+        },
+        "after_first_slot_count_admissions": {
+          "count": 0,
+          "mean_seconds": null,
+          "p50_seconds": null,
+          "p95_seconds": null
+        },
+        "all_samples": {
+          "count": 4,
+          "mean_seconds": 72.15771019075,
+          "p50_seconds": 75.7928651355,
+          "p95_seconds": 91.793484154
+        },
+        "available": true,
+        "batch_dispatch_wall_seconds": 92.2506932,
+        "batch_dispatch_wall_seconds_per_sample": 23.0626733,
+        "cold_start_limit": "First slot-count admissions are a diagnostic group, not a proven cold wave; the remaining samples are not guaranteed warm. No slow-sample trimming.",
+        "completed_samples": 4,
+        "content_sha256": "14168313f283f27d03733488918ab18b5e455d8f73e86d37e5e8885a990bd80a",
+        "eligible_for_efficiency_comparison": true,
+        "excluding_first": {
+          "count": 3,
+          "mean_seconds": 74.70268631933332,
+          "p50_seconds": 87.062948466,
+          "p95_seconds": 91.793484154
+        },
+        "failed_samples": 0,
+        "first_admitted_sample": {
+          "admission_index": 0,
+          "admission_wait_seconds": 5.6931e-05,
+          "elapsed_seconds": 64.522781805,
+          "error_type": null,
+          "sample_id": "slurp:train:003560:audio-1501686037",
+          "status": "completed",
+          "timing_record_sha256": "723da7820c2d70fbec3a5d2970d85666ab3224ab88d0b70d48b343aa29deb35a"
+        },
+        "first_sample_rule": "First admitted roster member, regardless of finish order; exclude exactly this member from the separately reported remaining-sample mean.",
+        "first_slot_count_admissions": {
+          "count": 4,
+          "mean_seconds": 72.15771019075,
+          "p50_seconds": 75.7928651355,
+          "p95_seconds": 91.793484154
+        },
+        "quality_constraint": "Executor completion does not establish answer correctness or reliability. Compare official task quality and delivery reliability alongside latency; cache reuse is diagnostic only.",
+        "queue_depth": 16,
+        "samples": [
+          {
+            "admission_index": 0,
+            "admission_wait_seconds": 5.6931e-05,
+            "elapsed_seconds": 64.522781805,
+            "error_type": null,
+            "sample_id": "slurp:train:003560:audio-1501686037",
+            "status": "completed",
+            "timing_record_sha256": "723da7820c2d70fbec3a5d2970d85666ab3224ab88d0b70d48b343aa29deb35a"
+          },
+          {
+            "admission_index": 1,
+            "admission_wait_seconds": 0.447356111,
+            "elapsed_seconds": 45.251626338,
+            "error_type": null,
+            "sample_id": "slurp:train:005407:audio-1502374837",
+            "status": "completed",
+            "timing_record_sha256": "3fcc5468b75e307cd7c161fdc752babfcede30939fe215c15d11d3aae5a07f36"
+          },
+          {
+            "admission_index": 2,
+            "admission_wait_seconds": 0.453069004,
+            "elapsed_seconds": 87.062948466,
+            "error_type": null,
+            "sample_id": "slurp:train:005513:audio-1494513310",
+            "status": "completed",
+            "timing_record_sha256": "83b4dca93309cd1ea6b64fe7fd375605d1c9ab90c549064bd16dd80101c27ab0"
+          },
+          {
+            "admission_index": 3,
+            "admission_wait_seconds": 0.457209046,
+            "elapsed_seconds": 91.793484154,
+            "error_type": null,
+            "sample_id": "slurp:train:011838:audio-1490369500",
+            "status": "completed",
+            "timing_record_sha256": "f2a681bc45dd2615230fe1b4a7a413f7addaab07ebe1b2ea7c6dcd544c20ba62"
+          }
+        ],
+        "schema": "saea-system-sample-timing-v1",
+        "slot_count": 4,
+        "timing_scope": "Monotonic admission-to-settled-workflow wall time includes internal model/tool waits, FIT and cleanup. Pre-admission wait is separate. Roster preparation, final persistence and official scoring are excluded. Batch wall per sample measures throughput, not individual latency."
+      },
+      "tokenizer_endpoints": 100,
+      "valid_visible_reviewer_handoffs": 7
+    }
+  ],
+  "model_contacts": 50,
+  "next_panel_admitted": false,
+  "no_optimizer_export": true,
+  "no_task_quality_read": true,
+  "official_scorer_contacts": 0,
+  "post_completion_windows_free_gib": 17.422298431396484,
+  "resources": [
+    {
+      "events": {
+        "relpath": "coordination/process-guard/smoke-1-slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1-20261003T133737Z/events.jsonl",
+        "sha256": "cf17d905c003854436146e98fd90ac850a9f27a7f12282fa8ab1446aad100dad"
+      },
+      "finished": {
+        "relpath": "coordination/process-guard/smoke-1-slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1-20261003T133737Z/finished.json",
+        "sha256": "93c90fd2cbb9013c82be3c806b36426429cea8a8b68c9d3b8b9c2fc606ebeecc"
+      },
+      "minimum_sampled_running_gib": 15.894847869873047,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1",
+      "running_samples": 22,
+      "startup_gib": 16.920246124267578,
+      "worker_exited": true,
+      "worker_pid": 506708
+    },
+    {
+      "events": {
+        "relpath": "coordination/process-guard/smoke-2-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-v1-20261003T134028Z/events.jsonl",
+        "sha256": "72f433b2ae66ccc98a4ac680d88a8cfa9632da7a6da9a44f4bc67fcba0fed8ef"
+      },
+      "finished": {
+        "relpath": "coordination/process-guard/smoke-2-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-v1-20261003T134028Z/finished.json",
+        "sha256": "e5ff0fa4d6c009938c7e02ff299ce023e9eff40a0365c7d0a16b60b106f87759"
+      },
+      "minimum_sampled_running_gib": 15.800567626953125,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1",
+      "running_samples": 24,
+      "startup_gib": 16.968605041503906,
+      "worker_exited": true,
+      "worker_pid": 507335
+    }
+  ],
+  "root_direct_execution": true,
+  "schema": "saea-context-matrix-structural-complete-v1",
+  "source_evidence": [
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "f1d3222d235bc998613f5b63d44511b20f85fce1e0f1f485a988cc2e6e60807c"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/structural-audit-v1.py",
+      "sha256": "2fd3c27ab734912e993b561544fa44d1f5a4efc81db878aa958426265ac3e0df"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/root-node-timing-v1.json",
+      "sha256": "4b0cf4b259cb05d172364f5d60c9c4fb8ca62f01fd0a2457b0825977a4e044d9"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/root-node-timing-v1.py",
+      "sha256": "c128fcf7382bbd06f222e7c87b6bd3b2ea1cccc0d6d344504ee0525d429ff5e6"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/resources-and-accounting-v1.json",
+      "sha256": "94b44733a7fec8b57f29753cd20dadcc7c8d63d978c845720ed225bd4c8c4c13"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/resources-and-accounting-v1.py",
+      "sha256": "55f751e5b549164824a2a8207d195807575ea468e6a91543f5537f84e317dfdc"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/windows-completion-v1.json",
+      "sha256": "f70d60b7ccb1d4b859e9f39a5a8454875d6c3e10c4e60be785147d37b98619df"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/frozen-check-v1.json",
+      "sha256": "02ba5e832c8999104852c83fdc2406ccdab1d32d54aa5bbd0a50915cc13374d2"
+    }
+  ],
+  "status": "COMPLETE structural acceptance and original numeric timing only",
+  "tokenizer_endpoints": 200,
+  "worker": "/home/chao/saea-worktrees/codex-context-matrix-structural-v1"
+}
