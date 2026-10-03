@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Fixed-policy prefix scheduling panel launched,2026-10-03T10:36:03Z
+
+The independent Windows SAEA-Batch-Driver is executing the exact four-member20 panel on frozen4c98cbf8d. All four clean frozen runtime and registration checks passed. Startup memory met12.5GiB for three observations over21.95seconds; the running floor remains8GiB. Revalidated driver464277 and server942. [Launch and control custody](../receipts/continuation/2026-10-03-prefix-affinity-n20-launch.json).
+
+Inspect all four operational members. Preserve policies/role texts/knowledge/source assets and frozen worker through unique official scoring. The complete-family READ stays unsigned until all80 trajectories independently finalize with verified seals, exactly one successful official score per member and zero failed jobs. No partial quality/cache analysis or optimizer export. The SLURP heartbeat remains PAUSED;10-second telemetry continues. Root reviews this20-stage measurement; no automatic scale/adoption and human review remains before8x400.
+
 ## Fixed-policy cache scheduling panel prepared
 
 Root227 registered four new20 members in trajectory, role, role-A/A, trajectory-A/A order. All four registration gates pass; actual role/policy/tool/knowledge semantics and prepared selection outputs equal the existing CONTROL2 seed. Only native prefix-slot scheduling differs. [Preparation](../receipts/continuation/2026-10-03-prefix-affinity-n20-prepared.json) and [analysis contract](../readiness/2026-10-03-slurp-prefix-affinity-n20-v1/analysis-recipe-v1.json). Clean frozen runtime checks remain before launch. The initial zero-contact metadata refusal and superseding explicit FIT eligibility are preserved outside the worker.
