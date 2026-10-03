@@ -1,0 +1,87 @@
+{
+  "contacts_added_by_audit": 0,
+  "fit_endpoint_contacts": 4036,
+  "fit_request_receipts": 1009,
+  "generation_contacts": 1009,
+  "members": [
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 500,
+      "fit_request_receipts": 125,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-FIT-V1",
+      "generation_contacts": 125,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1",
+      "member": "B-candidate-1"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 524,
+      "fit_request_receipts": 131,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-FIT-V1",
+      "generation_contacts": 131,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1",
+      "member": "B-candidate-2"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 476,
+      "fit_request_receipts": 119,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-FIT-V1",
+      "generation_contacts": 119,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1",
+      "member": "B-parent"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 488,
+      "fit_request_receipts": 122,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-FIT-V1",
+      "generation_contacts": 122,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1",
+      "member": "B-parent-aa"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 536,
+      "fit_request_receipts": 134,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-FIT-V1",
+      "generation_contacts": 134,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1",
+      "member": "L-candidate-1"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 536,
+      "fit_request_receipts": 134,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-FIT-V1",
+      "generation_contacts": 134,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1",
+      "member": "L-candidate-2"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 500,
+      "fit_request_receipts": 125,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-FIT-V1",
+      "generation_contacts": 125,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1",
+      "member": "L-parent"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 476,
+      "fit_request_receipts": 119,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-FIT-V1",
+      "generation_contacts": 119,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "member": "L-parent-aa"
+    }
+  ],
+  "official_score_jobs": 8,
+  "recorded_at_utc": "2026-10-03T08:33:15.738832+00:00",
+  "schema": "saea-panel-contact-accounting-receipt-v1",
+  "source_index": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/contact-accounting.json",
+    "sha256": "e8a77109c63ef2466e6cf3bd64cad86aec2af4ec3bb5d2d546356dc416c4f865"
+  }
+}

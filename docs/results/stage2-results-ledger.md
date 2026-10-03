@@ -1896,3 +1896,7 @@ Root reverified all eight qualified20-row members and the exact existing READ. A
 ## 2026-10-03: owner225 context20 recovery — EXPLORATORY, NO ADOPTION
 
 All four20-row systems finalized/sealed/scored once and the exact root READ is complete. Seed/A/A/Planner/Solver SLU-F1 is58.3942/55.1724/60.9298/57.0846%; intent70% and reliable completion100% throughout. Planner minus seed +2.5356pp CI95[-0.1701,+9.0435]; no stable gain. Solver has8/37 non-strict raw responses and one exact repair/one damage. Root stays at20 for repair; larger prepared panels remain HELD. [All strata, costs and source diagnostics](2026-10-03-slurp-context20-recovery1-root-read.md). No optimizer export or blind feedback.
+
+## 2026-10-03: round5 complete8x20 - NO QUALIFIED REPLACEMENT
+
+All160 trajectories finalized/sealed/scored once; exact root READ complete. Both L proposals are no-change, so favorable draws do not show learning. B candidates show no qualified improvement; parent stays. All283 Reviewer handoffs are visible, but28 raw Solver shape defects and19 non-slot findings remain. Root stays at20 and admits prospective coherent-feedback preparation with complete L-only feedback. [All metrics, uncertainty, strata, costs and root disposition](2026-10-03-slurp-round5-n20-root-read.md). No automatic scale growth or held-carrier release.

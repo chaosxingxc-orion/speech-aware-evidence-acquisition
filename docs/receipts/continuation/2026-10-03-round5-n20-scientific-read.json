@@ -1,0 +1,125 @@
+{
+  "artifacts": {
+    "contact-accounting.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/contact-accounting.json",
+      "sha256": "e8a77109c63ef2466e6cf3bd64cad86aec2af4ec3bb5d2d546356dc416c4f865"
+    },
+    "evidence.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/evidence.json",
+      "sha256": "8c6ebd8bb43fe0f7102cdda08db044567e1b5477307dcccefda36483823e8dfa"
+    },
+    "family.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/family.json",
+      "sha256": "e483b465bf12e7af61fbd8743139baf641c26f313650c73fab97ded704c18f27"
+    },
+    "learning-feedback.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/learning-feedback.json",
+      "sha256": "1054e2e27c850f27e0a59de7c486df5a88288f0b990af377d1d227762228a5c1"
+    },
+    "postcall-audit.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/postcall-audit.json",
+      "sha256": "802efc3af2c44d52d7250eb62cbbaa4766cd5e95ff60bea3ad6397e26a6a788e"
+    },
+    "report.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/report.json",
+      "sha256": "f43ed91634a570972b025dcacdbd3771fe3ed221b1ea77ee179c38626fa8fb6c"
+    }
+  },
+  "automatic_expansion": false,
+  "complete_members": 8,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decision": "Retain the original seed as formal parent in both branches; do not adopt a favorable no-change or A/A realization. Remain at20. Prospectively register round6 with the tested coherent-feedback-v1 presentation and the newly qualified complete L-only source, preserving all20 spent proposal slots and unchanged proposer model/budgets. Inspect all resulting proposals, including no-change or invalid ones, before exact next-panel admission. No automatic50/100/200 increase; human review remains required before8x400.",
+  "family_id": "fixed400-text-round5-n20-v1",
+  "formal_adoption": false,
+  "learning_export": "Complete L-only projection; no root/B/milestone/test diagnostic export.",
+  "mechanism_counts": {
+    "extra_solver_revisions": 123,
+    "findings": 371,
+    "findings_with_non_slot_identifiers": 19,
+    "first_to_last_solver_text_changed": 31,
+    "perception_visits": 160,
+    "planner_visits": 283,
+    "review_handoffs_not_visible_to_planner": 0,
+    "review_handoffs_visible_to_planner": 283,
+    "reviewer_visits": 283,
+    "reviews_valid": 283,
+    "solver_not_strict_task_json": 28,
+    "solver_strict_task_json": 255,
+    "solver_text_tool_markers": 25,
+    "solver_visits": 283
+  },
+  "official_summaries": {
+    "B-candidate-1": {
+      "intent": 0.7,
+      "model_calls": 125,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5892481346852878,
+      "tool_calls": 0
+    },
+    "B-candidate-2": {
+      "intent": 0.7,
+      "model_calls": 131,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.6031233171782445,
+      "tool_calls": 0
+    },
+    "B-parent": {
+      "intent": 0.7,
+      "model_calls": 119,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.6031233171782445,
+      "tool_calls": 0
+    },
+    "B-parent-aa": {
+      "intent": 0.7,
+      "model_calls": 122,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.6397784317119612,
+      "tool_calls": 0
+    },
+    "L-candidate-1": {
+      "intent": 0.7,
+      "model_calls": 134,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5854678515420805,
+      "tool_calls": 0
+    },
+    "L-candidate-2": {
+      "intent": 0.75,
+      "model_calls": 134,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.6231664137582195,
+      "tool_calls": 0
+    },
+    "L-parent": {
+      "intent": 0.7,
+      "model_calls": 125,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5940212150433944,
+      "tool_calls": 0
+    },
+    "L-parent-aa": {
+      "intent": 0.65,
+      "model_calls": 119,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5638766519823789,
+      "tool_calls": 0
+    }
+  },
+  "read_authority": {
+    "ledger_row_sha256": "ccd9bf459da96c874be8cf21cbbc7aeb735fe7e524b92bc7e5cdf25fcf3d1d1b",
+    "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/analysis-recipe-v1.json",
+      "sha256": "7d44b7a35919b7d6de7d806b57d3c8ae4c7258571de02f10fcab4e340c853030"
+    }
+  },
+  "read_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "recorded_at_utc": "2026-10-03T08:33:15.738832+00:00",
+  "schema": "saea-root-complete-panel-scientific-read-v1",
+  "total_trajectories": 160
+}

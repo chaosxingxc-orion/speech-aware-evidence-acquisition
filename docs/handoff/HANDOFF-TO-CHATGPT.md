@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round5 complete8x20 and root READ, 2026-10-03T08:33:15.738832+00:00
+
+All eight20-row members finalized with verified seals, one successful official complete score each and zero failed jobs; driver ended08:28:09Z. Frozen406eda8cc and all old bytes remain unchanged. Root READ and qualified L-only projection are complete. [Root report](../results/2026-10-03-slurp-round5-n20-root-read.md); [qualification](../receipts/continuation/2026-10-03-round5-n20-family-qualified.json). Actual1009 model contacts,1009 FIT receipts and4036 tokenizer endpoints. No replay.
+
+Both L proposals are no-change; their point gains are not learning. Neither B Solver policy provides a qualified replacement. All283 Reviewer handoffs are visible;28 raw Solver shape defects and19 non-slot findings remain. Keep seed as formal parent and remain at20. Next prospectively register round6 with the tested coherent-feedback view and complete own-L evidence; all20 old slots remain spent, B stays feedback-free. No new allocation/contact at this checkpoint.24 larger prepared slots stay held; human review before8x400. Other carrier holds remain. Expected idle resident service is not an outage. Monitor never reads quality, countersigns, dispatches or recovers.
+
 ## Round5 eight-member20 launched; coherent feedback base tested, 2026-10-03T07:42:55.799589+00:00
 
 Windows SAEA-Batch-Driver epoch07:40:22Z began the first campaign07:40:50Z from frozen406eda8cc at `/home/chao/saea-worktrees/codex-system-text-round5-n20-supply-v2`. All eight frozen checks pass after the recorded precontact supply-binding correction; original artifacts remain unchanged. First member OPENED, GPU92%, four slots busy, Windows13.64GiB. [Launch custody](../receipts/continuation/2026-10-03-round5-n20-launch.json). Complete160 trajectories and all eight seals/unique scores before exact READ; no partial quality or scale decision.
@@ -757,7 +763,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T04:42:41.810959+00:00
+Last refreshed: 2026-10-03T08:34:01.008168+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

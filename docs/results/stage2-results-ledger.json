@@ -2590,7 +2590,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -7077,6 +7077,25 @@
         "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1",
         "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1",
         "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1"
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "cell_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+      "status": "EXPLORATORY-FIXED-POOL-NO-ADOPTION",
+      "source": "docs/results/2026-10-03-slurp-round5-n20-root-read.md",
+      "source_sha256": "c25d8339ded2ed0f7d926e6147a551cfbec1085103f7253192fab27f7d7be3f2",
+      "receipt": "docs/receipts/continuation/2026-10-03-round5-n20-scientific-read.json",
+      "meaning": "Retain the original seed as formal parent in both branches; do not adopt a favorable no-change or A/A realization. Remain at20. Prospectively register round6 with the tested coherent-feedback-v1 presentation and the newly qualified complete L-only source, preserving all20 spent proposal slots and unchanged proposer model/budgets. Inspect all resulting proposals, including no-change or invalid ones, before exact next-panel admission. No automatic50/100/200 increase; human review remains required before8x400.",
+      "run_ids": [
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1"
       ]
     }
   ],
