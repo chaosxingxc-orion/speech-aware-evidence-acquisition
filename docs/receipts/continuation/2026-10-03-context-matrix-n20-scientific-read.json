@@ -1,0 +1,173 @@
+{
+  "schema": "saea-context-matrix-root-scientific-read-v1",
+  "at_utc": "2026-10-03T15:39:49.449374+00:00",
+  "read_authority": {
+    "ledger_row_sha256": "d05c047ab7fab7d1ec40c1f3a4e61d7d828feb2800e1e3e42e973b71bc784543",
+    "read_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/analysis-recipe-v1.json",
+      "sha256": "fa33acfbd61e428b0bae27eb7c184fc5cadac84479febfb23bac3ca1c2d82644"
+    }
+  },
+  "status": "DESCRIPTIVE ENGINEERING COMPARISON; NO FORMAL ADOPTION OR LEARNING CLAIM",
+  "decision": "Retain legacy query placement with trajectory scheduling as the next engineering basis, while keeping independent node instructions and explicit source-bound handoffs. This is a sampling/design choice, not formal adoption or proof of an optimum. Prepare a separate20-input context-content comparison crossing constant/per-role tool-schema display with full/latest-Solver-and-local-tools Reviewer history, with an own repeat for each configuration. Keep seed text, legal actions, revision budget, knowledge, task assets, service geometry and original sample timing fixed. Register fresh identities, maximum legal request FIT, required four-row structural proof and exact whole-family READ before execution. Do not scale to50 or start learning automatically; root reviews the next complete panel. The human boundary remains8x400.",
+  "complete_members": 8,
+  "trajectories": 160,
+  "input_clusters": 20,
+  "formal_adoption": false,
+  "optimizer_export": false,
+  "automatic_scaling": false,
+  "learning_held": true,
+  "heartbeat": "PAUSED",
+  "report_content_sha256": "1d2748c87db1e2a48f02ded1f9f3d2dcb1f5661f5ffa525da870cc5319fad009",
+  "artifacts": {
+    "report.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/context-matrix-n20-owner227-v1/report.json",
+      "sha256": "6f57c9da17a108cc99ca21ead116fdb4eca298e107eb2eb225c2c2d225117bc2"
+    },
+    "numeric-evidence.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/context-matrix-n20-owner227-v1/numeric-evidence.json",
+      "sha256": "d3ac9f48c4f14b2f7ba9cfe67a1b6912ccb43ca27a7007dfa4e664636f916ae0"
+    },
+    "README.md": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/context-matrix-n20-owner227-v1/README.md",
+      "sha256": "215fc64c3fbaa8dbd982937473e4f86d794b80871cba1bcb460ab31636dd272d"
+    },
+    "postcall-diagnostics-v1.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/context-matrix-n20-owner227-v1/postcall-diagnostics-v1.json",
+      "sha256": "745287d6efa159256c5254b0ab3e1dcc0f4f97106e2e47a6a7bd629ee8d050b6"
+    }
+  },
+  "coordination_evidence": {
+    "family-qualified-v1.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-n20-owner227-v1/family-qualified-v1.json",
+      "sha256": "b306ae20de6a83d81c787c9d8c0b5633a7ffa8f026d1bbb20d646c4f8db3fa8d"
+    },
+    "root-read-countersignature-v1.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-n20-owner227-v1/root-read-countersignature-v1.json",
+      "sha256": "c83054f1c442b7fb37070a6a8e8855e119f4edef92d948867b58eede0ccba0e6"
+    },
+    "driver-closure-v1.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-n20-owner227-v1/driver-closure-v1.json",
+      "sha256": "d2a552401f1024a5ea35fa99a66a85df71757a9f87783b006570cbbb443bbf15"
+    },
+    "joint-reader-v1.exit.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-n20-owner227-v1/joint-reader-v1.exit.json",
+      "sha256": "f434c07753d41b6da590cfbca9c2b021777d64b7a3aab77cebfdadd3a9fa9e38"
+    },
+    "joint-reader-v1.stdout.txt": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-n20-owner227-v1/joint-reader-v1.stdout.txt",
+      "sha256": "90cbef9afbc85e5bb74c20c13c33d9007466c53be039d9f9ce585192eb1e6934"
+    },
+    "joint-reader-v1.stderr.txt": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-n20-owner227-v1/joint-reader-v1.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "scientific_report": {
+    "relpath": "docs/results/2026-10-03-slurp-context-matrix-n20-root-read.md",
+    "sha256": "dcebcc98e2c6a77491f6af7a4b3cfef2c9f50eaa1af4a24396732d9bf8a71888"
+  },
+  "official_and_latency": {
+    "LT-P": {
+      "slu_f1": 0.6018269747447608,
+      "intent": 0.75,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 89.01970487825,
+      "first_admitted_seconds": 45.394744452,
+      "remaining_samples_mean_seconds": 91.315755427,
+      "model_calls": 131,
+      "tool_calls": 0
+    },
+    "LT-A": {
+      "slu_f1": 0.6127828898284009,
+      "intent": 0.7,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 106.51634995465,
+      "first_admitted_seconds": 60.232649697,
+      "remaining_samples_mean_seconds": 108.95233417873683,
+      "model_calls": 134,
+      "tool_calls": 0
+    },
+    "BT-P": {
+      "slu_f1": 0.5073524287406789,
+      "intent": 0.5,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 233.06755245009998,
+      "first_admitted_seconds": 124.945715382,
+      "remaining_samples_mean_seconds": 238.75817545368423,
+      "model_calls": 125,
+      "tool_calls": 0
+    },
+    "BT-A": {
+      "slu_f1": 0.5805116579457237,
+      "intent": 0.65,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 261.0360052159,
+      "first_admitted_seconds": 105.477893297,
+      "remaining_samples_mean_seconds": 269.2232742642632,
+      "model_calls": 131,
+      "tool_calls": 0
+    },
+    "LR-P": {
+      "slu_f1": 0.5784037558685448,
+      "intent": 0.7,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 265.3621003234,
+      "first_admitted_seconds": 57.128488688,
+      "remaining_samples_mean_seconds": 276.3217640936842,
+      "model_calls": 122,
+      "tool_calls": 0
+    },
+    "LR-A": {
+      "slu_f1": 0.5951690821256038,
+      "intent": 0.7,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 286.1640641936,
+      "first_admitted_seconds": 56.331176914,
+      "remaining_samples_mean_seconds": 298.2605319451579,
+      "model_calls": 125,
+      "tool_calls": 0
+    },
+    "BR-P": {
+      "slu_f1": 0.5367357632922652,
+      "intent": 0.65,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 319.10941737564997,
+      "first_admitted_seconds": 131.891026121,
+      "remaining_samples_mean_seconds": 328.96301691536837,
+      "model_calls": 131,
+      "tool_calls": 0
+    },
+    "BR-A": {
+      "slu_f1": 0.6026490066225165,
+      "intent": 0.65,
+      "reliable_completion_rate": 1.0,
+      "all_samples_mean_seconds": 315.8325842485,
+      "first_admitted_seconds": 104.844539875,
+      "remaining_samples_mean_seconds": 326.93721816289474,
+      "model_calls": 131,
+      "tool_calls": 0
+    }
+  },
+  "structural_counts": {
+    "model_contacts": 1030,
+    "valid_review_handoffs": 290,
+    "illegal_planner_actions": 0,
+    "rows_revised": 130,
+    "revision_limit_deliveries": 104,
+    "normalizer_changed_rows": 16
+  },
+  "source_audit": {
+    "verified_original_requests": 1030,
+    "verified_original_fit_receipts": 1030,
+    "output_reserve_tokens": 512,
+    "server_slot_assignment_verified": false
+  },
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "proposer": 0,
+    "scorer": 0
+  }
+}

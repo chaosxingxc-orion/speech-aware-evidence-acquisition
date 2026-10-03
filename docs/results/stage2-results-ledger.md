@@ -1900,3 +1900,8 @@ All four20-row systems finalized/sealed/scored once and the exact root READ is c
 ## 2026-10-03: round5 complete8x20 - NO QUALIFIED REPLACEMENT
 
 All160 trajectories finalized/sealed/scored once; exact root READ complete. Both L proposals are no-change, so favorable draws do not show learning. B candidates show no qualified improvement; parent stays. All283 Reviewer handoffs are visible, but28 raw Solver shape defects and19 non-slot findings remain. Root stays at20 and admits prospective coherent-feedback preparation with complete L-only feedback. [All metrics, uncertainty, strata, costs and root disposition](2026-10-03-slurp-round5-n20-root-read.md). No automatic scale growth or held-carrier release.
+
+
+## 2026-10-03: complete context matrix8x20 - descriptive engineering choice
+
+All160 trajectories finalized/sealed/scored once; exact root READ complete. Legacy trajectory observed mean sample89.0/106.5 seconds and SLU-F1 60.183/61.278%, versus233-319 seconds and50.735-60.265% for other configurations. All eight reliably deliver; quality uncertainty and own-repeat variation preclude formal benefit/adoption or a global optimum. Root retains this engineering basis and prepares independent tool-display/Reviewer-history choices at20, with new FIT/structural proof before execution. [All strata, both weightings, paired intervals, node/stage timing and post-call diagnosis](2026-10-03-slurp-context-matrix-n20-root-read.md). No learning export or automatic scaling.

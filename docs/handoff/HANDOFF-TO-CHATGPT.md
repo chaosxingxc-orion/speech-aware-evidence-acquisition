@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete context matrix read and next engineering basis, 2026-10-03T15:39:49.449374+00:00
+
+All eight20-input members finalized with verified seals, one unique complete official score each and zero failed jobs. Driver14:00:30Z completed15:21:07Z; exact root READ countersigned15:23:07Z and complete-source reader exited0. [Full report](../results/2026-10-03-slurp-context-matrix-n20-root-read.md) and [pinned receipt](../receipts/continuation/2026-10-03-context-matrix-n20-scientific-read.json) preserve quality, own-repeat intervals,13 scenarios, both weightings and original sample/node/stage timing. No new model/tokenizer/scorer/proposer contacts or optimizer export.
+
+Legacy trajectory observed89.0/106.5 seconds mean sample latency and60.183/61.278% SLU-F1, versus233-319 seconds and50.735-60.265% in other configurations. All160 reliably delivered, not100% correct. All1030 requests/FIT reservations with512 output tokens verified; actual server slot assignment unverified. All290 Reviewer handoffs valid,130 rows revised and104 delivered at the revision limit. First admitted sample faster than remaining19 mean; no cold/warm claim. Cache/order and20-input limits preclude stable benefit,no-harm,global optimality or learning.
+
+Root227 retains legacy trajectory as the next engineering basis and prepares constant/per-role tool display crossed with full/latest-Solver-and-local-tools Reviewer history, each with an own repeat. Keep independent node instructions; no prompt equality,cache floor or permanent role-slot rule. New registration,maximal-request FIT and four-row structural proof precede next20 launch; no automatic50 or learning. Frozen d8456cefe and completed controls preserved. Root only,no subagents;learning/ROUND8 HELD,heartbeat PAUSED,other-carrier holds unchanged,human before8x400. Revalidate resources/processes; last Windows16.26 GiB at15:24:42Z is historical.
+
 ## Independent node presentation options verified, 2026-10-03T15:14:37.843869+00:00
 
 The [shared compiler extension](../readiness/2026-10-03-node-context-presentation-v1/README.md) removes the mandatory common tool-display coupling when a new explicit context component owns that choice. It also exposes the existing source-checked Reviewer history scope. Other roles retain their existing history contracts; this is not complete arbitrary node-history freedom. Missing/off options preserve historical compiled bytes, tool authority and all eight current configuration hashes. Twenty-four prospective combinations compile and pass the ordinary parser. [Evidence](../receipts/continuation/2026-10-03-node-context-presentation-engineering.json):269 targeted tests pass,91.75 percent module coverage,all new helper statements covered,lint/base/admission pass. Zero real contacts and no runtime activation.
@@ -1134,7 +1142,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T15:16:02.833397+00:00
+Last refreshed: 2026-10-03T15:40:54.953855+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

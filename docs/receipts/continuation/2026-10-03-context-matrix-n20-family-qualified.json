@@ -1,0 +1,30 @@
+{
+  "schema": "saea-context-matrix-root-read-admission-v1",
+  "at_utc": "2026-10-03T15:23:07.001673+00:00",
+  "exact_read_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1",
+  "owner_decisions": [
+    227
+  ],
+  "decision": "Root personally admits the exact complete eight-member family read after all eight finalizations, verified seals and unique complete official scores qualify. Joint business quality, reliability and original sample/node latency description; no optimizer export or automatic adoption.",
+  "qualification": {
+    "relpath": "coordination/context-matrix-n20-owner227-v1/family-qualified-v1.json",
+    "sha256": "b306ae20de6a83d81c787c9d8c0b5633a7ffa8f026d1bbb20d646c4f8db3fa8d"
+  },
+  "members": [
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1"
+  ],
+  "verified_seals": 8,
+  "rows_per_member": 20,
+  "trajectory_count": 160,
+  "quality_read_at_admission": false,
+  "generation_or_scorer_contacts_added": 0,
+  "frozen_worker": "/home/chao/saea-worktrees/codex-context-matrix-n20-v1",
+  "commit": "d8456cefecafc8a7da681e06bfc06f141e994972"
+}

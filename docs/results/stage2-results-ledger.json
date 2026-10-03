@@ -2590,7 +2590,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -7096,6 +7096,25 @@
         "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1",
         "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1",
         "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1"
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "cell_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1",
+      "status": "DESCRIPTIVE-ENGINEERING-NO-ADOPTION",
+      "source": "docs/results/2026-10-03-slurp-context-matrix-n20-root-read.md",
+      "source_sha256": "dcebcc98e2c6a77491f6af7a4b3cfef2c9f50eaa1af4a24396732d9bf8a71888",
+      "receipt": "docs/receipts/continuation/2026-10-03-context-matrix-n20-scientific-read.json",
+      "meaning": "Retain legacy query placement with trajectory scheduling as the next engineering basis, while keeping independent node instructions and explicit source-bound handoffs. This is a sampling/design choice, not formal adoption or proof of an optimum. Prepare a separate20-input context-content comparison crossing constant/per-role tool-schema display with full/latest-Solver-and-local-tools Reviewer history, with an own repeat for each configuration. Keep seed text, legal actions, revision budget, knowledge, task assets, service geometry and original sample timing fixed. Register fresh identities, maximum legal request FIT, required four-row structural proof and exact whole-family READ before execution. Do not scale to50 or start learning automatically; root reviews the next complete panel. The human boundary remains8x400.",
+      "run_ids": [
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+        "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1"
       ]
     }
   ],
