@@ -1,0 +1,60 @@
+{
+  "complete_metered_provider_responses": 8,
+  "diagnosis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/outcome-diagnosis-v1.json",
+    "sha256": "ee09923af57db1a3b46a3968aeb7bb798e959b1af40e4ef303c4600172128eee"
+  },
+  "frozen_source": "/home/chao/saea-worktrees/codex-system-text-proposer-successor1-admitted-v1",
+  "gpu_dispatch": false,
+  "new_allocations": 0,
+  "observed_input_tokens": 32791,
+  "observed_output_tokens": 2930,
+  "outcomes": [
+    {
+      "allocation": "L-7-1",
+      "completed_metered_responses": 3,
+      "input_tokens": 13555,
+      "output_tokens": 870,
+      "reason": "nonempty English text is required",
+      "reservations": 3,
+      "status": "invalid"
+    },
+    {
+      "allocation": "B-7-1",
+      "completed_metered_responses": 2,
+      "input_tokens": 5573,
+      "output_tokens": 937,
+      "reason": null,
+      "reservations": 2,
+      "status": "provisional"
+    },
+    {
+      "allocation": "L-7-2",
+      "completed_metered_responses": 3,
+      "input_tokens": 13663,
+      "output_tokens": 1123,
+      "reason": "nonempty English text is required",
+      "reservations": 3,
+      "status": "invalid"
+    },
+    {
+      "allocation": "B-7-2",
+      "completed_metered_responses": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "reason": "registered credential unavailable",
+      "reservations": 1,
+      "status": "transport-failed-reserved-not-imported"
+    }
+  ],
+  "owner_decision": 227,
+  "readiness_package": "docs/readiness/2026-10-03-slurp-successor1-outcome-stop-v1",
+  "recorded_at_utc": "2026-10-03T09:52:11.162389+00:00",
+  "retry_or_replacement": false,
+  "root_disposition_pending": true,
+  "schema": "saea-root-proposer-stop-v1",
+  "source_commit": "316583e498f5c21225529dd122d47a37068b2f04",
+  "status": "STOPPED-PRESERVED-AWAITING-ROOT-DISPOSITION",
+  "total_contact_reservations": 9,
+  "unmetered_pre_http_attempts": 1
+}
