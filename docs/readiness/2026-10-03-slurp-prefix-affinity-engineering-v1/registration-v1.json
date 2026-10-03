@@ -1,0 +1,173 @@
+{
+  "capacity_tokenizer_endpoint_cap": 594,
+  "dataset_assets": "Reuse existing current400/first20/four-row audio, packets, queries, votes, and knowledge; no rebuild.",
+  "engineering_actual_fit_cap_held": 416,
+  "engineering_generation_cap_held": 104,
+  "engineering_trajectories_held": 8,
+  "fixed_parent_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "members": [
+    {
+      "experiment": "slurp-native-stage3-prefix-affinity-trajectory-capacity-v1",
+      "fit_run_id": null,
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-trajectory-capacity-fit-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-trajectory-capacity-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-trajectory-capacity-v1",
+        "config_hash": "63e3f1fce2d99c445788bd761a377bfaef088de6bd0e21a4d5c2c0610fb9da30",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-trajectory-capacity-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": null,
+        "protocol_hash": "18c7dbe2a953b0bbe9b62f33f3695daa13202baedfa86339936e054dbee0a903",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-CAPACITY-FIT-V1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011"
+      },
+      "kind": "capacity",
+      "mode": "trajectory",
+      "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-CAPACITY-STRUCTURE-V1",
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-CAPACITY-FIT-V1"
+    },
+    {
+      "experiment": "slurp-native-stage3-prefix-affinity-trajectory-graph-v1",
+      "fit_run_id": null,
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-trajectory-graph-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-trajectory-capacity-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-trajectory-graph-v1",
+        "config_hash": "c4bcac0fd746239e5564c6cdfbf728e164f38935460ea9d14002005cd051df69",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-trajectory-graph-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": null,
+        "protocol_hash": "e4a5d1ec906e0c8c118b6735024fd8311e4f531cb928c6fe417dd835b5a0ed77",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-GRAPH-V1",
+        "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+      },
+      "kind": "graph",
+      "mode": "trajectory",
+      "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-GRAPH-STRUCTURE-V1",
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-GRAPH-V1"
+    },
+    {
+      "experiment": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+      "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-FIT-V1",
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+        "config_hash": "bf944f0234b1dd05b3b7f3d4037fc1a4d58c585fd824505ce8cf1ceffd3351f4",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": null,
+        "protocol_hash": "f547b7860d2dd18c0a9e598e797fcd63fdd039011f3e7e7f4f7c0216733ef12d",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1",
+        "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+      },
+      "kind": "smoke-4",
+      "mode": "trajectory",
+      "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-STRUCTURE-V1",
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1"
+    },
+    {
+      "experiment": "slurp-native-stage3-prefix-affinity-role-capacity-v1",
+      "fit_run_id": null,
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-capacity-fit-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-role-capacity-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-role-capacity-v1",
+        "config_hash": "475cd92222f0c9db2686ac6fcd78814ac3384954492575b059636e8d35c3aa3f",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-role-capacity-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": null,
+        "protocol_hash": "95f35139a20ba90f233a4eeb46212d83827b2c0b214be8c8facb344acf55a38b",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-CAPACITY-FIT-V1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011"
+      },
+      "kind": "capacity",
+      "mode": "role",
+      "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-CAPACITY-STRUCTURE-V1",
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-CAPACITY-FIT-V1"
+    },
+    {
+      "experiment": "slurp-native-stage3-prefix-affinity-role-graph-v1",
+      "fit_run_id": null,
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-graph-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-role-capacity-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-role-graph-v1",
+        "config_hash": "bddae45e3858ba7bac3cc6e2a069cc4f59094ce1ecad6d4248c737be519299de",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-role-graph-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": null,
+        "protocol_hash": "4f1ea75a4c97aea165e43dbb1ff3a0edbee29594a8c276386d510cd95544197f",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-GRAPH-V1",
+        "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+      },
+      "kind": "graph",
+      "mode": "role",
+      "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-GRAPH-STRUCTURE-V1",
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-GRAPH-V1"
+    },
+    {
+      "experiment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+      "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-FIT-V1",
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+        "config_hash": "a59ba04a725c96d357cd151d908d3013fba3ada4f8f499e4243e8155212b76ab",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": null,
+        "protocol_hash": "3b02d66796fa95b38024f8629addbad16261a721b231f03209432f51892456c3",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
+        "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+      },
+      "kind": "smoke-4",
+      "mode": "role",
+      "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-STRUCTURE-V1",
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1"
+    }
+  ],
+  "official_scores": 0,
+  "prefix_slot_mapping": {
+    "role_slots": {
+      "perception": 0,
+      "planner": 3,
+      "reviewer": 2,
+      "solver": 1
+    },
+    "schema": "saea-native-prefix-slots-v1"
+  },
+  "schema": "saea-prefix-affinity-engineering-registration-v1",
+  "scientific_or_optimizer_read": false,
+  "status": "Capacity complete; two four-row structural proofs root-admitted pending clean frozen preflights"
+}

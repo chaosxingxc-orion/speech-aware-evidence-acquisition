@@ -1,0 +1,49 @@
+{
+  "B-7-2_archive_closure": {
+    "input_tokens": null,
+    "metering_complete": false,
+    "output_tokens": null,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/B-7-2-root-disposition-v1.json",
+    "sha256": "2f562fdbd5d87c8948f3d0de912b37e9ef4f6125bd9b11b16a1f7b95340a12ae",
+    "status": "invalid"
+  },
+  "accounting": {
+    "complete_metered_returns": 8,
+    "contact_reservations": 9,
+    "observed_input_tokens": 32791,
+    "observed_output_tokens": 2930,
+    "prior_held": 3,
+    "prior_spent": 21,
+    "reserved_opportunities": 4,
+    "unmetered_pre_post_reserved_attempts": 1
+  },
+  "allocations": {
+    "B-7-1": "Keep provisional compiled Solver candidate unactivated.",
+    "B-7-2": "Import the reserved failure using the existing invalid/failed archive category; preserve original empty response and missing usage evidence. Never invent an answer, zero actual usage or a free retry.",
+    "L-7-1": "Keep invalid exactly as received.",
+    "L-7-2": "Keep invalid exactly as received."
+  },
+  "allowed_offline_work": [
+    "Version a typed proposal response contract that agrees with the existing validator.",
+    "Add secret-free credential failure categories and model-free tests.",
+    "Retain all failed/invalid evidence and current source/model/budget/isolation identities."
+  ],
+  "at_utc": "2026-10-03T09:59:42.339404+00:00",
+  "diagnosis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/outcome-diagnosis-v1.json",
+    "sha256": "ee09923af57db1a3b46a3968aeb7bb798e959b1af40e4ef303c4600172128eee"
+  },
+  "learning_or_stable_benefit_established": false,
+  "next_gate": "Root must review offline proofs, current safe credential readiness and exact prospective allocation/input/budget registration before any new proposal sequence.",
+  "not_authorized": [
+    "retry",
+    "replacement",
+    "new proposal allocation or contact",
+    "partial or repaired GPU panel",
+    "scientific read"
+  ],
+  "original_credential_cause": "Unestablished; no claim of sign-in expiry or provider failure.",
+  "owner_decision": 227,
+  "schema": "saea-root-proposer-incident-disposition-v1",
+  "status": "DECIDED-PRESERVE-CLOSE-NO-RETRY"
+}

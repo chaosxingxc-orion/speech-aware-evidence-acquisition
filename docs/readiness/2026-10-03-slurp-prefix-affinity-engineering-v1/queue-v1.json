@@ -1,0 +1,42 @@
+[
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+    "contacts_per_row": 4,
+    "expected_rows": 4,
+    "experiment": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+    "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1",
+    "kind": "engineering",
+    "notool": false,
+    "order": 1,
+    "owner": "root-owner227-prefix-affinity-engineering",
+    "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1",
+    "short": "prefix-affinity-trajectory-engineering",
+    "smoke_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1",
+    "smoke_cell": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+    "smoke_experiment": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
+    "smoke_run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1"
+  },
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+    "contacts_per_row": 4,
+    "expected_rows": 4,
+    "experiment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+    "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1",
+    "kind": "engineering",
+    "notool": false,
+    "order": 2,
+    "owner": "root-owner227-prefix-affinity-engineering",
+    "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
+    "short": "prefix-affinity-role-engineering",
+    "smoke_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1",
+    "smoke_cell": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+    "smoke_experiment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+    "smoke_run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1"
+  }
+]

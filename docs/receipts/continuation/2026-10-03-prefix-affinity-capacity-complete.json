@@ -1,0 +1,76 @@
+{
+  "at_utc": "2026-10-03T10:03:10.794177+00:00",
+  "finished": {
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/capacity-finished.json",
+    "sha256": "23ee02b34f0dba97083d1c2132bf545faead6f69ab1efe38e872b85d1333ec44"
+  },
+  "generation_contacts": 0,
+  "measured_requests": 88,
+  "members": [
+    {
+      "measured_requests": 44,
+      "minimum_margin_after_full_reserves": 5546,
+      "mode": "trajectory",
+      "receipt": {
+        "relpath": "coordination/slurp-prefix-affinity-engineering-v1/trajectory/request-fit-v1.json",
+        "sha256": "bc5275fc326fbd201b5763ef36df5e55d4904d90eb0aa5bd3a38171c2094489e"
+      },
+      "synthetic_graph_observed_role_slots": {
+        "perception": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "planner": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "reviewer": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "solver": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "tokenizer_endpoints": 297
+    },
+    {
+      "measured_requests": 44,
+      "minimum_margin_after_full_reserves": 5546,
+      "mode": "role",
+      "receipt": {
+        "relpath": "coordination/slurp-prefix-affinity-engineering-v1/role/request-fit-v1.json",
+        "sha256": "59c0de32b6d1f9eaae61b11d65a4f2af727559ad17527db298149fec7756a44e"
+      },
+      "synthetic_graph_observed_role_slots": {
+        "perception": [
+          0
+        ],
+        "planner": [
+          3
+        ],
+        "reviewer": [
+          2
+        ],
+        "solver": [
+          1
+        ]
+      },
+      "tokenizer_endpoints": 297
+    }
+  ],
+  "official_scores": 0,
+  "schema": "saea-prefix-affinity-capacity-complete-v1",
+  "scope": "Both exact reachable graphs fit with complete reserves. Synthetic role routing verified; no real generation, cache-speed, quality or learning conclusion.",
+  "tokenizer_endpoints": 594,
+  "worker_commit": "194edc87ae0f06aaabdb54b88cc07bd1ab7848b4"
+}

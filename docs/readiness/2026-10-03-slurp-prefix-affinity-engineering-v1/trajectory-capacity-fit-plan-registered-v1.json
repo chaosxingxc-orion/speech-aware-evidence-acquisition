@@ -1,0 +1,26 @@
+{
+  "cell": "slurp-native-stage3-prefix-affinity-trajectory-capacity-v1",
+  "composed_config_hash": "63e3f1fce2d99c445788bd761a377bfaef088de6bd0e21a4d5c2c0610fb9da30",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/capacity-root-admission-v1.json",
+    "sha256": "cea3c7d8b2c8082a84d5361b81b92de513a75a93a7ae9fc6f6d3443b9c77740e"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-trajectory-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "18c7dbe2a953b0bbe9b62f33f3695daa13202baedfa86339936e054dbee0a903",
+    "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-prefix-affinity-trajectory-capacity-v1",
+  "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

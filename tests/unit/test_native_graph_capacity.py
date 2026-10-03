@@ -60,3 +60,23 @@ def test_each_endpoint_uses_a_fresh_connection_and_never_retries_failure():
     with pytest.raises(BrokenPipeError):
         adapter.request_json("POST", "/failure")
     assert len(made) == len(closed) == 3
+
+
+@pytest.mark.parametrize("capacity, graph", [
+    (None, {"schema": "saea-native-prefix-slots-v1", "role_slots": {"solver": 1}}),
+    ({"schema": "saea-native-prefix-slots-v1", "role_slots": {"solver": 1}}, None),
+    ({"schema": "saea-native-prefix-slots-v1", "role_slots": {"solver": 1}},
+     {"schema": "saea-native-prefix-slots-v1", "role_slots": {"solver": 2}}),
+])
+def test_capacity_refuses_different_prefix_routing_before_any_endpoint(capacity, graph, tmp_path):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.analysis.native_graph_capacity import fit_native_graph
+
+    def runtime(binding):
+        values = {} if binding is None else {"native_prefix_slots": binding}
+        return SimpleNamespace(preparation_context=lambda: {"values": values, "sample_ids": list("abcd")})
+
+    with pytest.raises(ValueError, match="Graph proof differs.*native_prefix_slots"):
+        fit_native_graph(runtime(capacity), tmp_path / "absent.json", policy=None,
+                         graph_factory=lambda: runtime(graph))
+    assert not (tmp_path / "absent.json").exists()

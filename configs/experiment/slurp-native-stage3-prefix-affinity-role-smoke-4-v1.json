@@ -1,0 +1,94 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+      "cell_id": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Root227 admits exact four-row structural proof after both capacity proofs.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-prefix-affinity-structure-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-prefix-affinity-engineering-v1/structure-root-admission-v1.json",
+            "sha256": "c1d2b6b662eb0a3823c7bad332780a8ebcc9da6a96e4e60e3c738604c5fecefe"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "679dbec641b712851ee39c09777c401a9f10fbed8c8e2defde7414395c4362b8",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/control2-owner217/policies/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15.json",
+          "sha256": "a6ae71e6139f9a0a80ba401afcb3e1485924959536f08d3b6977381c9f762cca"
+        },
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  ],
+  "date": "2026-10-03",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
+  "family_budget": {
+    "complete_system_trajectories": 4,
+    "generation_calls_cap": 52,
+    "official_complete_scoring_jobs": 0
+  },
+  "population": {
+    "count": 4,
+    "roster_receipt": "docs/readiness/2026-10-02-slurp-fixed400-context-engineering-v1/roster-v1.json",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+  "stage3_algorithm": {
+    "id": "system-text-black-box-v1",
+    "note": "Prefix scheduling engineering only; fixed seed policy, no learning or quality claim.",
+    "operators_used": [
+      "rollout"
+    ]
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Same current400 nested prefix; structure and cost only. No quality read or benefit claim.",
+    "primary_metric": "Structural routing and capacity only",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+    "rows": 4,
+    "tuning_roster": "none"
+  }
+}
