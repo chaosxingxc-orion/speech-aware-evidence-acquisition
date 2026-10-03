@@ -1,0 +1,40 @@
+{
+  "at_utc": "2026-10-03T12:17:53.777290+00:00",
+  "contacts": {
+    "generation": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "heartbeat": "PAUSED",
+  "next": "Freeze independent source,pass exact registration/runtime/warm supply/role-byte checks,verify live idle resources and absent STOP/lease,archive completed controls normally,and dispatch exactly once.",
+  "preparation_note": "Windows UNC write into the mounted E data path was denied before the preparation program existed or entered. Original empty/stdout and missing-script stderr retained; separately named v2 script was written through WSL /tmp then retained create-only in coordination. No failed worker/attempt or contact occurred.",
+  "prepared_registration": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-structural-entry-v1/registration-v1.json",
+    "sha256": "87859df5bc6a0178e7dd2565d3ba556dd75256efa7f7c63e1383b98b7954cc49"
+  },
+  "root_admission": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "9026cc396546115f9abacf5a43ba48b46e67e805413dc67cd43417865c11df9a"
+  },
+  "root_authority": "Exact root227 delegation after capacity closure; three four-row worker-only proofs. No scientific READ.",
+  "schema": "saea-round8-structural-root-admission-v1",
+  "source_guard": "df50a257c;63 synthetic tests passed,94% statement coverage,all new statements covered;actual fly_smoke success/failure/default paths tested.",
+  "source_request_changes": false,
+  "supplies": [
+    {
+      "member": "parent",
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "27db1db15543ad49b5648e2393d6849947899ad19c0c7a718a52008f923691cf"
+    },
+    {
+      "member": "candidate-1",
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "7a1e5a2b69b1c4e9c9528b839343024d75e8383049969811556f7721d8d3f929"
+    },
+    {
+      "member": "candidate-2",
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "67b56f979d1b9a9f13457f1ce7f62f501359d1f7bb72e7aff6654a38d086a0f8"
+    }
+  ]
+}

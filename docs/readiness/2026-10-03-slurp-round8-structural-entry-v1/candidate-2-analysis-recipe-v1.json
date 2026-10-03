@@ -1,0 +1,17 @@
+{
+  "acceptance": [
+    "Terminal Omni custody for every row",
+    "Valid Reviewer handoffs",
+    "Actual FIT with full output reserve",
+    "Preserve any named control defect and stop without output repair"
+  ],
+  "allowed_read": "Role/control contracts,FIT,Omni terminal custody,numeric resources/node costs only; no answers,quality or optimizer feedback.",
+  "expected_rows": 4,
+  "limitations": "Structural proof only; no benefit/adoption/learning conclusion or automatic panel admission.",
+  "run_ids": {
+    "generation": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1",
+    "read": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-round8-structural-analysis-v1",
+  "score_jobs": 0
+}

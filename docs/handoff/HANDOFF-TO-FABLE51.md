@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Round8 structural entry root-admitted, 2026-10-03T12:17:53.777290+00:00
+
+Root227 admits only three four-row worker proofs: parent, B81 and B82,12 trajectories total,maximum156 generation contacts and624 tokenizer endpoints,zero scoring. [Exact admission](../receipts/continuation/2026-10-03-round8-structural-root-admission.json) binds separately prepared own supplies and structural-only read recipes. Keep current legacy layout,trajectory scheduling,affinity and before-speech placement OFF,and unchanged400 assets/knowledge. All8x20 comparison cells remain HELD for root structural review.
+
+The shared engineering path now supports the existing process memory supervisor under its existing lease:12.5 GiB startup,8 GiB running. A guarded failure preserves lease evidence and stops; legacy defaults remain unchanged.63 relevant tests passed,94 percent module statement coverage,all added statements covered. No contact occurred during this correction. Independent frozen checks and a normal completed-control transition still precede the one-shot Windows driver launch. Read only role/control handoffs,FIT,Omni custody and node cost metadata; no task quality,scoring,retry or reseal. Heartbeat remains PAUSED.
+
+
 ## Round8 maximum-request capacities complete, 2026-10-03T12:06:37.212377+00:00
 
 All three admitted capacity members completed once on immutable 1343e022f96e3b541b247a39254d163ee737a0cb. Windows task exited 0 at 12:05:03.0536682Z. [Complete operational accounting](../receipts/continuation/2026-10-03-round8-capacity-complete.json) independently matches each 297-line contact journal to the unique run/attempt and measured artifact: 891 endpoints and 132 requests total, zero generation or scoring. Every request fits in 24576 tokens with a full 512 output reserve plus 2048 structural reserve; minimum remaining margins are parent 5546, B81 5448 and B82 5546 tokens. All owned leases released normally, launcher PID exited, frozen source stayed clean and STOP remained absent. The ordinary completed control files were not modified.

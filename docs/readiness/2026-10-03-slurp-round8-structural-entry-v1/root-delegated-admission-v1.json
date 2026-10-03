@@ -1,0 +1,39 @@
+{
+  "antecedents": [
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-round8-capacity-complete.json",
+      "sha256": "48117f6b7827cda895415c6187d1644378699d47dbad14b8a04e4eb25fa1e690"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-engineering-worker-memory-guard.json",
+      "sha256": "7d84753d858c33b68b43ec2ecfcf83499a393dfa4d680ad972a3e790415d0ad0"
+    }
+  ],
+  "at_utc": "2026-10-03T12:16:46.784796+00:00",
+  "authority": "Root reviewed capacity closure and structural draft at fe0ef080b; explicitly delegated exact three members and one Windows shared-driver dispatch after normal completed-control transition.",
+  "decision_id": "slurp-round8-structural-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-FIT-V1"
+  ],
+  "failure_disposition": "Stop and preserve for named root disposition.",
+  "heartbeat": "PAUSED",
+  "owner_decisions": [
+    227
+  ],
+  "resource_contract": {
+    "guard_mode": "worker with existing lease",
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5,
+    "wait_seconds": 600
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scope": "Exactly ROUND8 PARENT,CANDIDATE-1,CANDIDATE-2 SMOKE-4,first4 existing rows each;52 generation/208 FIT endpoints each,12 trajectories/156 generation/624 endpoints total,zero scoring. Same current400/data/knowledge/policies,legacy layout,trajectory scheduler,affinityOFF.",
+  "status": "decided",
+  "structural_acceptance": "Structural handoffs,actual FIT,terminal Omni custody and numeric node costs only; preserve any defect and stop. No task quality,scoring,retry,reseal or8x20 dispatch."
+}
