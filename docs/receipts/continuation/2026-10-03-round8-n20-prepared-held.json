@@ -1,0 +1,29 @@
+{
+  "analysis_recipe": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/analysis-recipe-HELD-v1.json",
+    "sha256": "75ecc46fa090562180903c3af51219ab620f9148faaaf616a2e7f9f2fccf1fd9"
+  },
+  "at_utc": "2026-10-03T12:40:20.556416+00:00",
+  "contacts": 0,
+  "freeze_refusal": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/freeze-refusal-v1.json",
+    "sha256": "4bbc371f409e38746c4f1871bac700a5cbd61e060b74ceb8d6bb9bdac1d8a30f"
+  },
+  "heartbeat": "PAUSED",
+  "no_frozen_worker": true,
+  "no_launch_or_control_changes": true,
+  "priority_hold": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/root-priority-hold-v1.json",
+    "sha256": "64db3dfe33a16361f93b68d820cd5907aba6b05775f5bcb8f4bb70e4a37440fb"
+  },
+  "replicate_correction": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/replicate-correction-v1.json",
+    "sha256": "9a22a2bdce36839849b9c8c8d5fbe51092453a2dd5a474ee311a0460de2f8aef"
+  },
+  "runtime_registration_prehold": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/runtime-registration-v1.json",
+    "sha256": "6f092ecf5b1247ef6c062b5e76dc7b70047f3fb42f003fa07184856757dce544"
+  },
+  "schema": "saea-round8-n20-prepared-held-v1",
+  "status": "HELD by latest human priority before any contact"
+}

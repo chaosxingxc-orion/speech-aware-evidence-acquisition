@@ -1,0 +1,53 @@
+{
+  "antecedents": [
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-round8-capacity-complete.json",
+      "sha256": "48117f6b7827cda895415c6187d1644378699d47dbad14b8a04e4eb25fa1e690"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-round8-structural-complete.json",
+      "sha256": "b6c77469a89e1802af6ddcf262fe1d16fc8979e35df0cb8d482041dd43c4c12e"
+    }
+  ],
+  "at_utc": "2026-10-03T12:35:22.185379+00:00",
+  "authority": "Root personally reviewed complete structural acceptance SHA209386b2324854504e965f81cfaa75a2076008f8e54dcb6ac371248aa1a2354a and every source hash; explicitly delegated the exact existing eight-member ROUND8 N20 family and one Windows dispatch after frozen checks.",
+  "conditions": "Same current400/audio/packets/queries/votes/knowledge/policies/scorer; legacy layout,trajectory scheduling,affinity OFF; no cache flush/save/restore/warmup. Inherited warm cache history is uncontrolled metadata.",
+  "decision_id": "slurp-round8-n20-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-1-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-1-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-2-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-2-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-1-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-1-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-2-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-2-FIT-V1"
+  ],
+  "failure_disposition": "Stop and preserve for named root disposition; no retry/reseal/score replay.",
+  "heartbeat": "PAUSED",
+  "owner_decisions": [
+    227
+  ],
+  "replicate_correction": {
+    "relpath": "coordination/system-text-round8-n20-owner227-v1/replicate-correction-v1.json",
+    "sha256": "9a22a2bdce36839849b9c8c8d5fbe51092453a2dd5a474ee311a0460de2f8aef"
+  },
+  "resource_contract": {
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5,
+    "wait_seconds": 600
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scientific_read": "Register exact family READ UNSIGNED; root alone countersigns/interprets after every member independently FINALIZED with verified seal,one unique successful complete official score,zero failed jobs. Node timing is descriptive and same complete-family-gated.",
+  "scope": "160 trajectories,260 generation calls and1040 tokenizer endpoints maximum per member;2080/8320 family;exactly one complete official score per member,one scorer. Six seed-equivalent members and two B Solver edits. No new proposals.",
+  "status": "decided"
+}

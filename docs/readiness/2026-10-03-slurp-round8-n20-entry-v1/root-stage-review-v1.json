@@ -1,0 +1,23 @@
+{
+  "at_utc": "2026-10-03T12:37:21.642513+00:00",
+  "family_id": "fixed400-text-round8-n20-v1",
+  "member_bindings_sha256": "c7ce671eb724640d0a9056f9befe2a7126f313b27878baa1ff84af6e59dcb3eb",
+  "pool_sample_ids_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "prior_complete_read_ids": [
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1"
+  ],
+  "proposal_protocol_sha256": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+  "rationale": "Root227 reviewed exact complete three-policy capacity and four-row structural proof, including every source hash, then delegated this exact complete eight-member20 panel. Six seed-equivalent members and two B Solver edits remain. This permits structural/cost/complete-system learning diagnosis, not efficacy or L-over-B learning claims. No new policy,scope,proposal or runtime factor.",
+  "reviewer": "ChatGPT root",
+  "root_delegated_admission": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/root-delegated-admission-v1.json",
+    "sha256": "eb2710ed1911f43064379b875eb88317f0c9e0ca6948d637560cd083f39b8968"
+  },
+  "rows_per_member": 20,
+  "schema": "saea-fixed400-panel-stage-review-v1",
+  "status": "completed",
+  "structural_acceptance": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/structural-acceptance-v1.json",
+    "sha256": "209386b2324854504e965f81cfaa75a2076008f8e54dcb6ac371248aa1a2354a"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "at_utc": "2026-10-03T12:35:22.185379+00:00",
+  "authority": "Root227 explicitly approved correcting each L member to exact ROUND8 L-parent-aa and B member to ROUND8 B-parent-aa before supply freeze.",
+  "contacts": 0,
+  "members": [
+    {
+      "after_sha256": "ab50595c11a987f2f99babb79cb38115837eec9f5d5a380bc4e31ed977ead643",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1.json",
+        "sha256": "ecd5774b4589b285a5a663a9a412c0a501a0ae86257b307444c73e1e1bef5067"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "L-parent",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1.json"
+    },
+    {
+      "after_sha256": "67f34805ec5c7515cc0208190347ced72c4ff5e73fb7a72d8dca0c0965c1da7c",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1.json",
+        "sha256": "bc79befbfc22b782ed09190847f4e8ef86ddd935a7ca593b6a21ddd20d054c4f"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "L-parent-aa",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1.json"
+    },
+    {
+      "after_sha256": "0f443a8984f6de9780c8481794ccce3842a039cd946fcbc28dc6c970d0c7bfcb",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1.json",
+        "sha256": "5e7ed783c44b8a4cc2b84d9ce3d9ee0537741df255576f5c0486a3246e7e47b3"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "L-candidate-1",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1.json"
+    },
+    {
+      "after_sha256": "719ace81adcf03fb5902ce1bd9abe1481addb587ab7e232da21c1105c98c162d",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1.json",
+        "sha256": "a19fd13dc1524d8ff46cda37e8c9196440e2ceafc70858b26a0ebe946c569725"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "L-candidate-2",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1.json"
+    },
+    {
+      "after_sha256": "e156253148e402f0909f9b42afd39a5915c0e6a89504458cb90914d1e33d6b78",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1.json",
+        "sha256": "a1ee57b756faaef84eff52d481ebfccdeb8a8091ed41386152c166ab22abca6e"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "B-parent",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1.json"
+    },
+    {
+      "after_sha256": "1d72e176d02ff90dc9d542eae1e3c49114ea4fe5b9e0f14bd223a0d67b0d6c88",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1.json",
+        "sha256": "479e145f81501dd4e07d9bebb3714f941ca61c062e99be7245f35f12f28480e9"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "B-parent-aa",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1.json"
+    },
+    {
+      "after_sha256": "b8f8496d876d4cb8ea1a44774be40e4a8c1365e05a8c1fa0425cb8ebea88d72a",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1.json",
+        "sha256": "e70e74de860d261486e8a35465a78e7e3c628507b5a8b2ad874d92521265a61b"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "B-candidate-1",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1.json"
+    },
+    {
+      "after_sha256": "883cea07bc8930a2fcd2cbc3325d8b1cee45ff2e11bd8781ca4dd9ba22c798af",
+      "after_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+      "before": {
+        "relpath": "coordination/system-text-round8-n20-owner227-v1/original-experiment-drafts/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1.json",
+        "sha256": "ef4526489412d7f8b498f3c55241d3f97031f0947791584775a63f6bff8f1fae"
+      },
+      "before_value": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1",
+      "json_pointer": "/stage3_measurement/replicate_run_id",
+      "member": "B-candidate-2",
+      "only_json_change_verified": true,
+      "path": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1.json"
+    }
+  ],
+  "schema": "saea-round8-replicate-binding-correction-v1",
+  "unchanged": "All policy/request/roster/budget fields; original drafts preserved."
+}

@@ -1,0 +1,195 @@
+{
+  "at_utc": "2026-10-03T12:40:20.556416+00:00",
+  "authority": "Latest direct human steering relayed by root at12:38Z: prioritize system-level context engineering configuration and experimental efficiency before optimization learning. Withhold ROUND8 N20 if no contact. Root confirmed preserving the offline preparation and recording HOLD.",
+  "contacts": 0,
+  "decision_id": "slurp-round8-n20-user-priority-hold-v1",
+  "eligible_run_ids": [],
+  "failure_evidence": {
+    "relpath": "coordination/system-text-round8-n20-owner227-v1/freeze-refusal-v1.json",
+    "sha256": "4bbc371f409e38746c4f1871bac700a5cbd61e060b74ceb8d6bb9bdac1d8a30f"
+  },
+  "future_resumption": "Prepared ready snapshots and own supply envelopes remain immutable. Mutable cells are HELD and their readiness identity changes; any resumption must prospectively revalidate/re-pin exact identities and repair the recorded owner-scope integration mismatch.",
+  "heartbeat": "PAUSED",
+  "held_run_ids": [
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-1-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-1-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-2-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-2-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-1-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-1-FIT-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-2-V1",
+    "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-2-FIT-V1"
+  ],
+  "next_work": "Root separately prepares seed-only before-speech layout capacity and structural proof. No learning proposal or candidate comparison is next.",
+  "preserved_prehold_snapshots": [
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1.json",
+      "sha256": "3eace8c79c0059c426993e801350ed896aac8090048ebdef5d3c1f1167ac8d09"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1.json",
+      "sha256": "51aaa457332d15066089206a4034a8659429f51b449bc6802e97e3ff5ad668e3"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1.json",
+      "sha256": "f5a95cea3891131a2cf2002688472c3637d72bc821794a56f7c77b5579cb77ba"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1.json",
+      "sha256": "2fc4a73ae4b5ad431f5b844c0c444669548bca10975a85721894b929424a77d4"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1.json",
+      "sha256": "f7cbad434a939ae70c00ef339e0465c42e864ce0e47f7fb5f9136b89242f9719"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1.json",
+      "sha256": "e9bd72735cebd5a7f7db0996e905ccfd49844220a0e5abf2cf43577e95891872"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1.json",
+      "sha256": "d26457348b5f2edde586b7a2f1e8d5fdf22ccee2233dd2fc62e5429f210a36e2"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1.json",
+      "sha256": "4fae333fd34a3a39e020f98a21f37b1dbb5b9c710160a5b807c343b97bffbe3a"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1.json",
+      "sha256": "b3e0735e412756d47b8a0d562e2059dc588de16738a52b82bbb3626668326cec"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1.json",
+      "sha256": "4fa6e7912c72590018524d4e4605727e494634d5d89b8847c390205feb00b48b"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1.json",
+      "sha256": "ad9ac7f30000b5dc848976f02ca05e3ddf97371b42eab39709115a76ffc4bd9a"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1.json",
+      "sha256": "c3bdd31ff706a8c7eeb17032d8571c7020f6c2ba4e45f3d126d97c958953c1cd"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1.json",
+      "sha256": "12becef857f75fe2b4b87ac7895a6769e87d4302d54dfcf5775178fb338e74bd"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1.json",
+      "sha256": "6f7c88b912197898dd6ac93a7a9ac86a8a8246abef6c74dd622c55c2733eb90b"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1.json",
+      "sha256": "11f8e53139f146c2f4134f6f252691b01c465e13e01138a22b58bf5f485af835"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1.json",
+      "sha256": "d7926dcf21fe52312251ad9786d5f1ad40a86902c2cbdd197bcd3c799f6efdef"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-candidate-1-fit-plan-registered-v1.json",
+      "sha256": "b0ed3f9a75870ec81b8aac21478d3a4e994cf5927b7bf7fa3f9b60c4ccc491c3"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-candidate-1-generation-plan-registered-v1.json",
+      "sha256": "042661a2407989de335973911f41c2e3fb6e38898ab679bbc77887d20fd3260a"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-candidate-2-fit-plan-registered-v1.json",
+      "sha256": "b52725698ef3b9aac3bbef3e7ba4430303b1f8288bb61b45a1418106335d85a0"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-candidate-2-generation-plan-registered-v1.json",
+      "sha256": "a5eff3be60ab08b647fa93ce1598943d225a2d65f0d870f46b75fef4bff81575"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-parent-aa-fit-plan-registered-v1.json",
+      "sha256": "185476405d165033fbca5fee991c8ffb87b820217f1d1c71986f6b1070c4bbb2"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-parent-aa-generation-plan-registered-v1.json",
+      "sha256": "8de20399e00674dd7f72da46ac74b4b93d1e928164de7db8eab884ef7a0046c0"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-parent-fit-plan-registered-v1.json",
+      "sha256": "85589096ac3fb16c029bc6df65cef6706591300f4bab8b3aed91b90392eefd89"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/b-parent-generation-plan-registered-v1.json",
+      "sha256": "a916dcbcd7510cf9e80b97718b09bd4b183d040aa11f4667f12e48237971343f"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-candidate-1-fit-plan-registered-v1.json",
+      "sha256": "d4547d354ccd42dc4e9afbcde165a3862924956b4e8837de9ca85d6d7f553f4e"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-candidate-1-generation-plan-registered-v1.json",
+      "sha256": "24e7e25ad3faae9ff7181e24ab94791787a87e69f6e4b9b2af42694fdf01f31b"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-candidate-2-fit-plan-registered-v1.json",
+      "sha256": "30ee43a04de18e81ec6eef407684fcae8f3dbb1a6b00cc4dc11951b1a8eddbc5"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-candidate-2-generation-plan-registered-v1.json",
+      "sha256": "4fdb0c99de104cb78419ac2dd7734111aa78cb727561f8a4c1e7816e5d222ba8"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-parent-aa-fit-plan-registered-v1.json",
+      "sha256": "1223388953f01a33820ae5c65f0ba098a04def79a9fba8a8045d101ce0933703"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-parent-aa-generation-plan-registered-v1.json",
+      "sha256": "f81c6e562708a8e61bfc4f7f4d72e000aa4b0d44596eec67ef7fba317d16b5b3"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-parent-fit-plan-registered-v1.json",
+      "sha256": "104ec372257741ff2c7abee2a96b0a0c84bc8038e783b0038269c31d4b3f8cb8"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/l-parent-generation-plan-registered-v1.json",
+      "sha256": "ea0fd4a697d00c82ff910db284962a432443d2f97d7bfc3ef5b819fa71b824ac"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/member-bindings-v1.json",
+      "sha256": "fd8de0c95ec1c8c57009cda45f00a05b8a83d2a69e5d8cf4ccd723a762b986f6"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/queue-v1.json",
+      "sha256": "fef093121c828a8a5fc1c780e280a9eb2b2a55d8d78597b5e73a5578186b8370"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/replicate-correction-v1.json",
+      "sha256": "9a22a2bdce36839849b9c8c8d5fbe51092453a2dd5a474ee311a0460de2f8aef"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/root-delegated-admission-v1.json",
+      "sha256": "eb2710ed1911f43064379b875eb88317f0c9e0ca6948d637560cd083f39b8968"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/root-stage-review-v1.json",
+      "sha256": "7d7ba85073149292dea3bd1402efde834a7437e95c1ce58e70e5e9921a60d137"
+    },
+    {
+      "relpath": "coordination/system-text-round8-n20-owner227-v1/prepared-prehold-snapshot-v1/docs/readiness/2026-10-03-slurp-round8-n20-entry-v1/runtime-registration-v1.json",
+      "sha256": "6f092ecf5b1247ef6c062b5e76dc7b70047f3fb42f003fa07184856757dce544"
+    }
+  ],
+  "queue_or_service_changes": false,
+  "schema": "saea-campaign-decision-v1",
+  "scientific_read": "UNSIGNED",
+  "source_statement_english": "Prioritize system-level context-engineering configuration and experimental efficiency before optimization learning.",
+  "status": "decided",
+  "supersedes": {
+    "relpath": "coordination/system-text-round8-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "eb2710ed1911f43064379b875eb88317f0c9e0ca6948d637560cd083f39b8968"
+  }
+}

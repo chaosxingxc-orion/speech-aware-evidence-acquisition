@@ -1,0 +1,35 @@
+{
+  "actual_allocation_owner": {
+    "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+    "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+  },
+  "actual_decision_id": 227,
+  "allocation_changes": 0,
+  "archive_panel_created": false,
+  "call_path": [
+    "system_search_stage.freeze_optimization_panel line716",
+    "analysis.system_text_panel.validate_definition line57"
+  ],
+  "cause": "freeze_optimization_panel passes allocation_extension.owner as growth; the registered successor allocation owner is227,while validate_definition strictly requires decision223 and stage_ladder. The prior four proposals already closed unchanged; this is panel-metadata integration,not task quality or model failure.",
+  "contacts": 0,
+  "disposition": "Preserve without retry; superseding direct human priority holds the learning panel. A future resumption needs explicit root scope repair and exact revalidation,not a weakened owner check.",
+  "exception_message": "approved owner223 reviewed scaling scope is required",
+  "exception_type": "speech_aware_evidence_acquisition.rails.system_text_policy.PolicyError",
+  "execution": "One model-free invocation,exec session33801,exit1. No durable stdout/stderr capture was configured for this preparation script; exact tool-returned exception retained below.",
+  "recorded_at_utc": "2026-10-03T12:40:20.556416+00:00",
+  "schema": "saea-round8-panel-freeze-precontact-refusal-v1",
+  "script": {
+    "relpath": "coordination/system-text-round8-n20-owner227-v1/freeze-panel-v1.py",
+    "sha256": "98fe060a69bb791d74947086c8921352aa268d31c65026b4f9f8f8e5055d34d1"
+  },
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_stage.py",
+      "sha256": "f35154008bcb17a2caeae366ecf3a886c1a4477edacf2b4dee8f86afd89f765b"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_text_panel.py",
+      "sha256": "fc5069fad0f29b0b83865b0f0496a0f17d3aaa6e001bbb70e1b5a983de318171"
+    }
+  ]
+}
