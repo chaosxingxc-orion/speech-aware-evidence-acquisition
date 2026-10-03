@@ -1,0 +1,141 @@
+{
+  "additional_model_or_scorer_contacts": 0,
+  "decision": "Root personally admits the exact complete four-member family read after operational identity, every verified seal and unique successful official score qualify. Descriptive cache/cost and quality/null interpretation only; no optimizer export, no scientific efficacy or automatic adoption.",
+  "exact_read_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1",
+  "family_id": "prefix-affinity-n20-v1",
+  "members": [
+    {
+      "actual_model_contacts": 128,
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1.json",
+        "sha256": "1d8e30b8378a1bf6626e95931d96e090bd031ef2a61dbf38c7fb22ae835a483c"
+      },
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1.run-manifest.json",
+        "sha256": "cdc797bdfc0b6588893bf0d7c96e1c5f05d37e751b3c447b67ef80cc2533bec3"
+      },
+      "member": "trajectory",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1",
+      "score_batch_summary": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1/score-batch/batch-summary.json",
+        "sha256": "12bcda3f09b30aa01d311c0dacc1b7d2300c772787011184022a09738935e095"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1/score-jobs.jsonl",
+        "sha256": "8d9cc2072ee5fc66d3a46dac831d4280e53ffcdddc8b0eacf9bbe5193c22786c"
+      },
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    },
+    {
+      "actual_model_contacts": 131,
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-generation-v1.json",
+        "sha256": "1ed5661a7a3fe657f817653a28656f3b68d512199af08753a4ae6d41f101d379"
+      },
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1.run-manifest.json",
+        "sha256": "fbb1c373bd8eb0b370a3bc3a8420934eef1deca3399e39403541f8b9829db882"
+      },
+      "member": "role",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1",
+      "score_batch_summary": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-generation-v1/score-batch/batch-summary.json",
+        "sha256": "26d15e2ce69a0a2fdcd2d6754a27f91bda3e16207c2700d2e3af68d8f996dcb9"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-generation-v1/score-jobs.jsonl",
+        "sha256": "9a67e8abcb082d9bad9feaf7bcc732bcfc08dfec085174aa767b82a3e09ea80b"
+      },
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    },
+    {
+      "actual_model_contacts": 128,
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-generation-v1.json",
+        "sha256": "b3e30464fde7c9db4800c1eaed56cf3c820252accbeabfb147fb3b538437f279"
+      },
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1.run-manifest.json",
+        "sha256": "17a564739c013fd9b28152273185eb74a08974a214ae0a20d96f026fba50e389"
+      },
+      "member": "role-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1",
+      "score_batch_summary": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-generation-v1/score-batch/batch-summary.json",
+        "sha256": "e05bc6a7f752c3786f733eab3b737297e52e4a15cf5b5e113f47775d6bd4a2f7"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-generation-v1/score-jobs.jsonl",
+        "sha256": "7d63a39243d71bc696c366c2bf68aa981a8a5c882f315e7ca607f71fc0a5ce46"
+      },
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    },
+    {
+      "actual_model_contacts": 122,
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-generation-v1.json",
+        "sha256": "c7be5ac6f390ba0407d32006963676967ee7cc8426cad7d2a3135a20ec740aee"
+      },
+      "failed_official_score_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1.run-manifest.json",
+        "sha256": "b633347c7fa504cb30c9a2211b66e219cc99339d7564e9ba97c5a54734b325ba"
+      },
+      "member": "trajectory-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1",
+      "score_batch_summary": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-generation-v1/score-batch/batch-summary.json",
+        "sha256": "433f45b1585d1850b1d7d4db543ef2e6eb6eef77e6574dba174c33a95e9d0d0d"
+      },
+      "score_jobs": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1/attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-generation-v1/score-jobs.jsonl",
+        "sha256": "5662df9f79add12b8c13ad45660bd1ab1f03aff8328609af0606386bd254506a"
+      },
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    }
+  ],
+  "operational_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/complete-family-qualification-v1.json",
+    "sha256": "de15c6d79d0f696e55d34e8ca17a5310cd6011f7fe30d83a43e8c8ecc33cd3fc"
+  },
+  "owner_decision": 227,
+  "qualification_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/analysis-driver-preparation-v1/saea_prefix_n20_qualify.py",
+    "sha256": "e9ded0d49870c110534cf3b16a3c48cda27b17031169f1913827afcff79f72d6"
+  },
+  "read_countersignature_granted": true,
+  "recipe": {
+    "path": "/home/chao/saea-worktrees/codex-prefix-affinity-n20-v1/docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/analysis-recipe-v1.json",
+    "sha256": "105dcff8b19e8a755561a9c519ee1318aa68b2a9ab42e5d5e0e1748b46b1077e"
+  },
+  "recorded_at_utc": "2026-10-03T11:15:36.093163+00:00",
+  "registration": {
+    "path": "/home/chao/saea-worktrees/codex-prefix-affinity-n20-v1/docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/registration-v1.json",
+    "sha256": "5722cc57913bd4b21c13c10706c04fc604f4d0ddad8cc62dcab423bf7452c6f1"
+  },
+  "root_reviewed_at_utc": "2026-10-03T11:16:22.902156+00:00",
+  "schema": "saea-root-cache-family-read-admission-v1",
+  "scientific_values_read_before_countersignature": false,
+  "source_commit": "4c98cbf8d94fe543e2aaab887ece5c02ba4858e1",
+  "source_worker": "/home/chao/saea-worktrees/codex-prefix-affinity-n20-v1",
+  "task_answers_or_quality_exposed": false
+}

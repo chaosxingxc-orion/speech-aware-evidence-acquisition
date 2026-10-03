@@ -1,0 +1,28 @@
+{
+  "additional_model_or_scorer_contacts": 0,
+  "analysis_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/analysis-driver-preparation-v1/preparation.json",
+    "sha256": "44e7781c787c764c06e4a355e324f85a918010765aa0a7f6b799a5f36b57160c"
+  },
+  "analysis_prepared": "Reuse existing bundle/source verification, cache export and official saved-count paired read. The unsigned root READ is confirmed to refuse before opening task sources. Each mode retains its own A/A; no pooling of repeat runs into extra independent sample support.",
+  "at_utc": "2026-10-03T10:56:13.760719+00:00",
+  "decision": "Keep independent role text optimization available with the existing trajectory scheduler. The separate fixed-policy slot-affinity experiment tests cache retention and cost; it is not a prerequisite for changing role text. Await every admitted member and exact root READ before any cache or quality interpretation.",
+  "heartbeat": "PAUSED",
+  "interpretation_scope": "The fixed-policy panel changes slot routing while preserving speech-query-prefix-v2. Query speech precedes the contact-instruction history suffix. It does not test relocating invariant node instructions ahead of the variable query, and cannot settle all possible node-specific prefix layouts. A future layout change would be a separate prospective request-semantics factor with its own capacity, structural and complete-family checks.",
+  "lifecycle_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/analysis-driver-preparation-v1/lifecycle-preparation-v1.json",
+    "sha256": "879a8a9b96c77d1b2ead24d70c183135761f4963896c58f79667ff5140a43c13"
+  },
+  "lifecycle_preparation_added_utc": "2026-10-03T11:11:47.050601+00:00",
+  "request_layout_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/request-layout-source-audit-v1.json",
+    "sha256": "0213a1f3f8dab01f6b091ada49c89c3ccb7b063c6b884e3e0566a5ef0e685a9a"
+  },
+  "resource_telemetry_seconds": 10,
+  "root_read_countersigned": false,
+  "runtime_changed": false,
+  "schema": "saea-prefix-layout-and-read-preparation-v1",
+  "scientific_sources_opened": false,
+  "source_commit": "4c98cbf8d94fe543e2aaab887ece5c02ba4858e1",
+  "source_worker": "/home/chao/saea-worktrees/codex-prefix-affinity-n20-v1"
+}
