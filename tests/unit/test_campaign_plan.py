@@ -134,13 +134,16 @@ def test_node_plan_refuses_ambiguous_or_recovery_members(tmp_path, monkeypatch, 
         load_node_panel_plan(tmp_path, path)
 
 
+@pytest.mark.parametrize("mode", ["node-panel", "node-panel-worker"])
 def test_node_panel_cli_uses_all_runtime_owners_and_no_partial_override(
-    tmp_path, monkeypatch, capsys
+    tmp_path, monkeypatch, capsys, mode
 ):
     from speech_aware_evidence_acquisition.core.flight import cli
     from types import SimpleNamespace
 
     path, document, cells = node_plan(tmp_path, monkeypatch)
+    for cell in cells:
+        cell.document["allowed_execution_stages"] = [mode]
     seen = []
     monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
     monkeypatch.setattr(cli, "__file__", str(tmp_path / "src/pkg/core/flight/cli.py"))
@@ -156,12 +159,13 @@ def test_node_panel_cli_uses_all_runtime_owners_and_no_partial_override(
     def run(flights, **kw):
         assert tuple(f.run_id for f in flights) == tuple(c.run_id for c in cells)
         assert kw["panel_id"] == "panel" and len(kw["members"]) == 2
+        assert kw["mode"] == mode
         seen.append(("run", len(flights)))
         return {"schema": "saea-node-panel-status-v1", "states": {}}
 
     monkeypatch.setattr(cli, "run_node_panel", run)
     argv = [
-        "node-panel",
+        mode,
         "--repo-root",
         str(tmp_path),
         "--data-root",
@@ -183,3 +187,20 @@ def test_node_panel_cli_uses_all_runtime_owners_and_no_partial_override(
         cli.main(argv + ["--cell", "cell-0"])
     with pytest.raises(SystemExit):
         cli.main(argv + ["--lease-token-file", str(tmp_path / "token")])
+
+
+@pytest.mark.parametrize("mode", ["node-panel", "node-panel-worker"])
+def test_panel_plan_admission_does_not_convert_scoring_lifecycle(
+    tmp_path, monkeypatch, mode
+):
+    from speech_aware_evidence_acquisition.core.flight.cli import load_node_panel_plan
+
+    path, document, cells = node_plan(tmp_path, monkeypatch)
+    for cell in cells:
+        cell.document["allowed_execution_stages"] = [mode]
+    assert len(load_node_panel_plan(tmp_path, path, mode=mode)[0]) == 2
+    other = "node-panel" if mode == "node-panel-worker" else "node-panel-worker"
+    with pytest.raises(CampaignError):
+        load_node_panel_plan(tmp_path, path, mode=other)
+    with pytest.raises(CampaignError):
+        load_node_panel_plan(tmp_path, path, mode="worker")

@@ -1,0 +1,130 @@
+{
+  "at_utc": "2026-10-03T18:41:47.162978+00:00",
+  "authority": "Owner227; root-only engineering before8x400. Direct owner reiterates independent node-prefix reuse as the scheduling objective.",
+  "changes": [
+    "Explicit node-panel-worker shares the existing panel lifecycle and generation lease but stops after all generations drain, without sealing or official scoring.",
+    "CLI, memory supervisor, batch driver and every-member inspector retain the exact declared lifecycle. Missing or conflicting cell stages refuse before any contact.",
+    "The full node-panel path keeps independent seals and serial official scores. Generation failure preserves evidence, aborts owned attempts and does not retry."
+  ],
+  "heartbeat": "PAUSED",
+  "interpretation": "This is an engineering entry path, not a demonstrated cache, latency or quality benefit.",
+  "learning": "HELD",
+  "next": "Register exact maximum-request FIT and a fresh worker-only integrated panel proof, then audit original requests, actual slots, prefix reuse/recomputation, timing and stage barriers. No existing frozen attempt is reopened or scored.",
+  "parent_commit": "d4d8dafdcaa12b426a911c84f1fbf5114da3fb37",
+  "real_contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "runtime_controls_changed": false,
+  "schema": "saea-node-panel-worker-engineering-v1",
+  "source_files": [
+    {
+      "relpath": "scripts/flights/batch/batch_driver.sh",
+      "sha256": "15c0615fee8d105ecd47b2c5b7216b552489e7e00d2824f9962875516e626803"
+    },
+    {
+      "relpath": "scripts/flights/batch/node_panel_inspect.py",
+      "sha256": "db1d8adfa19b862e52453fef33d4d1c586ddcf2d6366e41051db3f59aa032d94"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/campaign.py",
+      "sha256": "f54bba54095608ea6d8c2a9038d357ffaf628ad298b8a07ec59e043f243b5ab8"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/cli.py",
+      "sha256": "26a44ef59057947c15dccf956e7b833c2a7f8ce9fbfce7d8b0d837a53730e672"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/process_guard.py",
+      "sha256": "9aa432543881119a6c244ed453f14b5c8750cfbaa90c9deb67c60bace58f53da"
+    },
+    {
+      "relpath": "tests/unit/test_batch_process_guard.py",
+      "sha256": "b2190bee691e2028dfda98fb3650a32129de584334b3c5d534caed38aaded6a1"
+    },
+    {
+      "relpath": "tests/unit/test_campaign_plan.py",
+      "sha256": "f42a79df21c5c80279890c1f49c3ce83926e066107a92db0e149edb9c5684feb"
+    },
+    {
+      "relpath": "tests/unit/test_flight_process_guard.py",
+      "sha256": "e6df7d4ea0458458ee42c597b3ebcede98f2035591a7965960d6968a60587c78"
+    },
+    {
+      "relpath": "tests/unit/test_node_panel_campaign.py",
+      "sha256": "5b394ff12ce625e79c9097b16171c1925639a00120e300cb02f7d6f5e42aba20"
+    },
+    {
+      "relpath": "tests/unit/test_node_panel_inspect.py",
+      "sha256": "c25b1669624c3f946006aa11423f73354daa9f746221c1a29443feefe2164718"
+    }
+  ],
+  "verification": {
+    "checks": [
+      "ruff",
+      "bash syntax",
+      "engineering base",
+      "harness admission",
+      "git diff --check"
+    ],
+    "evidence": [
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/base-v1.log",
+        "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/checks-v1.json",
+        "sha256": "69d44d4857273818d4517adb9d618ef082ba0aa53d2f0c8968f079437bf115de"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/coverage-v1.json",
+        "sha256": "89e0236d428c7487be8a8bc3a26310d0f53dcfc1b35a757fb8d82ff376f7fe18"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/diff-v1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/green-tests-v1.json",
+        "sha256": "5ff180f7a7b4f65a28772fcc952bad29acd680008b5113c77849b6275e05cca0"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/green-tests-v1.log",
+        "sha256": "d6bc3206c95937083ca745e164d5d7e38da4149ea001ffa5196f013f5de65fb8"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/harness-v1.log",
+        "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/lint-v1.log",
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/premerge-process-v1.json",
+        "sha256": "a2468405d57a71d1952a543e30e2fd2189c8ecaad2e59ce755280438c751ac36"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/red-tests.json",
+        "sha256": "8c09fde7520dae0fa061fd25ba1a1f47b95e26ce56a6d53fcd2430ed320117aa"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/red-tests.log",
+        "sha256": "5df9a401a85cb068e5c2baf093ad7fe581b28b2f8a1e30fbc4a5665f19af14ff"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-worker-engineering-owner227-v1/shell-v1.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "red_phase": "New lifecycle tests failed before implementation. Two test-fixture errors from an overbroad signature edit were corrected; no model contact.",
+    "statement_coverage_percent": {
+      "campaign.py": 90.1360544217687,
+      "cli.py": 81.60377358490567,
+      "process_guard.py": 94.35897435897436
+    },
+    "tests_passed": 177,
+    "warnings": 3
+  }
+}

@@ -37,6 +37,7 @@ EXECUTION_STAGES = frozenset({
     "worker",
     "campaign",
     "node-panel",
+    "node-panel-worker",
     # E10d (2026-09-29): a cell whose declared predecessor(s) already cover
     # its whole roster seals with zero contacts -- no serving requirement, no
     # lease. See core.flight.cli's "seal-only" mode.
@@ -100,7 +101,7 @@ class CampaignCell:
     def assert_mode(self, mode: str) -> None:
         """Enforce declared stage custody before any runtime or session work."""
         stages = self.document.get("allowed_execution_stages")
-        if mode in {"prepare-window-inventory", "prepare-window-features", "prepare-speech-observation-sources", "node-panel"} and stages is None:
+        if mode in {"prepare-window-inventory", "prepare-window-features", "prepare-speech-observation-sources", "node-panel", "node-panel-worker"} and stages is None:
             raise CampaignError(
                 f"cell {self.document['cell_id']} must explicitly permit "
                 f"execution stage {mode}"
@@ -343,17 +344,21 @@ def run_node_panel(
     flights: Sequence[FlightRuntime], *, cells: Sequence[CampaignCell], members,
     panel_id: str, repo_root: Path, data_root: Path, owner: str,
     expected_session_id: str, resident_finder=find_resident_session,
+    mode: str = "node-panel",
 ) -> Mapping[str, object]:
     """Coordinate registered independent native flights under one node-stage lease.
 
     Reuse each FlightRuntime stage and the existing official scorer. No sibling
     may require a score from this still-unrun panel; prepare those dependencies
     before admission. All generation settles before any member is sealed, and
-    scoring remains serial with no replay after failure.
+    scoring remains serial with no replay after failure. Explicit node-panel-worker
+    mode stops after generation, preserving the unsealed, unscored engineering lifecycle.
     """
     from concurrent.futures import ThreadPoolExecutor, as_completed
     from ...reproduction.ojw.panel import NativeWorkflowPanel
 
+    if mode not in {"node-panel", "node-panel-worker"}:
+        raise CampaignError("node panel requires an explicit panel lifecycle mode")
     flights, cells, members = tuple(flights), tuple(cells), tuple(members)
     if any(not isinstance(s, str) or not s.strip() for s in (owner, expected_session_id)):
         raise CampaignError("panel owner and resident session must be explicit")
@@ -363,7 +368,7 @@ def run_node_panel(
             or tuple((c.run_id, c.attempt_id) for c in cells) != pairs):
         raise CampaignError("panel runtime/cell order differs from its exact registered members")
     for cell in cells:
-        cell.assert_mode("node-panel")
+        cell.assert_mode(mode)
         if cell.document.get("resume_from") is not None:
             raise CampaignError("node panel does not admit resume or seal-only members")
         if cell.dependencies():
@@ -432,8 +437,9 @@ def run_node_panel(
                         panel.abort(error)
                         raise
                 for flight in flights:
-                    flight.seal()
-                    states[flight.run_id] = {"state": "sealed"}
+                    if mode == "node-panel":
+                        flight.seal()
+                    states[flight.run_id] = {"state": "sealed" if mode == "node-panel" else "generated"}
                 persist_all()
             except BaseException as error:
                 panel.abort(error)
@@ -444,15 +450,16 @@ def run_node_panel(
                     except Exception as caught:
                         error.add_note(f"Panel abort failed for {flight.run_id}: {type(caught).__name__}: {caught}")
                 raise
-        for flight in flights:
-            flight.score(include_per_sample=True)
-            states[flight.run_id] = {"state": "scored"}
-            persist_all()
+        if mode == "node-panel":
+            for flight in flights:
+                flight.score(include_per_sample=True)
+                states[flight.run_id] = {"state": "scored"}
+                persist_all()
     except BaseException as error:
         persist_all(error)
         raise
     return {
-        "schema": "saea-node-panel-status-v1", "panel_id": panel_id,
+        "schema": "saea-node-panel-status-v1", "panel_id": panel_id, "mode": mode,
         "states": states, "completed": [f.run_id for f in flights],
         "pending": [], "flight_receipts": receipt_refs,
     }

@@ -139,7 +139,7 @@ def world(tmp_path, monkeypatch, fail=None):
     return flights, cells, declared, events, saved
 
 
-def run(tmp_path, flights, cells, declared):
+def run(tmp_path, flights, cells, declared, **kwargs):
     return run_node_panel(
         flights,
         cells=cells,
@@ -150,6 +150,7 @@ def run(tmp_path, flights, cells, declared):
         owner="root",
         expected_session_id="resident",
         resident_finder=lambda root: (tmp_path, {"session_id": "resident"}),
+        **kwargs,
     )
 
 
@@ -203,3 +204,50 @@ def test_all_readiness_and_identity_checks_precede_lease(tmp_path, monkeypatch, 
         run(tmp_path, flights, cells, declared)
     assert not (tmp_path / "locks/flight.lock").exists()
     assert not any(k in {"model", "seal", "score"} for _, k in events)
+
+
+@pytest.mark.parametrize("fail", [None, "before-join", "bypass", "model"])
+def test_explicit_worker_panel_generates_without_seal_or_score(
+    tmp_path, monkeypatch, fail
+):
+    flights, cells, declared, events, saved = world(tmp_path, monkeypatch, fail)
+    for cell in cells:
+        cell.document["allowed_execution_stages"] = ["node-panel-worker"]
+    if fail:
+        with pytest.raises((RuntimeError, ValueError), match="named|panel"):
+            run(tmp_path, flights, cells, declared, mode="node-panel-worker")
+        assert (tmp_path / "locks/flight.lock").exists()
+        assert sorted(i for i, k in events if k == "abort") == [0, 1]
+    else:
+        result = run(tmp_path, flights, cells, declared, mode="node-panel-worker")
+        assert all(s["state"] == "generated" for s in result["states"].values())
+        assert result["mode"] == "node-panel-worker"
+        assert result["completed"] == ["run-0", "run-1"]
+        assert not (tmp_path / "locks/flight.lock").exists()
+        assert all(
+            s == ["preflight", "preprocess", "serve", "run_phases"]
+            for s in saved.values()
+        )
+    assert set(saved) == {"run-0", "run-1"}
+    assert not any(k in {"seal", "score"} for _, k in events)
+
+
+@pytest.mark.parametrize(
+    "mode,allowed",
+    [
+        ("node-panel-worker", None),
+        ("node-panel-worker", ["node-panel"]),
+        ("node-panel", ["node-panel-worker"]),
+        ("worker", ["worker"]),
+    ],
+)
+def test_panel_lifecycle_requires_exact_explicit_mode(
+    tmp_path, monkeypatch, mode, allowed
+):
+    flights, cells, declared, events, saved = world(tmp_path, monkeypatch)
+    for cell in cells:
+        cell.document["allowed_execution_stages"] = allowed
+    with pytest.raises(CampaignError):
+        run(tmp_path, flights, cells, declared, mode=mode)
+    assert not events and not saved
+    assert not (tmp_path / "locks/flight.lock").exists()

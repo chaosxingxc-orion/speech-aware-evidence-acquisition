@@ -42,10 +42,12 @@ def load_campaign_plan(repo: Path, path: Path):
     return tuple(selected)
 
 
-def load_node_panel_plan(repo: Path, path: Path):
+def load_node_panel_plan(repo: Path, path: Path, *, mode: str = "node-panel"):
     """Bind a complete stage panel to exact registered runtime and job owners."""
     from ...reproduction.ojw.panel import NativePanelMember, NativeWorkflowPanel, NativeWorkflowPanelError
 
+    if mode not in {"node-panel", "node-panel-worker"}:
+        raise CampaignError("node panel requires an explicit panel lifecycle mode")
     document = json.loads(path.read_text(encoding="utf-8"))
     if (not isinstance(document, dict) or set(document) != {"schema", "panel_id", "cells"}
             or document["schema"] != "saea-node-panel-plan-v1"
@@ -61,7 +63,7 @@ def load_node_panel_plan(repo: Path, path: Path):
         if len(matches) != 1:
             raise CampaignError("node panel cell must resolve exactly once")
         cell = matches[0]
-        cell.assert_mode("node-panel")
+        cell.assert_mode(mode)
         if (cell.run_id != item["run_id"] or cell.attempt_id != item["attempt_id"]
                 or cell.document.get("resume_from") is not None):
             raise CampaignError("node panel must name the exact fresh registered runtime")
@@ -138,7 +140,7 @@ def main(argv=None) -> int:
     parser.add_argument("mode", choices=[
         "check", "wire-check", "prepare-supply", "prepare-phase-recall", "prepare-branch-seeds",
         "prepare-window-inventory", "prepare-window-features",
-        "prepare-speech-observation-sources", "prompt-fit", "coordinate-fit", "worker", "campaign", "node-panel",
+        "prepare-speech-observation-sources", "prompt-fit", "coordinate-fit", "worker", "campaign", "node-panel", "node-panel-worker",
         # E10d (2026-09-29): a resume-recovery whose declared predecessor(s)
         # already cover the whole roster -- seals with zero contacts, no
         # server, no slot, no lease. The batch driver runs this as an
@@ -164,13 +166,13 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     if bool(args.experiment) == bool(args.campaign_plan):
         parser.error("select either an experiment or a committed campaign plan")
-    if args.campaign_plan is not None and (args.mode not in {"campaign", "node-panel"} or args.cell):
+    if args.campaign_plan is not None and (args.mode not in {"campaign", "node-panel", "node-panel-worker"} or args.cell):
         parser.error("campaign plans require campaign or node-panel mode and cannot select a partial cell")
     if args.mode in {"worker", "prompt-fit", "prepare-window-features"} and (
         not args.expected_session_id or args.lease_token_file is None
     ):
         parser.error("workers require --expected-session-id and --lease-token-file from root")
-    if args.mode in {"campaign", "node-panel"} and (not args.owner or not args.expected_session_id):
+    if args.mode in {"campaign", "node-panel", "node-panel-worker"} and (not args.owner or not args.expected_session_id):
         parser.error("campaign requires explicit --owner and --expected-session-id")
     if args.mode in {
         "prepare-supply", "prepare-phase-recall", "prepare-branch-seeds", "prepare-window-inventory",
@@ -188,9 +190,9 @@ def main(argv=None) -> int:
         parser.error("coordinate-fit requires --owner, --expected-session-id, --output and a positive --contact-cap")
     if args.mode == "coordinate-fit" and args.lease_token_file is not None:
         parser.error("coordinate-fit creates its own root lease; --lease-token-file is forbidden")
-    if args.mode == "node-panel" and (args.campaign_plan is None or args.lease_token_file is not None):
+    if args.mode in {"node-panel", "node-panel-worker"} and (args.campaign_plan is None or args.lease_token_file is not None):
         parser.error("node-panel requires a committed complete plan and owns its own generation lease")
-    if args.mode not in {"campaign", "node-panel"} and not args.cell:
+    if args.mode not in {"campaign", "node-panel", "node-panel-worker"} and not args.cell:
         parser.error("single-worker modes require --cell")
     repo, root = Path(args.repo_root).resolve(), Path(args.data_root).resolve()
     package_root = Path(__file__).resolve().parents[4]
@@ -202,8 +204,8 @@ def main(argv=None) -> int:
         plan_path = args.campaign_plan.resolve()
         if not plan_path.is_relative_to(repo):
             parser.error("campaign plan must be within repo-root")
-        if args.mode == "node-panel":
-            selected, panel_id, panel_members = load_node_panel_plan(repo, plan_path)
+        if args.mode in {"node-panel", "node-panel-worker"}:
+            selected, panel_id, panel_members = load_node_panel_plan(repo, plan_path, mode=args.mode)
         else:
             selected = load_campaign_plan(repo, plan_path)
     else:
@@ -237,11 +239,11 @@ def main(argv=None) -> int:
         )
         for experiment, cell in selected
     ]
-    if args.mode in {"worker", "campaign", "node-panel", "seal-only"}:
+    if args.mode in {"worker", "campaign", "node-panel", "node-panel-worker", "seal-only"}:
         assert_prepared_artifacts_current(flights)
-    if args.mode == "node-panel":
+    if args.mode in {"node-panel", "node-panel-worker"}:
         result = run_node_panel(
-            flights, cells=cells, members=panel_members, panel_id=panel_id,
+            flights, cells=cells, members=panel_members, panel_id=panel_id, mode=args.mode,
             repo_root=repo, data_root=root, owner=args.owner,
             expected_session_id=args.expected_session_id,
         )
@@ -364,7 +366,7 @@ def main(argv=None) -> int:
     print(json.dumps(result, sort_keys=True, default=str))
     if args.mode == "check" and isinstance(result, dict) and result.get("blockers"):
         return 1
-    if args.mode in {"campaign", "node-panel"} and isinstance(result, dict):
+    if args.mode in {"campaign", "node-panel", "node-panel-worker"} and isinstance(result, dict):
         states = result.get("states", {})
         if any(
             isinstance(state, dict)

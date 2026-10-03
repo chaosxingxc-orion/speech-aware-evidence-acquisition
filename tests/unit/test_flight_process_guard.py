@@ -514,8 +514,9 @@ def test_guard_worker_binds_existing_lease_without_campaign(
 @pytest.mark.parametrize(
     "fault", [None, "held-peer", "outside-plan", "external-token", "mixed-selector"]
 )
+@pytest.mark.parametrize("mode", ["node-panel", "node-panel-worker"])
 def test_guard_node_panel_keeps_one_process_and_all_exact_owners(
-    tmp_path, monkeypatch, fault
+    tmp_path, monkeypatch, fault, mode
 ):
     from types import SimpleNamespace
     from speech_aware_evidence_acquisition.core.flight import (
@@ -541,7 +542,7 @@ def test_guard_node_panel_keeps_one_process_and_all_exact_owners(
     monkeypatch.setattr(
         cli,
         "load_node_panel_plan",
-        lambda *a: (tuple(("e", c) for c in cells), "panel", ()),
+        lambda *a, **kw: (tuple(("e", c) for c in cells), "panel", ()),
     )
 
     def ready(cell, root):
@@ -576,7 +577,7 @@ def test_guard_node_panel_keeps_one_process_and_all_exact_owners(
         "--expected-session-id",
         "session",
         "--mode",
-        "node-panel",
+        mode,
         "--receipt-dir",
         str(data / "coordination/guard"),
         "--start-gib",
@@ -596,9 +597,7 @@ def test_guard_node_panel_keeps_one_process_and_all_exact_owners(
         assert guard.main(args) == 0
         assert checked == [f"r{i}" for i in range(8)]
         cmd = calls[0][0][0]
-        assert (
-            cmd[4] == "node-panel" and "--experiment" not in cmd and "--cell" not in cmd
-        )
+        assert cmd[4] == mode and "--experiment" not in cmd and "--cell" not in cmd
         assert cmd[cmd.index("--campaign-plan") + 1] == str(plan)
         assert calls[0][1]["identity"]["members"] == [
             {"run_id": c.run_id, "attempt_id": c.attempt_id} for c in cells

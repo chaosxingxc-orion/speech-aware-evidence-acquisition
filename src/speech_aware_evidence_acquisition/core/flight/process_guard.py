@@ -224,7 +224,7 @@ def main(argv=None):
     parser.add_argument("--campaign-plan", type=Path)
     parser.add_argument("--start-gib", type=float, required=True)
     parser.add_argument("--floor-gib", type=float, default=10.0)
-    parser.add_argument("--mode", choices=("campaign", "worker", "node-panel"), default="campaign")
+    parser.add_argument("--mode", choices=("campaign", "worker", "node-panel", "node-panel-worker"), default="campaign")
     parser.add_argument("--lease-token-file")
     args = parser.parse_args(argv)
     repo = Path(args.repo_root).resolve()
@@ -238,7 +238,7 @@ def main(argv=None):
         parser.error("guard receipt must be confined beneath data-root/coordination")
     from .campaign import load_campaign_cells, declared_readiness
 
-    if args.mode == "node-panel":
+    if args.mode in {"node-panel", "node-panel-worker"}:
         from .cli import load_node_panel_plan
 
         if args.campaign_plan is None or args.experiment or args.lease_token_file:
@@ -246,7 +246,7 @@ def main(argv=None):
         plan_path = args.campaign_plan.resolve()
         if not plan_path.is_relative_to(repo):
             parser.error("node panel plan must be confined beneath repo-root")
-        selected, panel_id, _members = load_node_panel_plan(repo, plan_path)
+        selected, panel_id, _members = load_node_panel_plan(repo, plan_path, mode=args.mode)
         cells = tuple(cell for _, cell in selected)
         ownership = {"panel_id": panel_id, "members": [
             {"run_id": cell.run_id, "attempt_id": cell.attempt_id} for cell in cells]}
@@ -261,7 +261,7 @@ def main(argv=None):
         state = declared_readiness(cell, data)
         if state.state != "ready":
             parser.error("registered cell is not ready: " + state.reason)
-    if args.mode != "node-panel":
+    if args.mode not in {"node-panel", "node-panel-worker"}:
         ownership = {"run_id": cells[0].run_id, "attempt_id": cells[0].attempt_id}
     command = [
         sys.executable,
@@ -279,7 +279,7 @@ def main(argv=None):
         "expected-session-id",
     ):
         command.extend(["--" + name, getattr(args, name.replace("-", "_"))])
-    if args.mode == "node-panel":
+    if args.mode in {"node-panel", "node-panel-worker"}:
         command.extend(["--campaign-plan", str(plan_path)])
     else:
         command.extend(["--experiment", args.experiment])

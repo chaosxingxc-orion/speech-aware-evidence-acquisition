@@ -1,0 +1,15 @@
+# Explicit unscored panel engineering
+
+The panel coordinator now supports `node-panel-worker` for separately registered structural generation. It uses the same `FlightRuntime`, independent owner clients and journals, strict whole-node executor, exclusive panel generation lease and process memory supervisor as the scored `node-panel` mode. All generation callbacks drain before completion. Successful engineering members are reported as `generated`; their attempts retain the normal worker-only, unsealed/unscored lifecycle. The original prepared score specifications do not authorize scoring.
+
+Every member must explicitly declare the exact execution stage. Neither a missing stage nor permission for the other panel mode grants admission. The CLI, batch queue, process supervisor and all-member structural inspector propagate that stage. A failed generation stops and preserves the complete failure evidence; no retry, seal or score follows. Full `node-panel` behavior remains independent member sealing followed by serial unique official scoring.
+
+All177 selected tests pass, with three upstream dependency deprecation warnings. Statement coverage is90.14% for campaign,81.60% for CLI and94.36% for the process supervisor. Lint, shell syntax, base and harness checks pass. The tests exercise both modes through CLI/guard/batch/inspection, all-member custody, missing or conflicting permission, and prejoin/model failures. The tests-first failure and corrected test-fixture signature are retained. [Pinned evidence](../../receipts/continuation/2026-10-03-node-panel-worker-engineering.json).
+
+No real model, tokenizer or scorer contact occurred. No queue, service, cache endpoint or frozen worker changed. This interface enables the separate small structural proof; it is not its registration or launch. Learning stays HELD and the heartbeat PAUSED. Root works alone and returns to the human before8x400.
+
+## Cache objective and next proof
+
+Maximize reuse of each node's independent compatible prefix over its whole eligible stage. Keep all four slots available. CPU preparation for the next node overlaps only current-node inference; no next-node model request crosses the global inference/preparation barrier. Within the first structural proof, use the prospectively declared member/roster order and identical static policy version across members, while preserving distinct node texts. This order does not prove token equality or optimal placement. A later multi-policy panel must declare compatible-prefix grouping before contact, without rewriting prompts or viewing outcomes.
+
+Register fresh source-bound capacity and worker-only structural identities, with immutable current pool assets and independent member ownership. Inspect actual request/slot pairs, reused and recomputed input tokens, first versus later compatible-prefix prefill, CPU overlap and barrier waiting. Record original mean sample and later-sample latency, not makespan divided by count. Structural completion does not permit quality reading or establish stable speedup; a later complete registered comparison must retain official quality and reliability alongside timing.

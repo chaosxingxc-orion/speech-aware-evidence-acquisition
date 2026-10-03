@@ -7,8 +7,9 @@ import json
 import pytest
 
 
+@pytest.mark.parametrize("mode", ["node-panel", "node-panel-worker"])
 def test_inspector_keeps_all_member_results_even_after_failure(
-    tmp_path, monkeypatch, capsys
+    tmp_path, monkeypatch, capsys, mode
 ):
     path = (
         Path(__file__).resolve().parents[2]
@@ -23,9 +24,13 @@ def test_inspector_keeps_all_member_results_even_after_failure(
         )
         for i in range(8)
     ]
-    monkeypatch.setattr(
-        module, "load_node_panel_plan", lambda *a: ((), "panel", members)
-    )
+
+    def load(repo, plan, *, mode):
+        assert mode == selected_mode
+        return (), "panel", members
+
+    selected_mode = mode
+    monkeypatch.setattr(module, "load_node_panel_plan", load)
     calls = []
 
     def execute(cmd, **kw):
@@ -40,6 +45,8 @@ def test_inspector_keeps_all_member_results_even_after_failure(
 
     monkeypatch.setattr(module.subprocess, "run", execute)
     argv = [
+        "--mode",
+        mode,
         "--repo-root",
         str(tmp_path),
         "--data-root",

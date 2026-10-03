@@ -1,5 +1,9 @@
 # Panel-wide node stages with CPU prefetch
 
+## Explicit structural-only panel entry
+
+The [worker-only lifecycle](worker-engineering.md) now reuses the guarded panel path while leaving engineering attempts unsealed and unscored. All177 selected tests pass. This closes the execution-entry gap before separately registered real capacity and structural proof; no contacts or runtime controls changed. Independent node-prefix reuse remains the primary objective, with actual slot/token/timing measurement required.
+
 ## Disk trace retention verified offline
 
 The optional [local trace storage](trace-storage.md) now keeps pending trace payload copies on disk and streams them into the original canonical trace. Independent owner contexts, model requests, four-slot node stages and final answer authority are unchanged. All574 selected tests pass, including the eight-owner20-job native integration with storage off and on, revision request equivalence and failure evidence. New storage statement coverage is99.08%;shared tracing98.40%. Lint/base/harness pass. [Pinned receipt](../../receipts/continuation/2026-10-03-node-panel-trace-storage-engineering.json) preserves the early lifecycle correction and an old timing-count test failure reproduced on unchanged base.

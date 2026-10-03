@@ -23,13 +23,16 @@ def main(argv=None):
     parser.add_argument(
         "--result-kind", choices=("task-answer", "artifact"), default="task-answer"
     )
+    parser.add_argument(
+        "--mode", choices=("node-panel", "node-panel-worker"), default="node-panel"
+    )
     args = parser.parse_args(argv)
     repo, plan = Path(args.repo_root).resolve(), Path(args.campaign_plan).resolve()
     if not plan.is_relative_to(repo) or args.ceiling_per_row < 1:
         parser.error(
             "panel plan must be inside repo-root and its contact ceiling must be positive"
         )
-    _cells, panel_id, members = load_node_panel_plan(repo, plan)
+    _cells, panel_id, members = load_node_panel_plan(repo, plan, mode=args.mode)
     reports = []
     for member in members:
         completed = subprocess.run(

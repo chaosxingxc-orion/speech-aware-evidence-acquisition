@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Unscored panel entry verified offline, 2026-10-03T18:41:47.162978+00:00
+
+The [explicit worker-only panel mode](../readiness/2026-10-03-panel-node-pipeline-v1/worker-engineering.md) reuses the independent-owner node-stage runtime without sealing/scoring structural proofs. All177 selected tests pass;campaign90.14%,CLI81.60%,guard94.36% statement coverage;lint/shell/base/harness pass. Exact stage custody persists through CLI,guard,batch and every-member inspection;generation failure never retries. [Evidence](../receipts/continuation/2026-10-03-node-panel-worker-engineering.json). Zero real contacts or runtime-control changes. At18:40:45Z no live generator/driver/scorer,STOP or lease;Windows17.919GiB in adjacent observation. Revalidate before launch.
+
+The primary goal remains independent node-prefix reuse across a whole stage,with CPU prefetch as support. No cache or latency benefit is established. Next register exact maximum-request FIT and a new worker-only integrated structural panel,then join actual slot/prefix/timing evidence. Do not score or reopen old engineering attempts. Keep four slots,independent prompts,original latency and business-quality criteria. Root only,no subagents;learning HELD,heartbeat PAUSED,human before8x400;other-carrier holds unchanged.
+
 ## Node-panel local trace storage verified offline, 2026-10-03T18:30:37.997339+00:00
 
 The [opt-in store](../readiness/2026-10-03-panel-node-pipeline-v1/trace-storage.md) keeps pending trace payload copies on local disk,merges references and streams original canonical traces. All574 selected tests pass,new storage99.08%/shared tracing98.40% statement coverage;lint/base/harness pass. Eight independent20-job native runtime dispatches retain their own clients,budgets,role material,FIT-before-send and160-request node stages with storage off/on. Revision request equivalence and failure preservation pass. [Pinned evidence](../receipts/continuation/2026-10-03-node-panel-trace-storage-engineering.json) preserves the corrected early writer-close defect and an old failure-trace timing assertion reproduced on unchanged base. Zero real model/tokenizer/scorer contacts;no runtime-control changes.
@@ -1195,7 +1201,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T18:30:37.997339+00:00
+Last refreshed: 2026-10-03T18:41:47.162978+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

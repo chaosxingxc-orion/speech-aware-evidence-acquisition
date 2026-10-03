@@ -194,20 +194,21 @@ def test_incomplete_wait_policy_never_dispatches(tmp_path, changes):
     assert result.returncode == 9 and dispatches == []
 
 
+@pytest.mark.parametrize("kind", ["node-panel", "node-panel-worker"])
 @pytest.mark.parametrize("worker_exit", [0, 125])
 def test_node_panel_routes_once_per_panel_through_guard_and_inspects_every_member(
-    tmp_path, worker_exit
+    tmp_path, worker_exit, kind
 ):
     result, dispatches = run_batch_fixture(
         tmp_path,
         worker_exit,
-        {"kind": "node-panel", "campaign_plan": "docs/panel.json"},
+        {"kind": kind, "campaign_plan": "docs/panel.json"},
     )
     assert result.returncode == (9 if worker_exit else 0), result.stderr
     assert len(dispatches) == (1 if worker_exit else 2)
     for cmd in dispatches:
         assert cmd[cmd.index("-m") + 1].endswith("process_guard")
-        assert cmd[cmd.index("--mode") + 1] == "node-panel"
+        assert cmd[cmd.index("--mode") + 1] == kind
         assert "--experiment" not in cmd
         assert cmd[cmd.index("--campaign-plan") + 1] == str(
             tmp_path / "docs/panel.json"
@@ -217,6 +218,7 @@ def test_node_panel_routes_once_per_panel_through_guard_and_inspects_every_membe
         for line in (tmp_path / "panel-inspections").read_text().splitlines()
     ]
     assert len(inspected) == len(dispatches)
+    assert all(args[args.index("--mode") + 1] == kind for args in inspected)
     assert all(str(tmp_path / "docs/panel.json") in args for args in inspected)
 
 
@@ -229,10 +231,11 @@ def test_node_panel_routes_once_per_panel_through_guard_and_inspects_every_membe
         {"smoke_experiment": "extra"},
     ],
 )
-def test_node_panel_refuses_incomplete_plan_or_resource_custody(tmp_path, change):
+@pytest.mark.parametrize("kind", ["node-panel", "node-panel-worker"])
+def test_node_panel_refuses_incomplete_plan_or_resource_custody(tmp_path, change, kind):
     result, calls = run_batch_fixture(
         tmp_path,
         0,
-        {"kind": "node-panel", "campaign_plan": "docs/panel.json", **change},
+        {"kind": kind, "campaign_plan": "docs/panel.json", **change},
     )
     assert result.returncode == 9 and not calls

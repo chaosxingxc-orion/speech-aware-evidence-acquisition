@@ -173,8 +173,8 @@ for ((i=0; i<N; i++)); do
   case "$smoke_result_kind" in task-answer|artifact) ;; *) stop "invalid smoke_result_kind on step $order" ;; esac
   if grep -q "\"step-done\".*\"short\":\"$short\"" "$STATUS" 2>/dev/null; then log "step-skip-done" "{\"step\":$order,\"short\":\"$short\"}"; continue; fi
   log "step-start" "{\"step\":$order,\"short\":\"$short\",\"kind\":\"$kind\",\"cell\":\"$cell\"}"
-  case "$kind" in cell|resume|seal-only|engineering|node-panel) ;; *) stop "invalid kind on step $order" ;; esac
-  if [ "$kind" = "node-panel" ]; then
+  case "$kind" in cell|resume|seal-only|engineering|node-panel|node-panel-worker) ;; *) stop "invalid kind on step $order" ;; esac
+  if { [ "$kind" = "node-panel" ] || [ "$kind" = "node-panel-worker" ]; }; then
     [ -n "$plan" ] && [ "$plan" != "None" ] || stop "node panel step $order requires its complete registered plan"
     [ -n "$process_start" ] && [ -n "$process_floor" ] || stop "node panel step $order requires both memory floors"
     { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "node panel step $order cannot declare a separate smoke"
@@ -191,8 +191,8 @@ for ((i=0; i<N; i++)); do
   fi
   if [ -n "$process_start" ] || [ -n "$process_floor" ]; then
     [ -n "$process_start" ] && [ -n "$process_floor" ] || stop "step $order needs both process memory floors"
-    case "$kind" in cell|resume|engineering|node-panel) ;; *) stop "step $order process guard requires campaign or identical engineering worker" ;; esac
-    if [ "$kind" != "node-panel" ]; then
+    case "$kind" in cell|resume|engineering|node-panel|node-panel-worker) ;; *) stop "step $order process guard requires campaign or identical engineering worker" ;; esac
+    if [ "$kind" != "node-panel" ] && [ "$kind" != "node-panel-worker" ]; then
       { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "step $order process guard refuses a multi-member campaign_plan"
     fi
     if [ "$kind" != "engineering" ]; then
@@ -230,9 +230,9 @@ for ((i=0; i<N; i++)); do
     $PY -B -m speech_aware_evidence_acquisition.core.flight.cli seal-only \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --experiment "$exp" --cell "$cell" > "$LOGF" 2>&1
-  elif [ "$kind" = "node-panel" ]; then
+  elif { [ "$kind" = "node-panel" ] || [ "$kind" = "node-panel-worker" ]; }; then
     GUARD_DIR="$DATA/coordination/process-guard/$(basename "$LOGF" .log)"
-    $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard --mode node-panel \
+    $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard --mode "$kind" \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --campaign-plan "$REPO/$plan" --owner "$owner" --expected-session-id "$SESSION" \
       --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
@@ -251,8 +251,8 @@ for ((i=0; i<N; i++)); do
   fi
   rc=$?
   log "arm-exit" "{\"step\":$order,\"rc\":$rc}"
-  if [ "$kind" = "node-panel" ]; then
-    out=$($PY -B "$SP/node_panel_inspect.py" --repo-root "$REPO" --data-root "$DATA" \
+  if { [ "$kind" = "node-panel" ] || [ "$kind" = "node-panel-worker" ]; }; then
+    out=$($PY -B "$SP/node_panel_inspect.py" --mode "$kind" --repo-root "$REPO" --data-root "$DATA" \
       --campaign-plan "$REPO/$plan" --flight-commit "$FLIGHT_COMMIT" \
       --ceiling-per-row "$ceil" --notool "$nt" --result-kind "$result_kind"); irc=$?
   else
