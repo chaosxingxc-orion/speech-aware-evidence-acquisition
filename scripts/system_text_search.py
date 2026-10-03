@@ -259,6 +259,11 @@ def main(argv=None):
     stage_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
     stage_cmd.add_argument("--member-bindings", type=Path, required=True)
     stage_cmd.add_argument("--data-root", type=Path, required=True)
+    panel_cmd = commands.add_parser("freeze-panel", help="Freeze a reviewed exact extra-round panel; no dispatch or READ authority")
+    panel_cmd.add_argument("--round", type=int, required=True)
+    panel_cmd.add_argument("--rows", type=int, choices=(20, 50, 100, 200, 400), required=True)
+    for option in ("protocol", "member-bindings", "root-review", "repo-root", "data-root"):
+        panel_cmd.add_argument("--" + option, type=Path, required=True)
     selection_cmd = commands.add_parser("freeze-selection", help="Bind historical nominees before the common cohort; no dispatch")
     selection_cmd.add_argument("--protocol", type=Path, required=True)
     selection_cmd.add_argument("--update-family", type=Path, action="append", required=True,
@@ -461,6 +466,15 @@ def main(argv=None):
         from speech_aware_evidence_acquisition.rails.system_search_stage import freeze_update_stage
         registration = freeze_update_stage(archive, protocol=read(args.protocol), round_index=args.round,
             member_bindings=read(args.member_bindings), data_root=args.data_root)
+        print(json.dumps({"registration_sha256": registration["registration_sha256"],
+            "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],
+            "contacts_added": 0, "runtime_admission": "separate-required"}))
+    elif args.command == "freeze-panel":
+        from speech_aware_evidence_acquisition.rails.system_search_stage import freeze_optimization_panel
+        frozen = freeze_optimization_panel(archive, protocol=read(args.protocol), round_index=args.round,
+            rows=args.rows, member_bindings=read(args.member_bindings), root_review=read(args.root_review),
+            repo_root=args.repo_root, data_root=args.data_root)
+        registration = frozen["registration"]
         print(json.dumps({"registration_sha256": registration["registration_sha256"],
             "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],
             "contacts_added": 0, "runtime_admission": "separate-required"}))

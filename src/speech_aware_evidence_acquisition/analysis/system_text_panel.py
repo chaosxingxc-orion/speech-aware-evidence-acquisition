@@ -46,10 +46,8 @@ def scope_record(registration, owner, growth):
     }
 
 
-def validate_registration(
-    recipe, registration, owner, authority, *, growth, protocol, pool_ids
-):
-    """Validate prospective scope before opening any reward or terminal output."""
+def validate_definition(recipe, registration, owner, *, growth, protocol, pool_ids):
+    """Validate prospective scope without granting or fabricating READ authority."""
     require(
         owner.get("decision_id") == 224
         and owner.get("status") == "approved"
@@ -140,10 +138,16 @@ def validate_registration(
     require(
         recipe.get("run_ids", {}).get("read")
         == registration.get("read_id")
-        == authority.get("read_run_id")
         == read_id,
-        "exact panel root READ authority is required",
+        "exact prospective panel READ identity is required",
     )
+
+
+def validate_registration(recipe, registration, owner, authority, *, growth, protocol, pool_ids):
+    """Require real countersigned READ metadata in addition to prospective scope."""
+    validate_definition(recipe, registration, owner, growth=growth, protocol=protocol, pool_ids=pool_ids)
+    require(isinstance(authority, dict) and authority.get("read_run_id") == registration["read_id"],
+            "exact panel root READ authority is required")
     sha(authority.get("ledger_row_sha256"))
 
 

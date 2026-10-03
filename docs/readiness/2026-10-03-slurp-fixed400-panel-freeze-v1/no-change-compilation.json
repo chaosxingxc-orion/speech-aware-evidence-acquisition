@@ -1,0 +1,69 @@
+{
+  "at": "2026-10-03T04:42:41.810959+00:00",
+  "members": [
+    {
+      "allocation": "L-4-1",
+      "bundle_id": "1789cc3f9e60cd9ab04f8a8c811aefa3cdf5f42e2def34650454e410602b81a2",
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/L-4-1.json",
+        "sha256": "17b32e144c70cc23a5c1e02d6e46666fa219aa22325aec7dad9abc53ffcf968c"
+      },
+      "configuration": {
+        "relpath": "system-text-search/control2-owner217/compiled-configs/L-4-1.json",
+        "sha256": "c49de71f99e05637a92623e27a05c04edede385662af4b1d79cf8d381bbffa34"
+      },
+      "parent_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/control2-owner217/policies/1789cc3f9e60cd9ab04f8a8c811aefa3cdf5f42e2def34650454e410602b81a2.json",
+          "sha256": "6f1db59522e523508f96297b359722692d065dfdd720a9e7226ebd0b0c0d2381"
+        },
+        "bundle_id": "1789cc3f9e60cd9ab04f8a8c811aefa3cdf5f42e2def34650454e410602b81a2",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "prior_proposal_bytes_preserved": true,
+      "role_knowledge_supply_unchanged": true,
+      "role_sha256": {
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "status": "no-change"
+    },
+    {
+      "allocation": "L-4-2",
+      "bundle_id": "e88281aaf5dc5a5d2127e617aa881cd7de385639766252322b3ae7fb094388cc",
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/L-4-2.json",
+        "sha256": "f38671e18c1c161a18bc21409667f198bc094f845cd6681260dff05e1740aef1"
+      },
+      "configuration": {
+        "relpath": "system-text-search/control2-owner217/compiled-configs/L-4-2.json",
+        "sha256": "617f1c350c1670a06888193f68249b089ce44ddd3c335f38ba5c9fc4385d0243"
+      },
+      "parent_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/control2-owner217/policies/e88281aaf5dc5a5d2127e617aa881cd7de385639766252322b3ae7fb094388cc.json",
+          "sha256": "03e1f591fd973a8f3d04f3a29f9371ad895073345544d5cdfde2ada5a68f0c59"
+        },
+        "bundle_id": "e88281aaf5dc5a5d2127e617aa881cd7de385639766252322b3ae7fb094388cc",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "prior_proposal_bytes_preserved": true,
+      "role_knowledge_supply_unchanged": true,
+      "role_sha256": {
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "status": "no-change"
+    }
+  ],
+  "new_contacts": 0,
+  "proposal_allocations_added": 0,
+  "round": 4,
+  "runtime_admitted": false,
+  "schema": "saea-completed-no-change-compilation-custody-v1",
+  "source_base_commit": "ced3b07b6a1d7034b62ea3acb3bf47df30fa092e"
+}

@@ -1,0 +1,32 @@
+{
+  "actual_no_change_compilations": 2,
+  "actual_panel_freezes": 0,
+  "at": "2026-10-03T04:42:41.810959+00:00",
+  "base_commit": "ced3b07b6a1d7034b62ea3acb3bf47df30fa092e",
+  "checks": {
+    "engineering_base": "passed",
+    "git_diff": "passed",
+    "harness_admission": "passed",
+    "ruff": "passed"
+  },
+  "encoder_contacts": 0,
+  "model_contacts": 0,
+  "owner226": "pending",
+  "proposal_allocations_added": 0,
+  "runtime_admitted": false,
+  "schema": "saea-fixed400-panel-freeze-validation-v1",
+  "scorer_contacts": 0,
+  "statement_coverage_percent": {
+    "combined": 92,
+    "freeze_optimization_panel": 100,
+    "system_search_stage": 96,
+    "system_text_panel": 100,
+    "system_text_search_cli": 88
+  },
+  "tests": {
+    "failed": 0,
+    "new": 38,
+    "passed": 317
+  },
+  "tokenizer_contacts": 0
+}
