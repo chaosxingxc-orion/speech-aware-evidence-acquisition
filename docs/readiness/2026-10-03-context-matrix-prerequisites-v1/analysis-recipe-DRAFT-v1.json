@@ -1,0 +1,76 @@
+{
+  "analysis": {
+    "measurement_rules": [
+      "Token-weight reuse;never sum percentages.",
+      "Do not infer reused tokens from final tokens_cached residency.",
+      "Do not sum overlapping contact latencies as episode or campaign wall time.",
+      "Episode wall time requires original explicit episode boundaries;if absent report unavailable rather than reconstructing from contact sums.",
+      "Do not interpret client-minus-server duration as queue time.",
+      "Preserve raw output and original official score;no post-hoc score replay."
+    ],
+    "primary": [
+      "Official pooled SLU-F1,intent and reliable completion for all repeats",
+      "Generation dispatch wall time and complete flight wall time with separate boundaries",
+      "Per-role and per-stage input/reused/evaluated/generated tokens,prefill/decode/client transport mean,p50,p95 with missingness",
+      "Role/control errors,normalizer use,extra contacts and revisions"
+    ],
+    "secondary": [
+      "Natural-mixture and equal-stratum summaries with actual support",
+      "Layout contrasts within each scheduler,scheduler contrasts within each layout,and their difference as descriptive interaction",
+      "Per-variant A/A spread and first-contact versus subsequent-contact costs"
+    ],
+    "selection": "Root reviews complete evidence and selects a feasible measured quality/cost tradeoff or retains the seed. No precommitted score threshold,no global-optimum or stable-benefit claim from20. Cache hits are not an eligibility floor."
+  },
+  "automatic_scaling": false,
+  "comparisons": [
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "layout": "legacy-trajectory",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "layout": "before-speech-trajectory",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "layout": "legacy-role",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "layout": "before-speech-role",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1"
+    }
+  ],
+  "complete_family": [
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1"
+  ],
+  "latest_owner_timing_priority": {
+    "distinct_metrics": "Batch/dispatch wall divided by sample count and throughput remain distinct from mean sample elapsed time; never substitute summed contacts",
+    "first_vs_rest": "Report first sample separately; preserve admission/dispatch order and every original start/end timestamp",
+    "first_wave": "Report first4 concurrent starts versus remaining16 separately; do not silently exclude first wave",
+    "prerequisite": "Root shared original episode timing instrumentation integrated and identical in all8 frozen members; no worker freeze before that source",
+    "primary": "Actual original per-sample wall duration mean over samples2-20; report mean over all20 alongside it"
+  },
+  "optimizer_export": false,
+  "optional_timing": "Use existing export_system_node_timing under exact complete-family READ. Original episode wall boundaries required; otherwise unavailable.",
+  "order_limit": "Symmetric position balances linear time trend only. Cache history and numerical batching effects remain; no flush,warmup,save/restore or service changes. Report first versus later contacts and both repeats.",
+  "raw_request_audit": "Every original contact/body/FIT/control hash; before-speech additionally shared original ORG layout audit; actual requested slot identities for role-affinity",
+  "read_gate": "All eight independently FINALIZED,verified seals,one unique successful complete official score each,zero failed jobs,then exact root READ. No partial quality or optimizer export.",
+  "run_ids": {
+    "read": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1"
+  },
+  "schema": "saea-context-matrix-analysis-draft-v1",
+  "scores": "Exactly one official complete score per member; no failures or replay",
+  "source_rule": "No earlier update3 role annotations or old scored rows enter this new family.",
+  "status": "DRAFT UNSIGNED; no task-quality read"
+}

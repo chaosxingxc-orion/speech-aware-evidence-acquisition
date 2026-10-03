@@ -1,0 +1,56 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-aa-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "c9ede331a755981b03d0008de26af143d94b2dfb7f2074f5c6a5b61c694a72f7",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "member": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-aa-generation-v1",
+    "baseline_pin": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-role-aa-v1.json",
+      "sha256": "2e89826f3808117405fb2e379d89cc015594f15e5d97bb41be86b97380d2264f"
+    },
+    "config_hash": "92f779ebeae55de265d17a9b76ba002efff8a81de9c0ff9e1739923976b15c3b",
+    "config_pin": {
+      "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-legacy-role-aa-v1.json",
+      "sha256": "2e1fd2604b1bc6d9c7a7296bce8bb71bdb3a6cd4821c862027eedc3c5f57b049"
+    },
+    "experiment": "slurp-native-stage3-context-matrix-n20-legacy-role-aa-v1",
+    "fit": {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-aa-fit-v1",
+      "contact_cap": 1040,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-FIT-V1"
+    },
+    "label": "legacy-role-aa",
+    "order": 6,
+    "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "policy_binding": {
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "role_sha256": {
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    },
+    "protocol_hash": "c9ede331a755981b03d0008de26af143d94b2dfb7f2074f5c6a5b61c694a72f7",
+    "rows": 20,
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "status": "HELD",
+    "supply_prepared": false,
+    "variant": "legacy-role"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1",
+  "root_decision": null,
+  "schema": "saea-context-matrix-generation-plan-draft-v1",
+  "status": "DRAFT HELD; not contact authority"
+}

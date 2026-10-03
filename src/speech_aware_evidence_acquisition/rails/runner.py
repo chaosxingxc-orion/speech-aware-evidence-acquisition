@@ -6167,6 +6167,26 @@ def _run_agent_openjiuwen(
                 ),
             )
 
+        def record_sample_timing(state, timing):
+            from .execution_units import scoped_execution_contact_id
+
+            sample_id = state.prepared.sample.sample_id
+            unit_id = state.prepared.execution_unit_id
+            if state.final_outcome is not None:
+                trace = state.final_outcome.trace_buffer
+            else:
+                trace = TraceBuffer(run_id)
+                state.trace_buffers[(-2, 0)] = trace
+            trace.emit(
+                "USE", scoped_execution_contact_id(
+                    f"{sample_id}/{native_episode_binding.program.program_id}/sample-execution-timing",
+                    unit_id,
+                ),
+                {"use_sample_execution_timing": {
+                    **timing, "sample_id": sample_id, "execution_unit_id": unit_id,
+                }},
+            )
+
         try:
             execute_speech_agent_workflows(
                 states, branch_count=1, slot_count=slot_count,
@@ -6174,6 +6194,7 @@ def _run_agent_openjiuwen(
                 workflow_timeout_seconds=DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
                 episode_invoker=invoke_episode,
                 local_tool_workers=native_episode_binding.config.local_tool_workers,
+                sample_timing_sink=record_sample_timing,
                 **scheduling_options,
             )
         except BaseException:

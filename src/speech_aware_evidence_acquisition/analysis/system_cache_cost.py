@@ -275,3 +275,125 @@ def export_system_node_timing(source: VerifiedNativeEpisodeSource) -> dict:
     }
     report["content_sha256"] = content_hash(report)
     return report
+
+
+def _sample_seconds_summary(values):
+    ordered = sorted(values)
+    return {
+        "count": len(ordered),
+        "mean_seconds": math.fsum(ordered) / len(ordered) if ordered else None,
+        "p50_seconds": median(ordered) if ordered else None,
+        "p95_seconds": ordered[math.ceil(.95 * len(ordered)) - 1] if ordered else None,
+    }
+
+
+def summarize_sample_execution_timing(records, *, expected_sample_ids) -> dict:
+    """Validate one complete, ordered, single-execution-per-sample dispatch.
+
+    This pure numeric helper grants no source/read permission. Callers must bind
+    records to their original structural authority or finalized scientific source.
+    Refuse partial coverage, mixed batches and execution-unit mixtures. A failed
+    workflow remains measured but disqualifies the report for efficiency selection.
+    Completed means executor completion, not a correct or reliable task answer.
+    """
+    ids = tuple(expected_sample_ids)
+    if (not ids or any(not isinstance(sid, str) or not sid for sid in ids)
+            or len(set(ids)) != len(ids)):
+        raise CacheCostError("sample timing requires a unique ordered roster")
+    rows = list(records)
+    if len(rows) != len(ids):
+        raise CacheCostError("sample timing requires complete roster coverage")
+    indexed = {}
+    common = None
+    for row in rows:
+        if not isinstance(row, Mapping) or row.get("schema") != "saea-sample-execution-timing-v1":
+            raise CacheCostError("sample timing schema is invalid")
+        integer_fields = ("admission_index", "expected_samples", "slot_count", "queue_depth",
+                          "batch_started_ns", "admitted_ns", "finished_ns")
+        if any(type(row.get(key)) is not int or not 0 <= row[key] < 2**63 for key in integer_fields):
+            raise CacheCostError("sample timing boundaries and counts must be nonnegative integers")
+        index = row["admission_index"]
+        if (index >= len(ids) or index in indexed or row.get("sample_id") != ids[index]
+                or row.get("execution_unit_id") is not None or "execution_unit_id" not in row
+                or row["expected_samples"] != len(ids)
+                or row["slot_count"] < 1 or row["queue_depth"] < 1
+                or not row["batch_started_ns"] <= row["admitted_ns"] <= row["finished_ns"]):
+            raise CacheCostError("sample timing identity, order or boundaries are inconsistent")
+        status, error = row.get("status"), row.get("error_type")
+        if (not isinstance(status, str) or status not in {"completed", "failed"} or "error_type" not in row
+                or (status == "completed" and error is not None)
+                or (status == "failed" and (not isinstance(error, str) or not error.isidentifier()))):
+            raise CacheCostError("sample timing completion status is invalid")
+        identity = (row["batch_started_ns"], row["slot_count"], row["queue_depth"])
+        if common is not None and common != identity:
+            raise CacheCostError("sample timing cannot splice batches or scheduling envelopes")
+        common = identity
+        indexed[index] = dict(row)
+    ordered = [indexed[index] for index in range(len(ids))]
+    if any(left["admitted_ns"] > right["admitted_ns"] for left, right in zip(ordered, ordered[1:])):
+        raise CacheCostError("sample timing admission clocks reverse roster order")
+    samples = [{
+        "sample_id": row["sample_id"], "admission_index": row["admission_index"],
+        "status": row["status"], "error_type": row["error_type"],
+        "elapsed_seconds": (row["finished_ns"] - row["admitted_ns"]) / 1e9,
+        "admission_wait_seconds": (row["admitted_ns"] - row["batch_started_ns"]) / 1e9,
+        "timing_record_sha256": content_hash(row),
+    } for row in ordered]
+    elapsed = [row["elapsed_seconds"] for row in samples]
+    wall = (max(row["finished_ns"] for row in ordered) - common[0]) / 1e9
+    failed = sum(row["status"] == "failed" for row in ordered)
+    report = {
+        "schema": "saea-system-sample-timing-v1", "available": True,
+        "samples": samples, "all_samples": _sample_seconds_summary(elapsed),
+        "first_admitted_sample": samples[0],
+        "excluding_first": _sample_seconds_summary(elapsed[1:]),
+        "first_slot_count_admissions": _sample_seconds_summary(elapsed[:common[1]]),
+        "after_first_slot_count_admissions": _sample_seconds_summary(elapsed[common[1]:]),
+        "admission_wait": _sample_seconds_summary([row["admission_wait_seconds"] for row in samples]),
+        "batch_dispatch_wall_seconds": wall,
+        "batch_dispatch_wall_seconds_per_sample": wall / len(samples),
+        "completed_samples": len(samples) - failed, "failed_samples": failed,
+        "eligible_for_efficiency_comparison": failed == 0,
+        "slot_count": common[1], "queue_depth": common[2],
+        "first_sample_rule": "First admitted roster member, regardless of finish order; exclude exactly this member from the separately reported remaining-sample mean.",
+        "cold_start_limit": "First slot-count admissions are a diagnostic group, not a proven cold wave; the remaining samples are not guaranteed warm. No slow-sample trimming.",
+        "timing_scope": "Monotonic admission-to-settled-workflow wall time includes internal model/tool waits, FIT and cleanup. Pre-admission wait is separate. Roster preparation, final persistence and official scoring are excluded. Batch wall per sample measures throughput, not individual latency.",
+        "quality_constraint": "Executor completion does not establish answer correctness or reliability. Compare official task quality and delivery reliability alongside latency; cache reuse is diagnostic only.",
+    }
+    report["content_sha256"] = content_hash(report)
+    return report
+
+
+def export_system_sample_timing(source: VerifiedNativeEpisodeSource) -> dict:
+    """Export numeric sample timing under the unchanged complete-source read gate.
+
+    Historical sources without timing stay unavailable. Partial measurements are
+    refused rather than silently reducing the denominator or reconstructing time.
+    """
+    if not isinstance(source, VerifiedNativeEpisodeSource):
+        raise CacheCostError("source must be a verified native episode source")
+    exported = export_system_trajectories(source)
+    from ..rails.controllers import default_phase_program
+
+    program = default_phase_program(source.composed.values["policy"]).program_id
+    records, refs = [], []
+    for record_id, payload in source.bundle.trace_records.items():
+        if "use_sample_execution_timing" not in payload:
+            continue
+        row = payload["use_sample_execution_timing"]
+        if (not isinstance(row, Mapping)
+                or record_id != f"{row.get('sample_id')}/{program}/sample-execution-timing"):
+            raise CacheCostError("sample timing trace is bound to another execution")
+        records.append(row)
+        refs.append({"record_id": record_id, "content_sha256": content_hash(payload)})
+    report = (summarize_sample_execution_timing(records, expected_sample_ids=source.sample_ids)
+              if records else {
+                  "schema": "saea-system-sample-timing-v1", "available": False,
+                  "reason": "Original explicit sample execution boundaries are absent.",
+                  "eligible_for_efficiency_comparison": False,
+              })
+    report.update(source=exported["source"], timing_trace_records=sorted(refs, key=lambda r: r["record_id"]),
+                  model_contacts_added=0, scorer_contacts_added=0)
+    report.pop("content_sha256", None)
+    report["content_sha256"] = content_hash(report)
+    return report

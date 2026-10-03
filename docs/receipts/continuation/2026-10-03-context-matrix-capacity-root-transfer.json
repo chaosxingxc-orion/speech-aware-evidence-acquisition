@@ -1,0 +1,54 @@
+{
+  "at_utc": "2026-10-03T13:23:25.353577+00:00",
+  "disposition": "Accept exact current-basis capacity evidence transfer for the unchanged two role-affinity graphs; no duplicate capacity endpoints. This is source-equivalent reuse,not a new capacity measurement. Actual per-contact FIT remains mandatory.",
+  "generation_admission": false,
+  "measured_request_count": 88,
+  "new_contacts": 0,
+  "new_scoring": 0,
+  "quality_read": false,
+  "remaining": "Two separately registered role4 structural proofs,including original sample timing and source-bound request/layout/FIT/custody/routing; then independent complete8x20 registration and root admission.",
+  "root_verified": [
+    {
+      "layout": "legacy",
+      "mode": "new-acquisition",
+      "proof": {
+        "relpath": "coordination/context-matrix-prerequisites-owner227-v1/legacy-new-acquisition-equivalence-v1.json",
+        "sha256": "4ba01f7994152bddd6f051ed2d1768543d6956f7bbe80ceddcfcea936d0f57bf"
+      },
+      "requests": 22
+    },
+    {
+      "layout": "legacy",
+      "mode": "wide-automatic-supply",
+      "proof": {
+        "relpath": "coordination/context-matrix-prerequisites-owner227-v1/legacy-wide-automatic-supply-equivalence-v1.json",
+        "sha256": "e12dc4abd358ffb58a828348f190d2907458253e173b96d544940eaacb1be17e"
+      },
+      "requests": 22
+    },
+    {
+      "layout": "before-speech",
+      "mode": "new-acquisition",
+      "proof": {
+        "relpath": "coordination/context-matrix-prerequisites-owner227-v1/before-speech-new-acquisition-equivalence-v1.json",
+        "sha256": "c74f3e349bd7e0070c4eb43d106a9bd882941be1f83834037c8aeca139935eae"
+      },
+      "requests": 22
+    },
+    {
+      "layout": "before-speech",
+      "mode": "wide-automatic-supply",
+      "proof": {
+        "relpath": "coordination/context-matrix-prerequisites-owner227-v1/before-speech-wide-automatic-supply-equivalence-v1.json",
+        "sha256": "7dd20013a16581b5755ff02121d8d66be256e771af6056ed7a540c122f033444"
+      },
+      "requests": 22
+    }
+  ],
+  "schema": "saea-context-matrix-capacity-root-transfer-v1",
+  "source_proof": {
+    "relpath": "coordination/context-matrix-prerequisites-owner227-v1/capacity-equivalence-v1.json",
+    "sha256": "90a0db2dbdaf86fe347112520877ea2cc09151c9bf3622c79cfa13b820fba77b"
+  },
+  "timing_source_change": "Observational trace only; synthetic shared-runtime tests prove model requests and canonical outputs unchanged. No source/request budget change."
+}

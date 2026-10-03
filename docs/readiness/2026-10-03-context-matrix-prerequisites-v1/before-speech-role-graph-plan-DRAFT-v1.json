@@ -1,0 +1,57 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-graph-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "model-free-check",
+    "planned_gpu_hours": 0.01,
+    "planned_model_calls": 1,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "c7c35e188464636da535d6cbb701a51cff58a9b8304a595e635d6dfe55cf8283",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-GRAPH-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "fit_identity": null,
+  "member": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-graph-v1",
+    "baseline_pin": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-matrix-before-speech-role-graph-v1.json",
+      "sha256": "422bb2a2e490f4ff0341a3a6fd6c392411027521a1a81f90baaa5754be58bf6f"
+    },
+    "budget": {
+      "complete_system_trajectories": 0,
+      "generation_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "tokenizer_endpoint_cap": 0
+    },
+    "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+    "config_hash": "64e78aefe3094a38355eb02cf67c169916af528e276dd318d95c7979d2a4209f",
+    "config_pin": {
+      "relpath": "configs/experiment/slurp-native-stage3-context-matrix-before-speech-role-graph-v1.json",
+      "sha256": "590c049efb68e0a31900c354d623357b4ce905b6bc3cdb427ec8f96a87bd6d40"
+    },
+    "experiment": "slurp-native-stage3-context-matrix-before-speech-role-graph-v1",
+    "kind": "graph",
+    "policy_binding": {
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "role_sha256": {
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    },
+    "protocol_hash": "c7c35e188464636da535d6cbb701a51cff58a9b8304a595e635d6dfe55cf8283",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-GRAPH-V1",
+    "status": "HELD",
+    "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+    "variant": "before-speech-role"
+  },
+  "root_decision": null,
+  "schema": "saea-context-matrix-prerequisite-plan-draft-v1",
+  "status": "DRAFT HELD; not preregistered contact authority"
+}

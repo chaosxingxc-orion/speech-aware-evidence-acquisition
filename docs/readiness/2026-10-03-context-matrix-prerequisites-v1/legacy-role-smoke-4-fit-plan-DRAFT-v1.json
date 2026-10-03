@@ -1,0 +1,59 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 208,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "c69ddd7fe882c5a5fef15b520c159e24c822b7c1f4547dbd398172382f554e2e",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "fit_identity": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-fit-v1",
+    "contact_cap": 208,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-FIT-V1"
+  },
+  "member": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-generation-v1",
+    "baseline_pin": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1.json",
+      "sha256": "e92859c481179945925060bab51065c3c6fa675218a9057c87e383e27e2199e2"
+    },
+    "budget": {
+      "actual_request_fit_endpoint_cap": 208,
+      "complete_system_trajectories": 4,
+      "generation_calls_cap": 52,
+      "official_complete_scoring_jobs": 0
+    },
+    "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+    "config_hash": "1d61649b68ae652ee0cc6edb289a884d099b88fc3796272959391cfe2bfb802c",
+    "config_pin": {
+      "relpath": "configs/experiment/slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1.json",
+      "sha256": "e29307c62761ded4051630229c2b2fa9f5dc401d84ff6aa16b025c68aebc71f6"
+    },
+    "experiment": "slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1",
+    "kind": "smoke-4",
+    "policy_binding": {
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "role_sha256": {
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    },
+    "protocol_hash": "c69ddd7fe882c5a5fef15b520c159e24c822b7c1f4547dbd398172382f554e2e",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1",
+    "status": "HELD",
+    "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+    "variant": "legacy-role"
+  },
+  "root_decision": null,
+  "schema": "saea-context-matrix-structural-fit-plan-draft-v1",
+  "status": "DRAFT HELD; not preregistered contact authority"
+}

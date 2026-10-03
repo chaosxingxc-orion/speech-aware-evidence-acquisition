@@ -1,0 +1,35 @@
+{
+  "at_utc": "2026-10-03T13:23:01.764015+00:00",
+  "authority": "Two consecutive direct human messages in this root conversation, after engineering-first priority; owner227 autonomy remains bounded.",
+  "complete_english_translations": [
+    "Pay attention to experimental efficiency. Anchor each optimization on average latency per sample, or allow the first sample to take longer and use the average latency of the non-first samples.",
+    "Another constraint is business performance. The purpose of giving the model greater freedom is to achieve better performance. For example, each node should have its own independent context rather than sharing and reusing fixed common prefixes with other nodes in a way that reduces performance. Also, do not start subagents for this task; focus on optimization."
+  ],
+  "execution": {
+    "existing_delegation": "The existing preparation subagent stopped and released the serial window; root directly owns all further work. No new subagent.",
+    "heartbeat": "PAUSED",
+    "learning": "HELD",
+    "new_contacts": 0,
+    "root_only": true
+  },
+  "interpretation": [
+    "Treat official task quality and reliability as required business constraints alongside the primary efficiency anchor; never select for cache reuse alone.",
+    "Permit independent node instructions, evidence organization and node history within source custody, legal tools and Omni final-answer authority. Exchange relevant information through explicit versioned handoffs; do not force identical role prompts or irrelevant shared context.",
+    "Keep the initial layout/scheduler engineering matrix controlled with each existing independent role text fixed across arms. This does not restrict later node-specific context/text optimization.",
+    "Report the arithmetic mean of actual admitted sample wall time across all samples, the first admitted sample, and the mean excluding exactly that first sample. Identify it prospectively by admission order, never by completion speed.",
+    "Measure internal waits, FIT, role/tool execution and cleanup inside the sample interval; report pre-admission queue wait separately. Batch wall divided by count is throughput cost, not mean individual latency.",
+    "Retain every failed, finite, abstained or slow case; no favorable trimming. A four-slot initial group is descriptive, not proof of cold cache or warm later samples.",
+    "Compare task-quality and latency uncertainty with complete-family A/A evidence. Small engineering panels do not establish stable benefit or a global optimum."
+  ],
+  "schema": "saea-owner-latency-quality-context-amendment-v1",
+  "source_addresses": [
+    "Current root conversation: human instruction immediately before the node-context/business-performance amendment.",
+    "Current root conversation: latest human node-context/business-performance and no-subagent instruction."
+  ],
+  "unchanged_bounds": [
+    "Same existing UPDATE2 400-input pool and immutable assets/current knowledge",
+    "Exact source/family/FIT/structural/read registration and one generator/one scorer",
+    "Windows startup12.5GiB/running8GiB",
+    "Human review before8x400 without split evasion; other carriers remain held"
+  ]
+}

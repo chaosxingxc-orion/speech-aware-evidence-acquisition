@@ -1,0 +1,117 @@
+{
+  "analysis_recipe": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/analysis-recipe-DRAFT-v1.json",
+    "sha256": "8265c34d3dd4f46b88c1b155a2b834e44faa6c5749c45ca100b6e32f068131ec"
+  },
+  "at_utc": "2026-10-03T13:17:12.119276+00:00",
+  "cache": "Uncontrolled inherited warm history; no service option,flush,warmup,save or restore. Cache reuse is descriptive cost,not a floor.",
+  "capacity_transfer": {
+    "relpath": "coordination/context-matrix-prerequisites-owner227-v1/capacity-equivalence-v1.json",
+    "sha256": "90a0db2dbdaf86fe347112520877ea2cc09151c9bf3622c79cfa13b820fba77b"
+  },
+  "coverage": {
+    "before-speech-role": {
+      "capacity_disposition": "Recommend exact evidence transfer after root acceptance; same template/media/max512 and24576 geometry,only explicit id_slot differs. No independent new measurement claim. Actual per-contact FIT remains mandatory.",
+      "capacity_equivalence": {
+        "relpath": "coordination/context-matrix-prerequisites-owner227-v1/capacity-equivalence-v1.json",
+        "sha256": "90a0db2dbdaf86fe347112520877ea2cc09151c9bf3622c79cfa13b820fba77b"
+      },
+      "fallback_capacity_run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-CAPACITY-FIT-V1",
+      "fallback_contact_cap": 297,
+      "fallback_status": "HELD and not recommended if root accepts exact transfer; not an allocated or spent contact",
+      "fit_cap": 208,
+      "generation_cap": 52,
+      "official_scores": 0,
+      "same_layout_source": "docs/receipts/continuation/2026-10-03-context-layout-capacity-complete.json",
+      "structural_attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-generation-v1",
+      "structural_disposition": "REQUIRED current update8 four-row role-scheduler proof; older update3 proof does not substitute",
+      "structural_run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1"
+    },
+    "before-speech-trajectory": {
+      "capacity": {
+        "relpath": "docs/receipts/continuation/2026-10-03-context-layout-capacity-complete.json",
+        "sha256": "ac50e5fce91bf6c5813c4b1f31ef8dd8b1123e6ac56ddb4f293c9965836c8cce"
+      },
+      "disposition": "Root accepted current-basis capacity and original-layout structural coverage;reuse exact proof without duplicate contacts.",
+      "structural": {
+        "relpath": "docs/receipts/continuation/2026-10-03-context-layout-root-structural-review.json",
+        "sha256": "99b506563da539598284f1bee6b54c09c74769c92b6ed43339b3711fe7efb678"
+      }
+    },
+    "legacy-role": {
+      "capacity_disposition": "Recommend exact evidence transfer after root acceptance; same template/media/max512 and24576 geometry,only explicit id_slot differs. No independent new measurement claim. Actual per-contact FIT remains mandatory.",
+      "capacity_equivalence": {
+        "relpath": "coordination/context-matrix-prerequisites-owner227-v1/capacity-equivalence-v1.json",
+        "sha256": "90a0db2dbdaf86fe347112520877ea2cc09151c9bf3622c79cfa13b820fba77b"
+      },
+      "fallback_capacity_run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-CAPACITY-FIT-V1",
+      "fallback_contact_cap": 297,
+      "fallback_status": "HELD and not recommended if root accepts exact transfer; not an allocated or spent contact",
+      "fit_cap": 208,
+      "generation_cap": 52,
+      "official_scores": 0,
+      "same_layout_source": "docs/receipts/continuation/2026-10-03-round8-capacity-complete.json",
+      "structural_attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-generation-v1",
+      "structural_disposition": "REQUIRED current update8 four-row role-scheduler proof; older update3 proof does not substitute",
+      "structural_run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1"
+    },
+    "legacy-trajectory": {
+      "capacity": {
+        "relpath": "docs/receipts/continuation/2026-10-03-round8-capacity-complete.json",
+        "sha256": "48117f6b7827cda895415c6187d1644378699d47dbad14b8a04e4eb25fa1e690"
+      },
+      "capacity_member": "parent only,update8",
+      "disposition": "Revalidate source/semantic equality and reuse current-basis proof;no duplicate capacity/structural contacts requested.",
+      "structural": {
+        "relpath": "docs/receipts/continuation/2026-10-03-round8-structural-complete.json",
+        "sha256": "b6c77469a89e1802af6ddcf262fe1d16fc8979e35df0cb8d482041dd43c4c12e"
+      },
+      "structural_member": "parent only,update8"
+    }
+  },
+  "family_registration": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/family-registration-DRAFT-v1.json",
+    "sha256": "8e45ab395547797287c20a617684ace8204a63ab1130c8a48948a8160a93cf5e"
+  },
+  "future_matrix_contacts_authorized": false,
+  "heartbeat": "PAUSED",
+  "historical_data_rule": "All new8members use exact same existing first20 of400; retain cumulative exposure. No old score rows,no unqualified quality read,no independent-validation claim.",
+  "launch_sequence": [
+    "Integrate root explicit original per-sample timing source; revalidate renderer/request equivalence and tests before any final worker freeze.",
+    "Root separately admits exactly legacy-role and before-speech-role4 proof identities and their generation/FIT/structural READ.",
+    "Finalize allowed stages and own supplies via existing repin; preserve all original sources and compare actual selection output hashes.",
+    "Freeze clean independent worker; pass actual registration/runtime/role/layout/readiness/current session and12.5/8GiB checks.",
+    "Normally archive only completed controls after no STOP/lease/active worker; one Windows shared-driver engineering queue,no scorer.",
+    "Inspect complete original layout/FIT/control/request/response/wire/custody/routing and actual sample timing; preserve failure and stop.",
+    "Root reviews both structural members,then independently admits new8x20 family only after own8supplies/final registration/checks."
+  ],
+  "live_controls_changed": false,
+  "no_learning": true,
+  "proposed_remaining_live_prerequisites": {
+    "capacity_endpoints": 0,
+    "condition": "Root accepts exact measured-request transfer; any changed prompt/media/geometry requires prospective capacity disposition,not reuse by inference.",
+    "maximum_actual_fit_endpoints": 416,
+    "maximum_generation": 104,
+    "members": 2,
+    "official_scores": 0,
+    "rows_each": 4,
+    "total_trajectories": 8
+  },
+  "resource": {
+    "one_generator": true,
+    "one_scorer": true,
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5
+  },
+  "root_matrix": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/matrix-DRAFT-v1.json",
+    "sha256": "8427a8fd1faa393e468e0308caee46d1a6343a163843cdc7a50a1a3757d7feca"
+  },
+  "schema": "saea-context-matrix-root-review-recipe-v1",
+  "semantic_binding": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/semantic-binding-proof-v1.json",
+    "sha256": "3df511f381a5bd1c8a01f9109c4a64c4f167929e47cb815ba59e9ec7902c769e"
+  },
+  "status": "PREPARED HELD; exact root phase admission required"
+}

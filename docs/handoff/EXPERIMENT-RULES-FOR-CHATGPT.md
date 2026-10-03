@@ -1,5 +1,9 @@
 # Experiment rules for the ChatGPT side
 
+## Current context-engineering measurement priority,2026-10-03
+
+Apply the [latest direct owner amendment](../receipts/owner/2026-10-03-sample-latency-quality-node-context.json):root alone continues this task,with no further subagents. Permit independent node contexts and role texts;cache reuse is diagnostic,not a reason to homogenize nodes or sacrifice business performance. Anchor efficiency on original mean sample wall time,report first admitted sample and remaining-sample mean separately,and require official complete-family task quality and reliability alongside cost. Keep engineering first and learning HELD. Use [matrix v2 and the measurement contract](../readiness/2026-10-03-context-layout-engineering-v1/sample-latency-and-quality.md);exact admission/read and owner227 limits remain.
+
 ## Owner227 autonomous engineering amendment,2026-10-03
 
 Root may now decide and execute bounded SLURP engineering corrections, incident dispositions and reviewed20/50/100/200 learning experiments without another human confirmation for each routine step. Return to the human before8x400. This supersedes the conflicting per-incident human-approval requirement in historical snapshots, not preservation, pre-registration, complete-family READ, budget/exposure, L/B isolation, official scoring or other-carrier holds. Failed jobs still stop for diagnosis and a recorded root disposition; never silently retry or replace spent slots. The heartbeat remains read-only. See [exact227 authority](../receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json).

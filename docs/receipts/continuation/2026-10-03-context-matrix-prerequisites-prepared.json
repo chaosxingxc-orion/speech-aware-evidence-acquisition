@@ -1,0 +1,32 @@
+{
+  "at_utc": "2026-10-03T13:17:12.123096+00:00",
+  "capacity_equivalence": {
+    "relpath": "coordination/context-matrix-prerequisites-owner227-v1/capacity-equivalence-v1.json",
+    "sha256": "90a0db2dbdaf86fe347112520877ea2cc09151c9bf3622c79cfa13b820fba77b"
+  },
+  "capacity_replay_requests": 88,
+  "checks": {
+    "engineering_base": "PASS",
+    "finite_completion": "PASS",
+    "harness_admission": "PASS"
+  },
+  "configs": 14,
+  "control_changes": false,
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "matrix_members": 8,
+  "model_contacts": 0,
+  "official_scoring": 0,
+  "remaining_structural_members": 2,
+  "root_recipe": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/root-review-recipe-v1.json",
+    "sha256": "42529713463c301aabdf97ac8a339efc9f57dfafb601f7e454f16370365e30cd"
+  },
+  "schema": "saea-context-matrix-prerequisites-prepared-v1",
+  "semantic_binding": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/semantic-binding-proof-v1.json",
+    "sha256": "3df511f381a5bd1c8a01f9109c4a64c4f167929e47cb815ba59e9ec7902c769e"
+  },
+  "source_freeze": "Pending identical root sample timing integration and phase admission",
+  "tokenizer_contacts": 0
+}

@@ -1,0 +1,534 @@
+{
+  "at_utc": "2026-10-03T13:13:09.435528+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "dispatch_authorized": false,
+  "heartbeat": "PAUSED",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "a77e14bbee1ff1c6cd12098b03178afdee5c5a70a83935ba86ab3914954f7f51"
+      },
+      "config_hash": "9b598dabf4765cfdd388f9bbf5e0407021f1dc3bcc564bfcd93b4b10441c5729",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "f31fecf257b11ef0f71c872b9067a426be5f876df9bed145ebf10588be3cabf2"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-FIT-V1"
+      },
+      "label": "legacy-trajectory-primary",
+      "order": 1,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "policy_binding": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "42e7ee65cff96a192aabf7e69a232f4cbc8670b7b5daba6ae6abc49133cb570b",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "legacy-trajectory"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b538a2223dfd578dc2fd9fc48ff11291ecae3c3f1b42aa367cd56ffdc5e1ef40"
+      },
+      "config_hash": "ded966b816139671f2b00c6c99f5ffc779a518eecaf14354a681e89918bffc11",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "e11d425b6d23ea70b9c7c16df55ad19721df685882fab157382504752716b30c"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-FIT-V1"
+      },
+      "label": "before-speech-trajectory-primary",
+      "order": 2,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "1bce6519f5b803aeab313a68ea3e5458ea12e59b326ccf23f619a8ea1c672cba",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "before-speech-trajectory"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-primary-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-role-primary-v1.json",
+        "sha256": "2e0f3d5ff639f10396a2f4c67906fe00bda3d50aa6d35fca228d88df7ddb0cf5"
+      },
+      "config_hash": "dd5bf08e29318b3400e1003e66c77cc6788c825bac9d73a983630d9d88d34b2e",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-legacy-role-primary-v1.json",
+        "sha256": "2b082fd6e30c8f665265b687838a312e180712f44a2f3ae1748e65fa28b56c9e"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-role-primary-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-primary-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-FIT-V1"
+      },
+      "label": "legacy-role-primary",
+      "order": 3,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "policy_binding": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "4c86653cb1747caefc0d52e1c93c86ada7abea9744070741dcb3a4c7dfcadf6c",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "legacy-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-primary-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-role-primary-v1.json",
+        "sha256": "b8eb0c2f8ce6265db57ea06c5a068320e5fd2deb97016ca3aadad1ccce72ea9e"
+      },
+      "config_hash": "912f598360db34e9ac7b4f4361df78bd418684c4fac57db8984c006c9e725067",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-before-speech-role-primary-v1.json",
+        "sha256": "334328e532eafed4327ec66fc1a91e9e5f2f338f89ffef8513f30eb3c405692d"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-role-primary-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-primary-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-FIT-V1"
+      },
+      "label": "before-speech-role-primary",
+      "order": 4,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "78df42a623ff8ffd505c9d05695667fc5983fb26f1a51d869991958dc08202f2",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "before-speech-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-aa-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-role-aa-v1.json",
+        "sha256": "71cc29f0dcd9a1ddf67a3fe8e9feb421d77669227ba419953b7a1a554608d154"
+      },
+      "config_hash": "fa5b9d37836b2c0a1a36a659bc609cf7c1eb0cc198916abfb71782c6f1ab456d",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-before-speech-role-aa-v1.json",
+        "sha256": "c4c005af53e1416d3c60ca0b67888618503ccac86a7798ed9c5b160b0766c2dc"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-role-aa-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-aa-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-FIT-V1"
+      },
+      "label": "before-speech-role-aa",
+      "order": 5,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "d44a8d094f8ca491c6072bd534030c5b9e856aaf2621cd74241d5bbb3e9a9816",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "before-speech-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-aa-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-role-aa-v1.json",
+        "sha256": "2e89826f3808117405fb2e379d89cc015594f15e5d97bb41be86b97380d2264f"
+      },
+      "config_hash": "92f779ebeae55de265d17a9b76ba002efff8a81de9c0ff9e1739923976b15c3b",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-legacy-role-aa-v1.json",
+        "sha256": "2e1fd2604b1bc6d9c7a7296bce8bb71bdb3a6cd4821c862027eedc3c5f57b049"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-role-aa-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-aa-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-FIT-V1"
+      },
+      "label": "legacy-role-aa",
+      "order": 6,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "policy_binding": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "c9ede331a755981b03d0008de26af143d94b2dfb7f2074f5c6a5b61c694a72f7",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "legacy-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-v1.json",
+        "sha256": "10e5ad8c7ed30e78ca959c6be17f0232079ddd7dcab98827290b214db12db19f"
+      },
+      "config_hash": "cda2c11c5eca887ac2cae2a5b4632943341a4cebb847078cf239f8eac105cbd9",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-v1.json",
+        "sha256": "4fb6ed043860816ba39a6e528da130db49402541c62c920dd46a5a77e5e0eecc"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-FIT-V1"
+      },
+      "label": "before-speech-trajectory-aa",
+      "order": 7,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "6e196d1cc37f9b1658d33236e8a8d0673c2b60739f919c3e4130a0a774a7440c",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "before-speech-trajectory"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-v1.json",
+        "sha256": "6c0612c180b8b566211d21f804c2a648ea5d6bccf302b163454bea2c7e12ffe6"
+      },
+      "config_hash": "96d792f042d46060454c0625425d2a1a41ba53e4ea2f77026d1bdf5828adf8e9",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-v1.json",
+        "sha256": "d766c1a8cd96145f4e9411b7b5c0891cf1597ef9e19bb5bf5cd518c1862a9579"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-fit-v1",
+        "contact_cap": 1040,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-FIT-V1"
+      },
+      "label": "legacy-trajectory-aa",
+      "order": 8,
+      "own_aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "policy_binding": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "2a69ba8340fd236c94c871f70318bcc30e99b9ff169dbd8b98d291b83e4e0efb",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "status": "HELD",
+      "supply_prepared": false,
+      "variant": "legacy-trajectory"
+    }
+  ],
+  "prerequisites": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-capacity-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-legacy-role-capacity-v1.json",
+        "sha256": "041668fad904c2368ae6b2f8d63ab2135d8524872f955557ceed41be942a2288"
+      },
+      "budget": {
+        "complete_system_trajectories": 0,
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "tokenizer_endpoint_cap": 297
+      },
+      "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+      "config_hash": "c2796044a1054a49ff66912a44468b177f102361cd7735a06e083494d59568b5",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-legacy-role-capacity-v1.json",
+        "sha256": "a39040cba45a2c21e2a8f0dfd8d29996c9f67a2c6b5ef32c2d221f4a681c4081"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-legacy-role-capacity-v1",
+      "kind": "capacity",
+      "policy_binding": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "63d20b86a65fd84a18f665d03a550fba5cac772d3bd20c98737c6ed2cab23c06",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-CAPACITY-FIT-V1",
+      "status": "HELD",
+      "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+      "variant": "legacy-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-graph-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-legacy-role-graph-v1.json",
+        "sha256": "041668fad904c2368ae6b2f8d63ab2135d8524872f955557ceed41be942a2288"
+      },
+      "budget": {
+        "complete_system_trajectories": 0,
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "tokenizer_endpoint_cap": 0
+      },
+      "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+      "config_hash": "654291939ca9bc2180664422683bc92cda0216958a0d235de40f4f95d08a82be",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-legacy-role-graph-v1.json",
+        "sha256": "ac0edd7d5bfc20b82c6dde06a1139419a735d4cd4070c888ff630ada77a32f85"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-legacy-role-graph-v1",
+      "kind": "graph",
+      "policy_binding": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "56bc7d48f84848d689237d70e0cdc197a01aa45f2d637d541490e51497cca9e2",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-GRAPH-V1",
+      "status": "HELD",
+      "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+      "variant": "legacy-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1.json",
+        "sha256": "e92859c481179945925060bab51065c3c6fa675218a9057c87e383e27e2199e2"
+      },
+      "budget": {
+        "actual_request_fit_endpoint_cap": 208,
+        "complete_system_trajectories": 4,
+        "generation_calls_cap": 52,
+        "official_complete_scoring_jobs": 0
+      },
+      "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+      "config_hash": "1d61649b68ae652ee0cc6edb289a884d099b88fc3796272959391cfe2bfb802c",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1.json",
+        "sha256": "e29307c62761ded4051630229c2b2fa9f5dc401d84ff6aa16b025c68aebc71f6"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1",
+      "kind": "smoke-4",
+      "policy_binding": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "c69ddd7fe882c5a5fef15b520c159e24c822b7c1f4547dbd398172382f554e2e",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1",
+      "status": "HELD",
+      "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+      "variant": "legacy-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-capacity-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-before-speech-role-capacity-v1.json",
+        "sha256": "422bb2a2e490f4ff0341a3a6fd6c392411027521a1a81f90baaa5754be58bf6f"
+      },
+      "budget": {
+        "complete_system_trajectories": 0,
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "tokenizer_endpoint_cap": 297
+      },
+      "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+      "config_hash": "e75bcd55f7a3a9055c77d5fc81ec1a9561dc8d23565899c8dc284a2dcf19bff7",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-before-speech-role-capacity-v1.json",
+        "sha256": "c3baa74ce81b0c52f65c55ac73b12793316ed9a7ad238e75e35d0202899fb432"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-before-speech-role-capacity-v1",
+      "kind": "capacity",
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "b2b1e6b27ba30651ccf9a8ad4856a995bcea44e3b97991401a1063e9c04fbba9",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-CAPACITY-FIT-V1",
+      "status": "HELD",
+      "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+      "variant": "before-speech-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-graph-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-before-speech-role-graph-v1.json",
+        "sha256": "422bb2a2e490f4ff0341a3a6fd6c392411027521a1a81f90baaa5754be58bf6f"
+      },
+      "budget": {
+        "complete_system_trajectories": 0,
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "tokenizer_endpoint_cap": 0
+      },
+      "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+      "config_hash": "64e78aefe3094a38355eb02cf67c169916af528e276dd318d95c7979d2a4209f",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-before-speech-role-graph-v1.json",
+        "sha256": "590c049efb68e0a31900c354d623357b4ce905b6bc3cdb427ec8f96a87bd6d40"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-before-speech-role-graph-v1",
+      "kind": "graph",
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "c7c35e188464636da535d6cbb701a51cff58a9b8304a595e635d6dfe55cf8283",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-GRAPH-V1",
+      "status": "HELD",
+      "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+      "variant": "before-speech-role"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-generation-v1",
+      "baseline_pin": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-before-speech-role-smoke-4-v1.json",
+        "sha256": "02e897a9e25f4f201a64490256544ba23786f75c3f4b3eb773f9f138910b79ff"
+      },
+      "budget": {
+        "actual_request_fit_endpoint_cap": 208,
+        "complete_system_trajectories": 4,
+        "generation_calls_cap": 52,
+        "official_complete_scoring_jobs": 0
+      },
+      "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+      "config_hash": "49ff92f803a37363838a402c7d112a14d306ac91b767fa5ac977c317c024d624",
+      "config_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-matrix-before-speech-role-smoke-4-v1.json",
+        "sha256": "23911311096a13686381d5e77227d65084b93d4c3e81df67393ed41b0132e791"
+      },
+      "experiment": "slurp-native-stage3-context-matrix-before-speech-role-smoke-4-v1",
+      "kind": "smoke-4",
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "3743b6c72bcfaa66526f2321d3d43c076c3a9c04733b7907054eb6604499a5ec",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1",
+      "status": "HELD",
+      "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+      "variant": "before-speech-role"
+    }
+  ],
+  "root_matrix": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/matrix-DRAFT-v1.json",
+    "sha256": "8427a8fd1faa393e468e0308caee46d1a6343a163843cdc7a50a1a3757d7feca"
+  },
+  "round8_learning": "HELD",
+  "schema": "saea-context-matrix-preparation-v1",
+  "source_commit": "fc40d0fa7a6666eaa5235a18c1541e96ba164f61"
+}

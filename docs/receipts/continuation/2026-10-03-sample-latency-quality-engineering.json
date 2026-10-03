@@ -1,0 +1,78 @@
+{
+  "at_utc": "2026-10-03T13:25:24.112488+00:00",
+  "authority": {
+    "relpath": "docs/receipts/owner/2026-10-03-sample-latency-quality-node-context.json",
+    "sha256": "dd2f0338165cfaac97be2afa49768dd11273cc645d87433acc74362167ed39d8"
+  },
+  "before_next_flight": "Integrate instrumentation; admit and freeze exact remaining role4 structural proofs with own supplies and complete timing audit. All later comparison members share that instrumentation and require exact full-family registration/read.",
+  "capacity_transfer": {
+    "relpath": "docs/receipts/continuation/2026-10-03-context-matrix-capacity-root-transfer.json",
+    "sha256": "9cde1decd8462886599c2aa97b2aa346f7af07f2adc0daa7df06e528b51cf743"
+  },
+  "checks": {
+    "added_library_statements": 85,
+    "added_library_statements_covered": 85,
+    "changed_file_ruff": "PASS",
+    "engineering_base": "PASS",
+    "final_sample_timing_tests": 34,
+    "finite_completion": "PASS",
+    "harness_admission": "PASS",
+    "targeted_regression_tests": 179,
+    "test_scopes_overlap": true
+  },
+  "contract": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/sample-latency-and-quality.md",
+    "sha256": "d95145ca492acd5936cb5e170a5ac28ef84f2e08c8a400a73fc3111246cbe166"
+  },
+  "coverage": {
+    "relpath": "coordination/sample-latency-quality-owner227-v1/coverage-summary-v1.json",
+    "scope": "Selected relevant tests; whole legacy runner coverage is not claimed.",
+    "sha256": "be241d11b29944f4e7d6d8401718625d60c1b7b850b636bf167a7ebf23a6070b"
+  },
+  "delegation": "Existing preparation subagent stopped; root preserved its drafts without edits and superseded timing/business-priority wording in v2.",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "new_contacts": {
+    "live_model": 0,
+    "live_tokenizer": 0,
+    "official_scorer": 0
+  },
+  "new_runtime_activation": false,
+  "proofs": [
+    "First admitted member remains first when completion order reverses",
+    "Explicit monotonic boundaries distinguish sample mean from batch wall/count",
+    "Failed/cancelled work remains measured after blocking workers settle; original failure preserved",
+    "Duplicate/incomplete/cross-batch/reversed timing refused; historical absence remains unavailable",
+    "Actual shared FlightRuntime synthetic contacts preserve rendered model requests and canonical outputs when timing is enabled"
+  ],
+  "prospective_analysis": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/analysis-recipe-DRAFT-v2.json",
+    "sha256": "bc48b3906f731d57f586260d6408952276d3a629fe96be74057cc95bad5be146"
+  },
+  "prospective_matrix": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/matrix-DRAFT-v2.json",
+    "sha256": "121ed11735989a5ba3a416c8897026c3df0b0a20719c04ad41e5d54c6c8399ea"
+  },
+  "quality_read": false,
+  "root_only": true,
+  "schema": "saea-sample-latency-quality-engineering-v1",
+  "source_files": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "67e34e8ca9bddc6b37cc9ff69406bc768596917d696c7cacf5608b9312827f4e"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "67616021f3ae0ca1db3066742c4ec7c2aa8576ade2160384f44783a59920d297"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    {
+      "relpath": "tests/unit/test_sample_execution_timing.py",
+      "sha256": "d50c2b3b64e5f8668df2d6e031e9d7a8562599e8d903668a2c58be8ccaa87041"
+    }
+  ],
+  "source_freeze": "No new worker frozen or dispatched; all new matrix cells remain HELD."
+}

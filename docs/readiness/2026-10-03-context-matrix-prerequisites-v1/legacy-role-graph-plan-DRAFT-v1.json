@@ -1,0 +1,54 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-graph-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "model-free-check",
+    "planned_gpu_hours": 0.01,
+    "planned_model_calls": 1,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "56bc7d48f84848d689237d70e0cdc197a01aa45f2d637d541490e51497cca9e2",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-GRAPH-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "fit_identity": null,
+  "member": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-graph-v1",
+    "baseline_pin": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-matrix-legacy-role-graph-v1.json",
+      "sha256": "041668fad904c2368ae6b2f8d63ab2135d8524872f955557ceed41be942a2288"
+    },
+    "budget": {
+      "complete_system_trajectories": 0,
+      "generation_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "tokenizer_endpoint_cap": 0
+    },
+    "capacity_policy": "Fallback only: do not request duplicate endpoints if exact current-source graph replay proves token-input equivalence",
+    "config_hash": "654291939ca9bc2180664422683bc92cda0216958a0d235de40f4f95d08a82be",
+    "config_pin": {
+      "relpath": "configs/experiment/slurp-native-stage3-context-matrix-legacy-role-graph-v1.json",
+      "sha256": "ac0edd7d5bfc20b82c6dde06a1139419a735d4cd4070c888ff630ada77a32f85"
+    },
+    "experiment": "slurp-native-stage3-context-matrix-legacy-role-graph-v1",
+    "kind": "graph",
+    "policy_binding": {
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "role_sha256": {
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    },
+    "protocol_hash": "56bc7d48f84848d689237d70e0cdc197a01aa45f2d637d541490e51497cca9e2",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-GRAPH-V1",
+    "status": "HELD",
+    "supply": "Fresh own supply after phase admission and final allowed stages; none prepared",
+    "variant": "legacy-role"
+  },
+  "root_decision": null,
+  "schema": "saea-context-matrix-prerequisite-plan-draft-v1",
+  "status": "DRAFT HELD; not preregistered contact authority"
+}

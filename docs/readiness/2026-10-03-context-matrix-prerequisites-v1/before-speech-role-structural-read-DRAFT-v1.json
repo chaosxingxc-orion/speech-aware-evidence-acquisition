@@ -1,0 +1,23 @@
+{
+  "acceptance": [
+    "All original request,response,wire,control and actual FIT custody",
+    "Requested role slots exactly perception0,solver1,reviewer2,planner3; one active use per slot enforced by shared executor",
+    "All Reviewer handoffs valid and visible to Planner; Omni terminal custody for all4",
+    "Before-speech original ORG layout audit on every contact; legacy original body/FIT exact hash",
+    "Root per-sample original wall timing receipt coverage and unchanged request hashes once instrumentation is integrated"
+  ],
+  "max_fit_endpoints": 208,
+  "max_generation": 52,
+  "next_panel_authorized": false,
+  "official_scoring": 0,
+  "read_run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-STRUCTURE-V1",
+  "read_scope": "Complete engineering structure and numerical timing only; no task quality/scoring/reseal/retry",
+  "rows": 4,
+  "run_ids": {
+    "fit": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-FIT-V1",
+    "generation": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1",
+    "read": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-context-matrix-structural-read-draft-v1",
+  "status": "DRAFT HELD; no root countersignature"
+}

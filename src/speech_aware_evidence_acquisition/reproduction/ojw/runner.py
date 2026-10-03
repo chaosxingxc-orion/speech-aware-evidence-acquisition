@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import asyncio
 import contextvars
+from time import perf_counter_ns as _monotonic_ns
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from typing import TypeVar
@@ -419,6 +420,7 @@ def execute_speech_agent_workflows(
     episode_invoker: Callable[..., Awaitable[object]] | None = None,
     local_tool_workers: int = 0,
     prefix_slot_bindings: Mapping[str, int] | None = None,
+    sample_timing_sink: Callable[[object, Mapping[str, object]], None] | None = None,
 ) -> list[object]:
     """Run speech Agent workflows on one openJiuwen event loop.
 
@@ -453,8 +455,16 @@ def execute_speech_agent_workflows(
     serializes across samples; different families can run concurrently. The
     caller owns the versioned prefix identity and complete request bytes. This
     routing primitive neither verifies a cache hit nor grants flight admission.
-    No current FlightRuntime configuration enables this experimental seam.
+
+    Optional sample_timing_sink receives monotonic execution boundaries after an
+    admitted workflow and its synchronous workers settle. The interval includes
+    slot/tool waits and cleanup, but excludes pre-admission waiting and roster
+    preparation. Admission order, not completion order, identifies the first
+    sample. This observational callback never enters a model request.
     """
+
+    if sample_timing_sink is not None and not callable(sample_timing_sink):
+        raise TypeError("sample timing sink must be callable")
 
     if (
         isinstance(local_tool_workers, bool)
@@ -492,6 +502,7 @@ def execute_speech_agent_workflows(
     ordered_states = list(states)
 
     async def _run_all():
+        batch_started_ns = _monotonic_ns() if sample_timing_sink is not None else None
         local_executor = (
             ThreadPoolExecutor(max_workers=local_tool_workers, thread_name_prefix="saea-local-tool")
             if local_tool_workers else None
@@ -673,11 +684,32 @@ def execute_speech_agent_workflows(
                 if admitted is None:
                     return
                 index, state = admitted
+                admitted_ns = _monotonic_ns() if sample_timing_sink is not None else None
+                failure = None
                 try:
                     await one(state)
                 except BaseException as error:
+                    failure = error
+                if sample_timing_sink is not None:
+                    timing = {
+                        "schema": "saea-sample-execution-timing-v1",
+                        "admission_index": index, "expected_samples": len(ordered_states),
+                        "slot_count": slot_count, "queue_depth": queue_depth,
+                        "batch_started_ns": batch_started_ns, "admitted_ns": admitted_ns,
+                        "finished_ns": _monotonic_ns(),
+                        "status": "completed" if failure is None else "failed",
+                        "error_type": None if failure is None else type(failure).__name__,
+                    }
+                    try:
+                        sample_timing_sink(state, timing)
+                    except BaseException as error:
+                        if failure is None:
+                            failure = error
+                        else:
+                            failure.add_note(f"Sample timing sink also failed: {type(error).__name__}")
+                if failure is not None:
                     async with admission_lock:
-                        failures[index] = error
+                        failures[index] = failure
                     return
 
         worker_count = min(queue_depth, len(ordered_states))
