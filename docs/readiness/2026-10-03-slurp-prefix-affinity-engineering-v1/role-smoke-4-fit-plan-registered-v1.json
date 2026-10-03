@@ -1,0 +1,22 @@
+{
+  "cell": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+  "composed_config_hash": "d839d31762160627422c06e73f3fe50198bb2432bafa9d69c9755a3c8417d1a4",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 208,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "78b52a10c0d50fc02b4158e786822c3705b4e1b43a5737a788d1b075ab69346e",
+    "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
+  "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "DRAFT; capacity and exact structural admission pending"
+}

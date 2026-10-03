@@ -1,0 +1,23 @@
+{
+  "acceptance": [
+    "Every admitted row has terminal Omni custody.",
+    "Every role contact and tool continuation obeys the declared routing.",
+    "Every actual request fits with its complete output reserve.",
+    "No scoring, retry, reseal or policy update."
+  ],
+  "allowed_read": "Structural role/control contracts, requested/served slot identities, actual FIT, custody and numeric resource/cost metadata only; never task answers, quality or optimizer feedback.",
+  "expected_rows": 4,
+  "limitations": "Four rows are structural proof only. Cost values do not prove acceleration or retained cache prefixes. A separately registered complete comparison with A/A remains necessary.",
+  "required_role_slots": {
+    "perception": 0,
+    "planner": 3,
+    "reviewer": 2,
+    "solver": 1
+  },
+  "run_ids": {
+    "generation": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
+    "read": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-prefix-affinity-structural-analysis-v1",
+  "score_jobs": 0
+}
