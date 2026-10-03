@@ -13,23 +13,31 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Owner224 reduced context comparison after separately registered capacity and engineering acceptance; full-family READ remains unsigned.",
+        "reason": "Approved225 recovery after exact corrected seed capacity and engineering; all four members required before READ.",
         "requirements": [
           {
-            "expected_decision_id": "slurp-system-text-fixed400-context20-v1",
+            "expected_decision_id": "slurp-system-text-fixed400-context20-recovery1-v1",
             "kind": "decision",
-            "relpath": "coordination/slurp-system-text-fixed400-context20-v1/root-admission-v1.json",
-            "sha256": "c30f451374beb1f42e8ffd6dc9a4c17b7d35f0ed89cb6c7bcfe806e9cb10306f"
+            "relpath": "coordination/slurp-system-text-fixed400-context20-recovery1-v1/root-admission-v1.json",
+            "sha256": "e3c168c4e7eb538caa6cac0f53ba79609e37f83f578431672f6feb0b68dbf48a"
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/phase-supply-v1.json",
-            "sha256": "3deb18df9bab10f18ac6277f28c04f443a90dcc3f0867335b2ad326211ae494c"
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/phase-supply-owner225-v2.json",
+            "sha256": "08d930fa65cfb2bbf947ef1470a468d6eb16b3aa55f580d4eb54010105ad0f91"
           }
         ],
         "state": "ready"
       },
-      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1"
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/control2-owner217/policies/97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294.json",
+          "sha256": "167eb836d2ebb5b689bef1005b3ae36be31a5a27061cb2efe9322c619cf8c7b2"
+        },
+        "bundle_id": "97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294",
+        "schema": "saea-system-text-role-binding-v1"
+      }
     }
   ],
   "date": "2026-10-02",

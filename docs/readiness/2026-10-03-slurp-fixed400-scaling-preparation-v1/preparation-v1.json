@@ -1,0 +1,191 @@
+{
+  "at": "2026-10-03T02:03:40.112091+00:00",
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "data_or_knowledge_rebuilt": false,
+  "exposure": "Retain cumulative construction/feedback/proposal/selection sources; repeated prefixes are optimization, not independent tests.",
+  "new_proposal_slots": 0,
+  "owner_decision": 225,
+  "runtime_policy_status": "All24 slots pending final policy freeze. Corrected seed is only an engineering template, never an invented candidate.",
+  "same_input_order": true,
+  "schema": "saea-fixed400-offline-scaling-preparation-v1",
+  "shared_source_assets": {
+    "knowledge": {
+      "intent-boundaries": {
+        "phase_supply": {
+          "perception": {
+            "agreement_source": {
+              "embedded_signal": "Pinned update-3 speech-query votes from the frozen source-excluded exemplar pool; no evaluation labels.",
+              "kind": "sealed-agreement",
+              "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1/agreement.jsonl",
+              "sha256": "3e65820a9dd2ccac36dfe4aaa190bd019946b49a656df830eb856ad03591d031",
+              "tool_contact_ledger_row": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1"
+            },
+            "dimensions": [
+              "intent-boundary"
+            ],
+            "expose_facets": false,
+            "facet_source": {
+              "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+              "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+            },
+            "fuse_coverage": {
+              "c": 1,
+              "m": 8,
+              "top_l": 8
+            },
+            "fuse_policy": "saea-fuse-associated-values-v1",
+            "k": 60,
+            "provider": "kb-facet-v1",
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-segment-vectors",
+              "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+              "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_policy": "saea-rank-wcos-prior-agree-v1",
+            "rank_weights": {
+              "w_agree": 1.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "tau": 0.0
+          }
+        },
+        "release": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+          "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+          "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+        },
+        "store_role": "intent-boundaries"
+      },
+      "slot-contracts": {
+        "candidate_supply": {
+          "solver": {
+            "candidate_state_phase": "perception",
+            "compact_source_phase": "perception",
+            "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+            "max_candidates": 3,
+            "max_total_values": 28,
+            "max_values_per_candidate": 16,
+            "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+            "provider": "slurp-candidate-semantic-v1",
+            "rank_policy": "saea-ranked-candidate-round-robin-v1"
+          }
+        },
+        "release": {
+          "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+          "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+          "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
+        },
+        "store_role": "slot-contracts"
+      },
+      "train-exemplars": {
+        "phase_supply": {
+          "solver": {
+            "dimensions": [
+              "content"
+            ],
+            "expose_facets": false,
+            "facet_source": {
+              "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+              "kind": "sealed-vectors",
+              "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+              "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+              "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+            },
+            "fuse_coverage": {
+              "c": 20,
+              "m": 20,
+              "top_l": 20
+            },
+            "fuse_policy": "saea-fuse-supplyfilter-v1",
+            "k": 20,
+            "provider": "kb-facet-v1",
+            "query_source": {
+              "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+              "kind": "sealed-vectors",
+              "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+              "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+              "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+            },
+            "rank_policy": "saea-rank-wcos-prior-agree-v1",
+            "rank_weights": {
+              "w_agree": 0.0,
+              "w_cos": 1.0,
+              "w_prior": 0.0
+            },
+            "tau": 0.0
+          }
+        },
+        "release": {
+          "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+          "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+        },
+        "snapshot": {
+          "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+          "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+        },
+        "store_role": "train-exemplars"
+      }
+    },
+    "speech_packet_promotion": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+    "speech_packet_promotion_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
+  },
+  "source_runtime_view": {
+    "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+    "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+  },
+  "stages": [
+    {
+      "roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-fixed400-prefix50-owner225-v1.json",
+        "sha256": "f2476e24c7473ec536c08836504e80cabee962334f1a2903d92c92c4909ddc75"
+      },
+      "rows_per_member": 50,
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-fixed400-prefix50-owner225-v1.json",
+        "sha256": "3a8e6a3abd67b91028d06aae61300964dd56be3c0222f4539d68ba265c0c453a"
+      },
+      "trajectory_ceiling": 400
+    },
+    {
+      "roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-fixed400-prefix100-owner225-v1.json",
+        "sha256": "2bdbffeeb2a03f89b10e94c61376aa5614d71b2b82c58b0a2196903cea343e8c"
+      },
+      "rows_per_member": 100,
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-fixed400-prefix100-owner225-v1.json",
+        "sha256": "aea512f309a3bf46a93b564d6a056743da7cb2a8f413daf862bde54f00e7d3a0"
+      },
+      "trajectory_ceiling": 800
+    },
+    {
+      "roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-fixed400-prefix200-owner225-v1.json",
+        "sha256": "57c94d4092802baf83fc0a0a506db36ec7d6339a28ae2b50d3a6941d4048ca5b"
+      },
+      "rows_per_member": 200,
+      "runtime_view": {
+        "relpath": "configs/dataset/slurp-speech-native-system-text-fixed400-prefix200-owner225-v1.json",
+        "sha256": "a0b3ba2a6ca93aac0bd85a1822fd1ec329aa4eee02e0ba09a4a78c36c822c868"
+      },
+      "trajectory_ceiling": 1600
+    }
+  ]
+}

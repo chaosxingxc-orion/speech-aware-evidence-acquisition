@@ -1,0 +1,148 @@
+{
+  "complete_system_trajectory_ceiling": 1600,
+  "contacts_authorized": 0,
+  "generation_call_ceiling": 20800,
+  "independent_validation": false,
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-l-parent-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-l-parent-v1.json",
+        "sha256": "095aef40526ed6be904c7ffb25f0631a9f91cb68fa779d2432421463fb3d64fd"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-l-parent-v1.json",
+        "sha256": "d5fbd7f64050e90fb2a7d16f92c7ed2061d74152404f9db3aaed7acab99f30bc"
+      },
+      "input_namespace": "learning",
+      "member": "L-parent",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-L-PARENT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-l-parent-aa-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-l-parent-aa-v1.json",
+        "sha256": "6cb7ca1a1eb2d8a283486d922a2bf71957f2cc5f277406c619ea0f361e60c3b5"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-l-parent-aa-v1.json",
+        "sha256": "26cfb58702b881ab1519ac2bde19f55ef31ef792592ac3bac60d5eaea5eb9a24"
+      },
+      "input_namespace": "learning",
+      "member": "L-parent-aa",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-L-PARENT-AA-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-l-candidate-1-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-l-candidate-1-v1.json",
+        "sha256": "1efdc474e9f4f2cb65f04d1450433ff3c6dabf0403f52addee103bdde0131e58"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-l-candidate-1-v1.json",
+        "sha256": "0785195af1ce2c8dbbc63a5a9e93a10f7b01ba19eff1d743f98a8c9fdec1d614"
+      },
+      "input_namespace": "learning",
+      "member": "L-candidate-1",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-L-CANDIDATE-1-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-l-candidate-2-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-l-candidate-2-v1.json",
+        "sha256": "e1d317f1b2cb5546d66d9da5ff477d0fe1e9de2e8e2de0f2fe0a1da53745d29c"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-l-candidate-2-v1.json",
+        "sha256": "3309566fbcad207f3d7af707c2ea0b7a6a672698b3352ce7caf24a2c98da51af"
+      },
+      "input_namespace": "learning",
+      "member": "L-candidate-2",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-L-CANDIDATE-2-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-b-parent-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-b-parent-v1.json",
+        "sha256": "4221fcc15ad6ac2372b0de6855f930aab16dbd447fea9c675135f7287f893ebb"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-b-parent-v1.json",
+        "sha256": "de8e5ebdc13d4a7417852f486784aa7af8f53b8da85c0da4ccf73bd35c38a3c1"
+      },
+      "input_namespace": "blind",
+      "member": "B-parent",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-B-PARENT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-b-parent-aa-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-b-parent-aa-v1.json",
+        "sha256": "27a38162b05c18c7ed13b12a9fa3c0e783c8fdca5075799382d69031aedce24e"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-b-parent-aa-v1.json",
+        "sha256": "91c59374105481dbbd9a0360e5ed9443f29b4e252aaccacd66c1afd49cd94c98"
+      },
+      "input_namespace": "blind",
+      "member": "B-parent-aa",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-B-PARENT-AA-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-b-candidate-1-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-b-candidate-1-v1.json",
+        "sha256": "f4622af4351f98ab89cc1feb5643a51e38c5fc1d28f35dc14d09c29ec06327ef"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-b-candidate-1-v1.json",
+        "sha256": "e16ac07f908a9cf6bd56bf71784f022c97310d50dbc43b351428f44186c71764"
+      },
+      "input_namespace": "blind",
+      "member": "B-candidate-1",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-B-CANDIDATE-1-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-scale200-b-candidate-2-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-scale200-b-candidate-2-v1.json",
+        "sha256": "fa48e0f1ad7e3da0e52e6d76174f37ea1a096d54fee1effef7ac7bf60edd476c"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-scale200-b-candidate-2-v1.json",
+        "sha256": "6f956b27aa20694b14e2c40ba68ce6909ffd085180407fa33561e2d0b72f7eac"
+      },
+      "input_namespace": "blind",
+      "member": "B-candidate-2",
+      "policy_status": "pending-freeze",
+      "readiness": "held",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-B-CANDIDATE-2-V1"
+    }
+  ],
+  "official_score_job_ceiling": 8,
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-fixed400-prefix200-owner225-v1.json",
+    "sha256": "57c94d4092802baf83fc0a0a506db36ec7d6339a28ae2b50d3a6941d4048ca5b"
+  },
+  "rows_per_member": 200,
+  "runtime_tokenizer_endpoint_ceiling": 83200,
+  "runtime_view": {
+    "relpath": "configs/dataset/slurp-speech-native-system-text-fixed400-prefix200-owner225-v1.json",
+    "sha256": "a0b3ba2a6ca93aac0bd85a1822fd1ec329aa4eee02e0ba09a4a78c36c822c868"
+  },
+  "sample_ids_sha256": "ac51b5718d7153d6a005e2e602fc83d2f86c95bdc00b6d9af38be61d813d2b7f"
+}

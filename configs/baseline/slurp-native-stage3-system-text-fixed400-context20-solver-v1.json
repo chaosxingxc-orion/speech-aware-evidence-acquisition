@@ -469,8 +469,8 @@
     }
   ],
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/phase-supply-v1.json",
-    "sha256": "3deb18df9bab10f18ac6277f28c04f443a90dcc3f0867335b2ad326211ae494c"
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/phase-supply-owner225-v2.json",
+    "sha256": "08d930fa65cfb2bbf947ef1470a468d6eb16b3aa55f580d4eb54010105ad0f91"
   },
   "scorers": [
     "slurp-slu-official-train",

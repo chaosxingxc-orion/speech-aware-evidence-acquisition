@@ -1,0 +1,7 @@
+# Fixed400 offline scaling preparation
+
+Owner225 requests parallel preparation of eight-member50/100/200 panels within the existing UPDATE2 400-input pool. All three views reuse immutable media/packets and current knowledge/query/vote bindings. Their sample lists are exact nested stable-order prefixes. This creates350 prefix entries but only200 distinct inputs, not three independent datasets.
+
+Each stage has L parent, L A/A, two L candidate slots, B parent, B A/A and two B candidate slots, with independent run/attempt/FIT identities. All24 cells are HELD and permit only check/prepare-supply. The corrected seed is a template; no slot is represented as a new or selected proposal. The final policies, their actual consumed role bytes, cumulative exposure and per-policy preparation must be frozen after preceding results are reviewed. Spent no-change/invalid allocations stay spent; no hidden replacement or extra proposer contact is authorized.
+
+Before dispatch, complete prior-panel analysis, select/freeze policies, register the exact family/READ/exposure/cost limits, verify real request FIT and any required four-row structural proof, and pass shared runtime/admission guards. Same executor, one generator/one scorer, Windows8GiB running/12.5GiB startup, independent L/B inputs and full-family scientific reads remain mandatory. Draft maxima are400/800/1600 trajectories respectively; no larger GPU dispatch occurs from this preparation.

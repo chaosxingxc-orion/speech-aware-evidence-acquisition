@@ -1,0 +1,67 @@
+{
+  "expected_members": {
+    "B-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1",
+    "B-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1",
+    "B-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1",
+    "B-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1"
+  },
+  "family_id": "fixed400-context20-recovery1-v1",
+  "independent_validation": false,
+  "member_bindings": {
+    "B-candidate-1": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-planner-generation-v1",
+      "bundle_id": "fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452",
+      "cell": "slurp-native-stage3-system-text-fixed400-context20-planner-v1",
+      "config_hash": "9dbba1ccc384fbebbd67efa3e36d7a8831ce858669c7a82cbdafdf230bca0198",
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-planner-v1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1"
+    },
+    "B-candidate-2": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-solver-generation-v1",
+      "bundle_id": "97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294",
+      "cell": "slurp-native-stage3-system-text-fixed400-context20-solver-v1",
+      "config_hash": "03e61cf00c29764c8b79c882a920193fe7882526de154392bd6a4e335f56577f",
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-solver-v1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1"
+    },
+    "B-parent": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-v1",
+      "config_hash": "7fe7b431590c66fb3a88e201c530c6db8abe381970b4ec31716fb7f92d404474",
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-v1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1"
+    },
+    "B-parent-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-v1",
+      "config_hash": "c460d8e118a8a7ac8e24687b656fdcabcd71b2f446d5acc4ed4cbf5fed2f8613",
+      "experiment": "slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-v1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1"
+    }
+  },
+  "new_proposal_opportunities": 0,
+  "official_score_jobs_cap": 4,
+  "optimizer_feedback_allowed": false,
+  "owner_decisions": [
+    214,
+    218,
+    222,
+    223,
+    224,
+    225
+  ],
+  "pool_sample_ids_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "prefix_sample_ids_sha256": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "read_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1",
+  "recovery_owner_decision": {
+    "relpath": "docs/receipts/owner/2026-10-03-decision225-seed-binding-recovery-approved.json",
+    "sha256": "743e4636f51e66d156678a19e007ef74e39a3e8edb01fce33867530dc0d4fd5b"
+  },
+  "registration_sha256": "c5523482bacc6b730b98838a918d1ff98a86868021ed339b2fb508e9415fcec7",
+  "rows_per_member": 20,
+  "schema": "saea-fixed400-context-comparison-registration-v1",
+  "status": "REGISTERED-BEFORE-CONTACT",
+  "trajectory_cap": 80
+}

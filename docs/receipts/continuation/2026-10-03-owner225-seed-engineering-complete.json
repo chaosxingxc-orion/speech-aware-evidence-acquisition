@@ -1,0 +1,56 @@
+{
+  "artifacts": [
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1.generation-manifest.json",
+      "sha256": "fc37f281bc1c9429421d404f0fa7431652a3c6b0dc9d869782413cee157a7aca"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1.outputs.jsonl",
+      "sha256": "26a5789cc270e3c574f968b2b2c1ce120352b46dc7e6d3af053dfc088cf9ab02"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1.phases.json",
+      "sha256": "b253db4c2b876fbe3b7c449d50dac8d02f80105b295602d64e7b34f89f58903e"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1.run-manifest.json",
+      "sha256": "fc37f281bc1c9429421d404f0fa7431652a3c6b0dc9d869782413cee157a7aca"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1.trace-manifest.json",
+      "sha256": "fb9315dc70f704119ccbb3c6417c0e4125b337b761c06848524c3ca4a09021ce"
+    },
+    {
+      "relpath": "runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1.trace.jsonl",
+      "sha256": "396e97cda248045d971d2a60821baa18f3a9542ac88c34ebe48c9e99e0fa3bce"
+    }
+  ],
+  "at": "2026-10-03T01:58:42.766344+00:00",
+  "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-seed-binding-smoke-4-recovery1-generation-v1",
+  "commit": "988ba39944e51113844a613a7c19cafd1a47a766",
+  "contacts": 22,
+  "existing_normalizer_changed_rows": 1,
+  "native_solver_custody_through_existing_normalizer": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "official_score_batch_exists": false,
+  "planner_actions": {
+    "ACCEPT": 3,
+    "REVISE": 3
+  },
+  "reviewer_statuses": {
+    "valid": 6
+  },
+  "rows": 4,
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-SMOKE-4-RECOVERY1-V1",
+  "schema": "saea-owner225-engineering-structural-read-v1",
+  "solver_strict_json": {
+    "valid": 6
+  },
+  "structural_pass": true,
+  "task_quality_read": false,
+  "worker": "/home/chao/saea-worktrees/codex-system-text-seed-binding-engineering-recovery1"
+}

@@ -1,0 +1,3 @@
+# Exact owner225 fixed400 recovery comparison
+
+Run only the four registered20-row members after corrected-seed capacity and structural engineering acceptance. Preserve the old malformed controls unread. Keep policy content, data, knowledge, retrieval, votes, parser, scorer and serving geometry fixed. Newly added role-policy bindings require successor prepared envelopes for the two never-started candidates; their supply outputs are byte-identical. All80 trajectories and four independent seals/unique successful official scores are required before the new root READ. No further automatic recovery, no partial reading, no proposal replacement or automatic scale launch.

@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner225 capacity and engineering passed; comparison and scaling prepared, 2026-10-03T02:07:57.708428+00:00
+
+Corrected seed capacity passed297 tokenizer endpoints/44 measured requests, minimum5546 tokens after full reserves. The four-row engineering completed22 contacts with six valid Reviewer handoffs/six strict Solver JSON replies, legal Planner actions and all four Omni custody chains through the existing normalizer. No official scorer or task-quality read. [Engineering evidence](../receipts/continuation/2026-10-03-owner225-seed-engineering-complete.json).
+
+The [exact recovery comparison](../readiness/2026-10-03-slurp-fixed400-context20-recovery1-v1/README.md) now registers two new seed/A/A20 plus the two never-started candidates. Their actual bundle-role bindings are verified; successor candidate supply envelopes retain identical output content. Clean frozen preflights and launch remain next; READ remains unsigned. The old malformed family and all frozen bytes stay preserved and unread. No further automatic recovery.
+
+[Offline scaling preparation](../readiness/2026-10-03-slurp-fixed400-scaling-preparation-v1/README.md) has all three exact50/100/200 prefixes and24 HELD shared-runtime slots, with independent identities and L/B namespaces.143 tests pass; new staging module100% statement coverage; base/harness and real media identity checks pass. No larger-panel/proposer contact or new allocation. Final candidate freeze, per-policy preparation, whole-family registration/FIT and root review remain required before each scale. Windows floors8/12.5GiB and other-carrier holds remain.
+
 ## Owner225 approved; exact recovery registration in progress, 2026-10-03T01:42:22.423230+00:00
 
 The human explicitly approved225 and requested parallel offline8x50/8x100/8x200 preparation inside the existing UPDATE2 400-input pool. The [approved authority](../receipts/owner/2026-10-03-decision225-seed-binding-recovery-approved.json) supersedes prior pending snapshots. Corrected-seed capacity is registered with297 tokenizer endpoints and zero generation; real engineering and the four-member20 family follow only after acceptance. Preserve the failed old family and its scores unread. Do not replace spent proposals or launch the larger panels from offline preparation alone. No recovery/model contact has occurred at this checkpoint.
