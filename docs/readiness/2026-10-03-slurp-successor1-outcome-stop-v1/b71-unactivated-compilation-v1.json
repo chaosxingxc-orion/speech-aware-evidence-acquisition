@@ -1,0 +1,28 @@
+{
+  "activation": "none",
+  "allocation": "B-7-1",
+  "bundle_id": "de85e065315fd2fe8ad0c222ec786595f9a51fa0fa8e339015ec978fbee18ab7",
+  "compilation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227/compilations/B-7-1.json",
+    "sha256": "7646a545e685e6116bfc275e4ae2c4ca72c3550a066c36842da361be7fbf0e4b"
+  },
+  "compile_log": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/B-7-1-compile-roster-bound-v1.log",
+    "sha256": "708b57c5eeb9d5a9190606cce8f56fffe519687fcb23984ae8584dbbe202a8c9"
+  },
+  "config": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/configs/baseline/slurp-native-stage3-system-text-round7-b-candidate-1-v1.json",
+    "sha256": "8ccfaf753238158055fcc2d016631ea9f437e0de8b6076605fe5a50d691e27ae"
+  },
+  "contacts_added": 0,
+  "exact_roster_projection": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/compile-roster-items-v1.json",
+    "sha256": "1e1756f90fd001232aa1f2cefda26801ff50aa6b53b8e83f8b28c3d67d241499"
+  },
+  "initial_model_free_metadata_refusal": "The compiler expects roster.items; the existing exact roster has sample_ids. No output or compilation record existed after KeyError. A source-pinned exact ordered projection to items was created without rebuilding any data or changing sample identity.",
+  "policy": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227/policies/de85e065315fd2fe8ad0c222ec786595f9a51fa0fa8e339015ec978fbee18ab7.json",
+    "sha256": "490eee1789350a4f5c2ee709496d938b214c17e14c9ff2316623d2507a1cae52"
+  },
+  "schema": "saea-unactivated-candidate-compilation-receipt-v1"
+}

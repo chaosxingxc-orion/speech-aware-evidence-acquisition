@@ -1,0 +1,12 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Compare the candidate intents against the requested operation and the roles of the expressed mentions. Candidate order and the amount of supplied knowledge are not evidence for an intent. Distinguish a mention's role in this speech from its resemblance to a knowledge example. Do not reject a candidate merely because a commonly associated slot is absent, or reject a supported entity type merely because it is not associated with that candidate in the supplied knowledge.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. Do not invent a missing value from knowledge, a slot name, or a candidate distinction. Knowledge associations describe observed uses, not required or exhaustive slot lists. If no entity is expressed, return an empty entities array.
+
+Before returning the JSON, silently check both directions: each proposed entity must have a supporting mention in the speech and a type justified by its role; each expressed entity mention must have been considered for inclusion, including mentions outside the selected candidate's listed associations. Use supplied extraction boundaries where available. Do not expand, normalize, paraphrase, or complete a filler using a knowledge example. Check that scenario and action come from the same selected candidate. These checks are internal and must not appear in the response.
+
+On a revision, reconsider your answer using the same original Perception candidates and the intervening Reviewer/Planner evidence. Treat criticism as a prompt to recheck the speech and supplied knowledge, not as proof that the draft is wrong. A lookup result can clarify a type or boundary but cannot establish that an unspoken value is present. Make only changes justified by that recheck; you may keep a supported answer. Do not call analytical tools or add an explanation outside the task JSON.

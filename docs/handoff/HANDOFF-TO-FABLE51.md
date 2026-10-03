@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Successor1 stopped with two schema-invalid L outputs and a credential-entry failure, 2026-10-03T09:53:48.383910+00:00
+
+The one-shot proposal task ended09:49:44.316897Z and wrapper exited1. L-7-1 and L-7-2 returned complete metered responses but are invalid: hypotheses[0] is an object while the pinned schema requires an English string. Keep the original empty L71 changes and L72 Planner edit invalid; do not reinterpret or repair them. B-7-1 is a provisional Solver candidate, compiled with zero contacts and unactivated. B-7-2 reserved one opportunity then failed before HTTP POST in the bearer callback; the masked underlying cause is unestablished. No sign-in expiry or provider failure is inferred. [Exact diagnosis and minimal disposition proposal](../readiness/2026-10-03-slurp-successor1-outcome-stop-v1/README.md); [cost/custody receipt](../receipts/continuation/2026-10-03-proposer-successor1-outcome-stop.json).
+
+Nine reservations and eight complete metered returns are preserved:32791 input/2930 output tokens. The ninth is a pre-POST unmetered reserved attempt. All four new opportunities count as spent/reserved; B72 archive import disposition remains pending root. Old21 spent and three HELD identities remain unchanged. No retry, replacement, new opportunity, GPU task, scientific READ or prefix-affinity activation. The eight-member next20 panel remains HELD. Future contract clarification and credential-safe diagnostics are offline work only; root must register any later sequence. Heartbeat remains PAUSED and independent telemetry unchanged.
+
 ## Successor proposal task launched once, 2026-10-03T09:46:24.197376+00:00
 
 Windows SAEA-System-Text-Proposer-Successor1-Owner227 started2026-10-03T09:43:48Z from frozen316583e498f5c21225529dd122d47a37068b2f04 at `/home/chao/saea-worktrees/codex-system-text-proposer-successor1-admitted-v1`. Final frozen check-only passed all four members with zero contacts. The actual WSL process455569 was revalidated; durable precontact/start receipts and L-7-1 contact reservations exist. [Launch evidence](../receipts/continuation/2026-10-03-proposer-successor1-launch.json). Reservation count is not inferred completion.
