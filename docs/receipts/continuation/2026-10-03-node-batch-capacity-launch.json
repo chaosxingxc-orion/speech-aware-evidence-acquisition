@@ -1,0 +1,48 @@
+{
+  "at_utc": "2026-10-03T16:35:19.118590+00:00",
+  "budget": {
+    "generation": 0,
+    "official_scoring": 0,
+    "tokenizer_endpoints": 594
+  },
+  "cache_actions": 0,
+  "commit": "5b9344ffc6a1fa43fd53c9ca71fba6571ff9e38a",
+  "frozen_check": {
+    "relpath": "coordination/node-batch-capacity-owner227-v1/frozen-check-v3.json",
+    "sha256": "03a685e6ab12a0f8cd5eb6ebf657c186148900a72ab0025882a1131bc4360721"
+  },
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "live_launcher": {
+    "argv": [
+      "/home/chao/.venvs/speechrl/bin/python",
+      "-B",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-capacity-owner227-v1/launch-capacity-v1.py",
+      "--registration",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-capacity-owner227-v1/registration-v1.json",
+      "--sha256",
+      "780740d58e876ea55f91a9d83fdaafa3cd9de8a383ca953f2175c8dac9fb7bcf",
+      ""
+    ],
+    "pid": 530908,
+    "start_ticks": "39717155"
+  },
+  "next_generation_admitted": false,
+  "precontact_diagnostics": "Two offline caller issues corrected in successor scripts: initialize knowledge binding for target inspection; use a separate fresh runtime and actual session receipt for rehearsal. All originals preserved; no failed registered attempt or real contact resulted.",
+  "registration": {
+    "relpath": "coordination/node-batch-capacity-owner227-v1/registration-v1.json",
+    "sha256": "780740d58e876ea55f91a9d83fdaafa3cd9de8a383ca953f2175c8dac9fb7bcf"
+  },
+  "rehearsals": "Both complete real-asset synthetic role/tool/revision graphs passed; four terminal rows and three synthetic tool actions each.",
+  "schema": "saea-node-batch-capacity-launch-v1",
+  "started": {
+    "relpath": "coordination/node-batch-capacity-owner227-v1/capacity-started.json",
+    "sha256": "9484002f4ae360f1ceff2f3807f2dcb1a8d6f402bc799df4bcbda4796ff85fc2"
+  },
+  "task_name": "SAEA-Node-Batch-Capacity-Owner227",
+  "task_xml": {
+    "relpath": "coordination/node-batch-capacity-owner227-v1/windows-task.xml",
+    "sha256": "a6bb591b57bbf3112ccc73583f36e120b22718e98e097007e9c9a2c50627c83f"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-node-batch-capacity-v1"
+}

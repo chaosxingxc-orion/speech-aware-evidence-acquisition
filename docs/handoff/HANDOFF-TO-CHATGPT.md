@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Node-batch capacities launched, 2026-10-03T16:35:19.118590+00:00
+
+Windows SAEA-Node-Batch-Capacity-Owner227 began2026-10-03T16:34:33.563488+00:00 on clean frozen5b9344ffc. [Launch evidence](../receipts/continuation/2026-10-03-node-batch-capacity-launch.json) pins both exact capacity identities,source and live launcher. Batch4 and16 real-asset synthetic graph rehearsals each delivered four terminal rows and exercised three tool actions without real contacts. Two offline diagnostic caller corrections are preserved separately; no registered attempt failed. One task now measures at most594 tokenizer endpoints;zero task generation/scoring/cache operations.12.5/8GiB guards remain. Wait for complete capacity receipts before separate structural admission. Root only,learning HELD,heartbeat PAUSED,human before8x400.
+
 ## Node-batch capacities registered, 2026-10-03T16:28:31.988706+00:00
 
 Root227 admits exactly two297-endpoint nongenerative capacity members for cohort sizes4 and16,unchanged before-speech seed context and all four slots. [Registration](../readiness/2026-10-03-node-batch-capacity-entry-v1/README.md) retains independent prompts,tool/revision branches and immutable existing assets. Original graph composition and role binding pass without contacts. Clean separate worker and live resource/process checks remain before one Windows capacity task. No generation,official score,quality,cache operation or next-panel admission. Failure stops for preserved evidence and root disposition. Root only,learning HELD,heartbeat PAUSED,human before8x400.
@@ -1158,7 +1162,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T16:28:31.988706+00:00
+Last refreshed: 2026-10-03T16:35:19.118590+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
