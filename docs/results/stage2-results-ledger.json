@@ -7133,6 +7133,19 @@
         "SAEA-SLURP-NODE-BATCH4-CAPACITY-FIT-V1",
         "SAEA-SLURP-NODE-BATCH4-CAPACITY-STRUCTURE-V1"
       ]
+    },
+    {
+      "date": "2026-10-03",
+      "cell_id": "SAEA-SLURP-NODE-BATCH-SMOKE-4-STRUCTURE-V1",
+      "status": "STRUCTURAL-ONLY-NO-BENEFIT-CLAIM",
+      "source": "docs/receipts/continuation/2026-10-03-node-batch-structural-complete.json",
+      "source_sha256": "195d37b5850853a12b5b1ef6919d4a7c65f6e687023ffc17d0d4e15ca101bcb6",
+      "receipt": "docs/receipts/continuation/2026-10-03-node-batch-structural-complete.json",
+      "meaning": "Both four-row node-batch workers complete;53 model contacts,212 actual FIT endpoints,15 valid visible Reviewer handoffs and8 Omni deliveries. All14 waves are source-bound;no quality or speed claim. Owner now requests panel-wide node scheduling with overlapping downstream preparation;existing cohort implementation is not that pipeline.",
+      "run_ids": [
+        "SAEA-SLURP-NODE-BATCH4-SMOKE-4-V1",
+        "SAEA-SLURP-NODE-BATCH16-SMOKE-4-V1"
+      ]
     }
   ],
   "stage3_measurement_instrument": {

@@ -1911,3 +1911,7 @@ Source-bound follow-up: [actual cache sequence and node-batched direction](2026-
 ## 2026-10-03: node-batch capacity - STRUCTURAL ONLY
 
 Both cohort4/16 configurations fit88 measured requests with594 tokenizer endpoints. Full512 output plus2048 additional structural reserve retained;minimum remaining5546 tokens. No generation,official score,task quality or speed claim. [Exact closure](../receipts/continuation/2026-10-03-node-batch-capacity-complete.json). Separate four-row structural entry follows root admission;learning remains HELD.
+
+## 2026-10-03: node-batch structural generation - STRUCTURAL ONLY
+
+Both four-row workers completed normally with53 model contacts and212 actual FIT endpoints. All15 Reviewer handoffs are valid and visible;all8 deliveries retain Omni authority;14 node waves and original sample timing are source-bound. Batch16 is underfilled and no live knowledge call occurred;prior synthetic proofs cover conditional tools. No task quality,scoring or speedup claim. [Complete evidence](../receipts/continuation/2026-10-03-node-batch-structural-complete.json). Owner now requests full-panel node queues with downstream preparation overlapping current-node generation;the existing cohort scheduler does not yet implement this. Prepare offline before further admission.
