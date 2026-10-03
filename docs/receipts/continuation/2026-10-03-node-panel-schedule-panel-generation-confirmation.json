@@ -1,0 +1,367 @@
+{
+  "at_utc": "2026-10-03T22:06:34.670560+00:00",
+  "driver_epoch": "2026-10-03T20:48:40Z",
+  "family_read": "UNSIGNED",
+  "first_eight_generation_contacts": 1033,
+  "frozen_worker": {
+    "commit": "dd765815218eb7d9207701c130ae5ed9f802dab8",
+    "path": "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2"
+  },
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "live_processes": [
+    {
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ],
+      "memory": {
+        "Threads": "1",
+        "VmHWM": "3456 kB",
+        "VmRSS": "3456 kB"
+      },
+      "pid": 572846,
+      "start_ticks": 41171644
+    },
+    {
+      "argv": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "node-panel",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--owner",
+        "root-owner227-node-panel-schedule",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--campaign-plan",
+        "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2/docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/panel-plan-v1.json"
+      ],
+      "memory": {
+        "Threads": "61",
+        "VmHWM": "25514640 kB",
+        "VmRSS": "17307484 kB"
+      },
+      "pid": 582319,
+      "start_ticks": 41569135
+    },
+    {
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8080",
+        "-m",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "--no-mmproj",
+        "-c",
+        "98304",
+        "-np",
+        "4",
+        "-b",
+        "2048",
+        "-ub",
+        "512",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--cache-prompt",
+        "--cache-ram",
+        "0",
+        "--no-cache-idle-slots",
+        "--slot-prompt-similarity",
+        "0"
+      ],
+      "memory": {
+        "Threads": "29",
+        "VmHWM": "18464452 kB",
+        "VmRSS": "2003956 kB"
+      },
+      "pid": 942,
+      "start_ticks": 18129934
+    }
+  ],
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair1-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-trajectory-pair1-primary",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 125,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair1-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-trajectory-pair1-aa",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 134,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-trajectory-pair2-primary",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 134,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-trajectory-pair2-aa",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 131,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair1-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-trajectory-pair1-primary",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 131,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair1-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-trajectory-pair1-aa",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 131,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair2-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-trajectory-pair2-primary",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 122,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair2-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-trajectory-pair2-aa",
+      "manifest_rows": 20,
+      "manifest_status": "COMPLETED",
+      "model_contacts": 125,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+      "schedule": "trajectory",
+      "state": "FINALIZED",
+      "successful_scores": 1
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair1-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-panel-pair1-primary",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 20,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair1-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-panel-pair1-aa",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 20,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair2-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-panel-pair2-primary",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 20,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair2-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "legacy-panel-pair2-aa",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 20,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair1-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-panel-pair1-primary",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 20,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair1-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-panel-pair1-aa",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 12,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair2-primary-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-panel-pair2-primary",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 0,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair2-aa-generation-v1",
+      "failed_scores": 0,
+      "label": "before-speech-panel-pair2-aa",
+      "manifest_rows": null,
+      "manifest_status": null,
+      "model_contacts": 0,
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1",
+      "schedule": "panel",
+      "state": "OPENED",
+      "successful_scores": 0
+    }
+  ],
+  "panel_campaign_epoch": "2026-10-03T21:58:56Z",
+  "panel_generation_contacts_observed": 112,
+  "recent_status": [
+    {
+      "at": "2026-10-03T21:58:27Z",
+      "detail": {
+        "receipt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/start-memory-wait/step-9-node-schedule-full-panel160-20261003T215827Z",
+        "step": 9
+      },
+      "event": "memory-wait-start"
+    },
+    {
+      "at": "2026-10-03T21:58:52Z",
+      "detail": {
+        "elapsed_seconds": 21.7539319669595,
+        "exit_code": 0,
+        "interval_seconds": 10,
+        "observer_sha256": "9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c",
+        "running_floor_gib": 8.0,
+        "schema": "saea-precontact-memory-wait-v1",
+        "stable_samples": 3,
+        "start_gib": 12.5,
+        "status": "ready",
+        "stop_marker": "/home/chao/batch-STOP",
+        "wait_seconds": 600.0,
+        "worker_started": false
+      },
+      "event": "memory-wait-ok"
+    },
+    {
+      "at": "2026-10-03T21:58:56Z",
+      "detail": {
+        "step": 9
+      },
+      "event": "registration-gate-ok"
+    },
+    {
+      "at": "2026-10-03T21:58:56Z",
+      "detail": {
+        "step": 9,
+        "warmup": "registered-model-work-only"
+      },
+      "event": "prelaunch-ok"
+    },
+    {
+      "at": "2026-10-03T21:58:56Z",
+      "detail": {
+        "log": "/home/chao/batch-campaign-9-node-schedule-full-panel160-20261003T215856Z.log",
+        "step": 9
+      },
+      "event": "arm-start"
+    }
+  ],
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/registration-v1.json",
+    "sha256": "fc4bd2aca4d5d6e35d6a93f8f1e766898fbddc62633477904c36c9aee8f804db"
+  },
+  "resources": {
+    "gpu_memory_mib": 22976.0,
+    "gpu_utilization_percent": 83.0,
+    "minimum_observed_windows_free_gib": 8.507061004638672,
+    "observation_interval_seconds": 10,
+    "panel_start_window_samples": 40,
+    "sampled_at_iso": "2026-10-03T22:06:31.154870+00:00",
+    "sampling_limitation": "These sampled minima are not a continuous-time resource guarantee.",
+    "server_ok": true,
+    "telemetry_age_seconds": 3.5158822536468506,
+    "windows_free_gib": 10.949352264404297
+  },
+  "runtime_controls_or_sources_changed": false,
+  "schema": "saea-node-panel-schedule-generation-confirmation-v2",
+  "scientific_quality_read": false,
+  "scope": "Operational confirmation only. Original individual attempts and score jobs determine progress; service totals are not row counts. Eight open panel owners share one registered generator and four model slots. Whole-family source/seal qualification remains before root READ.",
+  "seals_independently_reverified_in_this_checkpoint": false,
+  "stop_present": false
+}

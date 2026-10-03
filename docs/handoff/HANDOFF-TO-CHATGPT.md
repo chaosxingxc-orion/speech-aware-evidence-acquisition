@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Full node panel is generating, 2026-10-03T22:06:34.670560+00:00
+
+The first eight sequential trajectory members are FINALIZED with20 manifest rows,one successful official complete score each and zero failed jobs. Their1033 generation contacts are operational accounting,not quality evidence. The full eight-owner160-job node panel began its campaign at21:58:56Z after the21.75s stable-memory wait;all eight attempts are OPENED and112 generation contacts were observed at this checkpoint. They share one registered node-panel process,PID582319/start ticks41569135,and four model slots. Driver572846/start ticks41171644 and original serving942/start ticks18129934 were revalidated. Frozen worker remains `codex-node-panel-schedule-n20-v2` at `dd765815218eb7d9207701c130ae5ed9f802dab8`. [Operational confirmation](../receipts/continuation/2026-10-03-node-panel-schedule-panel-generation-confirmation.json).
+
+Own panel preparation reached a process RSS high-water mark of25514640KiB;current RSS17307484KiB. Across40 available10-second telemetry samples since panel campaign start,minimum observed Windows free memory was8.507GiB;current10.949GiB,healthy serving,GPU83%,telemetry age3.516s and no STOP. This sampled minimum is not a continuous-time guarantee. Preserve preparation and queue waits in the eventual end-to-end cost analysis;do not attribute this footprint to stale tasks or KV eviction without evidence. No runtime control,cache,service or frozen-source change was made.
+
+The exact complete16-member READ remains UNSIGNED,with no partial quality read or optimizer export. Seals were not independently reverified in this operational checkpoint;all16 source/seal/unique-score qualifications remain mandatory before root READ. Keep independent node contexts,global node barriers and CPU-only prefetch. Root only;learning HELD,heartbeat PAUSED,human before8x400. Revalidate live processes and resources before continuing.
+
 ## Actual-slot cache diagnostic ready; comparison continues, 2026-10-03T21:15:39.250147+00:00
 
 The optional [slot-history reader](../readiness/2026-10-03-node-panel-slot-history-v1/README.md) joins every original contact to exactly one actual server task using measured token counts and rounded prefill/decode timings. It separates changed-input static-prefix reuse from repeated-input reuse, context changes and node switches; preserves external predecessors; and rejects ambiguous/missing/overlapping assignments. The full-family READ gate precedes all result/log access, and finite log pins are rechecked. No raw log text or optimizer feedback is exported. [Engineering evidence](../receipts/continuation/2026-10-03-node-panel-slot-history-engineering.json): 200 tests pass, module100%/CLI99.30% statement coverage, lint/base/harness pass, and all53 prior accepted structural task/slot joins reproduce. One model-free rehearsal caller omitted the owner namespace in its comparison; the library was already correct and the evidence preserves the correction. No real contacts or frozen runtime changes.
@@ -1257,7 +1265,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T21:15:39.250147+00:00
+Last refreshed: 2026-10-03T22:06:34.670560+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
