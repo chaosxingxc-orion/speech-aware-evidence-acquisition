@@ -1,0 +1,23 @@
+{
+  "schema": "saea-proposer-offline-readiness-verification-v1",
+  "verified_at_utc": "2026-10-03T08:51:45.958762+00:00",
+  "status": "PASS",
+  "scope": "Actual load_members and transport constructor only; clean frozen process entry and root serial admission remain required.",
+  "member_count": 4,
+  "request_bounds": {
+    "L-6-1": 20098,
+    "B-6-1": 14194,
+    "L-6-2": 20098,
+    "B-6-2": 14194
+  },
+  "registration_template": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/registration-prepared-v1.json",
+    "sha256": "38f84be4b0c73b04825d0f86a8fee1167453c87b19b6093ca067bac2a7f58900"
+  },
+  "credential_requests": 0,
+  "proposal_contacts": 0,
+  "gpu_contacts": 0,
+  "task_registered_or_started": false,
+  "shared_queue_changed": false,
+  "dispatch_authority": false
+}

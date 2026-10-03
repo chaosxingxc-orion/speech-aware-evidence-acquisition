@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round6 isolated proposal inputs prepared, 2026-10-03T08:50:16.839068+00:00
+
+Four fresh round6 opportunities retain all twenty spent slots. Complete round5 own-L feedback uses coherent-feedback-v1; B remains feedback-free and the exact model/budgets are unchanged. All four actual inputs pass initial bounds and the explicitly assumed one-page continuation; actual usage remains separately metered. [Prepared admission and integration handoff](../readiness/2026-10-03-slurp-text-extra-round6-v1/README.md). No model or GPU contact; root serial integration, frozen preflight and one-shot Windows launch are pending. Runtime policies, FIT/engineering and next20 membership follow complete proposal collection. Human review before8x400.
+
+The owner explicitly paused the SLURP heartbeat until a later large-scale experiment. Keep it PAUSED. The independent10-second resource recorder remains unchanged. Current geometry and trajectory scheduler stay frozen; no cache-setting change belongs to this phase. Other holds and L/B/read boundaries remain.
+
+
 ## Round5 complete8x20 and root READ, 2026-10-03T08:33:15.738832+00:00
 
 All eight20-row members finalized with verified seals, one successful official complete score each and zero failed jobs; driver ended08:28:09Z. Frozen406eda8cc and all old bytes remain unchanged. Root READ and qualified L-only projection are complete. [Root report](../results/2026-10-03-slurp-round5-n20-root-read.md); [qualification](../receipts/continuation/2026-10-03-round5-n20-family-qualified.json). Actual1009 model contacts,1009 FIT receipts and4036 tokenizer endpoints. No replay.
@@ -763,7 +770,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T08:34:01.008168+00:00
+Last refreshed: 2026-10-03T08:50:16.839068+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

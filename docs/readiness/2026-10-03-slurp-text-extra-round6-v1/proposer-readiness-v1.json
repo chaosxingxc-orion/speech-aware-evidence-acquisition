@@ -1,0 +1,132 @@
+{
+  "schema": "saea-system-text-proposer-round-readiness-v1",
+  "recorded_at_utc": "2026-10-03T08:50:16.839068+00:00",
+  "status": "OFFLINE-VERIFIED-ROOT-SERIAL-INTEGRATION-PENDING",
+  "round_index": 6,
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217",
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-03-slurp-text-extra-round6-v1/protocol-proposals-v1.json",
+    "sha256": "34e21a31cd859c407f940dbeeada3c34248c04f8b4b010843e3f36e09ae57d57"
+  },
+  "provider_admission": {
+    "relpath": "docs/readiness/2026-10-03-slurp-text-extra-round6-v1/provider-admission-v1.json",
+    "sha256": "11befbc55b00bc19c7d1d273793b5667314476e54bcc42857dea685e2ea8baaa"
+  },
+  "allocation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/allocations/round-6.json",
+    "sha256": "35bd36374e0d3d0592e03933115e874b894d16ada7061f05908e730effd17705"
+  },
+  "members": [
+    {
+      "key": "L-6-1",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-6-1.json",
+        "sha256": "99b03bbd7187062a20b6792230224e3db0514d48cde36e7f3e5708e5dabbe878"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-6-1.json",
+        "sha256": "6ad541cb790d36afe52ee318558f6d76977e4792080a9497d195cee0e0bed468"
+      },
+      "request_sha256": "f44adcfa15e9e19f0d16719d568df32259a9fb2042f0f4fc12c48951d8fbd122",
+      "initial_input_bound": 20098,
+      "artifact_count": 154,
+      "history_entries": 10,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-6-1-EXTRA-OWNER227-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "d0e3e236f7b28f91f11155ba19e378ec2706ab26f6d25172282649f3c9aecdd7",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "73eb3a952f3b6b246faceff2f04e4fbacf7687e2408998ad6c497393cc59d28e"
+      }
+    },
+    {
+      "key": "B-6-1",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-6-1.json",
+        "sha256": "b7a45ba4e7189f2344518eb7de4b93d2d9a5f277e4d84835cb14825f6ddabd0a"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-6-1.json",
+        "sha256": "d18912e6cec7677daa9fb92859e4b1356e5d66e15b78fd969568b72da4aceab8"
+      },
+      "request_sha256": "d0056005e9bc28c2603f4466c04d518ad972c14c27370d598e0d70c730be310f",
+      "initial_input_bound": 14194,
+      "artifact_count": 6,
+      "history_entries": 0,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-6-1-EXTRA-OWNER227-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "8aefaa017827ccbf7bc34fc1720ac3b4d79870589e99906d2e60880e6cf708e7",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "73eb3a952f3b6b246faceff2f04e4fbacf7687e2408998ad6c497393cc59d28e"
+      }
+    },
+    {
+      "key": "L-6-2",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-6-2.json",
+        "sha256": "cebb457e80018e0c4f86f41d539159b746d208a3c0034f1396b47507eb7a891a"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-6-2.json",
+        "sha256": "8b50a0410999b9bc2ac7d0f5f4d5d7bf76d053338ca1c8a9ee4331d1395ad875"
+      },
+      "request_sha256": "b945314efa669edac0b7a3bb8bd5c64096c8a969e49f8a73a9d7959cef101da7",
+      "initial_input_bound": 20098,
+      "artifact_count": 154,
+      "history_entries": 10,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-6-2-EXTRA-OWNER227-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "47096484801bafdc8906a92ca84192266883ce7ccfced645e9f9d2dc60b6a898",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "73eb3a952f3b6b246faceff2f04e4fbacf7687e2408998ad6c497393cc59d28e"
+      }
+    },
+    {
+      "key": "B-6-2",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-6-2.json",
+        "sha256": "1d3771f93aa7dab9a56cae2b6b2d439a28abd1c5427133689325baece74a252e"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-6-2.json",
+        "sha256": "d65e20c0f9d491d94b35ff7ef28f4c62a6067529048849cf7ab5ec5ceff7a4ad"
+      },
+      "request_sha256": "26a583fd5f1e063c89ec79e46775b70a5c84fa6812a4398eb4646a7be055a1a5",
+      "initial_input_bound": 14194,
+      "artifact_count": 6,
+      "history_entries": 0,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-6-2-EXTRA-OWNER227-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "ca3b780d652e60de9d0af7ec761be4a82a4d994af9bda1fa5a5e57aa93a29467",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "73eb3a952f3b6b246faceff2f04e4fbacf7687e2408998ad6c497393cc59d28e"
+      }
+    }
+  ],
+  "new_contacts": 0,
+  "source_data_rebuilt": false,
+  "monitoring": {
+    "heartbeat": "PAUSED by explicit owner instruction",
+    "ten_second_windows_telemetry": "unchanged",
+    "resume_heartbeat": "Only when a later large-scale experiment is arranged"
+  }
+}

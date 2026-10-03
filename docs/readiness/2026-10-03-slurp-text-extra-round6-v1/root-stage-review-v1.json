@@ -1,0 +1,24 @@
+{
+  "authority": {
+    "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+    "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+  },
+  "automatic_failure_recovery": false,
+  "contacts_per_proposal_cap": 4,
+  "decision": "Retain seed, remain at20 and prepare four new opportunities with complete own-L feedback and coherent decision context. No automatic adoption, runtime activation or scale increase.",
+  "dispatch_status": "Not admitted until actual packets, capacity evidence, provider registration and clean entry check are complete.",
+  "input_cap": 32768,
+  "model_version": "gpt-6-astra",
+  "new_allocations": 4,
+  "output_acceptance_cap": 4096,
+  "previous_spent": 20,
+  "proposal_round": 6,
+  "recorded_at_utc": "2026-10-03T08:36:24.391647+00:00",
+  "root_disposition_required_after_failure": true,
+  "schema": "saea-root-text-proposal-stage-review-v1",
+  "source_read": {
+    "relpath": "docs/receipts/continuation/2026-10-03-round5-n20-scientific-read.json",
+    "sha256": "58742e485d1e1a584c65f96ffb886413163e39dc9d72d1730ec03061a7478a1d"
+  },
+  "view_profile": "coherent-feedback-v1"
+}
