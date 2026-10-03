@@ -1,0 +1,80 @@
+{
+  "actual_contacts": 0,
+  "actual_limits": {
+    "contacts": 4,
+    "continuation_provider_bytes": 4096,
+    "continuation_tool_bytes": 4096,
+    "input": 139264,
+    "output_acceptance": 4096
+  },
+  "allocation_partition": {
+    "closed": 25,
+    "inherited_held": 3,
+    "new_unspent": 4
+  },
+  "at_utc": "2026-10-03T11:05:05.387750+00:00",
+  "frozen_worker": "PENDING serial integration and exact check-only",
+  "model_input_audit": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/exact-model-input-audit-v1.json",
+    "sha256": "8b4cddc7a5e9e068849561c8cfed81fb0fb218717fdacd9e171e6032e5846bd9"
+  },
+  "preparation_basis": "Existing 40 successor/allocation tests and162 typed/auth/transport tests already passed; no algorithm/source change in this registration-only package. Root independently reran18 successor tests. Actual eight CLI preparation steps and all four initial/envelope audits pass.",
+  "preparation_logs": {
+    "B-8-1-prepare-v1-0.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-1-prepare-v1-0.log",
+      "sha256": "d10df4091f9cbe4d52024d603b40a824da7412199802abf21716495c5b386e46"
+    },
+    "B-8-1-prepare-v1-1.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-1-prepare-v1-1.log",
+      "sha256": "6d9e42b9357d475d552532c495c452a7b1370310f8295725d229c366e208dcaa"
+    },
+    "B-8-2-prepare-v1-0.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-2-prepare-v1-0.log",
+      "sha256": "d36f48eb6979a3a7a9f8804ddcec328e84855570c8f2f7688431838d998ba1e9"
+    },
+    "B-8-2-prepare-v1-1.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-2-prepare-v1-1.log",
+      "sha256": "1bd6e1c36e166d0ffc03f301504b324ec2031d08492668cb2847858962b3d699"
+    },
+    "L-8-1-prepare-v1-0.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-1-prepare-v1-0.log",
+      "sha256": "5fb071d274122533623d53ee17c854dde73149042c09e448d3b3f0def65cfee0"
+    },
+    "L-8-1-prepare-v1-1.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-1-prepare-v1-1.log",
+      "sha256": "4799fc8462e7ac3ab6d5c68a03d59a59b0597471c89e7426a09baf0c52897fbe"
+    },
+    "L-8-2-prepare-v1-0.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-2-prepare-v1-0.log",
+      "sha256": "c5977dca03af201daaa2adae31d081e39adbbc9abd1f9be46a717a09ea14e255"
+    },
+    "L-8-2-prepare-v1-1.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-2-prepare-v1-1.log",
+      "sha256": "24d80de9415c6440c2acc87c5757e1cee55886f465db9c0221cd0ab58479ab06"
+    }
+  },
+  "preserved_preparation_variants": [
+    "audit-v1.py (not executed)",
+    "audit-v2.py (completed)",
+    "register-preparation-v1.py (not executed)",
+    "register-preparation-v2.py (completed)"
+  ],
+  "python_template_syntax": "PASS",
+  "readiness": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/proposer-readiness-v1.json",
+    "sha256": "f0003daddab6dab7ebbe47c1becf0bbec1e55d46352a330a9f090076b3b27e51"
+  },
+  "schema": "saea-proposer-preparation-verification-v1",
+  "source_data_rebuilt": false,
+  "templates": {
+    "freeze-registration-v1.py": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/freeze-registration-v1.py",
+      "sha256": "818e387186f9d74ce61385a7a71b9e0727601d692001a8139f91ade240fe25c2"
+    },
+    "launch-unbound-v1.ps1": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/launch-unbound-v1.ps1",
+      "sha256": "b754ce5b3cc6f3c11f34928eb6e2bbbca4e6312c7610143b03ba97bfd8ed7745"
+    }
+  },
+  "windows_template_parse_errors": 0
+}

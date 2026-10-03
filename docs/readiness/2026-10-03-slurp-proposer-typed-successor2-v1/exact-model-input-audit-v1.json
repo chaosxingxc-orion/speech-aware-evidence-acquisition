@@ -1,0 +1,113 @@
+{
+  "actual_contacts": 0,
+  "at_utc": "2026-10-03T11:04:19.476040+00:00",
+  "members": [
+    {
+      "actual_contacts": 0,
+      "artifact_count": 165,
+      "blind_feedback_free": false,
+      "continuation_items_max_bytes": [
+        4096,
+        4096
+      ],
+      "contract_sha256": "24bbf4d43614079f925634d1a45600ddf6c549c5042baa820aa38a5ae5838f1d",
+      "cumulative_input_limit": 139264,
+      "example_validator": "PASS",
+      "feedback_present": true,
+      "four_request_bound": 130942,
+      "four_request_headroom": 8322,
+      "fourth_request_bound": 45024,
+      "history_entries": 13,
+      "hypotheses_field_type": "array<EnglishText>; [] valid; never objects",
+      "initial_bound": 20445,
+      "key": "L-8-1",
+      "model": "gpt-6-astra",
+      "profile": "typed-coherent-feedback-v1",
+      "remaining_before_fourth_request": 53346,
+      "remaining_output_before_fourth_request": 1096,
+      "request_sha256": "42d4b1172e0f3011550a0ae39be1823b46a0270da9711e2474377c97a03499df",
+      "typed_contract_present": true
+    },
+    {
+      "actual_contacts": 0,
+      "artifact_count": 6,
+      "blind_feedback_free": true,
+      "continuation_items_max_bytes": [
+        4096,
+        4096
+      ],
+      "contract_sha256": "ecab3573bb7f78f201c53aef111f7b03ea9e9e6af8fd9eeef4c037f6e62dfb63",
+      "cumulative_input_limit": 139264,
+      "example_validator": "PASS",
+      "feedback_present": false,
+      "four_request_bound": 107323,
+      "four_request_headroom": 31941,
+      "fourth_request_bound": 39119,
+      "history_entries": 0,
+      "hypotheses_field_type": "array<EnglishText>; [] valid; never objects",
+      "initial_bound": 14540,
+      "key": "B-8-1",
+      "model": "gpt-6-astra",
+      "profile": "typed-coherent-feedback-v1",
+      "remaining_before_fourth_request": 71060,
+      "remaining_output_before_fourth_request": 1096,
+      "request_sha256": "8ff901bbff2d60f051b98183512a7c95326cb50013cb774162f10e23be785637",
+      "typed_contract_present": true
+    },
+    {
+      "actual_contacts": 0,
+      "artifact_count": 165,
+      "blind_feedback_free": false,
+      "continuation_items_max_bytes": [
+        4096,
+        4096
+      ],
+      "contract_sha256": "c218bf1936e054efaab55bd29e07910a72236de8694c243dfc591d9408cdb544",
+      "cumulative_input_limit": 139264,
+      "example_validator": "PASS",
+      "feedback_present": true,
+      "four_request_bound": 130942,
+      "four_request_headroom": 8322,
+      "fourth_request_bound": 45024,
+      "history_entries": 13,
+      "hypotheses_field_type": "array<EnglishText>; [] valid; never objects",
+      "initial_bound": 20445,
+      "key": "L-8-2",
+      "model": "gpt-6-astra",
+      "profile": "typed-coherent-feedback-v1",
+      "remaining_before_fourth_request": 53346,
+      "remaining_output_before_fourth_request": 1096,
+      "request_sha256": "bbaaf5c1d44b849845c25cb1e3e400941a80e178e9389523c26017d03048e03e",
+      "typed_contract_present": true
+    },
+    {
+      "actual_contacts": 0,
+      "artifact_count": 6,
+      "blind_feedback_free": true,
+      "continuation_items_max_bytes": [
+        4096,
+        4096
+      ],
+      "contract_sha256": "39c2f3a92ce8965b8c8e13ed5177cf817671b1d1466164a56ff3a88e824bc4ab",
+      "cumulative_input_limit": 139264,
+      "example_validator": "PASS",
+      "feedback_present": false,
+      "four_request_bound": 107323,
+      "four_request_headroom": 31941,
+      "fourth_request_bound": 39119,
+      "history_entries": 0,
+      "hypotheses_field_type": "array<EnglishText>; [] valid; never objects",
+      "initial_bound": 14540,
+      "key": "B-8-2",
+      "model": "gpt-6-astra",
+      "profile": "typed-coherent-feedback-v1",
+      "remaining_before_fourth_request": 71060,
+      "remaining_output_before_fourth_request": 1096,
+      "request_sha256": "d4a85614ebb6dd1cd2d2747c977fd56fcb9070f67839bf2f65e2df77f2701cf1",
+      "typed_contract_present": true
+    }
+  ],
+  "note": "Render actual four139264 packets; full four-request envelope charges each prior request its complete conservative bound. Final output reserve assumes1000 tokens for each tool turn; actual output remains separately gated.",
+  "schema": "saea-exact-proposer-input-audit-v1",
+  "source_data_rebuilt": false
+}

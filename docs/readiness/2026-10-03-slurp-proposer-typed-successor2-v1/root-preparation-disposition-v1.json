@@ -1,0 +1,40 @@
+{
+  "contact_cap": 4,
+  "continuation_limits": {
+    "provider_output_items_bytes": 4096,
+    "tool_result_bytes": 4096
+  },
+  "dispatch_authority": false,
+  "fixed_factors": [
+    "gpt-6-astra",
+    "typed-coherent-feedback-v1",
+    "fixed UPDATE2 400-input pool",
+    "seed parent",
+    "current knowledge",
+    "current serving and scheduler"
+  ],
+  "heartbeat": "PAUSED; independent ten-second telemetry unchanged",
+  "held_allocations": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "input_token_cap": 139264,
+  "limitations": "Client acceptance envelopes preserve complete provider custody and stop before a subsequent contact if oversized. Provider generation output is metered and rejected after completion, not server-capped. No arbitrary four-call completion guarantee or matched total compute claim.",
+  "model_version": "gpt-6-astra",
+  "new_allocations": [
+    "L-8-1",
+    "B-8-1",
+    "L-8-2",
+    "B-8-2"
+  ],
+  "old_budget_and_allocations": "Preserve all25 closed opportunities and3 inherited HELD identities with original metering and exposure. Four prospective slots are not retries or replacements.",
+  "output_token_cap": 4096,
+  "owner_decision": 227,
+  "recorded_at_utc": "2026-10-03T10:31:49.822271+00:00",
+  "round": 8,
+  "schema": "saea-root-proposer-sequence-disposition-v1",
+  "sequence_id": "typed-budget-successor2-owner227",
+  "source": "Root explicitly selected equal139264 input for both branches under owner227 after reviewing the four unregistered typed previews. Register exactly L-8-1/B-8-1/L-8-2/B-8-2 for preparation; no real contact, frozen entry or shared integration before separate root review.",
+  "status": "root-selected-for-preparation"
+}

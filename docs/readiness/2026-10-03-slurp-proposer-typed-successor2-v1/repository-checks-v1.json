@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-10-03T11:05:52.061034+00:00",
+  "checks": {
+    "engineering_base_check": {
+      "exit_code": 0,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/engineering_base_check-v1.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    "handoff_freshness_check": {
+      "exit_code": 0,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/handoff_freshness_check-v1.log",
+      "sha256": "7eafb793b26ed8757bdf2a04b9ba2a4d2da0bbced9a37a7eb5b494767d56ad2d"
+    },
+    "harness_admission_check": {
+      "exit_code": 0,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/harness_admission_check-v1.log",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    },
+    "results_ledger_check": {
+      "exit_code": 0,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/results_ledger_check-v1.log",
+      "sha256": "3cfec81bffcb948c1a7df0442803904fdbac3a0628b9f57701d2a48ffecc3692"
+    }
+  },
+  "contacts": 0
+}

@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Round8 typed successor prepared; exact dispatch pending, 2026-10-03T11:05:05.387750+00:00
+
+Root227 selected139264 equally for the four new L-8-1/B-8-1/L-8-2/B-8-2 opportunities. Separate successor custody preserves25 closed and3 inherited HELD identities; no retry or replacement. All four standard inputs/capsules and exact rendered requests pass. L retains13 own closed histories and165 artifacts; B has0 histories,6 artifacts and no feedback/selection/outcomes. Actual maximal four-request bounds are130942 (L) and107323 (B), leaving8322/31941 under139264. Typed field contract and minimal example match the unchanged validator; all original invalid responses remain invalid. [Preparation and exact-input audit](../readiness/2026-10-03-slurp-proposer-typed-successor2-v1/README.md).
+
+No real contacts or reservations occurred. Model gpt-6-astra, output acceptance4096, contact4,4096-byte continuation limits, fixed400 and seed parent remain. Retain prior L61 costs and successor1's9 reservations/8 metered returns/one unmetered reservation; no matched historical compute claim. Clean serial integration and a separate frozen check-only remain before root exact admission. Keep candidate prefix affinity OFF, heartbeat PAUSED and live root cache panel untouched. Distinct role templates already support independent node text; scheduling cache retention is a separate factor and no cache-panel outcome enters these packets.
+
 ## Round8 typed previews complete; exact budget and registration await root, 2026-10-03T10:27:26.178130+00:00
 
 Four unregistered previews preserve25 closed and three HELD opportunities. Each L keeps13 closed own histories and the qualified round5 own-L panel; B keeps zero histories and no feedback/selection. Maximal four-request double4096-byte envelopes are130930 for L and107311 for B. Propose an equal139264 ceiling, leaving8334 against the current L preview; the draft used147456 and exact final identities/cap require recheck. [Pinned preview package](../readiness/2026-10-03-slurp-round8-typed-preview-v1/README.md). No new allocation, proposal/model contact, provider admission or GPU dispatch. Model gpt-6-astra, output4096, contact4, same400 assets and candidate-panel prefix affinity OFF remain fixed. Heartbeat PAUSED.

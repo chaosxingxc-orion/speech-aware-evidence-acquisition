@@ -1,0 +1,11 @@
+{
+  "carrier_lock_key": "slurp",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 1.0,
+  "planned_model_calls": 4,
+  "planned_speech_audio_seconds": 1,
+  "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-8-1-SUCCESSOR2-OWNER227-V1",
+  "split_identity_hash": "0cc16f71ce43c67926dcbe94293d162d62462752e4c694ee7865eed1465eb96b",
+  "split_role": "discovery"
+}

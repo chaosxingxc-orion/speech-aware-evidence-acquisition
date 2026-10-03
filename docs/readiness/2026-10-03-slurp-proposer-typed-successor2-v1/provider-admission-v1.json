@@ -1,0 +1,134 @@
+{
+  "auth": "Own SAEA System Text Research subscription grant; owner completed sign-in; private DPAPI store; no third-party app credentials or paid API key",
+  "budget_profile": "subscription-metered-reject-v1",
+  "capacity_evidence": {
+    "B-8-1": {
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/B-8-1.json",
+        "sha256": "ec467a89f25d86fa59449a1c359a5ad2a9dce3eb032d0cfd68762af153ee6899"
+      },
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-1-envelope-v1.json",
+        "sha256": "074dd2a54a30e7eaf52c2ddb8691146dea0eaa5daf8ceee8f493d2d4d66ed5ab"
+      },
+      "independent_validation": false,
+      "initial": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-1-initial-audit-v1.json",
+        "sha256": "de76495c59c31402aa214306ac373770ffcee5e0cd3cad53e7ca825d1d47df98"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/B-8-1.json",
+        "sha256": "b6813df703bee8449657d388122dc4558d44b32d7b0fff84de401f9e5d7987ee"
+      },
+      "maximum_cumulative_bound": 107323,
+      "purpose": "reused-optimization-panel"
+    },
+    "B-8-2": {
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/B-8-2.json",
+        "sha256": "ef8484d868e541351ec4be47311596d7401c0cc560c6eae9498171fde0313e2d"
+      },
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-2-envelope-v1.json",
+        "sha256": "9fff38ba974b0f0cc3f235bbe9702fba1c6caf3702fede39579eb55eb3a46d21"
+      },
+      "independent_validation": false,
+      "initial": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/B-8-2-initial-audit-v1.json",
+        "sha256": "a907e5fd9dcfc33afaf51080d1d34dd07b365617501cd5474d08fd968f5f93ba"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/B-8-2.json",
+        "sha256": "34f54aaac7715eb9147f8272c58ea1ee7474de1b0331f58fd56649251a42a411"
+      },
+      "maximum_cumulative_bound": 107323,
+      "purpose": "reused-optimization-panel"
+    },
+    "L-8-1": {
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/L-8-1.json",
+        "sha256": "0790c79ee84d025b3b83e370d0bf1d2e0f02a7e708abdbf598f42d3c86697f1f"
+      },
+      "concrete_two_page_chain": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-1-concrete-two-page-audit-v1.json",
+        "sha256": "1f49eb2c1e408e95492522ba1877778b74188b4dd6c7d0384cb3ae264a94c1e2"
+      },
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-1-envelope-v1.json",
+        "sha256": "ba9bc533e38801e39c1bb8eed386e6db5bcdeffb10df9a5b6723fcfbc685508a"
+      },
+      "independent_validation": false,
+      "initial": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-1-initial-audit-v1.json",
+        "sha256": "8e727bbd8fc564c9dd633d02eb9463a0b4073af461f8889ed7e2259cce062d1e"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/L-8-1.json",
+        "sha256": "d0d07fc3dd2741d65c2c34471ba9c660b4f34d346b67581f9242ec3866402cc7"
+      },
+      "maximum_cumulative_bound": 130942,
+      "purpose": "reused-optimization-panel"
+    },
+    "L-8-2": {
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/L-8-2.json",
+        "sha256": "499dce937f5803111b01edac383a7ad3b373d93f9e45cf1f5c76e1c269dd6eb8"
+      },
+      "concrete_two_page_chain": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-2-concrete-two-page-audit-v1.json",
+        "sha256": "2fb047466f5237c8cd1c259c9c312ee0bd2d9ed7b26b834b3e1ad14b79d9e89d"
+      },
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-2-envelope-v1.json",
+        "sha256": "c3bed6c7ca2a04d9d52d39320c6d5a423c8d639e4035ee092dccdd164bc18714"
+      },
+      "independent_validation": false,
+      "initial": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/L-8-2-initial-audit-v1.json",
+        "sha256": "8db50aacfeb61c8ac80d0797c1c630c7ac1b4e8ee654abeb7ac4495916537003"
+      },
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/L-8-2.json",
+        "sha256": "e2f1904e12827b5294d5fe37d1a7db0077d5fda62f8319e05e23f7937c28a400"
+      },
+      "maximum_cumulative_bound": 130942,
+      "purpose": "reused-optimization-panel"
+    }
+  },
+  "capacity_limitations": "Synthetic two-page own-L overview chain and maximum accepted4096-byte provider-list plus4096-byte tool-result envelope fit. Maximum-envelope assumptions charge prior input its full byte bound and1000 output per tool turn, preserving1096 final output tokens. Client may refuse a larger serialized turn after metered completion; no arbitrary four-contact completion or matched actual compute guarantee.",
+  "capsule_view_profile": "typed-coherent-feedback-v1",
+  "completed_stream_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-subscription-transport-proof-recovery1-v1/response.sse",
+    "sha256": "81734f6ab9676d065ffef90db17351418b7c59314eaf596b8820b53ba966bc60"
+  },
+  "contact_cap": 4,
+  "continuation_limits": {
+    "provider_output_items_bytes": 4096,
+    "tool_result_bytes": 4096
+  },
+  "endpoint": "https://api.openai.com/v1/responses",
+  "input_meter": "serialized UTF-8 request bytes plus 4096 framing reserve; check every provider-reported input count independently; reject any underestimated or unmetered proposal without replacement",
+  "input_token_limit": 139264,
+  "isolation": "Fresh complete request per proposal, store=false, no conversation ID, only the pinned artifact namespace. No chat history, host tools, skills or workspace contents are added. Provider-internal behavior is not claimed to be inspectable.",
+  "model_version": "gpt-6-astra",
+  "offline_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-subscription-transport-proof-recovery1-v1/offline-complete-stream-validation.json",
+    "sha256": "a5098bbeaa2963ebb3b6c414e8936d2ee3976583fc2c9b2b9a68acd21cdee7ff"
+  },
+  "output_cap_enforcement": "metered-reject-after-completion",
+  "output_token_acceptance_limit": 4096,
+  "owner_decision": 217,
+  "paid_api_spend": 0,
+  "previous_admission": {
+    "relpath": "docs/readiness/2026-10-03-slurp-proposer-budget-successor1-v1/provider-admission-v1.json",
+    "sha256": "78f99a3d2f250c9d09e4d73c1ad86e5ee757839d7814c93de3f7c27b85e58dc5"
+  },
+  "prior_outcome_disposition": "Keep both synthetic proof finished records failed. The second already contains one complete correct acknowledgement with model identity and 220/10 token usage. Admit the corrected consumer on retained completed bytes plus offline negative and end-to-end tests, not on a third model request. No synthetic proof retry, reseal, score or rewriting occurs. Any real proposal transport failure consumes that allocation and stops the launcher; no replacement.",
+  "protocol_sha256": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+  "provider_profile": "chatgpt-plan-preview",
+  "recorded_at_utc": "2026-10-03T11:04:19.476040+00:00",
+  "schema": "saea-system-text-provider-admission-v1",
+  "scope": "Transport profile only for exactly four prospective successor2 opportunities. Root selected the139264 equal-budget protocol under227; exact task admission remains pending. Keep25 closed and3 HELD predecessors and all accumulated cost. No real contact, GPU dispatch or retry is admitted by preparation.",
+  "sha256": "42007313697fd78520b3c6b96673e25e115f3a508616ba826c2b9ac0d4f0fe3e",
+  "status": "admitted"
+}

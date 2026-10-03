@@ -1,0 +1,141 @@
+{
+  "allocation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/allocations/round-8.json",
+    "sha256": "2b6044c2b01f00a1419474f0a6715f49ce90b7ebf19754fc1d0db865918594d0"
+  },
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227",
+  "closed_predecessors": 25,
+  "heartbeat": "PAUSED; independent ten-second recorder unchanged",
+  "held_predecessors": 3,
+  "matched_historical_actual_compute_claim": false,
+  "members": [
+    {
+      "artifact_count": 165,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/L-8-1.json",
+        "sha256": "0790c79ee84d025b3b83e370d0bf1d2e0f02a7e708abdbf598f42d3c86697f1f"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-8-1-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "8f2e9e37de7050e6fd0f4728430ba115c8c392452dc56c386a7cf2234093fc37",
+        "split_role": "discovery"
+      },
+      "history_entries": 13,
+      "initial_input_bound": 20445,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/L-8-1.json",
+        "sha256": "d0d07fc3dd2741d65c2c34471ba9c660b4f34d346b67581f9242ec3866402cc7"
+      },
+      "key": "L-8-1",
+      "request_sha256": "42d4b1172e0f3011550a0ae39be1823b46a0270da9711e2474377c97a03499df"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/B-8-1.json",
+        "sha256": "ec467a89f25d86fa59449a1c359a5ad2a9dce3eb032d0cfd68762af153ee6899"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-8-1-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "0cc16f71ce43c67926dcbe94293d162d62462752e4c694ee7865eed1465eb96b",
+        "split_role": "discovery"
+      },
+      "history_entries": 0,
+      "initial_input_bound": 14540,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/B-8-1.json",
+        "sha256": "b6813df703bee8449657d388122dc4558d44b32d7b0fff84de401f9e5d7987ee"
+      },
+      "key": "B-8-1",
+      "request_sha256": "8ff901bbff2d60f051b98183512a7c95326cb50013cb774162f10e23be785637"
+    },
+    {
+      "artifact_count": 165,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/L-8-2.json",
+        "sha256": "499dce937f5803111b01edac383a7ad3b373d93f9e45cf1f5c76e1c269dd6eb8"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-8-2-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "259d97fb635c0bed97327df26cd8e854a758219ed18324241e5ddd235abb9afd",
+        "split_role": "discovery"
+      },
+      "history_entries": 13,
+      "initial_input_bound": 20445,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/L-8-2.json",
+        "sha256": "e2f1904e12827b5294d5fe37d1a7db0077d5fda62f8319e05e23f7937c28a400"
+      },
+      "key": "L-8-2",
+      "request_sha256": "bbaaf5c1d44b849845c25cb1e3e400941a80e178e9389523c26017d03048e03e"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/B-8-2.json",
+        "sha256": "ef8484d868e541351ec4be47311596d7401c0cc560c6eae9498171fde0313e2d"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-8-2-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "4d31ed3ef5fc64ad18f4362c59f6a619430eadcb7b899fa185b50585dda6dc84",
+        "split_role": "discovery"
+      },
+      "history_entries": 0,
+      "initial_input_bound": 14540,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/B-8-2.json",
+        "sha256": "34f54aaac7715eb9147f8272c58ea1ee7474de1b0331f58fd56649251a42a411"
+      },
+      "key": "B-8-2",
+      "request_sha256": "d4a85614ebb6dd1cd2d2747c977fd56fcb9070f67839bf2f65e2df77f2701cf1"
+    }
+  ],
+  "native_prefix_affinity": "OFF",
+  "new_contacts": 0,
+  "prior_failed_L61_contacts": 2,
+  "prior_failed_L61_input_tokens": 8478,
+  "prior_failed_L61_output_tokens": 151,
+  "prior_successor1_metered_input_tokens": 32791,
+  "prior_successor1_metered_output_tokens": 2930,
+  "prior_successor1_metered_returns": 8,
+  "prior_successor1_reservations": 9,
+  "prior_successor1_unmetered_reservations": 1,
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/protocol-proposals-v1.json",
+    "sha256": "2b9c3c847e8e42a4ce53cd18ea6ddd1c81340fea7e41058e7d5d9c85cf1b2aff"
+  },
+  "provider_admission": {
+    "relpath": "docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/provider-admission-v1.json",
+    "sha256": "f8459604ece5c485e88a75f353b044c187c2aadde9d8004abc044f246d281e41"
+  },
+  "recorded_at_utc": "2026-10-03T11:04:19.476040+00:00",
+  "round_index": 8,
+  "schema": "saea-system-text-proposer-round-readiness-v1",
+  "sequence_id": "typed-budget-successor2-owner227",
+  "source_data_rebuilt": false,
+  "status": "PREPARED-AWAITING-EXACT-ROOT-ADMISSION"
+}
