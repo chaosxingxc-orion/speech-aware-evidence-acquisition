@@ -1,0 +1,19 @@
+{
+  "all_cells": "HELD",
+  "at_utc": "2026-10-03T12:45:44.962740+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints": 297
+  },
+  "contacts": 0,
+  "dispatch_admitted": false,
+  "heartbeat": "PAUSED",
+  "root_review_recipe": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-capacity-entry-v1/root-review-recipe-v1.json",
+    "sha256": "b0be4327083b2c3c5c57e60cdedbc7c6b8c1a675d4f173e8938efa3debcf1884"
+  },
+  "round8": "HELD",
+  "schema": "saea-context-layout-capacity-entry-prepared-v1",
+  "source_commit": "34879b93886b07208585b939a27894f5c9b24644"
+}

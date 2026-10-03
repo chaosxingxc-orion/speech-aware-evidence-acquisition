@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-10-03T12:45:44.962740+00:00",
+  "capacity": "slurp-native-stage3-context-layout-before-speech-capacity-v1",
+  "capacity_config_hash": "eddfeb74573501c02105773550eae47da771554ee1b09aa6645a29802461d0ea",
+  "capacity_rows": 20,
+  "configuration_equality": {
+    "knowledge_stores": true,
+    "native_episode": true,
+    "native_prefix_slots": true,
+    "native_role_query_placement": true,
+    "phase_material": true,
+    "phase_tools": true,
+    "policy": true
+  },
+  "contacts": 0,
+  "existing_seed_role_bytes_identical": true,
+  "graph": "slurp-native-stage3-context-layout-before-speech-graph-v1",
+  "graph_config_hash": "a354975ad6b390d114c73b9462b37210c0ed73bb2ec81d93d3325310f769bd2a",
+  "graph_rows": 4,
+  "native_prefix_slots": null,
+  "native_role_query_placement": "before-speech-v1",
+  "policy_binding_verified": {
+    "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+    "context_layout": {
+      "native_role_query_placement": "before-speech-v1"
+    },
+    "role_sha256": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    }
+  },
+  "program_id": "phase-native-slot-review-contract-v1",
+  "prompt_order": "speech-query-prefix-v2",
+  "role_text_hashes": {
+    "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+    "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+    "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+    "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+  },
+  "schema": "saea-context-layout-capacity-dry-run-v1",
+  "source_commit": "34879b93886b07208585b939a27894f5c9b24644"
+}

@@ -1,0 +1,65 @@
+{
+  "at_utc": "2026-10-03T12:45:44.962740+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints": 297
+  },
+  "graph_model_free_proof": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-capacity-entry-v1/graph-dry-run-v1.json",
+    "sha256": "fe3b8b8eeb8fdf7afd7564afef5333a2736d9bc1c054331956a695d39a23b1bd"
+  },
+  "helper_no_contact_proof": {
+    "relpath": "coordination/context-layout-capacity-entry-preparation-owner227-v1/template-proof-v1.json",
+    "sha256": "d70b2abd10cf0d9b01647ca1696f9e7855f090c38600c356c8015718b81de550"
+  },
+  "limits": [
+    "Reachable graph stress is not an exhaustive arbitrary-text bound;actual request FIT remains mandatory.",
+    "Before-speech layout only;seed role bytes fixed,trajectory routing and affinity OFF,cache settings unchanged.",
+    "No learning proposal/allocation,ROUND8 panel resumption,task-quality read,automatic next stage or new model contact.",
+    "Heartbeat PAUSED;no cache flush/save/restore/warmup. Inherited warm history uncontrolled."
+  ],
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-capacity-v1",
+      "capacity": "slurp-native-stage3-context-layout-before-speech-capacity-v1",
+      "graph": "slurp-native-stage3-context-layout-before-speech-graph-v1",
+      "label": "seed-before-speech",
+      "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-FIT-V1"
+    }
+  ],
+  "memory": {
+    "bounded_wait_seconds": 600,
+    "interval_seconds": 10,
+    "running_floor_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5
+  },
+  "policy_bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+  "prelaunch_sequence": [
+    "Root records exact297-endpoint capacity-only admission and final precontact exposure. Set only capacity ready with check/prompt-fit; graph and smoke stay held. No generation/scoring.",
+    "Freeze a separate clean worker after exact source and policy pins. Run actual runtime/registration check and graph-layout equality/role-byte dry-run with zero contacts.",
+    "Bind fresh immutable external registration/helper/wrapper pins,including root receipt and full worker commit. No prepared placeholders can dispatch.",
+    "Revalidate current no competing generation/scorer,STOP/lease absent,serving PID/epoch/4x24576,max512,telemetry fresh,and current Windows memory. No queue/STOP/service/cache changes.",
+    "Launch one new Windows task with durable stdout/stderr/start/exit and IgnoreNew,then three stable12.5GiB readings before one prompt-fit lease.",
+    "Run shared native_graph_capacity with explicit297 endpoints inside tested run_guarded12.5/8GiB. Release owned lease only on successful capacity/lease exit;preserve failure and stop,without retry.",
+    "Account exact endpoint journal and all full512 output plus2048 structural reserves. Root may accept capacity metadata only. Four-row generation remains separately held."
+  ],
+  "proposed_receipt_root": "coordination/context-layout-capacity-owner227-v1",
+  "proposed_task": "SAEA-Context-Layout-Before-Speech-Capacity-Owner227",
+  "proposed_worker": "/home/chao/saea-worktrees/codex-context-layout-capacity-v1",
+  "registration_template": {
+    "relpath": "coordination/context-layout-capacity-entry-preparation-owner227-v1/registration-unbound-v1.json",
+    "sha256": "e7558f2a11ae8410f592982f34dd10e7b2489cc54eea74118787b86e575c30ab"
+  },
+  "schema": "saea-context-layout-capacity-root-review-recipe-v1",
+  "source_dependencies": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-capacity-entry-v1/source-dependencies-v1.json",
+    "sha256": "0b9ecc25298500cf0182f4bb8f06e76850ce25c7e84bbb234a2874e5bea227aa"
+  },
+  "status": "PREPARED-NOT-ADMITTED",
+  "wrapper_syntax_proof": {
+    "relpath": "coordination/context-layout-capacity-entry-preparation-owner227-v1/windows-template-parse-v1.json",
+    "sha256": "963168ed0974b659c6cf61c165c947284c095f30d651f7773fcb47db14c14d6c"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-capacity-v1",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints": 297
+  },
+  "cell": "slurp-native-stage3-context-layout-before-speech-capacity-v1",
+  "composed_config_hash": "eddfeb74573501c02105773550eae47da771554ee1b09aa6645a29802461d0ea",
+  "experiment": "slurp-native-stage3-context-layout-before-speech-capacity-v1",
+  "prepared_supply_required": false,
+  "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-FIT-V1",
+  "schema": "saea-context-layout-capacity-plan-v1",
+  "status": "DRAFT; root phase admission and final identity required",
+  "structural_read_run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-STRUCTURE-V1"
+}

@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Seed context-layout capacity entry prepared, 2026-10-03T12:45:44.962740+00:00
+
+The engineering-first path now has a concrete single-member capacity recipe for the seed before-speech layout,maximum297 tokenizer endpoints,zero generation/scoring. [Entry preparation](../receipts/continuation/2026-10-03-context-layout-capacity-entry-prepared.json) pins fresh helpers,unadmitted refusal proofs,Windows wrapper syntax and actual model-free graph/role-byte equality. All three seed role bytes remain identical;only declared layout placement changes.
+
+Exact root phase admission,precontact exposure,separate frozen source and final checks remain before one Windows task. Use existing prompt-fit lease,stable12.5 GiB startup/8 GiB running and durable capture. No queue/service/cache changes,flush/save/restore/warmup or learning proposal. Graph and four-row structural cells stay HELD;ROUND8 eight-member learning panel also stays HELD. Heartbeat PAUSED.
+
 ## Engineering first: seed context configuration, 2026-10-03T12:45:25.074379+00:00
 
 The latest direct human instruction prioritizes context-engineering configuration and experimental efficiency before optimization-based learning. [Exact translated authority](../receipts/owner/2026-10-03-engineering-first-context-configuration.json) supersedes the next-learning-panel order. Round8 learning comparison remains HELD with zero contacts; preserve its complete prepared records and the named model-free archive-scope refusal. No new learning proposals or allocations are authorized by this transition.
@@ -1016,7 +1022,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T12:45:25.074379+00:00
+Last refreshed: 2026-10-03T12:45:44.962740+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
