@@ -403,33 +403,99 @@ def test_owner_eight_gib_floor_is_explicit_and_enforced(tmp_path, running, expec
     assert MemoryPolicy(start_gib=14.5).floor_gib == 10
 
 
-@pytest.mark.parametrize("fault", [None, "missing", "outside", "run", "stage", "campaign-token"])
-def test_guard_worker_binds_existing_lease_without_campaign(tmp_path, monkeypatch, fault):
+@pytest.mark.parametrize(
+    "fault", [None, "missing", "outside", "run", "stage", "campaign-token"]
+)
+def test_guard_worker_binds_existing_lease_without_campaign(
+    tmp_path, monkeypatch, fault
+):
     from types import SimpleNamespace
-    from speech_aware_evidence_acquisition.core.flight import process_guard as guard, campaign, lease
+    from speech_aware_evidence_acquisition.core.flight import (
+        process_guard as guard,
+        campaign,
+        lease,
+    )
     from speech_aware_evidence_acquisition.core.bundle import git_commit
+
     repo = tmp_path / "repo"
     data = tmp_path / "data"
     token = data / "coordination/token.json"
     token.parent.mkdir(parents=True)
-    document = {"schema": "saea-worker-lease-handoff-v1", "run_id": "run", "attempt_id": "attempt", "session_id": "session", "token": "synthetic"}
+    document = {
+        "schema": "saea-worker-lease-handoff-v1",
+        "run_id": "run",
+        "attempt_id": "attempt",
+        "session_id": "session",
+        "token": "synthetic",
+    }
     if fault == "run":
         document["run_id"] = "other"
     if fault == "stage":
         document["stage"] = "prompt-fit"
     token.write_text(json.dumps(document))
     calls, modes, leases = [], [], []
-    monkeypatch.setattr(guard, "__file__", str(repo / "src/speech_aware_evidence_acquisition/core/flight/process_guard.py"))
+    monkeypatch.setattr(
+        guard,
+        "__file__",
+        str(
+            repo / "src/speech_aware_evidence_acquisition/core/flight/process_guard.py"
+        ),
+    )
     monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
-    cell = SimpleNamespace(run_id="run", attempt_id="attempt", document={"cell_id": "cell"}, assert_mode=modes.append)
+    cell = SimpleNamespace(
+        run_id="run",
+        attempt_id="attempt",
+        document={"cell_id": "cell"},
+        assert_mode=modes.append,
+    )
     monkeypatch.setattr(campaign, "load_campaign_cells", lambda *a: [cell])
-    monkeypatch.setattr(campaign, "declared_readiness", lambda *a: SimpleNamespace(state="ready", reason=""))
+    monkeypatch.setattr(
+        campaign,
+        "declared_readiness",
+        lambda *a: SimpleNamespace(state="ready", reason=""),
+    )
     monkeypatch.setattr(git_commit, "require_clean_study_repo", lambda p: "a" * 40)
-    monkeypatch.setattr(lease.WorkerExecutionPolicy, "assert_lease", lambda self, *a, **kw: leases.append((self, a, kw)))
-    monkeypatch.setattr(guard, "run_guarded", lambda *a, **kw: calls.append((a, kw)) or guard.GuardResult("completed", 0, 1, 0))
-    args = ["--repo-root", str(repo), "--data-root", str(data), "--runtime-root", "runtime", "--lock-path", "lock", "--experiment", "experiment", "--owner", "owner", "--expected-session-id", "session", "--receipt-dir", str(data / "coordination/guard"), "--start-gib", "12.5", "--floor-gib", "8", "--mode", "campaign" if fault == "campaign-token" else "worker"]
+    monkeypatch.setattr(
+        lease.WorkerExecutionPolicy,
+        "assert_lease",
+        lambda self, *a, **kw: leases.append((self, a, kw)),
+    )
+    monkeypatch.setattr(
+        guard,
+        "run_guarded",
+        lambda *a, **kw: (
+            calls.append((a, kw)) or guard.GuardResult("completed", 0, 1, 0)
+        ),
+    )
+    args = [
+        "--repo-root",
+        str(repo),
+        "--data-root",
+        str(data),
+        "--runtime-root",
+        "runtime",
+        "--lock-path",
+        "lock",
+        "--experiment",
+        "experiment",
+        "--owner",
+        "owner",
+        "--expected-session-id",
+        "session",
+        "--receipt-dir",
+        str(data / "coordination/guard"),
+        "--start-gib",
+        "12.5",
+        "--floor-gib",
+        "8",
+        "--mode",
+        "campaign" if fault == "campaign-token" else "worker",
+    ]
     if fault != "missing":
-        args += ["--lease-token-file", str(tmp_path / "outside.json") if fault == "outside" else str(token)]
+        args += [
+            "--lease-token-file",
+            str(tmp_path / "outside.json") if fault == "outside" else str(token),
+        ]
     if fault:
         with pytest.raises((SystemExit, ValueError)):
             guard.main(args)
@@ -443,3 +509,98 @@ def test_guard_worker_binds_existing_lease_without_campaign(tmp_path, monkeypatc
         assert modes == ["worker"] and len(leases) == 1
         assert calls[0][0][2].start_gib == 12.5 and calls[0][0][2].floor_gib == 8
     assert token.read_text() == json.dumps(document)
+
+
+@pytest.mark.parametrize(
+    "fault", [None, "held-peer", "outside-plan", "external-token", "mixed-selector"]
+)
+def test_guard_node_panel_keeps_one_process_and_all_exact_owners(
+    tmp_path, monkeypatch, fault
+):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.core.flight import (
+        process_guard as guard,
+        campaign,
+        cli,
+    )
+    from speech_aware_evidence_acquisition.core.bundle import git_commit
+
+    repo, data = tmp_path / "repo", tmp_path / "data"
+    plan = repo / "docs/panel.json"
+    calls, checked = [], []
+    cells = [
+        SimpleNamespace(
+            run_id=f"r{i}", attempt_id=f"a{i}", assert_mode=lambda mode: None
+        )
+        for i in range(8)
+    ]
+    monkeypatch.setattr(
+        guard, "__file__", str(repo / "src/pkg/core/flight/process_guard.py")
+    )
+    monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
+    monkeypatch.setattr(
+        cli,
+        "load_node_panel_plan",
+        lambda *a: (tuple(("e", c) for c in cells), "panel", ()),
+    )
+
+    def ready(cell, root):
+        checked.append(cell.run_id)
+        return SimpleNamespace(
+            state="held" if fault == "held-peer" and cell is cells[-1] else "ready",
+            reason="pending",
+        )
+
+    monkeypatch.setattr(campaign, "declared_readiness", ready)
+    monkeypatch.setattr(git_commit, "require_clean_study_repo", lambda p: "a" * 40)
+    monkeypatch.setattr(
+        guard,
+        "run_guarded",
+        lambda *a, **kw: (
+            calls.append((a, kw)) or guard.GuardResult("completed", 0, 1, 0)
+        ),
+    )
+    args = [
+        "--repo-root",
+        str(repo),
+        "--data-root",
+        str(data),
+        "--runtime-root",
+        "runtime",
+        "--lock-path",
+        "lock",
+        "--campaign-plan",
+        str(tmp_path / "outside.json") if fault == "outside-plan" else str(plan),
+        "--owner",
+        "root",
+        "--expected-session-id",
+        "session",
+        "--mode",
+        "node-panel",
+        "--receipt-dir",
+        str(data / "coordination/guard"),
+        "--start-gib",
+        "12.5",
+        "--floor-gib",
+        "8",
+    ]
+    if fault == "external-token":
+        args += ["--lease-token-file", str(data / "token")]
+    if fault == "mixed-selector":
+        args += ["--experiment", "e"]
+    if fault:
+        with pytest.raises(SystemExit):
+            guard.main(args)
+        assert not calls
+    else:
+        assert guard.main(args) == 0
+        assert checked == [f"r{i}" for i in range(8)]
+        cmd = calls[0][0][0]
+        assert (
+            cmd[4] == "node-panel" and "--experiment" not in cmd and "--cell" not in cmd
+        )
+        assert cmd[cmd.index("--campaign-plan") + 1] == str(plan)
+        assert calls[0][1]["identity"]["members"] == [
+            {"run_id": c.run_id, "attempt_id": c.attempt_id} for c in cells
+        ]
+        assert calls[0][1]["identity"]["panel_id"] == "panel"

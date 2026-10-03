@@ -1,6 +1,6 @@
 # Panel-wide node stages with CPU prefetch
 
-Status: shared native scheduler implemented and verified offline; cross-experiment runtime integration remains pending. This is not runtime admission. Authority: owner227 and the direct owner clarification on2026-10-03. Root works without subagents; learning remains HELD and the slurp heartbeat remains PAUSED. Return to the human before8x400; never split dispatch to evade that boundary.
+Status: independent runtime ownership and guarded panel dispatch implemented; 503 selected tests pass offline. This is not runtime admission. Authority: owner227 and the direct owner clarification on2026-10-03. Root works without subagents; learning remains HELD and the slurp heartbeat remains PAUSED. Return to the human before8x400; never split dispatch to evade that boundary.
 
 ## Exact owner requirement
 
@@ -59,9 +59,32 @@ All308 selected tests pass, including legacy scheduling, tool concurrency, nativ
 
 ### Remaining work before real panel admission
 
-1. Connect eight separately registered runtime members to one shared panel execution seam. Keep their existing individual clients, budgets, journals, traces, policy/supply/roster bindings and manifests. A single runtime with160 rows must not substitute for this ownership.
+1. Complete the offline independent-owner acceptance below and retain its exact evidence. Runtime ownership is implemented; this does not yet establish a real160-job flight or an admitted experiment.
 2. Persist intermediate records and prepared descriptors locally, enforce a resident-byte bound, and preserve fixed group identity and source hashes. Current logical-job and CPU-worker bounds do not prove a byte-memory bound.
 3. Freeze a deterministic within-node order for compatible actual prefixes. Preserve distinct candidate policies; never equate a node label with a cache hit. Join actual server slots and reused/recomputed token counts for the later real proof.
 4. Register maximum-legal-request capacity and a small structural proof of the integrated panel. Only after those pass admit a complete8x20 efficiency/quality comparison, preserving independent scores and whole-family READ.
 
 The CPU builder currently prepares role material using the original code. Final request rendering and tokenizer FIT still execute through the original metered contact. Relisten and model-based context cleaning are refused for this opt-in mode until their explicit preparation/contact seams exist. Intermediate spooling, secondary KV state storage and active cache save/restore are not implemented. The earlier cohort4/16 panel remains HELD; no new contact or policy activation occurred in this checkpoint.
+
+
+## Independent runtime ownership and guarded dispatch
+
+A new explicit `saea-node-panel-plan-v1` binds two to eight existing experiment cells, their exact run and attempt identities, and ordered `(sample_id, execution_unit_id)` rosters. Each cell must explicitly permit `node-panel`; the plan cannot convert a held cell, a recovery, a seal-only cell or a scored predecessor dependency into runnable work. The plan selects existing fragments rather than copying policy or data. Actual prepared states must exactly match the declared roster before any panel model call. Adding the execution stage changes preparation identity: prepare or re-pin separately owned supply envelopes and verify unchanged source/output bytes; never mutate a prior frozen supply in place.
+
+`NativeWorkflowPanel` joins the original native invokers. Each owner retains its existing FrozenCoreClient, execution budget, request gate, traces, tools, policy and answer state. The final arriving owner runs one existing OpenJiuwen node-stage executor for the combined jobs. Per-job task contexts and worker callbacks retain the original owner. Fixed20-job groups remain separate experimental members; no response or knowledge state is transferred between them. All four slots remain available to the active node. The panel does not rewrite prompts or infer token-prefix equality from role names.
+
+`run_node_panel` reuses every FlightRuntime lifecycle stage. All members pass readiness, source, preparation and resident identity checks; one exclusive generation lease names the exact ordered run/attempt pairs. All native generations settle before any seal. Each member seals independently, then the generation lease releases and the existing official complete-manifest scorers run serially. A scoring failure stops the remaining score sequence and preserves preceding results. A generation or seal failure drains active callbacks before recording dispositions. Neither path retries or replaces an attempt. Returning without joining the panel is an error that wakes waiting peers rather than leaving them stranded.
+
+The existing CLI gains the explicit `node-panel --campaign-plan` mode. The existing Windows-owned batch driver gains `kind: node-panel`, routed through the same process memory supervisor. This uses one owned process group and one shared generation lease, not eight unsupervised generating flights. Stable startup waiting remains available through the existing queue policy; root must retain12.5GiB startup and8GiB running floors. Registration checks visit every plan cell. Completion inspection visits every declared member through the original structural inspector, even if an earlier member failed. The inspector is not a scientific READ qualification or a substitute for verified seals and unique successful official jobs.
+
+### Timing custody
+
+Each original per-owner trace receives its20 sample timing records and its own node-stage records. Local admission indexes remain local; additional fields identify the panel, global admission index, total160 jobs and executor start. `batch_started_ns` uses the panel submission boundary, retaining preparation and rendezvous waiting; `panel_execution_started_ns`, `admitted_ns` and terminal time remain separately addressable. Do not compare this expanded submission clock against an older run's narrower execution clock without explicitly aligning origins. Preserve both aligned executor-to-terminal and submission-to-terminal summaries, first registered group and later groups. Makespan divided by160 is a throughput measure, never average completion latency.
+
+### Verification scope and next admission
+
+The independent-owner integration test runs eight real native FlightRuntime dispatch paths with20 synthetic samples each, their own FrozenCoreClient and scripted transport. It verifies640 simulated requests grouped160 per node, separate80-contact client counts, unique owner instructions in original rendered requests, FIT-before-dispatch order, independent trace destinations and20 timing records per owner. This is model-free integration, not640 real model or tokenizer contacts. Separate lifecycle fixtures exercise shared lease, seal and score ordering, prejoin/model/seal/score failures and no retry. The original node-stage tests cover CPU overlap, barriers, tools, conditional visits, revisions and cancellation.
+
+No GPU task, serving setting, cache endpoint, frozen worker or queue was changed by this implementation. The slurp heartbeat remains PAUSED and learning remains HELD. Before real admission, finish bounded local intermediate storage/resident-memory accounting, declare the exact within-node prefix order, register maximum legal FIT and a separate small structural proof, and qualify all original timing/cache joins. Only then review a full8x20 latency/quality panel on the same400-input pool. Preserve the independent contexts and current immutable data/knowledge. The human boundary remains8x400.
+
+The [ownership verification receipt](../../receipts/continuation/2026-10-03-node-panel-ownership-engineering.json) pins the tested source files,503 passing tests,coverage,lint/base/harness/native-reuse checks and preserved test corrections. Statement coverage: campaign.py 90.0%, cli.py 85.24%, lease.py 88.69%, process_guard.py 94.36%, node_pipeline.py 90.06%, panel.py 91.16%, runner.py 95.06%. No speed,quality,cache benefit or learning claim follows from these model-free checks.

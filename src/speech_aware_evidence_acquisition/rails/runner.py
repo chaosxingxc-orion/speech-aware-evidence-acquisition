@@ -6243,8 +6243,18 @@ def _run_agent_openjiuwen(
                 }},
             )
 
+        panel_participation = native_episode_binding.workflow_panel
+        if panel_participation is not None:
+            from ..reproduction.ojw.panel import NativePanelParticipation
+            if (not isinstance(panel_participation, NativePanelParticipation)
+                    or native_episode_binding.node_pipeline is None):
+                raise RailsRunnerError("panel participation requires the explicit node pipeline")
+
         try:
-            execute_speech_agent_workflows(
+            execute = execute_speech_agent_workflows if panel_participation is None else (
+                lambda states, **kwargs: panel_participation.execute(run_id, states, **kwargs)
+            )
+            execute(
                 states, branch_count=1, slot_count=slot_count,
                 queue_depth=queue_depth,
                 workflow_timeout_seconds=DEFAULT_WORKFLOW_TIMEOUT_SECONDS,

@@ -1,0 +1,407 @@
+{
+  "schema": "saea-node-panel-ownership-engineering-v1",
+  "recorded_at": "2026-10-03T18:06:48.499467+00:00",
+  "status": "independent native runtime ownership and guarded panel lifecycle verified offline; no real panel admitted",
+  "base_commit": "e174bd8165afedcf47936935d287ea801e07d30b",
+  "authority": "docs/receipts/owner/2026-10-03-node-stage-cache-reuse-clarification.json",
+  "checkout": "/home/chao/saea-worktrees/codex-cache-cost-audit",
+  "tested_source_files": [
+    {
+      "path": "scripts/flights/batch/batch_driver.sh",
+      "sha256": "ba0c8593ade35cf57034ce4fe05b94941262561b8a99cbbfee475ff4b1aa724c"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/campaign.py",
+      "sha256": "894f70dbc3e5aff5a53c3994d9546e002bf04e730ba026cbbe62606882755db7"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/cli.py",
+      "sha256": "c6b12cdf9baaafbecf8f880dd049b481a4c68079a4b9990d97c74e9c57936250"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/lease.py",
+      "sha256": "35656a1c7a414b2cb50145c5a4b98193c6eda59ae8bd6b36d1c43a03fb005b45"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/process_guard.py",
+      "sha256": "cab1e3dc229b3d88fe0c28033673c6110fcbda596286306f8a48d43a12e3a9e7"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "aca8b3aa741796aec80652cda15d9c524208f4615ff75db842f7d32fe0ac01ce"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+      "sha256": "40fcc94f479c349cec5ee8eac2d927387d79e985540e24550e550607dfb7e013"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "3f75dc92439d76c22791e35961c81a9f1e4cad7395e6ea57b8cb45cc34bd8e7a"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/system_episode_policy.py",
+      "sha256": "d08c04b4f10a01da7e58eb845ef0969d69a2e12fb6ffaec9ea0d7747ce566305"
+    },
+    {
+      "path": "tests/unit/test_batch_process_guard.py",
+      "sha256": "57496ef71765473113baeef6ec1d92e77320bfcad7f2a73f5cac3dea49c0a859"
+    },
+    {
+      "path": "tests/unit/test_campaign_plan.py",
+      "sha256": "8ce6b08aefa94f750f944857d5ae917ec64fd35e9aaa9e19757d656563114908"
+    },
+    {
+      "path": "tests/unit/test_flight_cli_seal_only.py",
+      "sha256": "381a35994ca71f63bc74590ae81208c104e15b866299447c30d1c92dec58a101"
+    },
+    {
+      "path": "tests/unit/test_flight_process_guard.py",
+      "sha256": "6e3dd80e7d7ccc00e31516655380d9b79d88cc37014b4b602f9235ca142f14dd"
+    },
+    {
+      "path": "tests/unit/test_generation_lease.py",
+      "sha256": "61a964874fdb9ba17282cc56775469ff4cf574b22748977f8ad17bb7f8404fba"
+    },
+    {
+      "path": "scripts/flights/batch/node_panel_inspect.py",
+      "sha256": "c334a3e9fbf8b5d7be426cc31b377a125dc0a8f958300bb4b2147350ea152c9b"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py",
+      "sha256": "234dcaa0ee6ccd5cec6cfb90596b61cd69b3d67384f8a8771cf74cbfadb891a9"
+    },
+    {
+      "path": "tests/unit/test_native_workflow_panel.py",
+      "sha256": "01939f8e6bded0844ea692190097fcc40f74c62a064bac16e6e95f4c035350ea"
+    },
+    {
+      "path": "tests/unit/test_node_panel_campaign.py",
+      "sha256": "d6399421bc393f8c47cae5417ad5e3b0dba22b3f0bd068c5f6a3fd4739bb8770"
+    },
+    {
+      "path": "tests/unit/test_node_panel_inspect.py",
+      "sha256": "ee80bb6cfd68f1e6d177b9991a62d75307f5d4e78d2e5a207f1084355905c30c"
+    }
+  ],
+  "tests": {
+    "final_passed": 503,
+    "failed": 0,
+    "dependency_warnings": 3,
+    "coverage": {
+      "src/speech_aware_evidence_acquisition/core/flight/campaign.py": {
+        "covered_lines": 261,
+        "num_statements": 290,
+        "percent_covered": 90.0,
+        "percent_covered_display": "90",
+        "missing_lines": 29,
+        "excluded_lines": 0,
+        "percent_statements_covered": 90.0,
+        "percent_statements_covered_display": "90"
+      },
+      "src/speech_aware_evidence_acquisition/core/flight/cli.py": {
+        "covered_lines": 179,
+        "num_statements": 210,
+        "percent_covered": 85.23809523809524,
+        "percent_covered_display": "85",
+        "missing_lines": 31,
+        "excluded_lines": 0,
+        "percent_statements_covered": 85.23809523809524,
+        "percent_statements_covered_display": "85"
+      },
+      "src/speech_aware_evidence_acquisition/core/flight/lease.py": {
+        "covered_lines": 149,
+        "num_statements": 168,
+        "percent_covered": 88.69047619047619,
+        "percent_covered_display": "89",
+        "missing_lines": 19,
+        "excluded_lines": 0,
+        "percent_statements_covered": 88.69047619047619,
+        "percent_statements_covered_display": "89"
+      },
+      "src/speech_aware_evidence_acquisition/core/flight/process_guard.py": {
+        "covered_lines": 184,
+        "num_statements": 195,
+        "percent_covered": 94.35897435897436,
+        "percent_covered_display": "94",
+        "missing_lines": 11,
+        "excluded_lines": 0,
+        "percent_statements_covered": 94.35897435897436,
+        "percent_statements_covered_display": "94"
+      },
+      "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py": {
+        "covered_lines": 154,
+        "num_statements": 171,
+        "percent_covered": 90.05847953216374,
+        "percent_covered_display": "90",
+        "missing_lines": 17,
+        "excluded_lines": 0,
+        "percent_statements_covered": 90.05847953216374,
+        "percent_statements_covered_display": "90"
+      },
+      "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py": {
+        "covered_lines": 165,
+        "num_statements": 181,
+        "percent_covered": 91.16022099447514,
+        "percent_covered_display": "91",
+        "missing_lines": 16,
+        "excluded_lines": 0,
+        "percent_statements_covered": 91.16022099447514,
+        "percent_statements_covered_display": "91"
+      },
+      "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py": {
+        "covered_lines": 366,
+        "num_statements": 385,
+        "percent_covered": 95.06493506493507,
+        "percent_covered_display": "95",
+        "missing_lines": 19,
+        "excluded_lines": 0,
+        "percent_statements_covered": 95.06493506493507,
+        "percent_statements_covered_display": "95"
+      }
+    },
+    "red_green": "New ownership, lease, lifecycle, exact-plan CLI and guarded batch tests refused absent features before implementation.",
+    "preserved_test_issues": [
+      "The first broad run passed499 and failed2. The new synthetic runtime skeleton omitted its normal _seal_only=False initialization; the fixture was corrected without weakening production refusal.",
+      "The historical seal-only shell test sliced through following elif branches. Its failure was reproduced on unchanged e174bd816 source in a source-only fixture. The test now isolates the actual seal-only branch; production seal-only routing is unchanged."
+    ]
+  },
+  "synthetic_integration": {
+    "owners": 8,
+    "jobs_per_owner": 20,
+    "scripted_model_requests": 640,
+    "requests_per_owner": 80,
+    "stages": [
+      "perception",
+      "solver",
+      "reviewer",
+      "planner"
+    ],
+    "own_context_and_fit_order_verified": true,
+    "scope": "real native FlightRuntime dispatch and FrozenCoreClient paths with scripted transports; lifecycle/scorer order uses separate fixtures, not real official scores"
+  },
+  "checks": [
+    {
+      "check": "lint",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/ruff",
+        "check",
+        "src/speech_aware_evidence_acquisition/core/flight/campaign.py",
+        "src/speech_aware_evidence_acquisition/core/flight/cli.py",
+        "src/speech_aware_evidence_acquisition/core/flight/lease.py",
+        "src/speech_aware_evidence_acquisition/core/flight/process_guard.py",
+        "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+        "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+        "src/speech_aware_evidence_acquisition/rails/runner.py",
+        "src/speech_aware_evidence_acquisition/rails/system_episode_policy.py",
+        "tests/unit/test_batch_process_guard.py",
+        "tests/unit/test_campaign_plan.py",
+        "tests/unit/test_flight_cli_seal_only.py",
+        "tests/unit/test_flight_process_guard.py",
+        "tests/unit/test_generation_lease.py",
+        "scripts/flights/batch/node_panel_inspect.py",
+        "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py",
+        "tests/unit/test_native_workflow_panel.py",
+        "tests/unit/test_node_panel_campaign.py",
+        "tests/unit/test_node_panel_inspect.py"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/lint-v2.txt"
+    },
+    {
+      "check": "engineering_base_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "scripts/checks/engineering_base_check.py"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/engineering_base_check-v2.txt"
+    },
+    {
+      "check": "harness_admission_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "scripts/checks/harness_admission_check.py"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/harness_admission_check-v2.txt"
+    },
+    {
+      "check": "driver_syntax",
+      "exit_code": 0,
+      "command": [
+        "bash",
+        "-n",
+        "scripts/flights/batch/batch_driver.sh"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/driver_syntax-v2.txt"
+    },
+    {
+      "check": "diff_check",
+      "exit_code": 0,
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/diff_check-v2.txt"
+    },
+    {
+      "check": "handoff_freshness_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "scripts/checks/handoff_freshness_check.py"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/handoff-freshness-v1.txt"
+    }
+  ],
+  "native_reuse_check": {
+    "exit_code": 0,
+    "report": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/native-reuse-v1.json"
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "proposer": 0
+  },
+  "runtime_changes": {
+    "queue": false,
+    "stop": false,
+    "serving": false,
+    "frozen_workers": false,
+    "heartbeat": "remains paused"
+  },
+  "remaining": [
+    "Bounded disk intermediate storage and resident-memory accounting",
+    "Prospective exact compatible-prefix ordering and original server-slot joins",
+    "Registered actual full-request FIT and small integrated structural proof",
+    "Root review before full8x20 and each later scale; human before8x400"
+  ],
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/base-seal-only-wiring-test.txt",
+      "sha256": "cd81ad087f320e8ca4a2fc13cf8278d34f3c3fdfa03d083a16c4ccabd5a77eb9",
+      "bytes": 2368
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/checks-v1.json",
+      "sha256": "57901b5b61890d7e896c7c46a9e2bf13f38669d27b72127e2e30d559fca87a31",
+      "bytes": 2618
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/checks-v2.json",
+      "sha256": "a337bb81680870604b6495771629c88c3b756cd179f9cc5aa424f3b33484884a",
+      "bytes": 2667
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/coverage-v1.json",
+      "sha256": "bcd09eb73e616ccbb055219435e672c04d51f091d966ba1f5828b8c5eb42ffb6",
+      "bytes": 72020
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/coverage-v2.json",
+      "sha256": "b97ae9d76754844602163d192e2faf06d3c86c685c44069128c53a52e841eeff",
+      "bytes": 72059
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/diff_check-v1.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/diff_check-v2.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/driver_syntax-v1.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/driver_syntax-v2.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/engineering_base_check-v1.txt",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+      "bytes": 29
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/engineering_base_check-v2.txt",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+      "bytes": 29
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/harness_admission_check-v1.txt",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378",
+      "bytes": 99
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/harness_admission_check-v2.txt",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378",
+      "bytes": 99
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/lint-v1.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/lint-v2.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/native-reuse-v1.json",
+      "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464",
+      "bytes": 3396
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/native-reuse-v1.txt",
+      "sha256": "5e3b9a38593e78bfef3f6b69aa73fcd0d4346aeaddb91a1b8aa84d0a0c3e887f",
+      "bytes": 2514
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/targeted-v1-command.json",
+      "sha256": "ca9486626123a794f26d24c65d2dab4f55079d80b406994baa187aafee2a103b",
+      "bytes": 2020
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/targeted-v1.txt",
+      "sha256": "672d563da1aeb4bacf1d161151308eab58fe5a5c6ee3b10fa5729c8642562efd",
+      "bytes": 8042
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/targeted-v2-command.json",
+      "sha256": "ca9486626123a794f26d24c65d2dab4f55079d80b406994baa187aafee2a103b",
+      "bytes": 2020
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/targeted-v2.txt",
+      "sha256": "5ca60edc4bb74930f9c3a791ebb993bdb8406331223910465c0225a0cc6e6c71",
+      "bytes": 2204
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/preintegration-operational-v1.json",
+      "sha256": "fb4fe966db1d92522ea6e2cec4ae2ba685fd27138121d84a06d15e11ede6d569",
+      "bytes": 907
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/preintegration-processes-v1.json",
+      "sha256": "03a040b1f2e9d9739d04d87c2d25545dc5e31f8378ed20636ec025d8ba25cc5d",
+      "bytes": 149
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-ownership-engineering-owner227-v1/handoff-freshness-v1.txt",
+      "sha256": "07f01893c1f39926db548f9f69405eaed806820c827757d94fbea8d770c55b61",
+      "bytes": 465
+    }
+  ]
+}

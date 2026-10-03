@@ -28,6 +28,8 @@
 #   Optional paired process_start_wait_seconds/process_start_stable_samples wait
 #   before prelaunch for stable memory. The observer starts no worker and never
 #   retries a failed process. The original guard still checks the startup floor.
+# A node-panel step joins every exact member of its committed plan under one
+# guarded process and one generation lease, then inspects every member.
 # Status: /home/chao/batch-status.jsonl (one line per event); STOP marker: /home/chao/batch-STOP.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 export MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
@@ -171,7 +173,12 @@ for ((i=0; i<N; i++)); do
   case "$smoke_result_kind" in task-answer|artifact) ;; *) stop "invalid smoke_result_kind on step $order" ;; esac
   if grep -q "\"step-done\".*\"short\":\"$short\"" "$STATUS" 2>/dev/null; then log "step-skip-done" "{\"step\":$order,\"short\":\"$short\"}"; continue; fi
   log "step-start" "{\"step\":$order,\"short\":\"$short\",\"kind\":\"$kind\",\"cell\":\"$cell\"}"
-  case "$kind" in cell|resume|seal-only|engineering) ;; *) stop "invalid kind on step $order" ;; esac
+  case "$kind" in cell|resume|seal-only|engineering|node-panel) ;; *) stop "invalid kind on step $order" ;; esac
+  if [ "$kind" = "node-panel" ]; then
+    [ -n "$plan" ] && [ "$plan" != "None" ] || stop "node panel step $order requires its complete registered plan"
+    [ -n "$process_start" ] && [ -n "$process_floor" ] || stop "node panel step $order requires both memory floors"
+    { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "node panel step $order cannot declare a separate smoke"
+  fi
   if [ "$kind" = "engineering" ]; then
     [ "$rows" = "4" ] && [ "$sexp" = "$exp" ] && [ "$scell" = "$cell" ] && \
       [ "$srun" = "$run" ] && [ "$satt" = "$gatt" ] || stop "engineering step $order must bind one identical four-row smoke"
@@ -184,8 +191,10 @@ for ((i=0; i<N; i++)); do
   fi
   if [ -n "$process_start" ] || [ -n "$process_floor" ]; then
     [ -n "$process_start" ] && [ -n "$process_floor" ] || stop "step $order needs both process memory floors"
-    case "$kind" in cell|resume|engineering) ;; *) stop "step $order process guard requires campaign or identical engineering worker" ;; esac
-    { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "step $order process guard refuses a multi-member campaign_plan"
+    case "$kind" in cell|resume|engineering|node-panel) ;; *) stop "step $order process guard requires campaign or identical engineering worker" ;; esac
+    if [ "$kind" != "node-panel" ]; then
+      { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "step $order process guard refuses a multi-member campaign_plan"
+    fi
     if [ "$kind" != "engineering" ]; then
       { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "step $order process guard cannot leave a separate smoke unsupervised"
     fi
@@ -221,6 +230,12 @@ for ((i=0; i<N; i++)); do
     $PY -B -m speech_aware_evidence_acquisition.core.flight.cli seal-only \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --experiment "$exp" --cell "$cell" > "$LOGF" 2>&1
+  elif [ "$kind" = "node-panel" ]; then
+    GUARD_DIR="$DATA/coordination/process-guard/$(basename "$LOGF" .log)"
+    $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard --mode node-panel \
+      --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
+      --campaign-plan "$REPO/$plan" --owner "$owner" --expected-session-id "$SESSION" \
+      --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
   elif [ -n "$process_start" ]; then
     GUARD_DIR="$DATA/coordination/process-guard/$(basename "$LOGF" .log)"
     $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard \
@@ -236,7 +251,13 @@ for ((i=0; i<N; i++)); do
   fi
   rc=$?
   log "arm-exit" "{\"step\":$order,\"rc\":$rc}"
-  out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind"); irc=$?
+  if [ "$kind" = "node-panel" ]; then
+    out=$($PY -B "$SP/node_panel_inspect.py" --repo-root "$REPO" --data-root "$DATA" \
+      --campaign-plan "$REPO/$plan" --flight-commit "$FLIGHT_COMMIT" \
+      --ceiling-per-row "$ceil" --notool "$nt" --result-kind "$result_kind"); irc=$?
+  else
+    out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind"); irc=$?
+  fi
   log "arm-inspect" "$out"
   [ $rc -eq 0 ] && [ $irc -eq 0 ] || stop "arm failed on step $order (campaign rc $rc, inspect rc $irc); see $LOGF"
   log "step-done" "{\"step\":$order,\"short\":\"$short\"}"

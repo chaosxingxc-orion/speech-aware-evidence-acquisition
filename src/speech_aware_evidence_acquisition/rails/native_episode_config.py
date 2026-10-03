@@ -961,6 +961,7 @@ class NativeEpisodeRunBinding:
     prefix_slots: object = None
     node_batch: object = None
     node_pipeline: object = None
+    workflow_panel: object = None
 
 
 @dataclass(frozen=True)

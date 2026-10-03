@@ -215,15 +215,16 @@ def main(argv=None):
         "data-root",
         "runtime-root",
         "lock-path",
-        "experiment",
         "owner",
         "expected-session-id",
         "receipt-dir",
     ):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--experiment")
+    parser.add_argument("--campaign-plan", type=Path)
     parser.add_argument("--start-gib", type=float, required=True)
     parser.add_argument("--floor-gib", type=float, default=10.0)
-    parser.add_argument("--mode", choices=("campaign", "worker"), default="campaign")
+    parser.add_argument("--mode", choices=("campaign", "worker", "node-panel"), default="campaign")
     parser.add_argument("--lease-token-file")
     args = parser.parse_args(argv)
     repo = Path(args.repo_root).resolve()
@@ -237,16 +238,31 @@ def main(argv=None):
         parser.error("guard receipt must be confined beneath data-root/coordination")
     from .campaign import load_campaign_cells, declared_readiness
 
-    cells = load_campaign_cells(repo, args.experiment)
-    if len(cells) != 1:
-        parser.error(
-            "memory-contained process requires exactly one registered campaign cell"
-        )
-    cell = cells[0]
-    cell.assert_mode(args.mode)
-    state = declared_readiness(cell, data)
-    if state.state != "ready":
-        parser.error("registered cell is not ready: " + state.reason)
+    if args.mode == "node-panel":
+        from .cli import load_node_panel_plan
+
+        if args.campaign_plan is None or args.experiment or args.lease_token_file:
+            parser.error("node-panel requires only its exact committed campaign plan")
+        plan_path = args.campaign_plan.resolve()
+        if not plan_path.is_relative_to(repo):
+            parser.error("node panel plan must be confined beneath repo-root")
+        selected, panel_id, _members = load_node_panel_plan(repo, plan_path)
+        cells = tuple(cell for _, cell in selected)
+        ownership = {"panel_id": panel_id, "members": [
+            {"run_id": cell.run_id, "attempt_id": cell.attempt_id} for cell in cells]}
+    else:
+        if not args.experiment or args.campaign_plan is not None:
+            parser.error("ordinary guarded workers require one experiment")
+        cells = load_campaign_cells(repo, args.experiment)
+        if len(cells) != 1:
+            parser.error("memory-contained process requires exactly one registered campaign cell")
+    for cell in cells:
+        cell.assert_mode(args.mode)
+        state = declared_readiness(cell, data)
+        if state.state != "ready":
+            parser.error("registered cell is not ready: " + state.reason)
+    if args.mode != "node-panel":
+        ownership = {"run_id": cells[0].run_id, "attempt_id": cells[0].attempt_id}
     command = [
         sys.executable,
         "-B",
@@ -259,11 +275,14 @@ def main(argv=None):
         "data-root",
         "runtime-root",
         "lock-path",
-        "experiment",
         "owner",
         "expected-session-id",
     ):
         command.extend(["--" + name, getattr(args, name.replace("-", "_"))])
+    if args.mode == "node-panel":
+        command.extend(["--campaign-plan", str(plan_path)])
+    else:
+        command.extend(["--experiment", args.experiment])
     if args.mode == "worker":
         from .lease import WorkerExecutionPolicy
 
@@ -304,8 +323,7 @@ def main(argv=None):
             receipt,
             policy,
             identity={
-                "run_id": cell.run_id,
-                "attempt_id": cell.attempt_id,
+                **ownership,
                 "repo_root": str(repo),
                 "study_head": study_head,
                 "session_id": args.expected_session_id,

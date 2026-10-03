@@ -138,7 +138,8 @@ class SystemEpisodePolicy:
                 or binding.config.local_tool_workers != reference.config.local_tool_workers
                 or binding.prefix_slots != reference.prefix_slots
                 or binding.node_batch != reference.node_batch
-                or binding.node_pipeline != reference.node_pipeline):
+                or binding.node_pipeline != reference.node_pipeline
+                or binding.workflow_panel is not reference.workflow_panel):
             raise SystemEpisodePolicyError("actions changed the shared execution envelope")
         if binding.node_pipeline is not None:
             from .dispatch_slot_fill import NativeNodePipelineError

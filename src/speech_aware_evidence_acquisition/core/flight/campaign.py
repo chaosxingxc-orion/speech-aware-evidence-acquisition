@@ -36,6 +36,7 @@ EXECUTION_STAGES = frozenset({
     "prompt-fit",
     "worker",
     "campaign",
+    "node-panel",
     # E10d (2026-09-29): a cell whose declared predecessor(s) already cover
     # its whole roster seals with zero contacts -- no serving requirement, no
     # lease. See core.flight.cli's "seal-only" mode.
@@ -99,7 +100,7 @@ class CampaignCell:
     def assert_mode(self, mode: str) -> None:
         """Enforce declared stage custody before any runtime or session work."""
         stages = self.document.get("allowed_execution_stages")
-        if mode in {"prepare-window-inventory", "prepare-window-features", "prepare-speech-observation-sources"} and stages is None:
+        if mode in {"prepare-window-inventory", "prepare-window-features", "prepare-speech-observation-sources", "node-panel"} and stages is None:
             raise CampaignError(
                 f"cell {self.document['cell_id']} must explicitly permit "
                 f"execution stage {mode}"
@@ -335,3 +336,123 @@ def run_campaign(
             "completed": [entry.flight.run_id for entry in queue.completed],
             "flight_receipts": dict(receipt_refs),
         }
+
+
+
+def run_node_panel(
+    flights: Sequence[FlightRuntime], *, cells: Sequence[CampaignCell], members,
+    panel_id: str, repo_root: Path, data_root: Path, owner: str,
+    expected_session_id: str, resident_finder=find_resident_session,
+) -> Mapping[str, object]:
+    """Coordinate registered independent native flights under one node-stage lease.
+
+    Reuse each FlightRuntime stage and the existing official scorer. No sibling
+    may require a score from this still-unrun panel; prepare those dependencies
+    before admission. All generation settles before any member is sealed, and
+    scoring remains serial with no replay after failure.
+    """
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from ...reproduction.ojw.panel import NativeWorkflowPanel
+
+    flights, cells, members = tuple(flights), tuple(cells), tuple(members)
+    if any(not isinstance(s, str) or not s.strip() for s in (owner, expected_session_id)):
+        raise CampaignError("panel owner and resident session must be explicit")
+    panel = NativeWorkflowPanel(panel_id, members)
+    pairs = tuple((m.run_id, m.attempt_id) for m in members)
+    if (tuple((f.run_id, f.attempt_id) for f in flights) != pairs
+            or tuple((c.run_id, c.attempt_id) for c in cells) != pairs):
+        raise CampaignError("panel runtime/cell order differs from its exact registered members")
+    for cell in cells:
+        cell.assert_mode("node-panel")
+        if cell.document.get("resume_from") is not None:
+            raise CampaignError("node panel does not admit resume or seal-only members")
+        if cell.dependencies():
+            raise CampaignError("node panel requires independently ready members; resolve dependencies before admission")
+        readiness = declared_readiness(cell, data_root)
+        if readiness.state != "ready":
+            raise CampaignError(f"node panel member {cell.run_id} remains {readiness.state}: {readiness.reason}")
+    require_clean_study_repo(repo_root)
+    resident = resident_finder(data_root)
+    if resident is None or resident[1].get("session_id") != expected_session_id:
+        raise CampaignError("node panel requires its existing named resident session")
+    receipt_refs = {}
+    states = {f.run_id: {"state": "preparing"} for f in flights}
+
+    def persist_all(error=None):
+        for flight in flights:
+            try:
+                ref = persist_flight_receipts(data_root, run_id=flight.run_id,
+                    attempt_id=flight.attempt_id, receipts=flight.receipts)
+                if ref is not None:
+                    receipt_refs[flight.run_id] = ref
+            except Exception as caught:
+                if error is None:
+                    raise
+                error.add_note(f"Panel receipt preservation failed for {flight.run_id}: {type(caught).__name__}: {caught}")
+
+    try:
+        for flight in flights:
+            flight.preflight()
+            flight.verify_prepared_artifacts()
+            assert_identity_matches(resident[1], flight.session_required_identity())
+        if len({f.serving_profile_fingerprint() for f in flights}) != 1:
+            raise CampaignError("node panel members require different serving profiles")
+        for flight in flights:
+            flight.preprocess()
+        with GenerationLease.acquire_panel(
+            data_root, owner=owner, panel_id=panel_id, members=pairs,
+            session_id=expected_session_id, study_head=require_clean_study_repo(repo_root),
+        ) as lease:
+            try:
+                for flight in flights:
+                    flight.bind_execution_policy(WorkerExecutionPolicy(
+                        expected_session_id, lease.token, panel_id=panel_id, panel_members=pairs,
+                    ))
+                    flight.bind_native_workflow_panel(panel)
+                for flight in flights:
+                    flight.serve()
+                def generate(flight):
+                    try:
+                        states[flight.run_id] = {"state": "running"}
+                        result = flight.run_phases()
+                        panel.assert_completed(flight.run_id, flight.attempt_id)
+                        return result
+                    except BaseException as error:
+                        states[flight.run_id] = {"state": "failed", "reason": str(error)}
+                        panel.abort(error)
+                        raise
+                # These are CPU-side runtime owners, not eight generation jobs.
+                # Their model callbacks rendezvous on one four-slot event loop.
+                with ThreadPoolExecutor(max_workers=len(flights), thread_name_prefix="saea-panel-owner") as pool:
+                    futures = [pool.submit(generate, flight) for flight in flights]
+                    try:
+                        for future in as_completed(futures):
+                            future.result()
+                    except BaseException as error:
+                        panel.abort(error)
+                        raise
+                for flight in flights:
+                    flight.seal()
+                    states[flight.run_id] = {"state": "sealed"}
+                persist_all()
+            except BaseException as error:
+                panel.abort(error)
+                # The worker pool above has settled before attempt disposition.
+                for flight in flights:
+                    try:
+                        flight.abort(f"node panel failed: {type(error).__name__}: {error}")
+                    except Exception as caught:
+                        error.add_note(f"Panel abort failed for {flight.run_id}: {type(caught).__name__}: {caught}")
+                raise
+        for flight in flights:
+            flight.score(include_per_sample=True)
+            states[flight.run_id] = {"state": "scored"}
+            persist_all()
+    except BaseException as error:
+        persist_all(error)
+        raise
+    return {
+        "schema": "saea-node-panel-status-v1", "panel_id": panel_id,
+        "states": states, "completed": [f.run_id for f in flights],
+        "pending": [], "flight_receipts": receipt_refs,
+    }

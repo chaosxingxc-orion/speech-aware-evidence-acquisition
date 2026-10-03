@@ -48,6 +48,9 @@ def run_batch_fixture(tmp_path, worker_exit, changes=None, wait_exit=0):
     (tmp_path / "batch_inspect.py").write_text(
         'print(\'{"structural_check":"PASS"}\')\n'
     )
+    (tmp_path / "node_panel_inspect.py").write_text(
+        "import os,sys,json\nwith open(os.environ['PANEL_INSPECTIONS'],'a') as f:f.write(json.dumps(sys.argv[1:])+'\\n')\nprint('{}')\n"
+    )
     (tmp_path / "wait_for_start_memory.py").write_text(
         "import os,sys,json\nwith open(os.environ['WAITS'],'a') as f:f.write(json.dumps(sys.argv[1:])+'\\n')\nraise SystemExit(int(os.environ['WAIT_EXIT']))\n"
     )
@@ -76,6 +79,7 @@ sleep() { :; }
         WAIT_EXIT=str(wait_exit),
         WAITS=str(tmp_path / "waits"),
         STOP=str(tmp_path / "STOP"),
+        PANEL_INSPECTIONS=str(tmp_path / "panel-inspections"),
     )
     result = subprocess.run(
         ["bash"],
@@ -188,3 +192,47 @@ def test_memory_wait_is_before_prelaunch_and_never_retries_worker(tmp_path, wait
 def test_incomplete_wait_policy_never_dispatches(tmp_path, changes):
     result, dispatches = run_batch_fixture(tmp_path, 0, changes)
     assert result.returncode == 9 and dispatches == []
+
+
+@pytest.mark.parametrize("worker_exit", [0, 125])
+def test_node_panel_routes_once_per_panel_through_guard_and_inspects_every_member(
+    tmp_path, worker_exit
+):
+    result, dispatches = run_batch_fixture(
+        tmp_path,
+        worker_exit,
+        {"kind": "node-panel", "campaign_plan": "docs/panel.json"},
+    )
+    assert result.returncode == (9 if worker_exit else 0), result.stderr
+    assert len(dispatches) == (1 if worker_exit else 2)
+    for cmd in dispatches:
+        assert cmd[cmd.index("-m") + 1].endswith("process_guard")
+        assert cmd[cmd.index("--mode") + 1] == "node-panel"
+        assert "--experiment" not in cmd
+        assert cmd[cmd.index("--campaign-plan") + 1] == str(
+            tmp_path / "docs/panel.json"
+        )
+    inspected = [
+        json.loads(line)
+        for line in (tmp_path / "panel-inspections").read_text().splitlines()
+    ]
+    assert len(inspected) == len(dispatches)
+    assert all(str(tmp_path / "docs/panel.json") in args for args in inspected)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"campaign_plan": None},
+        {"process_start_gib": None},
+        {"process_start_gib": None, "process_floor_gib": None},
+        {"smoke_experiment": "extra"},
+    ],
+)
+def test_node_panel_refuses_incomplete_plan_or_resource_custody(tmp_path, change):
+    result, calls = run_batch_fixture(
+        tmp_path,
+        0,
+        {"kind": "node-panel", "campaign_plan": "docs/panel.json", **change},
+    )
+    assert result.returncode == 9 and not calls

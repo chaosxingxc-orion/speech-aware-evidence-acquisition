@@ -7222,6 +7222,23 @@ class FlightRuntime:
         except NativePrefixSlotsError as error:
             raise FlightRuntimeError(str(error)) from error
 
+    def bind_native_workflow_panel(self, panel):
+        """Bind exact experimental ownership before opening this member's client."""
+        from ...reproduction.ojw.panel import (
+            NativePanelParticipation, NativeWorkflowPanel, NativeWorkflowPanelError,
+        )
+        if getattr(self, "_client", None) is not None or getattr(self, "_native_workflow_panel", None) is not None:
+            raise FlightRuntimeError("native workflow panel is already bound or generation has started")
+        if self._seal_only or self.shows_construction_targets():
+            raise FlightRuntimeError("native workflow panel does not admit construction or seal-only dispatch")
+        if not isinstance(panel, NativeWorkflowPanel) or self._native_node_pipeline() is None:
+            raise FlightRuntimeError("panel binding requires a native node pipeline")
+        try:
+            member = panel.member(self.run_id, self.attempt_id)
+            self._native_workflow_panel = NativePanelParticipation(panel, member)
+        except NativeWorkflowPanelError as error:
+            raise FlightRuntimeError(str(error)) from error
+
     def _native_node_pipeline(self, native_config=None):
         """Bind full-panel stage/prefetch limits before any model contact."""
         from ...rails.dispatch_slot_fill import NativeNodePipelineError, parse_native_node_pipeline
@@ -7552,6 +7569,7 @@ class FlightRuntime:
                 prefix_slots=prefix_slots,
                 node_batch=node_batch,
                 node_pipeline=node_pipeline,
+                workflow_panel=getattr(self, "_native_workflow_panel", None),
                 # Same-flight instrument, PHASE 2 (merge set C): every
                 # declared Perception branch's own pre-flight seed. None --
                 # and therefore byte-identical to the pre-phase-2 tree --
@@ -7836,6 +7854,8 @@ class FlightRuntime:
                 dispatch["slot_fill"] = slot_fill.as_json()
             if prefix_slots is not None:
                 dispatch["native_prefix_slots"] = prefix_slots.as_json()
+            if getattr(self, "_native_workflow_panel", None) is not None:
+                dispatch["native_workflow_panel"] = self._native_workflow_panel.receipt()
             if node_pipeline is not None:
                 dispatch["native_node_pipeline"] = node_pipeline.as_json()
                 dispatch["barrier"] = "full panel node stage; fixed-group CPU prefetch; all predecessors and preparations settled"

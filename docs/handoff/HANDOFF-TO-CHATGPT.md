@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Independent node-panel runtime ownership verified offline, 2026-10-03T18:06:48.499467+00:00
+
+The [shared panel implementation](../readiness/2026-10-03-panel-node-pipeline-v1/README.md) now joins eight independently owned native FlightRuntime dispatches:20 synthetic jobs each,640 scripted requests in four160-request node stages,80 contacts per own client,distinct role material and source/FIT/timing custody. One exact panel lease,guarded CLI/batch route and all-member completion inspection reuse the existing runtime/scorer. All generations drain before sealing;score jobs remain serial;failure never retries. All503 selected tests pass;lint/base/harness/native-reuse and shell syntax pass. [Pinned evidence](../receipts/continuation/2026-10-03-node-panel-ownership-engineering.json) retains test corrections,including the old seal-only wiring assertion reproduced on unchanged base. Zero real model/tokenizer/scorer contacts and no runtime-control changes.
+
+This closes the previous independent-owner implementation gap;it is not a real8x20 experiment or cache/latency proof. Disk intermediate storage/resident-byte accounting,exact within-node prefix ordering,maximum-request FIT and a separate integrated structural proof remain before admission. Keep independent node prompts;no permanent role slots or cache save/restore activation. Panel submission and executor/admission timing are separately recorded;align clock origins before comparisons and never call makespan/job count mean latency. Root only,no subagents;learning HELD,heartbeat PAUSED,other-carrier holds unchanged,human before8x400. Prior structural attempts remain intentionally unscored and immutable.
+
 ## Full-panel node scheduler verified offline, 2026-10-03T17:22:08.691438+00:00
 
 The [pipeline implementation](../readiness/2026-10-03-panel-node-pipeline-v1/README.md) now routes through the shared native executor: fixed-group CPU preparation overlaps current-node model work, while the whole-stage/final-preparation barrier precedes the next model stage. All four slots refill independently. Independent node prefixes remain the primary cache objective; no prompt homogenization or cache-benefit claim. All308 selected tests pass; new coordinator90%,shared executor95%,configuration99% statement coverage;lint/base/harness pass. [Pinned evidence](../receipts/continuation/2026-10-03-panel-node-pipeline-engineering.json). Zero real contacts or runtime-control changes.
@@ -1182,7 +1188,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T17:23:43.966998+00:00
+Last refreshed: 2026-10-03T18:07:37.537360+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
