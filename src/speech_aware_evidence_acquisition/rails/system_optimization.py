@@ -12,6 +12,7 @@ from .system_text_policy import (
     assert_roster_disjoint,
     cumulative_sources,
     require,
+    sha,
     validate_sources,
 )
 
@@ -167,7 +168,7 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
     )
     result = {
         "schema": SELECTION_SCHEMA,
-        "stage": PILOT,
+        "stage": d["family_id"],
         "branch": "L",
         "next_round": binding["next_round"],
         "formal_adoption": False,
@@ -186,14 +187,26 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
 def require_exploratory_packet(packet, *, protocol=None):
     """Check the small-family commitment at packaging and again before transport."""
     d, s = packet.get("feedback", {}), packet.get("selection", {})
+    rows, read_id = 20, "SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1"
+    family = d.get("family_id")
+    if family != PILOT:
+        scope = require_panel_scope(d)
+        rows, read_id = scope["rows"], scope["read_id"]
+        require(type(packet.get("round")) is int and packet["round"] > scope["proposal_round"],
+                "a panel can inform only a later prospectively allocated round")
+        require(d.get("learning_allowance_sha256") == scope["growth_owner_sha256"],
+                "panel learning allowance differs")
+        reference = d.get("reference", {})
+        require(len(reference.get("sample_ids", [])) >= 400
+                and all(sid.startswith("slurp:train:") for sid in reference["sample_ids"]),
+                "panel must preserve the frozen TRAIN reference")
     require(
         packet.get("branch") == "L"
         and d.get("schema") == "saea-exploratory-system-feedback-v1"
-        and d.get("family_id") == PILOT
         and d.get("optimizer_feedback_allowed") is True
         and d.get("formal_adoption") is False
         and d.get("read_authority", {}).get("read_run_id")
-        == "SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1",
+        == read_id,
         "exact exploratory learning authority required",
     )
     require(
@@ -205,18 +218,18 @@ def require_exploratory_packet(packet, *, protocol=None):
     )
     groups = d["feedback"]["groups"]
     require(
-        len(groups) == len({g["sample_id"] for g in groups}) == 20
+        len(groups) == len({g["sample_id"] for g in groups}) == rows
         and all(
             g["sample_id"].startswith("slurp:train:")
             and len(g["members"]) == 4
             and {m["candidate_id"] for m in g["members"]} == LEARNING_MEMBERS
             for g in groups
         ),
-        "exploratory feedback must keep all twenty complete L trajectories",
+        "exploratory feedback must keep all registered complete L trajectories",
     )
     require(
         s.get("schema") == SELECTION_SCHEMA
-        and s.get("stage") == PILOT
+        and s.get("stage") == family
         and s.get("branch") == "L"
         and s.get("formal_adoption") is False
         and type(packet.get("round")) is int
@@ -231,6 +244,13 @@ def require_exploratory_packet(packet, *, protocol=None):
         and set(s.get("member_bindings", {})) == LEARNING_MEMBERS,
         "exploratory selection binding differs",
     )
+    if family != PILOT:
+        require(all(
+            all(source.get(k) == s["member_bindings"][source["candidate_id"]].get(k)
+                for k in ("run_id", "attempt_id", "config_hash"))
+            and source["run_id"] == panel_member_run_id(scope["proposal_round"], rows, source["candidate_id"])
+            for source in d["feedback"]["sources"]),
+            "panel learning sources differ from the observed selection")
     require(
         set(s["active_ids"]) <= {v["bundle_id"] for v in s["member_bindings"].values()}
         and {content_hash(p) for p in packet.get("complementary_policies", [])}
@@ -283,3 +303,52 @@ def require_optimization_scope(packet, *, protocol=None):
                 "plan_sha256": block["plan"]["sha256"],
             }
         require(scope == expected, "optimization scope differs from the protocol")
+
+
+PANEL_SIZES = (20, 50, 100, 200, 400)
+
+
+def panel_identities(round_index, rows):
+    """Reserve fresh comparison/read identities without granting execution."""
+    require(type(round_index) is int and round_index >= 4,
+            "fixed-pool panel requires an extended proposal round")
+    require(type(rows) is int and rows in PANEL_SIZES,
+            "fixed-pool panel size is outside the reviewed ladder")
+    return (
+        f"fixed400-text-round{round_index}-n{rows}-v1",
+        f"SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND{round_index}-N{rows}-READ-V1",
+    )
+
+
+def panel_member_run_id(round_index, rows, candidate_id):
+    """Keep every candidate, parent and A/A separately bound to its panel."""
+    _, read_id = panel_identities(round_index, rows)
+    require(candidate_id in {f"{b}-{m}" for b in ("L", "B")
+            for m in ("parent", "parent-aa", "candidate-1", "candidate-2")},
+            "unknown fixed-pool panel member")
+    return read_id.removesuffix("READ-V1") + candidate_id.upper() + "-V1"
+
+
+def require_panel_scope(document):
+    """Validate shared source commitments without exporting blind identities."""
+    scope = document.get("panel_scope", {})
+    family, read_id = panel_identities(scope.get("proposal_round"), scope.get("rows"))
+    require(set(scope) == {"family_id", "proposal_round", "rows", "read_id",
+            "registration_sha256", "pool_sample_ids_sha256", "prefix_sample_ids_sha256",
+            "proposal_protocol_sha256", "pool_owner_sha256", "growth_owner_sha256"},
+            "panel scope commitments differ")
+    for key, value in scope.items():
+        if key.endswith("sha256"):
+            sha(value)
+    require(document.get("family_id") == scope["family_id"] == family
+            and document.get("registration_sha256") == scope["registration_sha256"]
+            and document.get("read_authority", {}).get("read_run_id") == scope["read_id"] == read_id,
+            "panel evidence scope differs")
+    sha(document.get("read_authority", {}).get("ledger_row_sha256"))
+    groups = document.get("feedback", {}).get("groups", [])
+    ids = [g["sample_id"] for g in groups]
+    require(len(ids) == len(set(ids)) == scope["rows"]
+            and all(isinstance(s, str) and s.startswith("slurp:train:") for s in ids)
+            and content_hash(ids) == scope["prefix_sample_ids_sha256"],
+            "panel feedback prefix differs")
+    return scope

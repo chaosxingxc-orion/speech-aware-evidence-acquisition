@@ -103,7 +103,7 @@ def read_family(path, *, repo_root=None, _seen=()):
 
 def read_pilot_learning(protocol, *, round_index, family_path, repo_root, archive,
                         parent_id, complementary_ids):
-    """Reverify the full pilot, then expose only its authorized L projection."""
+    """Reverify the full registered family, then expose only its L projection."""
     from speech_aware_evidence_acquisition.analysis.system_text_pilot import read_pilot_evidence
     from speech_aware_evidence_acquisition.rails.system_text_feedback import _absolute_json
     from speech_aware_evidence_acquisition.rails.system_optimization import (
@@ -133,17 +133,30 @@ def read_pilot_learning(protocol, *, round_index, family_path, repo_root, archiv
     spec = _absolute_json(binding["family"])
     # Check the reference pin before opening either family's scientific results.
     _absolute_json(binding["reference_family"])
-    require(spec["family_id"] == PILOT, "exploratory family differs")
     recipe = json.loads(_read_pin(spec["read_registration"], repo_root))
     supplement = json.loads(_read_pin(binding["analysis_supplement"], repo_root))
-    require(supplement.get("schema") == "saea-pilot-analysis-supplement-v1"
-            and supplement.get("recipe") == spec["read_registration"], "pilot supplement differs")
+    is_panel = "system_panel_registration" in recipe
+    expected_schema = "saea-system-panel-analysis-supplement-v1" if is_panel else "saea-pilot-analysis-supplement-v1"
+    require(supplement.get("schema") == expected_schema
+            and supplement.get("recipe") == spec["read_registration"], "exploratory supplement differs")
+    require(is_panel or spec["family_id"] == PILOT, "exploratory family differs")
     owner = json.loads(_read_pin(supplement["owner_decision"], repo_root))
     amendment = json.loads(_read_pin(binding["owner_learning"], repo_root))
-    registration = json.loads(_read_pin(recipe["pilot_registration"], repo_root))
+    registration_pin = recipe["system_panel_registration" if is_panel else "pilot_registration"]
+    registration = json.loads(_read_pin(registration_pin, repo_root))
+    kwargs = {}
+    reader = read_pilot_evidence
+    if is_panel:
+        from speech_aware_evidence_acquisition.analysis import system_text_panel as measured_panel
+        kwargs = measured_panel.load_scope(registration, owner, supplement, repo_root=repo_root)
+        require(binding["owner_learning"] == supplement["growth_owner_decision"]
+                and round_index > registration["proposal_round"]
+                and kwargs["pool_ids"] == panel[1],
+                "panel feedback needs its own approved allowance and the same pool in a later round")
+        reader = measured_panel.read_evidence
     authority = require_read_registration(spec, repo_root=repo_root)
-    evidence = read_pilot_evidence(spec["bindings"], recipe=recipe, registration=registration,
-        owner=owner, authority=authority)
+    evidence = reader(spec["bindings"], recipe=recipe, registration=registration,
+        owner=owner, authority=authority, **kwargs)
     reference = read_family(binding["reference_family"]["path"], repo_root=repo_root)
     projected = evidence.learning_projection(amendment=amendment, reference=reference)
     require(content_hash(projected.as_json()) == binding["expected_projection_sha256"],
@@ -153,14 +166,23 @@ def read_pilot_learning(protocol, *, round_index, family_path, repo_root, archiv
     require(json.loads(_read_pin(pin, repo_root)) == binding
             and _absolute_json(binding["family"]) == spec,
             "pilot binding changed during export")
+    if is_panel:
+        for source in (spec["read_registration"], binding["analysis_supplement"],
+                       supplement["owner_decision"], binding["owner_learning"], registration_pin):
+            _read_pin(source, repo_root)
+        require(measured_panel.load_scope(registration, owner, supplement, repo_root=repo_root) == kwargs
+                and load_optimization_panel(protocol, f"update-{round_index}", repo_root=repo_root) == panel,
+                "fixed panel scope changed during export")
+        _absolute_json(binding["reference_family"])
     document = projected.as_json()
-    document["interpretation"] = (
-        "Exploratory twenty-input full-system learning feedback under owner222/224. "
-        "Use all successes, failures, unchanged cases and damaged answers. "
-        "Continue on the pinned reused optimization panel; retain cumulative exposure. "
-        "Freeze knowledge and supply; revise role/context text only. "
-        "No independent-validation claim, formal adoption, node causal credit, "
-        "policy gradient or guaranteed improvement.")
+    if not is_panel:
+        document["interpretation"] = (
+            "Exploratory twenty-input full-system learning feedback under owner222/224. "
+            "Use all successes, failures, unchanged cases and damaged answers. "
+            "Continue on the pinned reused optimization panel; retain cumulative exposure. "
+            "Freeze knowledge and supply; revise role/context text only. "
+            "No independent-validation claim, formal adoption, node causal credit, "
+            "policy gradient or guaranteed improvement.")
     feedback = CompleteSystemFeedback(canonical(document))
     parents = [archive.load_policy(b).as_json() for b in [parent_id, *complementary_ids]]
     selection = exploratory_selection(feedback, registration=registration, binding=binding,

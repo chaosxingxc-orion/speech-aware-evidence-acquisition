@@ -1,0 +1,42 @@
+{
+  "schema": "saea-model-free-readiness-verification-v1",
+  "recorded_at_utc": "2026-10-03T04:18:21.966903+00:00",
+  "status": "engineering-passed-no-runtime-admission",
+  "tests": {
+    "regression_passed": 313
+  },
+  "coverage_statement_percent": {
+    "new_panel": 100,
+    "shared_pilot": 100,
+    "optimization": 99,
+    "analysis_cli": 87,
+    "combined": 96
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "changed_python_lint": "PASS",
+    "diff_whitespace": "PASS",
+    "handoff_freshness": "PASS"
+  },
+  "legacy_projection": {
+    "byte_identical": true,
+    "synthetic_sha256": "1012434cb07aca894be00cde1de555e91c9ff709adbf6edeed63ae5785013ad7"
+  },
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "real_quality_read": false,
+  "allocation_queue_stop_or_frozen_source_changed": false,
+  "pending_owner_decision": 226,
+  "source_sha256": {
+    "scripts/analysis/system_text_pilot_read.py": "8d109b7e82b6d45e4eca9a45caaf76501e287cf4b63d090a91de82b63f500ec3",
+    "scripts/system_text_search.py": "a1995b6aa3f84bbb249bb51fe1a5a294682bf5a819bcd424e1b6ff798e2d94c1",
+    "src/speech_aware_evidence_acquisition/analysis/system_text_panel.py": "893d271ef0bdab310a61ae70233b2725a7af4c6bb5d28c625dc664741507f8ef",
+    "src/speech_aware_evidence_acquisition/analysis/system_text_pilot.py": "bc4e85c30063be55fccec8706d15009af1099a225f0386bd41cd499a6b6bef52",
+    "src/speech_aware_evidence_acquisition/rails/system_optimization.py": "2528c69babc53eb57fc86da18dfdd23cf972b9326efe590b167055ef56da5586",
+    "tests/unit/test_system_text_panel_read.py": "a59aadb32c451b28cfdb0a370f86fbb1f68168e1e0e85ca6b1a1047856e2eff7"
+  }
+}

@@ -63,60 +63,68 @@ class CompleteSystemPilotEvidence:
             and len(d["feedback"]["groups"]) == 20,
             "complete root pilot evidence is required before learning",
         )
-        require(
-            isinstance(reference, CompleteSystemFeedback),
-            "verified frozen reference is required",
-        )
-        frozen = reference.as_json()["reference"]
-        require(
-            len(frozen["sample_ids"]) >= 400
-            and all(s.startswith("slurp:train:") for s in frozen["sample_ids"]),
-            "preserve the original TRAIN reference F1",
-        )
-        family_hash = content_hash(d)
-        own = sorted(c for c in MEMBERS if c.startswith("L-"))
-        d["schema"] = "saea-exploratory-system-feedback-v1"
-        d["reference"] = frozen
-        for group in d["feedback"]["groups"]:
-            require(
-                len(group["members"]) == 8
-                and {m["candidate_id"] for m in group["members"]} == MEMBERS,
-                "all original trajectories must remain in the root pilot evidence",
-            )
-            group["members"] = [m for m in group["members"] if m["candidate_id"] in own]
-            utilities = [
-                feedback_utility(m["native_counts"], frozen["f1"])
-                for m in group["members"]
-            ]
-            for member, utility, relative in zip(
-                group["members"],
-                utilities,
-                paired_relative_returns(utilities),
-                strict=True,
-            ):
-                member.update(utility=utility, relative_return=relative)
-                member.pop("quality", None)
-        d["summaries"] = {c: d["summaries"][c] for c in own}
-        d["feedback"]["candidate_ids"] = own
-        d["feedback"]["sources"] = [
-            s for s in d["feedback"]["sources"] if s["candidate_id"] in own
-        ]
-        require(
-            len(d["feedback"]["sources"]) == 4
-            and {s["candidate_id"] for s in d["feedback"]["sources"]} == set(own),
-            "all four learning source indexes are required",
-        )
-        d.update(
-            read_gate_family_sha256=family_hash,
-            learning_allowance_sha256=content_hash(amendment),
-            optimizer_feedback_allowed=True,
-            formal_adoption=False,
+        return _learning_projection(
+            d, amendment=amendment, reference=reference,
             interpretation="Exploratory twenty-input full-system learning feedback. Use successes, failures, "
             "unchanged cases and damaged answers to propose testable text/knowledge revisions. "
             "No reliable-benefit claim, node causal credit, policy gradient or guaranteed improvement. "
             "Evaluate the next version on a prospectively fixed disjoint small panel.",
         )
-        return CompleteSystemFeedback(canonical(d))
+
+
+def _learning_projection(d, *, amendment, reference, interpretation):
+    """Project a separately qualified full family; callers enforce exact allowance."""
+    require(
+        isinstance(reference, CompleteSystemFeedback),
+        "verified frozen reference is required",
+    )
+    frozen = reference.as_json()["reference"]
+    require(
+        len(frozen["sample_ids"]) >= 400
+        and all(s.startswith("slurp:train:") for s in frozen["sample_ids"]),
+        "preserve the original TRAIN reference F1",
+    )
+    family_hash = content_hash(d)
+    own = sorted(c for c in MEMBERS if c.startswith("L-"))
+    d["schema"] = "saea-exploratory-system-feedback-v1"
+    d["reference"] = frozen
+    for group in d["feedback"]["groups"]:
+        require(
+            len(group["members"]) == 8
+            and {m["candidate_id"] for m in group["members"]} == MEMBERS,
+            "all original trajectories must remain in the root pilot evidence",
+        )
+        group["members"] = [m for m in group["members"] if m["candidate_id"] in own]
+        utilities = [
+            feedback_utility(m["native_counts"], frozen["f1"])
+            for m in group["members"]
+        ]
+        for member, utility, relative in zip(
+            group["members"],
+            utilities,
+            paired_relative_returns(utilities),
+            strict=True,
+        ):
+            member.update(utility=utility, relative_return=relative)
+            member.pop("quality", None)
+    d["summaries"] = {c: d["summaries"][c] for c in own}
+    d["feedback"]["candidate_ids"] = own
+    d["feedback"]["sources"] = [
+        s for s in d["feedback"]["sources"] if s["candidate_id"] in own
+    ]
+    require(
+        len(d["feedback"]["sources"]) == 4
+        and {s["candidate_id"] for s in d["feedback"]["sources"]} == set(own),
+        "all four learning source indexes are required",
+    )
+    d.update(
+        read_gate_family_sha256=family_hash,
+        learning_allowance_sha256=content_hash(amendment),
+        optimizer_feedback_allowed=True,
+        formal_adoption=False,
+        interpretation=interpretation,
+    )
+    return CompleteSystemFeedback(canonical(d))
 
 
 def validate_pilot_registration(recipe, registration, owner, authority):
@@ -221,7 +229,7 @@ def _read_complete_evidence(bindings, *, recipe, registration, authority,
         roster = _absolute_json(binding["config"]["construction_roster"])
         require(
             [r["sample_id"] for r in roster["items"]] == ids
-            and manifest.get("split", {}).get("count") == 20
+            and manifest.get("split", {}).get("count") == len(ids) == recipe["required_rows_per_member"]
             and set(manifest.get("split", {}).get("ids", [])) == set(ids),
             "pilot roster differs",
         )

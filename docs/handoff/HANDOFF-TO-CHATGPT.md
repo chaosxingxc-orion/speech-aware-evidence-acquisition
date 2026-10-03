@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Fixed-pool panel feedback base verified, 2026-10-03T04:16:54.767839+00:00
+
+The shared analysis/proposer pipeline now supports exact registered eight-member20/50/100/200/400 prefixes after an extended proposal round. It rechecks all seals and unique successful official jobs before complete feedback, preserves own A/A/cost/stratum diagnostics, and exports only full L evidence into a later prospectively allocated round. New panel adapter100%, optimization guards99%, shared CLI87% statement coverage;313 regression and isolated-capsule tests pass. Legacy owner222 projection is byte-identical on synthetic evidence. [Engineering scope and validation](../readiness/2026-10-03-slurp-fixed400-panel-feedback-v1/README.md).
+
+No new model/tokenizer/scorer contact, actual quality read, allocation, queue/STOP edit, scientific policy change or frozen worker mutation. Existing24 scaling slots remain HELD and need final policies/registration/FIT/engineering. Owner226 is still pending, already asked; this independent engineering work is not precontact-recovery authority. All closed reads, malformed families, blind isolation, retained exposure and carrier holds remain.
+
 ## Extra round5 entry exited before proposal reservation, 2026-10-03T03:59:17.701657+00:00
 
 The Windows task SAEA-System-Text-Proposer-Extra5-Owner223 started03:52:32Z and returned1. All four allocations remain unspent; no proposal/GPU/scorer contacts. The wrapper retained an empty log and no outer exit receipt; the original exception/cause is unestablished. Frozen89c4486c2 and all old bytes stay unchanged. Current own-app status/catalogue/private pipe checks pass without proposal contacts or credential logging. [Incident custody](../receipts/continuation/2026-10-03-system-text-extra5-precontact-exit.json).
@@ -697,7 +703,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T03:59:17.701657+00:00
+Last refreshed: 2026-10-03T04:16:54.767839+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

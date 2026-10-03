@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read the exact owner220 pilot after root READ, with zero scorer/model calls.
+"""Read a registered complete optimization family with zero scorer/model calls.
 
 Create source-addressed analysis derivatives outside optimizer storage. Preserve
 all original manifests, attempts, score jobs, artifacts and registration bytes.
@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from speech_aware_evidence_acquisition.analysis import system_text_context as context
+from speech_aware_evidence_acquisition.analysis import system_text_panel as panel
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.analysis.system_text_pilot import (
     analyze_pilot,
@@ -55,14 +56,17 @@ def load_documents(recipe_pin, supplement_pin, root):
     require(
         supplement.get("schema")
         == (
-            "saea-context-analysis-supplement-v1"
+            "saea-system-panel-analysis-supplement-v1"
+            if "system_panel_registration" in recipe
+            else "saea-context-analysis-supplement-v1"
             if recipe.get("family_id") in context.READ_IDS
             else "saea-pilot-analysis-supplement-v1"
         )
         and supplement.get("recipe") == recipe_pin,
         "analysis supplement names another recipe",
     )
-    registration = json.loads(_read_pin(recipe["pilot_registration"], root))
+    key = "system_panel_registration" if "system_panel_registration" in recipe else "pilot_registration"
+    registration = json.loads(_read_pin(recipe[key], root))
     owner = json.loads(_read_pin(supplement["owner_decision"], root))
     return recipe, registration, owner, supplement
 
@@ -151,11 +155,12 @@ def run(
     }
     authority = CLI.require_read_registration(family, repo_root=repo_root)
     is_context = recipe.get("family_id") in context.READ_IDS
-    validate = (
+    is_panel = "system_panel_registration" in recipe
+    validate = panel.validate_registration if is_panel else (
         context.validate_registration if is_context else validate_pilot_registration
     )
-    evidence_reader = context.read_evidence if is_context else read_pilot_evidence
-    analyzer = context.analyze if is_context else analyze_pilot
+    evidence_reader = panel.read_evidence if is_panel else (context.read_evidence if is_context else read_pilot_evidence)
+    analyzer = panel.analyze if is_panel else (context.analyze if is_context else analyze_pilot)
     recovery_pin = supplement.get("recovery_owner_decision")
     recovery_kwargs = {}
     if recipe.get("family_id") == context.RECOVERY_FAMILY:
@@ -167,7 +172,13 @@ def run(
     if recovery_pin is not None:
         require(is_context, "recovery authority belongs only to its context family")
         recovery_kwargs = {"recovery": json.loads(_read_pin(recovery_pin, repo_root))}
+    if is_panel:
+        recovery_kwargs = panel.load_scope(registration, owner, supplement, repo_root=repo_root)
+        if learning_amendment_pin is not None:
+            require(learning_amendment_pin == supplement["growth_owner_decision"],
+                    "panel learning export must use its exact approved growth authority")
     validate(recipe, registration, owner, authority, **recovery_kwargs)
+    reference_pin = pin(reference_family_path) if is_panel and reference_family_path else None
     if is_context:
         require(
             learning_amendment_pin is None, "context comparison has no proposer export"
@@ -195,7 +206,7 @@ def run(
         require(
             manifest["config"]["config_hash"] == expected["config_hash"]
             and manifest["attempt"]["attempt_id"] == expected["attempt_id"]
-            and manifest["split"]["count"] == 20
+            and manifest["split"]["count"] == recipe["required_rows_per_member"]
             and set(manifest["split"]["ids"]) == set(recipe["sample_ids"]),
             "pilot manifest/roster differs from the frozen registration",
         )
@@ -272,6 +283,9 @@ def run(
         _read_pin(recovery_pin, repo_root)
     if is_context:
         _read_pin(owner["fixed_roster"], repo_root)
+    if is_panel:
+        require(panel.load_scope(registration, owner, supplement, repo_root=repo_root) == recovery_kwargs,
+                "panel scope changed during read")
     for source in (recipe["analysis_roster"], supplement["stratum_metadata"]):
         _read_pin(source, repo_root)
     require(
@@ -286,9 +300,11 @@ def run(
             amendment=amendment, reference=reference
         )
         _read_pin(learning_amendment_pin, repo_root)
+        if reference_pin is not None:
+            require(pin(reference_family_path) == reference_pin, "frozen reference family changed during export")
         report["learning_projection"] = {
             "owner_decision": learning_amendment_pin,
-            "scope": "All four L members only; all twenty cases; no B outcomes; not formal adoption.",
+            "scope": f"All four L members only; all {recipe['required_rows_per_member']} cases; no B outcomes; not formal adoption.",
         }
     report["read_at_utc"] = datetime.now(timezone.utc).isoformat()
     report["source_pins"] = {
@@ -306,7 +322,7 @@ def run(
         CLI.write_new(output / "learning-feedback.json", learning.as_json())
     CLI.write_new(output / "report.json", report)
     lines = [
-        "# Exploratory20-row whole-system pilot",
+        f"# Exploratory {recipe['required_rows_per_member']}-row whole-system panel",
         "",
         report["interpretation"],
         "",
