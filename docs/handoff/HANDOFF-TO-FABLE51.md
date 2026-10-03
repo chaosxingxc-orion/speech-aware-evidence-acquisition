@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete node schedule family qualified for root READ, 2026-10-03T23:18:53.376645+00:00
+
+All16 members independently FINALIZED20 rows with verified seals,one unique successful complete official score each and zero failed jobs. Windows driver epoch20:48:40Z ended normally at23:15:27Z after nine steps;the node-panel generator and all scorers are gone,STOP absent. Frozen worker remains `codex-node-panel-schedule-n20-v2` at `dd765815218eb7d9207701c130ae5ed9f802dab8`. [Qualification and root READ admission](../receipts/continuation/2026-10-03-node-panel-schedule-n20-family-qualified.json) pins all16 operational sources and independently verified seals.
+
+Root countersigned exactly `SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1` after qualification. Scientific values are still unread at this admission checkpoint. Next use the registered complete-family reader and pinned finite server-log snapshot for joint quality,reliability,first/non-first sample and node costs,plus actual slot predecessors. Preserve cold/inherited-state,repeated-input,order and coupled-panel limitations. A model-free qualification helper initially expected the wrong terminal event spelling;the preserved driver-done event was checked correctly on the second verification with zero model/scorer contacts and no runtime mutation.
+
+No automatic adoption,optimization feedback or scaling. Root only;learning HELD,heartbeat PAUSED,human before8x400. All current/older frozen workers and failed or intentionally unscored engineering artifacts remain immutable.
+
 ## Full node panel is generating, 2026-10-03T22:06:34.670560+00:00
 
 The first eight sequential trajectory members are FINALIZED with20 manifest rows,one successful official complete score each and zero failed jobs. Their1033 generation contacts are operational accounting,not quality evidence. The full eight-owner160-job node panel began its campaign at21:58:56Z after the21.75s stable-memory wait;all eight attempts are OPENED and112 generation contacts were observed at this checkpoint. They share one registered node-panel process,PID582319/start ticks41569135,and four model slots. Driver572846/start ticks41171644 and original serving942/start ticks18129934 were revalidated. Frozen worker remains `codex-node-panel-schedule-n20-v2` at `dd765815218eb7d9207701c130ae5ed9f802dab8`. [Operational confirmation](../receipts/continuation/2026-10-03-node-panel-schedule-panel-generation-confirmation.json).

@@ -1,0 +1,41 @@
+{
+  "at_utc": "2026-10-03T23:18:53.376645+00:00",
+  "decision": "Root personally admits the exact complete16-member family read after all16 independent finalizations, verified seals and unique complete official scores qualify. Describe joint business quality, reliability, original sample/node latency and actual slot-prefix reuse. No optimizer export, automatic adoption, new model generation or scorer replay.",
+  "driver_done_at": "2026-10-03T23:15:27Z",
+  "exact_read_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1",
+  "frozen_worker": {
+    "commit": "dd765815218eb7d9207701c130ae5ed9f802dab8",
+    "path": "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2"
+  },
+  "generation_or_scorer_contacts_added": 0,
+  "members": [
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1"
+  ],
+  "owner_decisions": [
+    227
+  ],
+  "qualification": {
+    "relpath": "coordination/node-panel-schedule-n20-owner227-v1/family-qualified-v1.json",
+    "sha256": "1ef54135859956dfb8fd3ff42e41815c4d4ed941cc8f19082130a6029f2dfc3e"
+  },
+  "quality_read_at_admission": false,
+  "rows_per_member": 20,
+  "schema": "saea-node-panel-schedule-root-read-admission-v1",
+  "trajectory_count": 320,
+  "verified_seals": 16
+}
