@@ -1,0 +1,58 @@
+{
+  "schema": "saea-prefix-cache-lifecycle-audit-v1",
+  "at_utc": "2026-10-03T12:17:29Z",
+  "authority": "Direct human request to analyze prefix recomputation, eviction/loading, and prospective driver control under owner227",
+  "llama_cpp_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+  "live_pid": 942,
+  "live_executable_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+  "serving_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "observed_options": {
+    "cache_prompt": true,
+    "cache_ram_mib": 0,
+    "cache_idle_slots": false,
+    "slot_prompt_similarity": 0,
+    "slot_save_path_configured": false
+  },
+  "operational_log_scan": {
+    "path": "serving/serving-slurp-native-candidate-five-train-a-np4-v1/server.log",
+    "byte_prefix_length": 45804212,
+    "sha256": "53619705e4c924f76b08af464c5c68aa4f616194cf3e26a05f43c9e994a969b8",
+    "lines": 434673,
+    "explicit_slot_selections": 47543,
+    "ram_save_load_eviction_events": 0,
+    "kv_pressure_or_forced_full_reprocess_events": 0,
+    "scope": "whole session, not per-panel attribution",
+    "raw_prompt_or_output_exposed": false
+  },
+  "findings": [
+    "Existing qualified response counters establish substantial evaluated input under role affinity; they do not identify every evaluated token as avoidable recomputation.",
+    "RAM cache update is bypassed for current explicit-slot plus zero-similarity selection; a positive RAM cap alone is insufficient.",
+    "Slot disk save can reach a text-only assertion for the custom has_mtmd speech-feature sequence despite no mmproj context. This is a static compatibility finding; no live action was called.",
+    "RAM clone preserves media metadata; actual restoration needs a separately registered proof.",
+    "Retain distinct cached-input, evaluated-input and final-residency counters."
+  ],
+  "source_files": [
+    {
+      "relpath": "tools/server/server-context.cpp",
+      "sha256": "e235949a10bfa9284b8d79c735b638569e3db533e0eee8da2f3e474ca2701248"
+    },
+    {
+      "relpath": "tools/server/server-task.cpp",
+      "sha256": "777e80a3827e3412da19d8130ae6e33fa06eb97d44978b13050a4cfabdea7891"
+    },
+    {
+      "relpath": "tools/server/server-common.cpp",
+      "sha256": "7d86566ac735e2c0e7a3d78719b49fdb8383786fd142c8b4df9dd303ba1f6e96"
+    }
+  ],
+  "report": {
+    "relpath": "docs/readiness/2026-10-03-node-context-optimization-v1/prefix-cache-lifecycle-audit.md",
+    "sha256": "f9f9198b5ce9dccbf20e14b514e30642dcbe6a2e7887530cef33bfce2a9099cc"
+  },
+  "model_tokenizer_scorer_contacts": 0,
+  "slot_action_requests": 0,
+  "service_or_queue_changes": false,
+  "scientific_feedback_export": false,
+  "heartbeat": "PAUSED",
+  "next_scope": "Prospective bounded RAM trigger proof or media-safe/pure-text disk snapshot support at a separate serving boundary; current structural and learning requests unchanged."
+}
