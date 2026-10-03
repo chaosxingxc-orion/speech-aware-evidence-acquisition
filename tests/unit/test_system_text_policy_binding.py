@@ -127,3 +127,88 @@ def test_real_prelaunch_gate_requires_the_registered_bundle(bound, tmp_path, mis
         result = w.run(cells=[EXPERIMENT])
         assert "system-text-policy-binding" in _kinds(result)
         assert not result["passed"]
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        None,
+        "missing-binding",
+        "missing-registration",
+        "changed-pin",
+        "wrong-family",
+        "wrong-policy",
+        "wrong-attempt",
+        "duplicate-member",
+        "old-planner",
+        "ambiguous",
+        "changed-registration",
+    ],
+)
+def test_new_panel_prelaunch_requires_exact_member_and_effective_role_bytes(
+    bound, tmp_path, fault
+):
+    import shutil
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+
+    compiled, binding, repo, data, _, _ = bound
+    w = World(tmp_path / "panel-gate").build()
+    shutil.copytree(repo / "configs", w.repo / "configs", dirs_exist_ok=True)
+    shutil.copytree(repo / "docs", w.repo / "docs", dirs_exist_ok=True)
+    shutil.copytree(data / "search", w.data / "search")
+    path = w.repo / "configs/experiment" / (EXPERIMENT + ".json")
+    fragment = json.loads(path.read_text())
+    cell = fragment["cells"][0]
+    cell["attempt_id"] = "attempt-panel-generation"
+    if fault != "missing-binding":
+        cell["system_text_policy_binding"] = binding
+    base_path = w.repo / "configs/baseline" / (cell["baseline_fragment"] + ".json")
+    _write(base_path, compiled)
+    w.recipe["family_id"] = "fixed400-text-round4-n50-v1"
+    registration = {
+        "schema": "saea-fixed400-system-panel-registration-v1",
+        "family_id": w.recipe["family_id"],
+        "member_bindings": {
+            "B-parent": {
+                "run_id": RUN,
+                "attempt_id": cell["attempt_id"],
+                "bundle_id": binding["bundle_id"],
+            }
+        },
+    }
+    if fault == "wrong-family":
+        registration["family_id"] = "another"
+    elif fault == "wrong-policy":
+        registration["member_bindings"]["B-parent"]["bundle_id"] = "0" * 64
+    elif fault == "wrong-attempt":
+        registration["member_bindings"]["B-parent"]["attempt_id"] = "another-attempt"
+    elif fault == "duplicate-member":
+        registration["member_bindings"]["B-parent-aa"] = registration[
+            "member_bindings"
+        ]["B-parent"]
+    registration["registration_sha256"] = content_hash(registration)
+    if fault == "changed-registration":
+        registration["registration_sha256"] = "0" * 64
+    rp = w.repo / "docs/readiness" / PACKAGE / "panel.json"
+    _write(rp, registration)
+    if fault != "missing-registration":
+        w.recipe["system_panel_registration"] = {
+            "relpath": rp.relative_to(w.repo).as_posix(),
+            "sha256": hashlib.sha256(rp.read_bytes()).hexdigest(),
+        }
+    if fault == "changed-pin":
+        rp.write_text("{}")
+    elif fault == "ambiguous":
+        w.recipe["pilot_registration"] = w.recipe["system_panel_registration"]
+    elif fault == "old-planner":
+        compiled["phase_material"]["planner"]["instruction_template"] = (
+            "probes/legacy.txt"
+        )
+        _write(base_path, compiled)
+    _write(path, fragment)
+    _write(w.repo / "docs/readiness" / PACKAGE / "analysis-recipe-v1.json", w.recipe)
+    result = w.run(cells=[EXPERIMENT])
+    if fault:
+        assert "system-text-policy-binding" in _kinds(result)
+    else:
+        assert "system-text-policy-binding" not in _kinds(result)

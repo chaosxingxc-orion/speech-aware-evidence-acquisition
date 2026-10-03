@@ -1,6 +1,8 @@
 """Prepare nested fixed400 inputs and held shared-runtime slots without dispatch."""
 
 import copy
+import json
+from pathlib import Path
 
 from ..data.runtime_subset import build_runtime_subset
 from .hashing import content_hash
@@ -128,3 +130,136 @@ def build_stage(parent, template, baseline, *, size, expected_pool_hash):
         "trajectory_ceiling": 8 * size,
         "contacts_authorized": 0,
     }
+
+
+def bind_scaling_policy(
+    compiled,
+    policy_binding,
+    *,
+    source_protocol,
+    cohort_binding,
+    size,
+    repo_root,
+    data_root,
+):
+    """Prepare an unchanged policy on a larger prefix; never alter its proposal.
+
+    The transient cohort projection is explicitly recorded and is used only by
+    the shared input binder. It is not a successor proposal protocol, selection,
+    registration or runtime admission. Return values remain preparation inputs.
+    """
+    from .system_optimization import assert_policy_roster, load_optimization_panel
+    from .system_search_archive import SystemSearchArchive
+    from .system_search_protocol import stage_for
+    from .system_text_cohort import bind_system_text_cohort
+    from .system_text_policy import _read_pin, verify_system_text_binding
+
+    require(
+        type(size) is int and size in (50, 100, 200), "unrequested preparation scale"
+    )
+    round_index = source_protocol.get("allocation_extension", {}).get("round")
+    require(
+        type(round_index) is int
+        and round_index >= 4
+        and source_protocol.get("updates") == round_index,
+        "pin the extended source proposal round",
+    )
+    stage = f"update-{round_index}"
+    require(cohort_binding.get("stage") == stage, "scaling source stage differs")
+    resolved = load_optimization_panel(source_protocol, stage, repo_root=repo_root)
+    require(resolved is not None, "scaling requires the owner's exact fixed pool")
+    plan, pool = resolved
+    source_stage = stage_for(source_protocol, stage)
+    assert_policy_roster(
+        [],
+        source_stage["sample_ids"],
+        protocol=source_protocol,
+        stage=stage,
+        repo_root=repo_root,
+    )
+    view = json.loads(_read_pin(cohort_binding["runtime_view"], repo_root))
+    full = json.loads(_read_pin(plan["source_runtime_view"], repo_root))
+    require(
+        view.get("count") == size
+        and view.get("items") == full["items"][:size]
+        and all(set(item) == ITEM_KEYS for item in view["items"])
+        and [i["sample_id"] for i in view["items"]] == pool[:size],
+        "scaling must reuse exact immutable media/packet rows without target fields",
+    )
+    proof = verify_system_text_binding(
+        compiled, policy_binding, repo_root=repo_root, data_root=data_root
+    )
+    policy_path = Path(data_root) / policy_binding["bundle"]["relpath"]
+    bundle = SystemSearchArchive(policy_path.parent.parent).load_policy(
+        policy_binding["bundle_id"]
+    )
+    # The source object and its file stay byte-identical. Only the read-only
+    # cohort projection can differ, and only in the declared evaluation roster.
+    evaluation_protocol = copy.deepcopy(source_protocol)
+    evaluation_stage = stage_for(evaluation_protocol, stage)
+    evaluation_stage.update(
+        sample_ids=pool[:size], roster_sha256=content_hash(pool[:size])
+    )
+    if "rows" in evaluation_stage:
+        evaluation_stage["rows"] = size
+    if "trajectory_cap" in evaluation_stage:
+        evaluation_stage["trajectory_cap"] = 8 * size
+    exposure = assert_policy_roster(
+        bundle.as_json()["cumulative_sources"],
+        pool[:size],
+        protocol=evaluation_protocol,
+        stage=stage,
+        repo_root=repo_root,
+    )
+    result = bind_system_text_cohort(
+        compiled,
+        cohort_binding,
+        protocol=evaluation_protocol,
+        stage=stage,
+        repo_root=repo_root,
+        data_root=data_root,
+    )
+    require(
+        verify_system_text_binding(
+            result, policy_binding, repo_root=repo_root, data_root=data_root
+        )
+        == proof,
+        "scaling changed effective policy role bytes",
+    )
+    require(
+        all(
+            result.get(k) == compiled.get(k)
+            for k in (
+                "policy",
+                "scorers",
+                "phase_material",
+                "phase_tools",
+                "serving_slots",
+                "serving_slot_tokens",
+            )
+        ),
+        "scaling changed policy, scorer, tool or serving semantics",
+    )
+    receipt = {
+        "schema": "saea-system-text-scaling-policy-preparation-v1",
+        "source_proposal_protocol_sha256": content_hash(source_protocol),
+        "source_proposal_round": round_index,
+        "evaluation_protocol_sha256": content_hash(evaluation_protocol),
+        "evaluation_stage": evaluation_stage,
+        "cohort_binding_sha256": content_hash(cohort_binding),
+        "pool_sample_ids_sha256": content_hash(pool),
+        "prefix_sample_ids_sha256": content_hash(pool[:size]),
+        "rows": size,
+        "bundle_id": bundle.bundle_id,
+        "policy_binding": copy.deepcopy(policy_binding),
+        "source_configuration_sha256": content_hash(compiled),
+        "prepared_configuration_sha256": content_hash(result),
+        "role_sha256": proof["role_sha256"],
+        "cumulative_sources_sha256": content_hash(
+            bundle.as_json()["cumulative_sources"]
+        ),
+        "retained_exposure": exposure,
+        "runtime_admission": "separate-required",
+        "contacts_added": 0,
+    }
+    return {"baseline": result, "preparation": receipt}

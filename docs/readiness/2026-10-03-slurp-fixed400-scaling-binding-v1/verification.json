@@ -1,0 +1,138 @@
+{
+  "algorithm_label_failures_reproduced_on_unchanged_main": true,
+  "at": "2026-10-03T04:31:57.103849+00:00",
+  "check_runs": [
+    {
+      "check": "engineering_base_check",
+      "code": 0,
+      "output": "engineering base check: PASS\n"
+    },
+    {
+      "check": "harness_admission_check",
+      "code": 0,
+      "output": "harness admission check: PASS (19 module(s), 11 barred from every default plan, 2 default plan(s))\n"
+    },
+    {
+      "check": "results_ledger_check",
+      "code": 0,
+      "output": "ding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-RECOVERY-V1 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-NCP-L1-ANCHOR-TRAIN-FOLD-A-V2 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-FALLBACK-QUIRKY-INTENT-V2-ANCHOR-TRAIN-FOLD-A-V2 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-TOOL-CONSTANT-ANCHOR-TRAIN-FOLD-A-V1 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-REVIEWER-AUDIT-ANCHOR-TRAIN-FOLD-A-V1 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-EXEMPLARS-K20-NOTOOL-V1 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-V1 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1 has no row in this results ledger\nresults ledger check: finding: cross-check D: the umbrella page published-baselines.md is not reachable from this checkout, so the headline comparison was skipped\nresults ledger check: PASS (92 row(s), 147 run id(s) registered and closed, 292 cited path(s) present, 35 status word(s) re-parsed from the verdict's first line, 0 row(s) compared against the umbrella, 183 finding(s) reported)\n"
+    },
+    {
+      "check": "tool_catalog_check",
+      "code": 0,
+      "output": "tool catalog check: PASS (34 tools, 1 extra pin(s), 17 module(s) clean of framework clients)\n"
+    },
+    {
+      "check": "experiment_handoff_check",
+      "code": 0,
+      "output": "{\n  \"schema_version\": 1,\n  \"status\": \"OWNER_DIRECTED_EXECUTION\",\n  \"checked_at_utc\": \"2026-10-03T04:30:21.245570+00:00\",\n  \"current_head\": \"90038c90e50e30ad1d2cfcf721af328d64991517\",\n  \"dirty_file_counts\": {\n    \"tracked\": 4,\n    \"untracked\": 6,\n    \"staged\": 0,\n    \"unstaged\": 4,\n    \"total\": 10\n  },\n  \"warnings\": [\n    \"Current HEAD differs from the handoff snapshot; reconcile newer changes.\",\n    \"The working tree has local changes; preserve and reconcile them.\"\n  ],\n  \"errors\": [],\n  \"execution_authority\": \"NOT_EVALUATED\",\n  \"launch_allowed\": false,\n  \"request_id\": \"SAEA-HANDOFF-20260909-01\",\n  \"generation\": 170,\n  \"snapshot_commit\": \"3727565cdedd2b26414e55314009613b74fbf5b9\",\n  \"execution_owner\": \"Codex\",\n  \"owner_decision_path\": \"docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-20260925.md\"\n}\n"
+    },
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "code": 2,
+      "output": "026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser ExcelParser for .tsv\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser TxtMdParser for .txt\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser TxtMdParser for .md\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser TxtMdParser for .markdown\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser HTMLFileParser for .htm\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser HTMLFileParser for .html\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser JSONParser for .json\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser PDFParser for .pdf\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser WordParser for .docx\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser ImageParser for .png\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser ImageParser for .jpg\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser ImageParser for .jpeg\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser ImageParser for .webp\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser ImageParser for .gif\n2026-10-02 21:30:23 | common | default_trace_id | INFO | Registered parser ImageParser for .jfif\nusage: openjiuwen_native_reuse_check.py [-h] --output OUTPUT\nopenjiuwen_native_reuse_check.py: error: the following arguments are required: --output\n"
+    },
+    {
+      "check": "derived_media_confinement_check",
+      "code": 1,
+      "output": "PYTHONPATH must contain the literal /home/chao/saea-worktrees/codex-system-text-policy/src\n"
+    },
+    {
+      "check": "stage3_algorithm_label_check",
+      "code": 1,
+      "output": "stage3 algorithm label check: FAIL: configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json: stage3_algorithm.operators_used is empty; a cell labelled 'system-text-black-box-v1' states which of that algorithm's operators it exercises\nstage3 algorithm label check: FAIL: configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json: stage3_algorithm.operators_used is empty; a cell labelled 'system-text-black-box-v1' states which of that algorithm's operators it exercises\nstage3 algorithm label check: FAIL (2 finding(s); 285 Stage-3 cell(s) of 735 experiment fragment(s); 4 allowlisted (pre-decision-101, flight-pinned))\n"
+    },
+    {
+      "check": "finite_completion_policy_check",
+      "code": 0,
+      "output": "cope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: scope: slurp-native-stage3-w4sv-fold-a-smoke-4-baseline-v1 (SAEA-SLURP-STAGE3-W4SV-FOLD-A-SMOKE-4-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: scope: slurp-native-stage3-w5-fold-a-baseline-v1 (SAEA-SLURP-STAGE3-W5-FOLD-A-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: scope: slurp-native-stage3-w5-fold-a-smoke-4-baseline-v1 (SAEA-SLURP-STAGE3-W5-FOLD-A-SMOKE-4-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: scope: slurp-native-stage3-wave1-aa-fold-a-baseline-v1 (SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: scope: slurp-native-stage3-wsv1-fold-a-baseline-v1 (SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: scope: slurp-native-stage3-wsv1-fold-a-smoke-4-baseline-v1 (SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: PASS (native_episode.finite_completion_policy='deliver-latest-or-abstain' and native_episode.react_exhaustion_policy='continue-without-answer'; 201 in-scope plan(s), 167 baseline(s) read; out of scope: 2 with no ledger row, 284 consumed, 0 naming no run id, 2 not-live cell(s) [superseded 2])\n"
+    },
+    {
+      "check": "stage3_effect_floor_check",
+      "code": 0,
+      "output": ", its preregistration or its fragment (configs/experiment/slurp-stage3-system-batch001-summary-s3-np1-run-v1.json); a live Stage-3 cell of an undeclared number of row(s) must declare measurement_design, expected_effect_pp and rows (see docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d)\nstage3 effect floor check: advisory: [missing-declaration] slurp-stage3-system-batch001-summary-s4-capacity-v1: no stage3_measurement block in its readiness package, its preregistration or its fragment (configs/experiment/slurp-stage3-system-batch001-summary-s4-capacity-v1.json); a live Stage-3 cell of an undeclared number of row(s) must declare measurement_design, expected_effect_pp and rows (see docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d)\nstage3 effect floor check: advisory: [missing-declaration] slurp-stage3-system-batch001-summary-s4-np1-run-v1: no stage3_measurement block in its readiness package, its preregistration or its fragment (configs/experiment/slurp-stage3-system-batch001-summary-s4-np1-run-v1.json); a live Stage-3 cell of an undeclared number of row(s) must declare measurement_design, expected_effect_pp and rows (see docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d)\nstage3 effect floor check: PASS (285 in-scope Stage-3 cell(s) of 735 fragment(s); 133 already flown (reported only), 22 undeclared under 200 rows (form proof by size); 0 blocking, 18 advisory finding(s); blocking from 2026-09-27; out of scope: 448 non-Stage-3 fragment(s), 58 cell(s) with no ledger row, 2 not-live cell(s))\n"
+    }
+  ],
+  "coverage_percent": {
+    "prelaunch_gate_module": 85,
+    "prelaunch_role_binding_function": 100,
+    "scaling_module": 97,
+    "scaling_policy_function": 94.29,
+    "shared_cli": 85
+  },
+  "diff_check": "passed",
+  "lint": "passed",
+  "new_contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "openjiuwen_synthetic": {
+    "passed": true,
+    "proofs": {
+      "advertised_tool_round_trip": {
+        "advertised_names": [
+          "audit_analyze"
+        ],
+        "callback_invocations": 1,
+        "passed": true,
+        "second_model_roles": [
+          "system",
+          "user",
+          "assistant",
+          "tool"
+        ],
+        "tool_call_id_preserved": "call-roundtrip"
+      },
+      "before_tool_call_rail_rejection": {
+        "hidden_callback_count_before_and_after_rejection": [
+          1,
+          1
+        ],
+        "passed": true,
+        "seen_tool_names": [
+          "audit_hidden_global"
+        ],
+        "tool_error_observation_reached_model": true,
+        "whole_react_run_aborted": false
+      },
+      "global_fallback_is_not_authority": {
+        "observation_reached_second_model_call": true,
+        "passed": true,
+        "unadvertised_callback_invocations": 1
+      },
+      "max_iterations": {
+        "configured": 1,
+        "model_calls": 1,
+        "passed": true,
+        "result_type": "error",
+        "tool_calls": 1
+      },
+      "per_agent_visibility": {
+        "agent_with_tool": [
+          "audit_analyze"
+        ],
+        "agent_without_tool": [],
+        "passed": true
+      },
+      "workflow_reviewer_then_solver": {
+        "passed": true,
+        "reviewer_invocations": 1,
+        "solver_invocations": 1,
+        "solver_received_reviewer_output": true,
+        "workflow_output_type": "WorkflowOutput"
+      }
+    }
+  },
+  "owner226": "pending; already requested",
+  "proposal_or_policy_changed": false,
+  "runtime_admitted": false,
+  "schema": "saea-scaling-binding-engineering-verification-v1",
+  "source_base_commit": "90038c90e50e30ad1d2cfcf721af328d64991517",
+  "tests": {
+    "passed": 339,
+    "skip": "Optional materialized-data smoke; synthetic integration and separate real-file seed rehearsal both pass.",
+    "skipped": 1
+  }
+}

@@ -1460,13 +1460,32 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
     from speech_aware_evidence_acquisition.rails.system_text_policy import (
         _read_pin, require, verify_system_text_binding,
     )
-    fixed = str(recipe.get("family_id", "")).startswith("fixed400-context")
-    if not fixed and "system_text_policy_binding" not in cell:
+    family = str(recipe.get("family_id", ""))
+    fixed = family.startswith("fixed400-context")
+    panel = (family.startswith("fixed400-text-") or "system_panel_registration" in recipe
+             or report.run_id.startswith("SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND"))
+    if not fixed and not panel and "system_text_policy_binding" not in cell:
         return
     try:
         binding = cell.get("system_text_policy_binding")
         require(binding is not None, "declared system text policy binding is missing")
-        if fixed:
+        if panel:
+            from speech_aware_evidence_acquisition.rails.hashing import content_hash
+            require(not fixed and "pilot_registration" not in recipe,
+                    "ambiguous legacy and panel registrations")
+            registration = json.loads(_read_pin(recipe["system_panel_registration"], repo_root))
+            require(registration.get("schema") == "saea-fixed400-system-panel-registration-v1"
+                    and registration.get("family_id") == family
+                    and registration.get("registration_sha256") == content_hash(
+                        {k: v for k, v in registration.items() if k != "registration_sha256"}),
+                    "panel registration identity or hash differs")
+            members = [m for m in registration["member_bindings"].values()
+                       if m["run_id"] == report.run_id]
+            require(len(members) == 1 and members[0]["bundle_id"] == binding["bundle_id"]
+                    and cell.get("attempt_id")
+                    and members[0]["attempt_id"] == cell["attempt_id"],
+                    "cell policy or attempt differs from the registered panel member")
+        elif fixed:
             registration = json.loads(_read_pin(recipe["pilot_registration"], repo_root))
             members = [m for m in registration["member_bindings"].values()
                        if m["run_id"] == report.run_id]

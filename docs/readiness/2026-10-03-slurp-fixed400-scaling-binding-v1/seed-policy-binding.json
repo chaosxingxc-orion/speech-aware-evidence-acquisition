@@ -1,0 +1,8 @@
+{
+  "bundle": {
+    "relpath": "system-text-search/control2-owner217/policies/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15.json",
+    "sha256": "a6ae71e6139f9a0a80ba401afcb3e1485924959536f08d3b6977381c9f762cca"
+  },
+  "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "schema": "saea-system-text-role-binding-v1"
+}

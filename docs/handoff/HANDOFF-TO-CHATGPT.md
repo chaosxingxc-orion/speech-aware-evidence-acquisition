@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Fixed-pool scaling policy binding verified, 2026-10-03T04:31:57.103849+00:00
+
+The shared offline binder now carries an unchanged compiled policy onto exact50/100/200 prefixes while preserving the original proposal protocol and recording a separate evaluation projection. It checks real media/packet identity, full400 query/vote custody, accumulated exposure and actual role bytes. All three real-file seed rehearsals pass without contacts; final candidate binding/supply/FIT remains owed. New panel prelaunch checks also close a missing-policy-binding bypass and join the exact run/attempt/bundle to the pinned registration. [Engineering proof and remaining scope](../readiness/2026-10-03-slurp-fixed400-scaling-binding-v1/README.md).
+
+339 tests pass with one optional smoke skipped; scaling97%, new policy-binding function94.29%, prelaunch role subgate100% statement coverage. Base/harness/lint and synthetic OpenJiuwen checks pass. Two pre-existing native-capacity algorithm-label findings reproduce on unchanged main; no historical configuration is edited. No proposal/model/tokenizer/scorer contact, quality read, queue/STOP change or frozen-worker mutation. All24 scale slots remain HELD. Owner225 remains complete; owner226 is still pending and already asked. Other carrier holds, L/B isolation, spent allocations and8/12.5GiB floors remain.
+
 ## Fixed-pool panel feedback base verified, 2026-10-03T04:16:54.767839+00:00
 
 The shared analysis/proposer pipeline now supports exact registered eight-member20/50/100/200/400 prefixes after an extended proposal round. It rechecks all seals and unique successful official jobs before complete feedback, preserves own A/A/cost/stratum diagnostics, and exports only full L evidence into a later prospectively allocated round. New panel adapter100%, optimization guards99%, shared CLI87% statement coverage;313 regression and isolated-capsule tests pass. Legacy owner222 projection is byte-identical on synthetic evidence. [Engineering scope and validation](../readiness/2026-10-03-slurp-fixed400-panel-feedback-v1/README.md).
@@ -703,7 +709,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T04:16:54.767839+00:00
+Last refreshed: 2026-10-03T04:31:57.103849+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

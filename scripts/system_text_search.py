@@ -250,6 +250,10 @@ def main(argv=None):
                              help="Pinned exact-cohort query, agreement and runtime inputs; required before compilation")
     compile_cmd.add_argument("--knowledge-link", type=Path,
                              help="JSON data-root pin to a fully generated and released construction link")
+    scale_cmd = commands.add_parser("bind-scaling-policy", help="Prepare unchanged policy on an exact larger prefix; no dispatch")
+    for option in ("compiled", "policy-binding", "protocol", "cohort-binding", "repo-root", "data-root", "output"):
+        scale_cmd.add_argument("--" + option, type=Path, required=True)
+    scale_cmd.add_argument("--size", type=int, choices=(50, 100, 200), required=True)
     stage_cmd = commands.add_parser("freeze-update", help="Freeze spent slots and membership before contact; no dispatch")
     stage_cmd.add_argument("--protocol", type=Path, required=True)
     stage_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
@@ -444,6 +448,15 @@ def main(argv=None):
         archive.record_compilation(branch=args.branch, round_index=args.round, slot=args.slot,
                                    bundle=bundle, configuration=compiled)
         print(json.dumps({"bundle_id": bundle.bundle_id, "runtime_admission": "pending", "contacts_added": 0}))
+    elif args.command == "bind-scaling-policy":
+        from speech_aware_evidence_acquisition.rails.system_text_scaling import bind_scaling_policy
+        result = bind_scaling_policy(read(args.compiled), read(args.policy_binding),
+            source_protocol=read(args.protocol), cohort_binding=read(args.cohort_binding),
+            size=args.size, repo_root=args.repo_root, data_root=args.data_root)
+        write_new(args.output, result)
+        print(json.dumps({"bundle_id": result["preparation"]["bundle_id"], "rows": args.size,
+            "preparation_sha256": content_hash(result["preparation"]),
+            "contacts_added": 0, "runtime_admission": "separate-required"}))
     elif args.command == "freeze-update":
         from speech_aware_evidence_acquisition.rails.system_search_stage import freeze_update_stage
         registration = freeze_update_stage(archive, protocol=read(args.protocol), round_index=args.round,
