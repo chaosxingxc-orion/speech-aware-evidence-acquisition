@@ -1,0 +1,19 @@
+{
+  "accounting": {
+    "relpath": "coordination/node-panel-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "a71d084b4549f1695bc9538e6e3dd9d5ae18f6a430743a7b3371c22c7fac54a2"
+  },
+  "all_admitted_complete": true,
+  "at_utc": "2026-10-03T18:52:43.564806+00:00",
+  "endpoints": 297,
+  "generation_contacts": 0,
+  "interpretation": "Measured reachable maximum-return graph fits; not an exhaustive arbitrary-text bound or KV warmup. Actual per-request FIT remains mandatory.",
+  "maximum_required_tokens": 16982,
+  "measured_requests": 44,
+  "minimum_margin_after_structural_reserve": 5546,
+  "new_structural_registration": "docs/readiness/2026-10-03-node-panel-structural-entry-v1/registration-v1.json",
+  "official_scorer_contacts": 0,
+  "schema": "saea-node-panel-capacity-complete-v1",
+  "source_commit": "456a28180238a59a1a7cbcdd7de8fba7f6c2756f",
+  "worker": "/home/chao/saea-worktrees/codex-node-panel-capacity-v1"
+}

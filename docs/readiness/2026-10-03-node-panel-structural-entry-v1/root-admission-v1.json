@@ -1,0 +1,32 @@
+{
+  "at_utc": "2026-10-03T18:50:26.537769+00:00",
+  "authority": "Root implements direct node-batching and engineering-first instructions; no subagents.",
+  "capacity_evidence": {
+    "relpath": "coordination/node-panel-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "a71d084b4549f1695bc9538e6e3dd9d5ae18f6a430743a7b3371c22c7fac54a2"
+  },
+  "decision_id": "node-panel-structural-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-V1",
+    "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-V1",
+    "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-FIT-V1"
+  ],
+  "failure_disposition": "Stop,preserve,diagnose and record root disposition;no automatic retry.",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "limitation": "Eight total jobs prove integrated ownership and two4-job groups,not160-job behavior or stable speed. Inherited cache and repeat samples are reported. No quality read or optimizer export.",
+  "next_panel_authorized": false,
+  "owner_decisions": [
+    227
+  ],
+  "precontact_conditions": [
+    "Clean frozen source,exact registration/runtime/warm supply and node binding checks",
+    "No active generator/scorer,STOP or lease; fresh service and12.5/8GiB guards",
+    "Normal completed owned control archive only,then one Windows shared driver"
+  ],
+  "schema": "saea-campaign-decision-v1",
+  "scope": "Exactly two independently owned four-row structural members in one strict node panel on existing same400 first4,104 model calls and416 actual FIT endpoints maximum,zero official scoring.",
+  "status": "decided",
+  "structural_read_scope": "Every request/FIT/wire/control/Reviewer handoff and Omni custody; original sample timing and node waves. No task quality or official score."
+}

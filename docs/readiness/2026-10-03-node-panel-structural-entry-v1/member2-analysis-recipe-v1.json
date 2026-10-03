@@ -1,0 +1,53 @@
+{
+  "acceptance": [
+    "Exact original request,response,wire and actual FIT body custody",
+    "Configured node_pipeline with all four slots available; node timing,global stage barriers and next-node CPU prefetch retained",
+    "No next-node model before all current-node visits and final-group preparation settle; exact independent requests,own budgets and legal per-sample revision transitions",
+    "All Reviewer handoffs valid and visible; all terminal answers retain Omni custody",
+    "Original sample wall timing includes barriers; no contact-sum substitution"
+  ],
+  "max_fit_endpoints": 208,
+  "max_generation": 52,
+  "next_panel_authorized": false,
+  "official_scoring": 0,
+  "read_run_id": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-STRUCTURE-V1",
+  "read_scope": "Every request/FIT/wire/control/Reviewer handoff and Omni custody; original sample timing and node waves. No task quality or official score.",
+  "rows": 4,
+  "run_ids": {
+    "fit": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-FIT-V1",
+    "generation": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-V1",
+    "read": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-node-panel-structural-read-v1",
+  "source_checks": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
+      "sha256": "9f5906cf3da4e7d9514353d9a80b295059124ac006c931f4af1dd42bcdaf041e"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py",
+      "sha256": "218fc1751ae7dceee0a6b98ac09e473ab48d05d8ac0a4892b4073bec934535a5"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py",
+      "sha256": "234dcaa0ee6ccd5cec6cfb90596b61cd69b3d67384f8a8771cf74cbfadb891a9"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/trace_spool.py",
+      "sha256": "a2fb2aa3055d0942cb56b94bed462a4841659edd2599d18217146428eddd250b"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "bec4de61c757245052cc6ab458613aaf6222bcdc022a5a422a0b5765a9f5d5c8"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "d571888abaa1dc9479f1d6a48915b860ed7730c66328c4690a2e94da80b44f36"
+    }
+  ],
+  "status": "ROOT COUNTERSIGNED structural-only before contact"
+}

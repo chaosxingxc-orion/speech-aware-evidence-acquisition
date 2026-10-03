@@ -1,0 +1,54 @@
+{
+  "cells": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member1-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-node-panel-member1-smoke-4-v1",
+      "experiment": "slurp-native-stage3-node-panel-member1-smoke-4-v1",
+      "job_keys": [
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ]
+      ],
+      "run_id": "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member2-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-node-panel-member2-smoke-4-v1",
+      "experiment": "slurp-native-stage3-node-panel-member2-smoke-4-v1",
+      "job_keys": [
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ]
+      ],
+      "run_id": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-V1"
+    }
+  ],
+  "panel_id": "SAEA-SLURP-NODE-PANEL-STRUCTURAL-V1",
+  "schema": "saea-node-panel-plan-v1"
+}
