@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Node timing and owner context-space amendment, 2026-10-03T11:29:43.118055+00:00
+
+Root completed a read-only timing sidecar for all 509 contacts of the already qualified prefix panel. Per-node prefill, decode, client transport mean/p50/p95, cache/token coverage and source hashes are available in the [descriptive timing report](../results/2026-10-03-prefix-node-timing-descriptive-read.md). No new model/scorer contacts, no optimizer export and no change to historical cache exports or frozen sources. Related tests: 98 passed; module statement coverage 97%.
+
+The human explicitly relaxes cache-driven context restrictions: retain fixed experimental conditions, permit prospective node-specific instructions/context layout/post-call handoffs, and treat cache reuse as a cost observation rather than a hard eligibility gate. [English owner amendment](../receipts/owner/2026-10-03-context-space-and-node-timing-amendment.json). Keep each frozen policy stable within a comparison; a new layout needs a new declared version and exact checks under owner227, not another human approval inside the existing bounded scope. Current round8 proposal bytes and role-text scope remain immutable. Preserve L/B isolation, same400 assets, answer custody, human review before8x400, other-carrier holds and PAUSED heartbeat. Independent 10-second telemetry continues.
+
 ## Complete prefix scheduling read; trajectory routing retained, 2026-10-03T11:19:19.103453+00:00
 
 All four20 members independently FINALIZED with verified seals and one unique successful official score each, zero failed jobs. Root READ is complete; no scorer replay or optimizer export.509 model contacts. Under unchanged query-first request layout, trajectory repeats reused83.81/83.19percent of input and took195.68/195.50seconds generation; role repeats reused25.84/25.99percent and took505.81/496.49seconds. Quality contrasts reverse sign and the20-row own-null is broad: no formal benefit, harm, speedup or learning claim. [Full natural/equal-stratum report](../results/2026-10-03-prefix-affinity-n20-descriptive-read.md); [hash-bound custody](../receipts/continuation/2026-10-03-prefix-affinity-n20-scientific-read.json).
@@ -921,7 +927,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T11:20:02.031745+00:00
+Last refreshed: 2026-10-03T11:29:43.118055+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

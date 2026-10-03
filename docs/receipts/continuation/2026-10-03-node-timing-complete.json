@@ -1,0 +1,72 @@
+{
+  "at_utc": "2026-10-03T11:29:43.118055+00:00",
+  "checks": {
+    "derived_media_confinement": "Not executed to data access: entry refused relative PYTHONPATH. This analysis-only change does not require reading unrelated carrier media.",
+    "engineering_base": "PASS",
+    "experiment_handoff": "No errors; historical snapshot/local-change warnings; not launch admission",
+    "finite_completion_policy": "PASS",
+    "harness_admission": "PASS",
+    "openjiuwen_native_reuse": "PASS, synthetic only",
+    "results_ledger": "PASS with 194 existing informational findings",
+    "stage3_algorithm_label": "Two existing empty operators_used capacity fragments also fail unchanged main 717759c64; preserve historical bytes. No new fragment added.",
+    "tool_catalog": "PASS"
+  },
+  "heartbeat": "PAUSED",
+  "implementation": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+    "sha256": "b0b0dc3bdcc638a4a9db5d8df734805e646bd12521d0934653e3ae3d5f6672fd"
+  },
+  "model_contacts_added": 0,
+  "optimizer_export": false,
+  "outputs": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/node-timing-v1/summary.json",
+      "sha256": "ca577a55cd5c45d80da77760bc6b44727beed874cd5c85d310322bc15735e185"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/node-timing-v1/trajectory.json",
+      "sha256": "24fa86b619d5e239acf85572f3cb41c82f4494aad08ca20b0d112e01e3619a57"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/node-timing-v1/role.json",
+      "sha256": "6477652ca3545dd14e8b1c2b61d6108a8d235048566d88ecf27bf63642437797"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/node-timing-v1/role-aa.json",
+      "sha256": "8d7e3e6507388db93db06f979d3c73665f3f3e2c29b7d515a2e2ea37529810aa"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/node-timing-v1/trajectory-aa.json",
+      "sha256": "6ed84d502251b5ce75315bb10bb2e9a8fb98e744734ba0aaa0d0776bc62bfd1e"
+    }
+  ],
+  "owner_amendment": {
+    "relpath": "docs/receipts/owner/2026-10-03-context-space-and-node-timing-amendment.json",
+    "sha256": "7b8c243e0ca0800d8ddefa34b43b8ea06b4767960b4c953efaee0e6349813cd6"
+  },
+  "preparation": "docs/readiness/2026-10-03-node-context-optimization-v1/README.md",
+  "read_authority": {
+    "ledger_row_sha256": "887beb3281e0536abe5a27f8acd78eeba1f4f30e44c3dfeea98ccc07817c3e28",
+    "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/analysis-recipe-v1.json",
+      "sha256": "105dcff8b19e8a755561a9c519ee1318aa68b2a9ab42e5d5e0e1748b46b1077e"
+    }
+  },
+  "report": {
+    "relpath": "docs/results/2026-10-03-prefix-node-timing-descriptive-read.md",
+    "sha256": "ebe8a4c4f759018bc5806a0577028af21a00aabee10461ec1b64a9c975db6856"
+  },
+  "runtime_changed": false,
+  "schema": "saea-node-timing-complete-v1",
+  "scorer_contacts_added": 0,
+  "stage3_existing_findings": [
+    "configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+    "configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json"
+  ],
+  "tests": {
+    "module_statement_coverage_percent": 97,
+    "new_exporter_statements_covered": true,
+    "passed": 98
+  }
+}

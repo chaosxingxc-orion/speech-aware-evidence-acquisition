@@ -1,0 +1,31 @@
+{
+  "application": "Prospective only. Preserve the current completed round8 proposal inputs/responses and its role-text scope. Register a new declared policy/layout version before activating broader changes; implement support in the shared engineering base, with legacy-off equivalence, full-request FIT and structural checks.",
+  "authority": "Direct human instruction in the current root conversation, under the existing owner227 bounded autonomy.",
+  "complete_english_translation": "I want to see timing statistics for each node so that we can observe whether the cache is effective. Regarding inputs assigned to fixed role slots, I prefer to lock the variables and release the invariants to achieve business-level end-to-end optimization and open up the optimization space. Previously we in fact constrained context engineering too tightly, which limited that space. Some reuse for each sample is sufficient; if extensive reuse is not possible, that is also tolerable.",
+  "fixed_boundaries": [
+    "Same existing UPDATE2 400-input pool and immutable audio/packets/queries/votes/current knowledge",
+    "Frozen Omni weights and answer custody; shared runtime, legal tools and official scorer",
+    "L/B isolation, cumulative exposure, spent proposal identities, complete-family READ and no paid API",
+    "No arbitrary optimizer-generated execution code, data rebuild, new answering model or hidden answer replacement",
+    "Owner227 reviewed 20/50/100/200 sequence; human decision before 8x400 without splitting to evade it",
+    "Other-carrier holds and PAUSED SLURP heartbeat"
+  ],
+  "gpu_dispatch_authorized_by_this_record": false,
+  "interpretation": [
+    "Separate experimental controls from editable system policy: hold sample/data, frozen answering core, tool authority, scoring and declared comparison conditions fixed while prospectively varying node instructions, context composition/order and post-call handoffs.",
+    "Within each frozen policy version, keep a node-specific invariant instruction block stable across its calls and separate it from variable sample/evidence/history content. Across policy versions, permit the invariant instruction block itself to be optimized.",
+    "Do not require all nodes to share identical prompts, a fixed role-to-slot assignment, or a minimum cache reuse fraction. Record cache reuse and recomputation as cost observations; accept lower reuse when complete-system quality/cost warrants it.",
+    "Treat a node-static-prefix-before-query layout as a prospective policy/transport-layout factor, not as a conclusion from the already completed query-first scheduling panel."
+  ],
+  "model_or_scorer_contacts_added": 0,
+  "new_human_permission_required_within_owner227": false,
+  "prospective_editable_surfaces": [
+    "Independent role text and output/hand-off contracts",
+    "Placement and grouping of invariant node instructions versus variable query, supplied evidence and visible history",
+    "Selection, ordering, compression and presentation of already authorized visible context through declared configuration",
+    "Post-call structural validation and handoff normalization with raw responses retained and Omni retaining final answer authority"
+  ],
+  "recorded_at_utc": "2026-10-03T11:29:43.118055+00:00",
+  "schema": "saea-owner-context-space-amendment-v1",
+  "source": "Current root conversation; latest human turn requesting per-node timing and relaxed context-engineering constraints, following approval of the prefix-cache investigation."
+}

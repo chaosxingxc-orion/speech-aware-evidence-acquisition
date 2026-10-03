@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Node timing and owner context-space amendment, 2026-10-03T11:29:43.118055+00:00
+
+Root completed a read-only timing sidecar for all 509 contacts of the already qualified prefix panel. Per-node prefill, decode, client transport mean/p50/p95, cache/token coverage and source hashes are available in the [descriptive timing report](../results/2026-10-03-prefix-node-timing-descriptive-read.md). No new model/scorer contacts, no optimizer export and no change to historical cache exports or frozen sources. Related tests: 98 passed; module statement coverage 97%.
+
+The human explicitly relaxes cache-driven context restrictions: retain fixed experimental conditions, permit prospective node-specific instructions/context layout/post-call handoffs, and treat cache reuse as a cost observation rather than a hard eligibility gate. [English owner amendment](../receipts/owner/2026-10-03-context-space-and-node-timing-amendment.json). Keep each frozen policy stable within a comparison; a new layout needs a new declared version and exact checks under owner227, not another human approval inside the existing bounded scope. Current round8 proposal bytes and role-text scope remain immutable. Preserve L/B isolation, same400 assets, answer custody, human review before8x400, other-carrier holds and PAUSED heartbeat. Independent 10-second telemetry continues.
+
 ## Complete prefix scheduling read; trajectory routing retained, 2026-10-03T11:19:19.103453+00:00
 
 All four20 members independently FINALIZED with verified seals and one unique successful official score each, zero failed jobs. Root READ is complete; no scorer replay or optimizer export.509 model contacts. Under unchanged query-first request layout, trajectory repeats reused83.81/83.19percent of input and took195.68/195.50seconds generation; role repeats reused25.84/25.99percent and took505.81/496.49seconds. Quality contrasts reverse sign and the20-row own-null is broad: no formal benefit, harm, speedup or learning claim. [Full natural/equal-stratum report](../results/2026-10-03-prefix-affinity-n20-descriptive-read.md); [hash-bound custody](../receipts/continuation/2026-10-03-prefix-affinity-n20-scientific-read.json).

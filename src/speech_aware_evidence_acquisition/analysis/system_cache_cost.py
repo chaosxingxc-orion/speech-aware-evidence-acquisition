@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 from collections.abc import Mapping
+from statistics import median
 
 from ..rails.hashing import content_hash
 from .native_episode_source import VerifiedNativeEpisodeSource
@@ -184,6 +185,93 @@ def export_system_cache_cost(source: VerifiedNativeEpisodeSource) -> dict:
         "contacts": contacts, "totals": totals,
         "model_contacts_added": 0, "scorer_contacts_added": 0,
         "claim_scope": "Recorded cache cost only; no cache-policy or quality comparison.",
+    }
+    report["content_sha256"] = content_hash(report)
+    return report
+
+
+def _measurement_summary(values):
+    observed = sorted(value for value in values if value is not None)
+    total = math.fsum(observed) if observed else None
+    return {
+        "observed_contacts": len(observed), "total_contacts": len(values),
+        "sum_observed": total,
+        "complete_total": total if len(observed) == len(values) else None,
+        "mean_observed": total / len(observed) if observed else None,
+        "p50_observed": median(observed) if observed else None,
+        "p95_observed": observed[math.ceil(.95 * len(observed)) - 1] if observed else None,
+    }
+
+
+def _client_cost(source, contact):
+    record_id = contact["request_id"] + "/cost"
+    if record_id not in source.bundle.trace_records:
+        return {"available": False}, None
+    record = source.bundle.trace_records[record_id]
+    if (not isinstance(record, Mapping) or type(record.get("calls")) is not int
+            or record["calls"] != 1):
+        raise CacheCostError("node timing COST must identify one model contact")
+    for key in ("sample_id", "request_id"):
+        if key in record and record[key] != contact[key]:
+            raise CacheCostError("node timing COST belongs to another sample or request")
+    latency = record.get("latency_seconds")
+    if (type(latency) not in (int, float) or latency < 0
+            or not math.isfinite(latency) or not math.isfinite(latency * 1000)):
+        raise CacheCostError("node timing COST latency must be finite and nonnegative")
+    return {"available": True, "record_id": record_id,
+            "content_sha256": content_hash(record)}, latency * 1000
+
+
+def export_system_node_timing(source: VerifiedNativeEpisodeSource) -> dict:
+    """Summarize measured node contacts after the same complete-source read gate.
+
+    This optional sidecar leaves the existing cache export unchanged. A contact
+    includes every model invocation, including tool continuations and revisits.
+    Means are contact weighted; p50 is the median and p95 the nearest-rank value
+    over observed contacts only. Missing values remain unknown, never zero.
+
+    COST latency spans the adapter's transport call, including work within that
+    transport. Server prompt/decode timers have different measurement boundaries.
+    Do not subtract them to invent queue time, or sum overlapping contacts to
+    infer episode wall time. Reuse is token weighted and requires full coverage.
+    The caller still supplies the exact complete-family READ authorization.
+    """
+    cached = export_system_cache_cost(source)
+    contacts = []
+    for row in cached["contacts"]:
+        values = {name: value for name, value in row["metrics"]["values"].items()
+                  if name != "final_resident_tokens"}
+        cost, values["client_transport_ms"] = _client_cost(source, row)
+        prefill, generation = values["prefill_ms"], values["generation_ms"]
+        values["server_prefill_and_generation_ms"] = (
+            prefill + generation if prefill is not None and generation is not None else None)
+        contacts.append({
+            "sample_id": row["sample_id"], "request_id": row["request_id"],
+            "role_id": row["role_id"], "visit_index": row["visit_index"],
+            "interrupted": row["interrupted"], "cache_contact_sha256": content_hash(row),
+            "cost_record": cost, "measurements": values,
+        })
+    by_role = {}
+    for role in sorted({row["role_id"] for row in contacts}):
+        rows = [row for row in contacts if row["role_id"] == role]
+        metrics = {name: _measurement_summary([row["measurements"][name] for row in rows])
+                   for name in rows[0]["measurements"]}
+        total = metrics["input_tokens"]["complete_total"]
+        reused = metrics["reused_input_tokens"]["complete_total"]
+        by_role[role] = {
+            "contacts": len(rows), "samples": len({row["sample_id"] for row in rows}),
+            "visits": len({(row["sample_id"], row["visit_index"]) for row in rows}),
+            "metrics": metrics,
+            "reused_input_fraction": reused / total if total and reused is not None else None,
+        }
+    report = {
+        "schema": "saea-system-node-timing-v1", "source": cached["source"],
+        "cache_export_content_sha256": cached["content_sha256"],
+        "contacts": contacts, "by_role": by_role,
+        "model_contacts_added": 0, "scorer_contacts_added": 0,
+        "statistics": "Contact-weighted mean; median p50; nearest-rank p95 over observed values; token-weighted reuse with complete coverage.",
+        "timing_scope": "Server prefill/decode and client transport have distinct boundaries. Contact sums are not episode wall time or isolated GPU time; queue time is not inferred.",
+        "claim_scope": "Descriptive cost observations only; cache reuse is not a policy eligibility threshold or proof of quality.",
     }
     report["content_sha256"] = content_hash(report)
     return report
