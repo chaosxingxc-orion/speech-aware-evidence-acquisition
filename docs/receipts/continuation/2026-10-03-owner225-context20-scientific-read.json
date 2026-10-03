@@ -1,0 +1,150 @@
+{
+  "artifacts": {
+    "evidence.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1/evidence.json",
+      "sha256": "4f50d334c4caa2e15b22f8887cf2761a5f37216801c86bf395c0ea9075823689"
+    },
+    "family.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1/family.json",
+      "sha256": "f1497c4b041e661ac25f68c5504ebe736872fd397f4e03c445ea13e81f2d9f7d"
+    },
+    "postcall-audit.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1/postcall-audit.json",
+      "sha256": "d22634c853c5873b5c0d2e44eca058c87898b198e5c2eaac1e5e6e5f17dcc6c4"
+    },
+    "report.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1/report.json",
+      "sha256": "51010c6664c815f32c954fa0301de7ac2888d98eafb8594544165511456f99da"
+    },
+    "solver-shape-reasons.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1/solver-shape-reasons.json",
+      "sha256": "52eeea560355627701ad39dd335cf08fb77f1abd421d9726b8b334b09b188caa"
+    }
+  },
+  "automatic_expansion": false,
+  "blind_input": "No root/B outcome enters any blind proposer. Future L inputs must use separately qualified L-only evidence.",
+  "complete_members": 4,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decision": "Retain the original seed as the formal parent. Preserve seed and Planner on this cohort descriptive frontier. Remain at20 for repair of raw Solver output and criticism targeting before reviewed scale growth. No stable efficacy, feedback-learning advantage or formal adoption.",
+  "family_id": "fixed400-context20-recovery1-v1",
+  "mechanism_counts": {
+    "B-candidate-1": {
+      "extra_solver_revisions": 16,
+      "findings": 52,
+      "findings_with_non_slot_identifiers": 6,
+      "first_to_last_solver_text_changed": 4,
+      "perception_visits": 20,
+      "planner_visits": 36,
+      "review_handoffs_not_visible_to_planner": 0,
+      "review_handoffs_visible_to_planner": 36,
+      "reviewer_visits": 36,
+      "reviews_valid": 36,
+      "solver_not_strict_task_json": 4,
+      "solver_strict_task_json": 32,
+      "solver_text_tool_markers": 4,
+      "solver_visits": 36
+    },
+    "B-candidate-2": {
+      "extra_solver_revisions": 17,
+      "findings": 44,
+      "findings_with_non_slot_identifiers": 2,
+      "first_to_last_solver_text_changed": 6,
+      "perception_visits": 20,
+      "planner_visits": 37,
+      "review_handoffs_not_visible_to_planner": 0,
+      "review_handoffs_visible_to_planner": 37,
+      "reviewer_visits": 37,
+      "reviews_valid": 37,
+      "solver_not_strict_task_json": 8,
+      "solver_strict_task_json": 29,
+      "solver_text_tool_markers": 3,
+      "solver_visits": 37
+    },
+    "B-parent": {
+      "extra_solver_revisions": 15,
+      "findings": 45,
+      "findings_with_non_slot_identifiers": 2,
+      "first_to_last_solver_text_changed": 2,
+      "perception_visits": 20,
+      "planner_visits": 35,
+      "review_handoffs_not_visible_to_planner": 0,
+      "review_handoffs_visible_to_planner": 35,
+      "reviewer_visits": 35,
+      "reviews_valid": 35,
+      "solver_not_strict_task_json": 2,
+      "solver_strict_task_json": 33,
+      "solver_text_tool_markers": 2,
+      "solver_visits": 35
+    },
+    "B-parent-aa": {
+      "extra_solver_revisions": 17,
+      "findings": 55,
+      "findings_with_non_slot_identifiers": 2,
+      "first_to_last_solver_text_changed": 5,
+      "perception_visits": 20,
+      "planner_visits": 37,
+      "review_handoffs_not_visible_to_planner": 0,
+      "review_handoffs_visible_to_planner": 37,
+      "reviewer_visits": 37,
+      "reviews_valid": 37,
+      "solver_not_strict_task_json": 3,
+      "solver_strict_task_json": 34,
+      "solver_text_tool_markers": 3,
+      "solver_visits": 37
+    }
+  },
+  "official_summaries": {
+    "B-candidate-1": {
+      "intent": 0.7,
+      "model_calls": 128,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.6092977250247279,
+      "tool_calls": 0
+    },
+    "B-candidate-2": {
+      "intent": 0.7,
+      "model_calls": 131,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5708460754332314,
+      "tool_calls": 0
+    },
+    "B-parent": {
+      "intent": 0.7,
+      "model_calls": 125,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.583941605839416,
+      "tool_calls": 0
+    },
+    "B-parent-aa": {
+      "intent": 0.7,
+      "model_calls": 131,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5517241379310344,
+      "tool_calls": 0
+    }
+  },
+  "optimizer_export_allowed": false,
+  "owner_decisions": [
+    223,
+    224,
+    225
+  ],
+  "qualification": "docs/receipts/continuation/2026-10-03-owner225-context20-family-qualified.json",
+  "read_authority": {
+    "ledger_row_sha256": "304e65f071a3c5a3422d5b423ebdff77828fcbed64060adac10fb8f5228ede42",
+    "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-03-slurp-fixed400-context20-recovery1-v1/analysis-recipe-v1.json",
+      "sha256": "de7c90d2ed05270d5aaf4494cb83ee635ed54ef659770797cec54c27a4d2282a"
+    }
+  },
+  "recorded_at_utc": "2026-10-03T02:46:05.070976+00:00",
+  "report": "docs/results/2026-10-03-slurp-context20-recovery1-root-read.md",
+  "rows_per_member": 20,
+  "schema": "saea-context20-recovery-scientific-read-v1",
+  "status": "EXPLORATORY-FIXED-POOL-NO-ADOPTION"
+}

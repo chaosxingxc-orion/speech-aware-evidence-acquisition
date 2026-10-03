@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner225 recovery complete and root READ reviewed, 2026-10-03T02:46:05.070976+00:00
+
+All four20-row members finalized with verified seals/unique successful official scores and zero failed jobs; exact root READ is complete. Seed/A/A/Planner/Solver SLU-F1 is58.3942/55.1724/60.9298/57.0846%, intent70%, completion100%. Planner gain +2.5356pp remains uncertain; Solver raw-shape defects8/37 versus seed2/35. All145 Reviewer handoffs are visible to Planner, with12 non-slot findings. [Complete root report](../results/2026-10-03-slurp-context20-recovery1-root-read.md). This is retained-exposure optimization, no formal adoption/L-over-B gain or optimizer export.
+
+Root retains seed and Planner on this cohort descriptive frontier, remains at20 to repair dominant consumption defects, then reviews50. The24 prepared50/100/200 slots remain HELD; register new bounded allocations rather than replace spent ones. Blind proposers receive no root/B feedback. No generation/scorer remains active after normal driver completion; resident service is intentionally idle. Preserve frozen963528f3e, all controls/evidence and old malformed family unread. Floors8/12.5GiB and other carrier holds remain.
+
 ## Complete-pilot post-call source audit, 2026-10-03T02:37:22.476711+00:00
 
 Root reverified the qualified owner220 family and exact READ. All289 Reviewer handoffs are visible in actual next Planner requests;27 raw Solver task-shape defects and17 non-slot finding identifiers are reproduced. This narrows the diagnosis to criticism content, Planner decisions and Solver revisions; visibility does not establish semantic use or benefit. [Source evidence](../results/2026-10-03-slurp-postcall-source-audit.md). Zero new model/scorer contacts, no optimizer export. Current225 comparison has three finalized/scored members and the last candidate in flight; current quality remains unread.

@@ -1892,3 +1892,7 @@ All eight20-row members finalized, sealed and officially scored once; root READ 
 ## 2026-10-03: complete-pilot post-call source audit — DESCRIPTIVE
 
 Root reverified all eight qualified20-row members and the exact existing READ. All289 Reviewer handoffs are present in the actual next Planner request. The source audit reproduces27 raw Solver shape defects and17 findings with non-slot identifiers; it establishes transmission, not semantic consumption or benefit. Zero new model/scorer contacts and no optimizer export. [Source-bound supplement](2026-10-03-slurp-postcall-source-audit.md). Prior scientific verdicts remain unchanged.
+
+## 2026-10-03: owner225 context20 recovery — EXPLORATORY, NO ADOPTION
+
+All four20-row systems finalized/sealed/scored once and the exact root READ is complete. Seed/A/A/Planner/Solver SLU-F1 is58.3942/55.1724/60.9298/57.0846%; intent70% and reliable completion100% throughout. Planner minus seed +2.5356pp CI95[-0.1701,+9.0435]; no stable gain. Solver has8/37 non-strict raw responses and one exact repair/one damage. Root stays at20 for repair; larger prepared panels remain HELD. [All strata, costs and source diagnostics](2026-10-03-slurp-context20-recovery1-root-read.md). No optimizer export or blind feedback.

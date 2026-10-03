@@ -1,0 +1,51 @@
+{
+  "contacts_added_by_audit": 0,
+  "fit_endpoint_contacts": 2060,
+  "generation_contacts": 515,
+  "members": [
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 512,
+      "fit_request_receipts": 128,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-FIT-V1",
+      "generation_contacts": 128,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1",
+      "member": "B-candidate-1"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 524,
+      "fit_request_receipts": 131,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-FIT-V1",
+      "generation_contacts": 131,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1",
+      "member": "B-candidate-2"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 500,
+      "fit_request_receipts": 125,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-FIT-V1",
+      "generation_contacts": 125,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1",
+      "member": "B-parent"
+    },
+    {
+      "all_requests_fit": true,
+      "fit_endpoint_contacts": 524,
+      "fit_request_receipts": 131,
+      "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-FIT-V1",
+      "generation_contacts": 131,
+      "generation_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1",
+      "member": "B-parent-aa"
+    }
+  ],
+  "official_score_jobs": 4,
+  "recorded_at_utc": "2026-10-03T02:47:53.978187+00:00",
+  "schema": "saea-context20-contact-accounting-receipt-v1",
+  "scope": "Actual role contacts and pre-request FIT endpoint journals; no new service/scorer contacts.",
+  "source_index": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1/contact-accounting.json",
+    "sha256": "006c0b744fc95bd0c4b9cf8a3384e3e282da120be3439af07badb0e7faf50982"
+  }
+}
