@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Extra5 structural engineering launched, 2026-10-03T07:18:40.466639+00:00
+
+Windows SAEA-Batch-Driver epoch2026-10-03T07:17:22Z runs three separately registered four-row structural proofs from frozenb04c9aab9 at `/home/chao/saea-worktrees/codex-system-text-extra5-engineering-v1`. All three actual frozen preflights passed; parent worker is OPENED and executing. Startup Windows free14.31GiB. [Launch custody](../receipts/continuation/2026-10-03-extra5-engineering-launch.json). Old completed controls were archived as a normal transition with no STOP present; this grants monitor no control authority.
+
+This worker-only engineering does not score or read quality. Exact next8x20 admission waits for all three structural acceptances. All20 proposal allocations remain spent, including two current L no-change outcomes. Root227 continues engineering autonomously through reviewed20/50/100/200, with human review before8x400. Keep frozen evidence, blind isolation and other holds.
+
 ## Extra5 capacity complete; engineering admitted, 2026-10-03T07:12:22.806711+00:00
 
 Three exact policies passed891 tokenizer endpoints and132 measured reachable requests with full reserves; zero generation/scorer contacts. [Evidence](../receipts/continuation/2026-10-03-extra5-capacity-complete.json). Three four-row structural-only proofs are root-admitted under227; launch is pending. Eight next20 members have identical supply outputs but remain held for engineering acceptance and exact family registration. Learning slots remain no-change; no improvement claim.
