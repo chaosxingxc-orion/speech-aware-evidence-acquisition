@@ -1,0 +1,17 @@
+{
+  "all_fit": true,
+  "at": "2026-10-03T01:50:27.679088+00:00",
+  "commit": "0a078853c3818d9b9b90dab8867b349e07e8978c",
+  "generation_contacts": 0,
+  "measured_requests": 44,
+  "minimum_margin_after_reserves": 5546,
+  "receipt": {
+    "relpath": "coordination/slurp-system-text-fixed400-seed-binding-capacity-recovery1-v1/request-fit-v1.json",
+    "sha256": "dd2f4991380cb5b0a9c646af4173cfc3400becc72fc4f0b8687861d7a351a092"
+  },
+  "schema": "saea-owner225-capacity-complete-v1",
+  "scorer_contacts": 0,
+  "tokenizer_endpoints": 297,
+  "windows_task": "SAEA-SystemText-SeedBinding-Capacity-Recovery1",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-seed-binding-capacity-recovery1"
+}
