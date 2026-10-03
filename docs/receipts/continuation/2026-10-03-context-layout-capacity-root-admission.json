@@ -1,0 +1,18 @@
+{
+  "admission": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-capacity-entry-v1/root-delegated-admission-v1.json",
+    "sha256": "bcea989b36b020c1246ee03dfeef517e87a9dfe39f85f01b55c4b42bf9eaa48d"
+  },
+  "analysis_recipe": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-capacity-entry-v1/capacity-analysis-recipe-v1.json",
+    "sha256": "bd30dc33e12a45555f394f9651c6bcd963c01b9b9237900d174ae5e2c4258e11"
+  },
+  "at_utc": "2026-10-03T12:47:52.589912+00:00",
+  "contacts": 0,
+  "next": "Separate clean frozen worker,actual final model-free checks,current live/resource checks,then one fresh durable Windows task.",
+  "plan": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-capacity-entry-v1/capacity-plan-registered-v1.json",
+    "sha256": "38874e5ce7141abf8c3c551eac58a15856ba65a7874524ab38bc253f66bb051f"
+  },
+  "schema": "saea-context-layout-capacity-root-admission-v1"
+}

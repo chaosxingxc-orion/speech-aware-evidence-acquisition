@@ -1,0 +1,36 @@
+{
+  "antecedents": [
+    {
+      "relpath": "docs/readiness/2026-10-03-context-layout-capacity-entry-v1/root-review-recipe-v1.json",
+      "sha256": "b0be4327083b2c3c5c57e60cdedbc7c6b8c1a675d4f173e8938efa3debcf1884"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/preparation-v2.json",
+      "sha256": "e2770e3cb4e1c93486d0be81729e77125f9a56689b2aa24ef701ce7adab50a7e"
+    }
+  ],
+  "at_utc": "2026-10-03T12:47:52.589912+00:00",
+  "authority": "Root personally reviewed recipe b0be4327083b2c3c5c57e60cdedbc7c6b8c1a675d4f173e8938efa3debcf1884, graph proof and10 repository/4 external hashes. Under owner227 and latest engineering-first instruction,exactly one capacity run is delegated after frozen and live checks.",
+  "conditions": "One fresh Windows capacity task,guarded startup12.5/running8 GiB,existing4x24576/max512 service,no competing lease/process/STOP,fresh live telemetry. No queue/STOP/service/cache or frozen-source mutation.",
+  "decision_id": "context-layout-before-speech-capacity-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-FIT-V1"
+  ],
+  "failure_disposition": "Stop and preserve evidence; no retry or next-stage generation.",
+  "held": "graph,smoke-4,ROUND8 learning and all proposals remain held;heartbeat PAUSED",
+  "read_scope": "Capacity bounds,endpoint accounting,output reserves,operational resources only;no answers,task quality,scoring or scientific READ.",
+  "schema": "saea-campaign-decision-v1",
+  "scope": {
+    "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-capacity-v1",
+    "context_layout": "before-speech-v1",
+    "generation_contacts": 0,
+    "policy_bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+    "prefix_affinity": "OFF",
+    "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-FIT-V1",
+    "scorer_contacts": 0,
+    "seed_role_bytes": "unchanged",
+    "tokenizer_endpoint_cap": 297,
+    "trajectory_scheduling": true
+  },
+  "status": "decided"
+}

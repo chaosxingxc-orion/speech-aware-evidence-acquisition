@@ -1,0 +1,16 @@
+{
+  "acceptance": [
+    "Exactly one fit within297 endpoints",
+    "Every tested request fits with full512 output and2048 structural reserve",
+    "Preserve failures without retry or next-stage dispatch"
+  ],
+  "allowed_read": "Capacity fit booleans,token/count/slot/output-reserve measurements,source and resource/operational custody only;no task answers,labels,quality or optimizer feedback.",
+  "expected_rows": 0,
+  "limitations": "Reachable synthetic stress graph is not exhaustive over arbitrary future text;per-request runtime FIT remains mandatory.",
+  "run_ids": {
+    "fit": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-FIT-V1",
+    "read": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-STRUCTURE-V1"
+  },
+  "schema": "saea-context-layout-capacity-structural-analysis-v1",
+  "score_jobs": 0
+}

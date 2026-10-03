@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Seed before-speech capacity exactly admitted, 2026-10-03T12:47:52.589912+00:00
+
+Root227 reviewed the pinned recipe and actual graph/template/source evidence,then delegated one297-endpoint nongenerative FIT identity. [Exact capacity admission](../receipts/continuation/2026-10-03-context-layout-capacity-root-admission.json) binds the seed-only before-speech layout,unchanged role text,12.5/8 GiB guards,existing service geometry and one fresh Windows task after clean frozen and current live checks. Zero contacts so far.
+
+Only the capacity cell is ready with check/prompt-fit;graph and smoke4 remain HELD. No queue/service/cache mutation,retry,generation/scoring or task-quality read. ROUND8 learning stays HELD,heartbeat PAUSED. Root must separately review completion and admit any later structural generation.
+
 ## Seed context-layout capacity entry prepared, 2026-10-03T12:45:44.962740+00:00
 
 The engineering-first path now has a concrete single-member capacity recipe for the seed before-speech layout,maximum297 tokenizer endpoints,zero generation/scoring. [Entry preparation](../receipts/continuation/2026-10-03-context-layout-capacity-entry-prepared.json) pins fresh helpers,unadmitted refusal proofs,Windows wrapper syntax and actual model-free graph/role-byte equality. All three seed role bytes remain identical;only declared layout placement changes.
