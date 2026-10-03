@@ -1,0 +1,13 @@
+{
+  "admission": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-capacity-entry-v1/root-admission-v1.json",
+    "sha256": "98aa2e2dcf8dd303d09944ef770a90f5a468710c37d62326766f2323fa3d3afa"
+  },
+  "at_utc": "2026-10-03T18:44:06.359874+00:00",
+  "new_contacts": 0,
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-capacity-entry-v1/registration-v1.json",
+    "sha256": "77a75baac1effec6eefb873c87ee8016d9c50430bb6b5754d9edbfb7d300bd2d"
+  },
+  "schema": "saea-node-panel-capacity-root-admission-v1"
+}

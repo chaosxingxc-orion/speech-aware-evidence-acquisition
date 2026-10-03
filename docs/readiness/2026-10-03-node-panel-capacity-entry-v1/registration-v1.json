@@ -1,0 +1,51 @@
+{
+  "admission": {
+    "relpath": "coordination/node-panel-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "98aa2e2dcf8dd303d09944ef770a90f5a468710c37d62326766f2323fa3d3afa"
+  },
+  "at_utc": "2026-10-03T18:44:06.359874+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints_per_member": 297,
+    "tokenizer_endpoints_total": 297
+  },
+  "cache_state": "Inherited; no warmup/reset/save/restore",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-capacity-v1",
+      "baseline": "slurp-native-stage3-node-panel-v1",
+      "binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "capacity": "slurp-native-stage3-node-panel-capacity-v1",
+      "config_hash": "216822c77dca089ed0c08b0df734a0f19ed997594558c720403b26644e57a1ad",
+      "graph": "slurp-native-stage3-node-panel-graph-v1",
+      "graph_proof": {
+        "relpath": "coordination/node-panel-capacity-owner227-v1/pipeline-graph-composition-v1.json",
+        "sha256": "b436daae081893965d9411a15fbc977b4dd618a93081386d566201a1db67891f"
+      },
+      "group_size": 4,
+      "label": "pipeline",
+      "max_jobs": 8,
+      "plan": {
+        "relpath": "docs/readiness/2026-10-03-node-panel-capacity-entry-v1/pipeline-plan-registered-v1.json",
+        "sha256": "8aabc1e885e56ba8fc5e2c22212420fd3c2e5437590be6f4a19cfe1a38b29951"
+      },
+      "protocol_hash": "eb603a7f7c19959494c310cf55cb35b9099b18700ff8d79cbf3df10bb622502f",
+      "run_id": "SAEA-SLURP-NODE-PANEL-CAPACITY-FIT-V1"
+    }
+  ],
+  "schema": "saea-node-panel-capacity-registration-v1",
+  "source_freeze": "Pending separate clean worker and checks"
+}
