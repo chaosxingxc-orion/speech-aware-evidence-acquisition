@@ -1,0 +1,121 @@
+{
+  "at_utc": "2026-10-03T07:03:43.977385+00:00",
+  "disposition": "Preserve both no-change L outcomes and both B candidates. Prepare the complete eight-member20 panel, with no extra allocation or silent replacement. No L improvement mechanism was produced; separate prospective feedback-consumption diagnosis remains necessary.",
+  "finished": {
+    "at_utc": "2026-10-03T07:00:27.948734+00:00",
+    "gpu_dispatch": false,
+    "outcomes": [
+      {
+        "activation": "none",
+        "key": "L-5-1",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-5-1",
+        "status": "provisional"
+      },
+      {
+        "activation": "none",
+        "key": "L-5-2",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-5-2",
+        "status": "provisional"
+      }
+    ],
+    "paid_api_spend": 0,
+    "stopped_on_transport_failure": false
+  },
+  "input_tokens": 23545,
+  "launcher_exit": {
+    "exit_code": 0,
+    "finished_at_utc": "2026-10-03T07:00:28.6274774Z",
+    "retry_permitted": false,
+    "wrapper_error_type": null
+  },
+  "learning_gain_established": false,
+  "members": [
+    {
+      "bundle_id": "a3d608c1a589c285c57f3bee9fb4c7efc08345d93c947df1c5f6164ca220eb1a",
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/L-5-1.json",
+        "sha256": "9cd4166bb11e7507dd82660a6f82edab39f711db853c87549e20f29f35c984b0"
+      },
+      "input_tokens": 6199,
+      "key": "L-5-1",
+      "model_contacts": 1,
+      "output_tokens": 517,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/L-5-1.json",
+        "sha256": "c4d90655ecae8a226b88ec46c953b0f5d802f5c783e4f5827fde89df0af2a972"
+      },
+      "status": "no-change",
+      "unchanged_parent_roles": true
+    },
+    {
+      "bundle_id": "c7720d2fa5ccb6459a005b4122cd6c48efa0701865d5fc1bd08ffa8d2320b450",
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/B-5-1.json",
+        "sha256": "d09531a10c482340a48ae5d18efc93ad23bf6c065773a0daee59abe37b593e85"
+      },
+      "input_tokens": 5577,
+      "key": "B-5-1",
+      "model_contacts": 2,
+      "output_tokens": 959,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/B-5-1.json",
+        "sha256": "752c7094783ea70259e376ccfa80bc41c580e964406ab6e8c5ac2931daea1a8d"
+      },
+      "status": "provisional",
+      "unchanged_parent_roles": false
+    },
+    {
+      "bundle_id": "1e00dc6e064de745b3c524c7938918448a76ea59b4ab1444bb3003335285990b",
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/L-5-2.json",
+        "sha256": "6cb8bcd465f6450746a409ebda458d807aaef105525a7f5f4b4ee88f7365118c"
+      },
+      "input_tokens": 6182,
+      "key": "L-5-2",
+      "model_contacts": 1,
+      "output_tokens": 472,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/L-5-2.json",
+        "sha256": "873278d2f3675f0ed37d5d2e57b373e87b5a4af8ea01551d80777c0806036f67"
+      },
+      "status": "no-change",
+      "unchanged_parent_roles": true
+    },
+    {
+      "bundle_id": "f936c87a1c5099c6bfdc614d194be84805034bedbc0375ed08a77e59134ed1b9",
+      "compilation": {
+        "relpath": "system-text-search/control2-owner217/compilations/B-5-2.json",
+        "sha256": "0f4c904eba28b142cdcbf88cb5e6eca862808f4bdac98021cfbc5ea05df22607"
+      },
+      "input_tokens": 5587,
+      "key": "B-5-2",
+      "model_contacts": 2,
+      "output_tokens": 1014,
+      "proposal": {
+        "relpath": "system-text-search/control2-owner217/proposals/B-5-2.json",
+        "sha256": "6242c4cce92e40de7268851c6cd3e0ac962912293bdf3bead44c560cbfc1dd0d"
+      },
+      "status": "provisional",
+      "unchanged_parent_roles": false
+    }
+  ],
+  "model_contacts": 6,
+  "new_runtime_contacts": 0,
+  "output_tokens": 2962,
+  "owner_decisions": [
+    226,
+    227
+  ],
+  "schema": "saea-system-text-extra5-completion-v1",
+  "spent_proposal_allocations": 20,
+  "stable_benefit_established": false,
+  "windows_task": "SAEA-System-Text-Proposer-Extra5-Precontact-Recovery1"
+}

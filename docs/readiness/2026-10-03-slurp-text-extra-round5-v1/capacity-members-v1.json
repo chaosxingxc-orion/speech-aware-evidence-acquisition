@@ -1,0 +1,53 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-parent-capacity-fit-v1",
+    "binding": {
+      "bundle": {
+        "relpath": "system-text-search/control2-owner217/policies/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15.json",
+        "sha256": "a6ae71e6139f9a0a80ba401afcb3e1485924959536f08d3b6977381c9f762cca"
+      },
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "cell": "slurp-native-stage3-system-text-extra5-parent-capacity-v1",
+    "config_hash": "2013e37fa4ee0919ef49dd0f002793486b1e3f44ad71b6043ad27df0247bb927",
+    "experiment": "slurp-native-stage3-system-text-extra5-parent-capacity-v1",
+    "label": "parent",
+    "output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-extra5-parent-capacity-v1/request-fit-v1.json",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-CAPACITY-FIT-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-candidate-1-capacity-fit-v1",
+    "binding": {
+      "bundle": {
+        "relpath": "system-text-search/control2-owner217/policies/c7720d2fa5ccb6459a005b4122cd6c48efa0701865d5fc1bd08ffa8d2320b450.json",
+        "sha256": "024d930b84e7862307bf8ea60655be4b760c290c60ce9b361c1fa1a813bee020"
+      },
+      "bundle_id": "c7720d2fa5ccb6459a005b4122cd6c48efa0701865d5fc1bd08ffa8d2320b450",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "cell": "slurp-native-stage3-system-text-extra5-candidate-1-capacity-v1",
+    "config_hash": "04d5042f2e8883e43eb9b9c66874e161b2ee9f0ab58394568d93e90b820a4072",
+    "experiment": "slurp-native-stage3-system-text-extra5-candidate-1-capacity-v1",
+    "label": "candidate-1",
+    "output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-extra5-candidate-1-capacity-v1/request-fit-v1.json",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-CAPACITY-FIT-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-candidate-2-capacity-fit-v1",
+    "binding": {
+      "bundle": {
+        "relpath": "system-text-search/control2-owner217/policies/f936c87a1c5099c6bfdc614d194be84805034bedbc0375ed08a77e59134ed1b9.json",
+        "sha256": "aa44fbce602520a39af29f088808ef5063a9469459ae96d99cb6f0e5731a5b2c"
+      },
+      "bundle_id": "f936c87a1c5099c6bfdc614d194be84805034bedbc0375ed08a77e59134ed1b9",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "cell": "slurp-native-stage3-system-text-extra5-candidate-2-capacity-v1",
+    "config_hash": "1b0891fca9e1029e21feaadb85665f8cfb4659218816cb090c42678e444219c0",
+    "experiment": "slurp-native-stage3-system-text-extra5-candidate-2-capacity-v1",
+    "label": "candidate-2",
+    "output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-system-text-extra5-candidate-2-capacity-v1/request-fit-v1.json",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-CAPACITY-FIT-V1"
+  }
+]

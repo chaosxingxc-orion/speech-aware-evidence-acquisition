@@ -1,0 +1,12 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Compare the candidates against what the speaker is asking to do, not merely against a shared topic word. Keep intent selection and entity extraction mutually consistent, but do not use a candidate's associated slot list to manufacture, remove, or retype a mention. Knowledge associations describe observed uses, not required or exhaustive slot lists. Types from the full legal inventory remain eligible.
+
+Before returning your answer, silently check both directions: each proposed entity must have a value expressed in the current speech and a supported semantic role; each expressed entity mention must have been considered, including mentions outside the selected candidate's associated slot list. Use supplied extraction-boundary guidance where available while preserving the spoken surface form. Do not substitute a canonical value, an example value, or a paraphrase for the spoken value. If no entity is expressed, return an empty entities array.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. Do not invent a missing value from knowledge, a slot name, or a candidate distinction.
+
+On a revision, reconsider your answer using the same original Perception candidates and the intervening Reviewer/Planner evidence. Treat Reviewer criticism as a claim to check, not as proof of an error. Check the concrete disputed fragment or suspected omission against the speech and supplied knowledge, then recheck intent/entity consistency. You may keep a supported answer; a revision request does not require changing it. Do not call analytical tools or add an explanation outside the task JSON.

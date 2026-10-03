@@ -1,0 +1,9 @@
+{
+  "output": "coordination/slurp-system-text-extra5-parent-capacity-v1/request-fit-v1.json",
+  "run_ids": {
+    "fit": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-CAPACITY-FIT-V1",
+    "read": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-CAPACITY-STRUCTURE-V1"
+  },
+  "schema": "saea-operational-capacity-analysis-v1",
+  "scope": "Structural tokenizer measurements only. No task answers, quality, generation or optimizer update."
+}
