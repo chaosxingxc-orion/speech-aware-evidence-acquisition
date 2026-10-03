@@ -2,7 +2,9 @@
   "cells": [
     {
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "prepare-supply",
+        "worker"
       ],
       "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-generation-v1",
       "baseline_fragment": "slurp-native-stage3-context-matrix-before-speech-role-smoke-4-v1",
@@ -11,8 +13,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Offline matrix prerequisites only; root must admit exact phase before any contact.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-context-matrix-structural-owner227-v1",
+            "relpath": "coordination/context-matrix-structural-owner227-v1/root-admission-v1.json",
+            "sha256": "e995b4dbde62f6f4e7c3157b2e265773e0e79001308ebc01719711cd36bf3830",
+            "reason": "Decision slurp-context-matrix-structural-owner227-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "46c69528e76531ee07cdef10351211416290b065403e1d73cbb9c1b434361968",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1",
       "system_text_policy_binding": {

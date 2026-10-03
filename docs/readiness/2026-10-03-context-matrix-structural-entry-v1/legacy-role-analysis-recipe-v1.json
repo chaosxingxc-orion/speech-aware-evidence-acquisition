@@ -1,0 +1,48 @@
+{
+  "acceptance": [
+    "All original request,response,wire,control and actual FIT custody",
+    "Requested role slots exactly perception0,solver1,reviewer2,planner3; one active use per slot enforced by shared executor",
+    "All Reviewer handoffs valid and visible to Planner; Omni terminal custody for all4",
+    "Before-speech original ORG layout audit on every contact; legacy original body/FIT exact hash",
+    "Root per-sample original wall timing receipt coverage and unchanged request hashes once instrumentation is integrated"
+  ],
+  "max_fit_endpoints": 208,
+  "max_generation": 52,
+  "next_panel_authorized": false,
+  "official_scoring": 0,
+  "read_run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-STRUCTURE-V1",
+  "read_scope": "Complete engineering structure and numerical timing only; no task quality/scoring/reseal/retry",
+  "rows": 4,
+  "run_ids": {
+    "fit": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-FIT-V1",
+    "generation": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1",
+    "read": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-context-matrix-structural-read-v1",
+  "source_checks": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
+      "sha256": "2f5b0ce2097d7352fc3cfebac59c3f0425cec3a9f39988fb10a658d662b72cbb"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "67616021f3ae0ca1db3066742c4ec7c2aa8576ade2160384f44783a59920d297"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "67e34e8ca9bddc6b37cc9ff69406bc768596917d696c7cacf5608b9312827f4e"
+    }
+  ],
+  "status": "ROOT COUNTERSIGNED structural-only before contact",
+  "timing": {
+    "audit": "summarize_sample_execution_timing against exact original executor roster;no contact-sum reconstruction",
+    "first": "Admission index0;first four admissions are not a proven cold wave",
+    "quality": "No task-quality read",
+    "required_samples": 4,
+    "source": "USE/use_sample_execution_timing"
+  }
+}

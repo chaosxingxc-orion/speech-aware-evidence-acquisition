@@ -1,0 +1,54 @@
+{
+  "antecedents": [
+    {
+      "relpath": "docs/receipts/owner/2026-10-03-sample-latency-quality-node-context.json",
+      "sha256": "dd2f0338165cfaac97be2afa49768dd11273cc645d87433acc74362167ed39d8"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-context-matrix-capacity-root-transfer.json",
+      "sha256": "9cde1decd8462886599c2aa97b2aa346f7af07f2adc0daa7df06e528b51cf743"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-sample-latency-quality-engineering.json",
+      "sha256": "b127f4493af2903a55d40f68ab06c63c0a7e910122f82182990180f9b782de46"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/root-review-recipe-v1.json",
+      "sha256": "42529713463c301aabdf97ac8a339efc9f57dfafb601f7e454f16370365e30cd"
+    }
+  ],
+  "at_utc": "2026-10-03T13:30:19.979581+00:00",
+  "authority": "Root directly implements latest owner engineering-first,sample-latency and independent-context/business-quality instructions. No delegation.",
+  "decision_id": "slurp-context-matrix-structural-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-FIT-V1"
+  ],
+  "failure_disposition": "Stop and preserve for named root disposition;no automatic retry.",
+  "heartbeat": "PAUSED",
+  "learning_status": "HELD",
+  "next_comparison_authorized": false,
+  "owner_decisions": [
+    227
+  ],
+  "precontact_conditions": [
+    "Register generation,FIT and structural-only READ;finalize allowed stages before own supply preparation.",
+    "Freeze a clean separate worker with original sample timing;pass role/layout/runtime/warm-supply checks.",
+    "Revalidate live service/process identity,absent STOP/lease/active generator/scorer,12.5GiB startup and8GiB running.",
+    "Normally archive only completed owned controls;launch one Windows shared driver for these two workers."
+  ],
+  "resource_contract": {
+    "guard_mode": "worker with existing lease",
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5,
+    "wait_seconds": 600
+  },
+  "root_only": true,
+  "schema": "saea-campaign-decision-v1",
+  "scope": "Exactly legacy-role and before-speech-role structural workers,four existing rows each,maximum104 generation and416 actual FIT endpoints total,zero official scoring.",
+  "status": "decided",
+  "structural_acceptance": "Verify every original request,response,wire,control,body and actual FIT;exact per-role slots;before-speech layout proof;valid visible Reviewer handoffs;all Omni terminals;complete original sample timing and numeric node costs. No task-quality read."
+}

@@ -1,0 +1,60 @@
+{
+  "admission": {
+    "relpath": "coordination/context-matrix-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "e995b4dbde62f6f4e7c3157b2e265773e0e79001308ebc01719711cd36bf3830"
+  },
+  "at_utc": "2026-10-03T13:30:19.979581+00:00",
+  "cache_state": "Inherited;no service change,flush,warmup,save or restore",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "members": [
+    {
+      "analysis_recipe": {
+        "relpath": "docs/readiness/2026-10-03-context-matrix-structural-entry-v1/legacy-role-analysis-recipe-v1.json",
+        "sha256": "623faa172a2ba0db425eb2239e41e1f4b9732c28c19bab0d80bba4e8c53915f5"
+      },
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "077af60a78a524de2c2eccaae543a2706da1be5e03f956a89b32b271743965ab",
+      "experiment": "slurp-native-stage3-context-matrix-legacy-role-smoke-4-v1",
+      "label": "legacy-role",
+      "protocol_hash": "fb2602807b3d6ec6d2f1f0f70248578e4108f6a4f52bb3971c4316d09401e781",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "729e6cc6e80ff2bead49269ae3e24d4abbc917a0a3215353e80218b56d3f7437"
+      }
+    },
+    {
+      "analysis_recipe": {
+        "relpath": "docs/readiness/2026-10-03-context-matrix-structural-entry-v1/before-speech-role-analysis-recipe-v1.json",
+        "sha256": "b3464b81c96cb9bc1259c364055d9dee869347d741506aed08d49a8be3a60669"
+      },
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "config_hash": "f6aba745c4e56f3f1dcfc4adf9ba14d43b4fdff3dbf7039d636884cef93aab86",
+      "experiment": "slurp-native-stage3-context-matrix-before-speech-role-smoke-4-v1",
+      "label": "before-speech-role",
+      "protocol_hash": "7be741b17489e8e9abe655ae45ba4d46b4d369d704b3a603c566bb3d50d6ced6",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "46c69528e76531ee07cdef10351211416290b065403e1d73cbb9c1b434361968"
+      }
+    }
+  ],
+  "queue": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-structural-entry-v1/queue-v1.json",
+    "sha256": "46ae39ef633bcfef9e04fb383fd3c5d2227c88bca56fc6652ad35ff70357a720"
+  },
+  "resource_contract": {
+    "guard_mode": "worker with existing lease",
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5,
+    "wait_seconds": 600
+  },
+  "schema": "saea-context-matrix-structural-registration-v1",
+  "score_jobs": 0,
+  "source_freeze": "Pending separate clean worker and actual checks"
+}

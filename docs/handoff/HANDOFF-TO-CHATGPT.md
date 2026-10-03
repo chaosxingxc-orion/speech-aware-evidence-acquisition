@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Two role-routing structural workers registered, 2026-10-03T13:31:36.453837+00:00
+
+Root227 directly admits legacy-role and before-speech-role on the same existing four engineering inputs,maximum104 model contacts and416 actual FIT endpoints total,zero official scoring. [Exact admission](../receipts/continuation/2026-10-03-context-matrix-structural-root-admission.json) and [entry](../readiness/2026-10-03-context-matrix-structural-entry-v1/README.md) bind independent seed role texts,unchanged knowledge/assets/cache geometry and original per-sample timing. Both own supply envelopes were prepared after final allowed stages;exact generation,FIT and structural READ rows pass registration with zero contacts.
+
+A clean separate frozen worker,actual warm/composition/source checks and live identity/resource checks precede one Windows shared-driver entry. Require all original request/body/FIT/layout/routing/handoff/Omni custody and timing coverage;record structural metadata and numeric costs only. Failure stops with preserved evidence. No scientific quality,official score,reseal,retry or8x20 dispatch is admitted here. Root operates directly without subagents;learning HELD,heartbeat PAUSED,12.5/8 GiB floors and human review before8x400 remain.
+
 ## Root-only context engineering with latency and business quality, 2026-10-03T13:25:24.112488+00:00
 
 The latest direct human amendment requires both business performance and actual mean sample latency, while preserving independent node contexts. Root now owns this task directly; the preparation subagent has stopped and no further delegation is permitted for this work. [Measurement and context contract](../readiness/2026-10-03-context-layout-engineering-v1/sample-latency-and-quality.md) supersedes quality-secondary and first-wave wording in the preserved draft. Do not homogenize role prompts,require permanent role slots or impose a cache-hit floor. Relevant cross-role handoffs and Omni answer custody remain explicit.
@@ -1078,7 +1084,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T13:25:24.112488+00:00
+Last refreshed: 2026-10-03T13:31:36.453837+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

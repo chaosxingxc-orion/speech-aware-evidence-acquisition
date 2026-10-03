@@ -1,0 +1,3 @@
+# Root-owned context matrix structural entry
+
+Run exactly two four-row structural members after current-basis capacity transfer. Preserve independent seed role texts,immutable assets,Omni custody and current cache geometry. Use identical original sample timing. Verify every request/body/FIT/layout/role-slot join,Reviewer handoff and terminal custody. Record first/all/remaining sample duration and numeric node costs only. Do not score,read quality,retry or launch the next panel. The intentional worker-only lifecycle stays OPENED. Require clean frozen checks and12.5/8GiB guards. Root operates directly;heartbeat PAUSED and learning HELD.
