@@ -83,7 +83,8 @@ class Flight:
         self.receipts.append("run_phases")
         self.events.append((self.index, "phases-complete"))
 
-    def seal(self):
+    def seal(self, **kwargs):
+        assert kwargs in ({}, {"defer_scoring": True})
         assert sum(kind == "phases-complete" for _, kind in self.events) == 2
         self.events.append((self.index, "seal"))
         self.receipts.append("seal")
@@ -206,8 +207,8 @@ def test_all_readiness_and_identity_checks_precede_lease(tmp_path, monkeypatch, 
     assert not any(k in {"model", "seal", "score"} for _, k in events)
 
 
-@pytest.mark.parametrize("fail", [None, "before-join", "bypass", "model"])
-def test_explicit_worker_panel_generates_without_seal_or_score(
+@pytest.mark.parametrize("fail", [None, "before-join", "bypass", "model", "seal"])
+def test_explicit_worker_panel_materializes_generation_without_scoring(
     tmp_path, monkeypatch, fail
 ):
     flights, cells, declared, events, saved = world(tmp_path, monkeypatch, fail)
@@ -225,11 +226,13 @@ def test_explicit_worker_panel_generates_without_seal_or_score(
         assert result["completed"] == ["run-0", "run-1"]
         assert not (tmp_path / "locks/flight.lock").exists()
         assert all(
-            s == ["preflight", "preprocess", "serve", "run_phases"]
+            s == ["preflight", "preprocess", "serve", "run_phases", "seal"]
             for s in saved.values()
         )
     assert set(saved) == {"run-0", "run-1"}
-    assert not any(k in {"seal", "score"} for _, k in events)
+    assert not any(k == "score" for _, k in events)
+    if fail and fail != "seal":
+        assert not any(k == "seal" for _, k in events)
 
 
 @pytest.mark.parametrize(
@@ -251,3 +254,44 @@ def test_panel_lifecycle_requires_exact_explicit_mode(
         run(tmp_path, flights, cells, declared, mode=mode)
     assert not events and not saved
     assert not (tmp_path / "locks/flight.lock").exists()
+
+
+def test_worker_panel_writes_actual_runtime_outputs_manifest_and_score_spec(tmp_path, monkeypatch):
+    """Exercise real worker materialization, not only a mocked seal call count."""
+    import json
+    from test_flight_runtime import _make_runtime
+    from speech_aware_evidence_acquisition.core.flight.scoring import load_sealed_score_jobs
+
+    flights, cells, declared, events, saved = world(tmp_path, monkeypatch)
+    real = []
+    for i, flight in enumerate(flights):
+        rt = _make_runtime(tmp_path / f"actual-{i}", happy_path=True)
+        rt.preflight()
+        rt.preprocess()
+        rt.serve()
+        rt.run_phases()
+        rt._execution_policy = object()
+        real.append(rt)
+        original_seal = flight.seal
+
+        def seal(*, defer_scoring=False, runtime=rt, original=original_seal):
+            original(defer_scoring=defer_scoring)
+            return runtime.seal(defer_scoring=defer_scoring)
+
+        flight.seal = seal
+        cells[i].document["allowed_execution_stages"] = ["node-panel-worker"]
+    run(tmp_path, flights, cells, declared, mode="node-panel-worker")
+    for rt in real:
+        directory = rt._run_dir()
+        assert (directory / f"{rt.run_id}.outputs.jsonl").is_file()
+        assert len((directory / f"{rt.run_id}.outputs.jsonl").read_text().splitlines()) == 2
+        assert (directory / f"{rt.run_id}.run-manifest.json").is_file()
+        assert (directory / f"{rt.run_id}.generation-manifest.json").is_file()
+        assert rt._client.closed
+        assert rt.receipts.has("seal") and not rt.receipts.has("score")
+        seal_receipt = rt.receipts.require("seal")
+        assert len(load_sealed_score_jobs(seal_receipt)) == 1
+        assert seal_receipt["finalize"]["status"] == "deferred-to-score-worker"
+        assert not list(directory.glob("*.scores.json"))
+        spec = json.loads((directory / "score-jobs.jsonl").read_text())
+        assert spec["job_id"] == rt.attempt_id

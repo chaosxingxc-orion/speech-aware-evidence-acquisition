@@ -60,7 +60,8 @@ def test_inspector_keeps_all_member_results_even_after_failure(
     ]
     assert module.main(argv) == 2
     assert [cmd[4:6] for cmd in calls] == [[m.run_id, m.attempt_id] for m in members]
-    assert all(cmd[6:9] == ["arm", "2", "13"] for cmd in calls)
+    expected = "worker" if mode == "node-panel-worker" else "arm"
+    assert all(cmd[6:9] == [expected, "2", "13"] for cmd in calls)
     report = json.loads(capsys.readouterr().out)
     assert len(report["members"]) == 8 and not report["pass"]
     assert report["panel_id"] == "panel"

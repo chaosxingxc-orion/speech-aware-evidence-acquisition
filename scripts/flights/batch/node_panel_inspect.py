@@ -43,7 +43,7 @@ def main(argv=None):
                 args.data_root,
                 member.run_id,
                 member.attempt_id,
-                "arm",
+                "worker" if args.mode == "node-panel-worker" else "arm",
                 str(len(member.job_keys)),
                 str(args.ceiling_per_row),
                 args.notool,

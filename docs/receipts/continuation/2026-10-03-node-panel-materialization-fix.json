@@ -1,0 +1,100 @@
+{
+  "at_utc": "2026-10-03T19:21:25.256116+00:00",
+  "base_commit": "a77b4b7dac67653d62302571bb53467a86969274",
+  "evidence": [
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/regression-red-v1.log",
+      "sha256": "435d98ca6a914ce79116a71730a181f81eb07b0b42840a80a6374266caf56a9e"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/regression-green-v1.log",
+      "sha256": "efb8e9a091b556e9666500d217592362af688741b3b34c4166b118bcdceb1e5e"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/regression-combined-v1.log",
+      "sha256": "151b9596114f017c68617886ebb9535b178043935a5e14b5d3087b87c19b23ae"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/coverage-statements-v2.json",
+      "sha256": "0fab6fc92d6f4ab328a08eb0fa009f7c9787bd63f395a789a22771305e9e833c"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/coverage-collection-note-v1.txt",
+      "sha256": "c5769807725fdd7c99d2daab94177904bea3f517308846974c0c4d25daccc968"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/fix-inspector-coverage-v2.log",
+      "sha256": "0fc440c708b8062bd05d6f72174bb278f97340e23c153cb23a029ed1add7672e"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/fix-lint-v1.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/fix-base-v1.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/fix-harness-v1.log",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/fix-handoff-v1.log",
+      "sha256": "dc283702809645fc16017b944e684d3dcd01a625ee529a72f6c83ccadf7c2f16"
+    },
+    {
+      "relpath": "coordination/node-panel-structural-owner227-v1/fix-diff-v1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "incident_receipt": "docs/receipts/continuation/2026-10-03-node-panel-structural-completion-stop.json",
+  "next": "One exact registered two-member4-row recovery proof; no next20 admission.",
+  "old_attempts_modified": false,
+  "real_contacts_added": 0,
+  "runtime_controls_changed": false,
+  "schema": "saea-node-panel-materialization-fix-v1",
+  "sources": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/campaign.py",
+      "sha256": "1a4cd69db908523ff67348fcdc490bf4606671aac360742757d4e3c1377301a3"
+    },
+    {
+      "relpath": "scripts/flights/batch/batch_inspect.py",
+      "sha256": "fc1bc85dbf501e763449d9944122be3bbb927c957bcdad6ed4e8e43599dc89b4"
+    },
+    {
+      "relpath": "scripts/flights/batch/node_panel_inspect.py",
+      "sha256": "b3774c4f7d656fc97a09bb382a2a7da824f36da39f367d1c2c9cb2cbef0afc82"
+    },
+    {
+      "relpath": "tests/unit/test_node_panel_campaign.py",
+      "sha256": "2df5b85bc08b4d3b78e21f401f9ee6f96542bf81c02595e35371b1a6908784fa"
+    },
+    {
+      "relpath": "tests/unit/test_node_panel_inspect.py",
+      "sha256": "0a54e591319c01b3aa27547f45fd2b79d068846d9cdac073b70379ad1b51180d"
+    },
+    {
+      "relpath": "tests/unit/test_batch_artifact_inspection.py",
+      "sha256": "5d9608f020b2fa03e82d3651b399e5b29b2fecb8a91ba44b5b3066b80399837d"
+    }
+  ],
+  "tests": {
+    "checks": [
+      "ruff",
+      "engineering_base",
+      "harness_admission",
+      "handoff_freshness",
+      "diff"
+    ],
+    "coverage_basis": "Union of observed line hits, statement-only; no branch-coverage claim. See collection note.",
+    "passed": 123,
+    "statement_percent": {
+      "batch_inspect": 98.21428571428571,
+      "campaign": 90.16949152542372,
+      "node_panel_inspect": 90.9090909090909
+    },
+    "tests_first_failed": 4,
+    "warnings": 3
+  }
+}

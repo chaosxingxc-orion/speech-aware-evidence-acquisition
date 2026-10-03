@@ -1,7 +1,7 @@
 """Structural inspector for the unattended batch driver. Zero model contact; reads sealed run/attempt files only.
 
 Usage: python batch_inspect.py <data-root> <run_id> <attempt_id> <mode> <expected_rows> <ceiling_per_row> <notool 0|1> <flight_commit> [--result-kind task-answer|artifact]
-  mode = smoke | arm
+  mode = smoke | arm | worker (complete generation, no official scoring)
 Exit 0 = PASS, 2 = FAIL (reasons printed), 3 = files missing. Never prints utterance text or gold.
 """
 
@@ -17,7 +17,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("data_root")
 parser.add_argument("run_id")
 parser.add_argument("attempt_id")
-parser.add_argument("mode", choices=("smoke", "arm"))
+parser.add_argument("mode", choices=("smoke", "arm", "worker"))
 parser.add_argument("expected_rows", type=int)
 parser.add_argument("ceiling_per_row", type=int)
 parser.add_argument("notool", choices=("0", "1"))
@@ -51,6 +51,8 @@ if att.get("state") == "ABORTED":
     fails.append(
         f"attempt ABORTED: {str(att.get('failure_reason') or att.get('failure') or '')[:200]}"
     )
+if MODE == "worker" and att.get("state") != "OPENED":
+    fails.append(f"worker attempt state {att.get("state")} (expected OPENED)")
 if MODE == "arm" and att.get("state") != "FINALIZED":
     fails.append(f"arm attempt state {att.get('state')} (expected FINALIZED)")
 
@@ -92,12 +94,41 @@ if RESULT_KIND == "artifact":
     except (ValueError, RuntimeError, OSError) as error:
         # The inspector emits structural metadata, never raw model content from errors.
         fails.append(f"artifact bundle verification failed ({type(error).__name__})")
+if MODE == "worker":
+    info["bundle_verified"] = False
+    try:
+        from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+        from speech_aware_evidence_acquisition.core.flight.receipts import read_flight_receipts
+        from speech_aware_evidence_acquisition.core.flight.scoring import load_sealed_score_jobs
+
+        if RESULT_KIND != "task-answer" or len(mans) != 1:
+            raise ValueError("worker requires one task generation manifest")
+        if m.get("exposure_run_id") != RUN or (m.get("plan") or {}).get("attempt_id") != ATT:
+            raise ValueError("worker identity mismatch")
+        verified = verify_bundle(Path(mans[0]))
+        receipt = read_flight_receipts(Path(D) / "flight-receipts.json")
+        stages = receipt["stages"]
+        if (verified.attempt_state != "OPENED" or m.get("scores") is not None
+                or glob.glob(f"{D}/*.scores.json*") or "score" in stages
+                or (receipt["run_id"], receipt["attempt_id"]) != (RUN, ATT)):
+            raise ValueError("worker has finalized, scored, or foreign evidence")
+        seal = stages["seal"]
+        jobs = load_sealed_score_jobs(seal)
+        if (len(jobs) != 1 or jobs[0].job_id != ATT
+                or Path(seal["manifest_path"]).resolve() != Path(mans[0]).resolve()
+                or jobs[0].manifest.resolve() != Path(mans[0]).resolve()
+                or seal["finalize"]["status"] != "deferred-to-score-worker"):
+            raise ValueError("worker prepared scoring identity mismatch")
+        info["bundle_verified"] = True
+        verified_outputs = list(verified.outputs_rows)
+    except (ValueError, RuntimeError, OSError, KeyError, TypeError) as error:
+        fails.append(f"worker generation custody failed ({type(error).__name__})")
 info["manifest_status"] = m.get("status")
 info["study_commit"] = m.get("study_commit")
 info["dirt"] = m.get("study_repo_dirt")
 if m.get("status") != "COMPLETED":
     fails.append(f"manifest status {m.get('status')}")
-if MODE == "arm":
+if MODE in {"arm", "worker"}:
     if str(m.get("study_commit")) != COMMIT:
         fails.append(
             f"manifest study_commit {str(m.get('study_commit'))[:8]} != flight commit {COMMIT[:8]}"
@@ -174,9 +205,9 @@ info["score_jobs"] = (
     sum(1 for _ in open(sj, encoding="utf-8")) if os.path.exists(sj) else 0
 )
 info["expected_score_jobs"] = (
-    0 if RESULT_KIND == "artifact" else (1 if MODE == "arm" else None)
+    0 if RESULT_KIND == "artifact" else (1 if MODE in {"arm", "worker"} else None)
 )
-if (MODE == "arm" or RESULT_KIND == "artifact") and info["score_jobs"] != info[
+if (MODE in {"arm", "worker"} or RESULT_KIND == "artifact") and info["score_jobs"] != info[
     "expected_score_jobs"
 ]:
     fails.append(

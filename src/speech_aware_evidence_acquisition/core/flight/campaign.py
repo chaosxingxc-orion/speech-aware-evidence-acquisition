@@ -352,7 +352,8 @@ def run_node_panel(
     may require a score from this still-unrun panel; prepare those dependencies
     before admission. All generation settles before any member is sealed, and
     scoring remains serial with no replay after failure. Explicit node-panel-worker
-    mode stops after generation, preserving the unsealed, unscored engineering lifecycle.
+    mode writes the same complete generation artifacts and prepared score specification,
+    then leaves the attempt OPENED without executing official scoring.
     """
     from concurrent.futures import ThreadPoolExecutor, as_completed
     from ...reproduction.ojw.panel import NativeWorkflowPanel
@@ -437,7 +438,11 @@ def run_node_panel(
                         panel.abort(error)
                         raise
                 for flight in flights:
-                    if mode == "node-panel":
+                    # seal materializes outputs and closes traces; the bound worker
+                    # policy defers official finalization to the separate score stage.
+                    if mode == "node-panel-worker":
+                        flight.seal(defer_scoring=True)
+                    else:
                         flight.seal()
                     states[flight.run_id] = {"state": "sealed" if mode == "node-panel" else "generated"}
                 persist_all()

@@ -183,3 +183,84 @@ def test_artifact_metadata_uses_verified_outputs_not_first_glob_match(artifact_w
     assert report["sha256_outputs"] == w["manifest"]["outputs"]["sha256"]
     w["rows"] = 1
     assert inspect(w, "artifact").returncode == 2
+
+
+@pytest.fixture
+def worker_world(synthetic_world, bundled_repo, tmp_path):  # noqa: F811
+    from test_bundle import _run_completed
+    from speech_aware_evidence_acquisition.core.flight.scoring import seal_scoring_inputs
+    from speech_aware_evidence_acquisition.core.flight.receipts import FlightReceipts, write_flight_receipts
+
+    run, attempt = "SAEA-E-000-worker", "attempt-worker"
+    directory = synthetic_world.data_root / "runs" / run / attempt
+    path, _, _, _ = _run_completed(synthetic_world, bundled_repo, tmp_path,
+        run_id=run, attempt_id=attempt, run_dir_name=str(directory))
+    manifest = json.loads(path.read_text())
+    seal = seal_scoring_inputs(path, run_id=run, attempt_id=attempt, ledger_cells={})
+    seal["manifest_path"] = str(path)
+    receipts = FlightReceipts(run, attempt)
+    for stage in ("preflight", "preprocess", "serve", "run_phases"):
+        receipts.record(stage, {})
+    receipts.record("seal", seal)
+    write_flight_receipts(directory / "flight-receipts.json", receipts)
+    return {"data": synthetic_world.data_root, "run": run, "attempt": attempt,
+            "rows": len(manifest["split"]["ids"]), "commit": manifest["study_commit"],
+            "manifest": manifest, "manifest_path": path, "run_dir": directory,
+            "attempt_path": synthetic_world.data_root / "attempts" / run / (attempt + ".json")}
+
+
+def test_generation_worker_passes_real_bundle_and_never_scores(worker_world):
+    w = worker_world
+    before = {p: p.read_bytes() for p in w["run_dir"].rglob("*") if p.is_file()}
+    result = inspect(w, mode="worker")
+    assert result.returncode == 0, result.stdout + result.stderr
+    report = json.loads(result.stdout)
+    assert report["bundle_verified"] and report["attempt_state"] == "OPENED"
+    assert report["score_jobs"] == report["expected_score_jobs"] == 1
+    assert "token tags" not in result.stdout
+    assert {p: p.read_bytes() for p in before} == before
+    assert not list(w["run_dir"].glob("*.scores.json"))
+    assert inspect(w, mode="arm").returncode == 2
+
+
+@pytest.mark.parametrize("mutation", ["generation", "receipt", "score-spec", "score-file",
+    "score-stage", "missing-receipt", "raw-output", "finalized", "aborted",
+    "wrong-commit", "dirty", "wrong-run", "wrong-attempt", "ambiguous-manifest"])
+def test_generation_worker_refuses_broken_custody(worker_world, mutation):
+    w = worker_world
+    directory, m = w["run_dir"], w["manifest"]
+    if mutation in {"generation", "receipt", "score-spec"}:
+        name = {"generation": w["run"] + ".generation-manifest.json",
+                "receipt": "flight-receipts.json", "score-spec": "score-jobs.jsonl"}[mutation]
+        (directory / name).write_text("{}\n")
+    elif mutation == "score-file":
+        (directory / "unexpected.scores.json").write_text("{}")
+    elif mutation == "score-stage":
+        from speech_aware_evidence_acquisition.core.flight.receipts import FlightReceipts, read_flight_receipts, write_flight_receipts
+        doc = read_flight_receipts(directory / "flight-receipts.json")
+        receipt = FlightReceipts(w["run"], w["attempt"], doc["stages"])
+        receipt.record("score", {"synthetic": True})
+        write_flight_receipts(directory / "flight-receipts.json", receipt)
+    elif mutation == "missing-receipt":
+        (directory / "flight-receipts.json").unlink()
+    elif mutation == "raw-output":
+        Path(m["outputs"]["path"]).write_text("{}\n")
+    elif mutation in {"finalized", "aborted"}:
+        doc = json.loads(w["attempt_path"].read_text())
+        doc["state"] = mutation.upper()
+        w["attempt_path"].write_text(json.dumps(doc))
+    else:
+        if mutation == "wrong-commit":
+            m["study_commit"] = "f" * 40
+        elif mutation == "dirty":
+            m["study_repo_dirt"] = ["modified.py"]
+        elif mutation == "wrong-run":
+            m["exposure_run_id"] = "another"
+        elif mutation == "wrong-attempt":
+            m["plan"]["attempt_id"] = "another"
+        elif mutation == "ambiguous-manifest":
+            (directory / "extra.run-manifest.json").write_text(json.dumps(m))
+        w["manifest_path"].write_text(json.dumps(m))
+    result = inspect(w, mode="worker")
+    assert result.returncode == 2, result.stdout + result.stderr
+    assert "token tags" not in result.stdout

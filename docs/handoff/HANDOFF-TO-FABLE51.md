@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Node-panel completion defect diagnosed, 2026-10-03T19:17:38.837995+00:00
+
+The18:58:06Z structural worker spent47 model/188 actual FIT endpoints,then failed completion inspection19:02:11Z. Root omitted generation materialization in worker-panel mode and its inspector required scored-arm completion. Both OPENED attempts lack outputs/manifests/score specs;preserve them,STOP,queue,traces and frozena77b4b7da. No old reseal,backfill,score or replay. [Diagnosis and root227 disposition](../readiness/2026-10-03-node-panel-worker-materialization-v1/README.md) permits one future registered two-member4-row recovery after tested correction and exact frozen checks. No next20 admission.
+
+Preserved47 contacts uniquely join actual server slots/timings;seven recorded node stages respect barriers,18 CPU preparation callbacks overlap prior-stage work. Nineteen same-node successors include12 changed inputs and7 repeated inputs;longer reuse/lower pooled prefill is descriptive,not controlled speedup. No whole-cache pressure/eviction event found. Original sample mean109.514s versus submission-to-terminal153.651s;no task quality or optimizer feedback. Root only,learning HELD,heartbeat PAUSED,human before8x400.
+
 ## Node-panel structural proof registered, 2026-10-03T18:50:26.537769+00:00
 
 The complete297-endpoint capacity passed. Root227 now admits one strict node-panel-worker with two independent four-row members,maximum104 generation/416 actual FIT endpoints,zero scoring. [Entry](../readiness/2026-10-03-node-panel-structural-entry-v1/README.md) fixes original before-speech node prompts,own supplies and deterministic member/roster order. Verify cross-member node stages,prefetch/barriers,own source/FIT/handoff custody,local trace storage and actual slot/prefix/timing evidence. Eight jobs do not establish160-job speed or task-quality benefit. Clean frozen and live checks remain before launch. No next20 admission;root only,learning HELD,heartbeat PAUSED,human before8x400.

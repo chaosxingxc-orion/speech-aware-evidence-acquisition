@@ -1,0 +1,65 @@
+{
+  "at_utc": "2026-10-03T19:17:38.837995+00:00",
+  "authority": "Owner227 root incident disposition; no further subagents, human before8x400.",
+  "cache_diagnostic": {
+    "relpath": "coordination/node-panel-structural-owner227-v1/failure-operational-cache-diagnostic-v1.json",
+    "sha256": "ea58066c3cbf0bfc82ec77609a1561eb73a375439a3a84b20824a0ea828cc16a"
+  },
+  "diagnostic_script": {
+    "relpath": "coordination/node-panel-structural-owner227-v1/failure-cache-diagnostic-v1.py",
+    "sha256": "c2442ccd42225b6244d7d21094553f56f3d7522576b3d48cee1c21a769c9426e"
+  },
+  "disposition": [
+    "Preserve both OPENED attempt records, all raw traces, original receipts, failed driver log, STOP, queue and frozen worker. No backfill, seal, score or replay of either original member.",
+    "Correct only future worker-panel materialization and exact worker inspection; leave model policy, node scheduling, data, knowledge, geometry and budgets unchanged.",
+    "Root permits exactly one separately registered two-member4-row recovery proof after relevant tests, complete registration, unchanged-request capacity transfer, own prepared identities and clean frozen/live checks. A further failure stops this recovery; no automatic repeat.",
+    "Read preserved operational trace/cache/timing for incident diagnosis only; never task quality or optimizer feedback."
+  ],
+  "driver_epoch": "2026-10-03T18:58:06Z",
+  "engineering_accepted": false,
+  "frozen_worker": "/home/chao/saea-worktrees/codex-node-panel-structural-v1",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member1-smoke-4-generation-v1",
+      "attempt_state": "OPENED",
+      "completed_generation_manifest": false,
+      "contacts": 22,
+      "fit_endpoints": 88,
+      "fit_receipts": 22,
+      "official_scores": 0,
+      "output_rows_persisted": false,
+      "run": "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-V1",
+      "run_phases_seconds": 140.05822014808655
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member2-smoke-4-generation-v1",
+      "attempt_state": "OPENED",
+      "completed_generation_manifest": false,
+      "contacts": 25,
+      "fit_endpoints": 100,
+      "fit_receipts": 25,
+      "official_scores": 0,
+      "output_rows_persisted": false,
+      "run": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-V1",
+      "run_phases_seconds": 140.09965252876282
+    }
+  ],
+  "new_contacts_in_diagnosis": 0,
+  "next20_authorized": false,
+  "original_log": {
+    "bytes": 825030,
+    "path": "/home/chao/batch-campaign-1-node-panel-structural-20261003T185835Z.log",
+    "sha256": "510429d0823eb8396b6db16a2f8f67eaa5d57b3a564eb3e17fb0934b79b3a44b"
+  },
+  "responsibility": "Root implementation/admission error; not model quality, cache eviction, service failure or memory shortage.",
+  "root_cause": [
+    "The new worker panel skipped FlightRuntime.seal entirely. That existing method writes canonical outputs, closes the trace, verifies the generation manifest and prepares deferred score jobs; the bound worker policy already prevents official scoring.",
+    "The panel inspector always selected arm mode, incorrectly requiring FINALIZED official results from engineering-only workers."
+  ],
+  "schema": "saea-node-panel-worker-materialization-incident-v1",
+  "source_commit": "a77b4b7dac67653d62302571bb53467a86969274",
+  "status": "FAILED_COMPLETION_INSPECTION",
+  "stop_at": "2026-10-03T19:02:11Z"
+}

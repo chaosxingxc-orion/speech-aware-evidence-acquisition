@@ -1,5 +1,7 @@
 # Explicit unscored panel engineering
 
+The initial completion description below is superseded by the [materialization correction](../2026-10-03-node-panel-worker-materialization-v1/README.md): engineering must write and verify generation artifacts through the shared seal stage while deferring official scoring. The omitted stage and scored-arm inspector caused the real eight-job proof to stop. Preserve the original pinned receipt as failed implementation evidence.
+
 The panel coordinator now supports `node-panel-worker` for separately registered structural generation. It uses the same `FlightRuntime`, independent owner clients and journals, strict whole-node executor, exclusive panel generation lease and process memory supervisor as the scored `node-panel` mode. All generation callbacks drain before completion. Successful engineering members are reported as `generated`; their attempts retain the normal worker-only, unsealed/unscored lifecycle. The original prepared score specifications do not authorize scoring.
 
 Every member must explicitly declare the exact execution stage. Neither a missing stage nor permission for the other panel mode grants admission. The CLI, batch queue, process supervisor and all-member structural inspector propagate that stage. A failed generation stops and preserves the complete failure evidence; no retry, seal or score follows. Full `node-panel` behavior remains independent member sealing followed by serial unique official scoring.
