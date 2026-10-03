@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 capacity entry ready for root review, 2026-10-03T11:51:42.879418+00:00
+
+Three separate four-row graph helpers now compose through the shared runtime on source 55f0a6ff7. The pending FIT stage has three 297-endpoint identities, 891 total, zero generation and zero scoring. The [entry receipt](../receipts/continuation/2026-10-03-round8-capacity-entry-prepared.json) pins dependencies, model-free composition and synthetic memory-guard proofs. Use native_graph_capacity with the explicit cap and the existing run_guarded MemoryPolicy(12.5, 8); retain prompt-fit lease custody and durable Windows capture. Initial dataclass evidence serialization failed after parent composition; the empty partial receipt is preserved and root approved a separate metadata-only correction. This consumed no contact or proposal.
+
+Root dispatch remains unadmitted. Final readiness, exposure, clean frozen source checks and a fresh external registration precede the one-shot capacity task. Keep speech-query-prefix-v2, trajectory routing, affinity OFF, optional role-query placement OFF, shared 4 x 24576 geometry and heartbeat PAUSED. Later structural 12 rows and complete 8 x 20 remain HELD; no scientific READ or new opportunity is authorized here.
+
 ## Optional role-query layout support, 2026-10-03T11:47:14.843037+00:00
 
 The shared native renderer now supports prospectively configured role instructions before speech, at user authority, while preserving tool/source custody. Default OFF retains legacy request semantics; round8 stays OFF. The complete role query can include dynamic episode limits, so reuse is measured rather than assumed. [Engineering scope and checks](../readiness/2026-10-03-node-context-optimization-v1/role-query-layout-support.md), [receipt](../receipts/continuation/2026-10-03-role-query-layout-engineering.json).350 tests passed, one existing optional skip; synthetic metered Reviewer-to-Solver roundtrip passes both layouts. No live tokenizer/model/scorer contact, geometry change or proposal-schema expansion occurred. A future declared complete policy/configuration still needs maximal FIT, structural proof and root admission. Cache reuse is not a quality gate. Keep heartbeat PAUSED and owner227 boundaries.
@@ -945,7 +951,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T11:32:42.178337+00:00
+Last refreshed: 2026-10-03T11:51:42.879418+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

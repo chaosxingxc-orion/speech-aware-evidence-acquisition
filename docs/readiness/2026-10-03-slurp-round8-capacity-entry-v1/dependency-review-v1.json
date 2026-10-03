@@ -1,0 +1,79 @@
+{
+  "at_utc": "2026-10-03T11:44:40.990955+00:00",
+  "entry_script": "scripts/native_graph_capacity.py",
+  "members": [
+    {
+      "capacity": "slurp-native-stage3-system-text-round8-parent-capacity-v1",
+      "capacity_rows": 20,
+      "capacity_run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-CAPACITY-FIT-V1",
+      "generation_contacts": 0,
+      "graph": "slurp-native-stage3-system-text-round8-parent-graph-v1",
+      "graph_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-parent-graph-v1.json",
+        "sha256": "3736b342635d44f9ef19e586158b878f290cbe7a15910b41b5be5c34d0f23ef5"
+      },
+      "graph_modes": [
+        "check"
+      ],
+      "graph_rows": 4,
+      "label": "parent",
+      "native_prefix_slots": null,
+      "official_scoring_contacts": 0,
+      "prompt_order": "speech-query-prefix-v2",
+      "runtime_semantics_match": true,
+      "serving_resource_limits_declared": false,
+      "tokenizer_endpoint_cap": 297
+    },
+    {
+      "capacity": "slurp-native-stage3-system-text-round8-candidate-1-capacity-v1",
+      "capacity_rows": 20,
+      "capacity_run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-CAPACITY-FIT-V1",
+      "generation_contacts": 0,
+      "graph": "slurp-native-stage3-system-text-round8-candidate-1-graph-v1",
+      "graph_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-candidate-1-graph-v1.json",
+        "sha256": "02f0604abdf3086a3c065759df8a911ca11fae12d3885e89b1d6198aaaf9e3e9"
+      },
+      "graph_modes": [
+        "check"
+      ],
+      "graph_rows": 4,
+      "label": "candidate-1",
+      "native_prefix_slots": null,
+      "official_scoring_contacts": 0,
+      "prompt_order": "speech-query-prefix-v2",
+      "runtime_semantics_match": true,
+      "serving_resource_limits_declared": false,
+      "tokenizer_endpoint_cap": 297
+    },
+    {
+      "capacity": "slurp-native-stage3-system-text-round8-candidate-2-capacity-v1",
+      "capacity_rows": 20,
+      "capacity_run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-FIT-V1",
+      "generation_contacts": 0,
+      "graph": "slurp-native-stage3-system-text-round8-candidate-2-graph-v1",
+      "graph_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-candidate-2-graph-v1.json",
+        "sha256": "bdbe110984db5ae00be511f947b58661db8e9dcfc746e7224b1da9eff448eb69"
+      },
+      "graph_modes": [
+        "check"
+      ],
+      "graph_rows": 4,
+      "label": "candidate-2",
+      "native_prefix_slots": null,
+      "official_scoring_contacts": 0,
+      "prompt_order": "speech-query-prefix-v2",
+      "runtime_semantics_match": true,
+      "serving_resource_limits_declared": false,
+      "tokenizer_endpoint_cap": 297
+    }
+  ],
+  "old_entry_not_used": "scripts/system_text_capacity.py uses a different stress path/default contact cap; do not substitute it",
+  "own_supplies_required_for_capacity": false,
+  "registered_total_endpoint_cap": 891,
+  "root_dispatch_admission": false,
+  "running_memory_enforcement": "Propose existing run_guarded with MemoryPolicy(start_gib=12.5,floor_gib=8,interval_seconds=10) around each owned capacity child; startup also requires three10-second stable samples. No server/global STOP or host-setting mutation.",
+  "schema": "saea-round8-capacity-entry-dependency-review-v1",
+  "supply_reason": "The actual capacity graph renders maximum legal current inputs through the shared runtime; no generating supply envelope is consumed. The later structural/panel cells require their own preparation and frozen identity."
+}

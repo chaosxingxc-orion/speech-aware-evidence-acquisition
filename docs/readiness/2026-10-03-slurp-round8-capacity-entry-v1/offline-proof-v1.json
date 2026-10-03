@@ -1,0 +1,21 @@
+{
+  "at_utc": "2026-10-03T11:46:29.581316+00:00",
+  "existing_guard_healthy": {
+    "exit_code": 0,
+    "pid": 475012,
+    "status": "completed",
+    "worker_returncode": 0
+  },
+  "existing_guard_low_memory": {
+    "exit_code": 125,
+    "pid": null,
+    "status": "start-refused",
+    "worker_returncode": null
+  },
+  "host_readings": "synthetic injected16GiB and7GiB; not live health",
+  "model_tokenizer_scorer_contacts": 0,
+  "queue_stop_service_task_mutations": false,
+  "real_host_or_service_inspection": false,
+  "schema": "saea-round8-capacity-guard-synthetic-proof-v1",
+  "unadmitted_template_refused": true
+}

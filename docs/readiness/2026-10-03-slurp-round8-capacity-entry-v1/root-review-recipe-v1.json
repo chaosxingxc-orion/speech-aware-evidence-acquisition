@@ -1,0 +1,44 @@
+{
+  "at_utc": "2026-10-03T11:51:42.879418+00:00",
+  "background_independence": "Windows owns the WSL task; heartbeat remains PAUSED and 10-second serving telemetry remains independent.",
+  "guarded_child_template": {
+    "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/guarded-child-template-v1.py",
+    "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+  },
+  "known_limits": [
+    "No current health is claimed from historical launch receipts.",
+    "No own phase-supply envelope is required by the nongenerative graph capacity path. Later generation members require their own exact envelopes after readiness/source freeze.",
+    "The process supervisor stops only its own child group on low/missing memory observations and does not stop or restart the model service.",
+    "Raw provider/task-quality outcomes are not consulted and no optimization export is produced."
+  ],
+  "model_free_composition_proof": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/graph-dry-run-proof-v2.json",
+    "sha256": "43152ef9efc622f21d6f4210dbcb657b44e42743b2f446bf33c45c0ae0d4e12e"
+  },
+  "no_contact_rehearsal": "Template syntax and unadmitted refusal; no live host/service/lease/task operation performed.",
+  "registration_template": {
+    "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/registration-unbound-v1.json",
+    "sha256": "4ed146e22de0f60ad261b322f9838f70f0b88e7adf78672a44516d59e20c36c7"
+  },
+  "root_selection": "Root227 approved the three graph helpers and tested MemoryPolicy(12.5, 8) run_guarded wrapper for offline preparation. Exact FIT dispatch is not admitted.",
+  "schema": "saea-round8-capacity-root-review-recipe-v1",
+  "source_dependencies": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/source-dependencies-v1.json",
+    "sha256": "b4bd3a1ccfa3e48ef8e9e53f74db672a8bf8828aa4ecb4ddee015b69ac4804ce"
+  },
+  "startup_recipe": [
+    "Integrate final default-off layout source and exact round8 configurations serially; preserve all prior frozen workers.",
+    "Root records an exact decided campaign receipt for the three297-endpoint FIT run IDs. This grants no generation, score or scientific READ.",
+    "Set only the three capacity cells ready, retain graph helpers held/check-only, and write three root-countersigned FIT plans plus exposure-ledger rows from the final shared-composed identities.",
+    "Update handoffs and commit, then create a separate clean frozen capacity worker. Use -B and PYTHONDONTWRITEBYTECODE=1 throughout.",
+    "Run exact frozen model-free runtime and flight_registration checks for each capacity cell, plus the three matching graph dry-runs; retain all receipts and hashes.",
+    "Bind a fresh immutable external registration to full worker commit, root admission, plans, source files, helper and wrapper hashes. Prepared placeholders cannot dispatch.",
+    "Revalidate no live generation/scorer conflict, STOP absent, exact resident session PID/epoch/geometry, fresh telemetry and current memory. Never alter queue, STOP, source, service or caches to make admission pass.",
+    "Register a new one-shot Windows task with IgnoreNew and durable separate stdout/stderr/start/exit capture. Do not reuse proposer or batch tasks.",
+    "For parent, candidate-1, candidate-2 in serial order: verify registration; wait for three12.5GiB startup readings10seconds apart; acquire the existing prompt-fit generation lease for that exact run/attempt.",
+    "Run the existing native_graph_capacity.py with contact-cap297 inside tested run_guarded(start12.5GiB,floor8GiB,interval10seconds). Preserve its contact journal, guarded child identity and output.",
+    "Release the owned lease only on successful guarded fit and lease exit; on any failure preserve token/lease/partial output/STOP/controls and stop the task for root disposition. Never automatically retry or continue the other capacities after failure.",
+    "After all three succeed, root may accept structural capacity only. Maximum tested graph is not an exhaustive guarantee over arbitrary future text; per-request runtime FIT stays mandatory. Next structural and8x20 stages remain HELD."
+  ],
+  "windows_task_name_proposed": "SAEA-System-Text-Round8-Capacity-Owner227"
+}

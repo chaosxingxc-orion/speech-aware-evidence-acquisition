@@ -1,0 +1,33 @@
+{
+  "at_utc": "2026-10-03T11:51:03.450456+00:00",
+  "contacts": 0,
+  "final_frozen_admission_proof": false,
+  "members": [
+    {
+      "label": "parent",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-capacity-entry-preparation-v1/parent-graph-dry-run-v2.json",
+      "rows": 4,
+      "sha256": "c040c935fb28d9bedcc39412f3f99754b4651f5e89cc84f4a696766868056b30"
+    },
+    {
+      "label": "candidate-1",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-capacity-entry-preparation-v1/candidate-1-graph-dry-run-v2.json",
+      "rows": 4,
+      "sha256": "8cc06223576862522f4d80bfdb33153312e1410de5421c9b1a65076fc2963522"
+    },
+    {
+      "label": "candidate-2",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-capacity-entry-preparation-v1/candidate-2-graph-dry-run-v2.json",
+      "rows": 4,
+      "sha256": "eb4369dfe55dfb306291312697a41ff168e605831d805bb73db9fa47dd63b039"
+    }
+  ],
+  "preserved_failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-capacity-entry-preparation-v1/graph-dry-run-serialization-failure-v1.json",
+    "sha256": "ba1bd8803c289efcbaabc18e1e61f5af63b09d970a795069e4d99100eb9d3468"
+  },
+  "schema": "saea-round8-graph-compose-proof-v2",
+  "serialization": "Explicit metadata projection; no mutation or generic serialization of internal runtime objects.",
+  "source_basis": "55f0a6ff7fb0d596fe476f2e9a9d1bcf8b6e9dec",
+  "total_rows": 12
+}

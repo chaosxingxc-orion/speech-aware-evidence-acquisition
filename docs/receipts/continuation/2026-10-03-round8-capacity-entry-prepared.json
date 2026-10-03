@@ -1,0 +1,49 @@
+{
+  "actual_preparation_contacts": 0,
+  "affinity": "OFF",
+  "at_utc": "2026-10-03T11:51:42.879418+00:00",
+  "dependencies": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/source-dependencies-v1.json",
+    "sha256": "b4bd3a1ccfa3e48ef8e9e53f74db672a8bf8828aa4ecb4ddee015b69ac4804ce"
+  },
+  "future_generation": "Three structural members and eight comparison members remain HELD. Six comparison members are seed-equivalent; no L policy improvement mechanism is present.",
+  "graph_composition": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/graph-dry-run-proof-v2.json",
+    "sha256": "43152ef9efc622f21d6f4210dbcb657b44e42743b2f446bf33c45c0ae0d4e12e"
+  },
+  "guarded_template": {
+    "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/guarded-child-template-v1.py",
+    "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+  },
+  "heartbeat": "PAUSED",
+  "next_stage_budget": {
+    "generation_contacts": 0,
+    "members": 3,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints_each": 297,
+    "total_tokenizer_endpoints": 891
+  },
+  "owner227_root_offline_selection": true,
+  "prepared_unbound_registration": {
+    "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/registration-unbound-v1.json",
+    "sha256": "4ed146e22de0f60ad261b322f9838f70f0b88e7adf78672a44516d59e20c36c7"
+  },
+  "preserved_serializer_failure": {
+    "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/graph-dry-run-serialization-failure-v1.json",
+    "sha256": "ba1bd8803c289efcbaabc18e1e61f5af63b09d970a795069e4d99100eb9d3468"
+  },
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/root-review-recipe-v1.json",
+    "sha256": "7f340869a37d271b721d33a1063b1a7640df8bb0b39c8b47a95d02ec14e3592c"
+  },
+  "request_layout": "speech-query-prefix-v2",
+  "role_instruction_first_layout": "OFF",
+  "root_fit_dispatch_admitted": false,
+  "runtime_or_control_changes": false,
+  "schema": "saea-round8-capacity-entry-prepared-v1",
+  "source_basis": "55f0a6ff7fb0d596fe476f2e9a9d1bcf8b6e9dec",
+  "synthetic_guard_proof": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/offline-proof-v1.json",
+    "sha256": "6eb36ce5c99c9d57c2fb1724492f911f64e71c8d5e37163ad9000e721f7b3f44"
+  }
+}

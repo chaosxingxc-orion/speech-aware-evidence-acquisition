@@ -1,0 +1,16 @@
+{
+  "at_utc": "2026-10-03T11:52:16.080002+00:00",
+  "checks": {
+    "engineering_base_check": "PASS",
+    "git_diff_check": "PASS",
+    "handoff_freshness_check": "PASS; 0 findings",
+    "harness_admission_check": "PASS",
+    "synthetic_memory_guard": "PASS; healthy inert child exit0, 7GiB startup refused125 before child",
+    "three_shared_runtime_compose_dry_runs": "PASS; 4 existing rows each; metadata-only receipts",
+    "unadmitted_helper": "PASS; refusal before source import or execution"
+  },
+  "final_frozen_check_required": true,
+  "model_tokenizer_scorer_contacts": 0,
+  "schema": "saea-round8-capacity-entry-checks-v1",
+  "source_implementation_changes": false
+}

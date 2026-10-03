@@ -1,0 +1,67 @@
+{
+  "at_utc": "2026-10-03T11:51:42.879418+00:00",
+  "dependencies": [
+    {
+      "relpath": "scripts/native_graph_capacity.py",
+      "sha256": "e57a76ab415dcb3eb321dde8015c2a4e9a85ac7ef38e0b88af5d898b6434e004"
+    },
+    {
+      "relpath": "scripts/checks/flight_registration_check.py",
+      "sha256": "c8b484687bace78d6d1b71933137c93a99a9817fa8b3598a30841d2feee26221"
+    },
+    {
+      "relpath": "scripts/flights/batch/wait_for_start_memory.py",
+      "sha256": "9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/lease_cli.py",
+      "sha256": "4de31300c963299962eae1eaf393e3a5d73dac990b4676db52222ba515871066"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/process_guard.py",
+      "sha256": "6939881f2351d470f0860ae82f7ce3a72ed7a2276a252bce7be0fd7f6359ef28"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/native_graph_capacity.py",
+      "sha256": "8542025e9a0738efe908fe74c3a769e9d25fba31e8ab49ca698560b78fe457fd"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/native_episode_dry_run.py",
+      "sha256": "9ebc694c6fd6440562729b1fea18a56eacc6110fa0f495ed537f70dc1e09749a"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/factory.py",
+      "sha256": "ae32a957a7023bcb9506f668d596b2b863dd6235343752350dcd9fc6b64ecc9f"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "3ab2afdb386df46883b43b21d7b785c0f5baaf74053bdb6ca70d80d24504329f"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/model/transport.py",
+      "sha256": "2e1d7954058e4dc88c5adede07e2aa5813fadcd82e49332242166a5a6b9aba43"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/model/native_framework_history.py",
+      "sha256": "e1ae6cdb854865ccb102e0f23d67cb24ae9fee05655b3651d5cbe39f6e4984ef"
+    }
+  ],
+  "external_templates": [
+    {
+      "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/guarded-child-template-v1.py",
+      "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/registration-unbound-v1.json",
+      "sha256": "4ed146e22de0f60ad261b322f9838f70f0b88e7adf78672a44516d59e20c36c7"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-entry-preparation-v1/compose-graph-evidence-v2.py",
+      "sha256": "75ada82b2a30dde49120218cfc440dcf2d735c41ce4f21bcd3bc6089e281f9b9"
+    }
+  ],
+  "final_frozen_worker_required": true,
+  "schema": "saea-round8-capacity-source-dependencies-v1",
+  "source_basis": "55f0a6ff7fb0d596fe476f2e9a9d1bcf8b6e9dec",
+  "source_implementation_changes": false
+}
