@@ -1,0 +1,12 @@
+{
+  "at_utc": "2026-10-03T12:43:06.273931+00:00",
+  "contacts": 0,
+  "failure": "compose_dry_run rejected the unadmitted graph draft because ExecutionPlan universally requires positive numeric planning fields. No graph requests or model contacts were reached.",
+  "policy_or_data_changed": false,
+  "preserved_draft": {
+    "relpath": "coordination/context-layout-engineering-owner227-v1/graph-zero-budget-draft-v1.json",
+    "sha256": "1c3072ae4df4299172e01af03ec62ad80a8105e296e45c6b9aab34688537161a"
+  },
+  "root_disposition": "Use inert positive legacy planning fields solely for model-free composition. Keep model-free-check, check-only HELD cell and zero contact family budget. No admission or execution plan is created.",
+  "schema": "saea-model-free-preparation-disposition-v1"
+}

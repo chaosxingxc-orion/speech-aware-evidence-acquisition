@@ -1,0 +1,22 @@
+{
+  "at_utc": "2026-10-03T12:43:21.557173+00:00",
+  "config_hash": "a354975ad6b390d114c73b9462b37210c0ed73bb2ec81d93d3325310f769bd2a",
+  "contacts": 0,
+  "dispatch_authorized": false,
+  "experiment": "slurp-native-stage3-context-layout-before-speech-graph-v1",
+  "final_frozen_source_check": false,
+  "layout": "before-speech-v1",
+  "role_instruction_sha256": {
+    "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+    "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+    "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+    "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+  },
+  "rows": 4,
+  "schema": "saea-context-layout-compose-proof-v1",
+  "store_ids": [
+    "intent-boundaries",
+    "slot-contracts",
+    "train-exemplars"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "at_utc": "2026-10-03T12:44:41.493953+00:00",
+  "capacity_and_structural_dispatch": "HELD pending exact phase admission and frozen checks",
+  "composition": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/composition-proof-v1.json",
+    "sha256": "16e4dd6deef34c36beedaa7d07f65be973796f48780c3d3cbbb05980bb8152f1"
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "heartbeat": "PAUSED",
+  "live_queue_or_service_changes": false,
+  "new_learning_contacts": false,
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-03-engineering-first-context-configuration.json",
+    "sha256": "178928f6acd0254f71878431e01159a20df279f20606d13492d31da9e062d0e7"
+  },
+  "preparation": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/preparation-v2.json",
+    "sha256": "e2770e3cb4e1c93486d0be81729e77125f9a56689b2aa24ef701ce7adab50a7e"
+  },
+  "review_recipe": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/README.md",
+    "sha256": "185b2e1d2c331528b15eed5c723471d366d517e54b46c8bcaf13532836836aa5"
+  },
+  "schema": "saea-context-layout-engineering-prepared-v1",
+  "verification": {
+    "capacity_graph_layout_mismatch": "refused before endpoint",
+    "engineering_base": "PASS",
+    "finite_completion": "PASS",
+    "harness_admission": "PASS",
+    "pre_fix_new_test_failures": 2,
+    "real_shared_composition_rows": 4,
+    "targeted_tests": 32
+  }
+}

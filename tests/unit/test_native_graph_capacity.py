@@ -80,3 +80,20 @@ def test_capacity_refuses_different_prefix_routing_before_any_endpoint(capacity,
         fit_native_graph(runtime(capacity), tmp_path / "absent.json", policy=None,
                          graph_factory=lambda: runtime(graph))
     assert not (tmp_path / "absent.json").exists()
+
+
+@pytest.mark.parametrize("capacity, graph", [
+    (None, "before-speech-v1"), ("before-speech-v1", None),
+])
+def test_capacity_refuses_a_graph_with_different_context_layout(capacity, graph, tmp_path):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.analysis.native_graph_capacity import fit_native_graph
+
+    def runtime(placement):
+        values = {} if placement is None else {"native_role_query_placement": placement}
+        return SimpleNamespace(preparation_context=lambda: {"values": values, "sample_ids": list("abcd")})
+
+    with pytest.raises(ValueError, match="Graph proof differs.*native_role_query_placement"):
+        fit_native_graph(runtime(capacity), tmp_path / "absent.json", policy=None,
+                         graph_factory=lambda: runtime(graph))
+    assert not (tmp_path / "absent.json").exists()

@@ -1,0 +1,153 @@
+{
+  "at_utc": "2026-10-03T12:44:11.922543+00:00",
+  "baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-context-layout-before-speech-v1.json",
+    "sha256": "206f96b4d80eb24000b95045a48c02a629359658f449b9d090fde2474a6b2efe"
+  },
+  "bundle": {
+    "bundle": {
+      "relpath": "coordination/context-layout-engineering-owner227-v1/policy-archive/policies/646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956.json",
+      "sha256": "921ed19bec81742399901dbdea694e8f8eb07375de8b0a107ffb65c8387d8fc1"
+    },
+    "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "composition_proof": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/composition-proof-v1.json",
+    "sha256": "16e4dd6deef34c36beedaa7d07f65be973796f48780c3d3cbbb05980bb8152f1"
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "cumulative_sources_preserved": true,
+  "dispatch_authorized": false,
+  "heartbeat": "PAUSED",
+  "members": [
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-capacity-v1",
+      "config_hash": "eddfeb74573501c02105773550eae47da771554ee1b09aa6645a29802461d0ea",
+      "experiment": "slurp-native-stage3-context-layout-before-speech-capacity-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-layout-before-speech-capacity-v1.json",
+        "sha256": "65429688b78e87cce5c20587d6d34577136e648e4c5ff0a7de0a93e95ca64e6e"
+      },
+      "kind": "capacity",
+      "policy_binding_check": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "prospective_budget": {
+        "complete_system_trajectories": 0,
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "tokenizer_endpoint_cap": 297
+      },
+      "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-CAPACITY-FIT-V1",
+      "state": "HELD"
+    },
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-graph-v1",
+      "config_hash": "a354975ad6b390d114c73b9462b37210c0ed73bb2ec81d93d3325310f769bd2a",
+      "experiment": "slurp-native-stage3-context-layout-before-speech-graph-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-layout-before-speech-graph-v1.json",
+        "sha256": "6bbf4edd4cbf4627cfbc88fb3de84fa08541eaa2918b9685a1670bd486bf1ae0"
+      },
+      "kind": "graph",
+      "policy_binding_check": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "prospective_budget": {
+        "complete_system_trajectories": 0,
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "tokenizer_endpoint_cap": 0
+      },
+      "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-GRAPH-V1",
+      "state": "HELD"
+    },
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-smoke-4-v1-generation",
+      "config_hash": "f28b0863f7e65c48d05f3331b550039f8ac972584f7b67401d5e1d227ca8dbbd",
+      "experiment": "slurp-native-stage3-context-layout-before-speech-smoke-4-v1",
+      "experiment_pin": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-layout-before-speech-smoke-4-v1.json",
+        "sha256": "4a76e5ec06b6263c9c90c9902382976a04bc00a8155017575ca9823bca274c93"
+      },
+      "kind": "structural",
+      "policy_binding_check": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "prospective_budget": {
+        "actual_request_fit_endpoint_cap": 208,
+        "complete_system_trajectories": 4,
+        "generation_calls_cap": 52,
+        "official_complete_scoring_jobs": 0
+      },
+      "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1",
+      "state": "HELD"
+    }
+  ],
+  "normalized_baseline_equals_existing_seed": true,
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-03-engineering-first-context-configuration.json",
+    "sha256": "178928f6acd0254f71878431e01159a20df279f20606d13492d31da9e062d0e7"
+  },
+  "reused_input_binding": {
+    "cohort": {
+      "relpath": "docs/readiness/2026-10-03-slurp-round8-compilation-v1/cohort-prefix20-v2.json",
+      "sha256": "cdfb7e0070ade83f81b5ac133cbbc0fc577cddd839ababb3a699cd8782fac30e"
+    },
+    "protocol": {
+      "relpath": "docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/protocol-proposals-v1.json",
+      "sha256": "2b9c3c847e8e42a4ce53cd18ea6ddd1c81340fea7e41058e7d5d9c85cf1b2aff"
+    },
+    "scope": "Reuse existing input identity validation only; no proposal or learning execution."
+  },
+  "schema": "saea-context-layout-engineering-preparation-v2",
+  "seed_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "semantic_diff": [
+    "native_role_query_placement: absent to before-speech-v1",
+    "content-addressed role paths change; every role byte remains identical"
+  ],
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/preparation-v1.json",
+    "sha256": "957a88f98ab3a01755a34a03b4eac5a139eb72691c7c411074a61c2a11326810"
+  },
+  "supplies_prepared": false
+}
