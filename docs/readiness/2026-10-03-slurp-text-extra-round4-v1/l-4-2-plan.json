@@ -1,0 +1,11 @@
+{
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-4-2-EXTRA-OWNER223-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "slurp",
+  "split_role": "discovery",
+  "split_identity_hash": "0f2280cb11246fa27f31427da99c080174cfa082c85baf24ee919dcc8fa5b014",
+  "planned_model_calls": 4,
+  "planned_gpu_hours": 1.0,
+  "planned_speech_audio_seconds": 1,
+  "protocol_hash": "51e885ec8c8b28fe5ed63ad569529a7a4d5699e8f038b6d29c89f5ab9a3f182f"
+}

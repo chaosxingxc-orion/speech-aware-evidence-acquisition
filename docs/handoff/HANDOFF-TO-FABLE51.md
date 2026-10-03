@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Extra proposal round4 prepared, 2026-10-03T03:12:30.926790+00:00
+
+Owner223/224 now has exactly four prospectively registered new slots in the existing archive; all twelve earlier slots remain spent. The same GPT6 version and budgets are pinned. All four isolated inputs/capsules are verified: L has131 artifacts and six prior L history entries; B has six frozen knowledge artifacts and no feedback/history/selection. Existing complete owner220 L-only feedback is reverified; no owner225/root/B report is exported. [Prepared protocol and custody](../readiness/2026-10-03-slurp-text-extra-round4-v1/README.md).
+
+The shared allocation gate supports exact extra rounds through proposal packaging/import/compilation and independently validates archive/owner evidence before transport.244 tests pass, allocation module100% statement coverage, lint/base/harness pass. Four exposure rows reserve at most four contacts each. No new model, tokenizer, scorer or GPU contacts yet. Freeze the proposer worker and pass its actual preflight before the one-shot proposal launch. Runtime families and larger50/100/200 slots remain HELD; register exact comparison/FIT/engineering/READ separately. The formal three-round stage reader remains unchanged, not an admission path for this extra20-row family.
+
 ## Owner225 recovery complete and root READ reviewed, 2026-10-03T02:46:05.070976+00:00
 
 All four20-row members finalized with verified seals/unique successful official scores and zero failed jobs; exact root READ is complete. Seed/A/A/Planner/Solver SLU-F1 is58.3942/55.1724/60.9298/57.0846%, intent70%, completion100%. Planner gain +2.5356pp remains uncertain; Solver raw-shape defects8/37 versus seed2/35. All145 Reviewer handoffs are visible to Planner, with12 non-slot findings. [Complete root report](../results/2026-10-03-slurp-context20-recovery1-root-read.md). This is retained-exposure optimization, no formal adoption/L-over-B gain or optimizer export.

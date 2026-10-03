@@ -1,0 +1,14 @@
+{
+  "schema": "saea-extra-allocation-engineering-validation-v1",
+  "checked_at_utc": "2026-10-03T03:08:23.265417+00:00",
+  "tests": 244,
+  "failed": 0,
+  "new_module_statement_coverage_percent": 100,
+  "engineering_base_check": "PASS",
+  "harness_admission_check": "PASS",
+  "changed_file_lint": "PASS",
+  "git_diff_check": "PASS",
+  "source_module": "src/speech_aware_evidence_acquisition/rails/system_search_allocations.py",
+  "new_model_contacts": 0,
+  "verification_limit": "Proposal allocation, packaging and mock transport only. Actual provider dispatch and extra-round runtime family admission remain separate."
+}

@@ -57,9 +57,11 @@ def input_references(packet):
     require(packet.get("input_sha256") == content_hash({k: v for k, v in packet.items() if k != "input_sha256"}),
             "proposal input fingerprint differs")
     branch = packet.get("branch")
-    require(branch in {"L", "B"} and packet.get("round") in (1, 2, 3) and packet.get("slot") in (1, 2),
+    from .system_search_allocations import require_packet_round_shape
+    require_packet_round_shape(packet)
+    require(branch in {"L", "B"} and type(packet.get("slot")) is int and packet.get("slot") in (1, 2),
             "invalid proposal allocation")
-    require(not set(packet) - COMMON_FIELDS - {"budget_profile", "optimization_scope"} - (LEARNING_FIELDS if branch == "L" else frozenset()),
+    require(not set(packet) - COMMON_FIELDS - {"budget_profile", "optimization_scope", "allocation_extension_sha256"} - (LEARNING_FIELDS if branch == "L" else frozenset()),
             "blind or undeclared input fields")
     require(packet.get("budget_profile", HARD_BUDGET) in (HARD_BUDGET, SUBSCRIPTION_BUDGET),
             "undeclared proposal budget profile")

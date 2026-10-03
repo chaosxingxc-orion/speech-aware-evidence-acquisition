@@ -160,11 +160,13 @@ class TextPolicyUpdateProposal:
         return json.loads(self.document_json)
 
     @classmethod
-    def from_json(cls, d):
+    def from_json(cls, d, *, allocation_extension=None):
         require(isinstance(d, dict) and set(d) == {"schema", "branch", "round", "slot", "parent_ids",
                                                  "changes", "rationale", "hypotheses", "evidence"}
                 and d["schema"] == PROPOSAL_SCHEMA, "proposal fields differ")
-        require(d["branch"] in {"L", "B"} and type(d["round"]) is int and d["round"] in (1, 2, 3)
+        from .system_search_allocations import require_round
+        require_round(d["round"], allocation_extension)
+        require(d["branch"] in {"L", "B"}
                 and type(d["slot"]) is int and d["slot"] in (1, 2), "invalid proposal allocation")
         require(isinstance(d["changes"], dict) and set(d["changes"]) <= EDITABLE,
                 "proposal changes an undeclared editable surface")

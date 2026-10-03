@@ -1,0 +1,26 @@
+{
+  "schema": "saea-extra-proposal-allocation-registration-receipt-v1",
+  "recorded_at_utc": "2026-10-03T03:03:39.733339+00:00",
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217",
+  "round": 4,
+  "allocation_extension": {
+    "relpath": "docs/readiness/2026-10-03-slurp-text-extra-round4-v1/allocation-extension.json",
+    "sha256": "4cc31540e9a8c22c2f1f2115d980dc44ff77a51cee2b079da3ca6e802617f51b"
+  },
+  "allocation_sha256": "7edc1cf29de7956843b059abd9191ecd32d0e498b03ed22019f0368011809d33",
+  "prior_spent_allocations": 12,
+  "new_slots": [
+    "L-4-1",
+    "L-4-2",
+    "B-4-1",
+    "B-4-2"
+  ],
+  "model_version": "gpt-6-astra",
+  "input_cap": 32768,
+  "output_cap": 4096,
+  "contact_cap_per_proposal": 4,
+  "model_contacts_added": 0,
+  "runtime_admission": "HELD",
+  "feedback_source": "Existing owner220 full-pilot READ projected to all four L members only; no owner225/root/B report export.",
+  "formal_three_round_stage_reader": "Unchanged; extra-round runtime family requires separate exact registration and reader acceptance."
+}

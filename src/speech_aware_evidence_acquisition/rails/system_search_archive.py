@@ -50,13 +50,15 @@ def pareto_frontier(rows, *, identity_key="bundle_id"):
 
 
 def proposal_input(*, branch, round_index, slot, seed, parent, model_version, session_id,
-                   input_token_cap, output_token_cap, feedback=None, complementary=()):
+                   input_token_cap, output_token_cap, feedback=None, complementary=(), allocation_extension=None):
     """Produce a manifest for a fresh context, not a shared-chat prompt.
 
     A launcher must enforce this input allowlist and deny all other file/tools
     access. The packet alone is not proof of process/filesystem isolation.
     """
-    require(branch in {"L", "B"} and round_index in (1, 2, 3) and slot in (1, 2), "invalid allocation")
+    from .system_search_allocations import require_round
+    require_round(round_index, allocation_extension)
+    require(branch in {"L", "B"} and type(slot) is int and slot in (1, 2), "invalid allocation")
     require(model_version and session_id and type(input_token_cap) is int and input_token_cap > 0
             and type(output_token_cap) is int and output_token_cap > 0, "pin the proposer and budgets")
     if branch == "B":
@@ -80,6 +82,10 @@ def proposal_input(*, branch, round_index, slot, seed, parent, model_version, se
     if branch == "L":
         packet["feedback"] = feedback.as_json()
         packet["complementary_policies"] = [b.as_json() for b in complementary]
+    if allocation_extension is not None:
+        from .system_search_allocations import require_packet_allocation
+        packet["allocation_extension_sha256"] = content_hash(allocation_extension)
+        require_packet_allocation(packet, {"allocation_extension": allocation_extension})
     packet["input_sha256"] = content_hash(packet)
     return packet
 
@@ -99,8 +105,24 @@ class SystemSearchArchive:
         except FileExistsError as error:
             raise PolicyError("proposal allocation already consumed") from error
 
+    def allocation_extension(self, round_index):
+        """Resolve an existing prospective allowance, never infer one from input."""
+        from .system_search_allocations import require_round, validate_extension
+        if type(round_index) is int and 1 <= round_index <= 3:
+            return None
+        path = self.root / f"allocations/round-{round_index}.json"
+        require(path.is_file(), "registered round extension required")
+        extension = json.loads(path.read_text())
+        require_round(round_index, extension)
+        return validate_extension(self, extension)
+
+    def require_packet_allocation(self, packet):
+        from .system_search_allocations import require_packet_allocation
+        require_packet_allocation(packet, {"allocation_extension": self.allocation_extension(packet["round"])})
+
     def record_proposal(self, *, branch, round_index, slot, receipt):
-        require(branch in {"L", "B"} and round_index in (1, 2, 3) and slot in (1, 2), "proposal quota exceeded")
+        extension = self.allocation_extension(round_index)
+        require(branch in {"L", "B"} and type(slot) is int and slot in (1, 2), "proposal quota exceeded")
         require(set(receipt) == {"raw_response", "session_id", "model_version", "input_sha256", "input_tokens", "output_tokens"},
                 "proposal receipt fields differ")
         sha(receipt["input_sha256"])
@@ -116,7 +138,7 @@ class SystemSearchArchive:
         record = {"branch": branch, "round": round_index, "slot": slot, "receipt": receipt,
                   "status": "invalid", "error": None, "proposal": None}
         try:
-            proposal = TextPolicyUpdateProposal.from_json(json.loads(receipt["raw_response"])).as_json()
+            proposal = TextPolicyUpdateProposal.from_json(json.loads(receipt["raw_response"]), allocation_extension=extension).as_json()
             require((proposal["branch"], proposal["round"], proposal["slot"]) == (branch, round_index, slot),
                     "proposal allocation differs from request")
             signature = content_hash({"parent_ids": proposal["parent_ids"], "changes": proposal["changes"]})
@@ -138,7 +160,7 @@ class SystemSearchArchive:
         an index with no hidden selection of positive cases, not a score summary.
         It does not authorize access to the archive directory as a whole.
         """
-        require(before_round in (1, 2, 3), "invalid history boundary")
+        self.allocation_extension(before_round)
         records = []
         for round_index in range(1, before_round):
             for slot in (1, 2):
@@ -184,12 +206,14 @@ class SystemSearchArchive:
         require(packet["input_sha256"] == content_hash({k: v for k, v in packet.items() if k != "input_sha256"}),
                 "proposal input fingerprint differs")
         branch, round_index, slot = packet["branch"], packet["round"], packet["slot"]
-        require(branch in {"L", "B"} and round_index in (1, 2, 3) and slot in (1, 2), "invalid input allocation")
+        self.require_packet_allocation(packet)
+        require(branch in {"L", "B"} and type(slot) is int and slot in (1, 2), "invalid input allocation")
         self._write(f"inputs/{branch}-{round_index}-{slot}.json", packet)
 
     def import_response(self, *, branch, round_index, slot, receipt):
         """Join an exact isolated-session response to its prepublished input manifest."""
         packet = json.loads((self.root / f"inputs/{branch}-{round_index}-{slot}.json").read_text())
+        self.require_packet_allocation(packet)
         require(packet["input_sha256"] == content_hash({k: v for k, v in packet.items() if k != "input_sha256"}),
                 "input changed after publication")
         # Burn the opportunity before validating the transport or model response.
@@ -234,7 +258,8 @@ class SystemSearchArchive:
 
     def record_compilation(self, *, branch, round_index, slot, bundle, configuration):
         """Bind a completed compiler output to its spent proposal slot; no admission."""
-        require(branch in {"L", "B"} and round_index in (1, 2, 3) and slot in (1, 2), "invalid compilation allocation")
+        self.allocation_extension(round_index)
+        require(branch in {"L", "B"} and type(slot) is int and slot in (1, 2), "invalid compilation allocation")
         key = f"{branch}-{round_index}-{slot}"
         packet = json.loads((self.root / f"inputs/{key}.json").read_text())
         imported = json.loads((self.root / f"imports/{key}.json").read_text())

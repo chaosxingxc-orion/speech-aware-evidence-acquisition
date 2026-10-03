@@ -201,3 +201,103 @@ def test_changed_registration_never_reaches_transport(tmp_path, mutation):
         r["protocol"] = pin(Path(r["protocol"]["path"]), protocol)
     with pytest.raises(PolicyError):
         runner.load_members(r)
+
+
+def fourth_registration(tmp_path):
+    from test_system_search_allocations import fixture as allocation_fixture
+    from speech_aware_evidence_acquisition.rails.system_search_allocations import register_extension
+    archive, repo, _, extension = allocation_fixture(tmp_path / "extension")
+    requests = tmp_path / "requests"
+    requests.mkdir()
+    r = registration(requests, 3)
+    seed_id = runner.read_pin(r["members"][0]["input"])["seed_bundle_id"]
+    previous_path = repo / extension["previous_protocol"]["relpath"]
+    previous = json.loads(previous_path.read_text())
+    previous["seed_bundle"]["bundle_id"] = seed_id
+    previous_path.write_text(json.dumps(previous))
+    extension["previous_protocol"]["sha256"] = runner.digest(previous_path)
+    extension["seed_bundle_id"] = seed_id
+    register_extension(archive, extension, repo_root=repo)
+    protocol = runner.read_pin(r["protocol"])
+    protocol.update(allocation_extension=extension, proposer_exact_version=extension["model_version"])
+    r.update(round_index=4, source_root=str(repo), archive=str(archive.root))
+    r["protocol"] = pin(Path(r["protocol"]["path"]), protocol)
+    r["provider_admission"] = pin(Path(r["provider_admission"]["path"]), {"protocol_sha256": content_hash(protocol)})
+    ledger = Path(r["ledger"]["path"])
+    rows = ledger.read_text()
+    for member in r["members"]:
+        doc = runner.read_pin(member["capsule"])
+        packet = doc["packet"]
+        old_hash = packet["input_sha256"]
+        packet.update(round=4, model_version=extension["model_version"], protocol_sha256=content_hash(protocol),
+                      allocation_extension_sha256=content_hash(extension), seed_bundle_id=extension["seed_bundle_id"])
+        # The fixture seed bytes are identical; this asserts the custody join.
+        assert packet["parent_bundle_id"] == extension["seed_bundle_id"]
+        if packet["branch"] == "L":
+            packet["feedback"]["family_id"] = "update-3"
+            packet["selection"].update(stage="update-3", protocol_sha256=content_hash(protocol))
+            packet["selection"]["selection_sha256"] = content_hash({k: v for k, v in packet["selection"].items() if k != "selection_sha256"})
+        reseal(packet)
+        member["key"] = f"{packet['branch']}-4-{packet['slot']}"
+        capsule = ProposerCapsule(packet, {a["artifact_id"]: a for a in doc["artifacts"]})
+        member["capsule"] = pin(Path(member["capsule"]["path"]), capsule.as_json())
+        member["input"] = pin(Path(member["input"]["path"]), packet)
+        member["request_sha256"] = content_hash(capsule.request())
+        member["execution_plan"].update(protocol_hash=content_hash(protocol), split_identity_hash=packet["input_sha256"])
+        rows = rows.replace(old_hash, packet["input_sha256"])
+    ledger.write_text(rows)
+    r["ledger"]["sha256"] = runner.digest(ledger)
+    return r
+
+
+def test_registered_fourth_round_requires_actual_archive_and_owner_before_transport(tmp_path):
+    r = fourth_registration(tmp_path)
+    assert len(runner.load_members(r)[0]) == 4
+    allocation = Path(r["archive"]) / "allocations/round-4.json"
+    allocation.unlink()
+    with pytest.raises(PolicyError, match="extension"):
+        runner.load_members(r)
+
+
+def test_fourth_round_rejects_changed_owner_even_when_packet_and_archive_match(tmp_path):
+    from speech_aware_evidence_acquisition.rails.system_search_allocations import OWNER223
+    r = fourth_registration(tmp_path)
+    (Path(r["source_root"]) / OWNER223).write_text("{}")
+    with pytest.raises(PolicyError):
+        runner.load_members(r)
+
+
+def test_fourth_round_mock_transport_spends_exactly_four_new_slots(tmp_path, monkeypatch):
+    r = fourth_registration(tmp_path)
+    r.update(source_commit="fixture-commit", source_pins={}, auth={}, output_root=str(tmp_path / "execution"))
+    admission = runner.read_pin(r["provider_admission"])
+    admission["endpoint"] = "fixture-only"
+    r["provider_admission"] = pin(Path(r["provider_admission"]["path"]), admission)
+    archive = runner.SystemSearchArchive(r["archive"])
+    before = {str(p): p.read_bytes() for folder in ("inputs", "responses", "imports")
+              for p in (archive.root / folder).glob("*.json")}
+    for member in r["members"]:
+        archive.store_input(runner.read_pin(member["input"]))
+    registered = pin(tmp_path / "dispatch.json", r)
+    monkeypatch.setattr(runner.sys, "argv", ["proposer_round", registered["path"], "--sha256", registered["sha256"]])
+    monkeypatch.setattr(runner.sys, "dont_write_bytecode", True)
+    monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
+    monkeypatch.setattr(runner, "assert_wsl_execution_environment", lambda: None)
+    monkeypatch.setattr(runner.subprocess, "check_output", lambda command, **kw: "" if "status" in command else "fixture-commit\n")
+    monkeypatch.setattr(runner, "SubscriptionBearer", lambda **kw: lambda: "fixture-no-token")
+    monkeypatch.setattr(runner, "ResponsesHTTP", lambda *args, **kw: None)
+    def transport(capsule, client, **options):
+        def receive(request):
+            packet = capsule.as_json()["packet"]
+            options["before_contact"]({"contact": 1, "proposal_input_sha256": packet["input_sha256"]})
+            return {"raw_response": json.dumps(capsule.initial_input()["response_contract"]["example"]),
+                    "model_version": packet["model_version"], "input_tokens": 100, "output_tokens": 10}
+        return receive
+    monkeypatch.setattr(runner, "ResponsesProposer", transport)
+    assert runner.main() == 0
+    assert all(Path(p).read_bytes() == raw for p, raw in before.items())
+    assert len(list((archive.root / "imports").glob("*.json"))) == 16
+    for member in r["members"]:
+        imported = json.loads((archive.root / "imports" / (member["key"] + ".json")).read_text())
+        assert imported["status"] == "no-change"
+        assert imported["proposal_allocation"][1] == 4

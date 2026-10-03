@@ -1,0 +1,83 @@
+{
+  "schema": "saea-system-search-allocation-extension-v1",
+  "round": 4,
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision223-progressive-learning-ladder.json",
+    "sha256": "003710d4e8a017fc2c4a126197396ce3bac4d406edc86c7b38e7acc4023d1123"
+  },
+  "previous_protocol": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/protocol-context-v1.json",
+    "sha256": "2d7f8221dfb638e938222989ec598e5e1f7fe0a655eacb7e29d97f6d71f78440"
+  },
+  "earlier_allocations": {
+    "L-1-1": {
+      "input": "5bc7479593fc59bc1aaa275befc062e7359dc92f7f22dc8102de42d3364e76ca",
+      "response": "5acb3ca116e7c29454f9e2dfd1c5bf3c141bcc5770c57f1c225ea67de0a86c1f",
+      "import": "4ef74025de645a693ab038e82a7769d13838d8e918de292763d2765476e7f692"
+    },
+    "L-1-2": {
+      "input": "2d3e1ec556b5a6f32009b003f3fcc47201269ac5d71683d14ba680a992a6f640",
+      "response": "cfdce92250590dc26497fe1efa4d2840f82375b1f87096e6704e4ea86f1d31f5",
+      "import": "e7da7e7c847c1f1aa7849adfd38cf8f4e7a079512e2e001f7e93bbf04068dadb"
+    },
+    "B-1-1": {
+      "input": "1362eb6c083d2ffd7554dda283af99e8b888ec16ed83b175ccf9e888f1a1a1d6",
+      "response": "f23a275e6087835f8f79479c577c9bec7c56c3d863dfdb7b3953ff672293f7d0",
+      "import": "865975cf71f3dad222390ad6c235816e01d3d95c4b364824c0fa97533d454b74"
+    },
+    "B-1-2": {
+      "input": "08334da234988c9267eab85a20b769be770f933a9f16d6dcdb8127394bde9e86",
+      "response": "8808735a618bba3c7a51c5765c04ef7b1fe44d5ebc57af574d70fa6d3fcb46bc",
+      "import": "095e8484f8b906f9dc031f64a6f17476a058875bcf62d029c0dc0a99c2be05f1"
+    },
+    "L-2-1": {
+      "input": "896130ec84295e6edd6cf77c262e0ad977e9d2ef93ed285a256f249e2abc775a",
+      "response": "455400d2880cde4bd7b8d432f659bebc7f93a59186d567bacb0709fe285092ef",
+      "import": "2c45aea2ae40409c18b96ab80a64958751e819eb0dd859134460b024b034c4f2"
+    },
+    "L-2-2": {
+      "input": "2c1c71c125006c0353fac119ba04fd731b9bed3dc442860d4fc384112d0a825b",
+      "response": "6981c7ff88d47cbffc93d9517f205317b4b190d523ee109477597d65e007ea66",
+      "import": "03e3cbc75e4ad7aadfdfc5f96cefc8941ed1a37f69befdb27a50a3beba3a3ac5"
+    },
+    "B-2-1": {
+      "input": "167b2061e445a181002f3f7cfcf0eeff3fd95a8ec6a591c890deec2edaf3fbba",
+      "response": "e2b9768cf4b056045dd66e4c80c9d7f826fa8b0ff4541ce8061f7f01e3f72924",
+      "import": "80b8e0936b3c1beb6d1f56b719ef3f9b540c0e8c105eaa59c725168841a1f6f0"
+    },
+    "B-2-2": {
+      "input": "452feb10c2dbfcca8ccf217c8903d6111eac3a4aa0817a27c07df971238e93e5",
+      "response": "225b566eb5441c39e873b2d7cae0a163e3b9d050c325e8e6548aba37bf196a46",
+      "import": "d6cf0e46ac4ec320ea023ce4c56dd9914a08bd39886b120e6ed067b01aa2b31e"
+    },
+    "L-3-1": {
+      "input": "443abbc47217f2b663cb5f0298ad31c56eebd0f2c35345c4c5d56dbce379f754",
+      "response": "e66e5d0f1164b3d26a5a90d80f2c0d1954c4f11309fe8b7ae1ca539abd44d8e9",
+      "import": "ad2a5e0cf894e6c4c630de6286a427c1a9a5c02af44889ae2ff339a375a194fa"
+    },
+    "L-3-2": {
+      "input": "a8ff052774610a8c61e2d45b4f427e20901f2484518abbcd5e57e0a204f8ed21",
+      "response": "8ad2346ed1b06dd966aeb8269e74f5b6f5517b458e6515598fcf3a069a251fee",
+      "import": "42c5d185ad053a97a5bdfda57be02c856ccb5428d8826754ef987174b63be908"
+    },
+    "B-3-1": {
+      "input": "09a5dd3a7a7466fb06f0a263c3254537c89564ee6c7290ceaebeda77ade8c57f",
+      "response": "56f944350ff56804e6ddd249ad758b65480f3da47736f832bad204c782762a9a",
+      "import": "74661715c2f87b0b9ad58a542bd4366ed1999762b069d800a1cd4b3e794d50e0"
+    },
+    "B-3-2": {
+      "input": "db812c1a6bf874a0f5398d18d5240b57ac6cf2df4c6fd6c9c93b3f701f3f7c1e",
+      "response": "d4f75ee550d472b6407370f7cf65eb67e077f90a0183944a40c437cddda69fbc",
+      "import": "4ed6a0f25d6c4b67007484e1a1d67a45a6151faacd700c8c44ecd1a116244387"
+    }
+  },
+  "model_version": "gpt-6-astra",
+  "seed_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "input_token_cap": 32768,
+  "output_token_cap": 4096,
+  "contact_cap": 4,
+  "editable": [
+    "role_text"
+  ],
+  "no_runtime_authority": true
+}

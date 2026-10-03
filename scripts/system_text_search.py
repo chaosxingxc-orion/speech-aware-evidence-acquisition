@@ -109,13 +109,19 @@ def read_pilot_learning(protocol, *, round_index, family_path, repo_root, archiv
     from speech_aware_evidence_acquisition.rails.system_optimization import (
         PILOT, exploratory_selection, load_optimization_panel,
     )
+    if round_index != 3:
+        from speech_aware_evidence_acquisition.rails.system_search_allocations import validate_extension
+        extension = archive.allocation_extension(round_index)
+        require(extension is not None and extension == protocol.get("allocation_extension"),
+                "exploratory learning requires the registered extra round")
+        validate_extension(archive, extension, repo_root=repo_root)
     pin = protocol["exploratory_learning"]
     binding = json.loads(_read_pin(pin, repo_root))
     require(set(binding) == {"schema", "family", "analysis_supplement", "owner_learning",
             "reference_family", "next_round", "parent_id", "complementary_ids",
             "optimization_plan", "expected_projection_sha256"}
             and binding["schema"] == "saea-exploratory-learning-binding-v1"
-            and type(round_index) is int and round_index == binding["next_round"] == 3
+            and type(round_index) is int and round_index == binding["next_round"]
             and parent_id == binding["parent_id"]
             and list(complementary_ids) == binding["complementary_ids"],
             "exploratory parent, allocation or binding differs")
@@ -180,7 +186,7 @@ def main(argv=None):
     feedback.add_argument("--output", type=Path, required=True)
     packet = commands.add_parser("proposal-input")
     packet.add_argument("--branch", choices=("L", "B"), required=True)
-    packet.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
+    packet.add_argument("--round", type=int, required=True)
     packet.add_argument("--slot", type=int, choices=(1, 2), required=True)
     packet.add_argument("--seed-id", required=True)
     packet.add_argument("--parent-id", required=True)
@@ -192,12 +198,12 @@ def main(argv=None):
     packet.add_argument("--complementary-id", action="append", default=[])
     response = commands.add_parser("import-response")
     response.add_argument("--branch", choices=("L", "B"), required=True)
-    response.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
+    response.add_argument("--round", type=int, required=True)
     response.add_argument("--slot", type=int, choices=(1, 2), required=True)
     response.add_argument("--receipt", type=Path, required=True)
     capsule_cmd = commands.add_parser("proposal-capsule", help="Snapshot registered English inputs; no model call")
     capsule_cmd.add_argument("--branch", choices=("L", "B"), required=True)
-    capsule_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
+    capsule_cmd.add_argument("--round", type=int, required=True)
     capsule_cmd.add_argument("--slot", type=int, choices=(1, 2), required=True)
     capsule_cmd.add_argument("--protocol", type=Path, required=True)
     capsule_cmd.add_argument("--data-root", type=Path, required=True)
@@ -209,7 +215,7 @@ def main(argv=None):
     capsule_cmd.add_argument("--learning-member", action="append", default=[])
     compile_cmd = commands.add_parser("compile-candidate")
     compile_cmd.add_argument("--branch", choices=("L", "B"), required=True)
-    compile_cmd.add_argument("--round", type=int, choices=(1, 2, 3), required=True)
+    compile_cmd.add_argument("--round", type=int, required=True)
     compile_cmd.add_argument("--slot", type=int, choices=(1, 2), required=True)
     compile_cmd.add_argument("--seed-config", type=Path, required=True)
     compile_cmd.add_argument("--repo-root", type=Path, required=True)
@@ -257,6 +263,13 @@ def main(argv=None):
         command.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args(argv)
     archive = SystemSearchArchive(args.archive)
+    extension = None
+    if hasattr(args, "round"):
+        extension = archive.allocation_extension(args.round)
+        if extension is not None and hasattr(args, "protocol"):
+            from speech_aware_evidence_acquisition.rails.system_search_allocations import validate_extension
+            require(read(args.protocol).get("allocation_extension") == extension, "protocol allocation differs")
+            validate_extension(archive, extension, repo_root=args.repo_root)
     if args.command == "import-seed":
         document = read(args.bundle)
         parents = [archive.load_policy(identity) for identity in document.get("parent_ids", [])]
@@ -291,7 +304,8 @@ def main(argv=None):
             seed=archive.load_policy(args.seed_id), parent=archive.load_policy(args.parent_id),
             model_version=args.model_version, session_id=args.session_id,
             input_token_cap=protocol["proposal_input_token_cap"], output_token_cap=protocol["proposal_output_token_cap"],
-            feedback=feedback, complementary=[archive.load_policy(b) for b in args.complementary_id])
+            feedback=feedback, complementary=[archive.load_policy(b) for b in args.complementary_id],
+            allocation_extension=extension)
         if args.branch == "L":
             packet["learning_history"] = archive.learning_history(before_round=args.round)
             if selection is not None:
@@ -364,7 +378,7 @@ def main(argv=None):
         require(packet["protocol_sha256"] == content_hash(protocol), "proposal protocol changed")
         require(packet["input_sha256"] == content_hash({k: v for k, v in packet.items() if k != "input_sha256"})
                 and record["receipt"]["input_sha256"] == packet["input_sha256"], "proposal input changed")
-        proposal = TextPolicyUpdateProposal.from_json(record["proposal"])
+        proposal = TextPolicyUpdateProposal.from_json(record["proposal"], allocation_extension=extension)
         from speech_aware_evidence_acquisition.rails.system_optimization import (
             assert_policy_roster, require_context_only_changes,
         )

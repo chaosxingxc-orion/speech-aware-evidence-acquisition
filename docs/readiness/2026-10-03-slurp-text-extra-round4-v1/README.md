@@ -1,0 +1,15 @@
+# Bounded extra text-policy proposal round4
+
+Owner223 allows prospective bounded extra proposal allocations; owner224 keeps context/post-call optimization inside the same prepared400-input pool. Owner225 recovery and root READ are complete. Root remains at20 because consumption defects remain unresolved. This package registers exactly two L and two B proposal opportunities in the existing archive. It does not replace any of the twelve spent slots or promise a beneficial candidate.
+
+The pinned GPT6 version, subscription budget profile,32768 input/4096 output acceptance limits and four-contact ceiling per proposal stay identical across branches. Provider-enforced output caps remain unavailable under the approved217 disposition. Record actual tokens; reject unmetered/over-budget output and retain the spent allocation. No paid API or automatic retry.
+
+L may receive the already-authorized complete owner220 L-only feedback projection and all prior L proposal records, including failures and no-change responses. B starts independently from the same feedback-free seed and sees no root/B/L results, selection, proposal history or diagnosis. Only an opaque allocation hash enters either packet. The full allocation certificate stays host-side. Neither the225 comparison nor its diagnostic report is exported to either optimizer.
+
+Edit role/context text only. Keep existing knowledge, construction, supply, media, packets, query/vote artifacts, interfaces, Omni answering authority, scorer and geometry fixed. Preserve cumulative feedback/proposal exposure. This is optimization on reused TRAIN inputs, not independent validation or a policy-gradient claim.
+
+The extension gate joins every prior immutable input, exact response and import disposition before allowing a later round. It checks the approved223 receipt, preceding protocol, identical model/budgets and exact next slots. Packet hashes are packaging metadata, not execution authority. The real proposer launcher independently checks the registered archive, owner authority, protocol, exposure rows, fresh sessions and full request bounds before contacting a provider.
+
+Validation:244 related tests pass, including a four-slot fake transport through the real launcher with no network or credentials. New allocation-module statement coverage is100%; base and harness checks and changed-file lint pass. The actual original archive has all twelve spent dispositions and passes the read-only extension check. No new model, tokenizer, scorer or runtime contact occurred during this preparation.
+
+Next: export and reverify four isolated inputs/capsules, freeze provider/source admission and exact exposure rows, then run the four proposals once. Compile any valid outputs without silently repairing invalid/no-change responses. The next20-row comparison still needs its exact admitted members, role-byte verification, maximum-request FIT, structural engineering and full-family READ. The existing formal three-round400-row stage reader is intentionally unchanged and cannot admit this new small-panel family. Prepared8x50/100/200 slots stay HELD until reviewed separately.

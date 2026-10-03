@@ -75,11 +75,21 @@ def load_members(registration):
     # Older admitted registrations covered round one and omitted this field.
     # Later rounds must name their allocation explicitly, never infer it from a key.
     round_index = r.get("round_index", 1)
-    require(type(round_index) is int and round_index in (1, 2, 3), "invalid registered round")
+    require(type(round_index) is int and round_index > 0, "invalid registered round")
     owner = read_pin(r["owner_receipt"])
     require(owner["decisions"]["217"]["status"] == "approved", "owner217 is not approved")
     admission = read_pin(r["provider_admission"])
     protocol = read_pin(r["protocol"])
+    from speech_aware_evidence_acquisition.rails.system_search_allocations import (
+        require_round, require_packet_allocation, validate_extension,
+    )
+    extension = protocol.get("allocation_extension") if round_index > 3 else None
+    require_round(round_index, extension)
+    if extension is not None:
+        archive = SystemSearchArchive(r["archive"])
+        require(archive.allocation_extension(round_index) == extension, "registered archive extension differs")
+        validate_extension(archive, extension, repo_root=r["source_root"])
+        require(protocol["proposal_contact_cap"] == extension["contact_cap"], "extension contact budget differs")
     require(admission["protocol_sha256"] == content_hash(protocol), "provider protocol differs")
     profile = r.get("capsule_view_profile", "full-index-v1")
     require(profile == admission.get("capsule_view_profile", "full-index-v1"),
@@ -91,6 +101,7 @@ def load_members(registration):
         document = read_pin(member["capsule"])
         packet = document["packet"]
         input_references(packet)
+        require_packet_allocation(packet, protocol)
         require(type(packet["round"]) is int and packet["round"] == round_index,
                 "proposal differs from the registered round")
         require_feedback_transition(packet, protocol=protocol, round_index=round_index)

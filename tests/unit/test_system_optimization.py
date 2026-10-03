@@ -611,3 +611,40 @@ def test_response_scope_violation_spends_the_allocation_without_activation(
         assert "scope" in str(result["errors"])
     with pytest.raises(PolicyError, match="consumed|exists"):
         archive.import_response(branch="B", round_index=1, slot=1, receipt=receipt)
+
+
+def test_extended_fixed_panel_needs_the_exact_extra_round_authority(tmp_path):
+    from test_system_search_allocations import fixture as allocation_fixture
+    protocol, _ = fixture(tmp_path)
+    _, repo, _, extension = allocation_fixture(tmp_path / "extension")
+    # Copy only the explicitly pinned owner authority into this synthetic repo.
+    owner_path = tmp_path / extension["owner"]["relpath"]
+    owner_path.parent.mkdir(parents=True, exist_ok=True)
+    owner_path.write_bytes((repo / extension["owner"]["relpath"]).read_bytes())
+    protocol["allocation_extension"] = extension
+    protocol["optimization_panel"]["stages"] = ["update-4"]
+    assert load_optimization_panel(protocol, "update-4", repo_root=tmp_path) is not None
+    protocol["optimization_panel"]["stages"] = ["update-5"]
+    with pytest.raises(PolicyError):
+        load_optimization_panel(protocol, "update-5", repo_root=tmp_path)
+    protocol["optimization_panel"]["stages"] = ["update-4"]
+    del protocol["allocation_extension"]
+    with pytest.raises(PolicyError):
+        load_optimization_panel(protocol, "update-4", repo_root=tmp_path)
+
+
+def test_extended_learning_cannot_borrow_a_digest_without_protocol_authority(tmp_path):
+    from test_system_search_allocations import fixture as allocation_fixture
+    protocol, packet = learning_fixture(tmp_path)
+    _, _, _, extension = allocation_fixture(tmp_path / "extension")
+    protocol["allocation_extension"] = extension
+    packet.update(round=4, allocation_extension_sha256=content_hash(extension),
+                  protocol_sha256=content_hash(protocol), model_version=extension["model_version"],
+                  seed_bundle_id=extension["seed_bundle_id"], input_token_cap=extension["input_token_cap"],
+                  output_token_cap=extension["output_token_cap"])
+    packet["selection"].update(next_round=4, protocol_sha256=content_hash(protocol))
+    packet["selection"]["selection_sha256"] = content_hash({k: v for k,v in packet["selection"].items() if k != "selection_sha256"})
+    require_exploratory_packet(packet, protocol=protocol)
+    protocol.pop("allocation_extension")
+    with pytest.raises(PolicyError):
+        require_exploratory_packet(packet, protocol=protocol)

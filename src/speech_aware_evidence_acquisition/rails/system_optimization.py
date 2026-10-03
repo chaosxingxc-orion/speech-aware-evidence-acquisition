@@ -26,13 +26,22 @@ def load_optimization_panel(protocol, stage, *, repo_root):
     block = protocol.get("optimization_panel")
     if block is None:
         return None
+    allowed_stages = {"update-1", "update-2", "update-3"}
+    extension = protocol.get("allocation_extension")
+    if extension is not None:
+        from .system_search_allocations import require_round
+        require_round(extension.get("round"), extension)
+        owner = json.loads(_read_pin(extension["owner"], repo_root))
+        require(owner.get("decision_id") == 223 and owner.get("status") == "approved",
+                "extended context scope requires owner223")
+        allowed_stages.add(f"update-{extension['round']}")
     require(
         isinstance(block, dict)
         and set(block) == {"plan", "stages", "editable"}
         and isinstance(block["stages"], list)
         and block["stages"]
         and len(set(block["stages"])) == len(block["stages"])
-        and set(block["stages"]) <= {"update-1", "update-2", "update-3"}
+        and set(block["stages"]) <= allowed_stages
         and block["editable"] == ["role_text"],
         "invalid context optimization scope",
     )
@@ -211,7 +220,8 @@ def require_exploratory_packet(packet, *, protocol=None):
         and s.get("branch") == "L"
         and s.get("formal_adoption") is False
         and type(packet.get("round")) is int
-        and packet["round"] == s.get("next_round") == 3
+        and packet["round"] == s.get("next_round")
+        and (packet["round"] == 3 or (packet["round"] > 3 and "allocation_extension_sha256" in packet))
         and s.get("selection_sha256")
         == content_hash({k: v for k, v in s.items() if k != "selection_sha256"})
         and s.get("protocol_sha256") == packet.get("protocol_sha256")
@@ -235,6 +245,11 @@ def require_exploratory_packet(packet, *, protocol=None):
         {g["sample_id"] for g in groups} | set(d["reference"]["sample_ids"]) <= exposed,
         "exploratory feedback ancestry is incomplete",
     )
+    if packet["round"] > 3:
+        from .system_search_allocations import require_packet_round_shape, require_packet_allocation
+        require_packet_round_shape(packet)
+        if protocol is not None:
+            require_packet_allocation(packet, protocol)
     if protocol is not None:
         require(
             packet["protocol_sha256"] == content_hash(protocol)
