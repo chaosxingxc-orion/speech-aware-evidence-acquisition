@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Whole-panel structural recovery accepted, 2026-10-03T19:43:16.208885+00:00
+
+The registered recovery completed19:35:06Z on frozenaee1d61e7: two owners/eight rows,53 model contacts/212 actual FIT endpoints,15 valid visible Reviewer handoffs,eight Omni deliveries and verified generation bundles. All seven whole-node stages respect inference/final-preparation barriers;22 CPU preparation callbacks overlap prior work. Worker-only attempts remain intentionally OPENED with prepared score specs and zero official scores. Never score/reseal/reopen them. The original missing-materialization attempts remain immutable. [Closure](../receipts/continuation/2026-10-03-node-panel-structural-recovery1-complete.json).
+
+All53 contacts join unique actual server slots.25 same-node successors separate18 changed inputs from7 repeats;changed-input static prefixes retain2754-2881 tokens,while repeated inputs can retain longer speech/history. No whole-cache pressure event was logged;suffix evaluation continues. Original sample mean153.561s,remaining-seven153.211s,submission-to-terminal189.606s. [Engineering diagnosis](../results/2026-10-03-node-panel-structural-cache-diagnosis.md) reports per-node costs and limitations. No controlled speedup,quality,learning or160-job claim. No next20 admission:register a same-roster schedule comparison and complete-family READ before adoption. Root only,learning HELD,heartbeat PAUSED,human before8x400. At19:39Z original service identity verified,no driver/generator/scorer/STOP/lease,Windows17.059GiB;revalidate before launch.
+
 ## Node-panel materialization recovery registered, 2026-10-03T19:23:06.100884+00:00
 
 The complete297-endpoint capacity passed. Root227 now admits one strict node-panel-worker with two independent four-row members,maximum104 generation/416 actual FIT endpoints,zero scoring. [Entry](../readiness/2026-10-03-node-panel-structural-recovery1-entry-v1/README.md) fixes original before-speech node prompts,own supplies and deterministic member/roster order. Verify cross-member node stages,prefetch/barriers,own source/FIT/handoff custody,local trace storage and actual slot/prefix/timing evidence. Eight jobs do not establish160-job speed or task-quality benefit. Clean frozen/live checks and exact failed-control archive remain before launch. Prior raw traces and missing-output attempts stay immutable. This is the only recovery of that proof. No next20 admission;root only,learning HELD,heartbeat PAUSED,human before8x400.
@@ -1219,7 +1225,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T19:23:06.100884+00:00
+Last refreshed: 2026-10-03T19:45:05.951899+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
