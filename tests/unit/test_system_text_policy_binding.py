@@ -14,6 +14,17 @@ from test_system_text_policy import seed_document, BASE, ROOT
 from test_flight_registration_check import World, EXPERIMENT, RUN, PACKAGE, _write, _kinds
 
 
+def add_runtime_fragments(w):
+    """Give a bound cell the exact four-fragment runtime composition."""
+    path = w.repo / "configs/experiment" / (EXPERIMENT + ".json")
+    fragment = json.loads(path.read_text())
+    fragment["cells"][0].update(model_fragment="synthetic-model",
+                                 dataset_fragment="synthetic-dataset")
+    _write(path, fragment)
+    for kind in ("model", "dataset"):
+        _write(w.repo / "configs" / kind / ("synthetic-" + kind + ".json"), {})
+
+
 @pytest.fixture
 def bound(tmp_path):
     repo, data = tmp_path / "worker", tmp_path / "data"
@@ -96,6 +107,7 @@ def test_uncompiled_seed_is_not_a_runtime_bundle(bound):
 def test_real_prelaunch_gate_requires_the_registered_bundle(bound, tmp_path, missing):
     compiled, binding, repo, data, _, _ = bound
     w = World(tmp_path / "gate").build()
+    add_runtime_fragments(w)
     # Materialize role and policy bytes in the synthetic prelaunch repository.
     import shutil
     shutil.copytree(repo / "configs", w.repo / "configs", dirs_exist_ok=True)
@@ -153,6 +165,7 @@ def test_new_panel_prelaunch_requires_exact_member_and_effective_role_bytes(
 
     compiled, binding, repo, data, _, _ = bound
     w = World(tmp_path / "panel-gate").build()
+    add_runtime_fragments(w)
     shutil.copytree(repo / "configs", w.repo / "configs", dirs_exist_ok=True)
     shutil.copytree(repo / "docs", w.repo / "docs", dirs_exist_ok=True)
     shutil.copytree(data / "search", w.data / "search")

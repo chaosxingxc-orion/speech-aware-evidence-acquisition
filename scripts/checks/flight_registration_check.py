@@ -1466,6 +1466,7 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
              or report.run_id.startswith("SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND"))
     if not fixed and not panel and "system_text_policy_binding" not in cell:
         return
+    from speech_aware_evidence_acquisition.core.config import ConfigError, compose
     try:
         binding = cell.get("system_text_policy_binding")
         require(binding is not None, "declared system text policy binding is missing")
@@ -1491,8 +1492,14 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
                        if m["run_id"] == report.run_id]
             require(len(members) == 1 and members[0]["bundle_id"] == binding["bundle_id"],
                     "cell policy differs from the registered comparison member")
-        verify_system_text_binding(baseline, binding, repo_root=repo_root, data_root=data_root)
-    except (ValueError, TypeError, KeyError, OSError) as error:
+        # Verify what the shared runtime consumes, including options declared in
+        # model, dataset or experiment fragments instead of the baseline.
+        effective = compose(repo_root, model=cell["model_fragment"],
+                            dataset=cell["dataset_fragment"],
+                            baseline=cell["baseline_fragment"],
+                            experiment=report.experiment).values
+        verify_system_text_binding(effective, binding, repo_root=repo_root, data_root=data_root)
+    except (ConfigError, ValueError, TypeError, KeyError, OSError) as error:
         report.findings.append(Finding(
             "system-text-policy-binding", f"{report.run_id}: {error}", report.run_id
         ))

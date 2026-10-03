@@ -16,6 +16,8 @@ from .hashing import content_hash
 from .prepared_feedback import reject_non_latin_scripts
 
 BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v1"
+CONTEXT_BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v2"
+CONTEXT_LAYOUT_FIELD = "native_role_query_placement"
 PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v1"
 TEXT_CHARACTER_CAP = 32768
 PROPOSAL_KEYS = frozenset({"schema", "branch", "round", "slot", "parent_ids",
@@ -60,6 +62,14 @@ def _pin(pin):
             and ":" not in path and "\\" not in path
             and not {"", ".", ".."}.intersection(path.split("/")), "invalid relative artifact path")
     sha(pin["sha256"])
+
+
+def _context_layout(value):
+    require(isinstance(value, dict) and set(value) == {CONTEXT_LAYOUT_FIELD},
+            "context layout fields differ")
+    placement = value[CONTEXT_LAYOUT_FIELD]
+    require(placement is None or (isinstance(placement, str) and placement == "before-speech-v1"),
+            "context layout must select the historical or implemented before-speech placement")
 
 
 def validate_sources(sources):
@@ -114,9 +124,13 @@ class SystemTextPolicyBundle:
 
     @classmethod
     def from_json(cls, document, *, parents=()):
-        require(isinstance(document, dict) and set(document) == BUNDLE_KEYS
-                and document["schema"] == BUNDLE_SCHEMA, "policy bundle fields differ")
+        context_version = isinstance(document, dict) and document.get("schema") == CONTEXT_BUNDLE_SCHEMA
+        fields = BUNDLE_KEYS | {"context_layout"} if context_version else BUNDLE_KEYS
+        require(isinstance(document, dict) and set(document) == fields
+                and document["schema"] in (BUNDLE_SCHEMA, CONTEXT_BUNDLE_SCHEMA), "policy bundle fields differ")
         d = copy.deepcopy(document)
+        if context_version:
+            _context_layout(d["context_layout"])
         sha(d["seed_config_sha256"])
         require(isinstance(d["parent_ids"], list) and len(set(d["parent_ids"])) == len(d["parent_ids"]),
                 "invalid parent identities")
@@ -142,6 +156,8 @@ class SystemTextPolicyBundle:
         validate_sources(d["cumulative_sources"])
         for parent in parents:
             old = parent.as_json()
+            require(old["schema"] != CONTEXT_BUNDLE_SCHEMA or context_version,
+                    "context policy schema cannot downgrade; select historical layout explicitly")
             require(old["seed_config_sha256"] == d["seed_config_sha256"], "seed system changed")
             require(all(s in d["cumulative_sources"] for s in old["cumulative_sources"]),
                     "cumulative ancestry cannot be removed")
@@ -311,6 +327,12 @@ def compile_system_text_policy(baseline, bundle, *, repo_root, output_root, enab
                                repo_root=Path(repo_root)).apply_to(baseline)
     result["native_episode"]["consumption_module"] = block
     cm.verify_declared_module(block, result, repo_root=Path(repo_root))
+    if "context_layout" in d:
+        placement = d["context_layout"][CONTEXT_LAYOUT_FIELD]
+        if placement is None:
+            result.pop(CONTEXT_LAYOUT_FIELD, None)
+        else:
+            result[CONTEXT_LAYOUT_FIELD] = placement
     if data_root is not None:
         from .knowledge_stores import load_knowledge_store_binding
         binding = load_knowledge_store_binding(result, data_root=Path(data_root))
@@ -348,6 +370,9 @@ def verify_system_text_binding(baseline, binding, *, repo_root, data_root):
             "bound policy must name its immutable archive identity")
     bundle = SystemSearchArchive(policy_path.parent.parent).load_policy(binding["bundle_id"])
     require(bundle.as_json() == document, "bound policy changed during verification")
+    expected_layout = document.get("context_layout", {CONTEXT_LAYOUT_FIELD: None})
+    require(baseline.get(CONTEXT_LAYOUT_FIELD) == expected_layout[CONTEXT_LAYOUT_FIELD],
+            "bound context layout differs from actual runtime configuration")
     role_hashes = {}
     for role, text in document["role_text"].items():
         material = baseline.get("phase_material", {}).get(role, {})
@@ -379,4 +404,7 @@ def verify_system_text_binding(baseline, binding, *, repo_root, data_root):
     store = baseline.get("knowledge_stores", {}).get(params["store_id"], {})
     require(all(store.get(k) == v for k, v in document["knowledge"].items()),
             "bound knowledge configuration differs")
-    return {"bundle_id": bundle.bundle_id, "role_sha256": role_hashes}
+    receipt = {"bundle_id": bundle.bundle_id, "role_sha256": role_hashes}
+    if "context_layout" in document:
+        receipt["context_layout"] = copy.deepcopy(expected_layout)
+    return receipt

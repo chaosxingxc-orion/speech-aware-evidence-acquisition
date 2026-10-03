@@ -1,0 +1,57 @@
+{
+  "schema": "saea-context-policy-bundle-engineering-v1",
+  "at_utc": "2026-10-03T12:10:19Z",
+  "source_basis": "fe0ef080bccf4b70e45c3f022bb910bf2550c525",
+  "authority": "Owner227 and the direct human context-space amendment",
+  "capability": "Versioned whole-policy context layout and verification of effective runtime composition",
+  "policy_schema": "saea-system-text-policy-bundle-v2",
+  "v1_proposal_edit_scope_unchanged": true,
+  "default_enabled": false,
+  "current_round8_enabled": false,
+  "round8_effective_composition_metadata_check": "PASS for parent, B81 and B82; all retain historical placement; no task outputs read",
+  "tests": {
+    "combined_passed": 275,
+    "targeted_subset_passed": 144,
+    "policy_statement_coverage_percent": 95,
+    "prelaunch_statement_coverage_percent": 91,
+    "new_statements_covered": true
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "finite_completion_policy": "PASS",
+    "openjiuwen_native_reuse": "PASS"
+  },
+  "openjiuwen_proof_sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464",
+  "model_tokenizer_scorer_contacts": 0,
+  "cache_or_quality_benefit_established": false,
+  "heartbeat": "PAUSED",
+  "implementation": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_policy.py",
+      "sha256": "4ea54e638f202c1d39d430ba4a9dcd8fafd29cfae3ba28963010c6c4e5c4747e"
+    },
+    {
+      "relpath": "scripts/checks/flight_registration_check.py",
+      "sha256": "812bef1107067bab59aaffc14f87c70fa98bdaef7f90abb0b41b0af58d851fe9"
+    },
+    {
+      "relpath": "tests/unit/test_system_text_context_layout.py",
+      "sha256": "a5c6c1bd5c3b3334de8dc3bbc0baa28928c77e7cfe3652bdec74cc08a46b3c12"
+    },
+    {
+      "relpath": "tests/unit/test_system_text_policy_binding.py",
+      "sha256": "70924c3451aa34c5bfc9877f47ec4ae98b41b23c96dabc6c437f0faf05e04cae"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-03-node-context-optimization-v1/context-policy-bundle-v2.md",
+      "sha256": "cebbc3a9071221aa16250da169aa8ee92bbcc2379fbc0cda4ebdcfcf7b9076c1"
+    }
+  ],
+  "future_activation_requires": [
+    "Prospective equal L/B proposal and policy scope",
+    "Real maximum-request FIT and structural proof",
+    "Exact root admission and full-family READ"
+  ],
+  "verification_note": "The initial OpenJiuwen check command omitted required --output and exited at argument parsing; the corrected synthetic check passed. Coverage initially used a package-qualified gate name although tests import the bare module; a targeted correct-name run measured the gate. Neither issue involved runtime contacts."
+}
