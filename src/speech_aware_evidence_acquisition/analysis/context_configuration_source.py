@@ -5,6 +5,7 @@ No scorer, model, proposer, queue or immutable source is modified here.
 """
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from ..core.bundle.verify import verify_bundle
@@ -12,7 +13,7 @@ from ..core.config import model_materialization_root, resolve_runtime_receipt_pa
 from ..core.configured_transport import build_configured_transport
 from ..core.session.receipt import SessionReceipt, load_runtime_receipt, resolve_pinned_session_receipt
 from ..rails.system_text_feedback import _row_cost_and_terminal
-from ..rails.system_text_policy import require
+from ..rails.system_text_policy import _read_pin, require
 from ..rails.hashing import content_hash
 from .native_episode_source import verify_native_episode_source
 from .system_cache_cost import export_system_node_timing, export_system_sample_timing
@@ -36,6 +37,39 @@ def _pin(path, root):
     require(path.is_relative_to(root), "source escaped the registered data root")
     return {"relpath": path.relative_to(root).as_posix(),
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+
+def describe_stage_timing(flight, batch):
+    """Retain observed experiment-stage durations, never infer sample latency.
+
+    Call only after the reader qualifies the original complete source. Missing
+    historical timers remain unknown; nested scoring timers are not additive.
+    """
+    stages = flight.get("stages", {})
+    jobs = batch.get("jobs", [])
+    require(isinstance(jobs, list) and len(jobs) <= 1, "stage timing requires at most one official worker")
+    fields = {
+        "preprocess_seconds": (stages.get("preprocess", {}), "duration_seconds"),
+        "packet_validation_seconds": (stages.get("preprocess", {}), "packet_validation_seconds"),
+        "service_startup_seconds": (stages.get("serve", {}), "startup_seconds"),
+        "generation_wall_seconds": (stages.get("run_phases", {}), "wall_seconds"),
+        "client_initialization_seconds": (stages.get("run_phases", {}), "client_initialization_seconds"),
+        "score_stage_seconds": (stages.get("score", {}), "duration_seconds"),
+        "score_batch_seconds": (batch, "elapsed_seconds"),
+        "official_finalize_worker_seconds": (jobs[0] if jobs else {}, "elapsed_seconds"),
+    }
+    result = {}
+    for name, (row, key) in fields.items():
+        value = row.get(key)
+        require(value is None or type(value) in (int, float) and math.isfinite(value) and value >= 0,
+                "stage timing must be a finite nonnegative number or unavailable")
+        result[name] = value
+    result["measurement_boundary"] = (
+        "Whole experiment stages, not sample latency. Scoring stage, batch and worker timers are nested, "
+        "not additive. Do not divide generation wall by rows to estimate sample latency. "
+        "Driver admission, inter-step waits and unmeasured work are not reconstructed."
+    )
+    return result
 
 
 def preflight_members(registration, *, data_root, sample_ids, commit):
@@ -172,12 +206,17 @@ Never return answer text or a learning-feedback object from this numeric view.
         score_path = root / score_pin["relpath"]
         require(_pin(score_path, root) == score_pin, "score changed during numeric read")
         score = _json(score_path)["slurp-slu-official-train"]["aggregate"]
+        stage_timing = describe_stage_timing(
+            json.loads(_read_pin(binding["flight_receipts"], root)),
+            json.loads(_read_pin(entry["metadata_pins"][2], root)),
+        )
         members[run] = {
             "rows": rows, "official": {"slu_f1": score["official"]["slu_f1"],
                                        "intent": score["port_micro"]["intent_accuracy"]},
             "sample_timing": export_system_sample_timing(source),
             "node_timing": export_system_node_timing(source),
             "context_execution": execution,
+            "experiment_stage_timing": stage_timing,
             "source_bindings": binding, "metadata_pins": entry["metadata_pins"],
             "official_feedback_content_sha256": feedback["content_sha256"],
         }

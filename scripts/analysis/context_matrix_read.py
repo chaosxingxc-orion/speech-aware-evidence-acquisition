@@ -48,6 +48,14 @@ def render(report):
             reused = node["reused_input_fraction"]
             reuse = "unavailable" if reused is None else f"{100 * reused:.2f}%"
             lines.append(f"| {name} | {role} | {node['contacts']} | {' | '.join(cells)} | {reuse} |")
+    lines += ["", "## Experiment turnaround", "",
+              "These are whole-stage timers, not sample latency. Scoring stage, batch and worker timers are nested, not additive. Missing timers stay unavailable; driver waits and unmeasured work are not reconstructed.", "",
+              "| Member | Generation wall (s) | Score stage (s) | Score batch (s) | Official finalize worker (s) |",
+              "|---|---:|---:|---:|---:|"]
+    for name, row in report.get("experiment_stage_timing", {}).items():
+        cells = ["unavailable" if row[key] is None else f"{row[key]:.3f}" for key in (
+            "generation_wall_seconds", "score_stage_seconds", "score_batch_seconds", "official_finalize_worker_seconds")]
+        lines.append(f"| {name} | {' | '.join(cells)} |")
     lines += ["", "The report retains all configurations, both repeats, paired uncertainty, own-repeat differences, per-scenario support and both weightings. No automatic selection or optimizer export. Batch wall/count is throughput, not individual latency.", ""]
     return "\n".join(lines)
 
@@ -116,10 +124,14 @@ def run(inputs, *, repo_root, data_root, output):
         _read_pin(pin, ROOT)
     for member in numeric.values():
         _read_pin(member["context_execution"]["wire_requests"]["artifact"], data)
+        for name in ("manifest", "phases", "flight_receipts", "score_jobs"):
+            if name in member["source_bindings"]:
+                _read_pin(member["source_bindings"][name], data)
     _pinned_json(data, registration["admission"], "matrix admission")
     report.update(read_authority=authority, source_inputs=inputs, reader_sources=reader_pins,
                   numeric_source_bindings={run: member["source_bindings"] for run, member in numeric.items()},
                   context_execution={run: member["context_execution"] for run, member in numeric.items()},
+                  experiment_stage_timing={run: member["experiment_stage_timing"] for run, member in numeric.items()},
                   model_contacts_added=0, scorer_contacts_added=0)
     report.pop("content_sha256", None)
     report["content_sha256"] = content_hash(report)

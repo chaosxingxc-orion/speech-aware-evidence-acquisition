@@ -1,0 +1,144 @@
+{
+  "schema": "saea-context-stage-timing-engineering-v1",
+  "at_utc": "2026-10-03T14:47:29.234141+00:00",
+  "scope": "Add original experiment-stage timers to the existing complete-family reader. Keep business quality, original sample latency and node timing separate from experiment turnaround. No runtime change.",
+  "tests": {
+    "tdd_red": "14 expected failures and 39 passes before implementation; missing timing extraction/export behavior.",
+    "targeted_passed": 94,
+    "source_reader_statement_percent": 100.0,
+    "reader_cli_statement_percent": 99.00990099009901,
+    "lint": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "handoff_freshness": "PASS"
+  },
+  "sources": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py",
+      "sha256": "35e888f3bcc4a2c61c9758df515415ccbf114cc4dcff636445dafd71bc2c8554"
+    },
+    {
+      "relpath": "scripts/analysis/context_matrix_read.py",
+      "sha256": "6c3fbdf5f12a1a3b707048f6179340ac4d28bd751dd93e3b04d9a801bd54c882"
+    },
+    {
+      "relpath": "tests/unit/test_context_configuration_source.py",
+      "sha256": "aab97bc77761b872321017fe2d3105e4d406d0cbc5ad0cb9fcfde3a56b6f4d9e"
+    },
+    {
+      "relpath": "tests/unit/test_context_matrix_read.py",
+      "sha256": "efd62a7f352ff48947bf711b2a5d48f5ebe5449b33ab46b98a2415a55fcc2b69"
+    }
+  ],
+  "evidence": [
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/coverage.json",
+      "sha256": "fd4066d4418efea508613ee3a26ba5ee40b91afad234f829e0ffaa58ca914e11"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/coverage.stderr",
+      "sha256": "20edc671ed765c9e4f2ec1573fce0df8fca2d750e22fa5be1af42f2174db803d"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/coverage.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/engineering-base.json",
+      "sha256": "022f6932be37fd338a2cd34651d9eb6625e35767943d080771123b50d5747e8f"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/engineering-base.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/engineering-base.stdout",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/harness-admission.json",
+      "sha256": "da17ded369ecc6101145a8db0e93837941be3c5c279b650ec3b17561b8a22d6b"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/harness-admission.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/harness-admission.stdout",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/lint.json",
+      "sha256": "1ff2f8b96ff6cb2aa0912ac261015442d8e8ab3b9023d9d7d9fd8af72c6a2036"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/lint.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/lint.stdout",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/operational-state-v1.json",
+      "sha256": "aa8fb69de0b71312a9dcbfa59bb877fdd413e0387d1747a4de77c6c4a6a60ba2"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/tests.json",
+      "sha256": "fa1b35664d230d25a3a3820bf36b2edc4a2ffef8db231aa62bea3d251ff9af64"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/tests.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/tests.stdout",
+      "sha256": "9e6d3773cace0c19f64f1e7272b6c483e99145fd4295fc708b4953497b3372db"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/handoff-freshness.stdout",
+      "sha256": "2c81d6ee8b0afe6cc3777b4ea417892282c51cfb241475cc4501b4cde49176a5"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage-timing-build-v1/handoff-freshness.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "numeric_boundaries": "Preserve generation wall, initialization, preprocessing and three nested scoring durations. Missing remains unavailable; reject invalid numeric values or multiple scoring workers. Never sum nested timers or use wall/rows as sample latency. Recheck original flight source before report write.",
+  "operational_finding": {
+    "first_four_score_stage_seconds": [
+      342.3976502418518,
+      58.06334185600281,
+      58.19263291358948,
+      57.697097063064575
+    ],
+    "scope": "Complete-member operational metadata only; no scientific quality or sample result read.",
+    "observed_current_driver": "Each guarded single-cell campaign waits for scoring/finalization before the next step; a normal 20-second inter-step wait and startup stability check also occur.",
+    "existing_capability": "FlightQueue supports serial generation and one background scoring executor.",
+    "not_yet_admitted": "The current memory supervisor requires exactly one cell and the batch driver refuses a guarded multi-member plan. Existing independent queue members also need explicit failure-stop review before an overlap launch. Do not bypass either guard.",
+    "unknown": "The cause of the longer first scoring stage is unestablished. No measured end-to-end speedup or recovered idle-time claim."
+  },
+  "runtime_checkpoint": {
+    "at_utc": "2026-10-03T14:46:14.715458+00:00",
+    "finalized_members": 4,
+    "opened_member": "before-speech-role-aa",
+    "remaining_absent": 3,
+    "driver_epoch": "2026-10-03T14:00:30Z",
+    "driver_pid": 510535,
+    "serving_pid": 942,
+    "windows_free_gib_at_14_46_39Z": 16.0486,
+    "stop_present": false,
+    "frozen_commit": "d8456cefecafc8a7da681e06bfc06f141e994972",
+    "frozen_clean": true
+  },
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "official_scorer": 0
+  },
+  "scientific_read": "Pending all eight independent finalizations, verified seals, unique official scores and exact root READ.",
+  "learning": "HELD",
+  "heartbeat": "PAUSED",
+  "root_only": true,
+  "automatic_selection_or_scale": false
+}

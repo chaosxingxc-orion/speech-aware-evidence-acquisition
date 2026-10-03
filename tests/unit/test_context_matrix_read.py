@@ -103,8 +103,8 @@ def test_output_cannot_overwrite_or_export_to_optimizer(tmp_path, target):
         cli.run(inputs(), repo_root=ROOT, data_root=tmp_path, output=output)
 
 
-@pytest.mark.parametrize("changed_archive", [False, True])
-def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch, changed_archive):
+@pytest.mark.parametrize("changed_artifact", [None, "archive", "flight"])
+def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch, changed_artifact):
     cli = load_cli()
     doc = inputs()
     frozen = tmp_path / "frozen"
@@ -128,6 +128,9 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     wire_archive.parent.mkdir(parents=True)
     wire_archive.write_text("{}")
     wire_pin = {"relpath": "analysis/prepared-wire.json", "sha256": hashlib.sha256(wire_archive.read_bytes()).hexdigest()}
+    flight_receipt = tmp_path / "flight.json"
+    flight_receipt.write_text("{}")
+    flight_pin = {"relpath": "flight.json", "sha256": hashlib.sha256(flight_receipt.read_bytes()).hexdigest()}
     authority = {"read_run_id": reg["read_id"], "ledger_row_sha256": "a" * 64}
     def gate(*a, **k):
         seen.append("authority")
@@ -138,21 +141,25 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
         return [{"metadata_pins": []} for _ in range(8)]
     def numeric(*a, **k):
         seen.append("numeric")
-        return {"synthetic-member": {"source_bindings": {}, "context_execution": {
+        return {"synthetic-member": {"source_bindings": {"flight_receipts": flight_pin}, "experiment_stage_timing": {
+            "generation_wall_seconds": 120, "score_stage_seconds": 60,
+            "score_batch_seconds": 55, "official_finalize_worker_seconds": 54}, "context_execution": {
             "wire_requests": {"artifact": wire_pin}}}}
     def analysis(*a, **k):
         seen.append("analysis")
         assert k["bootstrap_draws"] == 10000 and k["seed"] == 20261003
         assert len(k["roster"]) == 20
-        if changed_archive:
+        if changed_artifact == "archive":
             wire_archive.write_text('{"changed":true}')
+        elif changed_artifact == "flight":
+            flight_receipt.write_text('{"changed":true}')
         return {"members": {}, "comparisons": [], "interpretation": "Synthetic complete orchestration only."}
     monkeypatch.setattr(cli.CLI, "require_read_registration", gate)
     monkeypatch.setattr(cli, "preflight_members", preflight)
     monkeypatch.setattr(cli, "read_numeric_members", numeric)
     monkeypatch.setattr(cli, "describe_configurations", analysis)
     out = tmp_path / "analysis/read"
-    if changed_archive:
+    if changed_artifact:
         with pytest.raises(PolicyError, match="hash mismatch"):
             cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out)
         assert not out.exists()
@@ -160,6 +167,10 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     report = cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out)
     assert seen == ["authority", "preflight", "numeric", "analysis", "authority", "preflight"]
     assert report["read_authority"] == authority
+    assert report["experiment_stage_timing"]["synthetic-member"]["generation_wall_seconds"] == 120
+    rendered = (out / "README.md").read_text()
+    assert "Experiment turnaround" in rendered and "120.000" in rendered
+    assert "not additive" in rendered and "sample latency" in rendered
     assert frozen_checks == recipe()["source_checks"]
     assert (out / "report.json").exists() and (out / "README.md").exists()
 
@@ -169,6 +180,8 @@ def test_render_uses_original_exporter_field_names_and_preserves_missing_values(
     from test_context_configuration import fixture, describe
     members, pairs, roster = fixture()
     report = describe(members, pairs, roster)
+    report["experiment_stage_timing"] = {"unmeasured": {key: None for key in (
+        "generation_wall_seconds", "score_stage_seconds", "score_batch_seconds", "official_finalize_worker_seconds")}}
     for row in report["members"].values():
         row["node_timing"] = {"by_role": {"solver": {"contacts": 4, "reused_input_fraction": None,
             "metrics": {key: {"mean_observed": value} for key, value in [

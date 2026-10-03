@@ -154,6 +154,7 @@ def test_numeric_join_uses_existing_official_custody_and_original_timing(tmp_pat
         assert result["run-0"]["official"] == {"slu_f1": 0.5, "intent": 1}
         assert result["run-0"]["sample_timing"]["original"]
         assert result["run-0"]["context_execution"]["contacts_verified"] == 4
+        assert result["run-0"]["experiment_stage_timing"]["generation_wall_seconds"] is None
         assert audits == ["legacy-trajectory-primary", "legacy-trajectory-aa"]
         assert result["run-0"]["rows"][ids[0]]["model_calls"] == 4
         assert all(set(c) == {"schema", "execution_profile", "feedback_role", "scorer_id",
@@ -163,6 +164,45 @@ def test_numeric_join_uses_existing_official_custody_and_original_timing(tmp_pat
 def test_data_source_pin_rejects_escape(tmp_path):
     with pytest.raises(PolicyError, match="escaped"):
         source._pin(tmp_path.parent / "outside", tmp_path)
+
+
+def test_stage_timing_preserves_nested_boundaries_and_missingness():
+    flight = {"stages": {
+        "preprocess": {"duration_seconds": 2, "packet_validation_seconds": 0.5},
+        "serve": {"startup_seconds": 0},
+        "run_phases": {"wall_seconds": 120, "client_initialization_seconds": 3},
+        "score": {"duration_seconds": 60, "private_result": "never export"},
+    }}
+    result = source.describe_stage_timing(flight, {"elapsed_seconds": 55, "jobs": [
+        {"elapsed_seconds": 54, "private_result": "never export"}]})
+    assert result["generation_wall_seconds"] == 120
+    assert result["score_stage_seconds"] == 60
+    assert result["score_batch_seconds"] == 55
+    assert result["official_finalize_worker_seconds"] == 54
+    assert result["client_initialization_seconds"] == 3
+    assert result["preprocess_seconds"] == 2
+    assert result["packet_validation_seconds"] == 0.5
+    assert result["service_startup_seconds"] == 0
+    assert "not additive" in result["measurement_boundary"]
+    assert "never export" not in json.dumps(result)
+    empty = source.describe_stage_timing({}, {})
+    assert all(value is None for key, value in empty.items() if key.endswith("_seconds"))
+    assert "sample" in empty["measurement_boundary"]
+    assert not any("per_sample" in key or "speedup" in key or "total" in key for key in result)
+
+
+@pytest.mark.parametrize("bad", [-1, True, "12", float("nan"), float("inf")])
+@pytest.mark.parametrize("field", ["generation", "scoring"])
+def test_stage_timing_rejects_invalid_numeric_evidence(bad, field):
+    flight = {"stages": {"run_phases": {"wall_seconds": bad}}} if field == "generation" else {}
+    batch = {"jobs": [{"elapsed_seconds": bad}]} if field == "scoring" else {}
+    with pytest.raises(PolicyError, match="stage timing"):
+        source.describe_stage_timing(flight, batch)
+
+
+def test_stage_timing_refuses_multiple_workers_instead_of_averaging():
+    with pytest.raises(PolicyError, match="one"):
+        source.describe_stage_timing({}, {"jobs": [{"elapsed_seconds": 2}, {"elapsed_seconds": 3}]})
 
 
 @pytest.mark.parametrize("label", ["legacy-trajectory-aa", "before-speech-role-primary"])

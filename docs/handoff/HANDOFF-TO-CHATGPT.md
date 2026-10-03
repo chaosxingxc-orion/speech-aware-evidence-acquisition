@@ -1,10 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-## Complete context execution audit prepared, 2026-10-03T14:38:37.485738+00:00
+## Context execution and experiment timing readers prepared, 2026-10-03T14:47:29.234141+00:00
 
 The [joint reader](../readiness/2026-10-03-context-matrix-n20-entry-v1/analysis-reader-v1.md) now verifies every original model request against its original FIT body,actual role/query placement,requested slot routing and full512-token output reservation. It retains independent node instruction hashes and distinguishes requested slots from unobserved server assignment. Initial request-body materialization uses the normal shared renderer with its process identity check,never a send;the source-addressed analysis archive allows subsequent revalidation without a live service. No cache endpoint,service setting,queue or frozen runtime source changes. [Engineering evidence](../receipts/continuation/2026-10-03-context-execution-audit-engineering.json):375 targeted and62 final focused tests pass (overlapping),source-reader100%/wire92%/CLI98% coverage,lint/base/admission pass. Zero real contacts.
 
-At14:38Z the first three20-input members were FINALIZED with exactly one successful complete official job each and zero failures;fourth OPENED,remaining four ABSENT. Driver14:00:30Z and serving PID identities remain live,STOP absent,service healthy,Windows16.19 GiB. These are operational metadata only. Wait for all eight finalizations,seals and unique scores before exact root READ and actual source/quality/latency audit. No partial task quality,automatic selection,optimizer export or scaling. Root only,learning HELD,heartbeat PAUSED,human before8x400.
+At14:46Z the first four20-input members were FINALIZED with exactly one successful complete official job each and zero failures;fifth OPENED,remaining three ABSENT. Driver14:00:30Z and serving PID identities remain live,STOP absent,service healthy,Windows16.05 GiB. These are operational metadata only. Wait for all eight finalizations,seals and unique scores before exact root READ and actual source/quality/latency audit. No partial task quality,automatic selection,optimizer export or scaling. Root only,learning HELD,heartbeat PAUSED,human before8x400.
+
+The reader also separates original experiment-stage timings from sample latency and preserves nested scoring boundaries. [Stage-timing verification](../receipts/continuation/2026-10-03-context-stage-timing-engineering.json):94 targeted tests pass,source100%/CLI99% coverage,lint/base/admission pass. Operational scoring stages took342.4 seconds for the first member and about58 seconds for each of the next three;the first-stage cause remains unestablished. Current driver serializes scoring before the next generation. Existing overlap support still needs guarded multi-member admission and failure-stop review;do not alter the active schedule or infer sample speedup. Zero new contacts.
 
 ## Joint context quality and latency reader verified, 2026-10-03T14:24:04.763537+00:00
 
@@ -1126,7 +1128,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T14:38:37.485738+00:00
+Last refreshed: 2026-10-03T14:47:29.234141+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
