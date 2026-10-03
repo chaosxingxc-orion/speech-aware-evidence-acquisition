@@ -1,0 +1,58 @@
+{
+  "schema": "saea-system-text-precontact-exit-v1",
+  "recorded_at_utc": "2026-10-03T03:59:17.701657+00:00",
+  "windows_task": "SAEA-System-Text-Proposer-Extra5-Owner223",
+  "task_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-owner223-v1/windows-task-exit-observation.json",
+    "sha256": "7a807d8a0f29422e3332650fff92cba70242cd98ea6830ee3286808c9bbfa73d"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-owner223-v1/registration.json",
+    "sha256": "2441196820d8cb97e8f96bba208d1c3055ceea095db9a0671748fe7aa0c29f29"
+  },
+  "actual_frozen_preflight": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-owner223-v1/preflight.json",
+    "sha256": "174601d7f0f6f867c43f804df4406cd97a23f00b66f9da0c8f73886d8fc802d0"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-system-text-proposer-extra5-v1",
+  "commit": "89c4486c2ec5d445aff30e6a10bc67d7ad708817",
+  "live_process_observed_before_exit": {
+    "pid": 393261,
+    "cwd": "/home/chao/saea-worktrees/codex-system-text-proposer-extra5-v1",
+    "identity": "python -B scripts/flights/system_text_proposer_round.py with the exact registration hash"
+  },
+  "exit": {
+    "windows_result": 1,
+    "launcher_log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-owner223-v1/launcher-output.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "launcher_log_bytes": 0,
+    "launcher_exit_receipt_present": false,
+    "execution_root_present": false,
+    "started_or_finished_receipts_present": false
+  },
+  "unspent_allocations": {
+    "L-5-1": true,
+    "B-5-1": true,
+    "L-5-2": true,
+    "B-5-2": true
+  },
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "gpu_contacts": 0,
+  "provider_metadata_contacts_during_failed_launch": "unestablished; not generation contacts",
+  "diagnosis": "The admitted Windows process exited before a proposal reservation. The wrapper left an empty redirected log and no exit receipt. The original exception and producing cause are unestablished; do not attribute a credential failure, model failure, budget failure or task-quality outcome. Offline verification already passed. Current own-app session, catalogue and private credential path are healthy in separate read-only diagnostics.",
+  "post_exit_diagnostics": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-owner223-v1/post-exit-catalogue-diagnostic.json",
+      "sha256": "ee0c8053577beafedbc00f75914652b07dab0a039f18c40ed02d47021b846f10"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-owner223-v1/post-exit-private-credential-diagnostic.json",
+      "sha256": "4edb79f02dfc14330bf2682c356d89bf49a6770944337be1cf93764bbb1382e0"
+    }
+  ],
+  "preservation": "Original task, launcher, log, registration, worker and all four inputs/capsules retained. No repeat trigger, STOP/queue edit, provider proposal or scientific read.",
+  "next_action": "Pending owner226: one explicit precontact continuation of the same four unspent slots with durable startup logging; no new proposal allocation, retry or replacement after a further failure."
+}

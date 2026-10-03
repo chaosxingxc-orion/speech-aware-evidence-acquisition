@@ -1,5 +1,7 @@
 # Bounded extra proposal round5 with concrete source examples
 
+Current status: Windows entry exited before any reservation; all four slots remain unspent. Preserve the original one-shot task. [Incident and pending owner226 disposition](../2026-10-03-slurp-extra5-precontact-continuation-v1/README.md). No proposal/GPU/scorer contact.
+
 Owner223/224 authorizes this prospectively bounded four-slot allocation inside the same prepared UPDATE2 400-input pool. The prior sixteen proposal slots remain spent, including all no-change and invalid responses. This is a new registered learning opportunity, not replacement or recovery. Source audio, packets, queries, votes, knowledge construction and supply stay fixed. Role text remains the only editable surface.
 
 Both branches retain the exact GPT6 version, fresh isolated sessions,32768 cumulative input and4096 output acceptance limits, and four-contact ceiling. The owner217 subscription transport has no server-enforced output cap; record actual usage, reject an over-budget or unmetered result, and stop on a transport failure without retry. No paid API or runtime generation authority is granted by this package.

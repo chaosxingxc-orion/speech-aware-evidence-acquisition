@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Extra round5 entry exited before proposal reservation, 2026-10-03T03:59:17.701657+00:00
+
+The Windows task SAEA-System-Text-Proposer-Extra5-Owner223 started03:52:32Z and returned1. All four allocations remain unspent; no proposal/GPU/scorer contacts. The wrapper retained an empty log and no outer exit receipt; the original exception/cause is unestablished. Frozen89c4486c2 and all old bytes stay unchanged. Current own-app status/catalogue/private pipe checks pass without proposal contacts or credential logging. [Incident custody](../receipts/continuation/2026-10-03-system-text-extra5-precontact-exit.json).
+
+Root prepared durable precontact/failure records and separately captured process streams.108 tests pass; launcher95% coverage; synthetic Windows stderr/exit capture passes. [Exact pending continuation](../readiness/2026-10-03-slurp-extra5-precontact-continuation-v1/README.md) requests owner226 for one entry of the same four unspent slots, unchanged inputs/model/budgets. No new allocation or automatic retry; no task relaunch, queue/STOP edit or runtime dispatch occurred. Owner225 remains completed. Other holds and larger24 HELD slots remain. This new incident requires one disposition; do not repeat unchanged after it is reported.
+
 ## Extra round5 prepared with concrete source examples, 2026-10-03T03:50:22.337715+00:00
 
 Four fresh owner223/224 slots are registered after sixteen spent opportunities. All four isolated packets/capsules reverify; L has138 artifacts and eight own historical entries, B has six feedback-free knowledge artifacts. Initial serialized bounds27252/14201 fit. The L one-page stress scenario at assumed8000/100 usage does not fit the cumulative budget; this limitation is explicit and actual per-contact rejection stays active. No extra contact or completion guarantee. [Exact protocol, bounds and admission](../readiness/2026-10-03-slurp-text-extra-round5-v1/README.md).

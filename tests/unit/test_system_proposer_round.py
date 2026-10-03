@@ -328,3 +328,41 @@ def test_check_only_validates_transport_fingerprint_without_credentials(tmp_path
     registered = pin(tmp_path / "dispatch.json", r)
     runner.sys.argv = ["proposer_round", registered["path"], "--sha256", registered["sha256"], "--check-only"]
     assert runner.main() == 0
+
+
+@pytest.mark.parametrize("error_class", [PolicyError, TimeoutError])
+def test_credential_failure_is_durable_before_any_allocation(tmp_path, monkeypatch, error_class):
+    r = registration(tmp_path)
+    r.update(source_root=str(tmp_path), source_commit="fixture-commit", source_pins={}, auth={},
+             archive=str(tmp_path / "archive"), output_root=str(tmp_path / "execution"))
+    admission = runner.read_pin(r["provider_admission"])
+    admission["endpoint"] = "fixture-only"
+    r["provider_admission"] = pin(tmp_path / "admission.json", admission)
+    path = tmp_path / "registration.json"
+    registered = pin(path, r)
+    monkeypatch.setattr(runner.sys, "argv", ["proposer_round", str(path), "--sha256", registered["sha256"]])
+    monkeypatch.setattr(runner.sys, "dont_write_bytecode", True)
+    monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
+    monkeypatch.setattr(runner, "assert_wsl_execution_environment", lambda: None)
+    monkeypatch.setattr(runner.subprocess, "check_output", lambda command, **kw: "" if "status" in command else "fixture-commit\n")
+    monkeypatch.setattr(runner, "ResponsesHTTP", lambda *a, **k: None)
+    calls = []
+    def unavailable():
+        calls.append(1)
+        assert (tmp_path / "execution/precontact.json").is_file()
+        raise error_class("secret-from-untrusted-child-stream")
+    monkeypatch.setattr(runner, "SubscriptionBearer", lambda **kw: unavailable)
+    monkeypatch.setattr(runner, "ProposalDispatch", lambda *a, **k: pytest.fail("slot reserved"))
+    assert runner.main() == 1
+    output = tmp_path / "execution"
+    evidence = json.loads((output / "precontact-failure.json").read_text())
+    assert evidence["phase"] == "credential-check"
+    assert evidence["generation_contacts"] == evidence["allocations_reserved"] == 0
+    assert evidence["error_type"] == error_class.__name__
+    assert evidence["retry_permitted"] is False
+    assert not (output / "started.json").exists()
+    assert not (tmp_path / "archive").exists()
+    assert "secret" not in "".join(p.read_text() for p in output.iterdir())
+    with pytest.raises(FileExistsError):
+        runner.main()
+    assert len(calls) == 1

@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Extra round5 entry exited before proposal reservation, 2026-10-03T03:59:17.701657+00:00
+
+The Windows task SAEA-System-Text-Proposer-Extra5-Owner223 started03:52:32Z and returned1. All four allocations remain unspent; no proposal/GPU/scorer contacts. The wrapper retained an empty log and no outer exit receipt; the original exception/cause is unestablished. Frozen89c4486c2 and all old bytes stay unchanged. Current own-app status/catalogue/private pipe checks pass without proposal contacts or credential logging. [Incident custody](../receipts/continuation/2026-10-03-system-text-extra5-precontact-exit.json).
+
+Root prepared durable precontact/failure records and separately captured process streams.108 tests pass; launcher95% coverage; synthetic Windows stderr/exit capture passes. [Exact pending continuation](../readiness/2026-10-03-slurp-extra5-precontact-continuation-v1/README.md) requests owner226 for one entry of the same four unspent slots, unchanged inputs/model/budgets. No new allocation or automatic retry; no task relaunch, queue/STOP edit or runtime dispatch occurred. Owner225 remains completed. Other holds and larger24 HELD slots remain. This new incident requires one disposition; do not repeat unchanged after it is reported.
+
 ## Extra round5 prepared with concrete source examples, 2026-10-03T03:50:22.337715+00:00
 
 Four fresh owner223/224 slots are registered after sixteen spent opportunities. All four isolated packets/capsules reverify; L has138 artifacts and eight own historical entries, B has six feedback-free knowledge artifacts. Initial serialized bounds27252/14201 fit. The L one-page stress scenario at assumed8000/100 usage does not fit the cumulative budget; this limitation is explicit and actual per-contact rejection stays active. No extra contact or completion guarantee. [Exact protocol, bounds and admission](../readiness/2026-10-03-slurp-text-extra-round5-v1/README.md).
@@ -691,7 +697,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T03:50:22.337715+00:00
+Last refreshed: 2026-10-03T03:59:17.701657+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

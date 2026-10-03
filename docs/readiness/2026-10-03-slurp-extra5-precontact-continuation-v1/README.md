@@ -1,0 +1,11 @@
+# Extra round5 precontact continuation: owner226 pending
+
+The registered Windows task started2026-10-03T03:52:32Z and returned1 before any proposal reservation. The redirected log is empty, no outer exit receipt exists, and no execution directory or started receipt was created. The exact original exception and cause remain unestablished. Do not call this a model-quality result, an input-capacity failure or a confirmed authentication failure. Preserve the original task, log, launcher, registration and clean frozen89c4486c2 worker.
+
+All four round5 slots remain unspent. Separate read-only diagnostics find the own-app session connected, the pinned GPT6 model in the catalogue and the private credential pipe ready. No sign-in action is currently needed. No credential bytes were displayed or recorded. No proposal, GPU generation or official score contact occurred.
+
+The prepared change records credential-check entry durably before reading credentials, emits a sanitized precontact failure receipt without child streams, and refuses to reuse an existing execution directory.108 related tests pass;30 focused launcher tests pass with95% statement coverage. A hidden Windows process-object proof retained synthetic stderr and exit7; the original all-stream redirection pattern is not reused. This improves evidence retention without claiming to have reproduced the original failure cause.
+
+The concrete proposal requests one explicit continuation of the same four registered unspent slots, unchanged inputs, capsules, protocol, model and budgets, from a new frozen worker/output directory with durable logs. It grants no extra proposal slots, paid API, runtime generation, scoring or larger-panel admission. The old Windows task is never triggered again. Any further failure stops; preserve every disposition and do not replace spent slots.
+
+Owner223's approved bounds state "No ... automatic failure recovery" and the exact round5 admission was one-shot. Approval225 covered a different completed seed-binding recovery and cannot dispose of this later proposer entry failure. Owner226 is pending; do not dispatch from this prepared repair. Offline shared-base work may continue independently.

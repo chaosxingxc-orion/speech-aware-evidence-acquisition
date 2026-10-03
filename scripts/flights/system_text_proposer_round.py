@@ -169,13 +169,26 @@ def main():
         print(canonical({"preflight": "PASS", "members": len(jobs), "contacts_added": 0,
                          "request_bounds": {m["key"]: request_bound(c.request()) for m, c, _ in jobs}}))
         return 0
-    # Check the background process's credential path before consuming a slot.
-    # This may renew the own-app grant; it makes no proposal/model request.
-    bearer = SubscriptionBearer(**r["auth"])
-    ready_token = bearer()
-    del ready_token
+    # Record entry before credentials, while every proposal slot is still free.
+    # Keep check-only side-effect free; never place child streams in receipts.
     output = Path(r["output_root"])
     output.mkdir(parents=True, exist_ok=False)
+    write_once(output / "precontact.json", {"at_utc": datetime.now(timezone.utc).isoformat(),
+        "pid": os.getpid(), "registration_sha256": args.sha256,
+        "phase": "credential-check", "generation_contacts": 0, "allocations_reserved": 0})
+    try:
+        # This may renew the own-app grant; it makes no proposal/model request.
+        bearer = SubscriptionBearer(**r["auth"])
+        ready_token = bearer()
+        del ready_token
+    except Exception as error:
+        failure = {"at_utc": datetime.now(timezone.utc).isoformat(),
+            "registration_sha256": args.sha256, "phase": "credential-check",
+            "status": "precontact-failure", "error_type": type(error).__name__,
+            "generation_contacts": 0, "allocations_reserved": 0, "retry_permitted": False}
+        write_once(output / "precontact-failure.json", failure)
+        print(canonical(failure))
+        return 1
     write_once(output / "started.json", {"at_utc": datetime.now(timezone.utc).isoformat(), "pid": os.getpid(),
         "registration_sha256": args.sha256, "retry_permitted": False})
     archive = SystemSearchArchive(r["archive"])

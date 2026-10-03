@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-10-03T03:59:17.701657+00:00",
+  "tests_passed": 108,
+  "focused_launcher_tests": 30,
+  "launcher_statement_coverage_percent": 95,
+  "red_test_evidence": "Both precontact failure cases failed before implementation because the credential callback had no durable entry record.",
+  "negative_checks": [
+    "credential failure before slot reservation",
+    "opaque exception type only; no child secrets",
+    "create-only output refuses replay before credentials",
+    "existing successful proposer imports preserve their slots"
+  ],
+  "checks": [
+    "engineering base PASS",
+    "harness admission PASS",
+    "changed-file ruff PASS",
+    "git diff check PASS"
+  ],
+  "windows_capture_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/launcher-capture-proof.json",
+    "sha256": "7bb2c3796c28b3f5a69b3e49e120eede6f7143f2e76077204a609ce312c6b705"
+  },
+  "generation_contacts": 0,
+  "diagnostic_model_catalogue_queries": "read-only; no proposal generation",
+  "source_mutation": "Only the editable root worktree; frozen original is clean."
+}

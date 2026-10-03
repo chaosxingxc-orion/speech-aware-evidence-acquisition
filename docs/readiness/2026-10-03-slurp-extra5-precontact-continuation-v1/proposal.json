@@ -1,0 +1,33 @@
+{
+  "schema": "saea-system-text-precontact-continuation-proposal-v1",
+  "proposed_decision": 226,
+  "status": "pending-owner",
+  "incident": {
+    "relpath": "docs/receipts/continuation/2026-10-03-system-text-extra5-precontact-exit.json",
+    "sha256": "023c75a53ff54c655a71428afd44ca3c669c8b445b2a0782dbefbe8062fa085f"
+  },
+  "requested_disposition": "Authorize exactly one separately recorded entry for the same four unspent round5 proposal slots after the admitted launcher exited before any reservation. Preserve the failed launcher and unknown original exception.",
+  "keys": [
+    "L-5-1",
+    "B-5-1",
+    "L-5-2",
+    "B-5-2"
+  ],
+  "new_proposal_opportunities": 0,
+  "maximum_proposal_contacts": 16,
+  "per_proposal_input_acceptance_limit": 32768,
+  "per_proposal_output_acceptance_limit": 4096,
+  "per_proposal_contact_ceiling": 4,
+  "model": "gpt-6-astra",
+  "preserve_inputs_capsules_protocol_and_plans": true,
+  "source_change": "Add durable precontact and safe failure records before credential checking. Capture stdout/stderr separately through the Windows process object and always retain a process exit receipt. No proposal prompt, broker, model, budget or scientific policy changes.",
+  "proposed_task": "SAEA-System-Text-Proposer-Extra5-Precontact-Recovery1",
+  "proposed_output_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra5-precontact-recovery1-v1",
+  "old_task_retriggered": false,
+  "generation_or_scoring_admission": false,
+  "automatic_failure_recovery": false,
+  "further_failure_disposition": "Stop; preserve evidence and all unspent/consumed allocations; no replacement.",
+  "credential_relogin_needed": false,
+  "current_diagnostics": "Own-app status connected; catalogue contains gpt-6-astra; private pipe ready with no credential bytes logged. These later successes do not establish the original cause.",
+  "scope": "No STOP/queue reconciliation, runtime data rebuild, larger-panel activation, task-quality read, paid API or held-carrier release."
+}
