@@ -1,0 +1,124 @@
+{
+  "admission": {
+    "relpath": "coordination/context-matrix-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "83e2bed5a10f13873a600c56468e936598f54be52709bbee94eae86c99773d94"
+  },
+  "analysis": {
+    "context_freedom": "Each node has independently meaningful instructions and context. Reuse only naturally identical prefixes; do not homogenize nodes or omit relevant evidence to increase hits.",
+    "diagnostics": [
+      "Per-node prefill/decode/client time, mean,p50,p95,input/reused/evaluated/generated tokens",
+      "Role handoff failures,normalizer use,revisions and extra contacts",
+      "Batch dispatch wall/count and throughput, explicitly separate from individual latency"
+    ],
+    "efficiency_anchor": [
+      "Actual admission-to-settled-workflow elapsed mean over all20 samples",
+      "First admitted sample elapsed time reported separately",
+      "Actual elapsed mean over the remaining19 samples; no other exclusions"
+    ],
+    "read": "All exact family members finalized,sealed,one unique successful complete official score each,zero failed jobs,then exact root READ. No partial quality or optimizer export.",
+    "required_business_constraints": [
+      "Official pooled SLU-F1 and intent with paired uncertainty and own A/A",
+      "Reliable Omni delivery,finite/abstained/failed cases,per-stratum support and natural/equal weighting",
+      "Review complete quality/latency evidence before choosing a feasible configuration; cache hit rate is not a promotion gate"
+    ],
+    "selection": "Root reviews complete paired quality,reliability,all-sample and remaining-sample latency before choosing a feasible tradeoff. No stable-benefit or global-optimum claim from20; do not silently downgrade business performance to cache efficiency.",
+    "timing_boundaries": {
+      "concurrency_limit": "First4 admissions are only a diagnostic group; not necessarily simultaneous GPU work or a cold wave. No assumption that samples2-20 are fully warm.",
+      "first_rule": "Admission index0 from the frozen roster, regardless of completion order",
+      "sample": "Admission to workflow settlement including internal waits, FIT, tools and cleanup",
+      "separate": "Pre-admission waiting; batch wall/count; whole flight wall; official scoring",
+      "source": "saea-sample-execution-timing-v1 original monotonic boundaries, identical instrumentation in all new members"
+    }
+  },
+  "at_utc": "2026-10-03T13:23:01.764015+00:00",
+  "automatic_scaling": false,
+  "business_reporting": {
+    "reliability": "Retain every input,including finite deliveries,abstentions,normalizer use and control failures; report separately from correctness.",
+    "strata": "Report per-scenario support, official counts and intent with natural-mixture and equal-scenario summaries; pooled official number remains primary. Empty-support strata remain absent,not zero.",
+    "tradeoffs": "Show all four configurations and both repeats; do not choose a cache metric or one favorable replicate after seeing results."
+  },
+  "comparisons": [
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "layout": "legacy-trajectory",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "layout": "before-speech-trajectory",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "layout": "legacy-role",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "layout": "before-speech-role",
+      "primary": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1"
+    }
+  ],
+  "complete_family": [
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1"
+  ],
+  "optimizer_export": false,
+  "optional_timing": "Require export_system_sample_timing complete original coverage for all newly flown members. Also use export_system_node_timing. Historical missing boundaries remain unavailable.",
+  "order_limit": "Symmetric position balances linear time trend only. Cache history and numerical batching effects remain; no flush,warmup,save/restore or service changes. Report first versus later contacts and both repeats.",
+  "owner_amendment": {
+    "relpath": "docs/receipts/owner/2026-10-03-sample-latency-quality-node-context.json",
+    "sha256": "dd2f0338165cfaac97be2afa49768dd11273cc645d87433acc74362167ed39d8"
+  },
+  "raw_request_audit": "Every original contact/body/FIT/control hash; before-speech additionally shared original ORG layout audit; actual requested slot identities for role-affinity",
+  "read_gate": "All eight independently FINALIZED,verified seals,one unique successful complete official score each,zero failed jobs,then exact root READ. No partial quality or optimizer export.",
+  "registered_at_utc": "2026-10-03T13:47:13.226363+00:00",
+  "run_ids": {
+    "read": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1"
+  },
+  "schema": "saea-context-matrix-analysis-v1",
+  "scores": "Exactly one official complete score per member; no failures or replay",
+  "source_checks": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
+      "sha256": "2f5b0ce2097d7352fc3cfebac59c3f0425cec3a9f39988fb10a658d662b72cbb"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_trajectory.py",
+      "sha256": "b9fa7c9be35de1bb73934d2ca1c4642cdf54865021c06c2b3d97a6f53e22358e"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "67616021f3ae0ca1db3066742c4ec7c2aa8576ade2160384f44783a59920d297"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "67e34e8ca9bddc6b37cc9ff69406bc768596917d696c7cacf5608b9312827f4e"
+    }
+  ],
+  "source_rule": "No earlier update3 role annotations or old scored rows enter this new family.",
+  "status": "REGISTERED BEFORE CONTACT; scientific READ UNSIGNED",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-prerequisites-v1/analysis-recipe-DRAFT-v2.json",
+    "sha256": "bc48b3906f731d57f586260d6408952276d3a629fe96be74057cc95bad5be146"
+  },
+  "uncertainty": {
+    "bootstrap_draws": 10000,
+    "claim": "Descriptive optimization/form proof only;no stable benefit,formal no-harm,global optimum or learning claim from20.",
+    "latency": "Report each repeat separately and paired mean deltas on all20 and remaining19;first admission fixed by actual executor roster. No trimming,metric substitution or cold/warm assumption.",
+    "null": "Own A/A differences for every configuration; sampling intervals do not eliminate order/cache-history effects.",
+    "quality": "Official aggregate SLU-F1; paired official per-input TP/FP/FN where the qualified scoring view supplies them, recomputed aggregate ratios per bootstrap;never mean per-input F1. Intent accuracy paired on the same roster.",
+    "seed": 20261003,
+    "unit": "Paired input identity;do not treat the two repetitions as independent inputs"
+  }
+}

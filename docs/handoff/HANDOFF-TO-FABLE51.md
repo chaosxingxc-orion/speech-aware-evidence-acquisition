@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Root admitted the complete context configuration matrix, 2026-10-03T13:49:59.261371+00:00
+
+Root227 reviewed the completed current-basis capacities and all required structural combinations, then admitted [eight20-input members](../readiness/2026-10-03-context-matrix-n20-entry-v1/README.md): legacy/before-speech placement crossed with trajectory/role scheduling, with one own repeat of each. All eight use the same existing fixed400 first20, independent seed node prompts, immutable task assets and original sample timing. Exact own supplies, generation/FIT plans and complete-family unsigned READ are registered. Model-free registration passes for every member; no new contact yet. [Root admission](../receipts/continuation/2026-10-03-context-matrix-n20-root-admission.json) permits160 complete trajectories, maximum2080 generation and8320 actual FIT contacts, and eight unique complete official scores.
+
+A separate clean worker, current source/semantic/warm checks and live process/resource checks remain before a single Windows driver launch. Measure official quality, intent and reliable completion together with all-sample and remaining-sample mean latency; report both repeats and own A/A noise. Cache reuse is diagnostic, not a prompt restriction. Symmetric order does not remove inherited cache history or all time effects. No partial quality read, optimizer export, automatic scaling or learning. Root works without subagents; heartbeat PAUSED; human review before8x400.
+
 ## Both role-context structural proofs accepted, 2026-10-03T13:43:33.585350+00:00
 
 Both four-row workers completed normally at 2026-10-03T13:42:56Z on frozen 4ab00128df468ce7c49a857beb8aeda0aca5c1c0. [Complete acceptance](../receipts/continuation/2026-10-03-context-matrix-structural-complete.json) preserves 50 model contacts, 200 actual FIT endpoints, exact original request/body/layout joins, valid visible Reviewer handoffs and eight Omni terminal deliveries. All eight original sample timing records are complete; node measurements retain exact source coverage. No task quality or official score was read.

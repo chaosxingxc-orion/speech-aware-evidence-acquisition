@@ -1,0 +1,30 @@
+{
+  "cell": "slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-v1",
+  "composed_config_hash": "8bfc9b9d8906735bf7fda41d50a924a817bfc23ef40b12385fb818ab5674c301",
+  "decision_receipt": {
+    "relpath": "coordination/context-matrix-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "83e2bed5a10f13873a600c56468e936598f54be52709bbee94eae86c99773d94"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "287881c385662cf1f4148609faec020f7b13a32e0cc5519acebd094470384f95",
+    "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1/phase-supply-v1.json",
+    "sha256": "56c8dd4d75b2b3ff1bd0654cc4da24ecb4d95ab9e1b404d9d9cee1a0ab48cdcb"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under227 exact root-owned matrix admission"
+}

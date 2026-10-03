@@ -2,7 +2,10 @@
   "cells": [
     {
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-generation-v1",
       "baseline_fragment": "slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-v1",
@@ -10,9 +13,23 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Engineering matrix preparation only; exact source/supply/family/FIT/structural admission pending. No learning.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root227 admits exact repeated context matrix after complete current-basis capacities,structural custody and original sample timing proofs. Engineering only; no learning.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-context-matrix-n20-owner227-v1",
+            "relpath": "coordination/context-matrix-n20-owner227-v1/root-admission-v1.json",
+            "sha256": "83e2bed5a10f13873a600c56468e936598f54be52709bbee94eae86c99773d94",
+            "reason": "Decision slurp-context-matrix-n20-owner227-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1/phase-supply-v1.json",
+            "sha256": "56c8dd4d75b2b3ff1bd0654cc4da24ecb4d95ab9e1b404d9d9cee1a0ab48cdcb",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
       "system_text_policy_binding": {

@@ -1,0 +1,105 @@
+{
+  "antecedents": [
+    {
+      "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+      "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+    },
+    {
+      "relpath": "docs/receipts/owner/2026-10-03-engineering-first-context-configuration.json",
+      "sha256": "178928f6acd0254f71878431e01159a20df279f20606d13492d31da9e062d0e7"
+    },
+    {
+      "relpath": "docs/receipts/owner/2026-10-03-sample-latency-quality-node-context.json",
+      "sha256": "dd2f0338165cfaac97be2afa49768dd11273cc645d87433acc74362167ed39d8"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-sample-latency-quality-engineering.json",
+      "sha256": "b127f4493af2903a55d40f68ab06c63c0a7e910122f82182990180f9b782de46"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-context-matrix-capacity-root-transfer.json",
+      "sha256": "9cde1decd8462886599c2aa97b2aa346f7af07f2adc0daa7df06e528b51cf743"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-context-layout-root-structural-review.json",
+      "sha256": "99b506563da539598284f1bee6b54c09c74769c92b6ed43339b3711fe7efb678"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-context-matrix-structural-complete.json",
+      "sha256": "a0277341a0889083767852e951188435b493675125c177271bdd2ad33d5239ef"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-round8-structural-complete.json",
+      "sha256": "b6c77469a89e1802af6ddcf262fe1d16fc8979e35df0cb8d482041dd43c4c12e"
+    }
+  ],
+  "at_utc": "2026-10-03T13:47:13.226363+00:00",
+  "authority": "Root directly executes the latest independent-context, business-quality and sample-latency engineering priority. No subagents.",
+  "cache_state": "Inherited and uncontrolled;no flush, extra warmup, save/restore, service restart or geometry change.",
+  "context_freedom": "Each node has independently meaningful instructions and context. Reuse only naturally identical prefixes; do not homogenize nodes or omit relevant evidence to increase hits.",
+  "decision_id": "slurp-context-matrix-n20-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-FIT-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-FIT-V1"
+  ],
+  "failure_disposition": "Stop and preserve all evidence for a named root disposition;no automatic retry,reseal or score replay.",
+  "fixed": [
+    "Omni weights/build/answer custody",
+    "All seed Solver/Reviewer/Planner bytes and Perception format",
+    "Speech,packets,queries,votes,current knowledge and source bindings",
+    "Tools,official scorer,output reserve,max revisions and legal actions",
+    "Four24576-token slots,max512 output,current live-slot-only cache configuration",
+    "Same harness,concurrency ceiling,phase-supply selection bytes and exposure history"
+  ],
+  "heartbeat": "PAUSED",
+  "human_boundary": "Return to human before8x400 without splitting.",
+  "learning": "HELD",
+  "next_scale_admitted": false,
+  "order": [
+    "context-matrix-legacy-trajectory-primary",
+    "context-matrix-before-speech-trajectory-primary",
+    "context-matrix-legacy-role-primary",
+    "context-matrix-before-speech-role-primary",
+    "context-matrix-before-speech-role-aa",
+    "context-matrix-legacy-role-aa",
+    "context-matrix-before-speech-trajectory-aa",
+    "context-matrix-legacy-trajectory-aa"
+  ],
+  "owner_decisions": [
+    227
+  ],
+  "precontact_conditions": [
+    "Final allowed stages before own supply preparation",
+    "Eight exact identities,source bindings,plans and unsigned complete-family READ before contact",
+    "Clean frozen source with identical original sample timing,own warm supplies and request-semantic checks",
+    "Current service/process identity,absence of active generator/scorer/STOP/lease,12.5GiB stable startup and8GiB running guard"
+  ],
+  "purpose": "Establish the joint business-quality and latency evidence for engineering configuration before resuming learning. No proposer contact or optimizer export.",
+  "resource_contract": {
+    "generators": 1,
+    "official_scorers": 1,
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5,
+    "wait_seconds": 600
+  },
+  "root_only": true,
+  "schema": "saea-campaign-decision-v1",
+  "scientific_read": "All eight independently FINALIZED with verified seals,exactly one unique successful complete official score each,zero failed jobs,then root countersigns exact READ. No partial quality read.",
+  "scope": "Exactly four context-layout/scheduler configurations with one own repeat each,20 existing inputs per member,160 complete trajectories total. Maximum2080 generation contacts and8320 actual-request FIT endpoints;exactly one complete official score per member.",
+  "status": "decided"
+}

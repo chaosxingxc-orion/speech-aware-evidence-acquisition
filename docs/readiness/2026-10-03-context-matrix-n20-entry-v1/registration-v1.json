@@ -1,0 +1,151 @@
+{
+  "actual_fit_endpoint_cap": 8320,
+  "admission": {
+    "relpath": "coordination/context-matrix-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "83e2bed5a10f13873a600c56468e936598f54be52709bbee94eae86c99773d94"
+  },
+  "analysis": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/analysis-recipe-v1.json",
+    "sha256": "fa33acfbd61e428b0bae27eb7c184fc5cadac84479febfb23bac3ca1c2d82644"
+  },
+  "at_utc": "2026-10-03T13:47:13.226363+00:00",
+  "complete_family": [
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+    "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1"
+  ],
+  "context_freedom": "Each node has independently meaningful instructions and context. Reuse only naturally identical prefixes; do not homogenize nodes or omit relevant evidence to increase hits.",
+  "generation_contact_cap": 2080,
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "28084adc9e5bce6366d4b3dcbd6217aeadc3e3c2cd506a74f6f8f938a90132db",
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1",
+      "label": "legacy-trajectory-primary",
+      "protocol_hash": "af84cac76b893436af9f67e9c965bb4b2e5c4e55f0d03d200e3a4765b9ef8091",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "f3f079b8054692c7bb1d54a01109a6d579dd9e8b445f45b91fc3bf6516c1d1c5"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "config_hash": "0e0a5ab37741b730f5aac425fdd7694ada8b79ff620cb27918746ee7bb500a94",
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1",
+      "label": "before-speech-trajectory-primary",
+      "protocol_hash": "41b4174ccd02bc6cb612c51aa5105060f1b7889fff303b0f1a0fe6f34fe4ff79",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "5d619f347c2c215e9691c01a84a365084cf591de837bf9481bf44cc45eb9c2b5"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-primary-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "dfe319b5cf5305b0c0f5eff39c6eb0e8d5cb5d3d4fa7544c990ba78d0afd2e93",
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-role-primary-v1",
+      "label": "legacy-role-primary",
+      "protocol_hash": "320a6057cbab87ca7d4bb8a6d14b12a796012b1022bf70e2fbabea892d96c768",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "99cb3f33ae15e81fbec90025968d9fb582bc88c21ef3ad345104f8288d69b211"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-primary-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "config_hash": "b8a7c952c296ce2952da67c0375c730697d3d3aae0320ddabacfaa4fa4311bc1",
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-role-primary-v1",
+      "label": "before-speech-role-primary",
+      "protocol_hash": "4c35b26ca90871d5b918bda5fd6968b5f42b0dda25205c110728472d0398d89c",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "2acff760c8124d86745874a6c7887265cf068a8e45f26aa1dd30e907fdca309d"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-aa-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "config_hash": "14fbfd35c6cc43de306cf85a5b74d4f61a601e2d6f5d7f90c5e34c9dc7ea0c9b",
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-role-aa-v1",
+      "label": "before-speech-role-aa",
+      "protocol_hash": "a0606bcb5e1062b925d9ad0a5a22e21844cb4ab7cf41be2574c5cb12801a8871",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1/phase-supply-v1.json",
+        "sha256": "6dd2010ef54a722d653cff7ce9d6d24cbdd4fd38671fa8f53c23772732e4aa5d"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "94b9f5ef1840549ee366ad4eedc248e6192ff8c0575d7fbb5e99e909ce48e9d8",
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-role-aa-v1",
+      "label": "legacy-role-aa",
+      "protocol_hash": "7785d6aae83bdffaf7370f516aec5b224c27aab01a776b826efca00276ecc38f",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1/phase-supply-v1.json",
+        "sha256": "68b5acbad35160b50f0230f3209eaecfa65f0e2d66b75cf4f2f0888eeb551643"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "config_hash": "8bfc9b9d8906735bf7fda41d50a924a817bfc23ef40b12385fb818ab5674c301",
+      "experiment": "slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-v1",
+      "label": "before-speech-trajectory-aa",
+      "protocol_hash": "287881c385662cf1f4148609faec020f7b13a32e0cc5519acebd094470384f95",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1/phase-supply-v1.json",
+        "sha256": "56c8dd4d75b2b3ff1bd0654cc4da24ecb4d95ab9e1b404d9d9cee1a0ab48cdcb"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "87e6e500b124ae69184239772e6c4216fe756f6af14240599e582fb65969264e",
+      "experiment": "slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-v1",
+      "label": "legacy-trajectory-aa",
+      "protocol_hash": "2ee0665813538c10434bc18e34ee63b3c8f26719b65c385960e076a4760b932d",
+      "replicate_run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1/phase-supply-v1.json",
+        "sha256": "a7e825b4f9726dd6ae507f6bb125afd04923918a674ec1783d98fc6bdb903cb0"
+      }
+    }
+  ],
+  "official_complete_scores": 8,
+  "queue": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/queue-v1.json",
+    "sha256": "ee0cae4af1a21f0f28018536e080e36ea6eacd660c342ebd5296342cdd797076"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1",
+  "read_status": "UNSIGNED",
+  "rows_per_member": 20,
+  "schema": "saea-context-matrix-n20-registration-v1",
+  "source_freeze": "Separate clean worker required",
+  "trajectory_cap": 160
+}
