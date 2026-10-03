@@ -1,0 +1,39 @@
+{
+  "all_execution_plans": "DRAFT, no contacts authorized",
+  "at_utc": "2026-10-03T11:39:36.651819+00:00",
+  "capacity_requests": 3,
+  "capacity_tokenizer_endpoint_cap": 891,
+  "checks": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-next20-preparation-v1/checks-v1.json",
+    "sha256": "a419c67760d4e1f4dfb7263635d88e171e8c077fca163d5f8725bd32e3d5c845"
+  },
+  "engineering_trajectories": 12,
+  "heartbeat": "PAUSED",
+  "human_review_before": "8x400",
+  "member_package": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-next20-preparation-v1/exact-members-held-v1.json",
+    "sha256": "0a9c8a160f3f7462630d94b14f255618c823393eb9186bb282fd8eae9473e28a"
+  },
+  "model_free_verification": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-next20-preparation-v1/model-free-verification-v1.json",
+    "sha256": "ee7128d993b5f34a57ae3ca2411a5d48c9f7e8ea29862390001532e4d5a4bfd7"
+  },
+  "native_prefix_affinity": "OFF",
+  "new_learning_mechanism": false,
+  "one_generating_experiment": true,
+  "one_official_scorer": true,
+  "owner_authority": 227,
+  "paid_api_spend": 0,
+  "panel_members": 8,
+  "panel_trajectories": 160,
+  "prepared_own_supplies": "pending final source and root-admission identity; no sibling envelopes borrowed",
+  "proposed_runtime_scope": "Only registered round8 Solver-text replacements, other node text/interfaces/layout/normalizer unchanged",
+  "root_gpu_admission": false,
+  "root_read_admission": false,
+  "schema": "saea-round8-next20-held-preparation-v1",
+  "seed_equivalent_panel_members": 6,
+  "source_assets_rebuilt": false,
+  "source_basis": "a98a3066e317e3eeaf86161023f34514cd1a47cf",
+  "startup_memory_floor_gib": 12.5,
+  "windows_memory_floor_gib": 8
+}

@@ -1,0 +1,21 @@
+{
+  "cell": "slurp-native-stage3-system-text-round8-candidate-2-smoke-4-v1",
+  "composed_config_hash": "b45e90b5f75c7d97af4a77291df4def84a69ea2e63e491895f38929a1ee34d3b",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "95d427bdb96533cf9a60828232c9411362756b8915ca5db7700794a69705f201",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-round8-candidate-2-smoke-4-v1",
+  "schema": "saea-round8-held-plan-v1",
+  "status": "DRAFT; no contact authority"
+}

@@ -1,0 +1,351 @@
+{
+  "at_utc": "2026-10-03T11:37:40.143556+00:00",
+  "auto_scale": false,
+  "capacity_admitted": false,
+  "data_rebuilt": false,
+  "generation_admitted": false,
+  "heartbeat": "PAUSED",
+  "human_review_before": "8x400",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-parent-capacity-fit-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-parent-capacity-v1.json",
+        "sha256": "c7a3911db7f79b8734f746961796bd4f3b37c406ef7a2a4112f000dfe57139de"
+      },
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-round8-parent-capacity-v1",
+      "config_hash": "f35f87dc6491129cb5e950942a80c9b9ba6ee83f49fd2e72dd901f66cbcaea0e",
+      "experiment": "slurp-native-stage3-system-text-round8-parent-capacity-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-parent-capacity-v1.json",
+        "sha256": "4f546b7a98aee04de3b7ef36a7b476d75277903bf2ab9803e9a1f16a2f9f2889"
+      },
+      "kind": "capacity",
+      "member": "parent",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "capacity constructs maximum legal requests; no generation",
+      "protocol_hash": "81c2c72eb85fab423bb8cd3faa1343c0974e98aa8a6380f05a39d5b1df27612b",
+      "rows": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-CAPACITY-FIT-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-parent-smoke-4-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-parent-smoke-4-v1.json",
+        "sha256": "1e90ddb8c008b27cd80009015f20b415c2d6e144249bf78a8e8321b59392c9fc"
+      },
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-round8-parent-smoke-4-v1",
+      "config_hash": "1a668a8a12d404bb9609d77d6373dcd7ccada15a892da303192f365c99cc504f",
+      "experiment": "slurp-native-stage3-system-text-round8-parent-smoke-4-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-parent-smoke-4-v1.json",
+        "sha256": "da4dcaef22853b612138cb7476fb273eef87a6cc6da5d14fb68b13c3eec6b7b3"
+      },
+      "kind": "engineering",
+      "member": "parent",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "9468185bf9bbda2750070e3a42e92044f2ad1ee80e359671fb9ef72cd043dafe",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-V1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-1-capacity-fit-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-candidate-1-capacity-v1.json",
+        "sha256": "6793aca9bec0e5f5cf5ef4752b9747144814cb26185ba107b2f2f7da978a4b50"
+      },
+      "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+      "cell": "slurp-native-stage3-system-text-round8-candidate-1-capacity-v1",
+      "config_hash": "36fe4b485f2a17d3185c17167d001b6104c7b02096ec5388d238c83ced29035b",
+      "experiment": "slurp-native-stage3-system-text-round8-candidate-1-capacity-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-candidate-1-capacity-v1.json",
+        "sha256": "9f43e8c8ee0a64fa636c08cac8756ef7d9a1d5d4649af0967f19280d4dc2775d"
+      },
+      "kind": "capacity",
+      "member": "candidate-1",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "capacity constructs maximum legal requests; no generation",
+      "protocol_hash": "802a129d2045308b76589532241cb7c41088bf4f8f67e78fc32779d58f55c71b",
+      "rows": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-CAPACITY-FIT-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-1-smoke-4-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-candidate-1-smoke-4-v1.json",
+        "sha256": "469c2e06951426d50b8b46a30e1cd9e6ff88a91d6c7ed5c4053f4f04a42cfb78"
+      },
+      "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+      "cell": "slurp-native-stage3-system-text-round8-candidate-1-smoke-4-v1",
+      "config_hash": "111c7165ae6672ff1aae36d03a7f1956cae379f42469bd73a8158fedb6bca2bb",
+      "experiment": "slurp-native-stage3-system-text-round8-candidate-1-smoke-4-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-candidate-1-smoke-4-v1.json",
+        "sha256": "6d5c1792393672c645d9148d5a5ea1ccaa8ec42e38d15af2cfb167ce6869d4b0"
+      },
+      "kind": "engineering",
+      "member": "candidate-1",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "7d5a836cb868b547d20db0d51c02e9572d49fd222459f6e9c33623e1f892340a",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-V1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-capacity-fit-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-candidate-2-capacity-v1.json",
+        "sha256": "0b29ccb1be6fef3895792322f67598aa61ef6142e6298c88ea5b1ef555a3cb06"
+      },
+      "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+      "cell": "slurp-native-stage3-system-text-round8-candidate-2-capacity-v1",
+      "config_hash": "ba368759fc1603443f3e102738af529068f42a501be7ccdb3f1d2ab5b8c40543",
+      "experiment": "slurp-native-stage3-system-text-round8-candidate-2-capacity-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-candidate-2-capacity-v1.json",
+        "sha256": "2f9ce26bf6a2421157b1992f3f2d7027a523cd969d861e7ceb1b8ba63c39e1d5"
+      },
+      "kind": "capacity",
+      "member": "candidate-2",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "capacity constructs maximum legal requests; no generation",
+      "protocol_hash": "b436b7a1984efb9e1e78310839009c78098ef7f91cb21a8b37b9dbbb18a16b38",
+      "rows": 0,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-FIT-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-smoke-4-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-candidate-2-smoke-4-v1.json",
+        "sha256": "f70ffc27c63ed6f2dd2d710741b958532d0a11e52d8c13b5ee178443fb5444e9"
+      },
+      "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+      "cell": "slurp-native-stage3-system-text-round8-candidate-2-smoke-4-v1",
+      "config_hash": "b45e90b5f75c7d97af4a77291df4def84a69ea2e63e491895f38929a1ee34d3b",
+      "experiment": "slurp-native-stage3-system-text-round8-candidate-2-smoke-4-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-round8-candidate-2-smoke-4-v1.json",
+        "sha256": "1501de0e302445ec04cf0030c9c289c9420a3d88edcd26edfe0935840701575b"
+      },
+      "kind": "engineering",
+      "member": "candidate-2",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "95d427bdb96533cf9a60828232c9411362756b8915ca5db7700794a69705f201",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1.json",
+        "sha256": "ba426a474327e6cae64e23166e32540c0aa6eeb092662a10a239acb2db4f62fd"
+      },
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1",
+      "config_hash": "700c9b65e876d8a84c2d1f0db800e11c028d591a8e02d786f4b80e6bd0dd63bf",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-v1.json",
+        "sha256": "ecd5774b4589b285a5a663a9a412c0a501a0ae86257b307444c73e1e1bef5067"
+      },
+      "kind": "panel",
+      "member": "l-parent",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "35bc272122109bffa7c1b35d7a397ef3043cf2060f065264eb087207532fb878",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1.json",
+        "sha256": "9202e56706981fe8c9ea0616f190df603dd46fb71559bdac5986ee8ec1d4349f"
+      },
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1",
+      "config_hash": "b29aa798863fb5a3ca02e79ce53290d2bfc5ef25c2e63919194100e8308880d5",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1.json",
+        "sha256": "bc79befbfc22b782ed09190847f4e8ef86ddd935a7ca593b6a21ddd20d054c4f"
+      },
+      "kind": "panel",
+      "member": "l-parent-aa",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "829c9d5dd9ea87bc5f372a3066e7ff219c1733c02a5a4917a5aeefd5f406ebdf",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1.json",
+        "sha256": "4f462566530cdc6d792a3fb2d07e927146466dd1abbf4efb44670f2ab566b6f7"
+      },
+      "bundle_id": "d3494ac75de36be5a38b8fb7ac1074ebb0311896c2c9cee1acfa47d25f17e43c",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1",
+      "config_hash": "681c294cdb1b6fc82d7c78f8ddcbd8ab07dde74c9b59efff56b5d324203ef2d4",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-v1.json",
+        "sha256": "5e7ed783c44b8a4cc2b84d9ce3d9ee0537741df255576f5c0486a3246e7e47b3"
+      },
+      "kind": "panel",
+      "member": "l-candidate-1",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "7f20a5da28a040dbe28957e09087e670f5403646fd19aae47e33cda504554ca4",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-1-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1.json",
+        "sha256": "cbd15f2d6e60770fcf56123ef0faaa88b83257ba4d376a50e7ca3561a7fae04e"
+      },
+      "bundle_id": "914e22552f90482c563de37e353534af450bce8e75318c1616b209407b63d4b0",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1",
+      "config_hash": "0cff9e1297b27893284f61e6bcce167c0ae5674694d4009f82a5f0e9a9d4f1d0",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-v1.json",
+        "sha256": "a19fd13dc1524d8ff46cda37e8c9196440e2ceafc70858b26a0ebe946c569725"
+      },
+      "kind": "panel",
+      "member": "l-candidate-2",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "01701c4fc2c0724b8fcfdb2f34fc43b8c2148fd7b56f777b2ee4aa3f1c674995",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-2-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1.json",
+        "sha256": "4faed7d9a81325ebbd0ac65418e88dad15cd194cb494d1fd3adfaa17b2815b1a"
+      },
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1",
+      "config_hash": "e964799b936d9fa0d20b6b1f0112db0e9521672ca583eedecca0c7b7f4cdda2d",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-v1.json",
+        "sha256": "a1ee57b756faaef84eff52d481ebfccdeb8a8091ed41386152c166ab22abca6e"
+      },
+      "kind": "panel",
+      "member": "b-parent",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "5387747c90bd9b64b24bdc4714d5a09b3781149e162f81194da4930ee24d3517",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1.json",
+        "sha256": "c54fafb1595ffc751448b38c136f5b8e5e9c1c6c3a0d43ae490521f5921158b3"
+      },
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1",
+      "config_hash": "af009896f07ed031bfe2910822f690c578de165f24c564978794c81253dfccaf",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-v1.json",
+        "sha256": "479e145f81501dd4e07d9bebb3714f941ca61c062e99be7245f35f12f28480e9"
+      },
+      "kind": "panel",
+      "member": "b-parent-aa",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "4c575b71660ae0228819b5a0bd522c754f180880bdb2d171f368ca5d26e958ad",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1.json",
+        "sha256": "0bffc3b5eba98500409361766418e4c19da0fe741c0b5c374d4b7e198f871fc8"
+      },
+      "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1",
+      "config_hash": "58640f78d62017603fcd41c360e92e36b6905a9d9dbb7afafbea44e1b3c077cb",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-v1.json",
+        "sha256": "e70e74de860d261486e8a35465a78e7e3c628507b5a8b2ad874d92521265a61b"
+      },
+      "kind": "panel",
+      "member": "b-candidate-1",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "ede657cb56ac6eaf9485079048b733390e615edde1b4926df142f3c8cb1ded4b",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-1-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-generation-v1",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1.json",
+        "sha256": "bda397ffcf9ff9cb672ac1ef782df0898b3c9f38860757c605c45bf06e2ba234"
+      },
+      "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+      "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1",
+      "config_hash": "2cf5b5a4a1d359eb6eaaef52e5af80af5019796680aa32b6d92ec90612f5077a",
+      "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1",
+      "experiment_file": {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-v1.json",
+        "sha256": "ef4526489412d7f8b498f3c55241d3f97031f0947791584775a63f6bff8f1fae"
+      },
+      "kind": "panel",
+      "member": "b-candidate-2",
+      "native_prefix_affinity": "OFF",
+      "own_supply": "pending",
+      "protocol_hash": "80666aebd8345b151d8d16986b34326c94b8d90322a8f30e3bb1f0ce6f6a38be",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-2-V1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "state": "HELD"
+    }
+  ],
+  "read_admitted": false,
+  "schema": "saea-round8-next20-held-members-v1",
+  "scope": "Registered round8 role-text proposals only. Six panel members retain seed role semantics; no L improvement mechanism is present.",
+  "score_admitted": false
+}

@@ -1,0 +1,274 @@
+{
+  "at_utc": "2026-10-03T11:38:29.304071+00:00",
+  "final_own_supplies": "pending final source/readiness identity; do not reuse sibling envelopes",
+  "members": [
+    {
+      "bound_roles": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "f35f87dc6491129cb5e950942a80c9b9ba6ee83f49fd2e72dd901f66cbcaea0e",
+      "kind": "capacity",
+      "member": "parent",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "1a668a8a12d404bb9609d77d6373dcd7ccada15a892da303192f365c99cc504f",
+      "kind": "engineering",
+      "member": "parent",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "f13e584047f023dea36841fa0fc71f630cc844f3ea537a8a9549088520252170"
+        }
+      },
+      "config_hash": "36fe4b485f2a17d3185c17167d001b6104c7b02096ec5388d238c83ced29035b",
+      "kind": "capacity",
+      "member": "candidate-1",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "f13e584047f023dea36841fa0fc71f630cc844f3ea537a8a9549088520252170"
+        }
+      },
+      "config_hash": "111c7165ae6672ff1aae36d03a7f1956cae379f42469bd73a8158fedb6bca2bb",
+      "kind": "engineering",
+      "member": "candidate-1",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "15fed94fa116a608bca1b8abaff70897f22c429c762ea000f59255816448d9b8"
+        }
+      },
+      "config_hash": "ba368759fc1603443f3e102738af529068f42a501be7ccdb3f1d2ab5b8c40543",
+      "kind": "capacity",
+      "member": "candidate-2",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "15fed94fa116a608bca1b8abaff70897f22c429c762ea000f59255816448d9b8"
+        }
+      },
+      "config_hash": "b45e90b5f75c7d97af4a77291df4def84a69ea2e63e491895f38929a1ee34d3b",
+      "kind": "engineering",
+      "member": "candidate-2",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "700c9b65e876d8a84c2d1f0db800e11c028d591a8e02d786f4b80e6bd0dd63bf",
+      "kind": "panel",
+      "member": "l-parent",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "b29aa798863fb5a3ca02e79ce53290d2bfc5ef25c2e63919194100e8308880d5",
+      "kind": "panel",
+      "member": "l-parent-aa",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "d3494ac75de36be5a38b8fb7ac1074ebb0311896c2c9cee1acfa47d25f17e43c",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "681c294cdb1b6fc82d7c78f8ddcbd8ab07dde74c9b59efff56b5d324203ef2d4",
+      "kind": "panel",
+      "member": "l-candidate-1",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "914e22552f90482c563de37e353534af450bce8e75318c1616b209407b63d4b0",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "0cff9e1297b27893284f61e6bcce167c0ae5674694d4009f82a5f0e9a9d4f1d0",
+      "kind": "panel",
+      "member": "l-candidate-2",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "e964799b936d9fa0d20b6b1f0112db0e9521672ca583eedecca0c7b7f4cdda2d",
+      "kind": "panel",
+      "member": "b-parent",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "config_hash": "af009896f07ed031bfe2910822f690c578de165f24c564978794c81253dfccaf",
+      "kind": "panel",
+      "member": "b-parent-aa",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "f13e584047f023dea36841fa0fc71f630cc844f3ea537a8a9549088520252170"
+        }
+      },
+      "config_hash": "58640f78d62017603fcd41c360e92e36b6905a9d9dbb7afafbea44e1b3c077cb",
+      "kind": "panel",
+      "member": "b-candidate-1",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    },
+    {
+      "bound_roles": {
+        "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "15fed94fa116a608bca1b8abaff70897f22c429c762ea000f59255816448d9b8"
+        }
+      },
+      "config_hash": "2cf5b5a4a1d359eb6eaaef52e5af80af5019796680aa32b6d92ec90612f5077a",
+      "kind": "panel",
+      "member": "b-candidate-2",
+      "native_prefix_affinity": "OFF",
+      "state": "held"
+    }
+  ],
+  "model_tokenizer_scorer_contacts": 0,
+  "next": "Root reviews three capacity identities, then exact registration/exposure/frozen runtime check precedes capacity. Engineering and8x20 remain HELD.",
+  "panel_data_knowledge_policy_scorer_equal": {
+    "b-candidate-1": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28",
+    "b-candidate-2": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28",
+    "b-parent": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28",
+    "b-parent-aa": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28",
+    "l-candidate-1": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28",
+    "l-candidate-2": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28",
+    "l-parent": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28",
+    "l-parent-aa": "e732ceab346f04b3b070dca74f03619f93a6e56b43fc2ac15af4d7ba2b0dec28"
+  },
+  "panel_roles": {
+    "b-candidate-1": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "f13e584047f023dea36841fa0fc71f630cc844f3ea537a8a9549088520252170"
+    },
+    "b-candidate-2": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "15fed94fa116a608bca1b8abaff70897f22c429c762ea000f59255816448d9b8"
+    },
+    "b-parent": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    "b-parent-aa": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    "l-candidate-1": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    "l-candidate-2": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    "l-parent": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    "l-parent-aa": {
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    }
+  },
+  "queue_or_service_mutation": false,
+  "root_gpu_admission": false,
+  "schema": "saea-round8-held-config-verification-v1",
+  "source_assets_rebuilt": false
+}

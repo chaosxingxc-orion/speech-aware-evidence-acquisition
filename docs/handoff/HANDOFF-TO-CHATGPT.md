@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 next20 exact cells prepared HELD, 2026-10-03T11:39:36.651819+00:00
+
+Three distinct-policy capacity cells, three four-row structural proofs and all eight20 comparison identities are prepared with shared configuration and actual role-byte verification. All14 remain HELD and plans are DRAFT. Six comparison members retain seed-equivalent role text; no L improvement mechanism was produced. [Prepared scope and checks](../receipts/continuation/2026-10-03-round8-next20-prepared-held.json). No new tokenizer/model/scorer contact occurred.
+
+Finalize each own supply only after source/admission identity is stable, then root admits the capacity stage separately. Structural proofs and complete8x20 need their own prerequisites and exact complete-family READ. Keep same400 assets, current layout/normalizer, trajectory routing and affinity OFF; optional per-node timing uses the same READ gate. Keep8GiB running/12.5GiB startup, one generation/one scorer,10-second telemetry and heartbeat PAUSED. No automatic scaling or new proposals; human review before8x400.
+
 ## Round8 typed proposals complete; no-change retained, 2026-10-03T11:35:14.495573+00:00
 
 The single Windows task completed11:24:49Z and its durable wrapper exited0. L81/L82 are no-change; B81/B82 are provisional Solver-text policies, compiled but unactivated. Exactly12 contacts are fully metered:47775 input/3275 output tokens.29 opportunities are closed and three inherited HELD identities remain untouched. [Complete custody](../receipts/continuation/2026-10-03-proposer-typed-successor2-complete.json).

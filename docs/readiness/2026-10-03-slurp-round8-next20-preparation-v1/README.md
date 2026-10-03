@@ -1,0 +1,7 @@
+# Round8 next20 preparation — HELD
+
+The admitted proposal task finished with two L no-change choices and two B Solver edits. Preserve all four choices. Prepare three distinct-policy maximum-request capacities (parent and both B candidates), three four-row structural proofs, then a complete eight-member20 panel. Six panel members have seed-equivalent runtime text; no learning improvement mechanism was proposed. Nothing here admits a GPU/tokenizer contact, official score or READ.
+
+Reuse the exact first20 of the existing UPDATE2 400 pool, all speech packets, queries, votes and current knowledge. Capacity must retain four24576 slots, full output space and maximum legal knowledge/handoff/revision requests. Structural inspection covers every distinct policy including parent, native Omni custody and legal handoffs, with no task-quality read or score. Freeze exact supplies and final identities before root admission; a failed stage stops for diagnosis.
+
+Keep current trajectory scheduling, affinity OFF, current speech-query-prefix-v2 request layout and normalizer. Distinct node instructions remain independently editable. The separate cache panel did not test a static-role-before-query layout. Future broader context/post-call mechanisms require prospective registration under227 and do not mutate these candidates. Include the optional per-node timing sidecar after the full-family READ. Heartbeat stays PAUSED, independent telemetry unchanged. No automatic scale; human review before8x400.

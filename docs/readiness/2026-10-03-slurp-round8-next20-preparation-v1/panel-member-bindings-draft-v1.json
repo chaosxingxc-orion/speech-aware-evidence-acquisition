@@ -1,0 +1,50 @@
+{
+  "B-candidate-1": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-1-generation-v1",
+    "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+    "config_hash": "58640f78d62017603fcd41c360e92e36b6905a9d9dbb7afafbea44e1b3c077cb",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-1-V1"
+  },
+  "B-candidate-2": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-candidate-2-generation-v1",
+    "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+    "config_hash": "2cf5b5a4a1d359eb6eaaef52e5af80af5019796680aa32b6d92ec90612f5077a",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-2-V1"
+  },
+  "B-parent": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-generation-v1",
+    "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "config_hash": "e964799b936d9fa0d20b6b1f0112db0e9521672ca583eedecca0c7b7f4cdda2d",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-V1"
+  },
+  "B-parent-aa": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-b-parent-aa-generation-v1",
+    "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "config_hash": "af009896f07ed031bfe2910822f690c578de165f24c564978794c81253dfccaf",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1"
+  },
+  "L-candidate-1": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-1-generation-v1",
+    "bundle_id": "d3494ac75de36be5a38b8fb7ac1074ebb0311896c2c9cee1acfa47d25f17e43c",
+    "config_hash": "681c294cdb1b6fc82d7c78f8ddcbd8ab07dde74c9b59efff56b5d324203ef2d4",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-1-V1"
+  },
+  "L-candidate-2": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-candidate-2-generation-v1",
+    "bundle_id": "914e22552f90482c563de37e353534af450bce8e75318c1616b209407b63d4b0",
+    "config_hash": "0cff9e1297b27893284f61e6bcce167c0ae5674694d4009f82a5f0e9a9d4f1d0",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-2-V1"
+  },
+  "L-parent": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-generation-v1",
+    "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "config_hash": "700c9b65e876d8a84c2d1f0db800e11c028d591a8e02d786f4b80e6bd0dd63bf",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-V1"
+  },
+  "L-parent-aa": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-generation-v1",
+    "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "config_hash": "b29aa798863fb5a3ca02e79ce53290d2bfc5ef25c2e63919194100e8308880d5",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1"
+  }
+}

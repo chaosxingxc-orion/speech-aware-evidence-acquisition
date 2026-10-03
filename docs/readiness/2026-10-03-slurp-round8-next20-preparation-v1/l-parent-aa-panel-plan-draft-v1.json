@@ -1,0 +1,21 @@
+{
+  "cell": "slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1",
+  "composed_config_hash": "b29aa798863fb5a3ca02e79ce53290d2bfc5ef25c2e63919194100e8308880d5",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "829c9d5dd9ea87bc5f372a3066e7ff219c1733c02a5a4917a5aeefd5f406ebdf",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-fixed400-round8-n20-l-parent-aa-v1",
+  "schema": "saea-round8-held-plan-v1",
+  "status": "DRAFT; no contact authority"
+}

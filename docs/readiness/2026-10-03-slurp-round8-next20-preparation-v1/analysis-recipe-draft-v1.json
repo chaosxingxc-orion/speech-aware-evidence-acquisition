@@ -1,0 +1,23 @@
+{
+  "complete_system_trajectories": 160,
+  "expected_members": {
+    "B-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-1-V1",
+    "B-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-CANDIDATE-2-V1",
+    "B-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-V1",
+    "B-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-B-PARENT-AA-V1",
+    "L-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-1-V1",
+    "L-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-CANDIDATE-2-V1",
+    "L-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-V1",
+    "L-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-L-PARENT-AA-V1"
+  },
+  "family_id": "fixed400-text-round8-n20-v1",
+  "limits": "No L policy improvement mechanism was proposed. Preserve six seed-equivalent members, all29 closed/three HELD histories, optimization exposure and exact L-only export rules. Cache reuse is a cost observation, not a hard prompt-similarity constraint. No causal node attribution or matched historical total compute claim.",
+  "official_score_jobs": 8,
+  "optional_timing_sidecar": "export_system_node_timing after the same complete-family READ; prefill/decode/wall time and cache reuse by node, no new model/scorer contact.",
+  "primary": "Descriptive official pooled SLU-F1 with own in-chain A/A, intent, reliable completion, paired cases, natural/equal-stratum uncertainty and actual full-system cost. No efficacy claim on20.",
+  "read_gate": "All eight independently FINALIZED with verified seals, one unique successful complete official score each, zero failed jobs, then exact root READ.",
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND8-N20-READ-V1",
+  "rows_per_member": 20,
+  "schema": "saea-round8-next20-analysis-draft-v1",
+  "status": "DRAFT; exact archive freeze and root READ remain pending"
+}

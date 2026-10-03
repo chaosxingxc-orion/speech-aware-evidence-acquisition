@@ -1,0 +1,20 @@
+{
+  "at_utc": "2026-10-03T11:39:36.651819+00:00",
+  "capacity_contacts": 0,
+  "checks": {
+    "all14_actual_policy_role_bindings": "PASS",
+    "all14_finite_completion_and_react_exhaustion": "PASS explicit field assertions",
+    "all14_held_readiness": "PASS",
+    "all14_unique_run_attempts": "PASS",
+    "all8_common_data_knowledge_policy_scorer": "PASS",
+    "engineering_base_check": "PASS",
+    "finite_completion_policy_check": "PASS globally; per-new-cell fields explicitly verified separately",
+    "git_diff_check": "PASS",
+    "harness_admission_check": "PASS"
+  },
+  "dispatch": false,
+  "generation_contacts": 0,
+  "model_free": true,
+  "schema": "saea-round8-held-package-checks-v1",
+  "score_contacts": 0
+}
