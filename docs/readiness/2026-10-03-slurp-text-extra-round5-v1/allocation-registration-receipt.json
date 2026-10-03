@@ -1,0 +1,10 @@
+{
+  "schema": "saea-allocation-registration-receipt-v1",
+  "at_utc": "2026-10-03T03:40:29.227975+00:00",
+  "round": 5,
+  "registered": true,
+  "prior_spent_allocations": 16,
+  "new_slots": 4,
+  "contacts_added": 0,
+  "no_runtime_authority": true
+}

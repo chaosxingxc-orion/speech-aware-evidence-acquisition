@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Extra round5 prepared with concrete source examples, 2026-10-03T03:50:22.337715+00:00
+
+Four fresh owner223/224 slots are registered after sixteen spent opportunities. All four isolated packets/capsules reverify; L has138 artifacts and eight own historical entries, B has six feedback-free knowledge artifacts. Initial serialized bounds27252/14201 fit. The L one-page stress scenario at assumed8000/100 usage does not fit the cumulative budget; this limitation is explicit and actual per-contact rejection stays active. No extra contact or completion guarantee. [Exact protocol, bounds and admission](../readiness/2026-10-03-slurp-text-extra-round5-v1/README.md).
+
+The source-examples profile exposes deterministic own-L concrete cases in the first context; all complete source indexes and omissions remain. No root/owner225/B evidence is exported and blind inputs stay isolated. Zero new model/GPU/scorer contacts at this preparation checkpoint. Freeze the clean worker and pass the real check-only entry before one-shot dispatch. Next20 and larger24 slots remain HELD pending exact members, FIT/engineering and full-family READ. Prior failures/holds and8/12.5GiB floors remain.
+
 ## Extra round4 complete; source-first feedback prepared, 2026-10-03T03:37:40.016234+00:00
 
 The Windows proposer completed03:24:38Z with two L no-change and two B provisional Solver-text candidates, six contacts,17999 input/2946 output tokens, complete metering and no transport failure. All sixteen allocations remain spent. Both candidates compile offline with actual role bytes verified; knowledge/supply stay fixed and runtime admission remains pending. [Completion custody](../receipts/continuation/2026-10-03-system-text-extra4-proposer-complete.json).
@@ -685,7 +691,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T03:37:40.016234+00:00
+Last refreshed: 2026-10-03T03:50:22.337715+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

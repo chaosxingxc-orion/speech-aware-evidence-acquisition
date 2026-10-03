@@ -1,0 +1,123 @@
+{
+  "schema": "saea-system-text-proposer-round-readiness-v1",
+  "recorded_at_utc": "2026-10-03T03:50:22.337715+00:00",
+  "status": "OFFLINE-VERIFIED-FROZEN-BACKGROUND-LAUNCH-PENDING",
+  "round_index": 5,
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217",
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-03-slurp-text-extra-round5-v1/protocol-proposals-v1.json",
+    "sha256": "1b1163a397913817e7845a268ed5a46569772192ecc53c37713838cf2b2b2f4e"
+  },
+  "provider_admission": {
+    "relpath": "docs/readiness/2026-10-03-slurp-text-extra-round5-v1/provider-admission-v1.json",
+    "sha256": "2146808eeb7c15ca28486295a4cc495bcf60b0ab23204380c62e89a5aa2f2ad4"
+  },
+  "members": [
+    {
+      "key": "L-5-1",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-5-1.json",
+        "sha256": "ae00bcc1e7e3567aba89b72cabe6c1f9b959bf674f8e6c23e7111baa0e8b7d2a"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-5-1.json",
+        "sha256": "0785f57fbc54f2766c77d72b43ed311234ef309c4eda59677642778664b14a93"
+      },
+      "request_sha256": "64ddcd41abfc803d7ec7e792af54866850ab6eacb3140fe30422d69fe8a06512",
+      "initial_input_bound": 27252,
+      "artifact_count": 138,
+      "history_entries": 8,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-5-1-EXTRA-OWNER223-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "55194d64acbb403cc2001a3c166d3226e147ad66c3ebb746c06c66c6dfcd88c6",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "9be8b36d4c3100cd61fa1c61b85dbeb8d5afd37a07e11d61dcef7a5df282a2af"
+      }
+    },
+    {
+      "key": "B-5-1",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-5-1.json",
+        "sha256": "0707aad31a4f8a841387e102f0efbc29969c7e4b48f0a8ce46bdb9c9b072719d"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-5-1.json",
+        "sha256": "09efd85825aadd00b14ebf5c4be5a9485da37b0f2f9076752ef6e925f6e1ea96"
+      },
+      "request_sha256": "54174f27618d38951bf9d6852f9d6408596d8ea6dc06542c44d0227e6b1e37c7",
+      "initial_input_bound": 14201,
+      "artifact_count": 6,
+      "history_entries": 0,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-5-1-EXTRA-OWNER223-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "43e136b5c868bbc7649cc58b16066ee670f43a8a3de265f04c818738fd641ea5",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "9be8b36d4c3100cd61fa1c61b85dbeb8d5afd37a07e11d61dcef7a5df282a2af"
+      }
+    },
+    {
+      "key": "L-5-2",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-5-2.json",
+        "sha256": "b0284b938445d36c8e069d6dbf62b492a9e3e3292c3b331edbb241cbd7eb7f21"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/L-5-2.json",
+        "sha256": "9a9e6fc94766c324f8db28469d1b2feb645ad35ea23ce9e2670963952ec6e09c"
+      },
+      "request_sha256": "103c2a0e60c41b106f1e80fd6d497981aed757fcd4070d25062da3af82c7c781",
+      "initial_input_bound": 27252,
+      "artifact_count": 138,
+      "history_entries": 8,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-5-2-EXTRA-OWNER223-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "0d0ee5b913b31d34c8cf259d903fbc05cb24ca6dd1173953694e61bbd6abd203",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "9be8b36d4c3100cd61fa1c61b85dbeb8d5afd37a07e11d61dcef7a5df282a2af"
+      }
+    },
+    {
+      "key": "B-5-2",
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/B-5-2.json",
+        "sha256": "2cb3e20d079b836f4691fbab78e15c66632954bd17d3daec09d0db4d084d0635"
+      },
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/capsules/B-5-2.json",
+        "sha256": "f9482e62304a525b17c9add7ea1ce5080abace5e51e66fa8d03f71070b630210"
+      },
+      "request_sha256": "a86feb3011fd2cb237262c3ae3b3f99aecf6a625a53adf29905bef2dd74819ea",
+      "initial_input_bound": 14201,
+      "artifact_count": 6,
+      "history_entries": 0,
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-5-2-EXTRA-OWNER223-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "discovery",
+        "split_identity_hash": "7f1bf11dd46e070ea1be0b1c5e22409b419fc05ddd12f2ce3aaa537166555d38",
+        "planned_model_calls": 4,
+        "planned_gpu_hours": 1.0,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "9be8b36d4c3100cd61fa1c61b85dbeb8d5afd37a07e11d61dcef7a5df282a2af"
+      }
+    }
+  ],
+  "new_contacts": 0,
+  "source_data_rebuilt": false
+}

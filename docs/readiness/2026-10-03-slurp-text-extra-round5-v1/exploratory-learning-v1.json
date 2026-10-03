@@ -1,0 +1,27 @@
+{
+  "schema": "saea-exploratory-learning-binding-v1",
+  "family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1/family.json",
+    "sha256": "532cb9ea3f5b87c7806e5809debc9ccbe2796ab5519a85fede5941ffbc226ced"
+  },
+  "analysis_supplement": {
+    "relpath": "docs/readiness/2026-10-02-slurp-system-text-pilot20-owner220-v1/analysis-supplement-v1.json",
+    "sha256": "0fe4fb95be98c01f5a03326f9bc934beb553bfd0a53db4d16088021bfc09dbf6"
+  },
+  "owner_learning": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision222-small-panel-learning.json",
+    "sha256": "0854f88dbf3fd38aa22ddc84168519e709d6c6abf222c56f5ce3b47298ebaf53"
+  },
+  "reference_family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/family.json",
+    "sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148"
+  },
+  "next_round": 5,
+  "parent_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "complementary_ids": [],
+  "optimization_plan": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/plan.json",
+    "sha256": "883a2db2b3e96c1447003c8cd5f06d4d3b970f8e71d81f21cfd175a73d538888"
+  },
+  "expected_projection_sha256": "47752472ff8b9abc9920fb5e5012512e595439bf9422e0cc7e1b04d91e301dde"
+}
