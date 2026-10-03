@@ -1,0 +1,124 @@
+{
+  "actual_model_contacts": 509,
+  "analysis_contacts": 0,
+  "at_utc": "2026-10-03T11:19:19.010292+00:00",
+  "decision": "Retain trajectory routing; independent node text remains editable. Role routing under the unchanged query-first layout is not selected for the learning panel. No automatic scale or new layout activation.",
+  "heartbeat": "PAUSED",
+  "members": [
+    "trajectory",
+    "role",
+    "role-aa",
+    "trajectory-aa"
+  ],
+  "optimizer_export": false,
+  "outputs": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/cache-summary-v1.json",
+      "sha256": "93ecc36135d3ba98a01c13a6676ef435d1b7ce1e0d6146e582d769f23e7cbcfb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/lifecycle-summary-v1.json",
+      "sha256": "65468594b8da60cffd15bbe59fb5650d9a4a20e7b6ea897dc3c910b40ea2c375"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/paired-read-custody-v1.json",
+      "sha256": "6644babe1cba84cd45b4286871438722a95f16f6782035b8f5287c0c629e9a29"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__role/score-contrasts.json",
+      "sha256": "bb39e7eab46f17562d5ae5482377cd6fd767be725246107d1283ac3964a2ae6f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__role/per-scenario-tables.json",
+      "sha256": "734b97892b99174f42336eea94e30cf6498f0c439ecbb789b2a6f3b1ba090750"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__role/structural.json",
+      "sha256": "02627aa08a6365ebf53f331378e23ad77021163d943b244d99eb9bbcb304f00e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__role/stop.json",
+      "sha256": "8c03798fb5029dc8b1371a84209b51bec6091a028eb173682de7994041624ae6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__role/verdict.json",
+      "sha256": "841d2055291cf0a5bc07ee7fe3d2c1af4de65f153980b2a000e2df5b10a30f3d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory-aa__role-aa/score-contrasts.json",
+      "sha256": "6c124b1a6df35bc4a5801f032729e8f0a7dcc694f1e6e40337d7fd1b68a97037"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory-aa__role-aa/per-scenario-tables.json",
+      "sha256": "d00bd0a96e60ef1d5d881519a1cec7171959fe9e3d99b87d216defd1b21f8183"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory-aa__role-aa/structural.json",
+      "sha256": "01192da37d0579ed4ef79585594b2c16eabc58156ef5b40a41c44a95400c9437"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory-aa__role-aa/stop.json",
+      "sha256": "f2a7610a72db610b4ce63751789d4e2c118fc2d733cf9f4cc0850501059393b2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory-aa__role-aa/verdict.json",
+      "sha256": "06e1a8c99d830cfc9f453522eed77d9c3a3c79ac73ba2984fd6cffffa9cb907b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__trajectory-aa/score-contrasts.json",
+      "sha256": "ea78365065fc186de9ac555fac2644e8b75d070e77af151b5257b46744084035"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__trajectory-aa/per-scenario-tables.json",
+      "sha256": "f00b5781ef57cd422cd13663e2065fd7ecde3291067fb6bad340901456b4de8b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__trajectory-aa/structural.json",
+      "sha256": "f7c3fa3fbfdb7734a168cb30eac0c9160521af443b9c9b4b46e8a349751bae68"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__trajectory-aa/stop.json",
+      "sha256": "2db4b0526c697671874c19d6a159d14d4736d9d74ebfba86692364588bdef19c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/trajectory__trajectory-aa/verdict.json",
+      "sha256": "26f3af2b684f9c57d102f6f4e495c2a15e76182ef27ab8447a3c54658566cb40"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/role__role-aa/score-contrasts.json",
+      "sha256": "71143d52d7eff071fe5add7518c54030175ea49247612e76567198a967fdfa47"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/role__role-aa/per-scenario-tables.json",
+      "sha256": "ab2e88bc899cc959a721b44d9083494d5528bffc167b7ba25f17293a76e12a1f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/role__role-aa/structural.json",
+      "sha256": "d93f145190d9283a415acccf43b3664b9d180163f079fc9fc5738629d2372aac"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/role__role-aa/stop.json",
+      "sha256": "3438b386bc95408f92866a6d4d3e3da969e53c42df07b9e8b7f882fe33a49fac"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1/role__role-aa/verdict.json",
+      "sha256": "16ea62818df36ee066f87b621b53f27628320eb65f9f123ae821729e932a169f"
+    }
+  ],
+  "read_authority": {
+    "ledger_row_sha256": "887beb3281e0536abe5a27f8acd78eeba1f4f30e44c3dfeea98ccc07817c3e28",
+    "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/analysis-recipe-v1.json",
+      "sha256": "105dcff8b19e8a755561a9c519ee1318aa68b2a9ab42e5d5e0e1748b46b1077e"
+    }
+  },
+  "report": {
+    "relpath": "docs/results/2026-10-03-prefix-affinity-n20-descriptive-read.md",
+    "sha256": "4cb9f8bfceeb362e58dfe031a2c259dce9e5d8809e0eca39a9138fa82ba5c677"
+  },
+  "rows_per_member": 20,
+  "schema": "saea-root-prefix-scheduling-read-v1",
+  "scientific_claim": "DESCRIPTIVE only; no formal speedup, harm, non-inferiority, stable system benefit or L-over-B learning claim.",
+  "source_commit": "4c98cbf8d94fe543e2aaab887ece5c02ba4858e1"
+}
