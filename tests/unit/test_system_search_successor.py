@@ -116,3 +116,61 @@ def test_successor_preserves_exact_fixed_pool_scope(tmp_path):
     protocol["allocation_extension"] = doc
     protocol["optimization_panel"]["stages"] = ["update-4"]
     assert load_optimization_panel(protocol, "update-4", repo_root=repo)[1] == ids
+
+
+
+def second_successor(tmp_path):
+    old, middle, repo, seed, first, _ = setup(tmp_path)
+    register_successor(old, middle, first, repo_root=repo)
+    for branch in ("L", "B"):
+        for slot in (1, 2):
+            key = f"{branch}-4-{slot}"
+            packet = {"branch": branch, "round": 4, "slot": slot,
+                      "model_version": "GPT6-pinned", "session_id": key}
+            packet["input_sha256"] = content_hash(packet)
+            response = {"model_version": "GPT6-pinned", "input_sha256": packet["input_sha256"],
+                        "session_id": key, "raw_response": "invalid", "input_tokens": None, "output_tokens": None}
+            imported = {"proposal_allocation": [branch, 4, slot], "status": "invalid",
+                        "input_sha256": packet["input_sha256"], "receipt_sha256": content_hash(response)}
+            for folder, record in (("inputs", packet), ("responses", response), ("imports", imported)):
+                middle._write(f"{folder}/{key}.json", record)
+    previous = write_pin(repo, "middle-protocol.json", {"proposer_exact_version": "GPT6-pinned",
+        "proposal_input_token_cap": 131072, "proposal_output_token_cap": 4096, "proposal_contact_cap": 4,
+        "seed_bundle": {"bundle_id": seed.bundle_id}, "allocation_extension": first})
+    decision = write_pin(repo, "second-transition.json", {"status": "root-selected-for-preparation",
+        "sequence_id": "successor-v2", "round": 5, "input_token_cap": 147456,
+        "output_token_cap": 4096, "contact_cap": 4, "held_allocations": list(first["held_allocations"]),
+        "new_allocations": ["L-5-1", "B-5-1", "L-5-2", "B-5-2"], "dispatch_authority": False})
+    last = SystemSearchArchive(tmp_path / "successor2")
+    kwargs = dict(round_index=5, owner=first["owner"], transition=decision, previous_protocol=previous,
+                  repo_root=repo, sequence_id="successor-v2")
+    return old, middle, last, repo, kwargs
+
+
+def test_second_successor_retains_transitive_held_without_copying_or_spending(tmp_path):
+    old, middle, last, repo, kwargs = second_successor(tmp_path)
+    before = {str(p): p.read_bytes() for a in (old, middle) for p in a.root.rglob("*.json")}
+    doc = build_successor(middle, last, **kwargs)
+    assert len(doc["earlier_allocations"]) == 13
+    assert set(doc["held_allocations"]) == {"B-3-1", "L-3-2", "B-3-2"}
+    register_successor(middle, last, doc, repo_root=repo)
+    assert last.allocation_extension(5) == doc
+    assert all(Path(p).read_bytes() == raw for p, raw in before.items())
+    for key in doc["held_allocations"]:
+        assert not (last.root / f"inputs/{key}.json").exists()
+        assert not (last.root / f"responses/{key}.json").exists()
+    assert not (last.root / "dispatch").exists()
+
+
+@pytest.mark.parametrize("fault", ["ancestor-held-input", "copied-held", "missing-closed"])
+def test_transitive_custody_refuses_missing_or_mutated_ancestor(tmp_path, fault):
+    old, middle, last, repo, kwargs = second_successor(tmp_path)
+    if fault == "ancestor-held-input":
+        (old.root / "inputs/B-3-1.json").write_text("{}")
+    elif fault == "copied-held":
+        middle._write("inputs/B-3-1.json", {})
+    else:
+        (middle.root / "imports/L-4-1.json").unlink()
+    with pytest.raises((PolicyError, KeyError)):
+        build_successor(middle, last, **kwargs)
+    assert not last.root.exists()

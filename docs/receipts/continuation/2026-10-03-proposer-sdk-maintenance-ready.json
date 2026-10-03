@@ -1,0 +1,38 @@
+{
+  "all_observed_http_statuses": 200,
+  "catalogue_gets": 1,
+  "closed_allocations": 25,
+  "corrected_invocation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/own-app-maintenance-readiness-v2.json",
+    "sha256": "e8fb4237fc9d5b246fab8c915894742e0b5f45cf7b73ce4bffa6978e7ee77b96"
+  },
+  "credential_file_changed": true,
+  "failed_import_diagnostic": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/own-app-maintenance-readiness-v1.json",
+    "sha256": "22151e91ac509bc79e217c53295f9fb3c761bb5a0c2635dfebf84c992a167c74"
+  },
+  "held_allocations": 3,
+  "identity_gets": 2,
+  "login_or_sharing_change": false,
+  "model_posts": 0,
+  "network_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/own-app-maintenance-network-v2.json",
+    "sha256": "200879dd5df87e16d4b85e4dfecaf6a4de5767889d85d15bae9731b8ffa7166a"
+  },
+  "new_allocations_reserved": 0,
+  "observed_at_utc": "2026-10-03T10:14:01.037651+00:00",
+  "ordinary_sdk_refresh_posts": 1,
+  "original_B72_cause": "unestablished; later readiness does not identify earlier masked callback failure",
+  "owner_decision": 227,
+  "recorded_at_utc": "2026-10-03T10:19:18.512293+00:00",
+  "root_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/own-app-maintenance-root-disposition-v2.json",
+    "sha256": "49945cf4ccfe075bda532a7c237ebd178f549d1178a34b9f11401a2a8b8b2441"
+  },
+  "schema": "saea-root-proposer-sdk-maintenance-ready-v1",
+  "status": "READY-NO-PROPOSAL-ADMISSION",
+  "synthetic_entry_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/synthetic-import-proof-v1.json",
+    "sha256": "f832ff8c34fdfeb696d6200812d0b196b7cfa54bfc74ac3a0f1b2768047d967c"
+  }
+}

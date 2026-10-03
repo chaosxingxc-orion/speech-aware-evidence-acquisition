@@ -1,0 +1,17 @@
+{
+  "actual_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/actual-transitive-custody-v1.json",
+    "sha256": "1ee65ff644751ecdc9ab440a9e0251f1c7b1029fa96aa434d318ae4b540c0c6d"
+  },
+  "at_utc": "2026-10-03T10:23:46.369028+00:00",
+  "closed": 25,
+  "guarantee": "Verify the predecessor sequence recursively against its original archive; a missing input can only inherit an exact previously verified HELD pin. Reject mutated ancestors, copied HELD inputs and missing closed records.",
+  "inherited_held": 3,
+  "new_allocation_registered": false,
+  "new_model_contacts": 0,
+  "old_held_inputs_copied": false,
+  "snapshot_files": 123,
+  "statement_coverage_percent": 99,
+  "status": "PASS",
+  "tests": 40
+}

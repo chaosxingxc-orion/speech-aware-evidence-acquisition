@@ -48,8 +48,6 @@ def require_successor(index, document):
     require(isinstance(closed, dict) and isinstance(held, dict) and held
         and not (closed.keys() & held.keys()) and closed.keys() | held.keys() == expected,
         "closed and held allocations must partition the predecessor")
-    require(set(held) <= {f"{b}-{index-1}-{s}" for b in ("L", "B") for s in (1, 2)},
-        "only the last predecessor round can remain held")
     for record in closed.values():
         require(isinstance(record, dict) and set(record) == set(FOLDERS), "invalid closed custody")
         for value in record.values(): sha(value)
@@ -73,12 +71,29 @@ def require_successor(index, document):
 
 def partition(predecessor, index, model):
     closed, held, files = {}, {}, {}
+    # A later successor carries already verified HELD addresses transitively;
+    # never copy a held input or invent a response merely to fill a round gap.
+    inherited = {}
+    prior_sequences = []
+    for path in (predecessor.root / "allocations").glob("round-*.json"):
+        candidate = json.loads(path.read_bytes())
+        if candidate.get("schema") == SCHEMA:
+            require(type(candidate.get("round")) is int and candidate["round"] < index
+                and path.name == f"round-{candidate['round']}.json", "invalid predecessor sequence order")
+            prior_sequences.append(candidate)
+    if prior_sequences:
+        latest = max(prior_sequences, key=lambda d: d["round"])
+        validate_successor(predecessor, latest)
+        inherited = latest["held_allocations"]
     for r in range(1, index):
         for branch in ("L", "B"):
             for slot in (1, 2):
                 key = f"{branch}-{r}-{slot}"
                 path = predecessor.root / f"inputs/{key}.json"
-                require(path.is_file(), "predecessor input is missing")
+                if not path.is_file():
+                    require(key in inherited, "predecessor input is missing")
+                    held[key] = dict(inherited[key])
+                    continue
                 packet = json.loads(path.read_bytes())
                 require((packet.get("branch"), packet.get("round"), packet.get("slot")) == (branch, r, slot)
                     and packet.get("model_version") == model
@@ -136,6 +151,10 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
             and previous["seed_bundle"]["bundle_id"] == document["seed_bundle_id"]
             and previous["proposal_output_token_cap"] == document["output_token_cap"]
             and previous["proposal_contact_cap"] == document["contact_cap"], "successor changes a fixed factor")
+        ancestor = previous.get("allocation_extension", {})
+        if ancestor.get("schema") == SCHEMA:
+            path = predecessor.root / f"allocations/round-{ancestor['round']}.json"
+            require(json.loads(path.read_bytes()) == ancestor, "pinned predecessor sequence differs")
         decision = json.loads(_read_pin(document["transition"], repo_root))
         require(decision.get("status") == "root-selected-for-preparation" and decision.get("dispatch_authority") is False
             and all(decision.get(k) == document[k] for k in ("round", "sequence_id", "input_token_cap", "output_token_cap", "contact_cap"))

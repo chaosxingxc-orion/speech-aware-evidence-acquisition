@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Existing own-app session maintained successfully; no proposal dispatch, 2026-10-03T10:19:18.512293+00:00
+
+Root separately authorized normal SDK maintenance after the read-only observation. A diagnostic import-path defect was proven synthetically, preserved and superseded only under an exact root disposition. Corrected entry at10:14:01Z succeeded: one ordinary refresh POST, two identity GETs and one catalogue GET returned200, the SDK securely updated its own credential file, and zero model POSTs occurred. No new login/sharing change or credential disclosure. [Evidence](../receipts/continuation/2026-10-03-proposer-sdk-maintenance-ready.json). The old B72 cause remains unestablished.25 closed and three HELD opportunities stay unchanged. Prospective round8 typed inputs and headroom are offline preparation only; no new proposal admission, no heartbeat resume and no learning-panel cache change.
+
 ## Read-only own-app check found no directly usable access credential, 2026-10-03T10:10:57.633382+00:00
 
 One root-authorized read-only observation at10:10:21Z found the own-app session connected, sharing-enabled and with no pending refresh, but its access credential did not satisfy the at-least-ten-seconds-valid condition. No catalogue GET, model POST, refresh, login or credential write occurred; the credential file hash stayed identical. [Evidence](../receipts/continuation/2026-10-03-proposer-own-app-readonly-readiness.json). This neither proves login invalidity nor identifies the old B72 cause. Root disposition of any SDK-managed refresh is required before a later admitted sequence. No old opportunity is retried; heartbeat remains PAUSED.
