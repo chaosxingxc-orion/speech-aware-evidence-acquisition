@@ -10,14 +10,79 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 from pathlib import Path
 
 from ..core.flight.receipts import read_flight_receipts
+from ..core.model import FrozenCoreError
+from ..core.model.native_framework_history import validate_native_framework_contact
 from ..core.preparation import canonical_bytes, digest, load_artifact, prepare_artifact
 from ..core.preparation_fit import boundary_identity
 from ..rails.hashing import content_hash
 from ..rails.prepared_feedback import _read_pinned_json, _resolve_data_path
 from .shared_json import restore_json, share_json
+
+
+def verify_role_query_layout_receipt(request_bytes, body, receipt, *, fitted_body_sha256):
+    """Check one recorded layout against its original source and actual FIT body.
+
+    This pure structural check grants no read or execution permission. The caller
+    must supply the independently pinned original FIT hash and ensure complete
+    contact coverage under the applicable engineering or full-family read scope.
+    Render body with the original frozen shared renderer, without contacting a
+    service. Never substitute a newly measured FIT for the original receipt.
+    """
+    payload = json.loads(request_bytes)
+    if (not isinstance(payload, dict) or not isinstance(receipt, dict)
+            or not isinstance(body, dict)
+            or not isinstance(payload.get("request_id"), str)
+            or not payload["request_id"]):
+        raise ValueError("layout source and receipt require a request identity")
+    body_sha = digest(body)
+    if body_sha != fitted_body_sha256:
+        raise ValueError("layout body differs from the original independently pinned FIT")
+    request_sha = hashlib.sha256(request_bytes).hexdigest()
+    if (receipt.get("input_request_id") != payload["request_id"]
+            or receipt.get("input_request_bytes_sha256") != request_sha
+            or receipt.get("rendered_body_canonical_sha256") != body_sha):
+        raise ValueError("layout receipt source/body binding differs")
+    try:
+        validated = validate_native_framework_contact(payload)
+    except FrozenCoreError as exc:
+        raise ValueError("layout source framework is invalid") from exc
+    if validated is None:
+        raise ValueError("layout source requires the native framework contract")
+    contract, _, _ = validated
+    control = payload["history"][-1]
+    control_sha = hashlib.sha256(control["content"].encode("utf-8")).hexdigest()
+    if control.get("content_sha256") != control_sha:
+        raise ValueError("layout source control hash differs from its actual bytes")
+    query = contract["messages"][1]["content"]
+    expected = {
+        "schema": "saea-native-role-query-layout-v1",
+        "placement": "before-speech-v1",
+        **{key: contract[key] for key in ("role_id", "sample_id", "contact_id")},
+        "source_control_sha256": control_sha,
+        "role_query_sha256": hashlib.sha256(query.encode("utf-8")).hexdigest(),
+    }
+    layout = receipt.get("role_query_layout")
+    if not isinstance(layout, dict) or any(layout.get(k) != v for k, v in expected.items()):
+        raise ValueError("layout receipt differs from the original role/control identity")
+    messages = body.get("messages")
+    if (not isinstance(messages, list) or len(messages) < 2
+            or messages[0] != contract["messages"][0]
+            or not isinstance(messages[1], dict) or messages[1].get("role") != "user"
+            or not isinstance(messages[1].get("content"), list)
+            or not messages[1]["content"]
+            or messages[1]["content"][0] != {"type": "text", "text": query}):
+        raise ValueError("actual role query placement or message authority differs")
+    return {
+        "schema": "saea-verified-native-role-query-layout-v1", "verified": True,
+        **{key: expected[key] for key in ("placement", "role_id", "sample_id", "contact_id",
+                                         "source_control_sha256", "role_query_sha256")},
+        "request_id": payload["request_id"], "request_bytes_sha256": request_sha,
+        "request_body_sha256": body_sha,
+    }
 
 
 def _read(pin, data_root, label):
