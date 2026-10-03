@@ -160,6 +160,11 @@ def main():
     for relative, expected in r["source_pins"].items():
         require(digest(root / relative) == expected, "admitted proposer source changed")
     jobs, admission, protocol = load_members(r)
+    # Construct the real validator before credentials, reservations or contacts.
+    # This constructor performs no network request; never call its bearer here.
+    def no_preflight_credentials():
+        raise RuntimeError("Offline transport preflight cannot request credentials")
+    ResponsesHTTP(admission["endpoint"], bearer=no_preflight_credentials, admission=admission)
     if args.check_only:
         print(canonical({"preflight": "PASS", "members": len(jobs), "contacts_added": 0,
                          "request_bounds": {m["key"]: request_bound(c.request()) for m, c, _ in jobs}}))

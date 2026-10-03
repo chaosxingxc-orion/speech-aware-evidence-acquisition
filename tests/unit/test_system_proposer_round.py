@@ -301,3 +301,30 @@ def test_fourth_round_mock_transport_spends_exactly_four_new_slots(tmp_path, mon
         imported = json.loads((archive.root / "imports" / (member["key"] + ".json")).read_text())
         assert imported["status"] == "no-change"
         assert imported["proposal_allocation"][1] == 4
+
+
+def test_check_only_validates_transport_fingerprint_without_credentials(tmp_path, monkeypatch):
+    r = registration(tmp_path)
+    r.update(source_root=str(tmp_path), source_commit="fixture", source_pins={}, auth={})
+    admission = runner.read_pin(r["provider_admission"])
+    admission.update(endpoint="https://api.openai.com/v1/responses", status="admitted", owner_decision=217,
+                     provider_profile="chatgpt-plan-preview", budget_profile="subscription-metered-reject-v1",
+                     output_cap_enforcement="metered-reject-after-completion", paid_api_spend=0,
+                     model_version="gpt-6-sol", sha256="0" * 64)
+    r["provider_admission"] = pin(tmp_path / "admission.json", admission)
+    registered = pin(tmp_path / "dispatch.json", r)
+    monkeypatch.setattr(runner.sys, "argv", ["proposer_round", registered["path"], "--sha256", registered["sha256"], "--check-only"])
+    monkeypatch.setattr(runner.sys, "dont_write_bytecode", True)
+    monkeypatch.setenv("PYTHONDONTWRITEBYTECODE", "1")
+    monkeypatch.setattr(runner, "assert_wsl_execution_environment", lambda: None)
+    monkeypatch.setattr(runner.subprocess, "check_output", lambda command, **kw: "" if "status" in command else "fixture\n")
+    def forbidden_credentials(**kwargs):
+        raise AssertionError("Offline preflight cannot load credentials.")
+    monkeypatch.setattr(runner, "SubscriptionBearer", forbidden_credentials)
+    with pytest.raises(PolicyError, match="fingerprint"):
+        runner.main()
+    admission["sha256"] = content_hash({k:v for k,v in admission.items() if k != "sha256"})
+    r["provider_admission"] = pin(tmp_path / "admission.json", admission)
+    registered = pin(tmp_path / "dispatch.json", r)
+    runner.sys.argv = ["proposer_round", registered["path"], "--sha256", registered["sha256"], "--check-only"]
+    assert runner.main() == 0
