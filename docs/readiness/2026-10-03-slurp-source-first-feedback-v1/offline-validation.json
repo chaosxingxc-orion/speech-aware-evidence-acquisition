@@ -1,0 +1,78 @@
+{
+  "schema": "saea-source-first-feedback-offline-validation-v1",
+  "recorded_at_utc": "2026-10-03T03:37:40.016234+00:00",
+  "source_profile": "source-examples-v1",
+  "proposer_test_suite_passed": 199,
+  "views_statement_coverage_percent": 98,
+  "cohort_cli_optimization_test_suite_passed": 103,
+  "cohort_statement_coverage_percent": 100,
+  "engineering_base_check": "PASS",
+  "harness_admission_check": "PASS",
+  "changed_file_lint": "PASS",
+  "real_source_capacity_rehearsal": {
+    "L-4-1": {
+      "request_utf8_plus4096": 27252,
+      "input_acceptance_cap": 32768,
+      "initial_bound_pass": true,
+      "inline_bytes": 7840,
+      "examples": 3,
+      "covered_categories": [
+        "changed_not_resolved",
+        "native_counts_unchanged",
+        "parent_correct",
+        "parent_incorrect"
+      ],
+      "source_input": {
+        "relpath": "system-text-search/control2-owner217/inputs/L-4-1.json",
+        "sha256": "389b26953a10fd67ae3602f33e9e630edc174c14456b769fb246cc7d073aaf70"
+      },
+      "contacts_added": 0
+    },
+    "L-4-2": {
+      "request_utf8_plus4096": 27252,
+      "input_acceptance_cap": 32768,
+      "initial_bound_pass": true,
+      "inline_bytes": 7840,
+      "examples": 3,
+      "covered_categories": [
+        "changed_not_resolved",
+        "native_counts_unchanged",
+        "parent_correct",
+        "parent_incorrect"
+      ],
+      "source_input": {
+        "relpath": "system-text-search/control2-owner217/inputs/L-4-2.json",
+        "sha256": "a6fad4a9724718ee0880bf01f81dd0e1f75d730ecae829ff60d3d00ce7d565ea"
+      },
+      "contacts_added": 0
+    },
+    "B-4-1": {
+      "request_utf8_plus4096": 14201,
+      "input_acceptance_cap": 32768,
+      "initial_bound_pass": true,
+      "inline_bytes": 0,
+      "examples": 0,
+      "covered_categories": [],
+      "source_input": {
+        "relpath": "system-text-search/control2-owner217/inputs/B-4-1.json",
+        "sha256": "9bb705436313f4b0f9302c7c295989c3b993a2e07d9e9f2743bb006fc9d5310e"
+      },
+      "contacts_added": 0
+    },
+    "B-4-2": {
+      "request_utf8_plus4096": 14201,
+      "input_acceptance_cap": 32768,
+      "initial_bound_pass": true,
+      "inline_bytes": 0,
+      "examples": 0,
+      "covered_categories": [],
+      "source_input": {
+        "relpath": "system-text-search/control2-owner217/inputs/B-4-2.json",
+        "sha256": "0699f3815c652399b0c34424b34623fa709ab0b39c6bcbb7e990e901cae20608"
+      },
+      "contacts_added": 0
+    }
+  },
+  "contacts_added": 0,
+  "limits": "Rehearsal uses old source packets without altering or resubmitting them. UTF8+4096 is a conservative serialized bound, not measured provider usage. Future admission must pin exact profile/packets; no new allocation or runtime family is registered here."
+}

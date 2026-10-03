@@ -228,3 +228,123 @@ def test_three_contact_compact_lookup_and_submission_keeps_the_actual_budget_gat
     assert "Contacts left including this one: 2" in requests[2]["body"]["instructions"]
     assert len(capsule.access_log) == 2
     assert requests[2]["body"]["input"][-1]["call_id"] == "read-tail"
+
+
+EVIDENCE_PROFILE = "source-examples-v1"
+
+
+@pytest.mark.parametrize("paged", [False, True])
+def test_source_examples_inline_all_outcome_types_with_exact_source_ranges(tmp_path, paged):
+    packet, roots = learning_fixture(tmp_path)
+    c = ProposerCapsule.from_packet(packet, roots=roots, view_profile=EVIDENCE_PROFILE,
+        cache_root=tmp_path / "cache" if paged else None)
+    initial = c.initial_input()
+    evidence = initial["feedback_examples"]
+    assert len(canonical(evidence).encode()) <= 8192
+    assert set(evidence["covered_categories"]) == {
+        "correct_answer_repaired", "correct_answer_damaged", "native_counts_unchanged",
+        "changed_not_resolved", "unreliable_execution", "parent_correct", "parent_incorrect"}
+    assert evidence["omissions"] and evidence["examples"]
+    for example in evidence["examples"]:
+        detail = json.loads(read_all(c, example["details_artifact_id"]))
+        assert detail["sample_id"] == example["sample_id"]
+        for member in example["members"]:
+            assert len(member["counts"]) == len(evidence["count_fields"])
+            for response in member["responses"]:
+                role, prefix, text_chars, omitted, location = response
+                identity = evidence["sources"][location[0]]
+                original = json.loads(read_all(c, identity)[location[1]:location[1] + location[2]])
+                text = original["payload"]["text"]
+                assert text.startswith(prefix) and len(text) == text_chars
+                assert omitted == text_chars - len(prefix)
+                assert role == "solver"
+    assert c.access_log  # Assertions used the normal audited broker.
+    restored = ProposerCapsule.from_json(c.as_json())
+    assert restored.request() == c.request()
+    assert "Examine the inline source examples" in c.request()["instructions"]
+
+
+def test_source_examples_are_deterministic_bounded_and_never_enter_blind_input(tmp_path):
+    packet, roots = learning_fixture(tmp_path, size=400)
+    c = ProposerCapsule.from_packet(packet, roots=roots, view_profile=EVIDENCE_PROFILE)
+    examples = c.initial_input()["feedback_examples"]
+    choices = [(e["sample_id"], e["comparison"], e["categories"]) for e in examples["examples"]]
+    packet["feedback"]["feedback"]["groups"].reverse()
+    reseal(packet)
+    reversed_c = ProposerCapsule.from_packet(packet, roots=roots, view_profile=EVIDENCE_PROFILE)
+    assert choices == [(e["sample_id"], e["comparison"], e["categories"])
+                       for e in reversed_c.initial_input()["feedback_examples"]["examples"]]
+    assert len(canonical(examples).encode()) <= 8192
+    assert examples["sample_count"] == 400
+    assert len(examples["examples"]) <= 7
+    other = tmp_path / "blind"
+    other.mkdir()
+    blind, blind_roots = fixture(other, "B")
+    b = ProposerCapsule.from_packet(blind, roots=blind_roots, view_profile=EVIDENCE_PROFILE)
+    assert "feedback_examples" not in b.initial_input()
+    assert not any(a["kind"].startswith("feedback-") for a in b.as_json()["artifacts"])
+    legacy = ProposerCapsule.from_packet(blind, roots=blind_roots, view_profile=PROFILE)
+    assert b.request() == legacy.request()
+
+
+def test_inline_evidence_is_explicitly_opt_in_and_missing_responses_stay_visible(tmp_path):
+    packet, roots = learning_fixture(tmp_path)
+    legacy = ProposerCapsule.from_packet(packet, roots=roots, view_profile=PROFILE)
+    assert "feedback_examples" not in legacy.initial_input()
+    trace = roots["data"] / "seed-trace.jsonl"
+    rows = [json.loads(line) for line in trace.read_text().splitlines()]
+    trace.write_text("".join(canonical(r) + "\n" for r in rows if r["channel"] != "MODEL_RESPONSE"))
+    for group in packet["feedback"]["feedback"]["groups"]:
+        group["members"][0]["execution"]["trace"]["sha256"] = hashlib.sha256(trace.read_bytes()).hexdigest()
+    reseal(packet)
+    c = ProposerCapsule.from_packet(packet, roots=roots, view_profile=EVIDENCE_PROFILE)
+    evidence = c.initial_input()["feedback_examples"]
+    assert all(m["missing_responses"] == 1 for e in evidence["examples"]
+               for m in e["members"] if m["candidate_id"] == "seed")
+
+
+@pytest.mark.parametrize("mutation, message", [("empty", "complete comparison"),
+    ("source", "differs from indexed source"), ("large", "presentation bound")])
+def test_inline_examples_fail_closed_on_missing_sources_or_excessive_view(tmp_path, mutation, message):
+    from speech_aware_evidence_acquisition.rails.system_proposer_views import inline_feedback_examples
+    packet, roots = learning_fixture(tmp_path)
+    c = ProposerCapsule.from_packet(packet, roots=roots, view_profile=PROFILE)
+    overview = c.initial_input()["feedback_overview"]
+    artifacts = {a["artifact_id"]: a for a in c.as_json()["artifacts"]}
+    for a in artifacts.values():
+        if a["kind"] == "feedback-case-index" and mutation == "empty":
+            d = json.loads(a["text"])
+            d["cases"] = []
+            a["text"] = canonical(d)
+            a["characters"] = len(a["text"])
+        if a["kind"] == "feedback-case-view" and mutation in {"large", "source"}:
+            d = json.loads(a["text"])
+            for m in d["members"]:
+                if mutation == "large":
+                    m["role_responses"] *= 200
+                else:
+                    m["role_responses"][0]["text_characters"] += 1
+            a["text"] = canonical(d)
+            a["characters"] = len(a["text"])
+    with pytest.raises(PolicyError, match=message):
+        inline_feedback_examples(overview, artifacts, ProposerCapsule._page)
+
+
+def test_one_contact_response_transport_receives_inline_examples_without_broker_read(tmp_path):
+    from test_system_proposer_responses import server, reply, completed
+    from speech_aware_evidence_acquisition.rails.system_proposer_responses import ResponsesHTTP, ResponsesProposer
+    from speech_aware_evidence_acquisition.rails.system_proposer_capsule import ProposalDispatch
+    from test_system_proposer_round import runner
+    packet, roots = learning_fixture(tmp_path)
+    capsule = ProposerCapsule.from_packet(packet, roots=roots, view_profile=EVIDENCE_PROFILE)
+    reservations = []
+    with server([reply(completed())]) as (endpoint, requests):
+        transport = ResponsesProposer(capsule, ResponsesHTTP(endpoint, fixture_only=True),
+            audit_dir=tmp_path / "transport", input_counter=runner.request_bound,
+            before_contact=reservations.append, contact_cap=4)
+        ProposalDispatch(tmp_path / "dispatch", capsule).run(transport)
+    assert len(requests) == len(reservations) == 1
+    assert not capsule.access_log
+    payload = json.loads(requests[0]["body"]["input"][0]["content"])
+    assert payload["feedback_examples"]["examples"]
+    assert reservations[0]["input_token_bound"] <= 32768

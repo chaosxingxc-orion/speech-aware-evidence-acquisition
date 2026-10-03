@@ -45,10 +45,15 @@ def bind_system_text_cohort(
             "agreement_receipt",
         }
         and binding["schema"] == "saea-system-text-cohort-binding-v1"
-        and binding["stage"] == stage
-        and stage in {"update-1", "update-2", "update-3", "selection", "dev"},
+        and binding["stage"] == stage,
         "cohort binding fields or stage differ",
     )
+    if stage not in {"update-1", "update-2", "update-3", "selection", "dev"}:
+        from .system_optimization import load_optimization_panel
+        extension = protocol.get("allocation_extension", {})
+        require(stage == f"update-{extension.get('round')}"
+                and load_optimization_panel(protocol, stage, repo_root=repo_root) is not None,
+                "extra cohort requires its exact allocation and fixed-pool authority")
     stages = [s for s in protocol["stages"] if s["stage"] == stage]
     require(len(stages) == 1, "cohort stage is missing or duplicated")
     registered = stages[0]

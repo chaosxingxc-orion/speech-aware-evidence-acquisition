@@ -186,3 +186,97 @@ def build_feedback_views(packet, artifacts, read_page, append):
         "representative_rule": "One smallest seed-20261001 sample hash per nonempty category/comparison; every case remains in the index.",
         "omissions": ["This overview omits individual counts and trajectory text; use indexed case views and their original-source ranges."]}
     append(canonical(overview).encode(), "feedback-overview", {"input_sha256": packet["input_sha256"]})
+
+
+INLINE_BYTES = 8192
+
+
+def inline_feedback_examples(overview, artifacts, read_page):
+    """Expose balanced source examples before optional reads, never select by gain.
+
+    Only already-exported own-branch views are consumed. Original full records
+    remain indexed. This presentation is neither causal attribution nor adoption.
+    """
+    def read(identity):
+        a = artifacts[identity]
+        return json.loads(read_page(a, 0, a["characters"]))
+
+    index = read(overview["case_index"]["artifact_id"])
+    choices = {}
+    parent = overview["parent_id"]
+    for case in index["cases"]:
+        view = read(case["artifact_id"])
+        members = {m["candidate_id"]: m for m in view["members"]}
+        require(parent in members, "inline parent is missing")
+        for cid in sorted(set(members) - {parent}):
+            categories = [_category(members[parent], members[cid]),
+                          "parent_correct" if _correct(members[parent]) else "parent_incorrect"]
+            order = hashlib.sha256(f"20261001:{view['sample_id']}:{cid}".encode()).hexdigest()
+            for category in categories:
+                if category not in choices or order < choices[category][0]:
+                    choices[category] = order, case["artifact_id"], view, cid
+    require(choices, "inline examples need a complete comparison")
+    selected = {}
+    for category, (_, identity, view, cid) in sorted(choices.items()):
+        key = view["sample_id"], cid
+        if key not in selected:
+            selected[key] = identity, view, cid, []
+        selected[key][3].append(category)
+    sources, response_text = [], {}
+
+    def exact_response(response):
+        address = response["source"]
+        key = address["artifact_id"], address["offset"], address["characters"]
+        if key not in response_text:
+            raw = read_page(artifacts[key[0]], key[1], key[2])
+            text = json.loads(raw)["payload"]["text"]
+            require(isinstance(text, str) and len(text) == response["text_characters"]
+                    and text.startswith(response["text_prefix"]), "inline response differs from indexed source")
+            response_text[key] = text
+        return response_text[key]
+
+    def location(address):
+        identity = address["artifact_id"]
+        require(identity in artifacts, "inline source is not registered")
+        if identity not in sources:
+            sources.append(identity)
+        return [sources.index(identity), address["offset"], address["characters"]]
+
+    for limit in (256, 128, 64, 32, 16):
+        examples = []
+        for identity, view, cid, categories in selected.values():
+            result = {"sample_id": view["sample_id"], "comparison": cid,
+                      "categories": categories, "details_artifact_id": identity, "members": []}
+            for m in view["members"]:
+                if m["candidate_id"] not in {parent, cid}:
+                    continue
+                terminal = m["terminal"]
+                responses = []
+                for r in m["role_responses"]:
+                    if r.get("missing_response"):
+                        continue
+                    prefix = exact_response(r)[:limit]
+                    responses.append([r["role"], prefix, r["text_characters"],
+                                      r["text_characters"] - len(prefix), location(r["source"])])
+                prefix = terminal["text_prefix"][:limit]
+                result["members"].append({"candidate_id": m["candidate_id"],
+                    "counts": [m["native_counts"][k] for k in SLURP_NATIVE_FIELDS],
+                    "utility": m["utility"], "relative_return": m["relative_return"],
+                    "reliable": m["execution"]["reliable_completion"],
+                    "terminal": [prefix, terminal["text_characters"],
+                                 terminal["text_characters"] - len(prefix), location(terminal["source"])],
+                    "responses": responses,
+                    "missing_responses": sum(bool(r.get("missing_response")) for r in m["role_responses"])})
+            examples.append(result)
+        result = {"schema": "saea-proposer-inline-feedback-examples-v1",
+            "sample_count": index["sample_count"], "covered_categories": sorted(choices),
+            "count_fields": list(SLURP_NATIVE_FIELDS), "sources": sources, "examples": examples,
+            "response_fields": ["role", "text_prefix", "text_characters", "omitted_characters", "source_range"],
+            "terminal_fields": ["text_prefix", "text_characters", "omitted_characters", "source_range"],
+            "source_range_fields": ["sources_index", "offset", "characters"],
+            "selection": "One smallest seed20261001 sample/comparison hash per observed outcome category and parent correctness. Deduplicate pairs. Never choose by reward magnitude.",
+            "omissions": ["Only representative pairs and response prefixes are inline; they are not full trajectories. Every original case/member, request, response, tool record and omitted character remains indexed.",
+                          "Read source ranges before making claims about omitted text. A/A differences and terminal outcomes do not identify causal node contributions."]}
+        if len(canonical(result).encode()) <= INLINE_BYTES:
+            return result
+    require(False, "inline source examples exceed the registered presentation bound")

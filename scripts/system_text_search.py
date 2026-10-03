@@ -209,7 +209,7 @@ def main(argv=None):
     capsule_cmd.add_argument("--data-root", type=Path, required=True)
     capsule_cmd.add_argument("--cache-name", help="New cache directory for an offline packaging correction; never overwrite a prior cache")
     capsule_cmd.add_argument("--capsule-name", help="Create a separately named offline packaging revision; proposal allocation is unchanged")
-    capsule_cmd.add_argument("--view-profile", choices=("full-index-v1", "compact-feedback-v1"), default="full-index-v1",
+    capsule_cmd.add_argument("--view-profile", choices=("full-index-v1", "compact-feedback-v1", "source-examples-v1"), default="full-index-v1",
                              help="Opt into source-addressed compact feedback; requires separate transport admission")
     capsule_cmd.add_argument("--family", type=Path)
     capsule_cmd.add_argument("--learning-member", action="append", default=[])

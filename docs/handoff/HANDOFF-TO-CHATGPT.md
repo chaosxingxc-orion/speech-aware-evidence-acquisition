@@ -1,10 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-## Extra round4 proposer running, 2026-10-03T03:22:14.746771+00:00
+## Extra round4 complete; source-first feedback prepared, 2026-10-03T03:37:40.016234+00:00
 
-Windows task SAEA-System-Text-Proposer-Extra4-Owner223 started at2026-10-03T03:21:23.143668+00:00 on frozen `/home/chao/saea-worktrees/codex-system-text-proposer-extra4-v2` at268baff2be27352efbedee944524e2ca47e39a2b. The exact four-member preflight passed, live PID/cwd are verified and the first reserved model contact exists. [Launch custody](../receipts/continuation/2026-10-03-system-text-extra4-proposer-launch.json). Two L/two B opportunities are new registered allocations; all twelve older slots stay spent. Same GPT6 version and equal caps; existing217 subscription admission. L has its complete authorized owner220 projection and own history; B remains blind. No owner225/root/B report export.
+The Windows proposer completed03:24:38Z with two L no-change and two B provisional Solver-text candidates, six contacts,17999 input/2946 output tokens, complete metering and no transport failure. All sixteen allocations remain spent. Both candidates compile offline with actual role bytes verified; knowledge/supply stay fixed and runtime admission remains pending. [Completion custody](../receipts/continuation/2026-10-03-system-text-extra4-proposer-complete.json).
 
-No local GPU generation or official scoring was dispatched. Larger prefixes and the next20 family remain HELD until proposal dispositions, exact policy preparation, FIT/engineering and full-family registration. The first extra4 checkout at8b090ff2e remains preserved and unlaunched: its inherited capacity references/self fingerprint were superseded offline before any credential use, reservation or model contact. The corrected preflight verifies the real transport constructor before credentials;102 targeted tests pass. No automatic proposer retry or replacement. All prior holds, resource floors and scientific-read boundaries remain.
+Both L sessions read zero indexed artifacts and cited missing concrete evidence. The optional source-examples profile puts deterministic own-branch examples into the first context, with full source indexes and explicit omissions; no owner225/root/B report is exported and B requests remain unchanged.199 transport/view tests pass with98% view coverage;103 cohort/CLI tests pass with100% cohort coverage. Rehearsed L initial bounds27252 fit the32768 acceptance cap; this is not a provider-usage measurement. [Source presentation](../readiness/2026-10-03-slurp-source-first-feedback-v1/README.md). No fifth allocation/contact is registered here.
+
+Next register a bounded proposal allocation with this profile, then exact new20 candidates/controls, FIT/engineering and complete-family READ. Larger24 slots remain HELD. No stable benefit or learning superiority is established. Preserve old frozen bytes, read boundaries, carrier holds and8/12.5GiB floors. This completion is already reported; expected idle GPU during preparation is not an outage.
 
 ## Extra proposal round4 prepared, 2026-10-03T03:12:30.926790+00:00
 
@@ -683,7 +685,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T03:23:48.960390+00:00
+Last refreshed: 2026-10-03T03:37:40.016234+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -553,3 +553,34 @@ def test_prefix_reuse_never_admits_arbitrary_supersets(case, fault):
 
     with pytest.raises((PolicyError, PhaseSupplyError)):
         bind_prefix(c)
+
+
+@pytest.mark.parametrize("fault", [None, "no-extension", "no-panel", "wrong-round", "pending-owner"])
+def test_extra_round_cohort_requires_exact_owner_and_fixed_pool(case, tmp_path, fault):
+    from test_system_search_allocations import fixture as allocation_fixture
+    base, binding, protocol, repo, data, _ = fixed_pool_case(case)
+    _, owner_repo, _, extension = allocation_fixture(tmp_path / "extension")
+    owner = json.loads((owner_repo / extension["owner"]["relpath"]).read_text())
+    if fault == "pending-owner":
+        owner["status"] = "pending"
+    extension["owner"] = save(repo, extension["owner"]["relpath"], owner)
+    protocol["allocation_extension"] = extension
+    protocol["optimization_panel"]["stages"] = ["update-4"]
+    protocol["stages"][0]["stage"] = "update-4"
+    binding["stage"] = "update-4"
+    if fault == "no-extension":
+        del protocol["allocation_extension"]
+    elif fault == "no-panel":
+        del protocol["optimization_panel"]
+    elif fault == "wrong-round":
+        binding["stage"] = "update-5"
+    def run():
+        return bind_system_text_cohort(base, binding, protocol=protocol, stage=binding["stage"],
+            repo_root=repo, data_root=data, module_repo_root=ROOT)
+    if fault:
+        with pytest.raises(PolicyError):
+            run()
+    else:
+        result = run()
+        assert result["phase_material"] == base["phase_material"]
+        assert result["knowledge_stores"]["intent-boundaries"]["phase_supply"]["perception"]["agreement_source"]["relpath"] == "agreement-full400.jsonl"

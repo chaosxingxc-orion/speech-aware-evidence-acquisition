@@ -1,0 +1,175 @@
+{
+  "schema": "saea-system-text-extra-proposal-completion-v1",
+  "recorded_at_utc": "2026-10-03T03:37:40.016234+00:00",
+  "finished": {
+    "at_utc": "2026-10-03T03:24:38.149257+00:00",
+    "gpu_dispatch": false,
+    "outcomes": [
+      {
+        "activation": "none",
+        "key": "L-4-1",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-4-1",
+        "status": "provisional"
+      },
+      {
+        "activation": "none",
+        "key": "L-4-2",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-4-2",
+        "status": "provisional"
+      }
+    ],
+    "paid_api_spend": 0,
+    "stopped_on_transport_failure": false
+  },
+  "finished_receipt": {
+    "relpath": "system-text-search/control2-owner217/execution-extra4-owner223-v1/finished.json",
+    "sha256": "c1796336890d964f81630d9a91e86b3ebaae4e626bf6b40e2c81d7445b373872"
+  },
+  "source_commit": "268baff2be27352efbedee944524e2ca47e39a2b",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-proposer-extra4-v2",
+  "windows_task": "SAEA-System-Text-Proposer-Extra4-Owner223",
+  "windows_last_task_result": 0,
+  "members": {
+    "L-4-1": {
+      "activation": "none",
+      "contacts": 1,
+      "input_tokens": 3378,
+      "output_tokens": 421,
+      "status": "received",
+      "disposition": "no-change",
+      "metering_complete": true,
+      "broker_reads": 0,
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/L-4-1.json",
+        "sha256": "fdd0b5d167609572035876cf7bdbd7b3cfbd0fd33d3e0e646925a469cb93ceab"
+      },
+      "response": {
+        "relpath": "system-text-search/control2-owner217/responses/L-4-1.json",
+        "sha256": "21495055616fcf91351157ba9341d40feed580f807af4f593c4e78aa9d59a2af"
+      },
+      "artifact_access": {
+        "relpath": "system-text-search/control2-owner217/dispatch/L-4-1/artifact-access.json",
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    },
+    "L-4-2": {
+      "activation": "none",
+      "contacts": 1,
+      "input_tokens": 3371,
+      "output_tokens": 520,
+      "status": "received",
+      "disposition": "no-change",
+      "metering_complete": true,
+      "broker_reads": 0,
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/L-4-2.json",
+        "sha256": "5d0370ecb8b579147d32b8f60e3d088b88570a8e8b43871d09a5cd5836c67db5"
+      },
+      "response": {
+        "relpath": "system-text-search/control2-owner217/responses/L-4-2.json",
+        "sha256": "5105e4f1cc8b4534ac6b431c1434763d80d0e3e220a6afce246dbd618b80ede8"
+      },
+      "artifact_access": {
+        "relpath": "system-text-search/control2-owner217/dispatch/L-4-2/artifact-access.json",
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      }
+    },
+    "B-4-1": {
+      "activation": "none",
+      "contacts": 2,
+      "input_tokens": 5621,
+      "output_tokens": 1014,
+      "status": "received",
+      "disposition": "provisional",
+      "metering_complete": true,
+      "broker_reads": 1,
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/B-4-1.json",
+        "sha256": "4470fcd61592a3f1d73dd7ab96ca457b9ad572b67ec946cccae241ffa122ed1d"
+      },
+      "response": {
+        "relpath": "system-text-search/control2-owner217/responses/B-4-1.json",
+        "sha256": "08cbd99025f592574867482fa7b85980d608447dcd67c634f29a7e43433e4905"
+      },
+      "artifact_access": {
+        "relpath": "system-text-search/control2-owner217/dispatch/B-4-1/artifact-access.json",
+        "sha256": "cfc7f3586c50a7f5fffcec3c7fab39db385840da20027fb5e73a2008e2dea50f"
+      },
+      "compilation": {
+        "bundle_id": "92608a3e7dbd0c86ddae068d1c4433472ac0bb058dc459fbbdc635eebda9d6d1",
+        "receipt": {
+          "relpath": "system-text-search/control2-owner217/compilations/B-4-1.json",
+          "sha256": "fe2f81021c4c5d2e0be2c36e08a72b6314b38ae3232622fae6197bd7290a5f6f"
+        },
+        "configuration": {
+          "relpath": "system-text-search/control2-owner217/compiled-configs/B-4-1.json",
+          "sha256": "00a0396f022ab61a8d56e287242222ab1e912d4f76e57da7325e1266ae0d27f6"
+        },
+        "changed_roles": [
+          "solver"
+        ],
+        "actual_role_bytes_verified": true,
+        "knowledge_and_supply_unchanged": true,
+        "runtime_admission": "pending"
+      }
+    },
+    "B-4-2": {
+      "activation": "none",
+      "contacts": 2,
+      "input_tokens": 5629,
+      "output_tokens": 991,
+      "status": "received",
+      "disposition": "provisional",
+      "metering_complete": true,
+      "broker_reads": 1,
+      "import": {
+        "relpath": "system-text-search/control2-owner217/imports/B-4-2.json",
+        "sha256": "856d894a045cf74d5f5fddebf2e88dd723513783c9ed1effef216f83aa0dec49"
+      },
+      "response": {
+        "relpath": "system-text-search/control2-owner217/responses/B-4-2.json",
+        "sha256": "94a25f44233ef38390a3b37a4977a13205c9ce8bb9ff590a45feae470f3d7e53"
+      },
+      "artifact_access": {
+        "relpath": "system-text-search/control2-owner217/dispatch/B-4-2/artifact-access.json",
+        "sha256": "00b384e7c520b6bbbc3c08e6f5f21e601ae51add507af0c1110562bc8286bd71"
+      },
+      "compilation": {
+        "bundle_id": "cea21691c6a7e625a262a73d5cb2e5ce345401ab4c3e8e4cdd3d8be28cbc2d3a",
+        "receipt": {
+          "relpath": "system-text-search/control2-owner217/compilations/B-4-2.json",
+          "sha256": "92d14cca775d9a234ba83e77b9df2f361236159c626de41a4fa66e6b6560c2ac"
+        },
+        "configuration": {
+          "relpath": "system-text-search/control2-owner217/compiled-configs/B-4-2.json",
+          "sha256": "ec1b732b990694118a23f4656736f011da09df26da789f350367f5586c45c327"
+        },
+        "changed_roles": [
+          "solver"
+        ],
+        "actual_role_bytes_verified": true,
+        "knowledge_and_supply_unchanged": true,
+        "runtime_admission": "pending"
+      }
+    }
+  },
+  "totals": {
+    "contacts": 6,
+    "input_tokens": 17999,
+    "output_tokens": 2946
+  },
+  "paid_api_spend": 0,
+  "local_generation_or_scoring_contacts": 0,
+  "new_allocations_spent": 4,
+  "previous_allocations_preserved": 12,
+  "root_diagnosis": "Both L responses declined changes based on aggregates and read zero source artifacts. This is observed evidence-consumption behavior, not proof of no optimization opportunity or a causal attribution. Preserve both no-change allocations. Both B proposals change Solver text only; neither is measured or activated.",
+  "remaining": "Prepare source-first feedback for a prospectively registered future allocation. Keep exact new20 runtime family and larger panels HELD until role/supply preparation, actual capacity, engineering and full-family admission. No automatic retry or replacement."
+}

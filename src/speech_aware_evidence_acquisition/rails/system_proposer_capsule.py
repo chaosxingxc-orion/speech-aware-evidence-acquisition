@@ -30,7 +30,8 @@ MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
 CACHE_CHARS = 256 * 1024
-VIEW_PROFILES = ("full-index-v1", "compact-feedback-v1")
+COMPACT_PROFILES = ("compact-feedback-v1", "source-examples-v1")
+VIEW_PROFILES = ("full-index-v1", *COMPACT_PROFILES)
 BROKER_TOOL = {
     "type": "function", "name": "read_artifact",
     "description": "Read a character page from one registered English artifact by ID. No paths or network access.",
@@ -257,7 +258,7 @@ class ProposerCapsule:
         require(document["schema"] in {"saea-proposer-capsule-v1", "saea-proposer-capsule-v2", "saea-proposer-capsule-v3"},
                 "unknown capsule schema")
         profile = document.get("view_profile", "full-index-v1")
-        require((document["schema"] == "saea-proposer-capsule-v3") == (profile == "compact-feedback-v1"),
+        require((document["schema"] == "saea-proposer-capsule-v3") == (profile in COMPACT_PROFILES),
                 "capsule profile/schema differ")
         ids = [a["artifact_id"] for a in document["artifacts"]]
         require(len(ids) == len(set(ids)), "duplicate capsule artifact")
@@ -353,7 +354,7 @@ class ProposerCapsule:
                     "release": policy["knowledge"]["release"], "base_rows_sha256": contract["base_rows_sha256"]})
         expand(packet)
         append(canonical(packet).encode(), "complete-proposal-packet", {"input_sha256": packet["input_sha256"]})
-        if view_profile == "compact-feedback-v1":
+        if view_profile in COMPACT_PROFILES:
             from .system_proposer_views import build_feedback_views
             build_feedback_views(packet, artifacts, cls._page, append)
             catalogue = {"schema": "saea-proposer-artifact-catalog-v1",
@@ -421,7 +422,7 @@ class ProposerCapsule:
             result["feedback_summary"] = {"family_id": full["feedback"].get("family_id"),
                 "summaries": full["feedback"]["summaries"],
                 "detail": "All trajectories, counts and failures remain in the complete-feedback and trace artifacts; inspect evidence before attributing a change."}
-        if self.view_profile == "compact-feedback-v1":
+        if self.view_profile in COMPACT_PROFILES:
             from .system_proposer_views import reference
             result["schema"] = "saea-proposer-initial-view-v2"
             for policy in [packet["parent_policy"], *packet.get("complementary_policies", [])]:
@@ -453,6 +454,10 @@ class ProposerCapsule:
             if "feedback" in full:
                 a = current["feedback-overview"]
                 result["feedback_overview"] = json.loads(self._page(a, 0, a["characters"]))
+            if self.view_profile == "source-examples-v1" and "feedback" in full:
+                from .system_proposer_views import inline_feedback_examples
+                result["feedback_examples"] = inline_feedback_examples(
+                    result["feedback_overview"], self._artifacts, self._page)
             result["packet_projection"] = "compact-editable-text-and-complete-catalog"
             result["omissions"] = ["Full policies, construction custody, cumulative sources, selection, history and unabridged feedback remain in the complete packet and artifact catalogue."]
             result["reading_budget"] = "Each read consumes another contact and repeats context. Prefer one complete brief when its declared size fits2048 characters; otherwise use small pages, at most2048. Briefs link to detail and original-source ranges. Finish within the same cumulative budget; indexed evidence grants no extra contacts."
@@ -465,7 +470,7 @@ class ProposerCapsule:
                 "artifact request fields differ")
         identity, offset, limit = (arguments[k] for k in ("artifact_id", "offset", "limit"))
         require(isinstance(identity, str) and identity in self._artifacts, "artifact is not registered")
-        page_limit = 2048 if self.view_profile == "compact-feedback-v1" else MAX_PAGE_CHARACTERS
+        page_limit = 2048 if self.view_profile in COMPACT_PROFILES else MAX_PAGE_CHARACTERS
         require(type(offset) is int and offset >= 0 and type(limit) is int and 1 <= limit <= page_limit,
                 "invalid artifact page")
         artifact = self._artifacts[identity]
@@ -500,7 +505,7 @@ class ProposerCapsule:
             result["tools"] = [{"type": "namespace", "name": "artifacts",
                                 "description": "Only the registered artifact reader is available.",
                                 "tools": [copy.deepcopy(BROKER_TOOL)]}]
-        if self.view_profile == "compact-feedback-v1":
+        if self.view_profile in COMPACT_PROFILES:
             input_left = packet["input_token_cap"] if remaining_input is None else remaining_input
             require(type(input_left) is int and 0 < input_left <= packet["input_token_cap"], "invalid remaining input budget")
             result["instructions"] += (
@@ -511,9 +516,16 @@ class ProposerCapsule:
             if tool["type"] == "namespace":
                 tool = tool["tools"][0]
             tool["parameters"]["properties"]["limit"]["maximum"] = 2048
+        if self.view_profile == "source-examples-v1" and packet["branch"] == "L":
+            result["instructions"] += (
+                " Examine the inline source examples before proposing or declining a change. "
+                "Use the indexed complete source when a prefix is insufficient. No change remains valid; "
+                "a candidate hypothesis need not already demonstrate benefit, but must distinguish "
+                "observed evidence from an untested proposed repair. Do not claim to have read omitted text."
+            )
         if history is not None:
             result["input"] = copy.deepcopy(history)
-        if self.view_profile == "compact-feedback-v1":
+        if self.view_profile in COMPACT_PROFILES:
             require(type(remaining_contacts) is int and 1 <= remaining_contacts <= 4
                     and type(previous_input_tokens) is int and previous_input_tokens >= 0,
                     "invalid compact continuation budget")
