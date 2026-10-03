@@ -418,8 +418,9 @@ class ProposerCapsule:
                 " This cycle keeps knowledge, construction, supply and executable code frozen. "
                 "Revise only role/context text; evaluate on the same reused optimization pool. "
                 "This is optimization feedback, not independent validation.")
-        if self.view_profile == "typed-coherent-feedback-v1":
-            from .system_text_policy import TextPolicyUpdateProposal
+        from .system_text_policy import TextPolicyUpdateProposal, CONTEXT_PROPOSAL_SCHEMA
+        if (self.view_profile == "typed-coherent-feedback-v1"
+                or TextPolicyUpdateProposal.schema_for_packet(packet) == CONTEXT_PROPOSAL_SCHEMA):
             result["response_contract"] = TextPolicyUpdateProposal.response_contract(packet)
         full = json.loads(self._packet)
         if "feedback" in full:
@@ -431,7 +432,7 @@ class ProposerCapsule:
             result["schema"] = "saea-proposer-initial-view-v2"
             for policy in [packet["parent_policy"], *packet.get("complementary_policies", [])]:
                 for key in tuple(policy):
-                    if key not in {"construction_instruction", "role_text", "supply"}:
+                    if key not in {"construction_instruction", "role_text", "supply", "context_layout"}:
                         policy.pop(key)
             packet.pop("complementary_policies", None)
             if full.get("complementary_policies"):

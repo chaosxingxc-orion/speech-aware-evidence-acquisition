@@ -1,0 +1,78 @@
+{
+  "authority": {
+    "relpath": "docs/receipts/owner/2026-10-03-context-space-and-node-timing-amendment.json",
+    "sha256": "7b8c243e0ca0800d8ddefa34b43b8ea06b4767960b4c953efaee0e6349813cd6"
+  },
+  "contacts": {
+    "model": 0,
+    "official_scorer": 0,
+    "proposer": 0,
+    "tokenizer": 0
+  },
+  "current_round8_changed": false,
+  "files": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_policy.py",
+      "sha256": "3cbfe662a033d7a30da0b2efd1ff057d13ee1fc167a1212f1ff6cbf80302c57f"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_optimization.py",
+      "sha256": "44f84c66df460fef92b81af216c65ee5d0a910ef060464bc6ef5d31e57de22c2"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_successor.py",
+      "sha256": "01c1028239bec7c4f5220e0b7b7719b1ca2883a1d9d91e341e0f7a9554d1b203"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_allocations.py",
+      "sha256": "e3e811852aa058b40a1688950cc66d188953d11ca454436b8153b76bc9dc2efc"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_proposer_capsule.py",
+      "sha256": "50bb778c01553f13513810fbe597f00b14d23cdea9b0a555070ff24232cae557"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_archive.py",
+      "sha256": "466e4187a61986c63c0c62cca74f3817379599a166d843df16e191c04b662762"
+    },
+    {
+      "relpath": "scripts/system_text_search.py",
+      "sha256": "2b5e22f58a2e4fd81c1642022ca2e5e8a55c9aa0442931a9285a705b0b25ac07"
+    },
+    {
+      "relpath": "tests/unit/test_system_context_proposals.py",
+      "sha256": "7e502fd1319ff5d6b8ae791b5b59e4e8876d45ee2faae4a32cc2d6ffa713e8bd"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-03-node-context-optimization-v1/context-proposal-protocol-v2.md",
+      "sha256": "f0ed6601027565857cc552ee382c6ec8fe57487205b549000164c2e5afb7d86a"
+    }
+  ],
+  "heartbeat": "PAUSED",
+  "limitations": [
+    "Prospective declared role text and existing placement only; arbitrary context transformations and post-call code are not implemented here.",
+    "Exact future protocol, source/authority pins, allocation and isolated input admission remain required.",
+    "No system gain or learning gain established by model-free tests.",
+    "Human review before8x400 remains required."
+  ],
+  "new_allocations": 0,
+  "recorded_at_utc": "2026-10-03T12:31:42.840968+00:00",
+  "runtime_dispatch_authority": false,
+  "schema": "saea-context-proposal-protocol-v2-engineering-receipt-v1",
+  "verification": {
+    "added_statements_covered": true,
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "legacy_outbound_golden_hashes_unchanged": 4,
+    "statement_coverage_percent": {
+      "combined": 97,
+      "system_optimization": 90,
+      "system_proposer_capsule": 96,
+      "system_search_allocations": 100,
+      "system_search_archive": 98,
+      "system_search_successor": 99,
+      "system_text_policy": 98
+    },
+    "tests_passed": 352
+  }
+}

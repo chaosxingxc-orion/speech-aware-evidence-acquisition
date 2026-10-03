@@ -19,10 +19,12 @@ BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v1"
 CONTEXT_BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v2"
 CONTEXT_LAYOUT_FIELD = "native_role_query_placement"
 PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v1"
+CONTEXT_PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v2"
 TEXT_CHARACTER_CAP = 32768
 PROPOSAL_KEYS = frozenset({"schema", "branch", "round", "slot", "parent_ids",
                            "changes", "rationale", "hypotheses", "evidence"})
 EDITABLE = frozenset({"construction_instruction", "role_text", "supply", "slot_value_edits"})
+CONTEXT_EDITABLE = frozenset({"role_text", "context_layout"})
 BUNDLE_KEYS = frozenset({"schema", "parent_ids", "seed_config_sha256", "construction_instruction",
                         "role_text", "supply", "knowledge", "construction_receipt",
                         "cumulative_sources", "optimizer_experience"})
@@ -179,6 +181,15 @@ class TextPolicyUpdateProposal:
         return json.loads(self.document_json)
 
     @staticmethod
+    def schema_for_packet(packet):
+        """Do not grant expanded proposal syntax to a historical input."""
+        from .system_optimization import CONTEXT_SCOPE_SCHEMA, require_optimization_scope
+        require_optimization_scope(packet)
+        return (CONTEXT_PROPOSAL_SCHEMA
+                if packet.get("optimization_scope", {}).get("schema") == CONTEXT_SCOPE_SCHEMA
+                else PROPOSAL_SCHEMA)
+
+    @staticmethod
     def response_contract(packet):
         """Describe exact proposal field types without repeating task evidence.
 
@@ -190,6 +201,12 @@ class TextPolicyUpdateProposal:
             "supply": "object: exactly mode (targeted|reread string), value_limit (integer1|2)",
             "construction_instruction": "EnglishText; requires a materialized knowledge release",
             "slot_value_edits": "object: schema string, base_rows_sha256 SHA256, edits array<object>; follow the indexed slot edit contract"}
+        schema = TextPolicyUpdateProposal.schema_for_packet(packet)
+        if schema == CONTEXT_PROPOSAL_SCHEMA:
+            editable["context_layout"] = (
+                "object: exactly native_role_query_placement; null keeps historical placement, "
+                "before-speech-v1 places the complete role query before speech at user authority; "
+                "no other ordering, truncation or generated code is implemented")
         allowed = packet.get("optimization_scope", {}).get("editable", sorted(EDITABLE))
         fields = {
             "schema": "string = example", "branch": "string = example",
@@ -200,13 +217,16 @@ class TextPolicyUpdateProposal:
             "hypotheses": "array<EnglishText>; [] valid; never objects",
             "evidence": "array<JSON>; English text; cite sources; invent no evidence"}
         require(set(fields) == PROPOSAL_KEYS, "proposal field description differs from validator")
-        example = {"schema": PROPOSAL_SCHEMA, "branch": packet["branch"], "round": packet["round"],
+        example = {"schema": schema, "branch": packet["branch"], "round": packet["round"],
             "slot": packet["slot"], "parent_ids": [packet["parent_bundle_id"]], "changes": {},
             "rationale": "No supported revision.", "hypotheses": [], "evidence": []}
         rules = "Keep parent boundaries/control syntax. Invalid, duplicate and no-change spend the slot. Omni owns answers. No sample answers in runtime text."
-        if "optimization_scope" in packet:
+        if schema == CONTEXT_PROPOSAL_SCHEMA:
+            rules += (" Joint role text and declared context layout changes are allowed; knowledge, supply and code stay frozen. "
+                      "Cache reuse is a measured cost, not an eligibility gate. Reused pool means optimization, not validation.")
+        elif "optimization_scope" in packet:
             rules += " Only role text changes; knowledge, supply and code stay frozen. Reused pool means optimization, not validation."
-        return {"contract_version": "typed-fields-v1",
+        return {"contract_version": "typed-context-fields-v2" if schema == CONTEXT_PROPOSAL_SCHEMA else "typed-fields-v1",
             "format": "One JSON object, exactly the example fields; no Markdown.",
             "types": {"EnglishText": f"nonblank English string,1..{TEXT_CHARACTER_CAP} characters",
                 "SHA256": "64 lowercase hexadecimal characters",
@@ -217,13 +237,20 @@ class TextPolicyUpdateProposal:
     @classmethod
     def from_json(cls, d, *, allocation_extension=None):
         require(isinstance(d, dict) and set(d) == PROPOSAL_KEYS
-                and d["schema"] == PROPOSAL_SCHEMA, "proposal fields differ")
+                and d["schema"] in (PROPOSAL_SCHEMA, CONTEXT_PROPOSAL_SCHEMA), "proposal fields differ")
         from .system_search_allocations import require_round
         require_round(d["round"], allocation_extension)
+        if allocation_extension is not None:
+            expanded = allocation_extension["editable"] == ["role_text", "context_layout"]
+            require((d["schema"] == CONTEXT_PROPOSAL_SCHEMA) == expanded,
+                    "proposal schema differs from registered allocation scope")
         require(d["branch"] in {"L", "B"}
                 and type(d["slot"]) is int and d["slot"] in (1, 2), "invalid proposal allocation")
-        require(isinstance(d["changes"], dict) and set(d["changes"]) <= EDITABLE,
+        allowed = CONTEXT_EDITABLE if d["schema"] == CONTEXT_PROPOSAL_SCHEMA else EDITABLE
+        require(isinstance(d["changes"], dict) and set(d["changes"]) <= allowed,
                 "proposal changes an undeclared editable surface")
+        if "context_layout" in d["changes"]:
+            _context_layout(d["changes"]["context_layout"])
         if "slot_value_edits" in d["changes"]:
             from .semantic_knowledge_edits import PROPOSAL_SCHEMA as SLOT_EDIT_SCHEMA
             edits = d["changes"]["slot_value_edits"]
@@ -262,6 +289,9 @@ def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, con
     require(parents and p["parent_ids"] == [b.bundle_id for b in parents], "proposal parent binding differs")
     d = parents[0].as_json()
     changes = p["changes"]
+    if "context_layout" in changes:
+        d["schema"] = CONTEXT_BUNDLE_SCHEMA
+        d["context_layout"] = copy.deepcopy(changes["context_layout"])
     if "slot_value_edits" in changes or "construction_instruction" in changes:
         require(knowledge is not None and construction_receipt is not None,
                 "joint construction edits need a verified materialized construction release")

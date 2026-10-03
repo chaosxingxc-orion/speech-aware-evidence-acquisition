@@ -342,10 +342,9 @@ def main(argv=None):
             packet["learning_history"] = archive.learning_history(before_round=args.round)
             if selection is not None:
                 packet["selection"] = selection
-        from speech_aware_evidence_acquisition.rails.system_optimization import load_optimization_panel
+        from speech_aware_evidence_acquisition.rails.system_optimization import load_optimization_panel, optimization_scope_for
         if load_optimization_panel(protocol, f"update-{args.round}", repo_root=args.repo_root) is not None:
-            packet["optimization_scope"] = {"purpose": "reused-optimization-panel", "editable": ["role_text"],
-                "plan_sha256": protocol["optimization_panel"]["plan"]["sha256"]}
+            packet["optimization_scope"] = optimization_scope_for(protocol, args.round)
         packet["protocol_sha256"] = content_hash(protocol)
         if "proposal_budget_profile" in protocol:
             packet["budget_profile"] = protocol["proposal_budget_profile"]

@@ -237,6 +237,11 @@ class SystemSearchArchive:
                 errors.append(f"{field} exceeds frozen limit or is malformed")
         proposal = record["proposal"]
         if proposal is not None:
+            try:
+                require(proposal["schema"] == TextPolicyUpdateProposal.schema_for_packet(packet),
+                        "proposal schema differs from frozen input scope")
+            except ValueError as error:
+                errors.append(str(error))
             if "optimization_scope" in packet:
                 from .system_optimization import require_optimization_scope
                 try:

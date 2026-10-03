@@ -16,6 +16,8 @@ from .system_text_policy import _pin, _read_pin, require, sha
 
 OWNER227 = "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json"
 SCHEMA = "saea-system-search-successor-sequence-v1"
+CONTEXT_SCHEMA = "saea-system-search-successor-sequence-v2"
+SCHEMAS = (SCHEMA, CONTEXT_SCHEMA)
 FIELDS = {"schema", "round", "owner", "transition", "previous_protocol", "earlier_allocations",
     "held_allocations", "model_version", "seed_bundle_id", "input_token_cap", "output_token_cap",
     "contact_cap", "editable", "no_runtime_authority", "sequence_id", "predecessor_archive",
@@ -29,11 +31,19 @@ def digest(path):
 
 
 def require_successor(index, document):
-    require(isinstance(document, dict) and set(document) == FIELDS
-        and document["schema"] == SCHEMA and type(index) is int and index > 3
+    context_version = isinstance(document, dict) and document.get("schema") == CONTEXT_SCHEMA
+    fields = FIELDS | {"context_authority"} if context_version else FIELDS
+    require(isinstance(document, dict) and set(document) == fields
+        and document["schema"] in SCHEMAS and type(index) is int and index > 3
         and type(document["round"]) is int and document["round"] == index, "registered successor sequence required")
-    require(document["no_runtime_authority"] is True and document["editable"] == ["role_text"],
-        "successor is role-text proposal preparation only")
+    require(document["no_runtime_authority"] is True
+        and document["editable"] == (["role_text", "context_layout"] if context_version else ["role_text"]),
+        "successor is declared text/context proposal preparation only")
+    if context_version:
+        from .system_optimization import CONTEXT_AUTHORITY
+        _pin(document["context_authority"])
+        require(document["context_authority"]["relpath"] == CONTEXT_AUTHORITY,
+                "exact context-space owner receipt required")
     for key in ("owner", "transition", "previous_protocol"):
         _pin(document[key])
     require(document["owner"]["relpath"] == OWNER227, "exact owner227 authority required")
@@ -77,7 +87,7 @@ def partition(predecessor, index, model):
     prior_sequences = []
     for path in (predecessor.root / "allocations").glob("round-*.json"):
         candidate = json.loads(path.read_bytes())
-        if candidate.get("schema") == SCHEMA:
+        if candidate.get("schema") in SCHEMAS:
             require(type(candidate.get("round")) is int and candidate["round"] < index
                 and path.name == f"round-{candidate['round']}.json", "invalid predecessor sequence order")
             prior_sequences.append(candidate)
@@ -152,7 +162,7 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
             and previous["proposal_output_token_cap"] == document["output_token_cap"]
             and previous["proposal_contact_cap"] == document["contact_cap"], "successor changes a fixed factor")
         ancestor = previous.get("allocation_extension", {})
-        if ancestor.get("schema") == SCHEMA:
+        if ancestor.get("schema") in SCHEMAS:
             path = predecessor.root / f"allocations/round-{ancestor['round']}.json"
             require(json.loads(path.read_bytes()) == ancestor, "pinned predecessor sequence differs")
         decision = json.loads(_read_pin(document["transition"], repo_root))
@@ -160,6 +170,14 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
             and all(decision.get(k) == document[k] for k in ("round", "sequence_id", "input_token_cap", "output_token_cap", "contact_cap"))
             and set(decision.get("held_allocations", [])) == set(held)
             and decision.get("new_allocations") == document["allocations"], "exact root transition disposition required")
+        require(decision.get("context_authority") == document.get("context_authority"),
+                "successor context scope differs from root transition")
+        if document["schema"] == CONTEXT_SCHEMA:
+            authority = json.loads(_read_pin(document["context_authority"], repo_root))
+            require(authority.get("schema") == "saea-owner-context-space-amendment-v1"
+                    and authority.get("gpu_dispatch_authorized_by_this_record") is False
+                    and authority.get("new_human_permission_required_within_owner227") is False,
+                    "context-space owner authority differs")
     return document
 
 
@@ -175,6 +193,9 @@ def build_successor(predecessor, successor, *, round_index, owner, transition, p
         "sequence_id": sequence_id, "predecessor_archive": str(predecessor.root.resolve()),
         "successor_archive": str(successor.root.resolve()), "snapshot_files": files,
         "allocations": [f"{b}-{round_index}-{s}" for s in (1, 2) for b in ("L", "B")]}
+    if "context_authority" in decision:
+        document.update(schema=CONTEXT_SCHEMA, editable=["role_text", "context_layout"],
+                        context_authority=decision["context_authority"])
     return validate_successor(successor, document, repo_root=repo_root, preparing=True)
 
 
