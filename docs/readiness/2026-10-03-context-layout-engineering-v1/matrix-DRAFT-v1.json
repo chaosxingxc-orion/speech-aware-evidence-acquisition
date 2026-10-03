@@ -1,0 +1,163 @@
+{
+  "acceptance_before_launch": [
+    "Review complete first before-speech trajectory structural proof.",
+    "Complete actual capacity and four-row structural proof for any not-yet-covered layout/scheduler combination; revalidate reused proof source/semantic bindings explicitly.",
+    "Freeze eight member identities,own prepared supplies,exact config differences and source commit after final allowed-stage identity.",
+    "Register complete family,all generation/FIT plans,analysis and exact unsigned READ before contacts.",
+    "Pass current12.5GiB stable startup and8GiB running guard,one generator/one scorer."
+  ],
+  "analysis": {
+    "measurement_rules": [
+      "Token-weight reuse;never sum percentages.",
+      "Do not infer reused tokens from final tokens_cached residency.",
+      "Do not sum overlapping contact latencies as episode or campaign wall time.",
+      "Episode wall time requires original explicit episode boundaries;if absent report unavailable rather than reconstructing from contact sums.",
+      "Do not interpret client-minus-server duration as queue time.",
+      "Preserve raw output and original official score;no post-hoc score replay."
+    ],
+    "primary": [
+      "Official pooled SLU-F1,intent and reliable completion for all repeats",
+      "Generation dispatch wall time and complete flight wall time with separate boundaries",
+      "Per-role and per-stage input/reused/evaluated/generated tokens,prefill/decode/client transport mean,p50,p95 with missingness",
+      "Role/control errors,normalizer use,extra contacts and revisions"
+    ],
+    "secondary": [
+      "Natural-mixture and equal-stratum summaries with actual support",
+      "Layout contrasts within each scheduler,scheduler contrasts within each layout,and their difference as descriptive interaction",
+      "Per-variant A/A spread and first-contact versus subsequent-contact costs"
+    ],
+    "selection": "Root reviews complete evidence and selects a feasible measured quality/cost tradeoff or retains the seed. No precommitted score threshold,no global-optimum or stable-benefit claim from20. Cache hits are not an eligibility floor."
+  },
+  "at_utc": "2026-10-03T13:00:35.215226+00:00",
+  "fixed": [
+    "Omni weights/build/answer custody",
+    "All seed Solver/Reviewer/Planner bytes and Perception format",
+    "Speech,packets,queries,votes,current knowledge and source bindings",
+    "Tools,official scorer,output reserve,max revisions and legal actions",
+    "Four24576-token slots,max512 output,current live-slot-only cache configuration",
+    "Same harness,concurrency ceiling,phase-supply selection bytes and exposure history"
+  ],
+  "heartbeat": "PAUSED",
+  "learning": "HELD;no proposer contact/allocation/feedback update",
+  "maximum_budget": {
+    "actual_request_fit_endpoints_per_member": 1040,
+    "actual_request_fit_endpoints_total": 8320,
+    "capacity_and_structural_proofs": "Separate exact registrations; not borrowed from these budgets.",
+    "complete_trajectories": 160,
+    "generation_contacts_per_member": 260,
+    "generation_contacts_total": 2080,
+    "members": 8,
+    "official_complete_scores": 8,
+    "rows_per_member": 20
+  },
+  "next_step": "Only after complete stage review prepare a narrowly justified50/100/200 stage on this same400 pool;no automatic scaling. Freeze the engineering configuration before explicit root resumption of learning. Return to human before8x400 without splitting around it.",
+  "order_limit": "Symmetric position balances linear time trend only. Cache history and numerical batching effects remain; no flush,warmup,save/restore or service changes. Report first versus later contacts and both repeats.",
+  "owner_decisions": [
+    227
+  ],
+  "priority_receipt": {
+    "relpath": "docs/receipts/owner/2026-10-03-engineering-first-context-configuration.json",
+    "sha256": "178928f6acd0254f71878431e01159a20df279f20606d13492d31da9e062d0e7"
+  },
+  "proposed_order": [
+    "legacy-trajectory-primary",
+    "before-speech-trajectory-primary",
+    "legacy-role-primary",
+    "before-speech-role-primary",
+    "before-speech-role-aa",
+    "legacy-role-aa",
+    "before-speech-trajectory-aa",
+    "legacy-trajectory-aa"
+  ],
+  "purpose": "Measure context-layout and scheduling effects plus their interaction with unchanged independent seed role text before resuming learning.",
+  "read_contract": "All eight independently FINALIZED,verified seals,one unique successful complete official score each,zero failed jobs,then exact root READ. No partial quality or optimizer export.",
+  "roster": {
+    "analysis_pin": {
+      "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+      "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+    },
+    "origin": "Same exposed first20 of existing UPDATE2 fixed400 pool; no rebuilding or independent-validation claim.",
+    "sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500",
+      "slurp:train:000244:audio-1497883990-headset",
+      "slurp:train:009411:audio-1497030307-headset",
+      "slurp:train:015179:audio-1498569151-headset",
+      "slurp:train:013565:audio-1501765573-headset",
+      "slurp:train:010065:audio-1501756518",
+      "slurp:train:004087:audio-1490199961",
+      "slurp:train:013560:audio-1490291477-headset",
+      "slurp:train:014610:audio-1502218659-headset",
+      "slurp:train:014741:audio-1497882505",
+      "slurp:train:000081:audio-1501753218-headset",
+      "slurp:train:006032:audio--1504195204",
+      "slurp:train:016836:audio-1490705489-headset",
+      "slurp:train:004499:audio--1504194378-headset",
+      "slurp:train:011479:audio-1502216306-headset",
+      "slurp:train:010006:audio-1499693788-headset",
+      "slurp:train:010537:audio-1490183278"
+    ]
+  },
+  "schema": "saea-context-layout-matrix-draft-v1",
+  "status": "HELD; prospective preparation only; no dispatch or READ authority",
+  "variants": [
+    {
+      "label": "legacy-trajectory",
+      "native_prefix_slots": null,
+      "replicates": [
+        "primary",
+        "aa"
+      ],
+      "role_query_placement": "legacy",
+      "rows_each": 20
+    },
+    {
+      "label": "before-speech-trajectory",
+      "native_prefix_slots": null,
+      "replicates": [
+        "primary",
+        "aa"
+      ],
+      "role_query_placement": "before-speech-v1",
+      "rows_each": 20
+    },
+    {
+      "label": "legacy-role",
+      "native_prefix_slots": {
+        "role_slots": {
+          "perception": 0,
+          "planner": 3,
+          "reviewer": 2,
+          "solver": 1
+        },
+        "schema": "saea-native-prefix-slots-v1"
+      },
+      "replicates": [
+        "primary",
+        "aa"
+      ],
+      "role_query_placement": "legacy",
+      "rows_each": 20
+    },
+    {
+      "label": "before-speech-role",
+      "native_prefix_slots": {
+        "role_slots": {
+          "perception": 0,
+          "planner": 3,
+          "reviewer": 2,
+          "solver": 1
+        },
+        "schema": "saea-native-prefix-slots-v1"
+      },
+      "replicates": [
+        "primary",
+        "aa"
+      ],
+      "role_query_placement": "before-speech-v1",
+      "rows_each": 20
+    }
+  ]
+}
