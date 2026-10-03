@@ -1,6 +1,6 @@
 # Panel-wide node stages with CPU prefetch
 
-Status: prospective implementation design, not runtime admission. Authority: owner227 and the direct owner clarification on2026-10-03. Root works without subagents; learning remains HELD and the slurp heartbeat remains PAUSED. Return to the human before8x400; never split dispatch to evade that boundary.
+Status: shared native scheduler implemented and verified offline; cross-experiment runtime integration remains pending. This is not runtime admission. Authority: owner227 and the direct owner clarification on2026-10-03. Root works without subagents; learning remains HELD and the slurp heartbeat remains PAUSED. Return to the human before8x400; never split dispatch to evade that boundary.
 
 ## Exact owner requirement
 
@@ -47,3 +47,21 @@ Offline acceptance must prove: later-stage CPU preparation begins before the ear
 The existing NodeBatchCoordinator is a bounded cohort scheduler: each cohort4 or16 completes its own workflow before the next cohort starts, with four-slot waves and per-sample state. It does not yet implement this160-job cross-experiment stage pipeline. Its two four-row real structural proofs completed2026-10-03T16:49:04Z with53 model contacts,212 actual FIT endpoints,15 valid visible Reviewer handoffs and8 Omni deliveries. Cohort16 was underfilled; no task-quality or speedup claim follows. See [closure](../../receipts/continuation/2026-10-03-node-batch-structural-complete.json).
 
 Do not automatically launch the previously proposed cohort4/16 next8x20 matrix. First implement and verify this clarified CPU-prefetch/stage-barrier design in the existing FlightRuntime/OpenJiuwen/native execution base, including explicit panel-level ownership of separate members. Do not build a second experimental framework. Exact policies, rosters, maximum legal requests, registration, scoring semantics and complete-family READ remain prerequisites to a new runtime panel. No additional contacts, cache operations or serving changes are authorized by this design document itself.
+
+
+## Shared-executor implementation checkpoint
+
+The opt-in `native_node_pipeline` configuration now reaches the existing FlightRuntime, rails runner and OpenJiuwen workflow. `NodePipelineCoordinator` retains the whole logical panel, runs fixed-group role-material preparation on bounded CPU workers, and releases one inference stage across all model slots only after both barriers close. A freed slot accepts the next ready request without waiting for the other slots. Each workflow retains its own context variables, role history, tool authority, revision loop and terminal answer. Original sample timers include stage waiting; separate node records identify group, iteration, CPU/model/tool kind, queue/start/finish and requested slot.
+
+The off configuration preserves historical request semantics. The actual native fake-service proof uses two samples, with and without a revision; it is not a four-row GPU proof. The synthetic160-job executor proof exercises eight distinct experiment labels, but those labels are not eight independently journaled FlightRuntime attempts. Do not call this a completed8x20 runtime integration.
+
+All308 selected tests pass, including legacy scheduling, tool concurrency, native FlightRuntime dispatch, graph capacity and synthetic Audio2Tool/Earnings21 paths. Statement coverage is90.06% for the new coordinator,95.06% for the shared executor and99.31% for the configuration module. Base, harness, lint and diff checks pass. The [source and evidence receipt](../../receipts/continuation/2026-10-03-panel-node-pipeline-engineering.json) retains earlier verification and the corrected concurrency-test assumption. Failure stops admission when observed by the scheduler and drains already-active workers; no silent retry is implemented.
+
+### Remaining work before real panel admission
+
+1. Connect eight separately registered runtime members to one shared panel execution seam. Keep their existing individual clients, budgets, journals, traces, policy/supply/roster bindings and manifests. A single runtime with160 rows must not substitute for this ownership.
+2. Persist intermediate records and prepared descriptors locally, enforce a resident-byte bound, and preserve fixed group identity and source hashes. Current logical-job and CPU-worker bounds do not prove a byte-memory bound.
+3. Freeze a deterministic within-node order for compatible actual prefixes. Preserve distinct candidate policies; never equate a node label with a cache hit. Join actual server slots and reused/recomputed token counts for the later real proof.
+4. Register maximum-legal-request capacity and a small structural proof of the integrated panel. Only after those pass admit a complete8x20 efficiency/quality comparison, preserving independent scores and whole-family READ.
+
+The CPU builder currently prepares role material using the original code. Final request rendering and tokenizer FIT still execute through the original metered contact. Relisten and model-based context cleaning are refused for this opt-in mode until their explicit preparation/contact seams exist. Intermediate spooling, secondary KV state storage and active cache save/restore are not implemented. The earlier cohort4/16 panel remains HELD; no new contact or policy activation occurred in this checkpoint.

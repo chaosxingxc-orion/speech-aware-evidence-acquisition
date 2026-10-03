@@ -960,6 +960,7 @@ class NativeEpisodeRunBinding:
     # factor preserves existing whole-policy hashes and request semantics.
     prefix_slots: object = None
     node_batch: object = None
+    node_pipeline: object = None
 
 
 @dataclass(frozen=True)

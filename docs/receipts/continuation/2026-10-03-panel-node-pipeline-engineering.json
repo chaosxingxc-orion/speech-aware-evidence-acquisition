@@ -1,0 +1,256 @@
+{
+  "schema": "saea-panel-node-pipeline-engineering-v1",
+  "recorded_at": "2026-10-03T17:22:08.691438+00:00",
+  "status": "shared native workflow scheduler verified offline; cross-experiment runtime ownership not yet integrated",
+  "base_commit": "5df15fa076eef7bc8faa6a232ed8a1a42abce896",
+  "authority": "docs/receipts/owner/2026-10-03-node-stage-cache-reuse-clarification.json",
+  "checkout": "/home/chao/saea-worktrees/codex-cache-cost-audit",
+  "tested_source_files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/analysis/native_graph_capacity.py",
+      "sha256": "a2cc5daf74d949812860fa9cb52ae7470997f9fb6ef8e0a0f6b54f30c7c57c58"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "3c46080eb75d0fdd60b752e974b611398a3c089c49f82b85e3fe7f0eff0a67bc"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/dispatch_slot_fill.py",
+      "sha256": "25fc2630a6628968186cbd54169c8105946e81154da226fcfb317180d9012682"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+      "sha256": "04a82f1ea53350a57a14dd190077a6839e83a2ce3fc7f1db42387a0fe9e32dd8"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "47de0772169ec1ea4f063f17c3f8d12f70f1011e9cedb2627846cd7afda283ca"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/system_episode_policy.py",
+      "sha256": "4b42f51596e7fd5232175bc18a870a1558cbddf3572ca695d250cab163a912a1"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py",
+      "sha256": "218fc1751ae7dceee0a6b98ac09e473ab48d05d8ac0a4892b4073bec934535a5"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "bec4de61c757245052cc6ab458613aaf6222bcdc022a5a422a0b5765a9f5d5c8"
+    },
+    {
+      "path": "tests/unit/test_native_episode_runner.py",
+      "sha256": "83d68300723a84b194348b27c68d2768971af5b5cf35fc679e051c6976fddd45"
+    },
+    {
+      "path": "tests/unit/test_native_node_pipeline.py",
+      "sha256": "fe0c7957d3e436d60aa2bb8ef21e4592b1de3c79e6ab67417df1a67044505390"
+    },
+    {
+      "path": "tests/unit/test_native_node_pipeline_binding.py",
+      "sha256": "7a05596ac26a856514b4aafe22a067573a81b82e20f38c6a14d3d910462069f7"
+    }
+  ],
+  "tests": {
+    "final_passed": 308,
+    "failed": 0,
+    "dependency_warnings": 3,
+    "focused_passed": 49,
+    "counts_overlap": true,
+    "coverage": {
+      "src/speech_aware_evidence_acquisition/rails/dispatch_slot_fill.py": {
+        "covered_lines": 143,
+        "num_statements": 144,
+        "percent_covered": 99.30555555555556,
+        "percent_covered_display": "99",
+        "missing_lines": 1,
+        "excluded_lines": 0,
+        "percent_statements_covered": 99.30555555555556,
+        "percent_statements_covered_display": "99"
+      },
+      "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py": {
+        "covered_lines": 154,
+        "num_statements": 171,
+        "percent_covered": 90.05847953216374,
+        "percent_covered_display": "90",
+        "missing_lines": 17,
+        "excluded_lines": 0,
+        "percent_statements_covered": 90.05847953216374,
+        "percent_statements_covered_display": "90"
+      },
+      "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py": {
+        "covered_lines": 366,
+        "num_statements": 385,
+        "percent_covered": 95.06493506493507,
+        "percent_covered_display": "95",
+        "missing_lines": 19,
+        "excluded_lines": 0,
+        "percent_statements_covered": 95.06493506493507,
+        "percent_statements_covered_display": "95"
+      }
+    },
+    "red_green": "Tests first refused missing coordinator, unsupported executor keywords and absent typed binding. A later group_size > max_jobs refusal also failed before its validation fix.",
+    "preserved_test_issue": "The v2 coverage run passed 304 tests and failed a test that incorrectly assumed no request could start before a concurrent failure became visible to the event loop. The revised test explicitly waits for scheduler failure observation, holds the other active worker until then, and verifies no subsequent admission or future-stage dispatch. No production stop rule was weakened."
+  },
+  "checks": [
+    {
+      "check": "lint",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/ruff",
+        "check",
+        "src/speech_aware_evidence_acquisition/analysis/native_graph_capacity.py",
+        "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+        "src/speech_aware_evidence_acquisition/rails/dispatch_slot_fill.py",
+        "src/speech_aware_evidence_acquisition/rails/native_episode_config.py",
+        "src/speech_aware_evidence_acquisition/rails/runner.py",
+        "src/speech_aware_evidence_acquisition/rails/system_episode_policy.py",
+        "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+        "tests/unit/test_native_episode_runner.py",
+        "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py",
+        "tests/unit/test_native_node_pipeline.py",
+        "tests/unit/test_native_node_pipeline_binding.py"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/lint-v3.txt"
+    },
+    {
+      "check": "engineering_base_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "scripts/checks/engineering_base_check.py"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/engineering_base_check-v3.txt"
+    },
+    {
+      "check": "harness_admission_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "scripts/checks/harness_admission_check.py"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/harness_admission_check-v3.txt"
+    },
+    {
+      "check": "diff_check",
+      "exit_code": 0,
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "log": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/diff_check-v3.txt"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/targeted-v1.txt",
+      "sha256": "ce46777597b143da06e0a21ef8e2512bf9c7ec1856cb7010e6501b0b611abdf2",
+      "bytes": 1873
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/targeted-v2-command.json",
+      "sha256": "a21aeef7b6122cd17fe74c81b4c502dd74afaeb3c2140b817792838f18867e51",
+      "bytes": 1309
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/targeted-v2.txt",
+      "sha256": "6148f4c5e4105d7cf484e4f07659079ba5d6d2b3bbf1eafd5fce893984e9a627",
+      "bytes": 3516
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/targeted-v3-command.json",
+      "sha256": "a21aeef7b6122cd17fe74c81b4c502dd74afaeb3c2140b817792838f18867e51",
+      "bytes": 1309
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/targeted-v3.txt",
+      "sha256": "b90c841f9ab32a3e0cf9ec7200b86cb2d43e3f714e8cdb6d5a135367f7a4d94d",
+      "bytes": 2043
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/focused-v3.txt",
+      "sha256": "efd7417bd8c677f6f046d6e33a0f183909d25f65a672550c7a8d56cb47e99d54",
+      "bytes": 1711
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/coverage-v3.json",
+      "sha256": "2b04eeb9f368dd34e7b3dde7497f28027e0ea5be898810b8dddcac5c3d1320a0",
+      "bytes": 33578
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/checks-v3.json",
+      "sha256": "100a6037f23193f7ce73150726a4ee6a1d54ce666a2b13e5ee85071a624cf173",
+      "bytes": 2012
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/preintegration-operational-v1.json",
+      "sha256": "4418f192a5bb0ba7a5a55d9d8a9cc8ea61066da8359c07e5dc989dc9e6b197e2",
+      "bytes": 640
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/checks-v4.json",
+      "sha256": "2d976f912619eb55d05398ac6414512c91062bdd54614546b010775921a97ca0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/openjiuwen-native-reuse-v5.json",
+      "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/openjiuwen-native-reuse-v5.txt",
+      "sha256": "bff0ede9eddbc86be89e9347242dad0712d9a6e7fb1d9534cca387c3e1e04dca"
+    }
+  ],
+  "verified": [
+    "160 logical independent jobs in eight fixed groups of20 traverse full node stages using at most four model slots and two CPU preparation workers.",
+    "Each completed fixed group prepares downstream role material while earlier-stage model work continues; no later-stage model is released before all predecessors and preparations settle.",
+    "Slots refill independently rather than waiting for a slow four-slot wave.",
+    "Conditional termination, skipped nodes, revisions, ReAct model/tool continuations, local tools, failures and repeated cancellation preserve original workflow ownership.",
+    "Two-sample actual FlightRuntime fake-service off/on comparisons retain request bytes, canonical terminal output, actual-request FIT before dispatch, and Omni answer custody.",
+    "Historical native, legacy OpenJiuwen, Audio2Tool and Earnings21 synthetic checks pass with the new mode disabled."
+  ],
+  "remaining": [
+    "Eight separately registered FlightRuntime members still need a shared panel execution seam retaining their individual clients, budgets, journals, traces, rosters, manifests and one-shot scores. Synthetic experiment labels do not prove this integration.",
+    "Prepared contexts currently remain in bounded logical workflow objects; disk-backed intermediate spooling and a measured resident-byte bound are not implemented.",
+    "CPU prefetch covers the unchanged role material builder. Final wire serialization and actual-request tokenizer FIT remain within the original metered model contact.",
+    "Relisten and model-based context cleaning are refused in this opt-in mode until their separate preparation/contact boundaries are supported.",
+    "Prospective deterministic compatible-prefix grouping and real per-slot cache joins still require integration and measurement.",
+    "No real tokenizer/model/scorer contacts, cache save/restore operations, serving changes, queue changes, speed gain, business gain or full eight-member runtime admission occurred."
+  ],
+  "additional_checks": [
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "exit_code": 2,
+      "output": "2026-10-03 10:22:44 | common | default_trace_id | INFO | Registered connector pool type: default\n2026-10-03 10:22:44 | common | default_trace_id | INFO | Registered connector pool type: httpx\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered query expression support for milvus\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered query expression support for chroma\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ExcelParser for .xlsx\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ExcelParser for .csv\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ExcelParser for .tsv\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser TxtMdParser for .txt\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser TxtMdParser for .md\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser TxtMdParser for .markdown\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser HTMLFileParser for .htm\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser HTMLFileParser for .html\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser JSONParser for .json\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser PDFParser for .pdf\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser WordParser for .docx\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ImageParser for .png\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ImageParser for .jpg\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ImageParser for .jpeg\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ImageParser for .webp\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ImageParser for .gif\n2026-10-03 10:22:45 | common | default_trace_id | INFO | Registered parser ImageParser for .jfif\nusage: openjiuwen_native_reuse_check.py [-h] --output OUTPUT\nopenjiuwen_native_reuse_check.py: error: the following arguments are required: --output\n"
+    },
+    {
+      "check": "experiment_handoff_check",
+      "exit_code": 0,
+      "output": "{\n  \"schema_version\": 1,\n  \"status\": \"OWNER_DIRECTED_EXECUTION\",\n  \"checked_at_utc\": \"2026-10-03T17:22:46.316519+00:00\",\n  \"current_head\": \"5df15fa076eef7bc8faa6a232ed8a1a42abce896\",\n  \"dirty_file_counts\": {\n    \"tracked\": 12,\n    \"untracked\": 5,\n    \"staged\": 0,\n    \"unstaged\": 12,\n    \"total\": 17\n  },\n  \"warnings\": [\n    \"Current HEAD differs from the handoff snapshot; reconcile newer changes.\",\n    \"The working tree has local changes; preserve and reconcile them.\"\n  ],\n  \"errors\": [],\n  \"execution_authority\": \"NOT_EVALUATED\",\n  \"launch_allowed\": false,\n  \"request_id\": \"SAEA-HANDOFF-20260909-01\",\n  \"generation\": 170,\n  \"snapshot_commit\": \"3727565cdedd2b26414e55314009613b74fbf5b9\",\n  \"execution_owner\": \"Codex\",\n  \"owner_decision_path\": \"docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-20260925.md\"\n}\n"
+    },
+    {
+      "check": "handoff_freshness_check",
+      "exit_code": 0,
+      "output": "handoff freshness check: compared: stamp 2026-10-03T16:57:14.067428+00:00 | newest docs/results/stage2-results-ledger.md 2026-10-03T16:56:48+00:00 (git commit date; git commit dates for tracked files, mtimes for untracked ones; 182 file(s), 182 tracked) | newest ledger entry heading 2026-10-03 (2026-10-03T00:00:00+00:00) | now 2026-10-03T17:22:46.574221+00:00\nhandoff freshness check: PASS (docs/handoff/HANDOFF-TO-CHATGPT.md; no max age requested; 0 finding(s))\n"
+    },
+    {
+      "check": "final_diff",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "check": "openjiuwen_native_reuse_check",
+      "exit_code": 0,
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "scripts/checks/openjiuwen_native_reuse_check.py",
+        "--output",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-pipeline-engineering-owner227-v1/openjiuwen-native-reuse-v5.json"
+      ],
+      "supersedes": "initial missing --output invocation; no contact or gate proof occurred during that CLI refusal"
+    }
+  ]
+}

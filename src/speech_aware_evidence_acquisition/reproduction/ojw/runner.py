@@ -424,6 +424,11 @@ def execute_speech_agent_workflows(
     node_batch_order: Sequence[str] | None = None,
     node_batch_size: int | None = None,
     node_batch_timing_sink: Callable[[object, Mapping[str, object]], None] | None = None,
+    node_pipeline_order: Sequence[str] | None = None,
+    node_pipeline_group_size: int | None = None,
+    node_pipeline_prepare_workers: int | None = None,
+    node_pipeline_max_jobs: int | None = None,
+    node_pipeline_timing_sink: Callable[[object, Mapping[str, object]], None] | None = None,
 ) -> list[object]:
     """Run speech Agent workflows on one openJiuwen event loop.
 
@@ -467,12 +472,40 @@ def execute_speech_agent_workflows(
     No role is permanently assigned a slot. node_batch_timing_sink is strictly
     observational and records original queue/start/settlement boundaries.
 
+    Optional node_pipeline_order enables full-panel node stages, with the
+    explicit max_jobs bound independent of the historical workflow queue.
+    Its invoker must use run_prepare(pure_cpu_builder, prefix_family=role)
+    before that role's contacts. Fixed groups release CPU preparation while
+    current-node inference continues; every prior model and the last prepared
+    group must settle before the next node is dispatched. All slots serve the
+    active node and refill independently. Input preparation never calls a model
+    or FIT endpoint. The caller owns separate experimental identities/budgets.
+    Original sample timers include all stage barriers from panel admission.
+
     Optional sample_timing_sink receives monotonic execution boundaries after an
     admitted workflow and its synchronous workers settle. The interval includes
     slot/tool waits and cleanup, but excludes pre-admission waiting and roster
     preparation. Admission order, not completion order, identifies the first
     sample. This observational callback never enters a model request.
     """
+
+    if node_pipeline_order is not None:
+        if (episode_invoker is None or prefix_slot_bindings is not None or node_batch_order is not None
+                or isinstance(node_pipeline_order, (str, bytes))
+                or not isinstance(node_pipeline_order, Sequence) or not node_pipeline_order
+                or any(not isinstance(n, str) or not n.strip() for n in node_pipeline_order)
+                or len(set(node_pipeline_order)) != len(node_pipeline_order)
+                or type(slot_count) is not int or slot_count < 1
+                or type(node_pipeline_group_size) is not int or node_pipeline_group_size < 1
+                or type(node_pipeline_prepare_workers) is not int or not 1 <= node_pipeline_prepare_workers <= 8
+                or type(node_pipeline_max_jobs) is not int or node_pipeline_max_jobs < 1
+                or node_pipeline_group_size > node_pipeline_max_jobs
+                or (node_pipeline_timing_sink is not None and not callable(node_pipeline_timing_sink))):
+            raise ValueError("node pipeline requires native nodes, bounded panel and exclusive scheduling")
+        node_pipeline_order = tuple(node_pipeline_order)
+    elif any(value is not None for value in (node_pipeline_group_size, node_pipeline_prepare_workers,
+                                             node_pipeline_max_jobs, node_pipeline_timing_sink)):
+        raise ValueError("node pipeline settings require a declared node order")
 
     if node_batch_order is not None:
         if (episode_invoker is None or prefix_slot_bindings is not None
@@ -525,6 +558,8 @@ def execute_speech_agent_workflows(
         )
 
     ordered_states = list(states)
+    if node_pipeline_order is not None and len(ordered_states) > node_pipeline_max_jobs:
+        raise ValueError("node pipeline exceeds its declared panel job bound")
 
     async def _run_all():
         batch_started_ns = _monotonic_ns() if sample_timing_sink is not None else None
@@ -538,7 +573,7 @@ def execute_speech_agent_workflows(
             slots.put_nowait(slot_id)
         prefix_locks = {key: asyncio.Lock() for key in (prefix_slot_bindings or {})}
 
-        async def one(state: object, node_batch=None, member=None):
+        async def one(state: object, node_batch=None, member=None, node_pipeline=None):
             primary_slot_id: int | None = None
             slot_assignment_lock = asyncio.Lock()
             contact_lock = asyncio.Lock()
@@ -557,6 +592,8 @@ def execute_speech_agent_workflows(
                 *, prefix_family: str | None = None, contact_kind: str = "model",
             ) -> ContactResult:
                 async with contact_lock:
+                    if node_pipeline is not None:
+                        return await node_pipeline.contact(member, prefix_family, blocking_contact, contact_kind)
                     if node_batch is not None:
                         return await node_batch.contact(member, prefix_family, blocking_contact, contact_kind)
                     if prefix_slot_bindings is not None:
@@ -603,6 +640,10 @@ def execute_speech_agent_workflows(
                     finally:
                         if worker.done():
                             worker_tasks.discard(worker)
+
+            async def run_prepare(blocking_prepare, *, prefix_family):
+                async with contact_lock:
+                    return await node_pipeline.prepare(member, prefix_family, blocking_prepare)
 
             async def run_local(
                 blocking_tool: Callable[[], ContactResult],
@@ -671,6 +712,11 @@ def execute_speech_agent_workflows(
                 try:
                     if episode_invoker is None:
                         await flow.invoke(inputs={}, session=session)
+                    elif node_pipeline is not None:
+                        options = {"run_prepare": run_prepare}
+                        if local_tool_workers:
+                            options["run_local"] = run_local
+                        await episode_invoker(state, run_contact, session, **options)
                     elif local_tool_workers:
                         await episode_invoker(state, run_contact, session, run_local=run_local)
                     else:
@@ -738,6 +784,67 @@ def execute_speech_agent_workflows(
                     async with admission_lock:
                         failures[index] = failure
                     return
+
+        if node_pipeline_order is not None:
+            from .node_pipeline import NodePipelineCoordinator
+
+            def pipeline_event(member, event):
+                if node_pipeline_timing_sink is not None:
+                    node_pipeline_timing_sink(ordered_states[member], event)
+
+            coordinator = NodePipelineCoordinator(
+                tuple(range(len(ordered_states))), node_pipeline_order, slots=slot_count,
+                group_size=node_pipeline_group_size, prepare_workers=node_pipeline_prepare_workers,
+                event_sink=pipeline_event,
+            )
+
+            async def panel_member(index):
+                state = ordered_states[index]
+                admitted_ns = _monotonic_ns() if sample_timing_sink is not None else None
+                failure = None
+                try:
+                    await one(state, member=index, node_pipeline=coordinator)
+                except BaseException as error:
+                    failure = error
+                if sample_timing_sink is not None:
+                    timing = {
+                        "schema": "saea-sample-execution-timing-v1",
+                        "admission_index": index, "expected_samples": len(ordered_states),
+                        "slot_count": slot_count, "queue_depth": node_pipeline_max_jobs,
+                        "batch_started_ns": batch_started_ns, "admitted_ns": admitted_ns,
+                        "finished_ns": _monotonic_ns(),
+                        "status": "completed" if failure is None else "failed",
+                        "error_type": None if failure is None else type(failure).__name__,
+                    }
+                    try:
+                        sample_timing_sink(state, timing)
+                    except BaseException as error:
+                        failure = failure or error
+                coordinator.finish(index, failure)
+                if failure is not None:
+                    failures[index] = failure
+
+            driver = asyncio.create_task(coordinator.drive())
+            workers = [asyncio.create_task(panel_member(i)) for i in range(len(ordered_states))]
+            try:
+                await asyncio.gather(*workers)
+            except BaseException as error:
+                coordinator.abort(error)
+                raise
+            finally:
+                # Do not let repeated cancellation release ownership of live
+                # synchronous CPU/model workers or of future stage admission.
+                for task in (*workers, driver):
+                    while not task.done():
+                        try:
+                            await asyncio.shield(task)
+                        except asyncio.CancelledError:
+                            continue
+                if local_executor is not None:
+                    local_executor.shutdown(wait=True, cancel_futures=True)
+            if coordinator.failure is not None and not failures:
+                failures[0] = coordinator.failure
+            return failures
 
         if node_batch_order is not None:
             from .node_batch import NodeBatchCoordinator

@@ -1,0 +1,25 @@
+{
+  "schema": "saea-owner-clarification-v1",
+  "recorded_at": "2026-10-03T17:22:08.691438+00:00",
+  "authority": "direct human clarification within owner227",
+  "source": "Current owner conversation, consecutive node batching, prefetch and cache priority messages on 2026-10-03",
+  "complete_english_translations": [
+    "For an 8x20 experiment, send 160 samples to the inference engine in the node1 stage. While it produces outputs, once the first group of 20 finishes, begin preparing node2 data, creating pipeline parallelism.",
+    "The node2 data preparation stage only performs preprocessing. Wait until all node1 data has been processed, then wait for the last batch to be assembled before making the node2 model calls together, analogous to data prefetch in distributed training.",
+    "You need to understand the essence of this design: maximize reuse of the prefix cache across the different nodes."
+  ],
+  "implementation_interpretation": [
+    "Make independent node-prefix reuse across the full eligible panel the primary scheduling objective; CPU prefetch supports it.",
+    "Keep each node context independent. Reuse requires matching actual token prefixes; do not force identical role text or claim incompatible KV is reusable.",
+    "Use all four model slots for the active node. Finish every predecessor inference and the final next-node preparation before releasing the next inference stage.",
+    "Retain fixed registered groups and independent experiment, sample, attempt, budget and output identities."
+  ],
+  "boundaries": [
+    "root only; no subagents",
+    "learning HELD",
+    "slurp heartbeat PAUSED",
+    "same existing UPDATE2 400 pool",
+    "human review before 8x400",
+    "no runtime admission granted by this implementation note"
+  ]
+}

@@ -4144,6 +4144,8 @@ class FlightRuntime:
             self._native_prefix_slots()
         if "native_node_batch" in values:
             self._native_node_batch()
+        if "native_node_pipeline" in values:
+            self._native_node_pipeline()
 
         carrier_lock_key = values.get("carrier_lock_key")
         if not isinstance(carrier_lock_key, str) or not carrier_lock_key:
@@ -7220,6 +7222,24 @@ class FlightRuntime:
         except NativePrefixSlotsError as error:
             raise FlightRuntimeError(str(error)) from error
 
+    def _native_node_pipeline(self, native_config=None):
+        """Bind full-panel stage/prefetch limits before any model contact."""
+        from ...rails.dispatch_slot_fill import NativeNodePipelineError, parse_native_node_pipeline
+        from ...rails.native_episode_config import load_native_episode_config
+        try:
+            parsed = parse_native_node_pipeline(self._composed.values)
+            if parsed is None:
+                return None
+            if native_config is None:
+                policy = self._composed.values.get("policy")
+                if policy == "fixed" or policy in self._obs_policy_names():
+                    raise NativeNodePipelineError("node pipeline requires a native role episode")
+                native_config = load_native_episode_config(self._composed.values, default_phase_program(policy))
+            parsed.validate(native_config)
+            return parsed
+        except NativeNodePipelineError as error:
+            raise FlightRuntimeError(str(error)) from error
+
     def _native_node_batch(self, native_config=None):
         """Validate the bounded schedule before preparation opens any contact."""
         from ...rails.dispatch_slot_fill import NativeNodeBatchError, parse_native_node_batch
@@ -7268,6 +7288,7 @@ class FlightRuntime:
         native_config = load_native_episode_config(self._composed.values, program)
         prefix_slots = self._native_prefix_slots(native_config)
         node_batch = self._native_node_batch(native_config)
+        node_pipeline = self._native_node_pipeline(native_config)
         # Owner decision 159: the dispatcher slot-fill switches, or None --
         # the value of every committed configuration, under which nothing
         # below changes. Scheduling only; refused outside a native episode,
@@ -7530,6 +7551,7 @@ class FlightRuntime:
                 slot_fill=slot_fill,
                 prefix_slots=prefix_slots,
                 node_batch=node_batch,
+                node_pipeline=node_pipeline,
                 # Same-flight instrument, PHASE 2 (merge set C): every
                 # declared Perception branch's own pre-flight seed. None --
                 # and therefore byte-identical to the pre-phase-2 tree --
@@ -7814,6 +7836,9 @@ class FlightRuntime:
                 dispatch["slot_fill"] = slot_fill.as_json()
             if prefix_slots is not None:
                 dispatch["native_prefix_slots"] = prefix_slots.as_json()
+            if node_pipeline is not None:
+                dispatch["native_node_pipeline"] = node_pipeline.as_json()
+                dispatch["barrier"] = "full panel node stage; fixed-group CPU prefetch; all predecessors and preparations settled"
             if node_batch is not None:
                 dispatch["native_node_batch"] = node_batch.as_json()
                 dispatch["barrier"] = "bounded cohort: finish ready node contacts before advancing"

@@ -546,6 +546,7 @@ class _ActualEpisodeHarness:
             perception_contrast_pairs=getattr(self, "perception_contrast_pairs", None),
             prefix_slots=getattr(self, "prefix_slots", None),
             node_batch=getattr(self, "node_batch", None),
+            node_pipeline=getattr(self, "node_pipeline", None),
         )
         source_kwargs = (
             {}

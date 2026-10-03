@@ -216,7 +216,61 @@ def parse_native_node_batch(values: Mapping[str, object]) -> NativeNodeBatch | N
     return NativeNodeBatch(tuple(order), size)
 
 
+class NativeNodePipelineError(RailsError):
+    """Refuse an unbound panel or a hidden model call during CPU prefetch."""
+
+
+@dataclass(frozen=True)
+class NativeNodePipeline:
+    """Registered logical panel size is separate from model-slot concurrency."""
+
+    node_order: tuple[str, ...]
+    group_size: int
+    prepare_workers: int
+    max_jobs: int
+
+    def as_json(self):
+        return {"schema": "saea-native-node-pipeline-v1", "node_order": list(self.node_order),
+                "group_size": self.group_size, "prepare_workers": self.prepare_workers,
+                "max_jobs": self.max_jobs}
+
+    def validate(self, config):
+        if config is None:
+            raise NativeNodePipelineError("node pipeline requires a native role episode")
+        if set(self.node_order) != {r.phase_id for r in config.roles if r.max_iterations > 0}:
+            raise NativeNodePipelineError("node pipeline order must cover its reachable roles")
+        if config.relisten_json is not None:
+            raise NativeNodePipelineError("node pipeline needs an explicit relisten preparation boundary")
+        if config.context_policy_json is not None:
+            from .node_context_binding import node_context_cleaning_boundaries
+            if node_context_cleaning_boundaries(config.context_policy_json):
+                raise NativeNodePipelineError("node pipeline refuses model context cleaning during CPU prefetch")
+
+
+def parse_native_node_pipeline(values: Mapping[str, object]) -> NativeNodePipeline | None:
+    """Keep the full-panel schedule an explicit, separately hashed opt-in."""
+    if "native_node_pipeline" not in values:
+        return None
+    if any(key in values for key in ("native_prefix_slots", "native_node_batch")):
+        raise NativeNodePipelineError("node pipeline conflicts with other node/slot schedulers")
+    raw = values["native_node_pipeline"]
+    if (not isinstance(raw, Mapping)
+            or set(raw) != {"schema", "node_order", "group_size", "prepare_workers", "max_jobs"}
+            or raw["schema"] != "saea-native-node-pipeline-v1"):
+        raise NativeNodePipelineError("node pipeline needs its exact versioned configuration")
+    order = raw["node_order"]
+    if (not isinstance(order, list) or not order
+            or any(not isinstance(n, str) or not n.strip() for n in order)
+            or len(set(order)) != len(order)
+            or any(type(raw[k]) is not int or raw[k] < 1
+                   for k in ("group_size", "prepare_workers", "max_jobs"))
+            or raw["prepare_workers"] > 8 or raw["group_size"] > raw["max_jobs"]):
+        raise NativeNodePipelineError("node pipeline requires unique nodes and finite worker/job bounds")
+    return NativeNodePipeline(tuple(order), raw["group_size"], raw["prepare_workers"], raw["max_jobs"])
+
+
 __all__ = [
+    "NativeNodePipeline", "NativeNodePipelineError", "parse_native_node_pipeline",
     "NativeNodeBatch", "NativeNodeBatchError", "parse_native_node_batch",
     "DISPATCH_SLOT_FILL_KEY",
     "DISPATCH_SLOT_FILL_SCHEMA",

@@ -137,8 +137,15 @@ class SystemEpisodePolicy:
                 or not 0 < binding.config.max_contacts <= reference.program.max_contacts
                 or binding.config.local_tool_workers != reference.config.local_tool_workers
                 or binding.prefix_slots != reference.prefix_slots
-                or binding.node_batch != reference.node_batch):
+                or binding.node_batch != reference.node_batch
+                or binding.node_pipeline != reference.node_pipeline):
             raise SystemEpisodePolicyError("actions changed the shared execution envelope")
+        if binding.node_pipeline is not None:
+            from .dispatch_slot_fill import NativeNodePipelineError
+            try:
+                binding.node_pipeline.validate(binding.config)
+            except NativeNodePipelineError as error:
+                raise SystemEpisodePolicyError(str(error)) from error
         if binding.node_batch is not None:
             from .dispatch_slot_fill import NativeNodeBatchError
             try:

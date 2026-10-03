@@ -4465,7 +4465,7 @@ async def _invoke_native_role_episode(
                 slot_id=slot_id, contact_kind=contact_kind, index=index,
                 instruction=instruction, response_format_id=response_format_id,
             )
-        options = {"prefix_family": "relisten"} if binding.prefix_slots is not None or binding.node_batch is not None else {}
+        options = {"prefix_family": "relisten"} if binding.prefix_slots is not None or binding.node_batch is not None or binding.node_pipeline is not None else {}
         return await run_contact(contact, **options)
 
     async def run_relisten_stage(delivered_text):
@@ -4833,7 +4833,7 @@ async def _invoke_native_role_episode(
                 return completion
             finally:
                 set_current_trace_buffer(None)
-        options = {"prefix_family": request.role_id} if binding.prefix_slots is not None or binding.node_batch is not None else {}
+        options = {"prefix_family": request.role_id} if binding.prefix_slots is not None or binding.node_batch is not None or binding.node_pipeline is not None else {}
         return await run_contact(contact, **options)
 
     def reject_tool_batch(phase_id, assistant_message):
@@ -4898,8 +4898,8 @@ async def _invoke_native_role_episode(
                 return message["content"]
             if run_local is not None:
                 return await run_local(lambda: execute(None))
-            options = {"prefix_family": role.phase_id} if binding.prefix_slots is not None or binding.node_batch is not None else {}
-            if binding.node_batch is not None:
+            options = {"prefix_family": role.phase_id} if binding.prefix_slots is not None or binding.node_batch is not None or binding.node_pipeline is not None else {}
+            if binding.node_batch is not None or binding.node_pipeline is not None:
                 options["contact_kind"] = "tool"
             return await run_contact(execute, **options)
         async def invoke(**arguments):
@@ -6146,6 +6146,33 @@ def _run_agent_openjiuwen(
                 }})
                 state.trace_buffers[(-3, index)] = trace
             scheduling_options["node_batch_timing_sink"] = record_node_timing
+        if native_episode_binding.node_pipeline is not None:
+            from .dispatch_slot_fill import NativeNodePipeline, NativeNodePipelineError
+            pipeline = native_episode_binding.node_pipeline
+            if (not isinstance(pipeline, NativeNodePipeline) or prefix_slots is not None
+                    or native_episode_binding.node_batch is not None):
+                raise RailsRunnerError("invalid or conflicting native node pipeline binding")
+            try:
+                pipeline.validate(native_episode_binding.config)
+            except NativeNodePipelineError as error:
+                raise RailsRunnerError(str(error)) from error
+            scheduling_options.update(
+                node_pipeline_order=pipeline.node_order, node_pipeline_group_size=pipeline.group_size,
+                node_pipeline_prepare_workers=pipeline.prepare_workers, node_pipeline_max_jobs=pipeline.max_jobs,
+            )
+            def record_pipeline_timing(state, event):
+                from .execution_units import scoped_execution_contact_id
+                index = sum(key[0] == -4 for key in state.trace_buffers)
+                trace = TraceBuffer(run_id)
+                trace.emit("USE", scoped_execution_contact_id(
+                    f"{state.prepared.sample.sample_id}/{native_episode_binding.program.program_id}/node-pipeline-timing/{index}",
+                    state.prepared.execution_unit_id,
+                ), {"use_node_pipeline_timing": {
+                    **event, "sample_id": state.prepared.sample.sample_id,
+                    "execution_unit_id": state.prepared.execution_unit_id,
+                }})
+                state.trace_buffers[(-4, index)] = trace
+            scheduling_options["node_pipeline_timing_sink"] = record_pipeline_timing
         selector = native_episode_binding.system_episode_policy
         if selector is not None:
             from .system_episode_policy import SystemEpisodePolicy
@@ -6161,7 +6188,7 @@ def _run_agent_openjiuwen(
         # exactly as it was; see _SlotFillScheduler for what each switch does.
         slot_fill = _SlotFillScheduler.open(native_episode_binding.slot_fill)
 
-        async def invoke_episode(state, run_contact, session, *, run_local=None):
+        async def invoke_episode(state, run_contact, session, *, run_local=None, run_prepare=None):
             selected_binding = native_episode_binding
             decision = None
             if selector is not None:
@@ -6189,7 +6216,10 @@ def _run_agent_openjiuwen(
                 base_decoding_params=base_decoding_params, run_id=run_id,
                 knowledge_value_renderer=knowledge_value_renderer,
                 role_input_runner=(
-                    None if slot_fill is None else slot_fill.role_input_runner
+                    (lambda builder, phase_id, episode_state: run_prepare(
+                        lambda: builder(phase_id, episode_state), prefix_family=phase_id,
+                    )) if run_prepare is not None
+                    else (None if slot_fill is None else slot_fill.role_input_runner)
                 ),
             )
 

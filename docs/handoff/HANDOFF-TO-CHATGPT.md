@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Full-panel node scheduler verified offline, 2026-10-03T17:22:08.691438+00:00
+
+The [pipeline implementation](../readiness/2026-10-03-panel-node-pipeline-v1/README.md) now routes through the shared native executor: fixed-group CPU preparation overlaps current-node model work, while the whole-stage/final-preparation barrier precedes the next model stage. All four slots refill independently. Independent node prefixes remain the primary cache objective; no prompt homogenization or cache-benefit claim. All308 selected tests pass; new coordinator90%,shared executor95%,configuration99% statement coverage;lint/base/harness pass. [Pinned evidence](../receipts/continuation/2026-10-03-panel-node-pipeline-engineering.json). Zero real contacts or runtime-control changes.
+
+The160-job proof is synthetic; eight separately registered FlightRuntime clients/budgets/journals/manifests are NOT integrated yet. Do not run one160-row attempt as a replacement. Disk spooling/resident-byte bounds and real compatible-prefix/slot measurements remain. CPU prefetch prepares original role material; final serialization/FIT stay metered at contact. Relisten/model cleaning are refused in this mode. Finish panel ownership, then register capacity/structural proof before any new8x20. Prior cohort4/16 comparison remains HELD. Preserve all frozen workers and intentional unscored engineering attempts. Root only,no subagents;learning HELD,heartbeat PAUSED,human before8x400. No stable benefit,full carrier execution or learning gain follows from these checks.
+
 ## Node-batch structural proofs complete; panel pipeline requested, 2026-10-03T16:53:05.626554+00:00
 
 Both four-row workers completed16:49:04Z on frozen09e6e4d3b,53 model contacts/212 actual FIT endpoints,15 valid visible Reviewer handoffs,8 Omni deliveries and14 source-bound node waves. [Closure](../receipts/continuation/2026-10-03-node-batch-structural-complete.json) retains original sample/node timing,unchanged controls and intentional OPENED/unscored engineering lifecycle. Batch16 is underfilled;no real knowledge call occurred,no quality or speed claim. Owned processes exited,STOP/lease absent,service identity revalidated.
@@ -1176,7 +1182,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T16:57:14.067428+00:00
+Last refreshed: 2026-10-03T17:23:43.966998+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
