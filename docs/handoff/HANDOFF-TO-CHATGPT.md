@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Exact round6 proposer root-admitted, 2026-10-03T08:54:14.995096+00:00
+
+Root reviewed the four immutable round6 members and admitted exactly one Windows proposal task after clean frozen check-only. [Admission custody](../receipts/continuation/2026-10-03-round6-proposer-root-admission.json). All input/model/budget/view hashes stay fixed; twenty previous slots stay spent. No contact has occurred at this admission checkpoint. A failure stops; GPU FIT/engineering and runtime dispatch still require their separate registration and root admission.
+
+The delegated agent owns this serial admission integration window. Preserve current cache/trajectory scheduler and paused SLURP heartbeat; independent10-second telemetry remains unchanged.
+
+
 ## Round6 isolated proposal inputs prepared, 2026-10-03T08:50:16.839068+00:00
 
 Four fresh round6 opportunities retain all twenty spent slots. Complete round5 own-L feedback uses coherent-feedback-v1; B remains feedback-free and the exact model/budgets are unchanged. All four actual inputs pass initial bounds and the explicitly assumed one-page continuation; actual usage remains separately metered. [Prepared admission and integration handoff](../readiness/2026-10-03-slurp-text-extra-round6-v1/README.md). No model or GPU contact; root serial integration, frozen preflight and one-shot Windows launch are pending. Runtime policies, FIT/engineering and next20 membership follow complete proposal collection. Human review before8x400.
@@ -770,7 +777,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T08:50:16.839068+00:00
+Last refreshed: 2026-10-03T08:54:14.995096+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
