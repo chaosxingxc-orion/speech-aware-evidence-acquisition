@@ -1,0 +1,52 @@
+{
+  "schema": "saea-system-text-proposer-continuation-launch-v1",
+  "at_utc": "2026-10-03T06:57:46.633409+00:00",
+  "owner_decisions": [
+    226,
+    227
+  ],
+  "task": "SAEA-System-Text-Proposer-Extra5-Precontact-Recovery1",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-proposer-extra5-precontact-recovery1",
+  "commit": "4878e58ad5dc03f6653f05062b363c17d5dbf1a7",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/registration.json",
+    "sha256": "0cb94b0f1d8a8f69ea7c8de4e66eb60e443aa0ed1fb0a4cf56ada8067a935b45"
+  },
+  "launcher": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/launch.ps1",
+    "sha256": "cda0ecda801a74a0f7cd7253112d62f8f75b5d4a630927c0d87ed32cfec53cfa"
+  },
+  "preflight": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/preflight.json",
+    "sha256": "55f1b86df87c8217f259d9849aac38ec0826e7871b3ba61d0a330569802bc7e3"
+  },
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/windows-task-launch.json",
+    "sha256": "57c6f395c3dcecb5e618f1cc3578c55e7bb1a76bdd185cff908bf3c219df8a94"
+  },
+  "precontact": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra5-precontact-recovery1-v1/precontact.json",
+    "sha256": "bfc9e333b5b8de02c3abf3308490e51c19572d4438bc6048fd97b2329c8b67fc"
+  },
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra5-precontact-recovery1-v1/started.json",
+    "sha256": "6f1bfd72cb2df8f3bb2ae2e014f0974d48b6013fba83ad4e107991b6210b16ce"
+  },
+  "contact_receipts_at_checkpoint": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra5-precontact-recovery1-v1/contacts/B-5-1/001.json",
+      "sha256": "ab09bb3feb5e82235ce2ccfd97897a277db4034bce03f8be81e1a51651fb1d65"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra5-precontact-recovery1-v1/contacts/L-5-1/001.json",
+      "sha256": "d344c100f06b6f2ceeceda74e07a9af3cbc84d43b2ab1c1a88d4c52eb2b772b9"
+    }
+  ],
+  "reserved_contact_count_at_checkpoint": 2,
+  "old_task_retriggered": false,
+  "new_proposal_opportunities": 0,
+  "gpu_generation_or_scoring_contacts": 0,
+  "inputs_model_budgets_unchanged": true,
+  "status": "RUNNING",
+  "next": "Read all four proposal dispositions and actual metering; compile valid outputs and register exact next20 runtime family separately. Preserve spent/invalid/no-change slots, L/B isolation and frozen history. Root handles engineering incidents under227 before8x400; no silent retry."
+}
