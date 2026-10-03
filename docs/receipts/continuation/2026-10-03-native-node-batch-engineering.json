@@ -1,0 +1,86 @@
+{
+  "at_utc": "2026-10-03T16:19:53.908990+00:00",
+  "authority": "Owner227 plus direct node-batching direction",
+  "checks": [
+    {
+      "name": "engineering_base_check",
+      "passed": true,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-engineering-owner227-v1/engineering_base_check-v1.txt",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "name": "harness_admission_check",
+      "passed": true,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-engineering-owner227-v1/harness_admission_check-v1.txt",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    },
+    {
+      "name": "handoff_freshness_check",
+      "passed": true,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-engineering-owner227-v1/handoff_freshness_check-v1.txt",
+      "sha256": "60f0bb38b2d5939b7e74ba22d36510e19693fa8e2b9d551616857315c9f9b8dd"
+    }
+  ],
+  "coverage": {
+    "src/speech_aware_evidence_acquisition/rails/dispatch_slot_fill.py": {
+      "covered_lines": 111,
+      "excluded_lines": 0,
+      "missing_lines": 1,
+      "num_statements": 112,
+      "percent_covered": 99.10714285714286,
+      "percent_covered_display": "99",
+      "percent_statements_covered": 99.10714285714286,
+      "percent_statements_covered_display": "99"
+    },
+    "src/speech_aware_evidence_acquisition/reproduction/ojw/node_batch.py": {
+      "covered_lines": 110,
+      "excluded_lines": 0,
+      "missing_lines": 8,
+      "num_statements": 118,
+      "percent_covered": 93.22033898305085,
+      "percent_covered_display": "93",
+      "percent_statements_covered": 93.22033898305085,
+      "percent_statements_covered_display": "93"
+    },
+    "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py": {
+      "covered_lines": 317,
+      "excluded_lines": 0,
+      "missing_lines": 9,
+      "num_statements": 326,
+      "percent_covered": 97.23926380368098,
+      "percent_covered_display": "97",
+      "percent_statements_covered": 97.23926380368098,
+      "percent_statements_covered_display": "97"
+    }
+  },
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "lint_passed": true,
+  "new_real_contacts": 0,
+  "next_gpu": "Requires exact registration, capacity and structural acceptance before fresh repeated20 comparison",
+  "readiness": "docs/readiness/2026-10-03-native-node-batch-v1/README.md",
+  "runtime_activation": false,
+  "schema": "saea-native-node-batch-engineering-v1",
+  "scope": "Opt-in bounded cohorts inside shared native flight; cross-experiment interleaving not implemented",
+  "status": "OFFLINE_VERIFIED_NOT_ADMITTED",
+  "subagents": false,
+  "test_receipts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-engineering-owner227-v1/targeted-v3-command.json",
+      "sha256": "48c849d169a82e393e73f9bae55020b6e47c6ff50f763efa30880bb65568feab"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-engineering-owner227-v1/targeted-v3.txt",
+      "sha256": "c87272fbaefc6800b8512ff6d1cd91d470ad0f7bdeb1a9628905392a3176ed60"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-engineering-owner227-v1/coverage-v3.json",
+      "sha256": "56b2a49c6446ef818efc81b38c7cd9933da17d577b4fbc4cb8b5e3958db23d18"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-batch-engineering-owner227-v1/prior-base-trace-test-v1.txt",
+      "sha256": "5071d4e5b7aea7518cf0c43a4fc52cb0301889b3e8296567548e485e4dd645d5"
+    }
+  ],
+  "tests_passed": 237
+}

@@ -165,7 +165,59 @@ def parse_native_prefix_slots(values: Mapping[str, object]) -> NativePrefixSlots
     return NativePrefixSlots(tuple(sorted(roles.items())))
 
 
+class NativeNodeBatchError(RailsError):
+    """Refuse an incomplete or conflicting node-batch execution envelope."""
+
+
+@dataclass(frozen=True)
+class NativeNodeBatch:
+    """Bounded intermediate sample state, independent of permanent KV slots."""
+
+    node_order: tuple[str, ...]
+    batch_size: int
+
+    def as_json(self):
+        return {"schema": "saea-native-node-batch-v1", "node_order": list(self.node_order),
+                "batch_size": self.batch_size}
+
+    def validate(self, config, *, queue_depth):
+        if config is None:
+            raise NativeNodeBatchError("node batch requires a native role episode")
+        if type(queue_depth) is not int or not 1 <= self.batch_size <= queue_depth:
+            raise NativeNodeBatchError("node batch size exceeds the admitted workflow queue")
+        required = {r.phase_id for r in config.roles if r.max_iterations > 0}
+        if config.relisten_json is not None:
+            required.add("relisten")
+        if set(self.node_order) != required:
+            raise NativeNodeBatchError("node batch order must cover exactly all reachable model roles")
+        if config.context_policy_json is not None:
+            from .node_context_binding import node_context_cleaning_boundaries
+            if node_context_cleaning_boundaries(config.context_policy_json):
+                raise NativeNodeBatchError("node batch refuses unscheduled model context cleaning")
+
+
+def parse_native_node_batch(values: Mapping[str, object]) -> NativeNodeBatch | None:
+    """Opt in explicitly; keep absent historical configurations unchanged."""
+    if "native_node_batch" not in values:
+        return None
+    if "native_prefix_slots" in values:
+        raise NativeNodeBatchError("node batch conflicts with permanent role slots")
+    raw = values["native_node_batch"]
+    if not isinstance(raw, Mapping) or set(raw) != {"schema", "node_order", "batch_size"}:
+        raise NativeNodeBatchError("node batch needs exact schema, node_order and batch_size")
+    if raw["schema"] != "saea-native-node-batch-v1":
+        raise NativeNodeBatchError("unknown node batch schema")
+    order, size = raw["node_order"], raw["batch_size"]
+    if (not isinstance(order, list) or not order
+            or any(not isinstance(n, str) or not n.strip() for n in order)
+            or len(set(order)) != len(order)
+            or type(size) is not int or size < 1):
+        raise NativeNodeBatchError("node batch requires unique node names and positive integer size")
+    return NativeNodeBatch(tuple(order), size)
+
+
 __all__ = [
+    "NativeNodeBatch", "NativeNodeBatchError", "parse_native_node_batch",
     "DISPATCH_SLOT_FILL_KEY",
     "DISPATCH_SLOT_FILL_SCHEMA",
     "DispatchSlotFill",

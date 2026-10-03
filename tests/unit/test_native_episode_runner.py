@@ -545,6 +545,7 @@ class _ActualEpisodeHarness:
             # binding byte-identical to its pre-existing self.
             perception_contrast_pairs=getattr(self, "perception_contrast_pairs", None),
             prefix_slots=getattr(self, "prefix_slots", None),
+            node_batch=getattr(self, "node_batch", None),
         )
         source_kwargs = (
             {}

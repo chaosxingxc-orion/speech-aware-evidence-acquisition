@@ -4142,6 +4142,8 @@ class FlightRuntime:
         # Validate an armed scheduler before preparation can contact a service.
         if "native_prefix_slots" in values:
             self._native_prefix_slots()
+        if "native_node_batch" in values:
+            self._native_node_batch()
 
         carrier_lock_key = values.get("carrier_lock_key")
         if not isinstance(carrier_lock_key, str) or not carrier_lock_key:
@@ -7218,6 +7220,25 @@ class FlightRuntime:
         except NativePrefixSlotsError as error:
             raise FlightRuntimeError(str(error)) from error
 
+    def _native_node_batch(self, native_config=None):
+        """Validate the bounded schedule before preparation opens any contact."""
+        from ...rails.dispatch_slot_fill import NativeNodeBatchError, parse_native_node_batch
+        from ...rails.native_episode_config import load_native_episode_config
+        try:
+            parsed = parse_native_node_batch(self._composed.values)
+            if parsed is None:
+                return None
+            if native_config is None:
+                policy = self._composed.values.get("policy")
+                if policy == "fixed" or policy in self._obs_policy_names():
+                    raise NativeNodeBatchError("node batch requires a native role episode")
+                native_config = load_native_episode_config(self._composed.values, default_phase_program(policy))
+            # The ordinary continuous phase runner admits four workflows/slot.
+            parsed.validate(native_config, queue_depth=4 * self._adapter.serving_geometry()["slots"])
+            return parsed
+        except NativeNodeBatchError as error:
+            raise FlightRuntimeError(str(error)) from error
+
     def _dispatch_phase_program(
         self,
         client: object,
@@ -7246,6 +7267,7 @@ class FlightRuntime:
 
         native_config = load_native_episode_config(self._composed.values, program)
         prefix_slots = self._native_prefix_slots(native_config)
+        node_batch = self._native_node_batch(native_config)
         # Owner decision 159: the dispatcher slot-fill switches, or None --
         # the value of every committed configuration, under which nothing
         # below changes. Scheduling only; refused outside a native episode,
@@ -7507,6 +7529,7 @@ class FlightRuntime:
                 # Owner decision 159: None unless ``dispatch`` is declared.
                 slot_fill=slot_fill,
                 prefix_slots=prefix_slots,
+                node_batch=node_batch,
                 # Same-flight instrument, PHASE 2 (merge set C): every
                 # declared Perception branch's own pre-flight seed. None --
                 # and therefore byte-identical to the pre-phase-2 tree --
@@ -7791,6 +7814,9 @@ class FlightRuntime:
                 dispatch["slot_fill"] = slot_fill.as_json()
             if prefix_slots is not None:
                 dispatch["native_prefix_slots"] = prefix_slots.as_json()
+            if node_batch is not None:
+                dispatch["native_node_batch"] = node_batch.as_json()
+                dispatch["barrier"] = "bounded cohort: finish ready node contacts before advancing"
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)

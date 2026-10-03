@@ -4465,7 +4465,7 @@ async def _invoke_native_role_episode(
                 slot_id=slot_id, contact_kind=contact_kind, index=index,
                 instruction=instruction, response_format_id=response_format_id,
             )
-        options = {"prefix_family": "relisten"} if binding.prefix_slots is not None else {}
+        options = {"prefix_family": "relisten"} if binding.prefix_slots is not None or binding.node_batch is not None else {}
         return await run_contact(contact, **options)
 
     async def run_relisten_stage(delivered_text):
@@ -4833,7 +4833,7 @@ async def _invoke_native_role_episode(
                 return completion
             finally:
                 set_current_trace_buffer(None)
-        options = {"prefix_family": request.role_id} if binding.prefix_slots is not None else {}
+        options = {"prefix_family": request.role_id} if binding.prefix_slots is not None or binding.node_batch is not None else {}
         return await run_contact(contact, **options)
 
     def reject_tool_batch(phase_id, assistant_message):
@@ -4898,7 +4898,9 @@ async def _invoke_native_role_episode(
                 return message["content"]
             if run_local is not None:
                 return await run_local(lambda: execute(None))
-            options = {"prefix_family": role.phase_id} if binding.prefix_slots is not None else {}
+            options = {"prefix_family": role.phase_id} if binding.prefix_slots is not None or binding.node_batch is not None else {}
+            if binding.node_batch is not None:
+                options["contact_kind"] = "tool"
             return await run_contact(execute, **options)
         async def invoke(**arguments):
             return await execute_arguments(arguments)
@@ -6120,6 +6122,30 @@ def _run_agent_openjiuwen(
             except NativePrefixSlotsError as error:
                 raise RailsRunnerError(str(error)) from error
             scheduling_options["prefix_slot_bindings"] = prefix_slots.slot_bindings()
+        if native_episode_binding.node_batch is not None:
+            from .dispatch_slot_fill import NativeNodeBatch, NativeNodeBatchError
+            node_batch = native_episode_binding.node_batch
+            if not isinstance(node_batch, NativeNodeBatch) or prefix_slots is not None:
+                raise RailsRunnerError("invalid or conflicting native node batch binding")
+            try:
+                node_batch.validate(native_episode_binding.config, queue_depth=queue_depth)
+            except NativeNodeBatchError as error:
+                raise RailsRunnerError(str(error)) from error
+            scheduling_options.update(node_batch_order=node_batch.node_order,
+                                      node_batch_size=node_batch.batch_size)
+            def record_node_timing(state, event):
+                from .execution_units import scoped_execution_contact_id
+                index = sum(key[0] == -3 for key in state.trace_buffers)
+                trace = TraceBuffer(run_id)
+                trace.emit("USE", scoped_execution_contact_id(
+                    f"{state.prepared.sample.sample_id}/{native_episode_binding.program.program_id}/node-batch-timing/{index}",
+                    state.prepared.execution_unit_id,
+                ), {"use_node_batch_contact_timing": {
+                    **event, "sample_id": state.prepared.sample.sample_id,
+                    "execution_unit_id": state.prepared.execution_unit_id,
+                }})
+                state.trace_buffers[(-3, index)] = trace
+            scheduling_options["node_batch_timing_sink"] = record_node_timing
         selector = native_episode_binding.system_episode_policy
         if selector is not None:
             from .system_episode_policy import SystemEpisodePolicy

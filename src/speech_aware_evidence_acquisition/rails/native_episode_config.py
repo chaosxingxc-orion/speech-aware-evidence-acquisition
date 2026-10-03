@@ -959,6 +959,7 @@ class NativeEpisodeRunBinding:
     # Optional execution envelope, outside the policy dataclass so an absent
     # factor preserves existing whole-policy hashes and request semantics.
     prefix_slots: object = None
+    node_batch: object = None
 
 
 @dataclass(frozen=True)

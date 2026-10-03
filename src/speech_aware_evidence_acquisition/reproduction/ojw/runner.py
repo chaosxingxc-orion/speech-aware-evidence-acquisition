@@ -421,6 +421,9 @@ def execute_speech_agent_workflows(
     local_tool_workers: int = 0,
     prefix_slot_bindings: Mapping[str, int] | None = None,
     sample_timing_sink: Callable[[object, Mapping[str, object]], None] | None = None,
+    node_batch_order: Sequence[str] | None = None,
+    node_batch_size: int | None = None,
+    node_batch_timing_sink: Callable[[object, Mapping[str, object]], None] | None = None,
 ) -> list[object]:
     """Run speech Agent workflows on one openJiuwen event loop.
 
@@ -456,12 +459,34 @@ def execute_speech_agent_workflows(
     caller owns the versioned prefix identity and complete request bytes. This
     routing primitive neither verifies a cache hit nor grants flight admission.
 
+    Optional node_batch_order/node_batch_size groups a bounded cohort by its
+    ready native node, using every model slot for that node before advancing.
+    Per-sample state and tools remain in the original native graph; conditional
+    nodes and revision loops rejoin at contact boundaries. Whole cohorts settle
+    before new admissions, and any failure stops queued work and later cohorts.
+    No role is permanently assigned a slot. node_batch_timing_sink is strictly
+    observational and records original queue/start/settlement boundaries.
+
     Optional sample_timing_sink receives monotonic execution boundaries after an
     admitted workflow and its synchronous workers settle. The interval includes
     slot/tool waits and cleanup, but excludes pre-admission waiting and roster
     preparation. Admission order, not completion order, identifies the first
     sample. This observational callback never enters a model request.
     """
+
+    if node_batch_order is not None:
+        if (episode_invoker is None or prefix_slot_bindings is not None
+                or isinstance(node_batch_order, (str, bytes))
+                or not isinstance(node_batch_order, Sequence) or not node_batch_order
+                or any(not isinstance(n, str) or not n.strip() for n in node_batch_order)
+                or len(set(node_batch_order)) != len(node_batch_order)
+                or type(node_batch_size) is not int or not 1 <= node_batch_size <= queue_depth
+                or type(slot_count) is not int or slot_count < 1
+                or (node_batch_timing_sink is not None and not callable(node_batch_timing_sink))):
+            raise ValueError("node batch needs native nodes, bounded cohort and exclusive scheduling")
+        node_batch_order = tuple(node_batch_order)
+    elif node_batch_size is not None or node_batch_timing_sink is not None:
+        raise ValueError("node batch settings require a declared node order")
 
     if sample_timing_sink is not None and not callable(sample_timing_sink):
         raise TypeError("sample timing sink must be callable")
@@ -513,7 +538,7 @@ def execute_speech_agent_workflows(
             slots.put_nowait(slot_id)
         prefix_locks = {key: asyncio.Lock() for key in (prefix_slot_bindings or {})}
 
-        async def one(state: object):
+        async def one(state: object, node_batch=None, member=None):
             primary_slot_id: int | None = None
             slot_assignment_lock = asyncio.Lock()
             contact_lock = asyncio.Lock()
@@ -529,9 +554,11 @@ def execute_speech_agent_workflows(
 
             async def run_contact(
                 blocking_contact: Callable[[int], ContactResult],
-                *, prefix_family: str | None = None,
+                *, prefix_family: str | None = None, contact_kind: str = "model",
             ) -> ContactResult:
                 async with contact_lock:
+                    if node_batch is not None:
+                        return await node_batch.contact(member, prefix_family, blocking_contact, contact_kind)
                     if prefix_slot_bindings is not None:
                         if not isinstance(prefix_family, str) or prefix_family not in prefix_locks:
                             raise ValueError("model contact lacks its declared prefix family")
@@ -711,6 +738,60 @@ def execute_speech_agent_workflows(
                     async with admission_lock:
                         failures[index] = failure
                     return
+
+        if node_batch_order is not None:
+            from .node_batch import NodeBatchCoordinator
+
+            try:
+                for start in range(0, len(ordered_states), node_batch_size):
+                    if failures:
+                        break
+                    members = list(range(start, min(start + node_batch_size, len(ordered_states))))
+                    def event_sink(member, event):
+                        if node_batch_timing_sink is not None:
+                            node_batch_timing_sink(ordered_states[member], event)
+                    coordinator = NodeBatchCoordinator(
+                        members, node_batch_order, slot_count, start // node_batch_size,
+                        event_sink=event_sink,
+                    )
+                    async def cohort_member(index):
+                        state = ordered_states[index]
+                        admitted_ns = _monotonic_ns() if sample_timing_sink is not None else None
+                        failure = None
+                        try:
+                            await one(state, coordinator, index)
+                        except BaseException as error:
+                            failure = error
+                        if sample_timing_sink is not None:
+                            timing = {
+                                "schema": "saea-sample-execution-timing-v1",
+                                "admission_index": index, "expected_samples": len(ordered_states),
+                                "slot_count": slot_count, "queue_depth": queue_depth,
+                                "batch_started_ns": batch_started_ns, "admitted_ns": admitted_ns,
+                                "finished_ns": _monotonic_ns(),
+                                "status": "completed" if failure is None else "failed",
+                                "error_type": None if failure is None else type(failure).__name__,
+                            }
+                            try:
+                                sample_timing_sink(state, timing)
+                            except BaseException as error:
+                                failure = failure or error
+                        coordinator.finish(index, failure)
+                        if failure is not None:
+                            failures[index] = failure
+                    driver = asyncio.create_task(coordinator.drive())
+                    workers = [asyncio.create_task(cohort_member(i)) for i in members]
+                    try:
+                        await asyncio.gather(*workers)
+                    finally:
+                        await asyncio.gather(*workers, return_exceptions=True)
+                        await driver
+                    if coordinator.failure is not None and not failures:
+                        failures[start] = coordinator.failure
+                return failures
+            finally:
+                if local_executor is not None:
+                    local_executor.shutdown(wait=True, cancel_futures=True)
 
         worker_count = min(queue_depth, len(ordered_states))
         admission_workers = [

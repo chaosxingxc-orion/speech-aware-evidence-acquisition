@@ -307,6 +307,13 @@ def test_the_trace_records_are_the_same_records_modulo_arrival(tmp_path, monkeyp
         out = []
         for record in lines:
             record["payload"].pop("latency_seconds", None)
+            timing = record["payload"].get("use_sample_execution_timing")
+            if timing is not None:
+                # Keep the sample, status, scope and admission identity. Only
+                # measured monotonic boundaries differ between real executions.
+                for boundary in ("batch_started_ns", "admitted_ns", "finished_ns"):
+                    assert type(timing[boundary]) is int
+                    timing.pop(boundary)
             text = _arrival_free(record)
             text = re.sub(r"flight-\d+", lambda m: names.get(m.group(0), "?"), text)
             out.append(text)

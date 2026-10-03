@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Native node-batch scheduler verified offline, 2026-10-03T16:19:53.908990+00:00
+
+[Shared-executor implementation](../readiness/2026-10-03-native-node-batch-v1/README.md) groups bounded cohorts by ready node and uses all model slots, retaining each sample's own intermediate state/tools/revision and Omni custody. This is not permanent role-slot routing. Source/FIT order and canonical outputs match disabled execution in the native fake-service harness. All237 targeted tests pass;new scheduler93%,shared runner97%,configuration99% statement coverage. Repeated cancellation drains workers;failures stop queued contacts and future cohorts. Original sample timing includes node barriers;separate node records distinguish model/tool queue/start/finish. [Evidence](../receipts/continuation/2026-10-03-native-node-batch-engineering.json). Zero real contacts.
+
+An old trace test also failed on unchanged base because it compared real monotonic timestamps;its correction excludes only those three measured boundaries and retains business records. Prepared context-content factors stay HELD. Prospective exact capacity/structural proof precedes an8x20 comparison of original trajectory,before-speech trajectory,node-batch4,node-batch16 with own repeats. Cross-experiment co-scheduling is not implemented/admitted. No model policy change,learning,automatic scale or benefit claim;root only,heartbeat PAUSED,human before8x400.
+
 ## Prefix-cache diagnosis and node-batched execution direction, 2026-10-03T16:03:39.061786+00:00
 
 Root uniquely reverified all1,030 matrix requests against actual server task/slot logs. Hot prefix KV works; no full purge or RAM eviction event appears. Whole role text before speech causes early mismatches on216 same-sample successors; permanent role slots switch samples on all493 within-run successors. Original trajectory retains the long sample prefix on225 calls. See the [source-bound supplement](../results/2026-10-03-prefix-cache-sequence-and-node-batching.md) and [receipt](../receipts/continuation/2026-10-03-prefix-cache-sequence-diagnosis.json). This supersedes only the prior unknown actual-slot statement; frozen reports/results remain preserved. Zero new contacts.
@@ -1148,7 +1154,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T16:04:09.278921+00:00
+Last refreshed: 2026-10-03T16:19:53.908990+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

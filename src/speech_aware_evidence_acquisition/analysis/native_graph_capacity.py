@@ -113,7 +113,7 @@ def fit_native_graph(runtime, path, *, policy, graph_factory, contact_cap=2048):
     probe = graph_factory()
     probe_context = probe.preparation_context()
     for key in ("policy", "native_episode", "phase_material", "phase_tools", "knowledge_stores",
-                "native_prefix_slots", "native_role_query_placement"):
+                "native_prefix_slots", "native_node_batch", "native_role_query_placement"):
         if digest(values.get(key)) != digest(probe_context["values"].get(key)):
             raise ValueError("Graph proof differs from capacity configuration: " + key)
     if len(probe_context["sample_ids"]) != 4 or not set(probe_context["sample_ids"]) <= set(context["sample_ids"]):
