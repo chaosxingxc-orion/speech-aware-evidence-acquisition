@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Seed layout structural proof admitted, 2026-10-03T12:58:45.247921+00:00
+
+Root independently verified the completed capacity accounting and its six source hashes,297 endpoint entries and zero generation/scoring. [Exact structural admission](../receipts/continuation/2026-10-03-context-layout-structural-root-admission.json) permits one separate four-row seed before-speech worker,maximum52 generation/208 FIT endpoints,zero scoring,only after fresh own supply,exact precontact registration,clean frozen checks and a normal completed-control transition. Keep all role bytes,knowledge,current400 assets,trajectory routing and cache settings fixed.
+
+The shared offline layout audit now joins original input bytes,control/source identity,recorded ORG receipt and original actual-FIT body hash; it also checks complete query placement at user authority.62 tests pass,91 percent shared-module coverage and every new helper statement covered;engineering-base/harness-admission pass. It grants no read permission and does not weaken the finalized/scored scientific-source gate. Require every structural contact to pass this audit in addition to handoff and Omni custody checks. No new generation has occurred at this admission. Larger comparisons and learning remain HELD;heartbeat PAUSED,12.5/8 GiB floors and human review before8x400 remain.
+
 ## Seed layout capacity complete; structural preparation held, 2026-10-03T12:55:22.472369+00:00
 
 The one admitted capacity task exited0 at12:53:31.978388Z on immutable becae0234. [Exact closure](../receipts/continuation/2026-10-03-context-layout-capacity-complete.json) independently accounts297 endpoints and44 measured requests,all fitting.24576-token slots retain full512 output plus2048 structural reserve;minimum remaining5546 tokens. Zero generation/scoring/quality read,owned lease released,PID exited,source clean and STOP absent. Windows17.513 GiB after completion.

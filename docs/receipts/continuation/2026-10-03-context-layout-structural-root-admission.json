@@ -1,0 +1,60 @@
+{
+  "antecedents": [
+    {
+      "relpath": "docs/receipts/owner/2026-10-03-engineering-first-context-configuration.json",
+      "sha256": "178928f6acd0254f71878431e01159a20df279f20606d13492d31da9e062d0e7"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-context-layout-capacity-complete.json",
+      "sha256": "ac50e5fce91bf6c5813c4b1f31ef8dd8b1123e6ac56ddb4f293c9965836c8cce"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-03-context-layout-structural-entry-preparation-v1/root-review-DRAFT-v1.json",
+      "sha256": "3b6e8b37603fb818118461121b13378e2d2da05ed2bb5605f58b6b9f5b175c8f"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/structural-layout-audit.md",
+      "sha256": "ba753f7aa28a1551d21c8bd17be705368e12240ad9240e16addfc353476fdfa6"
+    }
+  ],
+  "at_utc": "2026-10-03T12:58:45.247921+00:00",
+  "authority": "Root implements the latest direct owner instruction: establish context-engineering correctness and efficiency before learning. Root independently checked completed capacity pins and endpoint count plus unchanged seed role and knowledge bindings.",
+  "decision_id": "slurp-context-layout-structural-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-FIT-V1"
+  ],
+  "failure_disposition": "Stop and preserve for named root disposition; no automatic retry.",
+  "heartbeat": "PAUSED",
+  "learning_status": "HELD",
+  "next_comparison_authorized": false,
+  "owner_decisions": [
+    227
+  ],
+  "precontact_conditions": [
+    "Integrate the shared layout audit; register exact generation,FIT and structural READ before any contact.",
+    "Prepare a fresh own supply after final allowed-mode and source identity; verify complete policy-role/layout binding and warm/frozen preparation.",
+    "Freeze a separate clean worker; verify actual live service geometry,original capacities and memory floors.",
+    "Normally archive only completed owned controls after no active generator/scorer,STOP or lease; no incident recovery authorized.",
+    "Use one Windows shared batch-driver engineering entry with existing guarded worker; preserve failure evidence without retry."
+  ],
+  "resource_contract": {
+    "guard_mode": "worker with existing lease",
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5,
+    "wait_seconds": 600
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scope": "One seed-only before-speech structural worker on the existing first4 engineering rows: maximum52 generation contacts and208 tokenizer endpoints,zero scoring. No policy learning,proposal allocation or larger comparison.",
+  "status": "decided",
+  "structural_acceptance": "Read complete engineering structure only: all original request/response/wire bindings, actual per-request FIT and ORG role-layout receipts, complete role query first at user authority, valid visible Reviewer handoffs, native Omni terminal custody and numeric node/episode costs. Require one-to-one contact coverage. Do not read task quality or score/reseal the intentional worker-only lifecycle.",
+  "verification": {
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "model_contacts_from_checks": 0,
+    "module_statement_coverage_percent": 91,
+    "new_helper_statements_covered": true,
+    "relevant_tests_passed": 62
+  }
+}
