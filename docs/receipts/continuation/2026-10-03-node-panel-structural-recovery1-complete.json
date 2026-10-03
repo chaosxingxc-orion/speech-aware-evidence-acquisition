@@ -1,0 +1,212 @@
+{
+  "actual_fit_endpoints": 212,
+  "actual_request_fit_receipts": 53,
+  "actual_slot_assignments_verified": 53,
+  "arm_start": "2026-10-03T19:30:28Z",
+  "barriers_verified": true,
+  "cpu_prefetch_overlap_events": 22,
+  "disposition": "The registered worker-only recovery is structurally complete. Preserve OPENED attempts with completed generation artifacts and prepared score specifications; do not officially score, reseal or replay. Register a controlled same-roster scheduling comparison before any speed or business-quality conclusion. No next20 admission by this receipt.",
+  "driver_completed_at": "2026-10-03T19:35:06Z",
+  "driver_epoch": "2026-10-03T19:30:00Z",
+  "heartbeat": "PAUSED",
+  "human_boundary": "before8x400",
+  "learning": "HELD",
+  "limits": [
+    "Two owners repeat the same four inputs; not a160-job scaling test.",
+    "No empty-cache warmup contrast or randomized immediate slot-predecessor contrast.",
+    "Long same-input reuse is separate from static-prefix reuse across changed inputs.",
+    "Full-slot eviction was not seen in the bounded logged interval; suffix invalidation remains.",
+    "No task-quality, stable benefit, learning or adoption claim."
+  ],
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member1-smoke-4-recovery1-generation-v1",
+      "attempt_state": "OPENED",
+      "completed_generation_manifest": true,
+      "contacts": 28,
+      "fit_endpoints": 112,
+      "fit_receipts": 28,
+      "official_scores": 0,
+      "output_rows_persisted": true,
+      "run": "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-RECOVERY1-V1",
+      "run_phases_seconds": 183.09228539466858
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member2-smoke-4-recovery1-generation-v1",
+      "attempt_state": "OPENED",
+      "completed_generation_manifest": true,
+      "contacts": 25,
+      "fit_endpoints": 100,
+      "fit_receipts": 25,
+      "official_scores": 0,
+      "output_rows_persisted": true,
+      "run": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-RECOVERY1-V1",
+      "run_phases_seconds": 183.0415015220642
+    }
+  ],
+  "model_contacts": 53,
+  "no_optimizer_export": true,
+  "no_quality_read": true,
+  "node_stages": [
+    {
+      "model_calls": 8,
+      "node": "perception",
+      "prepare_calls": 8,
+      "round": 0
+    },
+    {
+      "model_calls": 8,
+      "node": "solver",
+      "prepare_calls": 8,
+      "round": 0
+    },
+    {
+      "model_calls": 8,
+      "node": "reviewer",
+      "prepare_calls": 8,
+      "round": 0
+    },
+    {
+      "model_calls": 8,
+      "node": "planner",
+      "prepare_calls": 8,
+      "round": 0
+    },
+    {
+      "model_calls": 7,
+      "node": "solver",
+      "prepare_calls": 7,
+      "round": 1
+    },
+    {
+      "model_calls": 7,
+      "node": "reviewer",
+      "prepare_calls": 7,
+      "round": 1
+    },
+    {
+      "model_calls": 7,
+      "node": "planner",
+      "prepare_calls": 7,
+      "round": 1
+    }
+  ],
+  "node_switch_or_external_contacts": 28,
+  "official_scorer_contacts": 0,
+  "old_failed_attempts_preserved": true,
+  "omni_terminal_deliveries": 8,
+  "output_rows": 8,
+  "owner_decision": 227,
+  "pressure_log_matches": {
+    "cache size limit": [],
+    "cache token limit": [],
+    "context shift": [],
+    "evict": [],
+    "purging": []
+  },
+  "recorded_at_utc": "2026-10-03T19:43:16.208885+00:00",
+  "reviewer_valid_visible_handoffs": 15,
+  "root_only": true,
+  "same_node_changed_input_contacts": 18,
+  "same_node_repeated_input_contacts": 7,
+  "schema": "saea-node-panel-structural-recovery-complete-v1",
+  "source_commit": "aee1d61e707208ce68082e9174168979ae44dda2",
+  "sources": [
+    {
+      "bytes": 2243,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/root-admission-v1.json",
+      "sha256": "ae2c77fe16bb565da814e5928c9b3e7016611d6760104ad7f3a6ab0a3c432dfe"
+    },
+    {
+      "bytes": 131,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/frozen-source-v1.json",
+      "sha256": "f05d9a19f3cd64b96d7ec79393c217092ef70dbf8fed8e27156a3c5664938ab9"
+    },
+    {
+      "bytes": 1013,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/frozen-check-v1.json",
+      "sha256": "6a75bb3cb7f2020e85bc1ca0d5b736a55669754ba798180b27de8d47793b4fa5"
+    },
+    {
+      "bytes": 2393,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/driver-transition-intent-v1.json",
+      "sha256": "8f88b2816586e007bd713e97e7a84eff92d7555d1e65f36196fba3572b0a06c0"
+    },
+    {
+      "bytes": 2479,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/driver-transition-v1.json",
+      "sha256": "da2af93c23b9a82e00bddbecc19bd73116fe9f851f33c5de6472715e916a4959"
+    },
+    {
+      "bytes": 5151,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/postlaunch-operational-v1.json",
+      "sha256": "4584889e70046fb02a7bb24251c3cf5f642f99add0c721d95bd94bf92078b486"
+    },
+    {
+      "bytes": 19834,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/structural-audit-v1.py",
+      "sha256": "b0dfca6e3d80bd2b97c22be4825cdaa8cffcf1514319b1ef629c965521ee8adb"
+    },
+    {
+      "bytes": 1001,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/structural-audit-v1.stdout.log",
+      "sha256": "dc42c09169876b800248834e895aeed8e4f49b32e108782afaff7f05587ccf2f"
+    },
+    {
+      "bytes": 243960,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "933665a520ad6be4cf5828283a44f64e62fcbb8b01a8ac27f115e439e21d16b2"
+    },
+    {
+      "bytes": 3824,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/root-node-timing-v1.py",
+      "sha256": "e6cd44a5c41ff8d77e1f755d32b5f3d5286835bce77e6eb24712f18232d50b8d"
+    },
+    {
+      "bytes": 64878,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/root-node-timing-v1.json",
+      "sha256": "7c262dfe6fa99fccc9a501363a405af93b1c9026bbcd2136eb11b210fceb41dc"
+    },
+    {
+      "bytes": 11232,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/completed-cache-diagnostic-v1.py",
+      "sha256": "96cefb214c4a2ad4b141ff39e88353efe2514fb7ac2dc66d58158ca4731aee77"
+    },
+    {
+      "bytes": 81463,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/completed-operational-cache-diagnostic-v1.json",
+      "sha256": "61aa3903cc8b51c56feae449610c2178aabeb96c90e22969c25f85f1288ea67d"
+    },
+    {
+      "bytes": 5012,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/cache-input-split-v1.json",
+      "sha256": "c70ea3fe2f6ba4aff62daa3e09946c2f00e7d343945504fa366c9f237ed8fa12"
+    },
+    {
+      "bytes": 567,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/completion-status-v1.stdout.json",
+      "sha256": "3722ee2bf88325f0ec2aafde2060b9b514959c4909455bf3a8ace9c4c5b16db3"
+    },
+    {
+      "bytes": 2114,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/completion-live-state-v1.json",
+      "sha256": "713426ea6b19365a3c7900d02f6cf04163680b06b6910a6fd63fc8df4df4cf70"
+    },
+    {
+      "bytes": 141,
+      "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/windows-completion-v1.json",
+      "sha256": "270e6b71c7dad2cd7388a7d14ebc256ce712eac9f5c9f50696f8b448d09cc967"
+    }
+  ],
+  "status": "STRUCTURAL_ACCEPTED_ONLY",
+  "timing": {
+    "first_group_mean_seconds": 162.549852622,
+    "first_sample_seconds": 156.010414289,
+    "pre_execution_wait_seconds": 36.041598319,
+    "remaining_sample_mean_seconds": 153.21139217885715,
+    "sample_mean_seconds": 153.561269942625,
+    "second_group_mean_seconds": 144.57268726325,
+    "submission_to_terminal_mean_seconds": 189.60567785525
+  },
+  "worker": "/home/chao/saea-worktrees/codex-node-panel-structural-recovery1"
+}
