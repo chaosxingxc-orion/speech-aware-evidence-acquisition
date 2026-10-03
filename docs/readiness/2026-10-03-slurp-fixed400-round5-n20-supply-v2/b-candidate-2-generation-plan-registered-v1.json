@@ -1,0 +1,38 @@
+{
+  "cell": "slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-2-v1",
+  "composed_config_hash": "2ef0d9ace82a4b2c48e3c185ea1264088d297444e9d3b23805b10af27a06118c",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-system-text-fixed400-round5-n20-v1/root-admission-v1.json",
+    "sha256": "eedc339666b6aba71e17363add20197db55e1beaf3046d80827c2bdadfc2ad47"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-2-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "8fa84f20a48b52d5584e28ee3134c49e7083f28576dd617225719b4226f298c6",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-2-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1/phase-supply-v2.json",
+    "sha256": "9736d3f03ece683e14ff18af5e880230bc08c0ef4400886123010922656ee22a"
+  },
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "root_disposition": {
+    "relpath": "docs/receipts/continuation/2026-10-03-round5-n20-precontact-binding-disposition.json",
+    "sha256": "a05fc29076f550dc8876697c74e5bd42a0b65a651120722e2d3e56798daf1404"
+  },
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-v1/b-candidate-2-generation-plan-registered-v1.json",
+    "sha256": "102dbd61366673f739e90df8fc564dcae8870e6b996243e3c854b28e12577924"
+  }
+}

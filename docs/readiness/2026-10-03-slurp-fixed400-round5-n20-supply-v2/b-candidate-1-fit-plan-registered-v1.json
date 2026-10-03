@@ -1,0 +1,38 @@
+{
+  "cell": "slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-1-v1",
+  "composed_config_hash": "1319843c8cd40a7a62b301eff2fd13fb41a55e3ecd3337671910137ea59951f9",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-system-text-fixed400-round5-n20-v1/root-admission-v1.json",
+    "sha256": "eedc339666b6aba71e17363add20197db55e1beaf3046d80827c2bdadfc2ad47"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-1-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "3c832436d73acd7c8985deda860d3cb4e7fcbdd94a23ab8838a17a6e86df262a",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-1-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1/phase-supply-v2.json",
+    "sha256": "5f8e2766548dffae44a9a56ad477dcde04996f51396f39b2c7a366b5203dfb5e"
+  },
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "root_disposition": {
+    "relpath": "docs/receipts/continuation/2026-10-03-round5-n20-precontact-binding-disposition.json",
+    "sha256": "a05fc29076f550dc8876697c74e5bd42a0b65a651120722e2d3e56798daf1404"
+  },
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-v1/b-candidate-1-fit-plan-registered-v1.json",
+    "sha256": "048f88109fad8a6cc3134ad4a0de7c2fbac9f16d535f1a05a4a249ee734c9190"
+  }
+}

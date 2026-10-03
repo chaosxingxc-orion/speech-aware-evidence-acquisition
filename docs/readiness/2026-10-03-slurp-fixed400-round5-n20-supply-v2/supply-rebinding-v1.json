@@ -1,0 +1,150 @@
+{
+  "authority": 227,
+  "members": [
+    {
+      "attempt_absent": true,
+      "config_hash": "ed2bd54fd77646cecb283f7cb1c5df5a46c3d255fad45b37f4b5e214a7d0dd7e",
+      "member": "L-parent",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1/phase-supply-v2.json",
+        "sha256": "d45d3b7a3c5d8fdb36384b6fd4e63e4adf90cbe098392ec87d373302a04d6f84"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1/phase-supply-v1.json",
+        "sha256": "496038ee2f966d6160de66229b1cf9db164e55d96d645b2d896083028bda3057"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "df40a61679e3df6fb5bba6d0d6c118bacc8399818a262768a054a42b44a73104",
+      "warm_verified": true
+    },
+    {
+      "attempt_absent": true,
+      "config_hash": "15d31c23697b7b0f5c5c830e1762e23870ef01cd3ab90fce39e97dcf95cd7910",
+      "member": "L-parent-aa",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1/phase-supply-v2.json",
+        "sha256": "86b356835d28d04adfa6208b5707550e729ac92bacdcd749b90dcd6549435f16"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1/phase-supply-v1.json",
+        "sha256": "8ebab506df9a77899acf768af8e7a898a90c905b86dbe69f5da9f04736b3f5a3"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "e9d6955f60fdaddaa4fe5d5f1798ca1f1f9ba5654f2d4e13a4dbb507e0f2c9b2",
+      "warm_verified": true
+    },
+    {
+      "attempt_absent": true,
+      "config_hash": "b1b28a497bf52616eb3d39eeb48d26cbfd3d7fae39853b0daa0b49a2bf1c0464",
+      "member": "L-candidate-1",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1/phase-supply-v2.json",
+        "sha256": "ea520c35303c376b73f188c4421908293eeb1cd03af539f5e826ce040da15bd3"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1/phase-supply-v1.json",
+        "sha256": "a529f182c20e3680c35b37c32ba379062f97bbe77c6d85e046f00a2668adbe75"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "852c6ca6a3043f8f263371d8bea6b7d5575745a57993cb18f47adae17cd122b7",
+      "warm_verified": true
+    },
+    {
+      "attempt_absent": true,
+      "config_hash": "138489579f2ac2427165f5366cad466c0ba04270cd8cae039a38440642c66ac1",
+      "member": "L-candidate-2",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1/phase-supply-v2.json",
+        "sha256": "8af3f07ca384edbb66dac76a3cd21b2c38d7896ee081febe5252d91d0ed72c1a"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1/phase-supply-v1.json",
+        "sha256": "1c97dd9fa7f6bfef0ec643279fc1e715eb95bea5aaa99ba5663c9895fa4b29c0"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "01a6dd97f5c98a68d9cea81d1e43a7572675ce2b8449b7c99452cb587c91250a",
+      "warm_verified": true
+    },
+    {
+      "attempt_absent": true,
+      "config_hash": "e4d229435b2c4d650e466cb7c154ed97d42e09b39e58ee74c137dcebe82ec241",
+      "member": "B-parent",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1/phase-supply-v2.json",
+        "sha256": "6250132aec84654104de9aa5a2a330ef50604c1a3b6420df1ccc70175e31f672"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1/phase-supply-v1.json",
+        "sha256": "9fc6d37b82b0252a18151670a68539623a7415b999d59873abbb78d79c621b2e"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "fc0a6a92af9fd1757b1c32a92fc0fbb3f81262b81103b323b574eb3745a745e9",
+      "warm_verified": true
+    },
+    {
+      "attempt_absent": true,
+      "config_hash": "6343d2c319c6ae2599b1004b4c54f9d4eb0b88577ca7652dd15b4fe3ea6f8d1d",
+      "member": "B-parent-aa",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1/phase-supply-v2.json",
+        "sha256": "b0eb0cf42ce27b06d0695b33161772fb4b8ae4db604df628eb7b0207516e29c5"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1/phase-supply-v1.json",
+        "sha256": "0dabc58a87500ed0c25e91fc4240924e366d781f7fa691c5b0e88f8867abc9ed"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "abc42938f2c505fcc15039560f64728e481a9a9f8c445b4af964fe10d5faec35",
+      "warm_verified": true
+    },
+    {
+      "attempt_absent": true,
+      "config_hash": "1319843c8cd40a7a62b301eff2fd13fb41a55e3ecd3337671910137ea59951f9",
+      "member": "B-candidate-1",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1/phase-supply-v2.json",
+        "sha256": "5f8e2766548dffae44a9a56ad477dcde04996f51396f39b2c7a366b5203dfb5e"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1/phase-supply-v1.json",
+        "sha256": "354c24883d273fb47bc22d9261262e713e70c9d551249d9bca6542b5132053c8"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "3c832436d73acd7c8985deda860d3cb4e7fcbdd94a23ab8838a17a6e86df262a",
+      "warm_verified": true
+    },
+    {
+      "attempt_absent": true,
+      "config_hash": "2ef0d9ace82a4b2c48e3c185ea1264088d297444e9d3b23805b10af27a06118c",
+      "member": "B-candidate-2",
+      "new_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1/phase-supply-v2.json",
+        "sha256": "9736d3f03ece683e14ff18af5e880230bc08c0ef4400886123010922656ee22a"
+      },
+      "old_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1/phase-supply-v1.json",
+        "sha256": "9b5e878d49ff0b202fd1b810cebd18430cb481b869f507798c7d2e9f8ad35ab7"
+      },
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "outputs_equal": true,
+      "protocol_hash": "8fa84f20a48b52d5584e28ee3134c49e7083f28576dd617225719b4226f298c6",
+      "warm_verified": true
+    }
+  ],
+  "new_model_contacts": 0,
+  "new_score_contacts": 0,
+  "old_archive_panel": {
+    "relpath": "panels/fixed400-text-round5-n20-v1.json",
+    "sha256": "6beddfa296f203c0ebf30a87ae4e715f8b5d34a95d2409c5cde7352c962abaeb"
+  },
+  "recorded_at_utc": "2026-10-03T07:36:04.789659+00:00",
+  "schema": "saea-root-precontact-binding-supersession-v1",
+  "scope_validation": "PASS"
+}

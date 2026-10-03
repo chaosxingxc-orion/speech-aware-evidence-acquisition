@@ -1,0 +1,38 @@
+{
+  "cell": "slurp-native-stage3-system-text-fixed400-round5-n20-b-parent-aa-v1",
+  "composed_config_hash": "6343d2c319c6ae2599b1004b4c54f9d4eb0b88577ca7652dd15b4fe3ea6f8d1d",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-system-text-fixed400-round5-n20-v1/root-admission-v1.json",
+    "sha256": "eedc339666b6aba71e17363add20197db55e1beaf3046d80827c2bdadfc2ad47"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-b-parent-aa-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "abc42938f2c505fcc15039560f64728e481a9a9f8c445b4af964fe10d5faec35",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-fixed400-round5-n20-b-parent-aa-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1/phase-supply-v2.json",
+    "sha256": "b0eb0cf42ce27b06d0695b33161772fb4b8ae4db604df628eb7b0207516e29c5"
+  },
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "root_disposition": {
+    "relpath": "docs/receipts/continuation/2026-10-03-round5-n20-precontact-binding-disposition.json",
+    "sha256": "a05fc29076f550dc8876697c74e5bd42a0b65a651120722e2d3e56798daf1404"
+  },
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-v1/b-parent-aa-generation-plan-registered-v1.json",
+    "sha256": "2c390a3971aaf0e555c67c101e6801039fa78fbd7683ebd41108412ee5d2945b"
+  }
+}

@@ -23,8 +23,8 @@
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1/phase-supply-v1.json",
-            "sha256": "9fc6d37b82b0252a18151670a68539623a7415b999d59873abbb78d79c621b2e"
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1/phase-supply-v2.json",
+            "sha256": "6250132aec84654104de9aa5a2a330ef50604c1a3b6420df1ccc70175e31f672"
           }
         ],
         "state": "ready"

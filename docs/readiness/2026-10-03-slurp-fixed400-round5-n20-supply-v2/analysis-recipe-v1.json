@@ -1,0 +1,69 @@
+{
+  "analysis_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+    "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+  },
+  "authority": [
+    222,
+    223,
+    224,
+    227
+  ],
+  "expected_members": {
+    "B-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1",
+    "B-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1",
+    "B-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1",
+    "B-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1",
+    "L-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1",
+    "L-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1",
+    "L-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1",
+    "L-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1"
+  },
+  "family_id": "fixed400-text-round5-n20-v1",
+  "next_step": "Root reviews complete quality/intent, A/A variation, reliable completion, raw role formats, criticism visibility, actual decisions/revisions and cost before choosing the next registered action.",
+  "predeclared_limits": "Retained exposure inside the same fixed400 optimization pool; all spent no-change slots remain in the complete panel. No formal adoption, independent validation, guaranteed gain, node causal credit or automatic expansion. Only qualified own-L feedback may be exported.",
+  "primary": "Descriptive official pooled SLU-F1; complete-system paired changes with own in-chain A/A, uncertainty and cost. No efficacy or stable-learning claim on20.",
+  "read_gate": "All eight independently FINALIZED with verified seals and one unique successful official complete score each, zero failed jobs, then exact root READ.",
+  "recipe_id": "fixed400-text-round5-n20-v1",
+  "required_rows_per_member": 20,
+  "run_ids": {
+    "read": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "schema": "saea-system-text-analysis-recipe-v1",
+  "secondary": [
+    "intent",
+    "reliable completion",
+    "actual role and tool costs",
+    "valid Reviewer handoff",
+    "legal Planner decisions",
+    "correct repairs and damage",
+    "natural-mixture and equal-stratum descriptions with support counts"
+  ],
+  "status": "REGISTERED-BEFORE-CONTACT; READ UNSIGNED",
+  "system_panel_registration": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/registration-v1.json",
+    "sha256": "7737a0f52ba5a9f840e96d8ca2de1ec47d635390ecc75bbeae8b21af7551820c"
+  }
+}

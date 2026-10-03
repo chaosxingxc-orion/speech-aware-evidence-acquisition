@@ -1,0 +1,38 @@
+{
+  "cell": "slurp-native-stage3-system-text-fixed400-round5-n20-l-parent-v1",
+  "composed_config_hash": "ed2bd54fd77646cecb283f7cb1c5df5a46c3d255fad45b37f4b5e214a7d0dd7e",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-system-text-fixed400-round5-n20-v1/root-admission-v1.json",
+    "sha256": "eedc339666b6aba71e17363add20197db55e1beaf3046d80827c2bdadfc2ad47"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-l-parent-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "df40a61679e3df6fb5bba6d0d6c118bacc8399818a262768a054a42b44a73104",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-fixed400-round5-n20-l-parent-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1/phase-supply-v2.json",
+    "sha256": "d45d3b7a3c5d8fdb36384b6fd4e63e4adf90cbe098392ec87d373302a04d6f84"
+  },
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "root_disposition": {
+    "relpath": "docs/receipts/continuation/2026-10-03-round5-n20-precontact-binding-disposition.json",
+    "sha256": "a05fc29076f550dc8876697c74e5bd42a0b65a651120722e2d3e56798daf1404"
+  },
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-v1/l-parent-fit-plan-registered-v1.json",
+    "sha256": "e5b22a0abd566335f28d38761493cbd070519333d40caeb56d21f0e014a604cc"
+  }
+}

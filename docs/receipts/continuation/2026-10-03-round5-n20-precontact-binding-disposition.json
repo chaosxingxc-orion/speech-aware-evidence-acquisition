@@ -1,0 +1,12 @@
+{
+  "schema": "saea-root227-precontact-binding-disposition-v1",
+  "recorded_at_utc": "2026-10-03T07:28:23.033627+00:00",
+  "owner_decision": 227,
+  "status": "decided",
+  "refused_frozen_worker": "/home/chao/saea-worktrees/codex-system-text-round5-n20-v1",
+  "commit": "232438ac59252bfc251476fa6e08c52df01e5e16",
+  "observed": "Both parent preflights refused prepared_phase_supply config_sha256 before any attempt/contact. Remaining checks stopped. No driver launched or STOP altered.",
+  "named_cause": "Own supplies were prepared while allowed_execution_stages contained check/prepare-supply only. Root later added worker/campaign. Preparation normalizes readiness but binds allowed_execution_stages, so the prepared config identity became stale.",
+  "disposition": "Use the existing tested core.flight.repin ensure_artifact_pinned with allow_output_change=false to publish new immutable supply envelopes. Preserve old supplies, frozen worker, original prospective archive registration, preflight outputs and source policies. Supersede only precontact config/plan/registration bindings before launch.",
+  "invariants": "Same run/attempt identifiers are still unused; same candidates, model requests, tools, samples, audio, packets, queries, votes and knowledge. No new proposal allocation or generation/scorer contact. New registration revision must match exact original spent allocations and all non-config member fields."
+}

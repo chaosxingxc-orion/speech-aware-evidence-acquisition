@@ -468,10 +468,6 @@
       "sha256": "0b05a5f424210f4f91c22ea9340d1e34a12929dc86a5519f853f9dd58a74febe"
     }
   ],
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1/phase-supply-v1.json",
-    "sha256": "354c24883d273fb47bc22d9261262e713e70c9d551249d9bca6542b5132053c8"
-  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -486,5 +482,9 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
-  "what_this_is": "HELD F1 arm C; shared complete-system execution. Agreement is source-bound; own supply, fit and registration remain pending. A-prime uses arm A byte-identically."
+  "what_this_is": "HELD F1 arm C; shared complete-system execution. Agreement is source-bound; own supply, fit and registration remain pending. A-prime uses arm A byte-identically.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1/phase-supply-v2.json",
+    "sha256": "5f8e2766548dffae44a9a56ad477dcde04996f51396f39b2c7a366b5203dfb5e"
+  }
 }

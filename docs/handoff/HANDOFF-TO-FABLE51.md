@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Round5 precontact binding superseded, 2026-10-03T07:36:04.789659+00:00
+
+Frozen232438ac preflight refused stale supply identity before any attempt or contact: enabling already admitted execution stages changed the preparation config identity. Root227 records the disposition and uses the existing tested re-pin utility; all eight version2 envelopes retain identical outputs and pass warm verification. Original worker, supplies, plans and archive panel remain unchanged. The [successor package](../readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/README.md) now binds exact unchanged policies and members. All-member frozen checks and launch remain pending; no scientific read, new allocation or scale increase.
+
+
 ## Extra5 engineering accepted; exact8x20 registered, 2026-10-03T07:24:37.479069+00:00
 
 All three structural workers completed07:21:57Z: parent19, candidate1 22 and candidate2 25 model contacts, twelve outputs total. All18 Reviewer handoffs were valid/visible; every terminal answer has native Omni custody through the existing normalizer. Candidate2 retains two non-strict raw Solver replies in seven visits; this is an observed format defect, not a quality read or silent repair. No official scorer ran. [Evidence](../receipts/continuation/2026-10-03-extra5-engineering-complete.json).

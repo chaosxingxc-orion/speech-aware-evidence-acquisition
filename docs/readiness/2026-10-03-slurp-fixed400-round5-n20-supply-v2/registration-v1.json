@@ -1,0 +1,222 @@
+{
+  "allocations": {
+    "B-candidate-1": {
+      "compilation_sha256": "773f524c936aa8b309604eb2b6eedcd85ebd035846027ecd9a698e5bdf250451",
+      "import_sha256": "4d8475a31b5a833803780bba19f0165f3c4f0348bf47f95b365097c673a62941",
+      "input_sha256": "43e136b5c868bbc7649cc58b16066ee670f43a8a3de265f04c818738fd641ea5",
+      "receipt_sha256": "97ea120105e482dabde82d49bb4e37bb70f405fc0c404c53e0e3ef9f6acdd064",
+      "status": "provisional"
+    },
+    "B-candidate-2": {
+      "compilation_sha256": "d2a3b5f5322c83fcff25f007de0bce04ab7648785c2ae8c6eaac31a69cd650f6",
+      "import_sha256": "7604abfb950a5386ea8e932ff127d1f47f9389b108bbb8c2fb046a8642d5314d",
+      "input_sha256": "7f1bf11dd46e070ea1be0b1c5e22409b419fc05ddd12f2ce3aaa537166555d38",
+      "receipt_sha256": "a4d1ebee640a102f1504c2a45ba902c29eadecb6349b3b254016fa2c269ba7dd",
+      "status": "provisional"
+    },
+    "L-candidate-1": {
+      "compilation_sha256": "9af1b6a94210f5809174bde34b410538026a99c58126f7388f598130a818fd4f",
+      "import_sha256": "f6013047478ab9dc4e1b1729bf1927c9f930e7a66a6312c1c0219252fd2e5b07",
+      "input_sha256": "55194d64acbb403cc2001a3c166d3226e147ad66c3ebb746c06c66c6dfcd88c6",
+      "receipt_sha256": "b8b308cfab8942a810bd8715a4f4044435751b7b4a926008664b7533a1d2e3de",
+      "status": "no-change"
+    },
+    "L-candidate-2": {
+      "compilation_sha256": "c13c94f1ffce18d52652761d65aa662acd448ea93a2cd14f14e9e092a298c498",
+      "import_sha256": "f4ff04aec9cf028dd73b76402b909dc21dfefd40e8935abb38d532109803bebb",
+      "input_sha256": "0d0ee5b913b31d34c8cf259d903fbc05cb24ca6dd1173953694e61bbd6abd203",
+      "receipt_sha256": "547abc098f09f45ae4c749648aa4449db2ad4c24dfca2eecf40c964071cacc74",
+      "status": "no-change"
+    }
+  },
+  "automatic_expansion": false,
+  "binding_revision_reason": "Root227 precontact preparation-identity correction; no attempts or contacts; original archive panel remains immutable.",
+  "expected_members": {
+    "B-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1",
+    "B-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1",
+    "B-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1",
+    "B-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1",
+    "L-candidate-1": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1",
+    "L-candidate-2": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1",
+    "L-parent": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1",
+    "L-parent-aa": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1"
+  },
+  "family_id": "fixed400-text-round5-n20-v1",
+  "independent_validation": false,
+  "member_bindings": {
+    "B-candidate-1": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-1-generation-v1",
+      "bundle_id": "c7720d2fa5ccb6459a005b4122cd6c48efa0701865d5fc1bd08ffa8d2320b450",
+      "config_hash": "1319843c8cd40a7a62b301eff2fd13fb41a55e3ecd3337671910137ea59951f9",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1"
+    },
+    "B-candidate-2": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-b-candidate-2-generation-v1",
+      "bundle_id": "f936c87a1c5099c6bfdc614d194be84805034bedbc0375ed08a77e59134ed1b9",
+      "config_hash": "2ef0d9ace82a4b2c48e3c185ea1264088d297444e9d3b23805b10af27a06118c",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1"
+    },
+    "B-parent": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-b-parent-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "e4d229435b2c4d650e466cb7c154ed97d42e09b39e58ee74c137dcebe82ec241",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1"
+    },
+    "B-parent-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-b-parent-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "6343d2c319c6ae2599b1004b4c54f9d4eb0b88577ca7652dd15b4fe3ea6f8d1d",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1"
+    },
+    "L-candidate-1": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-l-candidate-1-generation-v1",
+      "bundle_id": "a3d608c1a589c285c57f3bee9fb4c7efc08345d93c947df1c5f6164ca220eb1a",
+      "config_hash": "b1b28a497bf52616eb3d39eeb48d26cbfd3d7fae39853b0daa0b49a2bf1c0464",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1"
+    },
+    "L-candidate-2": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-l-candidate-2-generation-v1",
+      "bundle_id": "1e00dc6e064de745b3c524c7938918448a76ea59b4ab1444bb3003335285990b",
+      "config_hash": "138489579f2ac2427165f5366cad466c0ba04270cd8cae039a38440642c66ac1",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1"
+    },
+    "L-parent": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-l-parent-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "ed2bd54fd77646cecb283f7cb1c5df5a46c3d255fad45b37f4b5e214a7d0dd7e",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1"
+    },
+    "L-parent-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-round5-n20-l-parent-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "config_hash": "15d31c23697b7b0f5c5c830e1762e23870ef01cd3ab90fce39e97dcf95cd7910",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1"
+    }
+  },
+  "new_proposal_opportunities": 0,
+  "official_score_jobs_cap": 8,
+  "owner_decisions": [
+    223,
+    224
+  ],
+  "pool_sample_ids_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "prefix_sample_ids_sha256": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "proposal_protocol_sha256": "9be8b36d4c3100cd61fa1c61b85dbeb8d5afd37a07e11d61dcef7a5df282a2af",
+  "proposal_round": 5,
+  "read_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "registration_sha256": "bc80d671af623848c7cc40bc920f7664f319ad54eb71b0401e37acef9fcb2443",
+  "retained_exposure": {
+    "B-candidate-1": {
+      "independent_validation": false,
+      "overlap_utterances": [],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    },
+    "B-candidate-2": {
+      "independent_validation": false,
+      "overlap_utterances": [],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    },
+    "B-parent": {
+      "independent_validation": false,
+      "overlap_utterances": [],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    },
+    "B-parent-aa": {
+      "independent_validation": false,
+      "overlap_utterances": [],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    },
+    "L-candidate-1": {
+      "independent_validation": false,
+      "overlap_utterances": [
+        "slurp:train:000081",
+        "slurp:train:000244",
+        "slurp:train:003560",
+        "slurp:train:004087",
+        "slurp:train:004499",
+        "slurp:train:005407",
+        "slurp:train:005513",
+        "slurp:train:006032",
+        "slurp:train:009411",
+        "slurp:train:010006",
+        "slurp:train:010065",
+        "slurp:train:010537",
+        "slurp:train:011479",
+        "slurp:train:011838",
+        "slurp:train:013560",
+        "slurp:train:013565",
+        "slurp:train:014610",
+        "slurp:train:014741",
+        "slurp:train:015179",
+        "slurp:train:016836"
+      ],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    },
+    "L-candidate-2": {
+      "independent_validation": false,
+      "overlap_utterances": [
+        "slurp:train:000081",
+        "slurp:train:000244",
+        "slurp:train:003560",
+        "slurp:train:004087",
+        "slurp:train:004499",
+        "slurp:train:005407",
+        "slurp:train:005513",
+        "slurp:train:006032",
+        "slurp:train:009411",
+        "slurp:train:010006",
+        "slurp:train:010065",
+        "slurp:train:010537",
+        "slurp:train:011479",
+        "slurp:train:011838",
+        "slurp:train:013560",
+        "slurp:train:013565",
+        "slurp:train:014610",
+        "slurp:train:014741",
+        "slurp:train:015179",
+        "slurp:train:016836"
+      ],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    },
+    "L-parent": {
+      "independent_validation": false,
+      "overlap_utterances": [],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    },
+    "L-parent-aa": {
+      "independent_validation": false,
+      "overlap_utterances": [],
+      "pool_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+      "purpose": "reused-optimization-panel",
+      "rows": 20
+    }
+  },
+  "root_stage_review": "completed",
+  "root_stage_review_receipt": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/root-stage-review-v1.json",
+    "sha256": "3e22e7d8bb458db14a1216a6e5efab03707e85029d2a25338858a3ed17c9025b"
+  },
+  "rows_per_member": 20,
+  "runtime_admission": "separate-required",
+  "schema": "saea-fixed400-system-panel-registration-v1",
+  "scientific_role": "optimization-only",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-v1/registration-v1.json",
+    "sha256": "fd6ea5f5aeb3727337565b94dc0d8086068af91f6196c2af87f3019b23dd9149"
+  },
+  "trajectory_cap": 160
+}
