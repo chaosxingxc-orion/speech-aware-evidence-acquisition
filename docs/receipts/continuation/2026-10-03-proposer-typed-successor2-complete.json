@@ -1,0 +1,162 @@
+{
+  "at_utc": "2026-10-03T11:35:14.495573+00:00",
+  "closed_opportunities": 29,
+  "compilation_disposition": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-compilation-v1/root-disposition-v1.json",
+    "sha256": "a917c74d273777f82c6404651bd4eb108b07a06614efe4a76caebabf4f30b031"
+  },
+  "contact_accounting": {
+    "relpath": "coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/complete-contact-accounting-v1.json",
+    "sha256": "20bdbb1f301229f5431495f9e0c65827c14ae96730237646ee7e2a265e0289ff"
+  },
+  "finished": {
+    "at_utc": "2026-10-03T11:24:49.598477+00:00",
+    "gpu_dispatch": false,
+    "outcomes": [
+      {
+        "activation": "none",
+        "key": "L-8-1",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-8-1",
+        "status": "provisional"
+      },
+      {
+        "activation": "none",
+        "key": "L-8-2",
+        "status": "no-change"
+      },
+      {
+        "activation": "none",
+        "key": "B-8-2",
+        "status": "provisional"
+      }
+    ],
+    "paid_api_spend": 0,
+    "stopped_on_transport_failure": false
+  },
+  "frozen_commit": "13de9fd1db00a9e80e82431b9dc1c40a66d8bd01",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-proposer-typed-successor2-admitted-v1",
+  "heartbeat": "PAUSED",
+  "historical_matched_compute": false,
+  "inherited_held_opportunities": 3,
+  "input_tokens": 47775,
+  "launcher_exit": {
+    "exit_code": 0,
+    "finished_at_utc": "2026-10-03T11:24:50.3965072Z",
+    "retry_permitted": false,
+    "wrapper_error_type": null
+  },
+  "learning_gain_established": false,
+  "limits": "Preserve both L no-change outcomes and both B Solver-text proposals. Completion/compilation establishes no task benefit. Same fixed400 optimization pool, no independent validation, no cache feedback export, no proposal retry/replacement or silent new context/layout/normalizer change. Human review before8x400.",
+  "members": [
+    {
+      "activation": "none",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-l-candidate-1-v1.json",
+        "sha256": "682f4a58e11f2d247499a90bc62f5b9f1020f47168a4edfc590fc049d248ba71"
+      },
+      "bundle_id": "d3494ac75de36be5a38b8fb7ac1074ebb0311896c2c9cee1acfa47d25f17e43c",
+      "changed_roles": [],
+      "compilation": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/compilations/L-8-1.json",
+        "sha256": "48e1c1e570add09598bccea729b7750c6730b0ffd83aebbea42a547f381f8919"
+      },
+      "input_tokens": 13899,
+      "key": "L-8-1",
+      "model_contacts": 3,
+      "output_tokens": 609,
+      "proposal": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/proposals/L-8-1.json",
+        "sha256": "3c7a8baf7948d648b4da22186518e5e38f68e0b0a8ec9032411b70a1aa6f7dae"
+      },
+      "status": "no-change"
+    },
+    {
+      "activation": "none",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-b-candidate-1-v1.json",
+        "sha256": "6793aca9bec0e5f5cf5ef4752b9747144814cb26185ba107b2f2f7da978a4b50"
+      },
+      "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+      "changed_roles": [
+        "solver"
+      ],
+      "compilation": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/compilations/B-8-1.json",
+        "sha256": "2f184193a20060b51fb4d58d916fbdb110db0fb92823a9f95a9a6f6f94eba01e"
+      },
+      "input_tokens": 10129,
+      "key": "B-8-1",
+      "model_contacts": 3,
+      "output_tokens": 877,
+      "proposal": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/proposals/B-8-1.json",
+        "sha256": "e868e3c7a5e6597e6e129e9481749e9cf03d234c220d5f50368233669c913e80"
+      },
+      "status": "provisional"
+    },
+    {
+      "activation": "none",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-l-candidate-2-v1.json",
+        "sha256": "2c7e5225fd042ff3c5c7d7984012f8e04b7e755cd7097dd43c06e93d083542f1"
+      },
+      "bundle_id": "914e22552f90482c563de37e353534af450bce8e75318c1616b209407b63d4b0",
+      "changed_roles": [],
+      "compilation": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/compilations/L-8-2.json",
+        "sha256": "e60e365013f1c97e8121b87aab7c4bfa87ec94c93a21926752df636c0e7d5d15"
+      },
+      "input_tokens": 13888,
+      "key": "L-8-2",
+      "model_contacts": 3,
+      "output_tokens": 746,
+      "proposal": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/proposals/L-8-2.json",
+        "sha256": "99ace38646b8fbb421085790bf4442c2ada72e9ee575dee6de3bf6bc99596d12"
+      },
+      "status": "no-change"
+    },
+    {
+      "activation": "none",
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-system-text-round8-b-candidate-2-v1.json",
+        "sha256": "0b29ccb1be6fef3895792322f67598aa61ef6142e6298c88ea5b1ef555a3cb06"
+      },
+      "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+      "changed_roles": [
+        "solver"
+      ],
+      "compilation": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/compilations/B-8-2.json",
+        "sha256": "5c9a25eef576ba1f32f074ea658f5056fff0db6f3c4600e827315fa03ee6faad"
+      },
+      "input_tokens": 9859,
+      "key": "B-8-2",
+      "model_contacts": 3,
+      "output_tokens": 1043,
+      "proposal": {
+        "relpath": "system-text-search/typed-budget-successor2-owner227/proposals/B-8-2.json",
+        "sha256": "354f7f66b0a465f4c901ba88c04f49893999c8bef493e1b515378ce96feaa1b6"
+      },
+      "status": "provisional"
+    }
+  ],
+  "metering_complete": true,
+  "model_contacts": 12,
+  "native_prefix_affinity": "OFF",
+  "no_change_evidence_audit": {
+    "relpath": "coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/no-change-evidence-audit-v1.json",
+    "sha256": "882e2a5f2112dad9b35d3b0754ad64686129bd968ef20dac25436993fb5594d9"
+  },
+  "no_runtime_admission": true,
+  "output_tokens": 3275,
+  "owner_authority": 227,
+  "paid_api_spend": 0,
+  "schema": "saea-proposer-typed-successor2-complete-v1",
+  "stable_benefit_established": false,
+  "windows_task": "SAEA-System-Text-Proposer-Typed-Successor2-Owner227"
+}

@@ -1,0 +1,47 @@
+{
+  "at_utc": "2026-10-03T11:28:42.909067+00:00",
+  "contacts_added": 0,
+  "error": "PolicyError: cohort binding fields or stage differ",
+  "failed_log": {
+    "relpath": "coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/L-8-1-compile-v1.log",
+    "sha256": "b9b189426b42c38d36b7fa76c87bd80747172d97d0c81bef865722b495795438"
+  },
+  "failed_member": "L-8-1",
+  "model_requests_unchanged": true,
+  "named_cause": "The round8 preparation copied a cohort binding declaring update-7; the exact binder requires update-8. The file is compiler-only and was not part of model requests.",
+  "no_baseline_published": true,
+  "no_compilation_published": true,
+  "old_cohort": {
+    "relpath": "docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/cohort-prefix20-v1.json",
+    "sha256": "6f975ea32df32f31fec5e41952e3422b8d27c5c3cd0166884e3a23d9d6d442cc"
+  },
+  "only_changed_field": {
+    "stage": {
+      "new": "update-8",
+      "old": "update-7"
+    }
+  },
+  "owner_authority": 227,
+  "partial_role_templates": [
+    {
+      "relpath": "configs/probes/system-text-policy/d3494ac75de36be5a38b8fb7ac1074ebb0311896c2c9cee1acfa47d25f17e43c/planner.txt",
+      "sha256": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569"
+    },
+    {
+      "relpath": "configs/probes/system-text-policy/d3494ac75de36be5a38b8fb7ac1074ebb0311896c2c9cee1acfa47d25f17e43c/reviewer.txt",
+      "sha256": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb"
+    },
+    {
+      "relpath": "configs/probes/system-text-policy/d3494ac75de36be5a38b8fb7ac1074ebb0311896c2c9cee1acfa47d25f17e43c/solver.txt",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    }
+  ],
+  "proposals_unchanged": true,
+  "proposed_cohort": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-compilation-v1/cohort-prefix20-v2.json",
+    "sha256": "cdfb7e0070ade83f81b5ac133cbbc0fc577cddd839ababb3a699cd8782fac30e"
+  },
+  "root_disposition": "pending; original cohort, failure log and role staging retained; no automatic contact or retry",
+  "runtime_admission": "none",
+  "schema": "saea-offline-candidate-cohort-refusal-v1"
+}

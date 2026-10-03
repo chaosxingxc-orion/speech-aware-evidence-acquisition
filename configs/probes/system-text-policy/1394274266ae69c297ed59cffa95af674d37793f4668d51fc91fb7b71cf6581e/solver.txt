@@ -1,0 +1,10 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. Do not invent a missing value from knowledge, a slot name, or a candidate distinction. Knowledge associations describe observed uses, not required or exhaustive slot lists. If no entity is expressed, return an empty entities array.
+
+Before returning the JSON, check that the scenario/action pair belongs to one original candidate, that each entity type is legal, and that each filler is supported by the speech rather than merely by a knowledge example. Use supplied slot explanations to check semantic role and extraction boundary; do not impose a universal shortest-span or longest-span rule.
+
+On a revision, reconsider your answer using the same original Perception candidates and the intervening Reviewer/Planner evidence. Treat Reviewer criticism as a hypothesis to check against the speech and supplied task knowledge, not as independent evidence that an entity exists or that your draft is wrong. A REVISE routing action requests reconsideration, not a mandatory answer change. You may keep a supported answer. Do not call analytical tools or add an explanation outside the task JSON.

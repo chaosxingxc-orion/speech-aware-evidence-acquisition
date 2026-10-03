@@ -1,0 +1,13 @@
+{
+  "at_utc": "2026-10-03T11:29:16.452406+00:00",
+  "authority": 227,
+  "correction_proposal": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-compilation-v1/cohort-correction-proposal-v1.json",
+    "sha256": "dad4707f7a320a0620f476d9f6f8fbdbaf64ada2d2a3558d62c2ccbe7fca6d92"
+  },
+  "new_staging_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/compile-staging-v2",
+  "no_gpu_dispatch": true,
+  "no_model_contacts": true,
+  "root_ruling": "Preserve the rejected update-7 cohort, failure log and staging bytes. Create a separate update-8 v2 cohort and clean compile destinations; continue standard offline compilation after proving stage is the sole change and all roster/source/protocol hashes are identical. Do not alter inputs/responses, rerun proposals, reuse partial compiler destinations or dispatch GPU.",
+  "schema": "saea-root-offline-compilation-disposition-v1"
+}

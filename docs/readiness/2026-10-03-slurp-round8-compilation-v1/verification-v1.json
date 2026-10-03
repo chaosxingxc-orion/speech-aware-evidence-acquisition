@@ -1,0 +1,19 @@
+{
+  "at_utc": "2026-10-03T11:36:09.445331+00:00",
+  "checks": {
+    "engineering_base_check": "PASS",
+    "four_actual_policy_role_bindings": "PASS",
+    "four_standard_compilations": "PASS in clean v2 staging",
+    "git_diff_check": "PASS",
+    "handoff_freshness_check": "PASS",
+    "only_corrected_cohort_stage": "PASS; source pins unchanged",
+    "results_ledger_check": "PASS;198 nonblocking findings retained"
+  },
+  "new_gpu_contacts": 0,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "runtime_activation": false,
+  "schema": "saea-round8-compilation-checks-v1",
+  "source_basis": "dacd11c3c",
+  "source_implementation_changed": false
+}

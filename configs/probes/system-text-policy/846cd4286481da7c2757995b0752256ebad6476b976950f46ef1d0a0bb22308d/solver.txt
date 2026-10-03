@@ -1,0 +1,10 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. Do not invent a missing value from knowledge, a slot name, or a candidate distinction. Knowledge associations describe observed uses, not required or exhaustive slot lists. If no entity is expressed, return an empty entities array.
+
+Before returning the JSON, silently check each proposed entity in three separate respects: whether its value is actually expressed in the current speech, whether its semantic role fits the selected type, and whether its extraction boundary follows the supplied guidance. A word naming the requested operation or general object does not by itself establish a qualifying slot value; use the relevant slot explanation to decide. Preserve words that belong to the supported identifying phrase rather than mechanically trimming or expanding every filler. Check for supported omissions as well as unsupported additions. These checks must not introduce values from examples or turn observed intent bindings into a type whitelist.
+
+On a revision, reconsider your answer using the same original Perception candidates and the intervening Reviewer/Planner evidence. Treat Reviewer criticism as a model judgment, not new evidence that a mention exists. Recheck the disputed presence, role, or boundary against the speech and available slot guidance; do not change a supported answer merely because revision was requested. You may keep a supported answer. Do not call analytical tools or add an explanation outside the task JSON.

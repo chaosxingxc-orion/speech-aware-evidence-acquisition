@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Round8 typed proposals complete; no-change retained, 2026-10-03T11:35:14.495573+00:00
+
+The single Windows task completed11:24:49Z and its durable wrapper exited0. L81/L82 are no-change; B81/B82 are provisional Solver-text policies, compiled but unactivated. Exactly12 contacts are fully metered:47775 input/3275 output tokens.29 opportunities are closed and three inherited HELD identities remain untouched. [Complete custody](../receipts/continuation/2026-10-03-proposer-typed-successor2-complete.json).
+
+Both L proposers read the two complete overview pages, saw an inline decision chain with explicit omissions, and chose no-change with one contact and more than125000 input tokens unused. Neither requested the further concrete chain details. Their actual rationales and source-bound request/page audit are retained. This was not hard-budget exhaustion and does not prove the cause or scientific adequacy of the choice. No stable system gain or L-over-B learning gain is established.
+
+The first offline compilation refused a copied update-7 cohort label. Root227 approved a separate update-8 v2 binding with identical roster/source pins and clean compile destinations; old binding, failed log and staging remain. No model replay, proposal repair or GPU contact occurred. Next20 needs exact complete-family identities, own supplies, maximal FIT and structural proof followed by root GPU admission. Keep current role-text-only scope, trajectory routing, affinity OFF and heartbeat PAUSED. Future context-layout/post-call changes need prospective registration; cache reuse is a cost observation and does not require shared node instructions. Return to the human before8x400.
+
 ## Node timing and owner context-space amendment, 2026-10-03T11:29:43.118055+00:00
 
 Root completed a read-only timing sidecar for all 509 contacts of the already qualified prefix panel. Per-node prefill, decode, client transport mean/p50/p95, cache/token coverage and source hashes are available in the [descriptive timing report](../results/2026-10-03-prefix-node-timing-descriptive-read.md). No new model/scorer contacts, no optimizer export and no change to historical cache exports or frozen sources. Related tests: 98 passed; module statement coverage 97%.
