@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Successor four-input frozen check passed, 2026-10-03T09:39:43.344915Z
+
+Clean frozen worker14e281a8f passes the actual four-member check-only with zero contacts; initial conservative bounds are20109 for each L packet and14204 for each B packet. The external prepared registration and durable Windows wrapper are pinned, and the wrapper refuses real entry without exact root-admitted status. No proposal reservation or execution directory exists. [Frozen preparation receipt](../receipts/continuation/2026-10-03-proposer-successor1-prepared.json).
+
+Root serial integration and exact admission remain pending. Retain the21 spent/three HELD predecessor identities and four fresh unspent successor identities. The model, same400 pool, default trajectory scheduler and full custody remain fixed; do not activate the optional prefix-affinity mechanism. Keep the SLURP heartbeat PAUSED, independent telemetry unchanged, and GPU runtime dispatch separately held until exact candidate capacity/structural admission. No learning benefit or matched historical compute is claimed.
+
 ## Prospective proposer budget successor prepared, 2026-10-03T09:37:47.523705Z
 
 Exactly L-7-1/B-7-1/L-7-2/B-7-2 are prepared under the explicit root227 successor transition with equal 131072 cumulative input, 4096 cumulative output acceptance and four provider contacts. Preserve the old 21 spent and three unspent HELD allocations and the original 32768 bound; L-6-1's two contacts and 8478/151 tokens remain cumulative discovery cost and exposure. No matched historical or actual total-compute claim is made. [Prepared package](../readiness/2026-10-03-slurp-proposer-budget-successor1-v1/README.md).

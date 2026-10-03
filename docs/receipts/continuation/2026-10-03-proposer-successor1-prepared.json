@@ -1,0 +1,81 @@
+{
+  "dispatch_authority": false,
+  "equal_new_limits": {
+    "input_tokens": 131072,
+    "model_contacts": 4,
+    "output_tokens_acceptance": 4096,
+    "provider_items_bytes": 4096,
+    "tool_result_bytes": 4096
+  },
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-owner227-v1/frozen-check-only-v1.json",
+    "sha256": "ea4103f816fe27789cb8b72b0fac6307aef1ce1b8b1359dc7f44e629785c83c4"
+  },
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-proposer-successor1-v1",
+  "frozen_worktree_clean": true,
+  "heartbeat_status": "PAUSED",
+  "historical_actual_total_compute_matched": false,
+  "historical_l61_cost_retained": {
+    "contacts": 2,
+    "input_tokens": 8478,
+    "output_tokens": 151
+  },
+  "l72_source_address_replay": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-owner227-v1/L-7-2-source-address-replay-v1.json",
+    "sha256": "b67a49614b20e86cbbb418700b525ead1f01d5b012122648bbfbe382a9653cb7"
+  },
+  "maximum_envelope_input": {
+    "B-7-1": 105978,
+    "B-7-2": 105978,
+    "L-7-1": 129598,
+    "L-7-2": 129598
+  },
+  "members": [
+    "L-7-1",
+    "B-7-1",
+    "L-7-2",
+    "B-7-2"
+  ],
+  "native_prefix_affinity_enabled": false,
+  "new_real_contacts": 0,
+  "new_reservations": 0,
+  "new_sequence_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227",
+  "new_unspent_allocations": 4,
+  "next_step": "Root reviews exact frozen pins, integrates serially, then records explicit four-member admission before any new proposer contact. Prepare GPU FIT and structural proof after proposal outcomes, with separate runtime admission.",
+  "old_held_unspent_allocations": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "old_spent_allocations": 21,
+  "owner_decision": 227,
+  "protocol": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-budget-successor1-v1/protocol-proposals-v1.json",
+    "sha256": "611b5aee7dd8adca1522830a8044fa00f761ff3ac5ddbfe30f3f0a9662f6c955"
+  },
+  "provider_admission": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-budget-successor1-v1/provider-admission-v1.json",
+    "sha256": "78f99a3d2f250c9d09e4d73c1ad86e5ee757839d7814c93de3f7c27b85e58dc5"
+  },
+  "readiness": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-budget-successor1-v1/proposer-readiness-v1.json",
+    "sha256": "1303e385e1ae6c75f00695dcabfec5b0894afa99bd4196c55a35c41a0456a97b"
+  },
+  "recorded_at_utc": "2026-10-03T09:39:43.344915Z",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-owner227-v1/registration-prepared-v1.json",
+    "sha256": "fb41e4a400cac543ac2b5af11d46fc4fb3d0488307e6176fedd5db35d267d4a7"
+  },
+  "runtime_admitted": false,
+  "schema": "saea-system-text-proposer-successor-prepared-v1",
+  "source_commit": "14e281a8f1d6c5f0fb514fc95dfbb732f68692e5",
+  "status": "PREPARED-FROZEN-CHECK-PASSED-AWAITING-EXACT-ROOT-ADMISSION",
+  "wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-owner227-v1/launch-prepared-v1.ps1",
+    "sha256": "01545c5a8f962b56959feba86368d6cb7c3fc4f1ed39b3b73c5fb9dcb5366d0e"
+  },
+  "wrapper_parse": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-owner227-v1/prepared-wrapper-parse-v1.json",
+    "sha256": "ebc7fdbcd7d54867eb348d30170ec15c52fa552d14fd21c411bd51856d63c542"
+  }
+}
