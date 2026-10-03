@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Engineering first: seed context configuration, 2026-10-03T12:45:25.074379+00:00
+
+The latest direct human instruction prioritizes context-engineering configuration and experimental efficiency before optimization-based learning. [Exact translated authority](../receipts/owner/2026-10-03-engineering-first-context-configuration.json) supersedes the next-learning-panel order. Round8 learning comparison remains HELD with zero contacts; preserve its complete prepared records and the named model-free archive-scope refusal. No new learning proposals or allocations are authorized by this transition.
+
+[Seed-only layout preparation](../readiness/2026-10-03-context-layout-engineering-v1/README.md) binds v2 policy646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956. The only request-semantic change is complete role query before speech. All role bytes,current400 assets,knowledge,tools,trajectory routing,cache options and Omni custody remain fixed. Three new cells are HELD/check-only: one297-endpoint capacity proposal,one zero-contact graph helper,and a later separate4-row structural proposal(max52generation/208FITendpoints,zero scoring). Use preparation-v2 pins; preserve the invalid zero-budget graph draft and its precontact disposition. Shared four-row composition and32 targeted tests pass;engineering-base,harness-admission and finite-completion checks pass. The capacity graph now refuses mismatched role-query layout before contact.
+
+Root's authorized subagent is preparing a fresh guarded capacity entry only; exact phase admission, precontact registration, clean frozen source and live identity/resource checks remain. Do not claim live FIT or structural completion from model-free checks. Root will compare feasible context layouts and scheduling with node/episode cost and complete paired quality, then freeze an engineering configuration before resuming learning. No global optimum or stable gain is established. Retain8GiB running/12.5GiB startup,human review before8x400,other-carrier holds and PAUSED heartbeat. Never activate disk snapshots on populated custom speech slots; the existing prefix profile also requires active-HBM-only until a separate versioned cache policy is proven.
+
 ## Round8 N20 held for engineering-first priority, 2026-10-03T12:40:20.556416+00:00
 
 Latest direct human steering prioritizes system-level context-engineering configuration and efficiency before optimization learning. Root withheld the unflown eight-member20 panel:all16 generation/FIT identities are absent,zero contacts,no Windows launch,no frozen N20 worker and no queue/control/service change. [Prepared evidence and superseding hold](../receipts/continuation/2026-10-03-round8-n20-prepared-held.json) retain eight own supplies,corrected exact branch A/A references and immutable pre-HOLD snapshots. All mutable cells and exposure rows are HELD;do not dispatch or silently resume them.
@@ -1008,7 +1016,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T12:40:20.556416+00:00
+Last refreshed: 2026-10-03T12:45:25.074379+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
