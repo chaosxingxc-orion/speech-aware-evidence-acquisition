@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner225 recovery comparison running; scaling basis ready, 2026-10-03T02:15:50.027149+00:00
+
+Windows SAEA-Batch-Driver epoch2026-10-03T02:12:05Z began the first campaign02:13:17Z on frozen `/home/chao/saea-worktrees/codex-system-text-context20-recovery1` at963528f3ee858837afbf94abc15d3b535906c7c1. All four clean preflights and exact registration passed. First seed attempt OPENED and actual generation verified; four slots busy, GPU98%, Windows10.54GiB after startup12.5GiB guard. [Launch and process custody](../receipts/continuation/2026-10-03-owner225-context20-recovery-launch.json). The normal64-second precontact resource wait passed; it was not a flight failure.
+
+Only new corrected seed/A/A20 and the two previously unstarted Planner/Solver candidates are admitted,80 trajectories total. Root225 capacity/engineering accepted; no further automatic recovery. Scientific READ stays unsigned until all four independent seals/unique successful scores qualify, with no failed jobs. Preserve the old malformed comparison and engineering artifacts without replay or quality read. Monitoring must inspect every member and revalidate PIDs, but never dispatch, restart, clear STOP or countersign.
+
+The50/100/200 prefix lists and24 HELD configurations are committed. Each prefix also has a shared-runtime seed supply prepared and warm-verified against exact original400 selections, zero new model/scorer/encoder contacts. [Complete preparation package](../readiness/2026-10-03-slurp-fixed400-scaling-preparation-v1/README.md). These are preparation bases, not newly generated/selected policies or larger-panel launch authority. Keep spent proposal allocations, L/B isolation and cumulative optimization exposure. No pending225 owner decision remains; other carrier holds and floors8/12.5GiB remain.
+
 ## Owner225 capacity and engineering passed; comparison and scaling prepared, 2026-10-03T02:07:57.708428+00:00
 
 Corrected seed capacity passed297 tokenizer endpoints/44 measured requests, minimum5546 tokens after full reserves. The four-row engineering completed22 contacts with six valid Reviewer handoffs/six strict Solver JSON replies, legal Planner actions and all four Omni custody chains through the existing normalizer. No official scorer or task-quality read. [Engineering evidence](../receipts/continuation/2026-10-03-owner225-seed-engineering-complete.json).

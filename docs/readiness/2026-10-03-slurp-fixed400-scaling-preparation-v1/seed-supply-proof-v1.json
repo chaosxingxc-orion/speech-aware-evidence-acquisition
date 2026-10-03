@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-03T02:12:11.722975+00:00",
+  "new_contacts": 0,
+  "no_data_or_knowledge_rebuild": true,
+  "schema": "saea-fixed400-scaling-seed-supply-proof-v1",
+  "source": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-PARENT-V1/phase-supply-v1.json",
+    "sha256": "99ba974066d6a87f086e8850c316252857e205e5213387e9ae7ed030c22900f0"
+  },
+  "stages": [
+    {
+      "cache": "warm",
+      "generation_admitted": false,
+      "identical_to_existing400_selection": true,
+      "member": "L-parent preparation basis only",
+      "receipt": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE50-L-PARENT-V1/phase-supply-staging-v1.json",
+        "sha256": "2d6ef0a4b94ffd067bd864c2387efc5a12c3489f0b123cfaae0cba24f1e751c5"
+      },
+      "rows": 50
+    },
+    {
+      "cache": "warm",
+      "generation_admitted": false,
+      "identical_to_existing400_selection": true,
+      "member": "L-parent preparation basis only",
+      "receipt": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE100-L-PARENT-V1/phase-supply-staging-v1.json",
+        "sha256": "171f89775bce5bc9aab3ca20d7cd4b7a5c6f490c184a079832d7761671b131cf"
+      },
+      "rows": 100
+    },
+    {
+      "cache": "warm",
+      "generation_admitted": false,
+      "identical_to_existing400_selection": true,
+      "member": "L-parent preparation basis only",
+      "receipt": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-SCALE200-L-PARENT-V1/phase-supply-staging-v1.json",
+        "sha256": "048c8247a95d2eabe099b7cd7ae17080f290fcce3816b28f9e0b4f66e0e7cedc"
+      },
+      "rows": 200
+    }
+  ],
+  "status": "Shared preparation basis verified; final policy-specific supply and admission remain required for each frozen member."
+}
