@@ -111,7 +111,7 @@ def test_read_family_refuses_partial_spec_and_cycles(tmp_path, monkeypatch):
         cli.read_family(bad)
 
 
-@pytest.mark.parametrize("profile", ["full-index-v1", "compact-feedback-v1"])
+@pytest.mark.parametrize("profile", ["full-index-v1", "compact-feedback-v1", "coherent-feedback-v1"])
 def test_blind_capsule_cli_exports_immutable_allowlist_and_refuses_feedback(tmp_path, capsys, profile):
     from test_system_proposer_capsule import fixture, reseal
     from speech_aware_evidence_acquisition.rails.hashing import content_hash
@@ -135,7 +135,7 @@ def test_blind_capsule_cli_exports_immutable_allowlist_and_refuses_feedback(tmp_
         cli.main(args)
 
 
-@pytest.mark.parametrize("profile", ["full-index-v1", "compact-feedback-v1"])
+@pytest.mark.parametrize("profile", ["full-index-v1", "compact-feedback-v1", "coherent-feedback-v1"])
 def test_learning_capsule_cli_requalifies_family_before_any_artifact_read(tmp_path, monkeypatch, profile):
     from test_system_proposer_capsule import fixture, reseal
     from speech_aware_evidence_acquisition.rails.hashing import content_hash

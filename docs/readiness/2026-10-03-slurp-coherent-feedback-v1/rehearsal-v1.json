@@ -1,0 +1,23 @@
+{
+  "initial_bound": 19825,
+  "cap": 32768,
+  "chain_status": "complete-decision-chain",
+  "chain_bytes": 2420,
+  "response_roles": [
+    "solver",
+    "reviewer",
+    "planner"
+  ],
+  "response_lengths": [
+    55,
+    461,
+    6
+  ],
+  "omissions": [
+    "Only one Solver-Reviewer-Planner decision and its immediate Solver revision, when present, are inline. This is not a complete trajectory.",
+    "All cases, outcomes, remaining role visits, requests, tool records, terminals and source custody remain in the complete case index and original artifacts.",
+    "Selection uses structural availability and a frozen hash, not reward magnitude. The balanced category index includes failures and damage; one chain is not representative evidence of efficacy or node causality."
+  ],
+  "artifact_count": 138,
+  "real_proposal_contacts": 0
+}

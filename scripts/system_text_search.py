@@ -12,6 +12,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
+from speech_aware_evidence_acquisition.rails.system_proposer_capsule import VIEW_PROFILES
 from speech_aware_evidence_acquisition.rails.system_search_archive import SystemSearchArchive, proposal_input, proposal_sources
 from speech_aware_evidence_acquisition.rails.system_text_feedback import CompleteSystemFeedback
 from speech_aware_evidence_acquisition.rails.system_search_protocol import stage_for, require_stage_feedback
@@ -231,7 +232,7 @@ def main(argv=None):
     capsule_cmd.add_argument("--data-root", type=Path, required=True)
     capsule_cmd.add_argument("--cache-name", help="New cache directory for an offline packaging correction; never overwrite a prior cache")
     capsule_cmd.add_argument("--capsule-name", help="Create a separately named offline packaging revision; proposal allocation is unchanged")
-    capsule_cmd.add_argument("--view-profile", choices=("full-index-v1", "compact-feedback-v1", "source-examples-v1"), default="full-index-v1",
+    capsule_cmd.add_argument("--view-profile", choices=VIEW_PROFILES, default="full-index-v1",
                              help="Opt into source-addressed compact feedback; requires separate transport admission")
     capsule_cmd.add_argument("--family", type=Path)
     capsule_cmd.add_argument("--learning-member", action="append", default=[])

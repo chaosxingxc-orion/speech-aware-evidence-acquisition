@@ -30,7 +30,7 @@ MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
 CACHE_CHARS = 256 * 1024
-COMPACT_PROFILES = ("compact-feedback-v1", "source-examples-v1")
+COMPACT_PROFILES = ("compact-feedback-v1", "source-examples-v1", "coherent-feedback-v1")
 VIEW_PROFILES = ("full-index-v1", *COMPACT_PROFILES)
 BROKER_TOOL = {
     "type": "function", "name": "read_artifact",
@@ -458,6 +458,20 @@ class ProposerCapsule:
                 from .system_proposer_views import inline_feedback_examples
                 result["feedback_examples"] = inline_feedback_examples(
                     result["feedback_overview"], self._artifacts, self._page)
+            if self.view_profile == "coherent-feedback-v1" and "feedback" in full:
+                from .system_proposer_views import coherent_feedback_chain
+                overview = result.pop("feedback_overview")
+                result["feedback_chain"] = coherent_feedback_chain(
+                    overview, self._artifacts, self._page)
+                result["feedback_category_index"] = {
+                    "sample_count": overview["sample_count"], "parent_id": overview["parent_id"],
+                    "comparisons": {cid: {"counts": value["counts"],
+                        "interpretation": value["interpretation"]}
+                        for cid, value in overview["comparisons"].items()},
+                    "case_index": overview["case_index"],
+                    "overview": reference(current["feedback-overview"]),
+                    "definitions": overview["definitions"],
+                    "omissions": ["Representative addresses remain in the overview; every case remains in the complete index."]}
             result["packet_projection"] = "compact-editable-text-and-complete-catalog"
             result["omissions"] = ["Full policies, construction custody, cumulative sources, selection, history and unabridged feedback remain in the complete packet and artifact catalogue."]
             result["reading_budget"] = "Each read consumes another contact and repeats context. Prefer one complete brief when its declared size fits2048 characters; otherwise use small pages, at most2048. Briefs link to detail and original-source ranges. Finish within the same cumulative budget; indexed evidence grants no extra contacts."
@@ -522,6 +536,13 @@ class ProposerCapsule:
                 "Use the indexed complete source when a prefix is insufficient. No change remains valid; "
                 "a candidate hypothesis need not already demonstrate benefit, but must distinguish "
                 "observed evidence from an untested proposed repair. Do not claim to have read omitted text."
+            )
+        if self.view_profile == "coherent-feedback-v1" and packet["branch"] == "L":
+            result["instructions"] += (
+                " Examine the full decision chain and the balanced category index. The selected role replies are untruncated; "
+                "the chain is only one source example, not the complete trajectory or a causal explanation. "
+                "Use indexed sources for other cases or omitted context. Propose a testable context repair when supported; "
+                "separate observed evidence from the proposed mechanism. No change is valid, and a hypothesis need not already prove benefit."
             )
         if history is not None:
             result["input"] = copy.deepcopy(history)

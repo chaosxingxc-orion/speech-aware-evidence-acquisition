@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round5 eight-member20 launched; coherent feedback base tested, 2026-10-03T07:42:55.799589+00:00
+
+Windows SAEA-Batch-Driver epoch07:40:22Z began the first campaign07:40:50Z from frozen406eda8cc at `/home/chao/saea-worktrees/codex-system-text-round5-n20-supply-v2`. All eight frozen checks pass after the recorded precontact supply-binding correction; original artifacts remain unchanged. First member OPENED, GPU92%, four slots busy, Windows13.64GiB. [Launch custody](../receipts/continuation/2026-10-03-round5-n20-launch.json). Complete160 trajectories and all eight seals/unique scores before exact READ; no partial quality or scale decision.
+
+The optional [coherent feedback view](../readiness/2026-10-03-slurp-coherent-feedback-v1/README.md) passes154 tests and improves source visibility/budget in a model-free qualified L-only rehearsal. This is not a new proposal, optimizer result or contact. All20 spent allocations remain; B isolation and frozen runtime are unchanged. A later registered allocation may use it after complete current feedback. Root227 continues bounded work through reviewed20/50/100/200 and returns to the human before8x400; monitor remains read-only.
+
+
 ## Round5 precontact binding superseded, 2026-10-03T07:36:04.789659+00:00
 
 Frozen232438ac preflight refused stale supply identity before any attempt or contact: enabling already admitted execution stages changed the preparation config identity. Root227 records the disposition and uses the existing tested re-pin utility; all eight version2 envelopes retain identical outputs and pass warm verification. Original worker, supplies, plans and archive panel remain unchanged. The [successor package](../readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/README.md) now binds exact unchanged policies and members. All-member frozen checks and launch remain pending; no scientific read, new allocation or scale increase.

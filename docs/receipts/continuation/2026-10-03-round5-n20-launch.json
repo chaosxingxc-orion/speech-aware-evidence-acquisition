@@ -1,0 +1,44 @@
+{
+  "schema": "saea-system-panel-launch-v1",
+  "recorded_at_utc": "2026-10-03T07:42:55.799589+00:00",
+  "authority": 227,
+  "windows_task": "SAEA-Batch-Driver",
+  "driver_epoch": "2026-10-03T07:40:22Z",
+  "campaign_epoch": "2026-10-03T07:40:50Z",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-round5-n20-supply-v2",
+  "commit": "406eda8ccb35dfbb30347ce0f3c84fe9808728d9",
+  "family_id": "fixed400-text-round5-n20-v1",
+  "queue": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/queue-v1.json",
+    "sha256": "a755500e3378936f704c4036b33e47178dc64b4d77defe62337ee48cc552f336"
+  },
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/registration-v1.json",
+    "sha256": "7737a0f52ba5a9f840e96d8ca2de1ec47d635390ecc75bbeae8b21af7551820c"
+  },
+  "normal_transition": {
+    "relpath": "coordination/slurp-system-text-fixed400-round5-n20-v1/driver-transition-supply-v2.json",
+    "sha256": "77757d92864262081706b6bf6867ce3448c007f9ce5541fe9d0ec3ec51293a62"
+  },
+  "binding_disposition": {
+    "relpath": "docs/receipts/continuation/2026-10-03-round5-n20-precontact-binding-disposition.json",
+    "sha256": "a05fc29076f550dc8876697c74e5bd42a0b65a651120722e2d3e56798daf1404"
+  },
+  "preflights": "All eight actual frozen checks passed before launch. Policies and output bytes unchanged.",
+  "status": "First member OPENED; live campaign observed, GPU92%, four busy slots; all quality unread.",
+  "memory": {
+    "windows_free_gib_before_start": 13.96,
+    "windows_free_gib_observed_running": 13.64,
+    "startup_wait_seconds": 21.814649317006115,
+    "startup_floor_gib": 12.5,
+    "running_floor_gib": 8.0
+  },
+  "snapshot_pids": {
+    "driver": 420548,
+    "campaign": 420722
+  },
+  "pid_rule": "Revalidate actual identity before any subsequent action.",
+  "read_condition": "Every admitted member independently FINALIZED, verified seals, one unique successful official complete score each, zero failed jobs, then exact root READ.",
+  "read_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "scope": "Same fixed400 first20; eight systems,160 trajectories; all20 proposer allocations remain spent including current L no-change. No scale increase, fresh proposal, data rebuild or feedback export at launch."
+}

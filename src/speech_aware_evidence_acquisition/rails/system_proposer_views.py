@@ -280,3 +280,72 @@ def inline_feedback_examples(overview, artifacts, read_page):
         if len(canonical(result).encode()) <= INLINE_BYTES:
             return result
     require(False, "inline source examples exceed the registered presentation bound")
+
+
+COHERENT_BYTES = 6144
+
+
+def coherent_feedback_chain(overview, artifacts, read_page):
+    """Expose one whole decision chain, with every other case still indexed.
+
+    Select by a frozen sample/member hash among structurally complete chains,
+    never by reward or error magnitude. Do not truncate a selected response to
+    make admission fit. This is a source presentation, not a causal explanation.
+    """
+    def read(identity):
+        artifact = artifacts[identity]
+        return json.loads(read_page(artifact, 0, artifact["characters"]))
+
+    index = read(overview["case_index"]["artifact_id"])
+    choices = []
+    for case in index["cases"]:
+        view = read(case["artifact_id"])
+        for member in view["members"]:
+            responses = member["role_responses"]
+            for start in range(len(responses) - 2):
+                chain = responses[start:start + 3]
+                if [r["role"] for r in chain] != ["solver", "reviewer", "planner"]:
+                    continue
+                if start + 3 < len(responses) and responses[start + 3]["role"] == "solver":
+                    chain = [*chain, responses[start + 3]]
+                if any(r.get("missing_response") for r in chain):
+                    continue
+                order = hashlib.sha256(
+                    f"20261001:{view['sample_id']}:{member['candidate_id']}".encode()
+                ).hexdigest()
+                choices.append((order, view["sample_id"], member["candidate_id"],
+                                case["artifact_id"], member, chain))
+                break
+    omissions = [
+        "Only one Solver-Reviewer-Planner decision and its immediate Solver revision, when present, are inline. This is not a complete trajectory.",
+        "All cases, outcomes, remaining role visits, requests, tool records, terminals and source custody remain in the complete case index and original artifacts.",
+        "Selection uses structural availability and a frozen hash, not reward magnitude. The balanced category index includes failures and damage; one chain is not representative evidence of efficacy or node causality.",
+    ]
+    result = {"schema": "saea-proposer-coherent-feedback-chain-v1",
+              "status": "no-complete-decision-chain", "responses": [],
+              "case_index": reference(artifacts[overview["case_index"]["artifact_id"]]),
+              "omissions": omissions}
+    if not choices:
+        return result
+    _, sid, cid, details, member, chain = min(choices, key=lambda c: c[:3])
+    responses = []
+    for response in chain:
+        address = response["source"]
+        raw = read_page(artifacts[address["artifact_id"]], address["offset"], address["characters"])
+        original = json.loads(raw)
+        text = original["payload"]["text"]
+        require(original["channel"] == "MODEL_RESPONSE"
+                and original["record_id"] == response["request_id"] + "/response"
+                and isinstance(text, str) and len(text) == response["text_characters"]
+                and text.startswith(response["text_prefix"]),
+                "coherent response differs from indexed source")
+        responses.append({"role": response["role"], "request_id": response["request_id"],
+                          "text": text, "source": address})
+    result.update(status="complete-decision-chain", sample_id=sid, candidate_id=cid,
+        details_artifact_id=details, responses=responses, native_counts=member["native_counts"],
+        utility=member["utility"], relative_return=member["relative_return"],
+        reliable_completion=member["execution"]["reliable_completion"],
+        omitted_role_responses=len(member["role_responses"]) - len(chain))
+    require(len(canonical(result).encode()) <= COHERENT_BYTES,
+            "coherent feedback exceeds the registered presentation bound; do not truncate or silently select another case")
+    return result

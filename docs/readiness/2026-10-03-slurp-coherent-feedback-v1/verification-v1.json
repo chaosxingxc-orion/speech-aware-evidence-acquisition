@@ -1,0 +1,25 @@
+{
+  "schema": "saea-model-free-engineering-verification-v1",
+  "recorded_at_utc": "2026-10-03T07:42:55.799589+00:00",
+  "tests_passed": 154,
+  "tests_failed": 0,
+  "new_tests": 11,
+  "statement_coverage_percent": {
+    "proposer_capsule": 95,
+    "proposer_views": 98
+  },
+  "lint": "PASS",
+  "profile": "coherent-feedback-v1",
+  "model_contacts": 0,
+  "scientific_reads": "Only existing qualified own-L input/source custody used. No current panel or root/B report read.",
+  "new_allocation": false,
+  "real_rehearsal_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/inputs/L-5-1.json",
+    "sha256": "ae00bcc1e7e3567aba89b72cabe6c1f9b959bf674f8e6c23e7111baa0e8b7d2a"
+  },
+  "limits": [
+    "The real selected chain ends ACCEPT and has no immediate revision; the code does not invent one.",
+    "A synthetic 8000-input/100-output first-turn scenario leaves one2048-character source page inside32768. It is not provider usage or an arbitrary-contact guarantee.",
+    "No-change remains valid. No learning improvement is established by presentation engineering."
+  ]
+}

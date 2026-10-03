@@ -1,0 +1,13 @@
+{
+  "schema": "saea-coherent-feedback-budget-rehearsal-v1",
+  "initial_bound": 19825,
+  "assumed_first_input_usage": 8000,
+  "assumed_first_output_usage": 100,
+  "page_characters": 2048,
+  "next_conservative_bound": 23123,
+  "cumulative_input_bound": 31123,
+  "registered_input_cap": 32768,
+  "fits_assumption": true,
+  "contacts": 0,
+  "limitations": "Model-free scenario, not provider metering or a guarantee for arbitrary further tool turns. Actual cumulative admission stays enforced. Existing round5 inputs/capsules/proposals remain immutable; a later allocation must register this presentation."
+}
