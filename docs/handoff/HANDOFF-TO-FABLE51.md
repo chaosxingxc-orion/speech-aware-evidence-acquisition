@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Round6 stopped on the registered third-request bound, 2026-10-03T08:59:22.308601+00:00
+
+L-6-1 made two metered contacts (8478/151 tokens), paging one2965-character overview. The third full-request bound26531 exceeded remaining24290 and was refused before reservation. No authentication, provider actual-budget or task-quality failure is established. All streams, exact requests and frozen a4f69684b remain preserved. Three original slots remain untouched; twenty-one total slots are spent. [Failure evidence](../receipts/continuation/2026-10-03-round6-proposer-bound-stop.json) and [bounded disposition proposal](../readiness/2026-10-03-slurp-round6-bound-stop-v1/README.md). Root disposition remains pending; no retry, replacement, parent substitution or GPU dispatch.
+
+SLURP heartbeat remains PAUSED; independent10-second telemetry and shared controls are unchanged.
+
+
 ## Exact round6 proposer root-admitted, 2026-10-03T08:54:14.995096+00:00
 
 Root reviewed the four immutable round6 members and admitted exactly one Windows proposal task after clean frozen check-only. [Admission custody](../receipts/continuation/2026-10-03-round6-proposer-root-admission.json). All input/model/budget/view hashes stay fixed; twenty previous slots stay spent. No contact has occurred at this admission checkpoint. A failure stops; GPU FIT/engineering and runtime dispatch still require their separate registration and root admission.

@@ -1,0 +1,79 @@
+{
+  "schema": "saea-proposer-round6-bound-stop-v1",
+  "recorded_at_utc": "2026-10-03T08:59:22.308601+00:00",
+  "windows_task": "SAEA-System-Text-Proposer-Extra6-Owner227",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-proposer-extra6-v1",
+  "source_commit": "a4f69684b175833919c16422cccb5bef9f93033a",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/registration.json",
+    "sha256": "36bef35109a9b81f12a1612adf1e5f5ea1666940e7b78067ea9d6aa579363ff5"
+  },
+  "frozen_preflight": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/frozen-check-only-v1.json",
+    "sha256": "a9f28ffecfa76eb486641644bca1725f9a2cd17a7b81c3304b574fa4370e0641"
+  },
+  "launcher_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/launcher-start.json",
+    "sha256": "4fe1c9cb4c379423c6a177fd325d66a154017d3ef9e4b7eaa5a20a21d14bba5f"
+  },
+  "launcher_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/launcher-exit.json",
+    "sha256": "a25f9c37e164c096d84bf753d9e6c539912361eaa40467238af0e5b0196b4ae8"
+  },
+  "finished": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra6-owner227-v1/finished.json",
+    "sha256": "48c81b42fbf8b161d47902e50a15da99d1cfad0884eb11a140aed3e9f2814e23"
+  },
+  "diagnosis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/failure-diagnosis-v1.json",
+    "sha256": "b4930786253ab49e47873e6da5f86cd266a732205aa8f51998a36edd3f8edceb"
+  },
+  "retained_continuation_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/L-6-1-retained-continuation-audit.json",
+    "sha256": "224deb8467ae3d1e6891c507983c6ed8ec61e70ea859a8684b99ea316476f477"
+  },
+  "outcome": {
+    "activation": "none",
+    "attempted_contacts": 2,
+    "error_type": "PolicyError",
+    "failure_reason": "proposal input budget exhausted or unknown",
+    "observed_input_tokens": 8478,
+    "observed_output_tokens": 151,
+    "retry_permitted": false,
+    "status": "failed",
+    "unmetered_contacts": 0,
+    "usage_complete": true
+  },
+  "allocations": {
+    "L-6-1": {
+      "reserved": true,
+      "response_imported": false,
+      "model_contacts": 2
+    },
+    "B-6-1": {
+      "reserved": false,
+      "response_imported": false,
+      "model_contacts": 0
+    },
+    "L-6-2": {
+      "reserved": false,
+      "response_imported": false,
+      "model_contacts": 0
+    },
+    "B-6-2": {
+      "reserved": false,
+      "response_imported": false,
+      "model_contacts": 0
+    }
+  },
+  "spent_allocations_total": 21,
+  "untouched_original_slots": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "root_disposition": "PENDING exact bounded continuation decision; no automatic retry",
+  "gpu_contacts": 0,
+  "shared_controls_unchanged": true,
+  "slurp_heartbeat": "PAUSED"
+}

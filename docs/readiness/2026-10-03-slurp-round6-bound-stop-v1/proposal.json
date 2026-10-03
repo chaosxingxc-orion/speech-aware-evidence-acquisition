@@ -1,0 +1,16 @@
+{
+  "schema": "saea-proposer-bound-stop-disposition-proposal-v1",
+  "status": "ROOT-REVIEW-PENDING",
+  "owner_authority": 227,
+  "failed_spent_slot": "L-6-1",
+  "untouched_slots": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "minimal_continuation": "Preserve failed slot and actual metering as invalid, then optionally complete only the three untouched slots through a new outer entry with all original input/request/model/budget bytes. No replacement or repeated L-6-1 contact.",
+  "runtime_boundary": "No complete valid round6 eight-member GPU panel exists if a proposal is invalid; do not substitute the parent or a different candidate. Future runtime membership needs a prospective registered root design.",
+  "future_engineering": "A new version may test overview presentation and continuation-budget discoverability; preserve this exact failure, never relax its registered bounds retrospectively.",
+  "code_defect_established": false,
+  "new_model_contacts": 0
+}
