@@ -498,3 +498,8 @@ The human directs root to settle the solution on the current prepared400 inputs,
 ## Decision225: fixed400 seed policy binding recovery (PENDING)
 
 Root proposes one named recovery after the comparison seed was mistakenly bound to the legacy Planner template instead of its declared CONTROL2 policy. Restore the existing seed bundle through the shared compiler; preserve the two completed invalid-comparator attempts and scores unread. Run fresh capacity/four-row seed engineering, then two new seed/A/A20 identities and the two never-started candidate20 identities, on the same current400 first20. No data/knowledge rebuild, proposal replacement, rescore or automatic further recovery. The concrete [proposal and offline proof](2026-10-02-slurp-fixed400-seed-binding-recovery1/proposal.json) are ready for the owner. This entry is not approval.
+
+
+## Decision225 approved and offline scaling preparation,2026-10-03
+
+The human explicitly approved225 in this conversation. Complete English translation: "Decision225: agreed. In parallel, prepare the data slices and engineering base for8x50,8x100 and8x200." The earlier pending entry is historical. Execute the exact proposed corrected-seed capacity, four-row engineering and four-member20 recovery on the same current400. Preserve old failed-family artifacts and all spent proposal allocations. Prepare three nested roster/configuration packages concurrently offline; preparation itself creates no proposal or larger-panel GPU authority. Root reviews each complete stage before the next stage under223/224. See [approved exact authority](../receipts/owner/2026-10-03-decision225-seed-binding-recovery-approved.json). Any further recovery failure stops; no automatic repeat.

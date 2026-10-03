@@ -1,0 +1,9 @@
+{
+  "output": "coordination/slurp-system-text-fixed400-seed-binding-capacity-recovery1-v1/request-fit-v1.json",
+  "run_ids": {
+    "fit": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-CAPACITY-RECOVERY1-FIT-V1",
+    "read": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-CAPACITY-RECOVERY1-STRUCTURE-V1"
+  },
+  "schema": "saea-operational-capacity-analysis-v1",
+  "scope": "Read structural tokenizer measurements only; no answers, task quality, generation or optimizer update."
+}

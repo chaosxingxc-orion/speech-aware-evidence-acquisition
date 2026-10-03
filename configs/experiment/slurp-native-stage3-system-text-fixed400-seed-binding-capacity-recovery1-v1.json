@@ -11,9 +11,16 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Owner225 explicit recovery ruling pending; offline preparation only. No contacts or dispatch.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Approved owner225 corrected-seed capacity only. Engineering and comparison remain held.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-system-text-fixed400-seed-binding-capacity-recovery1-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-system-text-fixed400-seed-binding-capacity-recovery1-v1/root-admission-v1.json",
+            "sha256": "17f46502ddcd858fd23263abc900f157f84d4ad13254437238e2975e55a06bb4"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-SEED-BINDING-CAPACITY-RECOVERY1-FIT-V1",
       "system_text_policy_binding": {

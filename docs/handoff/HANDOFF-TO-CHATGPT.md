@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner225 approved; exact recovery registration in progress, 2026-10-03T01:42:22.423230+00:00
+
+The human explicitly approved225 and requested parallel offline8x50/8x100/8x200 preparation inside the existing UPDATE2 400-input pool. The [approved authority](../receipts/owner/2026-10-03-decision225-seed-binding-recovery-approved.json) supersedes prior pending snapshots. Corrected-seed capacity is registered with297 tokenizer endpoints and zero generation; real engineering and the four-member20 family follow only after acceptance. Preserve the failed old family and its scores unread. Do not replace spent proposals or launch the larger panels from offline preparation alone. No recovery/model contact has occurred at this checkpoint.
+
 ## Exact recovery analysis prepared; owner225 still pending, 2026-10-02T18:50:05.511680+00:00
 
 The shared root analysis CLI now supports the exact proposed recovery1 family with its own READ and separately pinned owner225 authority. It requires new seed/A/A plus the two original unstarted candidates and rejects the pending draft, old-family mixing, incomplete seals and failed/duplicate official jobs before saved scores. All76 synthetic pilot/context/recovery tests pass; context reader100% and shared CLI90% statement coverage. [Draft registration chain and evidence](../readiness/2026-10-02-slurp-fixed400-seed-binding-recovery1/README.md).
