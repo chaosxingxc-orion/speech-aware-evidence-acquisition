@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Seed before-speech structural worker launched, 2026-10-03T13:05:10.332598+00:00
+
+Windows SAEA-Batch-Driver entered once at2026-10-03T13:04:19Z with driver PID501371 and independent frozen fe7682ca46f852875a9a4192ed011be4c6318201. [Launch custody](../receipts/continuation/2026-10-03-context-layout-structural-launch.json) pins all actual registration/runtime/warm/layout checks,normal completed-control archive and live serving/resource identity. Startup observed17.905 GiB;shared guard enforces12.5/8. One existing four-row worker only,maximum52 generation/208 FIT endpoints,zero official scoring. Completion remains pending.
+
+After completion require one-to-one original request/ORG/control/body/FIT layout audit plus valid handoffs and Omni terminal custody. Read numerical costs only;no task quality,learning,retry,cache action or next panel. All frozen role/data/source bytes remain immutable. ROUND8 learning HELD;heartbeat PAUSED.
+
 ## Seed layout structural entry registered, 2026-10-03T13:02:04.081242+00:00
 
 The exact root-admitted four-row before-speech worker now has independent generation/FIT plans,structural-only READ and a fresh own supply prepared after final check/prepare-supply/worker stages. [Registered entry](../readiness/2026-10-03-context-layout-structural-entry-v1/README.md) preserves seed role bytes,current400 assets,trajectory routing and cache settings. Maximum52 generation/208 actual FIT endpoints,zero scoring. Flight registration,engineering-base and harness-admission pass with zero contacts.

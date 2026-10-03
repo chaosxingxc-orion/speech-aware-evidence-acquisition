@@ -1,0 +1,64 @@
+{
+  "affinity": false,
+  "at_utc": "2026-10-03T13:05:10.332598+00:00",
+  "bounds": {
+    "generation": 52,
+    "official_scoring": 0,
+    "rows": 4,
+    "tokenizer_endpoints": 208
+  },
+  "cache": "unchanged inherited warm history",
+  "commit": "fe7682ca46f852875a9a4192ed011be4c6318201",
+  "driver_pid": 501371,
+  "epoch": "2026-10-03T13:04:19Z",
+  "evidence": [
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/frozen-check-v1.json",
+      "sha256": "e213011b982da4df31d95fdc16d0e4ae5cc3a24837019724f01c906dc3118cad"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/frozen-composition-v1.json",
+      "sha256": "a397dc9616ad770b4879a8f09f1a44736b1bf5ecc311c3c769ebdce4688da0dc"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/driver-transition-v1.json",
+      "sha256": "cecfefca3be872015cfba6a40c95f7cdc6c817deaa792701293f5703045cdc1f"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/pretransition-live-serving-v1.json",
+      "sha256": "15133ca708caea1670a73853db543d4fb92170ebb0d80196aa40d9d24cc95873"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/pretransition-service-v1.json",
+      "sha256": "a39b77e777259d40d723a9658cc3a7a351869e3052c832a4fb29d19527df75ce"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/windows-launch-request-v1.json",
+      "sha256": "42170d588c0461a0d0bc5ddf5a5f4b0762adbb470e2b34a8a79e623bcdb80298"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/windows-task-v1.xml",
+      "sha256": "d8bd7fdd8f7745a98a5840a263d8764f442063e021a253b4e7937b459b5467ce"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/launch-live-process-v1.json",
+      "sha256": "9df6d1c075c1121605f6fd909e3a72c6207995d38970772d8d13014bfdc287da"
+    }
+  ],
+  "failure": "Stop and preserve; no retry",
+  "future_panel_admitted": false,
+  "heartbeat": "PAUSED",
+  "layout": "before-speech-v1",
+  "no_learning": true,
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-structural-entry-v1/registration-v1.json",
+    "sha256": "59cf5ce44d81c27f23f4753859a8968236bd6f2ccc0b2956c1146245d48cf679"
+  },
+  "role_text": "unchanged seed",
+  "schema": "saea-context-layout-structural-launch-v1",
+  "status": "RUNNING; completion pending",
+  "structural_only": true,
+  "task": "SAEA-Batch-Driver",
+  "trajectory_routing": true,
+  "worker": "/home/chao/saea-worktrees/codex-context-layout-structural-v1"
+}
