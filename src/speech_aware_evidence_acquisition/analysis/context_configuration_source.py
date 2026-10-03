@@ -1,0 +1,130 @@
+"""Whole-family source custody for root-only context engineering descriptions.
+
+The caller must verify the exact ledger READ before invoking these functions.
+No scorer, model, proposer, queue or immutable source is modified here.
+"""
+import hashlib
+import json
+from pathlib import Path
+
+from ..core.bundle.verify import verify_bundle
+from ..rails.system_text_feedback import _row_cost_and_terminal
+from ..rails.system_text_policy import require
+from .native_episode_source import verify_native_episode_source
+from .system_cache_cost import export_system_node_timing, export_system_sample_timing
+from .system_feedback import load_system_feedback
+
+
+def _identity(value):
+    require(isinstance(value, str) and value and value not in (".", "..")
+            and "/" not in value and "\\" not in value, "invalid member path identity")
+    return value
+
+
+def _json(path):
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _pin(path, root):
+    path, root = Path(path).resolve(), Path(root).resolve()
+    require(path.is_relative_to(root), "source escaped the registered data root")
+    return {"relpath": path.relative_to(root).as_posix(),
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+
+def preflight_members(registration, *, data_root, sample_ids, commit):
+    """Check all operational members before parsing any seal or task result."""
+    root = Path(data_root).resolve()
+    members = registration["members"]
+    runs = [member["run_id"] for member in members]
+    attempts = [member["attempt_id"] for member in members]
+    require(len(runs) >= 2 and len(set(runs)) == len(runs) and len(set(attempts)) == len(attempts),
+            "complete unique member identities are required")
+    require(len(set(sample_ids)) == len(sample_ids) == registration["rows_per_member"]
+            and all(sid.startswith("slurp:train:") for sid in sample_ids), "complete TRAIN cohort differs")
+    sources = []
+    for member in members:
+        run, attempt = _identity(member["run_id"]), _identity(member["attempt_id"])
+        directory = root / "runs" / run / attempt
+        record = _json(root / "attempts" / run / (attempt + ".json"))
+        manifest_path = directory / (run + ".run-manifest.json")
+        manifest = _json(manifest_path)
+        jobs_path = directory / "score-jobs.jsonl"
+        jobs = [json.loads(line) for line in jobs_path.read_text().splitlines() if line.strip()]
+        summary_path = directory / "score-batch/batch-summary.json"
+        summary = _json(summary_path)
+        require(record.get("state") == "FINALIZED" and manifest.get("status") == "COMPLETED"
+                and manifest.get("run_id") == run and manifest.get("attempt", {}).get("attempt_id") == attempt
+                and manifest.get("study_commit") == commit
+                and manifest.get("config", {}).get("config_hash") == member["config_hash"]
+                and manifest.get("plan", {}).get("protocol_hash") == member["protocol_hash"]
+                and manifest.get("plan", {}).get("split_role") == "discovery",
+                "member operational identity or finalization differs")
+        require(manifest.get("split", {}).get("count") == len(sample_ids)
+                and len(manifest["split"]["ids"]) == len(sample_ids)
+                and set(manifest["split"]["ids"]) == set(sample_ids), "member cohort differs")
+        require(len(jobs) == 1 and jobs[0].get("job_id") == attempt
+                and Path(jobs[0]["manifest"]).resolve() == manifest_path.resolve()
+                and summary.get("job_count") == summary.get("succeeded") == 1
+                and summary.get("failed") == 0 and summary.get("include_per_sample") is True
+                and len(summary.get("jobs", [])) == 1,
+                "exactly one successful complete official job and zero failures are required")
+        scored = summary["jobs"][0]
+        require(scored.get("job_id") == attempt and scored.get("status") == "succeeded"
+                and scored.get("returncode") == 0 and scored.get("operation") == "finalize"
+                and Path(scored["manifest"]).resolve() == manifest_path.resolve(),
+                "official finalize job differs")
+        sources.append({"manifest": manifest, "manifest_path": manifest_path,
+                        "metadata_pins": [_pin(path, root) for path in (manifest_path, jobs_path, summary_path)]})
+    for source in sources:
+        verified = verify_bundle(source["manifest_path"])
+        require(verified.attempt_state == "FINALIZED", "complete member seal verification failed")
+    return sources
+
+
+def read_numeric_members(sources, *, data_root, frozen_repo):
+    """Use existing complete official custody and original timing exporters.
+
+Invoke only on all results of preflight_members after exact root READ authority.
+Never return answer text or a learning-feedback object from this numeric view.
+    """
+    root = Path(data_root).resolve()
+    members = {}
+    for entry in sources:
+        manifest, path = entry["manifest"], entry["manifest_path"]
+        run = manifest["run_id"]
+        phases = path.parent / (run + ".phases.json")
+        binding = {
+            "schema": "saea-system-feedback-binding-v1", "execution_profile": "model-free-check",
+            "feedback_role": "construction", "scorer_id": "slurp-slu-official-train",
+            "manifest": _pin(path, root), "phases": _pin(phases, root),
+            "flight_receipts": _pin(path.parent / "flight-receipts.json", root),
+            "score_jobs": _pin(path.parent / "score-jobs.jsonl", root),
+        }
+        source = verify_native_episode_source(
+            manifest_path=path, expected_manifest_sha256=binding["manifest"]["sha256"],
+            phase_artifact_path=phases, expected_phase_sha256=binding["phases"]["sha256"],
+            repo_root=Path(frozen_repo), data_root=root,
+        )
+        feedback = load_system_feedback(data_root=root, repo_root=Path(frozen_repo), binding=binding)
+        costs = _row_cost_and_terminal(manifest)
+        rows = {}
+        for row in feedback["terminal_feedback"]:
+            sid = row["sample_id"]
+            rows[sid] = {**costs[sid], **{key: row[key] for key in ("tp", "fp", "fn")},
+                         "intent": row["intent_exact"], "fallback_flags": row["fallback_flags"],
+                         "format_ok": row["format_ok"]}
+        require(set(rows) == set(costs) == set(source.sample_ids), "numeric views differ from complete source")
+        score_pin = feedback["resolved_auxiliary_sources"]["scores"]
+        score_path = root / score_pin["relpath"]
+        require(_pin(score_path, root) == score_pin, "score changed during numeric read")
+        score = _json(score_path)["slurp-slu-official-train"]["aggregate"]
+        members[run] = {
+            "rows": rows, "official": {"slu_f1": score["official"]["slu_f1"],
+                                       "intent": score["port_micro"]["intent_accuracy"]},
+            "sample_timing": export_system_sample_timing(source),
+            "node_timing": export_system_node_timing(source),
+            "source_bindings": binding, "metadata_pins": entry["metadata_pins"],
+            "official_feedback_content_sha256": feedback["content_sha256"],
+        }
+    return members

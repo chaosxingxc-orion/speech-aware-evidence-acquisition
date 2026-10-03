@@ -1,0 +1,23 @@
+{
+  "frozen_worker": {
+    "commit": "d8456cefecafc8a7da681e06bfc06f141e994972",
+    "path": "/home/chao/saea-worktrees/codex-context-matrix-n20-v1"
+  },
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/analysis-recipe-v1.json",
+    "sha256": "fa33acfbd61e428b0bae27eb7c184fc5cadac84479febfb23bac3ca1c2d82644"
+  },
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/registration-v1.json",
+    "sha256": "084a53ff48356fe9c1095d59b45b42c08994606b4af0f180f3fcc23960243e2a"
+  },
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+    "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+  },
+  "schema": "saea-context-matrix-read-inputs-v1",
+  "strata": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+  }
+}

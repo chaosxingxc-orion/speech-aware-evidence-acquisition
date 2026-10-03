@@ -30,7 +30,21 @@ def recipe_family_identity(recipe):
     registration; earlier readers used family_id/expected_members. Accept the
     former only when all redundant identities and the evaluation binding agree.
     """
-    if "stage" in recipe or "members" in recipe:
+    if recipe.get("schema") == "saea-context-matrix-analysis-v1":
+        family = "context-matrix-n20"
+        layouts = ("legacy-trajectory", "before-speech-trajectory", "legacy-role", "before-speech-role")
+        members = {f"{layout}-{repeat}": f"SAEA-SLURP-CONTEXT-MATRIX-N20-{layout.upper()}-{repeat.upper()}-V1"
+                   for layout in layouts for repeat in ("primary", "aa")}
+        expected = [{"layout": layout, **{repeat: members[f"{layout}-{repeat}"]
+                                         for repeat in ("primary", "aa")}} for layout in layouts]
+        require(recipe.get("comparisons") == expected
+                and len(recipe.get("complete_family", [])) == 8
+                and set(recipe["complete_family"]) == set(members.values())
+                and recipe.get("run_ids", {}).get("read") == "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1"
+                and recipe.get("optimizer_export") is False
+                and not {"stage", "members", "initial_members", "system_search_stage", "system_search_evaluation"}.intersection(recipe),
+                "exact context engineering family differs or has ambiguous learning aliases")
+    elif "stage" in recipe or "members" in recipe:
         require(
             recipe.get("schema") == "saea-system-text-analysis-recipe-v1"
             and {"stage", "members", "system_search_stage", "system_search_evaluation"}

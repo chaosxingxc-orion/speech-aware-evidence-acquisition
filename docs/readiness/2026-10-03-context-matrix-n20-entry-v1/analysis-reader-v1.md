@@ -1,0 +1,17 @@
+# Joint business quality and original latency reader
+
+The offline entry `scripts/analysis/context_matrix_read.py` implements the already registered analysis recipe. It does not select a configuration, change a node prompt, grant a READ, export learning feedback or contact a model/scorer. Its pinned inputs are in `analysis-inputs-v1.json`.
+
+Require the exact root-countersigned matrix READ before opening results. Then qualify every admitted member through operational identity, the complete TRAIN cohort, verified seal and exactly one successful complete official scoring job with zero failures. Reuse the existing native episode source verifier, official terminal-count reader and original sample/node timing exporters. Recheck READ authority, metadata and input/source hashes before writing a fresh analysis directory. The active frozen runtime is unchanged.
+
+Keep all eight members and both repetitions visible. Report official pooled SLU-F1, intent accuracy, reliable delivery, abstentions, attributed model/tool counts and token usage. Unknown usage remains unknown. Include per-scenario counts and support, natural-mixture pooled metrics and equal-stratum descriptions. Use the registered paired utterance resampling, seed20261003 and10000 draws; report own-repeat differences and between-configuration differences separately for each repetition.
+
+Report actual mean sample wall time, the first admitted sample and the remaining19 mean. Use original admission order across configurations; never choose the first finisher or trim slow/failing samples. Preserve admission wait and batch wall/count separately. Node measurements retain client, prefill and decode boundaries, missingness and source indices. Cache reuse is diagnostic, not a selection gate or a reason to homogenize node contexts. The report leaves selection empty for root's joint business-quality, reliability and efficiency review.
+
+The20-input panel is descriptive engineering evidence with inherited cache and ordering effects. It cannot establish stable benefit, formal no-harm, a global optimum or learning. Root must still audit actual request/layout/FIT custody and interpret the complete family. Learning remains HELD, the heartbeat remains PAUSED and root works without subagents. Review is required before every scale; return to the human before8x400.
+
+## Verification
+
+[Engineering evidence](../../receipts/continuation/2026-10-03-context-matrix-reader-engineering.json) records316 passing targeted tests: pure statistics, synthetic complete-source and command-line orchestration, shared reader gates and original timing regressions. Both new analysis modules have100% statement coverage; the CLI has99% and all7 added family-identity statements are covered. Unexercised existing stage code is reported separately, not claimed as covered. Lint, engineering-base and harness-admission checks pass.
+
+The real unsigned READ invocation refuses before any result read or output directory. The initial coverage invocation found the optional pytest-cov plugin unavailable before tests ran; the installed coverage.py executed the selected suite successfully without installing dependencies. Zero real model, tokenizer or official scorer contacts were added by this implementation or verification.

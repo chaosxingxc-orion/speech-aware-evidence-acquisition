@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Joint context quality and latency reader verified, 2026-10-03T14:24:04.763537+00:00
+
+Root completed the offline [joint reader](../readiness/2026-10-03-context-matrix-n20-entry-v1/analysis-reader-v1.md) for the already registered eight-member context matrix. It reuses official pooled counts, complete-source custody and original sample/node timers, retains both repeats and all configurations, and reports scenario support plus paired uncertainty. All316 targeted tests pass; new analysis modules100% coverage,CLI99%,all7 added family-identity statements covered. Lint,engineering-base and harness-admission pass. The real unsigned READ refusal is verified before results/output. Zero real model/tokenizer/scorer contacts were added; frozen runtime d8456cefecafc8a7da681e06bfc06f141e994972 is unchanged. See [verification receipt](../receipts/continuation/2026-10-03-context-matrix-reader-engineering.json).
+
+At14:22Z the first two20-input members were independently FINALIZED with one successful official job each and zero failures;the third campaign had entered. Driver epoch14:00:30Z remains active,STOP absent,service healthy and Windows15.98 GiB free. Revalidate actual state;these are operational observations only,not task-quality reads. The exact full-family READ remains unsigned until all eight qualify. Root then audits original request/layout/FIT custody and reads the whole family together.
+
+Business quality,reliability and actual mean sample latency jointly govern review. Report first admitted and remaining-sample means separately;cache reuse remains diagnostic and independent node contexts remain available. No automatic selection,scaling or optimizer export. Root only,no subagents;learning HELD,heartbeat PAUSED,human review before8x400.
+
 ## Complete context matrix launched, 2026-10-03T14:03:06.388340+00:00
 
 Windows SAEA-Batch-Driver started once at2026-10-03T14:00:30Z;first campaign14:00:57Z,on clean frozen d8456cefecafc8a7da681e06bfc06f141e994972 in `/home/chao/saea-worktrees/codex-context-matrix-n20-v1`. [Exact launch evidence](../receipts/continuation/2026-10-03-context-matrix-n20-launch.json) binds all eight registered20-input members:legacy/before-speech layout crossed with trajectory/role scheduling and one own repeat each. At14:02Z the first attempt was OPENED,the other seven ABSENT,GPU75 percent,three slots busy,Windows16.42 GiB,STOP absent;process identities and service epoch were revalidated. Revalidate these live observations on continuation.

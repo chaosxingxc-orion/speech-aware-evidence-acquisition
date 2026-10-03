@@ -1,0 +1,209 @@
+{
+  "schema": "saea-context-matrix-reader-engineering-v1",
+  "at_utc": "2026-10-03T14:23:17.032883+00:00",
+  "scope": "Root-only numeric quality and original sample/node latency reader; no runtime or frozen source edits.",
+  "tests": {
+    "passed": 316,
+    "scope": "Pure statistics, synthetic whole-family source/CLI custody and related shared-reader/timing regression.",
+    "warnings": "Three existing dependency deprecation warnings.",
+    "initial_runner_refusal": "pytest-cov is unavailable; initial command refused before tests. Existing coverage.py then ran the full selected suite. No dependency installation."
+  },
+  "coverage": {
+    "scripts/analysis/context_matrix_read.py": {
+      "covered_lines": 91,
+      "num_statements": 92,
+      "percent_covered": 98.91304347826087,
+      "percent_covered_display": "99",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 98.91304347826087,
+      "percent_statements_covered_display": "99"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/context_configuration.py": {
+      "covered_lines": 75,
+      "num_statements": 75,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py": {
+      "covered_lines": 68,
+      "num_statements": 68,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_search_stage.py": {
+      "covered_lines": 135,
+      "num_statements": 224,
+      "percent_covered": 60.267857142857146,
+      "percent_covered_display": "60",
+      "missing_lines": 89,
+      "excluded_lines": 0,
+      "percent_statements_covered": 60.267857142857146,
+      "percent_statements_covered_display": "60"
+    }
+  },
+  "added_stage_statements": {
+    "count": 7,
+    "covered": 7,
+    "lines": [
+      33,
+      34,
+      35,
+      36,
+      38,
+      40,
+      47
+    ]
+  },
+  "checks": {
+    "lint": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "real_unsigned_read": "Expected refusal before any result or output. Exact READ remains unsigned.",
+    "handoff_freshness": "PASS"
+  },
+  "sources": [
+    {
+      "relpath": "scripts/analysis/context_matrix_read.py",
+      "sha256": "b1475cf33d98cdeb0c773be1898fb0cf7001a809d667cb356eb018d00711fe7b"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/context_configuration.py",
+      "sha256": "4f2a2336b0ca914f21a1329c53d806ad809b6f3fe5a4296a33663c96f35f0da9"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py",
+      "sha256": "f775cb85bff9fa9b44ca90cfc3915592e444d344b720c032a4338d3fe51081be"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_stage.py",
+      "sha256": "df4831ff32e50ac2bbd54c6591a3c44f6747dd096d2f04e97af4ce229d560b8b"
+    },
+    {
+      "relpath": "tests/unit/test_context_matrix_read.py",
+      "sha256": "bd7a0b5750b7bddabd2246c25b48c2ed9b55cf90d10bd49597f585d3450b3249"
+    },
+    {
+      "relpath": "tests/unit/test_context_configuration.py",
+      "sha256": "bc3cfea8def67504d5f03bf50a71a1182b8d23bd949e2941357530f44f43ccc0"
+    },
+    {
+      "relpath": "tests/unit/test_context_configuration_source.py",
+      "sha256": "c53693e26bfd1b1640ae28b0c1e1c44c95a9a30fc503e9a16b6d1881d108667b"
+    }
+  ],
+  "inputs": {
+    "relpath": "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/analysis-inputs-v1.json",
+    "sha256": "66eecb815d76088240a72416af9d6ee716f2c76b0be95374a8c6aab70c081dc1"
+  },
+  "evidence": [
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/tests-v1.json",
+      "sha256": "e054f4e3822ff2a70d0b1cfb88c0b029b03f7686a4054ce1431cf1abbece3c12"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/tests-v1.stderr",
+      "sha256": "d8f39af5a3e9ada264a324e5a62c46b681718933cd9e51ad4c09e588ee226315"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/tests-v2.json",
+      "sha256": "2080a389b9631d1a625ef2dbe9140e20c405fe2925b2cb97bafede61ba976b50"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/tests-v2.stdout",
+      "sha256": "20661b64640fc571f5f11b37dfb05a79b2e83c3b39d6dffdb355d42be924ec15"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/tests-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/coverage-v2.json",
+      "sha256": "4a0d999007a2e690d90420689629e7f93467a66ac44636f64d7e5184ae9a4be4"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/lint-v1.json",
+      "sha256": "19ad2c842d74f9e6674af27c3c0b8b03d880ca977bbf019833397877babe8d8b"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/lint-v1.stdout",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/lint-v1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/engineering-base-v1.json",
+      "sha256": "7c8a4051d6fdeb744a3e88fefe93a0c814b952c6722d991634dc4497d2da13a5"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/engineering-base-v1.stdout",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/engineering-base-v1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/harness-admission-v1.json",
+      "sha256": "1e30077106be653276c11bb1a0dd6457a71813b376fe039bf7cfb93c39f6a08d"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/harness-admission-v1.stdout",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/harness-admission-v1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/unsigned-read-v1.json",
+      "sha256": "0aab3b2fbff51266cd155d616b43eeab4f4e3898246addc68a88ce6a9e5799c2"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/unsigned-read-v1.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/unsigned-read-v1.stderr",
+      "sha256": "a83d843de21b16c36d33fea85e6c943d279d2f103fe1aa5f20c8f388c1626a23"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/handoff-freshness-v1.json",
+      "sha256": "d90ca2a1b6a133c325c912516840b76f1f8287fe55b8d6343a04e086e937c709"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/handoff-freshness-v1.stdout",
+      "sha256": "db2a34457cfe2c4b71c62c7633d483d0ecfb9f60f6cabbb97e4ef8ddbdc74a63"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/analysis-reader-build-v1/handoff-freshness-v1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "official_scorer": 0
+  },
+  "scientific_read": false,
+  "optimizer_export": false,
+  "automatic_selection": false,
+  "limits": [
+    "Twenty inputs are descriptive engineering evidence, not stable benefit, formal no-harm or independent validation.",
+    "Preserve independent node contexts and jointly review business quality, reliability and actual sample latency.",
+    "First admitted sample and remaining samples use original admission order; no contact-sum reconstruction or favorable trimming.",
+    "Inherited cache and campaign order remain; report each own repeat separately.",
+    "Root READ requires all eight finalized, verified seals and one successful complete score each with zero failed jobs.",
+    "Learning HELD, heartbeat PAUSED, root only, human review before8x400."
+  ]
+}

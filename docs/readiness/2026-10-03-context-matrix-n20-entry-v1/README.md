@@ -9,3 +9,5 @@ All8 independently finalize with verified seals,one unique successful complete o
 ## Launch status
 
 Launched once on2026-10-03 at14:00:30Z through the Windows shared driver on frozen d8456cefecafc8a7da681e06bfc06f141e994972. The first campaign entered14:00:57Z and the first generation attempt was OPENED at14:02Z. See [launch custody](../../receipts/continuation/2026-10-03-context-matrix-n20-launch.json). All eight own supplies/runtime compositions and source gates passed; preserved historical global label findings and exposed-roster advisories are explicitly scoped in the receipt. Full-family READ remains unsigned; no quality read or optimizer export.
+
+The [joint offline reader](analysis-reader-v1.md) is implemented and tested against complete source custody, official counts and original timing. It refuses the current unsigned READ. No runtime source, active queue or cache settings changed.
