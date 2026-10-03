@@ -956,6 +956,9 @@ class NativeEpisodeRunBinding:
     # ``contrast_pairs`` pin. Declared LAST, after ``perception_branch_
     # seeds``, for the same reason that field is.
     perception_contrast_pairs: Mapping[str, Mapping] | None = None
+    # Optional execution envelope, outside the policy dataclass so an absent
+    # factor preserves existing whole-policy hashes and request semantics.
+    prefix_slots: object = None
 
 
 @dataclass(frozen=True)

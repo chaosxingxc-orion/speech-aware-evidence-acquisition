@@ -108,10 +108,70 @@ def parse_dispatch_slot_fill(values: Mapping[str, object]) -> DispatchSlotFill |
     return DispatchSlotFill(**switches)
 
 
+class NativePrefixSlotsError(RailsError):
+    """Refuse an incomplete or unsafe native role affinity envelope."""
+
+
+@dataclass(frozen=True)
+class NativePrefixSlots:
+    """Immutable role-to-slot ownership; this does not assert cache residency."""
+
+    role_slots: tuple[tuple[str, int], ...]
+
+    def slot_bindings(self) -> dict[str, int]:
+        return dict(self.role_slots)
+
+    def as_json(self) -> dict[str, object]:
+        return {"schema": "saea-native-prefix-slots-v1", "role_slots": self.slot_bindings()}
+
+    def validate(self, config, *, slot_count: int) -> None:
+        if config is None:
+            raise NativePrefixSlotsError("prefix slots require a native role episode")
+        if type(slot_count) is not int or slot_count <= 0:
+            raise NativePrefixSlotsError("prefix slots require a positive slot count")
+        if any(slot >= slot_count for _, slot in self.role_slots):
+            raise NativePrefixSlotsError("prefix slot is outside the serving geometry")
+        required = {role.phase_id for role in config.roles if role.max_iterations > 0}
+        if config.relisten_json is not None:
+            required.add("relisten")
+        if set(self.slot_bindings()) != required:
+            raise NativePrefixSlotsError("prefix slots must cover exactly all native roles")
+        if config.context_policy_json is not None:
+            from .node_context_binding import node_context_cleaning_boundaries
+
+            # Cleaning runs during input construction, outside run_contact. A
+            # trajectory-owned slot used to protect it; role ownership cannot.
+            if node_context_cleaning_boundaries(config.context_policy_json):
+                raise NativePrefixSlotsError("prefix slots do not admit unscheduled context cleaning")
+
+
+def parse_native_prefix_slots(values: Mapping[str, object]) -> NativePrefixSlots | None:
+    """Parse a separately versioned, opt-in scheduling factor without defaults."""
+    if "native_prefix_slots" not in values:
+        return None
+    raw = values["native_prefix_slots"]
+    if not isinstance(raw, Mapping) or set(raw) != {"schema", "role_slots"}:
+        raise NativePrefixSlotsError("native_prefix_slots requires exactly schema and role_slots")
+    if raw["schema"] != "saea-native-prefix-slots-v1":
+        raise NativePrefixSlotsError("unknown native_prefix_slots schema")
+    roles = raw["role_slots"]
+    if not isinstance(roles, Mapping) or not roles:
+        raise NativePrefixSlotsError("role_slots must be a nonempty mapping")
+    if any(not isinstance(role, str) or not role.strip()
+           or type(slot) is not int or slot < 0 for role, slot in roles.items()):
+        raise NativePrefixSlotsError("role_slots requires role names and nonnegative integer slots")
+    if len(set(roles.values())) != len(roles):
+        raise NativePrefixSlotsError("each role requires a distinct prefix slot")
+    return NativePrefixSlots(tuple(sorted(roles.items())))
+
+
 __all__ = [
     "DISPATCH_SLOT_FILL_KEY",
     "DISPATCH_SLOT_FILL_SCHEMA",
     "DispatchSlotFill",
     "DispatchSlotFillError",
     "parse_dispatch_slot_fill",
+    "NativePrefixSlots",
+    "NativePrefixSlotsError",
+    "parse_native_prefix_slots",
 ]

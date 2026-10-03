@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Optional native prefix affinity bound to FlightRuntime, 2026-10-03T09:25:41Z
+
+The existing execution chain now validates an explicit node-to-slot map against every model-contact role and the serving geometry, routes role/tool continuations through the shared scheduler, and records the map in the dispatch receipt. The key is absent from every committed experiment; historical policy identity and default trajectory affinity remain unchanged.179 relevant tests and six final focused checks pass; the scheduling configuration module has100% statement coverage. [Scope and limitations](../readiness/2026-10-03-node-prefix-flight-binding-v1/README.md); [proof](../receipts/continuation/2026-10-03-node-prefix-flight-binding-proof.json).
+
+Unscheduled context-cleaning model calls are explicitly incompatible until separately integrated. Stable role affinity does not establish cache retention or speedup. Actual maximum-request FIT, structural proof and a registered whole-family comparison remain pending before any real activation. No model/tokenizer/scorer/proposer contact, frozen-worker edit, queue/STOP change or GPU setting change occurred. Keep the proposer successor protocol separate, retain21 spent/three HELD identities, keep the heartbeat PAUSED and review with the human before8x400.
+
+
 ## Optional prefix-family scheduler seam verified, 2026-10-03T09:11:53.058135+00:00
 
 The shared OpenJiuwen executor now offers explicit prefix-family slot bindings while retaining trajectory affinity by default.177 tests pass, executor coverage98%; fixed per-family routing, cross-family concurrency, cancellation and local-tool compatibility are verified with synthetic model callbacks. [Scope and remaining admission work](../readiness/2026-10-03-node-prefix-slot-seam-v1/README.md).

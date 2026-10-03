@@ -544,6 +544,7 @@ class _ActualEpisodeHarness:
             # that declares no ``contrast_pairs`` branch -- leaves this
             # binding byte-identical to its pre-existing self.
             perception_contrast_pairs=getattr(self, "perception_contrast_pairs", None),
+            prefix_slots=getattr(self, "prefix_slots", None),
         )
         source_kwargs = (
             {}
@@ -564,8 +565,8 @@ class _ActualEpisodeHarness:
                 self.program.program_id, lambda _sample_id: object()
             ),
             max_contacts=self.config.max_contacts,
-            slot_count=len(self.samples),
-            queue_depth=len(self.samples),
+            slot_count=getattr(self, "slot_count", len(self.samples)),
+            queue_depth=getattr(self, "slot_count", len(self.samples)),
             trace_sink=self.trace,
             agent_executor_id="openjiuwen-workflow-v1",
             decoding_params=decoding_params or {"temperature": 0, "max_tokens": 64},

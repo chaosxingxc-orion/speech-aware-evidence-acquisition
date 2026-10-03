@@ -4465,7 +4465,8 @@ async def _invoke_native_role_episode(
                 slot_id=slot_id, contact_kind=contact_kind, index=index,
                 instruction=instruction, response_format_id=response_format_id,
             )
-        return await run_contact(contact)
+        options = {"prefix_family": "relisten"} if binding.prefix_slots is not None else {}
+        return await run_contact(contact, **options)
 
     async def run_relisten_stage(delivered_text):
         """Item E4 (owner decision 185, section 1, extended by the section 8
@@ -4832,7 +4833,8 @@ async def _invoke_native_role_episode(
                 return completion
             finally:
                 set_current_trace_buffer(None)
-        return await run_contact(contact)
+        options = {"prefix_family": request.role_id} if binding.prefix_slots is not None else {}
+        return await run_contact(contact, **options)
 
     def reject_tool_batch(phase_id, assistant_message):
         from ..reproduction.ojw.native_roles import restore_native_assistant_wire_message
@@ -4896,7 +4898,8 @@ async def _invoke_native_role_episode(
                 return message["content"]
             if run_local is not None:
                 return await run_local(lambda: execute(None))
-            return await run_contact(execute)
+            options = {"prefix_family": role.phase_id} if binding.prefix_slots is not None else {}
+            return await run_contact(execute, **options)
         async def invoke(**arguments):
             return await execute_arguments(arguments)
 
@@ -6106,6 +6109,17 @@ def _run_agent_openjiuwen(
     )
 
     if native_episode_binding is not None:
+        prefix_slots = native_episode_binding.prefix_slots
+        scheduling_options = {}
+        if prefix_slots is not None:
+            from .dispatch_slot_fill import NativePrefixSlots, NativePrefixSlotsError
+            if not isinstance(prefix_slots, NativePrefixSlots):
+                raise RailsRunnerError("invalid native prefix slot binding")
+            try:
+                prefix_slots.validate(native_episode_binding.config, slot_count=slot_count)
+            except NativePrefixSlotsError as error:
+                raise RailsRunnerError(str(error)) from error
+            scheduling_options["prefix_slot_bindings"] = prefix_slots.slot_bindings()
         selector = native_episode_binding.system_episode_policy
         if selector is not None:
             from .system_episode_policy import SystemEpisodePolicy
@@ -6160,6 +6174,7 @@ def _run_agent_openjiuwen(
                 workflow_timeout_seconds=DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
                 episode_invoker=invoke_episode,
                 local_tool_workers=native_episode_binding.config.local_tool_workers,
+                **scheduling_options,
             )
         except BaseException:
             _flush_agent_state_traces(states, trace_sink)

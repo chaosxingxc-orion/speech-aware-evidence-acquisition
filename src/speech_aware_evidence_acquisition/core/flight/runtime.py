@@ -4139,6 +4139,10 @@ class FlightRuntime:
             raise FlightRuntimeError("adapter_factory must return a TaskAdapter instance")
         self._adapter = adapter
 
+        # Validate an armed scheduler before preparation can contact a service.
+        if "native_prefix_slots" in values:
+            self._native_prefix_slots()
+
         carrier_lock_key = values.get("carrier_lock_key")
         if not isinstance(carrier_lock_key, str) or not carrier_lock_key:
             raise FlightRuntimeError("dataset fragment must declare a non-empty carrier_lock_key")
@@ -7191,6 +7195,29 @@ class FlightRuntime:
             policy, program, binding=binding, sink=sink, client=None
         )
 
+    def _native_prefix_slots(self, native_config=None):
+        """Bind an optional role schedule to the actual serving geometry."""
+        from ...rails.dispatch_slot_fill import (
+            NativePrefixSlotsError, parse_native_prefix_slots,
+        )
+        from ...rails.native_episode_config import load_native_episode_config
+
+        try:
+            parsed = parse_native_prefix_slots(self._composed.values)
+            if parsed is None:
+                return None
+            if native_config is None:
+                policy = self._composed.values.get("policy")
+                if policy == "fixed" or policy in self._obs_policy_names():
+                    raise NativePrefixSlotsError("prefix slots require a native role episode")
+                native_config = load_native_episode_config(
+                    self._composed.values, default_phase_program(policy),
+                )
+            parsed.validate(native_config, slot_count=self._adapter.serving_geometry()["slots"])
+            return parsed
+        except NativePrefixSlotsError as error:
+            raise FlightRuntimeError(str(error)) from error
+
     def _dispatch_phase_program(
         self,
         client: object,
@@ -7218,6 +7245,7 @@ class FlightRuntime:
         )
 
         native_config = load_native_episode_config(self._composed.values, program)
+        prefix_slots = self._native_prefix_slots(native_config)
         # Owner decision 159: the dispatcher slot-fill switches, or None --
         # the value of every committed configuration, under which nothing
         # below changes. Scheduling only; refused outside a native episode,
@@ -7478,6 +7506,7 @@ class FlightRuntime:
                 ),
                 # Owner decision 159: None unless ``dispatch`` is declared.
                 slot_fill=slot_fill,
+                prefix_slots=prefix_slots,
                 # Same-flight instrument, PHASE 2 (merge set C): every
                 # declared Perception branch's own pre-flight seed. None --
                 # and therefore byte-identical to the pre-phase-2 tree --
@@ -7760,6 +7789,8 @@ class FlightRuntime:
                 # Published only when armed, so an unarmed dispatch receipt
                 # keeps exactly its pre-decision-159 keys.
                 dispatch["slot_fill"] = slot_fill.as_json()
+            if prefix_slots is not None:
+                dispatch["native_prefix_slots"] = prefix_slots.as_json()
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)

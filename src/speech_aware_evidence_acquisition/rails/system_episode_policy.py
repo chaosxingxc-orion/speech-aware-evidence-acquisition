@@ -135,8 +135,19 @@ class SystemEpisodePolicy:
         reference = self._reference
         if (binding.program != reference.program
                 or not 0 < binding.config.max_contacts <= reference.program.max_contacts
-                or binding.config.local_tool_workers != reference.config.local_tool_workers):
+                or binding.config.local_tool_workers != reference.config.local_tool_workers
+                or binding.prefix_slots != reference.prefix_slots):
             raise SystemEpisodePolicyError("actions changed the shared execution envelope")
+        if binding.prefix_slots is not None:
+            from .dispatch_slot_fill import NativePrefixSlotsError
+
+            try:
+                binding.prefix_slots.validate(
+                    binding.config,
+                    slot_count=1 + max(binding.prefix_slots.slot_bindings().values()),
+                )
+            except NativePrefixSlotsError as error:
+                raise SystemEpisodePolicyError(str(error)) from error
         for field in ("material_for_phase", "render_request", "request_gate"):
             if getattr(binding, field) is not getattr(reference, field):
                 raise SystemEpisodePolicyError("actions changed the shared service/input envelope")

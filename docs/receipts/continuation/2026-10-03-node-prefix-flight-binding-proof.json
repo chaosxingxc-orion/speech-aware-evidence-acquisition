@@ -1,0 +1,29 @@
+{
+  "schema": "saea-engineering-evidence-v1",
+  "recorded_at": "2026-10-03T09:24:59Z",
+  "status": "MODEL_FREE_ENGINEERING_VERIFIED_GPU_UNADMITTED",
+  "authority": "Owner227 and the explicit node-prefix engineering request",
+  "implementation_base": "cd4cec334875905458f04d9d1058770fef34e714",
+  "scope": "Opt-in native_prefix_slots binds FlightRuntime configuration, shared native contacts, serving geometry validation and dispatch receipt",
+  "policy_default_identity_preserved": true,
+  "no_committed_experiment_enabled": true,
+  "unsupported_context_cleaning_refused": true,
+  "verification": {
+    "new_binding_tests_passed": 30,
+    "relevant_suite_passed": 179,
+    "final_whole_policy_focused_tests_passed": 6,
+    "scheduling_config_statement_coverage_percent": 100,
+    "scheduling_config_statements": 77,
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "changed_file_lint": "PASS",
+    "diff_check": "PASS",
+    "warnings": "Three existing third-party deprecation warnings"
+  },
+  "new_actual_contacts": {"model": 0, "tokenizer": 0, "proposer": 0, "scorer": 0},
+  "scientific_claim": null,
+  "cache_performance_claim": null,
+  "gpu_admission": false,
+  "heartbeat": "PAUSED",
+  "next": "Prospectively register exact capacity and structural proof before any real role-affinity contact. Keep the proposer successor protocol separate."
+}
