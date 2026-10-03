@@ -1,0 +1,17 @@
+{
+  "acceptance": [
+    "One capacity attempt within297 endpoints",
+    "Reachable request graph fits24576 with512 output and2048 structural reserve",
+    "Graph node_batch/role/policy/tool/source equality",
+    "Preserve any failure without retry"
+  ],
+  "expected_rows": 0,
+  "limitations": "Synthetic bounded long responses and measured longest legal returns are not exhaustive future text; actual per-request FIT remains mandatory.",
+  "read_scope": "Capacity/structural/token/reserve/resource custody only;no task answers or quality.",
+  "run_ids": {
+    "fit": "SAEA-SLURP-NODE-BATCH16-CAPACITY-FIT-V1",
+    "read": "SAEA-SLURP-NODE-BATCH16-CAPACITY-STRUCTURE-V1"
+  },
+  "schema": "saea-node-batch-capacity-read-v1",
+  "score_jobs": 0
+}

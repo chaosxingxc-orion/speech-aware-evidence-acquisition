@@ -1,0 +1,13 @@
+{
+  "admission": {
+    "relpath": "docs/readiness/2026-10-03-node-batch-capacity-entry-v1/root-admission-v1.json",
+    "sha256": "662a7980b529c77f5520f35f4b859581d6bd6efc4a62e1fdfe91decfefa28f88"
+  },
+  "at_utc": "2026-10-03T16:28:31.988706+00:00",
+  "new_contacts": 0,
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-node-batch-capacity-entry-v1/registration-v1.json",
+    "sha256": "a4e79ee7e8bd64267196a296f912a00698cadb29c2c435a67385335e6a2e2eb2"
+  },
+  "schema": "saea-node-batch-capacity-root-admission-v1"
+}

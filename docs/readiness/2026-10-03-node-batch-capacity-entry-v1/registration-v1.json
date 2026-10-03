@@ -1,0 +1,80 @@
+{
+  "admission": {
+    "relpath": "coordination/node-batch-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "662a7980b529c77f5520f35f4b859581d6bd6efc4a62e1fdfe91decfefa28f88"
+  },
+  "at_utc": "2026-10-03T16:28:31.988706+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints_per_member": 297,
+    "tokenizer_endpoints_total": 594
+  },
+  "cache_state": "Inherited; no warmup/reset/save/restore",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-batch4-capacity-v1",
+      "baseline": "slurp-native-stage3-node-batch4-v1",
+      "batch_size": 4,
+      "binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "capacity": "slurp-native-stage3-node-batch4-capacity-v1",
+      "config_hash": "ac168529a28dcc71ccd4f75d79dcf71eb9226c2f1ff480c4dfea79f30dff9f11",
+      "graph": "slurp-native-stage3-node-batch4-graph-v1",
+      "graph_proof": {
+        "relpath": "coordination/node-batch-capacity-owner227-v1/batch4-graph-composition-v1.json",
+        "sha256": "3c510259111cf9019cc65ca401279c4ec9eb3e34c138bf8929dee3785778fe50"
+      },
+      "label": "batch4",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-03-node-batch-capacity-entry-v1/batch4-plan-registered-v1.json",
+        "sha256": "a0d958b175d58a8541872a8cdc3c12dd04658df432231ef0af8241fc2d9bbe34"
+      },
+      "protocol_hash": "ac206e4fab3fa54b82967f172446f84aea9c7f5e81a2a6968d952c9d25fca7ef",
+      "run_id": "SAEA-SLURP-NODE-BATCH4-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-batch16-capacity-v1",
+      "baseline": "slurp-native-stage3-node-batch16-v1",
+      "batch_size": 16,
+      "binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "capacity": "slurp-native-stage3-node-batch16-capacity-v1",
+      "config_hash": "5d079c9a6c1e0e9eb1aa5dcc73fbcb91c24e752b141c416713592277565b4023",
+      "graph": "slurp-native-stage3-node-batch16-graph-v1",
+      "graph_proof": {
+        "relpath": "coordination/node-batch-capacity-owner227-v1/batch16-graph-composition-v1.json",
+        "sha256": "0fbb68921edb1997dcfda5f9752d7a224f26d6f7c3ce79223e756e3d4068dba8"
+      },
+      "label": "batch16",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-03-node-batch-capacity-entry-v1/batch16-plan-registered-v1.json",
+        "sha256": "6f6120d923b15afb05584f03726d769685aff7a17ae722a67f988f47397d53c2"
+      },
+      "protocol_hash": "1345d2e81c4eae3c1a5f4622b9bf5cee47e09f7e18b40d7ec6bc7b00dc57f60b",
+      "run_id": "SAEA-SLURP-NODE-BATCH16-CAPACITY-FIT-V1"
+    }
+  ],
+  "schema": "saea-node-batch-capacity-registration-v1",
+  "source_freeze": "Pending separate clean worker and checks"
+}

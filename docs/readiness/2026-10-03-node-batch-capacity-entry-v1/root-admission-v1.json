@@ -1,0 +1,35 @@
+{
+  "antecedents": [
+    {
+      "relpath": "docs/receipts/owner/2026-10-03-node-batched-execution-direction.json",
+      "sha256": "a5a1e7c4f12eb1bc18b3aac275eabc5d631aa6a3b99d96ab9148d04063d2987f"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-03-native-node-batch-engineering.json",
+      "sha256": "c473634c21eda9cc5720132403c894214618a6de142b3b92b8a939c45cb67fad"
+    }
+  ],
+  "at_utc": "2026-10-03T16:28:31.988706+00:00",
+  "authority": "Root implements direct node-batching instruction under227; root only, no subagents.",
+  "decision_id": "node-batch-capacity-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-NODE-BATCH4-CAPACITY-FIT-V1",
+    "SAEA-SLURP-NODE-BATCH16-CAPACITY-FIT-V1"
+  ],
+  "failure_disposition": "Stop,preserve evidence,record root diagnosis;no automatic retry.",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "next_generation_authorized": false,
+  "owner_decisions": [
+    227
+  ],
+  "precontact_conditions": [
+    "Exact exposure and graph/config checks; clean frozen worker.",
+    "Original live service identity, no active experiment/scorer/lease/STOP,12.5GiB stable startup and8GiB running.",
+    "One Windows task; no cache,service,queue or STOP mutation."
+  ],
+  "read_scope": "Capacity/structural/token/reserve/resource custody only;no task answers or quality.",
+  "schema": "saea-campaign-decision-v1",
+  "scope": "Exactly two nongenerative capacity members,batch4 and batch16,297 tokenizer endpoints each,594 total; zero real generation and official scoring.",
+  "status": "decided"
+}
