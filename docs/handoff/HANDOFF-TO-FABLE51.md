@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Optional role-query layout support, 2026-10-03T11:47:14.843037+00:00
+
+The shared native renderer now supports prospectively configured role instructions before speech, at user authority, while preserving tool/source custody. Default OFF retains legacy request semantics; round8 stays OFF. The complete role query can include dynamic episode limits, so reuse is measured rather than assumed. [Engineering scope and checks](../readiness/2026-10-03-node-context-optimization-v1/role-query-layout-support.md), [receipt](../receipts/continuation/2026-10-03-role-query-layout-engineering.json).350 tests passed, one existing optional skip; synthetic metered Reviewer-to-Solver roundtrip passes both layouts. No live tokenizer/model/scorer contact, geometry change or proposal-schema expansion occurred. A future declared complete policy/configuration still needs maximal FIT, structural proof and root admission. Cache reuse is not a quality gate. Keep heartbeat PAUSED and owner227 boundaries.
+
 ## Round8 next20 exact cells prepared HELD, 2026-10-03T11:39:36.651819+00:00
 
 Three distinct-policy capacity cells, three four-row structural proofs and all eight20 comparison identities are prepared with shared configuration and actual role-byte verification. All14 remain HELD and plans are DRAFT. Six comparison members retain seed-equivalent role text; no L improvement mechanism was produced. [Prepared scope and checks](../receipts/continuation/2026-10-03-round8-next20-prepared-held.json). No new tokenizer/model/scorer contact occurred.

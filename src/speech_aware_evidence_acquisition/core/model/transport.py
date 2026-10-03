@@ -515,6 +515,7 @@ class LlamaServerTransport:
         feature_cache_guard: PreparedFeatureCacheGuard | None = None,
         native_evidence_projection: str | None = None,
         native_evidence_projection_context: object | None = None,
+        native_role_query_placement: str | None = None,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -549,6 +550,12 @@ class LlamaServerTransport:
                 f"{', '.join(repr(item) for item in sorted(_SPEECH_FEATURE_PROMPT_ORDERS))}"
             )
         self._prompt_order = prompt_order
+        if native_role_query_placement is not None:
+            if not isinstance(native_role_query_placement, str) or native_role_query_placement != "before-speech-v1":
+                raise SessionError("native_role_query_placement must be before-speech-v1 or absent")
+            if prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS | {_RAW_NATIVE_PROMPT_ORDER}:
+                raise SessionError("native_role_query_placement requires a native prompt_order")
+        self._native_role_query_placement = native_role_query_placement
         if native_evidence_projection is not None:
             if not isinstance(native_evidence_projection, str):
                 raise SessionError(
@@ -842,6 +849,8 @@ class LlamaServerTransport:
         overwrite another request's provenance.
         """
         projection_receipts: list[Mapping[str, object]] = []
+        layout_receipts: list[Mapping[str, object]] = []
+        role_query_placement = getattr(self, "_native_role_query_placement", None)
         evidence_projection = getattr(self, "_native_evidence_projection", None)
         projection_context = getattr(
             self, "_native_evidence_projection_context", None
@@ -1072,6 +1081,8 @@ class LlamaServerTransport:
                 evidence_projection=evidence_projection,
                 projection_context=projection_context,
                 receipt_sink=projection_receipts.append,
+                role_query_placement=role_query_placement,
+                layout_receipt_sink=layout_receipts.append,
             )
             if framework_projection is None:
                 messages, historical_descriptors = project_native_history(
@@ -1157,6 +1168,8 @@ class LlamaServerTransport:
                 evidence_projection=evidence_projection,
                 projection_context=projection_context,
                 receipt_sink=projection_receipts.append,
+                role_query_placement=role_query_placement,
+                layout_receipt_sink=layout_receipts.append,
             )
             if framework_projection is None:
                 messages, historical_descriptors = project_native_history(
@@ -1325,6 +1338,20 @@ class LlamaServerTransport:
             raise FrozenCoreError(
                 "native evidence projection emitted a receipt without an enabled policy"
             )
+        if role_query_placement is not None:
+            if len(layout_receipts) != 1 or construction_receipt is not None:
+                raise FrozenCoreError("native role query layout requires exactly one native framework contact")
+            request_id = payload.get("request_id")
+            if not isinstance(request_id, str) or not request_id:
+                raise FrozenCoreError("native role query layout requires a payload request_id")
+            if receipt is None:
+                receipt = {
+                    "schema": "saea-native-role-query-layout-receipt-v1",
+                    "input_request_id": request_id,
+                    "input_request_bytes_sha256": hashlib.sha256(request_bytes).hexdigest(),
+                    "rendered_body_canonical_sha256": hashlib.sha256(canonical_bytes(body)).hexdigest(),
+                }
+            receipt["role_query_layout"] = dict(layout_receipts[0])
         return body, receipt
 
     def render_request(self, request_bytes: bytes) -> dict[str, object]:
@@ -1353,12 +1380,18 @@ class LlamaServerTransport:
                     "native evidence projection requires an active native trace buffer "
                     "before dispatch"
                 )
-            trace_buffer.emit(
-                "ORG",
-                projection_receipt["input_request_id"]
-                + "/native-evidence-projection",
-                {"org_native_evidence_projection": projection_receipt},
-            )
+            if projection_receipt.get("schema") != "saea-native-role-query-layout-receipt-v1":
+                trace_buffer.emit(
+                    "ORG",
+                    projection_receipt["input_request_id"]
+                    + "/native-evidence-projection",
+                    {"org_native_evidence_projection": projection_receipt},
+                )
+            if "role_query_layout" in projection_receipt:
+                trace_buffer.emit(
+                    "ORG", projection_receipt["input_request_id"] + "/native-role-query-layout",
+                    {"org_native_role_query_layout": projection_receipt},
+                )
         try:
             raw = self._post(self._url, json.dumps(body).encode("utf-8"))
         except urllib.error.HTTPError as error:
@@ -1583,6 +1616,7 @@ def _llama_server_factory(
             else None
         ),
         native_evidence_projection_context=projection_context,
+        native_role_query_placement=values.get("native_role_query_placement"),
     )
 
 

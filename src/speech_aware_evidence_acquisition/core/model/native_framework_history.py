@@ -7,6 +7,7 @@ FlightRuntime and the phase dispatcher own completion and tool custody.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from collections.abc import Mapping, Sequence
 
@@ -226,13 +227,21 @@ def validate_native_framework_contact(payload):
 
 def project_native_framework_history(
     *, payload, messages, state_texts, evidence_projection=None,
-    projection_context=None, receipt_sink=None,
+    projection_context=None, receipt_sink=None, role_query_placement=None,
+    layout_receipt_sink=None,
 ):
     """Return a validated full wire sequence, or None for the historical path."""
+    if role_query_placement is not None:
+        if role_query_placement != "before-speech-v1":
+            _refuse("unknown role query placement")
+        if not callable(layout_receipt_sink):
+            _refuse("role query placement requires a receipt sink")
     if evidence_projection is None and projection_context is not None:
         _refuse("projection context requires an evidence projection")
     validated = validate_native_framework_contact(payload)
     if validated is None:
+        if role_query_placement is not None:
+            _refuse("role query placement requires the native framework contract")
         if evidence_projection is not None:
             _refuse("evidence projection requires the native framework contract")
         return None
@@ -305,16 +314,22 @@ def project_native_framework_history(
     base[1]["content"] = base[1]["content"][: -len(state_texts)] + [
         {"type": "text", "text": text} for text in prior_texts
     ]
+    query_part = {"type": "text", "text": framework[1]["content"]}
+    if role_query_placement is not None:
+        # Keep the instruction at user authority and the complete history in
+        # its existing order. The role query can include dynamic episode limits;
+        # moving it does not claim that every byte is invariant across visits.
+        base[1]["content"].insert(0, query_part)
     rendered, historical_packets = project_native_history(
         payload=prior_payload,
         messages=base,
         state_texts=prior_texts,
     )
-    query_part = {"type": "text", "text": framework[1]["content"]}
-    if rendered[-1]["role"] == "user" and isinstance(rendered[-1]["content"], list):
-        rendered[-1]["content"].append(query_part)
-    else:
-        rendered.append({"role": "user", "content": [query_part]})
+    if role_query_placement is None:
+        if rendered[-1]["role"] == "user" and isinstance(rendered[-1]["content"], list):
+            rendered[-1]["content"].append(query_part)
+        else:
+            rendered.append({"role": "user", "content": [query_part]})
     packet_by_id = {p["packet_id"]: p for p in historical_packets}
     groups = []
     for state_id in local_ids:
@@ -346,4 +361,16 @@ def project_native_framework_history(
             projector_kwargs["projection_context"] = projection_context
         rendered, receipt = projector(**projector_kwargs)
         receipt_sink(receipt)
+    if role_query_placement is not None:
+        if rendered[1].get("role") != "user" or rendered[1]["content"][0] != query_part:
+            _refuse("role query prefix did not survive history/evidence projection")
+        layout_receipt_sink({
+            "schema": "saea-native-role-query-layout-v1",
+            "placement": role_query_placement,
+            "role_id": contract["role_id"], "sample_id": contract["sample_id"],
+            "contact_id": contract["contact_id"],
+            "source_control_sha256": history[-1]["content_sha256"],
+            "role_query_sha256": hashlib.sha256(framework[1]["content"].encode("utf-8")).hexdigest(),
+            "semantics": "Complete bound role query at user authority before speech; historical/local tool order retained. Invariance and cache reuse are measured, not assumed.",
+        })
     return rendered, list(packet_by_id.values())

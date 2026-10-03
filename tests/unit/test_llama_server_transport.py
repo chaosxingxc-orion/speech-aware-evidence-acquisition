@@ -3208,12 +3208,16 @@ def test_real_client_role_roundtrip_uses_wire_content_and_native_calls(tmp_path)
     assert role_requests[1].messages[-1]["tool_call_id"] == "call-roundtrip-1"
 
 
-def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_path):
+@pytest.mark.parametrize("role_query_placement", [None, "before-speech-v1"])
+def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_path, role_query_placement):
     """The real shared client must send the framework's counted tool history."""
     import copy
     from dataclasses import replace
 
     from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.tracing import (
+        TraceBuffer, set_current_trace_buffer,
+    )
     from speech_aware_evidence_acquisition.core.model.native_framework_history import (
         native_tool_result_message,
     )
@@ -3324,6 +3328,7 @@ def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_pa
         _base_url(), world.data_root, post=post, feature_root=feature_root,
         preserve_wire_responses=True, prompt_order="speech-query-prefix-v2",
         session=_fake_inference_session(),
+        native_role_query_placement=role_query_placement,
     )
     provider = LiveProvider()
     phase_dispatcher = dispatcher(
@@ -3457,6 +3462,8 @@ def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_pa
         ),
         delivery_allowed=lambda role, _output: role == "solver",
     )
+    layout_trace = TraceBuffer("native-role-layout-roundtrip")
+    set_current_trace_buffer(layout_trace)
     try:
         reviewer_result = asyncio.run(reviewer.invoke_direct(review_query))
         from speech_aware_evidence_acquisition.reproduction.ojw.native_request import (
@@ -3519,6 +3526,7 @@ def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_pa
         solver_result = asyncio.run(solver.invoke_direct(solver_query))
     finally:
         close_summary = client.close()
+        set_current_trace_buffer(None)
 
     assert reviewer_result["actor_output"] == "Reviewer assessment complete."
     assert solver_result["delivery_eligible"] is True
@@ -3550,6 +3558,12 @@ def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_pa
         for body in sent_bodies
     )
     solver_body = sent_bodies[2]
+    if role_query_placement is not None:
+        for body, query in zip(sent_bodies, (review_query, review_query, solver_query), strict=True):
+            assert body["messages"][1]["content"][0] == {"type": "text", "text": query}
+        assert str(layout_trace.records).count("org_native_role_query_layout") == 3
+    else:
+        assert "org_native_role_query_layout" not in str(layout_trace.records)
     assert solver_body["messages"][0] == {"role": "system", "content": solver_prompt}
     assert sum(
         row.get("tool_call_id") == "call-observe-1"

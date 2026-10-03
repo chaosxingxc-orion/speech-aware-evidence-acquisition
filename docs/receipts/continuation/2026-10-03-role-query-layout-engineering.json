@@ -1,0 +1,62 @@
+{
+  "at_utc": "2026-10-03T11:47:14.843037+00:00",
+  "authority": "Owner227 and direct human context-space amendment",
+  "cache_or_quality_benefit_established": false,
+  "capability": "Optional composed native_role_query_placement=before-speech-v1; absent remains historical",
+  "checks": {
+    "engineering_base": "PASS",
+    "finite_completion_policy": "PASS",
+    "harness_admission": "PASS",
+    "openjiuwen_native_reuse": "PASS",
+    "tool_catalog": "PASS"
+  },
+  "current_round8_enabled": false,
+  "default_enabled": false,
+  "future_activation_requires": [
+    "Prospective complete configuration and policy scope",
+    "Identical L/B editable surface and separate inputs",
+    "Real maximum-legal-request FIT",
+    "Separate four-row structural proof",
+    "Root exact member admission; full-family READ before analysis"
+  ],
+  "heartbeat": "PAUSED",
+  "implementation": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/model/native_framework_history.py",
+      "sha256": "e1ae6cdb854865ccb102e0f23d67cb24ae9fee05655b3651d5cbe39f6e4984ef"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/model/transport.py",
+      "sha256": "2e1d7954058e4dc88c5adede07e2aa5813fadcd82e49332242166a5a6b9aba43"
+    },
+    {
+      "relpath": "tests/unit/test_native_role_query_layout.py",
+      "sha256": "145f2a7d697431176ee6103aa46221c24484ffbae0e14515232a53e2c4fdb682"
+    },
+    {
+      "relpath": "tests/unit/test_llama_server_transport.py",
+      "sha256": "eeb4cec71b217eabb6524a89e0a5a010e55d9a6d00148929b601cbe54fff9278"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-03-node-context-optimization-v1/role-query-layout-support.md",
+      "sha256": "c49e347438dc2bc92c96c440297edf0c42d450b2b602b9cd08d07092b9df4748"
+    }
+  ],
+  "limits": [
+    "Complete role query includes dynamic episode limits; wholly invariant prefix not assumed",
+    "One layout option only; broader selection/compression and post-call changes remain prospective",
+    "Shared synthetic compatibility does not release other-carrier holds"
+  ],
+  "model_tokenizer_scorer_contacts": 0,
+  "openjiuwen_proof_sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464",
+  "schema": "saea-native-role-query-layout-engineering-v1",
+  "source_basis": "aa8f5a3ef166677e8f959bde82ae1e29b31d0de8",
+  "tests": {
+    "framework_statement_coverage_percent": 87,
+    "passed": 350,
+    "skipped": 1,
+    "synthetic_metered_roundtrip": "PASS for legacy and enabled layouts; prepared/dispatched bodies identical",
+    "transport_statement_coverage_percent": 88
+  },
+  "v1_policy_proposal_schema_changed": false
+}
