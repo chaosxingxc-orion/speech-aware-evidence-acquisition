@@ -1,0 +1,270 @@
+{
+  "analyzer": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-policy/src/speech_aware_evidence_acquisition/analysis/review_findings.py",
+    "sha256": "b71b9d5b7595ab5d36805ea672ee37bcd5d3734c557e6f775e9a904e684509dc"
+  },
+  "audit": {
+    "relpath": "analysis/SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1-POSTCALL-AUDIT-V2/audit.json",
+    "sha256": "33afb9474bd2e23484de9d6645db256d4050dce05391a8373ac1cdd6286775b5"
+  },
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0
+  },
+  "finding": "All289 valid Reviewer handoffs are visible in the actual next Planner context. Transmission alone does not establish semantic use, causal contribution or correct revision.",
+  "members": {
+    "B-candidate-1": {
+      "counts": {
+        "extra_solver_revisions": 17,
+        "findings": 43,
+        "findings_with_non_slot_identifiers": 0,
+        "first_to_last_solver_text_changed": 3,
+        "perception_visits": 20,
+        "planner_visits": 37,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 37,
+        "reviewer_visits": 37,
+        "reviews_valid": 37,
+        "solver_not_strict_task_json": 3,
+        "solver_strict_task_json": 34,
+        "solver_text_tool_markers": 2,
+        "solver_visits": 37
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1.run-manifest.json",
+        "sha256": "da948dccb419290c62d4fefcb8e0be9cd055c0af01da67f5eb3640dcfc26617a"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-1-generation-v1",
+        "config_sha256": "59c66ceb5e48781ada64a9b99d079700ce5d01f9e4ab1ede57ddf9dbdaaac653",
+        "phase_artifact_sha256": "51338529c5c39b24311149cd2cb8092d0215cedfa7f3281a8a8e6ebe1fc19bc2",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1"
+      }
+    },
+    "B-candidate-2": {
+      "counts": {
+        "extra_solver_revisions": 15,
+        "findings": 33,
+        "findings_with_non_slot_identifiers": 0,
+        "first_to_last_solver_text_changed": 2,
+        "perception_visits": 20,
+        "planner_visits": 35,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 35,
+        "reviewer_visits": 35,
+        "reviews_valid": 35,
+        "solver_not_strict_task_json": 2,
+        "solver_strict_task_json": 33,
+        "solver_text_tool_markers": 0,
+        "solver_visits": 35
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1.run-manifest.json",
+        "sha256": "ab812ed2569dd73114b57d17b83cea7f1792a80434b8b328aeeac7fcd2bdb082"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-candidate-2-generation-v1",
+        "config_sha256": "d64bd94dd3d5f9aa50e5efdce786b8ed8a4f7de614ff69230a33ca9967659297",
+        "phase_artifact_sha256": "09ed609f7a7d057e4afa670bc04b046eb49851b52758c731445171462ac2ebc7",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1"
+      }
+    },
+    "B-parent": {
+      "counts": {
+        "extra_solver_revisions": 16,
+        "findings": 36,
+        "findings_with_non_slot_identifiers": 2,
+        "first_to_last_solver_text_changed": 3,
+        "perception_visits": 20,
+        "planner_visits": 36,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 36,
+        "reviewer_visits": 36,
+        "reviews_valid": 36,
+        "solver_not_strict_task_json": 3,
+        "solver_strict_task_json": 33,
+        "solver_text_tool_markers": 3,
+        "solver_visits": 36
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1.run-manifest.json",
+        "sha256": "18926f0547d59e28b02f3d156680469c80f6ed3622ce7884a37b4194a6d1db55"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-generation-v1",
+        "config_sha256": "4d930c3508d7e409d56b79893f1efa873f473f36208f87eb36432b77575f6500",
+        "phase_artifact_sha256": "2a246a68ef408f6ff345d9a3efd4c4c668f68d59e3c8ee4aff1c2852276bba2f",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1"
+      }
+    },
+    "B-parent-aa": {
+      "counts": {
+        "extra_solver_revisions": 18,
+        "findings": 62,
+        "findings_with_non_slot_identifiers": 2,
+        "first_to_last_solver_text_changed": 5,
+        "perception_visits": 20,
+        "planner_visits": 38,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 38,
+        "reviewer_visits": 38,
+        "reviews_valid": 38,
+        "solver_not_strict_task_json": 4,
+        "solver_strict_task_json": 34,
+        "solver_text_tool_markers": 4,
+        "solver_visits": 38
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1.run-manifest.json",
+        "sha256": "e8330affceaba5f6b76078fb12ecdb94ea508897a686268139e090d66e276782"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-b-parent-aa-generation-v1",
+        "config_sha256": "634310d942931bb0324c381024193f636149ecc8c867825ed0b39e9636501289",
+        "phase_artifact_sha256": "776e6e79ec86076b1b83414f65d08a1367fc2b855992e7fab768b281c39341a1",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1"
+      }
+    },
+    "L-candidate-1": {
+      "counts": {
+        "extra_solver_revisions": 16,
+        "findings": 42,
+        "findings_with_non_slot_identifiers": 4,
+        "first_to_last_solver_text_changed": 5,
+        "perception_visits": 20,
+        "planner_visits": 36,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 36,
+        "reviewer_visits": 36,
+        "reviews_valid": 36,
+        "solver_not_strict_task_json": 5,
+        "solver_strict_task_json": 31,
+        "solver_text_tool_markers": 5,
+        "solver_visits": 36
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1.run-manifest.json",
+        "sha256": "0517b236f4b0440dde10452f00cd9d6d4782eb8b54a2a91f06c5a4a75d452d60"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-1-generation-v1",
+        "config_sha256": "a70566b74b914ffbd92daea2b91483dd5a34b2b190a4b487ff997003dd995c21",
+        "phase_artifact_sha256": "45f863682352e17ecb6090fb9fae3032d82b92cfee668e3ae2a030e7eeb0a701",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1"
+      }
+    },
+    "L-candidate-2": {
+      "counts": {
+        "extra_solver_revisions": 16,
+        "findings": 42,
+        "findings_with_non_slot_identifiers": 2,
+        "first_to_last_solver_text_changed": 3,
+        "perception_visits": 20,
+        "planner_visits": 36,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 36,
+        "reviewer_visits": 36,
+        "reviews_valid": 36,
+        "solver_not_strict_task_json": 3,
+        "solver_strict_task_json": 33,
+        "solver_text_tool_markers": 3,
+        "solver_visits": 36
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1.run-manifest.json",
+        "sha256": "29b343e5f79ef4403ec54dc7d4bb7321a8443570c1f6ac64aca6968ebc9ed338"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-candidate-2-generation-v1",
+        "config_sha256": "10310eea63c01d3dd2565b360e10ef388cfc5fa6de2ed97b752a539584d11a79",
+        "phase_artifact_sha256": "d524168535fee353deeeaf2590f7d3a75451870ca1eb8c36997dd302217a33d5",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1"
+      }
+    },
+    "L-parent": {
+      "counts": {
+        "extra_solver_revisions": 15,
+        "findings": 41,
+        "findings_with_non_slot_identifiers": 3,
+        "first_to_last_solver_text_changed": 5,
+        "perception_visits": 20,
+        "planner_visits": 35,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 35,
+        "reviewer_visits": 35,
+        "reviews_valid": 35,
+        "solver_not_strict_task_json": 4,
+        "solver_strict_task_json": 31,
+        "solver_text_tool_markers": 4,
+        "solver_visits": 35
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1.run-manifest.json",
+        "sha256": "4fe0a3884335b5722e7a886dc83e9ea1b2ad38f020fa699eaafb6057a66de4b0"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-generation-v1",
+        "config_sha256": "e539ca6594b2820403d8ed83b9245d178ea2f6ecfd34cb898cf29ec1cb160e31",
+        "phase_artifact_sha256": "a31a015fb5cf7427d37374dfde89eaf8f20911b11bd3185342461e30f434ba6f",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1"
+      }
+    },
+    "L-parent-aa": {
+      "counts": {
+        "extra_solver_revisions": 16,
+        "findings": 40,
+        "findings_with_non_slot_identifiers": 4,
+        "first_to_last_solver_text_changed": 4,
+        "perception_visits": 20,
+        "planner_visits": 36,
+        "review_handoffs_not_visible_to_planner": 0,
+        "review_handoffs_visible_to_planner": 36,
+        "reviewer_visits": 36,
+        "reviews_valid": 36,
+        "solver_not_strict_task_json": 3,
+        "solver_strict_task_json": 33,
+        "solver_text_tool_markers": 3,
+        "solver_visits": 36
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1/attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1/SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1.run-manifest.json",
+        "sha256": "07c77dd2e00e7b60b0e7be91dae2e8f55adf71fbef4d6e399152d2a64915e55f"
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-pilot20-rh1-l-parent-aa-generation-v1",
+        "config_sha256": "da11f01c82980fe68f490bf184c382c23bb0d5055ccf511ccac475bf2264e482",
+        "phase_artifact_sha256": "8525ab7b3da36ae96e03a24f14fa6de9ab9cf0c6121782ee027e666b14c40754",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1"
+      }
+    }
+  },
+  "optimizer_export_allowed": false,
+  "preserved": "Prior pilot verdict and all raw sources/official scores are unchanged; current recovery sources remain unread until complete-family root READ.",
+  "read_authority": {
+    "ledger_row_sha256": "006db75168d39ed51f20a25969759f80d6473d13cadc2fc605e9495eb79734be",
+    "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-02-slurp-system-text-pilot20-owner220-v1/analysis-recipe-v1.json",
+      "sha256": "c8f2ebd69027d2a88f24a488cd986790bdb009fdd3292dbcb3eb90a4adaf93bc"
+    }
+  },
+  "recorded_at_utc": "2026-10-03T02:37:22.476711+00:00",
+  "schema": "saea-pilot20-postcall-source-audit-receipt-v1",
+  "scope": "Root-only descriptive source audit of the already qualified complete owner220 pilot; no new score or performance estimate.",
+  "totals": {
+    "extra_solver_revisions": 129,
+    "findings": 339,
+    "findings_with_non_slot_identifiers": 17,
+    "first_to_last_solver_text_changed": 30,
+    "perception_visits": 160,
+    "planner_visits": 289,
+    "review_handoffs_not_visible_to_planner": 0,
+    "review_handoffs_visible_to_planner": 289,
+    "reviewer_visits": 289,
+    "reviews_valid": 289,
+    "solver_not_strict_task_json": 27,
+    "solver_strict_task_json": 262,
+    "solver_text_tool_markers": 24,
+    "solver_visits": 289
+  }
+}

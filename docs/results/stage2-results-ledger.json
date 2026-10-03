@@ -7044,6 +7044,25 @@
         "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-V1",
         "SAEA-SLURP-SYSTEM-TEXT-UPDATE1-L-PARENT-AA-V1"
       ]
+    },
+    {
+      "date": "2026-10-03",
+      "cell_id": "SLURP-PILOT20-POSTCALL-SOURCE-AUDIT-V2",
+      "status": "DESCRIPTIVE-SOURCE-AUDIT",
+      "source": "docs/results/2026-10-03-slurp-postcall-source-audit.md",
+      "source_sha256": "a6765a3d58fc5bd2308e8d69bbe0bbcb46abcb9443b46aa0a7f6528e16f2b8e5",
+      "receipt": "docs/receipts/continuation/2026-10-03-pilot20-postcall-source-audit.json",
+      "meaning": "All289 valid Reviewer handoffs are visible in the actual next Planner context. Transmission alone does not establish semantic use, causal contribution or correct revision.",
+      "run_ids": [
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-1-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-CANDIDATE-2-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-B-PARENT-AA-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-1-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-CANDIDATE-2-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-V1",
+        "SAEA-SLURP-SYSTEM-TEXT-PILOT20-RH1-L-PARENT-AA-V1"
+      ]
     }
   ],
   "stage3_measurement_instrument": {

@@ -1888,3 +1888,7 @@ All five400-row members are FINALIZED with verified seals and one successful off
 ## 2026-10-02: complete owner220 pilot; owner222 learning feedback
 
 All eight20-row members finalized, sealed and officially scored once; root READ complete. The [exploratory report](2026-10-02-slurp-pilot20-root-feedback.md) includes all official metrics,13 strata, both weightings and own A/A uncertainty. Status: learning feedback, no stable efficacy/adoption or automatic expansion. Syntax is fixed; semantic criticism, intermediate Solver output and absent lookup remain optimization targets. Only separate L feedback enters the proposer.
+
+## 2026-10-03: complete-pilot post-call source audit — DESCRIPTIVE
+
+Root reverified all eight qualified20-row members and the exact existing READ. All289 Reviewer handoffs are present in the actual next Planner request. The source audit reproduces27 raw Solver shape defects and17 findings with non-slot identifiers; it establishes transmission, not semantic consumption or benefit. Zero new model/scorer contacts and no optimizer export. [Source-bound supplement](2026-10-03-slurp-postcall-source-audit.md). Prior scientific verdicts remain unchanged.

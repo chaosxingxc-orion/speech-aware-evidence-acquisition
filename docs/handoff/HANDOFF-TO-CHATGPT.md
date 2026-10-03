@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete-pilot post-call source audit, 2026-10-03T02:37:22.476711+00:00
+
+Root reverified the qualified owner220 family and exact READ. All289 Reviewer handoffs are visible in actual next Planner requests;27 raw Solver task-shape defects and17 non-slot finding identifiers are reproduced. This narrows the diagnosis to criticism content, Planner decisions and Solver revisions; visibility does not establish semantic use or benefit. [Source evidence](../results/2026-10-03-slurp-postcall-source-audit.md). Zero new model/scorer contacts, no optimizer export. Current225 comparison has three finalized/scored members and the last candidate in flight; current quality remains unread.
+
 ## Root post-call diagnostic base verified, 2026-10-03T02:32:04.453860+00:00
 
 A source-bound analyzer now measures every completed role visit, raw Solver task shape, Reviewer handoff legality, exact visibility in actual Planner context, routing and revisions.110 tests pass;99% analysis-module statement coverage; base/harness/lint pass. [Scope and verification](../readiness/2026-10-03-slurp-root-postcall-diagnostics-v1/README.md). This adds no runtime change, model/scorer contact or held-carrier admission. Load exact complete-family sources only after root READ; context visibility is not semantic or causal credit. The current owner225 comparison is still in flight; no partial quality read has occurred.
@@ -661,7 +665,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-02T18:50:05.511680+00:00
+Last refreshed: 2026-10-03T02:37:22.505890+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
