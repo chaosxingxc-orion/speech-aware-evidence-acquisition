@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Optional prefix-family scheduler seam verified, 2026-10-03T09:11:53.058135+00:00
+
+The shared OpenJiuwen executor now offers explicit prefix-family slot bindings while retaining trajectory affinity by default.177 tests pass, executor coverage98%; fixed per-family routing, cross-family concurrency, cancellation and local-tool compatibility are verified with synthetic model callbacks. [Scope and remaining admission work](../readiness/2026-10-03-node-prefix-slot-seam-v1/README.md).
+
+This is not yet exposed by FlightRuntime configuration and has no real GPU/cache proof or quality result. No running/frozen worker, model request, geometry, queue or READ changed. Next bind the execution envelope and register exact structural/capacity proof separately. The proposer successor protocol remains separate; old21 spent/three HELD identities persist. SLURP heartbeat stays PAUSED, independent telemetry stays active, and human review remains before8x400.
+
 ## Cache cost instrumentation verified, 2026-10-03T09:04:15.635414+00:00
 
 The optional shared exporter separates reused input, evaluated input and final slot residency, retains unavailable values and checks every preserved wire response against complete trajectory custody.87 tests pass with95% new-module statement coverage; base/harness/lint pass. The exact qualified round5 family yields1,009 measured contacts,83.50% input reuse (Solver62.65%, Reviewer96.82%, Planner94.90%). These are descriptive source measurements, not scheduling acceleration or quality evidence. [Scope and proof](../readiness/2026-10-03-node-cache-cost-v1/README.md); [custody](../receipts/continuation/2026-10-03-node-cache-cost-proof.json).

@@ -418,6 +418,7 @@ def execute_speech_agent_workflows(
     workflow_timeout_seconds: float,
     episode_invoker: Callable[..., Awaitable[object]] | None = None,
     local_tool_workers: int = 0,
+    prefix_slot_bindings: Mapping[str, int] | None = None,
 ) -> list[object]:
     """Run speech Agent workflows on one openJiuwen event loop.
 
@@ -445,6 +446,14 @@ def execute_speech_agent_workflows(
     slot. The synchronous tool settles before cancellation completes. This is a
     resource policy only: the caller still owns tool authority, accounting and
     evidence custody. The default retains stable slot affinity.
+
+    Optional prefix_slot_bindings reserves distinct slots for declared prefix
+    families instead of trajectories. The native invoker must supply the exact
+    prefix_family keyword on every run_contact call. A family has one slot and
+    serializes across samples; different families can run concurrently. The
+    caller owns the versioned prefix identity and complete request bytes. This
+    routing primitive neither verifies a cache hit nor grants flight admission.
+    No current FlightRuntime configuration enables this experimental seam.
     """
 
     if (
@@ -454,6 +463,17 @@ def execute_speech_agent_workflows(
         or (local_tool_workers and episode_invoker is None)
     ):
         raise ValueError("local_tool_workers requires a native episode and an integer in 0..8")
+
+    if prefix_slot_bindings is not None:
+        if (episode_invoker is None or not isinstance(prefix_slot_bindings, Mapping)
+                or not prefix_slot_bindings or type(slot_count) is not int or slot_count < 1):
+            raise ValueError("prefix slot bindings require a native episode and positive slot count")
+        prefix_slot_bindings = dict(prefix_slot_bindings)
+        if (any(not isinstance(key, str) or not key.strip() for key in prefix_slot_bindings)
+                or any(type(slot) is not int or not 0 <= slot < slot_count
+                       for slot in prefix_slot_bindings.values())
+                or len(set(prefix_slot_bindings.values())) != len(prefix_slot_bindings)):
+            raise ValueError("prefix families require distinct in-range integer slots")
 
     if episode_invoker is None and any(
         callback is None
@@ -480,6 +500,7 @@ def execute_speech_agent_workflows(
         slots: asyncio.Queue[int] = asyncio.Queue(maxsize=slot_count)
         for slot_id in range(slot_count):
             slots.put_nowait(slot_id)
+        prefix_locks = {key: asyncio.Lock() for key in (prefix_slot_bindings or {})}
 
         async def one(state: object):
             primary_slot_id: int | None = None
@@ -497,8 +518,37 @@ def execute_speech_agent_workflows(
 
             async def run_contact(
                 blocking_contact: Callable[[int], ContactResult],
+                *, prefix_family: str | None = None,
             ) -> ContactResult:
                 async with contact_lock:
+                    if prefix_slot_bindings is not None:
+                        if not isinstance(prefix_family, str) or prefix_family not in prefix_locks:
+                            raise ValueError("model contact lacks its declared prefix family")
+                        async with prefix_locks[prefix_family]:
+                            worker = asyncio.create_task(asyncio.to_thread(
+                                blocking_contact, prefix_slot_bindings[prefix_family],
+                            ))
+                            worker_tasks.add(worker)
+                            try:
+                                return await asyncio.shield(worker)
+                            except asyncio.CancelledError:
+                                # Repeated cancellation cannot free a slot while
+                                # its synchronous model call still runs.
+                                while not worker.done():
+                                    try:
+                                        await asyncio.shield(worker)
+                                    except asyncio.CancelledError:
+                                        continue
+                                    except BaseException:
+                                        break
+                                if not worker.cancelled():
+                                    worker.exception()
+                                raise
+                            finally:
+                                if worker.done():
+                                    worker_tasks.discard(worker)
+                    if prefix_family is not None:
+                        raise ValueError("prefix family supplied without prefix slot bindings")
                     slot_id = await primary_slot()
                     worker = asyncio.create_task(
                         asyncio.to_thread(blocking_contact, slot_id)

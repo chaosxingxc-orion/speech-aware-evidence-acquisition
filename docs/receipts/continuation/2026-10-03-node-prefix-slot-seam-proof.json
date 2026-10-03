@@ -1,0 +1,17 @@
+{
+  "claim": "Model-free routing and lifecycle proof only",
+  "executor_statement_coverage_percent": 98,
+  "files": {
+    "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py": "9733f1a195ab5cf5f6d840236243864f077a6b255fea2b39db3f3f970a432538",
+    "tests/unit/test_native_node_slot_affinity.py": "f337479a4332081a0cedf4bc33bce2c433d8f72a9d73abba06eaf70b1d506597"
+  },
+  "model_contacts_added": 0,
+  "real_cache_proof": false,
+  "recorded_at_utc": "2026-10-03T09:11:53.058135+00:00",
+  "runtime_config_enabled": false,
+  "schema": "saea-prefix-slot-seam-proof-v1",
+  "scope": "Optional shared executor seam; no production FlightRuntime activation",
+  "scorer_contacts_added": 0,
+  "tests_passed": 177,
+  "tokenizer_contacts_added": 0
+}
