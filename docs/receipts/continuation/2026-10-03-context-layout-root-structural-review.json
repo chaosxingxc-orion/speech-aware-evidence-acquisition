@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-10-03T13:09:50.397726+00:00",
+  "comparison": "HELD;offline exact prerequisite preparation only",
+  "evidence": [
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "b4c794c2cd75369bc80207ea1cddc4940acc7402d93dcc27fd2f251166087a06"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/resources-and-node-cost-v1.json",
+      "sha256": "d55fd0c5fcd21d541e6a3b8d27e94f85b105bcd237c447714eab72682de4d343"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/root-node-timing-v1.py",
+      "sha256": "3b8ae3593c7743133f48dbef35f096ba7a638122dbc3ce22839d5370449f895b"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/root-node-timing-v1.json",
+      "sha256": "133b402cf9371f6588f7205d784b295b25adc52b0cad9e9b69baed6b159b4798"
+    }
+  ],
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "native_omni_terminal_deliveries": 4,
+  "new_contacts": 0,
+  "official_scoring": 0,
+  "original_actual_fit_endpoints": 100,
+  "original_model_contacts": 25,
+  "owner_decisions": [
+    227
+  ],
+  "report": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-engineering-v1/root-structural-review.md",
+    "sha256": "1711b5bf2198e75293c29237547f3a53e6735b01ef17920143cf24511aaaa0d0"
+  },
+  "schema": "saea-context-layout-root-structural-review-v1",
+  "source_commit": "fe7682ca46f852875a9a4192ed011be4c6318201",
+  "task_quality_read": false,
+  "verdict": "Accept the one completed structural proof; no quality,performance or scientific-adoption verdict.",
+  "verified_layout_contacts": 25,
+  "verified_original_artifact_pins": 5,
+  "visible_valid_reviewer_handoffs": 7
+}
