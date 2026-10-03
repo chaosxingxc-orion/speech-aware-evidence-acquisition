@@ -133,6 +133,7 @@ CENTROID_BOUNDARY_KEY = "centroid-boundary-key"
 SOLVER_CITATION_CONTRACT = "solver-citation-contract"
 REVIEWER_G5_REPAIR = "reviewer-g5-repair"
 KNOWLEDGE_CONSUMPTION_OPPORTUNITY = "knowledge-consumption-opportunity"
+NODE_CONTEXT_PRESENTATION = "node-context-presentation"
 CONSTRUCTION_STORE_BINDING = "construction-store-binding"
 RELISTEN = "relisten"
 SCOPE_RULE = "scope-rule"
@@ -159,6 +160,9 @@ _COLUMN_REQUIRED = frozenset({"column_id", "toggle", "to", "level"})
 _COLUMN_OPTIONAL = frozenset({"prepared_seed"})
 
 COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
+    ComponentSpec(NODE_CONTEXT_PRESENTATION, "USE, explicit node context presentation",
+        frozenset({STATE_ON}), frozenset(),
+        optional_params=frozenset({"tool_schema_rendering", "reviewer_history_scope"})),
     ComponentSpec(KNOWLEDGE_CONSUMPTION_OPPORTUNITY, "SUPPLY/USE, bounded knowledge opportunity",
         frozenset({STATE_ON}), frozenset({"mode", "store_id", "reviewer_template", "planner_template"}),
         optional_params=frozenset({"solver_template", "value_limit", "knowledge_binding",
@@ -823,6 +827,31 @@ def _require_hook(hooks: CarrierHooks, name: str, component_id: str) -> object:
     return value
 
 
+def _compile_node_presentation(params: Mapping, writer: _Writer) -> None:
+    """Select existing presentation paths without granting tools or adding contacts.
+
+    Node instructions remain independent phase material. The narrow history option
+    exposes the existing source-checked Reviewer projection; it does not invent a
+    projection for other roles or discard the speech and supplied knowledge inputs.
+    """
+    if not params:
+        raise ConsumptionModuleConfigError("node context presentation needs an explicit option")
+    options = {
+        "tool_schema_rendering": (
+            ("native_episode", "tool_schema_rendering"), {"constant", "per-role"}),
+        "reviewer_history_scope": (
+            ("native_episode", "roles", "reviewer", "history_scope"),
+            {"full", "latest-solver-and-local-tools"}),
+    }
+    for name, value in params.items():
+        path, allowed = options[name]
+        if not isinstance(value, str) or value not in allowed:
+            raise ConsumptionModuleConfigError(f"invalid node context presentation {name}")
+        parent = _node(writer.layer, path[:-1], field=NODE_CONTEXT_PRESENTATION)
+        writer.set(path, value, component_id=NODE_CONTEXT_PRESENTATION,
+                   replace_only=path[-1] in parent)
+
+
 def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPolicy:
     from .controllers import (  # noqa: PLC0415
         RailsControllersError, default_phase_program, module_program_family_id,
@@ -882,9 +911,16 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             f"armed {[d.component_id for d in block.armed()]} need a locked system layer"
         )
     writer = _Writer(layer)
+    context_decl = block.component(NODE_CONTEXT_PRESENTATION)
+    context_owns_tools = (
+        context_decl is not None and context_decl.state == STATE_ON
+        and "tool_schema_rendering" in context_decl.params
+    )
     for decl in block.armed():
         cid, params = decl.component_id, decl.params
-        if cid in (AGREE_VOTE_SEED, CENTROID_BOUNDARY_KEY):
+        if cid == NODE_CONTEXT_PRESENTATION:
+            _compile_node_presentation(params, writer)
+        elif cid in (AGREE_VOTE_SEED, CENTROID_BOUNDARY_KEY):
             seed = tuple(_require_hook(hooks, "decision_supply_path", cid))
             if cid == AGREE_VOTE_SEED:
                 writer.set((*seed, "rank_weights", "w_agree"), params["w_agree"],
@@ -950,8 +986,10 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                        component_id=cid, replace_only=True)
             writer.set(("native_episode", "review_handoff"), "slot-issues-v1",
                        component_id=cid, replace_only=False)
-            writer.set(("native_episode", "tool_schema_rendering"), "constant",
-                       component_id=cid, replace_only=False)
+            if not context_owns_tools:
+                # Preserve historical bytes unless presentation explicitly owns this leaf.
+                writer.set(("native_episode", "tool_schema_rendering"), "constant",
+                           component_id=cid, replace_only=False)
             writer.set(("phase_tools",), {"planner": {
                 "mode": "native-tools", "source_authority_role": "planner",
                 "allowed_tools": ["saea-tool-knowledge-target-lookup-v1"],

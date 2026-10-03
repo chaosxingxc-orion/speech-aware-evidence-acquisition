@@ -1,0 +1,87 @@
+{
+  "schema": "saea-node-context-presentation-engineering-v1",
+  "at_utc": "2026-10-03T15:14:37.843869+00:00",
+  "authority": [
+    227
+  ],
+  "status": "MODEL_FREE_COMPLETE_NOT_ACTIVATED",
+  "base_commit": "3d22fbdf12be268fd52c91bb9e20f14388a26d9d",
+  "source": {
+    "relpath": "src/speech_aware_evidence_acquisition/rails/consumption_module.py",
+    "sha256": "ec71fa5927fdebc303c477a34c72f04f25a10a332244d89d2bc3c033f7790e56"
+  },
+  "tests_source": {
+    "relpath": "tests/unit/test_consumption_node_context.py",
+    "sha256": "111f9d35edfd73dcb2b793341a74fd855ec1d60385a411a1dc20aace136510ce"
+  },
+  "evidence": [
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/prechange-refusals.json",
+      "sha256": "c678126fa7d9041412506dfeecf29eb8d45d90408ef09d79c21df916e1636a9d"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/compiled-options.json",
+      "sha256": "d1f052c9810db6ef91881f7eb3341f01966b71014542f82687c92f7654cd2b31"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/tests-red.txt",
+      "sha256": "c418c5a7e572e1ebccd8e044c7659789792d74275766c27810e66bf3dd813349"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/tests-first-green.txt",
+      "sha256": "03c44d98d559493270f045703fc668a1f0a643d55425e650da9961be8930feaa"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/tests-targeted.txt",
+      "sha256": "f283564e1de64b0139b5b9709abe78ebaa014b887ec0cbf54c817b8f6ac87c08"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/coverage.json",
+      "sha256": "76955887fd1eb832713bf668faeb5897be059b4f3c83271f398ba039b375742b"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/lint.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/engineering-base.txt",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/harness-admission.txt",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/node-context-inventory-v1/handoff-freshness.txt",
+      "sha256": "3ab3d7e335307fd61e343c9f0e105e4be408afe83101347ae8ac54ee817b2af1"
+    }
+  ],
+  "tests": {
+    "targeted_passed": 269,
+    "initial_red_failed": 11,
+    "initial_red_passed": 11,
+    "note": "The first implementation run retained five fixture failures because a baseline fragment lacks carrier identity; the final test uses ordinary full config composition. All evidence is preserved.",
+    "module_statement_coverage_percent": 91.74917491749174,
+    "new_helper_statement_coverage_percent": 100
+  },
+  "changes": [
+    "Add explicit opt-in node context presentation to the existing consumption compiler.",
+    "Keep per-role tool display independent of knowledge opportunity; preserve exact tool authority.",
+    "Expose the existing Reviewer history projection without changing other-role history.",
+    "Keep absent/off compiled output and all eight current config hashes unchanged."
+  ],
+  "new_real_contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "proposer": 0
+  },
+  "runtime_mutation": false,
+  "current_frozen_worker_commit": "d8456cefecafc8a7da681e06bfc06f141e994972",
+  "current_family_read": "UNSIGNED",
+  "scientific_quality_read": false,
+  "learning": "HELD",
+  "heartbeat": "PAUSED",
+  "subagents": "NONE",
+  "next_gpu_admission": false
+}

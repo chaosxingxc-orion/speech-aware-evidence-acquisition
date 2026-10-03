@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Independent node presentation options verified, 2026-10-03T15:14:37.843869+00:00
+
+The [shared compiler extension](../readiness/2026-10-03-node-context-presentation-v1/README.md) removes the mandatory common tool-display coupling when a new explicit context component owns that choice. It also exposes the existing source-checked Reviewer history scope. Other roles retain their existing history contracts; this is not complete arbitrary node-history freedom. Missing/off options preserve historical compiled bytes, tool authority and all eight current configuration hashes. Twenty-four prospective combinations compile and pass the ordinary parser. [Evidence](../receipts/continuation/2026-10-03-node-context-presentation-engineering.json):269 targeted tests pass,91.75 percent module coverage,all new helper statements covered,lint/base/admission pass. Zero real contacts and no runtime activation.
+
+At15:11Z six of eight current context members were FINALIZED,the seventh OPENED and last ABSENT;current worker remained clean at d8456cefe and Windows15.84 GiB. The exact whole-family READ remains unsigned; no partial task quality or automatic next-stage dispatch. Root alone continues,learning HELD,heartbeat PAUSED. Review business quality and reliable delivery jointly with original sample latency;cache reuse never forces node prompt equality or missing relevant handoffs. New options need exact registration,FIT and structural proof before use;human before8x400.
+
 ## Context execution and experiment timing readers prepared, 2026-10-03T14:47:29.234141+00:00
 
 The [joint reader](../readiness/2026-10-03-context-matrix-n20-entry-v1/analysis-reader-v1.md) now verifies every original model request against its original FIT body,actual role/query placement,requested slot routing and full512-token output reservation. It retains independent node instruction hashes and distinguishes requested slots from unobserved server assignment. Initial request-body materialization uses the normal shared renderer with its process identity check,never a send;the source-addressed analysis archive allows subsequent revalidation without a live service. No cache endpoint,service setting,queue or frozen runtime source changes. [Engineering evidence](../receipts/continuation/2026-10-03-context-execution-audit-engineering.json):375 targeted and62 final focused tests pass (overlapping),source-reader100%/wire92%/CLI98% coverage,lint/base/admission pass. Zero real contacts.
@@ -1128,7 +1134,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T14:47:29.234141+00:00
+Last refreshed: 2026-10-03T15:16:02.833397+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
