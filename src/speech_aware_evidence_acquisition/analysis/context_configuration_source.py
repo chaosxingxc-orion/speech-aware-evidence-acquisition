@@ -122,6 +122,32 @@ def preflight_members(registration, *, data_root, sample_ids, commit):
     return sources
 
 
+def context_member_identity(member):
+    """Resolve exact schedule owners without aliasing another research family."""
+    label = member["label"]
+    placement = "before-speech-v1" if label.startswith("before-speech-") else "legacy"
+    old = {f"{layout}-{scheduler}-{repeat}" for layout in ("legacy", "before-speech")
+           for scheduler in ("trajectory", "role") for repeat in ("primary", "aa")}
+    if label in old:
+        return placement, "role" if "-role-" in label else "trajectory", "context-matrix-n20", None
+    labels = [f"{layout}-{scheduler}-pair{pair}-{repeat}" for scheduler in ("trajectory", "panel")
+              for layout in ("legacy", "before-speech") for pair in (1, 2) for repeat in ("primary", "aa")]
+    require(label in labels, "unknown registered context matrix label")
+    schedule = "panel" if "-panel-" in label else "trajectory"
+    layout = "legacy" if placement == "legacy" else "before-speech"
+    require(member.get("run_id") == f"SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-{label.upper()}-V1"
+            and member.get("layout") == layout and member.get("schedule") == schedule,
+            "schedule owner or policy binding differs")
+    keys = member.get("job_keys", [])
+    require(len(keys) == 20 and all(isinstance(k, list) and len(k) == 2
+            and isinstance(k[0], str) and k[0] and k[1] is None for k in keys)
+            and len({k[0] for k in keys}) == 20, "schedule owner requires twenty distinct original jobs")
+    panel = None if schedule == "trajectory" else {
+        "panel_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-V1", "group_index": labels.index(label) - 8,
+        "group_size": 20, "max_jobs": 160, "job_keys": keys}
+    return placement, schedule, "node-panel-schedule-n20", panel
+
+
 def _audit_context_source(source, *, member, flight_pin, data_root, frozen_repo):
     """Render only through the shared transport; its normal identity check stays.
 
@@ -130,13 +156,8 @@ def _audit_context_source(source, *, member, flight_pin, data_root, frozen_repo)
     archive; subsequent reads reverify the original FIT without a live service.
     Never invoke the transport or restart a missing service for this reader.
     """
-    label = member["label"]
-    allowed = {f"{layout}-{scheduler}-{repeat}" for layout in ("legacy", "before-speech")
-               for scheduler in ("trajectory", "role") for repeat in ("primary", "aa")}
-    require(label in allowed, "unknown registered context matrix label")
-    placement = "before-speech-v1" if label.startswith("before-speech-") else "legacy"
-    scheduler = "role" if "-role-" in label else "trajectory"
-    materialized = materialize_semantic_trajectories(source, round_id="context-matrix-n20-root-audit-v1")
+    placement, scheduler, namespace, panel_identity = context_member_identity(member)
+    materialized = materialize_semantic_trajectories(source, round_id=namespace + "-root-audit-v1")
     renderer = None
     def render(raw):
         nonlocal renderer
@@ -151,7 +172,7 @@ def _audit_context_source(source, *, member, flight_pin, data_root, frozen_repo)
                 runtime_root=Path(runtime_root))
         return renderer.render_request(raw)
     identity = hashlib.sha256(source.bundle.manifest_path.read_bytes()).hexdigest()
-    archive = Path(data_root).resolve() / "analysis/context-matrix-n20-wire" / (identity + ".json")
+    archive = Path(data_root).resolve() / "analysis" / (namespace + "-wire") / (identity + ".json")
     require(archive.resolve().is_relative_to(Path(data_root).resolve() / "analysis"),
             "context wire archive escaped analysis storage")
     prepare_actor_wire_requests(source, materialized, flight_pin, archive,
@@ -160,7 +181,7 @@ def _audit_context_source(source, *, member, flight_pin, data_root, frozen_repo)
     requests = load_actor_wire_requests(source, materialized, spec, data_root=data_root)
     result = audit_context_execution(source, materialized, flight_pin, data_root=data_root,
         render_request=lambda raw: requests[json.loads(raw)["request_id"] + "/request"],
-        placement=placement, scheduler=scheduler)
+        placement=placement, scheduler=scheduler, panel_identity=panel_identity)
     result["wire_requests"] = spec
     result.pop("content_sha256", None)
     result["content_sha256"] = content_hash(result)

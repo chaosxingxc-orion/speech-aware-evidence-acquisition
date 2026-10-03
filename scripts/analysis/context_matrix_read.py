@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 import sys
 
+from speech_aware_evidence_acquisition.analysis.node_panel_timing import combine_node_panel_timings
 from speech_aware_evidence_acquisition.analysis.context_configuration import describe_configurations
 from speech_aware_evidence_acquisition.analysis.context_configuration_source import preflight_members, read_numeric_members
 from speech_aware_evidence_acquisition.rails.finite_policy_artifacts import _pinned_json
@@ -65,8 +66,9 @@ def run(inputs, *, repo_root, data_root, output):
     require(output.is_relative_to(data / "analysis") and output != data / "analysis" and not output.exists(),
             "use a fresh analysis directory outside optimizer storage")
     require(set(inputs) == {"schema", "recipe", "registration", "roster", "strata", "frozen_worker"}
-            and inputs["schema"] == "saea-context-matrix-read-inputs-v1", "exact matrix reader inputs are required")
-    reader_names = ["scripts/analysis/context_matrix_read.py", "scripts/system_text_search.py",
+            and inputs["schema"] in ("saea-context-matrix-read-inputs-v1", "saea-node-panel-schedule-read-inputs-v1"), "exact matrix reader inputs are required")
+    panel_schedule = inputs["schema"] == "saea-node-panel-schedule-read-inputs-v1"
+    reader_names = ["src/speech_aware_evidence_acquisition/analysis/node_panel_timing.py","scripts/analysis/context_matrix_read.py", "scripts/system_text_search.py",
                     "src/speech_aware_evidence_acquisition/analysis/context_configuration.py",
                     "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py",
                     "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
@@ -77,18 +79,26 @@ def run(inputs, *, repo_root, data_root, output):
     family, members = recipe_family_identity(recipe)
     read_spec = {"family_id": family, "expected_members": members, "read_registration": inputs["recipe"]}
     authority = CLI.require_read_registration(read_spec, repo_root=root)
-    require(registration.get("schema") == "saea-context-matrix-n20-registration-v1"
+    expected_schema = "saea-node-panel-schedule-n20-registration-v1" if panel_schedule else "saea-context-matrix-n20-registration-v1"
+    count = 16 if panel_schedule else 8
+    require(family == ("node-panel-schedule-n20" if panel_schedule else "context-matrix-n20"),
+            "reader schema differs from exact registered family")
+    require(registration.get("schema") == expected_schema
             and registration.get("analysis") == inputs["recipe"]
             and registration.get("read_id") == authority["read_run_id"]
-            and registration.get("rows_per_member") == 20 and registration.get("trajectory_cap") == 160
-            and registration.get("official_complete_scores") == 8
-            and len(registration.get("members", [])) == 8
+            and registration.get("rows_per_member") == 20 and registration.get("trajectory_cap") == count * 20
+            and registration.get("official_complete_scores") == count
+            and len(registration.get("members", [])) == count
             and {member["label"]: member["run_id"] for member in registration["members"]} == members
             and registration.get("complete_family") == recipe["complete_family"],
             "matrix registration differs from its exact READ recipe")
+    if panel_schedule:
+        require(registration.get("generation_contact_cap") == 4160
+                and registration.get("actual_fit_endpoint_cap") == 16640,
+                "schedule registration budget differs")
     admission, _ = _pinned_json(data, registration["admission"], "matrix admission")
     require(registration["admission"] == recipe["admission"]
-            and admission.get("decision_id") == "slurp-context-matrix-n20-owner227-v1"
+            and admission.get("decision_id") == ("slurp-node-panel-schedule-n20-owner227-v1" if panel_schedule else "slurp-context-matrix-n20-owner227-v1")
             and admission.get("status") == "decided" and admission.get("owner_decisions") == [227]
             and admission.get("next_scale_admitted") is False
             and set(members.values()) <= set(admission.get("eligible_run_ids", [])),
@@ -110,6 +120,13 @@ def run(inputs, *, repo_root, data_root, output):
         joined[sid] = {key: indexed[sid][key] for key in ("sample_id", "utterance_id", "stratum")}
     sources = preflight_members(registration, data_root=data, sample_ids=ids, commit=inputs["frozen_worker"]["commit"])
     numeric = read_numeric_members(sources, data_root=data, frozen_repo=frozen)
+    panel_timing = None
+    if panel_schedule:
+        require(set(numeric) == set(members.values()), "numeric schedule family is incomplete")
+        panel_members = [member for member in registration["members"] if member["schedule"] == "panel"]
+        require(len(panel_members) == 8, "exact eight panel owners are required")
+        panel_timing = combine_node_panel_timings([
+            numeric[member["run_id"]]["context_execution"]["node_panel_timing"] for member in panel_members])
     uncertainty = recipe["uncertainty"]
     report = describe_configurations(numeric, comparisons=recipe["comparisons"], roster=joined,
                                      bootstrap_draws=uncertainty["bootstrap_draws"], seed=uncertainty["seed"])
@@ -133,6 +150,9 @@ def run(inputs, *, repo_root, data_root, output):
                   context_execution={run: member["context_execution"] for run, member in numeric.items()},
                   experiment_stage_timing={run: member["experiment_stage_timing"] for run, member in numeric.items()},
                   model_contacts_added=0, scorer_contacts_added=0)
+    if panel_timing is not None:
+        report["whole_node_panel_timing"] = panel_timing
+        report["schedule_limitations"] = recipe["order"]["limitation"]
     report.pop("content_sha256", None)
     report["content_sha256"] = content_hash(report)
     output.mkdir(parents=True, exist_ok=False)

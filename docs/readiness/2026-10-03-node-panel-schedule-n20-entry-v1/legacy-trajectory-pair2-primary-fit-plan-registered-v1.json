@@ -1,0 +1,30 @@
+{
+  "cell": "slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-primary-v1",
+  "composed_config_hash": "9c7410189a1097640ea67fcf1c209894f990319993ddc29e9fa9abcf8dcba5fb",
+  "decision_receipt": {
+    "relpath": "coordination/node-panel-schedule-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "f2de3e40b20b8e7f9a8ef2331da7eeac7d1105afc8e0edca36dcc1eeefa972bd"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-primary-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "74fccf002d5ada66df6581c857e147707cb70140b6c46a66694f510a8f2bbc87",
+    "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-primary-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1/phase-supply-v1.json",
+    "sha256": "525d91ed3a0637d9470a02342717d6ab9314c0a454c32be98bdaf38624a462f8"
+  },
+  "read_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under227 bounded schedule comparison"
+}

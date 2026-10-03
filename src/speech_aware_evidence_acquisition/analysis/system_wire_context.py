@@ -20,6 +20,7 @@ from ..core.preparation import canonical_bytes, digest, load_artifact, prepare_a
 from ..core.preparation_fit import boundary_identity
 from ..rails.hashing import content_hash
 from ..rails.prepared_feedback import _read_pinned_json, _resolve_data_path
+from .node_panel_timing import audit_member_node_timing
 from .shared_json import restore_json, share_json
 
 
@@ -157,7 +158,7 @@ def _inputs(source, report, flight_pin):
 
 
 def audit_context_execution(source, report, flight_pin, *, data_root, render_request,
-                            placement, scheduler):
+                            placement, scheduler, panel_identity=None):
     """Check original fitted requests against the declared context comparison.
 
     The caller first qualifies the complete family and its exact root READ.
@@ -168,9 +169,13 @@ def audit_context_execution(source, report, flight_pin, *, data_root, render_req
     """
     values = source.composed.values
     role_slots = dict(perception=0, solver=1, reviewer=2, planner=3)
-    if (placement not in ("legacy", "before-speech-v1") or scheduler not in ("trajectory", "role")
+    if (placement not in ("legacy", "before-speech-v1") or scheduler not in ("trajectory", "role", "panel")
             or values.get("native_role_query_placement", "legacy") != placement):
         raise ValueError("context layout label differs from retained configuration")
+    if (bool(values.get("native_node_pipeline")) != (scheduler == "panel")
+            or (panel_identity is not None) != (scheduler == "panel")
+            or values.get("native_node_batch") is not None):
+        raise ValueError("context node scheduler or panel identity differs")
     expected_slots = ({"schema": "saea-native-prefix-slots-v1", "role_slots": role_slots}
                       if scheduler == "role" else None)
     if values.get("native_prefix_slots") != expected_slots:
@@ -245,6 +250,8 @@ def audit_context_execution(source, report, flight_pin, *, data_root, render_req
               "original_fit_receipts": len(fitted), "contacts": contacts,
               "sample_requested_slots": {sid: sorted(slots) for sid, slots in sample_slots.items()},
               "server_assignment_verified": False, "model_contacts_added": 0, "tokenizer_contacts_added": 0}
+    if scheduler == "panel":
+        result["node_panel_timing"] = audit_member_node_timing(source, contacts, **panel_identity)
     result["content_sha256"] = content_hash(result)
     return result
 

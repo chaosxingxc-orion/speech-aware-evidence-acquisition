@@ -1,0 +1,505 @@
+{
+  "allowed_config_differences": [
+    "native_contact_fit",
+    "native_node_pipeline",
+    "prepared_phase_supply",
+    "what_this_is"
+  ],
+  "at_utc": "2026-10-03T20:24:18.162046+00:00",
+  "authority": "Root227 source-equivalent capacity reuse;not a fresh measurement or KV warmup",
+  "capacity": [
+    {
+      "capacity": {
+        "relpath": "coordination/system-text-round8-capacity-owner227-v1/parent/request-fit-v1.json",
+        "sha256": "2e0a7ac1dea0f3f3b38c078e44c1df9ab6c5ab461982b63ef6f02574a78d3c6e"
+      },
+      "layout": "legacy",
+      "minimum_margin_after_structural_reserve": 5546,
+      "requests": 44
+    },
+    {
+      "capacity": {
+        "relpath": "coordination/context-layout-capacity-owner227-v1/seed-before-speech/request-fit-v1.json",
+        "sha256": "c0102d8aa616d6e8cd66e36abe2ed3cff7decc660cdd5c15e4648a149b5381d9"
+      },
+      "layout": "before-speech",
+      "minimum_margin_after_structural_reserve": 5546,
+      "requests": 44
+    }
+  ],
+  "new_model_tokenizer_scorer_contacts": 0,
+  "per_member": [
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair1-primary-composition-v1.json",
+        "sha256": "f908845bba9943a9be5b087149a7404ee8ebcf69312c17eee5c8da1f27e8c191"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair1-aa-composition-v1.json",
+        "sha256": "c6fcf07c4a2792b9c66e8b316cd7bb83d218495ff7a64003a16c70c62e642591"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair2-primary-composition-v1.json",
+        "sha256": "2477fc79919af9a0339231f89c48878bca768de6c4f67f72ae88b1eed9caa9bb"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair2-aa-composition-v1.json",
+        "sha256": "5dd552829a9a767b47f95cf51a8041da4c9ca91ff5bb083dace20214714322f4"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair1-primary-composition-v1.json",
+        "sha256": "986bc314dfd6ca13b707409eb8bf7883cc46872054abc77d3b59364ed5b7cad2"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair1-aa-composition-v1.json",
+        "sha256": "b3be2c11547f49f172601f1cb860af12b000274481b875223fdc862d01431e8c"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair2-primary-composition-v1.json",
+        "sha256": "5df019c056e06c52ea6814cd65fb5e19fa095420bf4d4f6e2ad43cfeb16545c4"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair2-aa-composition-v1.json",
+        "sha256": "de00bab0f73a7900b85ffe0897049ed2c1711cb5f0bc1e37803e13c3a1e1c431"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": null,
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair1-primary-composition-v1.json",
+        "sha256": "a97833d5e186b88ed477945435573bc2311e35a3cd1bdae7e8899fa5c54fd47d"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair1-aa-composition-v1.json",
+        "sha256": "01801389f952a27788565729bd40a066a85a715321a16c42662cac15c805a6d0"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair2-primary-composition-v1.json",
+        "sha256": "cbf04ed35123841abc72bed7369fa7a6c5ae4026f38dc79c5b8229445b432b04"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair2-aa-composition-v1.json",
+        "sha256": "b34e0750d3a68ca1f2f66a26fb36e3ba1c344a6ba316c42e4542b7799535f188"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-v1.json",
+        "sha256": "8dc912977cdd053832137fb10510895c91c69e1637d6837ff06eef4b57d8a932"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair1-primary-composition-v1.json",
+        "sha256": "6aa47a50c38a0d4d2521a3ede3f906b352ff3853e8f23472d545db349a460050"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair1-aa-composition-v1.json",
+        "sha256": "04adeb966b9ab03434699cc8bd323ff710bc88c0026cd44ad03ae31185e69ceb"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair2-primary-composition-v1.json",
+        "sha256": "89b4d1cd375e6b4a2163bd21c4a7fe1ba124504df075f283a3d97857057e74e7"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    },
+    {
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair2-aa-composition-v1.json",
+        "sha256": "8cf07f09231d789222b2efeb9494c0d58c00df976a00ae37b265b5ef54264635"
+      },
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1",
+      "same_supply_output": true,
+      "schedule_only": {
+        "group_size": 20,
+        "max_jobs": 160,
+        "node_order": [
+          "perception",
+          "solver",
+          "reviewer",
+          "planner"
+        ],
+        "prepare_workers": 2,
+        "schema": "saea-native-node-pipeline-v1",
+        "trace_spool": {
+          "max_record_bytes": 1048576,
+          "max_total_bytes": 67108864,
+          "schema": "saea-native-trace-spool-v1"
+        }
+      },
+      "unchanged_request_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-v1.json",
+        "sha256": "b3a1958d56c769cb27a1efa8dd692a4fdf146a23a7314e8da8bee56d29fafcd1"
+      }
+    }
+  ],
+  "schema": "saea-node-panel-schedule-capacity-transfer-v1",
+  "statement": "Only job count/group scheduling differs from real panel structural proof. The same renderer,role content,maximum-legal tool/revision envelope and full output reserve are preserved. Current request FIT remains mandatory for each actual request. No160-job latency or quality conclusion follows.",
+  "structural_basis": {
+    "relpath": "docs/receipts/continuation/2026-10-03-node-panel-structural-recovery1-complete.json",
+    "sha256": "83c6261ca4370b22f90e0c1ac2a4b9f28b3a8237d72c7050169eecf1a752afe5"
+  },
+  "unchanged_request_scheduler_sources": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "aca8b3aa741796aec80652cda15d9c524208f4615ff75db842f7d32fe0ac01ce"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/preparation_fit.py",
+      "sha256": "e4752355f06ed9d7b82966d23b2d83da0614428024ec3f4ff8ea5cd72a11d08c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/model/transport.py",
+      "sha256": "2e1d7954058e4dc88c5adede07e2aa5813fadcd82e49332242166a5a6b9aba43"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "d571888abaa1dc9479f1d6a48915b860ed7730c66328c4690a2e94da80b44f36"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py",
+      "sha256": "218fc1751ae7dceee0a6b98ac09e473ab48d05d8ac0a4892b4073bec934535a5"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py",
+      "sha256": "234dcaa0ee6ccd5cec6cfb90596b61cd69b3d67384f8a8771cf74cbfadb891a9"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "bec4de61c757245052cc6ab458613aaf6222bcdc022a5a422a0b5765a9f5d5c8"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/trace_spool.py",
+      "sha256": "a2fb2aa3055d0942cb56b94bed462a4841659edd2599d18217146428eddd250b"
+    }
+  ]
+}

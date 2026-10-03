@@ -1,0 +1,22 @@
+{
+  "frozen_worker": {
+    "status": "pending"
+  },
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/analysis-recipe-v1.json",
+    "sha256": "ebf7aba993265998d3fc8add61328832e9011322b9c64ca28a51baef73a73253"
+  },
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/registration-v1.json",
+    "sha256": "08acdd7e5ed85de63431210bfa1c147a9274bd8d2959cd9902ef8d4aeb694315"
+  },
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+    "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+  },
+  "schema": "saea-node-panel-schedule-read-inputs-v1",
+  "strata": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+  }
+}

@@ -71,19 +71,29 @@ def inputs():
                               "commit": "d8456cefecafc8a7da681e06bfc06f141e994972"}}
 
 
-def test_unsigned_real_read_refuses_before_results_or_output(tmp_path, monkeypatch):
-    cli = load_cli()
+def schedule_inputs():
     doc = inputs()
+    doc["schema"] = "saea-node-panel-schedule-read-inputs-v1"
+    for key, filename in (("recipe", "analysis-recipe-v1.json"), ("registration", "registration-v1.json")):
+        name = "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/" + filename
+        doc[key] = {"relpath": name, "sha256": hashlib.sha256((ROOT / name).read_bytes()).hexdigest()}
+    return doc
+
+
+@pytest.mark.parametrize("schedule", [False, True])
+def test_unsigned_real_read_refuses_before_results_or_output(tmp_path, monkeypatch, schedule):
+    cli = load_cli()
+    doc = schedule_inputs() if schedule else inputs()
     repo = tmp_path / "repo"
     for key in ("recipe", "registration"):
         path = repo / doc[key]["relpath"]
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes((ROOT / doc[key]["relpath"]).read_bytes())
     gate = cli.CLI.registration_gate()
-    run_id = recipe()["run_ids"]["read"]
+    run_id = json.loads((ROOT / doc["recipe"]["relpath"]).read_text())["run_ids"]["read"]
     columns = [gate.RUN_COLUMN, "execution profile", "split role", "calls",
                gate.ARTIFACTS_COLUMN, gate.NOTES_COLUMN]
-    values = [run_id, "model-free-check", "discovery", "0", RECIPE, "DRAFT UNSIGNED"]
+    values = [run_id, "model-free-check", "discovery", "0", doc["recipe"]["relpath"], "DRAFT UNSIGNED"]
     (repo / gate.EXPOSURE_LEDGER).write_text(
         "| " + " | ".join(columns) + " |\n| " + " | ".join(["---"] * len(columns))
         + " |\n| " + " | ".join(values) + " |\n")
@@ -104,9 +114,10 @@ def test_output_cannot_overwrite_or_export_to_optimizer(tmp_path, target):
 
 
 @pytest.mark.parametrize("changed_artifact", [None, "archive", "flight"])
-def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch, changed_artifact):
+@pytest.mark.parametrize("schedule", [False, True])
+def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch, changed_artifact, schedule):
     cli = load_cli()
-    doc = inputs()
+    doc = schedule_inputs() if schedule else inputs()
     frozen = tmp_path / "frozen"
     doc["frozen_worker"]["path"] = str(frozen)
     original_read_pin, frozen_checks = cli._read_pin, []
@@ -117,11 +128,11 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
         return original_read_pin(pin, root)
     monkeypatch.setattr(cli, "_read_pin", read_pin)
     reg = json.loads((ROOT / doc["registration"]["relpath"]).read_text())
-    admission = json.loads(
-        (ROOT / "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/root-admission-v1.json").read_text())
+    admission_path = ROOT / Path(doc["registration"]["relpath"]).parent / "root-admission-v1.json"
+    admission = json.loads(admission_path.read_text())
     path = tmp_path / reg["admission"]["relpath"]
     path.parent.mkdir(parents=True)
-    path.write_bytes((ROOT / "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/root-admission-v1.json").read_bytes())
+    path.write_bytes(admission_path.read_bytes())
     assert admission["status"] == "decided"
     seen = []
     wire_archive = tmp_path / "analysis/prepared-wire.json"
@@ -138,13 +149,21 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     def preflight(*a, **k):
         seen.append("preflight")
         assert len(k["sample_ids"]) == 20
-        return [{"metadata_pins": []} for _ in range(8)]
+        return [{"metadata_pins": []} for _ in range(16 if schedule else 8)]
     def numeric(*a, **k):
         seen.append("numeric")
-        return {"synthetic-member": {"source_bindings": {"flight_receipts": flight_pin}, "experiment_stage_timing": {
+        row = {"source_bindings": {"flight_receipts": flight_pin}, "experiment_stage_timing": {
             "generation_wall_seconds": 120, "score_stage_seconds": 60,
             "score_batch_seconds": 55, "official_finalize_worker_seconds": 54}, "context_execution": {
-            "wire_requests": {"artifact": wire_pin}}}}
+            "wire_requests": {"artifact": wire_pin}}}
+        if not schedule:
+            return {"synthetic-member": row}
+        result = {}
+        for member in reg["members"]:
+            result[member["run_id"]] = copy.deepcopy(row)
+            if member["schedule"] == "panel":
+                result[member["run_id"]]["context_execution"]["node_panel_timing"] = {"label": member["label"]}
+        return result
     def analysis(*a, **k):
         seen.append("analysis")
         assert k["bootstrap_draws"] == 10000 and k["seed"] == 20261003
@@ -158,6 +177,11 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     monkeypatch.setattr(cli, "preflight_members", preflight)
     monkeypatch.setattr(cli, "read_numeric_members", numeric)
     monkeypatch.setattr(cli, "describe_configurations", analysis)
+    if schedule:
+        def combine(rows):
+            assert [r["label"] for r in rows] == [m["label"] for m in reg["members"] if m["schedule"] == "panel"]
+            return {"jobs": 160, "barriers_verified": True}
+        monkeypatch.setattr(cli, "combine_node_panel_timings", combine)
     out = tmp_path / "analysis/read"
     if changed_artifact:
         with pytest.raises(PolicyError, match="hash mismatch"):
@@ -167,11 +191,13 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     report = cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out)
     assert seen == ["authority", "preflight", "numeric", "analysis", "authority", "preflight"]
     assert report["read_authority"] == authority
-    assert report["experiment_stage_timing"]["synthetic-member"]["generation_wall_seconds"] == 120
+    assert report["experiment_stage_timing"][reg["members"][0]["run_id"] if schedule else "synthetic-member"]["generation_wall_seconds"] == 120
     rendered = (out / "README.md").read_text()
     assert "Experiment turnaround" in rendered and "120.000" in rendered
     assert "not additive" in rendered and "sample latency" in rendered
-    assert frozen_checks == recipe()["source_checks"]
+    assert frozen_checks == json.loads((ROOT / doc["recipe"]["relpath"]).read_text())["source_checks"]
+    if schedule:
+        assert report["whole_node_panel_timing"]["jobs"] == 160
     assert (out / "report.json").exists() and (out / "README.md").exists()
 
 
@@ -202,3 +228,41 @@ def test_cli_main_preserves_exact_supplied_input_identity(tmp_path, monkeypatch,
     result = json.loads(capsys.readouterr().out)
     assert result["inputs_sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
     assert result["model_contacts_added"] == result["scorer_contacts_added"] == 0
+
+
+@pytest.mark.parametrize("fault", ["wrong-schema", "wrong-read", "missing-owner", "budget", "decision", "undecided", "unadmitted", "missing-timing"])
+def test_schedule_gate_rejects_misregistration_before_any_scientific_output(tmp_path, monkeypatch, fault):
+    cli = load_cli()
+    doc = schedule_inputs()
+    recipe_doc = json.loads((ROOT / doc["recipe"]["relpath"]).read_text())
+    reg = json.loads((ROOT / doc["registration"]["relpath"]).read_text())
+    adm = json.loads((ROOT / Path(doc["registration"]["relpath"]).parent / "root-admission-v1.json").read_text())
+    if fault == "wrong-schema":
+        reg["schema"] = "saea-context-matrix-n20-registration-v1"
+    elif fault == "wrong-read":
+        reg["read_id"] = "foreign"
+    elif fault == "missing-owner":
+        reg["members"].pop()
+    elif fault == "budget":
+        reg["generation_contact_cap"] += 1
+    elif fault == "decision":
+        adm["decision_id"] = "foreign"
+    elif fault == "undecided":
+        adm["status"] = "pending"
+    elif fault == "unadmitted":
+        adm["eligible_run_ids"] = []
+    monkeypatch.setattr(cli, "_document", lambda pin, root: recipe_doc if pin == doc["recipe"] else reg)
+    monkeypatch.setattr(cli.CLI, "require_read_registration", lambda *a, **k: {"read_run_id": recipe_doc["run_ids"]["read"]})
+    monkeypatch.setattr(cli, "_pinned_json", lambda *a: (adm, "hash"))
+    monkeypatch.setattr(cli, "preflight_members", lambda *a, **k: pytest.fail("unqualified family opened"))
+    if fault == "missing-timing":
+        # No real score/source is read: fail on incomplete synthetic numeric family.
+        monkeypatch.setattr(cli, "_read_pin", lambda *a: b"{}")
+        original_document = cli._document
+        roster = {"items": [{"sample_id": str(i), "utterance_id": str(i), "stratum": "s"} for i in range(20)]}
+        monkeypatch.setattr(cli, "_document", lambda pin, root: roster if pin in [doc["roster"], doc["strata"]] else original_document(pin, root))
+        monkeypatch.setattr(cli, "preflight_members", lambda *a, **k: [])
+        monkeypatch.setattr(cli, "read_numeric_members", lambda *a, **k: {})
+    with pytest.raises(PolicyError):
+        cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=tmp_path / "analysis/read")
+    assert not (tmp_path / "analysis/read").exists()

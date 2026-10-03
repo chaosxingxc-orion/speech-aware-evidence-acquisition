@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Whole-node schedule comparison prepared, 2026-10-03T20:28:35.571648+00:00
+
+Root227 registers two equal8x20 workloads: eight sequential trajectory flights and one independent-owner160-job node panel,320 trajectories over the same20 exposed UPDATE2 inputs. Two unchanged layouts each retain two primary/A-A pairs. Four model slots remain available to every node; fixed20-job CPU prefetch precedes the strict global next-node inference barrier. Each node keeps its own prompts. No new data/knowledge/proposal or learning. [Entry](../readiness/2026-10-03-node-panel-schedule-n20-entry-v1/README.md) uses registration-v2 and analysis-recipe-v2;v1 bytes are retained.16 own supply outputs and actual role hashes match their existing basis. Capacity transfers bind both measured legal branch envelopes and unchanged request/scheduler sources;actual-request FIT remains mandatory.
+
+The complete-family reader passes173 tests;new timing100%,source100%,CLI99.15%,wire87.94% statement coverage. It reproduces the preceding53-contact structural timing without quality reads. Lint/base/harness/native-reuse/finite-completion/effect-floor pass;the global algorithm checker retains two unchanged old capacity-row findings,zero new-member findings. [Evidence](../receipts/continuation/2026-10-03-node-panel-schedule-reader-engineering.json). Clean frozen all-member registration/runtime/warm checks and live resource/control transition remain BEFORE launch. No new contacts have occurred. Exact16-member READ stays unsigned until every member independently finalizes with verified seal,one successful complete official score and zero failed jobs.
+
+Anchor on original mean and non-first-sample latency plus official quality/reliability; retain panel and whole-workload submission waits separately. Sequential members run first; inherited cache/order and shared-panel coupling limit inference.160 jobs are not160 resident GPU contexts or independent scheduling replications. No stable benefit/adoption/global optimum claim. Root only,no subagents;learning HELD,heartbeat PAUSED,human before8x400. Do not score/reseal old structural attempts or interfere with other carriers.
+
+
 ## Whole-panel structural recovery accepted, 2026-10-03T19:43:16.208885+00:00
 
 The registered recovery completed19:35:06Z on frozenaee1d61e7: two owners/eight rows,53 model contacts/212 actual FIT endpoints,15 valid visible Reviewer handoffs,eight Omni deliveries and verified generation bundles. All seven whole-node stages respect inference/final-preparation barriers;22 CPU preparation callbacks overlap prior work. Worker-only attempts remain intentionally OPENED with prepared score specs and zero official scores. Never score/reseal/reopen them. The original missing-materialization attempts remain immutable. [Closure](../receipts/continuation/2026-10-03-node-panel-structural-recovery1-complete.json).

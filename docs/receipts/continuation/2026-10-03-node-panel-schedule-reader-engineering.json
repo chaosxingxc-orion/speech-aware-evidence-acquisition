@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-03T20:27:42.961549+00:00",
+  "authority": "Root227 context engineering;no learning",
+  "checks": {
+    "algorithm_labels": {
+      "files": [
+        "configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+        "configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json"
+      ],
+      "status": "Two pre-existing findings,unchanged at51a04783f;no new-member finding"
+    },
+    "effect_floor": "PASS;18 historical advisories",
+    "engineering_base": "PASS",
+    "finite_completion": "PASS",
+    "harness_admission": "PASS",
+    "lint": "PASS",
+    "native_reuse": "PASS after supplying required output argument"
+  },
+  "coverage": {
+    "scripts/analysis/context_matrix_read.py": {
+      "covered_lines": 116,
+      "num_statements": 117,
+      "percent_covered": 99.14529914529915
+    },
+    "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py": {
+      "covered_lines": 128,
+      "num_statements": 128,
+      "percent_covered": 100.0
+    },
+    "src/speech_aware_evidence_acquisition/analysis/node_panel_timing.py": {
+      "covered_lines": 92,
+      "num_statements": 92,
+      "percent_covered": 100.0
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py": {
+      "covered_lines": 175,
+      "num_statements": 199,
+      "percent_covered": 87.93969849246231
+    }
+  },
+  "new_model_tokenizer_scorer_contacts": 0,
+  "real_structural_revalidation": {
+    "relpath": "coordination/node-panel-schedule-n20-owner227-v1/original-structural-timing-reader-proof-v1.json",
+    "sha256": "a092cf5bc9276cfa9d1cb898a8ad919a41cad927759ad77d216338b3578d7137"
+  },
+  "remaining": "Freeze source,all16 exact registration/runtime/warm checks,live resource/process checks and normal completed-control transition before one Windows driver. Full16 family READ remains unsigned.",
+  "schema": "saea-node-panel-schedule-reader-engineering-v1",
+  "tests": {
+    "passed": 173,
+    "scope": "Family identity,original FIT/layout/routing,whole-panel timing,complete-source/READ/metadata gates,shared native wire and descriptive quality/timing analysis",
+    "warnings": "Three existing third-party deprecation warnings"
+  }
+}

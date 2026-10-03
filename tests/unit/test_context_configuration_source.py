@@ -256,3 +256,31 @@ def test_unregistered_audit_label_fails_before_renderer(tmp_path):
     with pytest.raises(PolicyError, match="label"):
         source._audit_context_source(None, member={"label": "foreign"}, flight_pin={},
                                      data_root=tmp_path, frozen_repo=tmp_path)
+
+
+@pytest.mark.parametrize("layout", ["legacy", "before-speech"])
+@pytest.mark.parametrize("schedule", ["trajectory", "panel"])
+def test_registered_schedule_identity_has_exact_owner_and_node_policy(layout, schedule):
+    label = f"{layout}-{schedule}-pair2-aa"
+    member = {"label": label, "layout": layout, "schedule": schedule,
+              "run_id": f"SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-{label.upper()}-V1",
+              "job_keys": [[f"sample-{i}", None] for i in range(20)]}
+    placement, scheduler, namespace, identity = source.context_member_identity(member)
+    assert placement == ("legacy" if layout == "legacy" else "before-speech-v1")
+    assert scheduler == schedule and namespace == "node-panel-schedule-n20"
+    if schedule == "panel":
+        assert identity["group_index"] == (3 if layout == "legacy" else 7)
+        assert identity["max_jobs"] == 160 and identity["group_size"] == 20
+        assert identity["job_keys"] == member["job_keys"]
+    else:
+        assert identity is None
+
+
+@pytest.mark.parametrize("field", ["label", "run_id", "layout", "schedule", "job_keys"])
+def test_schedule_identity_refuses_foreign_or_misbound_owner(field):
+    member = {"label": "legacy-panel-pair1-primary", "layout": "legacy", "schedule": "panel",
+              "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+              "job_keys": [[f"sample-{i}", None] for i in range(20)]}
+    member[field] = [] if field == "job_keys" else "foreign"
+    with pytest.raises(PolicyError):
+        source.context_member_identity(member)

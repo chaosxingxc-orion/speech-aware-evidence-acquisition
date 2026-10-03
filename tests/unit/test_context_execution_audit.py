@@ -143,3 +143,60 @@ def test_misapplied_or_incomplete_configuration_is_rejected(tmp_path, fault, mon
                 for key, ref in contact["request_field_refs"].items()}))) for contact in episode["contacts"]})
     with pytest.raises(ValueError, match="trajectory changed" if fault == "trajectory_changes_slot" else None):
         audit(tmp_path, objects, placement, scheduler, render_request=render)
+
+
+def panel_world(tmp_path, placement="legacy"):
+    objects = world(tmp_path, placement)
+    source, report, _, _ = objects
+    sid = source.sample_ids[0]
+    role = report["episodes"][0]["contacts"][0]["role_id"]
+    order = list(ROLE_SLOTS)
+    source.composed.values["native_node_pipeline"] = {
+        "schema": "saea-native-node-pipeline-v1", "group_size": 1,
+        "max_jobs": 2, "prepare_workers": 2, "node_order": order}
+    source.bundle.trace_records["sample-timing"] = {"use_sample_execution_timing": {
+        "schema": "saea-sample-execution-timing-v1", "sample_id": sid,
+        "execution_unit_id": None, "panel_id": "panel", "panel_expected_samples": 2,
+        "panel_admission_index": 0, "admission_index": 0, "expected_samples": 1,
+        "slot_count": 4, "status": "completed", "error_type": None,
+        "batch_started_ns": 0, "panel_execution_started_ns": 1, "admitted_ns": 1, "finished_ns": 5}}
+    for kind, start, slot in [("prepare", 2, None), ("model", 3, 0)]:
+        source.bundle.trace_records[kind] = {"use_node_pipeline_timing": {
+            "schema": "saea-node-pipeline-timing-v1", "sample_id": sid,
+            "execution_unit_id": None, "panel_id": "panel", "group_index": 0,
+            "round_index": 0, "node_index": order.index(role), "node_id": role,
+            "kind": kind, "slot_id": slot, "queued_ns": start, "started_ns": start,
+            "finished_ns": start + 1, "status": "completed", "error_type": None}}
+    identity = {"panel_id": "panel", "group_index": 0, "group_size": 1,
+                "max_jobs": 2, "job_keys": [[sid, None]]}
+    return objects, identity
+
+
+@pytest.mark.parametrize("placement", ["legacy", "before-speech-v1"])
+def test_panel_audit_joins_original_timing_and_full_fit(tmp_path, placement):
+    objects, identity = panel_world(tmp_path, placement)
+    result = audit(tmp_path, objects, placement, "panel", panel_identity=identity)
+    assert result["node_panel_timing"]["model_contacts"] == result["contacts_verified"] == 1
+    assert result["node_panel_timing"]["samples"][0]["batch_started_ns"] == 0
+    assert result["server_assignment_verified"] is False
+
+
+@pytest.mark.parametrize("fault", ["hidden-panel", "missing-identity", "wrong-identity", "extra-identity", "wrong-callback", "other-scheduler"])
+def test_panel_cannot_masquerade_as_ordinary_execution(tmp_path, fault):
+    objects, identity = panel_world(tmp_path)
+    scheduler = "panel"
+    if fault == "hidden-panel":
+        scheduler = "trajectory"
+    elif fault == "missing-identity":
+        identity = None
+    elif fault == "wrong-identity":
+        identity["panel_id"] = "foreign"
+    elif fault == "extra-identity":
+        objects[0].composed.values.pop("native_node_pipeline")
+        scheduler = "trajectory"
+    elif fault == "wrong-callback":
+        objects[0].bundle.trace_records["model"]["use_node_pipeline_timing"]["slot_id"] = 1
+    else:
+        objects[0].composed.values["native_node_batch"] = {"cohort_size": 4}
+    with pytest.raises(ValueError):
+        audit(tmp_path, objects, scheduler=scheduler, panel_identity=identity)

@@ -1,0 +1,227 @@
+{
+  "admission": {
+    "relpath": "coordination/node-panel-schedule-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "f2de3e40b20b8e7f9a8ef2331da7eeac7d1105afc8e0edca36dcc1eeefa972bd"
+  },
+  "automatic_scaling": false,
+  "comparisons": [
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+      "layout": "legacy-trajectory-pair1",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+      "layout": "legacy-trajectory-pair2",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+      "layout": "before-speech-trajectory-pair1",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+      "layout": "before-speech-trajectory-pair2",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+      "layout": "legacy-panel-pair1",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+      "layout": "legacy-panel-pair2",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+      "layout": "before-speech-panel-pair1",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1"
+    },
+    {
+      "aa": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1",
+      "layout": "before-speech-panel-pair2",
+      "primary": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1"
+    }
+  ],
+  "complete_family": [
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1"
+  ],
+  "optimizer_export": false,
+  "order": {
+    "group_size": 20,
+    "limitation": "One160-job panel is one coupled scheduling observation. Within-panel A/A runs share server load/barriers and are not independent scheduling replications. The sequential workload runs first;report order/inherited-cache effects.",
+    "max_jobs": 160,
+    "panel": [
+      "legacy-panel-pair1-primary",
+      "legacy-panel-pair1-aa",
+      "legacy-panel-pair2-primary",
+      "legacy-panel-pair2-aa",
+      "before-speech-panel-pair1-primary",
+      "before-speech-panel-pair1-aa",
+      "before-speech-panel-pair2-primary",
+      "before-speech-panel-pair2-aa"
+    ],
+    "panel_node_order": [
+      "perception",
+      "solver",
+      "reviewer",
+      "planner"
+    ],
+    "policy_prefix_groups": "Within each node,legacy owners then before-speech owners,each in registered pair/repeat/sample order. Actual token matching governs reuse;no assumption of a shared full prefix.",
+    "trajectory": [
+      "legacy-trajectory-pair1-primary",
+      "legacy-trajectory-pair1-aa",
+      "legacy-trajectory-pair2-primary",
+      "legacy-trajectory-pair2-aa",
+      "before-speech-trajectory-pair1-primary",
+      "before-speech-trajectory-pair1-aa",
+      "before-speech-trajectory-pair2-primary",
+      "before-speech-trajectory-pair2-aa"
+    ]
+  },
+  "primary_schedule_contrasts": [
+    {
+      "layout": "legacy",
+      "pair": 1,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+      "repeat": "primary",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1"
+    },
+    {
+      "layout": "legacy",
+      "pair": 1,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+      "repeat": "aa",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1"
+    },
+    {
+      "layout": "legacy",
+      "pair": 2,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+      "repeat": "primary",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1"
+    },
+    {
+      "layout": "legacy",
+      "pair": 2,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+      "repeat": "aa",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1"
+    },
+    {
+      "layout": "before-speech",
+      "pair": 1,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+      "repeat": "primary",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1"
+    },
+    {
+      "layout": "before-speech",
+      "pair": 1,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+      "repeat": "aa",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1"
+    },
+    {
+      "layout": "before-speech",
+      "pair": 2,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+      "repeat": "primary",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1"
+    },
+    {
+      "layout": "before-speech",
+      "pair": 2,
+      "panel": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1",
+      "repeat": "aa",
+      "trajectory": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1"
+    }
+  ],
+  "read_gate": "All16 independently FINALIZED with verified seals,exactly one successful complete official score each,zero failed jobs,and exact root READ before any quality read.",
+  "registered_at_utc": "2026-10-03T19:56:05.777619+00:00",
+  "rows_per_member": 20,
+  "run_ids": {
+    "read": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1"
+  },
+  "schema": "saea-node-panel-schedule-analysis-v1",
+  "selection": "Root personally reviews complete quality,reliability,latency and cache mechanisms before choosing any feasible schedule/layout. No automatic adoption or larger flight.",
+  "source_checks": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/campaign.py",
+      "sha256": "1a4cd69db908523ff67348fcdc490bf4606671aac360742757d4e3c1377301a3"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "aca8b3aa741796aec80652cda15d9c524208f4615ff75db842f7d32fe0ac01ce"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/preparation_fit.py",
+      "sha256": "e4752355f06ed9d7b82966d23b2d83da0614428024ec3f4ff8ea5cd72a11d08c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/trace_spool.py",
+      "sha256": "a2fb2aa3055d0942cb56b94bed462a4841659edd2599d18217146428eddd250b"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "d571888abaa1dc9479f1d6a48915b860ed7730c66328c4690a2e94da80b44f36"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "bec4de61c757245052cc6ab458613aaf6222bcdc022a5a422a0b5765a9f5d5c8"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py",
+      "sha256": "218fc1751ae7dceee0a6b98ac09e473ab48d05d8ac0a4892b4073bec934535a5"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py",
+      "sha256": "234dcaa0ee6ccd5cec6cfb90596b61cd69b3d67384f8a8771cf74cbfadb891a9"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
+      "sha256": "9f5906cf3da4e7d9514353d9a80b295059124ac006c931f4af1dd42bcdaf041e"
+    }
+  ],
+  "status": "REGISTERED BEFORE CONTACT; scientific READ UNSIGNED",
+  "timing_contract": {
+    "anchor": "Actual original admission-to-terminal all-sample and remaining-sample means,with business quality constraints.",
+    "cache": "Separate changed-input same-node reuse,repeated-input history reuse,node switches,actual slots and speech decoding;record inherited cache,no cold/warm claim.",
+    "capacity": "Four resident model slots,24576 tokens each,full512 output and existing structural reserves.160 jobs are independent queued workflows,not160 model contexts.",
+    "panel_queue": "Use the original panel creation/submission origin,retaining preprocessing and global-stage barriers. Do not move admission forward to remove waiting.",
+    "sequential_queue": "Queue residence of later trajectory members includes preceding members and driver/scoring waits;show this separately from native workflow latency. Do not hide it or attribute scoring waits to prefix cache.",
+    "submission": "Retain original workflow submission-to-terminal and per-owner readiness waiting. Also report whole workload queue residence from a common recorded monotonic origin within each workload,only after same-boot provenance verification.",
+    "throughput": "Makespan/job count is a throughput quantity,never mean sample latency."
+  },
+  "trajectory_cap": 320,
+  "uncertainty": {
+    "bootstrap_draws": 10000,
+    "claim": "Descriptive context-engineering optimization on the same exposed20,not stable benefit,formal no-harm,learning or global optimum.",
+    "latency": "Report every member and repeat,original all20 and remaining19 means,first admission,group waiting,submission-to-terminal,node prefill/decode/FIT/queue boundaries. No trimming or throughput substitution.",
+    "quality": "Official pooled TP/FP/FN-based SLU-F1,paired intent,reliability,own A/A and per-scenario support;natural mixture and equal-stratum summaries",
+    "seed": 20261003,
+    "unit": "Paired utterance identity with repeats kept together;never treat320 jobs as320 independent examples"
+  }
+}
