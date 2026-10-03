@@ -1,0 +1,37 @@
+{
+  "schema": "saea-proposer-failed-opportunity-disposition-v1",
+  "recorded_at_utc": "2026-10-03T09:01:02.543288+00:00",
+  "owner_decision": 227,
+  "root_directive": "Preserve and close spent invalid L-6-1. Keep untouched B-6-1/L-6-2/B-6-2 HELD; no further dispatch before prospective budget/feedback review.",
+  "failed_slot": "L-6-1",
+  "raw_response_interpretation": "Empty concatenation of proposal-message text from both complete retained tool-only responses. This is not a no-change proposal or a fabricated provider response. Exact original SSE/events/tool calls remain unchanged.",
+  "receipt": {
+    "input_sha256": "d0e3e236f7b28f91f11155ba19e378ec2706ab26f6d25172282649f3c9aecdd7",
+    "model_version": "gpt-6-astra",
+    "session_id": "saea-text-extra6-l-1-coherent-v1",
+    "raw_response": "",
+    "input_tokens": 8478,
+    "output_tokens": 151
+  },
+  "source_outcome": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra6-owner227-v1/transport/L-6-1/outcome.json",
+    "sha256": "f81fb692977e94c9126caebd624e1a8743ba1120c0913d0b50dc46a8356fc388"
+  },
+  "new_contacts": 0,
+  "closure_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra6-owner227-v1/root-disposition-close-L61-v1.json",
+    "sha256": "9cc767d5b5265eca746bfb730e33e943f682a0d699299946928fd92c91a3e52e"
+  },
+  "archive_import": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/imports/L-6-1.json",
+    "sha256": "58898ec59c4527d4b6aaf4493d40be5029b01feb30377e4f65e5daeb519c3b49"
+  },
+  "import_status": "invalid",
+  "metering_complete": true,
+  "held_slots": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "spent_allocations_total": 21
+}

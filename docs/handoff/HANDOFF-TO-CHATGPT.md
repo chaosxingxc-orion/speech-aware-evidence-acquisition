@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round6 failure closed; three untouched slots HELD, 2026-10-03T09:01:02.543288+00:00
+
+Root227 closes L-6-1 as spent invalid with complete8478/151 metering and preserves all tool-only source streams. The archive import records the empty proposal-text concatenation as invalid, never no-change. [Root disposition](../receipts/continuation/2026-10-03-round6-proposer-root-disposition.json). B-6-1/L-6-2/B-6-2 remain unspent and HELD; do not resume them into the known continuation limitation. No GPU dispatch or heartbeat restart.
+
+Next prepare only a prospective equal-budget L/B protocol covering realistic multi-page evidence plus a final answer. Compare reduced presentation with a larger cumulative input allowance; preserve indexes/custody, exact model/output cap and all21 spent allocations. Current archive forbids an in-place budget change and cannot silently skip untouched allocations; any successor needs an explicit reviewed transition. No real contacts are admitted for that preparation.
+
+
 ## Round6 stopped on the registered third-request bound, 2026-10-03T08:59:22.308601+00:00
 
 L-6-1 made two metered contacts (8478/151 tokens), paging one2965-character overview. The third full-request bound26531 exceeded remaining24290 and was refused before reservation. No authentication, provider actual-budget or task-quality failure is established. All streams, exact requests and frozen a4f69684b remain preserved. Three original slots remain untouched; twenty-one total slots are spent. [Failure evidence](../receipts/continuation/2026-10-03-round6-proposer-bound-stop.json) and [bounded disposition proposal](../readiness/2026-10-03-slurp-round6-bound-stop-v1/README.md). Root disposition remains pending; no retry, replacement, parent substitution or GPU dispatch.
@@ -784,7 +791,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T08:59:22.308601+00:00
+Last refreshed: 2026-10-03T09:01:02.543288+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
