@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Node-batch structural workers launched, 2026-10-03T16:45:36.597226+00:00
+
+Windows SAEA-Batch-Driver epoch2026-10-03T16:43:13Z runs exactly the two four-row node-batch workers on frozen09e6e4d3b. [Launch receipt](../receipts/continuation/2026-10-03-node-batch-structural-launch.json) preserves normal completed-control archive,clean actual registration/runtime/warm checks,source identity and live driver lineage. Maximum104 generation/416 actual FIT endpoints;no scoring or task-quality read. Wait for both complete then audit every original request/FIT/layout/handoff/Omni custody and barrier-inclusive sample/node-wave timing. Four rows underfill batch16;no speed or full-cohort claim. No retries or next20 admission. Root only,learning HELD,heartbeat PAUSED,human before8x400.
+
 ## Node-batch structural workers registered, 2026-10-03T16:38:31.980383+00:00
 
 Both capacities completed594 tokenizer endpoints with full512 output and2048 structural reserve. Root227 now admits exactly two four-row structural workers,batch4 and16,maximum104 generation/416 actual FIT endpoints,zero scoring. [Entry](../readiness/2026-10-03-node-batch-structural-entry-v1/README.md) preserves independent before-speech seed contexts and identical own knowledge selections. Verify actual node waves,per-sample handoffs and original barrier-inclusive timing. Batch16 is underfilled here;no speed or quality claim. Clean separate source and live checks precede one Windows shared driver;no next20 admission. Root only,learning HELD,heartbeat PAUSED,human before8x400.
@@ -1166,7 +1170,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T16:39:35.390575+00:00
+Last refreshed: 2026-10-03T16:45:36.597226+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

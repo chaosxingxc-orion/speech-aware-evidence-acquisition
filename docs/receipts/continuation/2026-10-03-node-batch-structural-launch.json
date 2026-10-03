@@ -1,0 +1,68 @@
+{
+  "at_utc": "2026-10-03T16:45:36.597226+00:00",
+  "audit_scripts": [
+    {
+      "relpath": "coordination/node-batch-structural-owner227-v1/structural-audit-v1.py",
+      "sha256": "35cfdb8f8df89bd4472b3269c22f21426ca561c3d788f1c8783b6ed665f5f7c4"
+    },
+    {
+      "relpath": "coordination/node-batch-structural-owner227-v1/root-node-timing-v1.py",
+      "sha256": "7de471d593aa205372038b7e67c16178ab014442f96c3b6bdeaec3fe4f1e1d98"
+    }
+  ],
+  "budget": {
+    "actual_fit_endpoints_max": 416,
+    "generation_max": 104,
+    "official_scores": 0,
+    "rows": 8
+  },
+  "commit": "09e6e4d3bf5d3904c7dfe746d6e960bcc7d88b08",
+  "driver_start": {
+    "at": "2026-10-03T16:43:13Z",
+    "detail": {
+      "flight_commit": "09e6e4d3bf5d3904c7dfe746d6e960bcc7d88b08",
+      "queue": "/home/chao/batch-queue.json"
+    },
+    "event": "driver-start"
+  },
+  "frozen_check": {
+    "relpath": "coordination/node-batch-structural-owner227-v1/frozen-check-v1.json",
+    "sha256": "3d41df0f1822532c628965d37635e41c06db712c27ddb392297376920d9742d0"
+  },
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "live_check_note": "The lease-holder shell is a verified child of the one driver; two matching argv entries do not imply competing drivers. Initial overly strict one-process observation was corrected by parent lineage without mutation or restart.",
+  "live_driver_tree": [
+    {
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh",
+        ""
+      ],
+      "pid": 532290,
+      "ppid": 532289,
+      "start_ticks": "39767206"
+    },
+    {
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh",
+        ""
+      ],
+      "pid": 532422,
+      "ppid": 532290,
+      "start_ticks": "39769908"
+    }
+  ],
+  "next_panel_authorized": false,
+  "normal_transition": {
+    "relpath": "coordination/node-batch-structural-owner227-v1/driver-transition-v1.json",
+    "sha256": "229a7d22c757da63311460d49566069963c40849442d416e72243f9653980d8c"
+  },
+  "schema": "saea-node-batch-structural-launch-v1",
+  "windows_start": {
+    "relpath": "coordination/node-batch-structural-owner227-v1/windows-start-request-v1.json",
+    "sha256": "0cc2fc2741991993776c0cc36509efc7d94df440b1f7a3370c87c724e89e2b68"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-node-batch-structural-v1"
+}
