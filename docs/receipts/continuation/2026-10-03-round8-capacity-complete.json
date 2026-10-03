@@ -1,0 +1,156 @@
+{
+  "accounting": {
+    "relpath": "coordination/system-text-round8-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "ee53fce017015ce25dc0a4fc7e0d89476919735dfa3fd32b350fc022a22018d7"
+  },
+  "accounting_script": {
+    "relpath": "coordination/system-text-round8-capacity-owner227-v1/complete-operational-audit-v1.py",
+    "sha256": "8bc7eccf2dc8b45a7bbd0dd67c57cf77b0344c918933e51bd2842a275551b883"
+  },
+  "all_requests_fit": true,
+  "at_utc": "2026-10-03T12:06:37.212377+00:00",
+  "existing_queue_stop_service_controls_mutated": false,
+  "heartbeat": "PAUSED",
+  "lease_absent_after_completion": true,
+  "limitations": "Measured reachable maximum legal return/bounded-history graph only; not exhaustive over arbitrary text; exact per-request runtime FIT remains mandatory.",
+  "members": [
+    {
+      "additional_structural_reserve_tokens": 2048,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-parent-capacity-fit-v1",
+      "contact_journal": {
+        "relpath": "coordination/system-text-round8-capacity-owner227-v1/parent/request-fit-v1.json.contacts.jsonl",
+        "sha256": "6127c992fc7bb0b72fcf8e4b367c91a9cd9b25e1a5d0777f3dd95333d32f9916"
+      },
+      "endpoint_contacts": 297,
+      "endpoint_routes": {
+        "GET /props": 1,
+        "POST /apply-template": 44,
+        "POST /tokenize": 252
+      },
+      "fit": {
+        "relpath": "coordination/system-text-round8-capacity-owner227-v1/parent/request-fit-v1.json",
+        "sha256": "2e0a7ac1dea0f3f3b38c078e44c1df9ab6c5ab461982b63ef6f02574a78d3c6e"
+      },
+      "label": "parent",
+      "lease_exit_code": 0,
+      "maximum_required_tokens": 16982,
+      "measured_requests": 44,
+      "memory": {
+        "guard_policy": {
+          "floor_gib": 8,
+          "interval_seconds": 10,
+          "read_timeout_seconds": 10.0,
+          "start_gib": 12.5,
+          "stop_grace_seconds": 5.0
+        },
+        "minimum_observed_gib": 11.045547485351562,
+        "startup_wait_seconds": 22.015070175984874
+      },
+      "minimum_margin_after_output_reserve": 7594,
+      "minimum_margin_after_structural_reserve": 5546,
+      "output_reserve_tokens": 512,
+      "owned_token_removed_by_normal_release": true,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-CAPACITY-FIT-V1",
+      "slot_tokens": 24576
+    },
+    {
+      "additional_structural_reserve_tokens": 2048,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-1-capacity-fit-v1",
+      "contact_journal": {
+        "relpath": "coordination/system-text-round8-capacity-owner227-v1/candidate-1/request-fit-v1.json.contacts.jsonl",
+        "sha256": "653112da771c38f51b81eba7c07a798102aee492d2963ca7210aba24ed58b15c"
+      },
+      "endpoint_contacts": 297,
+      "endpoint_routes": {
+        "GET /props": 1,
+        "POST /apply-template": 44,
+        "POST /tokenize": 252
+      },
+      "fit": {
+        "relpath": "coordination/system-text-round8-capacity-owner227-v1/candidate-1/request-fit-v1.json",
+        "sha256": "6aacdab6dae85528dde831712767737756b6ffcc16556d923916815022ad2981"
+      },
+      "label": "candidate-1",
+      "lease_exit_code": 0,
+      "maximum_required_tokens": 17080,
+      "measured_requests": 44,
+      "memory": {
+        "guard_policy": {
+          "floor_gib": 8,
+          "interval_seconds": 10,
+          "read_timeout_seconds": 10.0,
+          "start_gib": 12.5,
+          "stop_grace_seconds": 5.0
+        },
+        "minimum_observed_gib": 11.369415283203125,
+        "startup_wait_seconds": 32.640171142993495
+      },
+      "minimum_margin_after_output_reserve": 7496,
+      "minimum_margin_after_structural_reserve": 5448,
+      "output_reserve_tokens": 512,
+      "owned_token_removed_by_normal_release": true,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-CAPACITY-FIT-V1",
+      "slot_tokens": 24576
+    },
+    {
+      "additional_structural_reserve_tokens": 2048,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-capacity-fit-v1",
+      "contact_journal": {
+        "relpath": "coordination/system-text-round8-capacity-owner227-v1/candidate-2/request-fit-v1.json.contacts.jsonl",
+        "sha256": "b6fee69e66a64271859ac2c9a789fda093a25934524a55c4f7b23910257fb35a"
+      },
+      "endpoint_contacts": 297,
+      "endpoint_routes": {
+        "GET /props": 1,
+        "POST /apply-template": 44,
+        "POST /tokenize": 252
+      },
+      "fit": {
+        "relpath": "coordination/system-text-round8-capacity-owner227-v1/candidate-2/request-fit-v1.json",
+        "sha256": "4c970306441b1f98781eac3713ead3b143b974a770085fe87d04da8de5399d67"
+      },
+      "label": "candidate-2",
+      "lease_exit_code": 0,
+      "maximum_required_tokens": 16982,
+      "measured_requests": 44,
+      "memory": {
+        "guard_policy": {
+          "floor_gib": 8,
+          "interval_seconds": 10,
+          "read_timeout_seconds": 10.0,
+          "start_gib": 12.5,
+          "stop_grace_seconds": 5.0
+        },
+        "minimum_observed_gib": 11.251285552978516,
+        "startup_wait_seconds": 43.27521374000935
+      },
+      "minimum_margin_after_output_reserve": 7594,
+      "minimum_margin_after_structural_reserve": 5546,
+      "output_reserve_tokens": 512,
+      "owned_token_removed_by_normal_release": true,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-FIT-V1",
+      "slot_tokens": 24576
+    }
+  ],
+  "next_stage_status": "HELD; distinct structural root admission required",
+  "retry_count": 0,
+  "schema": "saea-round8-capacity-complete-v1",
+  "scientific_results_read": false,
+  "source_clean_after_completion": true,
+  "source_commit": "1343e022f96e3b541b247a39254d163ee737a0cb",
+  "stop_absent_after_completion": true,
+  "totals": {
+    "endpoint_contacts": 891,
+    "generation_contacts": 0,
+    "measured_requests": 132,
+    "official_scorer_contacts": 0
+  },
+  "windows_completion": {
+    "relpath": "coordination/system-text-round8-capacity-owner227-v1/windows-completion-v1.json",
+    "sha256": "ba4d6fc1429efeced1dd86b577f152f1903c48bfc52cd2ae6c4144de7447d592"
+  },
+  "windows_exit_code": 0,
+  "windows_finished_at_utc": "2026-10-03T12:05:03.0536682Z",
+  "windows_task": "SAEA-System-Text-Round8-Capacity-Owner227",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-round8-capacity-v1"
+}

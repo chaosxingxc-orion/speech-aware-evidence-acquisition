@@ -1,0 +1,96 @@
+{
+  "at_utc": "2026-10-03T12:05:31.789278+00:00",
+  "capacity_worker_preserved": "1343e022f96e3b541b247a39254d163ee737a0cb",
+  "entry_sequence": [
+    "Root reviews all three exact completed capacity measurements and admits only these three structural members with explicit generation/FIT identities.",
+    "Record final readiness/structural-only analysis recipes and generation/FIT/structural-read ledger entries before contact.",
+    "Prepare each own supply once from the finalized policy/roster using existing prepare-supply; bind and re-pin only with the existing supported utility after source and allowed-stage identity are fixed. Preserve every prior prepared envelope.",
+    "Freeze a separate clean worker and verify every own supply, first-phase material seed, actual policy role bytes, entry modes, source compatibility with capacity, registration and readiness.",
+    "Root performs an ordinary completed-control transition only after prior jobs ended normally, lease absent and STOP absent, preserving old queue/status/driver logs. This draft does not permit failure reconciliation.",
+    "Run the existing Windows-owned shared batch driver in engineering worker-only mode, with one generation worker, no official score, 12.5 GiB startup and 8 GiB running guards.",
+    "Read structural role/control handoffs, actual request FIT and native Omni custody only; preserve OPENED attempt plus completed manifest/prepared score specifications as the intentional unscored lifecycle.",
+    "Stop on any defect; no retry, reseal, scoring, quality read, proposal repair or automatic 8x20 dispatch."
+  ],
+  "heartbeat": "PAUSED",
+  "live_control_changes": false,
+  "members": [
+    {
+      "actual_request_fit": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-round8-parent-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-FIT-V1"
+      },
+      "affinity": "OFF",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-parent-smoke-4-generation-v1",
+      "baseline_sha256": "1e90ddb8c008b27cd80009015f20b415c2d6e144249bf78a8e8321b59392c9fc",
+      "experiment": "slurp-native-stage3-system-text-round8-parent-smoke-4-v1",
+      "experiment_sha256": "da4dcaef22853b612138cb7476fb273eef87a6cc6da5d14fb68b13c3eec6b7b3",
+      "generation_contact_cap": 52,
+      "label": "parent",
+      "layout": "speech-query-prefix-v2",
+      "own_supply_target_relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+      "role_query_placement": "OFF",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-V1",
+      "supply_status": "NOT PREPARED; wait for exact root admission and final source/readiness identity"
+    },
+    {
+      "actual_request_fit": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-1-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-FIT-V1"
+      },
+      "affinity": "OFF",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-1-smoke-4-generation-v1",
+      "baseline_sha256": "469c2e06951426d50b8b46a30e1cd9e6ff88a91d6c7ed5c4053f4f04a42cfb78",
+      "experiment": "slurp-native-stage3-system-text-round8-candidate-1-smoke-4-v1",
+      "experiment_sha256": "6d5c1792393672c645d9148d5a5ea1ccaa8ec42e38d15af2cfb167ce6869d4b0",
+      "generation_contact_cap": 52,
+      "label": "candidate-1",
+      "layout": "speech-query-prefix-v2",
+      "own_supply_target_relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-V1/phase-supply-v1.json",
+      "role_query_placement": "OFF",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-V1",
+      "supply_status": "NOT PREPARED; wait for exact root admission and final source/readiness identity"
+    },
+    {
+      "actual_request_fit": {
+        "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-FIT-V1"
+      },
+      "affinity": "OFF",
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-smoke-4-generation-v1",
+      "baseline_sha256": "f70ffc27c63ed6f2dd2d710741b958532d0a11e52d8c13b5ee178443fb5444e9",
+      "experiment": "slurp-native-stage3-system-text-round8-candidate-2-smoke-4-v1",
+      "experiment_sha256": "1501de0e302445ec04cf0030c9c289c9420a3d88edcd26edfe0935840701575b",
+      "generation_contact_cap": 52,
+      "label": "candidate-2",
+      "layout": "speech-query-prefix-v2",
+      "own_supply_target_relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1/phase-supply-v1.json",
+      "role_query_placement": "OFF",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1",
+      "supply_status": "NOT PREPARED; wait for exact root admission and final source/readiness identity"
+    }
+  ],
+  "model_tokenizer_contacts": 0,
+  "new_asset_or_knowledge_rebuild": false,
+  "queue_draft": {
+    "relpath": "docs/readiness/2026-10-03-slurp-round8-structural-entry-preparation-v1/queue-DRAFT-v1.json",
+    "sha256": "5221c44b15c21f4d00ab506d7deb9866d12c8d002c44f9d6b064ce1864e9617a"
+  },
+  "schema": "saea-round8-structural-entry-preparation-v1",
+  "source_basis": "0663d910a38d09b66b1be21b9c8b1612ca670c03",
+  "status": "HELD; offline preparation only",
+  "totals": {
+    "actual_request_fit_endpoint_cap": 624,
+    "generation_contact_cap": 156,
+    "official_scoring_jobs": 0,
+    "trajectories": 12
+  }
+}
