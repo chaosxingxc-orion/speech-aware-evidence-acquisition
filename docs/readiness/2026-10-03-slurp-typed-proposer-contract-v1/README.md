@@ -18,10 +18,16 @@ The initial verbose schema descriptions exceeded the L envelope; their external 
 
 The private callback now distinguishes only fixed categories: unreadable adapter, pin mismatch, timeout, OS start error, subprocess execution failure, nonzero child exit, non-ASCII response, invalid response shape and unclassified callback failure. The transport retains the generic `registered credential unavailable` message plus that allowlisted category and `before-http-post` phase. The launcher may retain the same safe field for an entry failure. Unknown callback text, child stdout/stderr, credentials, headers and account details never enter these diagnostics. The tests prove no HTTP POST occurs on such callback failures and preserve the unmetered reserved attempt rather than inventing provider usage.
 
-This is future diagnostic capability. The original B72 callback cause remains unestablished because it was masked by the frozen adapter. No reauthentication, live credential probe, token refresh, retry or new contact was performed or authorized. A future nonzero pipe exit alone would still not establish login expiry.
+This is future diagnostic capability. The original B72 callback cause remains unestablished because it was masked by the frozen adapter. No reauthentication, token refresh, retry or new proposal contact was performed. A future nonzero pipe exit alone would still not establish login expiry.
 
 ## Validation and next boundary
 
 [Offline evidence](offline-verification-v1.json):162 relevant tests pass, including16 new contract/diagnostic cases. Statement coverage is100% for the credential module,91% for the transport and84% for the complete policy module. Synthetic and loopback tests carry no account or remote-model contact. Actual-file render, isolation and continuation rehearsals have zero contacts and separate immutable external reports.
 
 Keep B71 unactivated. Prepare any successor only after root reviews the contract, budget and credential disposition. Keep prefix affinity OFF for the candidate panel and preserve4x24576 geometry. The SLURP heartbeat stays PAUSED; the independent ten-second recorder is unchanged. There is no task-quality interpretation, scientific READ, GPU admission, new data/knowledge build, paid API spend or benefit claim in this package.
+
+## Separately authorized read-only readiness observation
+
+Root authorized exactly one subsequent read-only session/private-pipe/catalogue diagnostic. At2026-10-03T10:10:21Z, the existing own-app session was present, connected and sharing-enabled, without pending refresh. The stored access credential did not satisfy the requirement to remain valid for at least another10 seconds. The diagnostic therefore withheld credential use and did not request the model catalogue. This does not establish that login is invalid, nor does it identify the original B72 callback failure.
+
+The pinned production callback can automatically refresh and write credentials. To honor the no-write ruling, this diagnostic reused the pinned official SDK store/model functions with credential writes and every network operation except a single catalogue GET explicitly denied. No GET was reached. The credential file hash was unchanged; no token, header, account identity, child output or exception body was recorded. [Separate current observation](../../receipts/continuation/2026-10-03-proposer-own-app-readonly-readiness.json). Root must separately disposition any SDK-managed refresh before further readiness checks or new proposal admission.

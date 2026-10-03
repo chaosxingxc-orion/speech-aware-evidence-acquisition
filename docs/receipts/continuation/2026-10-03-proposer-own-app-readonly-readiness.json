@@ -1,0 +1,24 @@
+{
+  "access_credential_at_least_ten_seconds_valid": false,
+  "catalogue_gets": 0,
+  "credential_file_unchanged": true,
+  "credential_writes": 0,
+  "diagnostic_boundary": "Pinned SDK read/models functions with denied credential writes and denied non-catalogue GET; original callback not replayed because it permits refresh.",
+  "evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/own-app-readonly-diagnostic-v1.json",
+    "sha256": "06b2bc4ec1f4ad132f41a1a483a9a4c178d80a8f956915d759492d1c7ea07457"
+  },
+  "model_posts": 0,
+  "new_allocations": 0,
+  "next_action": "Root disposition for any SDK-managed credential refresh; no retry, login or proposal admission here.",
+  "original_B72_cause": "unestablished; current observation cannot identify past callback failure",
+  "owner_decision": 227,
+  "pending_refresh": false,
+  "private_credential_available_without_refresh": false,
+  "recorded_at_utc": "2026-10-03T10:10:57.633382+00:00",
+  "root_authorized": true,
+  "schema": "saea-root-proposer-readonly-readiness-v1",
+  "session_connected": true,
+  "sharing_enabled": true,
+  "status": "STORED-SESSION-NOT-READY-NO-MUTATION"
+}

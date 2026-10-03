@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Read-only own-app check found no directly usable access credential, 2026-10-03T10:10:57.633382+00:00
+
+One root-authorized read-only observation at10:10:21Z found the own-app session connected, sharing-enabled and with no pending refresh, but its access credential did not satisfy the at-least-ten-seconds-valid condition. No catalogue GET, model POST, refresh, login or credential write occurred; the credential file hash stayed identical. [Evidence](../receipts/continuation/2026-10-03-proposer-own-app-readonly-readiness.json). This neither proves login invalidity nor identifies the old B72 cause. Root disposition of any SDK-managed refresh is required before a later admitted sequence. No old opportunity is retried; heartbeat remains PAUSED.
+
 ## Successor1 allocations closed; future typed contract is offline only, 2026-10-03T10:04:11.818049+00:00
 
 Root227 preserved L71/L72 invalid, B71 unactivated and closed B72 through the existing archive as invalid with original empty response and unknown usage. Nine reservations/eight metered returns remain32791 input and2930 output; the pre-POST ninth retains generic unmetered metadata.25 closed opportunities and three old HELD identities remain unchanged. [Root closure](../receipts/continuation/2026-10-03-proposer-successor1-root-closure.json).
