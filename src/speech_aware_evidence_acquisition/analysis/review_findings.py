@@ -137,3 +137,222 @@ def analyze_native_review_findings(source) -> dict[str, Any]:
             "semantic consumption, independence, or causal benefit."
         ),
     }
+
+def _strict_slurp_reply(text):
+    """Inspect raw task shape without repairing, scoring or changing runtime parsing."""
+    import json
+
+    def unique(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate task key")
+            result[key] = value
+        return result
+
+    def nonfinite(_value):
+        raise ValueError("nonfinite task value")
+
+    try:
+        value = json.loads(text, object_pairs_hook=unique, parse_constant=nonfinite)
+    except (ValueError, TypeError):
+        return False
+    return (
+        isinstance(value, dict)
+        and set(value) == {"scenario", "action", "entities"}
+        and all(
+            isinstance(value[k], str) and value[k].strip()
+            for k in ("scenario", "action")
+        )
+        and isinstance(value["entities"], list)
+        and all(
+            isinstance(entity, dict)
+            and set(entity) == {"type", "filler"}
+            and isinstance(entity["type"], str)
+            and bool(entity["type"].strip())
+            and isinstance(entity["filler"], str)
+            for entity in value["entities"]
+        )
+    )
+
+
+def _context_contains(payload, text):
+    """Inspect only serialized task instruction/history; visibility is not use."""
+
+    def leaves(value):
+        if isinstance(value, str):
+            yield value
+        elif isinstance(value, dict):
+            for child in value.values():
+                yield from leaves(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from leaves(child)
+
+    return any(
+        text in leaf
+        for field in ("task_instruction", "history")
+        for leaf in leaves(payload.get(field))
+    )
+
+
+def analyze_slot_review_episode(source, *, legal_slot_types):
+    """Describe every raw role reply and actual handoff in a verified native system.
+
+    The caller must qualify and authorize its entire family first. Keep this
+    derivative root-only. Slot identifiers refer to the caller's pinned legal
+    inventory; no reference answers or raw criticism are exported. Model and
+    official scorer contacts are zero. Existing runtime normalizers are unchanged.
+    """
+    import json
+    from collections import Counter
+    from .native_episode_source import VerifiedNativeEpisodeSource
+    from .native_role_responses import select_verified_native_role_response
+    from ..rails.review_handoff import normalize_review_handoff
+    from ..rails.hashing import content_hash
+
+    if not isinstance(source, VerifiedNativeEpisodeSource):
+        raise ReviewFindingsError("slot analysis requires a verified native source")
+    ids = source.sample_ids
+    if (
+        not ids
+        or len(ids) != len(set(ids))
+        or set(source.phase_results) != set(ids)
+        or set(source.output_rows) != set(ids)
+    ):
+        raise ReviewFindingsError("slot analysis requires the exact complete roster")
+    if (
+        not isinstance(legal_slot_types, (tuple, list))
+        or not legal_slot_types
+        or any(not isinstance(t, str) or not t.strip() for t in legal_slot_types)
+        or len(set(legal_slot_types)) != len(legal_slot_types)
+    ):
+        raise ReviewFindingsError(
+            "slot analysis requires an unambiguous legal inventory"
+        )
+    legal = set(legal_slot_types)
+    counts, actions, rows = Counter(), Counter(), []
+    for sid in ids:
+        episode = source.phase_results[sid]["native_episode_receipt"]
+        visits = episode["role_visits"]
+        row = {"sample_id": sid, "reviews": [], "solver_visits": []}
+        for index, visit in enumerate(visits):
+            role = visit["role_id"]
+            selected = select_verified_native_role_response(
+                source, sample_id=sid, role_id=role, visit_index=index
+            )
+            counts[role + "_visits"] += 1
+            if role == "solver":
+                strict = _strict_slurp_reply(selected.response_text)
+                marker = "<tool_call>" in selected.response_text
+                counts[
+                    "solver_strict_task_json"
+                    if strict
+                    else "solver_not_strict_task_json"
+                ] += 1
+                counts["solver_text_tool_markers"] += int(marker)
+                row["solver_visits"].append(
+                    {
+                        "source": selected.source_json(),
+                        "strict_task_json": strict,
+                        "text_tool_call_marker": marker,
+                    }
+                )
+            if role != "reviewer":
+                continue
+            normalized = normalize_review_handoff(selected.response_text)
+            handoff = json.loads(normalized)
+            valid = handoff["status"] == "valid"
+            counts["reviews_valid" if valid else "reviews_invalid"] += 1
+            findings = handoff["findings"]
+            counts["findings"] += len(findings)
+            non_slot = sorted(
+                {t for f in findings for t in f["slot_types"] if t not in legal}
+            )
+            counts["findings_with_non_slot_identifiers"] += sum(
+                any(t not in legal for t in f["slot_types"]) for f in findings
+            )
+            planner = next(
+                (
+                    i
+                    for i in range(index + 1, len(visits))
+                    if visits[i]["role_id"] == "planner"
+                ),
+                None,
+            )
+            routes = [
+                r
+                for r in episode.get("planner_routes", [])
+                if planner is not None and r["role_visit_index"] == planner
+            ]
+            if len(routes) > 1:
+                raise ReviewFindingsError("slot analysis has ambiguous Planner routing")
+            visible, planner_source = None, None
+            if planner is not None:
+                target = select_verified_native_role_response(
+                    source, sample_id=sid, role_id="planner", visit_index=planner
+                )
+                planner_source = target.source_json()
+                payload = source.bundle.trace_records[target.request_id + "/request"][
+                    "payload"
+                ]
+                visible = _context_contains(payload, normalized)
+                counts["review_handoffs_visible_to_planner"] += int(visible)
+                counts["review_handoffs_not_visible_to_planner"] += int(not visible)
+            action = routes[0]["action"] if routes else None
+            if action is not None:
+                actions[action] += 1
+            row["reviews"].append(
+                {
+                    "source": selected.source_json(),
+                    "status": handoff["status"],
+                    "finding_count": len(findings),
+                    "non_slot_identifiers": non_slot,
+                    "handoff_in_next_planner_context": visible,
+                    "planner_source": planner_source,
+                    "planner_action": action,
+                }
+            )
+        if not row["reviews"]:
+            missing = select_verified_native_role_response(
+                source, sample_id=sid, role_id="reviewer"
+            )
+            counts["reviews_" + missing.status] += 1
+            row["reviews"].append(
+                {
+                    "source": missing.source_json(),
+                    "status": missing.status,
+                    "finding_count": None,
+                    "planner_action": None,
+                }
+            )
+        solver = row["solver_visits"]
+        row["extra_solver_revisions"] = max(0, len(solver) - 1)
+        row["first_to_last_solver_text_changed"] = (
+            solver[0]["source"]["response_text_sha256"]
+            != solver[-1]["source"]["response_text_sha256"]
+            if solver
+            else None
+        )
+        counts["extra_solver_revisions"] += row["extra_solver_revisions"]
+        counts["first_to_last_solver_text_changed"] += int(
+            row["first_to_last_solver_text_changed"] is True
+        )
+        rows.append(row)
+    return {
+        "schema": "saea-slot-review-episode-analysis-v1",
+        "sample_count": len(ids),
+        "source": {
+            "run_id": source.plan.run_id,
+            "attempt_id": source.plan.attempt_id,
+            "config_sha256": source.composed.config_hash,
+            "phase_artifact_sha256": source.phase_artifact_sha256,
+        },
+        "inventory_sha256": content_hash(list(legal_slot_types)),
+        "counts": dict(counts),
+        "planner_actions": dict(actions),
+        "rows": rows,
+        "claims_semantic_consumption": False,
+        "claims_causal_node_credit": False,
+        "contacts_added": {"model": 0, "scorer": 0},
+    }

@@ -1,0 +1,14 @@
+{
+  "schema": "saea-postcall-analysis-readiness-v1",
+  "recorded_at_utc": "2026-10-03T02:32:04.453860+00:00",
+  "status": "MODEL-FREE-VERIFIED; FAMILY-READ-STILL-REQUIRED",
+  "tests_passed": 110,
+  "statement_coverage": 0.99,
+  "engineering_base": "PASS",
+  "harness_admission": "PASS",
+  "lint": "PASS",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "runtime_behavior_changed": false,
+  "held_carriers_released": false
+}

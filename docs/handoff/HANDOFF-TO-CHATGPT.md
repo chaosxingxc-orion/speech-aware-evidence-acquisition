@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Root post-call diagnostic base verified, 2026-10-03T02:32:04.453860+00:00
+
+A source-bound analyzer now measures every completed role visit, raw Solver task shape, Reviewer handoff legality, exact visibility in actual Planner context, routing and revisions.110 tests pass;99% analysis-module statement coverage; base/harness/lint pass. [Scope and verification](../readiness/2026-10-03-slurp-root-postcall-diagnostics-v1/README.md). This adds no runtime change, model/scorer contact or held-carrier admission. Load exact complete-family sources only after root READ; context visibility is not semantic or causal credit. The current owner225 comparison is still in flight; no partial quality read has occurred.
+
 ## Owner225 recovery comparison running; scaling basis ready, 2026-10-03T02:15:50.027149+00:00
 
 Windows SAEA-Batch-Driver epoch2026-10-03T02:12:05Z began the first campaign02:13:17Z on frozen `/home/chao/saea-worktrees/codex-system-text-context20-recovery1` at963528f3ee858837afbf94abc15d3b535906c7c1. All four clean preflights and exact registration passed. First seed attempt OPENED and actual generation verified; four slots busy, GPU98%, Windows10.54GiB after startup12.5GiB guard. [Launch and process custody](../receipts/continuation/2026-10-03-owner225-context20-recovery-launch.json). The normal64-second precontact resource wait passed; it was not a flight failure.
