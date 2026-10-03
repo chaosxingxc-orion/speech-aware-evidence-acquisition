@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Two role-context structural proofs launched, 2026-10-03T13:37:44.108852+00:00
+
+Root launched the exact two4-row workers through Windows SAEA-Batch-Driver,epoch2026-10-03T13:37:07Z,on frozen4ab00128df468ce7c49a857beb8aeda0aca5c1c0. [Launch evidence](../receipts/continuation/2026-10-03-context-matrix-structural-launch.json) binds clean source,registration/runtime/warm composition checks,original role text hashes,actual executor roster and normal completed-control archive. Maximum104 model contacts/416 actual FIT endpoints,zero official scoring. Service/cache settings and independent role texts remain fixed;the comparison varies content placement with exact role routing. Original sample timing is now recorded,not reconstructed from contact sums.
+
+Wait for both complete structural workers before source-bound acceptance and numeric timing review. Their engineering attempts retain the intentional OPENED lifecycle with prepared score specifications only. No quality,score,reseal,retry,optimizer export or next8x20 dispatch is admitted. Root works directly without subagents;heartbeat PAUSED,learning HELD. Business quality and sample latency jointly govern the later complete comparison;cache reuse is diagnostic and does not constrain independent prompts.
+
 ## Two role-routing structural workers registered, 2026-10-03T13:31:36.453837+00:00
 
 Root227 directly admits legacy-role and before-speech-role on the same existing four engineering inputs,maximum104 model contacts and416 actual FIT endpoints total,zero official scoring. [Exact admission](../receipts/continuation/2026-10-03-context-matrix-structural-root-admission.json) and [entry](../readiness/2026-10-03-context-matrix-structural-entry-v1/README.md) bind independent seed role texts,unchanged knowledge/assets/cache geometry and original per-sample timing. Both own supply envelopes were prepared after final allowed stages;exact generation,FIT and structural READ rows pass registration with zero contacts.

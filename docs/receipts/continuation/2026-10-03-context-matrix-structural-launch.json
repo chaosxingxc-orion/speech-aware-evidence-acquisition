@@ -1,0 +1,57 @@
+{
+  "at_utc": "2026-10-03T13:37:44.108852+00:00",
+  "authority": "Root227 and direct owner engineering/context/latency amendments",
+  "commit": "4ab00128df468ce7c49a857beb8aeda0aca5c1c0",
+  "driver_epoch": "2026-10-03T13:37:07Z",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "max_actual_request_fit_endpoints": 416,
+  "max_model_contacts": 104,
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-legacy-role-smoke-4-generation-v1",
+      "label": "legacy-role",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-LEGACY-ROLE-SMOKE-4-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-before-speech-role-smoke-4-generation-v1",
+      "label": "before-speech-role",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-BEFORE-SPEECH-ROLE-SMOKE-4-V1"
+    }
+  ],
+  "next_8x20": "HELD pending separate root admission",
+  "official_score_jobs": 0,
+  "read_scope": "Only complete structural source custody and original numeric node/sample timings; no quality",
+  "schema": "saea-context-matrix-structural-launch-v1",
+  "source_receipts": [
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/source-freeze-v1.json",
+      "sha256": "90ef6f965ec598e650035f81910e59d5285da926826e4cb4223a83dc3b622bb0"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/frozen-check-v1.json",
+      "sha256": "02ba5e832c8999104852c83fdc2406ccdab1d32d54aa5bbd0a50915cc13374d2"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/driver-transition-v1.json",
+      "sha256": "f67d9c5df93399a60ff8e06e97bb2f04c6d401daa88435f679a94589774a6f48"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/windows-launch-request-v1.json",
+      "sha256": "4c0bdf78c0f3e29c8e9839ac8a7b0005d28f26ec07800645952334995ce5a1f2"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/postlaunch-service-v1.json",
+      "sha256": "c3b072bcbde866c0304061c32c3692af56698ead3df2a98dd657b8b8ee6f93f9"
+    },
+    {
+      "relpath": "coordination/context-matrix-structural-owner227-v1/postlaunch-live-processes-v1.json",
+      "sha256": "164787c81664776925be8fabc4b83318c3918c80667cd35e70e3fdfc18f9b2f3"
+    }
+  ],
+  "subagents": false,
+  "windows_task": "SAEA-Batch-Driver",
+  "worker": "/home/chao/saea-worktrees/codex-context-matrix-structural-v1"
+}
