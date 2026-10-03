@@ -1,0 +1,151 @@
+{
+  "at_utc": "2026-10-03T15:45:58.446473+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints_per_member": 297,
+    "tokenizer_endpoints_total": 891
+  },
+  "contacts_added": 0,
+  "limitations": [
+    "Reachable graph with longest measured legal knowledge values and bounded long synthetic role text, not exhaustive arbitrary future text. Actual request FIT remains mandatory.",
+    "Reviewer scope is latest Solver plus current Reviewer local tools; other role histories remain full for this factor study. Base speech and supplied knowledge remain.",
+    "No scientific READ, optimizer export, proposal or larger panel is admitted by preparation.",
+    "No subagents; heartbeat PAUSED."
+  ],
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-context-role-tools-capacity-v1",
+      "baseline": "slurp-native-stage3-node-context-role-tools-v1",
+      "capacity": "slurp-native-stage3-node-context-role-tools-capacity-v1",
+      "graph": "slurp-native-stage3-node-context-role-tools-graph-v1",
+      "graph_proof": {
+        "relpath": "coordination/node-context-content-capacity-owner227-v1/role-tools-graph-composition-v2.json",
+        "sha256": "e2bda69f096ef38f5994fd53074ff93a2ed65e7bdb21416681e10b91d3d7444b"
+      },
+      "label": "role-tools",
+      "model_free_checks": {
+        "slurp-native-stage3-node-context-role-tools-capacity-v1": {
+          "config_hash": "50ef563cf836d8a82f687298e8d2be680ee67b8d4e76f670e65f7f562a6e236a",
+          "role_binding": {
+            "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+            "role_sha256": {
+              "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+              "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+              "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+            }
+          }
+        },
+        "slurp-native-stage3-node-context-role-tools-graph-v1": {
+          "config_hash": "4fc15a0ddf19ef13c37b975efdfbb1d34649a6b73d61035bafa137b8f8110668",
+          "role_binding": {
+            "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+            "role_sha256": {
+              "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+              "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+              "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+            }
+          }
+        }
+      },
+      "params": {
+        "tool_schema_rendering": "per-role"
+      },
+      "run_id": "SAEA-SLURP-NODE-CONTEXT-ROLE-TOOLS-CAPACITY-FIT-V1",
+      "tokenizer_endpoint_cap": 297
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-context-review-local-capacity-v1",
+      "baseline": "slurp-native-stage3-node-context-review-local-v1",
+      "capacity": "slurp-native-stage3-node-context-review-local-capacity-v1",
+      "graph": "slurp-native-stage3-node-context-review-local-graph-v1",
+      "graph_proof": {
+        "relpath": "coordination/node-context-content-capacity-owner227-v1/review-local-graph-composition-v2.json",
+        "sha256": "b4f5651bc3dbc4a316c7010cdf9961b6f19975b7e6e3add269d92a63b1962fd5"
+      },
+      "label": "review-local",
+      "model_free_checks": {
+        "slurp-native-stage3-node-context-review-local-capacity-v1": {
+          "config_hash": "1ccd7a49da0f18b916c56b60b3c14dd1c87821f95d7ed2bfa22bfa6d0cde2b85",
+          "role_binding": {
+            "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+            "role_sha256": {
+              "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+              "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+              "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+            }
+          }
+        },
+        "slurp-native-stage3-node-context-review-local-graph-v1": {
+          "config_hash": "5a8860529e536e0b7f26c82727495ebdbbe8b83b50cc52e1d5d825c3f1a8b4cf",
+          "role_binding": {
+            "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+            "role_sha256": {
+              "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+              "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+              "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+            }
+          }
+        }
+      },
+      "params": {
+        "reviewer_history_scope": "latest-solver-and-local-tools"
+      },
+      "run_id": "SAEA-SLURP-NODE-CONTEXT-REVIEW-LOCAL-CAPACITY-FIT-V1",
+      "tokenizer_endpoint_cap": 297
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-context-role-tools-review-local-capacity-v1",
+      "baseline": "slurp-native-stage3-node-context-role-tools-review-local-v1",
+      "capacity": "slurp-native-stage3-node-context-role-tools-review-local-capacity-v1",
+      "graph": "slurp-native-stage3-node-context-role-tools-review-local-graph-v1",
+      "graph_proof": {
+        "relpath": "coordination/node-context-content-capacity-owner227-v1/role-tools-review-local-graph-composition-v2.json",
+        "sha256": "04b7762d36bef80a40a02cc041e16556278a8e1fca9ce2a329d9c5a1a997c2e9"
+      },
+      "label": "role-tools-review-local",
+      "model_free_checks": {
+        "slurp-native-stage3-node-context-role-tools-review-local-capacity-v1": {
+          "config_hash": "748d5c3d406836636ba96f17a29a82cf89648c8dd17d5264bf213e058e4bd8d8",
+          "role_binding": {
+            "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+            "role_sha256": {
+              "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+              "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+              "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+            }
+          }
+        },
+        "slurp-native-stage3-node-context-role-tools-review-local-graph-v1": {
+          "config_hash": "b1600b3f09d973c6ed71b0240a902b8bf7d5bb48664261baf946e9caae01a445",
+          "role_binding": {
+            "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+            "role_sha256": {
+              "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+              "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+              "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+            }
+          }
+        }
+      },
+      "params": {
+        "reviewer_history_scope": "latest-solver-and-local-tools",
+        "tool_schema_rendering": "per-role"
+      },
+      "run_id": "SAEA-SLURP-NODE-CONTEXT-ROLE-TOOLS-REVIEW-LOCAL-CAPACITY-FIT-V1",
+      "tokenizer_endpoint_cap": 297
+    }
+  ],
+  "schema": "saea-node-context-content-capacity-preparation-v1",
+  "status": "HELD; exact capacity root admission and precontact ledger pending",
+  "unchanged": [
+    "seed role instruction bytes",
+    "source assets and knowledge",
+    "legal role/tool authority",
+    "full512 output",
+    "one revision",
+    "legacy placement",
+    "trajectory scheduling",
+    "resident cache settings"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "at_utc": "2026-10-03T16:02:25.835978+00:00",
+  "authority_limits": "Owner227 same fixed400 pool, reviewed bounded stages, preserved evidence and exact registration/READ; human before8x400; no subagents",
+  "direction": [
+    "Audit whether existing warmup really establishes prefix KV reuse and distinguish first/later batch latency.",
+    "Implement space-for-time execution by completing a node over a batch, retaining independent per-sample intermediate results, then feeding the next node.",
+    "Use the shared executor, independent node contexts and actual sample latency plus business performance; engineering first."
+  ],
+  "no_new_runtime_authority_from_preparation": true,
+  "schema": "saea-owner-node-batching-direction-v1",
+  "source": "Direct human conversation messages on2026-10-03; English semantic translation, not a verbatim source quote"
+}

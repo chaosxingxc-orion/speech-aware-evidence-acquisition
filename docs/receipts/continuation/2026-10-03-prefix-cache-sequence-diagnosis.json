@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-10-03T16:02:25.835978+00:00",
+  "authority": "Existing exact whole-family root READ; owner227 and latest direct owner cache/warmup/node-batching instructions",
+  "contacts_verified": 1030,
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-cache-sequence-owner227-v1/cache-mechanism-and-admission-groups-v2.json",
+      "sha256": "063beff4a2066585985df77de26f434815be3ac21f27826401d1d2dd4624311c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-matrix-cache-sequence-owner227-v1/audit-existing-cache-evidence-v2.py",
+      "sha256": "d4a3f19c0567180805ae9432be2f24687b2a0f97b3ea39d0718e8b8778a37ec4"
+    }
+  ],
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "model_sources_changed": false,
+  "new_contacts": 0,
+  "next_action": "Implement opt-in shared-executor node batches offline; retain independent contexts, full custody and sample timing; prospective proofs precede small GPU comparison",
+  "report": "docs/results/2026-10-03-prefix-cache-sequence-and-node-batching.md",
+  "runtime_dispatched": false,
+  "same_sample_speech_decode_skips": 225,
+  "schema": "saea-prefix-cache-sequence-root-diagnosis-v1",
+  "speech_feature_decode_events": 805,
+  "subagents": false
+}

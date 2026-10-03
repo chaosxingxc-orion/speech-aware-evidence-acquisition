@@ -7115,7 +7115,9 @@
         "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1",
         "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1",
         "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1"
-      ]
+      ],
+      "cache_diagnostic_supplement": "docs/results/2026-10-03-prefix-cache-sequence-and-node-batching.md",
+      "latest_engineering_direction": "Implement bounded node batches in shared executor offline; prepared context-content candidates remain HELD. Zero new contacts; no benefit claim."
     }
   ],
   "stage3_measurement_instrument": {

@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Prefix-cache diagnosis and node-batched execution direction, 2026-10-03T16:03:39.061786+00:00
+
+Root uniquely reverified all1,030 matrix requests against actual server task/slot logs. Hot prefix KV works; no full purge or RAM eviction event appears. Whole role text before speech causes early mismatches on216 same-sample successors; permanent role slots switch samples on all493 within-run successors. Original trajectory retains the long sample prefix on225 calls. See the [source-bound supplement](../results/2026-10-03-prefix-cache-sequence-and-node-batching.md) and [receipt](../receipts/continuation/2026-10-03-prefix-cache-sequence-diagnosis.json). This supersedes only the prior unknown actual-slot statement; frozen reports/results remain preserved. Zero new contacts.
+
+No explicit KV warmup was registered; warm supply/FIT verification is not KV prefill. First4 versus later16 admission means are reported separately, not labeled cold/warm batches. The owner now requests bounded node batching: all four slots work one node across a cohort, per-sample intermediate state feeds the next node, with conditional tools/revision and full custody. This differs from permanent role slots. Implement offline in the existing shared executor before new capacity/structural/20-input admission. Earlier context-content candidates remain HELD. Learning HELD,heartbeat PAUSED,no subagents,human before8x400; no stable benefit or learning claim.
+
 ## Complete context matrix read and next engineering basis, 2026-10-03T15:39:49.449374+00:00
 
 All eight20-input members finalized with verified seals, one unique complete official score each and zero failed jobs. Driver14:00:30Z completed15:21:07Z; exact root READ countersigned15:23:07Z and complete-source reader exited0. [Full report](../results/2026-10-03-slurp-context-matrix-n20-root-read.md) and [pinned receipt](../receipts/continuation/2026-10-03-context-matrix-n20-scientific-read.json) preserve quality, own-repeat intervals,13 scenarios, both weightings and original sample/node/stage timing. No new model/tokenizer/scorer/proposer contacts or optimizer export.
@@ -1142,7 +1148,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T15:40:54.953855+00:00
+Last refreshed: 2026-10-03T16:04:09.278921+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
