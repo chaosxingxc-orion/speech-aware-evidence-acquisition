@@ -1,0 +1,131 @@
+{
+  "actual_fit_endpoint_cap": 8320,
+  "at_utc": "2026-10-03T14:03:06.388340+00:00",
+  "authority": "Owner227 exact root admission plus latest direct engineering-first independent-node-context, business-quality and sample-latency instructions",
+  "commit": "d8456cefecafc8a7da681e06bfc06f141e994972",
+  "driver_epoch": "2026-10-03T14:00:30Z",
+  "first_campaign_epoch": "2026-10-03T14:00:57Z",
+  "generation_contact_cap": 2080,
+  "heartbeat": "PAUSED",
+  "human_boundary": "Before8x400; no split evasion",
+  "learning": "HELD",
+  "measurement": "Original per-sample all/first/remaining latency plus per-node cost and official business quality, own repeats and scenario support. Cache reuse is diagnostic, not a prompt restriction. n20 is a descriptive form proof, not stable benefit.",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-primary-generation-v1",
+      "label": "legacy-trajectory-primary",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-PRIMARY-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-primary-generation-v1",
+      "label": "before-speech-trajectory-primary",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-PRIMARY-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-primary-generation-v1",
+      "label": "legacy-role-primary",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-PRIMARY-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-primary-generation-v1",
+      "label": "before-speech-role-primary",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-PRIMARY-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-role-aa-generation-v1",
+      "label": "before-speech-role-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-ROLE-AA-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-role-aa-generation-v1",
+      "label": "legacy-role-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-ROLE-AA-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-before-speech-trajectory-aa-generation-v1",
+      "label": "before-speech-trajectory-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-BEFORE-SPEECH-TRAJECTORY-AA-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-matrix-n20-legacy-trajectory-aa-generation-v1",
+      "label": "legacy-trajectory-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-LEGACY-TRAJECTORY-AA-V1"
+    }
+  ],
+  "next_scale_admitted": false,
+  "official_scores": "Exactly one complete official score per member; no replay",
+  "operational_snapshot": {
+    "at_utc": "2026-10-03T14:02:08.016563+00:00",
+    "busy_slots": 3,
+    "first_attempt": "OPENED",
+    "gpu_utilization_percent": 75.0,
+    "live_driver_pids": [
+      510534,
+      510535,
+      510707
+    ],
+    "remaining_attempts": "ABSENT at launch snapshot",
+    "stop_present": false,
+    "windows_free_gib": 16.417377471923828,
+    "worker_clean": true
+  },
+  "optimizer_export": false,
+  "preflight_limitations": "Four historical tuning-roster-unverified advisories per member remain disclosed; this is the expressly exposed existing pool, not independent validation. Global algorithm-label check retains two byte-identical historical capacity-only findings; all eight current labels valid, no new findings. Exact root scope disposition is pinned.",
+  "read_id": "SAEA-SLURP-CONTEXT-MATRIX-N20-READ-V1",
+  "read_status": "UNSIGNED; wait for all eight independently finalized, verified seals, one successful complete official score each and zero failed jobs",
+  "schema": "saea-context-matrix-n20-launch-v1",
+  "source_receipts": [
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/source-freeze-v1.json",
+      "sha256": "ec842a73cd68e7c01ca8a3b1424e136ef24881e2571427f55e91a80af4f9bbae"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/frozen-check-v1.json",
+      "sha256": "9a568c37488bd9ede091c9b1ecac5b31670d915f502f7130326b5716ab228351"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/base-check-summary-v1.json",
+      "sha256": "2c191157ff777bbc0df1a007344a6d6192289c7c0e78d0f4cf2fb2f25cfc04d4"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/stage3-label-scope-disposition-v1.json",
+      "sha256": "90369ceb2d98cf07614c65e3912e0531d0642f32825aa5fb5fa59d342e46715e"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/driver-transition-v1.json",
+      "sha256": "4c889c4a9271865db5f68ed567927ec84bffeee1deaba2c914e9e0150388e765"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/windows-launch-intent-v1.json",
+      "sha256": "6f662e504c5d63efe8cf225551f7e15dc8b08db97f81974b0e4e6900139efd43"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/windows-launch-request-v1.json",
+      "sha256": "29dfd07c3f30335cc9d440f38619a728cbbbb0a52338b6b49a7603eebe87ddcb"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/postlaunch-service-v1.json",
+      "sha256": "3f8c3b3f7305f58052aaff36823963b445cdcf3ced6487a3dd3e4966f63b3094"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/postlaunch-live-processes-v1.json",
+      "sha256": "a898760e28b802fcfd7d25b42f399bd94f14f50e21d1024917156ae259041247"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/postlaunch-members-v1.json",
+      "sha256": "586214f3d3f367723b3a528e986659fe4fd4b370c9049b8bd4f162722941c0eb"
+    }
+  ],
+  "subagents": false,
+  "trajectory_cap": 160,
+  "windows_task": "SAEA-Batch-Driver",
+  "worker": "/home/chao/saea-worktrees/codex-context-matrix-n20-v1"
+}
