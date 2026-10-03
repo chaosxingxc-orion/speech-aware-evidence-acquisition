@@ -1,0 +1,40 @@
+{
+  "analyzer": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+    "sha256": "d1a60daa60191f05183a2ae1ae73c462f3e6cd8b2b640536a53eec7c50c062c8"
+  },
+  "audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/system-cache-cost-round5-v1.json",
+    "sha256": "222078423edb2c42eeb38b3496e348ea39133fdf152346d1029a0b05e87a91f5"
+  },
+  "checks": [
+    "engineering_base_check: PASS",
+    "harness_admission_check: PASS",
+    "scoped Ruff: PASS"
+  ],
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "optimizer_export": false,
+  "read_ledger_row_sha256": "ccd9bf459da96c874be8cf21cbbc7aeb735fe7e524b92bc7e5cdf25fcf3d1d1b",
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1",
+  "recorded_at_utc": "2026-10-03T09:04:15.635414+00:00",
+  "runtime_changed": false,
+  "schema": "saea-cache-cost-engineering-proof-v1",
+  "scope": "Offline complete-family measurement; no cache policy or runtime change",
+  "slurp_heartbeat": "PAUSED",
+  "source_commit": "406eda8ccb35dfbb30347ce0f3c84fe9808728d9",
+  "source_worker": "/home/chao/saea-worktrees/codex-system-text-round5-n20-supply-v2",
+  "stable_benefit_established": false,
+  "statement_coverage_percent": 95,
+  "tests": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_system_cache_cost.py",
+    "sha256": "897e558210b28fb81c0e26840b70522103eec458af2792fb4160c046c5062449"
+  },
+  "tests_passed": 87,
+  "verified_contacts": 1009,
+  "verified_members": 8,
+  "verified_trajectories": 160
+}

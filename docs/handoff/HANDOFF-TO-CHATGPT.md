@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Cache cost instrumentation verified, 2026-10-03T09:04:15.635414+00:00
+
+The optional shared exporter separates reused input, evaluated input and final slot residency, retains unavailable values and checks every preserved wire response against complete trajectory custody.87 tests pass with95% new-module statement coverage; base/harness/lint pass. The exact qualified round5 family yields1,009 measured contacts,83.50% input reuse (Solver62.65%, Reviewer96.82%, Planner94.90%). These are descriptive source measurements, not scheduling acceleration or quality evidence. [Scope and proof](../readiness/2026-10-03-node-cache-cost-v1/README.md); [custody](../receipts/continuation/2026-10-03-node-cache-cost-proof.json).
+
+No request, frozen worker, server/cache setting, scheduler, score, READ row or optimizer input changed. Node-specific affinity remains prospective and requires capacity/structural proof. Root recorded the round6 bound failure separately: L61 spent invalid, remaining three untouched/held. Next proposal protocol work is offline. Keep the SLURP heartbeat PAUSED and10-second resource recorder unchanged. Root227 remains bounded before8x400; carrier holds and blind isolation remain.
+
 ## Round6 failure closed; three untouched slots HELD, 2026-10-03T09:01:02.543288+00:00
 
 Root227 closes L-6-1 as spent invalid with complete8478/151 metering and preserves all tool-only source streams. The archive import records the empty proposal-text concatenation as invalid, never no-change. [Root disposition](../receipts/continuation/2026-10-03-round6-proposer-root-disposition.json). B-6-1/L-6-2/B-6-2 remain unspent and HELD; do not resume them into the known continuation limitation. No GPU dispatch or heartbeat restart.
@@ -791,7 +797,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T09:01:02.543288+00:00
+Last refreshed: 2026-10-03T09:04:15.635414+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
