@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Seed before-speech structural proof complete, 2026-10-03T13:09:09.790251+00:00
+
+The single4-row worker completed normally at2026-10-03T13:07:17Z on immutable fe7682ca4. [Complete structural custody](../receipts/continuation/2026-10-03-context-layout-structural-complete.json) verifies25 original input/control/ORG/body/FIT layout joins,100 tokenizer endpoints,7 valid Reviewer handoffs visible to Planner and4 Omni terminal deliveries. Every original request was re-rendered offline through the frozen shared transport and matched its original FIT body hash;zero additional contacts and zero scoring.
+
+Windows task exited0,all owned worker/driver PIDs exited,leases released,STOP absent and source clean. Minimum sampled running memory16.115 GiB. Numeric node costs are retained;explicit original episode wall boundaries are absent,so wall time is unavailable rather than inferred by summing contacts. Attempts intentionally remain OPENED with COMPLETED generation and a prepared score specification;never score/reseal/retry them. No task-quality read,efficacy/cache-improvement claim or optimizer export. Root review precedes any next panel;ROUND8 learning HELD,heartbeat PAUSED.
+
 ## Seed before-speech structural worker launched, 2026-10-03T13:05:10.332598+00:00
 
 Windows SAEA-Batch-Driver entered once at2026-10-03T13:04:19Z with driver PID501371 and independent frozen fe7682ca46f852875a9a4192ed011be4c6318201. [Launch custody](../receipts/continuation/2026-10-03-context-layout-structural-launch.json) pins all actual registration/runtime/warm/layout checks,normal completed-control archive and live serving/resource identity. Startup observed17.905 GiB;shared guard enforces12.5/8. One existing four-row worker only,maximum52 generation/208 FIT endpoints,zero official scoring. Completion remains pending.
@@ -1058,7 +1064,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T13:05:10.332598+00:00
+Last refreshed: 2026-10-03T13:09:09.790251+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

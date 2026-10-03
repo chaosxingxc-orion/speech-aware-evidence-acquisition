@@ -1,0 +1,73 @@
+{
+  "actual_request_fit_receipts": 25,
+  "at_utc": "2026-10-03T13:09:09.790251+00:00",
+  "attempt_evidence": [
+    {
+      "relpath": "attempts/SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1/attempt-slurp-native-stage3-context-layout-before-speech-smoke-4-v1-generation.json",
+      "sha256": "1e240b60d1d16d35c3424bc778e73faa572a48212207857edce924a165b756e9"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/original-fit-journal-accounting-v1.json",
+      "sha256": "79c8ffe676ca58a2e2096caff32e4951c6cd06dab329c377eb9a3650d1ec0bd6"
+    }
+  ],
+  "commit": "fe7682ca46f852875a9a4192ed011be4c6318201",
+  "cost_limit": "Numerical node fields retain exact coverage. Original episode start/end boundaries are absent; episode wall is unavailable,not summed contact time.",
+  "driver_completed_at": "2026-10-03T13:07:17Z",
+  "heartbeat": "PAUSED",
+  "intentional_lifecycle": "OPENED attempt; COMPLETED generation and one prepared score specification only. Never score,reseal or retry.",
+  "learning": "HELD",
+  "model_contacts": 25,
+  "next_panel_admitted": false,
+  "no_optimizer_export": true,
+  "no_task_quality_read": true,
+  "omni_terminal_deliveries": 4,
+  "original_layout_contacts_verified": 25,
+  "preserved": "All original request/response/wire bytes,ORG receipts,actual FIT records,normal completed controls and frozen sources",
+  "resource": {
+    "STOP_absent": true,
+    "all_owned_workers_exited": true,
+    "lease_absent": true,
+    "minimum_sampled_running_gib": 16.115299224853516,
+    "post_completion_windows_free_gib": 17.742904663085938,
+    "source_clean": true,
+    "startup_gib": 17.88577651977539
+  },
+  "rows": 4,
+  "schema": "saea-context-layout-structural-complete-v1",
+  "scorer_contacts": 0,
+  "source_evidence": [
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "b4c794c2cd75369bc80207ea1cddc4940acc7402d93dcc27fd2f251166087a06"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/structural-audit-v1.py",
+      "sha256": "8995cde4683bc09299c792143a4a6ad2e50bcbad80455a3d30e234bfa2fbf055"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/resources-and-node-cost-v1.json",
+      "sha256": "d55fd0c5fcd21d541e6a3b8d27e94f85b105bcd237c447714eab72682de4d343"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/resources-and-node-cost-v1.py",
+      "sha256": "f6b8320221e7162ec2210b098e3786a818990c0a716a4db54aed4fc9fd6539a6"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/windows-completion-v1.json",
+      "sha256": "3a81fee7b5f0450e33a56a00d9a1120673dfbd7bf7db74b736f749fba5c7bbe9"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/frozen-check-v1.json",
+      "sha256": "e213011b982da4df31d95fdc16d0e4ae5cc3a24837019724f01c906dc3118cad"
+    },
+    {
+      "relpath": "coordination/context-layout-structural-owner227-v1/closure-writer-failure-v1.json",
+      "sha256": "ee0ee0e3712887c9f7fc4198196a2aed0659b78c0c7f2088cf2f62c79c921492"
+    }
+  ],
+  "status": "COMPLETE structural proof; no scientific or efficacy read",
+  "tokenizer_endpoints": 100,
+  "valid_visible_reviewer_handoffs": 7,
+  "worker": "/home/chao/saea-worktrees/codex-context-layout-structural-v1"
+}

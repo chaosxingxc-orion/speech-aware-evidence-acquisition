@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Seed before-speech structural proof complete, 2026-10-03T13:09:09.790251+00:00
+
+The single4-row worker completed normally at2026-10-03T13:07:17Z on immutable fe7682ca4. [Complete structural custody](../receipts/continuation/2026-10-03-context-layout-structural-complete.json) verifies25 original input/control/ORG/body/FIT layout joins,100 tokenizer endpoints,7 valid Reviewer handoffs visible to Planner and4 Omni terminal deliveries. Every original request was re-rendered offline through the frozen shared transport and matched its original FIT body hash;zero additional contacts and zero scoring.
+
+Windows task exited0,all owned worker/driver PIDs exited,leases released,STOP absent and source clean. Minimum sampled running memory16.115 GiB. Numeric node costs are retained;explicit original episode wall boundaries are absent,so wall time is unavailable rather than inferred by summing contacts. Attempts intentionally remain OPENED with COMPLETED generation and a prepared score specification;never score/reseal/retry them. No task-quality read,efficacy/cache-improvement claim or optimizer export. Root review precedes any next panel;ROUND8 learning HELD,heartbeat PAUSED.
+
 ## Seed before-speech structural worker launched, 2026-10-03T13:05:10.332598+00:00
 
 Windows SAEA-Batch-Driver entered once at2026-10-03T13:04:19Z with driver PID501371 and independent frozen fe7682ca46f852875a9a4192ed011be4c6318201. [Launch custody](../receipts/continuation/2026-10-03-context-layout-structural-launch.json) pins all actual registration/runtime/warm/layout checks,normal completed-control archive and live serving/resource identity. Startup observed17.905 GiB;shared guard enforces12.5/8. One existing four-row worker only,maximum52 generation/208 FIT endpoints,zero official scoring. Completion remains pending.
