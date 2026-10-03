@@ -1,0 +1,19 @@
+{
+  "acceptance": [
+    "Exactly4 complete trajectories within52 model contacts;actual per-request FIT within208 endpoints with full output reserve.",
+    "Every Reviewer handoff is valid and visible to Planner;all terminals retain original Omni custody.",
+    "Every model contact carries original ORG org_native_role_query_layout;verify its original input request bytes hash,actual FIT rendered-body hash,first user-part complete role-query hash and source control identity. Use the pending shared source-bound audit;generic role validity alone is insufficient.",
+    "Preserve raw Solver non-strict cases and all actual wire/request/response hashes without repairing outputs.",
+    "Memory/resource/lease and numeric node-cost metadata only;no answers or task quality."
+  ],
+  "expected_rows": 4,
+  "limitations": "Structural form proof only;no scoring,reseal,retry,learning or efficacy conclusion. No cache flush/save/restore/warmup.",
+  "run_ids": {
+    "fit": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-FIT-V1",
+    "generation": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1",
+    "read": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-context-layout-structural-analysis-draft-v1",
+  "score_jobs": 0,
+  "status": "DRAFT HELD; root generation admission pending"
+}

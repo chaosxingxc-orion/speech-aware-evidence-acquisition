@@ -1,0 +1,28 @@
+{
+  "accounting": {
+    "relpath": "coordination/context-layout-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "2cfe1bf3ef9c2b5e6632cbf52a58e3ebfc483a91c91dda28d45f9ef0f2f50ce9"
+  },
+  "additional_structural_reserve": 2048,
+  "at_utc": "2026-10-03T12:54:54.090754+00:00",
+  "commit": "becae023450f93e95f205d67dd0a4c0a829d849d",
+  "every_request_fits": true,
+  "generation_contacts": 0,
+  "lease_absent": true,
+  "measured_requests": 44,
+  "minimum_remaining_margin": 5546,
+  "next": "Prepare only separately registered four-row structural proof,with exact per-contact layout custody audit. No generation admission yet.",
+  "output_reserve": 512,
+  "quality_read": false,
+  "schema": "saea-context-layout-capacity-complete-v1",
+  "scorer_contacts": 0,
+  "slot_tokens": 24576,
+  "source_clean": true,
+  "stop_absent": true,
+  "total_endpoints": 297,
+  "windows_completion": {
+    "relpath": "coordination/context-layout-capacity-owner227-v1/windows-completion-v1.json",
+    "sha256": "ee94188d477494e222ddaaed0ef7ec839809118230483e43d1bd2cd0344fcca7"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-layout-capacity-v1"
+}

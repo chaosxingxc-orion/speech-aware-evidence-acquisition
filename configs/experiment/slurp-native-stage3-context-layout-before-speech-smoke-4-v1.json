@@ -5,7 +5,7 @@
         "check"
       ],
       "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-smoke-4-v1-generation",
-      "baseline_fragment": "slurp-native-stage3-context-layout-before-speech-v1",
+      "baseline_fragment": "slurp-native-stage3-context-layout-before-speech-smoke-4-v1",
       "cell_id": "slurp-native-stage3-context-layout-before-speech-smoke-4-v1",
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",

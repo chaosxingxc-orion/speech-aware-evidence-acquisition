@@ -1,0 +1,54 @@
+{
+  "at_utc": "2026-10-03T12:55:22.472369+00:00",
+  "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-smoke-4-v1-generation",
+  "baseline_derivation": {
+    "only_added_key": "native_contact_fit",
+    "own_baseline": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-layout-before-speech-smoke-4-v1.json",
+      "sha256": "63a7b34ace1220850d1894a78b3e54659cbf9d0d886990f5e459050fadccf741"
+    },
+    "parent": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-layout-before-speech-v1.json",
+      "sha256": "206f96b4d80eb24000b95045a48c02a629359658f449b9d090fde2474a6b2efe"
+    },
+    "parent_bytes_unchanged": true,
+    "role_binding_verified": {
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "role_sha256": {
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    }
+  },
+  "budget": {
+    "generation_contacts": 52,
+    "official_scoring": 0,
+    "rows": 4,
+    "tokenizer_endpoints": 208
+  },
+  "capacity_complete": {
+    "relpath": "docs/receipts/continuation/2026-10-03-context-layout-capacity-complete.json",
+    "sha256": "ac50e5fce91bf6c5813c4b1f31ef8dd8b1123e6ac56ddb4f293c9965836c8cce"
+  },
+  "conditions": [
+    "Graph,capacity frozenworker and all old sources remain immutable.",
+    "Current completed structural controls may be normally archived only after all jobs exited,STOP and lease absent;no failure control reconciliation.",
+    "Use existing Windows shared driver engineering kind and tested guarded worker12.5/8GiB.",
+    "Do not score the worker-only lifecycle;retain OPENED attempts and completed manifests intentionally.",
+    "ROUND8 learning and heartbeat stay HELD/PAUSED;no proposal allocation or candidate comparison."
+  ],
+  "draft_config_hash": "f4ead3d8834612cd9272634b8cae10283933724a326f1f88f662d9ee5074bbcf",
+  "draft_protocol_hash": "eb7ab47f2de611bcf5edaba4c07af226b7c58f7fab7478c4594c4ba052b8bcc6",
+  "experiment": "slurp-native-stage3-context-layout-before-speech-smoke-4-v1",
+  "fit_attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-smoke-4-fit-v1",
+  "fit_run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-FIT-V1",
+  "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1",
+  "schema": "saea-context-layout-structural-preparation-v1",
+  "source_stage": "Wait for root shared layout-custody audit integration;then exact admission,allowed check/prepare-supply/worker modes,own supply after final identity,independent frozen worker/final checks.",
+  "status": "HELD; no dispatch",
+  "supply_prepared": false
+}

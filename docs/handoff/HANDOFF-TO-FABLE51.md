@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Seed layout capacity complete; structural preparation held, 2026-10-03T12:55:22.472369+00:00
+
+The one admitted capacity task exited0 at12:53:31.978388Z on immutable becae0234. [Exact closure](../receipts/continuation/2026-10-03-context-layout-capacity-complete.json) independently accounts297 endpoints and44 measured requests,all fitting.24576-token slots retain full512 output plus2048 structural reserve;minimum remaining5546 tokens. Zero generation/scoring/quality read,owned lease released,PID exited,source clean and STOP absent. Windows17.513 GiB after completion.
+
+A [single4-row structural draft](../readiness/2026-10-03-context-layout-structural-entry-preparation-v1/README.md) is prepared HELD with an independent thin baseline/FIT identity,52/208 caps and no scoring. Wait for root source-bound per-contact layout audit plus exact generation admission,own supply and separate frozen checks. Generic role handoffs alone cannot establish placement:require original input/FIT body/first user-part role-query hashes and source control custody. No queue/service/cache change,automatic next stage,learning proposal or ROUND8 resumption. Heartbeat PAUSED.
+
 ## Seed before-speech capacity task launched, 2026-10-03T12:52:33.622617+00:00
 
 Windows SAEA-Context-Layout-Before-Speech-Capacity-Owner227 entered once at12:51:53.064234Z,PID498960,on immutable becae023450f93e95f205d67dd0a4c0a829d849d. [Launch custody](../receipts/continuation/2026-10-03-context-layout-capacity-launch.json) pins the passing frozen checks,exact registration194af56a...,durable wrapper and current live/resource evidence. One297-endpoint capacity only;zero generation or scoring. Completion and measured margins are pending.
