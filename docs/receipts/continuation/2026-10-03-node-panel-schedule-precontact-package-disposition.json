@@ -1,0 +1,16 @@
+{
+  "at_utc": "2026-10-03T20:32:11.340642+00:00",
+  "authority": "Root227 bounded engineering",
+  "changed_ledger_rows": 33,
+  "disposition": "Preserve old source and evidence;use a separate unambiguous package with identical cells,supplies,plans,budgets,queue and panel plan. New clean frozen verification required.",
+  "new_model_tokenizer_scorer_contacts": 0,
+  "observed_failure": "Offline frozen first-member registration refused two applicable analysis recipes in one package. No runtime dispatch or attempts occurred.",
+  "original_commit": "63bda5da5f962ed6b971702144456d820eb19bc5",
+  "original_gate": {
+    "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair1-primary-frozen-registration-v1.stdout.log",
+    "sha256": "eea0d9ad070ee85aac5f1c86f1ddd379fc18467fe89f1f095750d19f4dfe0072"
+  },
+  "original_worker": "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v1",
+  "runtime_controls_changed": false,
+  "schema": "saea-root-precontact-registration-disposition-v1"
+}

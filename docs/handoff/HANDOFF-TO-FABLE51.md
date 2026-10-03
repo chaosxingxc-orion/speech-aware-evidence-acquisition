@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Unambiguous schedule entry, 2026-10-03T20:32:11.340642+00:00
+
+The first offline frozen registration check refused two applicable recipe versions before any attempt/contact. Root227 preserves the old63bda5da5 worker and all bytes;[entry-v2](../readiness/2026-10-03-node-panel-schedule-n20-entry-v2/README.md) carries one recipe with identical16 members and32 plans. All33 ledger rows now resolve that package. [Disposition](../receipts/continuation/2026-10-03-node-panel-schedule-precontact-package-disposition.json). No runtime control changes. Fresh frozen checks precede dispatch;READ unsigned,learning HELD,heartbeat PAUSED.
+
+
 ## Whole-node schedule comparison prepared, 2026-10-03T20:28:35.571648+00:00
 
 Root227 registers two equal8x20 workloads: eight sequential trajectory flights and one independent-owner160-job node panel,320 trajectories over the same20 exposed UPDATE2 inputs. Two unchanged layouts each retain two primary/A-A pairs. Four model slots remain available to every node; fixed20-job CPU prefetch precedes the strict global next-node inference barrier. Each node keeps its own prompts. No new data/knowledge/proposal or learning. [Entry](../readiness/2026-10-03-node-panel-schedule-n20-entry-v1/README.md) uses registration-v2 and analysis-recipe-v2;v1 bytes are retained.16 own supply outputs and actual role hashes match their existing basis. Capacity transfers bind both measured legal branch envelopes and unchanged request/scheduler sources;actual-request FIT remains mandatory.

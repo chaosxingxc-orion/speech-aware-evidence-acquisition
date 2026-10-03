@@ -1,0 +1,1786 @@
+{
+  "actual_fit_endpoint_cap": 16640,
+  "admission": {
+    "relpath": "coordination/node-panel-schedule-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "f2de3e40b20b8e7f9a8ef2331da7eeac7d1105afc8e0edca36dcc1eeefa972bd"
+  },
+  "analysis": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/analysis-recipe-v1.json",
+    "sha256": "f760e5a47d0af645792f95e4ba2c649191fca49f28cb537cfde6aeb86e95d368"
+  },
+  "at_utc": "2026-10-03T19:56:05.777619+00:00",
+  "capacity_transfer": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/capacity-transfer-v1.json",
+    "sha256": "25558705adeed676b7ae545fc280739bada9d0abf26fc880a34b2326a608324d"
+  },
+  "complete_family": [
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1"
+  ],
+  "generation_contact_cap": 4160,
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair1-primary-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair1-primary-composition-v1.json",
+        "sha256": "f908845bba9943a9be5b087149a7404ee8ebcf69312c17eee5c8da1f27e8c191"
+      },
+      "config_hash": "3911197194301926bee02e88839272c56961aa194538e23bca4346c69abbf235",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair1-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-trajectory-pair1-primary",
+      "layout": "legacy",
+      "protocol_hash": "db9708f982b291d26fce5c1abea8ca51448ba2f412d0991f9c85a904d51fc46d",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "b7c1574130c9c1398c90c1008cb5110dfdc9eb6070368a4f4804c00295f2fb75"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair1-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair1-aa-composition-v1.json",
+        "sha256": "c6fcf07c4a2792b9c66e8b316cd7bb83d218495ff7a64003a16c70c62e642591"
+      },
+      "config_hash": "49a91c21c500695e29a0ac14ca700020d22938493c33ce242d8e5d73c79465c5",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair1-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-trajectory-pair1-aa",
+      "layout": "legacy",
+      "protocol_hash": "a95f7dc40e7c796eb646de4f1247687e4d5b608f6f0d6504b258c3f6cd78f448",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1/phase-supply-v1.json",
+        "sha256": "f57da8b66996433c3dcb9bb86bb475a3713452b876fc8849c976463e938d5404"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-primary-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair2-primary-composition-v1.json",
+        "sha256": "2477fc79919af9a0339231f89c48878bca768de6c4f67f72ae88b1eed9caa9bb"
+      },
+      "config_hash": "9c7410189a1097640ea67fcf1c209894f990319993ddc29e9fa9abcf8dcba5fb",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-trajectory-pair2-primary",
+      "layout": "legacy",
+      "protocol_hash": "74fccf002d5ada66df6581c857e147707cb70140b6c46a66694f510a8f2bbc87",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "525d91ed3a0637d9470a02342717d6ab9314c0a454c32be98bdaf38624a462f8"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-trajectory-pair2-aa-composition-v1.json",
+        "sha256": "5dd552829a9a767b47f95cf51a8041da4c9ca91ff5bb083dace20214714322f4"
+      },
+      "config_hash": "87f98d39c168f7740a1eb647853ae4471e085329c88de0deda46db9803d16f2c",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-trajectory-pair2-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-trajectory-pair2-aa",
+      "layout": "legacy",
+      "protocol_hash": "21db6b6aebe9a5378bffacb19c6748ad8c8ff7ed87d458c30ff1808f0925e731",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1/phase-supply-v1.json",
+        "sha256": "ac05d8efdfbdabdb9548740e7d1e76a8e52cb9e79d31e2e94c90bcf82cbed494"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair1-primary-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair1-primary-composition-v1.json",
+        "sha256": "986bc314dfd6ca13b707409eb8bf7883cc46872054abc77d3b59364ed5b7cad2"
+      },
+      "config_hash": "397d90991e91c45e079c3918d956b82fb773a149110d8fb7f2873f3a457a2c54",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair1-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-trajectory-pair1-primary",
+      "layout": "before-speech",
+      "protocol_hash": "bb2413be136f1d3849b8359dbd43b739a2a518fb6ff5cb6db36a5afb178808c1",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "81bd9d3693d9a2506a764aaf538c5e10682ecee6aa92561bfc18690fab3cfebc"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair1-aa-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair1-aa-composition-v1.json",
+        "sha256": "b3be2c11547f49f172601f1cb860af12b000274481b875223fdc862d01431e8c"
+      },
+      "config_hash": "c945a412236bd99253232b867b0e0b223409a102d0682ba3d90a89b28c988414",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair1-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-trajectory-pair1-aa",
+      "layout": "before-speech",
+      "protocol_hash": "e389f9d87d10f23c564ae72beb6803c3aa336b54f7b7956786f01de22fb73f60",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1/phase-supply-v1.json",
+        "sha256": "4d9232c756470ea72da0ecf76bf1128766b1bacfe0461193e5c800f89804186b"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair2-primary-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair2-primary-composition-v1.json",
+        "sha256": "5df019c056e06c52ea6814cd65fb5e19fa095420bf4d4f6e2ad43cfeb16545c4"
+      },
+      "config_hash": "3f3a95778d2edd8ab9883b0e5f5ab1a2457ed332ff3bd0d622357f7d64aee669",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair2-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-trajectory-pair2-primary",
+      "layout": "before-speech",
+      "protocol_hash": "0407ff3f727942feb85f3bf9fdb21da33eeb4732ff17deee9d8906cc10cfaed2",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "18cba283a9e7b82f9362af8f2bf104887423008a041f48386310fc3d9e1778b7"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair2-aa-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-trajectory-pair2-aa-composition-v1.json",
+        "sha256": "de00bab0f73a7900b85ffe0897049ed2c1711cb5f0bc1e37803e13c3a1e1c431"
+      },
+      "config_hash": "70f5ac900af904635cf872d8ec6a37ac6ea7a8e3b2cbf18e903145102066312e",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-trajectory-pair2-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-trajectory-pair2-aa",
+      "layout": "before-speech",
+      "protocol_hash": "65833262b7abb7c2f7e02eaddb8cbaa81179e54eb6b067f88db83db3b6882df6",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+      "schedule": "trajectory",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1/phase-supply-v1.json",
+        "sha256": "b0dc2018472425123acca76095a95a637edb2bdc8c2b306fe16125928d7ce5c7"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair1-primary-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair1-primary-composition-v1.json",
+        "sha256": "a97833d5e186b88ed477945435573bc2311e35a3cd1bdae7e8899fa5c54fd47d"
+      },
+      "config_hash": "8a20a7ae0b9cb69d357b2023019b8eef3e14ce9ddbea0f291127b74c4efd4559",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair1-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-panel-pair1-primary",
+      "layout": "legacy",
+      "protocol_hash": "f148af2cff1de37c52d7c9972033a865d81a75bc759892283b7dd9d8d9f9cd58",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "1db0492086b1f43bb7da40e641ef36b9b52e130abd1c99b1d1566ca960927baf"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair1-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair1-aa-composition-v1.json",
+        "sha256": "01801389f952a27788565729bd40a066a85a715321a16c42662cac15c805a6d0"
+      },
+      "config_hash": "cf026e0a23773bd5c5b8e7c531b8380a6991c7e4ea605fda5d5b1316f0d70f16",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair1-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-panel-pair1-aa",
+      "layout": "legacy",
+      "protocol_hash": "a516432536fc05b04e2ad24ab5ba25fb2ba151b1783ab8c0f752cdd053e09fa9",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1/phase-supply-v1.json",
+        "sha256": "af211a8a445bd1fe328bf0765d2027c94ffcad092d23441c580cb1399f4688bd"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair2-primary-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair2-primary-composition-v1.json",
+        "sha256": "cbf04ed35123841abc72bed7369fa7a6c5ae4026f38dc79c5b8229445b432b04"
+      },
+      "config_hash": "834efa35462f7d4940dc468d88d676d2adac95e35939617ec32e0732d116855e",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair2-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-panel-pair2-primary",
+      "layout": "legacy",
+      "protocol_hash": "1866b17d0d3a52226c58ae2f62bc759901bf27268bc03e3b7a3f8a44133243cf",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "68ab8abfb806518a64feb5e72bb4f1ce6ee09341176601f09abc36cef946e5ea"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair2-aa-generation-v1",
+      "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/legacy-panel-pair2-aa-composition-v1.json",
+        "sha256": "b34e0750d3a68ca1f2f66a26fb36e3ba1c344a6ba316c42e4542b7799535f188"
+      },
+      "config_hash": "b6a90c09be8ba377c391254a21941c6fbdcab23e1752afb8d9fbde236ae57fad",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-legacy-panel-pair2-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "legacy-panel-pair2-aa",
+      "layout": "legacy",
+      "protocol_hash": "0c6cd9c45874f4d59366b1fff9533d8517a689cf955755c7766905aac0149767",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1/phase-supply-v1.json",
+        "sha256": "2da9dca2a37bf1e129326d6df1a4b9415de5fd714f27c2e98326376cfd7a33d4"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair1-primary-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair1-primary-composition-v1.json",
+        "sha256": "6aa47a50c38a0d4d2521a3ede3f906b352ff3853e8f23472d545db349a460050"
+      },
+      "config_hash": "46ee24c720b7cebca055e5ca7f0ac2b3e94c8bf45665b2036d79b5e5202d30ee",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair1-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-panel-pair1-primary",
+      "layout": "before-speech",
+      "protocol_hash": "4a5d9798baaca89149b5225ce6194cd3a0412fc7dc1c6e7311399ec91a206984",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "b1af2a7c1a931dc43967d66b2eabc87fb1fb4b0dc144f1e59bd0c0987f67754d"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair1-aa-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair1-aa-composition-v1.json",
+        "sha256": "04adeb966b9ab03434699cc8bd323ff710bc88c0026cd44ad03ae31185e69ceb"
+      },
+      "config_hash": "431dce014cf4b72e4dd834035b3a3eef174d4755d30a7526cbf323c76a9673a0",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair1-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-panel-pair1-aa",
+      "layout": "before-speech",
+      "protocol_hash": "2cc773cc52295b2c8cde3e76acb01fcc7a5c2915c38e2583c17880b263bcd1ae",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1/phase-supply-v1.json",
+        "sha256": "8a4846a7d500ba775b17060fff63cd4f63b94a280c52829e760cde0c8e8e6edf"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair2-primary-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair2-primary-composition-v1.json",
+        "sha256": "89b4d1cd375e6b4a2163bd21c4a7fe1ba124504df075f283a3d97857057e74e7"
+      },
+      "config_hash": "9b188f9618c47476489c462a6546188d5556bb5dd65ee8fcb5211b058a8dd1a4",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair2-primary-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-panel-pair2-primary",
+      "layout": "before-speech",
+      "protocol_hash": "f40b9339d59adfa121534884faaf16d149c24fd3f3f608cefb051ca753f9ec84",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1/phase-supply-v1.json",
+        "sha256": "9fe6bdd45a14fb5f952c815520a335cd47cfc36e401bcd8fc12a8e4e03f50274"
+      }
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair2-aa-generation-v1",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "composition": {
+        "relpath": "coordination/node-panel-schedule-n20-owner227-v1/before-speech-panel-pair2-aa-composition-v1.json",
+        "sha256": "8cf07f09231d789222b2efeb9494c0d58c00df976a00ae37b265b5ef54264635"
+      },
+      "config_hash": "07471a307f00c54d3410c736a2909a2ccd9dc7dbab2331b41f06c92044891258",
+      "experiment": "slurp-native-stage3-node-panel-schedule-n20-before-speech-panel-pair2-aa-v1",
+      "job_keys": [
+        [
+          "slurp:train:000081:audio-1501753218-headset",
+          null
+        ],
+        [
+          "slurp:train:000244:audio-1497883990-headset",
+          null
+        ],
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:004087:audio-1490199961",
+          null
+        ],
+        [
+          "slurp:train:004499:audio--1504194378-headset",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:006032:audio--1504195204",
+          null
+        ],
+        [
+          "slurp:train:009411:audio-1497030307-headset",
+          null
+        ],
+        [
+          "slurp:train:010006:audio-1499693788-headset",
+          null
+        ],
+        [
+          "slurp:train:010065:audio-1501756518",
+          null
+        ],
+        [
+          "slurp:train:010537:audio-1490183278",
+          null
+        ],
+        [
+          "slurp:train:011479:audio-1502216306-headset",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ],
+        [
+          "slurp:train:013560:audio-1490291477-headset",
+          null
+        ],
+        [
+          "slurp:train:013565:audio-1501765573-headset",
+          null
+        ],
+        [
+          "slurp:train:014610:audio-1502218659-headset",
+          null
+        ],
+        [
+          "slurp:train:014741:audio-1497882505",
+          null
+        ],
+        [
+          "slurp:train:015179:audio-1498569151-headset",
+          null
+        ],
+        [
+          "slurp:train:016836:audio-1490705489-headset",
+          null
+        ]
+      ],
+      "label": "before-speech-panel-pair2-aa",
+      "layout": "before-speech",
+      "protocol_hash": "733ad67ca9ce302c0c61e71fcfc95949df374bcc6c32494f50c3c0073b7b8566",
+      "replicate_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+      "role_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1",
+      "schedule": "panel",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1/phase-supply-v1.json",
+        "sha256": "3ef23f347c429e07af30cd481da63ea8ee1fc7e0f3966df2490e5734a6edc24c"
+      }
+    }
+  ],
+  "official_complete_scores": 16,
+  "panel_plan": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/panel-plan-v1.json",
+    "sha256": "62ecd0b877d1277ffd3bac4909a9ea5c14556dee088551aff68082e6804fca1e"
+  },
+  "queue": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/queue-v1.json",
+    "sha256": "72c3854eefac1abf20af7152690c85bc1bb9a0e5e98940f3a290f6dd3c533435"
+  },
+  "read_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1",
+  "read_status": "UNSIGNED",
+  "rows_per_member": 20,
+  "schema": "saea-node-panel-schedule-n20-registration-v1",
+  "source_freeze": "Separate clean worker and final checks required",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v1/registration-v2.json",
+    "sha256": "10429e77fcf28d00ec729ad58402c4b61957312ba18369a773bcfbd9afe10487"
+  },
+  "trajectory_cap": 320
+}
