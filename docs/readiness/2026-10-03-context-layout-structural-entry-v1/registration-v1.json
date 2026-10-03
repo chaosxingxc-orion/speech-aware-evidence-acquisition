@@ -1,0 +1,43 @@
+{
+  "admission": {
+    "relpath": "coordination/context-layout-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "209fd0fdc72238c7b1667d386a268683502b7ad5204d081d67a2e48c34d2145a"
+  },
+  "analysis_recipe": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-structural-entry-v1/analysis-recipe-v1.json",
+    "sha256": "abb3473301eb8947e5106e849f7d7305e2bdd35e1b1f430bb0a5744b543993de"
+  },
+  "at_utc": "2026-10-03T13:01:19.973309+00:00",
+  "cache_state": "Inherited uncontrolled warm history; no flush/save/restore/warmup",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-smoke-4-v1-generation",
+      "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+      "config_hash": "3d67c044fef1d1f29d2efa629aa72406af1782a171bbdf247aa2f9afe81c417c",
+      "experiment": "slurp-native-stage3-context-layout-before-speech-smoke-4-v1",
+      "label": "seed-before-speech",
+      "protocol_hash": "e644f07e0c169f5c80ba54b5ec30f14fcab8d760b6f17b478719f457c4f10ff6",
+      "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "154310628f5652826eaccd524a8f0363ee90b875fa39da97f18148ea5409271f"
+      }
+    }
+  ],
+  "queue": {
+    "relpath": "docs/readiness/2026-10-03-context-layout-structural-entry-v1/queue-v1.json",
+    "sha256": "0cd651bc13881a5d64f551eee86548ebcc4075075bb982bf568e5549c493adad"
+  },
+  "resource_contract": {
+    "guard_mode": "worker with existing lease",
+    "running_gib": 8,
+    "stable_samples": 3,
+    "startup_gib": 12.5,
+    "wait_seconds": 600
+  },
+  "schema": "saea-context-layout-structural-registration-v1",
+  "score_jobs": 0,
+  "source_freeze": "Pending separate clean frozen worker and actual checks"
+}

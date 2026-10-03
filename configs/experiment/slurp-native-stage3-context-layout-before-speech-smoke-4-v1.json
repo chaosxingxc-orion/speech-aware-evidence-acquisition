@@ -2,7 +2,9 @@
   "cells": [
     {
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "prepare-supply",
+        "worker"
       ],
       "attempt_id": "attempt-slurp-native-stage3-context-layout-before-speech-smoke-4-v1-generation",
       "baseline_fragment": "slurp-native-stage3-context-layout-before-speech-smoke-4-v1",
@@ -11,8 +13,22 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "Prospective engineering-first context layout proof; exact admission, exposure, final source and own supply remain pending. No dispatch.",
-        "requirements": [],
-        "state": "held"
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-context-layout-structural-owner227-v1",
+            "relpath": "coordination/context-layout-structural-owner227-v1/root-admission-v1.json",
+            "sha256": "209fd0fdc72238c7b1667d386a268683502b7ad5204d081d67a2e48c34d2145a",
+            "reason": "Decision slurp-context-layout-structural-owner227-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "154310628f5652826eaccd524a8f0363ee90b875fa39da97f18148ea5409271f",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1",
       "system_text_policy_binding": {

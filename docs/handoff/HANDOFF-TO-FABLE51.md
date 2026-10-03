@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Seed layout structural entry registered, 2026-10-03T13:02:04.081242+00:00
+
+The exact root-admitted four-row before-speech worker now has independent generation/FIT plans,structural-only READ and a fresh own supply prepared after final check/prepare-supply/worker stages. [Registered entry](../readiness/2026-10-03-context-layout-structural-entry-v1/README.md) preserves seed role bytes,current400 assets,trajectory routing and cache settings. Maximum52 generation/208 actual FIT endpoints,zero scoring. Flight registration,engineering-base and harness-admission pass with zero contacts.
+
+Clean separate frozen checks and current12.5/8 GiB resource/process checks precede one Windows shared-driver launch. Require original per-contact input/body/FIT/control/layout byte proof through the frozen renderer and shared audit,valid Reviewer handoffs and Omni custody. Numeric node/episode cost only;explicit episode wall time is unavailable unless original boundaries exist. No learning,quality,retry,cache action or further panel. ROUND8 remains HELD;heartbeat PAUSED.
+
 ## Seed layout structural proof admitted, 2026-10-03T12:58:45.247921+00:00
 
 Root independently verified the completed capacity accounting and its six source hashes,297 endpoint entries and zero generation/scoring. [Exact structural admission](../receipts/continuation/2026-10-03-context-layout-structural-root-admission.json) permits one separate four-row seed before-speech worker,maximum52 generation/208 FIT endpoints,zero scoring,only after fresh own supply,exact precontact registration,clean frozen checks and a normal completed-control transition. Keep all role bytes,knowledge,current400 assets,trajectory routing and cache settings fixed.

@@ -1,0 +1,32 @@
+{
+  "acceptance": [
+    "Exactly4 complete trajectories within52 model contacts;actual per-request FIT within208 endpoints with full output reserve.",
+    "Every Reviewer handoff is valid and visible to Planner;all terminals retain original Omni custody.",
+    "Every contact must pass verify_role_query_layout_receipt with original input bytes,actual normal frozen renderer body,recorded ORG receipt and original per-contact FIT body hash; enforce complete one-to-one coverage.",
+    "Preserve raw Solver non-strict cases and all actual wire/request/response hashes without repairing outputs.",
+    "Memory/resource/lease and numeric node-cost metadata only;no answers or task quality."
+  ],
+  "allowed_read": "Role/control/FIT/layout/Omni custody and numerical node/episode costs only",
+  "expected_rows": 4,
+  "layout_audit": {
+    "coverage": "Every admitted contact exactly once; original ORG receipt retained",
+    "helper": "analysis.system_wire_context.verify_role_query_layout_receipt",
+    "original_inputs": true,
+    "original_per_contact_fit_body_hash": true,
+    "required": "Original input bytes/source/control,complete role query first at user authority,body and original FIT identity",
+    "rerender": "Frozen normal shared transport with no POST",
+    "source": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
+      "sha256": "2f5b0ce2097d7352fc3cfebac59c3f0425cec3a9f39988fb10a658d662b72cbb"
+    }
+  },
+  "limitations": "Structural form proof only;no scoring,reseal,retry,learning or efficacy conclusion. No cache flush/save/restore/warmup.",
+  "run_ids": {
+    "fit": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-FIT-V1",
+    "generation": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-V1",
+    "read": "SAEA-SLURP-CONTEXT-LAYOUT-BEFORE-SPEECH-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-context-layout-structural-analysis-v1",
+  "score_jobs": 0,
+  "status": "ROOT ADMITTED structural-only; no task-quality read"
+}
