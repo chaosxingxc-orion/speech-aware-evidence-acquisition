@@ -503,3 +503,12 @@ Root proposes one named recovery after the comparison seed was mistakenly bound 
 ## Decision225 approved and offline scaling preparation,2026-10-03
 
 The human explicitly approved225 in this conversation. Complete English translation: "Decision225: agreed. In parallel, prepare the data slices and engineering base for8x50,8x100 and8x200." The earlier pending entry is historical. Execute the exact proposed corrected-seed capacity, four-row engineering and four-member20 recovery on the same current400. Preserve old failed-family artifacts and all spent proposal allocations. Prepare three nested roster/configuration packages concurrently offline; preparation itself creates no proposal or larger-panel GPU authority. Root reviews each complete stage before the next stage under223/224. See [approved exact authority](../receipts/owner/2026-10-03-decision225-seed-binding-recovery-approved.json). Any further recovery failure stops; no automatic repeat.
+
+
+## Decisions226 and227 approved: autonomous engineering before8x400
+
+Recorded 2026-10-03T06:54:07.419264+00:00. Complete English translation of the direct human message: "Agreed. We are still consolidating the engineering base, until the system works end to end and system-level benefit and learning capability are demonstrated. I authorize you to make decisions autonomously until an8x400 experiment is needed."
+
+226 approves the prepared one-entry continuation for the same four unspent round5 slots, with unchanged inputs/model/budgets and all original failed evidence preserved. See [exact226 authority](../receipts/owner/2026-10-03-decision226-precontact-continuation-approved.json).
+
+227 authorizes root decisions and execution for the current SLURP engineering/learning loop through reviewed20/50/100/200 panels. Root may dispose of an in-scope engineering incident after diagnosis, prospective registration and required proof without asking the human again. A failed job stops; no silent retry loop, spent-slot replacement, incomplete scientific read or frozen-byte mutation is allowed. Return to the human before8x400; do not evade that boundary through campaign splitting. Preserve fixed-pool exposure, L/B isolation, official scoring, Omni authority, zero paid API and all other-carrier holds. The heartbeat remains read-only. See [exact227 scope](../receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json).

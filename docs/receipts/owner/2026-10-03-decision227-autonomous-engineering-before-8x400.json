@@ -1,0 +1,34 @@
+{
+  "schema": "saea-owner-decision-supplement-v1",
+  "decision_id": 227,
+  "status": "approved",
+  "recorded_at_utc": "2026-10-03T06:54:07.419264+00:00",
+  "source": "Direct human message in ChatGPT thread 01a084c2-d062-7053-872f-0abf26aa6e06, immediately following the status explanation and recommendation to approve226. The original message remains in that conversation.",
+  "owner_statement_english": "Agreed. We are still consolidating the engineering base, until the system works end to end and system-level benefit and learning capability are demonstrated. I authorize you to make decisions autonomously until an8x400 experiment is needed.",
+  "objective": "Consolidate end-to-end execution and evaluate complete-system benefit and feedback-learning capability. Positive outcomes remain empirical, not guaranteed.",
+  "scope": "ChatGPT root may decide and execute the next SLURP engineering corrections, prospective bounded proposal iterations, incident dispositions and complete small-panel experiments without returning each routine engineering decision to the human. Use the current UPDATE2 400-input pool, existing knowledge and shared execution base.",
+  "authorized_rows_per_member": [
+    4,
+    20,
+    50,
+    100,
+    200
+  ],
+  "scale_boundary": "Return to the human before admitting or launching the8x400 experiment. Do not evade this boundary by splitting a400-input comparison into nominally smaller campaigns.",
+  "root_incident_authority": "A failed entry stops. Root diagnoses and records an evidence-backed bounded disposition, registers new immutable identities when required, proves changes offline and with structural engineering as applicable, then coordinates one-shot execution. Earlier blanket requirements for a new human ruling on each in-scope engineering incident are superseded. Frozen failed evidence, attempt accounting and the no-silent-retry rule remain.",
+  "proposal_rules": "Register each bounded allocation before contacts; retain spent invalid/no-change outcomes; preserve exact model identity, branch isolation, metering and declared bounds. No hidden replacement or outcome-driven unbounded sampling.",
+  "scientific_rules": "Require complete admitted families, verified seals, unique official scores, exact root READ and full success/failure/unchanged/damage evidence. Learning on the reused pool retains cumulative exposure and is not independent validation. Keep A/A and quality/intent/reliability/cost views; no guaranteed benefit or premature learning-superiority claim.",
+  "runtime_rules": "One generating experiment and one official scorer; Windows-owned WSL background execution; English model inputs and documents; fixed Omni answering authority and weights, data/scorer/tool permissions;8GiB running and12.5GiB startup floors.",
+  "outside_scope": [
+    "Paid API spend",
+    "Milestone or test feedback for optimization",
+    "Runtime gold or an answer lookup library",
+    "Arbitrary model-generated execution-code evolution",
+    "Editing or silently rescoring frozen failed artifacts",
+    "Other coordinator sources, queues or services",
+    "Release of Audio2Tool/E21/P-SV-4 holds or E22 GPU admission",
+    "Paper-scale claims or publication"
+  ],
+  "monitoring": "The30-minute heartbeat remains read-only. Root autonomous decision authority does not grant the monitor dispatch/recovery/READ authority.",
+  "supersedes": "Conflicting pending226 and per-incident human-approval snapshots within this bounded SLURP work only; preserves exact historical receipts and unrelated holds."
+}

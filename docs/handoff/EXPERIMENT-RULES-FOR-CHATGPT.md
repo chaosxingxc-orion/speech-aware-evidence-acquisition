@@ -1,5 +1,9 @@
 # Experiment rules for the ChatGPT side
 
+## Owner227 autonomous engineering amendment,2026-10-03
+
+Root may now decide and execute bounded SLURP engineering corrections, incident dispositions and reviewed20/50/100/200 learning experiments without another human confirmation for each routine step. Return to the human before8x400. This supersedes the conflicting per-incident human-approval requirement in historical snapshots, not preservation, pre-registration, complete-family READ, budget/exposure, L/B isolation, official scoring or other-carrier holds. Failed jobs still stop for diagnosis and a recorded root disposition; never silently retry or replace spent slots. The heartbeat remains read-only. See [exact227 authority](../receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json).
+
 ## Current scoped owner amendments (2026-10-02)
 
 The later explicit rulings supersede the conflicting historical clauses below only in their stated scope. Owner222 permits complete small-panel L-only learning feedback after the exact family READ; it supersedes A4's blanket ban on policy updates for that learning sequence, not formal efficacy floors. Owner223 permits reviewed20/50/100/200/400 growth. Owner224 keeps that growth inside the same already prepared UPDATE2 400-input optimization pool; repeated TRAIN feedback/proposal/selection exposure is retained and labeled optimization, not independent evaluation. Do not silently discard provenance or disable runtime knowledge/gold and formal DEV/test isolation. Keep the current knowledge assets fixed for the next context/post-call repair cycle. Owner221 sets the explicit running Windows floor to8GiB and the current startup threshold to12.5GiB. Historical frozen receipts are unchanged.
