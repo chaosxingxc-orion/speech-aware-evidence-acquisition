@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Extra round4 proposer running, 2026-10-03T03:22:14.746771+00:00
+
+Windows task SAEA-System-Text-Proposer-Extra4-Owner223 started at2026-10-03T03:21:23.143668+00:00 on frozen `/home/chao/saea-worktrees/codex-system-text-proposer-extra4-v2` at268baff2be27352efbedee944524e2ca47e39a2b. The exact four-member preflight passed, live PID/cwd are verified and the first reserved model contact exists. [Launch custody](../receipts/continuation/2026-10-03-system-text-extra4-proposer-launch.json). Two L/two B opportunities are new registered allocations; all twelve older slots stay spent. Same GPT6 version and equal caps; existing217 subscription admission. L has its complete authorized owner220 projection and own history; B remains blind. No owner225/root/B report export.
+
+No local GPU generation or official scoring was dispatched. Larger prefixes and the next20 family remain HELD until proposal dispositions, exact policy preparation, FIT/engineering and full-family registration. The first extra4 checkout at8b090ff2e remains preserved and unlaunched: its inherited capacity references/self fingerprint were superseded offline before any credential use, reservation or model contact. The corrected preflight verifies the real transport constructor before credentials;102 targeted tests pass. No automatic proposer retry or replacement. All prior holds, resource floors and scientific-read boundaries remain.
+
 ## Extra proposal round4 prepared, 2026-10-03T03:12:30.926790+00:00
 
 Owner223/224 now has exactly four prospectively registered new slots in the existing archive; all twelve earlier slots remain spent. The same GPT6 version and budgets are pinned. All four isolated inputs/capsules are verified: L has131 artifacts and six prior L history entries; B has six frozen knowledge artifacts and no feedback/history/selection. Existing complete owner220 L-only feedback is reverified; no owner225/root/B report is exported. [Prepared protocol and custody](../readiness/2026-10-03-slurp-text-extra-round4-v1/README.md).
@@ -677,7 +683,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T02:49:00.134292+00:00
+Last refreshed: 2026-10-03T03:23:48.960390+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

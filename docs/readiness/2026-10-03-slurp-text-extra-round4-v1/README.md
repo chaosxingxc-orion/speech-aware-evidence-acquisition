@@ -1,5 +1,7 @@
 # Bounded extra text-policy proposal round4
 
+Current status: all four isolated capsules are prepared. The separately frozen v2 worker passed complete preflight and the Windows one-shot proposer task started at2026-10-03T03:21:23.143668+00:00. See [launch custody](../../receipts/continuation/2026-10-03-system-text-extra4-proposer-launch.json). No GPU experiment is launched by this task.
+
 Owner223 allows prospective bounded extra proposal allocations; owner224 keeps context/post-call optimization inside the same prepared400-input pool. Owner225 recovery and root READ are complete. Root remains at20 because consumption defects remain unresolved. This package registers exactly two L and two B proposal opportunities in the existing archive. It does not replace any of the twelve spent slots or promise a beneficial candidate.
 
 The pinned GPT6 version, subscription budget profile,32768 input/4096 output acceptance limits and four-contact ceiling per proposal stay identical across branches. Provider-enforced output caps remain unavailable under the approved217 disposition. Record actual tokens; reject unmetered/over-budget output and retain the spent allocation. No paid API or automatic retry.

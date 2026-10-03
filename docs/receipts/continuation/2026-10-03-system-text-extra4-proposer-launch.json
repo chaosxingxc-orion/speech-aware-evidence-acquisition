@@ -1,0 +1,39 @@
+{
+  "schema": "saea-system-text-proposer-launch-v1",
+  "recorded_at_utc": "2026-10-03T03:22:14.746771+00:00",
+  "status": "RUNNING",
+  "windows_task": "SAEA-System-Text-Proposer-Extra4-Owner223",
+  "started": {
+    "at_utc": "2026-10-03T03:21:23.143668+00:00",
+    "pid": 390191,
+    "registration_sha256": "81d4276e8cab8dd1cb1a14d1ee967774523552d3b69d2c81018ca4693fdf7351",
+    "retry_permitted": false
+  },
+  "source_root": "/home/chao/saea-worktrees/codex-system-text-proposer-extra4-v2",
+  "source_commit": "268baff2be27352efbedee944524e2ca47e39a2b",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra4-owner223-v1/registration.json",
+    "sha256": "81d4276e8cab8dd1cb1a14d1ee967774523552d3b69d2c81018ca4693fdf7351"
+  },
+  "preflight": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra4-owner223-v1/preflight.json",
+    "sha256": "8f1cdb8b788a741f82259f712df5f01d9d1a2316f5e5eb4f6f717f181b17dc9d"
+  },
+  "started_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217/execution-extra4-owner223-v1/started.json",
+    "sha256": "0f6573baa5ee5126778e13b8a2e63f648c7aa3d569b7b898672d231e095a132a"
+  },
+  "live_process_verified": true,
+  "live_cwd": "/home/chao/saea-worktrees/codex-system-text-proposer-extra4-v2",
+  "contact_receipts_observed": [
+    "contacts/B-4-1/001.json",
+    "contacts/B-4-1/002.json",
+    "contacts/L-4-1/001.json"
+  ],
+  "scope": "Exactly four new round4 text-policy proposal slots under owner223/224; same GPT6 version, existing approved217 subscription limits. All twelve prior slots stay spent. No GPU/scorer dispatch or runtime activation.",
+  "isolation": "L gets the fully qualified owner220 L-only projection and all earlier L proposal history; B gets the original corrected feedback-free seed and fixed knowledge. No owner225/root/B result export.",
+  "recovery": "No automatic retry or replacement; any transport failure stops this launcher.",
+  "new_local_gpu_contacts": 0,
+  "new_official_scorer_contacts": 0,
+  "remaining": "Finish four imports, review complete dispositions and compile only legal candidates. Admit exact next20 family separately before any GPU contact; prepared8x50/100/200 remain HELD."
+}
