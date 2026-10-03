@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Prefix engineering plan-envelope metadata correction
+
+Root found and preserved a registration metadata defect after structural completion: the global re-pin replacement mapped two trajectory plan declarations to the role envelope. Actual baseline and runtime pins remained correct, and both envelopes contain identical selection outputs. No task result changed. The new prelaunch check rejects this mismatch;94 tests pass. Future multi-member preparation uses the existing per-cell helper, then emits plans from final identities. [Exact evidence and disposition](../receipts/continuation/2026-10-03-prefix-supply-plan-metadata-disposition.json). Never edit or rerun the frozen completed engineering workers.
+
 ## Both prefix-routing structural proofs complete, 2026-10-03T10:20:11.849194+00:00
 
 The independent Windows driver epoch10:12:40Z completed10:16:35Z on frozen6d1748ab9. Both four-row members pass structural inspection: trajectory25 and role22 model contacts,47 actual-request FIT receipts and188 tokenizer endpoints; all13 Reviewer handoffs are valid and visible and all8 terminal deliveries retain Omni custody. All22 role-affinity requests carry the declared Perception0/Solver1/Reviewer2/Planner3 slot IDs. The preserved OpenAI response does not independently report the serving slot; do not invent that observation. [Root structural evidence](../receipts/continuation/2026-10-03-prefix-affinity-structural-complete.json); [launch and preserved normal transition](../receipts/continuation/2026-10-03-prefix-affinity-structural-launch.json).

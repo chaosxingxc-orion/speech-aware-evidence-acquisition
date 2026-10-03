@@ -213,6 +213,27 @@ def test_a_complete_registration_passes_both_modes(world: World) -> None:
     assert arm["package"] == f"docs/readiness/{PACKAGE}"
 
 
+@pytest.mark.parametrize("run_id", [RUN, FIT])
+@pytest.mark.parametrize("same_pin", [True, False])
+def test_registered_supply_pin_must_match_the_members_actual_baseline(world, run_id, same_pin):
+    world.build()
+    pin = {"relpath": "prepared/own/phase-supply-v1.json", "sha256": "a" * 64}
+    fragment = json.loads((world.repo / "configs/experiment" / f"{EXPERIMENT}.json").read_text())
+    baseline = world.repo / "configs/baseline" / (fragment["cells"][0]["baseline_fragment"] + ".json")
+    document = json.loads(baseline.read_text())
+    document["prepared_phase_supply"] = pin
+    _write(baseline, document)
+    plan = world.repo / "docs/readiness" / PACKAGE / "generation-plan-registered-v1.json"
+    if run_id == FIT:
+        plan = plan.with_name("fit-plan-registered-v1.json")
+    _write(plan, {"execution_plan": {"run_id": run_id},
+                  "prepared_phase_supply": pin if same_pin else {
+                      "relpath": "prepared/sibling/phase-supply-v1.json", "sha256": "b" * 64}})
+    result = world.run(cells=[EXPERIMENT])
+    assert ("registered-supply-binding" in _kinds(result)) is not same_pin
+    assert result["passed"] is same_pin
+
+
 def test_multi_cell_family_checks_each_members_own_fit_identity(world: World) -> None:
     del world.rows[SMOKE_FIT]
     world.build()

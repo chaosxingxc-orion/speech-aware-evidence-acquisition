@@ -1,0 +1,53 @@
+{
+  "affected_plan_metadata": [
+    {
+      "actual_runtime_baseline_pin": {
+        "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "17616b8da0e0dabf97a5ff5078a4900162d055d719827c900b504648f5eed6fb"
+      },
+      "declared": {
+        "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "679dbec641b712851ee39c09777c401a9f10fbed8c8e2defde7414395c4362b8"
+      },
+      "identical_prepared_output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "original_plan_sha256": "3697db32dc7e8b94173b42cd7f702b0a3f9548172141c31a2ca43b68b8b40b2a",
+      "plan": "docs/readiness/2026-10-03-slurp-prefix-affinity-engineering-v1/trajectory-smoke-4-generation-plan-registered-v1.json"
+    },
+    {
+      "actual_runtime_baseline_pin": {
+        "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "17616b8da0e0dabf97a5ff5078a4900162d055d719827c900b504648f5eed6fb"
+      },
+      "declared": {
+        "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "679dbec641b712851ee39c09777c401a9f10fbed8c8e2defde7414395c4362b8"
+      },
+      "identical_prepared_output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "original_plan_sha256": "b467fc29f199210cb4f4a622f55d3286e426512f29ab19331166eeec346fb351",
+      "plan": "docs/readiness/2026-10-03-slurp-prefix-affinity-engineering-v1/trajectory-smoke-4-fit-plan-registered-v1.json"
+    }
+  ],
+  "disposition": [
+    "Preserve every frozen plan, worker, output and prepared envelope. Never retry/reseal/score these engineering attempts.",
+    "Keep the structural routing observation with this explicit metadata limitation.",
+    "The prelaunch registration gate now rejects a declared plan supply pin that differs from the member baseline. Legacy absence retains behavior.",
+    "Prepare each future member through the existing per-cell artifact helper and write registered plans from final own-cell identities. Do not use a global shared-pin rewrite for a multi-member package."
+  ],
+  "finding": "The package re-pin utility used one global old-pin replacement map. Two cells began with the same seed envelope and produced different own envelopes, so the last mapping also rewrote the first cell plan metadata. Actual baseline/runtime supply pins stayed correct and selection output bytes are identical.",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "owner_decision": 227,
+  "recorded_at_utc": "2026-10-03T10:24:22.354325+00:00",
+  "runtime_scope": "The frozen actual preflights and flight receipts bind the own trajectory envelope; all generated request custody remains valid. No task-quality read or scoring occurred. This correction does not claim flawless registration metadata.",
+  "schema": "saea-root-prepared-envelope-metadata-disposition-v1",
+  "scientific_results_read": false,
+  "status": "PRESERVE-COMPLETED-ENGINEERING; CORRECT-PROSPECTIVE-PLAN-BINDING",
+  "tests": {
+    "before_fix": "Two mismatched generation/FIT plan cases failed to be refused; matching cases passed.",
+    "new_cases": 4,
+    "passed": 94,
+    "real_frozen_replay": "New gate reports the preserved trajectory mismatch as advisory for the already consumed historical attempt.",
+    "unit_suite": "tests/unit/test_flight_registration_check.py"
+  },
+  "worker_commit": "6d1748ab964a3741e7d8552f922ea79cc98d9314"
+}
