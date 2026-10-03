@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Fixed-policy cache scheduling panel prepared
+
+Root227 registered four new20 members in trajectory, role, role-A/A, trajectory-A/A order. All four registration gates pass; actual role/policy/tool/knowledge semantics and prepared selection outputs equal the existing CONTROL2 seed. Only native prefix-slot scheduling differs. [Preparation](../receipts/continuation/2026-10-03-prefix-affinity-n20-prepared.json) and [analysis contract](../readiness/2026-10-03-slurp-prefix-affinity-n20-v1/analysis-recipe-v1.json). Clean frozen runtime checks remain before launch. The initial zero-contact metadata refusal and superseding explicit FIT eligibility are preserved outside the worker.
+
+This80-trajectory comparison has no optimizer export and no automatic scale/adoption. Every member needs an independent verified seal and one unique official complete score, zero failures, then exact root READ. Keep affinity OFF in learning experiments, the heartbeat PAUSED and10-second telemetry active; return before8x400.
+
 ## Prefix engineering plan-envelope metadata correction
 
 Root found and preserved a registration metadata defect after structural completion: the global re-pin replacement mapped two trajectory plan declarations to the role envelope. Actual baseline and runtime pins remained correct, and both envelopes contain identical selection outputs. No task result changed. The new prelaunch check rejects this mismatch;94 tests pass. Future multi-member preparation uses the existing per-cell helper, then emits plans from final identities. [Exact evidence and disposition](../receipts/continuation/2026-10-03-prefix-supply-plan-metadata-disposition.json). Never edit or rerun the frozen completed engineering workers.
