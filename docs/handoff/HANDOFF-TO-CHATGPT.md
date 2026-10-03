@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Prefix-affinity capacity complete; two structural members admitted, 2026-10-03T10:06:32.031882+00:00
+
+Both separately registered capacities passed594 tokenizer endpoints and88 measured requests with5546 tokens minimum remaining after full reserves. Synthetic role routing matches the four declared slots; no generation/scorer or performance claim. [Capacity evidence](../receipts/continuation/2026-10-03-prefix-affinity-capacity-complete.json). Root227 admits exactly two four-row structural proofs with unchanged seed text, tools, knowledge and source assets. Their own supply envelopes preserve identical selection outputs; clean frozen preflights and serial driver transition remain before launch. [Preparation proof](../receipts/continuation/2026-10-03-prefix-affinity-structural-preparation.json). Never score, reseal or read quality from these structural workers.
+
+The failed successor1 proposal outcomes remain closed and preserved. Future typed contract and safe credential diagnostics are offline only; no new proposal allocation. Prefix affinity remains OFF in the learning comparison. Keep heartbeat PAUSED and10-second telemetry unchanged; human review before8x400.
+
+
 ## Separate prefix-affinity capacity launched; proposer failure closed, 2026-10-03T09:59:42.339404+00:00
 
 Two fixed-seed capacity proofs started through Windows SAEA-Prefix-Affinity-Capacity-Owner227 at09:58:53Z from frozen194edc87a. Both clean frozen preflights and exact registration pass. The maximum594 tokenizer endpoints compare the existing trajectory schedule and the explicit four-role slot map; no generation/scorer is admitted. Two four-row structural members remain HELD. [Launch custody](../receipts/continuation/2026-10-03-prefix-affinity-capacity-launch.json). No queue, STOP, serving geometry or active policy changed; no cache-performance claim.

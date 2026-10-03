@@ -1,6 +1,6 @@
 # Separate prefix-affinity capacity and structural proof
 
-Root227 admits two maximum-request capacity checks only. One uses the historical
+Both root227 maximum-request capacity checks are complete. One uses the historical
 trajectory schedule; the other assigns Perception, Solver, Reviewer and Planner
 to slots 0, 1, 2 and 3 respectively. Keep the resident service at four slots of
 24576 with full512 output reserve. Both use the same approved seed policy and
@@ -15,10 +15,10 @@ code now also refuses a graph whose prefix-slot map differs from the capacity
 configuration, before contacting any endpoint. Three new refusal tests and the
 existing capacity/flight-binding suite pass (36 tests).
 
-Two separate four-row structural generation identities are prepared but HELD.
-They require exact root admission after both capacities, their own immutable
-prepared supply envelopes, a clean frozen preflight and normal serial GPU
-sequencing. Their prospective total is eight trajectories, at most104 model
+Two separate four-row structural generation identities are now root-admitted.
+Their own immutable supply envelopes preserve the original selection outputs.
+Require a clean frozen preflight and normal serial GPU sequencing before launch.
+Their prospective total is eight trajectories, at most104 model
 contacts and416 actual FIT endpoints. No official scorer may run. Structural
 acceptance checks slot routing, role/tool handoffs, full-request FIT and native
 Omni terminal custody. Natural model responses need not exercise every optional

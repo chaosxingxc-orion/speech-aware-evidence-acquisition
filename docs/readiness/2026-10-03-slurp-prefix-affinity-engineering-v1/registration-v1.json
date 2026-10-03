@@ -65,14 +65,14 @@
         "baseline_fragment": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
         "carrier_lock_key": "slurp",
         "cell_id": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
-        "config_hash": "1392e7a22f9f6601be19a7a274b5d6a49d324fd4c4bd12c81525b4277ff7e36e",
+        "config_hash": "bf944f0234b1dd05b3b7f3d4037fc1a4d58c585fd824505ce8cf1ceffd3351f4",
         "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
         "experiment": "slurp-native-stage3-prefix-affinity-trajectory-smoke-4-v1",
         "has_perception_branch_group": false,
         "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
         "perception_branch_seed_pin": null,
         "prepared_phase_supply": null,
-        "protocol_hash": "97babb3a848376cda39e3cf1ddd1aaf0cd81fb001f518fc767a5ec98bb2ca1c3",
+        "protocol_hash": "f547b7860d2dd18c0a9e598e797fcd63fdd039011f3e7e7f4f7c0216733ef12d",
         "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1",
         "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
       },
@@ -140,14 +140,14 @@
         "baseline_fragment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
         "carrier_lock_key": "slurp",
         "cell_id": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
-        "config_hash": "d839d31762160627422c06e73f3fe50198bb2432bafa9d69c9755a3c8417d1a4",
+        "config_hash": "a59ba04a725c96d357cd151d908d3013fba3ada4f8f499e4243e8155212b76ab",
         "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
         "experiment": "slurp-native-stage3-prefix-affinity-role-smoke-4-v1",
         "has_perception_branch_group": false,
         "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
         "perception_branch_seed_pin": null,
         "prepared_phase_supply": null,
-        "protocol_hash": "78b52a10c0d50fc02b4158e786822c3705b4e1b43a5737a788d1b075ab69346e",
+        "protocol_hash": "3b02d66796fa95b38024f8629addbad16261a721b231f03209432f51892456c3",
         "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
         "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
       },
@@ -169,5 +169,5 @@
   },
   "schema": "saea-prefix-affinity-engineering-registration-v1",
   "scientific_or_optimizer_read": false,
-  "status": "Capacity admitted; structural generation HELD"
+  "status": "Capacity complete; two four-row structural proofs root-admitted pending clean frozen preflights"
 }

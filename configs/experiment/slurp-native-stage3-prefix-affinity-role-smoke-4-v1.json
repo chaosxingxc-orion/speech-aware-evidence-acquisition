@@ -12,9 +12,22 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Separate root capacity/structural admission is required; no scorer or quality read.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root227 admits exact four-row structural proof after both capacity proofs.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-prefix-affinity-structure-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-prefix-affinity-engineering-v1/structure-root-admission-v1.json",
+            "sha256": "c1d2b6b662eb0a3823c7bad332780a8ebcc9da6a96e4e60e3c738604c5fecefe"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "679dbec641b712851ee39c09777c401a9f10fbed8c8e2defde7414395c4362b8",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
       "system_text_policy_binding": {

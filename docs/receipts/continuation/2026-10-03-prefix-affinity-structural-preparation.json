@@ -1,0 +1,36 @@
+{
+  "at_utc": "2026-10-03T10:06:32.031882+00:00",
+  "capacity_complete": "docs/receipts/continuation/2026-10-03-prefix-affinity-capacity-complete.json",
+  "generation_contacts": 0,
+  "only_execution_factor": "native_prefix_slots; per-member FIT/prepared identity fields differ",
+  "preparation_refusal_preserved": {
+    "reason": "Unflown structural draft config hashes were stale after admission editing; refreshed exact derived identities before preparation. No contact or attempt.",
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/structure-repin.stderr.log",
+    "sha256": "cde9ee6a3549fba20d03a5be05523d2473d9b9089297d851544e91ac85e5c099"
+  },
+  "prepared_supplies": [
+    {
+      "mode": "trajectory",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "17616b8da0e0dabf97a5ff5078a4900162d055d719827c900b504648f5eed6fb"
+      }
+    },
+    {
+      "mode": "role",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "pin": {
+        "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "679dbec641b712851ee39c09777c401a9f10fbed8c8e2defde7414395c4362b8"
+      }
+    }
+  ],
+  "repin_receipt": {
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/structure-repin-v2.json",
+    "sha256": "aeb5545df983dbf291090a242b1280868c32ba236db423d51fe3b9f89618bfba"
+  },
+  "role_text_knowledge_tools_policy_equal": true,
+  "schema": "saea-prefix-affinity-structural-preparation-v1",
+  "scorer_contacts": 0
+}
