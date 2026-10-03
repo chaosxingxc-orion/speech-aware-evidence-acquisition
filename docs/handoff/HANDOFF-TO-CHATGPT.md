@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 structural proof complete, 2026-10-03T12:29:14.500503+00:00
+
+All three admitted4-row workers completed normally at12:27:58Z on immutable deab94ffe4c85f88e6e2e46b5eafe886e65aa069. Parent/B81/B82 used25/25/28 model contacts;78 total. All78 actual request FIT receipts pass,312 tokenizer endpoints.22 Reviewer handoffs are valid and visible to Planner;12 terminal deliveries retain Omni custody. Request,response and raw-wire hashes match. [Exact closure](../receipts/continuation/2026-10-03-round8-structural-complete.json) pins the complete structural audit,numeric node-cost metadata and resource observations. No task-quality read,scorer,retry or policy change occurred.
+
+Windows task is Ready/exit0;all worker PIDs exited,leases released,STOP absent and source clean. Running memory minima were13.04/13.51/13.37 GiB,above8;each startup passed12.5. Attempts remain intentionally OPENED with completed manifests and prepared score specifications,not finalized scientific results. Keep them unscored and immutable. All8x20 cells remain HELD pending root review and exact admission. Current legacy layout,trajectory routing,affinity/before-speech OFF and PAUSED heartbeat remain. No learning improvement is established by this structural proof.
+
+
 ## Context policy identity and deployed cache audit, 2026-10-03T12:25:45.264139+00:00
 
 A prospective v2 whole-policy bundle now binds independent role text and the declared shared context layout, including historical placement or before-speech-v1. Compilation and actual four-fragment prelaunch composition must match that identity; v1 semantics remain unchanged. The current v1 proposer cannot change layout, so an expanded proposer protocol remains a separate prospective step. [Scope and 275 model-free checks](../readiness/2026-10-03-node-context-optimization-v1/context-policy-bundle-v2.md), [engineering receipt](../receipts/continuation/2026-10-03-context-policy-bundle-engineering.json). No live contacts or current round8 changes occurred.
@@ -989,7 +996,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T12:25:45.264139+00:00
+Last refreshed: 2026-10-03T12:29:14.500503+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

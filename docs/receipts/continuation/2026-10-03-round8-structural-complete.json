@@ -1,0 +1,123 @@
+{
+  "STOP_present": false,
+  "at_utc": "2026-10-03T12:29:14.500503+00:00",
+  "audit_source_pins": [
+    {
+      "relpath": "coordination/system-text-round8-structural-owner227-v1/structural-audit-v1.py",
+      "sha256": "b53fbc7fc1667d76cd55fe7e513d487808fd0ca92e54d18db83670abd1723ade"
+    },
+    {
+      "relpath": "coordination/system-text-round8-structural-owner227-v1/resources-and-node-cost-v1.py",
+      "sha256": "518fee9ad00cf278b31cf0f0faf0f79093bd2bc55f912760578d6f46e8d45854"
+    }
+  ],
+  "authority": "Root227 exact structural-only delegation",
+  "driver_completed_at": "2026-10-03T12:27:58Z",
+  "full_structure_audit": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/structural-acceptance-v1.json",
+    "sha256": "209386b2324854504e965f81cfaa75a2076008f8e54dcb6ac371248aa1a2354a"
+  },
+  "heartbeat": "PAUSED",
+  "lease_present": false,
+  "lifecycle": "All3worker runs COMPLETED with4distinct output rows each,attempts intentionally OPENED,one prepared score specification each. No finalize,score,reseal or scientific READ.",
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-parent-smoke-4-generation-v1",
+      "counts": {
+        "actual_request_fit_receipts": 25,
+        "delivery_accepted": 3,
+        "delivery_terminal": 1,
+        "fit_endpoint_contacts": 100,
+        "perception_visits": 4,
+        "planner_visits": 7,
+        "reviewer_valid": 7,
+        "reviewer_visits": 7,
+        "solver_visits": 7
+      },
+      "mode": "trajectory",
+      "model_contacts": 25,
+      "official_scorer_entered": false,
+      "prepared_score_specs": 1,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-SMOKE-4-V1",
+      "server_assignment_caveat": "The preserved OpenAI wire response does not report the serving slot. This proof verifies actual request routing and source custody; it does not invent an independently reported server assignment.",
+      "structural_pass": true,
+      "task_quality_read": false
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-1-smoke-4-generation-v1",
+      "counts": {
+        "actual_request_fit_receipts": 25,
+        "delivery_accepted": 2,
+        "delivery_terminal": 2,
+        "fit_endpoint_contacts": 100,
+        "perception_visits": 4,
+        "planner_visits": 7,
+        "reviewer_valid": 7,
+        "reviewer_visits": 7,
+        "solver_visits": 7
+      },
+      "mode": "trajectory",
+      "model_contacts": 25,
+      "official_scorer_entered": false,
+      "prepared_score_specs": 1,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-SMOKE-4-V1",
+      "server_assignment_caveat": "The preserved OpenAI wire response does not report the serving slot. This proof verifies actual request routing and source custody; it does not invent an independently reported server assignment.",
+      "structural_pass": true,
+      "task_quality_read": false
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-smoke-4-generation-v1",
+      "counts": {
+        "actual_request_fit_receipts": 28,
+        "delivery_accepted": 2,
+        "delivery_terminal": 2,
+        "fit_endpoint_contacts": 112,
+        "perception_visits": 4,
+        "planner_visits": 8,
+        "reviewer_valid": 8,
+        "reviewer_visits": 8,
+        "solver_visits": 8
+      },
+      "mode": "trajectory",
+      "model_contacts": 28,
+      "official_scorer_entered": false,
+      "prepared_score_specs": 1,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-SMOKE-4-V1",
+      "server_assignment_caveat": "The preserved OpenAI wire response does not report the serving slot. This proof verifies actual request routing and source custody; it does not invent an independently reported server assignment.",
+      "structural_pass": true,
+      "task_quality_read": false
+    }
+  ],
+  "next20": "HELD pending root structural review and exact complete-family admission; no new proposals or scale dispatch.",
+  "resource_minimum_sampled_running_gib": [
+    13.041828155517578,
+    13.508003234863281,
+    13.37225341796875
+  ],
+  "resource_node_cost": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/resources-and-node-cost-v1.json",
+    "sha256": "d5985aa1d42854594958b8f6617538ec790e0ff49f14efbfb24f847caf8a4fe9"
+  },
+  "schema": "saea-round8-structural-complete-v1",
+  "scientific_claim": "Structural proof only. No gain,policy adoption,learning improvement,speed comparison or optimizer export.",
+  "source_clean": true,
+  "source_commit": "deab94ffe4c85f88e6e2e46b5eafe886e65aa069",
+  "totals": {
+    "actual_request_fit_receipts": 78,
+    "knowledge_calls": 0,
+    "model_contacts": 78,
+    "native_omni_terminal_deliveries": 12,
+    "official_scorer_contacts": 0,
+    "rows": 12,
+    "tokenizer_endpoints": 312,
+    "valid_visible_reviewer_handoffs": 22
+  },
+  "windows": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/windows-completion-v1.json",
+    "sha256": "f3f3874fadc33b000ac0d90857f1d5f63e0916b9323d4b933dfe117a56baca24"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-system-text-round8-structural-v1"
+}
