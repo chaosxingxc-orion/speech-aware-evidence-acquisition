@@ -1,0 +1,138 @@
+{
+  "schema": "saea-node-panel-trace-storage-engineering-v1",
+  "recorded_at": "2026-10-03T18:30:37.997339+00:00",
+  "base_commit": "7cbe60d29eb09784890fc93f4b282f2179a7338f",
+  "authority": "docs/receipts/owner/2026-10-03-node-stage-cache-reuse-clarification.json",
+  "status": "opt-in disk trace retention verified in independent native panel dispatch; no real flight admitted",
+  "source_files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/trace_spool.py",
+      "sha256": "a2fb2aa3055d0942cb56b94bed462a4841659edd2599d18217146428eddd250b"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/tracing.py",
+      "sha256": "aeb83357cd542dbe61386b52292cb31f8405b92a5b0e93243ba6eabe22e192d4"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/dispatch_slot_fill.py",
+      "sha256": "619d22fad645e7cc7a43027eed6de3ffb00e92e02c828bff338c60da38faea6f"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "d571888abaa1dc9479f1d6a48915b860ed7730c66328c4690a2e94da80b44f36"
+    },
+    {
+      "path": "tests/unit/test_trace_spool.py",
+      "sha256": "c40b79586a8280cb97578f512f0d394ecd5b9eebbc0b336adb5fe662a25493a5"
+    },
+    {
+      "path": "tests/unit/test_native_node_pipeline.py",
+      "sha256": "df84456187b46239eba4ff26092aebbbc8a10d4a143e48488eb63fbd037eddcc"
+    },
+    {
+      "path": "tests/unit/test_native_workflow_panel.py",
+      "sha256": "0674f4baafded79d47a8ca3fa659b1aa2bbb1c40eb7d5c2870b646ee3fa60dd1"
+    },
+    {
+      "path": "tests/unit/test_native_failed_campaign_trace.py",
+      "sha256": "5b695c5d716af411f7071f5593516bf31de3622284062a9cfdde20bc288ad4b7"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/targeted-v2-command.json",
+      "sha256": "4bf31b11a2df7ac34e1841b3e65783119d6670e0a0f97954217a80ab2696568f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/targeted-v2.txt",
+      "sha256": "52d547b80ac8c4dc45d1bb0e9de33f57b0e733e617cdd5c4dbfb19eb2eb59a77"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/coverage-v2.json",
+      "sha256": "628f9671162bf265725411d30044b1e04edc0ddfd7bf9a8442683230b239401a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/targeted-v1.txt",
+      "sha256": "872b63e064c1c92632f9908d9acd3c6893054fb9f45516b41ddb6ab62e4182a8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/development-checkpoints.json",
+      "sha256": "9f285486dc3fe0afd0c5d9d0e7df7d4e0d53fb46fdebd991b81a08719d84561d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/base-failure-trace-test.txt",
+      "sha256": "2e77f573f8efc444aa3af6a377ba10a543d3b6be07b8236e0ffde5756dde0d83"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/base-failure-trace-test-command.json",
+      "sha256": "a6745503f507ed3f0ebfa897d7941661fcf2b8f8a6183e2dff566429dada7045"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/checks-v1.json",
+      "sha256": "336b28fad3c9294a9ae760df83c1d0831128417b78146868863a75b2bf39358e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/lint-final.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/preintegration-operational-v1.json",
+      "sha256": "125d1afcdcaf06cc491033dc3b92858934b98af1b8b1a373e97b1be19e01fc9a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/preintegration-processes-v1.json",
+      "sha256": "f8252d05c1290980be8c5900e2651ece774f405cc599a269fa665fdab61d3887"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/closure-checks.json",
+      "sha256": "099f14f02a155cc1562aa5c62f99b5caa1bdb676e2f8a6dca2d59834b942056e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/native-reuse.json",
+      "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-trace-spool-engineering-owner227-v1/handoff-freshness.txt",
+      "sha256": "84213299c4bef711012a01c1a1baef966a9d406b50acbd1e2552a090fccebe14"
+    }
+  ],
+  "verification": {
+    "selected_tests_passed": 574,
+    "dependency_warnings": 3,
+    "statement_coverage": {
+      "src/speech_aware_evidence_acquisition/core/trace_spool.py": 99.08,
+      "src/speech_aware_evidence_acquisition/core/tracing.py": 98.4,
+      "src/speech_aware_evidence_acquisition/rails/dispatch_slot_fill.py": 99.38,
+      "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py": 90.06,
+      "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py": 91.16
+    },
+    "checks": [
+      "lint PASS",
+      "engineering base PASS",
+      "harness admission PASS",
+      "diff PASS",
+      "OpenJiuwen native reuse PASS",
+      "handoff freshness PASS",
+      "final diff PASS"
+    ],
+    "integration": "Eight independent native runtime dispatches,20 jobs each,640 scripted model calls across four160-request node stages; off/on storage variants. Own clients, budgets, role material, FIT-before-send, traces, per-owner20 sample timers and process-memory observations. Additional two-sample revision request equivalence and failing-role preservation. No real model service request."
+  },
+  "scope": {
+    "trace_payloads": "Stored as immutable append-only intermediate records; offset/size/hash references in memory, streaming canonical replay. Files preserved on success/failure. Optional exact record and total encoded byte caps. Writer closes after final trace append/replay.",
+    "request_semantics": "unchanged; existing node-stage schedule, four slots, independent prompts, conditional tools/revisions and model answer authority retained",
+    "memory_limits": "Not a total RSS cap. Live histories/materials/indexes/transient encoding and reads remain; per-node whole-process RSS and peak observed. Windows8GiB running/12.5GiB startup guards remain.",
+    "timing": "Writes during execution remain in original runtime wall path; final trace replay is outside sample terminal timing and retained as storage/generation-stage work. Makespan/jobs is not mean sample latency.",
+    "historical_test_correction": "Old failure-trace test omitted two pre-existing timing records; identical failure reproduced on unchanged7cbe60d29. Assert both sample timing/status and clock ordering; suppress no production records."
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "official_scorer": 0
+  },
+  "runtime_mutations": [],
+  "next": [
+    "Declare deterministic compatible-prefix ordering with actual prefix evidence, without forcing node prompt equality.",
+    "Register real maximum-legal-request FIT and separate integrated panel structural proof before a complete8x20 latency/quality comparison.",
+    "Keep learning HELD, slurp heartbeat PAUSED, other-carrier holds, cumulative exposure and human review before8x400."
+  ]
+}

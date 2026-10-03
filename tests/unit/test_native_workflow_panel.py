@@ -3,6 +3,7 @@
 import contextvars
 import json
 import threading
+from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
@@ -209,8 +210,9 @@ def test_reused_panel_and_duplicate_identities_are_refused():
 from test_llama_server_transport import _spawn_live_matching_process  # noqa: F401,E402
 
 
+@pytest.mark.parametrize("disk_traces", [False, True])
 def test_eight_actual_native_runtimes_keep_own_clients_rosters_traces_and_counts(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, disk_traces
 ):
     from dataclasses import replace
     from test_native_episode_runner import _ActualEpisodeHarness
@@ -268,6 +270,12 @@ def test_eight_actual_native_runtimes_keep_own_clients_rosters_traces_and_counts
             "prepare_workers": 2,
             "max_jobs": 160,
         }
+        if disk_traces:
+            rt._composed.values["native_node_pipeline"]["trace_spool"] = {
+                "schema": "saea-native-trace-spool-v1",
+                "max_record_bytes": 1_048_576,
+                "max_total_bytes": 64 * 1_048_576,
+            }
         rt.bind_native_workflow_panel(panel)
         runtimes.append(rt)
 
@@ -299,6 +307,14 @@ def test_eight_actual_native_runtimes_keep_own_clients_rosters_traces_and_counts
             results = list(pool.map(run, range(8)))
     finally:
         closed = [h.close() for h in harnesses]
+    manifests = list(tmp_path.rglob("trace-intermediates/*/*.json"))
+    assert len(manifests) == (8 if disk_traces else 0)
+    for manifest in manifests:
+        storage = json.loads(manifest.read_text())
+        assert storage["closed"] and not storage["failed"]
+        assert storage["retained_payload_bytes"] == 0
+        assert storage["written_records"] > 80
+        assert storage["stored_bytes"] == Path(storage["path"]).stat().st_size
     assert [node for _, node in fitted] == [
         n for n in ("perception", "solver", "reviewer", "planner") for _ in range(160)
     ]
@@ -322,6 +338,16 @@ def test_eight_actual_native_runtimes_keep_own_clients_rosters_traces_and_counts
             for record in records
             if "use_sample_execution_timing" in record["payload"]
         ]
+        if disk_traces:
+            pipeline_events = [
+                row["payload"]["use_node_pipeline_timing"]
+                for row in records
+                if "use_node_pipeline_timing" in row["payload"]
+            ]
+            assert pipeline_events
+            assert all(
+                event["process_memory"]["rss_bytes"] > 0 for event in pipeline_events
+            )
         assert len(own_timing) == 20
         assert all(
             t["expected_samples"] == 20 and t["panel_expected_samples"] == 160

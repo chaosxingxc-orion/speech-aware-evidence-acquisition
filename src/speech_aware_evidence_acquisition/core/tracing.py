@@ -52,38 +52,72 @@ def get_current_trace_buffer() -> object | None:
 
 
 class TraceBuffer:
-    """One sample's in-memory trace: same ``emit`` contract as TraceSink
-    (eager validation included — a malformed record fails at emit time, not
-    at flush), mutation-proof (payloads are deep-copied at emit, matching
-    the sequential sink's serialize-at-emit semantics), replayed once into
-    the real sink by ``flush_into``."""
+    """Buffer one sample's ordered trace, optionally on disk.
+    Keep eager validation and mutation-proof emit semantics like TraceSink.
+    Default storage deep-copies payloads; an explicitly supplied spool keeps
+    references to serialized records. Flush once in caller order through
+    the original sink, without loading all stored payloads at once."""
 
-    def __init__(self, run_id: str) -> None:
+    def __init__(self, run_id: str, *, spool=None) -> None:
+        if spool is not None and spool.run_id != run_id:
+            from .trace_spool import TraceSpoolError
+            raise TraceSpoolError("trace buffer and spool must share their owner")
         self._run_id = run_id
-        self.records: list[tuple[str, str, Mapping[str, object]]] = []
+        self._spool = spool
+        self._records = []
 
     @property
     def run_id(self) -> str:
         return self._run_id
 
+    @property
+    def records(self):
+        """Retain the historical inspection API; runtime uses streaming iteration."""
+        return self._records if self._spool is None else list(self.iter_records())
+
+    @property
+    def resident_payload_bytes(self):
+        """Report retained serialized payload bytes, not Python objects or RSS."""
+        if self._spool is not None:
+            return 0
+        return sum(len(TraceRecord(*record).serialize().encode("utf-8"))
+                   for record in self._records)
+
+    def iter_records(self):
+        if self._spool is None:
+            yield from self._records
+        elif self._records:
+            yield from self._spool.iter_records(self._records)
+
     def emit(self, channel: str, record_id: str, payload: Mapping[str, object]) -> str:
         record = TraceRecord(channel=channel, record_id=record_id, payload=payload)
-        record.serialize()  # eager: validation + JSON-serializability now
-        self.records.append((channel, record_id, copy.deepcopy(payload)))
+        serialized = record.serialize()  # Preserve eager boundary validation.
+        if self._spool is None:
+            self._records.append((channel, record_id, copy.deepcopy(payload)))
+        else:
+            self._records.append(self._spool.append(serialized))
         return record.content_hash()
 
     def flush_into(self, sink: "TraceSink") -> None:
-        for channel, record_id, payload in self.records:
+        for channel, record_id, payload in self.iter_records():
             sink.emit(channel, record_id, payload)
-        self.records = []  # one-shot: a second flush replays nothing
+        self._records = []  # One-shot: leave the intermediate evidence on disk.
+
+    def close_storage(self) -> None:
+        """Close shared intermediate writing only after all owner traces flush."""
+        if self._spool is not None:
+            self._spool.close()
 
     def extend_from(self, child: "TraceBuffer") -> None:
-        """Merge one completed parallel contact buffer in caller-chosen order."""
-
+        """Merge one completed contact in caller order without loading shared spools."""
         if child is self or child.run_id != self.run_id:
             raise ValueError("trace child must be distinct and share the parent run_id")
-        self.records.extend(child.records)
-        child.records = []
+        if self._spool is child._spool:
+            self._records.extend(child._records)
+        else:
+            for record in child.iter_records():
+                self.emit(*record)
+        child._records = []
 
 
 class DispatchingSink:

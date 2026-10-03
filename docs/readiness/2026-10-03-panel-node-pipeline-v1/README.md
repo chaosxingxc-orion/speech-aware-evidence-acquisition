@@ -1,5 +1,12 @@
 # Panel-wide node stages with CPU prefetch
 
+## Disk trace retention verified offline
+
+The optional [local trace storage](trace-storage.md) now keeps pending trace payload copies on disk and streams them into the original canonical trace. Independent owner contexts, model requests, four-slot node stages and final answer authority are unchanged. All574 selected tests pass, including the eight-owner20-job native integration with storage off and on, revision request equivalence and failure evidence. New storage statement coverage is99.08%;shared tracing98.40%. Lint/base/harness pass. [Pinned receipt](../../receipts/continuation/2026-10-03-node-panel-trace-storage-engineering.json) preserves the early lifecycle correction and an old timing-count test failure reproduced on unchanged base.
+
+Only duplicate trace payload retention is removed. Live workflow histories/materials, indexes and serialization still use memory;the declared record/file byte limits are not a total process-RSS bound. Each node event observes whole-process RSS,not per-owner memory. During-execution writes are included in runtime timing;final trace replay remains separate generation-stage work. No real contacts,cache operation,queue change or benefit claim. Exact within-node prefix order,registered real FIT and integrated structural acceptance remain before a complete8x20 panel.
+
+
 Status: independent runtime ownership and guarded panel dispatch implemented; 503 selected tests pass offline. This is not runtime admission. Authority: owner227 and the direct owner clarification on2026-10-03. Root works without subagents; learning remains HELD and the slurp heartbeat remains PAUSED. Return to the human before8x400; never split dispatch to evade that boundary.
 
 ## Exact owner requirement

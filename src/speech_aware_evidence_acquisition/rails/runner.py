@@ -1024,6 +1024,7 @@ class _ContactAgentState:
     waves: list[AgentWaveRecord] = field(default_factory=list)
     transitions: list[AgentStepTransition] = field(default_factory=list)
     trace_buffers: dict[tuple[int, int], TraceBuffer] = field(default_factory=dict)
+    trace_spool: object = None
     seen_contact_ids: set[str] = field(default_factory=set)
     wave_index: int = 0
     scheduled_contacts: int = 0
@@ -4240,7 +4241,7 @@ async def _invoke_native_role_episode(
             messages=(system, {"role": "user", "content": request.instruction}),
             tool_schemas=(), visible_tool_names=(), decoding_controls={},
         )
-        trace = TraceBuffer(run_id)
+        trace = TraceBuffer(run_id, spool=state.trace_spool)
         state.trace_buffers[(state.scheduled_contacts, 0)] = trace
         state.scheduled_contacts += 1
         state.seen_contact_ids.add(contact_id)
@@ -4431,7 +4432,7 @@ async def _invoke_native_role_episode(
             messages=(system, {"role": "user", "content": instruction}),
             tool_schemas=(), visible_tool_names=(), decoding_controls={},
         )
-        trace = TraceBuffer(run_id)
+        trace = TraceBuffer(run_id, spool=state.trace_spool)
         state.trace_buffers[(state.scheduled_contacts, 0)] = trace
         state.scheduled_contacts += 1
         state.seen_contact_ids.add(contact_id)
@@ -4779,7 +4780,7 @@ async def _invoke_native_role_episode(
             if request.context.agent_contact_id in state.seen_contact_ids:
                 raise RailsRunnerError("native graph repeated a contact identity")
             state.seen_contact_ids.add(request.context.agent_contact_id)
-            trace = TraceBuffer(run_id)
+            trace = TraceBuffer(run_id, spool=state.trace_spool)
             state.trace_buffers[(state.scheduled_contacts, 0)] = trace
             state.scheduled_contacts += 1
             visits[request.role_id]["slot_id"] = slot_id
@@ -5631,7 +5632,7 @@ async def _invoke_native_role_episode(
             ))
             # Keep its raw request/response and cost; never promote finite text into semantic state.
             pending.clear()
-        trace = TraceBuffer(run_id)
+        trace = TraceBuffer(run_id, spool=state.trace_spool)
         for key in sorted(state.trace_buffers):
             trace.extend_from(state.trace_buffers[key])
         compact_receipt = {key: receipt[key] for key in (
@@ -6136,7 +6137,7 @@ def _run_agent_openjiuwen(
             def record_node_timing(state, event):
                 from .execution_units import scoped_execution_contact_id
                 index = sum(key[0] == -3 for key in state.trace_buffers)
-                trace = TraceBuffer(run_id)
+                trace = TraceBuffer(run_id, spool=state.trace_spool)
                 trace.emit("USE", scoped_execution_contact_id(
                     f"{state.prepared.sample.sample_id}/{native_episode_binding.program.program_id}/node-batch-timing/{index}",
                     state.prepared.execution_unit_id,
@@ -6162,8 +6163,11 @@ def _run_agent_openjiuwen(
             )
             def record_pipeline_timing(state, event):
                 from .execution_units import scoped_execution_contact_id
+                if state.trace_spool is not None:
+                    from ..core.trace_spool import process_memory_snapshot
+                    event = {**event, "process_memory": process_memory_snapshot()}
                 index = sum(key[0] == -4 for key in state.trace_buffers)
-                trace = TraceBuffer(run_id)
+                trace = TraceBuffer(run_id, spool=state.trace_spool)
                 trace.emit("USE", scoped_execution_contact_id(
                     f"{state.prepared.sample.sample_id}/{native_episode_binding.program.program_id}/node-pipeline-timing/{index}",
                     state.prepared.execution_unit_id,
@@ -6179,8 +6183,9 @@ def _run_agent_openjiuwen(
             if not isinstance(selector, SystemEpisodePolicy):
                 raise RailsRunnerError("complete policy selector has an invalid type")
             selector.assert_envelope(native_episode_binding)
+        trace_spool = None
         states = [
-            _ContactAgentState(prepared=task, controller=None, query_state=task.initial_query_state)
+            _ContactAgentState(prepared=task, controller=None, query_state=task.initial_query_state, trace_spool=trace_spool)
             for task in prepared_tasks
         ]
         # Owner decision 159 (rails.dispatch_slot_fill): scheduling only.
@@ -6199,7 +6204,7 @@ def _run_agent_openjiuwen(
                     contact_index=0,
                 )
                 selected_binding, decision = selector.select(ctx)
-                policy_trace = TraceBuffer(run_id)
+                policy_trace = TraceBuffer(run_id, spool=state.trace_spool)
                 policy_trace.emit(
                     "ORG", f"{state.prepared.sample.sample_id}/system-policy/initial",
                     {"org_system_policy_decision": decision},
@@ -6231,7 +6236,7 @@ def _run_agent_openjiuwen(
             if state.final_outcome is not None:
                 trace = state.final_outcome.trace_buffer
             else:
-                trace = TraceBuffer(run_id)
+                trace = TraceBuffer(run_id, spool=state.trace_spool)
                 state.trace_buffers[(-2, 0)] = trace
             trace.emit(
                 "USE", scoped_execution_contact_id(
@@ -6251,6 +6256,18 @@ def _run_agent_openjiuwen(
                 raise RailsRunnerError("panel participation requires the explicit node pipeline")
 
         try:
+            pipeline = native_episode_binding.node_pipeline
+            if pipeline is not None and pipeline.trace_spool is not None:
+                from ..core.trace_spool import TraceSpool
+                if native_episode_binding.data_root is None:
+                    raise RailsRunnerError("node pipeline trace storage needs its owned data root")
+                trace_spool = TraceSpool(
+                    native_episode_binding.data_root, run_id,
+                    max_record_bytes=pipeline.trace_spool.max_record_bytes,
+                    max_total_bytes=pipeline.trace_spool.max_total_bytes,
+                )
+            for state in states:
+                state.trace_spool = trace_spool
             execute = execute_speech_agent_workflows if panel_participation is None else (
                 lambda states, **kwargs: panel_participation.execute(run_id, states, **kwargs)
             )
@@ -6263,14 +6280,18 @@ def _run_agent_openjiuwen(
                 sample_timing_sink=record_sample_timing,
                 **scheduling_options,
             )
+            if any(state.final_outcome is None for state in states):
+                raise RailsRunnerError("native graph ended without an accepted Solver outcome")
         except BaseException:
-            _flush_agent_state_traces(states, trace_sink)
+            try:
+                _flush_agent_state_traces(states, trace_sink)
+            finally:
+                if trace_spool is not None:
+                    trace_spool.close()
             raise
         finally:
             if slot_fill is not None:
                 slot_fill.close()
-        if any(state.final_outcome is None for state in states):
-            raise RailsRunnerError("native graph ended without an accepted Solver outcome")
         return tuple(state.final_outcome for state in states)
 
     states: list[_ContactAgentState] = []
@@ -7414,20 +7435,25 @@ def run_speech_native_agent_loop(
     # is sealed. Persist the runtime trajectory before scoring so no post-hoc
     # value can become a controller observation.
     runtime_trace_sha256s: list[str] = []
-    for outcome in outcomes:
-        assert outcome is not None
-        runtime_trace_sha256s.append(
-            _emit_agent_runtime_trace(
-                sink=outcome.trace_buffer,
-                controller_policy_id=controller_policy_id,
-                agent_executor_id=agent_executor_id,
-                agent_executor_version=agent_executor_version,
-                snapshot_sha256=snapshot_sha256,
-                outcome=outcome,
-                record_namespace=trace_record_namespace,
+    try:
+        for outcome in outcomes:
+            assert outcome is not None
+            runtime_trace_sha256s.append(
+                _emit_agent_runtime_trace(
+                    sink=outcome.trace_buffer,
+                    controller_policy_id=controller_policy_id,
+                    agent_executor_id=agent_executor_id,
+                    agent_executor_version=agent_executor_version,
+                    snapshot_sha256=snapshot_sha256,
+                    outcome=outcome,
+                    record_namespace=trace_record_namespace,
+                )
             )
-        )
-        outcome.trace_buffer.flush_into(trace_sink)
+            outcome.trace_buffer.flush_into(trace_sink)
+    finally:
+        for outcome in outcomes:
+            if outcome is not None:
+                outcome.trace_buffer.close_storage()
 
     results: list[AgentLoopResult] = []
     for outcome, runtime_trace_sha256 in zip(

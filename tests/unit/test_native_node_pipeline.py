@@ -557,3 +557,78 @@ def test_shared_executor_preserves_failure_and_stops_later_stages(failure_at):
     assert not any(node == "reviewer" for _, node in contacts)
     if failure_at == "prepare":
         assert contacts == []
+
+
+from test_llama_server_transport import _spawn_live_matching_process  # noqa: F401,E402
+
+
+@pytest.mark.parametrize("failure", [False, True])
+def test_native_disk_traces_preserve_revision_requests_and_failure_evidence(
+    tmp_path, failure
+):
+    import json
+    from test_native_episode_runner import _ActualEpisodeHarness
+    from speech_aware_evidence_acquisition.rails.dispatch_slot_fill import (
+        parse_native_node_pipeline,
+    )
+
+    options = dict(
+        sample_count=2,
+        max_revisions=1,
+        max_contacts=8,
+        planner_actions=("REVISE", "ACCEPT"),
+    )
+    on = _ActualEpisodeHarness(tmp_path / "disk", **options)
+    on.solver_hints_data_root = on.world.data_root
+    on.node_pipeline = parse_native_node_pipeline(
+        {
+            "native_node_pipeline": {
+                "schema": "saea-native-node-pipeline-v1",
+                "node_order": ["perception", "solver", "reviewer", "planner"],
+                "group_size": 1,
+                "prepare_workers": 2,
+                "max_jobs": 2,
+                "trace_spool": {
+                    "schema": "saea-native-trace-spool-v1",
+                    "max_record_bytes": 1048576,
+                    "max_total_bytes": 16 * 1048576,
+                },
+            }
+        }
+    )
+    if failure:
+        original_output = on._output
+
+        def output(key):
+            if key[1] == "reviewer":
+                raise RuntimeError("synthetic reviewer contact failed")
+            return original_output(key)
+
+        on._output = output
+        try:
+            with pytest.raises(Exception, match="synthetic reviewer contact failed"):
+                on.run()
+        finally:
+            on.close()
+        assert len(on.dispatched) > 0
+    else:
+        off = _ActualEpisodeHarness(tmp_path / "memory", **options)
+        try:
+            got, expected = on.run(), off.run()
+        finally:
+            on.close()
+            off.close()
+        assert [r.final_response_text for r in got.results] == [
+            r.final_response_text for r in expected.results
+        ]
+        assert {k: v["rendered"] for k, v in on.prepared.items()} == {
+            k: v["rendered"] for k, v in off.prepared.items()
+        }
+        assert len(on.dispatched) == len(off.dispatched)
+    manifests = list(tmp_path.rglob("trace-intermediates/*/*.json"))
+    assert len(manifests) == 1
+    receipt = json.loads(manifests[0].read_text())
+    assert receipt["closed"] and receipt["written_records"] > 0
+    assert receipt["read_records"] == receipt["written_records"]
+    assert receipt["retained_payload_bytes"] == 0
+    assert on.trace.records

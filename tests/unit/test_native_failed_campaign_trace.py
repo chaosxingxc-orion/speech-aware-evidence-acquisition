@@ -124,4 +124,13 @@ def test_completed_and_failing_native_episode_traces_survive_once(tmp_path):
     } == expected_agent_contacts
     assert len(terminal_use) == 1
     assert terminal_use[0][0].startswith(f"{completed_id}/")
-    assert channel_counts["USE"] == len(contact_use) + len(terminal_use)
+    timing = [payload["use_sample_execution_timing"]
+              for channel, _, payload in harness.trace.records
+              if channel == "USE" and "use_sample_execution_timing" in payload]
+    assert len(timing) == 2
+    assert {row["sample_id"]: row["status"] for row in timing} == {
+        completed_id: "completed", failing_id: "failed",
+    }
+    assert all(row["batch_started_ns"] <= row["admitted_ns"] <= row["finished_ns"]
+               for row in timing)
+    assert channel_counts["USE"] == len(contact_use) + len(terminal_use) + len(timing)

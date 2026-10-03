@@ -221,6 +221,18 @@ class NativeNodePipelineError(RailsError):
 
 
 @dataclass(frozen=True)
+class NativeTraceSpool:
+    """Bound disk-backed trace copies without claiming a full process memory cap."""
+
+    max_record_bytes: int
+    max_total_bytes: int
+
+    def as_json(self):
+        return {"schema": "saea-native-trace-spool-v1",
+                "max_record_bytes": self.max_record_bytes, "max_total_bytes": self.max_total_bytes}
+
+
+@dataclass(frozen=True)
 class NativeNodePipeline:
     """Registered logical panel size is separate from model-slot concurrency."""
 
@@ -228,11 +240,15 @@ class NativeNodePipeline:
     group_size: int
     prepare_workers: int
     max_jobs: int
+    trace_spool: NativeTraceSpool | None = None
 
     def as_json(self):
-        return {"schema": "saea-native-node-pipeline-v1", "node_order": list(self.node_order),
+        result = {"schema": "saea-native-node-pipeline-v1", "node_order": list(self.node_order),
                 "group_size": self.group_size, "prepare_workers": self.prepare_workers,
                 "max_jobs": self.max_jobs}
+        if self.trace_spool is not None:
+            result["trace_spool"] = self.trace_spool.as_json()
+        return result
 
     def validate(self, config):
         if config is None:
@@ -255,7 +271,7 @@ def parse_native_node_pipeline(values: Mapping[str, object]) -> NativeNodePipeli
         raise NativeNodePipelineError("node pipeline conflicts with other node/slot schedulers")
     raw = values["native_node_pipeline"]
     if (not isinstance(raw, Mapping)
-            or set(raw) != {"schema", "node_order", "group_size", "prepare_workers", "max_jobs"}
+            or set(raw) - {"trace_spool"} != {"schema", "node_order", "group_size", "prepare_workers", "max_jobs"}
             or raw["schema"] != "saea-native-node-pipeline-v1"):
         raise NativeNodePipelineError("node pipeline needs its exact versioned configuration")
     order = raw["node_order"]
@@ -266,7 +282,18 @@ def parse_native_node_pipeline(values: Mapping[str, object]) -> NativeNodePipeli
                    for k in ("group_size", "prepare_workers", "max_jobs"))
             or raw["prepare_workers"] > 8 or raw["group_size"] > raw["max_jobs"]):
         raise NativeNodePipelineError("node pipeline requires unique nodes and finite worker/job bounds")
-    return NativeNodePipeline(tuple(order), raw["group_size"], raw["prepare_workers"], raw["max_jobs"])
+    storage = None
+    if "trace_spool" in raw:
+        declared = raw["trace_spool"]
+        if (not isinstance(declared, Mapping)
+                or set(declared) != {"schema", "max_record_bytes", "max_total_bytes"}
+                or declared["schema"] != "saea-native-trace-spool-v1"
+                or any(type(declared[k]) is not int or declared[k] < 1
+                       for k in ("max_record_bytes", "max_total_bytes"))
+                or declared["max_record_bytes"] > declared["max_total_bytes"]):
+            raise NativeNodePipelineError("trace spool needs exact positive record and total byte bounds")
+        storage = NativeTraceSpool(declared["max_record_bytes"], declared["max_total_bytes"])
+    return NativeNodePipeline(tuple(order), raw["group_size"], raw["prepare_workers"], raw["max_jobs"], storage)
 
 
 __all__ = [

@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Node-panel local trace storage verified offline, 2026-10-03T18:30:37.997339+00:00
+
+The [opt-in store](../readiness/2026-10-03-panel-node-pipeline-v1/trace-storage.md) keeps pending trace payload copies on local disk,merges references and streams original canonical traces. All574 selected tests pass,new storage99.08%/shared tracing98.40% statement coverage;lint/base/harness pass. Eight independent20-job native runtime dispatches retain their own clients,budgets,role material,FIT-before-send and160-request node stages with storage off/on. Revision request equivalence and failure preservation pass. [Pinned evidence](../receipts/continuation/2026-10-03-node-panel-trace-storage-engineering.json) preserves the corrected early writer-close defect and an old failure-trace timing assertion reproduced on unchanged base. Zero real model/tokenizer/scorer contacts;no runtime-control changes.
+
+Per-node current/peak RSS observations cover the whole shared process,not individual owners. Encoded record/file bounds do not bound all live workflow state or RSS. During-execution writes remain in runtime timing;final trace replay is separate generation-stage work. This stores ordinary trace copies,not KV. Keep independent node contexts and all four slots. Declare actual compatible-prefix ordering,then registered maximum-request FIT and separate integrated structural proof before a complete8x20 latency/quality panel. Learning HELD,heartbeat PAUSED,root only,no subagents,other-carrier holds unchanged,human before8x400. At18:27:50Z Windows18.147GiB;at18:28:08Z no driver/scorer and no STOP,service healthy idle in adjacent script snapshot. Revalidate live state before launch;do not treat expected idleness as failure.
+
+
 ## Independent node-panel runtime ownership verified offline, 2026-10-03T18:06:48.499467+00:00
 
 The [shared panel implementation](../readiness/2026-10-03-panel-node-pipeline-v1/README.md) now joins eight independently owned native FlightRuntime dispatches:20 synthetic jobs each,640 scripted requests in four160-request node stages,80 contacts per own client,distinct role material and source/FIT/timing custody. One exact panel lease,guarded CLI/batch route and all-member completion inspection reuse the existing runtime/scorer. All generations drain before sealing;score jobs remain serial;failure never retries. All503 selected tests pass;lint/base/harness/native-reuse and shell syntax pass. [Pinned evidence](../receipts/continuation/2026-10-03-node-panel-ownership-engineering.json) retains test corrections,including the old seal-only wiring assertion reproduced on unchanged base. Zero real model/tokenizer/scorer contacts and no runtime-control changes.
@@ -1188,7 +1195,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T18:07:37.537360+00:00
+Last refreshed: 2026-10-03T18:30:37.997339+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
