@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Root reviewed the completed seed context-layout proof, 2026-10-03T13:10:21.380806+00:00
+
+Root accepted the completed four-row before-speech structural proof after verifying all five source artifact hashes and exact25-contact layout coverage. All25 model contacts and100 tokenizer endpoints are accounted for,seven Reviewer handoffs are valid and visible,and four terminal deliveries retain Omni custody. [Root review and descriptive node measurements](../readiness/2026-10-03-context-layout-engineering-v1/root-structural-review.md) pins the original audit plus a new numeric-only sidecar with server/client means,p50,p95 and token-weighted reuse. No task-quality read,official scoring,new contact or change to original evidence occurred. Episode wall time is unavailable without explicit original boundaries; never infer it from contact sums.
+
+The [prospective matrix](../readiness/2026-10-03-context-layout-engineering-v1/matrix-DRAFT-v1.json) remains HELD:two layouts,two schedulers and own repeats,eight20-input members on the same existing400 pool. Root delegates offline exact prerequisite preparation only;cover any unresolved capacity/structural combination and preserve unchanged seed role text,assets,knowledge,cache settings and all old sources. Full source/supply/family registration and exact READ remain before dispatch. No learning proposal or larger panel is authorized by structural success. Retain engineering-first priority,ROUND8 learning HELD,heartbeat PAUSED,12.5/8 GiB floors and human review before8x400.
+
 ## Seed before-speech structural proof complete, 2026-10-03T13:09:09.790251+00:00
 
 The single4-row worker completed normally at2026-10-03T13:07:17Z on immutable fe7682ca4. [Complete structural custody](../receipts/continuation/2026-10-03-context-layout-structural-complete.json) verifies25 original input/control/ORG/body/FIT layout joins,100 tokenizer endpoints,7 valid Reviewer handoffs visible to Planner and4 Omni terminal deliveries. Every original request was re-rendered offline through the frozen shared transport and matched its original FIT body hash;zero additional contacts and zero scoring.

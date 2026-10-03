@@ -1,5 +1,7 @@
 # Validate context engineering before resuming learning
 
+Current phase: capacity and the single four-row before-speech structural proof are complete. See [root review and measured node costs](root-structural-review.md). The [layout/scheduling matrix draft](matrix-DRAFT-v1.json) is HELD for exact prerequisite preparation and later root admission. The preparation history below does not reactivate completed cells or the held learning panel.
+
 Apply the latest direct owner instruction: strengthen the engineering base and experimental efficiency before optimization-based learning. Preserve the completed proposals and the unstarted round8 learning panel as HELD. Do not create a new proposer allocation or use engineering outputs as optimizer feedback. The SLURP heartbeat remains PAUSED; ordinary ten-second resource telemetry stays independent.
 
 ## First concrete comparison factor
