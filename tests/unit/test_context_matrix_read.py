@@ -99,7 +99,8 @@ def test_unsigned_real_read_refuses_before_results_or_output(tmp_path, monkeypat
         + " |\n| " + " | ".join(values) + " |\n")
     monkeypatch.setattr(cli, "preflight_members", lambda *a, **k: pytest.fail("source opened before READ"))
     with pytest.raises(PolicyError, match="countersigned"):
-        cli.run(doc, repo_root=repo, data_root=tmp_path, output=tmp_path / "analysis/read")
+        cli.run(doc, repo_root=repo, data_root=tmp_path, output=tmp_path / "analysis/read",
+                server_log_pin={"relpath": "MUST-NOT-OPEN.log", "sha256": "a" * 64})
     assert not (tmp_path / "analysis/read").exists()
 
 
@@ -113,9 +114,12 @@ def test_output_cannot_overwrite_or_export_to_optimizer(tmp_path, target):
         cli.run(inputs(), repo_root=ROOT, data_root=tmp_path, output=output)
 
 
-@pytest.mark.parametrize("changed_artifact", [None, "archive", "flight"])
+@pytest.mark.parametrize("changed_artifact", [None, "archive", "flight", "server"])
+@pytest.mark.parametrize("with_server", [False, True])
 @pytest.mark.parametrize("schedule", [False, True])
-def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch, changed_artifact, schedule):
+def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch, changed_artifact, schedule, with_server):
+    if changed_artifact == "server" and not with_server:
+        return
     cli = load_cli()
     doc = schedule_inputs() if schedule else inputs()
     frozen = tmp_path / "frozen"
@@ -135,6 +139,9 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     path.write_bytes(admission_path.read_bytes())
     assert admission["status"] == "decided"
     seen = []
+    server_path = tmp_path / "finite-server.log"
+    server_path.write_bytes(b"synthetic numeric server log")
+    server_pin = {"relpath": server_path.name, "sha256": hashlib.sha256(server_path.read_bytes()).hexdigest()}
     wire_archive = tmp_path / "analysis/prepared-wire.json"
     wire_archive.parent.mkdir(parents=True)
     wire_archive.write_text("{}")
@@ -172,11 +179,25 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
             wire_archive.write_text('{"changed":true}')
         elif changed_artifact == "flight":
             flight_receipt.write_text('{"changed":true}')
+        elif changed_artifact == "server":
+            server_path.write_text("changed")
         return {"members": {}, "comparisons": [], "interpretation": "Synthetic complete orchestration only."}
     monkeypatch.setattr(cli.CLI, "require_read_registration", gate)
     monkeypatch.setattr(cli, "preflight_members", preflight)
     monkeypatch.setattr(cli, "read_numeric_members", numeric)
     monkeypatch.setattr(cli, "describe_configurations", analysis)
+    if with_server:
+        def assemble(numeric_rows, member_rows):
+            seen.append("server-contacts")
+            assert member_rows == reg["members"]
+            return ["synthetic-contact"]
+        def slot_history(contacts, raw, *, expected_sha256):
+            seen.append("slot-history")
+            assert contacts == ["synthetic-contact"] and raw == server_path.read_bytes()
+            assert expected_sha256 == server_pin["sha256"]
+            return {"contacts": [], "summary": [], "server_assignment_verified": True}
+        monkeypatch.setattr(cli, "contacts_from_numeric_members", assemble)
+        monkeypatch.setattr(cli, "audit_slot_history", slot_history)
     if schedule:
         def combine(rows):
             assert [r["label"] for r in rows] == [m["label"] for m in reg["members"] if m["schedule"] == "panel"]
@@ -185,11 +206,19 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     out = tmp_path / "analysis/read"
     if changed_artifact:
         with pytest.raises(PolicyError, match="hash mismatch"):
-            cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out)
+            cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out,
+                    server_log_pin=server_pin if with_server else None)
         assert not out.exists()
         return
-    report = cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out)
-    assert seen == ["authority", "preflight", "numeric", "analysis", "authority", "preflight"]
+    report = cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out,
+                    server_log_pin=server_pin if with_server else None)
+    expected = ["authority", "preflight", "numeric"]
+    if with_server:
+        expected += ["server-contacts", "slot-history"]
+        assert report["server_slot_history"]["server_assignment_verified"]
+        assert report["server_slot_history"]["server_log"] == server_pin
+        assert "Actual slot predecessor" in (out / "README.md").read_text()
+    assert seen == expected + ["analysis", "authority", "preflight"]
     assert report["read_authority"] == authority
     assert report["experiment_stage_timing"][reg["members"][0]["run_id"] if schedule else "synthetic-member"]["generation_wall_seconds"] == 120
     rendered = (out / "README.md").read_text()
@@ -266,3 +295,48 @@ def test_schedule_gate_rejects_misregistration_before_any_scientific_output(tmp_
     with pytest.raises(PolicyError):
         cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=tmp_path / "analysis/read")
     assert not (tmp_path / "analysis/read").exists()
+
+
+@pytest.mark.parametrize("option", ["--server-log", "--server-log-sha256"])
+def test_cli_refuses_an_unpinned_server_log(tmp_path, monkeypatch, option):
+    cli = load_cli()
+    monkeypatch.setattr(sys, "argv", ["reader", "--inputs", "unread", "--data-root", str(tmp_path),
+        "--output", str(tmp_path / "analysis/result"), option, "only-one-half"])
+    with pytest.raises(SystemExit):
+        cli.main()
+
+
+def test_slot_history_render_retains_original_means_and_missingness():
+    cli = load_cli()
+    row = {"schedule": "panel", "layout": "legacy", "role_id": "solver",
+           "successor_kind": "same-node-same-context-different-sample", "contacts": 3,
+           "measurements": {k: {"mean_observed": v} for k, v in (
+               ("reused_input_tokens", 2500), ("evaluated_input_tokens", None),
+               ("prefill_ms", 17.5), ("generation_ms", 40))}}
+    rendered = cli.render({"members": {}, "interpretation": "Synthetic rendering only.",
+                           "server_slot_history": {"summary": [row]}})
+    assert "3 | 2500.000 | unavailable | 17.500 | 40.000" in rendered
+
+
+@pytest.mark.parametrize("outside", [False, True])
+def test_cli_pins_the_preserved_log_under_the_data_root(tmp_path, monkeypatch, capsys, outside):
+    cli = load_cli()
+    path = tmp_path / "inputs.json"
+    path.write_text(json.dumps(inputs()))
+    log = tmp_path.parent / "outside.log" if outside else tmp_path / "finite.log"
+    monkeypatch.setattr(sys, "argv", ["reader", "--inputs", str(path), "--data-root", str(tmp_path),
+        "--output", str(tmp_path / "analysis/result"), "--server-log", str(log),
+        "--server-log-sha256", "a" * 64])
+    seen = []
+    def run(doc, **kwargs):
+        seen.append(kwargs["server_log_pin"])
+        return {"content_sha256": "b" * 64}
+    monkeypatch.setattr(cli, "run", run)
+    if outside:
+        with pytest.raises(PolicyError, match="escaped"):
+            cli.main()
+        assert not seen
+    else:
+        cli.main()
+        assert seen == [{"relpath": "finite.log", "sha256": "a" * 64}]
+        assert json.loads(capsys.readouterr().out)["scorer_contacts_added"] == 0

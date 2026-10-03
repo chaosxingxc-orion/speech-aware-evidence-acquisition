@@ -12,6 +12,7 @@ from pathlib import Path
 import sys
 
 from speech_aware_evidence_acquisition.analysis.node_panel_timing import combine_node_panel_timings
+from speech_aware_evidence_acquisition.analysis.llama_slot_history import audit_slot_history, contacts_from_numeric_members
 from speech_aware_evidence_acquisition.analysis.context_configuration import describe_configurations
 from speech_aware_evidence_acquisition.analysis.context_configuration_source import preflight_members, read_numeric_members
 from speech_aware_evidence_acquisition.rails.finite_policy_artifacts import _pinned_json
@@ -57,18 +58,29 @@ def render(report):
         cells = ["unavailable" if row[key] is None else f"{row[key]:.3f}" for key in (
             "generation_wall_seconds", "score_stage_seconds", "score_batch_seconds", "official_finalize_worker_seconds")]
         lines.append(f"| {name} | {' | '.join(cells)} |")
+    if "server_slot_history" in report:
+        lines += ["", "## Actual slot predecessor", "",
+                  "Every contact joins one unique server task by original token counts and rounded prefill/decode timings. Context identity is descriptive, not proof of full token equality. Repeated inputs and changed-input prefix reuse remain separate. No raw server log text is exported.", "",
+                  "| Schedule | Layout | Node | Predecessor category | Calls | Reused tokens | Evaluated tokens | Prefill (ms) | Decode (ms) |",
+                  "|---|---|---|---|---:|---:|---:|---:|---:|"]
+        for row in report["server_slot_history"]["summary"]:
+            cells = ["unavailable" if row["measurements"][key]["mean_observed"] is None
+                     else f'{row["measurements"][key]["mean_observed"]:.3f}'
+                     for key in ("reused_input_tokens", "evaluated_input_tokens", "prefill_ms", "generation_ms")]
+            lines.append(f'| {row["schedule"]} | {row["layout"]} | {row["role_id"]} | {row["successor_kind"]} | {row["contacts"]} | ' + " | ".join(cells) + " |")
     lines += ["", "The report retains all configurations, both repeats, paired uncertainty, own-repeat differences, per-scenario support and both weightings. No automatic selection or optimizer export. Batch wall/count is throughput, not individual latency.", ""]
     return "\n".join(lines)
 
 
-def run(inputs, *, repo_root, data_root, output):
+def run(inputs, *, repo_root, data_root, output, server_log_pin=None):
     root, data, output = (Path(p).resolve() for p in (repo_root, data_root, output))
     require(output.is_relative_to(data / "analysis") and output != data / "analysis" and not output.exists(),
             "use a fresh analysis directory outside optimizer storage")
     require(set(inputs) == {"schema", "recipe", "registration", "roster", "strata", "frozen_worker"}
             and inputs["schema"] in ("saea-context-matrix-read-inputs-v1", "saea-node-panel-schedule-read-inputs-v1"), "exact matrix reader inputs are required")
     panel_schedule = inputs["schema"] == "saea-node-panel-schedule-read-inputs-v1"
-    reader_names = ["src/speech_aware_evidence_acquisition/analysis/node_panel_timing.py","scripts/analysis/context_matrix_read.py", "scripts/system_text_search.py",
+    reader_names = ["src/speech_aware_evidence_acquisition/analysis/llama_slot_history.py",
+                    "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py","src/speech_aware_evidence_acquisition/analysis/node_panel_timing.py","scripts/analysis/context_matrix_read.py", "scripts/system_text_search.py",
                     "src/speech_aware_evidence_acquisition/analysis/context_configuration.py",
                     "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py",
                     "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
@@ -127,6 +139,14 @@ def run(inputs, *, repo_root, data_root, output):
         require(len(panel_members) == 8, "exact eight panel owners are required")
         panel_timing = combine_node_panel_timings([
             numeric[member["run_id"]]["context_execution"]["node_panel_timing"] for member in panel_members])
+    server_history = None
+    if server_log_pin is not None:
+        server_contacts = contacts_from_numeric_members(numeric, registration["members"])
+        server_history = audit_slot_history(server_contacts, _read_pin(server_log_pin, data),
+                                            expected_sha256=server_log_pin["sha256"])
+        server_history["server_log"] = dict(server_log_pin)
+        server_history.pop("content_sha256", None)
+        server_history["content_sha256"] = content_hash(server_history)
     uncertainty = recipe["uncertainty"]
     report = describe_configurations(numeric, comparisons=recipe["comparisons"], roster=joined,
                                      bootstrap_draws=uncertainty["bootstrap_draws"], seed=uncertainty["seed"])
@@ -145,6 +165,9 @@ def run(inputs, *, repo_root, data_root, output):
             if name in member["source_bindings"]:
                 _read_pin(member["source_bindings"][name], data)
     _pinned_json(data, registration["admission"], "matrix admission")
+    if server_log_pin is not None:
+        _read_pin(server_log_pin, data)
+        report["server_slot_history"] = server_history
     report.update(read_authority=authority, source_inputs=inputs, reader_sources=reader_pins,
                   numeric_source_bindings={run: member["source_bindings"] for run, member in numeric.items()},
                   context_execution={run: member["context_execution"] for run, member in numeric.items()},
@@ -168,9 +191,20 @@ def main():
     for name in ("inputs", "data-root", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--repo-root", type=Path, default=ROOT)
+    parser.add_argument("--server-log", type=Path, help="Finite preserved log snapshot under the data root")
+    parser.add_argument("--server-log-sha256", help="SHA-256 of that exact finite snapshot")
     args = parser.parse_args()
+    if bool(args.server_log) != bool(args.server_log_sha256):
+        parser.error("--server-log and --server-log-sha256 must be supplied together")
+    server_pin = None
+    if args.server_log is not None:
+        data = args.data_root.resolve()
+        path = args.server_log.resolve()
+        require(path.is_relative_to(data), "server log snapshot escaped the data root")
+        server_pin = {"relpath": path.relative_to(data).as_posix(), "sha256": args.server_log_sha256}
     raw = args.inputs.read_bytes()
-    report = run(json.loads(raw), repo_root=args.repo_root, data_root=args.data_root, output=args.output)
+    report = run(json.loads(raw), repo_root=args.repo_root, data_root=args.data_root, output=args.output,
+                 server_log_pin=server_pin)
     print(json.dumps({"output": str(args.output), "report_sha256": report["content_sha256"],
                       "inputs_sha256": hashlib.sha256(raw).hexdigest(), "model_contacts_added": 0,
                       "scorer_contacts_added": 0}))

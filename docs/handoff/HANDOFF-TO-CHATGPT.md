@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Actual-slot cache diagnostic ready; comparison continues, 2026-10-03T21:15:39.250147+00:00
+
+The optional [slot-history reader](../readiness/2026-10-03-node-panel-slot-history-v1/README.md) joins every original contact to exactly one actual server task using measured token counts and rounded prefill/decode timings. It separates changed-input static-prefix reuse from repeated-input reuse, context changes and node switches; preserves external predecessors; and rejects ambiguous/missing/overlapping assignments. The full-family READ gate precedes all result/log access, and finite log pins are rechecked. No raw log text or optimizer feedback is exported. [Engineering evidence](../receipts/continuation/2026-10-03-node-panel-slot-history-engineering.json): 200 tests pass, module100%/CLI99.30% statement coverage, lint/base/harness pass, and all53 prior accepted structural task/slot joins reproduce. One model-free rehearsal caller omitted the owner namespace in its comparison; the library was already correct and the evidence preserves the correction. No real contacts or frozen runtime changes.
+
+At21:14:50Z, the20:48:40Z driver remains live on frozendd765815: the first three legacy trajectory members are FINALIZED20 rows with one successful official score each and no failures; the fourth has completed20-row generation and its first official finalize worker is live. Remaining12 attempts are absent. STOP absent; original serving PID942/start ticks18129934 revalidated. The complete16-member READ stays UNSIGNED and quality remains unread. Revalidate live resources and every member before any next action; do not infer row completion from contact totals.
+
+Retain the existing entry-v2 registration, queue, exact320-trajectory design and independent node contexts. Root only; learning HELD, heartbeat PAUSED, human before8x400. No stable efficiency/quality benefit follows from diagnostic readiness or partial execution. Keep all current/old frozen workers, failed bytes and intentional unscored engineering artifacts immutable.
+
+
 ## Equal-workload node schedule comparison running, 2026-10-03T20:52:23.161417+00:00
 
 Windows SAEA-Batch-Driver epoch2026-10-03T20:48:40Z runs the new16-member comparison on frozen `/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2` at `dd765815218eb7d9207701c130ae5ed9f802dab8`. First campaign20:49:09Z follows21.74s successful stable-memory wait. [Launch](../receipts/continuation/2026-10-03-node-panel-schedule-n20-launch.json) and [real generation confirmation](../receipts/continuation/2026-10-03-node-panel-schedule-generation-confirmation.json) pin all frozen checks,normal completed-control archive and process custody. At20:50:25Z the first legacy-trajectory primary was OPENED with21 model contacts,remaining15 ABSENT,zero scores,STOP absent;service healthy,three busy slots,GPU62%,Windows15.433GiB. Original serving PID identities revalidated;revalidate later. No completed rows inferred from contacts or service totals.
@@ -1248,7 +1257,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T19:45:05.951899+00:00
+Last refreshed: 2026-10-03T21:15:39.250147+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

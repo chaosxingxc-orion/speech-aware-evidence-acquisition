@@ -1,0 +1,96 @@
+{
+  "at_utc": "2026-10-03T21:13:52.316236+00:00",
+  "authority": [
+    227
+  ],
+  "claim": "Source-bound diagnostic readiness only; no cache, latency or business-quality benefit established.",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/slot-history-preserved-structural-proof-v1.json",
+      "sha256": "2674ba92a70953717602a3a9603ce880ef76bd862333222c9310bee3bc39ef47"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/slot-history-unsigned-cli-proof-v1.json",
+      "sha256": "c39fbf527b98038cc08de95e54e8b623efd7c26aff43e1ec3813f73b233d71cb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/slot-history-coverage-v2.json",
+      "sha256": "a5ff1319d3a6e44937ca1533d6157ce5dcc19201f6b1f7f508770ac02de9f3fb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/slot-history-engineering_base_check-v1.stdout.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/slot-history-harness_admission_check-v1.stdout.log",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    }
+  ],
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "model_contacts_added": 0,
+  "read_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1",
+  "read_state": "UNSIGNED",
+  "runtime_controls_changed": false,
+  "runtime_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/slot-history-runtime-check-v1.json",
+    "sha256": "cacfc4d5d8e4d01d1a08cd7402f4e878d54c47ddbdca2d860f81e1f95aaeee09"
+  },
+  "runtime_worker_unchanged": {
+    "commit": "dd765815218eb7d9207701c130ae5ed9f802dab8",
+    "path": "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2"
+  },
+  "schema": "saea-node-panel-slot-history-engineering-v1",
+  "scientific_read": false,
+  "scorer_contacts_added": 0,
+  "sources": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/llama_slot_history.py",
+      "sha256": "466a13feacdfab82f92b384bae1160e1311ae324af6cd8d9410f03252c79d80a"
+    },
+    {
+      "relpath": "scripts/analysis/context_matrix_read.py",
+      "sha256": "d1b0ab2e78cd9d87c909e04d9bbe725ed9d662a42d6b45b41a5999163d8cadd0"
+    },
+    {
+      "relpath": "tests/unit/test_llama_slot_history.py",
+      "sha256": "c08f8777f7b850f6909d7a485b2eb2f3f01c5f9dd07d323c5ef3c11ebb702d40"
+    },
+    {
+      "relpath": "tests/unit/test_context_matrix_read.py",
+      "sha256": "c50d195b261eb6d6d5383b9759757aca4c98945943fa737467b824a16fa331a3"
+    }
+  ],
+  "test_first_observations": {
+    "new_module": "Initial collection refused the absent module; then 29 new cases passed.",
+    "reader_extension": "Initial optional-input integration tests produced 16 expected failures before implementation; then all 71 selected cases passed. Final owner-namespace/render/CLI additions and broader reader suite pass 200 tests."
+  },
+  "tests": {
+    "coverage": {
+      "scripts/analysis/context_matrix_read.py": {
+        "covered_lines": 142,
+        "excluded_lines": 0,
+        "missing_lines": 1,
+        "num_statements": 143,
+        "percent_covered": 99.3006993006993,
+        "percent_covered_display": "99",
+        "percent_statements_covered": 99.3006993006993,
+        "percent_statements_covered_display": "99"
+      },
+      "src/speech_aware_evidence_acquisition/analysis/llama_slot_history.py": {
+        "covered_lines": 155,
+        "excluded_lines": 0,
+        "missing_lines": 0,
+        "num_statements": 155,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100"
+      }
+    },
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "lint": "PASS",
+    "selected_passed": 200
+  }
+}
