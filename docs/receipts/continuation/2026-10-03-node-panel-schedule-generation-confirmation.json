@@ -1,0 +1,31 @@
+{
+  "all16_operational_metadata_inspected": true,
+  "at_utc": "2026-10-03T20:52:23.161417+00:00",
+  "completed_rows_inferred": false,
+  "driver_epoch": "2026-10-03T20:48:40Z",
+  "evidence": {
+    "continuation-status-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/continuation-status-v1.json",
+      "sha256": "41409304c54c91375ebd035baf9641b19d08ad27c2569d9066479379631b85cb"
+    },
+    "postlaunch-operational-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/postlaunch-operational-v1.json",
+      "sha256": "3d835414cf3670b14e07deea3ded7c2a3a219edf5631df65f858cfe8b879ddab"
+    },
+    "postlaunch-process-identity-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/postlaunch-process-identity-v1.json",
+      "sha256": "42c009479bb4c174f634a3697faccce55034f126f426a828bbcb120cfa6859a6"
+    }
+  },
+  "first_campaign_epoch": "2026-10-03T20:49:09Z",
+  "first_member_model_contacts_observed": 21,
+  "first_member_state": "OPENED",
+  "gpu_utilization": 62.0,
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "observation_at": "2026-10-03T20:50:25.994923+00:00",
+  "read_status": "DRAFT UNSIGNED;no partial task-quality read",
+  "schema": "saea-node-panel-schedule-generation-confirmation-v1",
+  "service_ok": true,
+  "windows_free_gib": 15.432670593261719
+}

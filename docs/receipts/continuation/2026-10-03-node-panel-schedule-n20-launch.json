@@ -1,0 +1,86 @@
+{
+  "actual_fit_endpoint_cap": 16640,
+  "analysis_recipe": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/analysis-recipe-v1.json",
+    "sha256": "f760e5a47d0af645792f95e4ba2c649191fca49f28cb537cfde6aeb86e95d368"
+  },
+  "at_utc": "2026-10-03T20:49:39.941631+00:00",
+  "authority": "Root227 bounded context engineering",
+  "cache_state": "Inherited existing four-slot hot KV;no restart,purge,warmup,save or restore. Independent role contexts retained.",
+  "commit": "dd765815218eb7d9207701c130ae5ed9f802dab8",
+  "control_transition": "Archived only exact completed own structural controls after original queue,epoch,no STOP/lease/liveflight and live serving identity validation. No STOP cleared or failed attempt recovered.",
+  "driver_epoch": "2026-10-03T20:48:40Z",
+  "evidence": {
+    "analysis-inputs-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/analysis-inputs-v1.json",
+      "sha256": "168a15519acd5c8eb723f1da4eaa759ec52bfee14d330aacc2d8ca34bc2bab49"
+    },
+    "capacity-transfer-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/capacity-transfer-v1.json",
+      "sha256": "25558705adeed676b7ae545fc280739bada9d0abf26fc880a34b2326a608324d"
+    },
+    "driver-transition-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/driver-transition-v1.json",
+      "sha256": "d88cf861376efda6b344777f54f1f66df58102a556b728dca888dc5ee3424a82"
+    },
+    "frozen-check-v2.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/frozen-check-v2.json",
+      "sha256": "e459553351390a98d121ee2d37acb50d40b34709488ffe09f84272d9f1215e4e"
+    },
+    "initial-driver-observation-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/initial-driver-observation-v1.json",
+      "sha256": "d2c5911213f9fd769787b18af1233c3b804256e8e8853a7ef1d5819674946d8a"
+    },
+    "original-structural-timing-reader-proof-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/original-structural-timing-reader-proof-v1.json",
+      "sha256": "a092cf5bc9276cfa9d1cb898a8ad919a41cad927759ad77d216338b3578d7137"
+    },
+    "pretransition-live-serving-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/pretransition-live-serving-v1.json",
+      "sha256": "cbc430830c62811a7aa8ad41c18cddc176e384420a88e492f44b32fad6fc2b2d"
+    },
+    "unsigned-read-cli-proof-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/unsigned-read-cli-proof-v1.json",
+      "sha256": "b1511e65f77eec721d758e77fa3e8f9d5cf662d1f8b336f5c18e6d86fa269bd0"
+    },
+    "windows-launch-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/windows-launch-v1.json",
+      "sha256": "5d82709fee35d1ae99dbf21b3355e1856e347ec30837aee0341da893d0e0d01c"
+    },
+    "windows-prelaunch-v1.json": {
+      "relpath": "coordination/node-panel-schedule-n20-owner227-v1/windows-prelaunch-v1.json",
+      "sha256": "951b2a792ee6b4d284ad4260e7182c4dc2cfd598e978b19429cceb131f46f917"
+    }
+  },
+  "generation_contact_cap": 4160,
+  "heartbeat": "PAUSED",
+  "human_boundary": "before8x400",
+  "learning": "HELD",
+  "limits": [
+    "Same20 exposed inputs,repeated;not320 independent examples.",
+    "One coupled160-job panel;within-panel repeats are not independent scheduling replications.",
+    "Sequential workload runs first;report inherited-cache/order effects and separate driver/scoring waits.",
+    "Report native admission and submission latency plus quality/reliability;never substitute makespan/count."
+  ],
+  "members": 16,
+  "model_parameters_changed": false,
+  "official_scores": 16,
+  "other_carrier_holds_unchanged": true,
+  "read_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1",
+  "read_status": "DRAFT UNSIGNED;all16 finalizations,seals and unique successful official scores required before quality read",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/registration-v1.json",
+    "sha256": "fc4bd2aca4d5d6e35d6a93f8f1e766898fbddc62633477904c36c9aee8f804db"
+  },
+  "root_only": true,
+  "rows_per_member": 20,
+  "schema": "saea-node-panel-schedule-launch-v1",
+  "state_at_initial_observation": "RUNNING;initial stable-memory wait;generation not yet observed",
+  "trajectory_cap": 320,
+  "windows_task": "SAEA-Batch-Driver",
+  "worker": "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2",
+  "workloads": {
+    "panel": "One eight-owner160-job whole-node panel;fixed20-job CPU prefetch and global inference/preparation barriers",
+    "trajectory": "Eight sequential20-row complete flights"
+  }
+}
