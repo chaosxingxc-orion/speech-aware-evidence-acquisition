@@ -1,0 +1,82 @@
+{
+  "at_utc": "2026-10-03T12:52:33.622617+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints": 297
+  },
+  "entry_epoch": "2026-10-03T12:51:53.064234+00:00",
+  "evidence": [
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/root-admission-v1.json",
+      "sha256": "bcea989b36b020c1246ee03dfeef517e87a9dfe39f85f01b55c4b42bf9eaa48d"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/source-freeze-v1.json",
+      "sha256": "8ac42f3ad1f20fcafe76af0a36e206118c95d6ed7cf00115ea344ac4b4a08972"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/frozen-check-v1.json",
+      "sha256": "d9e98bccaf4166ee44ec581ba3d0e34841af1c350cc0fc02fb570cf218e3f858"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/registration-v1.json",
+      "sha256": "194af56a8870d1fe4b5479d2a03cfcedf017cc670def80967a2d41a5bb6506df"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/launch-v1.ps1",
+      "sha256": "835e857b84f5dcb3dc269d2f2d6d1905f4340abd2b6a52a2e9a8ce0e8f8859b9"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/launch-capacity-v1.py",
+      "sha256": "9e7005ec312af1eb97298bb123f09f24fa058769a9217be33fee70e2f42162df"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/guarded-child-v1.py",
+      "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/prelaunch-continuation-status-v1.json",
+      "sha256": "71412ea1c3e01a04c2021dccfbe994c8b52cf9af97ba4e53beecf2e591cde21e"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/prelaunch-live-processes-v1.json",
+      "sha256": "52dc3dfe2819a3171e9e1074b3306ba697af5d9f2267467c6d08fef2505e34f0"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/prelaunch-windows-resources-v1.json",
+      "sha256": "c57719ea4667f2d8dbf25a34fd033f44f81bfad04e002e7c7a6a3351f03ee947"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/windows-launch-request-v1.json",
+      "sha256": "a5a630db8a671a1fe570fcbfa5ecd4a1fca0f1c454b6e6ccf405a6f15ac1d5fb"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/windows-task-v1.xml",
+      "sha256": "2808dd2534858837995dfbd2a17c64e7ec64d1b7a6798fb5f893f93fe6dbfbc9"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/launcher-start.json",
+      "sha256": "e0d927b39f1bc2a4df3d073ed18194c3e7f383d7e7cfe183f7919e28d66f4e3d"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/capacity-started.json",
+      "sha256": "31e3b55d7ee7461e64376e0b629fc9cdd09b741e5630decd2a6db65187c9b4bc"
+    },
+    {
+      "relpath": "coordination/context-layout-capacity-owner227-v1/launch-live-process-v1.json",
+      "sha256": "36329b91c0db1dc43bf397f60a8d22648ce937b0793014d7640b2cb6771d80f3"
+    }
+  ],
+  "held": "Four-row structural generation and all learning/ROUND8 remain HELD;heartbeat PAUSED.",
+  "launcher_pid": 498960,
+  "launcher_start_ticks": "38416003",
+  "prelaunch": "No competing generation/scorer/lease or STOP;exact serverPID942 epoch2026-10-01T03:10:56.492238Z,4x24576,max512,no-mmproj;healthy4idle slots,telemetry age5.918s,Windows17.918GiB. Revalidate during execution.",
+  "registration_sha256": "194af56a8870d1fe4b5479d2a03cfcedf017cc670def80967a2d41a5bb6506df",
+  "schema": "saea-context-layout-capacity-launch-v1",
+  "scope": "Before-speech seed layout only;no queue/STOP/service/cache changes. Lease/memory wait and run_guarded preserve failures;no retry.",
+  "status": "Windows task launched once;capacity completion pending",
+  "task": "SAEA-Context-Layout-Before-Speech-Capacity-Owner227",
+  "worker": "/home/chao/saea-worktrees/codex-context-layout-capacity-v1",
+  "worker_commit": "becae023450f93e95f205d67dd0a4c0a829d849d"
+}

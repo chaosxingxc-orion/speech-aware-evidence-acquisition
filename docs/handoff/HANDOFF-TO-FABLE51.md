@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Seed before-speech capacity task launched, 2026-10-03T12:52:33.622617+00:00
+
+Windows SAEA-Context-Layout-Before-Speech-Capacity-Owner227 entered once at12:51:53.064234Z,PID498960,on immutable becae023450f93e95f205d67dd0a4c0a829d849d. [Launch custody](../receipts/continuation/2026-10-03-context-layout-capacity-launch.json) pins the passing frozen checks,exact registration194af56a...,durable wrapper and current live/resource evidence. One297-endpoint capacity only;zero generation or scoring. Completion and measured margins are pending.
+
+Current service was healthy and idle at launch,Windows17.918 GiB;startup12.5/running8 GiB guards apply. No queue/STOP/service/cache changes or learning contacts. Any failure stops without retry. Structural4 and ROUND8 learning stay HELD pending separate root review;heartbeat PAUSED.
+
 ## Seed before-speech capacity exactly admitted, 2026-10-03T12:47:52.589912+00:00
 
 Root227 reviewed the pinned recipe and actual graph/template/source evidence,then delegated one297-endpoint nongenerative FIT identity. [Exact capacity admission](../receipts/continuation/2026-10-03-context-layout-capacity-root-admission.json) binds the seed-only before-speech layout,unchanged role text,12.5/8 GiB guards,existing service geometry and one fresh Windows task after clean frozen and current live checks. Zero contacts so far.
