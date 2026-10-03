@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 typed previews complete; exact budget and registration await root, 2026-10-03T10:27:26.178130+00:00
+
+Four unregistered previews preserve25 closed and three HELD opportunities. Each L keeps13 closed own histories and the qualified round5 own-L panel; B keeps zero histories and no feedback/selection. Maximal four-request double4096-byte envelopes are130930 for L and107311 for B. Propose an equal139264 ceiling, leaving8334 against the current L preview; the draft used147456 and exact final identities/cap require recheck. [Pinned preview package](../readiness/2026-10-03-slurp-round8-typed-preview-v1/README.md). No new allocation, proposal/model contact, provider admission or GPU dispatch. Model gpt-6-astra, output4096, contact4, same400 assets and candidate-panel prefix affinity OFF remain fixed. Heartbeat PAUSED.
+
 ## Existing own-app session maintained successfully; no proposal dispatch, 2026-10-03T10:19:18.512293+00:00
 
 Root separately authorized normal SDK maintenance after the read-only observation. A diagnostic import-path defect was proven synthetically, preserved and superseded only under an exact root disposition. Corrected entry at10:14:01Z succeeded: one ordinary refresh POST, two identity GETs and one catalogue GET returned200, the SDK securely updated its own credential file, and zero model POSTs occurred. No new login/sharing change or credential disclosure. [Evidence](../receipts/continuation/2026-10-03-proposer-sdk-maintenance-ready.json). The old B72 cause remains unestablished.25 closed and three HELD opportunities stay unchanged. Prospective round8 typed inputs and headroom are offline preparation only; no new proposal admission, no heartbeat resume and no learning-panel cache change.
@@ -870,7 +874,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T10:19:18.512293+00:00
+Last refreshed: 2026-10-03T10:27:26.178130+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

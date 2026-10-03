@@ -1,0 +1,136 @@
+{
+  "blind_isolation": "0 own history, no feedback or selection; seed only. No root/B result export.",
+  "contact_cap": 4,
+  "draft_rehearsal_input_cap": 147456,
+  "gpu_dispatch_authority": false,
+  "headroom_rule": "Smallest4096-aligned ceiling above measured maximum plus8192; final exact protocol identities and frozen packet at selected cap must be checked again.",
+  "learning_history": "All13 closed own-L records, including original invalid L71/L72, plus qualified complete round5 own-L panel; no source or failure omitted.",
+  "members": [
+    {
+      "artifact_count": 165,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/L-8-1-preview-capsule-v1.json",
+        "sha256": "4269a3d697a654ad4e71b3c9d9285a286f84bbdf18b8d3f162749811759b2e09"
+      },
+      "cumulative_bound": 130930,
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/L-8-1-envelope-v1.json",
+        "sha256": "73e4955ef1b8036a605d4dbf5d62c88375b438929c6b8183d0ab3c026f3b8dcb"
+      },
+      "history_entries": 13,
+      "initial_bound": 20442,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/L-8-1-preview-input-v1.json",
+        "sha256": "687812a6cc1427cc63481c2afbeab22717f3299ca1b0d03ebefd8195469e4248"
+      },
+      "key": "L-8-1",
+      "model_contacts": 0,
+      "registered": false,
+      "status": "covered_envelope_fits"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/B-8-1-preview-capsule-v1.json",
+        "sha256": "db4c7c8da0a7e11ddd92df73697aa0cf39e4d4f538f81bb712df14275b45a9a8"
+      },
+      "cumulative_bound": 107311,
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/B-8-1-envelope-v1.json",
+        "sha256": "abc6068a1b0f8254a5e360cd2107e32befc5fee812c1889e2fdedfeea8db3ce5"
+      },
+      "history_entries": 0,
+      "initial_bound": 14537,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/B-8-1-preview-input-v1.json",
+        "sha256": "ca5cdeaa133f0e4bf851f789b40903310c50ddc46fbc5e8864295c349ffea424"
+      },
+      "key": "B-8-1",
+      "model_contacts": 0,
+      "registered": false,
+      "status": "covered_envelope_fits"
+    },
+    {
+      "artifact_count": 165,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/L-8-2-preview-capsule-v1.json",
+        "sha256": "5213ce085f249ebdd4babf66d5876642dba91c3e067893403d9cdeff67472abd"
+      },
+      "cumulative_bound": 130930,
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/L-8-2-envelope-v1.json",
+        "sha256": "2d8bce5aca1bd7421801a9d0efbe62c3a8a3b6a568f91ab335cc71fc43aff9f6"
+      },
+      "history_entries": 13,
+      "initial_bound": 20442,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/L-8-2-preview-input-v1.json",
+        "sha256": "289c3c713ce3309eea3412a0f88b8bbcc1a6190176d761cc8900b2ee99e04de3"
+      },
+      "key": "L-8-2",
+      "model_contacts": 0,
+      "registered": false,
+      "status": "covered_envelope_fits"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/B-8-2-preview-capsule-v1.json",
+        "sha256": "9090ae68aa2d5207a9396af34374c0fb35ce0ee08f6410b0e17f7adc49721ca8"
+      },
+      "cumulative_bound": 107311,
+      "envelope": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/B-8-2-envelope-v1.json",
+        "sha256": "42290c8c287b461ae6e1dfe0652ef1f5856d22e4c7f44b4a67633909c7281459"
+      },
+      "history_entries": 0,
+      "initial_bound": 14537,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/B-8-2-preview-input-v1.json",
+        "sha256": "3cc7590bc251d2377a0f00e7943adcc841a9c19d14abd05d40dc4768744bf0ac"
+      },
+      "key": "B-8-2",
+      "model_contacts": 0,
+      "registered": false,
+      "status": "covered_envelope_fits"
+    }
+  ],
+  "model_version": "gpt-6-astra",
+  "new_allocations_registered": 0,
+  "new_model_contacts": 0,
+  "old_closed": 25,
+  "old_held": 3,
+  "output_acceptance_cap": 4096,
+  "preparation_refusal": {
+    "corrected_script": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/prepare-preview-v2.py",
+      "sha256": "8db3845af4290d106ea756885e84dc69d4432529a053914a4dfa4e73372291af"
+    },
+    "disposition": "New prospective selection binding sets next_round8 and its own draft protocol/hash; underlying qualified feedback/parent/source data remain unchanged.",
+    "first_script": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-preview-v1/prepare-preview-v1.py",
+      "sha256": "04c9540ba8e1fbe278dbcbd34729edda7219326a8cb21bedcdd545ec760d08ba"
+    },
+    "model_contacts": 0,
+    "phase": "model-free, before any cache/input publication",
+    "reason": "Initial draft copied old selection.next_round7 while packet.round8 and draft protocol differed."
+  },
+  "preview_not_admission": "These packets carry explicit unregistered draft protocol and extension digests; no new archive allocation, execution plan, provider admission or launch registration exists.",
+  "proposal_dispatch_authority": false,
+  "proposed_equal_input_cap": 139264,
+  "proposed_headroom": 8334,
+  "prospective_allocations": [
+    "L-8-1",
+    "B-8-1",
+    "L-8-2",
+    "B-8-2"
+  ],
+  "provider_output_items_bytes": 4096,
+  "recorded_at_utc": "2026-10-03T10:27:26.178130+00:00",
+  "round": 8,
+  "schema": "saea-unregistered-proposer-capacity-preview-v1",
+  "scientific_status": "Reused fixed400 optimization, no benefit, adoption, independent validation or matched-total-compute claim.",
+  "status": "PREVIEW-COMPLETE-AWAITING-ROOT-BUDGET-SELECTION",
+  "tool_result_bytes": 4096,
+  "view_profile": "typed-coherent-feedback-v1"
+}
