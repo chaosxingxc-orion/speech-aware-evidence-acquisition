@@ -1,0 +1,65 @@
+{
+  "automatic_retry": false,
+  "completed_contacts_inferred": false,
+  "dispatch_count": 1,
+  "final_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/final-check-only-v1.json",
+    "sha256": "993b42e7ed3e6bf2e881a9d30d90a14aa7e7085d500fdf93af6c48d96253b58d"
+  },
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-proposer-successor1-admitted-v1",
+  "gpu_runtime_dispatch": false,
+  "heartbeat_status": "PAUSED",
+  "launcher_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/launcher-start.json",
+    "sha256": "c2ae272999223f87814b491aa0dfda180028879a9a9dea3929dfda66855f8d1a"
+  },
+  "live_pid": 455569,
+  "owner_decision": 227,
+  "precontact": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227/execution-successor1-owner227-v1/precontact.json",
+    "sha256": "b458aa9652a444955baa58d73df96154fda80a4972997d0861a5f44fba876a9c"
+  },
+  "prefix_affinity_enabled": false,
+  "queue_or_stop_modified": false,
+  "recorded_at_utc": "2026-10-03T09:46:10.461209+00:00",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/registration.json",
+    "sha256": "b20a3a3f3cb6ba8780fbdc47e7f3e18bcf6b22f8085a3d2fd9ee3eaf97d556c4"
+  },
+  "reservation_count_at_checkpoint": 3,
+  "reservation_proof": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227/execution-successor1-owner227-v1/contacts/L-7-1/001.json",
+      "sha256": "0c6df0f6a6543fa723fe35b2f8584ebe08d23560e038dc6a45bd22cf2befa680"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227/execution-successor1-owner227-v1/contacts/L-7-1/002.json",
+      "sha256": "3c38e1c221ee48abfba1f38e04a12115385719b8ef4612ffe1ae2547bfddd099"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227/execution-successor1-owner227-v1/contacts/L-7-1/003.json",
+      "sha256": "548aeeef0f88222439c9b31bc76172061d49c2a6fe48e7fd96563614986f7a40"
+    }
+  ],
+  "root_admission": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/receipts/continuation/2026-10-03-proposer-successor1-root-admission.json",
+    "sha256": "bc9d5167ad0b461ad54409e1631f2fe549df1900199869b759fe66cb467f73f8"
+  },
+  "schema": "saea-root-proposer-launch-v1",
+  "source_commit": "316583e498f5c21225529dd122d47a37068b2f04",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227/execution-successor1-owner227-v1/started.json",
+    "sha256": "40bdb8ca92fe6b8c4db2f4804a4b309068c826a2a0bf9511212ba0b0a57dcc55"
+  },
+  "status": "RUNNING",
+  "task_epoch_utc": "2026-10-03T09:43:48Z",
+  "task_name": "SAEA-System-Text-Proposer-Successor1-Owner227",
+  "verified_argv": [
+    "/home/chao/.venvs/speechrl/bin/python",
+    "-B",
+    "scripts/flights/system_text_proposer_round.py",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/registration.json",
+    "--sha256",
+    "b20a3a3f3cb6ba8780fbdc47e7f3e18bcf6b22f8085a3d2fd9ee3eaf97d556c4"
+  ]
+}
