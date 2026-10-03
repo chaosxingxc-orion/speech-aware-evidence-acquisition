@@ -1,0 +1,65 @@
+{
+  "at_utc": "2026-10-03T12:22:32.853167+00:00",
+  "authority": "Exact root227 delegation after capacity closure",
+  "completed_control_transition": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/driver-transition-v1.json",
+    "sha256": "7a8007e44a940f581747c6f528007b0ebf7082d8aba13e0820a28c5af60c6f77"
+  },
+  "driver_epoch": "2026-10-03T12:21:56Z",
+  "frozen_check": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/frozen-check-v1.json",
+    "sha256": "1fa30d2b936979e7ab603acf796924549c95f311c4374119de9fdbd352193927"
+  },
+  "heartbeat": "PAUSED",
+  "next20": "HELD for root structural review",
+  "processes": [
+    {
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver_task.sh",
+        ""
+      ],
+      "pid": 483339,
+      "start_ticks": "38242137"
+    },
+    {
+      "argv": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh",
+        ""
+      ],
+      "pid": 483340,
+      "start_ticks": "38242137"
+    }
+  ],
+  "queue_sha256": "26667c04c09153555989b1fe417aad62e79ca69c3c421ee0f5ca0c3cb8e0b75d",
+  "root_admission": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "9026cc396546115f9abacf5a43ba48b46e67e805413dc67cd43417865c11df9a"
+  },
+  "schema": "saea-round8-structural-launch-v1",
+  "scientific_read": false,
+  "scope": "Exactly3x4 structural worker-only trajectories,max156 generation/624FIT endpoints,zero official scorer. Completion and structural acceptance pending.",
+  "source_commit": "deab94ffe4c85f88e6e2e46b5eafe886e65aa069",
+  "source_compatibility": "Only process_guard differs from successful frozen capacity src. Three role-text sets match capacity; legacy layout,trajectory routing,affinity OFF unchanged.",
+  "status_at_read": {
+    "at": "2026-10-03T12:22:23Z",
+    "detail": {
+      "step": 1,
+      "warmup": "registered-model-work-only"
+    },
+    "event": "prelaunch-ok"
+  },
+  "tests": {
+    "engineering_base": "PASS",
+    "finite_completion": "PASS",
+    "focused_passed": 63,
+    "guard_module_statement_coverage_percent": 94,
+    "handoff_freshness": "PASS"
+  },
+  "windows_launch": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/windows-launch-request-v1.json",
+    "sha256": "7db06c7382ebaa0d96643866cf322cdb017c642b1d9f35a2e33bf43c71f0f808"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-system-text-round8-structural-v1"
+}

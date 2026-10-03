@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 structural task launched once, 2026-10-03T12:22:32.853167+00:00
+
+Windows SAEA-Batch-Driver entered at12:21:56Z on separate frozen deab94ffe4c85f88e6e2e46b5eafe886e65aa069,driver PID483340. All three registration/runtime/own-supply/composition checks passed with zero contacts and role hashes identical to capacity proofs. [Launch custody](../receipts/continuation/2026-10-03-round8-structural-launch.json) retains exact source,root admission,prelaunch evidence and normal completed-control archive. Startup observed13.796 GiB free; the driver begins its registered stable memory wait before the guarded worker. Completion is pending.
+
+Only three4-row structural workers are admitted,with12.5 GiB startup/8 GiB running guard and failure lease preservation. No official scoring,scientific READ,retry or automatic8x20. Retain legacy layout,trajectory scheduler,affinity and before-speech placement OFF,all frozen bytes and heartbeat PAUSED. After completion read only role/control,FIT,Omni custody and numeric node costs,then return to root for panel admission.
+
+
 ## Round8 structural entry root-admitted, 2026-10-03T12:17:53.777290+00:00
 
 Root227 admits only three four-row worker proofs: parent, B81 and B82,12 trajectories total,maximum156 generation contacts and624 tokenizer endpoints,zero scoring. [Exact admission](../receipts/continuation/2026-10-03-round8-structural-root-admission.json) binds separately prepared own supplies and structural-only read recipes. Keep current legacy layout,trajectory scheduling,affinity and before-speech placement OFF,and unchanged400 assets/knowledge. All8x20 comparison cells remain HELD for root structural review.
@@ -974,7 +981,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T12:17:53.777290+00:00
+Last refreshed: 2026-10-03T12:22:32.853167+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
