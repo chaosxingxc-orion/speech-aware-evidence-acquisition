@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Context policy identity and deployed cache audit, 2026-10-03T12:25:45.264139+00:00
+
+A prospective v2 whole-policy bundle now binds independent role text and the declared shared context layout, including historical placement or before-speech-v1. Compilation and actual four-fragment prelaunch composition must match that identity; v1 semantics remain unchanged. The current v1 proposer cannot change layout, so an expanded proposer protocol remains a separate prospective step. [Scope and 275 model-free checks](../readiness/2026-10-03-node-context-optimization-v1/context-policy-bundle-v2.md), [engineering receipt](../receipts/continuation/2026-10-03-context-policy-bundle-engineering.json). No live contacts or current round8 changes occurred.
+
+The pinned deployed llama.cpp audit distinguishes live-slot prefix reuse, disabled RAM backup and inactive disk snapshots. Current explicit-slot routing with similarity zero bypasses the automatic RAM update path; merely increasing RAM capacity is insufficient. Ordinary divergent-prefix truncation can cause reevaluation without memory-pressure eviction. The inspected operational log has no observed RAM eviction or KV-pressure purge events. [Source-bound audit](../readiness/2026-10-03-node-context-optimization-v1/prefix-cache-lifecycle-audit.md) records limits and a prospective measured driver policy. Never call disk save on populated custom speech slots in the current build: its text-only accessor can assert, and restore does not reconstruct media metadata. This is a static finding, not a live crash. No service option, cache endpoint, queue or frozen source was changed.
+
+Round8 structural validation remains on immutable deab94ffe under its existing separate admission. Preserve trajectory scheduling, legacy layout, full output reserves, 8 GiB running / 12.5 GiB startup, all L/B and complete-family read boundaries, and PAUSED heartbeat. Node cache efficiency is a measured cost, not an eligibility gate or a reason to force identical prompts. Human review remains required before8x400.
+
 ## Round8 structural task launched once, 2026-10-03T12:22:32.853167+00:00
 
 Windows SAEA-Batch-Driver entered at12:21:56Z on separate frozen deab94ffe4c85f88e6e2e46b5eafe886e65aa069,driver PID483340. All three registration/runtime/own-supply/composition checks passed with zero contacts and role hashes identical to capacity proofs. [Launch custody](../receipts/continuation/2026-10-03-round8-structural-launch.json) retains exact source,root admission,prelaunch evidence and normal completed-control archive. Startup observed13.796 GiB free; the driver begins its registered stable memory wait before the guarded worker. Completion is pending.
