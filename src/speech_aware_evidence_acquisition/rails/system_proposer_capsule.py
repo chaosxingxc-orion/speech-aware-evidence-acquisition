@@ -30,7 +30,8 @@ MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
 CACHE_CHARS = 256 * 1024
-COMPACT_PROFILES = ("compact-feedback-v1", "source-examples-v1", "coherent-feedback-v1")
+COHERENT_PROFILES = ("coherent-feedback-v1", "typed-coherent-feedback-v1")
+COMPACT_PROFILES = ("compact-feedback-v1", "source-examples-v1", *COHERENT_PROFILES)
 VIEW_PROFILES = ("full-index-v1", *COMPACT_PROFILES)
 BROKER_TOOL = {
     "type": "function", "name": "read_artifact",
@@ -417,6 +418,9 @@ class ProposerCapsule:
                 " This cycle keeps knowledge, construction, supply and executable code frozen. "
                 "Revise only role/context text; evaluate on the same reused optimization pool. "
                 "This is optimization feedback, not independent validation.")
+        if self.view_profile == "typed-coherent-feedback-v1":
+            from .system_text_policy import TextPolicyUpdateProposal
+            result["response_contract"] = TextPolicyUpdateProposal.response_contract(packet)
         full = json.loads(self._packet)
         if "feedback" in full:
             result["feedback_summary"] = {"family_id": full["feedback"].get("family_id"),
@@ -458,7 +462,7 @@ class ProposerCapsule:
                 from .system_proposer_views import inline_feedback_examples
                 result["feedback_examples"] = inline_feedback_examples(
                     result["feedback_overview"], self._artifacts, self._page)
-            if self.view_profile == "coherent-feedback-v1" and "feedback" in full:
+            if self.view_profile in COHERENT_PROFILES and "feedback" in full:
                 from .system_proposer_views import coherent_feedback_chain
                 overview = result.pop("feedback_overview")
                 result["feedback_chain"] = coherent_feedback_chain(
@@ -537,7 +541,7 @@ class ProposerCapsule:
                 "a candidate hypothesis need not already demonstrate benefit, but must distinguish "
                 "observed evidence from an untested proposed repair. Do not claim to have read omitted text."
             )
-        if self.view_profile == "coherent-feedback-v1" and packet["branch"] == "L":
+        if self.view_profile in COHERENT_PROFILES and packet["branch"] == "L":
             result["instructions"] += (
                 " Examine the full decision chain and the balanced category index. The selected role replies are untruncated; "
                 "the chain is only one source example, not the complete trajectory or a causal explanation. "

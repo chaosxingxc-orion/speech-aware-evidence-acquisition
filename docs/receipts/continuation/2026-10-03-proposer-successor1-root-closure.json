@@ -1,0 +1,35 @@
+{
+  "B71_activation": "none",
+  "B72_archive_closure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-successor1-admitted-owner227-v1/B-7-2-root-disposition-v1.json",
+    "sha256": "2f562fdbd5d87c8948f3d0de912b37e9ef4f6125bd9b11b16a1f7b95340a12ae"
+  },
+  "gpu_dispatch": false,
+  "heartbeat": "PAUSED",
+  "input_tokens": null,
+  "metered_sequence_totals": {
+    "completed_returns": 8,
+    "generic_unmetered_reservations": 1,
+    "input_tokens": 32791,
+    "output_tokens": 2930,
+    "reservations": 9
+  },
+  "metering_complete": false,
+  "new_contacts": 0,
+  "old_incident_bytes_unchanged": true,
+  "old_incident_receipt": "docs/receipts/continuation/2026-10-03-proposer-successor1-outcome-stop.json",
+  "output_tokens": null,
+  "owner_decision": 227,
+  "proposer_opportunities": {
+    "closed_predecessors": 21,
+    "closed_successor": 4,
+    "held_predecessors": 3,
+    "total_closed": 25
+  },
+  "recorded_at_utc": "2026-10-03T10:04:11.818049+00:00",
+  "replacement": false,
+  "retry": false,
+  "root_disposition": "Preserve L71/L72 invalid and unactivated B71; archive reserved B72 failure with original empty response and unknown usage; no retry, replacement or incomplete panel.",
+  "schema": "saea-root-proposer-successor1-closure-v1",
+  "status": "ALL-FOUR-ALLOCATIONS-CLOSED-NO-DISPATCH"
+}

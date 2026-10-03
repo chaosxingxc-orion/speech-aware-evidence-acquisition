@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Successor1 allocations closed; future typed contract is offline only, 2026-10-03T10:04:11.818049+00:00
+
+Root227 preserved L71/L72 invalid, B71 unactivated and closed B72 through the existing archive as invalid with original empty response and unknown usage. Nine reservations/eight metered returns remain32791 input and2930 output; the pre-POST ninth retains generic unmetered metadata.25 closed opportunities and three old HELD identities remain unchanged. [Root closure](../receipts/continuation/2026-10-03-proposer-successor1-root-closure.json).
+
+The future optional typed response view clarifies every field/array item and validates examples against the existing parser. Credential failures gain safe allowlisted pre-HTTP categories without secrets.162 tests pass; no old request or response is rewritten. Actual old-input rehearsal preserves all non-contract content and B isolation. L's retained two-page path and maximal four-request double4096-byte envelope fit unchanged131072 at130954 (118 margin); B fits at107334. Recheck any future exact history before registration. [Offline package](../readiness/2026-10-03-slurp-typed-proposer-contract-v1/README.md). No new contacts, allocations, retry, incomplete GPU panel, READ or benefit claim. Heartbeat PAUSED; prefix affinity OFF for the candidate panel.
+
 ## Successor1 stopped with two schema-invalid L outputs and a credential-entry failure, 2026-10-03T09:53:48.383910+00:00
 
 The one-shot proposal task ended09:49:44.316897Z and wrapper exited1. L-7-1 and L-7-2 returned complete metered responses but are invalid: hypotheses[0] is an object while the pinned schema requires an English string. Keep the original empty L71 changes and L72 Planner edit invalid; do not reinterpret or repair them. B-7-1 is a provisional Solver candidate, compiled with zero contacts and unactivated. B-7-2 reserved one opportunity then failed before HTTP POST in the bearer callback; the masked underlying cause is unestablished. No sign-in expiry or provider failure is inferred. [Exact diagnosis and minimal disposition proposal](../readiness/2026-10-03-slurp-successor1-outcome-stop-v1/README.md); [cost/custody receipt](../receipts/continuation/2026-10-03-proposer-successor1-outcome-stop.json).
@@ -842,7 +848,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T09:53:48.383910+00:00
+Last refreshed: 2026-10-03T10:08:03.357917+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -120,8 +120,10 @@ class ResponsesHTTP:
             if self.bearer is not None:
                 try:
                     token = self.bearer()
-                except Exception:
-                    raise PolicyError("registered credential unavailable") from None
+                except Exception as error:
+                    from .system_subscription_auth import CredentialFailure, safe_credential_failure
+                    safe = safe_credential_failure(error)
+                    raise CredentialFailure(safe["category"], transport=True) from None
                 require(isinstance(token, str) and token and not any(c.isspace() for c in token), "invalid credential")
                 headers["Authorization"] = "Bearer " + token
             connection.request("POST", self.parsed.path, body=canonical(request).encode("utf-8"), headers=headers)
@@ -352,9 +354,13 @@ class ResponsesProposer:
                 history.extend(copy.deepcopy(final["output"]))
                 history.append(tool_item)
         except Exception as error:
-            write(self.audit_dir / "outcome.json", {"status": "failed", "error_type": type(error).__name__,
+            outcome = {"status": "failed", "error_type": type(error).__name__,
                 "failure_reason": str(error) if isinstance(error, PolicyError) else None,
                 "observed_input_tokens": total_input, "observed_output_tokens": total_output,
                 "attempted_contacts": attempted, "unmetered_contacts": attempted - metered,
-                "usage_complete": attempted == metered, "activation": "none", "retry_permitted": False})
+                "usage_complete": attempted == metered, "activation": "none", "retry_permitted": False}
+            from .system_subscription_auth import CredentialFailure, safe_credential_failure
+            if type(error) is CredentialFailure:
+                outcome["credential_failure"] = safe_credential_failure(error)
+            write(self.audit_dir / "outcome.json", outcome)
             raise

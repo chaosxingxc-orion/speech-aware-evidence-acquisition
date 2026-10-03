@@ -192,6 +192,11 @@ def main():
             "registration_sha256": args.sha256, "phase": "credential-check",
             "status": "precontact-failure", "error_type": type(error).__name__,
             "generation_contacts": 0, "allocations_reserved": 0, "retry_permitted": False}
+        from speech_aware_evidence_acquisition.rails.system_subscription_auth import (
+            CredentialFailure, safe_credential_failure,
+        )
+        if type(error) is CredentialFailure:
+            failure["credential_failure"] = safe_credential_failure(error)
         write_once(output / "precontact-failure.json", failure)
         print(canonical(failure))
         return 1

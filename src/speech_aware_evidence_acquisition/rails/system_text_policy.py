@@ -17,6 +17,9 @@ from .prepared_feedback import reject_non_latin_scripts
 
 BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v1"
 PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v1"
+TEXT_CHARACTER_CAP = 32768
+PROPOSAL_KEYS = frozenset({"schema", "branch", "round", "slot", "parent_ids",
+                           "changes", "rationale", "hypotheses", "evidence"})
 EDITABLE = frozenset({"construction_instruction", "role_text", "supply", "slot_value_edits"})
 BUNDLE_KEYS = frozenset({"schema", "parent_ids", "seed_config_sha256", "construction_instruction",
                         "role_text", "supply", "knowledge", "construction_receipt",
@@ -43,7 +46,7 @@ def canonical(value):
 
 def _text(value):
     require(isinstance(value, str) and bool(value.strip()), "nonempty English text is required")
-    require(len(value) <= 32768, "text exceeds registered character ceiling")
+    require(len(value) <= TEXT_CHARACTER_CAP, "text exceeds registered character ceiling")
     try:
         reject_non_latin_scripts(value)
     except ValueError as error:
@@ -159,10 +162,45 @@ class TextPolicyUpdateProposal:
     def as_json(self):
         return json.loads(self.document_json)
 
+    @staticmethod
+    def response_contract(packet):
+        """Describe exact proposal field types without repeating task evidence.
+
+        This prospective description shares schema, field names and text limits
+        with the validator. It never converts or repairs an old response.
+        """
+        editable = {
+            "role_text": "object: optional solver/reviewer/planner keys, each an EnglishText replacement",
+            "supply": "object: exactly mode (targeted|reread string), value_limit (integer1|2)",
+            "construction_instruction": "EnglishText; requires a materialized knowledge release",
+            "slot_value_edits": "object: schema string, base_rows_sha256 SHA256, edits array<object>; follow the indexed slot edit contract"}
+        allowed = packet.get("optimization_scope", {}).get("editable", sorted(EDITABLE))
+        fields = {
+            "schema": "string = example", "branch": "string = example",
+            "round": "integer = example", "slot": "integer = example",
+            "parent_ids": "nonempty array<SHA256>; allowed IDs; first as example",
+            "changes": "object: optional editable_changes fields; {} means no change",
+            "rationale": "EnglishText",
+            "hypotheses": "array<EnglishText>; [] valid; never objects",
+            "evidence": "array<JSON>; English text; cite sources; invent no evidence"}
+        require(set(fields) == PROPOSAL_KEYS, "proposal field description differs from validator")
+        example = {"schema": PROPOSAL_SCHEMA, "branch": packet["branch"], "round": packet["round"],
+            "slot": packet["slot"], "parent_ids": [packet["parent_bundle_id"]], "changes": {},
+            "rationale": "No supported revision.", "hypotheses": [], "evidence": []}
+        rules = "Keep parent boundaries/control syntax. Invalid, duplicate and no-change spend the slot. Omni owns answers. No sample answers in runtime text."
+        if "optimization_scope" in packet:
+            rules += " Only role text changes; knowledge, supply and code stay frozen. Reused pool means optimization, not validation."
+        return {"contract_version": "typed-fields-v1",
+            "format": "One JSON object, exactly the example fields; no Markdown.",
+            "types": {"EnglishText": f"nonblank English string,1..{TEXT_CHARACTER_CAP} characters",
+                "SHA256": "64 lowercase hexadecimal characters",
+                "JSON": "object|array|string|number|boolean|null"},
+            "field_types": fields, "editable_changes": {k: editable[k] for k in allowed},
+            "example": example, "rules": rules}
+
     @classmethod
     def from_json(cls, d, *, allocation_extension=None):
-        require(isinstance(d, dict) and set(d) == {"schema", "branch", "round", "slot", "parent_ids",
-                                                 "changes", "rationale", "hypotheses", "evidence"}
+        require(isinstance(d, dict) and set(d) == PROPOSAL_KEYS
                 and d["schema"] == PROPOSAL_SCHEMA, "proposal fields differ")
         from .system_search_allocations import require_round
         require_round(d["round"], allocation_extension)

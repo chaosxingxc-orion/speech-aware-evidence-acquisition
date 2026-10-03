@@ -6,7 +6,36 @@ import os
 from pathlib import Path
 import subprocess
 
-from .system_text_policy import PolicyError, require
+from .system_text_policy import PolicyError
+
+
+_CREDENTIAL_ERRORS = {
+    "adapter-unreadable": "own-app credential adapter is unreadable",
+    "adapter-pin-mismatch": "own-app credential adapter changed",
+    "pipe-timeout": "own-app credential pipe timed out",
+    "pipe-os-error": "own-app credential pipe could not start",
+    "pipe-execution-error": "own-app credential pipe execution failed",
+    "pipe-exit-nonzero": "own-app credential pipe exited unsuccessfully",
+    "pipe-response-non-ascii": "invalid own-app credential response encoding",
+    "pipe-response-invalid": "invalid own-app credential response shape",
+    "callback-unclassified": "registered credential callback failed without a safe category",
+}
+
+
+class CredentialFailure(PolicyError):
+    """Carry only a fixed local failure category; never child output or headers."""
+
+    def __init__(self, category, *, transport=False):
+        self.category = category if isinstance(category, str) and category in _CREDENTIAL_ERRORS else "callback-unclassified"
+        super().__init__("registered credential unavailable" if transport else _CREDENTIAL_ERRORS[self.category])
+
+
+def safe_credential_failure(error):
+    """Map only our exact error type and allowlisted category to public metadata."""
+    category = error.category if type(error) is CredentialFailure else "callback-unclassified"
+    if not isinstance(category, str) or category not in _CREDENTIAL_ERRORS:
+        category = "callback-unclassified"
+    return {"category": category, "phase": "before-http-post", "http_post_entered": False}
 
 
 class SubscriptionBearer:
@@ -18,8 +47,12 @@ class SubscriptionBearer:
         self.app_root_windows = app_root_windows
 
     def __call__(self):
-        require(hashlib.sha256(self.script_local.read_bytes()).hexdigest() == self.script_sha256,
-                "own-app credential adapter changed")
+        try:
+            actual_hash = hashlib.sha256(self.script_local.read_bytes()).hexdigest()
+        except OSError:
+            raise CredentialFailure("adapter-unreadable") from None
+        if actual_hash != self.script_sha256:
+            raise CredentialFailure("adapter-pin-mismatch")
         env = {k: v for k, v in os.environ.items() if k.upper() in {
             "PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP", "USERPROFILE", "LOCALAPPDATA",
             "APPDATA", "PROGRAMDATA", "COMSPEC", "PATHEXT", "WSLENV"}}
@@ -35,14 +68,20 @@ class SubscriptionBearer:
             result = subprocess.run(command,
                 input=b"", stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env,
                 timeout=90, check=False)
-        except (OSError, subprocess.SubprocessError):
-            raise PolicyError("own-app credential pipe unavailable") from None
+        except subprocess.TimeoutExpired:
+            raise CredentialFailure("pipe-timeout") from None
+        except OSError:
+            raise CredentialFailure("pipe-os-error") from None
+        except subprocess.SubprocessError:
+            raise CredentialFailure("pipe-execution-error") from None
         # Never include child stdout/stderr in an exception or a research receipt.
-        require(result.returncode == 0, "own-app sign-in or credential renewal required")
+        if result.returncode != 0:
+            raise CredentialFailure("pipe-exit-nonzero")
         try:
             token = result.stdout.decode("ascii")
         except UnicodeError:
-            raise PolicyError("invalid own-app credential response") from None
-        require(1 <= len(token) <= 32768 and not any(c.isspace() for c in token)
-                and not token.startswith(("{", "[")), "invalid own-app credential response")
+            raise CredentialFailure("pipe-response-non-ascii") from None
+        if not (1 <= len(token) <= 32768 and not any(c.isspace() for c in token)
+                and not token.startswith(("{", "["))):
+            raise CredentialFailure("pipe-response-invalid")
         return token

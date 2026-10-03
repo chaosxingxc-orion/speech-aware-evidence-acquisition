@@ -1,0 +1,55 @@
+{
+  "actual_model_contacts": 0,
+  "audit_reports": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/B-7-1-typed-view-audit-v3.json",
+      "sha256": "1f46057020efc0b04833c0e58610990d3d13c901fd32c38c037f8d3f883ea174"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/B-7-2-typed-view-audit-v3.json",
+      "sha256": "7f2dda9241290104472df378f19c141ee53357a2b1de0162d9ba818ede424ca7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/L-7-1-typed-view-audit-v3.json",
+      "sha256": "75f944f33ab6f2ec9eb1f0bd7dd689cb89da8aeb4112822fe7e0c7d5ef394b3a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-typed-contract-offline-v1/L-7-2-typed-view-audit-v3.json",
+      "sha256": "9e403e02d5d524d21cca6d4951305c3e695766ae1f90ba156f4d40713bef8d29"
+    }
+  ],
+  "checks": {
+    "engineering_base": "PASS",
+    "git_diff": "PASS",
+    "handoff_freshness": "PASS",
+    "harness_admission": "PASS",
+    "results_ledger": "PASS with188 existing findings; no blocking finding"
+  },
+  "credential_diagnostics": "Only fixed allowlisted local phase/category is retained. No credential, subprocess stdout/stderr, request header, exception body or live auth diagnostic. Original masked cause remains unestablished.",
+  "future_profile": "typed-coherent-feedback-v1",
+  "future_profile_admitted": false,
+  "input_bound": {
+    "B_initial": 14543,
+    "B_max_four_requests": 107334,
+    "L_initial": 20448,
+    "L_margin": 118,
+    "L_max_four_requests": 130954,
+    "L_retained_two_page_then_final": "Fits for both original L sources under explicitly retained usage assumptions.",
+    "max_envelope": "All four old-input rehearsals fit the original double-4096-byte envelope; future exact history still needs recheck.",
+    "registered_old_cap": 131072
+  },
+  "legacy_requests": "All four actual original capsule hashes and rendered request hashes match their immutable readiness pins.",
+  "new_allocations": 0,
+  "new_specific_tests": 16,
+  "non_contract_content": "All original context, source and feedback fields and artifacts remain identical. Blind packets retain no feedback, history or selection.",
+  "recorded_at_utc": "2026-10-03T10:08:03.357917+00:00",
+  "statement_coverage_percent": {
+    "system_proposer_responses": 91,
+    "system_subscription_auth": 100,
+    "system_text_policy": 84
+  },
+  "status": "OFFLINE-PASS-NO-DISPATCH",
+  "superseded_offline_rehearsals": "External v1 and v2 audits retained; verbose contracts exceeded L envelope. Root requested concise types with no feedback or budget change.",
+  "test_transport": "Synthetic callback and loopback only; no credentials, remote models, GPU, tokenizer or scorer",
+  "tests": 162
+}
