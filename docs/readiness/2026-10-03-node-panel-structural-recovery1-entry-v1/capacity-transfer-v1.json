@@ -1,0 +1,47 @@
+{
+  "authority": "Root227 named materialization recovery1",
+  "new_tokenizer_contacts": 0,
+  "only_changed_source": "core.flight.campaign: post-generation materialization; no request construction or scheduler changes",
+  "original_capacity_commit": "456a28180238a59a1a7cbcdd7de8fba7f6c2756f",
+  "per_member_proof": "Frozen checker must independently match static role hashes,pipeline layout,prepared knowledge output and roster before contact. Each runtime request retains its own actual FIT.",
+  "reuse_receipt": {
+    "relpath": "coordination/node-panel-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "a71d084b4549f1695bc9538e6e3dd9d5ae18f6a430743a7b3371c22c7fac54a2"
+  },
+  "schema": "saea-node-panel-capacity-transfer-v1",
+  "transfer_is_not_KV_warmup": true,
+  "unchanged_request_and_scheduler_sources": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "aca8b3aa741796aec80652cda15d9c524208f4615ff75db842f7d32fe0ac01ce"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/preparation_fit.py",
+      "sha256": "e4752355f06ed9d7b82966d23b2d83da0614428024ec3f4ff8ea5cd72a11d08c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/model/transport.py",
+      "sha256": "2e1d7954058e4dc88c5adede07e2aa5813fadcd82e49332242166a5a6b9aba43"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "d571888abaa1dc9479f1d6a48915b860ed7730c66328c4690a2e94da80b44f36"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/node_pipeline.py",
+      "sha256": "218fc1751ae7dceee0a6b98ac09e473ab48d05d8ac0a4892b4073bec934535a5"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/panel.py",
+      "sha256": "234dcaa0ee6ccd5cec6cfb90596b61cd69b3d67384f8a8771cf74cbfadb891a9"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "bec4de61c757245052cc6ab458613aaf6222bcdc022a5a422a0b5765a9f5d5c8"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/trace_spool.py",
+      "sha256": "a2fb2aa3055d0942cb56b94bed462a4841659edd2599d18217146428eddd250b"
+    }
+  ]
+}

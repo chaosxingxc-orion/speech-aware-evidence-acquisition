@@ -1,0 +1,13 @@
+{
+  "admission": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-structural-recovery1-entry-v1/root-admission-v1.json",
+    "sha256": "ae2c77fe16bb565da814e5928c9b3e7016611d6760104ad7f3a6ab0a3c432dfe"
+  },
+  "at_utc": "2026-10-03T19:23:06.100884+00:00",
+  "contacts_added": 0,
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-structural-recovery1-entry-v1/registration-v1.json",
+    "sha256": "62900c7e67cf60dec8f2d62e7ac6ba276b5c15c79a9e42532906dc4fff04ccd5"
+  },
+  "schema": "saea-node-panel-structural-root-admission-v1"
+}

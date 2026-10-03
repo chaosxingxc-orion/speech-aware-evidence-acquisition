@@ -1,0 +1,26 @@
+[
+  {
+    "campaign_plan": "docs/readiness/2026-10-03-node-panel-structural-recovery1-entry-v1/panel-plan-v1.json",
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-node-panel-member1-smoke-4-recovery1-v1",
+    "contacts_per_row": 4,
+    "expected_rows": 8,
+    "experiment": "slurp-native-stage3-node-panel-member1-smoke-4-recovery1-v1",
+    "fit_run_id": "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-RECOVERY1-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-node-panel-member1-smoke-4-recovery1-generation-v1",
+    "kind": "node-panel-worker",
+    "notool": false,
+    "order": 1,
+    "owner": "root-owner227-node-panel-structural",
+    "process_floor_gib": 8,
+    "process_start_gib": 12.5,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-RECOVERY1-V1",
+    "short": "node-panel-structural-recovery1",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  }
+]

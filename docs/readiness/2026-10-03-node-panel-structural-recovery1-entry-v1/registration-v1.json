@@ -1,0 +1,129 @@
+{
+  "admission": {
+    "relpath": "coordination/node-panel-structural-recovery1-owner227-v1/root-admission-v1.json",
+    "sha256": "ae2c77fe16bb565da814e5928c9b3e7016611d6760104ad7f3a6ab0a3c432dfe"
+  },
+  "at_utc": "2026-10-03T19:23:06.100884+00:00",
+  "cache_state": "Inherited; no cache operation or warmup",
+  "capacity_evidence": {
+    "relpath": "coordination/node-panel-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "a71d084b4549f1695bc9538e6e3dd9d5ae18f6a430743a7b3371c22c7fac54a2"
+  },
+  "members": [
+    {
+      "analysis_recipe": {
+        "relpath": "docs/readiness/2026-10-03-node-panel-structural-recovery1-entry-v1/member1-analysis-recipe-v1.json",
+        "sha256": "f46e66bcee238e242a39afdff425c73056d9250ea1504176bbf36df468da2697"
+      },
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member1-smoke-4-recovery1-generation-v1",
+      "config_hash": "9a1931b94efa1de5a04f0dfb5f76d24fec3c6d500e8e7e7ae5080bc52a995db8",
+      "experiment": "slurp-native-stage3-node-panel-member1-smoke-4-recovery1-v1",
+      "group_size": 4,
+      "job_keys": [
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ]
+      ],
+      "label": "member1",
+      "member_index": 1,
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "a5742226dfba5090020f11dbd981538230b3552e849af40d16398bc18ac40f1f",
+      "role_text_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-RECOVERY1-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-MEMBER1-SMOKE-4-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "70398ff86a15491321d59ced7a748968b44bc371f442f994dd4d556ada8d2eec"
+      },
+      "supply_output_identical": true
+    },
+    {
+      "analysis_recipe": {
+        "relpath": "docs/readiness/2026-10-03-node-panel-structural-recovery1-entry-v1/member2-analysis-recipe-v1.json",
+        "sha256": "8f4dd501024416833964b1fd61f4dd5ee5aa4df4da65b75823bf86bd6db7ee6f"
+      },
+      "attempt_id": "attempt-slurp-native-stage3-node-panel-member2-smoke-4-recovery1-generation-v1",
+      "config_hash": "b41993109aeda80f28edd9169c2803bfad73d98c2da4f2d8dc446bc5df487548",
+      "experiment": "slurp-native-stage3-node-panel-member2-smoke-4-recovery1-v1",
+      "group_size": 4,
+      "job_keys": [
+        [
+          "slurp:train:003560:audio-1501686037",
+          null
+        ],
+        [
+          "slurp:train:005407:audio-1502374837",
+          null
+        ],
+        [
+          "slurp:train:005513:audio-1494513310",
+          null
+        ],
+        [
+          "slurp:train:011838:audio-1490369500",
+          null
+        ]
+      ],
+      "label": "member2",
+      "member_index": 2,
+      "policy_binding": {
+        "bundle_id": "646099d577b305982abdc0e4f85091315b29a07949315cd57d3e50838cfd7956",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "28058b7623a0ab56d084610d66fef9189b2430880f215e342b094bbf10d4210c",
+      "role_text_hashes": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "run_id": "SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-RECOVERY1-V1",
+      "supply": {
+        "relpath": "prepared/SAEA-SLURP-NODE-PANEL-MEMBER2-SMOKE-4-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "8e99ed4defd2214dcdf7cb0b4c713222d3968d66dcb3b44a7a56992221182c72"
+      },
+      "supply_output_identical": true
+    }
+  ],
+  "queue": {
+    "relpath": "docs/readiness/2026-10-03-node-panel-structural-recovery1-entry-v1/queue-v1.json",
+    "sha256": "db6e421c7fa5f1cf9fdc802eba64e3e3186c6263d082b3cd5bfd4c500fdbf2ff"
+  },
+  "schema": "saea-node-panel-structural-registration-v1",
+  "score_jobs": 0,
+  "source_freeze": "Pending separate clean worker and checks"
+}
