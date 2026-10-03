@@ -1,0 +1,85 @@
+{
+  "at_utc": "2026-10-03T12:00:48.486310+00:00",
+  "custody": [
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/root-admission-v1.json",
+      "sha256": "e305458449db7ea8f5e1833b9af54850aebb0807c56b84022d57a317e90dec66"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/registration-v1.json",
+      "sha256": "9cb9998c1939c884096aa4fc969744d3fad0a514271cb4afae21813a37e8d198"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/frozen-check-v1.json",
+      "sha256": "b8428a2defe2209e293d2a1286b668a3027c5f3835fe83e0f88e47d7dfd26cf5"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/launch-capacity-v1.py",
+      "sha256": "6b45fd5750018082383e6aafe94076661f565091f80e6ccc72368cba7781c516"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/guarded-child-v1.py",
+      "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/launch-v1.ps1",
+      "sha256": "f561351a1a4a9494ad03d37688ffaae0379003878e252df8c4567bc7a4f832df"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/windows-task-v1.xml",
+      "sha256": "16fe8deef1d8122b9a05613bb63fa9c6b4b9360ff4d5e247a79e5a321d86f3b7"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/windows-launch-request-v1.json",
+      "sha256": "20ad399f220e137c37846e5076f6037dcfef0410b887b43ab9d8462409a66f21"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/launcher-start.json",
+      "sha256": "39cc2f93f9163d9894ba90607779fcfe92df9645892de202fd37f65e00e2f9e3"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/capacity-started.json",
+      "sha256": "9400e488f8b91130569f763648937e0467cd1b2baab11adbf7d66114a89783f1"
+    }
+  ],
+  "existing_queue_stop_controls_mutated": false,
+  "failure_policy": "Preserve evidence and stop without retry or next-stage dispatch.",
+  "generation_or_scientific_read": false,
+  "geometry": "Existing decoder-only 4 x 24576, full 512 output reserve",
+  "heartbeat": "PAUSED",
+  "launch_count": 1,
+  "live_launcher_argv": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-capacity-owner227-v1/launch-capacity-v1.py --registration /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-round8-capacity-owner227-v1/registration-v1.json --sha256 9cb9998c1939c884096aa4fc969744d3fad0a514271cb4afae21813a37e8d198",
+  "live_launcher_pid": 476803,
+  "native_prefix_affinity": "OFF",
+  "owner227_root_delegation": true,
+  "prelaunch": [
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/prelaunch-continuation-status-v1.json",
+      "sha256": "337194d41a76f4a3dac9d4905ec5b125cff322fad0f2cf709566d1167aa3a4f4"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/prelaunch-windows-resources-v1.json",
+      "sha256": "b8b192c6a5bdc568b2ba01bc2c9e3d4f89fbcec4de6cbf77ce3b842bfa9e80ce"
+    },
+    {
+      "relpath": "coordination/system-text-round8-capacity-owner227-v1/prelaunch-live-processes-v1.json",
+      "sha256": "af240825334a597b19fb854e8a304786cfd2156a9dd5c2425692cb9039744b4d"
+    }
+  ],
+  "prompt_order": "speech-query-prefix-v2",
+  "role_query_placement": "OFF",
+  "schema": "saea-round8-capacity-launched-v1",
+  "scope": {
+    "capacity_members": 3,
+    "generation_contacts_authorized": 0,
+    "score_contacts_authorized": 0,
+    "tokenizer_endpoint_cap_each": 297,
+    "tokenizer_endpoint_cap_total": 891
+  },
+  "source_commit": "1343e022f96e3b541b247a39254d163ee737a0cb",
+  "stage_status_at_receipt": "RUNNING; completion and contact accounting pending",
+  "windows_epoch": "2026-10-03T11:59:43.9382170Z",
+  "windows_task": "SAEA-System-Text-Round8-Capacity-Owner227",
+  "worker": "/home/chao/saea-worktrees/codex-system-text-round8-capacity-v1",
+  "wsl_epoch": "2026-10-03T11:59:45.611684+00:00"
+}

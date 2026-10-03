@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 capacity task launched once, 2026-10-03T12:00:48.486310+00:00
+
+Windows task SAEA-System-Text-Round8-Capacity-Owner227 entered at 11:59:43.938217Z; WSL entry PID 476803 began at 11:59:45.611684Z on clean frozen 1343e022f96e3b541b247a39254d163ee737a0cb. [Launch custody](../receipts/continuation/2026-10-03-round8-capacity-launch.json) pins the registration, durable wrapper, entry helpers, three passing frozen checks and current prelaunch resources. Only the three 297-endpoint capacity proofs are running; no generation or scoring is admitted. Completion, counts and margins remain pending. The entry preserves one prompt-fit lease at a time, stable 12.5 GiB startup and ongoing 8 GiB running checks. Any failure stops for root disposition.
+
+Keep all structural and comparison members HELD, current role text/layout and 4 x 24576 geometry unchanged, trajectory routing and affinity OFF, and heartbeat PAUSED. No queue/STOP/service reconciliation occurred. Scientific READ is not delegated.
+
 ## Round8 capacity-only root delegation, 2026-10-03T11:54:01.092017+00:00
 
 Root227 explicitly delegates one Windows-owned entry for the three ROUND8 capacity FIT identities, at most 297 tokenizer endpoints each / 891 total, with zero generation or scoring. [Exact admission and plans](../readiness/2026-10-03-slurp-round8-capacity-entry-v1/root-delegated-admission-v1.json) bind each final composed policy and precontact ledger row. Only those three cells are ready. Clean frozen checks, absent attempt/control conflicts, current serving identity and 12.5 GiB startup / 8 GiB running guards must still pass before dispatch. Failure stops and preserves evidence. No runtime generation, scientific READ, queue/STOP reconciliation, cache/layout change or heartbeat resumption is authorized.
@@ -955,7 +961,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T11:54:01.092017+00:00
+Last refreshed: 2026-10-03T12:00:48.486310+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
