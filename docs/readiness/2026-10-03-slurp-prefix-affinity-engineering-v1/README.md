@@ -15,9 +15,9 @@ code now also refuses a graph whose prefix-slot map differs from the capacity
 configuration, before contacting any endpoint. Three new refusal tests and the
 existing capacity/flight-binding suite pass (36 tests).
 
-Two separate four-row structural generation identities are now root-admitted.
+Both separate four-row structural generation identities completed on frozen6d1748ab9 at10:16:35Z.
 Their own immutable supply envelopes preserve the original selection outputs.
-Require a clean frozen preflight and normal serial GPU sequencing before launch.
+Both clean frozen preflights passed, and the normal completed-driver transition preserved all prior controls before the one-shot launch.
 Their prospective total is eight trajectories, at most104 model
 contacts and416 actual FIT endpoints. No official scorer may run. Structural
 acceptance checks slot routing, role/tool handoffs, full-request FIT and native
@@ -42,3 +42,5 @@ complete-family registration, seals, official scores and root READ.
 Keep the30-minute SLURP heartbeat PAUSED and the independent10-second recorder
 unchanged. Root227 permits bounded reviewed work through200 in the same400 pool;
 return to the human before8x400. Other-carrier holds remain unchanged.
+
+Root structural acceptance records47 model contacts,47 actual FIT receipts and188 tokenizer endpoints. All13 Reviewer handoffs are valid/visible and all8 final deliveries retain Omni custody. Actual requests match the declared scheduling map. Server-reported slot IDs are unavailable in the preserved OpenAI wire response; distinguish this from request routing. See [completion evidence](../../receipts/continuation/2026-10-03-prefix-affinity-structural-complete.json). These workers remain intentionally unscored.

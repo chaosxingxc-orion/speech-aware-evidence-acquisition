@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Both prefix-routing structural proofs complete, 2026-10-03T10:20:11.849194+00:00
+
+The independent Windows driver epoch10:12:40Z completed10:16:35Z on frozen6d1748ab9. Both four-row members pass structural inspection: trajectory25 and role22 model contacts,47 actual-request FIT receipts and188 tokenizer endpoints; all13 Reviewer handoffs are valid and visible and all8 terminal deliveries retain Omni custody. All22 role-affinity requests carry the declared Perception0/Solver1/Reviewer2/Planner3 slot IDs. The preserved OpenAI response does not independently report the serving slot; do not invent that observation. [Root structural evidence](../receipts/continuation/2026-10-03-prefix-affinity-structural-complete.json); [launch and preserved normal transition](../receipts/continuation/2026-10-03-prefix-affinity-structural-launch.json).
+
+Both attempts intentionally remain OPENED with complete generation and one prepared score specification each. No official scorer, quality read, reseal, retry or optimizer export is permitted. Keep the policies/role texts/knowledge/source assets unchanged and affinity OFF in learning comparisons. Structural success establishes request routing, not cache retention or speedup. Next prepare a separate fixed-policy replicated scheduling comparison; retain complete-family READ and stage review. Heartbeat remains PAUSED, independent10-second telemetry unchanged, and human review remains before8x400.
+
 ## Read-only own-app check found no directly usable access credential, 2026-10-03T10:10:57.633382+00:00
 
 One root-authorized read-only observation at10:10:21Z found the own-app session connected, sharing-enabled and with no pending refresh, but its access credential did not satisfy the at-least-ten-seconds-valid condition. No catalogue GET, model POST, refresh, login or credential write occurred; the credential file hash stayed identical. [Evidence](../receipts/continuation/2026-10-03-proposer-own-app-readonly-readiness.json). This neither proves login invalidity nor identifies the old B72 cause. Root disposition of any SDK-managed refresh is required before a later admitted sequence. No old opportunity is retried; heartbeat remains PAUSED.

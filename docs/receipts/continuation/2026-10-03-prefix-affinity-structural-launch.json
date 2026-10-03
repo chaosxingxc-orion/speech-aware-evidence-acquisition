@@ -1,0 +1,36 @@
+{
+  "commit": "6d1748ab964a3741e7d8552f922ea79cc98d9314",
+  "complete_rows_planned": 8,
+  "driver_epoch": "2026-10-03T10:12:40Z",
+  "driver_pid_revalidated_at_launch": 460496,
+  "first_worker_pid_revalidated_at_launch": 460625,
+  "frozen_preflights": [
+    {
+      "relpath": "coordination/slurp-prefix-affinity-engineering-v1/trajectory-structure-frozen-check.stdout.json",
+      "sha256": "513354b8f749327fa44f9aa829952c4c95c31d1689e649036367e7068ede4075"
+    },
+    {
+      "relpath": "coordination/slurp-prefix-affinity-engineering-v1/role-structure-frozen-check.stdout.json",
+      "sha256": "f8dd8372487b1842448811578f24635fa84c36af36a1b9ad7a4c60e9707c8adc"
+    }
+  ],
+  "heartbeat_status": "PAUSED",
+  "model_contact_ceiling": 104,
+  "official_scoring_permitted": false,
+  "owner_decision": 227,
+  "recorded_at_utc": "2026-10-03T10:20:11.849194+00:00",
+  "schema": "saea-prefix-affinity-structural-launch-v1",
+  "scientific_results_read_at_launch": false,
+  "structural_admission": {
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/structure-root-admission-v1.json",
+    "sha256": "c1d2b6b662eb0a3823c7bad332780a8ebcc9da6a96e4e60e3c738604c5fecefe"
+  },
+  "transition": {
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/driver-transition-v1.json",
+    "sha256": "adfa61dde554d20a53a030f15c359b2fad80f9a0f0870f7d7926475873438103"
+  },
+  "windows_free_gib_at_launch": 15.3,
+  "windows_task": "SAEA-Batch-Driver",
+  "windows_task_start_utc": "2026-10-03T10:12:38.7318457Z",
+  "worker": "/home/chao/saea-worktrees/codex-prefix-affinity-engineering-v1"
+}
