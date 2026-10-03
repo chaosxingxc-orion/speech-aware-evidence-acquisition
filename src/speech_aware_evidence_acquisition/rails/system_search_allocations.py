@@ -36,6 +36,10 @@ def require_round(round_index, extension=None):
     if round_index <= 3:
         require(extension is None, "original round cannot borrow an extension")
         return
+    from .system_search_successor import SCHEMA as SUCCESSOR, require_successor
+    if isinstance(extension, dict) and extension.get("schema") == SUCCESSOR:
+        require_successor(round_index, extension)
+        return
     require(
         isinstance(extension, dict)
         and set(extension) == FIELDS
@@ -167,6 +171,9 @@ def _spent(archive, round_index, model_version):
 def validate_extension(archive, extension, *, repo_root=None):
     """Recheck authority when supplied and retain every prior input/response/disposition."""
     require_round(extension.get("round"), extension)
+    from .system_search_successor import SCHEMA as SUCCESSOR, validate_successor
+    if extension["schema"] == SUCCESSOR:
+        return validate_successor(archive, extension, repo_root=repo_root)
     require(
         extension["earlier_allocations"]
         == _spent(archive, extension["round"], extension["model_version"]),

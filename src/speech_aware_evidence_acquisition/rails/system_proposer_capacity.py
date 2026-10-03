@@ -12,6 +12,7 @@ from .hashing import content_hash
 from .system_proposer_capsule import ProposerCapsule, SUBSCRIPTION_BUDGET
 from .system_proposer_responses import _output, strict_json
 from .system_text_policy import canonical, require
+from .system_proposer_continuation import checked_output, checked_tool, require_limits
 
 
 def request_bound(request):
@@ -21,8 +22,11 @@ def request_bound(request):
 
 def audit_scenario(capsule_document, scenario):
     """Reproduce retained history on a private capsule; never reserve a contact."""
-    require(isinstance(scenario, dict) and set(scenario) == {"schema", "contact_cap", "turns"}
+    require(isinstance(scenario, dict) and (set(scenario) == {"schema", "contact_cap", "turns"}
+                 or set(scenario) == {"schema", "contact_cap", "turns", "continuation_limits"})
             and scenario["schema"] == "saea-proposer-capacity-scenario-v1", "invalid capacity scenario")
+    limits = scenario.get("continuation_limits")
+    require_limits(limits)
     cap, turns = scenario["contact_cap"], scenario["turns"]
     require(type(cap) is int and 1 <= cap <= 4, "invalid scenario contact cap")
     require(isinstance(turns, list) and len(turns) < cap, "scenario requires a following request slot")
@@ -81,6 +85,7 @@ def audit_scenario(capsule_document, scenario):
         if turn["assumed_output_tokens"] > output_left:
             report["status"], report["first_failed_contact"] = "assumed_output_exceeds_allowance", index + 1
             break
+        checked_output(turn["output"], limits)
         tool, arguments = validated[index]
         supplied = capsule.read_artifact(arguments)
         report["artifact_reads"].append({"after_contact": index + 1, "arguments": copy.deepcopy(arguments),
@@ -88,7 +93,7 @@ def audit_scenario(capsule_document, scenario):
             "characters": len(supplied["text"]), "next_offset": supplied["next_offset"], "eof": supplied["eof"]})
         # Match ResponsesProposer's exact whole-item custody, including reasoning.
         history.extend(copy.deepcopy(turn["output"]))
-        history.append({"type": "function_call_output", "call_id": tool["call_id"], "output": canonical(supplied)})
+        history.append(checked_tool(supplied, tool["call_id"], limits))
     report["assumed_usage"] = {"input_tokens": total_input, "output_tokens": total_output}
     report["covered_requests"] = len(report["requests"])
     report["unassessed_turns"] = len(turns) - assessed

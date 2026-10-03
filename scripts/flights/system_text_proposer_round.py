@@ -67,10 +67,12 @@ def require_feedback_transition(packet, *, protocol, round_index):
                     "preceding complete-family feedback and selection binding required")
 
 
-def load_members(registration):
+def load_members(registration, *, check_only=False):
     r = registration
     require(r["schema"] == "saea-system-text-proposer-round-registration-v1"
-            and r["status"] == "root-admitted" and r["owner_decision"] == 217,
+            and (r["status"] == "root-admitted" or (check_only is True
+                and r["status"] == "prepared-awaiting-exact-root-admission"))
+            and r["owner_decision"] == 217,
             "round admission required")
     # Older admitted registrations covered round one and omitted this field.
     # Later rounds must name their allocation explicitly, never infer it from a key.
@@ -91,6 +93,10 @@ def load_members(registration):
         validate_extension(archive, extension, repo_root=r["source_root"])
         require(protocol["proposal_contact_cap"] == extension["contact_cap"], "extension contact budget differs")
     require(admission["protocol_sha256"] == content_hash(protocol), "provider protocol differs")
+    from speech_aware_evidence_acquisition.rails.system_proposer_continuation import require_limits
+    require_limits(protocol.get("proposal_continuation_limits"))
+    require(admission.get("continuation_limits") == protocol.get("proposal_continuation_limits"),
+            "provider continuation envelope differs")
     profile = r.get("capsule_view_profile", "full-index-v1")
     require(profile == admission.get("capsule_view_profile", "full-index-v1"),
             "capsule view profile requires provider admission")
@@ -159,7 +165,7 @@ def main():
     require(subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip() == r["source_commit"], "worker commit differs")
     for relative, expected in r["source_pins"].items():
         require(digest(root / relative) == expected, "admitted proposer source changed")
-    jobs, admission, protocol = load_members(r)
+    jobs, admission, protocol = load_members(r, check_only=args.check_only)
     # Construct the real validator before credentials, reservations or contacts.
     # This constructor performs no network request; never call its bearer here.
     def no_preflight_credentials():
@@ -205,7 +211,8 @@ def main():
                     "registration_sha256": args.sha256, "reservation": evidence})
             transport = ResponsesProposer(capsule, ResponsesHTTP(admission["endpoint"], bearer=bearer,
                 admission=admission, timeout=300), audit_dir=output / "transport" / key,
-                input_counter=request_bound, before_contact=before_contact, contact_cap=protocol["proposal_contact_cap"])
+                input_counter=request_bound, before_contact=before_contact, contact_cap=protocol["proposal_contact_cap"],
+                continuation_limits=protocol.get("proposal_continuation_limits"))
             receipt = ProposalDispatch(Path(r["archive"]) / "dispatch", capsule).run(transport)
             packet = capsule.as_json()["packet"]
             imported = archive.import_response(branch=packet["branch"], round_index=packet["round"],

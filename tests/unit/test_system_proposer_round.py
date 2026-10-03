@@ -366,3 +366,11 @@ def test_credential_failure_is_durable_before_any_allocation(tmp_path, monkeypat
     with pytest.raises(FileExistsError):
         runner.main()
     assert len(calls) == 1
+
+
+def test_prepared_registration_is_only_readable_for_no_contact_check(tmp_path):
+    r = registration(tmp_path)
+    r["status"] = "prepared-awaiting-exact-root-admission"
+    with pytest.raises(PolicyError, match="admission"):
+        runner.load_members(r)
+    assert len(runner.load_members(r, check_only=True)[0]) == 4

@@ -33,8 +33,10 @@ def load_optimization_panel(protocol, stage, *, repo_root):
         from .system_search_allocations import require_round
         require_round(extension.get("round"), extension)
         owner = json.loads(_read_pin(extension["owner"], repo_root))
-        require(owner.get("decision_id") == 223 and owner.get("status") == "approved",
-                "extended context scope requires owner223")
+        from .system_search_successor import SCHEMA as SUCCESSOR
+        decision_id = 227 if extension["schema"] == SUCCESSOR else 223
+        require(owner.get("decision_id") == decision_id and owner.get("status") == "approved",
+                "extended context scope requires its exact registered owner")
         allowed_stages.add(f"update-{extension['round']}")
     require(
         isinstance(block, dict)

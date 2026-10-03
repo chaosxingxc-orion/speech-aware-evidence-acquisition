@@ -19,6 +19,7 @@ from .hashing import content_hash
 from .prepared_feedback import reject_non_latin_scripts
 from .system_proposer_capsule import attest_outbound, HARD_BUDGET, SUBSCRIPTION_BUDGET
 from .system_text_policy import PolicyError, canonical, require, sha
+from .system_proposer_continuation import checked_output, checked_tool, require_limits
 
 MAX_STREAM_BYTES = 8 * 1024 * 1024
 MAX_LINE_BYTES = 1024 * 1024
@@ -242,9 +243,13 @@ class ResponsesProposer:
     Neither callback has a permissive default. Request count is a separate cap
     from proposal opportunities, and cumulative token usage includes tool turns.
     """
-    def __init__(self, capsule, client, *, audit_dir, input_counter, before_contact, contact_cap):
+    def __init__(self, capsule, client, *, audit_dir, input_counter, before_contact, contact_cap, continuation_limits=None):
         require(callable(input_counter) and callable(before_contact), "meter and contact admission are required")
         require(type(contact_cap) is int and contact_cap > 0, "invalid contact cap")
+        require_limits(continuation_limits)
+        if client.admission is not None:
+            require(client.admission.get("continuation_limits") == continuation_limits, "provider continuation envelope differs")
+        self.continuation_limits = copy.deepcopy(continuation_limits)
         self.capsule, self.client = capsule, client
         self.audit_dir, self.contact_cap = Path(audit_dir), contact_cap
         self.input_counter, self.before_contact = input_counter, before_contact
@@ -339,11 +344,13 @@ class ResponsesProposer:
                         "input_tokens": total_input, "output_tokens": total_output, "activation": "none"})
                     return result
                 require(number < self.contact_cap, "proposal contact budget exhausted")
+                checked_output(final["output"], self.continuation_limits)
                 tool = calls[0]
                 arguments = strict_json(tool["arguments"])
                 supplied = self.capsule.read_artifact(arguments)
+                tool_item = checked_tool(supplied, tool["call_id"], self.continuation_limits)
                 history.extend(copy.deepcopy(final["output"]))
-                history.append({"type": "function_call_output", "call_id": tool["call_id"], "output": canonical(supplied)})
+                history.append(tool_item)
         except Exception as error:
             write(self.audit_dir / "outcome.json", {"status": "failed", "error_type": type(error).__name__,
                 "failure_reason": str(error) if isinstance(error, PolicyError) else None,
