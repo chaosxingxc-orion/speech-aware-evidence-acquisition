@@ -1,0 +1,52 @@
+{
+  "at_utc": "2026-10-03T11:16:22.663074+00:00",
+  "closed_predecessors": 25,
+  "final_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/final-check-only-v1.json",
+    "sha256": "21f2e5fe0bda1b91a034c35d2e63647e254394510fbd586e28d6af188e8e86bb"
+  },
+  "gpu_dispatch": false,
+  "heartbeat": "PAUSED",
+  "inherited_held": 3,
+  "launch_intent": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/task-launch-intent-v1.json",
+    "sha256": "22b86f31dd6e073005a9dad8f4192d9a9df11b4a055795fc018fd12d21b77e66"
+  },
+  "learning_native_prefix_affinity": "OFF",
+  "members": [
+    "L-8-1",
+    "B-8-1",
+    "L-8-2",
+    "B-8-2"
+  ],
+  "model_contacts_established_at_process_proof": false,
+  "no_scientific_claim": true,
+  "one_shot": true,
+  "paid_api_spend": 0,
+  "phase_at_process_proof": "Runtime source/input validation before credentials and reservations",
+  "pid": 470261,
+  "prelaunch_no_competitor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/prelaunch-no-competing-proposer-v1.json",
+    "sha256": "3d886ba07a748272c8af3d43ff57c1d78786ff5c52f7a2000aa6d91a71f5d144"
+  },
+  "process_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/launch-process-proof-v1.json",
+    "sha256": "2360389d5c72d1acb593a1b2f1528cac7f44b8568622eba3d91e45a3fec06826"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/registration.json",
+    "sha256": "ac4353e816bddc9d82c5a82282f78d359ad90c99a0252c22c280912b199929ca"
+  },
+  "reservations_at_process_proof": 0,
+  "retry_permitted": false,
+  "root_admission": "docs/receipts/continuation/2026-10-03-proposer-typed-successor2-root-admission.json",
+  "schema": "saea-proposer-windows-launch-v1",
+  "source_commit": "13de9fd1db00a9e80e82431b9dc1c40a66d8bd01",
+  "source_root": "/home/chao/saea-worktrees/codex-system-text-proposer-typed-successor2-admitted-v1",
+  "task_name": "SAEA-System-Text-Proposer-Typed-Successor2-Owner227",
+  "windows_epoch": "2026-10-03T11:15:35Z",
+  "wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-admitted-owner227-v1/launch.ps1",
+    "sha256": "7fa5fc8ffd1d35fc57b853d763a387220ca5a0caab45bc16123549093e3bcfae"
+  }
+}
