@@ -1,0 +1,28 @@
+{
+  "at_utc": "2026-10-03T04:00:19.465736+00:00",
+  "status": "PREPARED-PENDING-OWNER226",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-system-text-proposer-extra5-precontact-recovery1",
+  "commit": "4878e58ad5dc03f6653f05062b363c17d5dbf1a7",
+  "draft_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/registration-draft.json",
+    "sha256": "bef169de09f0cebb4bf0d50cb36f7fe4d51a2a6df5642e326c1b119b8b59e78a"
+  },
+  "proposal_inputs_unchanged": true,
+  "source_clean": true,
+  "tests_passed": 108,
+  "launcher_statement_coverage_percent": 95,
+  "windows_capture_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/launcher-capture-proof.json",
+    "sha256": "7bb2c3796c28b3f5a69b3e49e120eede6f7143f2e76077204a609ce312c6b705"
+  },
+  "actual_entry_preflight_after_approval_required": true,
+  "model_contacts": 0,
+  "windows_task_registered": false,
+  "dispatch_authority": false,
+  "draft_launcher": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-extra5-precontact-recovery1-v1/launch-draft.ps1",
+    "sha256": "1c4bf4c3ce4ddad854d1071eec250e57263c655f109fadd28ebe1f59554de9aa"
+  },
+  "draft_launcher_dispatch_guard": "Requires approved continuation status plus literal pinned registration hash; current placeholder refuses execution.",
+  "actual_new_windows_task_registered": false
+}
