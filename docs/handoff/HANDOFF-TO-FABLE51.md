@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Round8 prepared frozen entry passes; exact root admission pending, 2026-10-03T11:10:27.465418+00:00
+
+The clean separate worker atabc721ba7 passes the actual four-member check-only with zero contacts/reservations and empty stderr. Prepared registration17b8e2c16679c3c6150da4a9caaf37728de266ba13890f2f94af89eec53de415 and its durable Windows wrapper are immutable; prepared status refuses real dispatch. [Frozen entry evidence](../readiness/2026-10-03-slurp-proposer-typed-successor2-v1/frozen-entry-proof-v1.json). Root independently verified all eight input/capsule files and exact-model-input audit. The L/B bounds130942/107323 fit the selected139264 cap; all13 own-L histories and B isolation remain. Preserve25 closed,3 inherited HELD and4 new unspent opportunities. No new model/credential contacts, queue/STOP action, GPU dispatch or READ; current root cache panel remains untouched. Keep heartbeat PAUSED and candidate affinity OFF.
+
 ## Round8 typed successor prepared; exact dispatch pending, 2026-10-03T11:05:05.387750+00:00
 
 Root227 selected139264 equally for the four new L-8-1/B-8-1/L-8-2/B-8-2 opportunities. Separate successor custody preserves25 closed and3 inherited HELD identities; no retry or replacement. All four standard inputs/capsules and exact rendered requests pass. L retains13 own closed histories and165 artifacts; B has0 histories,6 artifacts and no feedback/selection/outcomes. Actual maximal four-request bounds are130942 (L) and107323 (B), leaving8322/31941 under139264. Typed field contract and minimal example match the unchanged validator; all original invalid responses remain invalid. [Preparation and exact-input audit](../readiness/2026-10-03-slurp-proposer-typed-successor2-v1/README.md).

@@ -17,3 +17,5 @@ The one normal SDK maintenance observation succeeded after the wrapper import ca
 Keep candidate-panel native prefix affinity OFF,4x24576 serving unchanged and the SLURP heartbeat PAUSED. Independent Windows10-second telemetry continues. Root controls separate cache experiments and GPU sequencing. Return to the human before8x400 without splitting to evade that boundary.
 
 Actual four-packet verification is complete: L initial20445/four-request130942/headroom8322, B initial14540/four-request107323/headroom31941. See [exact rendered model-input audit](exact-model-input-audit-v1.json) and [offline evidence](offline-verification-v1.json). All typed minimal examples pass the unchanged validator. No new model/credential contact or opportunity reservation occurred.
+
+Prepared frozen entry is now PASS atabc721ba7, with all four members and zero contacts/reservations. The prepared status refuses dispatch. See [immutable entry proof](frozen-entry-proof-v1.json). Final root exact admission, a fresh admitted worker/registration and final check-only remain required before the one-shot Windows task.

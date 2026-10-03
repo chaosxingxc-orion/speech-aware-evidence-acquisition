@@ -1,0 +1,60 @@
+{
+  "actual_contacts": 0,
+  "allocations_reserved": 0,
+  "at_utc": "2026-10-03T11:10:27.465418+00:00",
+  "dispatch_authority": false,
+  "exact_input_audit": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/exact-model-input-audit-v1.json",
+    "sha256": "8b4cddc7a5e9e068849561c8cfed81fb0fb218717fdacd9e171e6032e5846bd9"
+  },
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/frozen-check-only-v1.json",
+    "sha256": "238b72511aad0c8ca3e684eacde0fa2e3392079b5ab476bac1560beba133aa6a"
+  },
+  "integration": "Main36f576344 was clean and merged only into the isolated branch. All latest-main ledger rows were preserved byte-for-byte plus exactly4 new rows; both latest handoff sections were retained. Main itself was not changed.",
+  "new_unspent_opportunities": [
+    "L-8-1",
+    "B-8-1",
+    "L-8-2",
+    "B-8-2"
+  ],
+  "next": "Root reviews this proof, serially integrates, then records exact one-shot admission and creates a fresh admitted worker/registration/wrapper. Preserve all prepared bytes and repeat actual final check-only before any real proposal task. No GPU dispatch.",
+  "prepared_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/registration-prepared-v1.json",
+    "sha256": "17b8e2c16679c3c6150da4a9caaf37728de266ba13890f2f94af89eec53de415"
+  },
+  "prepared_wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/launch-prepared-v1.ps1",
+    "sha256": "0c9dc2da37477cbb3baeb73eaace1f3d1aecf1b9384316f37e9c6172d0a83775"
+  },
+  "preserved": {
+    "closed": 25,
+    "inherited_held": 3,
+    "old_inputs_budgets_responses": "unchanged"
+  },
+  "protocol": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/protocol-proposals-v1.json",
+    "sha256": "2b9c3c847e8e42a4ce53cd18ea6ddd1c81340fea7e41058e7d5d9c85cf1b2aff"
+  },
+  "provider": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/provider-admission-v1.json",
+    "sha256": "f8459604ece5c485e88a75f353b044c187c2aadde9d8004abc044f246d281e41"
+  },
+  "readiness": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/proposer-readiness-v1.json",
+    "sha256": "f0003daddab6dab7ebbe47c1becf0bbec1e55d46352a330a9f090076b3b27e51"
+  },
+  "root_input_pin_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/root-input-pin-review-v1.json",
+    "sha256": "0a2c274b66ebeaa0d539a23dc816d9677a2dedfdfc91356a066a594e4c3464e6"
+  },
+  "schema": "saea-proposer-prepared-frozen-entry-proof-v1",
+  "source_clean": true,
+  "source_commit": "abc721ba762a6a48863441876e7f86357bdb7c62",
+  "source_root": "/home/chao/saea-worktrees/codex-system-text-proposer-typed-successor2-prepared-v1",
+  "status": "PASS-NO-CONTACT-AWAITING-EXACT-ROOT-ADMISSION",
+  "wrapper_parse": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/prepared-wrapper-parse-v1.json",
+    "sha256": "a519d292a378c15846a45b6600ff864b8237bb428b1cff64ef32eb89d779b5f4"
+  }
+}
