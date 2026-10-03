@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Prospective proposer budget successor prepared, 2026-10-03T09:37:47.523705Z
+
+Exactly L-7-1/B-7-1/L-7-2/B-7-2 are prepared under the explicit root227 successor transition with equal 131072 cumulative input, 4096 cumulative output acceptance and four provider contacts. Preserve the old 21 spent and three unspent HELD allocations and the original 32768 bound; L-6-1's two contacts and 8478/151 tokens remain cumulative discovery cost and exposure. No matched historical or actual total-compute claim is made. [Prepared package](../readiness/2026-10-03-slurp-proposer-budget-successor1-v1/README.md).
+
+The successor archive, transport and continuation envelope pass 189 tests (99%/98% new-module statement coverage). Four actual immutable inputs and capsules are prepared: learning receives 11 closed own-L histories and qualified own-L feedback; blind receives no feedback or outcome history. Maximum bounded four-request rehearsals total 129598 input for each L packet and 105978 for each B packet, below the equal 131072 ceiling. Provider/tool serialized envelopes are now explicit client acceptance limits; arbitrary tool reads and four-call completion are not guaranteed. The L-7-2 retained-page replay verifies a bijection of all 158 source artifacts and only explicit schema-address changes, preserving original audits.
+
+No real proposer/model/tokenizer/scorer/GPU contact occurred in this preparation. Exact serial root admission remains pending after clean frozen check-only; the prepared registration cannot launch. Next compile recorded valid proposals, retain invalid/no-change allocations, and register next20 capacity/structural proof before GPU admission. Keep native prefix affinity OFF, the trajectory scheduler and current knowledge/data unchanged. SLURP heartbeat remains PAUSED; independent 10-second telemetry is unchanged. Review with the human before 8x400.
+
 ## Optional native prefix affinity bound to FlightRuntime, 2026-10-03T09:25:41Z
 
 The existing execution chain now validates an explicit node-to-slot map against every model-contact role and the serving geometry, routes role/tool continuations through the shared scheduler, and records the map in the dispatch receipt. The key is absent from every committed experiment; historical policy identity and default trajectory affinity remain unchanged.179 relevant tests and six final focused checks pass; the scheduling configuration module has100% statement coverage. [Scope and limitations](../readiness/2026-10-03-node-prefix-flight-binding-v1/README.md); [proof](../receipts/continuation/2026-10-03-node-prefix-flight-binding-proof.json).
@@ -810,7 +818,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T09:11:53.058135+00:00
+Last refreshed: 2026-10-03T09:37:47.523705Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

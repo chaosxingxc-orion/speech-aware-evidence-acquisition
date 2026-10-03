@@ -1,0 +1,389 @@
+{
+  "active_candidates_per_branch": 2,
+  "additional_proposal_opportunities": 4,
+  "allocation_extension": {
+    "allocations": [
+      "L-7-1",
+      "B-7-1",
+      "L-7-2",
+      "B-7-2"
+    ],
+    "contact_cap": 4,
+    "earlier_allocations": {
+      "B-1-1": {
+        "import": "865975cf71f3dad222390ad6c235816e01d3d95c4b364824c0fa97533d454b74",
+        "input": "1362eb6c083d2ffd7554dda283af99e8b888ec16ed83b175ccf9e888f1a1a1d6",
+        "response": "f23a275e6087835f8f79479c577c9bec7c56c3d863dfdb7b3953ff672293f7d0"
+      },
+      "B-1-2": {
+        "import": "095e8484f8b906f9dc031f64a6f17476a058875bcf62d029c0dc0a99c2be05f1",
+        "input": "08334da234988c9267eab85a20b769be770f933a9f16d6dcdb8127394bde9e86",
+        "response": "8808735a618bba3c7a51c5765c04ef7b1fe44d5ebc57af574d70fa6d3fcb46bc"
+      },
+      "B-2-1": {
+        "import": "80b8e0936b3c1beb6d1f56b719ef3f9b540c0e8c105eaa59c725168841a1f6f0",
+        "input": "167b2061e445a181002f3f7cfcf0eeff3fd95a8ec6a591c890deec2edaf3fbba",
+        "response": "e2b9768cf4b056045dd66e4c80c9d7f826fa8b0ff4541ce8061f7f01e3f72924"
+      },
+      "B-2-2": {
+        "import": "d6cf0e46ac4ec320ea023ce4c56dd9914a08bd39886b120e6ed067b01aa2b31e",
+        "input": "452feb10c2dbfcca8ccf217c8903d6111eac3a4aa0817a27c07df971238e93e5",
+        "response": "225b566eb5441c39e873b2d7cae0a163e3b9d050c325e8e6548aba37bf196a46"
+      },
+      "B-3-1": {
+        "import": "74661715c2f87b0b9ad58a542bd4366ed1999762b069d800a1cd4b3e794d50e0",
+        "input": "09a5dd3a7a7466fb06f0a263c3254537c89564ee6c7290ceaebeda77ade8c57f",
+        "response": "56f944350ff56804e6ddd249ad758b65480f3da47736f832bad204c782762a9a"
+      },
+      "B-3-2": {
+        "import": "4ed6a0f25d6c4b67007484e1a1d67a45a6151faacd700c8c44ecd1a116244387",
+        "input": "db812c1a6bf874a0f5398d18d5240b57ac6cf2df4c6fd6c9c93b3f701f3f7c1e",
+        "response": "d4f75ee550d472b6407370f7cf65eb67e077f90a0183944a40c437cddda69fbc"
+      },
+      "B-4-1": {
+        "import": "4470fcd61592a3f1d73dd7ab96ca457b9ad572b67ec946cccae241ffa122ed1d",
+        "input": "9bb705436313f4b0f9302c7c295989c3b993a2e07d9e9f2743bb006fc9d5310e",
+        "response": "08cbd99025f592574867482fa7b85980d608447dcd67c634f29a7e43433e4905"
+      },
+      "B-4-2": {
+        "import": "856d894a045cf74d5f5fddebf2e88dd723513783c9ed1effef216f83aa0dec49",
+        "input": "0699f3815c652399b0c34424b34623fa709ab0b39c6bcbb7e990e901cae20608",
+        "response": "94a25f44233ef38390a3b37a4977a13205c9ce8bb9ff590a45feae470f3d7e53"
+      },
+      "B-5-1": {
+        "import": "1e6cb6864e30c546fd8c2327ad1cbdb7da50c67003104defbc9695173244a0d6",
+        "input": "0707aad31a4f8a841387e102f0efbc29969c7e4b48f0a8ce46bdb9c9b072719d",
+        "response": "c9eec09abc6388a051737d9938ccee58dd32bf3d3f0b3ab0a365c4167f2ec61e"
+      },
+      "B-5-2": {
+        "import": "10e84ca2efa7d00c9304a39075153c4c2fb587127a647e27adf8bb687ec71edd",
+        "input": "2cb3e20d079b836f4691fbab78e15c66632954bd17d3daec09d0db4d084d0635",
+        "response": "fef1ac2c7bd08e5b505d818fedb3bc030d699d2f7f04512718e65ef0252362d5"
+      },
+      "L-1-1": {
+        "import": "4ef74025de645a693ab038e82a7769d13838d8e918de292763d2765476e7f692",
+        "input": "5bc7479593fc59bc1aaa275befc062e7359dc92f7f22dc8102de42d3364e76ca",
+        "response": "5acb3ca116e7c29454f9e2dfd1c5bf3c141bcc5770c57f1c225ea67de0a86c1f"
+      },
+      "L-1-2": {
+        "import": "e7da7e7c847c1f1aa7849adfd38cf8f4e7a079512e2e001f7e93bbf04068dadb",
+        "input": "2d3e1ec556b5a6f32009b003f3fcc47201269ac5d71683d14ba680a992a6f640",
+        "response": "cfdce92250590dc26497fe1efa4d2840f82375b1f87096e6704e4ea86f1d31f5"
+      },
+      "L-2-1": {
+        "import": "2c45aea2ae40409c18b96ab80a64958751e819eb0dd859134460b024b034c4f2",
+        "input": "896130ec84295e6edd6cf77c262e0ad977e9d2ef93ed285a256f249e2abc775a",
+        "response": "455400d2880cde4bd7b8d432f659bebc7f93a59186d567bacb0709fe285092ef"
+      },
+      "L-2-2": {
+        "import": "03e3cbc75e4ad7aadfdfc5f96cefc8941ed1a37f69befdb27a50a3beba3a3ac5",
+        "input": "2c1c71c125006c0353fac119ba04fd731b9bed3dc442860d4fc384112d0a825b",
+        "response": "6981c7ff88d47cbffc93d9517f205317b4b190d523ee109477597d65e007ea66"
+      },
+      "L-3-1": {
+        "import": "ad2a5e0cf894e6c4c630de6286a427c1a9a5c02af44889ae2ff339a375a194fa",
+        "input": "443abbc47217f2b663cb5f0298ad31c56eebd0f2c35345c4c5d56dbce379f754",
+        "response": "e66e5d0f1164b3d26a5a90d80f2c0d1954c4f11309fe8b7ae1ca539abd44d8e9"
+      },
+      "L-3-2": {
+        "import": "42c5d185ad053a97a5bdfda57be02c856ccb5428d8826754ef987174b63be908",
+        "input": "a8ff052774610a8c61e2d45b4f427e20901f2484518abbcd5e57e0a204f8ed21",
+        "response": "8ad2346ed1b06dd966aeb8269e74f5b6f5517b458e6515598fcf3a069a251fee"
+      },
+      "L-4-1": {
+        "import": "fdd0b5d167609572035876cf7bdbd7b3cfbd0fd33d3e0e646925a469cb93ceab",
+        "input": "389b26953a10fd67ae3602f33e9e630edc174c14456b769fb246cc7d073aaf70",
+        "response": "21495055616fcf91351157ba9341d40feed580f807af4f593c4e78aa9d59a2af"
+      },
+      "L-4-2": {
+        "import": "5d0370ecb8b579147d32b8f60e3d088b88570a8e8b43871d09a5cd5836c67db5",
+        "input": "a6fad4a9724718ee0880bf01f81dd0e1f75d730ecae829ff60d3d00ce7d565ea",
+        "response": "5105e4f1cc8b4534ac6b431c1434763d80d0e3e220a6afce246dbd618b80ede8"
+      },
+      "L-5-1": {
+        "import": "3f38d789c8d6e05968bd535dd12a7e89e930116bf6df9a1caa08107417c79705",
+        "input": "ae00bcc1e7e3567aba89b72cabe6c1f9b959bf674f8e6c23e7111baa0e8b7d2a",
+        "response": "36e9d261475003e78a77a8bed36e0df18187c333f492a096ab90c2c654a42760"
+      },
+      "L-5-2": {
+        "import": "cd70d2ca43e32b805f917874029675e43f8c5a15f1b6cd514a4ad7f24dd744ae",
+        "input": "b0284b938445d36c8e069d6dbf62b492a9e3e3292c3b331edbb241cbd7eb7f21",
+        "response": "acdf56602f5f6e8a33b341150664cc2b86e3389366a42f839bb9dbdfab78bf6f"
+      },
+      "L-6-1": {
+        "import": "58898ec59c4527d4b6aaf4493d40be5029b01feb30377e4f65e5daeb519c3b49",
+        "input": "99b03bbd7187062a20b6792230224e3db0514d48cde36e7f3e5708e5dabbe878",
+        "response": "69db645bd6470443f69854e07df31b29272fb023224e3d79a9010049a426caf9"
+      }
+    },
+    "editable": [
+      "role_text"
+    ],
+    "held_allocations": {
+      "B-6-1": {
+        "input": "b7a45ba4e7189f2344518eb7de4b93d2d9a5f277e4d84835cb14825f6ddabd0a"
+      },
+      "B-6-2": {
+        "input": "1d3771f93aa7dab9a56cae2b6b2d439a28abd1c5427133689325baece74a252e"
+      },
+      "L-6-2": {
+        "input": "cebb457e80018e0c4f86f41d539159b746d208a3c0034f1396b47507eb7a891a"
+      }
+    },
+    "input_token_cap": 131072,
+    "model_version": "gpt-6-astra",
+    "no_runtime_authority": true,
+    "output_token_cap": 4096,
+    "owner": {
+      "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+      "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+    },
+    "predecessor_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/control2-owner217",
+    "previous_protocol": {
+      "relpath": "docs/readiness/2026-10-03-slurp-text-extra-round6-v1/protocol-proposals-v1.json",
+      "sha256": "34e21a31cd859c407f940dbeeada3c34248c04f8b4b010843e3f36e09ae57d57"
+    },
+    "round": 7,
+    "schema": "saea-system-search-successor-sequence-v1",
+    "seed_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "sequence_id": "coherent-budget-successor1-owner227",
+    "snapshot_files": {
+      "allocations/round-4.json": "a1a2837241391d73932d39a846eb66527f3dd0d4ee782afb37257d163b9f040c",
+      "allocations/round-5.json": "e041bcf5b16b9bfd64ffe7f66774773b2dc34a54782f995dc4864056c993a2c5",
+      "allocations/round-6.json": "35bd36374e0d3d0592e03933115e874b894d16ada7061f05908e730effd17705",
+      "imports/B-1-1.json": "865975cf71f3dad222390ad6c235816e01d3d95c4b364824c0fa97533d454b74",
+      "imports/B-1-2.json": "095e8484f8b906f9dc031f64a6f17476a058875bcf62d029c0dc0a99c2be05f1",
+      "imports/B-2-1.json": "80b8e0936b3c1beb6d1f56b719ef3f9b540c0e8c105eaa59c725168841a1f6f0",
+      "imports/B-2-2.json": "d6cf0e46ac4ec320ea023ce4c56dd9914a08bd39886b120e6ed067b01aa2b31e",
+      "imports/B-3-1.json": "74661715c2f87b0b9ad58a542bd4366ed1999762b069d800a1cd4b3e794d50e0",
+      "imports/B-3-2.json": "4ed6a0f25d6c4b67007484e1a1d67a45a6151faacd700c8c44ecd1a116244387",
+      "imports/B-4-1.json": "4470fcd61592a3f1d73dd7ab96ca457b9ad572b67ec946cccae241ffa122ed1d",
+      "imports/B-4-2.json": "856d894a045cf74d5f5fddebf2e88dd723513783c9ed1effef216f83aa0dec49",
+      "imports/B-5-1.json": "1e6cb6864e30c546fd8c2327ad1cbdb7da50c67003104defbc9695173244a0d6",
+      "imports/B-5-2.json": "10e84ca2efa7d00c9304a39075153c4c2fb587127a647e27adf8bb687ec71edd",
+      "imports/L-1-1.json": "4ef74025de645a693ab038e82a7769d13838d8e918de292763d2765476e7f692",
+      "imports/L-1-2.json": "e7da7e7c847c1f1aa7849adfd38cf8f4e7a079512e2e001f7e93bbf04068dadb",
+      "imports/L-2-1.json": "2c45aea2ae40409c18b96ab80a64958751e819eb0dd859134460b024b034c4f2",
+      "imports/L-2-2.json": "03e3cbc75e4ad7aadfdfc5f96cefc8941ed1a37f69befdb27a50a3beba3a3ac5",
+      "imports/L-3-1.json": "ad2a5e0cf894e6c4c630de6286a427c1a9a5c02af44889ae2ff339a375a194fa",
+      "imports/L-3-2.json": "42c5d185ad053a97a5bdfda57be02c856ccb5428d8826754ef987174b63be908",
+      "imports/L-4-1.json": "fdd0b5d167609572035876cf7bdbd7b3cfbd0fd33d3e0e646925a469cb93ceab",
+      "imports/L-4-2.json": "5d0370ecb8b579147d32b8f60e3d088b88570a8e8b43871d09a5cd5836c67db5",
+      "imports/L-5-1.json": "3f38d789c8d6e05968bd535dd12a7e89e930116bf6df9a1caa08107417c79705",
+      "imports/L-5-2.json": "cd70d2ca43e32b805f917874029675e43f8c5a15f1b6cd514a4ad7f24dd744ae",
+      "imports/L-6-1.json": "58898ec59c4527d4b6aaf4493d40be5029b01feb30377e4f65e5daeb519c3b49",
+      "inputs/B-1-1.json": "1362eb6c083d2ffd7554dda283af99e8b888ec16ed83b175ccf9e888f1a1a1d6",
+      "inputs/B-1-2.json": "08334da234988c9267eab85a20b769be770f933a9f16d6dcdb8127394bde9e86",
+      "inputs/B-2-1.json": "167b2061e445a181002f3f7cfcf0eeff3fd95a8ec6a591c890deec2edaf3fbba",
+      "inputs/B-2-2.json": "452feb10c2dbfcca8ccf217c8903d6111eac3a4aa0817a27c07df971238e93e5",
+      "inputs/B-3-1.json": "09a5dd3a7a7466fb06f0a263c3254537c89564ee6c7290ceaebeda77ade8c57f",
+      "inputs/B-3-2.json": "db812c1a6bf874a0f5398d18d5240b57ac6cf2df4c6fd6c9c93b3f701f3f7c1e",
+      "inputs/B-4-1.json": "9bb705436313f4b0f9302c7c295989c3b993a2e07d9e9f2743bb006fc9d5310e",
+      "inputs/B-4-2.json": "0699f3815c652399b0c34424b34623fa709ab0b39c6bcbb7e990e901cae20608",
+      "inputs/B-5-1.json": "0707aad31a4f8a841387e102f0efbc29969c7e4b48f0a8ce46bdb9c9b072719d",
+      "inputs/B-5-2.json": "2cb3e20d079b836f4691fbab78e15c66632954bd17d3daec09d0db4d084d0635",
+      "inputs/L-1-1.json": "5bc7479593fc59bc1aaa275befc062e7359dc92f7f22dc8102de42d3364e76ca",
+      "inputs/L-1-2.json": "2d3e1ec556b5a6f32009b003f3fcc47201269ac5d71683d14ba680a992a6f640",
+      "inputs/L-2-1.json": "896130ec84295e6edd6cf77c262e0ad977e9d2ef93ed285a256f249e2abc775a",
+      "inputs/L-2-2.json": "2c1c71c125006c0353fac119ba04fd731b9bed3dc442860d4fc384112d0a825b",
+      "inputs/L-3-1.json": "443abbc47217f2b663cb5f0298ad31c56eebd0f2c35345c4c5d56dbce379f754",
+      "inputs/L-3-2.json": "a8ff052774610a8c61e2d45b4f427e20901f2484518abbcd5e57e0a204f8ed21",
+      "inputs/L-4-1.json": "389b26953a10fd67ae3602f33e9e630edc174c14456b769fb246cc7d073aaf70",
+      "inputs/L-4-2.json": "a6fad4a9724718ee0880bf01f81dd0e1f75d730ecae829ff60d3d00ce7d565ea",
+      "inputs/L-5-1.json": "ae00bcc1e7e3567aba89b72cabe6c1f9b959bf674f8e6c23e7111baa0e8b7d2a",
+      "inputs/L-5-2.json": "b0284b938445d36c8e069d6dbf62b492a9e3e3292c3b331edbb241cbd7eb7f21",
+      "inputs/L-6-1.json": "99b03bbd7187062a20b6792230224e3db0514d48cde36e7f3e5708e5dabbe878",
+      "policies/1789cc3f9e60cd9ab04f8a8c811aefa3cdf5f42e2def34650454e410602b81a2.json": "6f1db59522e523508f96297b359722692d065dfdd720a9e7226ebd0b0c0d2381",
+      "policies/1e00dc6e064de745b3c524c7938918448a76ea59b4ab1444bb3003335285990b.json": "16083234b9a1c583741a2e721e9d67818d334c317b7d7ceb4fd6fce53c4d2dd6",
+      "policies/2d18e6e9a4a5b236bb6da35d90e95078e65be6a1ee3a45187396f1ecbc94daa5.json": "8402b1e2c3270de20e0fb3b86a4cb2febbb04a17d1191eb3d257d5c63bdd4def",
+      "policies/6c5717d2cf8d88da38216cf24f6880b184cb977e0d0000726c5b0f02e606737b.json": "df15e7629279717f58434294224054755a611b555084469082202bf1d7894001",
+      "policies/6e6f8ede28096805a99e7af6a5fb6a4368c0c35fe1f4e2ba7c19291f6d1a0fd6.json": "ce5d544e75d6aa6a88a6a984858193478baf842dded4a75620b1d199d69d4552",
+      "policies/92608a3e7dbd0c86ddae068d1c4433472ac0bb058dc459fbbdc635eebda9d6d1.json": "95238276be90e950977dbfe39f949a31db6752e9ea12cae29bb31805e5141685",
+      "policies/9652aa381a37280d5e5231e2875f89a95bf9c7587e1cd997dce924b9abe730b6.json": "6363ee558a5fca33eb3f04d2d3ba4aea904e46c73b656cf5f88fc1a86964d38a",
+      "policies/97580eb7d1c26a7d9e81ab3fb24de93eefd2b1966b4da5b504cbf1e9f4d8c294.json": "167eb836d2ebb5b689bef1005b3ae36be31a5a27061cb2efe9322c619cf8c7b2",
+      "policies/9bb4e33feb372b21fab3b139aa246c060e9d12f292ff74952c5b0b6c122195ca.json": "548b81adfdd52e7441b815b7dd872315e7fece28b9b03e23f8f446e16590c1eb",
+      "policies/a3d608c1a589c285c57f3bee9fb4c7efc08345d93c947df1c5f6164ca220eb1a.json": "5b4e60df39298bf94ac08ba01df766b2cd4b1332d9f8951ba66177bc74025196",
+      "policies/c7720d2fa5ccb6459a005b4122cd6c48efa0701865d5fc1bd08ffa8d2320b450.json": "024d930b84e7862307bf8ea60655be4b760c290c60ce9b361c1fa1a813bee020",
+      "policies/cea21691c6a7e625a262a73d5cb2e5ce345401ab4c3e8e4cdd3d8be28cbc2d3a.json": "d79e19e399dab419f5d1d06f3ba14cb10362dc74433359e787018d3b8c8f0575",
+      "policies/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15.json": "a6ae71e6139f9a0a80ba401afcb3e1485924959536f08d3b6977381c9f762cca",
+      "policies/e88281aaf5dc5a5d2127e617aa881cd7de385639766252322b3ae7fb094388cc.json": "03e1f591fd973a8f3d04f3a29f9371ad895073345544d5cdfde2ada5a68f0c59",
+      "policies/ef50b59dd95fc48238e62115e211fe3890c5e9e50c05b36002959db7cdba637e.json": "ba7943e02c3efc8ee1bb4bf912e149cee322dd5f435aa1620958f750e8b1ca2e",
+      "policies/f936c87a1c5099c6bfdc614d194be84805034bedbc0375ed08a77e59134ed1b9.json": "aa44fbce602520a39af29f088808ef5063a9469459ae96d99cb6f0e5731a5b2c",
+      "policies/fa7e7b9e46db4d43ab246b5761576e4e3046854b1168c3fbaedca58b5794dfea.json": "ba9d6ba98905d3b1ec81dd2b71c5483c6a41ced0b7526410e3e2e22f4f0b617d",
+      "policies/fdfb3eb7277819a9b6821a4220e560e916cde87e7112d79090402a6d8f118452.json": "7d7dffc7c2220f2be96ce8a7b748d43066ad6b9852ae166e76decd86b23951b3",
+      "proposals/B-1-1.json": "41c0f84384a67c8b3a8d396a1f89de38ed181697f87f98e2b3887425a58ddcd1",
+      "proposals/B-1-2.json": "f7cac804643eb41966e8a8369f976eff07a3c38e9935ef900ed5310777109c8f",
+      "proposals/B-2-1.json": "b418c0b20616109e13d4c03d8a5dd4a31e3d70b6b64dc3d289f27a8a2b051590",
+      "proposals/B-2-2.json": "cfa9c763515aec4021fa4abf7a8ddfb89428a2c5388af23ef628ab5d77743d52",
+      "proposals/B-3-1.json": "d2c0448d4db30dd6b67914d43bb59e0be30e19c1a42de049c2008928531d6755",
+      "proposals/B-3-2.json": "572ebbf70ad61c9e1ef98a0baa4db524d973bb56cf69b4e1b7ad9ef2c29be39c",
+      "proposals/B-4-1.json": "3bdc6702fadb3eb291d6aa6914c4c342d8dfd0ca25b31ad43e37cd03cb592651",
+      "proposals/B-4-2.json": "d73afd999ba3b3c1751b9ac0acd789776f3002935ddbc599e1b13a25337486f5",
+      "proposals/B-5-1.json": "752c7094783ea70259e376ccfa80bc41c580e964406ab6e8c5ac2931daea1a8d",
+      "proposals/B-5-2.json": "6242c4cce92e40de7268851c6cd3e0ac962912293bdf3bead44c560cbfc1dd0d",
+      "proposals/L-1-1.json": "995e285972a5c463271bdaf6976771324148c168b896fb81556c9a437a788333",
+      "proposals/L-1-2.json": "866892069cd52d5dc19b00442d894a26aaca10b4536bdd6427cac959410a04b1",
+      "proposals/L-2-1.json": "3d6fa2d2055f1eb684b66f356199660b4d487aef69deee22b26f09fc8a027aa7",
+      "proposals/L-2-2.json": "27b32eee41b42bd2fd1b2772f25d9a2936b05b296f30ce045254bc4197159b04",
+      "proposals/L-3-1.json": "3e118187f7f7751dbb27cf8a52b763980441987b698cfc106a0ba65fb989ff29",
+      "proposals/L-3-2.json": "a3e52f7877fdeb26295ccd29176cec4c5a8d05eec8988f7b00ab5356e58ddd02",
+      "proposals/L-4-1.json": "69e00e6bbda5f996f042557a61cd404def25cf1820addab865d1f90f97fa188a",
+      "proposals/L-4-2.json": "6b24b14e4044e3477b474d6feaaf3a3813a61a4e8e63184a829b754c2311518b",
+      "proposals/L-5-1.json": "c4d90655ecae8a226b88ec46c953b0f5d802f5c783e4f5827fde89df0af2a972",
+      "proposals/L-5-2.json": "873278d2f3675f0ed37d5d2e57b373e87b5a4af8ea01551d80777c0806036f67",
+      "proposals/L-6-1.json": "19bd784d864733db19189505226305fddc02e0b1063e45406217f6547afcdd18",
+      "responses/B-1-1.json": "f23a275e6087835f8f79479c577c9bec7c56c3d863dfdb7b3953ff672293f7d0",
+      "responses/B-1-2.json": "8808735a618bba3c7a51c5765c04ef7b1fe44d5ebc57af574d70fa6d3fcb46bc",
+      "responses/B-2-1.json": "e2b9768cf4b056045dd66e4c80c9d7f826fa8b0ff4541ce8061f7f01e3f72924",
+      "responses/B-2-2.json": "225b566eb5441c39e873b2d7cae0a163e3b9d050c325e8e6548aba37bf196a46",
+      "responses/B-3-1.json": "56f944350ff56804e6ddd249ad758b65480f3da47736f832bad204c782762a9a",
+      "responses/B-3-2.json": "d4f75ee550d472b6407370f7cf65eb67e077f90a0183944a40c437cddda69fbc",
+      "responses/B-4-1.json": "08cbd99025f592574867482fa7b85980d608447dcd67c634f29a7e43433e4905",
+      "responses/B-4-2.json": "94a25f44233ef38390a3b37a4977a13205c9ce8bb9ff590a45feae470f3d7e53",
+      "responses/B-5-1.json": "c9eec09abc6388a051737d9938ccee58dd32bf3d3f0b3ab0a365c4167f2ec61e",
+      "responses/B-5-2.json": "fef1ac2c7bd08e5b505d818fedb3bc030d699d2f7f04512718e65ef0252362d5",
+      "responses/L-1-1.json": "5acb3ca116e7c29454f9e2dfd1c5bf3c141bcc5770c57f1c225ea67de0a86c1f",
+      "responses/L-1-2.json": "cfdce92250590dc26497fe1efa4d2840f82375b1f87096e6704e4ea86f1d31f5",
+      "responses/L-2-1.json": "455400d2880cde4bd7b8d432f659bebc7f93a59186d567bacb0709fe285092ef",
+      "responses/L-2-2.json": "6981c7ff88d47cbffc93d9517f205317b4b190d523ee109477597d65e007ea66",
+      "responses/L-3-1.json": "e66e5d0f1164b3d26a5a90d80f2c0d1954c4f11309fe8b7ae1ca539abd44d8e9",
+      "responses/L-3-2.json": "8ad2346ed1b06dd966aeb8269e74f5b6f5517b458e6515598fcf3a069a251fee",
+      "responses/L-4-1.json": "21495055616fcf91351157ba9341d40feed580f807af4f593c4e78aa9d59a2af",
+      "responses/L-4-2.json": "5105e4f1cc8b4534ac6b431c1434763d80d0e3e220a6afce246dbd618b80ede8",
+      "responses/L-5-1.json": "36e9d261475003e78a77a8bed36e0df18187c333f492a096ab90c2c654a42760",
+      "responses/L-5-2.json": "acdf56602f5f6e8a33b341150664cc2b86e3389366a42f839bb9dbdfab78bf6f",
+      "responses/L-6-1.json": "69db645bd6470443f69854e07df31b29272fb023224e3d79a9010049a426caf9"
+    },
+    "successor_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/coherent-budget-successor1-owner227",
+    "transition": {
+      "relpath": "docs/readiness/2026-10-03-slurp-proposer-budget-successor1-v1/root-preparation-disposition-v1.json",
+      "sha256": "4a7e972c780a3253a488cba8040bbd6801a998c60bac1214e3bfc5aa8df7cce9"
+    }
+  },
+  "candidate_opportunities": 28,
+  "capsule_view_profile": "coherent-feedback-v1",
+  "claim_scope": "New equal-budget proposal sequence factor under owner227: four prospective slots, twenty-one immutable spent predecessors, three unspent HELD predecessors. Use qualified round5 own-L feedback plus own closed history only; blind inputs remain feedback-free. Same existing fixed400 first20; no runtime admission.",
+  "exploratory_learning": {
+    "relpath": "docs/readiness/2026-10-03-slurp-proposer-budget-successor1-v1/exploratory-learning-v1.json",
+    "sha256": "ac79f5e51c85cb021a516f4d2168f4310f8e9e5c83796efd62aa82872014fe4d"
+  },
+  "feedback_presentation": "Keep coherent-feedback-v1: complete deterministic own-L decision chain, all category and source indexes, explicit omissions, and qualified own-L history. Blind view has no feedback or history.",
+  "model_call_cap_per_system_trajectory": 13,
+  "no_automatic_extra_sampling": true,
+  "no_runtime_authority": true,
+  "optimization_panel": {
+    "editable": [
+      "role_text"
+    ],
+    "plan": {
+      "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/plan.json",
+      "sha256": "883a2db2b3e96c1447003c8cd5f06d4d3b970f8e71d81f21cfd175a73d538888"
+    },
+    "stages": [
+      "update-7"
+    ]
+  },
+  "primary_comparison": "L-frozen minus B-frozen",
+  "proposal_budget_notes": "Both branches use identical limits. Output is an acceptance target, not a provider-enforced generation cap; over-budget or unmetered proposals consume their opportunity and are rejected without replacement. Report actual compute. Four contacts per proposal include all artifact-tool continuations. No hidden tools, prior conversation, previous_response_id or API-key spend.",
+  "proposal_budget_owner": {
+    "relpath": "docs/receipts/owner/2026-10-02-decisions216-217.json",
+    "sha256": "5f0651d05562c4b7c2d106cc957e2dbb5c079a1b77e91bb3967fd2411feef8e9"
+  },
+  "proposal_budget_profile": "subscription-metered-reject-v1",
+  "proposal_contact_cap": 4,
+  "proposal_continuation_limits": {
+    "provider_output_items_bytes": 4096,
+    "tool_result_bytes": 4096
+  },
+  "proposal_input_token_cap": 131072,
+  "proposal_output_token_cap": 4096,
+  "proposer_exact_version": "gpt-6-astra",
+  "proposer_family": "GPT6",
+  "read_boundary": "All registered members of a stage must finalize and have one official score; no partial read.",
+  "runtime_admission": "HELD: freeze actual members and register capacity, engineering, unique scoring and full-family READ separately",
+  "schema": "saea-system-text-search-protocol-v1",
+  "secondary_comparison": "L-frozen minus seed",
+  "seed": 20261001,
+  "seed_bundle": {
+    "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "relpath": "system-text-search/review-contract-owner219/policies/d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15.json",
+    "sha256": "163cb9e12a4a72f2c29ae49da01b70534994ef2497635e1bf7912c6ee8587ff0"
+  },
+  "separately_registered": [
+    "FIT",
+    "engineering-four-row-proof",
+    "knowledge-construction",
+    "proposal"
+  ],
+  "sequence_id": "coherent-budget-successor1-owner227",
+  "source_rosters": {
+    "dev": {
+      "relpath": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+      "sha256": "f78dd8ad2894b1fd02bfe6050e39e3fb2c5d178a649e5d20e85ea4ecf4b8dc58"
+    },
+    "fold_a": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "fold_b": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+    },
+    "r01c": {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    }
+  },
+  "stages": [
+    {
+      "full_family_read_required": true,
+      "independent_validation": false,
+      "member_slots": [
+        "L-parent",
+        "L-parent-aa",
+        "L-candidate-1",
+        "L-candidate-2",
+        "B-parent",
+        "B-parent-aa",
+        "B-candidate-1",
+        "B-candidate-2"
+      ],
+      "official_score_jobs_cap": 8,
+      "purpose": "reused-optimization-panel",
+      "roster_sha256": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:009411:audio-1497030307-headset",
+        "slurp:train:015179:audio-1498569151-headset",
+        "slurp:train:013565:audio-1501765573-headset",
+        "slurp:train:010065:audio-1501756518",
+        "slurp:train:004087:audio-1490199961",
+        "slurp:train:013560:audio-1490291477-headset",
+        "slurp:train:014610:audio-1502218659-headset",
+        "slurp:train:014741:audio-1497882505",
+        "slurp:train:000081:audio-1501753218-headset",
+        "slurp:train:006032:audio--1504195204",
+        "slurp:train:016836:audio-1490705489-headset",
+        "slurp:train:004499:audio--1504194378-headset",
+        "slurp:train:011479:audio-1502216306-headset",
+        "slurp:train:010006:audio-1499693788-headset",
+        "slurp:train:010537:audio-1490183278"
+      ],
+      "source_roster": {
+        "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-v1.json",
+        "sha256": "bf72abff34fe726b023c5172c4944f9c029fbd0a0de6313bb7873f06abf110f9"
+      },
+      "stage": "update-7",
+      "status": "HELD-PROSPECTIVE-COMPARISON-REQUIRED",
+      "trajectory_cap": 160
+    }
+  ],
+  "supersedes": "Only the future proposal sequence factor changes. The old32768 budget, closed and HELD slots, original source packets, responses and dispatch records are immutable.",
+  "tool_call_cap_per_system_trajectory": 1,
+  "trajectory_cap": 160,
+  "updates": 7
+}

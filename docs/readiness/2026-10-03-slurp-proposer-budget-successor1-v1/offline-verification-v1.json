@@ -1,0 +1,26 @@
+{
+  "recorded_at_utc": "2026-10-03T09:30:28.912589+00:00",
+  "status": "PASS",
+  "tests": 189,
+  "new_module_statement_coverage": {
+    "system_search_successor": 99,
+    "system_proposer_continuation": 98
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "tool_catalog": "PASS",
+    "derived_media_confinement": "PASS with literal worktree src PYTHONPATH; generated local receipt retained externally and original tracked bytes restored"
+  },
+  "model_contacts": 0,
+  "local_gpu_contacts": 0,
+  "first_preparation_refusal": {
+    "phase": "before any new input write",
+    "reason": "optimization scope still required owner223 for every extension schema",
+    "correction": "exact successor schema now resolves its pinned owner227; unchanged owner224 fixed-pool checks; new regression test passes",
+    "evidence": "coordination/system-text-proposer-successor1-owner227-v1/L-7-1-prepare-0.log",
+    "no_proposal_opportunity_spent": true
+  },
+  "test_transport": "Loopback only; real HTTP/broker/dispatch path, no credentials or remote provider",
+  "old_records": "All source snapshots preserved; all new held memberships remain unspent"
+}

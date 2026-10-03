@@ -1,0 +1,40 @@
+{
+  "contact_cap": 4,
+  "continuation_limits": {
+    "provider_output_items_bytes": 4096,
+    "tool_result_bytes": 4096
+  },
+  "dispatch_authority": false,
+  "fixed_factors": [
+    "gpt-6-astra",
+    "coherent-feedback-v1",
+    "fixed UPDATE2 400-input pool",
+    "seed parent",
+    "current knowledge",
+    "current serving and scheduler"
+  ],
+  "heartbeat": "PAUSED; independent ten-second telemetry unchanged",
+  "held_allocations": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "input_token_cap": 131072,
+  "limitations": "Client acceptance envelopes preserve complete provider custody and stop before a subsequent contact if oversized. Provider generation output is metered and rejected after completion, not server-capped. No arbitrary four-call completion guarantee or matched total compute claim.",
+  "model_version": "gpt-6-astra",
+  "new_allocations": [
+    "L-7-1",
+    "B-7-1",
+    "L-7-2",
+    "B-7-2"
+  ],
+  "old_budget_and_allocations": "Keep all original bytes and identities. Twenty-one opportunities are spent; three untouched opportunities stay HELD. These four new opportunities are not retries or replacements.",
+  "output_token_cap": 4096,
+  "owner_decision": 227,
+  "recorded_at_utc": "2026-10-03T09:12:50.984835+00:00",
+  "round": 7,
+  "schema": "saea-root-proposer-sequence-disposition-v1",
+  "sequence_id": "coherent-budget-successor1-owner227",
+  "source": "Explicit root delegation selected equal 131072 cumulative input for both branches and exactly four prospective allocations after preserving the spent L-6-1 failure and holding the three untouched round6 slots. Final exact root contact admission is separate.",
+  "status": "root-selected-for-preparation"
+}
