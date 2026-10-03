@@ -103,10 +103,19 @@ def test_output_cannot_overwrite_or_export_to_optimizer(tmp_path, target):
         cli.run(inputs(), repo_root=ROOT, data_root=tmp_path, output=output)
 
 
-def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch):
+@pytest.mark.parametrize("changed_archive", [False, True])
+def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts(tmp_path, monkeypatch, changed_archive):
     cli = load_cli()
     doc = inputs()
-    doc["frozen_worker"]["path"] = str(ROOT)
+    frozen = tmp_path / "frozen"
+    doc["frozen_worker"]["path"] = str(frozen)
+    original_read_pin, frozen_checks = cli._read_pin, []
+    def read_pin(pin, root):
+        if Path(root) == frozen:
+            frozen_checks.append(pin)
+            return b""
+        return original_read_pin(pin, root)
+    monkeypatch.setattr(cli, "_read_pin", read_pin)
     reg = json.loads((ROOT / doc["registration"]["relpath"]).read_text())
     admission = json.loads(
         (ROOT / "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/root-admission-v1.json").read_text())
@@ -115,6 +124,10 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
     path.write_bytes((ROOT / "docs/readiness/2026-10-03-context-matrix-n20-entry-v1/root-admission-v1.json").read_bytes())
     assert admission["status"] == "decided"
     seen = []
+    wire_archive = tmp_path / "analysis/prepared-wire.json"
+    wire_archive.parent.mkdir(parents=True)
+    wire_archive.write_text("{}")
+    wire_pin = {"relpath": "analysis/prepared-wire.json", "sha256": hashlib.sha256(wire_archive.read_bytes()).hexdigest()}
     authority = {"read_run_id": reg["read_id"], "ledger_row_sha256": "a" * 64}
     def gate(*a, **k):
         seen.append("authority")
@@ -125,20 +138,29 @@ def test_complete_orchestration_rechecks_authority_and_metadata_without_contacts
         return [{"metadata_pins": []} for _ in range(8)]
     def numeric(*a, **k):
         seen.append("numeric")
-        return {}
+        return {"synthetic-member": {"source_bindings": {}, "context_execution": {
+            "wire_requests": {"artifact": wire_pin}}}}
     def analysis(*a, **k):
         seen.append("analysis")
         assert k["bootstrap_draws"] == 10000 and k["seed"] == 20261003
         assert len(k["roster"]) == 20
+        if changed_archive:
+            wire_archive.write_text('{"changed":true}')
         return {"members": {}, "comparisons": [], "interpretation": "Synthetic complete orchestration only."}
     monkeypatch.setattr(cli.CLI, "require_read_registration", gate)
     monkeypatch.setattr(cli, "preflight_members", preflight)
     monkeypatch.setattr(cli, "read_numeric_members", numeric)
     monkeypatch.setattr(cli, "describe_configurations", analysis)
     out = tmp_path / "analysis/read"
+    if changed_archive:
+        with pytest.raises(PolicyError, match="hash mismatch"):
+            cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out)
+        assert not out.exists()
+        return
     report = cli.run(doc, repo_root=ROOT, data_root=tmp_path, output=out)
     assert seen == ["authority", "preflight", "numeric", "analysis", "authority", "preflight"]
     assert report["read_authority"] == authority
+    assert frozen_checks == recipe()["source_checks"]
     assert (out / "report.json").exists() and (out / "README.md").exists()
 
 

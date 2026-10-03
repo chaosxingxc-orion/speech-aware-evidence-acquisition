@@ -1,0 +1,200 @@
+{
+  "schema": "saea-context-execution-audit-engineering-v1",
+  "at_utc": "2026-10-03T14:38:37.485738+00:00",
+  "scope": "Root-only complete-family read extension. Reuse original native source, semantic materialization, FIT custody, shared transport and immutable request-body artifact paths. No runtime or active source change.",
+  "tests": {
+    "targeted_regression_passed": 375,
+    "final_focused_passed": 62,
+    "counts_overlap": true,
+    "verification": "Four layout/scheduler combinations, exact original FIT and query/control identity, wrong/missing/duplicate routing or layout, full output reserve, changed archive refusal and service-independent repeat read.",
+    "lint": "PASS",
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "handoff_freshness": "PASS"
+  },
+  "coverage": {
+    "scripts/analysis/context_matrix_read.py": {
+      "covered_lines": 92,
+      "num_statements": 94,
+      "percent_covered": 97.87234042553192,
+      "percent_covered_display": "98",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 97.87234042553192,
+      "percent_statements_covered_display": "98"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py": {
+      "covered_lines": 103,
+      "num_statements": 103,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py": {
+      "covered_lines": 178,
+      "num_statements": 194,
+      "percent_covered": 91.75257731958763,
+      "percent_covered_display": "92",
+      "missing_lines": 16,
+      "excluded_lines": 0,
+      "percent_statements_covered": 91.75257731958763,
+      "percent_statements_covered_display": "92"
+    }
+  },
+  "sources": [
+    {
+      "relpath": "scripts/analysis/context_matrix_read.py",
+      "sha256": "641a3e47013110b71465359b3b877a56ed506a34c9ba306467869f6da534d391"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py",
+      "sha256": "ec226278ca63eb70fdda2b51d90d90fa7cc996ae00bf98c6d9cbeecb545dd3fb"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
+      "sha256": "9f5906cf3da4e7d9514353d9a80b295059124ac006c931f4af1dd42bcdaf041e"
+    },
+    {
+      "relpath": "tests/unit/test_context_execution_audit.py",
+      "sha256": "958529dcff469f7ab7d7c8da64e1b5d3a79df30d4deffc8b59d546149915b6e2"
+    },
+    {
+      "relpath": "tests/unit/test_context_configuration_source.py",
+      "sha256": "10265464b25cffd0535c61109e862e8f5c01564dca384ffacdfea312e4bfe831"
+    },
+    {
+      "relpath": "tests/unit/test_context_matrix_read.py",
+      "sha256": "41a76964423ddc8481cc6b08ee8e251569c3bbdbd8b55a5607cda1c0d7049e9f"
+    }
+  ],
+  "evidence": [
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/coverage-v1.json",
+      "sha256": "a7cf33ac10f47d9032c4f11fca060d7837d193b7853140d97cf8aae4252c38e4"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/coverage-v2.json",
+      "sha256": "6ee006afff5bf12b2cf42cc5e2bb1f569e9827b909de3a544b4ff1644982023c"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/engineering-base-v2.json",
+      "sha256": "4e36e29564e285ea9d95505d23f297810898644273a4a355090fe959347e8df0"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/engineering-base-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/engineering-base-v2.stdout",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/final-focused-tests-v2.json",
+      "sha256": "a882f7757f21ba179d2d22aa1a00ba86492b3d722cac808cdab48d358f4605b4"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/final-focused-tests-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/final-focused-tests-v2.stdout",
+      "sha256": "a879e479c6780626d3bc46d36bc4e36b5a6ad98be2dd68e874525da2aacbf3d8"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/harness-admission-v2.json",
+      "sha256": "97e1cdbfc2840d7b2e03a13a5d7e69c336f6fd2a10443dfc11d5e9b4c5bb1ee6"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/harness-admission-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/harness-admission-v2.stdout",
+      "sha256": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/lint-v1.json",
+      "sha256": "7ec8434b83c75a02fec4e059986a8f93fa704e34a7b73ad910e71a57832b1cc6"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/lint-v1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/lint-v1.stdout",
+      "sha256": "162629e36b353fa0ed16d0b32fc68ded58609c57e7f978c34cc5f2f10d8c02f5"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/lint-v2.json",
+      "sha256": "cbe76d125de7f26612e35f310cdc0531e29f90836787122104b5684d259c71de"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/lint-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/lint-v2.stdout",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/operational-state-v1.json",
+      "sha256": "704532561efcc484563c638ca0e89dc58b83626365bfb77deae3f77efb0c857d"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/tests-v1.json",
+      "sha256": "e060bd5e0fd9df284ac04bbca9658fc07c55d577faf4dd819f20bdb0bc4c3d8a"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/tests-v1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/tests-v1.stdout",
+      "sha256": "d4e62c54fc60a62c35b714fb32d7c3041686d61a47a99aa8b64cd1ae2e974cfd"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/tests-v2.json",
+      "sha256": "9131e8d2a6083ef2f502daebde8087cd430148ca574ab0f7181a267fb2d6faa1"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/tests-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/tests-v2.stdout",
+      "sha256": "b13f8c898d19cb53b784578f4bfbcc17e7ff77b7cc2eb791d63451b39bf54a13"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/handoff-freshness-v1.json",
+      "sha256": "097584d1c030dec051c322c1ed0834881a63981562cca474d855c9f4f8f416f8"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/handoff-freshness-v1.stdout",
+      "sha256": "468b8e2ff10d2d71c8f0fef1ed50cd888e1a8f14091bb7133756be653021497f"
+    },
+    {
+      "relpath": "coordination/context-matrix-n20-owner227-v1/context-execution-build-v1/handoff-freshness-v1.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "official_scorer": 0
+  },
+  "actual_complete_family_audit": "Pending all eight finalized, unique successful complete scores, verified seals and exact root READ. Synthetic verification is not an actual panel audit.",
+  "read_behavior": {
+    "initial_render": "The normal shared renderer retains its original process identity check. Never invoke its send method or restart a service for this reader.",
+    "repeated_read": "Reuse only request bodies reverified against original source/FIT and materialization identities; no serving process needed after the archive exists.",
+    "archive": "Analysis-only content-addressed request-body artifacts under DATA/analysis/context-matrix-n20-wire. Never a runtime knowledge store or optimizer export.",
+    "server_assignment": "Requested slot identity only; no invented independently observed server assignment."
+  },
+  "selection": null,
+  "learning": "HELD",
+  "heartbeat": "PAUSED",
+  "root_only": true,
+  "human_review_before": "8x400"
+}

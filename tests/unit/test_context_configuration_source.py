@@ -14,7 +14,8 @@ def fixture(tmp_path):
     members = []
     for i in range(2):
         run, attempt = f"run-{i}", f"attempt-{i}"
-        member = {"run_id": run, "attempt_id": attempt, "config_hash": str(i) * 64, "protocol_hash": "b" * 64}
+        member = {"run_id": run, "attempt_id": attempt, "config_hash": str(i) * 64, "protocol_hash": "b" * 64,
+                  "label": "legacy-trajectory-" + ("primary" if i == 0 else "aa")}
         members.append(member)
         directory = tmp_path / "runs" / run / attempt
         directory.mkdir(parents=True)
@@ -106,7 +107,7 @@ def test_bad_seal_stops_before_numeric_reader(tmp_path, monkeypatch):
         source.preflight_members(registration, data_root=tmp_path, sample_ids=ids, commit="c" * 40)
 
 
-@pytest.mark.parametrize("fault", [None, "cohort", "changed_score"])
+@pytest.mark.parametrize("fault", [None, "cohort", "changed_score", "audit_reject"])
 def test_numeric_join_uses_existing_official_custody_and_original_timing(tmp_path, monkeypatch, fault):
     registration, ids = fixture(tmp_path)
     monkeypatch.setattr(source, "verify_bundle", lambda *_: SimpleNamespace(attempt_state="FINALIZED"))
@@ -135,14 +136,25 @@ def test_numeric_join_uses_existing_official_custody_and_original_timing(tmp_pat
     monkeypatch.setattr(source, "_row_cost_and_terminal", lambda _: {sid: {"model_calls": 4} for sid in ids})
     monkeypatch.setattr(source, "export_system_sample_timing", lambda s: {"original": s is verified})
     monkeypatch.setattr(source, "export_system_node_timing", lambda s: {"original": s is verified})
+    audits = []
+    def audit(*args, **kwargs):
+        audits.append(kwargs["member"]["label"])
+        if fault == "audit_reject":
+            raise PolicyError("actual request audit refused")
+        return {"contacts_verified": 4, "original_fit_receipts": 4}
+    monkeypatch.setattr(source, "_audit_context_source", audit)
     if fault:
         with pytest.raises(PolicyError):
             source.read_numeric_members(entries, data_root=tmp_path, frozen_repo=tmp_path)
+        if fault == "audit_reject":
+            assert calls == []
     else:
         result = source.read_numeric_members(entries, data_root=tmp_path, frozen_repo=tmp_path)
         assert set(result) == {"run-0", "run-1"} and len(calls) == 2
         assert result["run-0"]["official"] == {"slu_f1": 0.5, "intent": 1}
         assert result["run-0"]["sample_timing"]["original"]
+        assert result["run-0"]["context_execution"]["contacts_verified"] == 4
+        assert audits == ["legacy-trajectory-primary", "legacy-trajectory-aa"]
         assert result["run-0"]["rows"][ids[0]]["model_calls"] == 4
         assert all(set(c) == {"schema", "execution_profile", "feedback_role", "scorer_id",
                                "manifest", "phases", "flight_receipts", "score_jobs"} for c in calls)
@@ -151,3 +163,56 @@ def test_numeric_join_uses_existing_official_custody_and_original_timing(tmp_pat
 def test_data_source_pin_rejects_escape(tmp_path):
     with pytest.raises(PolicyError, match="escaped"):
         source._pin(tmp_path.parent / "outside", tmp_path)
+
+
+@pytest.mark.parametrize("label", ["legacy-trajectory-aa", "before-speech-role-primary"])
+def test_source_audit_keeps_shared_renderer_and_original_session_identity(tmp_path, monkeypatch, label):
+    from test_context_execution_audit import world
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+    placement = "legacy" if label.startswith("legacy") else "before-speech-v1"
+    scheduler = "role" if "-role-" in label else "trajectory"
+    actor, report, flight_pin, transport = world(tmp_path, placement, scheduler)
+    report["content_sha256"] = content_hash(report)
+    actor.bundle.manifest = {"session_receipt": {"path": str(tmp_path / "session.json"), "sha256": "f" * 64}}
+    actor.composed.values["model_materialization_root"] = str(tmp_path)
+    seen = []
+    session = object()
+    def resolve(path, sha):
+        assert path == tmp_path / "session.json" and sha == "f" * 64
+        seen.append("session")
+        return b'{"original":true}'
+    def session_from(doc):
+        assert doc == {"original": True}
+        return session
+    def build(values, data, **kwargs):
+        assert values is actor.composed.values and data == tmp_path
+        assert kwargs == {"repo_root": tmp_path, "session": session,
+                          "runtime_receipt": {"pinned": True}, "runtime_root": tmp_path}
+        seen.append("shared-renderer")
+        return transport
+    def materialize(value, **kwargs):
+        assert value is actor and kwargs["round_id"] == "context-matrix-n20-root-audit-v1"
+        seen.append("complete-source")
+        return report
+    monkeypatch.setattr(source, "resolve_pinned_session_receipt", resolve)
+    monkeypatch.setattr(source.SessionReceipt, "from_json", session_from)
+    monkeypatch.setattr(source, "resolve_runtime_receipt_path", lambda *a: tmp_path / "runtime.json")
+    monkeypatch.setattr(source, "load_runtime_receipt", lambda path: {"pinned": True})
+    monkeypatch.setattr(source, "build_configured_transport", build)
+    monkeypatch.setattr(source, "materialize_semantic_trajectories", materialize)
+    result = source._audit_context_source(actor, member={"label": label}, flight_pin=flight_pin,
+        data_root=tmp_path, frozen_repo=tmp_path)
+    assert result["contacts_verified"] == 1
+    assert seen == ["complete-source", "session", "shared-renderer"]
+    assert result["wire_requests"]["artifact"]["relpath"].startswith("analysis/context-matrix-n20-wire/")
+    monkeypatch.setattr(source, "build_configured_transport", lambda *a, **k: pytest.fail("cached audit must not need service"))
+    monkeypatch.setattr(source, "resolve_pinned_session_receipt", lambda *a, **k: pytest.fail("cached audit must not need session"))
+    replay = source._audit_context_source(actor, member={"label": label}, flight_pin=flight_pin,
+        data_root=tmp_path, frozen_repo=tmp_path)
+    assert replay == result
+
+
+def test_unregistered_audit_label_fails_before_renderer(tmp_path):
+    with pytest.raises(PolicyError, match="label"):
+        source._audit_context_source(None, member={"label": "foreign"}, flight_pin={},
+                                     data_root=tmp_path, frozen_repo=tmp_path)

@@ -156,6 +156,99 @@ def _inputs(source, report, flight_pin):
             "flight_receipts": dict(flight_pin)}
 
 
+def audit_context_execution(source, report, flight_pin, *, data_root, render_request,
+                            placement, scheduler):
+    """Check original fitted requests against the declared context comparison.
+
+    The caller first qualifies the complete family and its exact root READ.
+    Supply the normal shared renderer from the retained configuration. Every
+    rendered body must match the independently pinned original FIT; no request
+    is sent. This view contains hashes and routing only, never model text.
+    Requested slots are not independently observed server assignments.
+    """
+    values = source.composed.values
+    role_slots = dict(perception=0, solver=1, reviewer=2, planner=3)
+    if (placement not in ("legacy", "before-speech-v1") or scheduler not in ("trajectory", "role")
+            or values.get("native_role_query_placement", "legacy") != placement):
+        raise ValueError("context layout label differs from retained configuration")
+    expected_slots = ({"schema": "saea-native-prefix-slots-v1", "role_slots": role_slots}
+                      if scheduler == "role" else None)
+    if values.get("native_prefix_slots") != expected_slots:
+        raise ValueError("context scheduler label differs from retained configuration")
+    episodes = report["episodes"]
+    ids = [episode["trajectory"]["sample_id"] for episode in episodes]
+    if len(ids) != len(set(ids)) or set(ids) != set(source.sample_ids):
+        raise ValueError("context audit must retain every complete sample once")
+    fitted = _fit_index(source, report, flight_pin, data_root)
+    layouts = {}
+    for record_id, record in source.bundle.trace_records.items():
+        if "org_native_role_query_layout" not in record:
+            continue
+        receipt = record["org_native_role_query_layout"]
+        rid = receipt["input_request_id"]
+        if rid in layouts:
+            raise ValueError("duplicate original layout receipt")
+        layouts[rid] = (receipt, record_id)
+    contacts, seen, sample_slots = [], set(), {sid: set() for sid in ids}
+    for episode, contact, payload in _contacts(report):
+        record_id, role = contact["request_record_id"], contact["role_id"]
+        rid, sid = payload["request_id"], episode["trajectory"]["sample_id"]
+        if record_id != rid + "/request" or rid in seen or record_id not in fitted:
+            raise ValueError("context contact identity or coverage differs")
+        seen.add(rid)
+        slot = payload.get("decoding_params", {}).get("id_slot")
+        if type(slot) is not int or not 0 <= slot < 4 or role not in role_slots:
+            raise ValueError("context contact lacks one legal requested slot and role")
+        if scheduler == "role" and slot != role_slots[role]:
+            raise ValueError("actual requested slot differs from role mapping")
+        sample_slots[sid].add(slot)
+        if scheduler == "trajectory" and len(sample_slots[sid]) != 1:
+            raise ValueError("trajectory changed requested slot within the sample")
+        validated = validate_native_framework_contact(payload)
+        if validated is None:
+            raise ValueError("context contact requires native framework custody")
+        contract, _, _ = validated
+        if contract["role_id"] != role or contract["sample_id"] != sid or payload["sample_id"] != sid:
+            raise ValueError("context role or sample identity differs from source")
+        raw = canonical_bytes(payload)
+        body = render_request(raw)
+        if digest(body) != fitted[record_id]:
+            raise ValueError("context request differs from its original FIT body")
+        if body.get("id_slot") != slot or type(body.get("id_slot")) is not int or body.get("max_tokens") != 512:
+            raise ValueError("actual body routing or full output reserve differs")
+        proof = None
+        if placement == "before-speech-v1":
+            if rid not in layouts:
+                raise ValueError("original context layout receipt is missing")
+            proof = verify_role_query_layout_receipt(raw, body, layouts[rid][0],
+                                                     fitted_body_sha256=fitted[record_id])
+        else:
+            messages = body.get("messages", [])
+            query = contract["messages"][1]["content"]
+            if (len(messages) < 2 or messages[0] != contract["messages"][0]
+                    or messages[1].get("role") != "user"
+                    or not isinstance(messages[1].get("content"), list) or not messages[1]["content"]
+                    or messages[1]["content"][-1] != {"type": "text", "text": query}):
+                raise ValueError("legacy role query placement differs from source")
+        contacts.append({"request_id": rid, "sample_id": sid, "role_id": role,
+                         "request_payload_sha256": hashlib.sha256(raw).hexdigest(),
+                         "request_body_sha256": fitted[record_id], "requested_slot_id": slot,
+                         "output_reserve": 512, "system_message_sha256": content_hash(contract["messages"][0]),
+                         "role_query_sha256": content_hash(contract["messages"][1]), "layout_proof": proof,
+                         "layout_source": None if rid not in layouts else {
+                             "record_id": layouts[rid][1], "receipt_sha256": content_hash(layouts[rid][0])}})
+    if not contacts or set(layouts) != (seen if placement == "before-speech-v1" else set()):
+        raise ValueError("original layout receipts differ from complete contact coverage")
+    result = {"schema": "saea-context-execution-audit-v1", "placement": placement, "scheduler": scheduler,
+              "source_manifest_sha256": hashlib.sha256(source.bundle.manifest_path.read_bytes()).hexdigest(),
+              "flight_receipts": dict(flight_pin), "contacts_verified": len(contacts),
+              "original_fit_receipts": len(fitted), "contacts": contacts,
+              "sample_requested_slots": {sid: sorted(slots) for sid, slots in sample_slots.items()},
+              "server_assignment_verified": False, "model_contacts_added": 0, "tokenizer_contacts_added": 0}
+    result["content_sha256"] = content_hash(result)
+    return result
+
+
 def prepare_actor_wire_requests(source, report, flight_pin, output_path, *,
                                 data_root, render_request):
     """Archive shared-transport renderings only if every original fitted hash matches.

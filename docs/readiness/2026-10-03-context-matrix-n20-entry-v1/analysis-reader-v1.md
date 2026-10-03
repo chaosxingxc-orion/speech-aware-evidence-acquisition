@@ -15,3 +15,12 @@ The20-input panel is descriptive engineering evidence with inherited cache and o
 [Engineering evidence](../../receipts/continuation/2026-10-03-context-matrix-reader-engineering.json) records316 passing targeted tests: pure statistics, synthetic complete-source and command-line orchestration, shared reader gates and original timing regressions. Both new analysis modules have100% statement coverage; the CLI has99% and all7 added family-identity statements are covered. Unexercised existing stage code is reported separately, not claimed as covered. Lint, engineering-base and harness-admission checks pass.
 
 The real unsigned READ invocation refuses before any result read or output directory. The initial coverage invocation found the optional pytest-cov plugin unavailable before tests ran; the installed coverage.py executed the selected suite successfully without installing dependencies. Zero real model, tokenizer or official scorer contacts were added by this implementation or verification.
+
+
+## Actual context execution custody
+
+The reader now checks every original request against its independently pinned actual-request FIT, native role/control identity and declared legacy or before-speech query placement. Verify the actual requested role slot or one-slot-per-trajectory rule and the complete512-token output reservation. Preserve independent node instruction/query hashes; do not impose equal prompts. Slot parameters are requested routing, not independently observed server assignment.
+
+Initial materialization uses the normal shared renderer and retains its process identity check; it never sends a request. Preserve exact bodies in source-addressed analysis-only artifacts. Later reads revalidate those bodies against the original FIT and complete source without requiring the former serving process. Do not restart a service to satisfy a reader. Recheck artifact hashes before publishing the joint report. No archive feeds runtime knowledge or a proposer.
+
+[Execution-audit verification](../../receipts/continuation/2026-10-03-context-execution-audit-engineering.json) records375 passing targeted regression tests and62 passing final focused tests (overlapping scopes),100% source-reader statement coverage,92% shared wire module and98% CLI coverage. Lint,engineering-base and harness-admission pass. The actual eight-member audit remains pending complete-family qualification and root READ; synthetic tests are not a substitute for that audit. No real model/tokenizer/scorer contacts or active runtime changes occurred.

@@ -8,11 +8,17 @@ import json
 from pathlib import Path
 
 from ..core.bundle.verify import verify_bundle
+from ..core.config import model_materialization_root, resolve_runtime_receipt_path
+from ..core.configured_transport import build_configured_transport
+from ..core.session.receipt import SessionReceipt, load_runtime_receipt, resolve_pinned_session_receipt
 from ..rails.system_text_feedback import _row_cost_and_terminal
 from ..rails.system_text_policy import require
+from ..rails.hashing import content_hash
 from .native_episode_source import verify_native_episode_source
 from .system_cache_cost import export_system_node_timing, export_system_sample_timing
 from .system_feedback import load_system_feedback
+from .system_semantic_trajectory import materialize_semantic_trajectories
+from .system_wire_context import audit_context_execution, load_actor_wire_requests, prepare_actor_wire_requests
 
 
 def _identity(value):
@@ -74,12 +80,57 @@ def preflight_members(registration, *, data_root, sample_ids, commit):
                 and scored.get("returncode") == 0 and scored.get("operation") == "finalize"
                 and Path(scored["manifest"]).resolve() == manifest_path.resolve(),
                 "official finalize job differs")
-        sources.append({"manifest": manifest, "manifest_path": manifest_path,
+        sources.append({"manifest": manifest, "manifest_path": manifest_path, "member": dict(member),
                         "metadata_pins": [_pin(path, root) for path in (manifest_path, jobs_path, summary_path)]})
     for source in sources:
         verified = verify_bundle(source["manifest_path"])
         require(verified.attempt_state == "FINALIZED", "complete member seal verification failed")
     return sources
+
+
+def _audit_context_source(source, *, member, flight_pin, data_root, frozen_repo):
+    """Render only through the shared transport; its normal identity check stays.
+
+    The retained serving process and feature files must still be available for
+    initial materialization. Preserve verified bodies in an analysis-only
+    archive; subsequent reads reverify the original FIT without a live service.
+    Never invoke the transport or restart a missing service for this reader.
+    """
+    label = member["label"]
+    allowed = {f"{layout}-{scheduler}-{repeat}" for layout in ("legacy", "before-speech")
+               for scheduler in ("trajectory", "role") for repeat in ("primary", "aa")}
+    require(label in allowed, "unknown registered context matrix label")
+    placement = "before-speech-v1" if label.startswith("before-speech-") else "legacy"
+    scheduler = "role" if "-role-" in label else "trajectory"
+    materialized = materialize_semantic_trajectories(source, round_id="context-matrix-n20-root-audit-v1")
+    renderer = None
+    def render(raw):
+        nonlocal renderer
+        if renderer is None:
+            pin = source.bundle.manifest["session_receipt"]
+            session = SessionReceipt.from_json(json.loads(resolve_pinned_session_receipt(Path(pin["path"]), pin["sha256"])))
+            values = source.composed.values
+            runtime_root = model_materialization_root(values)
+            require(runtime_root is not None, "context matrix requires its recorded model materialization root")
+            renderer = build_configured_transport(values, Path(data_root), repo_root=Path(frozen_repo), session=session,
+                runtime_receipt=load_runtime_receipt(resolve_runtime_receipt_path(Path(frozen_repo), values)),
+                runtime_root=Path(runtime_root))
+        return renderer.render_request(raw)
+    identity = hashlib.sha256(source.bundle.manifest_path.read_bytes()).hexdigest()
+    archive = Path(data_root).resolve() / "analysis/context-matrix-n20-wire" / (identity + ".json")
+    require(archive.resolve().is_relative_to(Path(data_root).resolve() / "analysis"),
+            "context wire archive escaped analysis storage")
+    prepare_actor_wire_requests(source, materialized, flight_pin, archive,
+                                data_root=data_root, render_request=render)
+    spec = {"artifact": _pin(archive, data_root), "flight_receipts": dict(flight_pin)}
+    requests = load_actor_wire_requests(source, materialized, spec, data_root=data_root)
+    result = audit_context_execution(source, materialized, flight_pin, data_root=data_root,
+        render_request=lambda raw: requests[json.loads(raw)["request_id"] + "/request"],
+        placement=placement, scheduler=scheduler)
+    result["wire_requests"] = spec
+    result.pop("content_sha256", None)
+    result["content_sha256"] = content_hash(result)
+    return result
 
 
 def read_numeric_members(sources, *, data_root, frozen_repo):
@@ -106,6 +157,8 @@ Never return answer text or a learning-feedback object from this numeric view.
             phase_artifact_path=phases, expected_phase_sha256=binding["phases"]["sha256"],
             repo_root=Path(frozen_repo), data_root=root,
         )
+        execution = _audit_context_source(source, member=entry["member"], flight_pin=binding["flight_receipts"],
+                                          data_root=root, frozen_repo=Path(frozen_repo))
         feedback = load_system_feedback(data_root=root, repo_root=Path(frozen_repo), binding=binding)
         costs = _row_cost_and_terminal(manifest)
         rows = {}
@@ -124,6 +177,7 @@ Never return answer text or a learning-feedback object from this numeric view.
                                        "intent": score["port_micro"]["intent_accuracy"]},
             "sample_timing": export_system_sample_timing(source),
             "node_timing": export_system_node_timing(source),
+            "context_execution": execution,
             "source_bindings": binding, "metadata_pins": entry["metadata_pins"],
             "official_feedback_content_sha256": feedback["content_sha256"],
         }

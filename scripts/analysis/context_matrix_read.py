@@ -61,6 +61,7 @@ def run(inputs, *, repo_root, data_root, output):
     reader_names = ["scripts/analysis/context_matrix_read.py", "scripts/system_text_search.py",
                     "src/speech_aware_evidence_acquisition/analysis/context_configuration.py",
                     "src/speech_aware_evidence_acquisition/analysis/context_configuration_source.py",
+                    "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
                     "src/speech_aware_evidence_acquisition/rails/system_search_stage.py"]
     reader_pins = [{"relpath": name, "sha256": hashlib.sha256((ROOT / name).read_bytes()).hexdigest()}
                    for name in reader_names]
@@ -113,9 +114,12 @@ def run(inputs, *, repo_root, data_root, output):
         _read_pin(inputs[key], root)
     for pin in reader_pins:
         _read_pin(pin, ROOT)
+    for member in numeric.values():
+        _read_pin(member["context_execution"]["wire_requests"]["artifact"], data)
     _pinned_json(data, registration["admission"], "matrix admission")
     report.update(read_authority=authority, source_inputs=inputs, reader_sources=reader_pins,
                   numeric_source_bindings={run: member["source_bindings"] for run, member in numeric.items()},
+                  context_execution={run: member["context_execution"] for run, member in numeric.items()},
                   model_contacts_added=0, scorer_contacts_added=0)
     report.pop("content_sha256", None)
     report["content_sha256"] = content_hash(report)
