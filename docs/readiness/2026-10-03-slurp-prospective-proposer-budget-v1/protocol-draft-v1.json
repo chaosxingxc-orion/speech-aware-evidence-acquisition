@@ -1,0 +1,64 @@
+{
+  "schema": "saea-prospective-search-sequence-budget-v1",
+  "status": "DRAFT-MODEL-FREE-ONLY",
+  "prepared_at_utc": "2026-10-03T09:04:54.112351+00:00",
+  "authority": 227,
+  "requires_exact_root_admission": true,
+  "allocation_registration_occurred": false,
+  "proposed_new_opportunities": 4,
+  "old_spent_opportunities": 21,
+  "old_unspent_held_slots": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "old_failed_slot": "L-6-1",
+  "model_version": "gpt-6-astra",
+  "view_profile": "coherent-feedback-v1",
+  "branch_bounds": {
+    "L": {
+      "input_acceptance_token_cap": 131072,
+      "output_acceptance_token_cap": 4096,
+      "contact_cap": 4,
+      "proposal_slots": 2
+    },
+    "B": {
+      "input_acceptance_token_cap": 131072,
+      "output_acceptance_token_cap": 4096,
+      "contact_cap": 4,
+      "proposal_slots": 2
+    }
+  },
+  "paid_api_spend": 0,
+  "provider_hard_output_cap": false,
+  "budget_enforcement": "Per-contact full serialized-byte bound plus4096 framing reserve, checked against remaining cumulative input allowance; all reported provider usage checked. Output acceptance remains metered rejection after completion, not provider hard limit.",
+  "parent_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "optimization_pool": "Same immutable UPDATE2 400-input pool; prospective runtime panel remains20 after exact policies/FIT/structural proof",
+  "transition_contract": {
+    "new_sequence_required": true,
+    "old_archive": "system-text-search/control2-owner217",
+    "do_not_change_old_budget_json": true,
+    "do_not_mutate_old_inputs": true,
+    "preserve_spent_and_held_distinction": true,
+    "successor_lineage": "Explicitly pin all previous response/disposition/allocation evidence; link cumulative provenance into the new sequence. L may inherit only its qualified own-L feedback/history including the recorded failure; B starts feedback-free. Never copy combined root/B reports into L or B.",
+    "no_silent_replacement": "The four proposed opportunities are a new prospectively declared budget factor, not remaining slots, retries, repairs or replacements of L-6-1. Compare L/B under equal new bounds and separately report all prior budget expenditure."
+  },
+  "precontact_requirements": [
+    "Root review and exact successor registration",
+    "Implement and test an explicit sequence-transition gate preserving all old custody, without weakening the existing immutable-budget gate",
+    "Rebuild only isolated optimizer packets/capsules under new registration; do not rebuild data or knowledge",
+    "Recheck actual new initial requests, exact retained chain analogue and stated bounded continuation envelope",
+    "Freeze clean worker and exact one-shot Windows entry"
+  ],
+  "capacity_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-prospective-budget-v1/comparison.json",
+    "sha256": "c23f712ed110d328b37d82e73e42d1bde8789c699927379222fbb6e58ba2069a"
+  },
+  "source_replay": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-prospective-budget-v1/replay-source-v1.py",
+    "sha256": "a953db844f344b27c4ceb026de595eb5d4ac0742eb226a29069fe6fecb67db24"
+  },
+  "new_contacts": 0,
+  "gpu_dispatch_authority": false,
+  "heartbeat": "PAUSED"
+}
