@@ -1,0 +1,26 @@
+{
+  "cell": "slurp-native-stage3-system-text-round8-candidate-2-capacity-v1",
+  "composed_config_hash": "62c6d72e2426974632c7f6d0a9fa5cae4f9eafbf1d1970a76d0d8d226a47d3d9",
+  "decision_receipt": {
+    "relpath": "coordination/system-text-round8-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "e305458449db7ea8f5e1833b9af54850aebb0807c56b84022d57a317e90dec66"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "0cc98ed2423e9d527c9551cec479e6df1da9c639a0518a665fd74d273445940a",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-round8-candidate-2-capacity-v1",
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT through explicit owner227 root delegation"
+}

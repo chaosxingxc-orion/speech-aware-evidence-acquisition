@@ -1,0 +1,75 @@
+{
+  "at_utc": "2026-10-03T11:54:01.092017+00:00",
+  "decision_receipt": {
+    "relpath": "coordination/system-text-round8-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "e305458449db7ea8f5e1833b9af54850aebb0807c56b84022d57a317e90dec66"
+  },
+  "final_frozen_checks_pending": true,
+  "generation_scoring_admitted": false,
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-parent-capacity-fit-v1",
+      "capacity": "slurp-native-stage3-system-text-round8-parent-capacity-v1",
+      "composed_config_hash": "9d5babd7243a8d5ce4de4a092f9162bc28a5ed3a1d90d97c4e7fb6c92faf94b1",
+      "graph": "slurp-native-stage3-system-text-round8-parent-graph-v1",
+      "label": "parent",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/parent-capacity-plan-registered-v1.json",
+        "sha256": "9f643d6fccb2858cbbd156f52fb1f5dcfa1714a4ef52177852d08259f7a15305"
+      },
+      "policy_binding_verified": {
+        "bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "protocol_hash": "a3a7a6ba63f210b8f493fe51ed4e828230006eb2a4e8e7695ca1fd22c056052b",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-PARENT-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-1-capacity-fit-v1",
+      "capacity": "slurp-native-stage3-system-text-round8-candidate-1-capacity-v1",
+      "composed_config_hash": "52a547dc6273e537b15f567d242430d6f90f64a2b24b2a00adbcbb59b1aa8b90",
+      "graph": "slurp-native-stage3-system-text-round8-candidate-1-graph-v1",
+      "label": "candidate-1",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/candidate-1-capacity-plan-registered-v1.json",
+        "sha256": "9736a6d25fae83e6e56eba5978b2ec59b12dfc24509af8bc99ff06fb9108d1b0"
+      },
+      "policy_binding_verified": {
+        "bundle_id": "1394274266ae69c297ed59cffa95af674d37793f4668d51fc91fb7b71cf6581e",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "f13e584047f023dea36841fa0fc71f630cc844f3ea537a8a9549088520252170"
+        }
+      },
+      "protocol_hash": "3b6f2fe5fbec518adde962099e39ecdb19d0fadb15ef6a0978c281241f86c508",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-1-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-round8-candidate-2-capacity-fit-v1",
+      "capacity": "slurp-native-stage3-system-text-round8-candidate-2-capacity-v1",
+      "composed_config_hash": "62c6d72e2426974632c7f6d0a9fa5cae4f9eafbf1d1970a76d0d8d226a47d3d9",
+      "graph": "slurp-native-stage3-system-text-round8-candidate-2-graph-v1",
+      "label": "candidate-2",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-03-slurp-round8-capacity-entry-v1/candidate-2-capacity-plan-registered-v1.json",
+        "sha256": "e76090dd50e3a0e98fee7bf48cf879c09752d7f2258ced19b2431149658b14cf"
+      },
+      "policy_binding_verified": {
+        "bundle_id": "846cd4286481da7c2757995b0752256ebad6476b976950f46ef1d0a0bb22308d",
+        "role_sha256": {
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "15fed94fa116a608bca1b8abaff70897f22c429c762ea000f59255816448d9b8"
+        }
+      },
+      "protocol_hash": "0cc98ed2423e9d527c9551cec479e6df1da9c639a0518a665fd74d273445940a",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-FIT-V1"
+    }
+  ],
+  "schema": "saea-round8-root-delegated-fit-admission-v1"
+}

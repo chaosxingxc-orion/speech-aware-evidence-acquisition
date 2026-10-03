@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Round8 capacity-only root delegation, 2026-10-03T11:54:01.092017+00:00
+
+Root227 explicitly delegates one Windows-owned entry for the three ROUND8 capacity FIT identities, at most 297 tokenizer endpoints each / 891 total, with zero generation or scoring. [Exact admission and plans](../readiness/2026-10-03-slurp-round8-capacity-entry-v1/root-delegated-admission-v1.json) bind each final composed policy and precontact ledger row. Only those three cells are ready. Clean frozen checks, absent attempt/control conflicts, current serving identity and 12.5 GiB startup / 8 GiB running guards must still pass before dispatch. Failure stops and preserves evidence. No runtime generation, scientific READ, queue/STOP reconciliation, cache/layout change or heartbeat resumption is authorized.
+
 ## Round8 capacity entry ready for root review, 2026-10-03T11:51:42.879418+00:00
 
 Three separate four-row graph helpers now compose through the shared runtime on source 55f0a6ff7. The pending FIT stage has three 297-endpoint identities, 891 total, zero generation and zero scoring. The [entry receipt](../receipts/continuation/2026-10-03-round8-capacity-entry-prepared.json) pins dependencies, model-free composition and synthetic memory-guard proofs. Use native_graph_capacity with the explicit cap and the existing run_guarded MemoryPolicy(12.5, 8); retain prompt-fit lease custody and durable Windows capture. Initial dataclass evidence serialization failed after parent composition; the empty partial receipt is preserved and root approved a separate metadata-only correction. This consumed no contact or proposal.

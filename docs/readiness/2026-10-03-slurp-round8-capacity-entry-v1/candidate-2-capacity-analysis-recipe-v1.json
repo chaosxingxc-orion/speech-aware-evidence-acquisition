@@ -1,0 +1,16 @@
+{
+  "acceptance": [
+    "Exactly one fit per member within its registered 297-endpoint ceiling.",
+    "Every tested legal request fits while retaining the full declared output reserve.",
+    "Preserve all failures and original files; no retry or next-stage authority."
+  ],
+  "allowed_read": "Capacity fit booleans, token/count/slot/output-reserve measurements, source and resource/operational custody only. No task answers, labels, quality or optimizer feedback.",
+  "expected_rows": 0,
+  "limitations": "A measured reachable graph with bounded synthetic histories is not an exhaustive guarantee over arbitrary future text. Per-request FIT remains mandatory.",
+  "run_ids": {
+    "fit": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-FIT-V1",
+    "read": "SAEA-SLURP-SYSTEM-TEXT-ROUND8-CANDIDATE-2-CAPACITY-STRUCTURE-V1"
+  },
+  "schema": "saea-round8-capacity-structural-analysis-v1",
+  "score_jobs": 0
+}

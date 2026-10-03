@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 capacity-only root delegation, 2026-10-03T11:54:01.092017+00:00
+
+Root227 explicitly delegates one Windows-owned entry for the three ROUND8 capacity FIT identities, at most 297 tokenizer endpoints each / 891 total, with zero generation or scoring. [Exact admission and plans](../readiness/2026-10-03-slurp-round8-capacity-entry-v1/root-delegated-admission-v1.json) bind each final composed policy and precontact ledger row. Only those three cells are ready. Clean frozen checks, absent attempt/control conflicts, current serving identity and 12.5 GiB startup / 8 GiB running guards must still pass before dispatch. Failure stops and preserves evidence. No runtime generation, scientific READ, queue/STOP reconciliation, cache/layout change or heartbeat resumption is authorized.
+
 ## Round8 capacity entry ready for root review, 2026-10-03T11:51:42.879418+00:00
 
 Three separate four-row graph helpers now compose through the shared runtime on source 55f0a6ff7. The pending FIT stage has three 297-endpoint identities, 891 total, zero generation and zero scoring. The [entry receipt](../receipts/continuation/2026-10-03-round8-capacity-entry-prepared.json) pins dependencies, model-free composition and synthetic memory-guard proofs. Use native_graph_capacity with the explicit cap and the existing run_guarded MemoryPolicy(12.5, 8); retain prompt-fit lease custody and durable Windows capture. Initial dataclass evidence serialization failed after parent composition; the empty partial receipt is preserved and root approved a separate metadata-only correction. This consumed no contact or proposal.
@@ -951,7 +955,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T11:51:42.879418+00:00
+Last refreshed: 2026-10-03T11:54:01.092017+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
