@@ -1,0 +1,126 @@
+{
+  "additional_contacts": 0,
+  "family_id": "fixed400-context20-recovery1-v1",
+  "members": [
+    {
+      "actual_model_contacts": 128,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-planner-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-planner-generation-v1.json",
+        "sha256": "b8cdd357885f7a0ed2b0927dd20b1b3c499250c35887392078a75d1c579ef652"
+      },
+      "failed_official_score_jobs": 0,
+      "frozen_worker_commit": "963528f3ee858837afbf94abc15d3b535906c7c1",
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-planner-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1.run-manifest.json",
+        "sha256": "4c2b48b394a43ff38eba8032af77129457b03c913c4fdc61d396c236a200d7eb"
+      },
+      "member": "B-candidate-1",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1",
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    },
+    {
+      "actual_model_contacts": 131,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-solver-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-solver-generation-v1.json",
+        "sha256": "7097959192fb6e85b4790bb097c39cb5638e9241b87c60a9fb231eba1bb78df7"
+      },
+      "failed_official_score_jobs": 0,
+      "frozen_worker_commit": "963528f3ee858837afbf94abc15d3b535906c7c1",
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-solver-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1.run-manifest.json",
+        "sha256": "85ba007bf9ed612b69c076485b0e82bd8b1f31349abf157032092a9ded6b9f17"
+      },
+      "member": "B-candidate-2",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1",
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    },
+    {
+      "actual_model_contacts": 125,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1.json",
+        "sha256": "cc0225c603f4d7787a3c47a098c0cd72ed7c301ee0fab47cf5d7697cb7c3ff70"
+      },
+      "failed_official_score_jobs": 0,
+      "frozen_worker_commit": "963528f3ee858837afbf94abc15d3b535906c7c1",
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1.run-manifest.json",
+        "sha256": "7b028c6b51796f8ad3c5f0c45e849b0c35d4df4bab5e6912eb5bc2597a2981a4"
+      },
+      "member": "B-parent",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1",
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    },
+    {
+      "actual_model_contacts": 131,
+      "attempt_id": "attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1",
+      "attempt_state": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1.json",
+        "sha256": "e8df455dcfcf793b61f6a762ffaed557ae0944606f4a6637f35beaec7fada432"
+      },
+      "failed_official_score_jobs": 0,
+      "frozen_worker_commit": "963528f3ee858837afbf94abc15d3b535906c7c1",
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1.run-manifest.json",
+        "sha256": "a79b944e4e5d903442120b9e134308fbfd317b91c96fc8e53fae783397692267"
+      },
+      "member": "B-parent-aa",
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1",
+      "seal_verified": true,
+      "state": "FINALIZED",
+      "successful_official_score_jobs": 1
+    }
+  ],
+  "observed_at_utc": "2026-10-03T02:40:47.443070+00:00",
+  "official_job_metadata": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-planner-generation-v1/score-jobs.jsonl",
+      "sha256": "5a55fc132a47e60011cf5dbeeb90793e11d8d0d8b1b51f4a81a45ff020601aa1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-PLANNER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-planner-generation-v1/score-batch/batch-summary.json",
+      "sha256": "ad47e0922337e0262b53b0395967137f0eae41cc37ca69f04a50750b7e578ae4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-solver-generation-v1/score-jobs.jsonl",
+      "sha256": "d8c2d9892b7a5d717fe96a6d11945832fe78751d31f1c5abe00e79534200b570"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SOLVER-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-solver-generation-v1/score-batch/batch-summary.json",
+      "sha256": "76929d104644b0db001bf512b905f579f1c82ca18a48f16051231f9b198bfe4f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1/score-jobs.jsonl",
+      "sha256": "aeffead308b64bbfb477fd6645a5201a0ecc34c2e2891eb9a00fac7373cfb28c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-recovery1-generation-v1/score-batch/batch-summary.json",
+      "sha256": "3941814a1f87b7b9d38517bf012b215907395343f4064e6e41f85a693abfd752"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1/score-jobs.jsonl",
+      "sha256": "beb45189399d9536f4586bf20a2c8617ab19b8f75d213e1d1842ddb778de01f9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-SEED-AA-RECOVERY1-V1/attempt-slurp-native-stage3-system-text-fixed400-context20-seed-aa-recovery1-generation-v1/score-batch/batch-summary.json",
+      "sha256": "ac757f02a6f1b6d26b43b1cf315b2a8a87b4543e425db71657e325e5c1ef11c9"
+    }
+  ],
+  "old_family": "Preserved, unread and excluded.",
+  "read_id": "SAEA-SLURP-SYSTEM-TEXT-FIXED400-CONTEXT20-RECOVERY1-READ-V1",
+  "schema": "saea-complete-context-operational-qualification-v1",
+  "scope": "Operational integrity and complete-family qualification only; no quality interpretation before root READ.",
+  "total_complete_trajectories": 80
+}
