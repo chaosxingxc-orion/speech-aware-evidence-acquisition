@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round8 typed proposals exactly root-admitted for one task, 2026-10-03T11:12:44.669430+00:00
+
+Root227 countersigns only L-8-1/B-8-1/L-8-2/B-8-2 with gpt-6-astra, equal139264 input,4096 output acceptance,4 contacts and4096-byte provider/tool envelopes. [Exact admission](../receipts/continuation/2026-10-03-proposer-typed-successor2-root-admission.json) binds the independently verified eight files, typed request audit and prepared frozen proof. Prepared bytes remain immutable; create a separate admitted worker/registration/wrapper and pass final check-only before one Windows task. No contact has occurred yet. Preserve25 closed/3 inherited HELD; no retry or replacement. Keep B feedback-free, current cache GPU panel untouched, learning affinity OFF and heartbeat PAUSED. Root controls any later GPU admission and human review remains before8x400.
+
 ## Round8 prepared frozen entry passes; exact root admission pending, 2026-10-03T11:10:27.465418+00:00
 
 The clean separate worker atabc721ba7 passes the actual four-member check-only with zero contacts/reservations and empty stderr. Prepared registration17b8e2c16679c3c6150da4a9caaf37728de266ba13890f2f94af89eec53de415 and its durable Windows wrapper are immutable; prepared status refuses real dispatch. [Frozen entry evidence](../readiness/2026-10-03-slurp-proposer-typed-successor2-v1/frozen-entry-proof-v1.json). Root independently verified all eight input/capsule files and exact-model-input audit. The L/B bounds130942/107323 fit the selected139264 cap; all13 own-L histories and B isolation remain. Preserve25 closed,3 inherited HELD and4 new unspent opportunities. No new model/credential contacts, queue/STOP action, GPU dispatch or READ; current root cache panel remains untouched. Keep heartbeat PAUSED and candidate affinity OFF.
@@ -906,7 +910,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-03T11:10:27.465418+00:00
+Last refreshed: 2026-10-03T11:12:44.669430+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

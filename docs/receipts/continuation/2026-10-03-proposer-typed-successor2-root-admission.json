@@ -1,0 +1,156 @@
+{
+  "authority": {
+    "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+    "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+  },
+  "conditions": [
+    "Preserve all prepared external registrations, wrappers, inputs and capsules",
+    "Preserve 25 closed and three inherited HELD predecessor identities; no retry or replacement",
+    "Retain prior L61 two contacts and 8478/151 actual tokens in discovery cost/exposure",
+    "Same fixed400 assets, typed-coherent-feedback-v1 view and seed parent; zero paid API spend",
+    "Native prefix affinity remains OFF, trajectory scheduler and 4x24576 geometry unchanged",
+    "No queue/STOP reconciliation, GPU dispatch, scientific READ or outcome interpretation is admitted",
+    "SLURP heartbeat remains PAUSED; independent ten-second telemetry remains unchanged",
+    "Retain successor1 nine reservations, eight metered returns32791/2930 tokens andone unmetered B72 reservation; no historical matched-compute claim",
+    "Preserve thirteen closed own-L histories and qualified own-L feedback. B remains feedback/outcome-free. No sign-in or credential logging.",
+    "Return to the human before8x400; do not split to evade the boundary."
+  ],
+  "decision": "ROOT COUNTERSIGNED under owner227: execute exactly L-8-1/B-8-1/L-8-2/B-8-2 once in one Windows-owned durable proposal task after final clean frozen check-only and no-competing-proposer validation. Failures stop for preserved evidence and root disposition.",
+  "exact_limits": {
+    "cumulative_input_tokens": 139264,
+    "cumulative_output_acceptance_tokens": 4096,
+    "model": "gpt-6-astra",
+    "model_contacts": 4,
+    "provider_output_items_bytes": 4096,
+    "tool_result_bytes": 4096,
+    "view_profile": "typed-coherent-feedback-v1"
+  },
+  "exact_model_input_audit": {
+    "path": "/home/chao/saea-worktrees/codex-system-text-round6-arrange/docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/exact-model-input-audit-v1.json",
+    "sha256": "8b4cddc7a5e9e068849561c8cfed81fb0fb218717fdacd9e171e6032e5846bd9"
+  },
+  "members": [
+    {
+      "artifact_count": 165,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/L-8-1.json",
+        "sha256": "0790c79ee84d025b3b83e370d0bf1d2e0f02a7e708abdbf598f42d3c86697f1f"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-8-1-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "8f2e9e37de7050e6fd0f4728430ba115c8c392452dc56c386a7cf2234093fc37",
+        "split_role": "discovery"
+      },
+      "history_entries": 13,
+      "initial_input_bound": 20445,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/L-8-1.json",
+        "sha256": "d0d07fc3dd2741d65c2c34471ba9c660b4f34d346b67581f9242ec3866402cc7"
+      },
+      "key": "L-8-1",
+      "request_sha256": "42d4b1172e0f3011550a0ae39be1823b46a0270da9711e2474377c97a03499df"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/B-8-1.json",
+        "sha256": "ec467a89f25d86fa59449a1c359a5ad2a9dce3eb032d0cfd68762af153ee6899"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-8-1-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "0cc16f71ce43c67926dcbe94293d162d62462752e4c694ee7865eed1465eb96b",
+        "split_role": "discovery"
+      },
+      "history_entries": 0,
+      "initial_input_bound": 14540,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/B-8-1.json",
+        "sha256": "b6813df703bee8449657d388122dc4558d44b32d7b0fff84de401f9e5d7987ee"
+      },
+      "key": "B-8-1",
+      "request_sha256": "8ff901bbff2d60f051b98183512a7c95326cb50013cb774162f10e23be785637"
+    },
+    {
+      "artifact_count": 165,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/L-8-2.json",
+        "sha256": "499dce937f5803111b01edac383a7ad3b373d93f9e45cf1f5c76e1c269dd6eb8"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-8-2-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "259d97fb635c0bed97327df26cd8e854a758219ed18324241e5ddd235abb9afd",
+        "split_role": "discovery"
+      },
+      "history_entries": 13,
+      "initial_input_bound": 20445,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/L-8-2.json",
+        "sha256": "e2f1904e12827b5294d5fe37d1a7db0077d5fda62f8319e05e23f7937c28a400"
+      },
+      "key": "L-8-2",
+      "request_sha256": "bbaaf5c1d44b849845c25cb1e3e400941a80e178e9389523c26017d03048e03e"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/capsules/B-8-2.json",
+        "sha256": "ef8484d868e541351ec4be47311596d7401c0cc560c6eae9498171fde0313e2d"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "0024f0faabbbc1f3e629a5aed80897d23937b172494eb3ac5366c3e82e14ac5a",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-8-2-SUCCESSOR2-OWNER227-V1",
+        "split_identity_hash": "4d31ed3ef5fc64ad18f4362c59f6a619430eadcb7b899fa185b50585dda6dc84",
+        "split_role": "discovery"
+      },
+      "history_entries": 0,
+      "initial_input_bound": 14540,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/typed-budget-successor2-owner227/inputs/B-8-2.json",
+        "sha256": "34f54aaac7715eb9147f8272c58ea1ee7474de1b0331f58fd56649251a42a411"
+      },
+      "key": "B-8-2",
+      "request_sha256": "d4a85614ebb6dd1cd2d2747c977fd56fcb9070f67839bf2f65e2df77f2701cf1"
+    }
+  ],
+  "new_contacts_before_admission": 0,
+  "owner_decision": 227,
+  "prepared_frozen_check_sha256": "238b72511aad0c8ca3e684eacde0fa2e3392079b5ab476bac1560beba133aa6a",
+  "prepared_readiness": {
+    "relpath": "docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/proposer-readiness-v1.json",
+    "sha256": "f0003daddab6dab7ebbe47c1becf0bbec1e55d46352a330a9f090076b3b27e51"
+  },
+  "protocol_file_sha256": "2b9c3c847e8e42a4ce53cd18ea6ddd1c81340fea7e41058e7d5d9c85cf1b2aff",
+  "provider_admission_file_sha256": "f8459604ece5c485e88a75f353b044c187c2aadde9d8004abc044f246d281e41",
+  "recorded_at_utc": "2026-10-03T11:12:44.669430+00:00",
+  "root_delegated_serial_window": "Verify main clean36f576344, integrate prepared0fea653fd, then this admission-only commit; freeze a distinct admitted worker, use a new registration/wrapper, pass final check-only, verify no competing proposer and launch exactly once. Do not change the independent current GPU cache panel, queue, STOP, services or frozen sources.",
+  "root_input_pin_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-proposer-typed-successor2-owner227-v1/root-input-pin-review-v1.json",
+    "sha256": "0a2c274b66ebeaa0d539a23dc816d9677a2dedfdfc91356a066a594e4c3464e6"
+  },
+  "schema": "saea-root-proposer-admission-v1",
+  "source": "Root personally reviewed exact readiness, typed model-input audit, independent eight-file hashes, provider/protocol/source custody and prepared frozen check238b72511. Root delegated the reserved serial integration/admission/launch window; no further human confirmation is required under227.",
+  "status": "ROOT-ADMITTED"
+}
