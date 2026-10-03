@@ -1,0 +1,48 @@
+{
+  "controls": "The completed round5 batch queue/status and serving settings remain unchanged. Shared generation lease serializes capacity.",
+  "frozen_preflights": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-engineering-v1/trajectory-frozen-check.stdout.json",
+      "sha256": "b449f0390a429f600c83bb0ba80c40cca74dbebffda06174e8d91fb41f196a15"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-engineering-v1/role-frozen-check.stdout.json",
+      "sha256": "9d56cdf05d4a6c2fa389075ba9ddda14c598a2370aff4afd59ea111991eabb89"
+    }
+  ],
+  "generation_admitted": false,
+  "launcher": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-engineering-v1/launch-capacity.py",
+    "sha256": "6fc426ed0f7f8f175318fff188171a21ca8f62614fbf40af0bd670ce17a252a6"
+  },
+  "owner_decision": 227,
+  "planned_tokenizer_endpoint_cap": 594,
+  "prelaunch_observation": {
+    "batch_state": "complete",
+    "busy_slots": 0,
+    "gpu_memory_mib": 22976,
+    "server_ok": true,
+    "stop_present": false,
+    "telemetry_age_seconds": 2.693,
+    "windows_free_gib": 16.64
+  },
+  "recorded_at_utc": "2026-10-03T09:59:42.339404+00:00",
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-engineering-v1/capacity-root-admission-v1.json",
+    "sha256": "cea3c7d8b2c8082a84d5361b81b92de513a75a93a7ae9fc6f6d3443b9c77740e"
+  },
+  "schema": "saea-prefix-affinity-capacity-launch-v1",
+  "scope": "Separate fixed-policy capacity proof only; no cache speed or system-quality conclusion.",
+  "scoring_admitted": false,
+  "started": {
+    "at_utc": "2026-10-03T09:58:55.358674+00:00",
+    "pid": 457676,
+    "script_sha256": "6fc426ed0f7f8f175318fff188171a21ca8f62614fbf40af0bd670ce17a252a6",
+    "worker": "/home/chao/saea-worktrees/codex-prefix-affinity-capacity-v1"
+  },
+  "structural_generation_status": "Two four-row members remain HELD until complete capacity and exact admission.",
+  "windows_task": "SAEA-Prefix-Affinity-Capacity-Owner227",
+  "windows_task_start_utc": "2026-10-03T09:58:53Z",
+  "worker": "/home/chao/saea-worktrees/codex-prefix-affinity-capacity-v1",
+  "worker_commit": "194edc87ae0f06aaabdb54b88cc07bd1ab7848b4"
+}

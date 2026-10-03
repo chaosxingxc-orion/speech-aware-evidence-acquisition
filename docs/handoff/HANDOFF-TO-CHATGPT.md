@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Separate prefix-affinity capacity launched; proposer failure closed, 2026-10-03T09:59:42.339404+00:00
+
+Two fixed-seed capacity proofs started through Windows SAEA-Prefix-Affinity-Capacity-Owner227 at09:58:53Z from frozen194edc87a. Both clean frozen preflights and exact registration pass. The maximum594 tokenizer endpoints compare the existing trajectory schedule and the explicit four-role slot map; no generation/scorer is admitted. Two four-row structural members remain HELD. [Launch custody](../receipts/continuation/2026-10-03-prefix-affinity-capacity-launch.json). No queue, STOP, serving geometry or active policy changed; no cache-performance claim.
+
+Root227 preserves/closes the four successor1 outcomes: two invalid L responses, one unactivated provisional B Solver policy and one reserved pre-POST B failure with missing usage. No retry or replacement. Future typed response contracts and safe credential diagnostics are offline work; any new opportunity needs prospective root registration. [Exact disposition](../receipts/continuation/2026-10-03-proposer-successor1-root-disposition.json). Preserve all25 spent/reserved opportunities and three old HELD identities. No stable system benefit or L-over-B gain is established. Heartbeat remains PAUSED,10-second telemetry remains independent, and human review remains before8x400.
+
+
 ## Successor1 stopped with two schema-invalid L outputs and a credential-entry failure, 2026-10-03T09:53:48.383910+00:00
 
 The one-shot proposal task ended09:49:44.316897Z and wrapper exited1. L-7-1 and L-7-2 returned complete metered responses but are invalid: hypotheses[0] is an object while the pinned schema requires an English string. Keep the original empty L71 changes and L72 Planner edit invalid; do not reinterpret or repair them. B-7-1 is a provisional Solver candidate, compiled with zero contacts and unactivated. B-7-2 reserved one opportunity then failed before HTTP POST in the bearer callback; the masked underlying cause is unestablished. No sign-in expiry or provider failure is inferred. [Exact diagnosis and minimal disposition proposal](../readiness/2026-10-03-slurp-successor1-outcome-stop-v1/README.md); [cost/custody receipt](../receipts/continuation/2026-10-03-proposer-successor1-outcome-stop.json).
