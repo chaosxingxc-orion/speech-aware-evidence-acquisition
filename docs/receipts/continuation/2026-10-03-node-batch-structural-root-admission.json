@@ -1,0 +1,13 @@
+{
+  "admission": {
+    "relpath": "docs/readiness/2026-10-03-node-batch-structural-entry-v1/root-admission-v1.json",
+    "sha256": "7805b79d8d45cafab3dd4a52a0a6e58bb124120f5ef57bbf69cde794dc6a3932"
+  },
+  "at_utc": "2026-10-03T16:38:31.980383+00:00",
+  "contacts_added": 0,
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-node-batch-structural-entry-v1/registration-v1.json",
+    "sha256": "dfdbd369d27142594bfa2640457e31d22cd02c7e3b6e5c4960fc19a3322a05a6"
+  },
+  "schema": "saea-node-batch-structural-root-admission-v1"
+}

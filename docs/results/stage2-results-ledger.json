@@ -7118,6 +7118,21 @@
       ],
       "cache_diagnostic_supplement": "docs/results/2026-10-03-prefix-cache-sequence-and-node-batching.md",
       "latest_engineering_direction": "Implement bounded node batches in shared executor offline; prepared context-content candidates remain HELD. Zero new contacts; no benefit claim."
+    },
+    {
+      "date": "2026-10-03",
+      "cell_id": "SAEA-SLURP-NODE-BATCH-CAPACITY-STRUCTURE-V1",
+      "status": "STRUCTURAL-ONLY-NO-BENEFIT-CLAIM",
+      "source": "docs/receipts/continuation/2026-10-03-node-batch-capacity-complete.json",
+      "source_sha256": "4a2b25aaba63b8c60bab0a18fddd9a94cdf835c96b24566b1e97084483caae7a",
+      "receipt": "docs/receipts/continuation/2026-10-03-node-batch-capacity-complete.json",
+      "meaning": "Both bounded node-batch configurations fit all88 measured requests across594 tokenizer endpoints with512 output,2048 extra structural reserve and minimum5546 remaining tokens. No generation,official scoring or task quality. Separately admit four-row structural workers; no latency or business benefit is established.",
+      "run_ids": [
+        "SAEA-SLURP-NODE-BATCH16-CAPACITY-FIT-V1",
+        "SAEA-SLURP-NODE-BATCH16-CAPACITY-STRUCTURE-V1",
+        "SAEA-SLURP-NODE-BATCH4-CAPACITY-FIT-V1",
+        "SAEA-SLURP-NODE-BATCH4-CAPACITY-STRUCTURE-V1"
+      ]
     }
   ],
   "stage3_measurement_instrument": {

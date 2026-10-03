@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Node-batch structural workers registered, 2026-10-03T16:38:31.980383+00:00
+
+Both capacities completed594 tokenizer endpoints with full512 output and2048 structural reserve. Root227 now admits exactly two four-row structural workers,batch4 and16,maximum104 generation/416 actual FIT endpoints,zero scoring. [Entry](../readiness/2026-10-03-node-batch-structural-entry-v1/README.md) preserves independent before-speech seed contexts and identical own knowledge selections. Verify actual node waves,per-sample handoffs and original barrier-inclusive timing. Batch16 is underfilled here;no speed or quality claim. Clean separate source and live checks precede one Windows shared driver;no next20 admission. Root only,learning HELD,heartbeat PAUSED,human before8x400.
+
 ## Node-batch capacities launched, 2026-10-03T16:35:19.118590+00:00
 
 Windows SAEA-Node-Batch-Capacity-Owner227 began2026-10-03T16:34:33.563488+00:00 on clean frozen5b9344ffc. [Launch evidence](../receipts/continuation/2026-10-03-node-batch-capacity-launch.json) pins both exact capacity identities,source and live launcher. Batch4 and16 real-asset synthetic graph rehearsals each delivered four terminal rows and exercised three tool actions without real contacts. Two offline diagnostic caller corrections are preserved separately; no registered attempt failed. One task now measures at most594 tokenizer endpoints;zero task generation/scoring/cache operations.12.5/8GiB guards remain. Wait for complete capacity receipts before separate structural admission. Root only,learning HELD,heartbeat PAUSED,human before8x400.

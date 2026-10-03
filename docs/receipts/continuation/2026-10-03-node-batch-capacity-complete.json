@@ -1,0 +1,22 @@
+{
+  "accounting": {
+    "relpath": "coordination/node-batch-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "79a450e05b0ca347732bef04f082fa42031e3c165c75f41d05cb7c7217e667c4"
+  },
+  "additional_structural_reserve": 2048,
+  "all_owned_processes_exited": true,
+  "at_utc": "2026-10-03T16:39:35.329223+00:00",
+  "commit": "5b9344ffc6a1fa43fd53c9ca71fba6571ff9e38a",
+  "every_request_fits": true,
+  "generation_contacts": 0,
+  "measured_requests": 88,
+  "minimum_remaining_margin": 5546,
+  "next": "Separately admitted two four-row structural workers;no speed,quality or learning claim.",
+  "output_reserve": 512,
+  "quality_read": false,
+  "schema": "saea-node-batch-capacity-complete-v1",
+  "scorer_contacts": 0,
+  "source_clean": true,
+  "total_endpoints": 594,
+  "worker": "/home/chao/saea-worktrees/codex-node-batch-capacity-v1"
+}

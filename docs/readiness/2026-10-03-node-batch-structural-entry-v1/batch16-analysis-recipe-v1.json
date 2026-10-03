@@ -1,0 +1,45 @@
+{
+  "acceptance": [
+    "Exact original request,response,wire and actual FIT body custody",
+    "Configured node_batch with all slots available; every node timing accounted by original sample and ordered wave",
+    "Homogeneous node family per wave; slots unique per wave; legal per-sample predecessor and revision transitions",
+    "All Reviewer handoffs valid and visible; all terminal answers retain Omni custody",
+    "Original sample wall timing includes barriers; no contact-sum substitution"
+  ],
+  "max_fit_endpoints": 208,
+  "max_generation": 52,
+  "next_panel_authorized": false,
+  "official_scoring": 0,
+  "read_run_id": "SAEA-SLURP-NODE-BATCH16-SMOKE-4-STRUCTURE-V1",
+  "read_scope": "Every request/FIT/wire/control/Reviewer handoff and Omni custody; original sample timing and node waves. No task quality or official score.",
+  "rows": 4,
+  "run_ids": {
+    "fit": "SAEA-SLURP-NODE-BATCH16-SMOKE-4-FIT-V1",
+    "generation": "SAEA-SLURP-NODE-BATCH16-SMOKE-4-V1",
+    "read": "SAEA-SLURP-NODE-BATCH16-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-node-batch-structural-read-v1",
+  "source_checks": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_wire_context.py",
+      "sha256": "9f5906cf3da4e7d9514353d9a80b295059124ac006c931f4af1dd42bcdaf041e"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/node_batch.py",
+      "sha256": "76228622433cf0ce1b576909ed1708651e63fcc3ae0462745f037850f466c943"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/reproduction/ojw/runner.py",
+      "sha256": "1c6ae703d78b6dcf7c0593cbeaa18ab9ee5dcebb187a55e9ef4baf1369606b64"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "55e03abc6a795ec2889acc95bc701bde8a8cb1f2fcf856bd4ed2ed6a722d682b"
+    }
+  ],
+  "status": "ROOT COUNTERSIGNED structural-only before contact"
+}

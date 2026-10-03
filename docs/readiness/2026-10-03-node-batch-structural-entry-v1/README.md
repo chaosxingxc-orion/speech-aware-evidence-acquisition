@@ -1,0 +1,3 @@
+# Node-batch structural entry
+
+Root227 admits batch4 and batch16 four-row workers after both complete capacity proofs. Preserve unchanged before-speech seed prompts,knowledge,source assets and tool/Omni authority. Each has its own prepared supply with identical selected output,52 generation and208 actual FIT endpoint ceiling. Verify all original source/FIT/handoff/custody and sample/node timing before acceptance. Batch16 is underfilled at four rows; no throughput or full-cohort claim. No score,quality,reseal or retry. Root separately reviews the next20-input repeated panel. Require clean frozen checks,existing4x24576/max512 service,one generator,12.5/8GiB floors. Root only,learning HELD,heartbeat PAUSED,human before8x400.

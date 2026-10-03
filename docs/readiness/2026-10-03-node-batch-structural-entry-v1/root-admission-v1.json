@@ -1,0 +1,32 @@
+{
+  "at_utc": "2026-10-03T16:38:31.980383+00:00",
+  "authority": "Root implements direct node-batching and engineering-first instructions; no subagents.",
+  "capacity_evidence": {
+    "relpath": "coordination/node-batch-capacity-owner227-v1/complete-operational-accounting-v1.json",
+    "sha256": "79a450e05b0ca347732bef04f082fa42031e3c165c75f41d05cb7c7217e667c4"
+  },
+  "decision_id": "node-batch-structural-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-NODE-BATCH4-SMOKE-4-V1",
+    "SAEA-SLURP-NODE-BATCH4-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-NODE-BATCH16-SMOKE-4-V1",
+    "SAEA-SLURP-NODE-BATCH16-SMOKE-4-FIT-V1"
+  ],
+  "failure_disposition": "Stop,preserve,diagnose and record root disposition;no automatic retry.",
+  "heartbeat": "PAUSED",
+  "learning": "HELD",
+  "limitation": "Four-row batch16 is an underfilled cohort; it validates configured path,not16-row utilization or speed. Offline multi-wave tests plus a separately admitted20-input panel address filled cohorts.",
+  "next_panel_authorized": false,
+  "owner_decisions": [
+    227
+  ],
+  "precontact_conditions": [
+    "Clean frozen source,exact registration/runtime/warm supply and node binding checks",
+    "No active generator/scorer,STOP or lease; fresh service and12.5/8GiB guards",
+    "Normal completed owned control archive only,then one Windows shared driver"
+  ],
+  "schema": "saea-campaign-decision-v1",
+  "scope": "Exactly batch4 and batch16 four-row structural generations on existing same400 first4,104 model calls and416 actual FIT endpoints maximum,zero official scoring.",
+  "status": "decided",
+  "structural_read_scope": "Every request/FIT/wire/control/Reviewer handoff and Omni custody; original sample timing and node waves. No task quality or official score."
+}
