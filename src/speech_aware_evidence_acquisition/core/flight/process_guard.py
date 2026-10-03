@@ -1,4 +1,4 @@
-"""Bound one owned campaign process with sampled Windows memory admission.
+"""Bound one owned campaign or leased worker with sampled Windows memory admission.
 
 This supervisor never changes a service, attempt, lease, STOP marker or queue.
 The original campaign CLI still owns execution and scoring. A stopped worker's
@@ -223,6 +223,8 @@ def main(argv=None):
         parser.add_argument("--" + name, required=True)
     parser.add_argument("--start-gib", type=float, required=True)
     parser.add_argument("--floor-gib", type=float, default=10.0)
+    parser.add_argument("--mode", choices=("campaign", "worker"), default="campaign")
+    parser.add_argument("--lease-token-file")
     args = parser.parse_args(argv)
     repo = Path(args.repo_root).resolve()
     data = Path(args.data_root).resolve()
@@ -241,7 +243,7 @@ def main(argv=None):
             "memory-contained process requires exactly one registered campaign cell"
         )
     cell = cells[0]
-    cell.assert_mode("campaign")
+    cell.assert_mode(args.mode)
     state = declared_readiness(cell, data)
     if state.state != "ready":
         parser.error("registered cell is not ready: " + state.reason)
@@ -250,7 +252,7 @@ def main(argv=None):
         "-B",
         "-m",
         "speech_aware_evidence_acquisition.core.flight.cli",
-        "campaign",
+        args.mode,
     ]
     for name in (
         "repo-root",
@@ -262,6 +264,31 @@ def main(argv=None):
         "expected-session-id",
     ):
         command.extend(["--" + name, getattr(args, name.replace("-", "_"))])
+    if args.mode == "worker":
+        from .lease import WorkerExecutionPolicy
+
+        if not args.lease_token_file:
+            parser.error("worker mode requires the existing leased worker token")
+        token_path = Path(args.lease_token_file).resolve()
+        if not token_path.is_relative_to(data / "coordination"):
+            parser.error("worker token must be confined beneath data-root/coordination")
+        token = json.loads(token_path.read_text())
+        if not isinstance(token, dict) or any((
+            token.get("schema") != "saea-worker-lease-handoff-v1",
+            token.get("run_id") != cell.run_id,
+            token.get("attempt_id") != cell.attempt_id,
+            token.get("session_id") != args.expected_session_id,
+            token.get("stage", "worker") != "worker",
+            not isinstance(token.get("token"), str) or not token.get("token"),
+        )):
+            parser.error("worker token does not name this exact registered worker")
+        WorkerExecutionPolicy(args.expected_session_id, token["token"]).assert_lease(
+            data, run_id=cell.run_id, attempt_id=cell.attempt_id
+        )
+        command.extend(["--cell", cell.document["cell_id"],
+                        "--lease-token-file", str(token_path)])
+    elif args.lease_token_file is not None:
+        parser.error("campaign mode does not accept an external worker token")
     policy = MemoryPolicy(args.start_gib, args.floor_gib)
     from ..bundle.git_commit import require_clean_study_repo
 

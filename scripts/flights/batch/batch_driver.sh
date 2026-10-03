@@ -22,8 +22,9 @@
 #   result_kind defaults to task-answer; artifact requires zero scoring jobs and
 #   verified finalized artifact bytes. smoke_result_kind defaults to result_kind.
 #   Optional process_start_gib and process_floor_gib opt one ordinary member into
-#   the shared owned-process memory supervisor; both are required, with no smoke
-#   or campaign_plan. Its exact experiment must contain one ready cell.
+#   the shared owned-process memory supervisor; both are required. An ordinary
+#   campaign member has no separate smoke or campaign_plan; an engineering member
+#   guards only its identical four-row worker under the existing lease.
 #   Optional paired process_start_wait_seconds/process_start_stable_samples wait
 #   before prelaunch for stable memory. The observer starts no worker and never
 #   retries a failed process. The original guard still checks the startup floor.
@@ -129,11 +130,27 @@ fly_smoke() {  # $1 order $2 smoke_experiment $3 smoke_cell $4 owner
   local lpid=$!
   local w; for w in $(seq 1 90); do [ -f "$token" ] && break; sleep 1; done  # never reuse the outer step index (2026-09-23: it ended a two-step queue after step 1)
   [ -f "$token" ] || { kill $lpid 2>/dev/null; stop "smoke lease token never appeared for step $1 ($(tail -c 300 /home/chao/batch-smoke-$1-lease.out))"; }
-  $PY -B -m speech_aware_evidence_acquisition.core.flight.cli worker \
+  local rc
+  if [ -n "$process_start" ]; then
+    local guard_dir="$DATA/coordination/process-guard/smoke-$1-$cell-$(date -u +%Y%m%dT%H%M%SZ)"
+    $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard --mode worker \
+      --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
+      --experiment "$exp" --owner "$owner" --expected-session-id "$SESSION" --lease-token-file "$token" \
+      --receipt-dir "$guard_dir" --start-gib "$process_start" --floor-gib "$process_floor" \
+      > /home/chao/batch-smoke-$1-worker.log 2>&1
+    rc=$?
+    if [ $rc -ne 0 ]; then
+      timeout 5 bash -c "echo preserve > $fifo" >/dev/null 2>&1; wait $lpid 2>/dev/null
+      log "smoke-worker-exit" "{\"step\":$1,\"rc\":$rc,\"lease_preserved\":true}"
+      stop "guarded smoke worker exit $rc on step $1; preserve lease and evidence"
+    fi
+  else
+    $PY -B -m speech_aware_evidence_acquisition.core.flight.cli worker \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --experiment "$exp" --cell "$cell" --expected-session-id "$SESSION" --lease-token-file "$token" \
       > /home/chao/batch-smoke-$1-worker.log 2>&1
-  local rc=$?
+    rc=$?
+  fi
   timeout 5 bash -c "echo release > $fifo" >/dev/null 2>&1; sleep 3; wait $lpid 2>/dev/null
   [ -f "$token" ] && stop "smoke lease token still present after release (step $1)"
   log "smoke-worker-exit" "{\"step\":$1,\"rc\":$rc}"
@@ -167,9 +184,11 @@ for ((i=0; i<N; i++)); do
   fi
   if [ -n "$process_start" ] || [ -n "$process_floor" ]; then
     [ -n "$process_start" ] && [ -n "$process_floor" ] || stop "step $order needs both process memory floors"
-    case "$kind" in cell|resume) ;; *) stop "step $order process guard requires an ordinary campaign member" ;; esac
+    case "$kind" in cell|resume|engineering) ;; *) stop "step $order process guard requires campaign or identical engineering worker" ;; esac
     { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "step $order process guard refuses a multi-member campaign_plan"
-    { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "step $order process guard cannot leave a separate smoke unsupervised"
+    if [ "$kind" != "engineering" ]; then
+      { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "step $order process guard cannot leave a separate smoke unsupervised"
+    fi
   fi
   if [ -n "$process_wait" ] || [ -n "$process_stable" ]; then
     [ -n "$process_start" ] && [ -n "$process_floor" ] && [ -n "$process_wait" ] && [ -n "$process_stable" ] || stop "step $order needs complete guarded memory-wait policy"

@@ -1,0 +1,35 @@
+{
+  "at_utc": "2026-10-03T12:14:57.967707+00:00",
+  "authority": "Root227 explicitly delegates the missing engineering resource guard correction before the admitted three four-row structural members.",
+  "change": "Opt in the existing process supervisor for an exact worker bound to its existing lease. Startup 12.5 GiB and running 8 GiB. On failure retain lease and stop the queue; default campaigns and unguarded legacy behavior unchanged.",
+  "claim": "Synthetic operational proof only; live guarded entry still must pass frozen checks.",
+  "contacts": {
+    "generation": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "coverage": {
+    "relpath": "coordination/system-text-round8-structural-owner227-v1/engineering-worker-guard-coverage-v1.json",
+    "sha256": "6348d194a11c27ca149b5dcfa73f8206f31bb09528a26195d2cd22de00a123f2"
+  },
+  "model_request_changes": false,
+  "problem": "The engineering queue path formerly refused process memory guard fields and invoked an unguarded worker. Current composed model has no separate running memory guard.",
+  "schema": "saea-engineering-worker-memory-guard-proof-v1",
+  "source_files": {
+    "scripts/flights/batch/batch_driver.sh": "d42142efc9fcba1b233140530291c2e407f4c09db80ea26c60dbdad6faf57ae6",
+    "src/speech_aware_evidence_acquisition/core/flight/process_guard.py": "31c1d833da75bf7be7e9a80852e11ccc5900029e45455a42f62ce59e9a9f6adc",
+    "tests/unit/test_batch_engineering_step.py": "8efde223e97901a41934a1a49c434a178263d118c5034edb2ced0de459c52798",
+    "tests/unit/test_flight_process_guard.py": "093436cb66b6080a5fc798a58cf11963e61bc6f24e78116ca4d3462947fc0fa5"
+  },
+  "tests": {
+    "actual_shell_function_cases": [
+      "guarded success releases normally",
+      "guarded failure preserves lease and stops",
+      "legacy success remains unchanged"
+    ],
+    "bash_syntax": "PASS",
+    "new_statements_covered": true,
+    "passed": 63,
+    "statement_coverage_percent": 94
+  }
+}
