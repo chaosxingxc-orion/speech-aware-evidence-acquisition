@@ -1,0 +1,42 @@
+{
+  "at_utc": "2026-10-03T07:12:22.806711+00:00",
+  "commit": "13523e1a4c576838b904c46289a36c3fcc3290a4",
+  "generation_contacts": 0,
+  "members": [
+    {
+      "label": "parent",
+      "measured_requests": 44,
+      "minimum_margin_after_full_reserves": 5546,
+      "receipt": {
+        "relpath": "coordination/slurp-system-text-extra5-parent-capacity-v1/request-fit-v1.json",
+        "sha256": "73de794a383744b7a6a7bf845ea8e9d11947d951b2e7a19cff902a1d10f1592e"
+      },
+      "tokenizer_endpoints": 297
+    },
+    {
+      "label": "candidate-1",
+      "measured_requests": 44,
+      "minimum_margin_after_full_reserves": 5546,
+      "receipt": {
+        "relpath": "coordination/slurp-system-text-extra5-candidate-1-capacity-v1/request-fit-v1.json",
+        "sha256": "5f2db8527ee6c080fc2336059a97ae1e555115f07435bcd756e81e91718ec36a"
+      },
+      "tokenizer_endpoints": 297
+    },
+    {
+      "label": "candidate-2",
+      "measured_requests": 44,
+      "minimum_margin_after_full_reserves": 5546,
+      "receipt": {
+        "relpath": "coordination/slurp-system-text-extra5-candidate-2-capacity-v1/request-fit-v1.json",
+        "sha256": "165099dfeb82539db4645f56ccfe24087abfcab45b460aab54b0213292f06b03"
+      },
+      "tokenizer_endpoints": 297
+    }
+  ],
+  "schema": "saea-extra5-capacity-complete-v1",
+  "scope": "Measured reachable request stresses with largest legal tool return and full output/structural reserves. Not exhaustive over arbitrary text; runtime per-request FIT remains mandatory.",
+  "scorer_contacts": 0,
+  "tokenizer_endpoints": 891,
+  "worker": "/home/chao/saea-worktrees/codex-system-text-extra5-capacity-v2"
+}

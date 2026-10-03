@@ -1,0 +1,32 @@
+[
+  {
+    "label": "parent",
+    "output_sha256": "5afb7a67329e1f2c9a9fcf77d641b64681812d82b3734c707010b737076b0a04",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "b0a166342368eacda5e944a7636a893306728ce1816014780f63d9a696ae0a77"
+    }
+  },
+  {
+    "label": "candidate-1",
+    "output_sha256": "5afb7a67329e1f2c9a9fcf77d641b64681812d82b3734c707010b737076b0a04",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "d25b01efc7c1f73172e89f3c700cc21e8d895ada6a2159fe002e38f3c4a026c1"
+    }
+  },
+  {
+    "label": "candidate-2",
+    "output_sha256": "5afb7a67329e1f2c9a9fcf77d641b64681812d82b3734c707010b737076b0a04",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "7fd8a81dc763257e7bc1c230f17aaa1275aaeb4a12d15eb219be0bb477af231e"
+    }
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "additional_contacts": 0,
+  "hypothesis": "The bounded presentation compresses every selected role response instead of preserving a coherent full review/revision chain. Both L sessions declined while citing omitted evidence and never requested the indexed source. The initial conservative request bound27252 leaves less than one unchanged repeated context after the observed6199/6182 input tokens are deducted from32768. A useful tool continuation may therefore be refused even when provider token counts are modest. This is a source-presentation and continuation-admission limitation, not proof of why the model chose no-change.",
+  "next_prospective_remedy": "After evaluating the existing proposals, prepare a smaller initial L packet with one coherent complete role chain plus a balanced category index and explicit omissions, leaving a measured conservative reserve for at least one source-page continuation. Preserve full own-L evidence, no task examples in runtime knowledge, unchanged B isolation, exact registered budgets, fresh bounded proposal allocations and all previous no-change outcomes. Do not loosen the counter or pretend byte bounds are actual tokens.",
+  "observations": [
+    {
+      "artifact_access": [],
+      "initial_conservative_bound": 27252,
+      "input_tokens": 6199,
+      "key": "L-5-1",
+      "next_remaining_input_tokens": 26569,
+      "proposal_sha256": "c4d90655ecae8a226b88ec46c953b0f5d802f5c783e4f5827fde89df0af2a972",
+      "status": "no-change"
+    },
+    {
+      "artifact_access": [],
+      "initial_conservative_bound": 27252,
+      "input_tokens": 6182,
+      "key": "L-5-2",
+      "next_remaining_input_tokens": 26586,
+      "proposal_sha256": "873278d2f3675f0ed37d5d2e57b373e87b5a4af8ea01551d80777c0806036f67",
+      "status": "no-change"
+    }
+  ],
+  "owner_decision": 227,
+  "schema": "saea-extra5-feedback-consumption-diagnosis-v1",
+  "scientific_limit": "No successful learning update or L-over-B advantage has been established.",
+  "source_round": 5,
+  "task_quality_read": false
+}

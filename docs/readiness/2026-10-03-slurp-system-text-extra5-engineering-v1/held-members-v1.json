@@ -1,0 +1,29 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-parent-smoke-4-generation-v1",
+    "cell": "slurp-native-stage3-system-text-extra5-parent-smoke-4-v1",
+    "experiment": "slurp-native-stage3-system-text-extra5-parent-smoke-4-v1",
+    "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-FIT-V1",
+    "label": "parent",
+    "output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-generation-v1",
+    "cell": "slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-v1",
+    "experiment": "slurp-native-stage3-system-text-extra5-candidate-1-smoke-4-v1",
+    "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-FIT-V1",
+    "label": "candidate-1",
+    "output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1/phase-supply-v1.json",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-1-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-generation-v1",
+    "cell": "slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-v1",
+    "experiment": "slurp-native-stage3-system-text-extra5-candidate-2-smoke-4-v1",
+    "fit_run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-FIT-V1",
+    "label": "candidate-2",
+    "output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1/phase-supply-v1.json",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-EXTRA5-CANDIDATE-2-SMOKE-4-V1"
+  }
+]

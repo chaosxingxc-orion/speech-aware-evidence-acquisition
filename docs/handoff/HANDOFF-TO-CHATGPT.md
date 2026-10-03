@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Extra5 capacity complete; engineering admitted, 2026-10-03T07:12:22.806711+00:00
+
+Three exact policies passed891 tokenizer endpoints and132 measured reachable requests with full reserves; zero generation/scorer contacts. [Evidence](../receipts/continuation/2026-10-03-extra5-capacity-complete.json). Three four-row structural-only proofs are root-admitted under227; launch is pending. Eight next20 members have identical supply outputs but remain held for engineering acceptance and exact family registration. Learning slots remain no-change; no improvement claim.
+
 ## Owner226 extra5 complete; capacity registered, 2026-10-03T07:03:43.977385+00:00
 
 All four slots completed with full metering: two L no-change, two B Solver candidates, 6 contacts, 23545 input/2962 output tokens. All twenty proposal slots stay spent; original precontact failure stays immutable. All four compile with actual role binding verified. [Completion](../receipts/continuation/2026-10-03-owner226-extra5-proposer-complete.json). Learning candidates remain unchanged; no stable gain or learning advantage is established.

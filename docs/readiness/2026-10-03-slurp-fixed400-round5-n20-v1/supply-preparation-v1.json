@@ -1,0 +1,82 @@
+[
+  {
+    "candidate_id": "L-parent",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-V1/phase-supply-v1.json",
+      "sha256": "496038ee2f966d6160de66229b1cf9db164e55d96d645b2d896083028bda3057"
+    }
+  },
+  {
+    "candidate_id": "L-parent-aa",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-PARENT-AA-V1/phase-supply-v1.json",
+      "sha256": "8ebab506df9a77899acf768af8e7a898a90c905b86dbe69f5da9f04736b3f5a3"
+    }
+  },
+  {
+    "candidate_id": "L-candidate-1",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-1-V1/phase-supply-v1.json",
+      "sha256": "a529f182c20e3680c35b37c32ba379062f97bbe77c6d85e046f00a2668adbe75"
+    }
+  },
+  {
+    "candidate_id": "L-candidate-2",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-L-CANDIDATE-2-V1/phase-supply-v1.json",
+      "sha256": "1c97dd9fa7f6bfef0ec643279fc1e715eb95bea5aaa99ba5663c9895fa4b29c0"
+    }
+  },
+  {
+    "candidate_id": "B-parent",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-V1/phase-supply-v1.json",
+      "sha256": "9fc6d37b82b0252a18151670a68539623a7415b999d59873abbb78d79c621b2e"
+    }
+  },
+  {
+    "candidate_id": "B-parent-aa",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-PARENT-AA-V1/phase-supply-v1.json",
+      "sha256": "0dabc58a87500ed0c25e91fc4240924e366d781f7fa691c5b0e88f8867abc9ed"
+    }
+  },
+  {
+    "candidate_id": "B-candidate-1",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-1-V1/phase-supply-v1.json",
+      "sha256": "354c24883d273fb47bc22d9261262e713e70c9d551249d9bca6542b5132053c8"
+    }
+  },
+  {
+    "candidate_id": "B-candidate-2",
+    "output_sha256": "ccdcd390da1f76a9542b7e76bd24528818b121974db0b13c5e16a3757dd6c20d",
+    "receipt": {
+      "cache": "cold",
+      "contact_class": "model-free",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-B-CANDIDATE-2-V1/phase-supply-v1.json",
+      "sha256": "9b5e878d49ff0b202fd1b810cebd18430cb481b869f507798c7d2e9f8ad35ab7"
+    }
+  }
+]

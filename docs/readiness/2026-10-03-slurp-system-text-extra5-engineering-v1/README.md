@@ -1,0 +1,3 @@
+# Extra5 policy engineering before the complete20 panel
+
+All three distinct-policy capacities passed. Run exactly one four-row structural proof for the original parent and each compiled B Solver candidate through the shared worker. L no-change policies retain parent role bytes and remain separate members of the later8x20 comparison. Inspect control contracts, Reviewer visibility and Omni answer custody only. No official score, quality read, reward update or reseal. Stop on failure; root227 handles bounded dispositions after diagnosis, preserving prior attempts. The eight-member20 comparison stays held until proof acceptance, exact registration and clean frozen preflight.
