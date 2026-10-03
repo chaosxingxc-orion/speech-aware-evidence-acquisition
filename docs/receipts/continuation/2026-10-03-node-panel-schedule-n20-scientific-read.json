@@ -1,0 +1,121 @@
+{
+  "actual_server_task_slot_joins": 2072,
+  "authority": "owner227 and exact complete-family root READ",
+  "automatic_adoption": false,
+  "automatic_scaling": false,
+  "cache_source_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/complete-family-cache-source-audit-v1.json",
+    "sha256": "0fe2c94d4f538043f6297a47bd0505c6ed9feadab2a58782543cd8d9b73a74bc"
+  },
+  "companion_tables": {
+    "relpath": "docs/results/2026-10-03-node-panel-schedule-strata-and-repeats.md",
+    "sha256": "498ff306a50a19adc311f32325575b8c5c27069f65fcc777133a3d37b9b079e7"
+  },
+  "complete_trajectories": 320,
+  "created_at_utc": "2026-10-03T23:50:12.912932+00:00",
+  "disposition": {
+    "engineering_reference": "existing legacy trajectory configuration;no superiority claim",
+    "heartbeat": "PAUSED",
+    "human_before": "8x400",
+    "learning": "HELD",
+    "next": "Offline exact prefix/state-lifecycle and preparation-memory audit,then prospectively registered capacity/structural/small complete-family comparison. No GPU admission in this record.",
+    "promote_before_speech_layout": false,
+    "promote_global_node_panel": false
+  },
+  "failed_scoring_jobs": 0,
+  "family_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/family-qualified-v1.json",
+    "sha256": "1ef54135859956dfb8fd3ff42e41815c4d4ed941cc8f19082130a6029f2dfc3e"
+  },
+  "full_family_quality_read": true,
+  "limits": [
+    "Descriptive engineering comparison with inherited cache/order effects. Sampling intervals and own repeats do not prove stable benefit, formal no-harm, a global optimum or learning. Root jointly reviews business quality, reliability and sample latency. Cache reuse does not restrict node contexts.",
+    "One160-job panel is one coupled scheduling observation. Within-panel A/A runs share server load/barriers and are not independent scheduling replications. The sequential workload runs first;report order/inherited-cache effects.",
+    "Twenty unique exposed TRAIN inputs;320 repeated trajectories are not320 independent samples.",
+    "No controlled cold-cache or explicit KV warmup measurement.",
+    "Source audit does not establish untested disk snapshot fidelity or transfer cost."
+  ],
+  "members": [
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
+    "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1"
+  ],
+  "model_contacts": 2072,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "new_tokenizer_contacts": 0,
+  "numeric_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/node-panel-schedule-n20-root-read-v1/numeric-evidence.json",
+    "sha256": "e92c87fdbd6f81f6e9df76e15dc533ce9e5a10265b97c1ae5701e90657e90895"
+  },
+  "official_successful_complete_scores": 16,
+  "optimizer_export": false,
+  "read_authority": {
+    "ledger_row_sha256": "3e40dde0a56c0b8a1096341edb0b75ab70f36594ee58925aa9bfdb4b3574b151",
+    "read_run_id": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/analysis-recipe-v1.json",
+      "sha256": "f760e5a47d0af645792f95e4ba2c649191fca49f28cb537cfde6aeb86e95d368"
+    }
+  },
+  "reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/complete-family-read-v1.exit.json",
+    "sha256": "d05f395890ff683fab95ba97707e0e7046fd1b46ae2f074d269ddbb7d0558509"
+  },
+  "report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/node-panel-schedule-n20-root-read-v1/report.json",
+    "sha256": "3d3036354dc0b7ddcf3ecab4d9e70c14278ed22c024af81eb5dd7837bb8a56fd"
+  },
+  "report_content_sha256": "6e73444b8dae9a7628fca5656f4fcb673739ee1c7222286260be779023e504cd",
+  "root_report": {
+    "relpath": "docs/results/2026-10-03-node-panel-schedule-cache-and-latency.md",
+    "sha256": "ab7ccd2de3424cbc6c0429f98b13851c8ce562bc65427477a603e894861edb01"
+  },
+  "schema": "saea-node-panel-schedule-scientific-read-v1",
+  "server_log_snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/complete-server-log-prefix-v1.log",
+    "sha256": "6f0a2de84bbd4cba4a4841031bd31081dc3919a2dfe0c6ca868bb400453bcea1"
+  },
+  "source_inputs": {
+    "frozen_worker": {
+      "commit": "dd765815218eb7d9207701c130ae5ed9f802dab8",
+      "path": "/home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/analysis-recipe-v1.json",
+      "sha256": "f760e5a47d0af645792f95e4ba2c649191fca49f28cb537cfde6aeb86e95d368"
+    },
+    "registration": {
+      "relpath": "docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/registration-v1.json",
+      "sha256": "fc4bd2aca4d5d6e35d6a93f8f1e766898fbddc62633477904c36c9aee8f804db"
+    },
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+      "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+    },
+    "schema": "saea-node-panel-schedule-read-inputs-v1",
+    "strata": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    }
+  },
+  "status": "DESCRIPTIVE_ENGINEERING_ROUTE_NOT_PROMOTED",
+  "summary": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/node-panel-schedule-n20-owner227-v1/complete-family-summary-v1.json",
+    "sha256": "855195fd8d000588eb75497dcc3d72c704bfe6e421b1bfbca30de30a1cca80f7"
+  },
+  "unique_inputs": 20
+}

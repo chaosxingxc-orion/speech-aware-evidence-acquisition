@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete node schedule read: preserve cross-node prefix value, 2026-10-03T23:50:12.912932+00:00
+
+The exact16-member family is qualified and root READ complete;the admitted reader exited zero23:25:13Z with no new contacts. All320 trajectories finalized with verified seals,one official successful complete score each and zero failures. [Root report](../results/2026-10-03-node-panel-schedule-cache-and-latency.md),[all strata/repeats](../results/2026-10-03-node-panel-schedule-strata-and-repeats.md),and[receipt](../receipts/continuation/2026-10-03-node-panel-schedule-n20-scientific-read.json) pin complete evidence.
+
+All2072 contacts uniquely join actual server slots. Legacy Reviewer retained10638.8 tokens under trajectory execution versus2526 under the global panel;prefill0.245s versus3.474s. Checked pressure patterns are absent from the finite family scope;observed prefix divergence/resident replacement is not demonstrated capacity eviction. The original session has cache-ram0/no disk slot path:160 prepared jobs are not160 saved KV states. Node-stage batching was tested,not a genuine160-state space-for-time bank. All barriers and768 overlapping CPU preparations verified.
+
+Equal160-job dispatch totals41.928min sequential versus61.689min panel. Different160/20 admission cohorts make sample-time ratios unsuitable as pure GPU speedups. Full report retains first/non-first/first-four,node costs,official quality,intent,reliability,repeats and13 strata. All delivered,20unique exposed inputs,one coupled panel;no stable efficacy,harm/no-harm,global optimum or learning claim. Preparation RSS peaked24.33GiB;earlier sampled Windows floor8.507GiB is not a continuous guarantee. No stale-task cause established.
+
+Root227 does not promote global160-job barriers or before-speech layout. Keep legacy trajectory as engineering reference,independent node contexts,learning HELD,heartbeat PAUSED. Next audit exact prefix affinity,saved-state fidelity/transfer cost and preparation lifetime offline before new registered capacity/structural/small-panel dispatch. This record admits no GPU run or runtime/cache/service change. Root only,no subagents,human before8x400. Preserve frozen/failed/completed bytes and current controls;other-carrier holds unchanged.
+
 ## Complete node schedule family qualified for root READ, 2026-10-03T23:18:53.376645+00:00
 
 All16 members independently FINALIZED20 rows with verified seals,one unique successful complete official score each and zero failed jobs. Windows driver epoch20:48:40Z ended normally at23:15:27Z after nine steps;the node-panel generator and all scorers are gone,STOP absent. Frozen worker remains `codex-node-panel-schedule-n20-v2` at `dd765815218eb7d9207701c130ae5ed9f802dab8`. [Qualification and root READ admission](../receipts/continuation/2026-10-03-node-panel-schedule-n20-family-qualified.json) pins all16 operational sources and independently verified seals.

@@ -6607,3 +6607,59 @@ Registered before model-free derivation: SAEA-SLURP-SYSTEM-TEXT-SMOKE-4-RECOVERY
 | 2026-10-03 | SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1 | bounded-discovery-probe | before-speech-panel-pair2-aa schedule generation | Frozen Omni | slurp current400 first20 | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 260 | 1500 | 1.0 | Retain fixed assets and all cumulative exposure;optimization only | docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/before-speech-panel-pair2-aa-generation-plan-registered-v1.json | ROOT COUNTERSIGNED before contact under227 exact schedule comparison. Decision receipt coordination/node-panel-schedule-n20-owner227-v1/root-admission-v1.json, sha256 f2de3e40b20b8e7f9a8ef2331da7eeac7d1105afc8e0edca36dcc1eeefa972bd. Protocol hash 733ad67ca9ce302c0c61e71fcfc95949df374bcc6c32494f50c3c0073b7b8566; composed config 07471a307f00c54d3410c736a2909a2ccd9dc7dbab2331b41f06c92044891258; Plan SHA256 a774634e69105480f7507f57207f2cdc1eafffa022e0d12bd549a1c58405bad8. One complete generation and unique official score per member;entire16-member READ remains unsigned. Failure stops;no automatic retry. |
 | 2026-10-03 | SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-FIT-V1 | bounded-discovery-probe | before-speech-panel-pair2-aa schedule fit | Shared native tokenizer | slurp current400 first20 | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 1040 | 1500 | 1.0 | Retain fixed assets and all cumulative exposure;optimization only | docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/before-speech-panel-pair2-aa-fit-plan-registered-v1.json | ROOT COUNTERSIGNED before contact under227 exact schedule comparison. Decision receipt coordination/node-panel-schedule-n20-owner227-v1/root-admission-v1.json, sha256 f2de3e40b20b8e7f9a8ef2331da7eeac7d1105afc8e0edca36dcc1eeefa972bd. Protocol hash 733ad67ca9ce302c0c61e71fcfc95949df374bcc6c32494f50c3c0073b7b8566; composed config 07471a307f00c54d3410c736a2909a2ccd9dc7dbab2331b41f06c92044891258; Plan SHA256 931f6962d58cc7742c9758256fcb233dd18dcfc14256c292c27d8e91d03e981c. One complete generation and unique official score per member;entire16-member READ remains unsigned. Failure stops;no automatic retry. |
 | 2026-10-03 | SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1 | model-free-check | Complete16-member node scheduling read | Official quality,reliability,original node/sample timing | slurp current400 first20 | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 0 | 0 | 0 | Same exposed optimization pool;no optimizer export | docs/readiness/2026-10-03-node-panel-schedule-n20-entry-v2/analysis-recipe-v1.json | ROOT COUNTERSIGNED at 2026-10-03T23:18:53.376645+00:00 under owner227 after all16 independent FINALIZED20 members, verified seals, one unique successful complete official score each and zero failed jobs. Qualification docs/receipts/continuation/2026-10-03-node-panel-schedule-n20-family-qualified.json. Joint quality, reliability, original sample/node latency and actual slot-history description only; no optimizer export, scorer replay or automatic adoption. |
+
+## Complete node-panel schedule family closure, 2026-10-03
+
+Root read finished2026-10-03T23:25:13.447721Z under the exact signed READ. Evidence: docs/receipts/continuation/2026-10-03-node-panel-schedule-n20-scientific-read.json. Original registration and signed rows stay preserved. No replay,optimizer export,adoption or scaling.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-V1 FINALIZED** -20 complete rows,125 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-PRIMARY-FIT-V1 COMPLETED** -125 actual-request FIT receipts and500 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-V1 FINALIZED** -20 complete rows,134 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR1-AA-FIT-V1 COMPLETED** -134 actual-request FIT receipts and536 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-V1 FINALIZED** -20 complete rows,134 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-PRIMARY-FIT-V1 COMPLETED** -134 actual-request FIT receipts and536 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-V1 FINALIZED** -20 complete rows,131 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-TRAJECTORY-PAIR2-AA-FIT-V1 COMPLETED** -131 actual-request FIT receipts and524 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-V1 FINALIZED** -20 complete rows,131 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-PRIMARY-FIT-V1 COMPLETED** -131 actual-request FIT receipts and524 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-V1 FINALIZED** -20 complete rows,131 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR1-AA-FIT-V1 COMPLETED** -131 actual-request FIT receipts and524 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-V1 FINALIZED** -20 complete rows,122 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-PRIMARY-FIT-V1 COMPLETED** -122 actual-request FIT receipts and488 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-V1 FINALIZED** -20 complete rows,125 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-TRAJECTORY-PAIR2-AA-FIT-V1 COMPLETED** -125 actual-request FIT receipts and500 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-V1 FINALIZED** -20 complete rows,128 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-PRIMARY-FIT-V1 COMPLETED** -128 actual-request FIT receipts and512 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-V1 FINALIZED** -20 complete rows,128 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR1-AA-FIT-V1 COMPLETED** -128 actual-request FIT receipts and512 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-V1 FINALIZED** -20 complete rows,134 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-PRIMARY-FIT-V1 COMPLETED** -134 actual-request FIT receipts and536 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-V1 FINALIZED** -20 complete rows,131 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-LEGACY-PANEL-PAIR2-AA-FIT-V1 COMPLETED** -131 actual-request FIT receipts and524 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-V1 FINALIZED** -20 complete rows,128 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-PRIMARY-FIT-V1 COMPLETED** -128 actual-request FIT receipts and512 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1 FINALIZED** -20 complete rows,128 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-FIT-V1 COMPLETED** -128 actual-request FIT receipts and512 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1 FINALIZED** -20 complete rows,131 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-FIT-V1 COMPLETED** -131 actual-request FIT receipts and524 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1 FINALIZED** -20 complete rows,131 generation contacts,verified seal,one successful complete official score,zero failures.
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-FIT-V1 COMPLETED** -131 actual-request FIT receipts and524 tokenizer endpoints,source-bound to the corresponding generation.
+
+**SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1 COMPLETED** -complete descriptive quality/latency/cache read,no new contacts,no formal efficacy or learning claim.
+
+Historical non-English quotation handling: the immutable old rows are preserved. Use [English successors](handoff/2026-10-03-historical-ledger-english-quote-successors.md),with exact original line hashes,for future reading/model input;this grants no new authority.
