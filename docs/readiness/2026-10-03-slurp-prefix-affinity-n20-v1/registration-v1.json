@@ -1,0 +1,289 @@
+{
+  "at_utc": "2026-10-03T10:28:29.467980+00:00",
+  "automatic_expansion": false,
+  "decision_receipt": {
+    "relpath": "coordination/slurp-prefix-affinity-n20-v1/root-admission-v2.json",
+    "sha256": "b3446247b2fa193f33a0f7a2956cd38b8e5744e825732c1f2db75ef63361ac06"
+  },
+  "expected_members": {
+    "role": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1",
+    "role-aa": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1",
+    "trajectory": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1",
+    "trajectory-aa": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1"
+  },
+  "family_id": "prefix-affinity-n20-v1",
+  "fixed_policy_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "generation_call_cap": 1040,
+  "independent_validation": false,
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1",
+      "experiment": "slurp-native-stage3-prefix-affinity-n20-trajectory-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-fit-v1",
+      "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-FIT-V1",
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-n20-trajectory-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-n20-trajectory-v1",
+        "config_hash": "6f09faf81d7d6de3c453977f97b77f3cf33772f4c120e4637220a5dac98697b7",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-n20-trajectory-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/phase-supply-v2.json",
+          "sha256": "b2bcac16c85dcdd2cd6e18aff135339b35528981b9cdb4ff373a609c9e662b0d"
+        },
+        "protocol_hash": "cfb72d37eb0e0152272d968c574a2fbe4f61cd1af41ad3b00b729cc017641afd",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011"
+      },
+      "member": "trajectory",
+      "mode": "trajectory",
+      "order": 1,
+      "preparation": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/phase-supply-v2.json",
+          "sha256": "b2bcac16c85dcdd2cd6e18aff135339b35528981b9cdb4ff373a609c9e662b0d"
+        },
+        "old_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/phase-supply-v1.json",
+          "sha256": "1e7ecba114feb51677f117eaccf2463747ae96e31302453539dbb4d2c1b4843c"
+        },
+        "readiness_requirement": {
+          "appended": 0,
+          "kept": 0,
+          "updated": 1
+        },
+        "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+        "rebuilt": true,
+        "row_counts": {
+          "new": {
+            "facets": 0,
+            "values": 20
+          },
+          "old": {
+            "facets": 0,
+            "values": 20
+          }
+        }
+      },
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1",
+      "selection_output_equal_to_seed": true
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-generation-v1",
+      "experiment": "slurp-native-stage3-prefix-affinity-n20-role-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-fit-v1",
+      "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-FIT-V1",
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-n20-role-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-n20-role-v1",
+        "config_hash": "78ac74c738143cb4be59a6e0657f9f8963434c0f25a355534ea0b881cfb5db9b",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-n20-role-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1/phase-supply-v2.json",
+          "sha256": "777a3ffdd9f1b8e7416451932cb23863801d41d8ce1f00cd597a9efbca7553bb"
+        },
+        "protocol_hash": "70bd738a5687cf91bb31ba4a57949d0ca95b2ea6d1d581759d5d487a7fcdf2ac",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011"
+      },
+      "member": "role",
+      "mode": "role",
+      "order": 2,
+      "preparation": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1/phase-supply-v2.json",
+          "sha256": "777a3ffdd9f1b8e7416451932cb23863801d41d8ce1f00cd597a9efbca7553bb"
+        },
+        "old_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1/phase-supply-v1.json",
+          "sha256": "3e8ea00b1111287d987be32ce227ca0a4dc9964e06322ed88ddcfa4acc6c5460"
+        },
+        "readiness_requirement": {
+          "appended": 0,
+          "kept": 0,
+          "updated": 1
+        },
+        "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+        "rebuilt": true,
+        "row_counts": {
+          "new": {
+            "facets": 0,
+            "values": 20
+          },
+          "old": {
+            "facets": 0,
+            "values": 20
+          }
+        }
+      },
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1",
+      "selection_output_equal_to_seed": true
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-generation-v1",
+      "experiment": "slurp-native-stage3-prefix-affinity-n20-role-aa-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-fit-v1",
+      "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-FIT-V1",
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-role-aa-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-n20-role-aa-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-n20-role-aa-v1",
+        "config_hash": "e2f163a189574462f126ab850338bf9df1828d6c93c9289cf2c42c0fd463d642",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-n20-role-aa-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1/phase-supply-v2.json",
+          "sha256": "dfb80e571206cd35638b230e34a691f9205910876acac1f2656599ff6ddfbe11"
+        },
+        "protocol_hash": "6ea19dfe2d1bd67dbc77562e5b0badf2b060f3d0a20736264981a6d5491e0ece",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011"
+      },
+      "member": "role-aa",
+      "mode": "role",
+      "order": 3,
+      "preparation": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1/phase-supply-v2.json",
+          "sha256": "dfb80e571206cd35638b230e34a691f9205910876acac1f2656599ff6ddfbe11"
+        },
+        "old_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1/phase-supply-v1.json",
+          "sha256": "5d66e4d2ce3e35bf24ca6f36f740af044e25f617f75195d9b43a0ca73c95c8d0"
+        },
+        "readiness_requirement": {
+          "appended": 0,
+          "kept": 0,
+          "updated": 1
+        },
+        "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+        "rebuilt": true,
+        "row_counts": {
+          "new": {
+            "facets": 0,
+            "values": 20
+          },
+          "old": {
+            "facets": 0,
+            "values": 20
+          }
+        }
+      },
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1",
+      "selection_output_equal_to_seed": true
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-generation-v1",
+      "experiment": "slurp-native-stage3-prefix-affinity-n20-trajectory-aa-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-fit-v1",
+      "fit_run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-FIT-V1",
+      "identity": {
+        "arm": "speech-feature-query-native-tools",
+        "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-aa-generation-v1",
+        "baseline_fragment": "slurp-native-stage3-prefix-affinity-n20-trajectory-aa-v1",
+        "carrier_lock_key": "slurp",
+        "cell_id": "slurp-native-stage3-prefix-affinity-n20-trajectory-aa-v1",
+        "config_hash": "02b13813d3f8991289191f7bae9e326b9b099a98b4c84f836ca97f490386fe17",
+        "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+        "experiment": "slurp-native-stage3-prefix-affinity-n20-trajectory-aa-v1",
+        "has_perception_branch_group": false,
+        "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+        "perception_branch_seed_pin": null,
+        "prepared_phase_supply": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1/phase-supply-v2.json",
+          "sha256": "5d36d6618b1502b97b00bb513367d063b5b20de7c33d14eadf3e5b4c0c8f1297"
+        },
+        "protocol_hash": "22197b5847729fb1627e63cd069a0bec30990ab1963a1eebdc60131dc8c2a53e",
+        "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011"
+      },
+      "member": "trajectory-aa",
+      "mode": "trajectory",
+      "order": 4,
+      "preparation": {
+        "new_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1/phase-supply-v2.json",
+          "sha256": "5d36d6618b1502b97b00bb513367d063b5b20de7c33d14eadf3e5b4c0c8f1297"
+        },
+        "old_pin": {
+          "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1/phase-supply-v1.json",
+          "sha256": "8b0bb8d92fd803ef67289cdb1f2f04d4918ea7402f9ac6ee585200de08d5ab3c"
+        },
+        "readiness_requirement": {
+          "appended": 0,
+          "kept": 0,
+          "updated": 1
+        },
+        "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+        "rebuilt": true,
+        "row_counts": {
+          "new": {
+            "facets": 0,
+            "values": 20
+          },
+          "old": {
+            "facets": 0,
+            "values": 20
+          }
+        }
+      },
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1",
+      "selection_output_equal_to_seed": true
+    }
+  ],
+  "new_proposal_opportunities": 0,
+  "official_complete_score_cap": 4,
+  "optimizer_export": false,
+  "order": [
+    "trajectory",
+    "role",
+    "role-aa",
+    "trajectory-aa"
+  ],
+  "read_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1",
+  "rows_per_member": 20,
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "schema": "saea-prefix-scheduling-panel-registration-v1",
+  "status": "REGISTERED BEFORE CONTACT; FINAL FROZEN CHECKS REQUIRED",
+  "tokenizer_endpoint_cap": 4160,
+  "trajectory_cap": 80
+}

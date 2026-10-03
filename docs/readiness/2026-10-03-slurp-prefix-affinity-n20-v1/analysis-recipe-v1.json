@@ -1,0 +1,57 @@
+{
+  "analysis_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+    "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+  },
+  "expected_members": {
+    "role": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-V1",
+    "role-aa": "SAEA-SLURP-PREFIX-AFFINITY-N20-ROLE-AA-V1",
+    "trajectory": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1",
+    "trajectory-aa": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-AA-V1"
+  },
+  "family_id": "prefix-affinity-n20-v1",
+  "next_step": "Root personally reviews all four complete results and repeat variation before deciding whether to retain trajectory routing, prepare another bounded measurement or prospectively adopt any execution change. No automatic scale.",
+  "predeclared_limits": "Same previously exposed20 optimization inputs; neither independent validation nor formal speedup, quality benefit, no-harm admission or learning claim. Request content and contact counts can vary because batching changes numerical execution. ABBA order partly balances sequence but cannot remove warm-cache or time effects. No cache flush or server setting change; analyze first-contact versus later contacts explicitly. No optimizer export.",
+  "primary": "Describe per-member and per-role evaluated prompt tokens, reused prompt tokens/rates, actual contact counts, request time and generation wall time, plus complete-system end-to-end wall time. Compare both replicates; do not infer cache residency from final cache size.",
+  "read_gate": "All four independently FINALIZED with verified seals, exactly one successful complete official score each and zero failed jobs, then exact root READ countersignature.",
+  "recipe_id": "prefix-affinity-n20-v1",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/registration-v1.json",
+    "sha256": "5722cc57913bd4b21c13c10706c04fc604f4d0ddad8cc62dcab423bf7452c6f1"
+  },
+  "required_rows_per_member": 20,
+  "run_ids": {
+    "read": "SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "schema": "saea-system-text-analysis-recipe-v1",
+  "secondary": [
+    "Official pooled SLU-F1 and intent as descriptive guards",
+    "Reliable completion and valid visible role handoffs",
+    "Raw Solver format and existing normalizer use",
+    "Natural-mixture and equal-stratum descriptions with support counts",
+    "Actual selected/requested slot evidence; missing served-slot values stay unavailable"
+  ],
+  "status": "REGISTERED BEFORE CONTACT; READ UNSIGNED"
+}

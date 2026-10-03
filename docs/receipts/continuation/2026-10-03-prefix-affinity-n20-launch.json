@@ -1,0 +1,89 @@
+{
+  "at_utc": "2026-10-03T10:37:07.997251+00:00",
+  "commit": "4c98cbf8d94fe543e2aaab887ece5c02ba4858e1",
+  "driver_epoch": "2026-10-03T10:36:03Z",
+  "driver_pid_revalidated": 464277,
+  "frozen_preflights": [
+    {
+      "member": "trajectory",
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/trajectory-registration-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "d0e6705f90a545018addf997f8e3750f9a028ea0ae8ecc5cedd02ba8978bf1a8"
+      },
+      "runtime": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/trajectory-runtime-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "527f9f4909f1cfd2ef5ed5a1c74c5ac8b9ca77ab3f0f067b8348655f7e8279dd"
+      }
+    },
+    {
+      "member": "role",
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/role-registration-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "22bde94d7b4c6c5ff398030dbd6729e468d904a9527a5c76e48e955d6697a40a"
+      },
+      "runtime": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/role-runtime-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "6035f714233f9ba1718b6d8c5941149445283e770bb6171071955477afc75f64"
+      }
+    },
+    {
+      "member": "role-aa",
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/role-aa-registration-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "b9f261e7b8aa5dd1f2ae4caaeeff873608227449c16b293803fb2e208541aace"
+      },
+      "runtime": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/role-aa-runtime-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "3ce21a7dc79fa66c3a45f210e3390dc6b40f26229cd04699503ac06114ed4e1d"
+      }
+    },
+    {
+      "member": "trajectory-aa",
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/trajectory-aa-registration-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "d06020edfc6ba9fdef296f72369a4adc898a49f18be36f2ea552d52caeba879d"
+      },
+      "runtime": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/trajectory-aa-runtime-codex-prefix-affinity-n20-v1.stdout.json",
+        "sha256": "bb7be2d697cf6c84131583e42a25bca9aa50e19b0fa7f7a3ae22b6832ebfc223"
+      }
+    }
+  ],
+  "heartbeat_status": "PAUSED",
+  "launch_snapshot": {
+    "relpath": "coordination/slurp-prefix-affinity-n20-v1/launch-operational-snapshot-v1.json",
+    "sha256": "2f08ac95e54a742dbc9b6457749d6fd7e66ad95a67b1c6c3e466191c7f23c2c3"
+  },
+  "member_count": 4,
+  "model_contact_cap": 1040,
+  "official_complete_score_cap": 4,
+  "optimizer_export": false,
+  "order": [
+    "trajectory",
+    "role",
+    "role-aa",
+    "trajectory-aa"
+  ],
+  "owner_decision": 227,
+  "read_countersigned": false,
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/registration-v1.json",
+    "sha256": "5722cc57913bd4b21c13c10706c04fc604f4d0ddad8cc62dcab423bf7452c6f1"
+  },
+  "rows_per_member": 20,
+  "schema": "saea-prefix-affinity-n20-launch-v1",
+  "scientific_results_read": false,
+  "scope": "Fixed approved seed and identical assets. Only scheduling changes; no learning or stable speedup claim. Any failure stops for preserved evidence and a root disposition.",
+  "server_pid_revalidated": 942,
+  "startup_memory_stable_samples": 3,
+  "startup_memory_wait_seconds": 21.953729708038736,
+  "tokenizer_endpoint_cap": 4160,
+  "trajectory_cap": 80,
+  "transition": {
+    "relpath": "coordination/slurp-prefix-affinity-n20-v1/driver-transition-v1.json",
+    "sha256": "14ba815ce9e2164d864e1def7ac1eb972f83199d6a8a38a631ccff113a16b488"
+  },
+  "windows_task": "SAEA-Batch-Driver",
+  "windows_task_start_utc": "2026-10-03T10:36:02Z",
+  "worker": "/home/chao/saea-worktrees/codex-prefix-affinity-n20-v1"
+}

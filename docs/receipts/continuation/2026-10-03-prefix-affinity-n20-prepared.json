@@ -1,0 +1,31 @@
+{
+  "all_prepared_outputs_equal_existing_seed": true,
+  "at_utc": "2026-10-03T10:28:29.467980+00:00",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-prefix-affinity-n20-v1/root-admission-v2.json",
+    "sha256": "b3446247b2fa193f33a0f7a2956cd38b8e5744e825732c1f2db75ef63361ac06"
+  },
+  "members": 4,
+  "model_contacts": 0,
+  "new_data_or_knowledge": false,
+  "optimizer_export": false,
+  "precontact_registration_correction": {
+    "all_prior_files_preserved": true,
+    "cause": "FIT IDs omitted from decision eligible_run_ids; explicit tuning_roster none replaces explanatory prose. No contact or attempt occurred.",
+    "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/precontact-registration-draft-v1"
+  },
+  "queue": {
+    "relpath": "docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/queue-v1.json",
+    "sha256": "3d77dbf6fe7063c129c36628f259308f5bc2e8b6c78a18fc799774123396102e"
+  },
+  "read_countersigned": false,
+  "registration": {
+    "relpath": "docs/readiness/2026-10-03-slurp-prefix-affinity-n20-v1/registration-v1.json",
+    "sha256": "5722cc57913bd4b21c13c10706c04fc604f4d0ddad8cc62dcab423bf7452c6f1"
+  },
+  "schema": "saea-prefix-affinity-panel-prepared-v1",
+  "scorer_contacts": 0,
+  "status": "ROOT REGISTERED; CLEAN FROZEN CHECKS PENDING",
+  "tokenizer_contacts": 0,
+  "trajectories": 80
+}

@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-03T10:33:37.585385+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "engineering_base": "PASS",
+  "frozen_runtime_check": "pending",
+  "members": [
+    {
+      "all_task_semantics_equal_seed": true,
+      "member": "trajectory",
+      "registration_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/trajectory-registration2-codex-cache-cost-audit.stdout.json",
+        "sha256": "d0e6705f90a545018addf997f8e3750f9a028ea0ae8ecc5cedd02ba8978bf1a8"
+      },
+      "supply_output_equal_seed": true
+    },
+    {
+      "all_task_semantics_equal_seed": true,
+      "member": "role",
+      "registration_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/role-registration2-codex-cache-cost-audit.stdout.json",
+        "sha256": "22bde94d7b4c6c5ff398030dbd6729e468d904a9527a5c76e48e955d6697a40a"
+      },
+      "supply_output_equal_seed": true
+    },
+    {
+      "all_task_semantics_equal_seed": true,
+      "member": "role-aa",
+      "registration_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/role-aa-registration2-codex-cache-cost-audit.stdout.json",
+        "sha256": "b9f261e7b8aa5dd1f2ae4caaeeff873608227449c16b293803fb2e208541aace"
+      },
+      "supply_output_equal_seed": true
+    },
+    {
+      "all_task_semantics_equal_seed": true,
+      "member": "trajectory-aa",
+      "registration_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-prefix-affinity-n20-v1/trajectory-aa-registration2-codex-cache-cost-audit.stdout.json",
+        "sha256": "d06020edfc6ba9fdef296f72369a4adc898a49f18be36f2ea552d52caeba879d"
+      },
+      "supply_output_equal_seed": true
+    }
+  ],
+  "schema": "saea-prefix-panel-precontact-verification-v1"
+}

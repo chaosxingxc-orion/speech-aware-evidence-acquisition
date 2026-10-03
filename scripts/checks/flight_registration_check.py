@@ -1498,6 +1498,30 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
         ))
 
 
+def _check_registered_supply_binding(report, baseline, index, package):
+    """Refuse a plan that declares another member's prepared supply envelope.
+
+    Legacy plans without this optional declaration retain their old behavior.
+    Runtime preparation still verifies the actual artifact and source hashes.
+    """
+    expected = (baseline or {}).get("prepared_phase_supply")
+    for path in sorted((index.repo_root / READINESS / package).glob("*plan-registered*.json")):
+        try:
+            document = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            continue
+        if not isinstance(document, dict) or "prepared_phase_supply" not in document:
+            continue
+        plan = document.get("execution_plan")
+        run_id = document.get("run_id") or (plan.get("run_id") if isinstance(plan, dict) else None)
+        if run_id in report.run_ids.values() and document["prepared_phase_supply"] != expected:
+            report.findings.append(Finding(
+                "registered-supply-binding",
+                f"{run_id}: {path.name} declares a prepared supply different from its cell baseline",
+                run_id,
+            ))
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -1563,6 +1587,7 @@ def check_cell(
         ))
         return
     report.package = f"{READINESS.as_posix()}/{package}"
+    _check_registered_supply_binding(report, baseline, index, package)
     _check_resume_replay_proof(report, cell, index, package)
     recipes = index.recipes(package)
     if not recipes:

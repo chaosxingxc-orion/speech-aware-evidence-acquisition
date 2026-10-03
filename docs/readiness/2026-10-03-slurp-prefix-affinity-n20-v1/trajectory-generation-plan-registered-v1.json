@@ -1,0 +1,30 @@
+{
+  "cell": "slurp-native-stage3-prefix-affinity-n20-trajectory-v1",
+  "composed_config_hash": "6f09faf81d7d6de3c453977f97b77f3cf33772f4c120e4637220a5dac98697b7",
+  "decision_receipt": {
+    "relpath": "coordination/slurp-prefix-affinity-n20-v1/root-admission-v2.json",
+    "sha256": "b3446247b2fa193f33a0f7a2956cd38b8e5744e825732c1f2db75ef63361ac06"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-n20-trajectory-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "cfb72d37eb0e0152272d968c574a2fbe4f61cd1af41ad3b00b729cc017641afd",
+    "run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-prefix-affinity-n20-trajectory-v1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-PREFIX-AFFINITY-N20-TRAJECTORY-V1/phase-supply-v2.json",
+    "sha256": "b2bcac16c85dcdd2cd6e18aff135339b35528981b9cdb4ff373a609c9e662b0d"
+  },
+  "read_run_id": "SAEA-SLURP-PREFIX-AFFINITY-N20-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

@@ -1,0 +1,223 @@
+{
+  "audit_script": {
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/structural-audit-v1.py",
+    "sha256": "0af13f3085e49a00317e8ec3417ee4626a78636c6eaf0c9cf7e887a66435ca68"
+  },
+  "claim_scope": "Structural request routing, native model custody and handoff validity only. No quality read, speed comparison, cache retention guarantee, optimizer export or scientific adoption.",
+  "commit": "6d1748ab964a3741e7d8552f922ea79cc98d9314",
+  "driver_completed_at": "2026-10-03T10:16:35Z",
+  "evidence": {
+    "relpath": "coordination/slurp-prefix-affinity-engineering-v1/structural-acceptance-v1.json",
+    "sha256": "9eeb534eba2fe34a4f28e26fd10132001b4d9a476d09b67717d2f35749f07062"
+  },
+  "fit_endpoint_contacts": 188,
+  "members": [
+    {
+      "artifacts": [
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1.outputs.jsonl",
+          "sha256": "3215ee72683080e7f676e8966a9a8916ae5d51717f5b2ea870459c0042654e4c"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1.trace.jsonl",
+          "sha256": "1bdf5acc41ae00b1cb1c51eb587b47b0eba7ae2ef28859e6321aac84ef0611f1"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1.phases.json",
+          "sha256": "22b5658455193b67b3bba7b1e8bdd883e6ceed98e091e94a2fb7b311d153b833"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1.run-manifest.json",
+          "sha256": "255cb0a02420259e95cdc81e29149c0c23bf999daacbd01376b20bcf01ec6e2b"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1.generation-manifest.json",
+          "sha256": "255cb0a02420259e95cdc81e29149c0c23bf999daacbd01376b20bcf01ec6e2b"
+        }
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-trajectory-smoke-4-generation-v1",
+      "counts": {
+        "actual_request_fit_receipts": 25,
+        "delivery_accepted": 3,
+        "delivery_terminal": 1,
+        "fit_endpoint_contacts": 100,
+        "perception_visits": 4,
+        "planner_visits": 7,
+        "reviewer_valid": 7,
+        "reviewer_visits": 7,
+        "solver_visits": 7
+      },
+      "mode": "trajectory",
+      "model_contacts": 25,
+      "native_omni_terminal_custody": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "official_scorer_entered": false,
+      "per_sample_requested_slots": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ]
+      ],
+      "prepared_score_specs": 1,
+      "requested_role_slots": {
+        "perception": {
+          "0": 1,
+          "1": 1,
+          "2": 1,
+          "3": 1
+        },
+        "planner": {
+          "0": 2,
+          "1": 1,
+          "2": 2,
+          "3": 2
+        },
+        "reviewer": {
+          "0": 2,
+          "1": 1,
+          "2": 2,
+          "3": 2
+        },
+        "solver": {
+          "0": 2,
+          "1": 1,
+          "2": 2,
+          "3": 2
+        }
+      },
+      "reviewer_handoffs_visible": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "rows": 4,
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-TRAJECTORY-SMOKE-4-V1",
+      "server_assignment_caveat": "The preserved OpenAI wire response does not report the serving slot. This proof verifies actual request routing and source custody; it does not invent an independently reported server assignment.",
+      "structural_pass": true,
+      "task_quality_read": false
+    },
+    {
+      "artifacts": [
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1.outputs.jsonl",
+          "sha256": "b494e244f4a3e019280d9a95315c091fdd20c5a1a4a66ad15d6be40c7c6536a1"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1.trace.jsonl",
+          "sha256": "d8a8a0526fa00ffa562789f46dde6bfa33b605964d28e02dcb076ee6534b9695"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1.phases.json",
+          "sha256": "3e3f512465d780b4ff247cc180216600465687bfdd7a05d24c93c1501cfde793"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1.run-manifest.json",
+          "sha256": "397276a64653f12638acd3e9d5d25406bd90746e4d0ec778dde7115c20bdfbd0"
+        },
+        {
+          "relpath": "runs/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1/attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1/SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1.generation-manifest.json",
+          "sha256": "397276a64653f12638acd3e9d5d25406bd90746e4d0ec778dde7115c20bdfbd0"
+        }
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-prefix-affinity-role-smoke-4-generation-v1",
+      "counts": {
+        "actual_request_fit_receipts": 22,
+        "delivery_accepted": 3,
+        "delivery_terminal": 1,
+        "fit_endpoint_contacts": 88,
+        "perception_visits": 4,
+        "planner_visits": 6,
+        "reviewer_valid": 6,
+        "reviewer_visits": 6,
+        "solver_visits": 6
+      },
+      "mode": "role",
+      "model_contacts": 22,
+      "native_omni_terminal_custody": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "official_scorer_entered": false,
+      "per_sample_requested_slots": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          0,
+          1,
+          2,
+          3
+        ]
+      ],
+      "prepared_score_specs": 1,
+      "requested_role_slots": {
+        "perception": {
+          "0": 4
+        },
+        "planner": {
+          "3": 6
+        },
+        "reviewer": {
+          "2": 6
+        },
+        "solver": {
+          "1": 6
+        }
+      },
+      "reviewer_handoffs_visible": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "rows": 4,
+      "run_id": "SAEA-SLURP-PREFIX-AFFINITY-ROLE-SMOKE-4-V1",
+      "server_assignment_caveat": "The preserved OpenAI wire response does not report the serving slot. This proof verifies actual request routing and source custody; it does not invent an independently reported server assignment.",
+      "structural_pass": true,
+      "task_quality_read": false
+    }
+  ],
+  "model_contacts": 47,
+  "next": "Keep affinity OFF in learning comparisons. Prepare a separately registered fixed-policy scheduling comparison with in-chain replication; preserve every old source and never score these engineering workers.",
+  "official_scorer_contacts": 0,
+  "owner_decision": 227,
+  "recorded_at_utc": "2026-10-03T10:19:06.748965+00:00",
+  "schema": "saea-prefix-affinity-structural-acceptance-v1",
+  "total_rows": 8,
+  "worker": "/home/chao/saea-worktrees/codex-prefix-affinity-engineering-v1"
+}
