@@ -1,0 +1,116 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-graph-v1",
+    "baseline": "slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-graph-prepared-v1",
+    "config_hash": "33938be00aba77d468f00c783cf67d16537e58fa6ee4641a0317e467b7f9b547",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-graph-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "model-free-check",
+      "planned_gpu_hours": 0.01,
+      "planned_model_calls": 1,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "c656a36998425aeba5295e63d7379414c2d4be8d5b325fbba68e0d68c903e47a",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-GRAPH-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-graph-v1",
+    "kind": "graph",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-tf-iteration2-v1/policies/6dc77d37f6a9d3f5fdbd79744b7fabe9b9066a2f4daf709260e15c019b17a640.json",
+        "sha256": "ed8e13407301479b0ab589f3960af83bbf200d602abd49d66b09b976812be2de"
+      },
+      "bundle_id": "6dc77d37f6a9d3f5fdbd79744b7fabe9b9066a2f4daf709260e15c019b17a640",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-GRAPH-V1/phase-supply-v1.json",
+      "sha256": "2da40d6e88a5b21d9b4e094698bb076a34ff5ec7eb5f0cb48fb26281147e931e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-GRAPH-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-capacity-fit-v1",
+    "baseline": "slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-capacity-v1",
+    "config_hash": "e042512e26d669988eb63b2c24803ebf42b2d797cf36b08bdb1ba550abac6112",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-capacity-fit-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 297,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "17e20e82c8ebb8e5362947432d0818f87e63216a6c4d163ec6405ab1177b3a1b",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-capacity-v1",
+    "kind": "capacity",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-tf-iteration2-v1/policies/6dc77d37f6a9d3f5fdbd79744b7fabe9b9066a2f4daf709260e15c019b17a640.json",
+        "sha256": "ed8e13407301479b0ab589f3960af83bbf200d602abd49d66b09b976812be2de"
+      },
+      "bundle_id": "6dc77d37f6a9d3f5fdbd79744b7fabe9b9066a2f4daf709260e15c019b17a640",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-CAPACITY-FIT-V1/phase-supply-v1.json",
+      "sha256": "3978da4bc7d017f33c5e44aeb71f30b2c788a6bea4faf3992832de2857186f21"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-smoke-4-generation-v1",
+    "baseline": "slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-smoke-4-v1",
+    "config_hash": "b977facdea638f10795c27efbe3d93245ffa07be8589d7964fe7c6a84a57ceee",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-smoke-4-generation-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "0f920407475b578189b2ffece13fb153baebb8467ad1a73d790309872025812e",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-SMOKE-4-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-tf-iteration2-coverage-ledger-smoke-4-v1",
+    "kind": "smoke-4",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-tf-iteration2-v1/policies/6dc77d37f6a9d3f5fdbd79744b7fabe9b9066a2f4daf709260e15c019b17a640.json",
+        "sha256": "ed8e13407301479b0ab589f3960af83bbf200d602abd49d66b09b976812be2de"
+      },
+      "bundle_id": "6dc77d37f6a9d3f5fdbd79744b7fabe9b9066a2f4daf709260e15c019b17a640",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "5aa8107fca3f1112355ea39bace4707dda8b2484a74ba168b1f8f161d87d5115"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-COVERAGE-LEDGER-SMOKE-4-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  }
+]

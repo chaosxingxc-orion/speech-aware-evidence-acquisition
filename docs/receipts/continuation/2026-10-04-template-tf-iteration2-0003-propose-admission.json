@@ -1,0 +1,27 @@
+{
+  "schema": "saea-template-tf-actor-admission-v1",
+  "at_utc": "2026-10-04T17:55:05.544943+00:00",
+  "status": "ROOT ADMITTED BEFORE CONTACT",
+  "authority": "owner227; exact template-only iteration2 plan and own complete source READs",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-0003-PROPOSE-V1",
+  "original_request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/external-exchange/requests/0003-propose/request.json",
+    "sha256": "57788455d6c1f2f317069ddcbc385c4a0368cd68c51c6bbbaa82ce6740efc478",
+    "bytes": 95073
+  },
+  "request_sha256": "8fa4f6382745e7c506b1d1933f180f11f18b4fc248e3f32b6188a1ce8962c36b",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/actor-capsules/0003-propose/manifest.json",
+    "sha256": "54a502bf5b0b49692a7d4dfa1cd310be3612fba06de7cf5a2436686dd22d0c00",
+    "bytes": 1370
+  },
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "callback_cap": 1,
+  "max_response_bytes": 262144,
+  "provider_usage": "Unknown remains null; byte bounds are not token limits.",
+  "paid_api_spend": 0,
+  "runtime_dispatch": false,
+  "automatic_retry": false
+}

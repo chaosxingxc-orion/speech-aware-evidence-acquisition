@@ -1,0 +1,28 @@
+{
+  "schema": "saea-template-population-original-completion-v1",
+  "at_utc": "2026-10-04T18:25:48.551070+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-PROPOSE-V2",
+  "agent": "/root/template_k16_population_sol",
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/actor-capsule-v2/original-response.json",
+    "sha256": "3b72f1a39f00f63417574f307e516bdf33f31ec76a994e7387cb0d50184daefe",
+    "bytes": 217563
+  },
+  "input_hashes": {
+    "request.json": "5058a61f6a442f5a3e79a351dbc633605c513479158cc84ffbc39d3fb677bf26",
+    "instructions.md": "17642f45e636b76078d3ebe7abbd30d72bb7e5ce93b13297fe3f0c7b5321b36e"
+  },
+  "result": {
+    "status": "VALIDATED_ALL_16",
+    "valid_proposals": 16
+  },
+  "semantic_opportunities_spent": 1,
+  "design_slots_spent": 16,
+  "provider_usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "runtime_dispatch": false,
+  "repair_or_replacement": false
+}

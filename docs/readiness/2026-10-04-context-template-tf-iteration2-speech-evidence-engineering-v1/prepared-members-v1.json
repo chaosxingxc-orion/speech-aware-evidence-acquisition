@@ -1,0 +1,116 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-speech-evidence-graph-v1",
+    "baseline": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-graph-prepared-v1",
+    "config_hash": "95582462432d7864c629c915bbb2b59eabff7a23d3e7cb51aecaab5d9204e31e",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-speech-evidence-graph-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "model-free-check",
+      "planned_gpu_hours": 0.01,
+      "planned_model_calls": 1,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "3cfde4ea8b710304f6e591c17e952b3db1f3d75af95161288baf930c2d4cb446",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-GRAPH-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-graph-v1",
+    "kind": "graph",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-tf-iteration2-v1/policies/cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74.json",
+        "sha256": "8e8c743fdace44e1d944e568b0ac747dc1bf62052adbb66e4eb9c1b8cec321b3"
+      },
+      "bundle_id": "cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-GRAPH-V1/phase-supply-v1.json",
+      "sha256": "0c1567695938e740aae80fca98514e7aa47a6494b8438a9a130689b85895e73f"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-GRAPH-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-speech-evidence-capacity-fit-v1",
+    "baseline": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-capacity-v1",
+    "config_hash": "0a2764c992569b66123f9c48408552d3640170c64a58583c1cc7b296f5af43f1",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-speech-evidence-capacity-fit-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 297,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "568d81080b8a18d6f85b789653c8f656e38d2704f99d5ce064f9f4a3fa466956",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-CAPACITY-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-capacity-v1",
+    "kind": "capacity",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-tf-iteration2-v1/policies/cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74.json",
+        "sha256": "8e8c743fdace44e1d944e568b0ac747dc1bf62052adbb66e4eb9c1b8cec321b3"
+      },
+      "bundle_id": "cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-CAPACITY-FIT-V1/phase-supply-v1.json",
+      "sha256": "44e2d1ecf5dbf06b227c4116cb70e8a87dcbfeb78edfd923dcdb7d70ff6c457a"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-CAPACITY-FIT-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-speech-evidence-smoke-4-generation-v1",
+    "baseline": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-smoke-4-v1",
+    "config_hash": "67d317ff051624fba492f8ab7def8dd3c48daf11f0ea5ceb8d3f3d94e7db7c53",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-speech-evidence-smoke-4-generation-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "512a5f0f59dba06ce78190816f03a149f99681df1114bdea5893f336e5141469",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-SMOKE-4-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-smoke-4-v1",
+    "kind": "smoke-4",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-tf-iteration2-v1/policies/cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74.json",
+        "sha256": "8e8c743fdace44e1d944e568b0ac747dc1bf62052adbb66e4eb9c1b8cec321b3"
+      },
+      "bundle_id": "cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "cd432d69dc892e1d376fdf0447e500ffd952eb1d58b29b683f97556a4229a8e4"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-SMOKE-4-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  }
+]

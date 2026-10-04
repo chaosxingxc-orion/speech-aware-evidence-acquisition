@@ -1,0 +1,29 @@
+{
+  "schema": "saea-root-superseded-learner-disposition-v1",
+  "at_utc": "2026-10-04T18:00:28.258532+00:00",
+  "authority": "Latest direct owner instruction: one semantic agent authors16 branches in one context, runtime K16 on N20.",
+  "original_worker": {
+    "admission": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-admission-v1.json",
+    "admission_sha256": "e15cc04406a3c6f3baa2646947a18943f5f585048046f12415c949bd6d626773",
+    "model_contacts_added": 0,
+    "no_automatic_restart": true,
+    "pid": 714195,
+    "start_ticks": "48300862",
+    "started_unix": 1791135120.6805809,
+    "worker_commit": "f66d9aabf07d83929db45e4447a480c4c2b124cf"
+  },
+  "disposition": "Stop only the superseded waiting K4 learner before its unspent fourth proposal; preserve all originals. This is owner-directed supersession, not a model or task-quality failure.",
+  "spent_callbacks": [
+    "0000-update_experience",
+    "0001-propose",
+    "0002-propose",
+    "0003-propose"
+  ],
+  "unspent_held_callbacks": [
+    "0004-propose",
+    "0005-evaluate"
+  ],
+  "new_runtime_contacts": 0,
+  "queue_stop_service_mutations": false,
+  "pending_request_sha256": "8de606d13697347a2481bf9a51e853ddab11274d07b45190b1c51a8f1f249b83"
+}

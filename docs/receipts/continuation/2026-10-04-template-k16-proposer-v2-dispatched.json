@@ -1,0 +1,17 @@
+{
+  "schema": "saea-template-population-dispatch-v1",
+  "at_utc": "2026-10-04T18:19:26.166208+00:00",
+  "agent_task": "/root/template_k16_population_sol",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/actor-capsule-v2/manifest.json",
+    "sha256": "bf60ae3315704819455537beaf10cb996342ae97534042414cefd26c500a742f"
+  },
+  "input_bytes": 252650,
+  "design_slots": 16,
+  "semantic_opportunities": 1,
+  "runtime_contacts": 0,
+  "pending": "Original one-batch16-branch response, then shared validation/materialization and capacity/structural/runtime admission."
+}

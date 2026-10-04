@@ -1,0 +1,10 @@
+{
+  "at_utc": "2026-10-04T18:11:06.576378+00:00",
+  "complete_english_translations": [
+    "The learner should receive the templates (node1 template plus node2 template plus node3 template), the outputs for different samples (node1 output,node2 output,node3 output), the node performances (node1 performance,node2 performance,node3 performance), and the final score.",
+    "Give the learner abstract representations rather than concrete content and information; overly complex trajectory content would interfere with it."
+  ],
+  "resolution": "Export content-free per-input/per-node output structure, all recorded visits, operational timing/token/format performance, official terminal counts and frozen utility, aligned to complete editable templates. Anonymous cohort ordinals preserve input pairing. Exclude utterances, task labels/values, knowledge, reason text and source lists. No per-sample semantic calls, new scorer or invented node accuracy/causal credit. This supersedes aggregate-only actor input for the prospective K16 batch; all immutable inputs remain archived.",
+  "runtime_population": "K16,N20,M4;320 candidate plus40 control trajectories. One semantic batch; no model contact yet.",
+  "schema": "saea-owner-abstract-node-learning-feedback-v1"
+}

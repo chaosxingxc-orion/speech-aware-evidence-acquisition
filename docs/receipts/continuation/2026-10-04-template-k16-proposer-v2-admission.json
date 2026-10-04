@@ -1,0 +1,22 @@
+{
+  "at_utc": "2026-10-04T18:17:38.027309+00:00",
+  "authority": "Latest direct owner K16 and abstract-node feedback instructions, owner227",
+  "design_slots": 16,
+  "manifest": {
+    "bytes": 1163,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/actor-capsule-v2/manifest.json",
+    "sha256": "bf60ae3315704819455537beaf10cb996342ae97534042414cefd26c500a742f"
+  },
+  "paid_api_spend": 0,
+  "plan": {
+    "bytes": 7381,
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-template-k16-n20-v1/plan-v2.json",
+    "sha256": "d759b195546a19091c82c243b2b19c943e35c521fe471b325449d73e503bdef8"
+  },
+  "previous_v1": "Never dispatched, no response, no spent opportunity; superseded before contact.",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-PROPOSE-V2",
+  "runtime_dispatch": false,
+  "schema": "saea-template-population-actor-admission-v1",
+  "semantic_opportunities": 1,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT"
+}

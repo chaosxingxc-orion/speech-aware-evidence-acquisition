@@ -1,0 +1,23 @@
+{
+  "actor_v1_disposition": "UNSPENT AND SUPERSEDED before dispatch; create a successor capsule after complete abstract-source verification.",
+  "schema": "saea-abstract-node-source-registration-v1",
+  "semantic_contacts": 0,
+  "sources": [
+    {
+      "family_id": "context-initial4-n20",
+      "recipe_pin": {
+        "relpath": "docs/readiness/2026-10-04-template-k16-n20-v1/abstract-initial-recipe-v1.json",
+        "sha256": "74bb8cbd50f777040f3f98ddabcc5dfe471878e647c440891be05bfba3ea2ca7"
+      },
+      "tag": "initial"
+    },
+    {
+      "family_id": "context-tf-iteration1-n20",
+      "recipe_pin": {
+        "relpath": "docs/readiness/2026-10-04-template-k16-n20-v1/abstract-rejected-recipe-v1.json",
+        "sha256": "7aa140a4dbaa7cd56084a2e3fa91ec0eba2cb2780040c411de19766780bd570e"
+      },
+      "tag": "rejected"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "at_utc": "2026-10-04T18:02:18.085317+00:00",
+  "complete_english_translations": [
+    "If only generating templates, consider generating16 template groups in parallel. Preserve diversity and combinations across optimization surfaces so that system branches can be formed. Do not assign one template group to each subagent; that wastes context. Have one subagent reason about and generate all16 branches in one task.",
+    "Run the experiment with16 groups too; regard this as K=16."
+  ],
+  "resolution": {
+    "K": 16,
+    "M": 4,
+    "N": 20,
+    "boundary": "Human before8x400. No held carrier release, paid API or heartbeat restart.",
+    "candidate_trajectories": 320,
+    "case_free_learner": true,
+    "control_trajectories": 40,
+    "fidelity": "Prospective batched TF context-diversity population extension; not unchanged original K4 baseline or16 independent search replications.",
+    "fixed_knowledge": true,
+    "runtime": "Sequential complete trajectories with existing4slots and queue4, same immutable UPDATE2 first20.",
+    "seed": 20260913,
+    "selection": "Evaluate all16 registered valid branches in one complete family; no subjective best-four screening. Invalid/duplicate/no-change slots remain spent and require explicit root disposition; never silently substitute.",
+    "semantic_agents": 1,
+    "semantic_batch_requests": 1,
+    "superseded": "Unissued K4 fourth proposal/evaluation; retain the three original proposals and all prior evidence.",
+    "temperature": 0,
+    "total_scientific_trajectories": 360
+  },
+  "schema": "saea-owner-template-population-k16-v1"
+}

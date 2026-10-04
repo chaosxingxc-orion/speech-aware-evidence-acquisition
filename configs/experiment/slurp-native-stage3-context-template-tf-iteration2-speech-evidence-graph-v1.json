@@ -1,0 +1,80 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-context-template-tf-iteration2-speech-evidence-graph-v1",
+      "baseline_fragment": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-graph-prepared-v1",
+      "cell_id": "slurp-native-stage3-context-template-tf-iteration2-speech-evidence-graph-v1",
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Exact TF provisional child engineering preparation; registration and frozen/live admission pending.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-GRAPH-V1",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-tf-iteration2-v1/policies/cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74.json",
+          "sha256": "8e8c743fdace44e1d944e568b0ac747dc1bf62052adbb66e4eb9c1b8cec321b3"
+        },
+        "bundle_id": "cde5533db48b98b0b1fed5619567e1f7173c7f9b73d8eec8350aa2cc27553d74",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  ],
+  "date": "2026-10-04",
+  "execution_plan": {
+    "execution_profile": "model-free-check",
+    "planned_gpu_hours": 0.01,
+    "planned_model_calls": 1,
+    "planned_speech_audio_seconds": 1500,
+    "split_role": "discovery"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-SPEECH-EVIDENCE-GRAPH-V1",
+  "family_budget": {
+    "complete_system_trajectories": 0,
+    "generation_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "tokenizer_endpoint_cap": 0
+  },
+  "population": {
+    "count": 4,
+    "roster_receipt": "docs/readiness/2026-10-02-slurp-system-text-update2-v1/graph-roster-v1.json",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+  "stage3_algorithm": {
+    "id": "system-text-black-box-v1",
+    "note": "Engineering one original TF provisional complete-system child; no efficacy or completed learning claim.",
+    "operators_used": [
+      "rollout"
+    ]
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Same immutable UPDATE2 first20/first4; structural/capacity proof only. No efficacy claim.",
+    "primary_metric": "Capacity only; no task quality",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+    "rows": 4,
+    "tuning_roster": "none"
+  }
+}

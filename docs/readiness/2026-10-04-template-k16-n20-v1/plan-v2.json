@@ -1,0 +1,204 @@
+{
+  "abstract_source_registration": {
+    "bytes": 843,
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-template-k16-n20-v1/abstract-source-registration-v1.json",
+    "sha256": "f4525af4ab8f5b9eec15473be6f95e914a60ec3afbc83aad28d203b54a737578"
+  },
+  "abstract_view": {
+    "bytes": 152917,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-feedback-v1/learner-view.json",
+    "sha256": "1415685022f7bf8aba8745f64bc1a0bcb00674a1f058b2ad7f748fc4e300eb15"
+  },
+  "assembly_profiles": {
+    "A": {
+      "context_layout": {
+        "native_role_query_placement": null
+      },
+      "node_context": {
+        "reviewer_history_scope": "full",
+        "tool_schema_rendering": "constant"
+      }
+    },
+    "B": {
+      "context_layout": {
+        "native_role_query_placement": null
+      },
+      "node_context": {
+        "reviewer_history_scope": "latest-solver-and-local-tools",
+        "tool_schema_rendering": "per-role"
+      }
+    },
+    "C": {
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "node_context": {
+        "reviewer_history_scope": "full",
+        "tool_schema_rendering": "per-role"
+      }
+    },
+    "D": {
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "node_context": {
+        "reviewer_history_scope": "latest-solver-and-local-tools",
+        "tool_schema_rendering": "constant"
+      }
+    }
+  },
+  "at_utc": "2026-10-04T18:17:38.027309+00:00",
+  "common_parent_bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+  "evaluation": {
+    "K": 16,
+    "N": 20,
+    "analysis": "Read only all18 complete valid seals and unique official scores with root countersignature; compare all16 against same-flight seed/A/A and retain full frontier. No stable-benefit claim from reusedN20.",
+    "candidate_trajectories": 320,
+    "complete_members": 18,
+    "control_trajectories": 40,
+    "official_score_jobs": 18,
+    "optimizer_fidelity": "Prospective batched TF context-diversity population; no original K4 acceptance/reward comparison is silently resized. Subsequent update rule must bind this exactK16 source before use.",
+    "status": "HELD until original proposals, materialization, real full-request capacity, separate structural proofs and exact full-family registration/frozen/live gates",
+    "total_trajectories": 360
+  },
+  "feedback_contract": "Per-template, per-anonymous-input, every node output structure and numeric operational performance plus official terminal counts/utility. No concrete sample content, source rosters, knowledge or per-sample semantic summarization. Independent node quality is unmeasured, not terminal reward attribution.",
+  "input_sha256": "6932284df3a9b50374aa03b5e45d3f993ffc1783766048a4ac0f0cd29d0d6776",
+  "knowledge_assets": "unchanged",
+  "owner": {
+    "bytes": 1598,
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/owner/2026-10-04-template-population-k16.json",
+    "sha256": "c01ac2501e95e42d7e44f2888f683f888544b85d5cfc5ab94f12147668442acc"
+  },
+  "runtime_dispatch": false,
+  "schema": "saea-template-population-plan-v1",
+  "semantic": {
+    "agents": 1,
+    "design_slots": 16,
+    "fork_turns": "none",
+    "input_bytes": 252650,
+    "max_input_bytes": 262144,
+    "max_output_bytes": 262144,
+    "model": "gpt-6.1-sol",
+    "no_retry_or_replacement": true,
+    "reasoning_effort": "high",
+    "request_opportunities": 1,
+    "unknown_provider_usage": null
+  },
+  "slots": [
+    {
+      "assembly_profile": "A",
+      "candidate_id": "branch-01",
+      "strategy_id": "strategy-1"
+    },
+    {
+      "assembly_profile": "B",
+      "candidate_id": "branch-02",
+      "strategy_id": "strategy-1"
+    },
+    {
+      "assembly_profile": "C",
+      "candidate_id": "branch-03",
+      "strategy_id": "strategy-1"
+    },
+    {
+      "assembly_profile": "D",
+      "candidate_id": "branch-04",
+      "strategy_id": "strategy-1"
+    },
+    {
+      "assembly_profile": "A",
+      "candidate_id": "branch-05",
+      "strategy_id": "strategy-2"
+    },
+    {
+      "assembly_profile": "B",
+      "candidate_id": "branch-06",
+      "strategy_id": "strategy-2"
+    },
+    {
+      "assembly_profile": "C",
+      "candidate_id": "branch-07",
+      "strategy_id": "strategy-2"
+    },
+    {
+      "assembly_profile": "D",
+      "candidate_id": "branch-08",
+      "strategy_id": "strategy-2"
+    },
+    {
+      "assembly_profile": "A",
+      "candidate_id": "branch-09",
+      "strategy_id": "strategy-3"
+    },
+    {
+      "assembly_profile": "B",
+      "candidate_id": "branch-10",
+      "strategy_id": "strategy-3"
+    },
+    {
+      "assembly_profile": "C",
+      "candidate_id": "branch-11",
+      "strategy_id": "strategy-3"
+    },
+    {
+      "assembly_profile": "D",
+      "candidate_id": "branch-12",
+      "strategy_id": "strategy-3"
+    },
+    {
+      "assembly_profile": "A",
+      "candidate_id": "branch-13",
+      "strategy_id": "strategy-4"
+    },
+    {
+      "assembly_profile": "B",
+      "candidate_id": "branch-14",
+      "strategy_id": "strategy-4"
+    },
+    {
+      "assembly_profile": "C",
+      "candidate_id": "branch-15",
+      "strategy_id": "strategy-4"
+    },
+    {
+      "assembly_profile": "D",
+      "candidate_id": "branch-16",
+      "strategy_id": "strategy-4"
+    }
+  ],
+  "source_capsule": {
+    "bytes": 95073,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/actor-capsules/0003-propose/request.json",
+    "sha256": "57788455d6c1f2f317069ddcbc385c4a0368cd68c51c6bbbaa82ce6740efc478"
+  },
+  "source_export": "Root227 and latest explicit K16 owner instruction prospectively authorize reuse of this exact already-qualified zero-case own-template/aggregate view. No new task-quality read or GEPA/root/test export.",
+  "source_history_commitment": {
+    "registration_sha256": "2d46adce93cc389d7f562cf1caca2d2d0777b0d804bec6b966c78d3cab742602",
+    "sha256": "1242a5570dc1f8e04eb815de9baf4bd9f45c0cbf8a7621fbc1fc8b49ac749e7a"
+  },
+  "source_read_authority": {
+    "ledger_row_sha256": "64e5697f7b597b84eb68463895409e3ea7c084cbfb3e96f6b1f3a1eb021586dd",
+    "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-INPUT-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-template-tf-iteration2-v1/input-recipe-v1.json",
+      "sha256": "71a5bfb00b4c5ba53dc30a4b1f047f924fec4809124a20c6973ac4c4038d101e"
+    }
+  },
+  "supersedes_uncontacted_actor_plan": {
+    "bytes": 5642,
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-template-k16-n20-v1/plan-v1.json",
+    "sha256": "edb1b8bddd825a3f32b607c6a7ce3a3eac18e2593ff76da20263825adc3b0fbd"
+  },
+  "validation_modules": [
+    {
+      "bytes": 8183,
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_node_feedback.py",
+      "sha256": "fd3ec8d7b4348ab239b5a497103e857303c9559747a8cb88cd45cc02c9ec0841"
+    },
+    {
+      "bytes": 4023,
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/rails/template_population.py",
+      "sha256": "f9e07e72995a75409e750dfa94fcdd294344954fcbca276cdcf96ef2feac5a04"
+    }
+  ]
+}

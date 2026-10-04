@@ -1,0 +1,21 @@
+{
+  "schema": "saea-abstract-node-feedback-complete-v1",
+  "at_utc": "2026-10-04T18:19:26.166208+00:00",
+  "view": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-feedback-v1/learner-view.json",
+    "sha256": "1415685022f7bf8aba8745f64bc1a0bcb00674a1f058b2ad7f748fc4e300eb15"
+  },
+  "private_custody": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-feedback-v1/private-custody.json",
+    "sha256": "126dc993eeb88e10ad4c9948fba6ca18c97594ca9a86c6526b76dd465f2705f5"
+  },
+  "families": 2,
+  "templates": 8,
+  "rows": 160,
+  "recorded_node_contacts": 781,
+  "source_integrity": "Both full six-member original families and frozen TRAIN reference requalified through existing READ/seal/unique-score gates before projection; all eight candidate native sources reverified.",
+  "projection": "Every input and recorded contact; numeric output features/operational performance and official terminal counts/utility. All dynamic episode leaves checked numeric/bool/null. Independent node quality and per-sample official aggregate F1 remain null. No original text, entity labels/values, knowledge, source rosters or semantic summaries.",
+  "new_model_contacts": 0,
+  "new_score_jobs": 0,
+  "tests": "39 new tests pass, including privacy, terminal utility, malformed outputs, exact population order, scope, duplicates and provenance. Broader regression remains before runtime."
+}

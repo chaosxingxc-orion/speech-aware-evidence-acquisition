@@ -1,0 +1,82 @@
+{
+  "K": 4,
+  "M": [
+    "perception",
+    "solver",
+    "reviewer",
+    "planner"
+  ],
+  "N": 20,
+  "abstract_node_export": {
+    "cases_with_concrete_content": 0,
+    "module": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/abstract_node_feedback.py",
+      "sha256": "fd3ec8d7b4348ab239b5a497103e857303c9559747a8cb88cd45cc02c9ec0841"
+    },
+    "new_semantic_or_scoring_contacts": 0,
+    "owner_receipt": {
+      "relpath": "docs/receipts/owner/2026-10-04-abstract-node-learning-feedback.json",
+      "sha256": "0427955b21015fc45d27c09eb7e9e95ebfa2e83d1bdb46373dd246c1d35f4826"
+    },
+    "purpose": "Prospective K16 template batch; content-free node output/performance aligned per anonymous input and terminal score.",
+    "schema": "saea-abstract-node-feedback-v1"
+  },
+  "algorithms": [
+    "tf-grpo-context-diversity",
+    "gepa"
+  ],
+  "automatic_expansion": false,
+  "candidate_members": [
+    "speech-evidence",
+    "coverage-ledger",
+    "counterexample-check",
+    "semantic-frame"
+  ],
+  "control_members": [
+    "seed",
+    "seed-aa"
+  ],
+  "evaluation_only": true,
+  "evaluation_request": {
+    "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0045-evaluate/request.json",
+    "sha256": "8ab2bee31eca98a6ff144058ef47b653b3467493a479b07d4fb415e686b1b889"
+  },
+  "family_id": "context-tf-iteration1-n20",
+  "fixed_roster": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/fixed400-source-v1.json",
+    "sha256": "1e1b284a21893973a207ac387b13d6627e64e1c550953c26744328937ef8d5bd"
+  },
+  "frozen_reference": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/original-reference-family-v1.json",
+    "sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148"
+  },
+  "independent_validation": false,
+  "iteration": 2,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-04-deterministic-context-rollouts.json",
+    "sha256": "95605fc5cad2d4e7ff1b5209014dff1d6dcc7ac640747ec727e732c61f99d272"
+  },
+  "purpose": "Own TF rejected-trial aggregate conditioning for iteration2 only; no GEPA export, parent promotion, new scoring or runtime authority.",
+  "rejected_trial_use": {
+    "algorithm": "tf-grpo-context-diversity",
+    "iteration": 2,
+    "previous_decision_sha256": "b48d737e08b29586fece8c75ad8273e1adda3aa13a105db64c5a27535a8eac09"
+  },
+  "sampling": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "schema": "saea-context-learning-protocol-v1",
+  "source_iteration_plan": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/tf-grpo-context-diversity-iteration-plan-draft-v1.json",
+    "sha256": "145ac6019e3ec82f6cc6ddbb4efff77cdaa737a861fe59ac2ec4e7f12030731f"
+  }
+}
