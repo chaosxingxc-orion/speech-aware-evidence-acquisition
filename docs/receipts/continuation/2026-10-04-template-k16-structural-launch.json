@@ -1,0 +1,247 @@
+{
+  "schema": "saea-k16-structural-launch-v1",
+  "at_utc": "2026-10-04T19:56:53.594825+00:00",
+  "authority": "Root227 bounded structural execution after all16 successful capacities and frozen preflights",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-structural-v1",
+  "commit": "a024df8aecfbdf69efbd3d4f93f9b464f9e7f777",
+  "driver_epoch": "2026-10-04T19:54:22Z",
+  "processes": [
+    {
+      "pid": 737914,
+      "parent_pid": 737913,
+      "start_ticks": "49128807",
+      "args": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ]
+    },
+    {
+      "pid": 738444,
+      "parent_pid": 737914,
+      "start_ticks": "49142940",
+      "args": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ]
+    },
+    {
+      "pid": 738523,
+      "parent_pid": 738483,
+      "start_ticks": "49143282",
+      "args": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "worker",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-context-template-k16-structural-v1",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--owner",
+        "chatgpt-root-owner227",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--experiment",
+        "slurp-native-stage3-context-template-k16-branch-02-smoke-4-v1",
+        "--cell",
+        "slurp-native-stage3-context-template-k16-branch-02-smoke-4-v1",
+        "--lease-token-file",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-stage3-context-template-k16-branch-02-smoke-4-v1.worker-lease.json"
+      ]
+    }
+  ],
+  "windows_dispatch": {
+    "schema": "saea-k16-structural-windows-dispatch-v1",
+    "at_utc": "2026-10-04T19:54:21.7095970Z",
+    "task": "SAEA-Batch-Driver",
+    "prelaunch_free_gib": 18.468849182128906,
+    "worker_commit": "a024df8aecfbdf69efbd3d4f93f9b464f9e7f777",
+    "members": 16,
+    "rows": 64,
+    "official_score_jobs": 0,
+    "automatic_retry": false
+  },
+  "frozen_preflight": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/frozen-check-v1.json",
+    "sha256": "f4d6a5363a58f11d2063e2d3eb16b14d998cd34a1d723654e05f853674fa5754"
+  },
+  "normal_completed_control_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/driver-transition-v1.json",
+    "sha256": "2aa0c5f0527f4bfe3a943d83f2ebab7433cc8e0ffc3ae150a7828838f14e4748"
+  },
+  "queue": {
+    "path": "/home/chao/saea-worktrees/codex-context-template-k16-structural-v1/docs/readiness/2026-10-04-context-template-k16-structural-entry-v1/queue-v1.json",
+    "sha256": "e171eee97e4f965f20e00ccb75569a195f1afd1063c97af3d339eddcc7dbf6aa"
+  },
+  "startup_memory": [
+    {
+      "at": "2026-10-04T19:54:45Z",
+      "event": "memory-wait-ok",
+      "detail": {
+        "elapsed_seconds": 21.882999853987712,
+        "exit_code": 0,
+        "interval_seconds": 10,
+        "observer_sha256": "9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c",
+        "running_floor_gib": 8.0,
+        "schema": "saea-precontact-memory-wait-v1",
+        "stable_samples": 3,
+        "start_gib": 12.5,
+        "status": "ready",
+        "stop_marker": "/home/chao/batch-STOP",
+        "wait_seconds": 600.0,
+        "worker_started": false
+      }
+    },
+    {
+      "at": "2026-10-04T19:56:41Z",
+      "event": "memory-wait-ok",
+      "detail": {
+        "elapsed_seconds": 21.637454826035537,
+        "exit_code": 0,
+        "interval_seconds": 10,
+        "observer_sha256": "9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c",
+        "running_floor_gib": 8.0,
+        "schema": "saea-precontact-memory-wait-v1",
+        "stable_samples": 3,
+        "start_gib": 12.5,
+        "status": "ready",
+        "stop_marker": "/home/chao/batch-STOP",
+        "wait_seconds": 600.0,
+        "worker_started": false
+      }
+    }
+  ],
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-01-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-01-smoke-4-generation-v1",
+      "state": "OPENED",
+      "model_contacts": 22
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-02-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-02-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-03-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-03-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-04-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-04-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-05-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-05-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-06-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-06-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-07-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-07-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-08-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-08-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-09-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-09-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-10-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-10-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-11-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-11-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-12-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-12-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-13-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-13-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-15-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-15-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-16-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-16-smoke-4-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    }
+  ],
+  "scope": {
+    "systems": 16,
+    "rows_each": 4,
+    "rows_total": 64,
+    "official_scores": 0,
+    "generation_cap": 832,
+    "request_fit_endpoint_cap": 3328
+  },
+  "selected_acceptance_helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/structural-audit-v2.py",
+      "sha256": "7ce2835c0db506db60ec8f948e0ea3746827b961a4f239fdc016197cad3d73fb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/root-node-timing-v1.py",
+      "sha256": "7047cbad8b6752683cb9d2955b8c79dab14b5217ec7b2f47c0c3b89866544848"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/root-sample-timing-v1.py",
+      "sha256": "cf9002d8d5006eaed007de6e5526f3d28f15acfc6373b7a45660cc5466196563"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/record-completion-v2.py",
+      "sha256": "1d28901e8f2bb8421c5d8e1d66fc077c44b314953501f6c022a35ddebe9ec859"
+    }
+  ],
+  "task_quality_read": false,
+  "optimizer_export": false,
+  "automatic_recovery": false,
+  "heartbeat": "PAUSED"
+}

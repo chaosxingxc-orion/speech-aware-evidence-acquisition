@@ -1,5 +1,14 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 GPU structural family launched, 2026-10-04T19:56:53.594825+00:00
+
+[Exact launch](../receipts/continuation/2026-10-04-template-k16-structural-launch.json):Windows SAEA-Batch-Driver epoch2026-10-04T19:54:22Z, root Linux737914/start49128807, frozen /home/chao/saea-worktrees/codex-context-template-k16-structural-v1 at a024df8aecfbdf69efbd3d4f93f9b464f9e7f777. All16 capacity and frozen checks passed. Startup memory waited21.883seconds and passed3 stable samples; dispatch Windows free18.47GiB. Branch01 has real model contacts. Revalidate current PIDs/attempts/telemetry; do not infer completed rows from serving totals. Exactly16x4 engineering rows, at most832 generation/3328 FIT endpoints, no official scoring.
+
+The completed prior TF controls were normally archived only after no STOP/competing process and the exact prior queue/commit were verified. Preserve that archive and all frozen workers. This was normal progression, not failure recovery. The current batch owns the queue; no source or geometry edits while active.
+
+After driver-done16, use structural-audit-v2.py, root-node-timing-v1.py, root-sample-timing-v1.py and record-completion-v2.py with exact acceptance hash where required. Engineering attempts intentionally remain OPENED after completed generation/prepared score specs; never score or reseal. No task-quality/optimizer read. Scientific18x20 remains HELD until64 accepted structural rows, then exact preparation/supplement/freeze/preflight/launch. Heartbeat stays PAUSED. Preserve fixed assets/decoding, sequential4slot/queue4, formal seed, other-carrier holds and human-before8x400.
+
+
 ## Stronger unscored structural acceptance selected, 2026-10-04
 
 [Prospective scorer-entry guard](../receipts/continuation/2026-10-04-template-k16-scorer-entry-guard.json) selects structural-audit-v2.py and record-completion-v2.py in coordination/context-template-k16-structural-owner227-v1 after the exact completed64-row engineering family. Preserve v1 helpers unexecuted. Eleven synthetic tests and four prior engineering metadata-only checks pass. Require absent scoring stage/batch/lock/scores, deferred finalization and one exactly bound inert score specification; hash/recheck those metadata files before recording completion. A missing score file alone no longer proves the registered scorer was never entered. No quality read, model/scorer contact, runtime request or frozen source changed.
