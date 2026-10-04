@@ -1,0 +1,5 @@
+# Exact K16 template population N20K16 evaluation entry
+
+Register eighteen complete shared-runtime members: unchanged seed/A/A followed by sixteen distinct full context systems. Same20 UPDATE2 inputs;320 candidate plus40 control trajectories. Reuse assets and own warm-verified supplies. The seed and all sixteen exact original branches have capacity and separate structural proofs. Temperature0/seed20260913, sequential4slot/queue4, standard official whole-member scoring once.
+
+Root227 permits this finite comparison after exact frozen/runtime/live checks. No callback/proposer contact, automatic expansion or independent-validation claim. Scientific READ remains unsigned until all eighteen finalized, verified seals and unique successful scores with no failed jobs. The original reference is TRAIN only. This family evaluates all sixteen original batched template branches. A future abstract TF feedback export must bind this exact complete family after root READ. No old K4 callback or GEPA export. No invented reward or automatic next iteration. Preserve historical/frozen bytes, paused heartbeat and human-before8x400.

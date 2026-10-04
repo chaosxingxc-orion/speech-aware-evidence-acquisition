@@ -1,0 +1,254 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-seed-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed",
+    "config_hash": "201dd7766a43ab5a00246abb241713415b9718565d7775fa1dfbdf91830986a1",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-seed-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-SEED-V1/phase-supply-v1.json",
+      "sha256": "dacc5f058c71ff5e203de3657099a67efc92568f9819ee19109d203d6ac73c5e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-SEED-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-seed-aa-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed-aa",
+    "config_hash": "527ce32905e39322be46a9978b408cec61e924323e2dcc6724806c7f31c420b9",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-seed-aa-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-SEED-AA-V1/phase-supply-v1.json",
+      "sha256": "d442b2a145baf12b2b439c71c7e2b19ebd18de28a6c10ed315240124e6aa06fc"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-SEED-AA-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-01-generation-v1",
+    "bundle_id": "f85da93e9182caaff2adb4f059fede3a60da9c39812f80b3e4194d98e851c656",
+    "candidate_id": "branch-01",
+    "config_hash": "6e64a21dd962480054363c8b1012e6b4d78c3955cfcf67072d86edceebdb79b6",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-01-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-01-V1/phase-supply-v1.json",
+      "sha256": "a0208f57069ec7653c69d70a1fda7ec74135352e4e0c66ab3113f836d1080dec"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-01-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-02-generation-v1",
+    "bundle_id": "929de105cfcf5c43767e07da42de8eabe14306cf8377894d5fef1a6ca768b308",
+    "candidate_id": "branch-02",
+    "config_hash": "6356c543f985cf0e2c2dad6be24602edb09a8ea1fefee452a6b0d709068512bf",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-02-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-02-V1/phase-supply-v1.json",
+      "sha256": "07bba43e7c2fd739dd0909b1071154ff2c4e9ff50ad731ecafde5c6032775748"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-02-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-03-generation-v1",
+    "bundle_id": "39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7",
+    "candidate_id": "branch-03",
+    "config_hash": "eaca1d1116e4fe5eee1ef11bd6d43adf9a45c1afb39f2c4530f96f278cb55184",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-03-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-03-V1/phase-supply-v1.json",
+      "sha256": "41002cc6f328a78a06afc89da34ce2d6313648a8ca2b427aa0eb573544021a70"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-03-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-04-generation-v1",
+    "bundle_id": "3183decb35b0447055fe9abf480faaa4f165810e6e854139ad1e2c76eb8b10c5",
+    "candidate_id": "branch-04",
+    "config_hash": "57cf00825520964faa366fa9aa3ea484b02f74105a9c3cdaeb61d82c289a2dc9",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-04-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-04-V1/phase-supply-v1.json",
+      "sha256": "02555de03f833b2ad3fd1875ce7c8f6889f9e2fd51830b65d3f00cd1378b0481"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-04-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-05-generation-v1",
+    "bundle_id": "ec80370848513fbaed7cbded6d894902fad15a82e1c1d4c63988f7a7624a8da6",
+    "candidate_id": "branch-05",
+    "config_hash": "422cb6ee81b475fd64686bdae1d92025a312d4a2214de8a61668974ba67c1d87",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-05-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-05-V1/phase-supply-v1.json",
+      "sha256": "3cf79a518f3d9ada5272cc885f011bbd6b5b99b5309f50ceb7114161a0bdf1c7"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-05-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-06-generation-v1",
+    "bundle_id": "a8efbb4e9f70482e53e88e9b74163916b44cdf5666275f1407adf2a155437474",
+    "candidate_id": "branch-06",
+    "config_hash": "82e4876ca768c58e0ffc6462e52465471909e97bfc72f577ae5e25626abf300c",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-06-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-06-V1/phase-supply-v1.json",
+      "sha256": "93862e3b615efc9bc28fa46d12f3b6bde707f5458487eee05c4acf4a03c24fcb"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-06-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-07-generation-v1",
+    "bundle_id": "a07629b7e6dd252f90ab0dffe146cbbe3520c62e7ac09e286daa1408caab188a",
+    "candidate_id": "branch-07",
+    "config_hash": "d28e5b561eb8dbf42f951a0ba017a10fe2dc0ec839dab90c0e498c913c228fd1",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-07-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-07-V1/phase-supply-v1.json",
+      "sha256": "31c22c23e01654282b1fcf2d5b48a36317b7d3845f378fe0802279eabb868521"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-07-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-08-generation-v1",
+    "bundle_id": "c894e574d753063ca47d56ef9f645340ca48c64be1d855af16365c1669de5bc6",
+    "candidate_id": "branch-08",
+    "config_hash": "c9c4db17a0bc361567995a3e1fbabe78b243b5ce111122ff2ea09658362e5671",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-08-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-08-V1/phase-supply-v1.json",
+      "sha256": "bb064b0b09d56ee6004b39f8dd2fe2d466b22cb639c6811bcf1937d06ff326ca"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-08-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-09-generation-v1",
+    "bundle_id": "e1bf66dbfe01928b7bc9901414ad1d81b6867bdff1f6a943700bc1c6fcf2c18d",
+    "candidate_id": "branch-09",
+    "config_hash": "f0bf085d42c1f2190b9bbc93c18447f7e84cee6782fe569244264cb8eb7ef3b1",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-09-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-09-V1/phase-supply-v1.json",
+      "sha256": "90a84433a850417a684c4f9a616bb2c898b796d6d2cd56b3d44b5ccccb9862ea"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-09-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-10-generation-v1",
+    "bundle_id": "6b8882ec9e7058270317229281919f6961e0cc69b159937ac28837e8e741b3d8",
+    "candidate_id": "branch-10",
+    "config_hash": "78691e47649156dd4a097031a0dac4d095e4071e8c8bdb8e0226040f0c86e067",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-10-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-10-V1/phase-supply-v1.json",
+      "sha256": "08b2d268e50dfc1e1434076dd2dc2a1dbb8c6ebc50eecb4e8d69795438879252"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-10-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-11-generation-v1",
+    "bundle_id": "cdfbab8d55d5741c33f4368bf305b74cdc8ea009c2ef18affd6a57c82b6bae50",
+    "candidate_id": "branch-11",
+    "config_hash": "a696a85b04072bafec60ee79eedbcc4636bc39b65e50f1dd410b17916d798136",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-11-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-11-V1/phase-supply-v1.json",
+      "sha256": "3af3b4db2aab40a116c59c183e9b7f42e1069aaf85c422845f7417afa457c6c0"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-11-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-12-generation-v1",
+    "bundle_id": "11f73e7d0ccaab0d2f9b3c0fe64b6d7829cc674113268498c539e3223b135a15",
+    "candidate_id": "branch-12",
+    "config_hash": "d3d6f7b644a7c2238370a5dd32eab4ad50c36a754adefc9981066ca2c568b1af",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-12-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-12-V1/phase-supply-v1.json",
+      "sha256": "c8b4fb484a281e915be055e1ef665dbe7b8c7ec90bb16b59fcbdfbc27cab025f"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-12-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-13-generation-v1",
+    "bundle_id": "5bb377ec1e76ee4d1db4778e56ddbee3a4c22acdfba001fa8f0b7c48c4266735",
+    "candidate_id": "branch-13",
+    "config_hash": "4eeededbb368fd26351dfa0fe54488ffbcb0c6e18859aa0b38e4297d8dafdecf",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-13-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-13-V1/phase-supply-v1.json",
+      "sha256": "49b2117419a8e54d5049ea74679e6340221df149bffdbccc5c3f3ca7b8854c9c"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-13-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-14-generation-v1",
+    "bundle_id": "440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab",
+    "candidate_id": "branch-14",
+    "config_hash": "d2cccb389ab9738b61991ead57a1b627b3683e8cb91539c0979d96f69b62e084",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-14-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-14-V1/phase-supply-v1.json",
+      "sha256": "e79920d843a99d1211b98934d9b235f4c55a153daa117c1dc5b1e7838900cab7"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-14-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-15-generation-v1",
+    "bundle_id": "81335b552d93599b9082511f46548e09d16d98ac3f009b75ba094445f1c31a6d",
+    "candidate_id": "branch-15",
+    "config_hash": "c2a47bfe807535d4e128d923de4d896d1848f6d0f5957bceb7617e8b75d29b64",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-15-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-15-V1/phase-supply-v1.json",
+      "sha256": "28f45b8a997008162e6ed689d71737ce0a9b4c76b538f5adf53d4e1941ea03db"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-15-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-16-generation-v1",
+    "bundle_id": "572421acd0c59931c5d1b43d6da4a71ae847f7bcac6000c1467d9cf62e74ee58",
+    "candidate_id": "branch-16",
+    "config_hash": "eaf6b319df28bcb48c13b566213815c0a20b6b951507a28449c1352044806139",
+    "experiment": "slurp-native-stage3-context-template-k16-n20-branch-16-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-16-V1/phase-supply-v1.json",
+      "sha256": "9630380bec276fd2ac5d6cdd94641a0c6c9e733287ea852dfc8b868df2b91303"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-16-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  }
+]

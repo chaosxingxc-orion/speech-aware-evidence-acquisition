@@ -1,0 +1,42 @@
+{
+  "schema": "saea-template-k16-n20-registered-v1",
+  "at_utc": "2026-10-04T20:36:11.327161+00:00",
+  "authority": 227,
+  "structural_rows_accepted": 64,
+  "reviewer_handoffs_valid_visible": 76,
+  "native_omni_terminal_deliveries": 64,
+  "structural_model_contacts": 292,
+  "structural_fit_endpoints": 1168,
+  "structural_score_contacts": 0,
+  "scientific_members": 18,
+  "candidate_trajectories": 320,
+  "control_trajectories": 40,
+  "scientific_trajectories": 360,
+  "scientific_generation_contact_cap": 4680,
+  "scientific_fit_endpoint_cap": 18720,
+  "official_score_jobs": 18,
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1",
+  "read_status": "DRAFT; unsigned",
+  "scientific_attempts_absent": true,
+  "model_contacts_added": 0,
+  "only_config_delta": "readiness held to ready; all other original config bytes decoded identically",
+  "evidence": [
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/registration-v1.json",
+      "sha256": "6b036687e3849be491f243ecfc804d91a93cb7b8c17e1baf2f8dcb64d8f9a96e"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/analysis-recipe-v1.json",
+      "sha256": "74e683fded86de8a992f1f6a2cd517103fb082923556a362efdb60c9b1b35635"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/analysis-supplement-v1.json",
+      "sha256": "9e8cb8fca2a4d9b36031eaec772f60edd70c3e6d2ec5534162d7780023ff1ecb"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/queue-v1.json",
+      "sha256": "28ced50a85c0f3c8f0141eeee8fd6f8fbe56d40c92558bd82b5ba6d299f5f15f"
+    }
+  ],
+  "next": "Freeze the clean committed eighteen-member source, run all eighteen exact frozen/runtime/supply checks, then perform the normal completed-structural-control transition and launch Windows SAEA-Batch-Driver once. No automatic retry, scoring replay, optimizer export or scale."
+}
