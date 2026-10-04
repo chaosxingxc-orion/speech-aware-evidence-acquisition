@@ -1,0 +1,7 @@
+# Initial deterministic context population: protocol draft
+
+Status: DRAFT, not scientific registration, exposure, READ or runtime admission. The exact existing UPDATE2 ordered400 and original initial TRAIN reference metadata are copied with source hashes; no data or knowledge is rebuilt and no task quality is read. Four full context policies plus seed/A/A mean120 initial trajectories. The two algorithms share this qualified initialization once; each later changed trial separately reserves80 candidate plus40 control trajectories.
+
+The pinned per-algorithm plans bound callback opportunities, not provider contacts or tokens. Before actual summary/reflection contacts, root must register exact English request assembly, GPT-6.1 Sol provenance, original response retention, contact/token ceilings and actual available metering. Do not treat these draft callback counts as equal compute or provider admission. The current chat is not a blind proposer. Keep original historical L/B histories isolated.
+
+Complete structural evidence now exists. Remaining: root review of iteration implementation, exact config/member registration and acyclic runtime source scope, unsigned scientific READ row, generation/FIT exposure plans, clean frozen admission and live checks. Then run the finite initial family, score each complete member once and qualify the entire family before countersigning READ. Retention during optimization never equals stable benefit or formal adoption. No automatic expansion, no paid spend, heartbeat PAUSED and human before8x400.

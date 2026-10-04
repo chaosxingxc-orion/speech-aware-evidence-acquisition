@@ -1,0 +1,19 @@
+{
+  "acceptance": "strict-registered-utility-sum",
+  "algorithm": "gepa",
+  "automatic_next_iteration": false,
+  "callback_caps": {
+    "compare": 0,
+    "evaluate": 1,
+    "propose": 1,
+    "summarize": 0,
+    "update_experience": 0
+  },
+  "evaluation_candidate_trajectories_cap": 80,
+  "evaluation_control_trajectories_cap": 40,
+  "input_family_id": "context-initial4-n20",
+  "iteration": 1,
+  "sample_ids_sha256": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "schema": "saea-context-learning-iteration-plan-v1",
+  "selection_seed": 0
+}

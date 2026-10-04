@@ -1,0 +1,107 @@
+{
+  "family_id": "initial",
+  "expected_members": {
+    "seed": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1",
+    "seed-aa": "SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1"
+  },
+  "bindings": [
+    {
+      "candidate_id": "seed",
+      "config": {
+        "schema": "saea-reward-link-artifact-config-v1",
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-CONTROL2-V1.run-manifest.json",
+          "sha256": "9d062d3a11b8d219ed6eea74f9ec2b88235a2ab7c962ae77f2cd89470ddef03b"
+        },
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/seed-score-envelope/complete-score-receipt.json",
+          "sha256": "270df50773f88b420e1632987301ee5fac71e042164218ed82cf861549aac0c6",
+          "cell_id": "attempt-slurp-native-stage3-system-text-initial-seed-control2-generation-v1"
+        },
+        "construction_roster": {
+          "path": "/home/chao/saea-worktrees/codex-system-text-policy/docs/receipts/rosters/slurp-knowledge-opportunity-r01c400-analysis-v1.json",
+          "sha256": "cbc46ec2a25313a9acd00a688c988b52c6ad3dadfed88e267a780eb1396f74ba"
+        },
+        "projection": {
+          "schema": "saea-reward-projection-v1",
+          "reward_rule_id": "system-text-initial-official-counts-v1",
+          "scorer": "slurp-slu-official-train",
+          "aggregate_fields": [
+            "port_micro.slu_f1",
+            "port_micro.intent_accuracy"
+          ],
+          "per_sample_fields": [
+            "scenario_action_exact",
+            "scenario_exact",
+            "action_exact",
+            "slot_f1_exact_tp",
+            "slot_f1_exact_fp",
+            "slot_f1_exact_fn",
+            "slu_f1_word_tp",
+            "slu_f1_word_fp",
+            "slu_f1_word_fn",
+            "slu_f1_char_tp",
+            "slu_f1_char_fp",
+            "slu_f1_char_fn"
+          ]
+        }
+      },
+      "artifact": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/seed-reward-links.json",
+        "sha256": "21f8742f866c452665b1ed0b350dc3086dd64b44680d4819feec5a00dad41fda"
+      }
+    },
+    {
+      "candidate_id": "seed-aa",
+      "config": {
+        "schema": "saea-reward-link-artifact-config-v1",
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1/attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1/SAEA-SLURP-SYSTEM-TEXT-INITIAL-SEED-AA-CONTROL2-V1.run-manifest.json",
+          "sha256": "9eeaa8b03ffe74baf9292295e0a7e5ffa19a6208417a4992500d4755bb814950"
+        },
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/seed-aa-score-envelope/complete-score-receipt.json",
+          "sha256": "316cff4fa5ef0f378c06393d27468db784a40d9ab6d36254a035468c9462b3c1",
+          "cell_id": "attempt-slurp-native-stage3-system-text-initial-seed-aa-control2-generation-v1"
+        },
+        "construction_roster": {
+          "path": "/home/chao/saea-worktrees/codex-system-text-policy/docs/receipts/rosters/slurp-knowledge-opportunity-r01c400-analysis-v1.json",
+          "sha256": "cbc46ec2a25313a9acd00a688c988b52c6ad3dadfed88e267a780eb1396f74ba"
+        },
+        "projection": {
+          "schema": "saea-reward-projection-v1",
+          "reward_rule_id": "system-text-initial-official-counts-v1",
+          "scorer": "slurp-slu-official-train",
+          "aggregate_fields": [
+            "port_micro.slu_f1",
+            "port_micro.intent_accuracy"
+          ],
+          "per_sample_fields": [
+            "scenario_action_exact",
+            "scenario_exact",
+            "action_exact",
+            "slot_f1_exact_tp",
+            "slot_f1_exact_fp",
+            "slot_f1_exact_fn",
+            "slu_f1_word_tp",
+            "slu_f1_word_fp",
+            "slu_f1_word_fn",
+            "slu_f1_char_tp",
+            "slu_f1_char_fp",
+            "slu_f1_char_fn"
+          ]
+        }
+      },
+      "artifact": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/seed-aa-reward-links.json",
+        "sha256": "c47e04a709efe23fbdb310e56014822c0444ba761907289f57e8ca08150fa5c0"
+      }
+    }
+  ],
+  "initial_reference_member": "seed",
+  "reference_family": null,
+  "read_registration": {
+    "relpath": "docs/readiness/2026-10-01-slurp-system-text-initial-control2-v1/analysis-recipe-v1.json",
+    "sha256": "a05fe2525e6ff2f126143ca8ebcfe1667f866b1a6053f186baa617231c126183"
+  }
+}

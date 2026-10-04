@@ -1,0 +1,10 @@
+{
+  "schema": "saea-context-learning-source-import-v1",
+  "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/family.json",
+  "source_sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148",
+  "copy_relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/original-reference-family-v1.json",
+  "copy_sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148",
+  "task_quality_read": false,
+  "scientific_read_granted": false,
+  "status": "DRAFT; metadata copy only; original source and READ unchanged"
+}
