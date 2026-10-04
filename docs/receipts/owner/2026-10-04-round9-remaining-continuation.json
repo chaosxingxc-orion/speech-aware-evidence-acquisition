@@ -1,0 +1,24 @@
+{
+  "schema": "saea-owner-proposer-availability-continuation-v1",
+  "at_utc": "2026-10-04T05:27:02.786025+00:00",
+  "complete_english_translation": "Please continue trying. I understand the quota has reset now.",
+  "source": "Direct human message in this root conversation after the detailed status report.",
+  "interpretation": "Authorize one real continuation of the three unspent registered round9 opportunities; the human reports a possible quota reset. Availability is not yet service-confirmed.",
+  "scope": [
+    "B-9-1",
+    "L-9-2",
+    "B-9-2"
+  ],
+  "preserve_spent": "L-9-1",
+  "unchanged": [
+    "model",
+    "inputs",
+    "capsules",
+    "budgets",
+    "L/B isolation"
+  ],
+  "separate_probe": false,
+  "paid_api_spend": 0,
+  "stop_on_failure": true,
+  "heartbeat": "PAUSED"
+}

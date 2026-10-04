@@ -1,0 +1,31 @@
+{
+  "schema": "saea-root-remaining-proposer-admission-v1",
+  "at_utc": "2026-10-04T05:30:36.453161+00:00",
+  "status": "root-admitted-conditional-on-fresh-check-only-pass",
+  "owner_decision": 227,
+  "direct_human_continuation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-remaining-owner227-v1/owner-continuation.json",
+    "sha256": "4579e98a0d634b92559f5f380fc2358e0afa61eaf3e978fced3456ea0f99505a"
+  },
+  "availability_basis": "The human reports that the quota has reset and explicitly asks to continue. This is not an independently verified provider quota status.",
+  "remaining": [
+    "B-9-1",
+    "L-9-2",
+    "B-9-2"
+  ],
+  "closed_not_retried": [
+    "L-9-1"
+  ],
+  "source_root": "/home/chao/saea-worktrees/codex-four-node-proposer-round9-v1",
+  "source_commit": "8eafb9f601242d7310cb889656d30dc3cb9af214",
+  "conditions": [
+    "Fresh original remaining-only check passes with exactly3 members and0 contacts",
+    "No competing proposer; prior original task remains terminal",
+    "Unchanged original inputs,capsules,model,protocol,budgets and source pins",
+    "Unique output and Windows task; no replay of previous wrapper"
+  ],
+  "failure": "Stop on any real failure, preserve evidence and account for any spent contact; no automatic retry.",
+  "paid_api_spend": 0,
+  "gpu_dispatch": false,
+  "heartbeat": "PAUSED"
+}
