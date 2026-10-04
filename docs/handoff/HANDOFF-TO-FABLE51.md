@@ -1,5 +1,14 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Exact K16 continuation helpers prepared, 2026-10-04
+
+[Fourteen prospective helpers](../receipts/continuation/2026-10-04-template-k16-continuation-helpers-prepared.json) have recorded hashes and syntax checks; none has executed. After all16 capacity exits0 and wrapper exit0, run structural prepare-entry, serially integrate and freeze codex-context-template-k16-structural-v1, run its frozen-check under exact SAEA_EXPECTED_COMMIT, and use its completed-TF transition only after revalidating no STOP/competing flight. Launch the existing Windows batch task once, then require all64 structural rows and source-bound timing before record-completion. No engineering scoring or quality read.
+
+After structural completion, run N20 prepare-entry and prepare-analysis-supplement before scientific contact, serially integrate, freeze codex-context-template-k16-n20-v1, run all18 frozen checks, then its exact structural-to-scientific transition and Windows batch task. The prepared qualify-family, root-countersign and read-family helpers retain all18 members/360 trajectories and require complete seals/unique scores. No callback submission or next learner source is admitted here. Helper syntax is verified; actual frozen checks and structural acceptance still remain, so do not treat preparation as execution proof.
+
+At the helper receipt checkpoint, original capacity Linux730548/start48865276 remains live with branch01-03 successful; no failure or generation/scorer contact. Continue the original launcher, never restart for observation timeout. Active worker16cd42cd1 remains immutable. Heartbeat PAUSED.
+
+
 ## K16 capacity launched; root report scope verified, 2026-10-04T19:11:29.260775+00:00
 
 [Exact Windows-owned launch](../receipts/continuation/2026-10-04-template-k16-capacity-launch.json) follows all16 frozen preflight PASS. Original Linux730548/start48865276, Windows20272, frozen16cd42cd1ec4dc2e687222c295ba796c27de4d80 run the registered4752-endpoint nongenerative capacity sequence. Continue this exact process through durable member exits; no retry for observation timeout. Queue/service/STOP controls are unchanged. Scientific generation remains HELD; heartbeat PAUSED. Revalidate live state rather than this launch snapshot.

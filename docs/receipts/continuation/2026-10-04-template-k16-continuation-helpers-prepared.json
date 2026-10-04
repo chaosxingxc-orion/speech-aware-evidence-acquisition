@@ -1,0 +1,100 @@
+{
+  "schema": "saea-template-k16-prospective-continuation-helpers-v1",
+  "at_utc": "2026-10-04T19:14:48.894487+00:00",
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/prepare-entry-v1.py",
+      "sha256": "c6afba790211edb53f01980be4fb0ce7172a37886ca75864cf50b6c70fbb36ba",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/frozen-check-v1.py",
+      "sha256": "b95c5f78dc553c8e6c17ac14e03dbd1841fc81780af58344b48bbb51fba8820b",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/structural-audit-v1.py",
+      "sha256": "7b4a7fbb326e49ace575123640e81845062d199f95a4edb6e4903da8c48d28d6",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/root-node-timing-v1.py",
+      "sha256": "7047cbad8b6752683cb9d2955b8c79dab14b5217ec7b2f47c0c3b89866544848",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/root-sample-timing-v1.py",
+      "sha256": "cf9002d8d5006eaed007de6e5526f3d28f15acfc6373b7a45660cc5466196563",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/record-completion-v1.py",
+      "sha256": "bcd7db04eaf04a2faf6ef7437a3cd604467b43ab28805d97db7a09edc861e4c5",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/transition-completed-driver-v1.py",
+      "sha256": "e230f5d2f905b825afb17b422ab401b301e6affcf75b6cd0357c2b197d3c1174",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/prepare-entry-v1.py",
+      "sha256": "45232a3c5409e756f56390ec93df6a5f0f48c6fc5f7cfc8ffdfd945ddbf32985",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/frozen-check-v1.py",
+      "sha256": "18df0fb66e4254d315775301a5f9932258cd7b354d0d5ca82de19737333df52e",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/qualify-family-v1.py",
+      "sha256": "f5532bfab28b927203dbf4edb6d37ebf02e9b9d6b16d0b6dd0b8b515fbd5f3c9",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/root-countersign-v1.py",
+      "sha256": "2100a47dcde3f1d4fe7f44b78d0c9cd49b2f4df1cb459b55de6f474537d63056",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/read-family-v1.py",
+      "sha256": "36133efebe4f19075c1dddf22c9d6f15acee2aff610a7902eeb093fbf07988e1",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/transition-completed-driver-v1.py",
+      "sha256": "5c02cd0621a8bb0b783fd9e5e191a8976aadf30c4454f18845826f9be7feaa21",
+      "syntax_pass": true,
+      "executed": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/prepare-analysis-supplement-v1.py",
+      "sha256": "c9c260d087489f25e1920d9d2aa754f9690efb4952577606a12253d9fd838d59",
+      "syntax_pass": true,
+      "executed": false
+    }
+  ],
+  "scope": "Prepared only. Structural helpers require all16 actual capacities. N20 entry requires all64 structurally accepted rows; its analysis supplement must be pinned before first scientific contact. Countersign/read helpers require all18 finalized/unique-scored members. No helper grants monitoring or automatic recovery authority.",
+  "live_capacity": {
+    "pid": 730548,
+    "worker": "/home/chao/saea-worktrees/codex-context-template-k16-capacity-v1",
+    "successful_members_observed": 3,
+    "generation_contacts": 0,
+    "scorer_contacts": 0
+  },
+  "additional_model_contacts": 0,
+  "source_changes": "Root report prospective correction only; active frozen capacity worker unchanged."
+}
