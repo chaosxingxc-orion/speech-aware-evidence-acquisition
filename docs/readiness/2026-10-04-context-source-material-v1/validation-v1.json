@@ -1,0 +1,15 @@
+{
+  "schema": "saea-context-source-material-validation-v1",
+  "recorded_at": "2026-10-04T09:20:30.852460+00:00",
+  "tests_passed": 136,
+  "statements": 50,
+  "statement_coverage_percent": 100,
+  "branches": 6,
+  "branch_coverage_percent": 100,
+  "base_check": "PASS",
+  "harness_admission": "PASS",
+  "real_family_exported": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "frozen_worker_modified": false
+}

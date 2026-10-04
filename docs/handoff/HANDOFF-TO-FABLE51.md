@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Full recorded context available to qualified learners, 2026-10-04T09:20:30.852460+00:00
+
+[Source material adapter](../readiness/2026-10-04-context-source-material-v1/README.md) reuses the complete-family READ gate and verified native trajectory export to publish full per-input phase, request, response, tool and terminal evidence. It preserves interrupted/failed visits and exact source hashes, excludes unrelated records and comparator material, and requalifies before publishing the final index.136 focused tests pass;50 adapter statements/six branches have100% coverage;base/harness pass. No real semantic source was opened and no model/scorer contact was added. Isolated actor admission remains separate; this is not an OS sandbox or a new optimizer.
+
+Current initial N20K4 execution continues unchanged on frozenc6f5543b7; at09:18Z three driver steps completed and coverage-ledger generation completed with scoring/finalization pending. Revalidate every member. Exact six-member READ remains unsigned. After complete qualification and root READ, use the implemented reader and this source projection for separate TF/GEPA inputs. Do not supply root chat or incidental logs. Preserve paused heartbeat, fixed400 sources, other-carrier holds and human-before8x400.
+
 ## External callback handoff proven offline, 2026-10-04T09:11:37.036107+00:00
 
 [External callback adapter](../readiness/2026-10-04-context-external-callbacks-v1/README.md) now connects the original bounded TF/GEPA runner to source-bound file requests and separately serviced responses. The qualified entry checks full READ and exact plan before creating an exchange.120 focused tests pass, with135 new statements/12 branches covered100%;base/harness/Ruff pass. Tests drive complete synthetic GEPA and TF iterations through actual file waits, preserving unknown usage, spent opportunities, immutable failure and full evaluator source requalification. No real proposer, summary/reflection, external worker or new GPU contact follows from this patch.
