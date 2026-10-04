@@ -126,3 +126,129 @@ def abstract_episode(contacts, *, counts, reference_f1, reliable, abstained, ela
             "terminal": {"official_counts": numeric, "intent_correct": numeric.get("scenario_action_exact"),
                          "utility": utility, "official_aggregate_f1": None, "reliable": reliable,
                          "abstained": abstained, "sample_seconds": elapsed_seconds}}
+
+
+def _exact_fields(value, fields, label):
+    _require(isinstance(value, dict) and set(value) == set(fields), label)
+
+
+def _nonnegative_integer(value):
+    return type(value) is int and value >= 0
+
+
+def _validate_projected_nodes(nodes, missing_roles):
+    _require(isinstance(nodes, list) and bool(nodes), "recorded nodes required")
+    seen, previous_visit = set(), -1
+    for node in nodes:
+        _require(isinstance(node, list) and len(node) == 5, "node shape differs")
+        role, visit, interrupted, output, performance = node
+        _require(type(role) is int and 0 <= role < len(ROLES)
+                 and _nonnegative_integer(visit) and visit >= previous_visit
+                 and type(interrupted) is bool, "node identity or visit order differs")
+        previous_visit = visit
+        seen.add(role)
+        _require(isinstance(performance, list) and len(performance) == len(METRICS) + 1
+                 and performance[-1] is None, "node quality must remain unmeasured")
+        for value in performance[:-1]:
+            if value is not None:
+                _number(value, "finite nonnegative measured cost required")
+        columns = FEEDBACK_SCHEMA["output_columns"][ROLES[role]]
+        _require(isinstance(output, list) and len(output) == len(columns)
+                 and type(output[0]) is bool, "output feature shape differs")
+        if ROLES[role] == "planner":
+            _require(type(output[1]) is int and output[1] in (0, 1, 2)
+                     and output[0] == (output[1] != 2), "planner action encoding differs")
+        elif not output[0]:
+            _require(all(v is None for v in output[1:]), "invalid output has unavailable features")
+        else:
+            for index, value in enumerate(output[1:], 1):
+                if columns[index] == "intent_changed":
+                    _require(value is None or type(value) is bool, "intent change must be abstract")
+                else:
+                    _require(value is None or _nonnegative_integer(value), "output counts must be abstract")
+    _require(isinstance(missing_roles, list)
+             and all(type(r) is int for r in missing_roles)
+             and missing_roles == [r for r in range(len(ROLES)) if r not in seen],
+             "missing role accounting differs")
+
+
+def abstract_population_feedback(source, *, expected_bundles, expected_family_id,
+                                 expected_source_batch, sample_count, reference_f1):
+    """Validate and group one qualified K16 cohort without copying concrete content.
+
+    This pure boundary validates representation and exact caller-supplied bindings,
+    not source authorization. The caller must first verify full-family READ, seals,
+    official scores and source hashes. Returned relative returns are descriptive
+    same-input preferences, never node credit, policy gradients or adoption.
+    """
+    from copy import deepcopy
+    import re
+    from ..rails.hashing import content_hash
+    from ..rails.system_text_feedback import paired_relative_returns
+
+    ids = [f"branch-{i:02d}" for i in range(1, 17)]
+    _require(isinstance(expected_bundles, dict) and list(expected_bundles) == ids
+             and all(isinstance(v, str) and re.fullmatch(r"[a-f0-9]{64}", v)
+                     for v in expected_bundles.values()), "all16 exact policy bindings required")
+    _require(type(sample_count) is int and sample_count > 0, "positive input count required")
+    _number(reference_f1, "finite frozen reference required")
+    _require(reference_f1 <= 1, "frozen reference must use zero-to-one scale")
+    _exact_fields(source, ("source_batch", "family_id", "reference_f1", "templates"),
+                  "abstract source fields differ")
+    _require(source["family_id"] == expected_family_id
+             and source["source_batch"] == expected_source_batch
+             and type(source["reference_f1"]) in (int, float)
+             and source["reference_f1"] == reference_f1, "exact source cohort/reference required")
+    templates = source["templates"]
+    _require(isinstance(templates, list) and len(templates) == 16, "all16 original templates required")
+    groups = [{"input_index": i, "members": []} for i in range(sample_count)]
+    summaries = []
+    for cid, template in zip(ids, templates, strict=True):
+        _exact_fields(template, ("candidate_id", "bundle_id", "official_summary", "samples"),
+                      "template fields differ")
+        _require(template["candidate_id"] == cid and template["bundle_id"] == expected_bundles[cid],
+                 "template identity/order differs")
+        summary = template["official_summary"]
+        _exact_fields(summary, ("slu_f1", "intent"), "official summary fields differ")
+        for value in summary.values():
+            if value is not None:
+                _number(value, "finite official measurement required")
+        samples = template["samples"]
+        _require(isinstance(samples, list) and len(samples) == sample_count, "complete paired roster required")
+        for index, sample in enumerate(samples):
+            _exact_fields(sample, ("input_index", "nodes", "missing_roles", "terminal"),
+                          "abstract sample fields differ")
+            _require(type(sample["input_index"]) is int and sample["input_index"] == index,
+                     "anonymous input order differs")
+            _validate_projected_nodes(sample["nodes"], sample["missing_roles"])
+            terminal = sample["terminal"]
+            _exact_fields(terminal, ("official_counts", "intent_correct", "utility", "official_aggregate_f1",
+                                    "reliable", "abstained", "sample_seconds"), "terminal fields differ")
+            counts = terminal["official_counts"]
+            _require(isinstance(counts, dict) and set(counts) <= COUNT_KEYS
+                     and all(type(v) in (int, float) and math.isfinite(v) and v >= 0
+                             for v in counts.values()), "official count shape differs")
+            required = {f"slu_f1_{axis}_{kind}" for axis in ("word", "char") for kind in ("tp", "fp", "fn")}
+            _require(required <= set(counts), "complete official terminal counts required")
+            intent = terminal["intent_correct"]
+            _require((intent is None or type(intent) in (int, float) and intent in (0, 1))
+                     and intent == counts.get("scenario_action_exact"), "intent correctness differs")
+            utility = terminal["utility"]
+            _require(type(utility) in (int, float) and math.isfinite(utility)
+                     and utility == feedback_utility(counts, reference_f1), "terminal utility differs")
+            _require(terminal["official_aggregate_f1"] is None
+                     and type(terminal["reliable"]) is bool and type(terminal["abstained"]) is bool,
+                     "terminal flags or aggregate distinction differs")
+            _number(terminal["sample_seconds"], "finite nonnegative sample latency required")
+            groups[index]["members"].append({"candidate_id": cid, "nodes": deepcopy(sample["nodes"]),
+                "missing_roles": list(sample["missing_roles"]), "terminal": deepcopy(terminal)})
+        summaries.append({"candidate_id": cid, "bundle_id": expected_bundles[cid],
+                          "official_summary": deepcopy(summary)})
+    for group in groups:
+        relative = paired_relative_returns([m["terminal"]["utility"] for m in group["members"]])
+        for member, value in zip(group["members"], relative, strict=True):
+            member["relative_return"] = value
+    return {"schema": "saea-abstract-population-feedback-v1", "source_sha256": content_hash(source),
+            "templates": summaries, "groups": groups, "runtime_admission": False,
+            "interpretation": "Same-input relative returns guide template search only; zero variance is zero. "
+                              "Node correctness and causal contribution remain unmeasured."}

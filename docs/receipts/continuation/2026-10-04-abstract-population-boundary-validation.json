@@ -1,0 +1,32 @@
+{
+  "schema": "saea-abstract-population-boundary-validation-v1",
+  "at_utc": "2026-10-04T21:12:21.681318+00:00",
+  "module": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_node_feedback.py",
+    "sha256": "aef9814e628df0f185cf8e5bd6f87310d58924955f13fd6f712254c8a9173a40"
+  },
+  "tests": {
+    "passed": 74,
+    "test_first_import_failure_observed": true,
+    "fractional_official_count_regression_red_then_green": true,
+    "coverage_file": "/tmp/saea-abstract-population-coverage",
+    "module_statement_coverage_percent": 100
+  },
+  "prepared_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/project-complete-abstract-v2.py",
+    "sha256": "f62ed901b5c4adfaa3e0160c97723fa9ff67fa560031c3b6dfbff346fab6375d"
+  },
+  "preserved_previous_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/project-complete-abstract-v1.py",
+    "sha256": "bb908e03df07421fd7c2dc85e16566f2123f3dd7c6bb3940608d54b720b480d2"
+  },
+  "helper_executed": false,
+  "source_registration_present": false,
+  "model_contacts_added": 0,
+  "score_jobs_added": 0,
+  "quality_read": false,
+  "runtime_admission": false,
+  "scope": "Validate exact anonymous single-cohort K16 pairing and numeric structure; retain fractional official counts and missing metrics. Group-relative returns describe complete-system alternatives, not node causal credit. Source READ qualification and next learner registration remain separate.",
+  "engineering_base_check": "PASS",
+  "diff_check": "PASS"
+}

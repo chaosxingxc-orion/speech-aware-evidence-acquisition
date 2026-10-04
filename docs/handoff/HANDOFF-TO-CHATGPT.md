@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Strict abstract K16 population boundary prepared, 2026-10-04
+
+[Validation receipt](../receipts/continuation/2026-10-04-abstract-population-boundary-validation.json) records74 passing tests,100percent statement coverage for the abstract-feedback module and a passing engineering-base check. The new pure population boundary requires all16 exact policy bindings, complete anonymous input pairing, allowed numeric structural/node performance fields, unmeasured node quality and official terminal utility consistency. Fractional official counts are preserved. It produces same-input relative returns with zero for zero variance; no causal node credit or policy-gradient claim.
+
+After full18-member root READ and separate abstract-source admission, prefer the prepared project-complete-abstract-v2.py in coordination/context-template-k16-n20-owner227-v1. Its SHA-256 is f62ed901b5c4adfaa3e0160c97723fa9ff67fa560031c3b6dfbff346fab6375d. It reuses complete-family/source verification, invokes the strict boundary and saves anonymous population-feedback.json alongside learner-view.json and separate private custody under abstract-outcomes-v2. Original v1 is preserved unexecuted. The source registration is still absent, so neither version has run or exported current experiment feedback. Helper syntax and pure synthetic end-to-end projection are checked; real full-family projection remains pending.
+
+This preparation does not alter the active frozen N20 runtime, admission, measurement recipe or old K4 iteration contract. A future batched template update still needs full templates, prospective iteration/source/budget bindings and evaluated retention. No new proposer/model/scorer contacts or partial-quality read occurred. Heartbeat remains paused.
+
 ## K16 abstract learning boundary audit, 2026-10-04
 
 [Model-free boundary audit](../receipts/continuation/2026-10-04-template-k16-learning-boundary-audit.json) and [continuation requirements](../readiness/2026-10-04-context-template-k16-learning-continuation-audit-v1.md) distinguish the running K16 evaluation from the legacy K4 learning iterator. The current evaluation-only protocol is correctly refused by the old iteration-plan validator before callbacks. Do not reinterpret320 candidate trajectories as80 or invoke old per-candidate semantic callbacks. A future single-batch K16 update needs prospective source, iteration and budget bindings after the complete root READ.
