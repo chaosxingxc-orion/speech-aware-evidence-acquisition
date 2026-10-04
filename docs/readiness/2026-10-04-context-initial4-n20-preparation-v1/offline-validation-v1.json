@@ -1,0 +1,27 @@
+{
+  "at_utc": "2026-10-04T08:17:20.989604+00:00",
+  "candidate_trajectories": 80,
+  "control_trajectories": 40,
+  "distinct_candidate_bundle_count": 4,
+  "engineering_base": "PASS",
+  "generation_cap": 1560,
+  "harness_admission": "PASS",
+  "model_tokenizer_scorer_contacts": 0,
+  "official_score_job_cap": 6,
+  "own_supplies_warm_verified": 6,
+  "same_ordered20": true,
+  "same_selected_output_bytes": true,
+  "schema": "saea-context-initial4-n20-offline-verification-v1",
+  "seed_aa_same_nonidentity_config": true,
+  "selected_output_sha256_by_member": {
+    "counterexample-check": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+    "coverage-ledger": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+    "seed": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+    "seed-aa": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+    "semantic-frame": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+    "speech-evidence": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6"
+  },
+  "separate_fit_endpoint_cap": 6240,
+  "status": "HELD-NOT-ADMITTED",
+  "total_trajectories": 120
+}

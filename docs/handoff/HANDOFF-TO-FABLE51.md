@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Initial4 structural GPU running; six N20 supplies prepared, 2026-10-04T08:24:36.645714+00:00
+
+[Structural launch](../receipts/continuation/2026-10-04-context-initial4-structural-launch.json) runs through Windows SAEA-Batch-Driver epoch08:16:12Z on frozen237c4658e. All four frozen registration/runtime checks passed before normal transition of completed controls. Three engineering steps completed and the fourth is running; revalidate actual status. This admits sixteen structural trajectories and no official scoring or quality read. Preserve intentional OPENED engineering lifecycles; final structural acceptance remains pending.
+
+[Six N20 preparations](../readiness/2026-10-04-context-initial4-n20-preparation-v1/README.md) warm-verify through the shared runtime with matching immutable supply output bytes and exact first20 inputs. Four distinct candidate systems contribute80 trajectories; seed/A/A contribute40, total120. All six remain HELD pending complete engineering, exact scientific registration and frozen admission. No dataset/knowledge rebuild or scientific contact follows from preparation.
+
+The actual TF-GRPO/GEPA iteration implementation is under final agent verification. No learned improvement is established. Keep heartbeat PAUSED, temperature0/seed20260913, sequential4-slot/queue4, same400 pool, separate carrier holds and human review before8x400.
+
 ## Initial4 capacities complete; structural registration prepared, 2026-10-04T08:03:00.203483+00:00
 
 [All four actual capacities](../receipts/continuation/2026-10-04-context-initial4-capacity-complete.json) completed successfully through the original Windows-owned worker at07:58:06Z; exit0, all leases released and original process gone. Each consumed297 tokenizer endpoints/44 measured requests,1188/176 total,with full512 output plus2048 structural reserve. No generation,scoring or scientific feedback. Preserve frozen capacitycdce93551 and all original receipts.

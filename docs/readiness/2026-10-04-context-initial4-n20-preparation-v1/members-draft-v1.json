@@ -1,0 +1,44 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-speech-evidence-generation-v1",
+    "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+    "candidate_id": "speech-evidence",
+    "experiment": "slurp-native-stage3-context-initial4-n20-speech-evidence-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-coverage-ledger-generation-v1",
+    "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+    "candidate_id": "coverage-ledger",
+    "experiment": "slurp-native-stage3-context-initial4-n20-coverage-ledger-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-counterexample-check-generation-v1",
+    "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+    "candidate_id": "counterexample-check",
+    "experiment": "slurp-native-stage3-context-initial4-n20-counterexample-check-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-semantic-frame-generation-v1",
+    "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+    "candidate_id": "semantic-frame",
+    "experiment": "slurp-native-stage3-context-initial4-n20-semantic-frame-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed",
+    "experiment": "slurp-native-stage3-context-initial4-n20-seed-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-aa-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed-aa",
+    "experiment": "slurp-native-stage3-context-initial4-n20-seed-aa-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1"
+  }
+]

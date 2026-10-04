@@ -1,0 +1,30 @@
+{
+  "schema": "saea-context-initial4-structural-launch-v1",
+  "at_utc": "2026-10-04T08:24:36.645714+00:00",
+  "authority": "owner227 root",
+  "worker": "/home/chao/saea-worktrees/codex-context-initial4-engineering-v1",
+  "commit": "237c4658ee5f4436f353ae7861df7f1ad0e6d658",
+  "driver_epoch": "2026-10-04T08:16:12Z",
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/windows-launch-proof-v1.json",
+    "sha256": "baa0bb5ecd83c2195aca707de4cd90358161546abeee8afd1f67eaa5dcfd18c8"
+  },
+  "frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/frozen-check-v1.json",
+    "sha256": "bfc21b45b2edc7a29ff5382b904c4820cfbf4fd324bfa3930d0e4fc746230bd7"
+  },
+  "normal_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/driver-transition-v1.json",
+    "sha256": "dd4315bc810366213f9b2d9f2d273d87b4768fb65f3bca326737207b6d222aac"
+  },
+  "scope": {
+    "systems": 4,
+    "rows_per_system": 4,
+    "engineering_trajectories": 16,
+    "official_scoring": false,
+    "quality_read": false
+  },
+  "observed_state": "Three structural steps completed; fourth admitted and running. Completion requires separate structural audit.",
+  "next_n20": "Six independently prepared HELD members: four distinct systems plus seed and same-chain A/A, 120 total trajectories. No scientific registration or admission from preparation alone.",
+  "heartbeat": "PAUSED"
+}

@@ -1,0 +1,3 @@
+# Initial N20K4 runtime preparation
+
+Prepare four distinct complete policies plus unchanged seed and same-chain A/A through the shared runtime on the existing UPDATE2 first20. Candidate trajectories80; controls40; total120. Every cell remains HELD. These source/config/supply materials are not a registered scientific family or GPU admission. Complete all four structural proofs, prospective protocol/member bindings/READ/exposure and root review first. Preserve temperature0/seed20260913, sequential4slot/queue4, full reserves and existing data/knowledge. No new proposal allocation, data reconstruction, scientific read, learning result or automatic scaling.
