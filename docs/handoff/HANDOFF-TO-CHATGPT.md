@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Goal continuation blocked audit, 2026-10-04T04:26:07.638054+00:00
+
+[Current audit](../receipts/continuation/2026-10-04-four-node-goal-blocked-audit.json) revalidates the original proposer task as terminal: Windows Ready/last result1/no next run,original PID607813 absent,all10 preserved evidence hashes intact,and no response/proposal for the three remaining unspent round9 slots. This is not a live wait. The historical quota refusal remains the last provider evidence; current availability and reset time are unknown because no model probe was made.
+
+The same blocker persisted through the last two engineering-progress turns and this audit. Independent full-node,measurement,compilation and existing-prefix preparation work is complete enough to consume legal candidates. No identified offline fix can substitute for actual missing proposals. The audit qualifies marking the active goal blocked,not complete or user-paused. Preserve the full objective,including future qualified SLURP learning evidence and separately held carrier execution.
+
+Resume after fresh availability evidence or a directly authorized admissible proposer path and exact root continuation. Do not retry/replace spent L-9-1,probe quota,use paid fallback or fabricate a panel. Keep heartbeat PAUSED,sequential/root-only work,same fixed400 sources,human before8x400 and separate carrier holds.
+
 ## Four-node measured compilation and real prefix preparation, 2026-10-04T04:23:32.911966+00:00
 
 [Shared compilation correction](../readiness/2026-10-04-four-node-measured-compilation-v1/README.md) now transfers the frozen protocol profile into candidate and scaling configurations. It rejects stale/unregistered profiles and incompatible geometry without altering historical profile-free behavior.141 focused tests pass; cohort module84 statements/100% coverage; base/harness/focused lint pass.
