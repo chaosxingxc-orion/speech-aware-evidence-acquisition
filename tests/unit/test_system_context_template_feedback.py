@@ -251,3 +251,65 @@ def test_aggregate_only_profile_never_sends_sample_cases_or_knowledge(tmp_path, 
     assert f.calls == ["propose"] * 4 + ["evaluate"]
     assert d["accounting"]["callback_counts"]["summarize"] == 0
     assert d["accounting"]["callback_counts"]["compare"] == 0
+
+
+def test_explicit_template_phase_reset_preserves_policy_history(tmp_path, monkeypatch):
+    f = iteration_fixture(tmp_path, monkeypatch, algorithm="tf-grpo-context-diversity", outcome="no-change")
+    plan = configure(f)
+    plan["iteration"] = f.protocol["iteration"] = 2
+    plan["feedback_profile"]["examples_per_template"] = 0
+    previous_sha = "c" * 64
+    plan["experience_transition"] = {"mode": "empty-template-phase-v1", "previous_decision_sha256": previous_sha}
+    f.protocol["iteration_plan"] = pin(f.root, "iteration-plan.json", plan)
+    repin(f)
+    previous = {"experience": {"old-case": "Observed slurp:train:42; retain in original archive only."},
+                "programs": [{"bundle_id": p.bundle_id} for p in f.policies.values()],
+                "active_bundle_ids": {c: p.bundle_id for c, p in f.policies.items()}, "component_cursors": {}}
+    original = copy.deepcopy(previous)
+    monkeypatch.setattr(learning, "_load_iteration_state", lambda *a, **k: previous)
+    old_propose = f.callbacks.propose
+    def experience(task):
+        assert task["experience"] == {}
+        assert "slurp:train:" not in json.dumps(task)
+        return {"value": [], "provenance": {"kind": "synthetic"},
+                "usage": dict.fromkeys(("provider_contacts", "input_tokens", "output_tokens"), None)}
+    def propose(task):
+        assert task["experience"] == task["qualified_input"]["experience"] == {}
+        assert "slurp:train:" not in json.dumps(task)
+        return old_propose(task)
+    callbacks = replace(f.callbacks, summarize=None, compare=None, update_experience=experience, propose=propose)
+    d = learning.run_context_learning_iteration(f.archive, bindings=f.bindings, recipe_pin=f.recipe_pin,
+        repo_root=f.root, algorithm="tf-grpo-context-diversity", iteration=2, policies=f.policies,
+        callbacks=callbacks, previous_decision_sha256=previous_sha)
+    assert d["status"] == "no-change", d["error"]
+    assert previous == original
+    assert d["experience_transition"]["prior_experience_sha256"] == content_hash(original["experience"])
+    assert d["experience_transition"]["prior_experience_entries"] == 1
+    assert d["state_after"]["experience"] == {}
+    assert d["state_after"]["active_bundle_ids"] == original["active_bundle_ids"]
+    assert {p["bundle_id"] for p in d["state_after"]["programs"]} == set(original["active_bundle_ids"].values())
+    assert not any(stage in f.calls for stage in ("summarize", "compare", "evaluate"))
+
+
+@pytest.mark.parametrize("fault", ["mode", "hash", "extra", "profile", "algorithm", "no-previous", "wrong-previous"])
+def test_experience_reset_requires_exact_prospective_transition(tmp_path, monkeypatch, fault):
+    algorithm = "gepa" if fault == "algorithm" else "tf-grpo-context-diversity"
+    f = iteration_fixture(tmp_path, monkeypatch, algorithm=algorithm)
+    plan = configure(f)
+    plan["iteration"] = f.protocol["iteration"] = 2
+    plan["feedback_profile"]["examples_per_template"] = 0
+    plan["experience_transition"] = {"mode": "empty-template-phase-v1", "previous_decision_sha256": "c" * 64}
+    if fault == "mode": plan["experience_transition"]["mode"] = "delete-history"
+    if fault == "hash": plan["experience_transition"]["previous_decision_sha256"] = "invalid"
+    if fault == "extra": plan["experience_transition"]["erase_archive"] = True
+    if fault == "profile": plan["feedback_profile"]["examples_per_template"] = 3
+    f.protocol["iteration_plan"] = pin(f.root, "iteration-plan.json", plan)
+    repin(f)
+    if fault != "no-previous":
+        monkeypatch.setattr(learning, "_load_iteration_state", lambda *a, **k:
+            {"experience": {}, "programs": [], "active_bundle_ids": {}, "component_cursors": {}})
+    with pytest.raises(PolicyError):
+        learning.run_context_learning_iteration(f.archive, bindings=f.bindings, recipe_pin=f.recipe_pin,
+            repo_root=f.root, algorithm=algorithm, iteration=2, policies=f.policies, callbacks=f.callbacks,
+            previous_decision_sha256=None if fault == "no-previous" else ("d" if fault == "wrong-previous" else "c") * 64)
+    assert f.calls == []

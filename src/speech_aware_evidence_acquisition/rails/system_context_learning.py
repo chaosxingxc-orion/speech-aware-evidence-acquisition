@@ -473,6 +473,15 @@ def _iteration_plan(protocol, recipe, root, algorithm, iteration, controls):
         require(caps["summarize"] == caps["compare"] == 0
                 and caps["update_experience"] == (1 if algorithm == "tf-grpo-context-diversity" else 0),
                 "template feedback forbids per-sample semantic callbacks")
+    if "experience_transition" in plan:
+        transition = plan["experience_transition"]
+        require(algorithm == "tf-grpo-context-diversity" and iteration > 1
+                and plan.get("feedback_profile", {}).get("examples_per_template") == 0
+                and isinstance(transition, dict)
+                and set(transition) == {"mode", "previous_decision_sha256"}
+                and transition["mode"] == "empty-template-phase-v1",
+                "explicit template-only phase transition required")
+        sha(transition["previous_decision_sha256"])
     return pin, plan
 
 
@@ -552,6 +561,15 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
         iteration=iteration, ids=recipe["sample_ids"], reference=reference, repo_root=root)
     state = {"active_bundle_ids": active, "experience": {}, "component_cursors": {}, "programs": []} if previous is None else previous
     state = json.loads(canonical(state))
+    experience_transition = None
+    if "experience_transition" in plan:
+        require(previous is not None and plan["experience_transition"]["previous_decision_sha256"]
+                == previous_decision_sha256, "phase transition must bind the exact prior decision")
+        experience_transition = {**plan["experience_transition"],
+            "prior_experience_sha256": content_hash(state["experience"]),
+            "prior_experience_entries": len(state["experience"]),
+            "original_archive_preserved": True, "new_phase_experience_sha256": content_hash({})}
+        state["experience"] = {}
     if previous is not None:
         require(set(active.values()) <= {p["bundle_id"] for p in state["programs"]},
                 "a rejected/unregistered program cannot silently become the next parent")
@@ -600,6 +618,9 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
     if "feedback_profile" in packet:
         decision["feedback_profile"] = packet["feedback_profile"]
         decision["fidelity"]["reflection"] = "template-batch-study-adaptation-v1"
+    if experience_transition is not None:
+        decision["experience_transition"] = experience_transition
+        decision["fidelity"]["experience_transition"] = "prospective-template-only-phase-reset"
     reserved_candidate = reserved_control = 0
 
     def invoke(stage, task):

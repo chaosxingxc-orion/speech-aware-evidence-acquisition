@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Template phase experience custody, 2026-10-04T16:56:01.688257+00:00
+
+[Root disposition](../receipts/continuation/2026-10-04-template-phase-experience-disposition.json) confirms 8 of9 original TF experience operations contain sample identifiers. Preserve all originals. The next zero-case TF phase may explicitly reset working textual experience using a plan bound to the exact prior decision, while retaining policies, numeric history and exposure.186 tests pass; no current worker/callback or runtime changed. Exact next parent/READ/admission waits for the original decision. Use read-family-v2.py with analysis-supplement-v2.json for current TF root analysis after full qualification; root-countersign-v2.py and submit-qualified-evaluation-v2.py remain the selected helpers. No partial quality read.
+
 ## Template-only actor entry prepared, 2026-10-04T16:48:16.294062+00:00
 
 [Prepared entry](../readiness/2026-10-04-template-only-actor-entry-v1/README.md) supplies complete editable templates to the aggregate TF experience updater and snapshots exactly two bounded actor files.178 relevant tests pass,100% statement coverage across exchange/learning/template modules. No new semantic contact or allocation. Exact accepted parents, successor learning READ/protocol, carried-experience scope and actor admission remain pending after original TF0045 completion. Preserve original sources and existing algorithm separation.

@@ -1,0 +1,21 @@
+{
+  "schema": "saea-template-phase-experience-disposition-v1",
+  "at_utc": "2026-10-04T16:56:01.688257+00:00",
+  "authority": "owner227 and direct template-only consumption amendment",
+  "original_experience_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0040-update_experience/original-response.json",
+    "sha256": "0af9474e866eb8a7d3d5d3d530c042c16b6face0e3ea8a6cf5b3f119c86ef92d"
+  },
+  "audit": {
+    "operations": 9,
+    "operations_containing_individual_sample_identifiers": 8,
+    "current_trial_quality_read": false
+  },
+  "disposition": "Keep all original experience and decisions immutable. At the next TF template-only phase boundary, prospectively bind an empty-template-phase-v1 transition to the exact terminal prior decision. Clear only the next working textual experience; preserve accepted templates, numerical program history, all source custody and cumulative exposure. Do not manually cherry-pick old case lessons into the new actor view.",
+  "implementation": "Optional exact transition in the pinned next iteration plan; zero-case TF iteration >1 only. Missing/wrong predecessor, unknown mode/fields, GEPA or nonzero-case profile refuse before callbacks. Transition records original experience hash/count in the new decision. Plans without a transition retain prior behavior.",
+  "scientific_label": "Explicit phase adaptation, not unchanged baseline continuation or a reset of optimization exposure. New template lessons come from aggregate feedback and actual template differences.",
+  "runtime_dispatch": false,
+  "semantic_contacts_added": 0,
+  "original_learner_changed": false,
+  "pending": "Original TF terminal decision must exist and qualify before exact next plan/READ and contact admission."
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "saea-template-phase-transition-validation-v1",
+  "at_utc": "2026-10-04T16:56:01.688257+00:00",
+  "tests_passed": 186,
+  "statement_coverage_percent": {
+    "system_context_exchange": 100,
+    "system_context_learning": 100,
+    "system_context_template_feedback": 100
+  },
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "0d5bef1f179e4183e7ca9529baaf3f274f07da7393dc24455f82ce209d7abf93"
+    },
+    {
+      "relpath": "tests/unit/test_system_context_template_feedback.py",
+      "sha256": "34c37b3dafbe672624c22648aced991c79e43dfd4d6ddac728098da4d3f93a28"
+    }
+  ],
+  "test_scope": "Full synthetic algorithm/callback/proposal/capsule suite plus phase-transition guards. The phase integration uses a synthetic qualified prior-state seam; original history requalification is covered separately by existing custody tests. No real next iteration or quality gain is implied.",
+  "contacts_added": 0
+}
