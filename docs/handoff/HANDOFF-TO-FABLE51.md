@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## GEPA child engineering assets prepared, 2026-10-04T10:18:30.107249+00:00
+
+[Exact child engineering preparation](../readiness/2026-10-04-context-gepa-iteration1-engineering-v1/README.md) provides model-free graph, twenty-input maximum-capacity and four-row structural configurations, all bound to provisional0e48a88cd. Own supply envelopes warm-verify; source knowledge/audio/query/vote selections remain unchanged. One separately registered nongenerative297-endpoint capacity member is conditionally admitted under root227. Clean frozen/runtime/live checks precede dispatch. Graph and structural generation remain held; no new model/tokenizer/scorer contact has occurred.
+
+The original GEPA worker remains alive at its evaluation callback. Keep it waiting while qualifying and registering the fresh complete N20 trial; do not synthesize reward or restart. TF remains independent and prepared only. Preserve the paused heartbeat, seed incumbent, exact same400 pool, other-carrier holds and human-before8x400.
+
 ## GEPA first proposal preserved and compiled, 2026-10-04T10:11:40.815106+00:00
 
 [Provisional child](../receipts/continuation/2026-10-04-context-gepa-provisional-child.json) is the original GPT-6.1 Sol response, unchanged. The shared learner accepted it as provisional and now waits at its single evaluation callback. Child0e48a88cd changes only counterexample-check Perception text: evidence-bearing alternatives, candidate deduplication and permission for one supported candidate. These are hypotheses, not demonstrated repairs. All provider/token metering remains unknown; one semantic callback is spent. Original response, inputs, read coverage and omissions are preserved.

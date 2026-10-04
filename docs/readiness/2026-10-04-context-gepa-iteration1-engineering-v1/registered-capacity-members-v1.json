@@ -1,0 +1,20 @@
+[
+  {
+    "decision": {
+      "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "fe90bb67655ffba36ba84830ebf8d5a032cba09edc07dbb890d65afaa0736555"
+    },
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-capacity-v1",
+    "graph": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-engineering-v1/capacity-fit-plan-registered-v1.json",
+      "sha256": "374a2bdac5f72e3b84a227d0a91a622aeef583d416a698055982dc196b1180fb"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-engineering-v1/capacity-analysis-recipe-v1.json",
+      "sha256": "3573c56d9e12d886dc8214283e8160df0756e1d34d987a4bb973e519eb0c18d9"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1",
+    "system_id": "counterexample-check"
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-04T10:17:18.775455+00:00",
+  "cell": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-capacity-v1",
+  "composed_config_hash": "65aa35e7a7cd01fef0f23340e4570a50be503cf40e2a5c51bbdc4cb3c4b3756a",
+  "decision_receipt": {
+    "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+    "sha256": "fe90bb67655ffba36ba84830ebf8d5a032cba09edc07dbb890d65afaa0736555"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-counterexample-check-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "a8adf67ccda7907a4eda1d858d5ed216fd955126ae1a0a8574c420744a611334",
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-capacity-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-gepa-iteration1-worker2-v1/policies/0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff.json",
+      "sha256": "8ce3d83d16f05212a3add19925adcd39e378fc76594684d6c9fd78d119842637"
+    },
+    "bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "f7bcba82649a9ac436fc42193fb0162f9fa4bf4af9ed9d69e172faa71bfa2de9"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}
