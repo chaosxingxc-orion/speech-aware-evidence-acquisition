@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## K16 capacities complete;64 structural rows registered, 2026-10-04T19:39:01.034838+00:00
+
+[All16 actual capacities passed](../receipts/continuation/2026-10-04-template-k16-capacity-complete.json):4752 tokenizer endpoints covering704 measured request forms, zero generation/scoring, every lease released. Minimum margin after full512 output and2048 structural reserve is5494tokens. Original Linux730548 and Windows20272 ended0 at19:33:59Z; do not restart. All32 capacity/FIT structural-read rows are marked consumed once.
+
+[Structural registration](../receipts/continuation/2026-10-04-template-k16-structural-registered.json) now covers all16 originals,4 rows each,64 total, at most832 generation contacts/3328 request-FIT endpoints and zero official scoring. Prepare-entry session75259/Linux735665 exited0. Freeze codex-context-template-k16-structural-v1 at this committed registration, run the pinned frozen-check helper with exact SAEA_EXPECTED_COMMIT/PYTHONPATH, then use its transition helper only after original completed TF controls and no STOP/competing process are revalidated. Launch the existing Windows SAEA-Batch-Driver once. Do not treat registration as proof or change any original template.
+
+After driver-done16, use structural-audit, numeric node/sample timing and record-completion helpers; preserve intentional unscored engineering lifecycle. The18-member360-trajectory scientific entry remains HELD until64 valid structural rows. Keep original supplies, T0/fixed seed, sequential4-slot execution, paused heartbeat, formal seed, other-carrier holds and human-before8x400.
+
+
 ## K16 abstract continuation boundary checked, 2026-10-04T19:20:51.916365+00:00
 
 [Preparation evidence](../receipts/continuation/2026-10-04-template-k16-abstract-continuation-prepared.json) adds11 synthetic malformed-accounting rejection checks against the actual structural acceptance assertions. This is helper validation, not completed runtime structure. The separately prepared project-complete-abstract-v1.py requalifies all18 members and emits all16 original branches x20 anonymous node/terminal feedback rows, without per-input semantic calls or concrete task/knowledge content. Its separate source registration is intentionally absent; do not execute/export until full scientific root READ and an exact prospective source admission. Do not fall back to legacy per-input reflection or an old K4 callback.

@@ -1,0 +1,48 @@
+{
+  "cell": "slurp-native-stage3-context-template-k16-branch-14-smoke-4-v1",
+  "composed_config_hash": "b2020320ce8618c7ca2bb4cbf75da63aff414af84adbc89e10408feda89715c0",
+  "decision_receipt": {
+    "relpath": "coordination/context-template-k16-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "1d7e915c54d90fb6ed1679c1ea03190b6f20fcf6eac6c0b2627e400404439518"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "f8100693896fff9ae531d518ca4862945ef2af6770ccb920aaaa9b00692aa4ee",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-k16-branch-14-smoke-4-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-template-k16-v1/policies/440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab.json",
+      "sha256": "f93ae14f1463036103cf1dc572c12ee25aa4507b7400ad47eaccad29f6126383"
+    },
+    "bundle_id": "440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "632326af4e77f30c88faac0cb330b1281a279bb6d799202e11ab7951b411b1c9"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-SMOKE-4-STRUCTURE-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

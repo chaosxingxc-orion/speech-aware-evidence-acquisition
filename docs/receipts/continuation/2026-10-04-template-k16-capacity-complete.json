@@ -1,0 +1,173 @@
+{
+  "at_utc": "2026-10-04T19:34:34.015987+00:00",
+  "capacity_passed": true,
+  "generation_contacts": 0,
+  "limits": "Reachable graph with longest legal supplied knowledge and bounded role replies; not an exhaustive arbitrary-text guarantee. Actual request FIT remains mandatory for every generation contact.",
+  "members": [
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-01/request-fit-v1.json",
+        "sha256": "7b0858aadb95a5d681e9ed2346fe036fc9705f8ddb1205a03ee0d4a3a6c3a7ef"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5499,
+      "system_id": "branch-01"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-02/request-fit-v1.json",
+        "sha256": "7500296cc204c4637d3675db135a8d5f0722b7ce326947ebc6f5ea5b5ae77ec1"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5569,
+      "system_id": "branch-02"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-03/request-fit-v1.json",
+        "sha256": "3cdc1972db7cba78cb3e2b2fa9b65974d56720382f445f8a2d736d03ec431540"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5572,
+      "system_id": "branch-03"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-04/request-fit-v1.json",
+        "sha256": "0c6937486e89ca362186006e6d9ee08ce943fb7d3d9397dc4176907505ed1f50"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5497,
+      "system_id": "branch-04"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-05/request-fit-v1.json",
+        "sha256": "af547776092fb262b6d7ac815a426964c0ee9c15298b055d8d08fcbe67d94df4"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5519,
+      "system_id": "branch-05"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-06/request-fit-v1.json",
+        "sha256": "63d4860abf47b1073b789613aab839fc4faf9ec9a3b7fbf2f2995c9af8b145f3"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5580,
+      "system_id": "branch-06"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-07/request-fit-v1.json",
+        "sha256": "fbcd8a69b263b3789a59c03dcd98bb6f9d7ee3a846b1b2c65edffc07232b04e4"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5583,
+      "system_id": "branch-07"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-08/request-fit-v1.json",
+        "sha256": "b33aa77cb412281eb764ec82d8b220c15ccdb272f0872aef8d397a9026a0e018"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5517,
+      "system_id": "branch-08"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-09/request-fit-v1.json",
+        "sha256": "619fdd88a20f631d002e34a8bc6f659dbec6148124fddcc63053feb3e45feb60"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5507,
+      "system_id": "branch-09"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-10/request-fit-v1.json",
+        "sha256": "2f83718fa73369e5607ce65a8206673e76d9d753edb299201f98be67cbaa4c9b"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5574,
+      "system_id": "branch-10"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-11/request-fit-v1.json",
+        "sha256": "3322805e04b3bb1a24133744dcd651f7b77361983f7a9e8d8ce22f53dcdc19f0"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5577,
+      "system_id": "branch-11"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-12/request-fit-v1.json",
+        "sha256": "cac5b1c06a6020627b227ee93c8e8099112b5098fa79a4bb7ef15b5ca3a3ceeb"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5505,
+      "system_id": "branch-12"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-13/request-fit-v1.json",
+        "sha256": "394308e2d7402e5254dfe9e7967213b9676a898e79120b4752059d3f55c03caf"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5496,
+      "system_id": "branch-13"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-14/request-fit-v1.json",
+        "sha256": "15becdb5c13881b08548ae7d7dce91386ae55ad91bd1df37bf7958d200c52398"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5571,
+      "system_id": "branch-14"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-15/request-fit-v1.json",
+        "sha256": "d76b2b322d0bb672bdcf6c5423b968cab9ef03740a6a671f7ef736cfeb8d3ae0"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5574,
+      "system_id": "branch-15"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-engineering-owner227-v1/branch-16/request-fit-v1.json",
+        "sha256": "90f5dedbb16d8ddaddc39ebaacabfc135c29f38e3460c119b90eff36c76fee3c"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5494,
+      "system_id": "branch-16"
+    }
+  ],
+  "read_scope": "Registered structural-only capacity read; no task quality or optimizer feedback.",
+  "schema": "saea-context-template-k16-capacity-complete-v1",
+  "scorer_contacts": 0,
+  "source_commit": "16cd42cd1ec4dc2e687222c295ba796c27de4d80",
+  "tokenizer_endpoints": 4752
+}
