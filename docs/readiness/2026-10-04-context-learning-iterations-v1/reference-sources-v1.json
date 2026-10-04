@@ -1,0 +1,24 @@
+{
+  "schema": "saea-baseline-iteration-reference-sources-v1",
+  "use": "Read-only official code; no installation, task data or execution.",
+  "sources": [
+    {
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/gepa_utils.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/gepa_utils.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-iterations-v1/gepa/src/gepa/gepa_utils.py",
+      "sha256": "ac272a7d411c5c6273be369ec012d14121b1ce5a3bdc87409f419216b6f6a0e3",
+      "bytes": 4704
+    },
+    {
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/strategies/acceptance.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/strategies/acceptance.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-iterations-v1/gepa/src/gepa/strategies/acceptance.py",
+      "sha256": "a6234c188fdeab0f7181dd1f01d767fc91779512773ed4ad952df68855c1d3a4",
+      "bytes": 2646
+    }
+  ]
+}

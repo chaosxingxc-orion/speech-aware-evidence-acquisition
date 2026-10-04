@@ -1,15 +1,20 @@
 """Offline deterministic context-diversity learner seams on the shared base.
 
-No callback, sampling, execution, scoring, scaling or adoption happens here.
-Public input construction freshly verifies registered READ and complete custody;
-synthetic unit packets are not scientific-read authority.
+Input construction performs no contact. The opt-in bounded iteration invokes
+only explicitly supplied callbacks after immutable reservation; callbacks own
+their separate contact/runtime authorization. There is no executor or auto-loop.
+Public input construction freshly verifies registered READ and complete custody.
 """
 from __future__ import annotations
 
 import importlib.util
 import json
+import math
+import random
 import re
 import sys
+import time
+from dataclasses import dataclass
 from pathlib import Path
 
 from ..analysis.system_text_panel import _job_metadata
@@ -20,7 +25,7 @@ from .system_text_feedback import CompleteSystemFeedback, feedback_utility
 from .system_text_policy import (
     CONTEXT_COMPONENTS, CONTEXT_LEARNING_ALGORITHMS, NODE_BUNDLE_SCHEMA,
     SystemTextPolicyBundle, TextPolicyUpdateProposal, _read_pin, _text, apply_text_proposal,
-    require, sha,
+    canonical, require, sha,
 )
 
 REGISTRATION_SCHEMA = "saea-context-learning-registration-v1"
@@ -249,7 +254,8 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
     return packet
 
 
-def record_context_update(archive, *, input_sha256, update_id, proposal_document, experience_operations=None):
+def record_context_update(archive, *, input_sha256, update_id, proposal_document, experience_operations=None,
+                          expected_candidate_id=None):
     """Retain one attempted update, including invalid/no-change, with no admission."""
     sha(input_sha256)
     require(isinstance(update_id, str) and re.fullmatch(r"[a-z0-9][a-z0-9-]{0,95}", update_id), "invalid update identity")
@@ -271,6 +277,8 @@ def record_context_update(archive, *, input_sha256, update_id, proposal_document
         require(p["algorithm"] == packet["algorithm"] and p["iteration"] == packet["iteration"]
                 and p["candidate_id"] in packet["policies"] and p["evidence"] == [input_sha256],
                 "update differs from optimizer input/evidence commitment")
+        require(expected_candidate_id is None or p["candidate_id"] == expected_candidate_id,
+                "update differs from reserved system task")
         parent_id = packet["policies"][p["candidate_id"]]["bundle_id"]
         require(p["parent_ids"] == [parent_id], "update parent differs from evaluated complete system")
         if packet["algorithm"] == "tf-grpo-context-diversity":
@@ -328,3 +336,354 @@ def apply_experience_operations(experiences, operations):
         elif kind == "delete":
             del result[identity]
     return result
+
+
+def select_gepa_task(programs, *, sample_ids, selection_seed=0, state=None):
+    """Pure pinned GEPA instance-front draw and per-program round-robin schedule.
+
+    Match gepa_utils.py at fb1ed589: ascending aggregate tie-cover removal,
+    frequency-weighted RNG choice, then component_selector.py cursor advance.
+    Metrics supplied here are not scientific-read authority; the runner derives
+    them only from qualified family inputs and immutable prior decisions.
+    """
+    require(programs and sample_ids and len(set(sample_ids)) == len(sample_ids)
+            and type(selection_seed) is int, "GEPA program/roster/seed differs")
+    require(len({p["bundle_id"] for p in programs}) == len(programs), "duplicate GEPA program")
+    for p in programs:
+        sha(p["bundle_id"])
+        require(set(p["scores"]) == set(sample_ids)
+                and all(type(v) in (int, float) and math.isfinite(v) for v in p["scores"].values()),
+                "GEPA needs complete finite per-example scores")
+    front = {sid: {i for i, p in enumerate(programs)
+                  if p["scores"][sid] == max(q["scores"][sid] for q in programs)} for sid in sample_ids}
+    frequency = {}
+    for winners in front.values():
+        for i in winners:
+            frequency[i] = frequency.get(i, 0) + 1
+    aggregate = [sum(p["scores"][s] for s in sample_ids) / len(sample_ids) for p in programs]
+    ordered = sorted(frequency, key=lambda i: aggregate[i])
+    dominated = set()
+    changed = True
+    while changed:
+        changed = False
+        for i in ordered:
+            if i in dominated:
+                continue
+            others = set(ordered) - {i} - dominated
+            if all(winners & others for winners in front.values() if i in winners):
+                dominated.add(i)
+                changed = True
+                break
+    surviving = {sid: {i for i in winners if i not in dominated} for sid, winners in front.items()}
+    frequency = {}
+    for winners in surviving.values():
+        for i in winners:
+            frequency[i] = frequency.get(i, 0) + 1
+    sampling = [i for i, count in frequency.items() for _ in range(count)]
+    require(sampling, "GEPA front has no surviving program")
+    previous = {} if state is None else json.loads(canonical(state))
+    require(previous.get("selection_seed", selection_seed) == selection_seed, "selector seed changed")
+    rng = random.Random(selection_seed)
+    if previous.get("rng_state") is not None:
+        def tuples(value):
+            return tuple(tuples(v) for v in value) if isinstance(value, list) else value
+        rng.setstate(tuples(previous["rng_state"]))
+    selected = rng.choice(sampling)
+    bundle = programs[selected]["bundle_id"]
+    cursors = dict(previous.get("component_cursors", {}))
+    cursor = cursors.get(bundle, 0)
+    require(type(cursor) is int and 0 <= cursor < len(CONTEXT_COMPONENTS), "invalid GEPA component cursor")
+    cursors[bundle] = (cursor + 1) % len(CONTEXT_COMPONENTS)
+    return {"parent_bundle_id": bundle, "component": CONTEXT_COMPONENTS[cursor],
+            "per_example_front": {sid: [programs[i]["bundle_id"] for i in sorted(winners)] for sid, winners in front.items()},
+            "state_after": {"selection_seed": selection_seed, "rng_state": json.loads(canonical(rng.getstate())),
+                            "component_cursors": cursors}}
+
+
+@dataclass(frozen=True)
+class ContextLearningCallbacks:
+    """Injected seams; each real callback must enforce its own admitted contacts.
+
+    Return {value, provenance, usage}. Callback invocation count is not provider
+    contact count. No missing usage is replaced by zero and no retry is made.
+    """
+    summarize: object = None
+    compare: object = None
+    update_experience: object = None
+    propose: object = None
+    evaluate: object = None
+
+
+def _iteration_plan(protocol, recipe, root, algorithm, iteration, controls):
+    plans = protocol.get("iteration_plans")
+    require(plans is None or (isinstance(plans, dict) and set(plans) == set(CONTEXT_LEARNING_ALGORITHMS)
+                             and "iteration_plan" not in protocol), "ambiguous common iteration plans")
+    pin = protocol.get("iteration_plan") if plans is None else plans[algorithm]
+    require(isinstance(pin, dict), "exact prospective iteration plan required")
+    plan = _load(pin, root)
+    require(plan.get("schema") == "saea-context-learning-iteration-plan-v1"
+            and plan.get("algorithm") == algorithm and plan.get("iteration") == iteration
+            and plan.get("input_family_id") == recipe["family_id"]
+            and plan.get("sample_ids_sha256") == content_hash(recipe["sample_ids"])
+            and type(plan.get("selection_seed")) is int
+            and plan.get("acceptance") == "strict-registered-utility-sum"
+            and plan.get("automatic_next_iteration") is False,
+            "registered iteration identity/acceptance differs")
+    caps = plan.get("callback_caps", {})
+    require(set(caps) == {"summarize", "compare", "update_experience", "propose", "evaluate"}
+            and all(type(v) is int and v >= 0 for v in caps.values())
+            and caps["propose"] == (4 if algorithm == "tf-grpo-context-diversity" else 1)
+            and caps["evaluate"] == 1
+            and plan.get("evaluation_candidate_trajectories_cap") == 80
+            and plan.get("evaluation_control_trajectories_cap") == 20 * len(controls),
+            "exact bounded callback and full-family evaluation caps required")
+    return pin, plan
+
+
+def _load_iteration_state(archive, previous_sha, *, algorithm, iteration, ids, reference, repo_root):
+    if previous_sha is None:
+        return None
+    sha(previous_sha)
+    decisions = [json.loads(p.read_text()) for p in (archive.root / "context-learning/iterations").glob("*/decision.json")]
+    matching = [d for d in decisions if d.get("decision_sha256") == previous_sha]
+    require(len(matching) == 1, "exact prior decision required")
+    d = matching[0]
+    require(content_hash({k: v for k, v in d.items() if k != "decision_sha256"}) == previous_sha
+            and d["algorithm"] == algorithm and d["iteration"] == iteration - 1
+            and d["sample_ids"] == ids and d["reference_sha256"] == content_hash(reference),
+            "prior iteration custody/scope differs")
+    state = d["state_after"]
+    sources = {}
+    for program in state["programs"]:
+        identity = content_hash({"recipe": program["source_recipe"], "bindings": program["source_bindings"]})
+        if identity not in sources:
+            source = _qualified_feedback(program["source_bindings"], recipe_pin=program["source_recipe"], repo_root=repo_root)
+            e, recipe, registration, protocol, candidates, _, frozen = source
+            require(recipe["sample_ids"] == ids and frozen == reference, "historical feedback cohort/reference differs")
+            measured_rows(e, candidates, registration["member_bindings"], profile=protocol["measurement_profile"])
+            sources[identity] = (e, registration, _candidate_groups(e, recipe, registration, candidates, frozen), candidates)
+        e, registration, groups, candidates = sources[identity]
+        require(content_hash(e) == program["source_family_sha256"], "historical complete-family commitment differs")
+        own = [c for c in candidates if registration["member_bindings"][c]["bundle_id"] == program["bundle_id"]]
+        require(len(own) == 1 and program["scores"] == {g["sample_id"]:
+            next(m["utility"] for m in g["members"] if m["candidate_id"] == own[0]) for g in groups},
+            "historical program scores/bundle differ from qualified source")
+    return state
+
+
+def _trial_feedback(request, *, root, initial, expected, changed):
+    require(isinstance(request, dict) and set(request) == {"bindings", "recipe_pin"},
+            "evaluation must return source bindings, never caller-entered reward")
+    trial = _qualified_feedback(request["bindings"], recipe_pin=request["recipe_pin"], repo_root=root)
+    e, recipe, registration, protocol, candidates, controls, reference = trial
+    old_e, old_recipe, old_registration, old_protocol, old_candidates, old_controls, old_reference = initial
+    require(recipe["family_id"] != old_recipe["family_id"] and candidates == old_candidates
+            and controls == old_controls and recipe["sample_ids"] == old_recipe["sample_ids"]
+            and reference == old_reference and protocol["frozen_reference"] == old_protocol["frozen_reference"]
+            and protocol["sampling"] == old_protocol["sampling"]
+            and protocol["measurement_profile"] == old_protocol["measurement_profile"],
+            "prospective trial roster/reference/envelope differs")
+    for cid, binding in registration["member_bindings"].items():
+        old = old_registration["member_bindings"][cid]
+        require(binding["bundle_id"] == (expected[cid] if cid in expected else old["bundle_id"])
+                and binding["run_id"] != old["run_id"] and binding["attempt_id"] != old["attempt_id"],
+                "trial must contain exact child/unchanged systems and fresh attempts")
+    business = measured_rows(e, candidates, registration["member_bindings"], profile=protocol["measurement_profile"])
+    groups = _candidate_groups(e, recipe, registration, candidates, reference)
+    require(changed and len(groups) * len(candidates) == 80, "trial must retain complete N by K exposure")
+    return groups, business, {"recipe": request["recipe_pin"], "family_sha256": content_hash(e),
+                             "registration_sha256": registration["registration_sha256"]}
+
+
+def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
+                                   algorithm, iteration, policies, callbacks,
+                                   previous_decision_sha256=None):
+    """Run one bounded learning iteration through externally authorized callables.
+
+    Default GEPA selection/RR/strict-sum rules follow pinned upstream source.
+    Full N20 TRAIN replacement-cohort evaluation and quality-gated TF retention
+    are explicit study adaptations. Retention never grants scientific adoption.
+    """
+    require(algorithm in CONTEXT_LEARNING_ALGORITHMS and isinstance(callbacks, ContextLearningCallbacks),
+            "explicit baseline/callback seams required")
+    root = Path(repo_root).resolve()
+    initial = _qualified_feedback(bindings, recipe_pin=recipe_pin, repo_root=root)
+    evidence, recipe, registration, protocol, candidates, controls, reference = initial
+    plan_pin, plan = _iteration_plan(protocol, recipe, root, algorithm, iteration, controls)
+    groups = _candidate_groups(evidence, recipe, registration, candidates, reference)
+    active = {c: policies[c].bundle_id for c in candidates}
+    previous = _load_iteration_state(archive, previous_decision_sha256, algorithm=algorithm,
+        iteration=iteration, ids=recipe["sample_ids"], reference=reference, repo_root=root)
+    state = {"active_bundle_ids": active, "experience": {}, "component_cursors": {}, "programs": []} if previous is None else previous
+    state = json.loads(canonical(state))
+    if previous is not None:
+        require(set(active.values()) <= {p["bundle_id"] for p in state["programs"]},
+                "a rejected/unregistered program cannot silently become the next parent")
+    for c in candidates:
+        scores = {g["sample_id"]: next(m["utility"] for m in g["members"] if m["candidate_id"] == c) for g in groups}
+        old = next((p for p in state["programs"] if p["bundle_id"] == active[c]), None)
+        if old is None:
+            state["programs"].append({"bundle_id": active[c], "scores": scores, "source_recipe": recipe_pin,
+                "source_bindings": bindings, "source_family_sha256": content_hash(evidence)})
+        else:
+            old.update(scores=scores, source_recipe=recipe_pin, source_bindings=bindings,
+                       source_family_sha256=content_hash(evidence))
+    state["active_bundle_ids"] = active
+    schedule = None
+    if algorithm == "gepa":
+        schedule = select_gepa_task(state["programs"], sample_ids=recipe["sample_ids"],
+                                    selection_seed=plan["selection_seed"], state=state)
+        require(schedule["parent_bundle_id"] in active.values(),
+                "selected historical parent requires a prospectively registered K-family")
+        state.update(schedule["state_after"])
+        selected = next(c for c in candidates if active[c] == schedule["parent_bundle_id"])
+        packet = prepare_context_optimizer_input(archive, bindings=bindings, recipe_pin=recipe_pin,
+            repo_root=root, algorithm=algorithm, iteration=iteration, policies=policies,
+            candidate_id=selected, component=schedule["component"])
+    else:
+        packet = prepare_context_optimizer_input(archive, bindings=bindings, recipe_pin=recipe_pin,
+            repo_root=root, algorithm=algorithm, iteration=iteration, policies=policies, experiences=state["experience"])
+    directory = f"context-learning/iterations/{algorithm}-{iteration}"
+    archive._write(directory + "/reservation.json", {"plan": plan_pin, "input_sha256": packet["input_sha256"],
+        "previous_decision_sha256": previous_decision_sha256, "callbacks_do_not_grant_contact_authority": True})
+    counts = dict.fromkeys(plan["callback_caps"], 0)
+    events, updates = [], []
+    decision = {"schema": "saea-context-learning-iteration-decision-v1", "algorithm": algorithm,
+        "iteration": iteration, "input_sha256": packet["input_sha256"], "plan": plan_pin,
+        "sample_ids": recipe["sample_ids"], "reference_sha256": content_hash(reference),
+        "qualified_input_family_budget": packet["budget"],
+        "input_family_is_reused_qualified_evidence": True,
+        "qualified_input_family_sha256": packet["family_commitment"]["sha256"],
+        "sampling": packet["sampling"], "selection_seed": plan["selection_seed"], "schedule": schedule,
+        "formal_adoption": False, "runtime_admission": False, "automatic_next_iteration": False,
+        "fidelity": {"gepa_selector": "pinned-default-instance-pareto-frequency", "gepa_component": "pinned-per-program-round-robin",
+            "gepa_acceptance": "pinned-strict-sum-improvement", "evaluation": "full-registered-N20-TRAIN-study-adaptation",
+            "tf_sampling": "deterministic-distinct-context-study-adaptation", "tf_retention": "quality-gated-study-adaptation"},
+        "business_before": packet["business_measurements"], "business_after": None,
+        "updates": updates, "status": "failed", "error": None}
+    reserved_candidate = reserved_control = 0
+
+    def invoke(stage, task):
+        nonlocal reserved_candidate, reserved_control
+        require(counts[stage] < plan["callback_caps"][stage], "callback stage cap exhausted; no retry")
+        callback = getattr(callbacks, stage)
+        require(callable(callback), f"explicit {stage} callback required")
+        counts[stage] += 1
+        if stage == "evaluate":
+            reserved_candidate = 80
+            reserved_control = 20 * len(controls)
+        identity = f"{len(events):04d}-{stage}"
+        archive._write(directory + f"/events/{identity}-reserved.json", {"stage": stage, "task": task,
+            "task_sha256": content_hash(task), "opportunity_consumed": True})
+        started = time.perf_counter()
+        unknown = dict.fromkeys(("provider_contacts", "input_tokens", "output_tokens"), None)
+        event = {"stage": stage, "identity": identity, "usage": unknown,
+                 "provenance": None, "response": None, "status": "failed"}
+        events.append(event)
+        try:
+            response = callback(task)
+            # Invalid Python objects cannot enter JSON custody or erase the
+            # consumed opportunity. The external callback owns its raw source.
+            event["response"] = {"invalid_response_type": type(response).__name__}
+            canonical(response)
+            event["response"] = response
+            require(isinstance(response, dict) and set(response) == {"value", "provenance", "usage"}
+                    and isinstance(response["provenance"], dict) and response["provenance"], "callback provenance envelope required")
+            usage = response["usage"]
+            require(isinstance(usage, dict) and set(usage) == set(unknown)
+                    and all(v is None or type(v) is int and v >= 0 for v in usage.values()), "invalid callback usage")
+            event.update(provenance=response["provenance"], usage=usage)
+            from .prepared_feedback import reject_non_latin_scripts
+            reject_non_latin_scripts(response)
+            event["status"] = "completed"
+            return response["value"]
+        except Exception as error:
+            event["error_type"] = type(error).__name__
+            raise
+        finally:
+            event["callback_elapsed_seconds"] = time.perf_counter() - started
+            archive._write(directory + f"/events/{identity}-{event['status']}.json", event)
+
+    try:
+        operations, experience_after = None, state["experience"]
+        if algorithm == "tf-grpo-context-diversity":
+            comparisons = []
+            for group in packet["groups"]:
+                if group["semantic_advantage"] == "skip-zero-variation":
+                    continue
+                summaries = []
+                for member in group["members"]:
+                    summary = invoke("summarize", {"input_sha256": packet["input_sha256"],
+                        "sample_id": group["sample_id"], "rollout": member})
+                    _text(summary)
+                    summaries.append({"rollout_id": member["rollout_id"], "utility": member["utility"], "summary": summary})
+                comparison = invoke("compare", {"input_sha256": packet["input_sha256"], "sample_id": group["sample_id"],
+                    "summaries": summaries, "experience": state["experience"]})
+                _text(comparison)
+                comparisons.append({"sample_id": group["sample_id"], "semantic_advantage": comparison})
+            if not comparisons:
+                decision["status"] = "skip-zero-variation"
+            else:
+                operations = invoke("update_experience", {"input_sha256": packet["input_sha256"],
+                    "experience": state["experience"], "comparisons": comparisons})
+                experience_after = apply_experience_operations(state["experience"], operations)
+        task_candidates = [selected] if algorithm == "gepa" else candidates if decision["status"] != "skip-zero-variation" else []
+        trial_policies = dict(active)
+        changed = []
+        for c in task_candidates:
+            response = invoke("propose", {"input_sha256": packet["input_sha256"], "candidate_id": c,
+                "algorithm": algorithm, "iteration": iteration,
+                "parent_bundle_id": active[c], "component": schedule["component"] if schedule else "joint-system",
+                "policy": packet["policies"][c]["policy"], "experience": experience_after,
+                "qualified_input": packet})
+            update = record_context_update(archive, input_sha256=packet["input_sha256"], update_id=f"system-{candidates.index(c)}",
+                proposal_document=response, experience_operations=operations, expected_candidate_id=c)
+            updates.append(update)
+            if update["status"] == "provisional":
+                trial_policies[c] = update["bundle_id"]
+                changed.append(c)
+        if task_candidates and not changed:
+            decision["status"] = "invalid" if any(u["status"] == "invalid" for u in updates) else "no-change"
+        if changed:
+            require(len({content_hash({k: archive.load_policy(b).as_json()[k]
+                for k in ("role_text", "context_layout", "node_context")}) for b in trial_policies.values()}) == 4,
+                "trial K must retain four distinct prompt-and-assembly systems")
+            request = invoke("evaluate", {"input_sha256": packet["input_sha256"], "policies": trial_policies,
+                "changed_members": changed, "control_members": controls, "sample_ids": recipe["sample_ids"],
+                "sampling": packet["sampling"], "measurement_profile": packet["measurement_profile"]})
+            trial_groups, business, trial_commitment = _trial_feedback(request, root=root, initial=initial,
+                expected=trial_policies, changed=changed)
+            before = sum(m["utility"] for g in groups for m in g["members"]
+                         if algorithm != "gepa" or m["candidate_id"] == selected)
+            after = sum(m["utility"] for g in trial_groups for m in g["members"]
+                        if algorithm != "gepa" or m["candidate_id"] == selected)
+            decision.update(utility_before=before, utility_after=after, trial_commitment=trial_commitment,
+                            business_after=business, status="retained-for-optimization" if after > before else "rejected")
+            if after > before:
+                state["active_bundle_ids"] = trial_policies
+                state["experience"] = experience_after
+                for c in changed:
+                    scores = {g["sample_id"]: next(m["utility"] for m in g["members"] if m["candidate_id"] == c) for g in trial_groups}
+                    state["programs"].append({"bundle_id": trial_policies[c], "scores": scores, "source_recipe": request["recipe_pin"],
+                        "source_bindings": request["bindings"], "source_family_sha256": trial_commitment["family_sha256"]})
+                    if algorithm == "gepa":
+                        state["component_cursors"][trial_policies[c]] = state["component_cursors"][active[c]]
+    except Exception as error:
+        message = str(error)
+        try:
+            _text(message)
+        except ValueError:
+            message = "External callback must preserve and translate the original exception source."
+        decision.update(status="failed", error={"type": type(error).__name__, "message": message})
+    decision["state_after"] = state
+    decision["events"] = events
+    accounting = {"callback_counts": counts, "evaluation_candidate_trajectories_reserved": reserved_candidate,
+                  "evaluation_control_trajectories_reserved": reserved_control}
+    for k in ("provider_contacts", "input_tokens", "output_tokens"):
+        values = [e["usage"][k] for e in events]
+        accounting[k] = None if None in values else sum(values)
+    accounting["callback_elapsed_seconds"] = sum(e["callback_elapsed_seconds"] for e in events)
+    decision["accounting"] = accounting
+    decision["decision_sha256"] = content_hash(decision)
+    archive._write(directory + "/decision.json", decision)
+    return decision
