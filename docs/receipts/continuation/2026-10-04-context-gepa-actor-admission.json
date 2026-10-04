@@ -1,0 +1,26 @@
+{
+  "schema": "saea-context-gepa-actor-admission-v1",
+  "recorded_at_utc": "2026-10-04T10:03:41.980039+00:00",
+  "status": "ROOT ADMITTED BEFORE SUBAGENT CONTACT",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1/actor-capsules/0000-propose/manifest.json",
+    "sha256": "075b6e28f3437dece68951cc8294f3f60434b32533169117d99238cdba264f88",
+    "bytes": 13493
+  },
+  "request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1/external-exchange/requests/0000-propose/request.json",
+    "sha256": "77f9441c95a30279adda9cab3a724d493afd44c07110671223aa1bbbd1f0bff6",
+    "bytes": 8591792
+  },
+  "callback_cap": 1,
+  "model": "gpt-6.1-sol",
+  "fork_turns": "none",
+  "reasoning_effort": "high",
+  "actual_provider_usage": "Unknown until provided; preserve null otherwise",
+  "paid_api_spend": 0,
+  "full_family_read": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "candidate_id": "counterexample-check",
+  "component": "role_text.perception",
+  "runtime_dispatch": false,
+  "automatic_retry": false
+}

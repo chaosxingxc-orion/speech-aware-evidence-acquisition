@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## First isolated GEPA semantic callback admitted, 2026-10-04T10:06:49.581373+00:00
+
+[Exact actor admission](../receipts/continuation/2026-10-04-context-gepa-actor-admission.json) follows complete initial-family READ and fresh worker qualification. The original GEPA selector chose counterexample-check and its first round-robin component, Perception. A fresh GPT-6.1 Sol/high/no-history subagent receives the immutable request and twenty selected-system source episodes through an exact hash manifest. It cannot dispatch GPU, score, replace failed proposals or inspect unlisted evidence. Provider/token usage may be unknown and remains null. One callback is reserved prospectively in the exposure ledger; original historical allocations remain untouched.
+
+The corrected original worker is waiting for that one response. Preserve the original precontact failure. An accepted proposal is provisional until independent compile, actual FIT, structural proof and a fresh complete six-member N20 evaluation/READ. Keep both baseline algorithms separate, seed as formal incumbent, same400 assets, temperature0/fixedseed, paused heartbeat and human-before8x400. No learned improvement or scale admission is established.
+
 ## Qualified baseline inputs and bounded GEPA worker, 2026-10-04T10:00:03.885065+00:00
 
 [Prepared input evidence](../receipts/continuation/2026-10-04-context-baseline-inputs-prepared.json) records separate complete eighty-episode candidate material exports for GEPA and TF. Source READ is complete and stable. The first GEPA wrapper stopped before any callback because it passed a keyword-only argument positionally; Windows stderr handling also truncated the outer diagnostic. [Root227 disposition](../receipts/continuation/2026-10-04-context-gepa-precontact-wrapper-disposition.json) preserves every original and admits one corrected successor with identical material, algorithms and allocations. Signature binding and native stdout/stderr/exit capture proofs pass; source feedback independently requalifies. No model or scorer contact was consumed.
