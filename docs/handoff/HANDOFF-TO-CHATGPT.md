@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Initial4 capacities complete; structural registration prepared, 2026-10-04T08:03:00.203483+00:00
+
+[All four actual capacities](../receipts/continuation/2026-10-04-context-initial4-capacity-complete.json) completed successfully through the original Windows-owned worker at07:58:06Z; exit0, all leases released and original process gone. Each consumed297 tokenizer endpoints/44 measured requests,1188/176 total,with full512 output plus2048 structural reserve. No generation,scoring or scientific feedback. Preserve frozen capacitycdce93551 and all original receipts.
+
+[Four structural members](../readiness/2026-10-04-context-initial4-structural-entry-v1/README.md) are now prospectively registered under root227: same first4 inputs per complete policy,16 trajectories total,52 generation/208 FIT ceilings each,zero official scores. All exact registration/base/harness checks pass and own supplies warm-verify. This is not a launch: freeze clean source and run complete runtime/live admission before transitioning the completed queue. No policy,knowledge,data,tool,parser or serving-geometry change.
+
+Learning iteration orchestration is under authorized GPT-6.1 Sol engineering; no new proposals or algorithm results. Heartbeat remainsPAUSED. ScientificN20K4 and its seed/A/A require a separate exact family, official complete scoring and root READ.
+
 ## Initial4 actual capacity running; learner boundary integrated, 2026-10-04T07:53:17.446167+00:00
 
 [Capacity launch](../receipts/continuation/2026-10-04-context-initial4-capacity-launch.json) is verified RUNNING through Windows SAEA-Context-Initial4-Capacity-Owner227 at07:51:36Z, original PID637952/start44906776. Frozen worker codex-context-initial4-capacity-v2 atcdce93551 passes all four runtime/registration/role/supply checks. First stable memory admission passed; the worker owns its lease and resource guard. Revalidate the handle, not this snapshot. Four nongenerative297-endpoint members,1188 ceiling total; no generation/scoring admitted. Preserve original consumed-flag refusal andcdce successor. No queue/STOP/service/cache change. Heartbeat stays PAUSED.

@@ -1,0 +1,55 @@
+{
+  "members": [
+    {
+      "system_id": "speech-evidence",
+      "passed": true,
+      "contacts": {
+        "encoder": 0,
+        "model": 0,
+        "network": 0,
+        "scorer": 0,
+        "server": 0,
+        "tokenizer": 0
+      }
+    },
+    {
+      "system_id": "coverage-ledger",
+      "passed": true,
+      "contacts": {
+        "encoder": 0,
+        "model": 0,
+        "network": 0,
+        "scorer": 0,
+        "server": 0,
+        "tokenizer": 0
+      }
+    },
+    {
+      "system_id": "counterexample-check",
+      "passed": true,
+      "contacts": {
+        "encoder": 0,
+        "model": 0,
+        "network": 0,
+        "scorer": 0,
+        "server": 0,
+        "tokenizer": 0
+      }
+    },
+    {
+      "system_id": "semantic-frame",
+      "passed": true,
+      "contacts": {
+        "encoder": 0,
+        "model": 0,
+        "network": 0,
+        "scorer": 0,
+        "server": 0,
+        "tokenizer": 0
+      }
+    }
+  ],
+  "engineering_base": "PASS",
+  "harness_admission": "PASS",
+  "contacts": 0
+}

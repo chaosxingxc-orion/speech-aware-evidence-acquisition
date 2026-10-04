@@ -1,0 +1,82 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-speech-evidence-smoke-4-generation-v1",
+    "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+    "experiment": "slurp-native-stage3-context-initial4-speech-evidence-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-initial4-speech-evidence-graph-v1",
+    "label": "speech-evidence",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/speech-evidence-generation-plan-registered-v1.json",
+      "sha256": "20d38e1e19b827318040c2c1314519775a5f555f5b1d5aae945f6f59aacdbd0d"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v2.json",
+      "sha256": "2912071f765a064a706be8ec0be7bb11ca3f8f20b0e7e877b2745a22fe26d36d"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/speech-evidence-analysis-recipe-v1.json",
+      "sha256": "98d3e4075aff97b59de4c6cc754b2dbdc2ea511afa55f4af63b2a725eb805f8d"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-coverage-ledger-smoke-4-generation-v1",
+    "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+    "experiment": "slurp-native-stage3-context-initial4-coverage-ledger-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-initial4-coverage-ledger-graph-v1",
+    "label": "coverage-ledger",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/coverage-ledger-generation-plan-registered-v1.json",
+      "sha256": "a60c5aebc9f325af246ec80f8fe970371d38368c73db2cdb96b0b1082a9fa87e"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v2.json",
+      "sha256": "02fafc045b64b7fdc71a57a3a3845e138f1f41edf8db93810d26dcdb19517a29"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/coverage-ledger-analysis-recipe-v1.json",
+      "sha256": "f0d3e679ddda5d06c28fd62dbccc30bbc4c8dcee14b636bf0b9f35060f57e38e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-counterexample-check-smoke-4-generation-v1",
+    "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+    "experiment": "slurp-native-stage3-context-initial4-counterexample-check-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-initial4-counterexample-check-graph-v1",
+    "label": "counterexample-check",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/counterexample-check-generation-plan-registered-v1.json",
+      "sha256": "8f69941973300887c424aee4c9dd507b49f0c436e2955aa72c6cf1eeecb7087d"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v2.json",
+      "sha256": "970f42250cd890995614a9a2ac47f0d4fbdd986a25efb9a9dee43109c6c9aa71"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/counterexample-check-analysis-recipe-v1.json",
+      "sha256": "088f36a00379b8e2087a6289aa3012e2ed9815d848d3dfa8a0f85b27e90ecb39"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-semantic-frame-smoke-4-generation-v1",
+    "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+    "experiment": "slurp-native-stage3-context-initial4-semantic-frame-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-initial4-semantic-frame-graph-v1",
+    "label": "semantic-frame",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/semantic-frame-generation-plan-registered-v1.json",
+      "sha256": "d0ec36755e434f790a02913521c9afc74348c2a5f6e657d33dc6895e586d2ef7"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v2.json",
+      "sha256": "4979531bbc1438bc47f15d628ec25264c749f25634e6a32f6ae1e0d6276cbce9"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-structural-entry-v1/semantic-frame-analysis-recipe-v1.json",
+      "sha256": "ab2ed00a36f233faf7764b4b794b94945965166c2f8d230bd11d6789547d7036"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1"
+  }
+]
