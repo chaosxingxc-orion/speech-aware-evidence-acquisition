@@ -39,7 +39,8 @@ def test_contract_is_prospective_and_legacy_capsule_roundtrip_is_identical(tmp_p
 
 def test_field_contract_returns_fresh_values_and_respects_scope(tmp_path):
     packet, _ = fixture(tmp_path)
-    packet["optimization_scope"] = {"editable": ["role_text"]}
+    packet["optimization_scope"] = {"purpose": "reused-optimization-panel",
+        "editable": ["role_text"], "plan_sha256": "a" * 64}
     a = TextPolicyUpdateProposal.response_contract(packet)
     assert set(a["editable_changes"]) == {"role_text"}
     a["field_types"]["hypotheses"] = "array<object>"

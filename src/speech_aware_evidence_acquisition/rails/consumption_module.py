@@ -165,7 +165,7 @@ COMPONENT_CATALOGUE: tuple[ComponentSpec, ...] = (
         optional_params=frozenset({"tool_schema_rendering", "reviewer_history_scope"})),
     ComponentSpec(KNOWLEDGE_CONSUMPTION_OPPORTUNITY, "SUPPLY/USE, bounded knowledge opportunity",
         frozenset({STATE_ON}), frozenset({"mode", "store_id", "reviewer_template", "planner_template"}),
-        optional_params=frozenset({"solver_template", "value_limit", "knowledge_binding",
+        optional_params=frozenset({"solver_template", "perception_template", "value_limit", "knowledge_binding",
                                    "reviewer_response_format_id"})),
     ComponentSpec(CONSTRUCTION_STORE_BINDING, "ORG, source-isolated construction release",
         frozenset({STATE_ON}), frozenset({"store_id", "snapshot", "release"})),
@@ -961,6 +961,10 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             if "solver_template" in params:
                 template = _require_text(params["solver_template"], field="solver template")
                 writer.set(("phase_material", "solver", "instruction_template"), template,
+                           component_id=cid, replace_only=True)
+            if "perception_template" in params:
+                template = _require_text(params["perception_template"], field="perception template")
+                writer.set(("phase_material", "perception", "instruction_template"), template,
                            component_id=cid, replace_only=True)
             if "knowledge_binding" in params:
                 binding = params["knowledge_binding"]

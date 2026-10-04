@@ -1,0 +1,137 @@
+{
+  "at_utc": "2026-10-04T00:49:12.658310+00:00",
+  "base_commit": "8b98deb4125b50780cab75597d01ad203692a5bc",
+  "changes": [
+    "Version the full four-node English policy, proposal and optimization scope.",
+    "Bind complete Perception, Solver, Reviewer and Planner instruction bytes through the shared consumption compiler.",
+    "Expose only existing context layout, tool-schema presentation and Reviewer history scope choices.",
+    "Preserve compact/full proposer field visibility, historical request contracts and exact spent allocations.",
+    "Reject v3 proposals or successor admission that silently retain an unupgraded three-role seed."
+  ],
+  "claims": {
+    "global_optimality": false,
+    "learning_gain": false,
+    "new_task_quality_gain": false,
+    "stable_benefit": false
+  },
+  "file_sha256": {
+    "docs/readiness/2026-10-04-node-optimization-space-v1/README.md": "5a37c4578109ffc7e79316cd19b29a09d93892498e45bf8cc0f6eed68deb98fe",
+    "docs/receipts/owner/2026-10-04-node-optimization-space.json": "af96bf4f14456ec1e1bc6a13f6f0781dbf43be9181d883e121c9f97d08c90cf0",
+    "src/speech_aware_evidence_acquisition/rails/consumption_module.py": "698f2cf695a02aef649bdb02ede67940e854d8614105fcc8454468821b73d6d2",
+    "src/speech_aware_evidence_acquisition/rails/system_optimization.py": "b57005e680abb7ccbe7424100f2a15ed5d7eefd155aeca6385ad6cbc8e9ee239",
+    "src/speech_aware_evidence_acquisition/rails/system_proposer_capsule.py": "3dbe70de0394543709a51def898e96e0a35afe7fc21400504ededbcb4944ba5d",
+    "src/speech_aware_evidence_acquisition/rails/system_search_successor.py": "bd9e3e5db10db8dcbfc233847895c8ee6979f2b784d4a35adab063caac578857",
+    "src/speech_aware_evidence_acquisition/rails/system_text_policy.py": "b7be3efee7594afba9b2c84e40c6655e74eaee11cefe5a6082aa82fd0a9c9c75",
+    "tests/unit/test_system_node_optimization.py": "0ac694c1eeb7644004a8b6f0267493032c9b1173661091f04aaa464280e6d8d4",
+    "tests/unit/test_system_proposal_contract.py": "c0183043a144ebd75d9a4cde38dcb7af55d443d1d61b725e7f25fd56e0796926"
+  },
+  "heartbeat": "PAUSED",
+  "new_contacts": {
+    "model": 0,
+    "official_scorer": 0,
+    "proposer": 0,
+    "tokenizer": 0
+  },
+  "offline_failure_history": [
+    "New tests first rejected v3 fields, then exposed missing component admission metadata; repaired before integration.",
+    "The new capsule test initially used the wrong helper API; corrected the test to package pinned artifacts through the production API.",
+    "Compact views omitted node_context and a v3 scope accepted a three-role parent; regression tests failed before both guards were fixed.",
+    "Successor review found that an unchanged three-role seed cannot admit four-role proposals; added a fail-closed guard and explicit four-role protocol continuation tests.",
+    "A historical synthetic contract fixture omitted required scope fields; corrected the fixture, without relaxing validation.",
+    "The environment lacks pytest-cov; used the installed coverage module. The first OpenJiuwen CLI check omitted its required output path; reran with an explicit temporary output.",
+    "Lint found three preexisting one-line statements in the touched successor module and imported fixture warnings; corrected formatting and explicit pytest fixture annotations.",
+    "The media-confinement checker refreshed its historical generated reports in the editable worktree; their exact original tracked bytes were restored. This receipt retains the PASS without rewriting historical evidence."
+  ],
+  "optimizer_evidence_export": false,
+  "owner": "docs/receipts/owner/2026-10-04-node-optimization-space.json",
+  "package": "docs/readiness/2026-10-04-node-optimization-space-v1/README.md",
+  "remaining": [
+    "Freeze an explicit four-node seed transition and exact proposer/runtime protocol.",
+    "Implement an opt-in complete measured-latency and reliability retention profile; historical frontier still uses call counts.",
+    "Admit source-recoverable progressive evidence and summary actions only after actual implementation and metering.",
+    "Perform registered capacity/structural checks and a complete small comparison before learning updates."
+  ],
+  "runtime_mutations": false,
+  "schema": "saea-node-optimization-space-engineering-v1",
+  "status": "OFFLINE_INTERFACES_VERIFIED_LEARNING_PROTOCOL_PENDING",
+  "validation": {
+    "coverage": {
+      "consumption_module.py": {
+        "covered_lines": 559,
+        "excluded_lines": 2,
+        "missing_lines": 50,
+        "num_statements": 609,
+        "percent_covered": 91.78981937602627,
+        "percent_covered_display": "92",
+        "percent_statements_covered": 91.78981937602627,
+        "percent_statements_covered_display": "92"
+      },
+      "system_optimization.py": {
+        "covered_lines": 146,
+        "excluded_lines": 0,
+        "missing_lines": 17,
+        "num_statements": 163,
+        "percent_covered": 89.57055214723927,
+        "percent_covered_display": "90",
+        "percent_statements_covered": 89.57055214723927,
+        "percent_statements_covered_display": "90"
+      },
+      "system_proposer_capsule.py": {
+        "covered_lines": 426,
+        "excluded_lines": 0,
+        "missing_lines": 12,
+        "num_statements": 438,
+        "percent_covered": 97.26027397260275,
+        "percent_covered_display": "97",
+        "percent_statements_covered": 97.26027397260275,
+        "percent_statements_covered_display": "97"
+      },
+      "system_search_successor.py": {
+        "covered_lines": 147,
+        "excluded_lines": 0,
+        "missing_lines": 2,
+        "num_statements": 149,
+        "percent_covered": 98.65771812080537,
+        "percent_covered_display": "99",
+        "percent_statements_covered": 98.65771812080537,
+        "percent_statements_covered_display": "99"
+      },
+      "system_text_policy.py": {
+        "covered_lines": 320,
+        "excluded_lines": 0,
+        "missing_lines": 7,
+        "num_statements": 327,
+        "percent_covered": 97.85932721712538,
+        "percent_covered_display": "98",
+        "percent_statements_covered": 97.85932721712538,
+        "percent_statements_covered_display": "98"
+      }
+    },
+    "coverage_kind": "statement",
+    "coverage_total": {
+      "covered_lines": 1598,
+      "excluded_lines": 2,
+      "missing_lines": 88,
+      "num_statements": 1686,
+      "percent_covered": 94.78054567022538,
+      "percent_covered_display": "95",
+      "percent_statements_covered": 94.78054567022538,
+      "percent_statements_covered_display": "95"
+    },
+    "derived_media_confinement": "PASS",
+    "engineering_base": "PASS",
+    "experiment_handoff": "PASS; no errors, historical snapshot and local-change warnings only",
+    "git_diff_check": "PASS",
+    "handoff_freshness": "PASS",
+    "harness_admission": "PASS",
+    "historical_outbound_digest_regressions": "PASS",
+    "new_source_pins_english_links": "PASS",
+    "new_tests_passed": 30,
+    "openjiuwen_native_reuse": "PASS",
+    "openjiuwen_proof_sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464",
+    "ruff": "PASS",
+    "targeted_test_files": 26,
+    "targeted_tests_passed": 667,
+    "warnings": 3
+  }
+}

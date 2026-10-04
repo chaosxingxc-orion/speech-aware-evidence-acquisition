@@ -17,14 +17,18 @@ from .prepared_feedback import reject_non_latin_scripts
 
 BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v1"
 CONTEXT_BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v2"
+NODE_BUNDLE_SCHEMA = "saea-system-text-policy-bundle-v3"
+BUNDLE_SCHEMAS = (BUNDLE_SCHEMA, CONTEXT_BUNDLE_SCHEMA, NODE_BUNDLE_SCHEMA)
 CONTEXT_LAYOUT_FIELD = "native_role_query_placement"
 PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v1"
 CONTEXT_PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v2"
+NODE_PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v3"
 TEXT_CHARACTER_CAP = 32768
 PROPOSAL_KEYS = frozenset({"schema", "branch", "round", "slot", "parent_ids",
                            "changes", "rationale", "hypotheses", "evidence"})
 EDITABLE = frozenset({"construction_instruction", "role_text", "supply", "slot_value_edits"})
 CONTEXT_EDITABLE = frozenset({"role_text", "context_layout"})
+NODE_EDITABLE = frozenset({"role_text", "context_layout", "node_context"})
 BUNDLE_KEYS = frozenset({"schema", "parent_ids", "seed_config_sha256", "construction_instruction",
                         "role_text", "supply", "knowledge", "construction_receipt",
                         "cumulative_sources", "optimizer_experience"})
@@ -72,6 +76,18 @@ def _context_layout(value):
     placement = value[CONTEXT_LAYOUT_FIELD]
     require(placement is None or (isinstance(placement, str) and placement == "before-speech-v1"),
             "context layout must select the historical or implemented before-speech placement")
+
+
+def _node_context(value):
+    require(isinstance(value, dict)
+            and set(value) == {"tool_schema_rendering", "reviewer_history_scope"},
+            "node context fields differ")
+    require(isinstance(value["tool_schema_rendering"], str)
+            and value["tool_schema_rendering"] in {"constant", "per-role"},
+            "node context tool presentation is not implemented")
+    require(isinstance(value["reviewer_history_scope"], str)
+            and value["reviewer_history_scope"] in {"full", "latest-solver-and-local-tools"},
+            "node context history selection is not implemented")
 
 
 def validate_sources(sources):
@@ -126,13 +142,18 @@ class SystemTextPolicyBundle:
 
     @classmethod
     def from_json(cls, document, *, parents=()):
-        context_version = isinstance(document, dict) and document.get("schema") == CONTEXT_BUNDLE_SCHEMA
+        node_version = isinstance(document, dict) and document.get("schema") == NODE_BUNDLE_SCHEMA
+        context_version = node_version or (isinstance(document, dict) and document.get("schema") == CONTEXT_BUNDLE_SCHEMA)
         fields = BUNDLE_KEYS | {"context_layout"} if context_version else BUNDLE_KEYS
+        if node_version:
+            fields |= {"node_context"}
         require(isinstance(document, dict) and set(document) == fields
-                and document["schema"] in (BUNDLE_SCHEMA, CONTEXT_BUNDLE_SCHEMA), "policy bundle fields differ")
+                and document["schema"] in BUNDLE_SCHEMAS, "policy bundle fields differ")
         d = copy.deepcopy(document)
         if context_version:
             _context_layout(d["context_layout"])
+        if node_version:
+            _node_context(d["node_context"])
         sha(d["seed_config_sha256"])
         require(isinstance(d["parent_ids"], list) and len(set(d["parent_ids"])) == len(d["parent_ids"]),
                 "invalid parent identities")
@@ -140,8 +161,9 @@ class SystemTextPolicyBundle:
             sha(identity)
         require(set(d["parent_ids"]) == {p.bundle_id for p in parents}, "all parents must be supplied")
         _text(d["construction_instruction"])
-        require(isinstance(d["role_text"], dict) and set(d["role_text"]) == {"solver", "reviewer", "planner"},
-                "only Solver, Reviewer and Planner texts are editable")
+        roles = {"solver", "reviewer", "planner"} | ({"perception"} if node_version else set())
+        require(isinstance(d["role_text"], dict) and set(d["role_text"]) == roles,
+                "role text must name exactly the roles declared by this policy version")
         for text in d["role_text"].values():
             _text(text)
         supply = d["supply"]
@@ -158,7 +180,7 @@ class SystemTextPolicyBundle:
         validate_sources(d["cumulative_sources"])
         for parent in parents:
             old = parent.as_json()
-            require(old["schema"] != CONTEXT_BUNDLE_SCHEMA or context_version,
+            require(BUNDLE_SCHEMAS.index(old["schema"]) <= BUNDLE_SCHEMAS.index(d["schema"]),
                     "context policy schema cannot downgrade; select historical layout explicitly")
             require(old["seed_config_sha256"] == d["seed_config_sha256"], "seed system changed")
             require(all(s in d["cumulative_sources"] for s in old["cumulative_sources"]),
@@ -183,8 +205,12 @@ class TextPolicyUpdateProposal:
     @staticmethod
     def schema_for_packet(packet):
         """Do not grant expanded proposal syntax to a historical input."""
-        from .system_optimization import CONTEXT_SCOPE_SCHEMA, require_optimization_scope
+        from .system_optimization import CONTEXT_SCOPE_SCHEMA, NODE_SCOPE_SCHEMA, require_optimization_scope
         require_optimization_scope(packet)
+        if packet.get("optimization_scope", {}).get("schema") == NODE_SCOPE_SCHEMA:
+            require(packet.get("parent_policy", {}).get("schema") == NODE_BUNDLE_SCHEMA,
+                    "node proposals require an explicitly frozen four-role parent")
+            return NODE_PROPOSAL_SCHEMA
         return (CONTEXT_PROPOSAL_SCHEMA
                 if packet.get("optimization_scope", {}).get("schema") == CONTEXT_SCOPE_SCHEMA
                 else PROPOSAL_SCHEMA)
@@ -202,11 +228,17 @@ class TextPolicyUpdateProposal:
             "construction_instruction": "EnglishText; requires a materialized knowledge release",
             "slot_value_edits": "object: schema string, base_rows_sha256 SHA256, edits array<object>; follow the indexed slot edit contract"}
         schema = TextPolicyUpdateProposal.schema_for_packet(packet)
-        if schema == CONTEXT_PROPOSAL_SCHEMA:
+        if schema in (CONTEXT_PROPOSAL_SCHEMA, NODE_PROPOSAL_SCHEMA):
             editable["context_layout"] = (
                 "object: exactly native_role_query_placement; null keeps historical placement, "
                 "before-speech-v1 places the complete role query before speech at user authority; "
                 "no other ordering, truncation or generated code is implemented")
+        if schema == NODE_PROPOSAL_SCHEMA:
+            editable["role_text"] = "object: optional perception/solver/reviewer/planner keys; replace the whole independent English instruction, not a cached suffix"
+            editable["node_context"] = (
+                "object: exactly tool_schema_rendering (constant|per-role) and "
+                "reviewer_history_scope (full|latest-solver-and-local-tools); "
+                "these are implemented presentations, not progressive source expansion")
         allowed = packet.get("optimization_scope", {}).get("editable", sorted(EDITABLE))
         fields = {
             "schema": "string = example", "branch": "string = example",
@@ -221,12 +253,13 @@ class TextPolicyUpdateProposal:
             "slot": packet["slot"], "parent_ids": [packet["parent_bundle_id"]], "changes": {},
             "rationale": "No supported revision.", "hypotheses": [], "evidence": []}
         rules = "Keep parent boundaries/control syntax. Invalid, duplicate and no-change spend the slot. Omni owns answers. No sample answers in runtime text."
-        if schema == CONTEXT_PROPOSAL_SCHEMA:
+        if schema in (CONTEXT_PROPOSAL_SCHEMA, NODE_PROPOSAL_SCHEMA):
             rules += (" Joint role text and declared context layout changes are allowed; knowledge, supply and code stay frozen. "
                       "Cache reuse is a measured cost, not an eligibility gate. Reused pool means optimization, not validation.")
         elif "optimization_scope" in packet:
             rules += " Only role text changes; knowledge, supply and code stay frozen. Reused pool means optimization, not validation."
-        return {"contract_version": "typed-context-fields-v2" if schema == CONTEXT_PROPOSAL_SCHEMA else "typed-fields-v1",
+        return {"contract_version": ("typed-node-fields-v3" if schema == NODE_PROPOSAL_SCHEMA else
+                "typed-context-fields-v2" if schema == CONTEXT_PROPOSAL_SCHEMA else "typed-fields-v1"),
             "format": "One JSON object, exactly the example fields; no Markdown.",
             "types": {"EnglishText": f"nonblank English string,1..{TEXT_CHARACTER_CAP} characters",
                 "SHA256": "64 lowercase hexadecimal characters",
@@ -237,20 +270,25 @@ class TextPolicyUpdateProposal:
     @classmethod
     def from_json(cls, d, *, allocation_extension=None):
         require(isinstance(d, dict) and set(d) == PROPOSAL_KEYS
-                and d["schema"] in (PROPOSAL_SCHEMA, CONTEXT_PROPOSAL_SCHEMA), "proposal fields differ")
+                and d["schema"] in (PROPOSAL_SCHEMA, CONTEXT_PROPOSAL_SCHEMA, NODE_PROPOSAL_SCHEMA), "proposal fields differ")
         from .system_search_allocations import require_round
         require_round(d["round"], allocation_extension)
         if allocation_extension is not None:
-            expanded = allocation_extension["editable"] == ["role_text", "context_layout"]
-            require((d["schema"] == CONTEXT_PROPOSAL_SCHEMA) == expanded,
+            expected = {("role_text",): PROPOSAL_SCHEMA,
+                        ("role_text", "context_layout"): CONTEXT_PROPOSAL_SCHEMA,
+                        ("role_text", "context_layout", "node_context"): NODE_PROPOSAL_SCHEMA}
+            require(d["schema"] == expected.get(tuple(allocation_extension["editable"])),
                     "proposal schema differs from registered allocation scope")
         require(d["branch"] in {"L", "B"}
                 and type(d["slot"]) is int and d["slot"] in (1, 2), "invalid proposal allocation")
-        allowed = CONTEXT_EDITABLE if d["schema"] == CONTEXT_PROPOSAL_SCHEMA else EDITABLE
+        allowed = (NODE_EDITABLE if d["schema"] == NODE_PROPOSAL_SCHEMA else
+                   CONTEXT_EDITABLE if d["schema"] == CONTEXT_PROPOSAL_SCHEMA else EDITABLE)
         require(isinstance(d["changes"], dict) and set(d["changes"]) <= allowed,
                 "proposal changes an undeclared editable surface")
         if "context_layout" in d["changes"]:
             _context_layout(d["changes"]["context_layout"])
+        if "node_context" in d["changes"]:
+            _node_context(d["changes"]["node_context"])
         if "slot_value_edits" in d["changes"]:
             from .semantic_knowledge_edits import PROPOSAL_SCHEMA as SLOT_EDIT_SCHEMA
             edits = d["changes"]["slot_value_edits"]
@@ -289,15 +327,23 @@ def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, con
     require(parents and p["parent_ids"] == [b.bundle_id for b in parents], "proposal parent binding differs")
     d = parents[0].as_json()
     changes = p["changes"]
+    if p["schema"] == NODE_PROPOSAL_SCHEMA:
+        require(d["schema"] == NODE_BUNDLE_SCHEMA,
+                "node proposals require an explicitly frozen four-role parent")
+    if "node_context" in changes:
+        d["node_context"] = copy.deepcopy(changes["node_context"])
     if "context_layout" in changes:
-        d["schema"] = CONTEXT_BUNDLE_SCHEMA
+        if d["schema"] != NODE_BUNDLE_SCHEMA:
+            d["schema"] = CONTEXT_BUNDLE_SCHEMA
         d["context_layout"] = copy.deepcopy(changes["context_layout"])
     if "slot_value_edits" in changes or "construction_instruction" in changes:
         require(knowledge is not None and construction_receipt is not None,
                 "joint construction edits need a verified materialized construction release")
     if "role_text" in changes:
         require(isinstance(changes["role_text"], dict)
-                and set(changes["role_text"]) <= {"solver", "reviewer", "planner"}, "unknown role text")
+                and set(changes["role_text"]) <= (
+                    {"perception", "solver", "reviewer", "planner"} if p["schema"] == NODE_PROPOSAL_SCHEMA
+                    else {"solver", "reviewer", "planner"}), "unknown role text")
         d["role_text"].update(changes["role_text"])
     for key in ("construction_instruction", "supply"):
         if key in changes:
@@ -328,6 +374,17 @@ def compile_system_text_policy(baseline, bundle, *, repo_root, output_root, enab
     opportunity = next(c for c in block["components"] if c["component_id"] == cm.KNOWLEDGE_CONSUMPTION_OPPORTUNITY)
     require(opportunity["state"] == "on", "seed must have the bounded opportunity enabled")
     params = opportunity["params"]
+    if "node_context" in d:
+        presentations = [c for c in block["components"] if c["component_id"] == cm.NODE_CONTEXT_PRESENTATION]
+        require(len(presentations) <= 1, "duplicate node context presentation")
+        if presentations:
+            presentations[0].update(state="on", params=copy.deepcopy(d["node_context"]))
+        else:
+            from .system_optimization import NODE_AUTHORITY
+            block["components"].append({"component_id": cm.NODE_CONTEXT_PRESENTATION,
+                                        "state": "on", "params": copy.deepcopy(d["node_context"]),
+                                        "admitted_by": "owner227; direct node optimization scope",
+                                        "record": NODE_AUTHORITY})
     knowledge_changed = d["knowledge"] != {k: baseline["knowledge_stores"][params["store_id"]][k] for k in ("snapshot", "release")}
     if knowledge_changed or d["construction_receipt"] is not None:
         require(data_root is not None and d["construction_receipt"] is not None,
@@ -437,4 +494,9 @@ def verify_system_text_binding(baseline, binding, *, repo_root, data_root):
     receipt = {"bundle_id": bundle.bundle_id, "role_sha256": role_hashes}
     if "context_layout" in document:
         receipt["context_layout"] = copy.deepcopy(expected_layout)
+    if "node_context" in document:
+        actual = {"tool_schema_rendering": baseline["native_episode"].get("tool_schema_rendering"),
+                  "reviewer_history_scope": baseline["native_episode"]["roles"]["reviewer"].get("history_scope", "full")}
+        require(actual == document["node_context"], "bound node context differs from actual runtime")
+        receipt["node_context"] = copy.deepcopy(actual)
     return receipt

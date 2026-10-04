@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Full node optimization interface and learning preparation, 2026-10-04T00:49:12.658310+00:00
+
+The latest direct owner instruction concludes general cache/scheduler analysis and moves toward learning over the complete editable policy of every node. [Owner amendment](../receipts/owner/2026-10-04-node-optimization-space.json), [space contract and algorithm handoff](../readiness/2026-10-04-node-optimization-space-v1/README.md), and [engineering receipt](../receipts/continuation/2026-10-04-node-optimization-space-engineering.json) are authoritative for this priority. Sequential trajectory execution remains the reference.344 was newly evaluated prefill, not an optimizer allowance.
+
+V3 now binds complete Perception/Solver/Reviewer/Planner English texts and existing context placement/tool-presentation/Reviewer-history options through the shared bundle, compiler, proposer capsule and actual-byte prelaunch verifier. Old request contracts and default-off behavior remain unchanged.667 targeted tests pass; five changed modules have about95% combined statement coverage. Base/harness/native reuse/media-confinement checks and targeted lint pass. No new proposer/model/tokenizer/scorer contacts or runtime mutations; no new effectiveness claim.
+
+Learning preparation is now authorized, superseding the earlier priority hold. Actual proposals still require a newly frozen four-node seed and exact sequence; no implicit three-role identity rebase, old allocation replacement or L/B contamination. Progressive evidence/summary actions remain prospective. The existing retention frontier still uses call counts; implement a versioned complete-sample latency/reliability profile before claiming the intended learning loop is ready. Preserve official quality, intent, reliable delivery, overall/non-first latency and A/A uncertainty. Do not use combined root/B/cache or milestone results as optimizer feedback.
+
+Next freeze the new seed/protocol, connect measured latency selection, and run bounded registered capacity/structural/full-small-panel checks. Root227 covers routine decisions before8x400; return to the human at that boundary. Heartbeat stays PAUSED; root-only work; frozen workers, queues, serving and other-carrier holds remain unchanged. See earlier records for historical runtime health; this offline change did not revalidate current service health.
+
 ## Sequential context priority and Reviewer optimization, 2026-10-04T00:12:51.118380+00:00
 
 The latest direct human instruction keeps sequential trajectory execution and asks for compact/progressive cross-node context. The follow-up concern explicitly rejects treating344 newly evaluated tokens as the Reviewer optimization allowance. [Owner amendment](../receipts/owner/2026-10-04-sequential-progressive-context.json), [offline design](../readiness/2026-10-04-sequential-progressive-context-v1/README.md), and [source-pinned footprint audit](../receipts/continuation/2026-10-04-sequential-context-footprint.json) supersede the earlier next-step priority of saved-state investigation. No new runtime admission.

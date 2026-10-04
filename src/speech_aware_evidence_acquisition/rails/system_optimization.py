@@ -19,9 +19,29 @@ from .system_text_policy import (
 OWNER224 = "docs/receipts/owner/2026-10-02-decision224-fixed400-context-postcall.json"
 CONTEXT_AUTHORITY = "docs/receipts/owner/2026-10-03-context-space-and-node-timing-amendment.json"
 CONTEXT_SCOPE_SCHEMA = "saea-context-layout-search-scope-v2"
+NODE_SCOPE_SCHEMA = "saea-node-context-search-scope-v3"
+NODE_AUTHORITY = "docs/receipts/owner/2026-10-04-node-optimization-space.json"
+CONTEXT_SCOPES = (CONTEXT_SCOPE_SCHEMA, NODE_SCOPE_SCHEMA)
 PILOT = "pilot20-owner220"
 LEARNING_MEMBERS = {"L-parent", "L-parent-aa", "L-candidate-1", "L-candidate-2"}
 SELECTION_SCHEMA = "saea-exploratory-learning-selection-v1"
+
+
+def editable_for_scope(schema):
+    return (["role_text", "context_layout", "node_context"] if schema == NODE_SCOPE_SCHEMA else
+            ["role_text", "context_layout"] if schema == CONTEXT_SCOPE_SCHEMA else ["role_text"])
+
+
+def validate_context_authority(pin, *, repo_root, node_version=False):
+    expected = NODE_AUTHORITY if node_version else CONTEXT_AUTHORITY
+    require(pin.get("relpath") == expected, "exact context-space owner receipt required")
+    authority = json.loads(_read_pin(pin, repo_root))
+    schema = "saea-owner-node-optimization-space-v1" if node_version else "saea-owner-context-space-amendment-v1"
+    require(authority.get("schema") == schema
+            and authority.get("gpu_dispatch_authorized_by_this_record") is False
+            and authority.get("new_human_permission_required_within_owner227") is False,
+            "context-space owner authority differs")
+    return authority
 
 
 def load_optimization_panel(protocol, stage, *, repo_root):
@@ -40,7 +60,7 @@ def load_optimization_panel(protocol, stage, *, repo_root):
         require(owner.get("decision_id") == decision_id and owner.get("status") == "approved",
                 "extended context scope requires its exact registered owner")
         allowed_stages.add(f"update-{extension['round']}")
-    context_version = isinstance(block, dict) and block.get("schema") == CONTEXT_SCOPE_SCHEMA
+    context_version = isinstance(block, dict) and block.get("schema") in CONTEXT_SCOPES
     fields = {"plan", "stages", "editable"}
     if context_version:
         fields |= {"schema", "context_authority"}
@@ -51,17 +71,12 @@ def load_optimization_panel(protocol, stage, *, repo_root):
         and block["stages"]
         and len(set(block["stages"])) == len(block["stages"])
         and set(block["stages"]) <= allowed_stages
-        and block["editable"] == (["role_text", "context_layout"] if context_version else ["role_text"]),
+        and block["editable"] == editable_for_scope(block.get("schema")),
         "invalid context optimization scope",
     )
     if context_version:
-        require(block["context_authority"]["relpath"] == CONTEXT_AUTHORITY,
-                "exact context-space owner receipt required")
-        authority = json.loads(_read_pin(block["context_authority"], repo_root))
-        require(authority.get("schema") == "saea-owner-context-space-amendment-v1"
-                and authority.get("gpu_dispatch_authorized_by_this_record") is False
-                and authority.get("new_human_permission_required_within_owner227") is False,
-                "context-space owner authority differs")
+        validate_context_authority(block["context_authority"], repo_root=repo_root,
+                                   node_version=block.get("schema") == NODE_SCOPE_SCHEMA)
     if extension is not None:
         require(block["editable"] == extension["editable"]
                 and block.get("context_authority") == extension.get("context_authority"),
@@ -306,8 +321,8 @@ def optimization_scope_for(protocol, round_index):
         return None
     scope = {"purpose": "reused-optimization-panel", "editable": list(block["editable"]),
              "plan_sha256": block["plan"]["sha256"]}
-    if block.get("schema") == CONTEXT_SCOPE_SCHEMA:
-        scope.update(schema=CONTEXT_SCOPE_SCHEMA,
+    if block.get("schema") in CONTEXT_SCOPES:
+        scope.update(schema=block["schema"],
                      context_authority_sha256=block["context_authority"]["sha256"])
     require_optimization_scope({"optimization_scope": scope})
     return scope
@@ -319,7 +334,7 @@ def require_optimization_scope(packet, *, protocol=None):
     if scope is not None:
         from .system_text_policy import sha
 
-        context_version = isinstance(scope, dict) and scope.get("schema") == CONTEXT_SCOPE_SCHEMA
+        context_version = isinstance(scope, dict) and scope.get("schema") in CONTEXT_SCOPES
         fields = {"purpose", "editable", "plan_sha256"}
         if context_version:
             fields |= {"schema", "context_authority_sha256"}
@@ -327,7 +342,7 @@ def require_optimization_scope(packet, *, protocol=None):
             isinstance(scope, dict)
             and set(scope) == fields
             and scope["purpose"] == "reused-optimization-panel"
-            and scope["editable"] == (["role_text", "context_layout"] if context_version else ["role_text"]),
+            and scope["editable"] == editable_for_scope(scope.get("schema")),
             "optimization input scope differs",
         )
         sha(scope["plan_sha256"])

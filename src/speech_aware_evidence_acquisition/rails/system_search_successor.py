@@ -17,7 +17,8 @@ from .system_text_policy import _pin, _read_pin, require, sha
 OWNER227 = "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json"
 SCHEMA = "saea-system-search-successor-sequence-v1"
 CONTEXT_SCHEMA = "saea-system-search-successor-sequence-v2"
-SCHEMAS = (SCHEMA, CONTEXT_SCHEMA)
+NODE_SCHEMA = "saea-system-search-successor-sequence-v3"
+SCHEMAS = (SCHEMA, CONTEXT_SCHEMA, NODE_SCHEMA)
 FIELDS = {"schema", "round", "owner", "transition", "previous_protocol", "earlier_allocations",
     "held_allocations", "model_version", "seed_bundle_id", "input_token_cap", "output_token_cap",
     "contact_cap", "editable", "no_runtime_authority", "sequence_id", "predecessor_archive",
@@ -31,18 +32,20 @@ def digest(path):
 
 
 def require_successor(index, document):
-    context_version = isinstance(document, dict) and document.get("schema") == CONTEXT_SCHEMA
+    node_version = isinstance(document, dict) and document.get("schema") == NODE_SCHEMA
+    context_version = node_version or (isinstance(document, dict) and document.get("schema") == CONTEXT_SCHEMA)
     fields = FIELDS | {"context_authority"} if context_version else FIELDS
     require(isinstance(document, dict) and set(document) == fields
         and document["schema"] in SCHEMAS and type(index) is int and index > 3
         and type(document["round"]) is int and document["round"] == index, "registered successor sequence required")
     require(document["no_runtime_authority"] is True
-        and document["editable"] == (["role_text", "context_layout"] if context_version else ["role_text"]),
+        and document["editable"] == (["role_text", "context_layout", "node_context"] if node_version else
+                                 ["role_text", "context_layout"] if context_version else ["role_text"]),
         "successor is declared text/context proposal preparation only")
     if context_version:
-        from .system_optimization import CONTEXT_AUTHORITY
+        from .system_optimization import CONTEXT_AUTHORITY, NODE_AUTHORITY
         _pin(document["context_authority"])
-        require(document["context_authority"]["relpath"] == CONTEXT_AUTHORITY,
+        require(document["context_authority"]["relpath"] == (NODE_AUTHORITY if node_version else CONTEXT_AUTHORITY),
                 "exact context-space owner receipt required")
     for key in ("owner", "transition", "previous_protocol"):
         _pin(document[key])
@@ -60,7 +63,8 @@ def require_successor(index, document):
         "closed and held allocations must partition the predecessor")
     for record in closed.values():
         require(isinstance(record, dict) and set(record) == set(FOLDERS), "invalid closed custody")
-        for value in record.values(): sha(value)
+        for value in record.values():
+            sha(value)
     for record in held.values():
         require(isinstance(record, dict) and set(record) == {"input"}, "held is not spent")
         sha(record["input"])
@@ -129,9 +133,11 @@ def partition(predecessor, index, model):
                         "accepted predecessor response identity differs")
                 closed[key] = {kind: digest(predecessor.root / folder / (key + ".json"))
                     for kind, folder in FOLDERS.items()}
-                for kind, folder in FOLDERS.items(): files[f"{folder}/{key}.json"] = closed[key][kind]
+                for kind, folder in FOLDERS.items():
+                    files[f"{folder}/{key}.json"] = closed[key][kind]
                 proposal = predecessor.root / f"proposals/{key}.json"
-                if proposal.exists(): files[f"proposals/{key}.json"] = digest(proposal)
+                if proposal.exists():
+                    files[f"proposals/{key}.json"] = digest(proposal)
     for folder in ("policies", "allocations"):
         for path in sorted((predecessor.root / folder).glob("*.json")):
             files[f"{folder}/{path.name}"] = digest(path)
@@ -153,6 +159,11 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
     if not preparing:
         require(all((archive.root / p).is_file() and digest(archive.root / p) == value for p, value in files.items()),
             "successor snapshot changed")
+    if document["schema"] == NODE_SCHEMA:
+        from .system_text_policy import NODE_BUNDLE_SCHEMA
+        seed = predecessor.load_policy(document["seed_bundle_id"])
+        require(seed.as_json()["schema"] == NODE_BUNDLE_SCHEMA,
+                "node successor requires an explicitly registered four-role seed; no implicit rebase")
     if repo_root is not None:
         owner = json.loads(_read_pin(document["owner"], repo_root))
         require(owner.get("decision_id") == 227 and owner.get("status") == "approved", "owner227 is not approved")
@@ -172,12 +183,10 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
             and decision.get("new_allocations") == document["allocations"], "exact root transition disposition required")
         require(decision.get("context_authority") == document.get("context_authority"),
                 "successor context scope differs from root transition")
-        if document["schema"] == CONTEXT_SCHEMA:
-            authority = json.loads(_read_pin(document["context_authority"], repo_root))
-            require(authority.get("schema") == "saea-owner-context-space-amendment-v1"
-                    and authority.get("gpu_dispatch_authorized_by_this_record") is False
-                    and authority.get("new_human_permission_required_within_owner227") is False,
-                    "context-space owner authority differs")
+        if document["schema"] in (CONTEXT_SCHEMA, NODE_SCHEMA):
+            from .system_optimization import validate_context_authority
+            validate_context_authority(document["context_authority"], repo_root=repo_root,
+                                       node_version=document["schema"] == NODE_SCHEMA)
     return document
 
 
@@ -194,7 +203,10 @@ def build_successor(predecessor, successor, *, round_index, owner, transition, p
         "successor_archive": str(successor.root.resolve()), "snapshot_files": files,
         "allocations": [f"{b}-{round_index}-{s}" for s in (1, 2) for b in ("L", "B")]}
     if "context_authority" in decision:
-        document.update(schema=CONTEXT_SCHEMA, editable=["role_text", "context_layout"],
+        from .system_optimization import NODE_AUTHORITY
+        node_version = decision["context_authority"]["relpath"] == NODE_AUTHORITY
+        document.update(schema=NODE_SCHEMA if node_version else CONTEXT_SCHEMA,
+                        editable=["role_text", "context_layout", "node_context"] if node_version else ["role_text", "context_layout"],
                         context_authority=decision["context_authority"])
     return validate_successor(successor, document, repo_root=repo_root, preparing=True)
 
