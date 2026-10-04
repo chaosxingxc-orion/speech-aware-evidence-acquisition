@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Initial4 precontact ledger correction, 2026-10-04T07:44:29.905227+00:00
+
+The first clean frozen runtime check correctly refused a root preparation defect: the eight prospective exposure rows copied consumed=yes from the completed seed predecessor. No attempt/run directory or service contact exists. Root227 [disposition](../receipts/continuation/2026-10-04-context-initial4-precontact-ledger-disposition.json) corrects only these new rows to no in a successor checkout and preserves original993fd7908 source/logs. Full frozen runtime checks remain; no bypass, replay or automatic contact is authorized.
+
 ## Initial four-system runtime preparation and conditional capacity entry, 2026-10-04T07:41:33.839738+00:00
 
 [Engineering preparation](../readiness/2026-10-04-context-initial4-engineering-v1/README.md) binds all four distinct complete policies to the existing UPDATE2 first20/first4 supplies through the shared compiler/runtime. Twelve role bindings and four model-free graph compositions pass. Eight own supplies warm-verify with unchanged selected output bytes. The initial smoke preparation retained legacy request-FIT identities; this was detected before any contact, corrected in new v2 envelopes and recorded without changing the v1 envelopes.
