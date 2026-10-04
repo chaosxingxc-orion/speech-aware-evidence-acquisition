@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 update-two execution preparation progressing, 2026-10-04
+
+[Live preparation snapshot](../receipts/continuation/2026-10-04-k16-update2-preparation-progress.json) revalidates both model-free processes: root session42864 serially prepares16 graph/capacity/structural children; session76978 prepares the fresh18-member N20 supply envelopes. Both reuse existing selection bytes. Inspect those exact handles/logs and continue them; do not resubmit on an observation timeout. All new runtime cells remain HELD and no new tokenizer,generation or scorer contact occurred.
+
+Prospective orchestration is prepared in coordination/context-template-k16-update2-capacity-owner227-v1, context-template-k16-update2-structural-owner227-v1 and context-template-k16-update2-n20-owner227-v1. [Entry rehearsal](../receipts/continuation/2026-10-04-k16-update2-prospective-entry-rehearsal.json) accepts the iteration2/K16/N20 scope and refuses five malformed family/sampling/read variants; the six actual capacity admission assertions reject six malformed populations. Eleven unscored-lifecycle tests pass. These are synthetic/model-free proofs, not real frozen or capacity acceptance.
+
+Next, finish child preparations, execute the prepared capacity registration once, commit/freeze a clean new capacity worker and complete every exact frozen/live gate before Windows-owned capacity dispatch. Only full successful capacity permits separate64-row unscored structure; only complete structural acceptance and exact frozen registration permit360-row scientific evaluation. The update2 N20 helpers bind the prior registered strict population-utility retention intent and preserve separate quality/intent/reliability/actual mean and non-first latency reporting. Do not alter the old K4 iterator or claim formal adoption. Paused heartbeat,formal seed,other-carrier holds and human-before8x400 remain.
+
 ## K16 abstract update-two original received and compiled, 2026-10-04
 
 [Original completion](../receipts/continuation/2026-10-04-k16-update2-proposer-complete.json) preserves the terminal GPT-6.1 Sol/high actor response,224429bytes,SHA2567c372a9a91f32400435a14709f54db3fc21099c04f49d4e470c0c79ddfd2618a. All three allowed input files remain unchanged. All16 reserved positions are spent; provider usage remains null. The actor is complete; never resubmit or repair its original response.

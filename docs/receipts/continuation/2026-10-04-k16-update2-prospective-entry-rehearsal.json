@@ -1,0 +1,24 @@
+{
+  "schema": "saea-k16-update2-prospective-entry-rehearsal-v1",
+  "at_utc": "2026-10-04T23:41:28.159011+00:00",
+  "scope": "Model-free in-memory rehearsal using actual pinned owner scope, same ordered input roster and all16 compiled child identities. Config hashes remain predecessor placeholders; this does not replace actual registered/frozen runtime checks.",
+  "actual_scope_validator_accepted": {
+    "iteration": 2,
+    "candidates": 16,
+    "controls": 2,
+    "rows_per_member": 20
+  },
+  "faults_rejected": [
+    "missing-member",
+    "duplicate-policy",
+    "wrong-cohort",
+    "changed-temperature",
+    "different-read"
+  ],
+  "structural_unscored_tests_passed": 11,
+  "capacity_launch_assertions_tested": 6,
+  "capacity_malformed_populations_rejected": 6,
+  "result_reads": 0,
+  "model_tokenizer_scorer_contacts": 0,
+  "runtime_admission": false
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "saea-k16-update2-preparation-progress-v1",
+  "at_utc": "2026-10-04T23:42:12.353263+00:00",
+  "live_processes": [
+    {
+      "pid": 771473,
+      "start_ticks": "50423127",
+      "argv": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/prepare-n20-v1.py"
+      ]
+    },
+    {
+      "pid": 774023,
+      "start_ticks": "50451548",
+      "argv": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/prepare-child-engineering-v1.py",
+        "branch-08"
+      ]
+    }
+  ],
+  "completed_child_preparations": 7,
+  "completed_n20_supply_messages": 11,
+  "root_execution_sessions": {
+    "child_engineering": 42864,
+    "complete_n20": 76978
+  },
+  "new_runtime_contacts": 0,
+  "note": "Both handles revalidated live. Do not resubmit. Current sources are editable offline preparation; all runtime cells HELD. Exact subsequent frozen checks remain required."
+}

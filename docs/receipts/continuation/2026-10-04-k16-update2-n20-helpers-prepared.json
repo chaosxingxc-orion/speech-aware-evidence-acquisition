@@ -1,0 +1,44 @@
+{
+  "schema": "saea-k16-update2-n20-helpers-prepared-v1",
+  "at_utc": "2026-10-04T23:39:43.791049+00:00",
+  "helpers": [
+    {
+      "name": "prepare-entry-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/prepare-entry-v1.py",
+        "sha256": "45232a3c5409e756f56390ec93df6a5f0f48c6fc5f7cfc8ffdfd945ddbf32985"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/prepare-entry-v1.py",
+        "sha256": "49ed27913a29870a814ad64a0ce2435a33e324cecde49c3e7121d77a786146da"
+      }
+    },
+    {
+      "name": "frozen-check-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/frozen-check-v1.py",
+        "sha256": "18df0fb66e4254d315775301a5f9932258cd7b354d0d5ca82de19737333df52e"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/frozen-check-v1.py",
+        "sha256": "9825eead1dd9cf18fe5d00a0d1e8ba9d4cd7c4d3d9b14d0d4bafd6d853b910d4"
+      }
+    },
+    {
+      "name": "prepare-analysis-supplement-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/prepare-analysis-supplement-v1.py",
+        "sha256": "c9c260d087489f25e1920d9d2aa754f9690efb4952577606a12253d9fd838d59"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/prepare-analysis-supplement-v1.py",
+        "sha256": "da1c4511e158d07622a15b6883b8af3834459424a4a66f5093cbf646e3abf700"
+      }
+    }
+  ],
+  "syntax_checked": true,
+  "scope": "Fresh eighteen-member learned update-two identities, exact compiled original children, existing seed/A/A, same20 inputs, iteration2 and prospective retention intent binding. No legacy K4 callback.",
+  "runtime_admission": false,
+  "contacts_added": 0,
+  "conditions": "All sixteen capacity and structural proofs, complete member supplies and clean frozen checks precede live admission. Scientific READ remains unsigned until full independent seals and unique official scores."
+}

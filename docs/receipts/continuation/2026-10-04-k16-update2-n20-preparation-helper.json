@@ -1,0 +1,16 @@
+{
+  "schema": "saea-k16-update2-n20-preparation-helper-v1",
+  "at_utc": "2026-10-04T23:36:30.839345+00:00",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/prepare-n20-v1.py",
+    "sha256": "46313cdde21bf96ba10f6433f3e749dfb50156a2080250dd0b5b89e4c45af6ba"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/prepare-n20-v1.py",
+    "sha256": "351937fd36b137989855408019bffcbd95a6eba2621ad16781371c248e6bdf29"
+  },
+  "scope": "Only new learned policy identities and fresh eighteen HELD supply envelopes on the same existing20 inputs; preserve selection bytes.",
+  "syntax_checked": true,
+  "runtime_admission": false,
+  "contacts_added": 0
+}
