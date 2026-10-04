@@ -1,0 +1,132 @@
+{
+  "allocation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/allocations/round-9.json",
+    "sha256": "4abba8c04f1d098a39a684d76208313a56a6955a594b783dd7f1e81d89f7533b"
+  },
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227",
+  "closed_predecessors": 29,
+  "heartbeat": "PAUSED",
+  "held_predecessors": 3,
+  "matched_total_compute_claim": false,
+  "members": [
+    {
+      "artifact_count": 172,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/capsules/L-9-1.json",
+        "sha256": "658cca1211a8b234742d3e1ef1f1cba865c9524243d061283f929f7b3c2c93ac"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "17736da97999a03436f3bc139df4ef109a5f74cdd446df3ac68416401b062744",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-9-1-FOUR-NODE-OWNER227-V1",
+        "split_identity_hash": "54f75a59aa71f4c153bbd4732d64502713dfd4593137d3afc7944f68f97bf62f",
+        "split_role": "discovery"
+      },
+      "history_entries": 15,
+      "initial_input_bound": 24352,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/inputs/L-9-1.json",
+        "sha256": "069c875a474d74558b24e150ac7ad2fe7cb8d686681455353be0b8394da7208e"
+      },
+      "key": "L-9-1",
+      "request_sha256": "a98a1eecb3a6a64560534c5ccf3d439a16f6f1e7424fcb497cb0870f5d1d1bad"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/capsules/B-9-1.json",
+        "sha256": "692b89e991bdbd67c711506bdad4eced4b7030617f30d58ab3c949d43ba3dffa"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "17736da97999a03436f3bc139df4ef109a5f74cdd446df3ac68416401b062744",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-9-1-FOUR-NODE-OWNER227-V1",
+        "split_identity_hash": "994e8ad02aa7a421691db2a889c630100b60dffd21c47430b2b69d37c6ee90f8",
+        "split_role": "discovery"
+      },
+      "history_entries": 0,
+      "initial_input_bound": 17024,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/inputs/B-9-1.json",
+        "sha256": "8974711a996d710f561b2693f59272a30a62df82f6289017e68e367152930adf"
+      },
+      "key": "B-9-1",
+      "request_sha256": "823f9c23177e7da2c6820029ffaf303fc3fb7b783f281f75593490ddbb24477e"
+    },
+    {
+      "artifact_count": 172,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/capsules/L-9-2.json",
+        "sha256": "857cc62885fa815655b25228f48f6578574678375428e53f59bd91f4f0e2bdfd"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "17736da97999a03436f3bc139df4ef109a5f74cdd446df3ac68416401b062744",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-L-9-2-FOUR-NODE-OWNER227-V1",
+        "split_identity_hash": "819654409d40ab4db34cc6419472e6dff4ce7a3947db533153dd997c4bcd0381",
+        "split_role": "discovery"
+      },
+      "history_entries": 15,
+      "initial_input_bound": 24352,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/inputs/L-9-2.json",
+        "sha256": "08434e848af280001eeed7712ef4d556e10799580c257c2586ff680708c3e2ca"
+      },
+      "key": "L-9-2",
+      "request_sha256": "54127785be3e38f954d61a7926f431a69ca0ea925e12a273f1a08c4e2b12e8e2"
+    },
+    {
+      "artifact_count": 6,
+      "capsule": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/capsules/B-9-2.json",
+        "sha256": "f84c857ce24b163800dacffe167c465ecaec78414c81912d02ac3973f1128617"
+      },
+      "execution_plan": {
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 4,
+        "planned_speech_audio_seconds": 1,
+        "protocol_hash": "17736da97999a03436f3bc139df4ef109a5f74cdd446df3ac68416401b062744",
+        "run_id": "SAEA-SLURP-SYSTEM-TEXT-PROPOSER-B-9-2-FOUR-NODE-OWNER227-V1",
+        "split_identity_hash": "9a6934a1303230c038ca08318f8667471f6fb41834c5bb3ecbb4519821eff669",
+        "split_role": "discovery"
+      },
+      "history_entries": 0,
+      "initial_input_bound": 17024,
+      "input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/inputs/B-9-2.json",
+        "sha256": "170d0441dfdd7b7e6c1907d903363b6fa01c82336972958393b6d121a6f79855"
+      },
+      "key": "B-9-2",
+      "request_sha256": "d893789e6bf0cd312664866eb90e92e0cfbc3efdf7fac262be1193b5b26d965a"
+    }
+  ],
+  "new_contacts": 0,
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-04-slurp-four-node-proposer-round9-v1/protocol-proposals-v1.json",
+    "sha256": "241c4bf29c40f048b80487e0ceae56249b8e4ee0f36be5e8f331b3bdab90f0fd"
+  },
+  "provider_admission": {
+    "relpath": "docs/readiness/2026-10-04-slurp-four-node-proposer-round9-v1/provider-admission-v1.json",
+    "sha256": "8bb144d577e76bb4f8060ee30d36e408c752b31b7a24ff3541f51549f44aabee"
+  },
+  "recorded_at_utc": "2026-10-04T02:41:46.453026+00:00",
+  "round_index": 9,
+  "schema": "saea-system-text-proposer-round-readiness-v1",
+  "sequence_id": "four-node-measured-successor3-owner227",
+  "source_data_rebuilt": false,
+  "status": "READY-FOR-CONDITIONAL-ROOT-ADMISSION"
+}

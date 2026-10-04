@@ -271,3 +271,18 @@ def test_node_successor_continues_only_an_explicit_four_role_seed_protocol(tmp_p
     register_successor(old, new, successor, repo_root=repo)
     assert new.allocation_extension(4) == successor
     assert new.load_policy(node_seed.bundle_id).as_json() == node_seed.as_json()
+
+
+
+def test_node_branches_receive_the_same_system_quality_and_latency_objective(tmp_path):
+    p, _ = packet(tmp_path)
+    rules = []
+    for branch in ("L", "B"):
+        p["branch"] = branch
+        r = TextPolicyUpdateProposal.response_contract(p)["rules"]
+        assert "official SLU-F1" in r
+        assert "intent" in r and "reliable completion" in r
+        assert "non-first sample" in r and "mean" in r
+        assert "first sample" in r
+        rules.append(r)
+    assert rules[0] == rules[1]

@@ -289,6 +289,14 @@ class TextPolicyUpdateProposal:
                       "Cache reuse is a measured cost, not an eligibility gate. Reused pool means optimization, not validation.")
         elif "optimization_scope" in packet:
             rules += " Only role text changes; knowledge, supply and code stay frozen. Reused pool means optimization, not validation."
+        if schema == NODE_PROPOSAL_SCHEMA:
+            rules += (
+                " Optimize complete-system official SLU-F1 while preserving intent and reliable completion. "
+                "Seek useful quality-cost tradeoffs in mean sample admission-to-settled-workflow latency, "
+                "including non-first sample mean; report the first sample separately. "
+                "Account for every role, tool and revision. Do not substitute call counts or cache hits "
+                "for measured latency, or claim unobserved gains. Independent full node instructions "
+                "and joint changes are allowed; do not shorten useful reasoning solely for cache reuse.")
         return {"contract_version": ("typed-node-fields-v3" if schema == NODE_PROPOSAL_SCHEMA else
                 "typed-context-fields-v2" if schema == CONTEXT_PROPOSAL_SCHEMA else "typed-fields-v1"),
             "format": "One JSON object, exactly the example fields; no Markdown.",

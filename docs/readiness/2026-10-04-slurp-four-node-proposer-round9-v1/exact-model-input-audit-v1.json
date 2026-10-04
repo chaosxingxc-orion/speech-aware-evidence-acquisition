@@ -1,0 +1,60 @@
+{
+  "actual_contacts": 0,
+  "at_utc": "2026-10-04T02:41:46.453026+00:00",
+  "members": [
+    {
+      "actual_contacts": 0,
+      "bootstrap_notice_present": true,
+      "envelope_bound": 146571,
+      "feedback_present": true,
+      "headroom": 17269,
+      "history_entries": 15,
+      "initial_bound": 24352,
+      "key": "L-9-1",
+      "objective_sha256": "cb4f8c662014450227dec8e77dfeb8eb81f4c14957745541739f9a2cc0cb1ff6",
+      "request_sha256": "a98a1eecb3a6a64560534c5ccf3d439a16f6f1e7424fcb497cb0870f5d1d1bad",
+      "typed_contract_sha256": "0caf66d96eed2759c8a2b455a90090ed2656bc5f691bbdb8fb709bb8a44616a6"
+    },
+    {
+      "actual_contacts": 0,
+      "bootstrap_notice_present": false,
+      "envelope_bound": 117259,
+      "feedback_present": false,
+      "headroom": 46581,
+      "history_entries": 0,
+      "initial_bound": 17024,
+      "key": "B-9-1",
+      "objective_sha256": "cb4f8c662014450227dec8e77dfeb8eb81f4c14957745541739f9a2cc0cb1ff6",
+      "request_sha256": "823f9c23177e7da2c6820029ffaf303fc3fb7b783f281f75593490ddbb24477e",
+      "typed_contract_sha256": "63647e5ffa87e810b739c981b35d10075c97a09978374a53f7a41a4b93eb3c47"
+    },
+    {
+      "actual_contacts": 0,
+      "bootstrap_notice_present": true,
+      "envelope_bound": 146571,
+      "feedback_present": true,
+      "headroom": 17269,
+      "history_entries": 15,
+      "initial_bound": 24352,
+      "key": "L-9-2",
+      "objective_sha256": "cb4f8c662014450227dec8e77dfeb8eb81f4c14957745541739f9a2cc0cb1ff6",
+      "request_sha256": "54127785be3e38f954d61a7926f431a69ca0ea925e12a273f1a08c4e2b12e8e2",
+      "typed_contract_sha256": "21c4f3b5bd644e4d1330bb2683f56a3e70286bf5fc406c735783ce0221d6db2c"
+    },
+    {
+      "actual_contacts": 0,
+      "bootstrap_notice_present": false,
+      "envelope_bound": 117259,
+      "feedback_present": false,
+      "headroom": 46581,
+      "history_entries": 0,
+      "initial_bound": 17024,
+      "key": "B-9-2",
+      "objective_sha256": "cb4f8c662014450227dec8e77dfeb8eb81f4c14957745541739f9a2cc0cb1ff6",
+      "request_sha256": "d893789e6bf0cd312664866eb90e92e0cfbc3efdf7fac262be1193b5b26d965a",
+      "typed_contract_sha256": "8825190e8b99f7a1e260ec90e13ccc9ea00da629514b617da038233166bc473b"
+    }
+  ],
+  "schema": "saea-exact-proposer-input-audit-v1",
+  "shared_objective": "Keep parent boundaries/control syntax. Invalid, duplicate and no-change spend the slot. Omni owns answers. No sample answers in runtime text. Joint role text and declared context layout changes are allowed; knowledge, supply and code stay frozen. Cache reuse is a measured cost, not an eligibility gate. Reused pool means optimization, not validation. Optimize complete-system official SLU-F1 while preserving intent and reliable completion. Seek useful quality-cost tradeoffs in mean sample admission-to-settled-workflow latency, including non-first sample mean; report the first sample separately. Account for every role, tool and revision. Do not substitute call counts or cache hits for measured latency, or claim unobserved gains. Independent full node instructions and joint changes are allowed; do not shorten useful reasoning solely for cache reuse."
+}

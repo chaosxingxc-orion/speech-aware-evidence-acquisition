@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Four-node round9 inputs registered and root proposal admission, 2026-10-04T02:43:18.543142+00:00
+
+[Exact proposer package](../readiness/2026-10-04-slurp-four-node-proposer-round9-v1/README.md) and [conditional root admission](../receipts/continuation/2026-10-04-four-node-round9-root-admission.json) register L-9-1/B-9-1/L-9-2/B-9-2 in `four-node-measured-successor3-owner227`. All four formal exporter packets exactly match final previews after whole-family qualification and normal history validation. Both L inputs preserve15 own-L histories and explicitly labeled historical feedback; B has none. All29 closed/3 HELD predecessor slots stay preserved. Four new slots are available, unspent; zero new model contacts at this checkpoint.
+
+The two branches now receive identical explicit complete-system quality, intent, reliable-completion and mean/non-first sample latency objectives.61 focused tests, lint and base checks pass. All four exact initial requests and maximum serialized-continuation envelopes fit163840 cumulative input,4096 output acceptance and four contacts: L envelope146571, B117259. These are conservative byte bounds, not provider usage or completion guarantees. Inputs/capsules retain complete disk-backed history; no source data or knowledge rebuild. Capsule chunks remain pinned in the separate immutable final preview directory.
+
+Root227 conditionally countersigns exactly those four one-shot proposal allocations through the existing Windows-owned launcher, after clean frozen check-only and fresh no-competing-proposer proof. Next serially integrate, create the clean frozen worker, perform that final check and launch once. No GPU experiment, scientific READ, queue/STOP transition or policy activation is admitted. After outputs, preserve invalid/no-change outcomes, compile legal candidates, and separately register FIT/structural/full8x20 comparison. No stable system benefit or learning gain is established. Root-only; heartbeat PAUSED; same fixed400 and sequential runtime; human before8x400; other-carrier holds unchanged.
+
 ## Four-node learning adapters and real input rehearsal, 2026-10-04T02:11:30.389486+00:00
 
 [Preparation package](../readiness/2026-10-04-four-node-round9-preparation-v1/README.md) and [engineering receipt](../receipts/continuation/2026-10-04-four-node-learning-preparation-engineering.json) implement exact v4 successor seed custody and qualified historical own-L bootstrap. Preserve all29 closed/3 HELD predecessor slots. Historical feedback retains old identities and utility reference, cannot become a new latency frontier, and carries an explicit qualification in the initial model view. B remains feedback-free.470 targeted tests pass; three modules98% statement coverage; base/harness/lint pass.
@@ -1326,7 +1334,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T02:11:30.389486+00:00
+Last refreshed: 2026-10-04T02:43:18.543142+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
