@@ -1,0 +1,57 @@
+{
+  "at_utc": "2026-10-04T10:35:55.780894+00:00",
+  "authority": "root227 bounded incident disposition",
+  "cause": "fit_native_graph derived scratch from artifact parent leaf only. Both initial and GEPA artifacts use counterexample-check. Existing initial proof correctly refused overwrite, but only after tokenizer work.",
+  "commit": "2a7e379a37cc4b1fa184b99e4e2d47e81f855d02",
+  "disposition": "Allow exactly one separately registered successor FIT with unchanged child/roster/requests/budget. Archive only exact dead-owner preserved lease after live validation. Any successor failure stops; no automatic retry. No generation/scoring authority.",
+  "endpoint_contacts": 140,
+  "evidence": [
+    {
+      "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/capacity-failure.json",
+      "sha256": "d5589f215d256758f3ed909216a31bdd594318a69b6d9ba29ebb0a1ea6a9ce57"
+    },
+    {
+      "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/capacity-finished.json",
+      "sha256": "7044291854abc6444a21c3bd05054ddd0ed287a52661aa3efa9b2663f20c75c6"
+    },
+    {
+      "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/capacity-windows-v1.exit.json",
+      "sha256": "b641028729f3927f3031b06b01ac1fa1dd5e401f3e47ad26ead2b1c87bc5a13e"
+    },
+    {
+      "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/counterexample-check-capacity.stderr.log",
+      "sha256": "b4102a6dc6190ce3846d3fd1d04a7dcd5d409b7f677564b72c089bf25fbe73e4"
+    },
+    {
+      "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/counterexample-check/request-fit-v1.json.contacts.jsonl",
+      "sha256": "98c50b12e30e619ce07b11c70411277d530bd2480ae3e71ad8a1640761c44a5a"
+    }
+  ],
+  "failed_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-context-gepa-iteration1-capacity-v1",
+  "generation_contacts": 0,
+  "old_proof_directories": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/counterexample-check-new-acquisition",
+      "requests_sha256": "46e92d4e1dd82cf848bb47f7b69ab51d91024e01f866570b93f30686458d1eac"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/counterexample-check-wide-automatic-supply",
+      "requests_sha256": "5cd521b48e99e625f3ab481b3c26563310d86b31dec2d1cc031c73b66fa2ab37"
+    }
+  ],
+  "props_contacts": 1,
+  "repair": "Use deterministic full DATA-relative artifact identity for each rehearsal namespace; reject existing scratch before authorizing or making contacts. Never reuse old proof or delete any artifact.",
+  "schema": "saea-capacity-scratch-collision-disposition-v1",
+  "scorer_contacts": 0,
+  "tokenize_contacts": 139,
+  "validation": {
+    "full_graph_fake_tokenizer_proof": {
+      "relpath": "coordination/context-gepa-iteration1-engineering-owner227-v1/scratch-fix-model-free-proof-v2.json",
+      "sha256": "ae903dc0c284fc3966e051790cd7b9087a4d37901ce0e37abd16fe3157ff27d5"
+    },
+    "network_disabled": true,
+    "no_capacity_certificate_from_fake_test": true,
+    "unit_cli_tests": 17
+  }
+}

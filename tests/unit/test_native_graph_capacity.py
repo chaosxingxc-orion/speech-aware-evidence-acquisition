@@ -97,3 +97,43 @@ def test_capacity_refuses_a_graph_with_different_context_layout(capacity, graph,
         fit_native_graph(runtime(capacity), tmp_path / "absent.json", policy=None,
                          graph_factory=lambda: runtime(graph))
     assert not (tmp_path / "absent.json").exists()
+
+
+def test_capacity_scratch_names_separate_equal_leaf_directories(tmp_path):
+    from speech_aware_evidence_acquisition.analysis.native_graph_capacity import capacity_rehearsal_outputs
+    data = tmp_path / "data"
+    first = data / "coordination" / "initial" / "counterexample-check" / "fit.json"
+    second = data / "coordination" / "gepa" / "counterexample-check" / "fit.json"
+    a = capacity_rehearsal_outputs(data, first)
+    b = capacity_rehearsal_outputs(data, second)
+    assert set(a) == {"new-acquisition", "wide-automatic-supply"}
+    assert set(a.values()).isdisjoint(b.values())
+    assert all(p.is_relative_to(data / "wire-check") for p in a.values())
+    assert capacity_rehearsal_outputs(data, first.parent / "." / first.name) == a
+    assert not data.exists()
+
+
+@pytest.mark.parametrize("mode", ["new-acquisition", "wide-automatic-supply"])
+def test_capacity_scratch_refuses_existing_proof_before_authorization(tmp_path, monkeypatch, mode):
+    from types import SimpleNamespace
+    import speech_aware_evidence_acquisition.analysis.native_graph_capacity as cap
+    import speech_aware_evidence_acquisition.analysis.native_episode_dry_run as dry
+    import speech_aware_evidence_acquisition.core.bundle.git_commit as gc
+    import speech_aware_evidence_acquisition.core.preparation as prep
+    data = tmp_path / "data"
+    output = data / "coordination" / "fresh" / "fit.json"
+    scratch = cap.capacity_rehearsal_outputs(data, output)
+    scratch[mode].mkdir(parents=True)
+    sentinel = scratch[mode] / "immutable"
+    sentinel.write_text("preserve")
+    context = {"values": {}, "sample_ids": list("abcd"), "data_root": data}
+    runtime = SimpleNamespace(preparation_context=lambda: context, _data_root=data,
+        _repo_root=tmp_path, _composed=SimpleNamespace(config_hash="synthetic"),
+        authorize_preparation_contacts=lambda **kw: pytest.fail("authorized contacts"))
+    monkeypatch.setattr(dry, "compose_dry_run", lambda *a, **kw: None)
+    monkeypatch.setattr(gc, "require_clean_study_repo", lambda *a: "a" * 40)
+    monkeypatch.setattr(prep, "prepare_artifact", lambda path, **kw: kw["producer"]())
+    with pytest.raises(ValueError, match="Capacity rehearsal output already exists"):
+        cap.fit_native_graph(runtime, output, policy=None, graph_factory=lambda: runtime)
+    assert sentinel.read_text() == "preserve"
+    assert not output.exists()

@@ -95,6 +95,16 @@ def measure_captured_requests(client, records, *, media_marker, speech_max, rese
     return rows
 
 
+def capacity_rehearsal_outputs(data_root, artifact_path):
+    """Bind scratch identity to the whole DATA-relative artifact, not its leaf."""
+    from ..core.preparation import digest
+    root = Path(data_root).resolve()
+    relative = Path(artifact_path).resolve().relative_to(root).as_posix()
+    identity = digest({"schema": "saea-capacity-scratch-v1", "artifact": relative})
+    return {mode: root / "wire-check" / ("capacity-" + identity + "-" + mode)
+            for mode in ("new-acquisition", "wide-automatic-supply")}
+
+
 def fit_native_graph(runtime, path, *, policy, graph_factory, contact_cap=2048):
     """Use the shared lease and exposure guard for the separate FIT identity."""
     import os
@@ -127,6 +137,10 @@ def fit_native_graph(runtime, path, *, policy, graph_factory, contact_cap=2048):
         "method": "Actual production graph, longest released slot values and long bounded role replies"}
 
     def produce():
+        scratch = capacity_rehearsal_outputs(runtime._data_root, path)
+        for output in scratch.values():
+            if output.exists():
+                raise ValueError('Capacity rehearsal output already exists: ' + str(output))
         runtime.authorize_preparation_contacts(contact_cap=contact_cap)
         directory, document, session = attach_worker_session(policy=policy,
             data_root=context["data_root"], run_id=context["run_id"], attempt_id=context["attempt_id"],
@@ -190,7 +204,7 @@ def fit_native_graph(runtime, path, *, policy, graph_factory, contact_cap=2048):
                 texts, response_counts = bounded_response_texts(tokens, targets=targets, intents=chosen)
                 graph = graph_factory()
                 roster = graph.preparation_context()["sample_ids"]
-                output = runtime._data_root / "wire-check" / (path.parent.name + "-" + mode)
+                output = scratch[mode]
                 proof = rehearse_native_graph(graph, session_path=directory / SESSION_RECEIPT_NAME,
                     respond=CapacityResponder(roster, targets, texts), output=output)
                 if proof["terminal_rows"] != 4 or proof["synthetic_tool_calls"] != 3:

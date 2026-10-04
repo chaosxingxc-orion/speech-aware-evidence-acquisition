@@ -1,0 +1,3 @@
+# GEPA iteration1 complete N20 evaluation preparation
+
+Six HELD members exactly bind the original waiting learner request: seed/A/A and four candidate systems. Only the selected counterexample Perception changes; all other complete policy versions remain unchanged. Every own supply warm-verifies and preserves original selection output. Same20 inputs,80 candidate plus40 control trajectories. This preparation adds no tokenizer/generation/scoring contact. Changed-child actual capacity/structural proof, exact full-family registration, frozen runtime/live admission and unique official scores/root READ remain required. No adoption, automatic expansion or independent validation.

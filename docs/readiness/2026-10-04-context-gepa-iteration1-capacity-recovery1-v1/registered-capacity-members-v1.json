@@ -1,0 +1,18 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-counterexample-check-capacity-recovery1-fit-v1",
+    "bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-capacity-recovery1-v1",
+    "graph": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-capacity-recovery1-v1/capacity-fit-plan-registered-v1.json",
+      "sha256": "5d5fbb7cf2ddc3f6e9ba3804897c505a79185d7253d48364b2b1c27ac5974c4c"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-capacity-recovery1-v1/capacity-analysis-recipe-v1.json",
+      "sha256": "f89e7e03103f16d7e202848f3f36d80903e37a8adaff817065973ce5e062f7ad"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-RECOVERY1-FIT-V1",
+    "system_id": "counterexample-check"
+  }
+]

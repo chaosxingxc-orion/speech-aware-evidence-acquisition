@@ -1,0 +1,3 @@
+# GEPA child capacity recovery
+
+Preserve the failed original140 endpoints and its dead-owner lease. The scratch namespace used only a repeated leaf directory, so the first synthetic graph refused overwriting an initial proof. A full-artifact identity and precontact collision gate are regression-tested, including a network-disabled full graph proof. Admit one fresh297-endpoint FIT with identical child and roster. No generation, scoring or learning feedback; a later separate structural/family admission remains mandatory. Root227 permits exact dead-lock archival after live verification. A further failure stops.

@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## GEPA capacity collision preserved and one successor prepared, 2026-10-04T10:36:55.7652261Z
+
+[Root227 disposition](../receipts/continuation/2026-10-04-context-gepa-capacity-collision-disposition.json) preserves the exact failed capacity:140 endpoints (one props and139 tokenizer), zero generation/scoring. The rehearsal namespace used only the repeated parent leaf and collided with an immutable initial counterexample proof. The old worker, scratch, journal and dead-owner lease remain preserved; structural registration correctly refused this failure. Do not retry that identity or read task quality.
+
+Full DATA-relative artifact hashing now separates scratch and a precontact guard rejects existing outputs before authorization.18 unit/CLI/full graph tests pass with network disabled for the synthetic integration; combined module coverage90percent, base/harness/Ruff pass. The first local integration selected a stale historical supply and refused; the explicit current child graph passes without changing historical files. Fake tokenizer evidence is not a capacity certificate.
+
+[One exact successor](../readiness/2026-10-04-context-gepa-iteration1-capacity-recovery1-v1/README.md) is registered for297 endpoints only with the unchanged child and same20 input assets. Own supply warm-verifies. Frozen/live checks and archival of only the exact dead-owner lease precede dispatch; a further failure stops. No generation, official scoring or optimizer feedback is admitted. Six exact GEPA N20 candidate/control supplies are separately prepared HELD; no contacts. Keep the original GEPA worker waiting, TF independent, seed incumbent, paused heartbeat and human-before8x400.
+
 ## GEPA child engineering assets prepared, 2026-10-04T10:18:30.107249+00:00
 
 [Exact child engineering preparation](../readiness/2026-10-04-context-gepa-iteration1-engineering-v1/README.md) provides model-free graph, twenty-input maximum-capacity and four-row structural configurations, all bound to provisional0e48a88cd. Own supply envelopes warm-verify; source knowledge/audio/query/vote selections remain unchanged. One separately registered nongenerative297-endpoint capacity member is conditionally admitted under root227. Clean frozen/runtime/live checks precede dispatch. Graph and structural generation remain held; no new model/tokenizer/scorer contact has occurred.

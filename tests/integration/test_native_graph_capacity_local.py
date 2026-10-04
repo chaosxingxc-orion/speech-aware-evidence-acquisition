@@ -16,7 +16,6 @@ def test_capacity_integration_without_model_or_tokenizer_endpoints(monkeypatch):
     import speech_aware_evidence_acquisition.core.session.worker as worker
     from speech_aware_evidence_acquisition.core.flight.factory import build_flight_runtime
     from speech_aware_evidence_acquisition.core.session import attach_session
-    from speech_aware_evidence_acquisition.core.session.serving import SESSION_RECEIPT_NAME
     repo = Path(__file__).resolve().parents[2]
     data = Path(os.environ["SAEA_NATIVE_REHEARSAL_DATA"])
     def build(experiment):
@@ -24,7 +23,7 @@ def test_capacity_integration_without_model_or_tokenizer_endpoints(monkeypatch):
         return build_flight_runtime(repo, data, model=cell["model_fragment"], dataset=cell["dataset_fragment"],
             baseline=cell["baseline_fragment"], experiment=experiment, run_id=cell["run_id"], attempt_id=cell["attempt_id"],
             runtime_root=Path("/home/chao"), lock_path=Path(os.environ["SAEA_NATIVE_REHEARSAL_LOCK"]), campaign_active=False)
-    runtime = build("slurp-native-stage3-system-text-capacity-control2-recovery1-v1")
+    runtime = build(os.environ.get("SAEA_NATIVE_CAPACITY_EXPERIMENT", "slurp-native-stage3-system-text-capacity-control2-recovery1-v1"))
     monkeypatch.setattr(runtime, "authorize_preparation_contacts", lambda **kw: None)
     monkeypatch.setattr(gc, "require_clean_study_repo", lambda _: "a" * 40)
     session_path = Path(os.environ["SAEA_NATIVE_REHEARSAL_SESSION"])
@@ -49,7 +48,7 @@ def test_capacity_integration_without_model_or_tokenizer_endpoints(monkeypatch):
     monkeypatch.setattr(prep, "prepare_artifact", fake_artifact)
     with patch("socket.socket.connect", side_effect=AssertionError("No network")), patch("socket.socket.connect_ex", side_effect=AssertionError("No network")):
         cap.fit_native_graph(runtime, output, policy=SimpleNamespace(assert_lease=lambda *a, **kw: None),
-            graph_factory=lambda: build("slurp-native-stage3-system-text-smoke-4-recovery1-v1"))
+            graph_factory=lambda: build(os.environ.get("SAEA_NATIVE_CAPACITY_GRAPH", "slurp-native-stage3-system-text-smoke-4-recovery1-v1")))
     result = json.loads(output.read_text())["output"]
     assert len(result["proofs"]) == 2
     assert all(p["terminal_rows"] == 4 and p["synthetic_completions"] == 22 for p in result["proofs"])
