@@ -1,0 +1,57 @@
+{
+  "schema": "saea-four-node-final-two-proposer-launch-v1",
+  "at_utc": "2026-10-04T05:42:51.924543+00:00",
+  "task_name": "SAEA-System-Text-Proposer-Four-Node-Round9-FinalTwo-Owner227",
+  "status": "RUNNING",
+  "process": {
+    "pid": 621545,
+    "start_ticks": "44167925",
+    "registration": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/registration.json"
+  },
+  "members": [
+    "L-9-2",
+    "B-9-2"
+  ],
+  "closed_not_retried": [
+    "L-9-1",
+    "B-9-1"
+  ],
+  "availability_basis": "Latest direct human message states manual quota reset and asks to continue.",
+  "provider_acceptance_verified": false,
+  "source_root": "/home/chao/saea-worktrees/codex-four-node-proposer-round9-v1",
+  "source_commit": "8eafb9f601242d7310cb889656d30dc3cb9af214",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/owner-continuation.json",
+      "sha256": "b41181050ce5015e9c74e711dbdd9a4faaa5170a1fc885df74b68d395d4767b8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/root-admission.json",
+      "sha256": "4bbba7f9a3c2699470b9c73e3cac34f7327a0d4fbec74aedb3b710464bb9a8e4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/registration.json",
+      "sha256": "396675a0cba896dfd5a19a6c68276e2013d10af57e3e4336cdeb7011d7258a51"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/prelaunch-check.json",
+      "sha256": "affa85a6a8d3080b075d9591907fc77723693af614e34ff7844b2c3395cc434b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/launch.ps1",
+      "sha256": "0928b16adcdcc221bc943589c21c04d5729b54f6736b61cae1595888dec7f230"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/task-launch-intent.json",
+      "sha256": "80de0028b55679af64b1737f926ad7ddec6af57d0fce92485ffb933dec6d0d18"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/launcher-start.json",
+      "sha256": "fa3a770a55d72168185f02da5a287a5b043475a794fcaa6cd5f540bbe1722fa6"
+    }
+  ],
+  "retry_permitted": false,
+  "gpu_dispatch": false,
+  "paid_api_spend": 0,
+  "heartbeat": "PAUSED"
+}

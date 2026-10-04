@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Manual-reset continuation of final two proposals running, 2026-10-04T05:42:51.924543+00:00
+
+A later direct human message states that the quota was manually reset and asks to continue. [Exact admission](../receipts/continuation/2026-10-04-four-node-round9-final-two-root-admission.json) and [launch](../receipts/continuation/2026-10-04-four-node-round9-final-two-launch.json) supersede the prior hold for only L-9-2/B-9-2. L-9-1 and B-9-1 remain invalid/spent and are filtered out. No replacement or new allocation.
+
+Fresh check-only passes exactly2 untouched members/zero contacts,with original inputs,capsules,model,budgets and frozen8eafb9f60 source unchanged. Windows SAEA-System-Text-Proposer-Four-Node-Round9-FinalTwo-Owner227 is running; PID621545/start44167925 was observed in source/input validation. Revalidate that handle. No provider acceptance or completion is claimed from task start. Any real failure stops for evidence-backed disposition.
+
+No GPU comparison or policy activation is admitted. Keep root-only,sequential work,heartbeat PAUSED,zero paid spend,human before8x400 and separate carrier holds. Resolve exact complete family and accounting only after genuine outcomes.
+
 ## Requested continuation stopped on provider quota, 2026-10-04T05:36:37.374786+00:00
 
 The requested remaining-only task has ended, superseding the live checkpoint below. The first actual B-9-1 request again received subscription_sharing_usage_limit_exceeded at05:33:53Z. No candidate or complete usage was returned. Windows exit1,original PID620657 absent. [Fresh stop and root closure](../receipts/continuation/2026-10-04-four-node-round9-remaining-quota-stop.json) preserves the transport/error and closes B-9-1 invalid/spent with unknown token usage,not zero. L-9-1 was not retried. L-9-2 and B-9-2 have no contact and remain unspent.
