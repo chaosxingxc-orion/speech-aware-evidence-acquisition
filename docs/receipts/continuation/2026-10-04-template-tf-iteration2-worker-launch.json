@@ -1,0 +1,53 @@
+{
+  "schema": "saea-template-tf-iteration2-worker-launch-v1",
+  "at_utc": "2026-10-04T17:33:04.891960+00:00",
+  "status": "LIVE_SOURCE_QUALIFICATION",
+  "windows_launch": {
+    "runtime_dispatch": false,
+    "worker_commit": "f66d9aabf07d83929db45e4447a480c4c2b124cf",
+    "at_utc": "2026-10-04T17:31:57.7527385Z",
+    "wrapper": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\context-template-tf-iteration2-owner227-v1\\worker-windows-v1.ps1",
+    "automatic_retry": false,
+    "schema": "saea-windows-context-worker-launch-v1",
+    "windows_pid": 27392
+  },
+  "linux_start": {
+    "admission": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-admission-v1.json",
+    "admission_sha256": "e15cc04406a3c6f3baa2646947a18943f5f585048046f12415c949bd6d626773",
+    "model_contacts_added": 0,
+    "no_automatic_restart": true,
+    "pid": 714195,
+    "start_ticks": "48300862",
+    "started_unix": 1791135120.6805809,
+    "worker_commit": "f66d9aabf07d83929db45e4447a480c4c2b124cf"
+  },
+  "linux_identity_revalidated": true,
+  "command": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-entry-v1.py --admission /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-admission-v1.json --admission-sha256 e15cc04406a3c6f3baa2646947a18943f5f585048046f12415c949bd6d626773 ",
+  "source_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-admission-v1.json",
+      "sha256": "e15cc04406a3c6f3baa2646947a18943f5f585048046f12415c949bd6d626773"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-entry-v1.py",
+      "sha256": "338441313c8f6c3ac3501f46608f9f6033a7ef3ae8e66266b3029928f4a80414"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-windows-v1.ps1",
+      "sha256": "3f83fdfdbab766f3bc58787b0b77ab25004723983b05e36d51adccf679d1ee95"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/prepared-inputs.json",
+      "sha256": "5074814e35464ddacd976f011d72be4c94f7a322f1af96eb6494c16551fc592a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/worker-start.json",
+      "sha256": "e9d2df5afd8687b78088f590fa368102b3bb51efd7a6b82cc38ef7d1b565895e"
+    }
+  ],
+  "semantic_requests_observed": [],
+  "new_model_contacts": 0,
+  "runtime_dispatch": false,
+  "automatic_retry": false,
+  "next": "Service the first exact immutable update_experience request with a separately admitted GPT-6.1 Sol/high fork-none template-only capsule. Do not restart on an observation timeout."
+}

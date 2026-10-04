@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Template-only TF iteration2 worker launched, 2026-10-04T17:33:04.891960+00:00
+
+[Exact launch](../receipts/continuation/2026-10-04-template-tf-iteration2-worker-launch.json): Windows27392, Linux714195/start48300862, frozen f66d9aabf. The process is live requalifying its registered sources; no semantic request or model contact observed at this checkpoint. Use new archive context-template-tf-iteration2-v1 and coordination context-template-tf-iteration2-owner227-v1. Do not restart for observation timeout. Exact request/capsule admission remains required before each GPT-6.1 Sol/high fork-none actor; the worker has no model client or GPU dispatch authority.
+
+The original TF decision and sources remain immutable. Current accepted parents are the original four, rejected children are separate aggregate conditioning, and active experience is empty. New plan:0 summarize,0 compare,1 experience update,4 proposals,1 complete evaluation, N20/K4 plus seed/A/A. Knowledge and source rosters stay out of actors. Preserve source recipes/READ interface while this worker is live. Keep formal seed, no automatic scaling, paused heartbeat and other-carrier holds.
+
 ## Template-only rejected-trial conditioning prepared, 2026-10-04T17:30:27.870687+00:00
 
 [Prospective iteration2](../readiness/2026-10-04-template-tf-iteration2-v1/README.md) preserves original TF parents and zero active experience while adding separately requalified rejected-trial templates and aggregate feedback.199 tests pass,100% statement coverage across the three shared modules; engineering-base PASS. Original acceptance rules and archived decisions remain unchanged. This is an explicit own-history conditioning adaptation, not an unchanged upstream reproduction.
@@ -1798,7 +1804,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T17:30:27.870687+00:00
+Last refreshed: 2026-10-04T17:33:04.891960+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

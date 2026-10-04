@@ -1,0 +1,13 @@
+{
+  "schema": "saea-template-tf-worker-admission-receipt-v1",
+  "admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/worker-admission-v1.json",
+    "sha256": "e15cc04406a3c6f3baa2646947a18943f5f585048046f12415c949bd6d626773"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-template-tf-iteration2-worker-v1",
+  "commit": "f66d9aabf07d83929db45e4447a480c4c2b124cf",
+  "semantic_contacts_admitted": 0,
+  "new_model_contacts": 0,
+  "runtime_dispatch": false,
+  "automatic_retry": false
+}
