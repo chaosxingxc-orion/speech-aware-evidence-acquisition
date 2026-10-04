@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Four-node measured compilation and real prefix preparation, 2026-10-04T04:23:32.911966+00:00
+
+[Shared compilation correction](../readiness/2026-10-04-four-node-measured-compilation-v1/README.md) now transfers the frozen protocol profile into candidate and scaling configurations. It rejects stale/unregistered profiles and incompatible geometry without altering historical profile-free behavior.141 focused tests pass; cohort module84 statements/100% coverage; base/harness/focused lint pass.
+
+Real four-node seed preparation passed on the existing20/50/100/200 prefixes. All four policy hashes, knowledge/query/packet sources remain fixed, and every output carries4 slots/queue4. Original supply/FIT identities are removed. [Receipt](../receipts/continuation/2026-10-04-four-node-measured-compilation-engineering.json) pins the disk-backed bases and rehearsal. Zero new contacts, proposals, data rebuild or runtime admission; these are not new candidates or scientific results.
+
+Proposal quota remains unresolved; preserve spent L-9-1 and the remaining held opportunities without probes or replacement. Exact complete family membership, actual candidate preparation, FIT and structural qualification remain before execution. Keep sequential/root-only work, heartbeat PAUSED, human before8x400 and all separate carrier holds.
+
 ## Measured runtime queue binding verified, 2026-10-04T04:15:08.551562+00:00
 
 [Offline correction](../readiness/2026-10-04-measured-runtime-binding-v1/README.md) now routes the opt-in experiment measurement profile into the shared sequential runner. Pre-preparation and dispatch validation reject incompatible envelopes; registration requires recipe/registration/runtime equality and explicit geometry. The existing complete-family protocol hash/profile check remains. Absent profile preserves legacy behavior. Candidates cannot edit the scheduling envelope.

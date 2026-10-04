@@ -153,6 +153,24 @@ def bind_system_text_cohort(
         "agreement rows differ from the complete cohort",
     )
     result = copy.deepcopy(compiled)
+    # Measurement belongs to the frozen experiment protocol, never the proposer.
+    # Resolve it here so CLI candidates and scaling use the same shared binder.
+    if "measurement_profile" in protocol:
+        from .system_search_measurement import runtime_options, validate_profile
+
+        profile = validate_profile(protocol["measurement_profile"])
+        require("system_search_measurement" not in result
+                or result["system_search_measurement"] == profile,
+                "compiled measurement differs from the registered protocol")
+        require(type(result.get("serving_slots")) is int
+                and type(result.get("serving_slot_tokens")) is int
+                and result["serving_slot_tokens"] > 0,
+                "measured cohort needs explicit serving geometry")
+        result["system_search_measurement"] = copy.deepcopy(profile)
+        runtime_options(result, slot_count=result["serving_slots"])
+    else:
+        require("system_search_measurement" not in result,
+                "compiled measurement lacks a registered protocol profile")
     if stage == "dev":
         # Same pinned official evaluator, bound explicitly to the DEV partition.
         # This mapping is coordinator plumbing, not a proposer-editable scorer.

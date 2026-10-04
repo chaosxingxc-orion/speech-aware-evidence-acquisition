@@ -584,3 +584,47 @@ def test_extra_round_cohort_requires_exact_owner_and_fixed_pool(case, tmp_path, 
         result = run()
         assert result["phase_material"] == base["phase_material"]
         assert result["knowledge_stores"]["intent-boundaries"]["phase_supply"]["perception"]["agreement_source"]["relpath"] == "agreement-full400.jsonl"
+
+
+def test_measured_protocol_reaches_compiled_runtime_without_policy_change(case):
+    from test_system_search_measurement import profile
+    base, _, protocol, *_ = case
+    legacy = bind(case)
+    base_before = copy.deepcopy(base)
+    protocol["measurement_profile"] = profile()
+    result = bind(case)
+    assert result["system_search_measurement"] == profile()
+    assert {k: v for k, v in result.items() if k != "system_search_measurement"} == legacy
+    assert base == base_before
+    result["system_search_measurement"]["queue_depth"] = 12
+    assert protocol["measurement_profile"] == profile()
+
+
+@pytest.mark.parametrize("fault", ["null", "slots", "queue", "conflict", "unregistered", "geometry"])
+def test_measured_cohort_refuses_undeclared_or_incompatible_schedule(case, fault):
+    from test_system_search_measurement import profile
+    base, _, protocol, *_ = case
+    protocol["measurement_profile"] = profile()
+    if fault == "null":
+        protocol["measurement_profile"] = None
+    elif fault == "slots":
+        protocol["measurement_profile"]["slot_count"] = 8
+    elif fault == "queue":
+        protocol["measurement_profile"]["queue_depth"] = 2
+    elif fault == "conflict":
+        base["system_search_measurement"] = {**profile(), "queue_depth": 16}
+    elif fault == "geometry":
+        del base["serving_slots"]
+    else:
+        del protocol["measurement_profile"]
+        base["system_search_measurement"] = profile()
+    with pytest.raises(PolicyError):
+        bind(case)
+
+
+def test_matching_registered_measurement_is_idempotent(case):
+    from test_system_search_measurement import profile
+    base, _, protocol, *_ = case
+    base["system_search_measurement"] = profile()
+    protocol["measurement_profile"] = profile()
+    assert bind(case)["system_search_measurement"] == profile()

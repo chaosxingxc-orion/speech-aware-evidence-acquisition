@@ -122,11 +122,15 @@ def prepared(case, tmp_path, size):
     return compiled, policy_binding, protocol, binding, repo, data, bundle
 
 
+@pytest.mark.parametrize("measured", [False, True])
 @pytest.mark.parametrize("size", [50, 100, 200])
 def test_actual_policy_and_full400_artifacts_survive_prefix_binding(
-    case, tmp_path, size
+    case, tmp_path, size, measured
 ):
     compiled, pb, protocol, binding, repo, data, bundle = prepared(case, tmp_path, size)
+    if measured:
+        from test_system_search_measurement import profile
+        protocol["measurement_profile"] = profile()
     before = copy.deepcopy((compiled, pb, protocol, binding))
     files = {
         str(p): p.read_bytes()
@@ -145,6 +149,7 @@ def test_actual_policy_and_full400_artifacts_survive_prefix_binding(
     )
     assert (compiled, pb, protocol, binding) == before
     actual = result["baseline"]
+    assert actual.get("system_search_measurement") == protocol.get("measurement_profile")
     for key in (
         "phase_material",
         "phase_tools",

@@ -1,0 +1,106 @@
+{
+  "schema": "saea-four-node-measured-compilation-engineering-v1",
+  "at_utc": "2026-10-04T04:23:32.911966+00:00",
+  "status": "OFFLINE_VERIFIED_PREPARATION_ONLY",
+  "source_commit": "b69c0aec9",
+  "rehearsal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/rehearsal-result-v1.json",
+    "sha256": "61c07f14478efd0456f7cdb91a0323933b00a224b16c446008badc2e91292944"
+  },
+  "rehearsal_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/rehearsal-v1.py",
+    "sha256": "53e5e8c878b5fc018556f1f7316791c0a6ba0c281e369f5bcde08ca30012a008"
+  },
+  "seed_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "proposal_protocol": {
+    "relpath": "docs/readiness/2026-10-04-slurp-four-node-proposer-round9-v1/protocol-proposals-v1.json",
+    "sha256": "241c4bf29c40f048b80487e0ceae56249b8e4ee0f36be5e8f331b3bdab90f0fd"
+  },
+  "prefixes": [
+    {
+      "rows": 20,
+      "compiled": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/seed-prefix20-compiled-v1.json",
+        "sha256": "7a88f7d39f82c84c6b0bf479ab58f6a3335a086bd6cdfa04c4ec7f189e9739e2"
+      },
+      "cohort": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/cohort-prefix20-v1.json",
+        "sha256": "6858c1c4b74bc70463af5d8c3af498e3a057af60a384313d989b2d90fd36d381"
+      },
+      "configuration_sha256": "34ae302ccf17a03bdb81cc5755d3888509a440988933cd89b057a29d07b32065"
+    },
+    {
+      "rows": 50,
+      "compiled": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/seed-prefix50-compiled-v1.json",
+        "sha256": "5eec8f1afb0a1c3899f8c8f91d474ba93355fe64d0625a611c8f8cd4f4aa087e"
+      },
+      "cohort": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/cohort-prefix50-v1.json",
+        "sha256": "38f363ba51020d9fa38a8a354e47a68386eab6974ebcf73f41b524abda1c5eb0"
+      },
+      "configuration_sha256": "c786c4a98180690c91b933817b5167a15a6b4a1781c8780c5867df01f0653fde"
+    },
+    {
+      "rows": 100,
+      "compiled": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/seed-prefix100-compiled-v1.json",
+        "sha256": "c9a1120d7c60f94893e2930a10497911a1644ac8584af2b1993b4c3d37349327"
+      },
+      "cohort": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/cohort-prefix100-v1.json",
+        "sha256": "eb1384d79817179d141d9d0f34f59470ea7873b3d54eabcdc2ca9fc406ad357a"
+      },
+      "configuration_sha256": "2f5ec096ad134e363a65451cec59d1154ecc3328068cb1cec6d6a6f99539c9de"
+    },
+    {
+      "rows": 200,
+      "compiled": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/seed-prefix200-compiled-v1.json",
+        "sha256": "efd79b5ddf844a746fa0ba8f4aad206d396f6594a57cb544afed2b70ef3e99f9"
+      },
+      "cohort": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-measured-compilation-v1/cohort-prefix200-v1.json",
+        "sha256": "0eec5c7e8b05b4d1e6536acda08f7f71da187d46e1bbcf6274709932ffb325fd"
+      },
+      "configuration_sha256": "4e7fd8b50095639ad8a6d4a38b359eabff570e0635546ed3e9644b691c0b8470"
+    }
+  ],
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "tests": {
+    "passed": 141,
+    "cohort_module_statement_coverage_percent": 100,
+    "statements": 84
+  },
+  "checks": [
+    "engineering_base_check PASS",
+    "harness_admission_check PASS",
+    "focused lint PASS",
+    "git diff --check PASS"
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "proposal_allocations_added": 0,
+  "data_rebuild": false,
+  "runtime_admission": false,
+  "scientific_gain_established": false,
+  "heartbeat": "PAUSED",
+  "human_review_before": "8x400"
+}
