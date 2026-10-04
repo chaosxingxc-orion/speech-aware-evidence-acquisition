@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 abstract continuation boundary checked, 2026-10-04T19:20:51.916365+00:00
+
+[Preparation evidence](../receipts/continuation/2026-10-04-template-k16-abstract-continuation-prepared.json) adds11 synthetic malformed-accounting rejection checks against the actual structural acceptance assertions. This is helper validation, not completed runtime structure. The separately prepared project-complete-abstract-v1.py requalifies all18 members and emits all16 original branches x20 anonymous node/terminal feedback rows, without per-input semantic calls or concrete task/knowledge content. Its separate source registration is intentionally absent; do not execute/export until full scientific root READ and an exact prospective source admission. Do not fall back to legacy per-input reflection or an old K4 callback.
+
+Original capacity Linux730548/start48865276 is revalidated live; 7 members exited0 with leases released and no failure at this checkpoint. Continue the same Windows-owned launch. Frozen worker16cd42cd1, original controls/service and paused heartbeat remain unchanged. Next actual runtime action remains all16 capacities complete ->64 structural rows ->18x20 scientific family, using the prior pinned helpers. No new proposal, scoring, scientific result or policy adoption in this update.
+
+
 ## Exact K16 continuation helpers prepared, 2026-10-04
 
 [Fourteen prospective helpers](../receipts/continuation/2026-10-04-template-k16-continuation-helpers-prepared.json) have recorded hashes and syntax checks; none has executed. After all16 capacity exits0 and wrapper exit0, run structural prepare-entry, serially integrate and freeze codex-context-template-k16-structural-v1, run its frozen-check under exact SAEA_EXPECTED_COMMIT, and use its completed-TF transition only after revalidating no STOP/competing flight. Launch the existing Windows batch task once, then require all64 structural rows and source-bound timing before record-completion. No engineering scoring or quality read.
