@@ -1,0 +1,115 @@
+{
+  "schema": "saea-context-gepa-provisional-child-v1",
+  "recorded_at_utc": "2026-10-04T10:11:40.815106+00:00",
+  "algorithm": "gepa",
+  "iteration": 1,
+  "semantic_actor": "/root/gepa_iteration1_perception_sol",
+  "proposal_status": "provisional; not evaluated or adopted",
+  "accepted_exchange": {
+    "request_sha256": "ac46ba5095d4cef183852fdc6142ad690329adc7b458eb52d2e8ea6a3177369e",
+    "response_sha256": "eb3b7969a95d6bd7d6361786c4aeee79d94e6230e4435a7076dbfee787795a2b",
+    "stage": "propose"
+  },
+  "original_response_sha256": "1cadfcb062fadf7d62301d5816139e31b60afeee7b738c8521ee190ce574b79d",
+  "compile": {
+    "schema": "saea-context-gepa-child-compile-v1",
+    "recorded_at_utc": "2026-10-04T10:10:30.184593+00:00",
+    "source_evaluation_request": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1/external-exchange/requests/0001-evaluate/request.json",
+    "parent_bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+    "child_bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+    "policy_binding": {
+      "schema": "saea-system-text-role-binding-v1",
+      "bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+      "bundle": {
+        "relpath": "system-text-search/context-baseline-gepa-iteration1-worker2-v1/policies/0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff.json",
+        "sha256": "8ce3d83d16f05212a3add19925adcd39e378fc76594684d6c9fd78d119842637"
+      }
+    },
+    "baseline": "configs/baseline/slurp-native-stage3-context-gepa-iteration1-counterexample-check-graph-v1.json",
+    "baseline_sha256": "601ded991b426eb53b7c8ff50af2a3cb2f1e20dd151908167a03f20b58fbec52",
+    "actual_binding": {
+      "bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+      "role_sha256": {
+        "perception": "f64612cd310bbb921b3d885399cf8740e16f693a4b601040ef65308d9ffb36e6",
+        "planner": "c63879dc850a76d8a9ab010dbb5e21eaf8a44e9ca1e27872b605230d0db83062",
+        "reviewer": "35c2c88dc80432896db1aa7c1aa6122fdaee4cd18765ca1bde8bdcab4d36232c",
+        "solver": "86db2558a36fe0ec4f20c31e51b068abaa8c81dcbf6cd7811fc20895b4ff6321"
+      },
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "node_context": {
+        "tool_schema_rendering": "constant",
+        "reviewer_history_scope": "latest-solver-and-local-tools"
+      }
+    },
+    "changed_configuration_paths": [
+      [
+        "native_episode",
+        "consumption_module",
+        "components",
+        12,
+        "params",
+        "planner_template"
+      ],
+      [
+        "native_episode",
+        "consumption_module",
+        "components",
+        12,
+        "params",
+        "reviewer_template"
+      ],
+      [
+        "native_episode",
+        "consumption_module",
+        "components",
+        12,
+        "params",
+        "perception_template"
+      ],
+      [
+        "native_episode",
+        "consumption_module",
+        "components",
+        12,
+        "params",
+        "solver_template"
+      ],
+      [
+        "phase_material",
+        "perception",
+        "instruction_template"
+      ],
+      [
+        "phase_material",
+        "planner",
+        "instruction_template"
+      ],
+      [
+        "phase_material",
+        "reviewer",
+        "instruction_template"
+      ],
+      [
+        "phase_material",
+        "solver",
+        "instruction_template"
+      ]
+    ],
+    "unchanged_noneditable_configuration": true,
+    "model_contacts_added": 0,
+    "scorer_contacts_added": 0,
+    "status": "Compiled graph only; own capacity/structural/scientific configurations and supplies remain pending; no runtime admission"
+  },
+  "preparation_note": "The first model-free graph comparison rejected list-order differences in dictionary traversal. Its source and staged exact role bytes are retained. A successor compares identical path-keyed old/new maps; it passes without changing the proposal or policy bytes. No generation/FIT/scorer contact was added.",
+  "pending_evaluation_request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1/external-exchange/requests/0001-evaluate/request.json",
+    "sha256": "aa946b4f0e24decd0b70feecdc511eefca5baea801b939ced1996b5ed6b44aae"
+  },
+  "original_worker_waiting": true,
+  "next": "Prepare and freeze separately registered changed-child capacity/structural proof and exact six-member120 trial. Compile graph is not a runtime-ready configuration; inherited supply/FIT bindings require own registration.",
+  "formal_incumbent": "seed",
+  "stable_benefit": false,
+  "heartbeat": "PAUSED"
+}

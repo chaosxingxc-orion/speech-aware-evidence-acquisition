@@ -1,0 +1,21 @@
+{
+  "schema": "saea-context-gepa-original-response-v1",
+  "recorded_at_utc": "2026-10-04T10:09:51.420738+00:00",
+  "actor": "/root/gepa_iteration1_perception_sol",
+  "model_configured": "gpt-6.1-sol",
+  "fork_turns": "none",
+  "original_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1/actor-capsules/0000-propose/original-response.json",
+    "sha256": "1cadfcb062fadf7d62301d5816139e31b60afeee7b738c8521ee190ce574b79d"
+  },
+  "request": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1/external-exchange/requests/0000-propose/request.json",
+  "submitted_unchanged": true,
+  "semantic_callbacks_observed": 1,
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "status": "Submitted to original live learner; no evaluator reward or runtime dispatch",
+  "paid_api_spend": 0
+}

@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## GEPA first proposal preserved and compiled, 2026-10-04T10:11:40.815106+00:00
+
+[Provisional child](../receipts/continuation/2026-10-04-context-gepa-provisional-child.json) is the original GPT-6.1 Sol response, unchanged. The shared learner accepted it as provisional and now waits at its single evaluation callback. Child0e48a88cd changes only counterexample-check Perception text: evidence-bearing alternatives, candidate deduplication and permission for one supported candidate. These are hypotheses, not demonstrated repairs. All provider/token metering remains unknown; one semantic callback is spent. Original response, inputs, read coverage and omissions are preserved.
+
+The existing shared compiler and actual role-binding check pass for the new graph; all noneditable operational configuration is unchanged. No new generation, FIT or scorer contact. The graph inherits old supply/FIT fields and is not runtime-ready. Next: separately register its capacity and structural proof, then an exact fresh six-member N20 trial (K4 eighty plus seed/A/A forty), complete unique scoring and READ, and return source bindings to the same live GEPA worker. Do not synthesize reward or restart the waiting worker. TF remains prepared from the original family and must not ingest GEPA outcomes. Keep seed, N20, paused heartbeat, other carrier holds and human-before8x400.
+
 ## First isolated GEPA semantic callback admitted, 2026-10-04T10:06:49.581373+00:00
 
 [Exact actor admission](../receipts/continuation/2026-10-04-context-gepa-actor-admission.json) follows complete initial-family READ and fresh worker qualification. The original GEPA selector chose counterexample-check and its first round-robin component, Perception. A fresh GPT-6.1 Sol/high/no-history subagent receives the immutable request and twenty selected-system source episodes through an exact hash manifest. It cannot dispatch GPU, score, replace failed proposals or inspect unlisted evidence. Provider/token usage may be unknown and remains null. One callback is reserved prospectively in the exposure ledger; original historical allocations remain untouched.
